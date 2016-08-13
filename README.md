@@ -31,5 +31,5 @@ the same TypeScript file twice. The checksumming operation is actually checksumm
 that was compiled the *last* time you built the WebSite project (or what you cloned from the
 repository) but the JavaScript that was built *this* time is what'll get checksummed at run-time.
 
-I'll be changing the build process to address this problem and when I'll do I'll remove this note.
+I'll be changing the build process to address this problem and when I do I'll remove this note.
 In the meantime if you hit the problem just rebuild and it should go away.
