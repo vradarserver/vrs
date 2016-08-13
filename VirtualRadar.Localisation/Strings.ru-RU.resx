@@ -308,7 +308,7 @@
   </data>
   <data name="BaseStation" xml:space="preserve">
     <value>BaseStation</value>
-    <comment>May not need to be translated, it's the name of a program</comment>
+    <comment>** SAME AS ENGLISH ** May not need to be translated, it's the name of a program</comment>
   </data>
   <data name="BaseStationStatus" xml:space="preserve">
     <value>Состояние BaseStation</value>
@@ -386,11 +386,9 @@
   </data>
   <data name="CannotStartDefaultBrowser" xml:space="preserve">
     <value>Не удалось запустить браузер по умолчанию, вы зарегистированы? Получено исключение "{0}".</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CannotStartDefaultBrowserTitle" xml:space="preserve">
     <value>Невозможно запустить браузер по умолчанию</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CannotStartWebServerFull" xml:space="preserve">
     <value>Не удается запустить веб-сервер на порту {0}</value>
@@ -407,7 +405,7 @@
   </data>
   <data name="Cidr" xml:space="preserve">
     <value>CIDR</value>
-    <comment>CIDR = Classless Inter-Domain Routing, standard TCP/IP term</comment>
+    <comment>** SAME AS ENGLISH ** CIDR = Classless Inter-Domain Routing, standard TCP/IP term</comment>
   </data>
   <data name="CidrEdit" xml:space="preserve">
     <value>CIDR калькулятор</value>
@@ -458,7 +456,6 @@
   </data>
   <data name="CommandLineHelpTitle" xml:space="preserve">
     <value>Параметры командной строки</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CompressedPort30003" xml:space="preserve">
     <value>Compressed VRS</value>
@@ -499,7 +496,6 @@
   </data>
   <data name="ConnectionSnapshotTakenTitle" xml:space="preserve">
     <value>Снимок взят</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ConnectionStatus" xml:space="preserve">
     <value>Статус соединения</value>
@@ -568,11 +564,9 @@
   </data>
   <data name="CreateAdminUserAlreadyExists" xml:space="preserve">
     <value>Имя пользователя с опцией -createAdmin уже существует</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CreateAdminUserMissing" xml:space="preserve">
     <value>Вы должны ввести имя пользователя с опцией -createAdmin.  Не ставьте пробел между опцией и именем.</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CurrentRouteData" xml:space="preserve">
     <value>Маршрутов</value>
@@ -599,7 +593,6 @@
   </data>
   <data name="DataSourceRequired" xml:space="preserve">
     <value>Необходимо выбрать формат</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DaysBetweenChecks" xml:space="preserve">
     <value>Интервал проверки, дни</value>
@@ -681,7 +674,6 @@
   </data>
   <data name="DownloadGlobalAirPressureReadings" xml:space="preserve">
     <value>Скачивать значение давления воздуха</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DownloadingPleaseWait" xml:space="preserve">
     <value>идет загрузка, ждите...</value>
@@ -740,7 +732,6 @@
   </data>
   <data name="Error" xml:space="preserve">
     <value>Ошибка</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Exception" xml:space="preserve">
     <value>Исключение</value>
@@ -847,14 +838,12 @@
   </data>
   <data name="GoogleMapsAPIKey" xml:space="preserve">
     <value>Google Maps API ключ</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="GoogleMapZoomOutOfBounds" xml:space="preserve">
     <value>Уровень увеличения карты Google Maps должен быть между 0 и 19</value>
   </data>
   <data name="Help" xml:space="preserve">
     <value>Помощь</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Hidden" xml:space="preserve">
     <value>Скрытый</value>
@@ -864,7 +853,7 @@
   </data>
   <data name="ICAO" xml:space="preserve">
     <value>ICAO</value>
-    <comment>The initials of the United Nations organisation</comment>
+    <comment>** SAME AS ENGLISH ** The initials of the United Nations organisation</comment>
   </data>
   <data name="IcaoTimeout" xml:space="preserve">
     <value>таймаут ICAO</value>
@@ -1001,7 +990,6 @@
   </data>
   <data name="IsSatcomFeed" xml:space="preserve">
     <value>SatCom ACARS канал</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="JustFlightSimulatorX" xml:space="preserve">
     <value>Только для Flight Simulator X</value>
@@ -1011,7 +999,6 @@
   </data>
   <data name="KilometresOver30Seconds" xml:space="preserve">
     <value>км / 30 с</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="KilometresPerHour" xml:space="preserve">
     <value>Километры в час</value>
@@ -1074,7 +1061,6 @@
   </data>
   <data name="LocalAddress" xml:space="preserve">
     <value>Local адрес: {0}</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Location" xml:space="preserve">
     <value>Название</value>
@@ -1245,7 +1231,6 @@
   </data>
   <data name="Minutes" xml:space="preserve">
     <value>минут</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Miscellaneous" xml:space="preserve">
     <value>Разное</value>
@@ -1258,7 +1243,7 @@
   </data>
   <data name="MLAT" xml:space="preserve">
     <value>MLAT</value>
-    <comment>Short for multilateration. If there's no equivalent then just leave it as MLAT</comment>
+    <comment>** SAME AS ENGLISH ** Short for multilateration. If there's no equivalent then just leave it as MLAT</comment>
   </data>
   <data name="MobileSite" xml:space="preserve">
     <value>Mobile сайт</value>
@@ -1303,7 +1288,6 @@
   </data>
   <data name="NetworkAddress" xml:space="preserve">
     <value>Network адрес: {0}</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="New" xml:space="preserve">
     <value>Новый</value>
@@ -1458,7 +1442,6 @@
   </data>
   <data name="OptionsDescribeDownloadGlobalAirPressureReadings" xml:space="preserve">
     <value>"Да", для периодической загрузки давления из Интернета, "Нет" - отключить загрузку.  Показания давления  используются для преобразования барометрической высоты, сообщаемой самолетом в фактическую высоту.</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeEnableBundling" xml:space="preserve">
     <value>"Да", чтобы объединить несколько CSS или JavaScript файлов при скачивании, "Нет", чтобы скачивать файлы без изменений.</value>
@@ -1498,11 +1481,9 @@
   </data>
   <data name="OptionsDescribeGeneralSatcomDisplayTimeout" xml:space="preserve">
     <value>Количество минут, которое метка самолета, полученная по спутниковому каналу, остается на карте после получения последней передачи.</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeGeneralSatcomTrackingTimeout" xml:space="preserve">
     <value>Количество минут, которое метка самолета, полученная по спутниковому каналу, будет отслеживаться после получения последней передачи.</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeGeneralShortTrailLengthSeconds" xml:space="preserve">
     <value>Какому количеству секунд, при перемещении самолета, будет соответствовать укороченный след на карте.</value>
@@ -1515,7 +1496,6 @@
   </data>
   <data name="OptionsDescribeGoogleMapsAPIKey" xml:space="preserve">
     <value>Введите Google Maps API ключ, который должен использоваться, когда сайт помещается в Интернет.  Вам не нужен этот ключ, если сервер используется только в локальной сети.</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeIcaoTimeout" xml:space="preserve">
     <value>Количество секунд после прекращения поступления сообщений о самолете с конкретным ICAO-адресом, прежде чем приемник, выдававший эти сообщения, перестанет считаться для него основным. Если это время слишком малое, то самолеты могут прыгать назад. Если слишком большое, то могут быть замирания метки, когда самолет переходит от одного приемника к другому.</value>
@@ -1528,7 +1508,6 @@
   </data>
   <data name="OptionsDescribeIsSatcomFeed" xml:space="preserve">
     <value>"Да", если приемник получает данные канала SatCom ACARS, например из программы JAERO.  "Нет" - использовать наземный канал ADS-B / Mode S.</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeLoginName" xml:space="preserve">
     <value>Имя пользователя, вводимое при входе.</value>
@@ -1664,7 +1643,6 @@
   </data>
   <data name="OptionsDescribeUseGoogleMapsKeyWithLocalRequests" xml:space="preserve">
     <value>"Да", если Google Maps API ключ следует использовать для запросов из локальной сети наряду с Интернетом, "Нет" - не использовать в локальной сети.</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeUserEnabled" xml:space="preserve">
     <value>"Да", если учетная запись пользователя разрешена, "Нет", если запрещена.</value>
@@ -1719,11 +1697,9 @@
   </data>
   <data name="OptionsDescribeWebSiteAllowCorsDomains" xml:space="preserve">
     <value>Список разделенных точкой с запятой доменов, которые могут запрашивать контент через CORS.</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebSiteEnableCorsSupport" xml:space="preserve">
     <value>"Да", чтобы включить поддержку CORS (совместное использование ресурсов между разными источниками - технология современных браузеров, которая позволяет предоставить ВЕБ-странице доступ к ресурсам другого домена.), "Нет" - игнорировать CORS запросы и пропускать заголовки CORS из ответов.</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebSiteInitialDistanceUnit" xml:space="preserve">
     <value>В каких единицах измеряется расстояние. Используется при первом посещении веб-сайта.</value>
@@ -1814,11 +1790,9 @@
   </data>
   <data name="PasswordMissingOnCommandLine" xml:space="preserve">
     <value>Вы должны ввести пароль с опцией -password</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PasswordMissingTitle" xml:space="preserve">
     <value>Пароль отсутствует</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Peak" xml:space="preserve">
     <value>Пик</value>
@@ -1844,7 +1818,7 @@
   </data>
   <data name="PlaneFinder" xml:space="preserve">
     <value>Plane Finder Radar</value>
-    <comment>PlaneFinder is the name of a web site and a receiver manufacturer</comment>
+    <comment>** SAME AS ENGLISH ** PlaneFinder is the name of a web site and a receiver manufacturer</comment>
   </data>
   <data name="PleaseConfigureAtLeastOneReceiver" xml:space="preserve">
     <value>Настройте, по крайней мере, один приемник.</value>
@@ -1915,7 +1889,7 @@
   </data>
   <data name="Port30003Feed" xml:space="preserve">
     <value>BaseStation</value>
-    <comment>BaseStation does not need translating</comment>
+    <comment>** SAME AS ENGLISH ** BaseStation does not need translating</comment>
   </data>
   <data name="PortIsUsedByWebServer" xml:space="preserve">
     <value>Порт {0} используется на веб-сервере</value>
@@ -1972,15 +1946,15 @@
   </data>
   <data name="RebroadcastFormatAvr" xml:space="preserve">
     <value>AVR</value>
-    <comment>Probably doesn't need translating, it's a format for transmitting Mode-S messages</comment>
+    <comment>** SAME AS ENGLISH ** Probably doesn't need translating, it's a format for transmitting Mode-S messages</comment>
   </data>
   <data name="RebroadcastFormatPassthrough" xml:space="preserve">
     <value>Pass-through</value>
-    <comment>A rebroadcast server that transmits exactly the same bytes that were transmitted by the receiver VRS is listening to</comment>
+    <comment>** SAME AS ENGLISH ** A rebroadcast server that transmits exactly the same bytes that were transmitted by the receiver VRS is listening to</comment>
   </data>
   <data name="RebroadcastFormatPort30003" xml:space="preserve">
     <value>BaseStation</value>
-    <comment>A rebroadcast server that transmits Kinetic Port 30003 format messages converted from raw messages transmitted by the receiver that VRS is listening to</comment>
+    <comment>** SAME AS ENGLISH ** A rebroadcast server that transmits Kinetic Port 30003 format messages converted from raw messages transmitted by the receiver that VRS is listening to</comment>
   </data>
   <data name="RebroadcastFormatRequired" xml:space="preserve">
     <value>Выберите формат сообщения для ретрансляции</value>
@@ -2078,7 +2052,7 @@
   </data>
   <data name="RecConWizSdrFR24Feeder" xml:space="preserve">
     <value>Flightradar24 Feeder</value>
-    <comment>It's the name of a program</comment>
+    <comment>** SAME AS ENGLISH ** It's the name of a program</comment>
   </data>
   <data name="RecConWizSdrGrAirModes" xml:space="preserve">
     <value>gr-air-modes</value>
@@ -2188,11 +2162,11 @@
   </data>
   <data name="RideAircraft" xml:space="preserve">
     <value>Ride Aircraft</value>
-    <comment>Ride in the cockpit of an aircraft (using Flight Simulator X)</comment>
+    <comment>** SAME AS ENGLISH ** Ride in the cockpit of an aircraft (using Flight Simulator X)</comment>
   </data>
   <data name="RidingAircraft" xml:space="preserve">
     <value>Riding {0}</value>
-    <comment>Riding in the cockpit of the aircraft whose registration is {0}</comment>
+    <comment>** SAME AS ENGLISH ** Riding in the cockpit of the aircraft whose registration is {0}</comment>
   </data>
   <data name="RouteFileStatus" xml:space="preserve">
     <value>получено {0:N0} за период с {1:d} по {2:d}</value>
@@ -2208,11 +2182,9 @@
   </data>
   <data name="SatcomTrackingTimeoutLessThanDisplayTimeout" xml:space="preserve">
     <value>Тайм-аут отслеживания JAERO не может быть меньше, чем тайм-аут отображения</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SatcomTrackingTimeoutOutOfBounds" xml:space="preserve">
     <value>Тайм-аут отслеживания JAERO не может быть больше 1440 мин</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Сохранить</value>
@@ -2376,7 +2348,6 @@
   </data>
   <data name="ShuttingDownAirPressureManager" xml:space="preserve">
     <value>Выключение системы учета давления</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ShuttingDownBaseStationAircraftList" xml:space="preserve">
     <value>Отключение списка самолетов</value>
@@ -2445,7 +2416,6 @@
   </data>
   <data name="SplashScreenInitialisingAirPressureManager" xml:space="preserve">
     <value>Инициализация системы учета давления</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenInitialisingBaseStationListener" xml:space="preserve">
     <value>Инициализация приемника канала</value>
@@ -2523,7 +2493,7 @@
   </data>
   <data name="StopRidingAircraft" xml:space="preserve">
     <value>Stop Ride</value>
-    <comment>Stop riding in the cockpit of an aircraft</comment>
+    <comment>** SAME AS ENGLISH ** Stop riding in the cockpit of an aircraft</comment>
   </data>
   <data name="SuggestUseDifferentPortFull" xml:space="preserve">
     <value>Если веб-сервер не может запуститься, потому что другая программа уже использует этот номер порта. Запустите программу установки Virtual Radar Server вновь и выберите другой порт.
@@ -2682,7 +2652,6 @@ Suggestion made if the exception could indicate that the port number is in use.<
   </data>
   <data name="UseGoogleMapsKeyWithLocalRequests" xml:space="preserve">
     <value>Использовать Google Maps API ключ с локальными запросами</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UseIcaoSpecificationSettings" xml:space="preserve">
     <value>Использовать рекомендованные ICAO настройки</value>
@@ -2701,7 +2670,6 @@ Suggestion made if the exception could indicate that the port number is in use.<
   </data>
   <data name="UserAlreadyExists" xml:space="preserve">
     <value>Пользователь уже существует</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UseRecommendedSettings" xml:space="preserve">
     <value>Использовать рекомендованные настройки</value>
@@ -2736,7 +2704,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
   </data>
   <data name="VirtualRadarServer" xml:space="preserve">
     <value>Virtual Radar Server</value>
-    <comment>The name of the application</comment>
+    <comment>** SAME AS ENGLISH ** The name of the application</comment>
   </data>
   <data name="Waiting" xml:space="preserve">
     <value>Ожидание</value>
@@ -2758,7 +2726,6 @@ Suggestion made if the exception could indicate that the port number is in use.<
   </data>
   <data name="WebSiteAdministrator" xml:space="preserve">
     <value>Администратор ВЕБ-сайта</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WebSiteReceiverId" xml:space="preserve">
     <value>Приемник для веб-сайта</value>
@@ -2771,7 +2738,6 @@ Suggestion made if the exception could indicate that the port number is in use.<
   </data>
   <data name="WebSiteUser" xml:space="preserve">
     <value>Пользователь ВЕБ-сайта</value>
-    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WindowsVersionTooLowFull" xml:space="preserve">
     <value>Программа не будет работать в используемой вами операционной системе. Если вы работаете в Windows XP, то необходимо установить пакет Service Pack 2 или выше.</value>

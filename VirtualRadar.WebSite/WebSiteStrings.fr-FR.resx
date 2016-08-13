@@ -1137,6 +1137,14 @@
     <value>MLAT</value>
     <comment>** SAME AS ENGLISH ** An abbreviation of Multilateration</comment>
   </data>
+  <data name="MmHgAbbreviation" xml:space="preserve">
+    <value>{0} mmHg</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
+  <data name="MmHgDescription" xml:space="preserve">
+    <value>Millimetres of Mercury</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="MobilePage" xml:space="preserve">
     <value>Page Mobile </value>
   </data>

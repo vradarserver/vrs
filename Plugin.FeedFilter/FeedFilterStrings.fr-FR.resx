@@ -137,6 +137,10 @@
     <value>The following ICAOs were invalid and were not saved</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
+  <data name="IcaoDataEntryHelp" xml:space="preserve">
+    <value>ABCDEF = block / allow ABCDEF. 123000 - 123FFF = block / allow all ICAOs between 123000 and 123FFF. Separate entries with ; or , or new lines.</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="Icaos" xml:space="preserve">
     <value>ICAOs</value>
     <comment>** SAME AS ENGLISH **</comment>

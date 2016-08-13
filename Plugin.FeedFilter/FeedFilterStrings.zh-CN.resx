@@ -132,6 +132,10 @@
   <data name="FoundInvalidIcaos" xml:space="preserve">
     <value>下面ICAO代码无效并且不能被保存。</value>
   </data>
+  <data name="IcaoDataEntryHelp" xml:space="preserve">
+    <value>ABCDEF = block / allow ABCDEF. 123000 - 123FFF = block / allow all ICAOs between 123000 and 123FFF. Separate entries with ; or , or new lines.</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="Icaos" xml:space="preserve">
     <value>ICAO代码</value>
   </data>
