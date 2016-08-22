@@ -51,8 +51,8 @@ namespace VirtualRadar.Library
 
             public IEnumerable<IDirectoryCacheProviderFileInfo>GetFilesInFolder(string folder)
             {
-                FindFile findFile = new FindFile();  // <- interop workaround for slow DirectoryInfo.GetFiles(), we can replace this with DirectoryInfo in .NET 4
-                return findFile.GetFiles(folder).Select(fi => (IDirectoryCacheProviderFileInfo)(new DefaultDirectoryCacheProviderFileInfo(fi)));
+                var directoryInfo = new DirectoryInfo(folder);
+                return directoryInfo.GetFiles().Select(r => new DefaultDirectoryCacheProviderFileInfo(r));
             }
         }
 
@@ -63,12 +63,6 @@ namespace VirtualRadar.Library
         {
             public string Name                  { get; set; }
             public DateTime LastWriteTimeUtc    { get; set; }
-
-            public DefaultDirectoryCacheProviderFileInfo(FindFileData findFileData)
-            {
-                Name = findFileData.Name;
-                LastWriteTimeUtc = findFileData.LastWriteTimeUtc;
-            }
 
             public DefaultDirectoryCacheProviderFileInfo(FileInfo fileInfo)
             {

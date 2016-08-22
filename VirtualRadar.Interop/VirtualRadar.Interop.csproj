@@ -44,8 +44,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Console.cs" />
-    <Compile Include="FindFile.cs" />
-    <Compile Include="FindFileData.cs" />
     <Compile Include="HDITEM.cs" />
     <Compile Include="TcpKeepAlive.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
