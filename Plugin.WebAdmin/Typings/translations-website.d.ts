@@ -21,6 +21,7 @@ declare module VRS
         AircraftNotTransmittingCallsign:    string;
         Airport:                            string;
         AirportDataThumbnails:              string;
+        AirPressure:                        string;
         AllAircraft:                        string;
         AllAltitudes:                       string;
         AllRows:                            string;
@@ -134,6 +135,7 @@ declare module VRS
         FurthestFromCurrentLocation:        string;
         GenericName:                        string;
         Geometric:                          string;
+        GeometricAltitude:                  string;
         GeometricAltitudeIndicator:         string;
         GoogleMapsCouldNotBeLoaded:         string;
         GotoCurrentLocation:                string;
@@ -163,6 +165,8 @@ declare module VRS
         Index:                              string;
         IndicatedAirSpeed:                  string;
         IndicatedAirSpeedShort:             string;
+        InHgAbbreviation:                   string;
+        InHgDescription:                    string;
         Interesting:                        string;
         IntervalSeconds:                    string;
         IsMilitary:                         string;
@@ -195,6 +199,7 @@ declare module VRS
         Layout6:                            string;
         ListAircraftClass:                  string;
         ListAirportDataThumbnails:          string;
+        ListAirPressure:                    string;
         ListAltitude:                       string;
         ListAltitudeAndVerticalSpeed:       string;
         ListAltitudeType:                   string;
@@ -229,6 +234,7 @@ declare module VRS
         ListFlightLevelAndVerticalSpeed:    string;
         ListFlightsCount:                   string;
         ListGenericName:                    string;
+        ListGeometricAltitude:              string;
         ListHadAlert:                       string;
         ListHadEmergency:                   string;
         ListHadSPI:                         string;
@@ -262,6 +268,7 @@ declare module VRS
         ListOwnershipStatus:                string;
         ListPicture:                        string;
         ListPopularName:                    string;
+        ListPressureAltitude:               string;
         ListPreviousId:                     string;
         ListReceiver:                       string;
         ListRegistration:                   string;
@@ -300,7 +307,11 @@ declare module VRS
         MilesPerHour:                       string;
         MilesPerHourAbbreviation:           string;
         Military:                           string;
+        MillibarAbbreviation:               string;
+        MillibarDescription:                string;
         Mlat:                               string;
+        MmHgAbbreviation:                   string;
+        MmHgDescription:                    string;
         MobilePage:                         string;
         MobileReportPage:                   string;
         Model:                              string;
@@ -374,6 +385,8 @@ declare module VRS
         PositionAndAltitude:                string;
         PositionAndSpeed:                   string;
         PoweredByVRS:                       string;
+        PressureAltitude:                   string;
+        Pressures:                          string;
         PreviousId:                         string;
         Quantity:                           string;
         RadioMast:                          string;
@@ -399,6 +412,7 @@ declare module VRS
         ReportsAreDisabled:                 string;
         ReportTodaysFlights:                string;
         ReportYesterdaysFlights:            string;
+        ResetClustererZoomLevel:            string;
         Resume:                             string;
         Reversing:                          string;
         ReversingShort:                     string;
@@ -455,6 +469,7 @@ declare module VRS
         ServerFetchTimedOut:                string;
         ServerReportExceptionBody:          string;
         ServerReportExceptionTitle:         string;
+        SetClustererZoomLevel:              string;
         SetCurrentLocation:                 string;
         Settings:                           string;
         SettingsPage:                       string;
@@ -528,8 +543,10 @@ declare module VRS
         Turbo:                              string;
         Unknown:                            string;
         UseBrowserLocation:                 string;
+        UsePressureAltitude:                string;
         UseRelativeDates:                   string;
         UserTag:                            string;
+        UseShortLabels:                     string;
         VerticalSpeed:                      string;
         VerticalSpeedType:                  string;
         VirtualRadar:                       string;

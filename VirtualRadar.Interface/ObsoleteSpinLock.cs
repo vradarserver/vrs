@@ -32,27 +32,27 @@ namespace VirtualRadar.Interface
     /// Unlike the traditional C# lock call a thread can lock itself if it calls <see cref="Lock"/> twice - care must
     /// be taken to avoid double-locks. What you gain in speed you lose in convenience.
     /// </para></remarks>
-    public class SpinLock
+    public class ObsoleteSpinLock
     {
         /// <summary>
         /// A wrapper class that calls Lock in its constructor and Unlock in its Dispose.
         /// </summary>
         public class Acquire : IDisposable
         {
-            private SpinLock _SpinLock;
+            private ObsoleteSpinLock _SpinLock;
 
             /// <summary>
-            /// Creates a new object, locking the <see cref="SpinLock"/> passed across.
+            /// Creates a new object, locking the <see cref="ObsoleteSpinLock"/> passed across.
             /// </summary>
             /// <param name="spinLock"></param>
-            public Acquire(SpinLock spinLock)
+            public Acquire(ObsoleteSpinLock spinLock)
             {
                 _SpinLock = spinLock;
                 _SpinLock.Lock();
             }
 
             /// <summary>
-            /// Releases the lock on <see cref="SpinLock"/>.
+            /// Releases the lock on <see cref="ObsoleteSpinLock"/>.
             /// </summary>
             public void Dispose()
             {

@@ -33,7 +33,7 @@ namespace VirtualRadar.Library.Settings
         /// <summary>
         /// A spin lock that protects against multithreaded reads and writes of the configuration file.
         /// </summary>
-        private static SpinLock _FileProtectionSpinLock = new SpinLock();
+        private static ObsoleteSpinLock _FileProtectionSpinLock = new ObsoleteSpinLock();
 
         /// <summary>
         /// A private class that supplies the default implementation of <see cref="IConfigurationStorageProvider"/>.
