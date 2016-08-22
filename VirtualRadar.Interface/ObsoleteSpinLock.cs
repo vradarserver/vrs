@@ -20,6 +20,10 @@ namespace VirtualRadar.Interface
     /// A class that implements a simple lock that avoids the overhead imposed by using lock().
     /// </summary>
     /// <remarks><para>
+    /// This was originally written when Virtual Radar Server targetted .NET 3.5. When it was retargetted to .NET
+    /// 4.6.1 it clashed with System.Threading.SpinLock, so it was renamed to solve the clash and to indicate that
+    /// its use may no longer be appropriate now that better locking primitives are available.
+    /// </para><para>
     /// You can create one of these objects to share amongst all of your threads and then call <see cref="Lock"/>
     /// to acquire a lock. If the object is already locked then the thread will spin until the lock can be acquired.
     /// Every call to <see cref="Lock"/> <em>must</em> be paired with a call to <see cref="Unlock"/>, otherwise
