@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading;
 
@@ -279,9 +280,8 @@ namespace VirtualRadar.Interface
         /// </remarks>
         public static void Rethrow(Exception ex)
         {
-            // Note from the OP that this has been replaced with an official API, ExceptionDispatchInfo, in .NET 4.5
-            typeof(Exception).GetMethod("PrepForRemoting", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(ex, new object[0]);
-            throw ex;
+            var exceptionDispatchInfo = ExceptionDispatchInfo.Capture(ex);
+            exceptionDispatchInfo.Throw();
         }
     }
 }
