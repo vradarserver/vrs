@@ -560,7 +560,7 @@ namespace Test.VirtualRadar.Library.Listener
                     case "Statistics":
                         break;
                     default:
-                        throw new NotImplementedException(String.Format("Need to implement test for {0}", property.Name));
+                        throw new NotImplementedException($"Need to implement test for {property.Name}");
                 }
             }
         }

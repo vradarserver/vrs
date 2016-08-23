@@ -43,7 +43,7 @@ namespace TypeLite.TsModels {
                 case "DateTimeOffset":
 					this.Kind = SystemTypeKind.Date; break;
 				default:
-					throw new ArgumentException(string.Format("The type '{0}' is not supported system type.", type.FullName));
+					throw new ArgumentException($"The type '{type.FullName}' is not supported system type.");
 			}
 		}
 	}

@@ -32,7 +32,7 @@ namespace VirtualRadar.Library
         public static int Compare(string version, Version applicationVersion)
         {
             string[] chunks = version.Split('.');
-            if(chunks.Length != 3) throw new InvalidOperationException(String.Format("{0} is not a valid a.b.c version number", version));
+            if(chunks.Length != 3) throw new InvalidOperationException($"{version} is not a valid a.b.c version number");
 
             int major = int.Parse(chunks[0]);
             int minor = int.Parse(chunks[1]);

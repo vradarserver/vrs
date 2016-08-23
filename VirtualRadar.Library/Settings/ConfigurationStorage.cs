@@ -323,10 +323,8 @@ namespace VirtualRadar.Library.Settings
                 }
 
                 if(currentConfiguration != null && currentConfiguration.DataVersion != configuration.DataVersion) {
-                    throw new ConflictingUpdateException(String.Format("Cannot save the configuration - it has been saved elsewhere since you last loaded it. Current data version is {0}, you are attempting to save version {1}",
-                        currentConfiguration.DataVersion,
-                        configuration.DataVersion)
-                    );
+                    throw new ConflictingUpdateException($"Cannot save the configuration - it has been saved elsewhere since you last loaded it. " +
+                                                         $"Current data version is {currentConfiguration.DataVersion}, you are attempting to save version {configuration.DataVersion}.");
                 }
 
                 ++configuration.DataVersion;

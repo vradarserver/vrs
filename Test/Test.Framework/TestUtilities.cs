@@ -208,7 +208,7 @@ namespace Test.Framework
             else if(type == typeof(double?))    property.SetValue(obj, useValue1 ? (double?)null : 2.0, null);
             else if(type == typeof(DateTime?))  property.SetValue(obj, useValue1 ? (DateTime?)null : new DateTime(1920, 8, 17), null);
 
-            else                                throw new NotImplementedException(String.Format("Need to add support for property type {0}", type.Name));
+            else                                throw new NotImplementedException($"Need to add support for property type {type.Name}");
         }
         #endregion
 
@@ -340,7 +340,7 @@ namespace Test.Framework
         public static Mock<T> CreateMockSingleton<T>()
             where T: class
         {
-            if(!typeof(ISingleton<T>).IsAssignableFrom(typeof(T))) throw new InvalidOperationException(String.Format("{0} does not implement {1}", typeof(T).Name, typeof(ISingleton<>).Name));
+            if(!typeof(ISingleton<T>).IsAssignableFrom(typeof(T))) throw new InvalidOperationException($"{typeof(T).Name} does not implement {typeof(ISingleton<>).Name}");
 
             Mock<T> result = new Mock<T>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             Mock<T> strict = new Mock<T>(MockBehavior.Strict);
@@ -363,7 +363,7 @@ namespace Test.Framework
         public static Mock<T> CreateMockImplementation<T>()
             where T: class
         {
-            if(typeof(ISingleton<T>).IsAssignableFrom(typeof(T))) throw new InvalidOperationException(String.Format("{0} implements {1}, use CreateMockSingleton instead", typeof(T).Name, typeof(ISingleton<>).Name));
+            if(typeof(ISingleton<T>).IsAssignableFrom(typeof(T))) throw new InvalidOperationException($"{typeof(T).Name} implements {typeof(ISingleton<>).Name}, use CreateMockSingleton instead");
 
             Mock<T> result = CreateMockInstance<T>();
             Factory.Singleton.RegisterInstance(typeof(T), result.Object);

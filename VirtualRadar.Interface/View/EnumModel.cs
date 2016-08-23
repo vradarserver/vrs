@@ -104,7 +104,7 @@ namespace VirtualRadar.Interface.View
         public static T CastFromInt<T>(int value)
         {
             if(!IsInRange<T>(value)) {
-                throw new InvalidCastException(String.Format("Attempted to cast {0} to {1}", value, typeof(T).Name));
+                throw new InvalidCastException($"Attempted to cast {value} to {typeof(T).Name}");
             }
 
             return (T)Enum.ToObject(typeof(T), value);

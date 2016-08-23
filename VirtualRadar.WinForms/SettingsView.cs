@@ -846,7 +846,7 @@ namespace VirtualRadar.WinForms
                     }
 
                     if(realPageSummaries.Length != pageSummary.TreeNode.Nodes.Count) {
-                        throw new InvalidOperationException(String.Format("Assertion failed - there are {0} child pages and {1} tree nodes", realPageSummaries.Length, pageSummary.TreeNode.Nodes.Count));
+                        throw new InvalidOperationException($"Assertion failed - there are {realPageSummaries.Length} child pages and {pageSummary.TreeNode.Nodes.Count} tree nodes");
                     }
 
                     treeViewPagePicker.Sort();
@@ -1128,7 +1128,12 @@ namespace VirtualRadar.WinForms
                     }
                 }
                 if(fieldPageSummary == null) {
-                  throw new InvalidOperationException(String.Format("Cannot find a page and control for {0} on {1}. The validation {2} message was {3}", validationResult.Field, validationResult.Record, validationResult.IsWarning ? "warning" : "error", validationResult.Message));
+                    throw new InvalidOperationException(String.Format("Cannot find a page and control for {0} on {1}. The validation {2} message was {3}",
+                        validationResult.Field,
+                        validationResult.Record,
+                        validationResult.IsWarning ? "warning" : "error",
+                        validationResult.Message
+                    ));
                 }
 
                 var validateDelegate = fieldControl as IValidateDelegate;

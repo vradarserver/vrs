@@ -289,7 +289,7 @@ namespace VirtualRadar.Plugin.WebAdmin
                     var key = NormaliseString(method.Name);
 
                     if(reservedMethodNames.Contains(key)) {
-                        throw new InvalidOperationException(String.Format("Views cannot expose a method called {0}, it has been reserved for use by the mapper", method.Name));
+                        throw new InvalidOperationException($"Views cannot expose a method called {method.Name}, it has been reserved for use by the mapper");
                     }
                     if(methodMap.ContainsKey(key)) {
                         throw new InvalidOperationException("Function overloading is not supported by the view mapper");
@@ -495,7 +495,7 @@ namespace VirtualRadar.Plugin.WebAdmin
                     if(parameterInfo.IsOptional) {
                         result.Add(parameterInfo.DefaultValue);
                     } else {
-                        throw new InvalidOperationException(String.Format("The parameter {0} is required but was not supplied", parameterInfo.Name));
+                        throw new InvalidOperationException($"The parameter {parameterInfo.Name} is required but was not supplied");
                     }
                 }
             }

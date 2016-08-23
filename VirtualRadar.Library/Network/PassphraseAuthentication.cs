@@ -124,7 +124,9 @@ namespace VirtualRadar.Library.Network
         public byte[] SendAuthentication()
         {
             var passphrase = Encoding.UTF8.GetBytes(Passphrase);
-            if(passphrase.Length > MaxPassphraseLength) throw new InvalidOperationException(String.Format("The passphrase is too long, it encodes to {0} bytes and the maximum is {1}", passphrase.Length, MaxPassphraseLength));
+            if(passphrase.Length > MaxPassphraseLength) {
+                throw new InvalidOperationException($"The passphrase is too long, it encodes to {passphrase.Length} bytes and the maximum is {MaxPassphraseLength}");
+            }
 
             var result = new byte[MagicNumber.Length + 2 + passphrase.Length];
             Array.Copy(MagicNumber, result, MagicNumber.Length);

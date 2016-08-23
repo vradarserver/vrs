@@ -51,7 +51,7 @@ namespace VirtualRadar.WinForms
                 if(!hooked) hooked = HookControl<FileNameControl>(control,  r => r.FileNameTextChanged += ValueChanged);
                 if(!hooked) hooked = HookControl<FolderControl>(control,    r => r.FolderTextChanged += ValueChanged);
 
-                if(!hooked) throw new NotImplementedException(String.Format("Need to add code to hook {0} controls", control.GetType().Name));
+                if(!hooked) throw new NotImplementedException($"Need to add code to hook {control.GetType().Name} controls");
             }
         }
 

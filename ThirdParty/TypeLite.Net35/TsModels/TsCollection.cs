@@ -37,7 +37,7 @@ namespace TypeLite.TsModels {
 			} else if (typeof(IEnumerable).IsAssignableFrom(this.Type)) {
 				this.ItemsType = TsType.Any;
 			} else {
-				throw new ArgumentException(string.Format("The type '{0}' is not collection.", this.Type.FullName));
+				throw new ArgumentException($"The type '{this.Type.FullName}' is not collection.");
 			}
 
 			this.Dimension = GetCollectionDimension(type);

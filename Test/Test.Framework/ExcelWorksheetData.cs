@@ -255,7 +255,7 @@ namespace Test.Framework
                     case 3:     result = new DateTime(parsed[2], parsed[1], parsed[0]); break;
                     case 6:     result = new DateTime(parsed[2], parsed[1], parsed[0], parsed[3], parsed[4], parsed[5]); break;
                     case 7:     result = new DateTime(parsed[2], parsed[1], parsed[0], parsed[3], parsed[4], parsed[5], parsed[6]); break;
-                    default:    throw new InvalidOperationException(string.Format("Cannot parse date string {0}", rawValue));
+                    default:    throw new InvalidOperationException($"Cannot parse date string {rawValue}");
                 }
                 if(kind != DateTimeKind.Unspecified) result = System.DateTime.SpecifyKind((DateTime)result, kind);
             }

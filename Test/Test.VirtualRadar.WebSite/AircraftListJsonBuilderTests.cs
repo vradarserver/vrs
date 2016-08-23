@@ -1262,7 +1262,7 @@ namespace Test.VirtualRadar.WebSite
                 else if(property.PropertyType == typeof(Species))                   property.SetValue(aircraft.Object, Species.TiltWing, null);
                 else if(property.PropertyType == typeof(WakeTurbulenceCategory))    property.SetValue(aircraft.Object, WakeTurbulenceCategory.Light, null);
                 else if(property.PropertyType == typeof(ICollection<string>))       aircraft.Object.Stopovers.Add("A");
-                else throw new NotImplementedException(String.Format("Need to add code to set dummy values for {0} properties", property.PropertyType.Name));
+                else throw new NotImplementedException($"Need to add code to set dummy values for {property.PropertyType.Name} properties");
             }
             aircraft.Object.LastSatcomUpdate = DateTime.UtcNow;
 
@@ -1287,7 +1287,7 @@ namespace Test.VirtualRadar.WebSite
                     } else if(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>)) {
                         isEmpty = Object.Equals(null, value);
                     } else {
-                        throw new NotImplementedException(String.Format("Need test code for JSON property type {0}", property.PropertyType.Name));
+                        throw new NotImplementedException($"Need test code for JSON property type {property.PropertyType.Name}");
                     }
                 }
 

@@ -147,7 +147,9 @@ namespace VirtualRadar.WebServer
             if(response == null) throw new ArgumentNullException("response");
             if(image == null) throw new ArgumentNullException("image");
             if(format == null) throw new ArgumentNullException("format");
-            if(format != ImageFormat.Bmp && format != ImageFormat.Gif && format != ImageFormat.Png) throw new NotSupportedException(String.Format("Responder does not support sending {0} images", format));
+            if(format != ImageFormat.Bmp && format != ImageFormat.Gif && format != ImageFormat.Png) {
+                throw new NotSupportedException($"Responder does not support sending {format} images");
+            }
 
             AddCacheHeaders(response, 21600);
 

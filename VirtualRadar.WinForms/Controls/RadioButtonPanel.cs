@@ -168,7 +168,7 @@ namespace VirtualRadar.WinForms.Controls
             foreach(var radioButton in RadioButtons) {
                 var value = getMappingValue(radioButton);
                 if(value == null) {
-                    throw new InvalidOperationException(String.Format("Need to supply a value for radio button {0}", radioButton.Name));
+                    throw new InvalidOperationException("Need to supply a value for radio button {radioButton.Name}");
                 }
                 MapButtonValue(radioButton, value);
             }

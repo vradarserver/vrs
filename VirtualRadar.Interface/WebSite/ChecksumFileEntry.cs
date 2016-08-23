@@ -70,7 +70,7 @@ namespace VirtualRadar.Interface.WebSite
         public static string GenerateChecksum(string fileName)
         {
             if(fileName == null) throw new ArgumentNullException("fileName");
-            if(!File.Exists(fileName)) throw new InvalidOperationException(String.Format("{0} does not exist", fileName));
+            if(!File.Exists(fileName)) throw new InvalidOperationException($"{fileName} does not exist");
 
             var bytes = File.ReadAllBytes(fileName);
             return _ChecksumCalculator.ComputeChecksumString(bytes, 0, bytes.Length);
@@ -84,7 +84,7 @@ namespace VirtualRadar.Interface.WebSite
         public static long GetFileSize(string fileName)
         {
             if(fileName == null) throw new ArgumentNullException("fileName");
-            if(!File.Exists(fileName)) throw new InvalidOperationException(String.Format("{0} does not exist", fileName));
+            if(!File.Exists(fileName)) throw new InvalidOperationException($"{fileName} does not exist");
 
             return new FileInfo(fileName).Length;
         }
@@ -102,7 +102,7 @@ namespace VirtualRadar.Interface.WebSite
             fileName = fileName.Replace("/", "\\");
             if(rootFolder[rootFolder.Length - 1] != '\\') rootFolder += '\\';
 
-            if(!fileName.StartsWith(rootFolder)) throw new InvalidOperationException(String.Format("{0} does not start with {1}", fileName, rootFolder));
+            if(!fileName.StartsWith(rootFolder)) throw new InvalidOperationException($"{fileName} does not start with {rootFolder}");
 
             return fileName.Substring(rootFolder.Length - 1);
         }

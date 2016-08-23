@@ -125,7 +125,7 @@ namespace Test.VirtualRadar.Database
                     try {
                         LogDatabase_EstablishSession_Writes_Client_Record();
                     } catch(Exception ex) {
-                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
                 }
             }
@@ -206,7 +206,7 @@ namespace Test.VirtualRadar.Database
                     try {
                         LogDatabase_EstablishSession_Writes_Session_Record();
                     } catch(Exception ex) {
-                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
                 }
             }
@@ -381,7 +381,7 @@ namespace Test.VirtualRadar.Database
                     try {
                         LogDatabase_UpdateSession_Updates_Existing_Session_Record();
                     } catch(Exception ex) {
-                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
                 }
             }
@@ -456,7 +456,7 @@ namespace Test.VirtualRadar.Database
                     try {
                         LogDatabase_UpdateClient_Updates_Existing_Client_Records();
                     } catch(Exception ex) {
-                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
                 }
             }

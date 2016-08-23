@@ -217,7 +217,7 @@ namespace VirtualRadar.Library
             if(XmlSerializerCompatible) {
                 if(type == typeof(IntPtr) ||
                    type == typeof(TimeSpan)) {
-                    throw new InvalidOperationException(String.Format("Cannot serialise {0} types in XmlSerializer compatible mode", type.Name));
+                    throw new InvalidOperationException($"Cannot serialise {type.Name} types in XmlSerializer compatible mode");
                 }
             }
         }

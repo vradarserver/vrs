@@ -87,7 +87,7 @@ namespace VirtualRadar.Database.StandingData
                     }
                 } catch(Exception ex) {
                     // The standard exception is not very helpful - in particular it doesn't report the URL that we're downloading
-                    throw new InvalidOperationException(String.Format("Could not download {0}: {1}", url, ex.Message), ex);
+                    throw new InvalidOperationException($"Could not download {url}: {ex.Message}", ex);
                 }
             }
 
