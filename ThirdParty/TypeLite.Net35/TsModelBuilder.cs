@@ -67,7 +67,7 @@ namespace TypeLite {
         public TsModuleMember Add(Type clrType, bool includeReferences) {
             var typeFamily = TsType.GetTypeFamily(clrType);
             if (typeFamily != TsTypeFamily.Class && typeFamily != TsTypeFamily.Enum) {
-                throw new ArgumentException(string.Format("Type '{0}' isn't class or struct. Only classes and structures can be added to the model", clrType.FullName));
+                throw new ArgumentException($"Type '{clrType.FullName}' isn't class or struct. Only classes and structures can be added to the model");
             }
 
             if (clrType.IsNullable()) {

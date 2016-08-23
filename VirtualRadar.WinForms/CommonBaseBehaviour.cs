@@ -346,7 +346,7 @@ namespace VirtualRadar.WinForms
                 try {
                     controlBinder.Initialise();
                 } catch(Exception ex) {
-                    throw new InvalidOperationException(String.Format("Could not initialise {0} control binder. Exception was {1}", controlBinder.GetType().Name, ex.Message), ex);
+                    throw new InvalidOperationException($"Could not initialise {controlBinder.GetType().Name} control binder. Exception was {ex.Message}", ex);
                 }
             }
         }

@@ -31,7 +31,7 @@ namespace VirtualRadar.Plugin.FeedFilter
             /// <summary>
             /// Protects the fields from multi-threaded access.
             /// </summary>
-            private SpinLock _Lock = new SpinLock();
+            private ObsoleteSpinLock _Lock = new ObsoleteSpinLock();
 
             /// <summary>
             /// True if the plugin is enabled.

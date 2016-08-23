@@ -143,7 +143,7 @@ namespace VirtualRadar.Library.Listener
             if(_Initialised) throw new InvalidOperationException("A feed can only be initialised once");
             if(receiver == null) throw new ArgumentNullException("receiver");
             if(configuration == null) throw new ArgumentNullException("configuration");
-            if(!receiver.Enabled) throw new InvalidOperationException(String.Format("The {0} receiver has not been enabled", receiver.Name));
+            if(!receiver.Enabled) throw new InvalidOperationException($"The {receiver.Name} receiver has not been enabled");
             var receiverLocation = configuration.ReceiverLocation(receiver.ReceiverLocationId);
             _ReceiverFormatManager = Factory.Singleton.Resolve<IReceiverFormatManager>().Singleton;
 
@@ -168,7 +168,7 @@ namespace VirtualRadar.Library.Listener
             if(_Initialised) throw new InvalidOperationException("A feed can only be initialised once");
             if(mergedFeed == null) throw new ArgumentNullException("receiver");
             if(mergeFeeds == null) throw new ArgumentNullException("mergePathways");
-            if(!mergedFeed.Enabled) throw new InvalidOperationException(String.Format("The {0} merged feed has not been enabled", mergedFeed.Name));
+            if(!mergedFeed.Enabled) throw new InvalidOperationException($"The {mergedFeed.Name} merged feed has not been enabled");
 
             var mergedListeners = GetListenersFromMergeFeeds(mergedFeed, mergeFeeds);
 
@@ -292,11 +292,11 @@ namespace VirtualRadar.Library.Listener
             if(!_Initialised) throw new InvalidOperationException("ApplyConfiguration cannot be called on an uninitialised feed");
             if(receiver == null) throw new ArgumentNullException("receiver");
             if(configuration == null) throw new ArgumentNullException("configuration");
-            if(receiver.UniqueId != UniqueId) throw new InvalidOperationException(String.Format("Cannot apply configuration for receiver #{0} to feed for receiver for #{1}", receiver.UniqueId, UniqueId));
+            if(receiver.UniqueId != UniqueId) throw new InvalidOperationException($"Cannot apply configuration for receiver #{receiver.UniqueId} to feed for receiver for #{UniqueId}");
             var receiverLocation = configuration.ReceiverLocation(receiver.ReceiverLocationId);
 
             var initialisedWithReceiver = (Listener as IMergedFeedListener) == null;
-            if(!initialisedWithReceiver) throw new InvalidOperationException(String.Format("Feed {0} was initialised with a merged feed but updated with a receiver", UniqueId));
+            if(!initialisedWithReceiver) throw new InvalidOperationException("Feed {UniqueId} was initialised with a merged feed but updated with a receiver");
 
             var nameChanged = !String.IsNullOrEmpty(Name) && Name != receiver.Name;
             if(nameChanged) SaveCurrentPolarPlot();
@@ -380,10 +380,10 @@ namespace VirtualRadar.Library.Listener
             if(!_Initialised) throw new InvalidOperationException("ApplyConfiguration cannot be called on an uninitialised feed");
             if(mergedFeed == null) throw new ArgumentNullException("mergedFeed");
             if(mergeFeeds == null) throw new ArgumentNullException("mergePathways");
-            if(mergedFeed.UniqueId != UniqueId) throw new InvalidOperationException(String.Format("Cannot apply configuration for merged feed #{0} to feed for merged feed for #{1}", mergedFeed.UniqueId, UniqueId));
+            if(mergedFeed.UniqueId != UniqueId) throw new InvalidOperationException($"Cannot apply configuration for merged feed #{mergedFeed.UniqueId} to feed for merged feed for #{UniqueId}");
 
             var mergedFeedListener = Listener as IMergedFeedListener;
-            if(mergedFeedListener == null) throw new InvalidOperationException(String.Format("ReceiverPathway {0} was initialised with a receiver but updated with a merged feed", UniqueId));
+            if(mergedFeedListener == null) throw new InvalidOperationException($"ReceiverPathway {UniqueId} was initialised with a receiver but updated with a merged feed");
 
             Name = mergedFeed.Name;
             SetIsVisible(mergedFeed.ReceiverUsage);
@@ -468,7 +468,7 @@ namespace VirtualRadar.Library.Listener
 
             var provider = _ReceiverFormatManager.GetProvider(receiver.DataSource);
             if(provider == null) {
-                throw new InvalidOperationException(String.Format("There is no receiver format provider registered with a unique ID of {0}", receiver.DataSource));
+                throw new InvalidOperationException($"There is no receiver format provider registered with a unique ID of {receiver.DataSource}");
             }
             if(result == null || !provider.IsUsableBytesExtractor(result)) {
                 result = provider.CreateMessageBytesExtractor();

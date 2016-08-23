@@ -60,7 +60,7 @@ namespace VirtualRadar.Plugin.CustomContent
         {
             var currentOptions = Load(plugin);
             if(options.DataVersion != currentOptions.DataVersion) {
-                throw new ConflictingUpdateException(String.Format("The options you are trying to save have changed since you loaded them. You are editing version {0}, the current version is {1}", options.DataVersion, currentOptions.DataVersion));
+                throw new ConflictingUpdateException($"The options you are trying to save have changed since you loaded them. You are editing version {options.DataVersion}, the current version is {currentOptions.DataVersion}");
             }
             ++options.DataVersion;
 

@@ -201,7 +201,7 @@ namespace VirtualRadar.WebServer
         /// <summary>
         /// Protects the administrator paths from multi-threaded access.
         /// </summary>
-        private SpinLock _AdministratorPathSpinLock = new SpinLock();
+        private ObsoleteSpinLock _AdministratorPathSpinLock = new ObsoleteSpinLock();
 
         /// <summary>
         /// The list of paths that require administrator permissions.
@@ -211,7 +211,7 @@ namespace VirtualRadar.WebServer
         /// <summary>
         /// The lock object that protects access to <see cref="_RestrictedPaths"/> from concurrent access.
         /// </summary>
-        private SpinLock _RestrictedPathSpinLock = new SpinLock();
+        private ObsoleteSpinLock _RestrictedPathSpinLock = new ObsoleteSpinLock();
 
         /// <summary>
         /// The dictionary of restricted paths to the filters that indicate whether an IP address can access the path.

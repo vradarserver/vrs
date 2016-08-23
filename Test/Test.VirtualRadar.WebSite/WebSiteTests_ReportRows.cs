@@ -166,7 +166,7 @@ namespace Test.VirtualRadar.WebSite
                     case "WakeTurbulenceCategory":  WakeTurbulenceCategory = new BoolFilter<WakeTurbulenceCategory>((WakeTurbulenceCategory)Enum.Parse(typeof(WakeTurbulenceCategory), queryValue), false); break;
                     case "Species":                 Species = new BoolFilter<Species>((Species)Enum.Parse(typeof(Species), queryValue), false); break;
                     case "Type":                    Type = new StringFilter(queryValue, FilterCondition.Equals, false); break;
-                    default:                        throw new NotImplementedException(String.Format("Unknown property name {0}", propertyName));
+                    default:                        throw new NotImplementedException($"Unknown property name {propertyName}"));
                 }
             }
         }

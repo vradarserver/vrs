@@ -743,7 +743,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                         UseMarkerLabels = false,
                                                     };
                                                     break;
-                    default:                        throw new NotImplementedException(String.Format("Unknown property {0}", property.Name));
+                    default:                        throw new NotImplementedException($"Unknown property {property.Name}");
                 }
             }
 

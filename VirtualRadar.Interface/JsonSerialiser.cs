@@ -28,6 +28,7 @@ namespace VirtualRadar.Interface
     public class JsonSerialiser
     {
         private bool _Initialised;
+        private static Encoding _UTF8NoBOM = new UTF8Encoding(false, true);         // Same encoding that you get by default in StreamWriter
 
         /// <summary>
         /// Initialises the serialiser.
@@ -58,18 +59,11 @@ namespace VirtualRadar.Interface
                 Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
                 if(stream == null) throw new ArgumentNullException("stream");
 
-                // Note that the lack of a Dispose call on the StreamWriter is intentional. We
-                // must not close the stream that we've been passed, and Dispose or Close will
-                // close the underlying stream. I think this is something that was addressed in
-                // .NET 4, but while we're on 3.5 all we can do is flush the streamwriter.
-                var streamWriter = new StreamWriter(stream);
-                try {
+                using(var streamWriter = new StreamWriter(stream, _UTF8NoBOM, 1024, leaveOpen: true)) {
                     using(var jsonWriter = new JsonTextWriter(streamWriter) { CloseOutput = false, Formatting = Formatting.None, DateFormatHandling = DateFormatHandling.MicrosoftDateFormat }) {
                         var serialiser = new JsonSerializer();
                         serialiser.Serialize(jsonWriter, obj);
                     }
-                } finally {
-                    streamWriter.Flush();
                 }
             } finally {
                 Thread.CurrentThread.CurrentCulture = currentCulture;

@@ -180,7 +180,7 @@ namespace VirtualRadar.Plugin.WebAdmin
 
             var path = Path.GetFullPath(Path.Combine(pluginFolder, subFolder));
             if(!Directory.Exists(path)) {
-                throw new InvalidOperationException(String.Format("{0} does not exist", path));
+                throw new InvalidOperationException($"{path} does not exist");
             }
 
             var normalisedPath = NormaliseFullPath(path, appendTrailingSlash: true);
@@ -238,7 +238,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         {
             var normalisedPathAndFile = NormaliseFullPath(webAdminView.PathAndFile);
             if(!normalisedPathAndFile.StartsWith(String.Format("/{0}/", NormaliseFullPath(_ProtectedFolder)))) {
-                throw new InvalidOperationException(String.Format("{0} is not under {1}", webAdminView.PathAndFile, _ProtectedFolder));
+                throw new InvalidOperationException($"{webAdminView.PathAndFile} is not under {_ProtectedFolder}");
             }
 
             lock(_SyncLock) {
@@ -283,7 +283,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         {
             if(String.IsNullOrEmpty(templateMarker)) throw new ArgumentNullException("templateMarker");
             if(String.IsNullOrEmpty(templateHtmlFullPath)) throw new ArgumentNullException("templateHtmlFullPath");
-            if(!File.Exists(templateHtmlFullPath)) throw new InvalidOperationException(String.Format("{0} does not exist", templateHtmlFullPath));
+            if(!File.Exists(templateHtmlFullPath)) throw new InvalidOperationException($"{templateHtmlFullPath} does not exist");
 
             lock(_SyncLock) {
                 if(!_TemplateMarkerFileNames.ContainsKey(templateMarker)) {

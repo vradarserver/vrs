@@ -180,7 +180,7 @@ namespace VirtualRadar.Library.Network
 
             var providerManager = Factory.Singleton.Resolve<IRebroadcastFormatManager>().Singleton;
             _Provider = providerManager.CreateProvider(Format);
-            if(_Provider == null) throw new InvalidOperationException(String.Format("There is no rebroadcast format registered with a unique ID of {0}", Format));
+            if(_Provider == null) throw new InvalidOperationException($"There is no rebroadcast format registered with a unique ID of {Format}");
 
             _Provider.RebroadcastServer = this;
             _Provider.HookFeed();

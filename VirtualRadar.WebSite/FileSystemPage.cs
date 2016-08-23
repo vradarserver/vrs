@@ -221,11 +221,11 @@ namespace VirtualRadar.WebSite
         {
             if(siteRoot == null) throw new ArgumentNullException("siteRoot");
             if(String.IsNullOrEmpty(siteRoot.Folder)) throw new ArgumentException("siteRoot.Folder");
-            if(!Directory.Exists(siteRoot.Folder)) throw new InvalidOperationException(String.Format("{0} does not exist", siteRoot.Folder));
-            if(!Path.IsPathRooted(siteRoot.Folder)) throw new InvalidOperationException(String.Format("{0} is a relative path - only absolute paths can be site roots", siteRoot.Folder));
+            if(!Directory.Exists(siteRoot.Folder)) throw new InvalidOperationException($"{siteRoot.Folder} does not exist");
+            if(!Path.IsPathRooted(siteRoot.Folder)) throw new InvalidOperationException($"{siteRoot.Folder} is a relative path - only absolute paths can be site roots");
 
             var folder = NormalisePath(siteRoot.Folder);
-            if(_Roots.Any(r => r.Folder.Equals(folder, StringComparison.OrdinalIgnoreCase))) throw new InvalidOperationException(String.Format("{0} is already a site root", siteRoot.Folder));
+            if(_Roots.Any(r => r.Folder.Equals(folder, StringComparison.OrdinalIgnoreCase))) throw new InvalidOperationException($"{siteRoot.Folder} is already a site root");
 
             _Roots.Add(new Root(folder, siteRoot));
             _Roots.Sort((lhs, rhs) => { return lhs.Priority < rhs.Priority ? -1 : lhs.Priority == rhs.Priority ? 0 : 1; });

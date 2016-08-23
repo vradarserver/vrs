@@ -218,6 +218,7 @@ declare module VRS.Server
         GoogleMaps:                                                string;
         GoogleMapsAPIKey:                                          string;
         GoogleMapZoomOutOfBounds:                                  string;
+        Help:                                                      string;
         Hidden:                                                    string;
         HideFromWebSite:                                           string;
         ICAO:                                                      string;

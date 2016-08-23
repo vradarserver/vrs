@@ -603,7 +603,9 @@ namespace VirtualRadar.Library.Network
         {
             var ipAddresses = Dns.GetHostAddresses(address);
             var result = ipAddresses == null || ipAddresses.Length == 0 ? null : ipAddresses[0];
-            if(result == null) throw new InvalidOperationException(String.Format("Cannot resolve {0}", address));
+            if(result == null) {
+                throw new InvalidOperationException($"Cannot resolve {address}");
+            }
 
             return result;
         }

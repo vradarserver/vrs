@@ -33,7 +33,7 @@ namespace VirtualRadar.Library.Settings
         /// <summary>
         /// A spin lock that protects against multithreaded reads and writes of the configuration file.
         /// </summary>
-        private static SpinLock _FileProtectionSpinLock = new SpinLock();
+        private static ObsoleteSpinLock _FileProtectionSpinLock = new ObsoleteSpinLock();
 
         /// <summary>
         /// A private class that supplies the default implementation of <see cref="IConfigurationStorageProvider"/>.
@@ -323,10 +323,8 @@ namespace VirtualRadar.Library.Settings
                 }
 
                 if(currentConfiguration != null && currentConfiguration.DataVersion != configuration.DataVersion) {
-                    throw new ConflictingUpdateException(String.Format("Cannot save the configuration - it has been saved elsewhere since you last loaded it. Current data version is {0}, you are attempting to save version {1}",
-                        currentConfiguration.DataVersion,
-                        configuration.DataVersion)
-                    );
+                    throw new ConflictingUpdateException($"Cannot save the configuration - it has been saved elsewhere since you last loaded it. " +
+                                                         $"Current data version is {currentConfiguration.DataVersion}, you are attempting to save version {configuration.DataVersion}.");
                 }
 
                 ++configuration.DataVersion;

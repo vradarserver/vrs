@@ -20,6 +20,10 @@ namespace VirtualRadar.Interface
     /// A class that implements a simple lock that avoids the overhead imposed by using lock().
     /// </summary>
     /// <remarks><para>
+    /// This was originally written when Virtual Radar Server targetted .NET 3.5. When it was retargetted to .NET
+    /// 4.6.1 it clashed with System.Threading.SpinLock, so it was renamed to solve the clash and to indicate that
+    /// its use may no longer be appropriate now that better locking primitives are available.
+    /// </para><para>
     /// You can create one of these objects to share amongst all of your threads and then call <see cref="Lock"/>
     /// to acquire a lock. If the object is already locked then the thread will spin until the lock can be acquired.
     /// Every call to <see cref="Lock"/> <em>must</em> be paired with a call to <see cref="Unlock"/>, otherwise
@@ -32,27 +36,27 @@ namespace VirtualRadar.Interface
     /// Unlike the traditional C# lock call a thread can lock itself if it calls <see cref="Lock"/> twice - care must
     /// be taken to avoid double-locks. What you gain in speed you lose in convenience.
     /// </para></remarks>
-    public class SpinLock
+    public class ObsoleteSpinLock
     {
         /// <summary>
         /// A wrapper class that calls Lock in its constructor and Unlock in its Dispose.
         /// </summary>
         public class Acquire : IDisposable
         {
-            private SpinLock _SpinLock;
+            private ObsoleteSpinLock _SpinLock;
 
             /// <summary>
-            /// Creates a new object, locking the <see cref="SpinLock"/> passed across.
+            /// Creates a new object, locking the <see cref="ObsoleteSpinLock"/> passed across.
             /// </summary>
             /// <param name="spinLock"></param>
-            public Acquire(SpinLock spinLock)
+            public Acquire(ObsoleteSpinLock spinLock)
             {
                 _SpinLock = spinLock;
                 _SpinLock.Lock();
             }
 
             /// <summary>
-            /// Releases the lock on <see cref="SpinLock"/>.
+            /// Releases the lock on <see cref="ObsoleteSpinLock"/>.
             /// </summary>
             public void Dispose()
             {

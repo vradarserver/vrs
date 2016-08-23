@@ -137,7 +137,7 @@ namespace VirtualRadar.Database
         /// <param name="paramValues"></param>
         public static void SetParameters(IDbCommand command, object[] paramValues)
         {
-            if(paramValues.Length != command.Parameters.Count) throw new InvalidOperationException(String.Format("{0} parameters were passed to SetParameters for a command that is expecting {1}", paramValues.Length, command.Parameters.Count));
+            if(paramValues.Length != command.Parameters.Count) throw new InvalidOperationException($"{paramValues.Length} parameters were passed to SetParameters for a command that is expecting {command.Parameters.Count}");
 
             for(var c = 0;c < paramValues.Length;c++) {
                 IDbDataParameter parameter = (IDbDataParameter)command.Parameters[c];
@@ -163,7 +163,7 @@ namespace VirtualRadar.Database
         /// <param name="namedValues"></param>
         public static void SetNamedParameters(IDbCommand command, Dictionary<string, object> namedValues)
         {
-            if(namedValues.Count != command.Parameters.Count) throw new InvalidOperationException(String.Format("{0} parameters were passed to SetNamedParameters for a command that is expecting {1}", namedValues.Count, command.Parameters.Count));
+            if(namedValues.Count != command.Parameters.Count) throw new InvalidOperationException($"{namedValues.Count} parameters were passed to SetNamedParameters for a command that is expecting {command.Parameters.Count}");
             var paramPosn = 0;
             foreach(var namedValue in namedValues) {
                 SetNamedParameter(command, paramPosn++, namedValue.Key, namedValue.Value);
@@ -179,7 +179,7 @@ namespace VirtualRadar.Database
         /// <param name="value"></param>
         public static void SetNamedParameter(IDbCommand command, int index, string name, object value)
         {
-            if(index > command.Parameters.Count) throw new InvalidOperationException(String.Format("Could not set the named parameter at index {0}, there are only {1} parameters on the command", index, command.Parameters.Count));
+            if(index > command.Parameters.Count) throw new InvalidOperationException($"Could not set the named parameter at index {index}, there are only {command.Parameters.Count} parameters on the command");
             var parameter = (IDbDataParameter)command.Parameters[index];
             parameter.ParameterName = name;
             parameter.Value = value;

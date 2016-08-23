@@ -327,9 +327,15 @@ namespace VirtualRadar.Library
         /// <param name="buffer"></param>
         private void ReadIntegerBytes(Stream stream, int length, byte[] buffer)
         {
-            if(length > buffer.Length) throw new InvalidOperationException(String.Format("The buffer is {0} bytes long, needs to be at least {1} bytes", buffer.Length, length));
+            if(length > buffer.Length) {
+                throw new InvalidOperationException($"The buffer is {buffer.Length} bytes long, needs to be at least {length} bytes");
+            }
+
             var bytesRead = stream.Read(buffer, 0, length);
-            if(bytesRead != length) throw new IOException(String.Format("Could not read {0} bytes from the stream", length));
+
+            if(bytesRead != length) {
+                throw new IOException($"Could not read {length} bytes from the stream");
+            }
         }
 
         /// <summary>

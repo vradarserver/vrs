@@ -82,7 +82,7 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// A spin lock that protects access to the <see cref="_FeedCounterMap"/> add / remove / lookup operations.
         /// </summary>
-        private SpinLock _FeedCounterMapSpinLock = new SpinLock();
+        private ObsoleteSpinLock _FeedCounterMapSpinLock = new ObsoleteSpinLock();
 
         /// <summary>
         /// The object that helps assigning values to <see cref="FeedStatus"/> objects.
@@ -97,7 +97,7 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// A spin lock that protects access to the <see cref="_ServerRequests"/> add / remove / find operations.
         /// </summary>
-        private SpinLock _ServerRequestsSpinLock = new SpinLock();
+        private ObsoleteSpinLock _ServerRequestsSpinLock = new ObsoleteSpinLock();
         #endregion
 
         #region Properties

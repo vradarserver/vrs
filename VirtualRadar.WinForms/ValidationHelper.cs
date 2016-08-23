@@ -65,8 +65,8 @@ namespace VirtualRadar.WinForms
         public void RegisterValidationField(ValidationField validationField, Control control)
         {
             if(control == null) throw new ArgumentNullException("control");
-            if(_ValidationFieldMap.ContainsKey(validationField)) throw new InvalidOperationException(String.Format("An attempt was made to register the {0} validation field twice", validationField));
-            if(_ValidationFieldMap.Where(kvp => kvp.Value == control).Any()) throw new InvalidOperationException(String.Format("An attempt was made to register the {0} control twice", control.Name));
+            if(_ValidationFieldMap.ContainsKey(validationField)) throw new InvalidOperationException($"An attempt was made to register the {validationField} validation field twice");
+            if(_ValidationFieldMap.Where(kvp => kvp.Value == control).Any()) throw new InvalidOperationException($"An attempt was made to register the {control.Name} control twice");
 
             _ValidationFieldMap.Add(validationField, control);
         }

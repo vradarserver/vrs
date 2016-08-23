@@ -34,7 +34,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         public static void RecordCurrentImplementation<T>()
         {
             var type = typeof(T);
-            if(!type.IsInterface) throw new InvalidOperationException(String.Format("{0} is not an interface", type.Name));
+            if(!type.IsInterface) throw new InvalidOperationException($"{type.Name} is not an interface");
 
             var instance = Factory.Singleton.Resolve(type);
             var currentImplementation = instance.GetType();
@@ -53,7 +53,7 @@ namespace VirtualRadar.Plugin.FeedFilter
 
             Type originalImplementationType;
             if(!_OriginalImplementationMap.TryGetValue(type, out originalImplementationType)) {
-                throw new InvalidOperationException(String.Format("The original implementation of {0} was not recorded", type.Name));
+                throw new InvalidOperationException($"The original implementation of {type.Name} was not recorded");
             }
 
             return (T)Activator.CreateInstance(originalImplementationType);

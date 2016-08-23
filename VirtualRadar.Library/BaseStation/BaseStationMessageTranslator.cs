@@ -73,7 +73,7 @@ namespace VirtualRadar.Library.BaseStation
                         // strips off all outer exceptions and only shows the bottom-most exception - i.e., in our case, the exception from a Parse method. This
                         // is not useful in isolation, we need to know what was being translated, the context in which the exception was thrown. So I have ended
                         // up with this, which is not very nice but shows enough information in the unhandled exception handler to allow diagnosis of the problem.
-                        throw new BaseStationTranslatorException(String.Format("{0} while translating \"{1}\" (chunk {2}) in \"{3}\"", ex.Message, chunk, c, text));
+                        throw new BaseStationTranslatorException($"{ex.Message} while translating \"{chunk}\" (chunk {c}) in \"{text}\"");
                     }
                 }
 
@@ -95,7 +95,7 @@ namespace VirtualRadar.Library.BaseStation
         // I'm just plucking out the numbers by hand...
         private DateTime ParseDate(string chunk)
         {
-            if(chunk.Length != 10) throw new InvalidOperationException(String.Format("{0} doesn't look like a valid date", chunk));
+            if(chunk.Length != 10) throw new InvalidOperationException($"{chunk} doesn't look like a valid date");
             int year = int.Parse(chunk.Substring(0, 4));
             int month = int.Parse(chunk.Substring(5,2));
             int day = int.Parse(chunk.Substring(8, 2));
@@ -106,7 +106,7 @@ namespace VirtualRadar.Library.BaseStation
         // See notes against ParseDate for explanation of parser
         private DateTime ParseTime(DateTime date, string chunk)
         {
-            if(chunk.Length != 12) throw new InvalidOperationException(String.Format("{0} doesn't look like a valid time", chunk));
+            if(chunk.Length != 12) throw new InvalidOperationException($"{chunk} doesn't look like a valid time");
             int hour = int.Parse(chunk.Substring(0, 2));
             int minute = int.Parse(chunk.Substring(3, 2));
             int second = int.Parse(chunk.Substring(6, 2));

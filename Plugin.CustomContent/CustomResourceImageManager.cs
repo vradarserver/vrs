@@ -122,7 +122,7 @@ namespace VirtualRadar.Plugin.CustomContent
             /// <param name="bitmap"></param>
             public void AssignBitmap(Bitmap bitmap)
             {
-                if(FileImageType != FileImageType.Bitmap) throw new InvalidOperationException(String.Format("Cannot assign a bitmap to {0}", Name));
+                if(FileImageType != FileImageType.Bitmap) throw new InvalidOperationException($"Cannot assign a bitmap to {Name}");
                 PropertyInfo.SetValue(null, bitmap, null);
             }
 
@@ -132,7 +132,7 @@ namespace VirtualRadar.Plugin.CustomContent
             /// <param name="icon"></param>
             public void AssignIcon(Icon icon)
             {
-                if(FileImageType != FileImageType.Icon) throw new InvalidOperationException(String.Format("Cannot assign an icon to {0}", Name));
+                if(FileImageType != FileImageType.Icon) throw new InvalidOperationException($"Cannot assign an icon to {Name}");
                 PropertyInfo.SetValue(null, icon, null);
             }
         }

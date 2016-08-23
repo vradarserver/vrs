@@ -95,11 +95,7 @@ namespace VirtualRadar.Interface.View
                     CollectionViewModelObjects.Add(viewModelObject);
                 } else {
                     if(SingleInstanceViewModelObject != null) {
-                        throw new InvalidOperationException(String.Format("Seen a single instance of {0} on at least two non-collection objects: {1} and {2}",
-                            Field,
-                            SingleInstanceViewModelObject.Instance.GetType().Name,
-                            instance.GetType().Name
-                        ));
+                        throw new InvalidOperationException($"Seen a single instance of {Field} on at least two non-collection objects: {SingleInstanceViewModelObject.Instance.GetType().Name} and {instance.GetType().Name}");
                     }
                     SingleInstanceViewModelObject = viewModelObject;
                 }
@@ -252,7 +248,7 @@ namespace VirtualRadar.Interface.View
                     var attribute = property.GetCustomAttributes(true).OfType<ValidationModelFieldAttribute>().FirstOrDefault();
                     if(attribute != null) {
                         if(property.PropertyType != typeof(ValidationModelField)) {
-                            throw new InvalidOperationException(String.Format("Saw ValidationModelField attribute on non-ValidationModelField type {0}.{1}", instance.GetType().Name, property.Name));
+                            throw new InvalidOperationException($"Saw ValidationModelField attribute on non-ValidationModelField type {instance.GetType().Name}.{property.Name}");
                         }
                         FieldInstance fieldInstance = null;
                         if(!result.TryGetValue(attribute.Field, out fieldInstance)) {

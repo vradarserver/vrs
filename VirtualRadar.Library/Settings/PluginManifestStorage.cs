@@ -57,7 +57,7 @@ namespace VirtualRadar.Library.Settings
             if(fileName == "") throw new InvalidOperationException("Plugin filename must be supplied");
 
             var extension = Path.GetExtension(fileName);
-            if(extension.ToUpper() != ".DLL") throw new InvalidOperationException(String.Format("{0} is not a DLL", fileName));
+            if(extension.ToUpper() != ".DLL") throw new InvalidOperationException($"{fileName} is not a DLL");
 
             var manifestFileName = Path.ChangeExtension(fileName, ".xml");
 

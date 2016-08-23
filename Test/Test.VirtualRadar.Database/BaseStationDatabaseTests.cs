@@ -1132,7 +1132,7 @@ namespace Test.VirtualRadar.Database
                     try {
                         BaseStationDatabase_InsertAircraft_Correctly_Inserts_Record();
                     } catch(Exception ex) {
-                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
                 }
             }
@@ -1224,7 +1224,7 @@ namespace Test.VirtualRadar.Database
                     try {
                         BaseStationDatabase_GetOrInsertAircraftByCode_Correctly_Inserts_Record();
                     } catch(Exception ex) {
-                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
                 }
             }
@@ -1334,7 +1334,7 @@ namespace Test.VirtualRadar.Database
                     try {
                         BaseStationDatabase_UpdateAircraft_Correctly_Updates_Record();
                     } catch(Exception ex) {
-                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
                 }
             }
@@ -3075,7 +3075,7 @@ namespace Test.VirtualRadar.Database
                     try {
                         BaseStationDatabase_InsertFlight_Correctly_Inserts_Record();
                     } catch(Exception ex) {
-                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
                 }
             }
@@ -3180,7 +3180,7 @@ namespace Test.VirtualRadar.Database
                     try {
                         BaseStationDatabase_UpdateFlight_Correctly_Updates_Record();
                     } catch(Exception ex) {
-                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
                 }
             }
@@ -3404,7 +3404,7 @@ namespace Test.VirtualRadar.Database
                     try {
                         BaseStationDatabase_InsertSystemEvents_Correctly_Inserts_Record();
                     } catch(Exception ex) {
-                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
                 }
             }
@@ -3477,7 +3477,7 @@ namespace Test.VirtualRadar.Database
                     try {
                         BaseStationDatabase_UpdateSystemEvents_Correctly_Updates_Record();
                     } catch(Exception ex) {
-                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
                 }
             }
@@ -3619,7 +3619,7 @@ namespace Test.VirtualRadar.Database
                     try {
                         BaseStationDatabase_InsertLocation_Correctly_Inserts_Record();
                     } catch(Exception ex) {
-                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
                 }
             }
@@ -3699,7 +3699,7 @@ namespace Test.VirtualRadar.Database
                     try {
                         BaseStationDatabase_UpdateLocation_Correctly_Updates_Record();
                     } catch(Exception ex) {
-                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
                 }
             }
@@ -3859,7 +3859,7 @@ namespace Test.VirtualRadar.Database
                     try {
                         BaseStationDatabase_InsertSession_Inserts_Record_Correctly();
                     } catch(Exception ex) {
-                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
                 }
             }
@@ -3953,7 +3953,7 @@ namespace Test.VirtualRadar.Database
                     try {
                         BaseStationDatabase_UpdateSession_Correctly_Updates_Record();
                     } catch(Exception ex) {
-                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
                 }
             }
@@ -4096,7 +4096,7 @@ namespace Test.VirtualRadar.Database
                     try {
                         BaseStationDatabase_CreateDatabaseIfMissing_Writes_Correct_History_Record_If_Missing();
                     } catch(Exception ex) {
-                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
                 }
             }
@@ -4124,7 +4124,7 @@ namespace Test.VirtualRadar.Database
                     try {
                         BaseStationDatabase_CreateDatabaseIfMissing_Writes_Correct_Info_Record();
                     } catch(Exception ex) {
-                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
                 }
             }
@@ -4161,7 +4161,7 @@ namespace Test.VirtualRadar.Database
                     try {
                         BaseStationDatabase_CreateDatabaseIfMissing_Writes_Google_Map_Default_Centre_As_Default_Location();
                     } catch(Exception ex) {
-                        throw new InvalidOperationException(String.Format("Exception thrown when culture was {0}", culture), ex);
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
                 }
             }

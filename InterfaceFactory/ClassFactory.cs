@@ -31,7 +31,9 @@ namespace InterfaceFactory
             public object CreateInstance()
             {
                 var result = Callback == null ? Activator.CreateInstance(Type) : Callback();
-                if(result == null) throw new NullReferenceException(String.Format("Callback returned null when creating a {0}", Type.FullName));
+                if(result == null) {
+                    throw new NullReferenceException($"Callback returned null when creating a {Type.FullName}");
+                }
 
                 return result;
             }
@@ -66,9 +68,9 @@ namespace InterfaceFactory
         {
             if(interfaceType == null) throw new ArgumentNullException("interfaceType");
             if(implementationType == null) throw new ArgumentNullException("implementationType");
-            if(!interfaceType.IsInterface) throw new ClassFactoryException(String.Format("{0} is not an interface", interfaceType.Name));
-            if(implementationType.IsInterface) throw new ClassFactoryException(String.Format("{0} is an interface", implementationType.Name));
-            if(!interfaceType.IsAssignableFrom(implementationType)) throw new ClassFactoryException(String.Format("{0} does not implement {1}", implementationType.Name, interfaceType.Name));
+            if(!interfaceType.IsInterface) throw new ClassFactoryException($"{interfaceType.Name} is not an interface");
+            if(implementationType.IsInterface) throw new ClassFactoryException($"{implementationType.Name} is an interface");
+            if(!interfaceType.IsAssignableFrom(implementationType)) throw new ClassFactoryException($"{implementationType.Name} does not implement {interfaceType.Name}");
 
             var implementation = new Implementation() { Type = implementationType };
             AddImplementation(interfaceType, implementation);
@@ -76,8 +78,11 @@ namespace InterfaceFactory
 
         private void AddImplementation(Type interfaceType, Implementation implementation)
         {
-            if(_ImplementationMap.ContainsKey(interfaceType)) _ImplementationMap[interfaceType] = implementation;
-            else _ImplementationMap.Add(interfaceType, implementation);
+            if(_ImplementationMap.ContainsKey(interfaceType)) {
+                _ImplementationMap[interfaceType] = implementation;
+            } else {
+                _ImplementationMap.Add(interfaceType, implementation);
+            }
         }
 
         /// <summary>
@@ -112,10 +117,13 @@ namespace InterfaceFactory
         {
             if(interfaceType == null) throw new ArgumentNullException("interfaceType");
             if(instance == null) throw new ArgumentNullException("instance");
-            if(!interfaceType.IsAssignableFrom(instance.GetType())) throw new ClassFactoryException(String.Format("Instances of {0} do not implement {1}", instance.GetType().Name, interfaceType.Name));
+            if(!interfaceType.IsAssignableFrom(instance.GetType())) throw new ClassFactoryException($"Instances of {instance.GetType().Name} do not implement {interfaceType.Name}");
 
-            if(_SingletonMap.ContainsKey(interfaceType)) _SingletonMap[interfaceType] = instance;
-            else _SingletonMap.Add(interfaceType, instance);
+            if(_SingletonMap.ContainsKey(interfaceType)) {
+                _SingletonMap[interfaceType] = instance;
+            } else {
+                _SingletonMap.Add(interfaceType, instance);
+            }
         }
 
         /// <summary>
@@ -138,10 +146,12 @@ namespace InterfaceFactory
         {
             if(interfaceType == null) throw new ArgumentNullException("interfaceType");
             if(!interfaceType.IsInterface) throw new ClassFactoryException(String.Format("{0} is not an interface", interfaceType.Name));
-            if(!_ImplementationMap.ContainsKey(interfaceType) && !_SingletonMap.ContainsKey(interfaceType)) throw new ClassFactoryException(String.Format("{0} has not had an implementation registered for it", interfaceType.Name));
+            if(!_ImplementationMap.ContainsKey(interfaceType) && !_SingletonMap.ContainsKey(interfaceType)) throw new ClassFactoryException($"{interfaceType.Name} has not had an implementation registered for it");
 
             object result;
-            if(!_SingletonMap.TryGetValue(interfaceType, out result)) result = _ImplementationMap[interfaceType].CreateInstance();
+            if(!_SingletonMap.TryGetValue(interfaceType, out result)) {
+                result = _ImplementationMap[interfaceType].CreateInstance(); 
+            }
 
             return result;
         }

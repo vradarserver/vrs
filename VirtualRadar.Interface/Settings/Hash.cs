@@ -115,7 +115,7 @@ namespace VirtualRadar.Interface.Settings
                     result.AddRange(hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(text)));
                     break;
                 default:
-                    throw new InvalidOperationException(String.Format("Unknown hash version {0}", version));
+                    throw new InvalidOperationException($"Unknown hash version {version}");
             }
 
             return result;

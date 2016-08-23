@@ -74,7 +74,9 @@ namespace VirtualRadar.Localisation
             if(name == null) throw new ArgumentNullException("name");
 
             PropertyInfo property;
-            if(!_LocalisedStrings.TryGetValue(name, out property)) throw new NotImplementedException(String.Format(@"There is no localised string called ""{0}""", name));
+            if(!_LocalisedStrings.TryGetValue(name, out property)) {
+                throw new NotImplementedException($@"There is no localised string called ""{name}""");
+            }
 
             return (string)property.GetValue(null, null);
         }
