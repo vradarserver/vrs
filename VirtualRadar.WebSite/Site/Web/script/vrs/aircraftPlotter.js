@@ -1358,7 +1358,7 @@ var VRS;
                 (!this._Settings.plotterOptions.getSuppressAltitudeStalkWhenZoomedOut() || mapZoomLevel >= this._Settings.suppressAltitudeStalkAboveZoom);
         };
         AircraftPlotter.prototype.getIconAltitudeStalkHeight = function (aircraft) {
-            var result = aircraft.altitude.val;
+            var result = aircraft.isOnGround ? 0 : aircraft.altitude.val;
             if (isNaN(result)) {
                 result = 0;
             }
