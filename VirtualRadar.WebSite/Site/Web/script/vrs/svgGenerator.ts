@@ -25,6 +25,7 @@ namespace VRS
     VRS.globalOptions.svgAircraftMarkerSelectedFill = VRS.globalOptions.svgAircraftMarkerSelectedFill === undefined ? '#FFFF00' : VRS.globalOptions.svgAircraftMarkerSelectedFill;
     VRS.globalOptions.svgAircraftMarkerTextShadowFilterXml = VRS.globalOptions.svgAircraftMarkerTextShadowFilterXml === undefined ?
 `<filter
+    xmlns="http://www.w3.org/2000/svg"
     style="color-interpolation-filters:sRGB"
     id="vrs-text-shadow-filter">
     <feFlood
@@ -64,6 +65,18 @@ namespace VRS
      */
     export class SvgGenerator
     {
+        private _DomParser = new DOMParser();
+        private _XmlSerialiser = new XMLSerializer();
+
+        /**
+         * Serialises an SVG element into a string.
+         * @param svg
+         */
+        public serialiseSvg(svg: Element) : string
+        {
+            return this._XmlSerialiser.serializeToString(svg);
+        }
+
         /**
          * Generates a disconnected DOM element for an aircraft marker's SVG.
          * @param embeddedSvg
@@ -234,9 +247,17 @@ namespace VRS
 
         private convertXmlIntoNode(xml: string, namespace: string = 'http://www.w3.org/2000/svg') : Element
         {
-            var dummySvgNode = this.createElement('svg', namespace);
-            dummySvgNode.innerHTML = xml;
-            var result = dummySvgNode.firstElementChild;
+            var xmlDoc = this._DomParser.parseFromString(xml, 'image/svg+xml');
+
+            var result: Element = null;
+            var length = xmlDoc.childNodes.length;
+            for(var i = 0;i < length;++i) {
+                var node = xmlDoc.childNodes[i];
+                if(node instanceof Element) {
+                    result = <Element>node;
+                    break;
+                }
+            }
 
             return result;
         }

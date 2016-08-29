@@ -1974,9 +1974,8 @@ namespace VRS
                     pinTextLines > 0 ? details.pinTexts : null,
                     this._Settings.pinTextLineHeight
                 );
-                var svgText = (<any>svg).outerHTML;
+                var svgText = this._SvgGenerator.serialiseSvg(svg);
                 url = 'data:image/svg+xml;charset=UTF-8;base64,' + btoa(svgText);
-                svg.innerHTML = '';
                 svg = null;
             }
 

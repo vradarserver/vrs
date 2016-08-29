@@ -6,7 +6,7 @@ var VRS;
     VRS.globalOptions.svgAircraftMarkerNormalFill = VRS.globalOptions.svgAircraftMarkerNormalFill === undefined ? '#FFFFFF' : VRS.globalOptions.svgAircraftMarkerNormalFill;
     VRS.globalOptions.svgAircraftMarkerSelectedFill = VRS.globalOptions.svgAircraftMarkerSelectedFill === undefined ? '#FFFF00' : VRS.globalOptions.svgAircraftMarkerSelectedFill;
     VRS.globalOptions.svgAircraftMarkerTextShadowFilterXml = VRS.globalOptions.svgAircraftMarkerTextShadowFilterXml === undefined ?
-        "<filter\n    style=\"color-interpolation-filters:sRGB\"\n    id=\"vrs-text-shadow-filter\">\n    <feFlood\n        flood-opacity=\"1\"\n        flood-color=\"rgb(0,0,0)\"\n        result=\"flood\" />\n    <feComposite\n        in=\"flood\"\n        in2=\"SourceGraphic\"\n        operator=\"in\"\n        result=\"composite1\" />\n    <feGaussianBlur\n        in=\"composite1\"\n        stdDeviation=\"1\"\n        result=\"blur\" />\n    <feOffset\n         in=\"blur\"\n         dx=\"-0.5\"\n         dy=\"-0.5\"\n         result=\"offset\" />\n    <feComposite\n        in=\"SourceGraphic\"\n        in2=\"offset\"\n        operator=\"over\"\n        result=\"composite2\" />\n</filter>" : VRS.globalOptions.svgAircraftMarkerTextShadowFilterXml;
+        "<filter\n    xmlns=\"http://www.w3.org/2000/svg\"\n    style=\"color-interpolation-filters:sRGB\"\n    id=\"vrs-text-shadow-filter\">\n    <feFlood\n        flood-opacity=\"1\"\n        flood-color=\"rgb(0,0,0)\"\n        result=\"flood\" />\n    <feComposite\n        in=\"flood\"\n        in2=\"SourceGraphic\"\n        operator=\"in\"\n        result=\"composite1\" />\n    <feGaussianBlur\n        in=\"composite1\"\n        stdDeviation=\"1\"\n        result=\"blur\" />\n    <feOffset\n         in=\"blur\"\n         dx=\"-0.5\"\n         dy=\"-0.5\"\n         result=\"offset\" />\n    <feComposite\n        in=\"SourceGraphic\"\n        in2=\"offset\"\n        operator=\"over\"\n        result=\"composite2\" />\n</filter>" : VRS.globalOptions.svgAircraftMarkerTextShadowFilterXml;
     VRS.globalOptions.svgAircraftMarkerStyle = VRS.globalOptions.svgAircraftMarkerStyle === undefined ?
         {
             'font-family': '"Arial",Sans-Serif',
@@ -16,7 +16,12 @@ var VRS;
         } : VRS.globalOptions.svgAircraftMarkerStyle;
     var SvgGenerator = (function () {
         function SvgGenerator() {
+            this._DomParser = new DOMParser();
+            this._XmlSerialiser = new XMLSerializer();
         }
+        SvgGenerator.prototype.serialiseSvg = function (svg) {
+            return this._XmlSerialiser.serializeToString(svg);
+        };
         SvgGenerator.prototype.generateAircraftMarker = function (embeddedSvg, fillColour, width, height, rotation, addAltitudeStalk, pinTextLines, pinTextLineHeight) {
             var result = this.createSvgNode(width * 2, height * 2, this.buildViewBox(0, 0, width, height));
             var marker = this.convertXmlIntoNode(embeddedSvg.svg);
@@ -148,9 +153,16 @@ var VRS;
         };
         SvgGenerator.prototype.convertXmlIntoNode = function (xml, namespace) {
             if (namespace === void 0) { namespace = 'http://www.w3.org/2000/svg'; }
-            var dummySvgNode = this.createElement('svg', namespace);
-            dummySvgNode.innerHTML = xml;
-            var result = dummySvgNode.firstElementChild;
+            var xmlDoc = this._DomParser.parseFromString(xml, 'image/svg+xml');
+            var result = null;
+            var length = xmlDoc.childNodes.length;
+            for (var i = 0; i < length; ++i) {
+                var node = xmlDoc.childNodes[i];
+                if (node instanceof Element) {
+                    result = node;
+                    break;
+                }
+            }
             return result;
         };
         SvgGenerator.prototype.setAttribute = function (node, attributes) {
