@@ -20,9 +20,15 @@ namespace VRS
      */
     export interface AircraftMarker_Settings
     {
+        // The raster image URL for the aircraft
         folder?: string;
         normalFileName?: string;
         selectedFileName?: string;
+
+        // The embedded SVG for the aircraft
+        embeddedSvg?: EmbeddedSvg;
+
+        // Settings common to all aircraft markers
         size?: ISize;
         isAircraft?: boolean;
         canRotate?: boolean;
@@ -43,6 +49,7 @@ namespace VRS
                 folder:             'images/web-markers',
                 normalFileName :    null,
                 selectedFileName:   settings.normalFileName || null,
+                embeddedSvg:        null,
                 size:               { width: 35, height: 35 },
                 isAircraft:         true,
                 canRotate:          true,
@@ -122,12 +129,31 @@ namespace VRS
             this._Settings.matches = value;
         }
 
+        getEmbeddedSvg()
+        {
+            return this._Settings.embeddedSvg;
+        }
+        setEmbeddedSvg(value: EmbeddedSvg)
+        {
+            this._Settings.embeddedSvg = value;
+        }
+
         /**
          * Returns true if the marker can be used to represent the aircraft passed across.
          */
         matchesAircraft(aircraft: Aircraft) : boolean
         {
             return this._Settings.matches ? this._Settings.matches(aircraft) : false;
+        }
+
+        /**
+         * Returns the fill colour for embedded SVGs.
+         * @param aircraft
+         * @param isSelected
+         */
+        getSvgFillColour(aircraft: Aircraft, isSelected: boolean) : string
+        {
+            return isSelected ? VRS.globalOptions.svgAircraftMarkerSelectedFill : VRS.globalOptions.svgAircraftMarkerNormalFill;
         }
     }
 
@@ -186,6 +212,7 @@ namespace VRS
     VRS.globalOptions.aircraftMarkerClustererMaxZoom = VRS.globalOptions.aircraftMarkerClustererMaxZoom || 5;                           // The maximum zoom level at which to cluster map markers or null if there is no maximum.
     VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize = VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize || 1;     // The minimum number of adjacent markers in a map marker cluster.
     VRS.globalOptions.aircraftMarkerClustererUserCanConfigure = VRS.globalOptions.aircraftMarkerClustererUserCanConfigure !== false;    // True if the user can configure the map marker clusterer.
+    VRS.globalOptions.aircraftMarkerUseSvg = VRS.globalOptions.aircraftMarkerUseSvg !== false;
 
     // The order in which these appear in the list is important. Earlier items take precedence over later items.
     VRS.globalOptions.aircraftMarkers = VRS.globalOptions.aircraftMarkers || [
@@ -263,6 +290,7 @@ namespace VRS
         new VRS.AircraftMarker({
             normalFileName: 'WTC-Medium-2-Jet.png',
             selectedFileName: 'WTC-Medium-2-Jet-Selected.png',
+            embeddedSvg: VRS.EmbeddedSvgs.Marker_Medium2Jet,
             size: { width: 40, height: 40 },
             matches: function(aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Medium && aircraft.countEngines.val !== '4' && aircraft.engineType.val === VRS.EngineType.Jet; }
         }),
@@ -1400,6 +1428,7 @@ namespace VRS
         private _RangeCircleCircles: IMapCircle[] = [];
         private _MovingMap: boolean = VRS.globalOptions.aircraftMarkerMovingMapOn;
         private _MapMarkerClusterer: IMapMarkerClusterer;
+        private _SvgGenerator = new SvgGenerator();
 
         // Event handles
         private _PlotterOptionsPropertyChangedHook:             IEventHandle;
@@ -1901,26 +1930,43 @@ namespace VRS
                 };
             }
 
-            var url = marker.getFolder();
-            url += '/top';
-            url += '/Wdth-' + requestSize.width;
-            url += '/Hght-' + requestSize.height;
-            if(VRS.browserHelper.isHighDpi()) {
-                url += '/hiDpi';
-            }
-            if(details.iconRotation || details.iconRotation === 0) {
-                url += '/Rotate-' + details.iconRotation;
-            }
-            if(hasAltitudeStalk) {
-                url += '/Alt-' + (details.iconAltitudeStalkHeight * multiplier);
-                url += '/CenX-' + (centreX * multiplier);
-            }
-            if(pinTextLines > 0) {
-                for(var i = 0;i < pinTextLines;++i) {
-                    url += '/PL' + (i + 1) + '-' + encodeURIComponent(details.pinTexts[i]);
+            var url = ''
+            var embeddedSvg = marker.getEmbeddedSvg();
+            if(VRS.globalOptions.aircraftMarkerUseSvg && embeddedSvg) {
+                var svg = this._SvgGenerator.generateAircraftMarker(
+                    embeddedSvg,
+                    marker.getSvgFillColour(aircraft, isSelectedAircraft),
+                    requestSize.width,
+                    requestSize.height,
+                    details.iconRotation,
+                    hasAltitudeStalk,
+                    pinTextLines > 0 ? details.pinTexts : null,
+                    this._Settings.pinTextLineHeight
+                );
+                var svgText = (<any>svg).outerHTML;
+                url = 'data:image/svg+xml;charset=UTF-8;base64,' + btoa(svgText);
+            } else {
+                url = marker.getFolder();
+                url += '/top';
+                url += '/Wdth-' + requestSize.width;
+                url += '/Hght-' + requestSize.height;
+                if(VRS.browserHelper.isHighDpi()) {
+                    url += '/hiDpi';
                 }
+                if(details.iconRotation || details.iconRotation === 0) {
+                    url += '/Rotate-' + details.iconRotation;
+                }
+                if(hasAltitudeStalk) {
+                    url += '/Alt-' + (details.iconAltitudeStalkHeight * multiplier);
+                    url += '/CenX-' + (centreX * multiplier);
+                }
+                if(pinTextLines > 0) {
+                    for(var i = 0;i < pinTextLines;++i) {
+                        url += '/PL' + (i + 1) + '-' + encodeURIComponent(details.pinTexts[i]);
+                    }
+                }
+                url += '/' + (isSelectedAircraft ? marker.getSelectedFileName() : marker.getNormalFileName());
             }
-            url += '/' + (isSelectedAircraft ? marker.getSelectedFileName() : marker.getNormalFileName());
 
             var urlChanged = details.iconUrl !== url;
             details.iconUrl = url;
