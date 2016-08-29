@@ -1939,8 +1939,31 @@ namespace VRS
                 };
             }
 
-            var url = ''
-            if(useSvg) {
+            var url = marker.getFolder();
+            url += '/top';
+            url += '/Wdth-' + requestSize.width;
+            url += '/Hght-' + requestSize.height;
+            if(VRS.browserHelper.isHighDpi()) {
+                url += '/hiDpi';
+            }
+            if(details.iconRotation || details.iconRotation === 0) {
+                url += '/Rotate-' + details.iconRotation;
+            }
+            if(hasAltitudeStalk) {
+                url += '/Alt-' + (details.iconAltitudeStalkHeight * multiplier);
+                url += '/CenX-' + (centreX * multiplier);
+            }
+            if(pinTextLines > 0) {
+                for(var i = 0;i < pinTextLines;++i) {
+                    url += '/PL' + (i + 1) + '-' + encodeURIComponent(details.pinTexts[i]);
+                }
+            }
+            url += '/' + (isSelectedAircraft ? marker.getSelectedFileName() : marker.getNormalFileName());
+
+            var urlChanged = details.iconUrl !== url;
+            details.iconUrl = url;
+
+            if(useSvg && urlChanged) {
                 var svg = this._SvgGenerator.generateAircraftMarker(
                     marker.getEmbeddedSvg(),
                     marker.getSvgFillColour(aircraft, isSelectedAircraft),
@@ -1953,31 +1976,9 @@ namespace VRS
                 );
                 var svgText = (<any>svg).outerHTML;
                 url = 'data:image/svg+xml;charset=UTF-8;base64,' + btoa(svgText);
-            } else {
-                url = marker.getFolder();
-                url += '/top';
-                url += '/Wdth-' + requestSize.width;
-                url += '/Hght-' + requestSize.height;
-                if(VRS.browserHelper.isHighDpi()) {
-                    url += '/hiDpi';
-                }
-                if(details.iconRotation || details.iconRotation === 0) {
-                    url += '/Rotate-' + details.iconRotation;
-                }
-                if(hasAltitudeStalk) {
-                    url += '/Alt-' + (details.iconAltitudeStalkHeight * multiplier);
-                    url += '/CenX-' + (centreX * multiplier);
-                }
-                if(pinTextLines > 0) {
-                    for(var i = 0;i < pinTextLines;++i) {
-                        url += '/PL' + (i + 1) + '-' + encodeURIComponent(details.pinTexts[i]);
-                    }
-                }
-                url += '/' + (isSelectedAircraft ? marker.getSelectedFileName() : marker.getNormalFileName());
+                svg.innerHTML = '';
+                svg = null;
             }
-
-            var urlChanged = details.iconUrl !== url;
-            details.iconUrl = url;
 
             return !urlChanged ? null : new VRS.MapIcon(url, size, { x: centreX, y: anchorY }, { x: 0, y: 0 }, size, labelAnchor);
         }
