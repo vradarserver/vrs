@@ -1992,7 +1992,7 @@ namespace VRS
          */
         private getIconAltitudeStalkHeight(aircraft: Aircraft) : number
         {
-            var result = aircraft.altitude.val;
+            var result = aircraft.isOnGround ? 0 : aircraft.altitude.val;
             if(isNaN(result)) {
                 result = 0;
             } else {
