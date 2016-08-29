@@ -147,6 +147,14 @@ namespace VRS
         }
 
         /**
+         * Returns true if the aircraft marker should be rendered browser-side using SVG.
+         */
+        useEmbeddedSvg()
+        {
+            return VRS.globalOptions.aircraftMarkerUseSvg && this._Settings.embeddedSvg;
+        }
+
+        /**
          * Returns the fill colour for embedded SVGs.
          * @param aircraft
          * @param isSelected
@@ -1865,6 +1873,7 @@ namespace VRS
         {
             var aircraft = details.aircraft;
             var marker = this.getAircraftMarkerDetails(aircraft);
+            var useSvg = marker.useEmbeddedSvg();
 
             var size = marker.getSize();
             size = { width: size.width, height: size.height };
@@ -1922,7 +1931,7 @@ namespace VRS
 
             var requestSize = size;
             var multiplier = 1;
-            if(VRS.browserHelper.isHighDpi()) {
+            if(!useSvg && VRS.browserHelper.isHighDpi()) {
                 multiplier = 2;
                 requestSize = {
                     width: size.width * multiplier,
@@ -1931,10 +1940,9 @@ namespace VRS
             }
 
             var url = ''
-            var embeddedSvg = marker.getEmbeddedSvg();
-            if(VRS.globalOptions.aircraftMarkerUseSvg && embeddedSvg) {
+            if(useSvg) {
                 var svg = this._SvgGenerator.generateAircraftMarker(
-                    embeddedSvg,
+                    marker.getEmbeddedSvg(),
                     marker.getSvgFillColour(aircraft, isSelectedAircraft),
                     requestSize.width,
                     requestSize.height,

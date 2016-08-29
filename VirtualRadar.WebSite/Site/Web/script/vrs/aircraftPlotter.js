@@ -70,6 +70,9 @@ var VRS;
         AircraftMarker.prototype.matchesAircraft = function (aircraft) {
             return this._Settings.matches ? this._Settings.matches(aircraft) : false;
         };
+        AircraftMarker.prototype.useEmbeddedSvg = function () {
+            return VRS.globalOptions.aircraftMarkerUseSvg && this._Settings.embeddedSvg;
+        };
         AircraftMarker.prototype.getSvgFillColour = function (aircraft, isSelected) {
             return isSelected ? VRS.globalOptions.svgAircraftMarkerSelectedFill : VRS.globalOptions.svgAircraftMarkerNormalFill;
         };
@@ -1216,6 +1219,7 @@ var VRS;
         AircraftPlotter.prototype.createIcon = function (details, mapZoomLevel, isSelectedAircraft) {
             var aircraft = details.aircraft;
             var marker = this.getAircraftMarkerDetails(aircraft);
+            var useSvg = marker.useEmbeddedSvg();
             var size = marker.getSize();
             size = { width: size.width, height: size.height };
             var anchorY = Math.floor(size.height / 2);
@@ -1267,7 +1271,7 @@ var VRS;
             }
             var requestSize = size;
             var multiplier = 1;
-            if (VRS.browserHelper.isHighDpi()) {
+            if (!useSvg && VRS.browserHelper.isHighDpi()) {
                 multiplier = 2;
                 requestSize = {
                     width: size.width * multiplier,
@@ -1275,9 +1279,8 @@ var VRS;
                 };
             }
             var url = '';
-            var embeddedSvg = marker.getEmbeddedSvg();
-            if (VRS.globalOptions.aircraftMarkerUseSvg && embeddedSvg) {
-                var svg = this._SvgGenerator.generateAircraftMarker(embeddedSvg, marker.getSvgFillColour(aircraft, isSelectedAircraft), requestSize.width, requestSize.height, details.iconRotation, hasAltitudeStalk, pinTextLines > 0 ? details.pinTexts : null, this._Settings.pinTextLineHeight);
+            if (useSvg) {
+                var svg = this._SvgGenerator.generateAircraftMarker(marker.getEmbeddedSvg(), marker.getSvgFillColour(aircraft, isSelectedAircraft), requestSize.width, requestSize.height, details.iconRotation, hasAltitudeStalk, pinTextLines > 0 ? details.pinTexts : null, this._Settings.pinTextLineHeight);
                 var svgText = svg.outerHTML;
                 url = 'data:image/svg+xml;charset=UTF-8;base64,' + btoa(svgText);
             }
