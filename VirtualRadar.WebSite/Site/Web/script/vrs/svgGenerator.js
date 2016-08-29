@@ -38,19 +38,19 @@ var VRS;
             var x = (width / 2) - (VRS.globalOptions.svgAircraftMarkerAltitudeLineWidth / 2);
             this.addSvgElement(svg, 'line', {
                 x1: x, y1: markerHeight / 2,
-                x2: x, y2: height - 3,
+                x2: x, y2: height - 2,
                 'stroke': VRS.globalOptions.svgAircraftMarkerAltitudeLineStroke,
                 'stroke-width': VRS.globalOptions.svgAircraftMarkerAltitudeLineWidth
             });
             this.addSvgElement(svg, 'line', {
-                x1: x - 2, y1: height - 5,
-                x2: x + 3, y2: height - 1,
+                x1: x - 2, y1: height - 4,
+                x2: x + 3, y2: height,
                 'stroke': VRS.globalOptions.svgAircraftMarkerAltitudeLineStroke,
                 'stroke-width': VRS.globalOptions.svgAircraftMarkerAltitudeLineWidth
             });
             this.addSvgElement(svg, 'line', {
-                x1: x - 3, y1: height - 1,
-                x2: x + 2, y2: height - 5,
+                x1: x - 3, y1: height,
+                x2: x + 2, y2: height - 4,
                 'stroke': VRS.globalOptions.svgAircraftMarkerAltitudeLineStroke,
                 'stroke-width': VRS.globalOptions.svgAircraftMarkerAltitudeLineWidth
             });
