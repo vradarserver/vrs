@@ -53,13 +53,10 @@ namespace VRS
 </filter>` : VRS.globalOptions.svgAircraftMarkerTextShadowFilterXml;
     VRS.globalOptions.svgAircraftMarkerStyle = VRS.globalOptions.svgAircraftMarkerStyle === undefined ?
     {
-        'font-family': 'Roboto',
-        'font-size': '8.5pt',
-        'font-weight': 700,
-        'fill': '#FFFFFF',
-        'stroke': '#000',
-        'stroke-width': 1,
-        'stroke-opacity': 0.25
+        'font-family': '"Arial",Sans-Serif',
+        'font-size': '7.5pt',
+        'font-weight': 'bold',
+        'fill': '#FFFFFF'
     } : VRS.globalOptions.svgAircraftMarkerStyle;
 
     /**
@@ -80,7 +77,7 @@ namespace VRS
          */
         public generateAircraftMarker(embeddedSvg: EmbeddedSvg, fillColour: string, width: number, height: number, rotation: number, addAltitudeStalk: boolean, pinTextLines: string[], pinTextLineHeight: number) : Element
         {
-            var result = this.createSvgNode(width, height);
+            var result = this.createSvgNode(width * 2, height * 2, this.buildViewBox(0, 0, width, height));
 
             var marker = this.convertXmlIntoNode(embeddedSvg.svg);
             var markerWidth = Number(marker.getAttribute('width'));
@@ -134,7 +131,7 @@ namespace VRS
                 y: 0,
                 width: markerWidth,
                 height: markerHeight,
-                viewBox: '' + offsetX + ' 0 ' + markerWidth + ' ' + markerHeight
+                viewBox: this.buildViewBox(offsetX, 0, markerWidth, markerHeight)
             });
             if(rotation > 0) {
                 this.setAttribute(markerGroup, {
@@ -182,9 +179,6 @@ namespace VRS
                 width: width,
                 height: pinTextHeight
             });
-            if(VRS.globalOptions.svgAircraftMarkerStyle) {
-                this.setAttribute(pinTextGroup, VRS.globalOptions.svgAircraftMarkerStyle);
-            }
 
             var textElement = this.addSvgElement(pinTextGroup, 'text', { 
                 x: centerX,
@@ -206,7 +200,16 @@ namespace VRS
                     dy: pinTextLineHeight
                 });
                 tspan.textContent = text;
+
+                if(VRS.globalOptions.svgAircraftMarkerStyle) {
+                    this.setAttribute(tspan, VRS.globalOptions.svgAircraftMarkerStyle);
+                }
             }
+        }
+
+        private buildViewBox(x: number, y: number, width: number, height: number) : string
+        {
+            return '' + x + ' ' + y + ' ' + width + ' ' + height;
         }
 
         private createElement(element: string, namespace: string = 'http://www.w3.org/2000/svg') : any
@@ -215,11 +218,8 @@ namespace VRS
             return result;
         }
 
-        private createSvgNode(width: number, height: number, viewBox?: string, version: string = '1.1', namespace: string = 'http://www.w3.org/2000/svg') : SVGSVGElement
+        private createSvgNode(width: number, height: number, viewBox: string, version: string = '1.1', namespace: string = 'http://www.w3.org/2000/svg') : SVGSVGElement
         {
-            if(!viewBox) {
-                viewBox = '0 0 ' + width + ' ' + height;
-            }
             var result = this.createElement('svg', namespace);
             this.setAttribute(result, {
                 width: width,

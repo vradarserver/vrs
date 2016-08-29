@@ -9,19 +9,16 @@ var VRS;
         "<filter\n    style=\"color-interpolation-filters:sRGB\"\n    id=\"vrs-text-shadow-filter\">\n    <feFlood\n        flood-opacity=\"1\"\n        flood-color=\"rgb(0,0,0)\"\n        result=\"flood\" />\n    <feComposite\n        in=\"flood\"\n        in2=\"SourceGraphic\"\n        operator=\"in\"\n        result=\"composite1\" />\n    <feGaussianBlur\n        in=\"composite1\"\n        stdDeviation=\"1\"\n        result=\"blur\" />\n    <feOffset\n         in=\"blur\"\n         dx=\"-0.5\"\n         dy=\"-0.5\"\n         result=\"offset\" />\n    <feComposite\n        in=\"SourceGraphic\"\n        in2=\"offset\"\n        operator=\"over\"\n        result=\"composite2\" />\n</filter>" : VRS.globalOptions.svgAircraftMarkerTextShadowFilterXml;
     VRS.globalOptions.svgAircraftMarkerStyle = VRS.globalOptions.svgAircraftMarkerStyle === undefined ?
         {
-            'font-family': 'Roboto',
-            'font-size': '8.5pt',
-            'font-weight': 700,
-            'fill': '#FFFFFF',
-            'stroke': '#000',
-            'stroke-width': 1,
-            'stroke-opacity': 0.25
+            'font-family': '"Arial",Sans-Serif',
+            'font-size': '7.5pt',
+            'font-weight': 'bold',
+            'fill': '#FFFFFF'
         } : VRS.globalOptions.svgAircraftMarkerStyle;
     var SvgGenerator = (function () {
         function SvgGenerator() {
         }
         SvgGenerator.prototype.generateAircraftMarker = function (embeddedSvg, fillColour, width, height, rotation, addAltitudeStalk, pinTextLines, pinTextLineHeight) {
-            var result = this.createSvgNode(width, height);
+            var result = this.createSvgNode(width * 2, height * 2, this.buildViewBox(0, 0, width, height));
             var marker = this.convertXmlIntoNode(embeddedSvg.svg);
             var markerWidth = Number(marker.getAttribute('width'));
             var markerHeight = Number(marker.getAttribute('height'));
@@ -64,7 +61,7 @@ var VRS;
                 y: 0,
                 width: markerWidth,
                 height: markerHeight,
-                viewBox: '' + offsetX + ' 0 ' + markerWidth + ' ' + markerHeight
+                viewBox: this.buildViewBox(offsetX, 0, markerWidth, markerHeight)
             });
             if (rotation > 0) {
                 this.setAttribute(markerGroup, {
@@ -105,9 +102,6 @@ var VRS;
                 width: width,
                 height: pinTextHeight
             });
-            if (VRS.globalOptions.svgAircraftMarkerStyle) {
-                this.setAttribute(pinTextGroup, VRS.globalOptions.svgAircraftMarkerStyle);
-            }
             var textElement = this.addSvgElement(pinTextGroup, 'text', {
                 x: centerX,
                 y: startY,
@@ -126,7 +120,13 @@ var VRS;
                     dy: pinTextLineHeight
                 });
                 tspan.textContent = text;
+                if (VRS.globalOptions.svgAircraftMarkerStyle) {
+                    this.setAttribute(tspan, VRS.globalOptions.svgAircraftMarkerStyle);
+                }
             }
+        };
+        SvgGenerator.prototype.buildViewBox = function (x, y, width, height) {
+            return '' + x + ' ' + y + ' ' + width + ' ' + height;
         };
         SvgGenerator.prototype.createElement = function (element, namespace) {
             if (namespace === void 0) { namespace = 'http://www.w3.org/2000/svg'; }
@@ -136,9 +136,6 @@ var VRS;
         SvgGenerator.prototype.createSvgNode = function (width, height, viewBox, version, namespace) {
             if (version === void 0) { version = '1.1'; }
             if (namespace === void 0) { namespace = 'http://www.w3.org/2000/svg'; }
-            if (!viewBox) {
-                viewBox = '0 0 ' + width + ' ' + height;
-            }
             var result = this.createElement('svg', namespace);
             this.setAttribute(result, {
                 width: width,
