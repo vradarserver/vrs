@@ -1315,7 +1315,7 @@ var VRS;
             if (useSvg && urlChanged) {
                 var svg = this._SvgGenerator.generateAircraftMarker(marker.getEmbeddedSvg(), marker.getSvgFillColour(aircraft, isSelectedAircraft), requestSize.width, requestSize.height, details.iconRotation, hasAltitudeStalk, pinTextLines > 0 ? details.pinTexts : null, this._Settings.pinTextLineHeight);
                 var svgText = this._SvgGenerator.serialiseSvg(svg);
-                url = 'data:image/svg+xml;charset=UTF-8;base64,' + btoa(svgText);
+                url = 'data:image/svg+xml;charset=UTF-8;base64,' + VRS.stringUtility.safeBtoa(svgText);
                 svg = null;
             }
             return !urlChanged ? null : new VRS.MapIcon(url, size, { x: centreX, y: anchorY }, { x: 0, y: 0 }, size, labelAnchor);

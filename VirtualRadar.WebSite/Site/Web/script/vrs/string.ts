@@ -420,6 +420,19 @@ namespace VRS
             }
             return result;
         }
+
+        /**
+         * Encodes the string in Base64 without incurring the 'failed to be encoded' error that Chrome throws when you
+         * pass it characters that need more than one byte to encode. Based on snippet from MDN here:
+         * https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding#Solution_.232_.E2.80.93_rewriting_atob()_and_btoa()_using_TypedArrays_and_UTF-8
+         * @param text
+         */
+        safeBtoa(text: string)
+        {
+            return btoa(encodeURIComponent(text).replace(/%([0-9A-F]{2})/g, function(match: any, p1: string) {
+                return String.fromCharCode(Number('0x' + p1));
+            }));
+        }
     }
 
     /**

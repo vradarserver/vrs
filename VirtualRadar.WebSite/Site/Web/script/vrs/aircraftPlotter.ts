@@ -1987,7 +1987,7 @@ namespace VRS
                     this._Settings.pinTextLineHeight
                 );
                 var svgText = this._SvgGenerator.serialiseSvg(svg);
-                url = 'data:image/svg+xml;charset=UTF-8;base64,' + btoa(svgText);
+                url = 'data:image/svg+xml;charset=UTF-8;base64,' + VRS.stringUtility.safeBtoa(svgText);
                 svg = null;
             }
 
