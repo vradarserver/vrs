@@ -273,7 +273,7 @@ namespace VRS
             return node;
         }
 
-        private addSvgElement(parent: Element, element: string, attributes: Object = null, namespace: string = null) : Element
+        private addSvgElement(parent: Element, element: string, attributes: Object = null, namespace: string = 'http://www.w3.org/2000/svg') : Element
         {
             var result = this.createElement(element, namespace);
             if(attributes) {

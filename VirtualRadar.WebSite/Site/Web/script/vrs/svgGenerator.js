@@ -175,7 +175,7 @@ var VRS;
         };
         SvgGenerator.prototype.addSvgElement = function (parent, element, attributes, namespace) {
             if (attributes === void 0) { attributes = null; }
-            if (namespace === void 0) { namespace = null; }
+            if (namespace === void 0) { namespace = 'http://www.w3.org/2000/svg'; }
             var result = this.createElement(element, namespace);
             if (attributes) {
                 this.setAttribute(result, attributes);
