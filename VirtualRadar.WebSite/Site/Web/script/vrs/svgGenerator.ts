@@ -238,7 +238,6 @@ namespace VRS
                 width: width,
                 height: height,
                 viewBox: viewBox,
-                xmlns: namespace,
                 version: version
             });
 
