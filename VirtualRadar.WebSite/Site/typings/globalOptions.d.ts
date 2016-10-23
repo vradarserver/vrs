@@ -237,8 +237,8 @@
         scriptManagerTimeout?: number;                              // The timeout in milliseconds when dynamically loading scripts (e.g. Google Maps and the language files).
 
         /* svgGenerator */
+        svgAircraftMarkerTextStyle?: Object;                        // An object of SVG attributes to apply to the pin text on aircraft markers (e.g. { 'font-family': 'Roboto', 'font-size': '8pt' }).
         svgAircraftMarkerTextShadowFilterXml?: string;              // The filter that is applied to text to add a shadow to it. Set this to an empty string to remove the shadow entirely.
-        svgAircraftMarkerStyle?: Object;                            // An object of SVG attributes to apply to the pin text on aircraft markers (e.g. { 'font-family': 'Roboto', 'font-size': '8pt' }).
         svgAircraftMarkerAltitudeLineStroke?: string;               // The CSS colour for the altitude line.
         svgAircraftMarkerAltitudeLineWidth?: number;                // The width of the altitude line in pixels.
         svgAircraftMarkerNormalFill?: string;                       // The CSS colour for unselected aircraft.

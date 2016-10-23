@@ -42,13 +42,13 @@ namespace VRS
         in2="blur"
         operator="over" />
 </filter>` : VRS.globalOptions.svgAircraftMarkerTextShadowFilterXml;
-    VRS.globalOptions.svgAircraftMarkerStyle = VRS.globalOptions.svgAircraftMarkerStyle === undefined ?
+    VRS.globalOptions.svgAircraftMarkerTextStyle = VRS.globalOptions.svgAircraftMarkerTextStyle === undefined ?
     {
         'font-family': 'Roboto, Sans-Serif',
-        'font-size': '7.5pt',
+        'font-size': '8pt',
         'font-weight': '700',
         'fill': '#FFFFFF'
-    } : VRS.globalOptions.svgAircraftMarkerStyle;
+    } : VRS.globalOptions.svgAircraftMarkerTextStyle;
 
     /**
      * A class that can generate SVG elements and strings.
@@ -204,8 +204,8 @@ namespace VRS
                 });
                 tspan.textContent = text;
 
-                if(VRS.globalOptions.svgAircraftMarkerStyle) {
-                    this.setAttribute(tspan, VRS.globalOptions.svgAircraftMarkerStyle);
+                if(VRS.globalOptions.svgAircraftMarkerTextStyle) {
+                    this.setAttribute(tspan, VRS.globalOptions.svgAircraftMarkerTextStyle);
                 }
             }
         }
