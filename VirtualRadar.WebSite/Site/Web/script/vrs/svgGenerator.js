@@ -6,7 +6,7 @@ var VRS;
     VRS.globalOptions.svgAircraftMarkerNormalFill = VRS.globalOptions.svgAircraftMarkerNormalFill === undefined ? '#FFFFFF' : VRS.globalOptions.svgAircraftMarkerNormalFill;
     VRS.globalOptions.svgAircraftMarkerSelectedFill = VRS.globalOptions.svgAircraftMarkerSelectedFill === undefined ? '#FFFF00' : VRS.globalOptions.svgAircraftMarkerSelectedFill;
     VRS.globalOptions.svgAircraftMarkerTextShadowFilterXml = VRS.globalOptions.svgAircraftMarkerTextShadowFilterXml === undefined ?
-        "<filter\n    xmlns=\"http://www.w3.org/2000/svg\"\n    style=\"color-interpolation-filters:sRGB\"\n    id=\"vrs-text-shadow-filter\">\n    <feMorphology\n        in=\"SourceAlpha\"\n        operator=\"dilate\"\n        radius=\"1.5\"\n        result=\"fat-text\" />\n    <feGaussianBlur\n        in=\"fat-text\"\n        stdDeviation=\"1.5\"\n        result=\"blur\" />\n    <feComposite\n        in=\"SourceGraphic\"\n        in2=\"blur\"\n        operator=\"over\" />\n</filter>" : VRS.globalOptions.svgAircraftMarkerTextShadowFilterXml;
+        "<filter\n    xmlns=\"http://www.w3.org/2000/svg\"\n    style=\"color-interpolation-filters:sRGB\"\n    id=\"vrs-text-shadow-filter\">\n    <feMorphology\n        in=\"SourceAlpha\"\n        operator=\"dilate\"\n        radius=\"1\"\n        result=\"fat-text\" />\n    <feGaussianBlur\n        in=\"fat-text\"\n        stdDeviation=\"1.5\"\n        result=\"blur\" />\n    <feComposite\n        in=\"SourceGraphic\"\n        in2=\"blur\"\n        operator=\"over\" />\n</filter>" : VRS.globalOptions.svgAircraftMarkerTextShadowFilterXml;
     VRS.globalOptions.svgAircraftMarkerStyle = VRS.globalOptions.svgAircraftMarkerStyle === undefined ?
         {
             'font-family': 'Roboto, Sans-Serif',

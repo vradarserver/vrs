@@ -31,7 +31,7 @@ namespace VRS
     <feMorphology
         in="SourceAlpha"
         operator="dilate"
-        radius="1.5"
+        radius="1"
         result="fat-text" />
     <feGaussianBlur
         in="fat-text"
