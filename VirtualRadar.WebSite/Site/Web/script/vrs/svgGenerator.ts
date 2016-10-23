@@ -28,35 +28,25 @@ namespace VRS
     xmlns="http://www.w3.org/2000/svg"
     style="color-interpolation-filters:sRGB"
     id="vrs-text-shadow-filter">
-    <feFlood
-        flood-opacity="1"
-        flood-color="rgb(0,0,0)"
-        result="flood" />
-    <feComposite
-        in="flood"
-        in2="SourceGraphic"
-        operator="in"
-        result="composite1" />
+    <feMorphology
+        in="SourceAlpha"
+        operator="dilate"
+        radius="1.5"
+        result="fat-text" />
     <feGaussianBlur
-        in="composite1"
-        stdDeviation="1"
+        in="fat-text"
+        stdDeviation="1.5"
         result="blur" />
-    <feOffset
-         in="blur"
-         dx="-0.5"
-         dy="-0.5"
-         result="offset" />
     <feComposite
         in="SourceGraphic"
-        in2="offset"
-        operator="over"
-        result="composite2" />
+        in2="blur"
+        operator="over" />
 </filter>` : VRS.globalOptions.svgAircraftMarkerTextShadowFilterXml;
     VRS.globalOptions.svgAircraftMarkerStyle = VRS.globalOptions.svgAircraftMarkerStyle === undefined ?
     {
-        'font-family': '"Arial",Sans-Serif',
+        'font-family': 'Roboto, Sans-Serif',
         'font-size': '7.5pt',
-        'font-weight': 'bold',
+        'font-weight': '700',
         'fill': '#FFFFFF'
     } : VRS.globalOptions.svgAircraftMarkerStyle;
 

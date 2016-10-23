@@ -6,12 +6,12 @@ var VRS;
     VRS.globalOptions.svgAircraftMarkerNormalFill = VRS.globalOptions.svgAircraftMarkerNormalFill === undefined ? '#FFFFFF' : VRS.globalOptions.svgAircraftMarkerNormalFill;
     VRS.globalOptions.svgAircraftMarkerSelectedFill = VRS.globalOptions.svgAircraftMarkerSelectedFill === undefined ? '#FFFF00' : VRS.globalOptions.svgAircraftMarkerSelectedFill;
     VRS.globalOptions.svgAircraftMarkerTextShadowFilterXml = VRS.globalOptions.svgAircraftMarkerTextShadowFilterXml === undefined ?
-        "<filter\n    xmlns=\"http://www.w3.org/2000/svg\"\n    style=\"color-interpolation-filters:sRGB\"\n    id=\"vrs-text-shadow-filter\">\n    <feFlood\n        flood-opacity=\"1\"\n        flood-color=\"rgb(0,0,0)\"\n        result=\"flood\" />\n    <feComposite\n        in=\"flood\"\n        in2=\"SourceGraphic\"\n        operator=\"in\"\n        result=\"composite1\" />\n    <feGaussianBlur\n        in=\"composite1\"\n        stdDeviation=\"1\"\n        result=\"blur\" />\n    <feOffset\n         in=\"blur\"\n         dx=\"-0.5\"\n         dy=\"-0.5\"\n         result=\"offset\" />\n    <feComposite\n        in=\"SourceGraphic\"\n        in2=\"offset\"\n        operator=\"over\"\n        result=\"composite2\" />\n</filter>" : VRS.globalOptions.svgAircraftMarkerTextShadowFilterXml;
+        "<filter\n    xmlns=\"http://www.w3.org/2000/svg\"\n    style=\"color-interpolation-filters:sRGB\"\n    id=\"vrs-text-shadow-filter\">\n    <feMorphology\n        in=\"SourceAlpha\"\n        operator=\"dilate\"\n        radius=\"1.5\"\n        result=\"fat-text\" />\n    <feGaussianBlur\n        in=\"fat-text\"\n        stdDeviation=\"1.5\"\n        result=\"blur\" />\n    <feComposite\n        in=\"SourceGraphic\"\n        in2=\"blur\"\n        operator=\"over\" />\n</filter>" : VRS.globalOptions.svgAircraftMarkerTextShadowFilterXml;
     VRS.globalOptions.svgAircraftMarkerStyle = VRS.globalOptions.svgAircraftMarkerStyle === undefined ?
         {
-            'font-family': '"Arial",Sans-Serif',
+            'font-family': 'Roboto, Sans-Serif',
             'font-size': '7.5pt',
-            'font-weight': 'bold',
+            'font-weight': '700',
             'fill': '#FFFFFF'
         } : VRS.globalOptions.svgAircraftMarkerStyle;
     var SvgGenerator = (function () {
