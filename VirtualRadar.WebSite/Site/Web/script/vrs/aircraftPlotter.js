@@ -6,6 +6,7 @@ var VRS;
                 folder: 'images/web-markers',
                 normalFileName: null,
                 selectedFileName: settings.normalFileName || null,
+                embeddedSvg: null,
                 size: { width: 35, height: 35 },
                 isAircraft: true,
                 canRotate: true,
@@ -60,8 +61,20 @@ var VRS;
         AircraftMarker.prototype.setMatches = function (value) {
             this._Settings.matches = value;
         };
+        AircraftMarker.prototype.getEmbeddedSvg = function () {
+            return this._Settings.embeddedSvg;
+        };
+        AircraftMarker.prototype.setEmbeddedSvg = function (value) {
+            this._Settings.embeddedSvg = value;
+        };
         AircraftMarker.prototype.matchesAircraft = function (aircraft) {
             return this._Settings.matches ? this._Settings.matches(aircraft) : false;
+        };
+        AircraftMarker.prototype.useEmbeddedSvg = function () {
+            return VRS.globalOptions.aircraftMarkerUseSvg && this._Settings.embeddedSvg;
+        };
+        AircraftMarker.prototype.getSvgFillColour = function (aircraft, isSelected) {
+            return isSelected ? VRS.globalOptions.svgAircraftMarkerSelectedFill : VRS.globalOptions.svgAircraftMarkerNormalFill;
         };
         return AircraftMarker;
     }());
@@ -118,6 +131,7 @@ var VRS;
     VRS.globalOptions.aircraftMarkerClustererMaxZoom = VRS.globalOptions.aircraftMarkerClustererMaxZoom || 5;
     VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize = VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize || 1;
     VRS.globalOptions.aircraftMarkerClustererUserCanConfigure = VRS.globalOptions.aircraftMarkerClustererUserCanConfigure !== false;
+    VRS.globalOptions.aircraftMarkerUseSvg = VRS.globalOptions.aircraftMarkerUseSvg !== false;
     VRS.globalOptions.aircraftMarkers = VRS.globalOptions.aircraftMarkers || [
         new VRS.AircraftMarker({
             normalFileName: 'GroundVehicle.png',
@@ -139,42 +153,49 @@ var VRS;
         new VRS.AircraftMarker({
             normalFileName: 'Helicopter.png',
             selectedFileName: 'Helicopter-Selected.png',
+            embeddedSvg: VRS.EmbeddedSvgs.Marker_Helicopter,
             size: { width: 32, height: 32 },
             matches: function (aircraft) { return aircraft.species.val === VRS.Species.Helicopter; }
         }),
         new VRS.AircraftMarker({
             normalFileName: 'Type-GLID.png',
             selectedFileName: 'Type-GLID-Selected.png',
+            embeddedSvg: VRS.EmbeddedSvgs.Marker_TypeGLID,
             size: { width: 60, height: 60 },
             matches: function (aircraft) { return aircraft.modelIcao.val === 'GLID'; }
         }),
         new VRS.AircraftMarker({
             normalFileName: 'Type-A380.png',
             selectedFileName: 'Type-A380-Selected.png',
+            embeddedSvg: VRS.EmbeddedSvgs.Marker_TypeA380,
             size: { width: 60, height: 60 },
             matches: function (aircraft) { return aircraft.modelIcao.val === 'A388'; }
         }),
         new VRS.AircraftMarker({
             normalFileName: 'Type-A340.png',
             selectedFileName: 'Type-A340-Selected.png',
+            embeddedSvg: VRS.EmbeddedSvgs.Marker_TypeA340,
             size: { width: 60, height: 60 },
             matches: function (aircraft) { return aircraft.modelIcao.val && (aircraft.modelIcao.val === 'E6' || (aircraft.modelIcao.val.length === 4 && aircraft.modelIcao.val.substring(0, 3) === 'A34')); }
         }),
         new VRS.AircraftMarker({
             normalFileName: 'WTC-Light-1-Prop.png',
             selectedFileName: 'WTC-Light-1-Prop-Selected.png',
+            embeddedSvg: VRS.EmbeddedSvgs.Marker_Light1Prop,
             size: { width: 32, height: 32 },
             matches: function (aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Light && aircraft.engineType.val !== VRS.EngineType.Jet && aircraft.countEngines.val === '1'; }
         }),
         new VRS.AircraftMarker({
             normalFileName: 'WTC-Light-2-Prop.png',
             selectedFileName: 'WTC-Light-2-Prop-Selected.png',
+            embeddedSvg: VRS.EmbeddedSvgs.Marker_Light2Prop,
             size: { width: 36, height: 36 },
             matches: function (aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Light && aircraft.engineType.val !== VRS.EngineType.Jet; }
         }),
         new VRS.AircraftMarker({
             normalFileName: 'Type-GLFx.png',
             selectedFileName: 'Type-GLFx-Selected.png',
+            embeddedSvg: VRS.EmbeddedSvgs.Marker_TypeGLFx,
             size: { width: 40, height: 40 },
             matches: function (aircraft) {
                 return aircraft.engineType.val === VRS.EngineType.Jet &&
@@ -185,42 +206,49 @@ var VRS;
         new VRS.AircraftMarker({
             normalFileName: 'WTC-Medium-4-Jet.png',
             selectedFileName: 'WTC-Medium-4-Jet-Selected.png',
+            embeddedSvg: VRS.EmbeddedSvgs.Marker_Medium4Jet,
             size: { width: 40, height: 40 },
             matches: function (aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Medium && aircraft.countEngines.val === '4' && aircraft.engineType.val === VRS.EngineType.Jet; }
         }),
         new VRS.AircraftMarker({
             normalFileName: 'WTC-Medium-2-Jet.png',
             selectedFileName: 'WTC-Medium-2-Jet-Selected.png',
+            embeddedSvg: VRS.EmbeddedSvgs.Marker_Medium2Jet,
             size: { width: 40, height: 40 },
             matches: function (aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Medium && aircraft.countEngines.val !== '4' && aircraft.engineType.val === VRS.EngineType.Jet; }
         }),
         new VRS.AircraftMarker({
             normalFileName: 'WTC-Medium-2-Turbo.png',
             selectedFileName: 'WTC-Medium-2-Turbo-Selected.png',
+            embeddedSvg: VRS.EmbeddedSvgs.Marker_Medium2TurboProp,
             size: { width: 40, height: 40 },
             matches: function (aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Medium && aircraft.countEngines.val !== '4'; }
         }),
         new VRS.AircraftMarker({
             normalFileName: 'WTC-Heavy-4-Jet.png',
             selectedFileName: 'WTC-Heavy-4-Jet-Selected.png',
+            embeddedSvg: VRS.EmbeddedSvgs.Marker_Heavy4Jet,
             size: { width: 60, height: 60 },
             matches: function (aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Heavy && aircraft.countEngines.val === '4'; }
         }),
         new VRS.AircraftMarker({
             normalFileName: 'WTC-Heavy-2-Jet.png',
             selectedFileName: 'WTC-Heavy-2-Jet-Selected.png',
+            embeddedSvg: VRS.EmbeddedSvgs.Marker_Heavy2Jet,
             size: { width: 57, height: 57 },
             matches: function (aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Heavy && aircraft.countEngines.val !== '4'; }
         }),
         new VRS.AircraftMarker({
             normalFileName: '4-TurboProp.png',
             selectedFileName: '4-TurboPropSelected.png',
+            embeddedSvg: VRS.EmbeddedSvgs.Marker_4TurboProp,
             size: { width: 40, height: 40 },
             matches: function (aircraft) { return aircraft.countEngines.val === '4' && aircraft.engineType.val === VRS.EngineType.Turbo; }
         }),
         new VRS.AircraftMarker({
             normalFileName: 'Airplane.png',
             selectedFileName: 'AirplaneSelected.png',
+            embeddedSvg: VRS.EmbeddedSvgs.Marker_Generic,
             size: { width: 35, height: 35 },
             isPre22Icon: true,
             matches: function () { return true; }
@@ -876,6 +904,7 @@ var VRS;
             this._RangeCircleCentre = null;
             this._RangeCircleCircles = [];
             this._MovingMap = VRS.globalOptions.aircraftMarkerMovingMapOn;
+            this._SvgGenerator = new VRS.SvgGenerator();
             settings = $.extend({
                 name: 'default',
                 aircraftMarkers: VRS.globalOptions.aircraftMarkers,
@@ -1203,6 +1232,7 @@ var VRS;
         AircraftPlotter.prototype.createIcon = function (details, mapZoomLevel, isSelectedAircraft) {
             var aircraft = details.aircraft;
             var marker = this.getAircraftMarkerDetails(aircraft);
+            var useSvg = marker.useEmbeddedSvg();
             var size = marker.getSize();
             size = { width: size.width, height: size.height };
             var anchorY = Math.floor(size.height / 2);
@@ -1254,7 +1284,7 @@ var VRS;
             }
             var requestSize = size;
             var multiplier = 1;
-            if (VRS.browserHelper.isHighDpi()) {
+            if (!useSvg && VRS.browserHelper.isHighDpi()) {
                 multiplier = 2;
                 requestSize = {
                     width: size.width * multiplier,
@@ -1283,6 +1313,12 @@ var VRS;
             url += '/' + (isSelectedAircraft ? marker.getSelectedFileName() : marker.getNormalFileName());
             var urlChanged = details.iconUrl !== url;
             details.iconUrl = url;
+            if (useSvg && urlChanged) {
+                var svg = this._SvgGenerator.generateAircraftMarker(marker.getEmbeddedSvg(), marker.getSvgFillColour(aircraft, isSelectedAircraft), requestSize.width, requestSize.height, details.iconRotation, hasAltitudeStalk, pinTextLines > 0 ? details.pinTexts : null, this._Settings.pinTextLineHeight);
+                var svgText = this._SvgGenerator.serialiseSvg(svg);
+                url = 'data:image/svg+xml;charset=UTF-8;base64,' + VRS.stringUtility.safeBtoa(svgText);
+                svg = null;
+            }
             return !urlChanged ? null : new VRS.MapIcon(url, size, { x: centreX, y: anchorY }, { x: 0, y: 0 }, size, labelAnchor);
         };
         AircraftPlotter.prototype.getAircraftMarkerDetails = function (aircraft) {

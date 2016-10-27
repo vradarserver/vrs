@@ -143,6 +143,7 @@
         aircraftMarkerClustererMaxZoom?: number;                    // The zoom level at which clusters of aircraft should be presented as a single icon. Smaller numbers are further away from the ground.
         aircraftMarkerClustererMinimumClusterSize?: number;         // The number of aircraft that have to be grouped together before they become merged into a single cluster icon.
         aircraftMarkerClustererUserCanConfigure?: boolean;          // True if the user can configure the parameters for aircraft marker clustering.
+        aircraftMarkerUseSvg?: boolean;                             // True if SVGs should be used if available.
         aircraftMarkers?: AircraftMarker[];                         // (See Note 7) An array of the aircraft icons that can represent different types of aircraft on the map.
 
         /* aircraftRenderer */
@@ -234,6 +235,14 @@
 
         /* scriptManager */
         scriptManagerTimeout?: number;                              // The timeout in milliseconds when dynamically loading scripts (e.g. Google Maps and the language files).
+
+        /* svgGenerator */
+        svgAircraftMarkerTextStyle?: Object;                        // An object of SVG attributes to apply to the pin text on aircraft markers (e.g. { 'font-family': 'Roboto', 'font-size': '8pt' }).
+        svgAircraftMarkerTextShadowFilterXml?: string;              // The filter that is applied to text to add a shadow to it. Set this to an empty string to remove the shadow entirely.
+        svgAircraftMarkerAltitudeLineStroke?: string;               // The CSS colour for the altitude line.
+        svgAircraftMarkerAltitudeLineWidth?: number;                // The width of the altitude line in pixels.
+        svgAircraftMarkerNormalFill?: string;                       // The CSS colour for unselected aircraft.
+        svgAircraftMarkerSelectedFill?: string;                     // The CSS colour for selected aircraft.
 
         /* unitDisplayPreferences */
         unitDisplayHeight?: HeightEnum;                             // The default VRS.Height unit for altitudes.

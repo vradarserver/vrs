@@ -769,6 +769,12 @@
     <Content Include="Site\Web\script\vrs\currentLocation.js.map">
       <DependentUpon>currentLocation.ts</DependentUpon>
     </Content>
+    <Content Include="Site\Web\script\vrs\embeddedSvgs.js">
+      <DependentUpon>embeddedSvgs.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\embeddedSvgs.js.map">
+      <DependentUpon>embeddedSvgs.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\enums.js">
       <DependentUpon>enums.ts</DependentUpon>
     </Content>
@@ -810,6 +816,12 @@
     </Content>
     <Content Include="Site\Web\script\vrs\string.js.map">
       <DependentUpon>string.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\svgGenerator.js">
+      <DependentUpon>svgGenerator.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\svgGenerator.js.map">
+      <DependentUpon>svgGenerator.ts</DependentUpon>
     </Content>
     <Content Include="Site\Web\script\vrs\titleUpdater.js">
       <DependentUpon>titleUpdater.ts</DependentUpon>
@@ -932,6 +944,7 @@
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftListFetcher.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftListFilter.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftListSorter.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\svgGenerator.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftPlotter.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftRenderer.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\airportDataApi.ts" />
@@ -963,6 +976,7 @@
     <TypeScriptCompile Include="Site\Web\script\vrs\scriptManager.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\serverConfiguration.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\string.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\embeddedSvgs.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\timeoutManager.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\titleUpdater.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\unitDisplayPreferences.ts" />
@@ -999,7 +1013,8 @@
     <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
     <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
-    <TypeScriptModuleKind>None</TypeScriptModuleKind>
+    <TypeScriptModuleKind>
+    </TypeScriptModuleKind>
     <TypeScriptOutFile />
     <TypeScriptOutDir />
     <TypeScriptSourceMap>True</TypeScriptSourceMap>
