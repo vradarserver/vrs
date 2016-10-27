@@ -418,6 +418,11 @@ namespace VRS
          * A VRS.TrailType value indicating what kind of trail, if any, is currently drawn for the aircraft.
          */
         polylineTrailType: TrailTypeEnum;
+
+        /**
+         * True if the marker is an embedded SVG, false if it is a bitmap.
+         */
+        isSvg: boolean = false;
     }
 
     /**
@@ -1888,10 +1893,12 @@ namespace VRS
             var marker = this.getAircraftMarkerDetails(aircraft);
             var useSvg = marker.useEmbeddedSvg();
 
+            details.isSvg = !!useSvg;
+
             var size = marker.getSize();
             size = { width: size.width, height: size.height };
             var anchorY = Math.floor(size.height / 2);
-            var suppressPinText = this._SuppressTextOnImages || (details.mapMarker && details.mapMarker.isMarkerWithLabel);
+            var suppressPinText = details.isSvg ? false : this._SuppressTextOnImages || (details.mapMarker && details.mapMarker.isMarkerWithLabel);
 
             if(!this.allowIconRotation() || !marker.getCanRotate()) {
                 details.iconRotation = undefined;
@@ -2141,12 +2148,14 @@ namespace VRS
         {
             var result = false;
 
-            if(this._SuppressTextOnImages || (details.mapMarker && details.mapMarker.isMarkerWithLabel)) {
-                if(this.allowPinTexts()) {
-                    result = this.havePinTextDependenciesChanged(details.aircraft);
-                } else {
-                    if(details.pinTexts.length !== 0) {
-                        result = true;
+            if(!details.isSvg) {
+                if(this._SuppressTextOnImages || (details.mapMarker && details.mapMarker.isMarkerWithLabel)) {
+                    if(this.allowPinTexts()) {
+                        result = this.havePinTextDependenciesChanged(details.aircraft);
+                    } else {
+                        if(details.pinTexts.length !== 0) {
+                            result = true;
+                        }
                     }
                 }
             }
@@ -2159,33 +2168,35 @@ namespace VRS
          */
         private createLabel(details: PlottedDetail)
         {
-            if(this._SuppressTextOnImages && details.mapMarker && details.mapMarker.isMarkerWithLabel) {
-                if(this.allowPinTexts()) {
-                    details.pinTexts = this.getPinTexts(details.aircraft);
-                } else {
-                    if(details.pinTexts.length > 0) {
-                        details.pinTexts = [];
+            if(!details.isSvg) {
+                if(this._SuppressTextOnImages && details.mapMarker && details.mapMarker.isMarkerWithLabel) {
+                    if(this.allowPinTexts()) {
+                        details.pinTexts = this.getPinTexts(details.aircraft);
+                    } else {
+                        if(details.pinTexts.length > 0) {
+                            details.pinTexts = [];
+                        }
                     }
-                }
 
-                var labelText = '';
-                var length = details.pinTexts.length;
-                for(var i = 0;i < length;++i) {
-                    if(labelText.length) {
-                        labelText += '<br/>';
+                    var labelText = '';
+                    var length = details.pinTexts.length;
+                    for(var i = 0;i < length;++i) {
+                        if(labelText.length) {
+                            labelText += '<br/>';
+                        }
+                        labelText += '<span>&nbsp;' + VRS.stringUtility.htmlEscape(details.pinTexts[i]) + '&nbsp;</span>'
                     }
-                    labelText += '<span>&nbsp;' + VRS.stringUtility.htmlEscape(details.pinTexts[i]) + '&nbsp;</span>'
-                }
 
-                var marker = details.mapMarker;
-                if(labelText.length === 0 || !details.mapIcon) {
-                    marker.setLabelVisible(false);
-                } else {
-                    if(!marker.getLabelVisible()) {
-                        marker.setLabelVisible(true);
+                    var marker = details.mapMarker;
+                    if(labelText.length === 0 || !details.mapIcon) {
+                        marker.setLabelVisible(false);
+                    } else {
+                        if(!marker.getLabelVisible()) {
+                            marker.setLabelVisible(true);
+                        }
+                        marker.setLabelAnchor(details.mapIcon.labelAnchor);
+                        marker.setLabelContent(labelText);
                     }
-                    marker.setLabelAnchor(details.mapIcon.labelAnchor);
-                    marker.setLabelContent(labelText);
                 }
             }
         }

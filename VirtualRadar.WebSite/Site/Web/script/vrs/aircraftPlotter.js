@@ -261,6 +261,7 @@ var VRS;
             this.nextPolylineId = 0;
             this.pinTexts = [];
             this.polylinePathUpdateCounter = -1;
+            this.isSvg = false;
             this._Id = aircraft.id;
         }
         Object.defineProperty(PlottedDetail.prototype, "id", {
@@ -1233,10 +1234,11 @@ var VRS;
             var aircraft = details.aircraft;
             var marker = this.getAircraftMarkerDetails(aircraft);
             var useSvg = marker.useEmbeddedSvg();
+            details.isSvg = !!useSvg;
             var size = marker.getSize();
             size = { width: size.width, height: size.height };
             var anchorY = Math.floor(size.height / 2);
-            var suppressPinText = this._SuppressTextOnImages || (details.mapMarker && details.mapMarker.isMarkerWithLabel);
+            var suppressPinText = details.isSvg ? false : this._SuppressTextOnImages || (details.mapMarker && details.mapMarker.isMarkerWithLabel);
             if (!this.allowIconRotation() || !marker.getCanRotate()) {
                 details.iconRotation = undefined;
             }
@@ -1416,46 +1418,50 @@ var VRS;
         };
         AircraftPlotter.prototype.haveLabelDetailsChanged = function (details) {
             var result = false;
-            if (this._SuppressTextOnImages || (details.mapMarker && details.mapMarker.isMarkerWithLabel)) {
-                if (this.allowPinTexts()) {
-                    result = this.havePinTextDependenciesChanged(details.aircraft);
-                }
-                else {
-                    if (details.pinTexts.length !== 0) {
-                        result = true;
+            if (!details.isSvg) {
+                if (this._SuppressTextOnImages || (details.mapMarker && details.mapMarker.isMarkerWithLabel)) {
+                    if (this.allowPinTexts()) {
+                        result = this.havePinTextDependenciesChanged(details.aircraft);
+                    }
+                    else {
+                        if (details.pinTexts.length !== 0) {
+                            result = true;
+                        }
                     }
                 }
             }
             return result;
         };
         AircraftPlotter.prototype.createLabel = function (details) {
-            if (this._SuppressTextOnImages && details.mapMarker && details.mapMarker.isMarkerWithLabel) {
-                if (this.allowPinTexts()) {
-                    details.pinTexts = this.getPinTexts(details.aircraft);
-                }
-                else {
-                    if (details.pinTexts.length > 0) {
-                        details.pinTexts = [];
+            if (!details.isSvg) {
+                if (this._SuppressTextOnImages && details.mapMarker && details.mapMarker.isMarkerWithLabel) {
+                    if (this.allowPinTexts()) {
+                        details.pinTexts = this.getPinTexts(details.aircraft);
                     }
-                }
-                var labelText = '';
-                var length = details.pinTexts.length;
-                for (var i = 0; i < length; ++i) {
-                    if (labelText.length) {
-                        labelText += '<br/>';
+                    else {
+                        if (details.pinTexts.length > 0) {
+                            details.pinTexts = [];
+                        }
                     }
-                    labelText += '<span>&nbsp;' + VRS.stringUtility.htmlEscape(details.pinTexts[i]) + '&nbsp;</span>';
-                }
-                var marker = details.mapMarker;
-                if (labelText.length === 0 || !details.mapIcon) {
-                    marker.setLabelVisible(false);
-                }
-                else {
-                    if (!marker.getLabelVisible()) {
-                        marker.setLabelVisible(true);
+                    var labelText = '';
+                    var length = details.pinTexts.length;
+                    for (var i = 0; i < length; ++i) {
+                        if (labelText.length) {
+                            labelText += '<br/>';
+                        }
+                        labelText += '<span>&nbsp;' + VRS.stringUtility.htmlEscape(details.pinTexts[i]) + '&nbsp;</span>';
                     }
-                    marker.setLabelAnchor(details.mapIcon.labelAnchor);
-                    marker.setLabelContent(labelText);
+                    var marker = details.mapMarker;
+                    if (labelText.length === 0 || !details.mapIcon) {
+                        marker.setLabelVisible(false);
+                    }
+                    else {
+                        if (!marker.getLabelVisible()) {
+                            marker.setLabelVisible(true);
+                        }
+                        marker.setLabelAnchor(details.mapIcon.labelAnchor);
+                        marker.setLabelContent(labelText);
+                    }
                 }
             }
         };
