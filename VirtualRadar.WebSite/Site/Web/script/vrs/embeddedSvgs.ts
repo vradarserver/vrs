@@ -96,6 +96,65 @@ namespace VRS
             aircraftMarkerStatusFillPaths: [ 'outline-path' ]
         };
 
+        public static Marker_Generic: EmbeddedSvg = {
+            svg: `<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   width="35"
+   height="35"
+   viewBox="0 0 35 35"
+   id="svg2"
+   version="1.1">
+  <defs
+     id="defs4">
+    <filter
+       style="color-interpolation-filters:sRGB"
+       id="filter4194">
+      <feFlood
+         flood-opacity="0.501961"
+         flood-color="rgb(0,0,0)"
+         result="flood"
+         id="feFlood4196" />
+      <feComposite
+         in="flood"
+         in2="SourceGraphic"
+         operator="in"
+         result="composite1"
+         id="feComposite4198" />
+      <feGaussianBlur
+         in="composite1"
+         stdDeviation="1"
+         result="blur"
+         id="feGaussianBlur4200" />
+      <feOffset
+         dx="-6.38378e-016"
+         dy="-6.38378e-016"
+         result="offset"
+         id="feOffset4202" />
+      <feComposite
+         in="SourceGraphic"
+         in2="offset"
+         operator="over"
+         result="composite2"
+         id="feComposite4204" />
+    </filter>
+  </defs>
+  <g
+     id="outline"
+     style="display:inline">
+    <path
+       style="opacity:1;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter4194)"
+       d="M 19.598813,8.1191146 19.642857,13.866071 29,19 c 0,0 0.470511,0.475196 0.464286,0.776786 -0.0064,0.309486 -0.508929,0.776785 -0.508929,0.776785 l -9.401786,0.223215 -0.04464,5.267857 3.178571,2.241071 0,1.401786 -4.401786,0 c 0,0 -0.266008,-0.831484 -0.6875,-0.821429 -0.427228,0.01019 -0.642857,0.776786 -0.642857,0.776786 l -4.375,0 0,-1.133928 2.955357,-2.464286 -0.04464,-5.267857 -8.491076,0 c 0,0 -1.0035801,-0.551474 -1.0625,-1.044643 -0.036788,-0.307924 0.491071,-0.790179 0.491071,-0.790179 l 9.017858,-5.165178 -0.01116,-5.7243307 c 0,0 0.434941,-3.2832986 2.108479,-3.2438829 1.790301,0.042166 2.055065,3.3105422 2.055065,3.3105422 z"
+       id="outline-path" />
+  </g>
+</svg>`,
+            aircraftMarkerStatusFillPaths: [ 'outline-path' ]
+        };
+
         public static Marker_Heavy2Jet: EmbeddedSvg = {
             svg: `<svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"

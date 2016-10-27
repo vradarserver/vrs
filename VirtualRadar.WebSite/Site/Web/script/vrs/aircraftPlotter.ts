@@ -341,6 +341,7 @@ namespace VRS
         new VRS.AircraftMarker({
             normalFileName: 'Airplane.png',
             selectedFileName: 'AirplaneSelected.png',
+            embeddedSvg: EmbeddedSvgs.Marker_Generic,
             size: { width: 35, height: 35 },
             isPre22Icon: true,
             matches: function() { return true; }
