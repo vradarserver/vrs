@@ -227,6 +227,7 @@ namespace VRS
         new VRS.AircraftMarker({
             normalFileName: 'GroundVehicle.png',
             selectedFileName: 'GroundVehicle.png',
+            embeddedSvg: EmbeddedSvgs.Marker_GroundVehicle,
             size: { width: 26, height: 24},
             isAircraft: false,
             isPre22Icon: true,
@@ -2007,7 +2008,7 @@ namespace VRS
          */
         private getAircraftMarkerDetails(aircraft: Aircraft) : AircraftMarker
         {
-            var result = null;
+            var result: AircraftMarker = null;
 
             if(aircraft) {
                 var markers = this._Settings.aircraftMarkers;

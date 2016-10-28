@@ -135,6 +135,103 @@ namespace VRS
             aircraftMarkerStatusFillPaths: [ 'outline-path' ]
         };
 
+        public static Marker_GroundVehicle: EmbeddedSvg = {
+            svg: `
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   width="26"
+   height="24"
+   viewBox="0 0 26 24"
+   id="svg2"
+   version="1.1">
+  <defs
+     id="defs4">
+    <pattern
+       xlink:href="#checkerboard-content"
+       id="checkerboard-pattern"
+       patternTransform="matrix(2,0,0,2,0.04419417,1.0606602)" />
+    <pattern
+       id="checkerboard-content"
+       patternTransform="translate(0,0) scale(10,10)"
+       height="2"
+       width="2"
+       patternUnits="userSpaceOnUse">
+      <rect
+         id="top-left"
+         x="0"
+         y="0"
+         width="1"
+         height="1"
+         style="fill:#363b4e;stroke:none" />
+      <rect
+         id="top-right" 
+         x="1"
+         y="0"
+         width="1"
+         height="1"
+         style="fill:#fff422;stroke:none" />
+      <rect
+         id="bottom-left"
+         x="0"
+         y="1"
+         width="1"
+         height="1"
+         style="fill:#fff422;stroke:none" />
+      <rect
+         id="bottom-right"
+         x="1"
+         y="1"
+         width="1"
+         height="1"
+         style="fill:#363b4e;stroke:none" />
+    </pattern>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       id="outline-shadow">
+      <feFlood
+         flood-opacity="1"
+         flood-color="rgb(0,0,0)"
+         result="flood" />
+      <feComposite
+         in="flood"
+         in2="SourceGraphic"
+         operator="in"
+         result="composite" />
+      <feGaussianBlur
+         in="composite"
+         stdDeviation="1"
+         result="blur" />
+      <feComposite
+         in="SourceGraphic"
+         in2="blur"
+         operator="over" />
+    </filter>
+  </defs>
+  <g
+     id="outline-group"
+     style="display:inline;opacity:1">
+    <path
+       style="opacity:1;fill:url(#checkerboard-pattern);fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#outline-shadow)"
+       d="m 10,3 6,0 2,3 0,15 L 8,21 8,6 10,3"
+       id="outline-path" />
+  </g>
+  <g
+     id="windscreen-group"
+     style="opacity:1">
+    <path
+       style="display:inline;opacity:1;fill:#73a6aa;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 18,10.625 0,3 c -2,-2 -8,-2 -10,0 l 0,-3 c 2,-3 8,-3 10,0 z"
+       id="windscreen-path" />
+  </g>
+</svg>`,
+            aircraftMarkerStatusFillPaths: null
+        };
+
         public static Marker_Heavy2Jet: EmbeddedSvg = {
             svg: `<svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"

@@ -136,6 +136,7 @@ var VRS;
         new VRS.AircraftMarker({
             normalFileName: 'GroundVehicle.png',
             selectedFileName: 'GroundVehicle.png',
+            embeddedSvg: VRS.EmbeddedSvgs.Marker_GroundVehicle,
             size: { width: 26, height: 24 },
             isAircraft: false,
             isPre22Icon: true,
