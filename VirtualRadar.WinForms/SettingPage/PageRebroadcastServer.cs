@@ -161,8 +161,8 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new TextBoxStringBinder<RebroadcastSettings>(RebroadcastSettings, textBoxPassphrase,      r => r.Passphrase,       (r,v) => r.Passphrase = v));
 
             AddControlBinder(new NumericIntBinder<RebroadcastSettings>(RebroadcastSettings, numericPort,            r => r.Port,                            (r,v) => r.Port = v));
-            AddControlBinder(new NumericIntBinder<RebroadcastSettings>(RebroadcastSettings, numericIdleTimeout,     r => r.IdleTimeoutMilliseconds / 1000,  (r,v) => r.IdleTimeoutMilliseconds = v * 1000) { ModelPropertyName = PropertyHelper.ExtractName<RebroadcastSettings>(r => r.IdleTimeoutMilliseconds) });
-            AddControlBinder(new NumericIntBinder<RebroadcastSettings>(RebroadcastSettings, numericSendInterval,    r => r.SendIntervalMilliseconds / 1000, (r,v) => r.SendIntervalMilliseconds = v * 1000) { ModelPropertyName = PropertyHelper.ExtractName<RebroadcastSettings>(r => r.SendIntervalMilliseconds) });
+            AddControlBinder(new NumericIntBinder<RebroadcastSettings>(RebroadcastSettings, numericIdleTimeout,     r => r.IdleTimeoutMilliseconds / 1000,  (r,v) => r.IdleTimeoutMilliseconds = v * 1000) { ModelPropertyName = nameof(RebroadcastSettings.IdleTimeoutMilliseconds) });
+            AddControlBinder(new NumericIntBinder<RebroadcastSettings>(RebroadcastSettings, numericSendInterval,    r => r.SendIntervalMilliseconds / 1000, (r,v) => r.SendIntervalMilliseconds = v * 1000) { ModelPropertyName = nameof(RebroadcastSettings.SendIntervalMilliseconds) });
             AddControlBinder(new NumericIntBinder<RebroadcastSettings>(RebroadcastSettings, numericStaleSeconds,    r => r.StaleSeconds,                    (r,v) => r.StaleSeconds = v));
 
             AddControlBinder(new ComboBoxBinder<RebroadcastSettings, CombinedFeed, int>            (RebroadcastSettings, comboBoxReceiver,  SettingsView.CombinedFeed, r => r.ReceiverId, (r,v) => r.ReceiverId = v) { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId, SortList = true, });
@@ -212,9 +212,9 @@ namespace VirtualRadar.WinForms.SettingPage
 
             if(SettingsView != null && this.IsHandleCreated) {
                 if(Object.ReferenceEquals(args.Record, RebroadcastSettings)) {
-                    if(args.PropertyName == PropertyHelper.ExtractName<RebroadcastSettings>(r => r.IsTransmitter) ||
-                       args.PropertyName == PropertyHelper.ExtractName<Receiver>(r => r.UseKeepAlive) ||
-                       args.PropertyName == PropertyHelper.ExtractName<RebroadcastSettings>(r => r.Format)) {
+                    if(args.PropertyName == nameof(RebroadcastSettings.IsTransmitter) ||
+                       args.PropertyName == nameof(Receiver.UseKeepAlive) ||
+                       args.PropertyName == nameof(RebroadcastSettings.Format)) {
                         EnableDisableControls();
                     }
                 }

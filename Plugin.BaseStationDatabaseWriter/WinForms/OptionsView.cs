@@ -223,7 +223,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
                 _Presenter.Initialise(this);
 
                 AddControlBinder(new CheckBoxBoolBinder<OptionsView>(this, checkBoxEnabled,                             r => r.PluginEnabled,                   (r,v) => r.PluginEnabled = v));
-                AddControlBinder(new CheckBoxBoolBinder<OptionsView>(this, checkBoxOnlyUpdateDatabasesCreatedByPlugin,  r => !r.AllowUpdateOfOtherDatabases,    (r,v) => r.AllowUpdateOfOtherDatabases = !v)    { ModelPropertyName = PropertyHelper.ExtractName<OptionsView>(r => r.AllowUpdateOfOtherDatabases) });
+                AddControlBinder(new CheckBoxBoolBinder<OptionsView>(this, checkBoxOnlyUpdateDatabasesCreatedByPlugin,  r => !r.AllowUpdateOfOtherDatabases,    (r,v) => r.AllowUpdateOfOtherDatabases = !v)    { ModelPropertyName = nameof(OptionsView.AllowUpdateOfOtherDatabases) });
                 AddControlBinder(new CheckBoxBoolBinder<OptionsView>(this, checkBoxWriteOnlineLookupsToDatabase,        r => r.SaveDownloadedAircraftDetails,   (r,v) => r.SaveDownloadedAircraftDetails = v)   { UpdateMode = DataSourceUpdateMode.OnPropertyChanged, });
                 AddControlBinder(new CheckBoxBoolBinder<OptionsView>(this, checkBoxRefreshOutOfDateAircraft,            r => r.RefreshOutOfDateAircraft,        (r,v) => r.RefreshOutOfDateAircraft = v)        { UpdateMode = DataSourceUpdateMode.OnPropertyChanged, });
 

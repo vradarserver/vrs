@@ -186,14 +186,14 @@ namespace VirtualRadar.Interface.Settings
         private void BasicAuthenticationUserIds_ListChanged(object sender, ListChangedEventArgs args)
         {
             if(args.ListChangedType != ListChangedType.ItemChanged) {
-                OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.BasicAuthenticationUserIds)));
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(BasicAuthenticationUserIds)));
             }
         }
 
         void AdministratorUserIds_ListChanged(object sender, ListChangedEventArgs args)
         {
             if(args.ListChangedType != ListChangedType.ItemChanged) {
-                OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.AdministratorUserIds)));
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(AdministratorUserIds)));
             }
         }
     }

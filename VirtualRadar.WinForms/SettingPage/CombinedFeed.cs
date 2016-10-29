@@ -35,12 +35,12 @@ namespace VirtualRadar.WinForms.SettingPage
         /// </summary>
         static CombinedFeed()
         {
-            _UniqueIdName =             PropertyHelper.ExtractName<CombinedFeed>(r => r.UniqueId);
-            _NameName =                 PropertyHelper.ExtractName<CombinedFeed>(r => r.Name);
-            _ReceiverUniqueIdName =     PropertyHelper.ExtractName<Receiver>(r => r.UniqueId);
-            _ReceiverNameName =         PropertyHelper.ExtractName<Receiver>(r => r.Name);
-            _MergedFeedUniqueIdName =   PropertyHelper.ExtractName<MergedFeed>(r => r.UniqueId);
-            _MergedFeedNameName =       PropertyHelper.ExtractName<MergedFeed>(r => r.Name);
+            _UniqueIdName =             nameof(CombinedFeed.UniqueId);
+            _NameName =                 nameof(CombinedFeed.Name);
+            _ReceiverUniqueIdName =     nameof(VirtualRadar.Interface.Settings.Receiver.UniqueId);
+            _ReceiverNameName =         nameof(VirtualRadar.Interface.Settings.Receiver.Name);
+            _MergedFeedUniqueIdName =   nameof(VirtualRadar.Interface.Settings.MergedFeed.UniqueId);
+            _MergedFeedNameName =       nameof(VirtualRadar.Interface.Settings.MergedFeed.Name);
         }
 
         /// <summary>

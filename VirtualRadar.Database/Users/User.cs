@@ -37,10 +37,10 @@ namespace VirtualRadar.Database.Users
                 var oldIsPersisted = IsPersisted;
                 SetField(ref _Id, value, () => Id);
                 if(UniqueId != oldUniqueId) {
-                    OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.UniqueId)));
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(UniqueId)));
                 }
                 if(oldIsPersisted != IsPersisted) {
-                    OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.IsPersisted)));
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsPersisted)));
                 }
             }
         }

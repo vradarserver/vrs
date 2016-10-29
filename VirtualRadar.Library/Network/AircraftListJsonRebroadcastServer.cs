@@ -42,10 +42,10 @@ namespace VirtualRadar.Library.Network
 
             public AircraftListJsonContractResolver() : base()
             {
-                _AllowAircraftListJsonNames.Add(PropertyHelper.ExtractName<AircraftListJson>(r => r.Aircraft));
+                _AllowAircraftListJsonNames.Add(nameof(Aircraft));
 
-                _SuppressAircraftJsonNames.Add(PropertyHelper.ExtractName<AircraftJson>(r => r.UniqueId));
-                _SuppressAircraftJsonNames.Add(PropertyHelper.ExtractName<AircraftJson>(r => r.HasSignalLevel));
+                _SuppressAircraftJsonNames.Add(nameof(AircraftJson.UniqueId));
+                _SuppressAircraftJsonNames.Add(nameof(AircraftJson.HasSignalLevel));
             }
 
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)

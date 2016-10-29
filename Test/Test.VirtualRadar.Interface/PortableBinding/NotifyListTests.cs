@@ -104,7 +104,7 @@ namespace Test.VirtualRadar.Interface.PortableBinding
             _ListChanged = new EventRecorder<ListChangedEventArgs>();
             _CollectionChanged = new EventRecorder<NotifyCollectionChangedEventArgs>();
 
-            _ObservableValueDescriptor = TypeDescriptor.GetProperties(typeof(ObservableClass))[PropertyHelper.ExtractName<ObservableClass>(r => r.Value)];
+            _ObservableValueDescriptor = TypeDescriptor.GetProperties(typeof(ObservableClass))[nameof(ObservableClass.Value)];
         }
 
         [TestCleanup]

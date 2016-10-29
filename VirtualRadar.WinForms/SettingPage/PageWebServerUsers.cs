@@ -84,7 +84,7 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new CheckBoxBoolBinder<WebServerSettings>(settings, checkBoxEnabled,
                 r =>     r.AuthenticationScheme == AuthenticationSchemes.Basic,
                 (r,v) => r.AuthenticationScheme = v ? AuthenticationSchemes.Basic : AuthenticationSchemes.Anonymous) {
-                    ModelPropertyName = PropertyHelper.ExtractName<WebServerSettings>(r => r.AuthenticationScheme)
+                    ModelPropertyName = nameof(WebServerSettings.AuthenticationScheme)
                 }
             );
 

@@ -140,7 +140,7 @@ namespace VirtualRadar.Interface.Settings
         void Addresses_ListChanged(object sender, ListChangedEventArgs args)
         {
             if(args.ListChangedType != ListChangedType.ItemChanged) {
-                OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.Addresses)));
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(Addresses)));
             }
         }
     }

@@ -174,14 +174,14 @@ namespace VirtualRadar.Interface.Settings
         private void ReceiverIds_ListChanged(object sender, ListChangedEventArgs args)
         {
             if(args.ListChangedType != ListChangedType.ItemChanged) {
-                OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.ReceiverIds)));
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(ReceiverIds)));
             }
         }
 
         private void ReceiverFlags_ListChanged(object sender, ListChangedEventArgs args)
         {
             if(args.ListChangedType != ListChangedType.ItemChanged) {
-                OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.ReceiverFlags)));
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(ReceiverFlags)));
             }
         }
     }

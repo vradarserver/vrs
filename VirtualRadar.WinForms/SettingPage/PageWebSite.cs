@@ -161,7 +161,7 @@ namespace VirtualRadar.WinForms.SettingPage
             base.ConfigurationChanged(args);
             if(SettingsView != null && IsHandleCreated) {
                 if(args.Group == ConfigurationListenerGroup.GoogleMapSettings) {
-                    if(args.PropertyName == PropertyHelper.ExtractName<GoogleMapSettings>(r => r.EnableCorsSupport)) {
+                    if(args.PropertyName == nameof(GoogleMapSettings.EnableCorsSupport)) {
                         EnableDisableControls();
                     }
                 }

@@ -129,13 +129,13 @@ namespace VirtualRadar.WinForms.SettingPage
 
             AddControlBinder(new CheckBoxBoolBinder<MergedFeed>(MergedFeed, checkBoxEnabled,                        r => r.Enabled,                                         (r,v) => r.Enabled = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
             AddControlBinder(new CheckBoxBoolBinder<MergedFeed>(MergedFeed, checkBoxIgnoreAircraftWithNoPosition,   r => r.IgnoreAircraftWithNoPosition,                    (r,v) => r.IgnoreAircraftWithNoPosition = v));
-            AddControlBinder(new CheckBoxBoolBinder<MergedFeed>(MergedFeed, checkBoxHideFromWebSite,                r => r.ReceiverUsage == ReceiverUsage.HideFromWebSite,  (r,v) => r.ReceiverUsage = v ? ReceiverUsage.HideFromWebSite : ReceiverUsage.Normal) { ModelPropertyName = PropertyHelper.ExtractName<MergedFeed>(r => r.ReceiverUsage) });
+            AddControlBinder(new CheckBoxBoolBinder<MergedFeed>(MergedFeed, checkBoxHideFromWebSite,                r => r.ReceiverUsage == ReceiverUsage.HideFromWebSite,  (r,v) => r.ReceiverUsage = v ? ReceiverUsage.HideFromWebSite : ReceiverUsage.Normal) { ModelPropertyName = nameof(MergedFeed.ReceiverUsage) });
 
             AddControlBinder(new CheckBoxBoolBinder<MergedFeedReceiver>(null, checkBoxIsMlatFeed, r => r.IsMlatFeed, (r,v) => r.IsMlatFeed = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
 
             AddControlBinder(new TextBoxStringBinder<MergedFeed>(MergedFeed,    textBoxName,    r => r.Name,    (r,v) => r.Name = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
 
-            AddControlBinder(new NumericIntBinder<MergedFeed>(MergedFeed,   numericIcaoTimeout, r => r.IcaoTimeout / 1000, (r,v) => r.IcaoTimeout = v * 1000) { ModelPropertyName = PropertyHelper.ExtractName<MergedFeed>(r => r.IcaoTimeout) });
+            AddControlBinder(new NumericIntBinder<MergedFeed>(MergedFeed,   numericIcaoTimeout, r => r.IcaoTimeout / 1000, (r,v) => r.IcaoTimeout = v * 1000) { ModelPropertyName = nameof(MergedFeed.IcaoTimeout) });
 
             AddControlBinder(new MasterListToSubsetBinder<MergedFeed, Configuration, Receiver, int>(MergedFeed, listReceiverIds, SettingsView.Configuration, r => r.ReceiverIds, r => r.Receivers, r => r.UniqueId) {
                 FetchColumns = (receiver, e) => {
@@ -212,7 +212,7 @@ namespace VirtualRadar.WinForms.SettingPage
             base.ConfigurationChanged(args);
 
             if(args.Record == MergedFeed) {
-                if(args.PropertyName == PropertyHelper.ExtractName<MergedFeed>(r => r.ReceiverIds)) {
+                if(args.PropertyName == nameof(MergedFeed.ReceiverIds)) {
                     SynchroniseReceiverIdsToFlags();
                     BindSelectedMergedFeedReceiver();
                 }

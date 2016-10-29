@@ -120,7 +120,7 @@ namespace VirtualRadar.WinForms
             // ReceiverClass
             radioButtonReceiverSdr.Tag =        ReceiverClass.SoftwareDefinedRadio;
             radioButtonReceiverDedicated.Tag =  ReceiverClass.DedicatedHardware;
-            radioPanelReceiverClass.ValueMember = PropertyHelper.ExtractName(answers, r => r.ReceiverClass);
+            radioPanelReceiverClass.ValueMember = nameof(ReceiverConfigurationWizardAnswers.ReceiverClass);
             radioPanelReceiverClass.DataSource = Answers;
 
             // SdrDecoder
@@ -131,7 +131,7 @@ namespace VirtualRadar.WinForms
             radioButtonSdrOther.Tag =       SdrDecoder.Other;
             radioButtonSdrRtl1090.Tag =     SdrDecoder.Rtl1090;
             radioButtonSdrFR24Feeder.Tag =  SdrDecoder.FR24Feeder;
-            radioPanelSdrDecoder.ValueMember = PropertyHelper.ExtractName(answers, r => r.SdrDecoder);
+            radioPanelSdrDecoder.ValueMember = nameof(ReceiverConfigurationWizardAnswers.SdrDecoder);
             radioPanelSdrDecoder.DataSource = Answers;
 
             // DedicatedReceiver
@@ -141,29 +141,29 @@ namespace VirtualRadar.WinForms
             radioButtonDedicatedOther.Tag =             DedicatedReceiver.Other;
             radioButtonDedicatedRadarBox.Tag =          DedicatedReceiver.RadarBox;
             radioButtonDedicatedPlaneFinderRadar.Tag =  DedicatedReceiver.PlaneFinderRadar;
-            radioPanelDedicatedReceiver.ValueMember = PropertyHelper.ExtractName(answers, r => r.DedicatedReceiver);
+            radioPanelDedicatedReceiver.ValueMember = nameof(ReceiverConfigurationWizardAnswers.DedicatedReceiver);
             radioPanelDedicatedReceiver.DataSource = Answers;
 
             // ConnectionType
             radioButtonConnectionTypeNetwork.Tag =  ConnectionType.TCP;
             radioButtonConnectionTypeUsb.Tag =      ConnectionType.COM;
-            radioPanelConnectionType.ValueMember = PropertyHelper.ExtractName(answers, r => r.ConnectionType);
+            radioPanelConnectionType.ValueMember = nameof(ReceiverConfigurationWizardAnswers.ConnectionType);
             radioPanelConnectionType.DataSource = Answers;
 
             // KineticConnection
             radioButtonKineticConnectBaseStation.Tag =  KineticConnection.BaseStation;
             radioButtonKineticConnectHardware.Tag =     KineticConnection.DirectToHardware;
-            radioPanelKineticConnection.ValueMember = PropertyHelper.ExtractName(answers, r => r.KineticConnection);
+            radioPanelKineticConnection.ValueMember = nameof(ReceiverConfigurationWizardAnswers.KineticConnection);
             radioPanelKineticConnection.DataSource = Answers;
 
             // Loopback
             radioButtonLoopbackYes.Tag =    YesNo.Yes;
             radioButtonLoopbackNo.Tag =     YesNo.No;
-            radioPanelLoopback.ValueMember = PropertyHelper.ExtractName(answers, r => r.UseLoopbackAddress);
+            radioPanelLoopback.ValueMember = nameof(ReceiverConfigurationWizardAnswers.UseLoopbackAddress);
             radioPanelLoopback.DataSource = Answers;
 
             // Network address
-            textBoxNetworkAddress.DataBindings.Add("Text", answers, PropertyHelper.ExtractName(Answers, r => r.NetworkAddress));
+            textBoxNetworkAddress.DataBindings.Add("Text", answers, nameof(ReceiverConfigurationWizardAnswers.NetworkAddress));
         }
         #endregion
 

@@ -230,28 +230,28 @@ namespace VirtualRadar.Interface.Settings
         private void MergedFeeds_ListChanged(object sender, ListChangedEventArgs args)
         {
             if(args.ListChangedType != ListChangedType.ItemChanged) {
-                OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.MergedFeeds)));
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(MergedFeeds)));
             }
         }
 
         private void RebroadcastSettings_ListChanged(object sender, ListChangedEventArgs args)
         {
             if(args.ListChangedType != ListChangedType.ItemChanged) {
-                OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.RebroadcastSettings)));
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(RebroadcastSettings)));
             }
         }
 
         private void ReceiverLocations_ListChanged(object sender, ListChangedEventArgs args)
         {
             if(args.ListChangedType != ListChangedType.ItemChanged) {
-                OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.ReceiverLocations)));
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(ReceiverLocations)));
             }
         }
 
         private void Receivers_ListChanged(object sender, ListChangedEventArgs args)
         {
             if(args.ListChangedType != ListChangedType.ItemChanged) {
-                OnPropertyChanged(new PropertyChangedEventArgs(PropertyHelper.ExtractName(this, r => r.Receivers)));
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(Receivers)));
             }
         }
     }

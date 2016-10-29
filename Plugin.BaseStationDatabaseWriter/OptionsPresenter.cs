@@ -98,7 +98,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// <param name="args"></param>
         private void View_PropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            if(args.PropertyName == PropertyHelper.ExtractName<IOptionsView>(r => r.RefreshOutOfDateAircraft)) {
+            if(args.PropertyName == nameof(IOptionsView.RefreshOutOfDateAircraft)) {
                 RefreshWriteNotice();
             }
         }
