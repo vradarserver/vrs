@@ -270,7 +270,7 @@ var VRS;
                 forceRefresh = false;
             var aircraft = state.aircraft;
             var map = options.aircraftPlotter.getMap();
-            var mapMarker = options.aircraftPlotter.getAircraftMarker(aircraft);
+            var mapMarker = options.aircraftPlotter.getMapMarkerForAircraft(aircraft);
             var mapInfoWindow = state.mapInfoWindow;
             if (state.anchoredAircraft !== aircraft)
                 forceRefresh = true;

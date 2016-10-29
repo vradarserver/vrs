@@ -1234,7 +1234,7 @@ var VRS;
         };
         AircraftPlotter.prototype.createIcon = function (details, mapZoomLevel, isSelectedAircraft) {
             var aircraft = details.aircraft;
-            var marker = this.getAircraftMarkerDetails(aircraft);
+            var marker = this.getAircraftMarkerSettings(aircraft);
             var useSvg = marker.useEmbeddedSvg();
             details.isSvg = !!useSvg;
             var size = marker.getSize();
@@ -1325,7 +1325,7 @@ var VRS;
             }
             return !urlChanged ? null : new VRS.MapIcon(url, size, { x: centreX, y: anchorY }, { x: 0, y: 0 }, size, labelAnchor);
         };
-        AircraftPlotter.prototype.getAircraftMarkerDetails = function (aircraft) {
+        AircraftPlotter.prototype.getAircraftMarkerSettings = function (aircraft) {
             var result = null;
             if (aircraft) {
                 var markers = this._Settings.aircraftMarkers;
@@ -1822,7 +1822,7 @@ var VRS;
                 this._RangeCircleCentre = null;
             }
         };
-        AircraftPlotter.prototype.getAircraftMarker = function (aircraft) {
+        AircraftPlotter.prototype.getMapMarkerForAircraft = function (aircraft) {
             var result = null;
             if (aircraft) {
                 var detail = this._PlottedDetail[aircraft.id];

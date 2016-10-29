@@ -1892,7 +1892,7 @@ namespace VRS
         private createIcon(details: PlottedDetail, mapZoomLevel: number, isSelectedAircraft: boolean) : IMapIcon
         {
             var aircraft = details.aircraft;
-            var marker = this.getAircraftMarkerDetails(aircraft);
+            var marker = this.getAircraftMarkerSettings(aircraft);
             var useSvg = marker.useEmbeddedSvg();
 
             details.isSvg = !!useSvg;
@@ -2007,7 +2007,7 @@ namespace VRS
         /**
          * Returns the aircraft marker to use for the aircraft passed across.
          */
-        private getAircraftMarkerDetails(aircraft: Aircraft) : AircraftMarker
+        private getAircraftMarkerSettings(aircraft: Aircraft) : AircraftMarker
         {
             var result: AircraftMarker = null;
 
@@ -2682,7 +2682,7 @@ namespace VRS
         /**
          * Returns the VRS.MapMarker for the aircraft passed across or null / undefined if no such marker exists.
          */
-        getAircraftMarker(aircraft: Aircraft) : IMapMarker
+        getMapMarkerForAircraft(aircraft: Aircraft) : IMapMarker
         {
             var result = null;
             if(aircraft) {
