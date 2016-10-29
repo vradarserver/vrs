@@ -476,6 +476,7 @@ declare module VRS.Server
         OptionsDescribeUserEnabled:                                string;
         OptionsDescribeUserName:                                   string;
         OptionsDescribeUserPassword:                               string;
+        OptionsDescribeUseSvgGraphics:                             string;
         OptionsDescribeWebServerAllowInternetProximityGadgets:     string;
         OptionsDescribeWebServerAutoStartUPnp:                     string;
         OptionsDescribeWebServerEnableUPnpFeatures:                string;
@@ -796,6 +797,7 @@ declare module VRS.Server
         UserNameMissing:                                           string;
         Users:                                                     string;
         UseSlewMethod:                                             string;
+        UseSvgGraphics:                                            string;
         Version:                                                   string;
         VersionCheckResult:                                        string;
         VirtualRadarServer:                                        string;

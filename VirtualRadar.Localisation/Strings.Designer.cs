@@ -4302,6 +4302,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Yes to allow the use of SVG graphics on the web site, no to disable SVG graphics. SVG graphics reduce the load on the web server and look better on high resolution screens..
+        /// </summary>
+        public static string OptionsDescribeUseSvgGraphics {
+            get {
+                return ResourceManager.GetString("OptionsDescribeUseSvgGraphics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Yes if proximity gadgets connecting from the Internet are allowed to fetch aircraft data, no if they cannot. Proximity gadgets on the local network are not affected by this setting..
         /// </summary>
         public static string OptionsDescribeWebServerAllowInternetProximityGadgets {
@@ -7180,6 +7189,15 @@ namespace VirtualRadar.Localisation {
         public static string UseSlewMethod {
             get {
                 return ResourceManager.GetString("UseSlewMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use SVG graphics.
+        /// </summary>
+        public static string UseSvgGraphics {
+            get {
+                return ResourceManager.GetString("UseSvgGraphics", resourceCulture);
             }
         }
         

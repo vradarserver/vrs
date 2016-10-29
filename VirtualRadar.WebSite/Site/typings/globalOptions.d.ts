@@ -143,7 +143,6 @@
         aircraftMarkerClustererMaxZoom?: number;                    // The zoom level at which clusters of aircraft should be presented as a single icon. Smaller numbers are further away from the ground.
         aircraftMarkerClustererMinimumClusterSize?: number;         // The number of aircraft that have to be grouped together before they become merged into a single cluster icon.
         aircraftMarkerClustererUserCanConfigure?: boolean;          // True if the user can configure the parameters for aircraft marker clustering.
-        aircraftMarkerUseSvg?: boolean;                             // True if SVGs should be used if available.
         aircraftMarkers?: AircraftMarker[];                         // (See Note 7) An array of the aircraft icons that can represent different types of aircraft on the map.
 
         /* aircraftRenderer */

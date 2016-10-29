@@ -122,24 +122,24 @@ namespace Test.VirtualRadar.Library.Settings
             Configuration configuration = _Implementation.Load();
             foreach(PropertyInfo property in configuration.GetType().GetProperties()) {
                 switch(property.Name) {
-                    case "BaseStationSettings":     BaseStationSettingsTests.CheckProperties(configuration.BaseStationSettings); break;
-                    case "FlightRouteSettings":     FlightRouteSettingsTests.CheckProperties(configuration.FlightRouteSettings); break;
-                    case "WebServerSettings":       WebServerSettingsTests.CheckProperties(configuration.WebServerSettings); break;
-                    case "GoogleMapSettings":       GoogleMapSettingsTests.CheckProperties(configuration.GoogleMapSettings, assumeInitialConfig: true); break;
-                    case "VersionCheckSettings":    VersionCheckSettingsTests.CheckProperties(configuration.VersionCheckSettings); break;
-                    case "InternetClientSettings":  InternetClientSettingsTests.CheckProperties(configuration.InternetClientSettings); break;
-                    case "AudioSettings":           AudioSettingsTests.CheckProperties(configuration.AudioSettings); break;
-                    case "RawDecodingSettings":     RawDecodingSettingsTests.CheckProperties(configuration.RawDecodingSettings); break;
-                    case "ReceiverLocations":       Assert.AreEqual(0, configuration.ReceiverLocations.Count); break;
-                    case "RebroadcastSettings":     Assert.AreEqual(0, configuration.RebroadcastSettings.Count); break;
-                    case "Receivers":
+                    case nameof(Configuration.BaseStationSettings):     BaseStationSettingsTests.CheckProperties(configuration.BaseStationSettings); break;
+                    case nameof(Configuration.FlightRouteSettings):     FlightRouteSettingsTests.CheckProperties(configuration.FlightRouteSettings); break;
+                    case nameof(Configuration.WebServerSettings):       WebServerSettingsTests.CheckProperties(configuration.WebServerSettings); break;
+                    case nameof(Configuration.GoogleMapSettings):       GoogleMapSettingsTests.CheckProperties(configuration.GoogleMapSettings, assumeInitialConfig: true); break;
+                    case nameof(Configuration.VersionCheckSettings):    VersionCheckSettingsTests.CheckProperties(configuration.VersionCheckSettings); break;
+                    case nameof(Configuration.InternetClientSettings):  InternetClientSettingsTests.CheckProperties(configuration.InternetClientSettings); break;
+                    case nameof(Configuration.AudioSettings):           AudioSettingsTests.CheckProperties(configuration.AudioSettings); break;
+                    case nameof(Configuration.RawDecodingSettings):     RawDecodingSettingsTests.CheckProperties(configuration.RawDecodingSettings); break;
+                    case nameof(Configuration.ReceiverLocations):       Assert.AreEqual(0, configuration.ReceiverLocations.Count); break;
+                    case nameof(Configuration.RebroadcastSettings):     Assert.AreEqual(0, configuration.RebroadcastSettings.Count); break;
+                    case nameof(Configuration.Receivers):
                         Assert.AreEqual(1, configuration.Receivers.Count);
                         ReceiverTests.CheckProperties(configuration.Receivers[0], assumeInitialConfig: true);
                         break;
-                    case "MergedFeeds":             Assert.AreEqual(0, configuration.MergedFeeds.Count); break;
-                    case "DataVersion":             Assert.AreEqual(0, configuration.DataVersion); break;
-                    case "MonoSettings":            MonoSettingsTests.CheckProperties(configuration.MonoSettings); break;
-                    default:                        Assert.Fail("Missing {0} property test", property.Name); break;
+                    case nameof(Configuration.MergedFeeds):             Assert.AreEqual(0, configuration.MergedFeeds.Count); break;
+                    case nameof(Configuration.DataVersion):             Assert.AreEqual(0, configuration.DataVersion); break;
+                    case nameof(Configuration.MonoSettings):            MonoSettingsTests.CheckProperties(configuration.MonoSettings); break;
+                    default:                                            Assert.Fail("Missing {0} property test", property.Name); break;
                 }
             }
         }
@@ -184,7 +184,7 @@ namespace Test.VirtualRadar.Library.Settings
             var readBack = _Implementation.Load();
             foreach(PropertyInfo property in configuration.GetType().GetProperties()) {
                 switch(property.Name) {
-                    case "BaseStationSettings":
+                    case nameof(Configuration.BaseStationSettings):
                         Assert.AreEqual("Aa", readBack.BaseStationSettings.Address);
                         Assert.AreEqual(100, readBack.BaseStationSettings.AutoSavePolarPlotsMinutes);
                         Assert.AreEqual(65535, readBack.BaseStationSettings.Port);
@@ -213,10 +213,10 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(300, readBack.BaseStationSettings.SatcomDisplayTimeoutMinutes);
                         Assert.AreEqual(400, readBack.BaseStationSettings.SatcomTrackingTimeoutMinutes);
                         break;
-                    case "FlightRouteSettings":
+                    case nameof(Configuration.FlightRouteSettings):
                         Assert.AreEqual(true, readBack.FlightRouteSettings.AutoUpdateEnabled);
                         break;
-                    case "WebServerSettings":
+                    case nameof(Configuration.WebServerSettings):
                         Assert.AreEqual(AuthenticationSchemes.Basic, readBack.WebServerSettings.AuthenticationScheme);
                         Assert.AreEqual("Tt", readBack.WebServerSettings.BasicAuthenticationUser);
                         Assert.AreEqual(true, readBack.WebServerSettings.BasicAuthenticationPasswordHash.PasswordMatches("Funk to funky"));
@@ -229,7 +229,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual("First", readBack.WebServerSettings.BasicAuthenticationUserIds[0]);
                         Assert.AreEqual("Second", readBack.WebServerSettings.BasicAuthenticationUserIds[1]);
                         break;
-                    case "GoogleMapSettings":
+                    case nameof(Configuration.GoogleMapSettings):
                         Assert.AreEqual("SomeSettings", readBack.GoogleMapSettings.InitialSettings);
                         Assert.AreEqual(-12.123456, readBack.GoogleMapSettings.InitialMapLatitude);
                         Assert.AreEqual(120.123987, readBack.GoogleMapSettings.InitialMapLongitude);
@@ -254,12 +254,13 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual("ABC.COM", readBack.GoogleMapSettings.AllowCorsDomains);
                         Assert.AreEqual("API Key", readBack.GoogleMapSettings.GoogleMapsApiKey);
                         Assert.AreEqual(true, readBack.GoogleMapSettings.UseGoogleMapsAPIKeyWithLocalRequests);
+                        Assert.AreEqual(false, readBack.GoogleMapSettings.UseSvgGraphics);
                         break;
-                    case "VersionCheckSettings":
+                    case nameof(Configuration.VersionCheckSettings):
                         Assert.AreEqual(false, readBack.VersionCheckSettings.CheckAutomatically);
                         Assert.AreEqual(12, readBack.VersionCheckSettings.CheckPeriodDays);
                         break;
-                    case "InternetClientSettings":
+                    case nameof(Configuration.InternetClientSettings):
                         Assert.AreEqual(true, readBack.InternetClientSettings.CanRunReports);
                         Assert.AreEqual(true, readBack.InternetClientSettings.CanShowPictures);
                         Assert.AreEqual(true, readBack.InternetClientSettings.CanShowPinText);
@@ -269,12 +270,12 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(true, readBack.InternetClientSettings.CanSubmitRoutes);
                         Assert.AreEqual(true, readBack.InternetClientSettings.CanShowPolarPlots);
                         break;
-                    case "AudioSettings":
+                    case nameof(Configuration.AudioSettings):
                         Assert.AreEqual(false, readBack.AudioSettings.Enabled);
                         Assert.AreEqual("Male Voice", readBack.AudioSettings.VoiceName);
                         Assert.AreEqual(2, readBack.AudioSettings.VoiceRate);
                         break;
-                    case "RawDecodingSettings":
+                    case nameof(Configuration.RawDecodingSettings):
                         Assert.AreEqual(17.25, readBack.RawDecodingSettings.AcceptableAirborneSpeed);
                         Assert.AreEqual(19.75, readBack.RawDecodingSettings.AcceptableAirSurfaceTransitionSpeed);
                         Assert.AreEqual(21.25, readBack.RawDecodingSettings.AcceptableSurfaceSpeed);
@@ -296,7 +297,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(false, readBack.RawDecodingSettings.SuppressIcao0);
                         Assert.AreEqual(true, readBack.RawDecodingSettings.SuppressTisbDecoding);
                         break;
-                    case "ReceiverLocations":
+                    case nameof(Configuration.ReceiverLocations):
                         Assert.AreEqual(2, readBack.ReceiverLocations.Count);
 
                         Assert.AreEqual(74, readBack.ReceiverLocations[0].UniqueId);
@@ -309,7 +310,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(17.123, readBack.ReceiverLocations[1].Latitude);
                         Assert.AreEqual(12.456, readBack.ReceiverLocations[1].Longitude);
                         break;
-                    case "RebroadcastSettings":
+                    case nameof(Configuration.RebroadcastSettings):
                         Assert.AreEqual(2, readBack.RebroadcastSettings.Count);
 
                         Assert.AreEqual(1, readBack.RebroadcastSettings[0].UniqueId);
@@ -350,7 +351,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual("192.168.0.7", readBack.RebroadcastSettings[1].Access.Addresses[0]);
 
                         break;
-                    case "Receivers":
+                    case nameof(Configuration.Receivers):
                         Assert.AreEqual(2, readBack.Receivers.Count);
 
                         var receiver = readBack.Receivers[0];
@@ -413,7 +414,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual("192.168.0.7", readBack.Receivers[1].Access.Addresses[0]);
 
                         break;
-                    case "MergedFeeds":
+                    case nameof(Configuration.MergedFeeds):
                         Assert.AreEqual(2, readBack.MergedFeeds.Count);
 
                         var mergedFeed = readBack.MergedFeeds[0];
@@ -447,10 +448,10 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(1, mergedFeed.ReceiverFlags[1].UniqueId);
                         Assert.AreEqual(false, mergedFeed.ReceiverFlags[1].IsMlatFeed);
                         break;
-                    case "DataVersion":
+                    case nameof(Configuration.DataVersion):
                         Assert.AreEqual(102, readBack.DataVersion);     // Save adds one to the saved DataVersion of 101
                         break;
-                    case "MonoSettings":
+                    case nameof(Configuration.MonoSettings):
                         var monoSettings = readBack.MonoSettings;
                         Assert.AreEqual(false, monoSettings.UseMarkerLabels);
                         break;
@@ -465,289 +466,350 @@ namespace Test.VirtualRadar.Library.Settings
             var result = new Configuration();
             foreach(PropertyInfo property in result.GetType().GetProperties()) {
                 switch(property.Name) {
-                    case "BaseStationSettings":     result.BaseStationSettings = new BaseStationSettings() {
-                                                        Address = "Aa",
-                                                        Port = 65535,
-                                                        DataSource = DataSource.Sbs3,
-                                                        DatabaseFileName = "Bb",
-                                                        OperatorFlagsFolder = "Cc",
-                                                        SilhouettesFolder = "Ee",
-                                                        OutlinesFolder = "Ff",
-                                                        DisplayTimeoutSeconds = 120,
-                                                        PicturesFolder = "Pp",
-                                                        IgnoreBadMessages = true,
-                                                        ConnectionType = ConnectionType.COM,
-                                                        ComPort = "/dev/com4",
-                                                        BaudRate = 2400,
-                                                        DataBits = 7,
-                                                        StopBits = StopBits.OnePointFive,
-                                                        Parity = Parity.Space,
-                                                        Handshake = Handshake.XOnXOff,
-                                                        StartupText = "startup",
-                                                        ShutdownText = "shutdown",
-                                                        AutoReconnectAtStartup = true,
-                                                        TrackingTimeoutSeconds = 3600,
-                                                        MinimiseToSystemTray = true,
-                                                        SearchPictureSubFolders = true,
-                                                        AutoSavePolarPlotsMinutes = 100,
-                                                        DownloadGlobalAirPressureReadings = false,
-                                                        SatcomDisplayTimeoutMinutes = 300,
-                                                        SatcomTrackingTimeoutMinutes = 400,
-                                                    }; break;
-                    case "FlightRouteSettings":     result.FlightRouteSettings = new FlightRouteSettings() {
-                                                        AutoUpdateEnabled = true,
-                                                    }; break;
-                    case "WebServerSettings":       result.WebServerSettings = new WebServerSettings() {
-                                                        AuthenticationScheme = AuthenticationSchemes.Basic,
-                                                        BasicAuthenticationUser = "Tt",
-                                                        BasicAuthenticationPasswordHash = new Hash("Funk to funky"),
-                                                        EnableUPnp = true,
-                                                        UPnpPort = 8181,
-                                                        IsOnlyInternetServerOnLan = false,
-                                                        AutoStartUPnP = true,
-                                                        ConvertedUser = true,
-                                                        BasicAuthenticationUserIds = {
-                                                            "First",
-                                                            "Second",
-                                                        }
-                                                    }; break;
-                    case "GoogleMapSettings":       result.GoogleMapSettings = new GoogleMapSettings() {
-                                                        InitialSettings = "SomeSettings",
-                                                        InitialMapLatitude = -12.123456,
-                                                        InitialMapLongitude = 120.123987,
-                                                        InitialMapType = "HYBRID",
-                                                        InitialMapZoom = 7,
-                                                        InitialRefreshSeconds = 9,
-                                                        MinimumRefreshSeconds = 8,
-                                                        ShortTrailLengthSeconds = 400,
-                                                        InitialDistanceUnit = DistanceUnit.Kilometres,
-                                                        InitialHeightUnit = HeightUnit.Metres,
-                                                        InitialSpeedUnit = SpeedUnit.MilesPerHour,
-                                                        PreferIataAirportCodes = true,
-                                                        EnableBundling = false,
-                                                        EnableMinifying = false,
-                                                        EnableCompression = false,
-                                                        WebSiteReceiverId = 123,
-                                                        ClosestAircraftReceiverId = 456,
-                                                        FlightSimulatorXReceiverId = 789,
-                                                        ProxyType = ProxyType.Reverse,
-                                                        DirectoryEntryKey = "ABC123-456",
-                                                        EnableCorsSupport = true,
-                                                        AllowCorsDomains = "ABC.COM",
-                                                        GoogleMapsApiKey = "API Key",
-                                                        UseGoogleMapsAPIKeyWithLocalRequests = true,
-                                                    }; break;
-                    case "VersionCheckSettings":    result.VersionCheckSettings = new VersionCheckSettings() {
-                                                        CheckAutomatically = false,
-                                                        CheckPeriodDays = 12,
-                                                    }; break;
-                    case "InternetClientSettings":  result.InternetClientSettings = new InternetClientSettings() {
-                                                        CanRunReports = true,
-                                                        CanShowPinText = true,
-                                                        CanShowPictures = true,
-                                                        TimeoutMinutes = 15,
-                                                        CanPlayAudio = true,
-                                                        AllowInternetProximityGadgets = true,
-                                                        CanSubmitRoutes = true,
-                                                        CanShowPolarPlots = true,
-                                                    }; break;
-                    case "AudioSettings":           result.AudioSettings = new AudioSettings() {
-                                                        Enabled = false,
-                                                        VoiceName = "Male Voice",
-                                                        VoiceRate = 2,
-                                                    }; break;
-                    case "RawDecodingSettings":     result.RawDecodingSettings = new RawDecodingSettings() {
-                                                        AcceptableAirborneSpeed = 17.25,
-                                                        AcceptableAirSurfaceTransitionSpeed = 19.75,
-                                                        AcceptableSurfaceSpeed = 21.25,
-                                                        AirborneGlobalPositionLimit = 19,
-                                                        FastSurfaceGlobalPositionLimit = 17,
-                                                        SlowSurfaceGlobalPositionLimit = 12,
-                                                        IgnoreCallsignsInBds20 = true,
-                                                        IgnoreMilitaryExtendedSquitter = true,
-                                                        IgnoreInvalidCodeBlockInParityMessages = true,
-                                                        IgnoreInvalidCodeBlockInOtherMessages = false,
-                                                        ReceiverLocationId = 7,
-                                                        ReceiverRange = 400,
-                                                        SuppressReceiverRangeCheck = false,
-                                                        UseLocalDecodeForInitialPosition = true,
-                                                        AcceptIcaoInNonPICount = 20,
-                                                        AcceptIcaoInNonPISeconds = 21,
-                                                        AcceptIcaoInPI0Count = 7,
-                                                        AcceptIcaoInPI0Seconds = 42,
-                                                        SuppressIcao0 = false,
-                                                        SuppressTisbDecoding = true,
-                                                    }; break;
-                    case "ReceiverLocations":       result.ReceiverLocations.Clear();
-                                                    result.ReceiverLocations.AddRange(new ReceiverLocation[] {
-                                                        new ReceiverLocation() {
-                                                            UniqueId = 74,
-                                                            Name = "Home",
-                                                            Latitude = 51.234,
-                                                            Longitude = -0.642,
-                                                        },
-                                                        new ReceiverLocation() {
-                                                            UniqueId = 90,
-                                                            Name = "Away",
-                                                            Latitude = 17.123,
-                                                            Longitude = 12.456,
-                                                        },
-                                                    });
-                                                    break;
-                    case "RebroadcastSettings":     result.RebroadcastSettings.Clear();
-                                                    result.RebroadcastSettings.AddRange(new RebroadcastSettings[] {
-                                                        new RebroadcastSettings() {
-                                                            UniqueId = 1,
-                                                            Enabled = true,
-                                                            Format = RebroadcastFormat.Passthrough,
-                                                            Name = "Server 1",
-                                                            IsTransmitter = false,
-                                                            TransmitAddress = "unused",
-                                                            Port = 10000,
-                                                            UseKeepAlive = true,
-                                                            IdleTimeoutMilliseconds = 15000,
-                                                            ReceiverId = -1,
-                                                            StaleSeconds = 7,
-                                                            Access = {
-                                                                DefaultAccess = DefaultAccess.Deny,
-                                                                Addresses = {
-                                                                    "1.2.3.4/10",
-                                                                    "virtualradarserver.co.uk",
-                                                                }
-                                                            },
-                                                            Passphrase = null,
-                                                            SendIntervalMilliseconds = 1000,
-                                                        },
-                                                        new RebroadcastSettings() {
-                                                            UniqueId = 2,
-                                                            Enabled = false,
-                                                            Format = RebroadcastFormat.Port30003,
-                                                            Name = "Server 2",
-                                                            IsTransmitter = true,
-                                                            TransmitAddress = "remote.address.com",
-                                                            Port = 10001,
-                                                            UseKeepAlive = false,
-                                                            IdleTimeoutMilliseconds = 20000,
-                                                            ReceiverId = 1,
-                                                            StaleSeconds = 10,
-                                                            Access = {
-                                                                DefaultAccess = DefaultAccess.Allow,
-                                                                Addresses = {
-                                                                    "192.168.0.7",
-                                                                },
-                                                            },
-                                                            Passphrase = "Two",
-                                                            SendIntervalMilliseconds = 2000,
-                                                        },
-                                                    });
-                                                    break;
-                    case "Receivers":               result.Receivers.Clear();
-                                                    result.Receivers.AddRange(new Receiver[] {
-                                                        new Receiver() {
-                                                            Enabled = true,
-                                                            UniqueId = 1,
-                                                            Name = "First",
-                                                            DataSource = DataSource.Port30003,
-                                                            ConnectionType = ConnectionType.TCP,
-                                                            AutoReconnectAtStartup = false,
-                                                            IsPassive = true,
-                                                            Address = "192.168.0.1",
-                                                            Port = 30004,
-                                                            UseKeepAlive = true,
-                                                            IdleTimeoutMilliseconds = 30000,
-                                                            ComPort = null,
-                                                            BaudRate = 19200,
-                                                            DataBits = 7,
-                                                            StopBits = StopBits.One,
-                                                            Parity = Parity.Even,
-                                                            Handshake = Handshake.XOnXOff,
-                                                            StartupText = "Start",
-                                                            ShutdownText = "",
-                                                            ReceiverLocationId = 1,
-                                                            Access = {
-                                                                DefaultAccess = DefaultAccess.Deny,
-                                                                Addresses = {
-                                                                    "1.2.3.4/10",
-                                                                    "virtualradarserver.co.uk",
-                                                                }
-                                                            },
-                                                            Passphrase = null,
-                                                            ReceiverUsage = ReceiverUsage.Normal,
-                                                            IsSatcomFeed = true,
-                                                        },
-                                                        new Receiver() {
-                                                            Enabled = false,
-                                                            UniqueId = 2,
-                                                            Name = "Second",
-                                                            DataSource = DataSource.Beast,
-                                                            ConnectionType = ConnectionType.COM,
-                                                            AutoReconnectAtStartup = true,
-                                                            IsPassive = false,
-                                                            Address = "127.0.0.1",
-                                                            Port = 30003,
-                                                            UseKeepAlive = false,
-                                                            IdleTimeoutMilliseconds = 20000,
-                                                            ComPort = "COM3",
-                                                            BaudRate = 2400,
-                                                            DataBits = 8,
-                                                            StopBits = StopBits.OnePointFive,
-                                                            Parity = Parity.Odd,
-                                                            Handshake = Handshake.RequestToSend,
-                                                            StartupText = "",
-                                                            ShutdownText = "Stop",
-                                                            ReceiverLocationId = 2,
-                                                            Access = {
-                                                                DefaultAccess = DefaultAccess.Allow,
-                                                                Addresses = {
-                                                                    "192.168.0.7",
-                                                                },
-                                                            },
-                                                            Passphrase = "Two",
-                                                            ReceiverUsage = ReceiverUsage.MergeOnly,
-                                                            IsSatcomFeed = false,
-                                                        },
-                                                    });
-                                                    break;
-                    case "MergedFeeds":             result.MergedFeeds.Clear();
-                                                    result.MergedFeeds.AddRange(new MergedFeed[] {
-                                                        new MergedFeed() {
-                                                            Enabled = true,
-                                                            UniqueId = 1,
-                                                            Name = "First",
-                                                            IcaoTimeout = 1000,
-                                                            IgnoreAircraftWithNoPosition = false,
-                                                            ReceiverUsage = ReceiverUsage.Normal,
-                                                            ReceiverIds = { 1, 2 },
-                                                            ReceiverFlags = {
-                                                                new MergedFeedReceiver() { UniqueId = 1, IsMlatFeed = false, },
-                                                                new MergedFeedReceiver() { UniqueId = 2, IsMlatFeed = true, },
-                                                            }
-                                                        },
-                                                        new MergedFeed() {
-                                                            Enabled = false,
-                                                            UniqueId = 2,
-                                                            Name = "Second",
-                                                            IcaoTimeout = 2000,
-                                                            IgnoreAircraftWithNoPosition = true,
-                                                            ReceiverUsage = ReceiverUsage.HideFromWebSite,
-                                                            ReceiverIds = { 2, 1 },
-                                                            ReceiverFlags = {
-                                                                new MergedFeedReceiver() { UniqueId = 2, IsMlatFeed = true, },
-                                                                new MergedFeedReceiver() { UniqueId = 1, IsMlatFeed = false, },
-                                                            }
-                                                        },
-                                                    });
-                                                    break;
-                    case "DataVersion":             result.DataVersion = 101; break;
-                    case "MonoSettings":            result.MonoSettings = new MonoSettings() {
-                                                        UseMarkerLabels = false,
-                                                    };
-                                                    break;
-                    default:                        throw new NotImplementedException($"Unknown property {property.Name}");
+                    case nameof(Configuration.BaseStationSettings):     CreateKnownBaseStationSettings(result); break;
+                    case nameof(Configuration.FlightRouteSettings):     CreateKnownFlightRouteSettings(result); break;
+                    case nameof(Configuration.WebServerSettings):       CreateKnownWebServerSettings(result); break;
+                    case nameof(Configuration.GoogleMapSettings):       CreateKnownGoogleMapSettings(result); break;
+                    case nameof(Configuration.VersionCheckSettings):    CreateKnownVersionCheckSettings(result); break;
+                    case nameof(Configuration.InternetClientSettings):  CreateKnownInternetClientSettings(result); break;
+                    case nameof(Configuration.AudioSettings):           CreateKnownAudioSettings(result); break;
+                    case nameof(Configuration.RawDecodingSettings):     CreateKnownRawDecodingSettings(result); break;
+                    case nameof(Configuration.ReceiverLocations):       CreateKnownReceiverLocations(result); break;
+                    case nameof(Configuration.RebroadcastSettings):     CreateKnownRebroadcastSettings(result); break;
+                    case nameof(Configuration.Receivers):               CreateKnownReceivers(result); break;
+                    case nameof(Configuration.MergedFeeds):             CreateKnownMergedFeeds(result); break;
+                    case nameof(Configuration.DataVersion):             result.DataVersion = 101; break;
+                    case nameof(Configuration.MonoSettings):            CreateKnownMonoSettings(result); break;
+                    default:                                            throw new NotImplementedException($"Unknown property {property.Name}");
                 }
             }
 
             return result;
+        }
+
+        private static void CreateKnownBaseStationSettings(Configuration configuration)
+        {
+            configuration.BaseStationSettings = new BaseStationSettings() {
+                Address = "Aa",
+                Port = 65535,
+                DataSource = DataSource.Sbs3,
+                DatabaseFileName = "Bb",
+                OperatorFlagsFolder = "Cc",
+                SilhouettesFolder = "Ee",
+                OutlinesFolder = "Ff",
+                DisplayTimeoutSeconds = 120,
+                PicturesFolder = "Pp",
+                IgnoreBadMessages = true,
+                ConnectionType = ConnectionType.COM,
+                ComPort = "/dev/com4",
+                BaudRate = 2400,
+                DataBits = 7,
+                StopBits = StopBits.OnePointFive,
+                Parity = Parity.Space,
+                Handshake = Handshake.XOnXOff,
+                StartupText = "startup",
+                ShutdownText = "shutdown",
+                AutoReconnectAtStartup = true,
+                TrackingTimeoutSeconds = 3600,
+                MinimiseToSystemTray = true,
+                SearchPictureSubFolders = true,
+                AutoSavePolarPlotsMinutes = 100,
+                DownloadGlobalAirPressureReadings = false,
+                SatcomDisplayTimeoutMinutes = 300,
+                SatcomTrackingTimeoutMinutes = 400,
+            };
+        }
+
+        private static void CreateKnownFlightRouteSettings(Configuration configuration)
+        {
+            configuration.FlightRouteSettings = new FlightRouteSettings() {
+                AutoUpdateEnabled = true,
+            };
+        }
+
+        private static void CreateKnownWebServerSettings(Configuration configuration)
+        {
+            configuration.WebServerSettings = new WebServerSettings() {
+                AuthenticationScheme = AuthenticationSchemes.Basic,
+                BasicAuthenticationUser = "Tt",
+                BasicAuthenticationPasswordHash = new Hash("Funk to funky"),
+                EnableUPnp = true,
+                UPnpPort = 8181,
+                IsOnlyInternetServerOnLan = false,
+                AutoStartUPnP = true,
+                ConvertedUser = true,
+                BasicAuthenticationUserIds = {
+                    "First",
+                    "Second",
+                }
+            };
+        }
+
+        private static void CreateKnownGoogleMapSettings(Configuration configuration)
+        {
+            configuration.GoogleMapSettings = new GoogleMapSettings() {
+                InitialSettings = "SomeSettings",
+                InitialMapLatitude = -12.123456,
+                InitialMapLongitude = 120.123987,
+                InitialMapType = "HYBRID",
+                InitialMapZoom = 7,
+                InitialRefreshSeconds = 9,
+                MinimumRefreshSeconds = 8,
+                ShortTrailLengthSeconds = 400,
+                InitialDistanceUnit = DistanceUnit.Kilometres,
+                InitialHeightUnit = HeightUnit.Metres,
+                InitialSpeedUnit = SpeedUnit.MilesPerHour,
+                PreferIataAirportCodes = true,
+                EnableBundling = false,
+                EnableMinifying = false,
+                EnableCompression = false,
+                WebSiteReceiverId = 123,
+                ClosestAircraftReceiverId = 456,
+                FlightSimulatorXReceiverId = 789,
+                ProxyType = ProxyType.Reverse,
+                DirectoryEntryKey = "ABC123-456",
+                EnableCorsSupport = true,
+                AllowCorsDomains = "ABC.COM",
+                GoogleMapsApiKey = "API Key",
+                UseGoogleMapsAPIKeyWithLocalRequests = true,
+                UseSvgGraphics = false,
+            };
+        }
+
+        private static void CreateKnownVersionCheckSettings(Configuration configuration)
+        {
+            configuration.VersionCheckSettings = new VersionCheckSettings() {
+                CheckAutomatically = false,
+                CheckPeriodDays = 12,
+            };
+        }
+
+        private static void CreateKnownInternetClientSettings(Configuration configuration)
+        {
+            configuration.InternetClientSettings = new InternetClientSettings() {
+                CanRunReports = true,
+                CanShowPinText = true,
+                CanShowPictures = true,
+                TimeoutMinutes = 15,
+                CanPlayAudio = true,
+                AllowInternetProximityGadgets = true,
+                CanSubmitRoutes = true,
+                CanShowPolarPlots = true,
+            };
+        }
+
+        private static void CreateKnownAudioSettings(Configuration configuration)
+        {
+            configuration.AudioSettings = new AudioSettings() {
+                Enabled = false,
+                VoiceName = "Male Voice",
+                VoiceRate = 2,
+            };
+        }
+
+        private static void CreateKnownRawDecodingSettings(Configuration configuration)
+        {
+            configuration.RawDecodingSettings = new RawDecodingSettings() {
+                AcceptableAirborneSpeed = 17.25,
+                AcceptableAirSurfaceTransitionSpeed = 19.75,
+                AcceptableSurfaceSpeed = 21.25,
+                AirborneGlobalPositionLimit = 19,
+                FastSurfaceGlobalPositionLimit = 17,
+                SlowSurfaceGlobalPositionLimit = 12,
+                IgnoreCallsignsInBds20 = true,
+                IgnoreMilitaryExtendedSquitter = true,
+                IgnoreInvalidCodeBlockInParityMessages = true,
+                IgnoreInvalidCodeBlockInOtherMessages = false,
+                ReceiverLocationId = 7,
+                ReceiverRange = 400,
+                SuppressReceiverRangeCheck = false,
+                UseLocalDecodeForInitialPosition = true,
+                AcceptIcaoInNonPICount = 20,
+                AcceptIcaoInNonPISeconds = 21,
+                AcceptIcaoInPI0Count = 7,
+                AcceptIcaoInPI0Seconds = 42,
+                SuppressIcao0 = false,
+                SuppressTisbDecoding = true,
+            };
+        }
+
+        private static void CreateKnownReceiverLocations(Configuration configuration)
+        {
+            configuration.ReceiverLocations.Clear();
+            configuration.ReceiverLocations.AddRange(new ReceiverLocation[] {
+                new ReceiverLocation() {
+                    UniqueId = 74,
+                    Name = "Home",
+                    Latitude = 51.234,
+                    Longitude = -0.642,
+                },
+                new ReceiverLocation() {
+                    UniqueId = 90,
+                    Name = "Away",
+                    Latitude = 17.123,
+                    Longitude = 12.456,
+                },
+            });
+        }
+
+        private static void CreateKnownRebroadcastSettings(Configuration configuration)
+        {
+            configuration.RebroadcastSettings.Clear();
+            configuration.RebroadcastSettings.AddRange(new RebroadcastSettings[] {
+                new RebroadcastSettings() {
+                    UniqueId = 1,
+                    Enabled = true,
+                    Format = RebroadcastFormat.Passthrough,
+                    Name = "Server 1",
+                    IsTransmitter = false,
+                    TransmitAddress = "unused",
+                    Port = 10000,
+                    UseKeepAlive = true,
+                    IdleTimeoutMilliseconds = 15000,
+                    ReceiverId = -1,
+                    StaleSeconds = 7,
+                    Access = {
+                        DefaultAccess = DefaultAccess.Deny,
+                        Addresses = {
+                            "1.2.3.4/10",
+                            "virtualradarserver.co.uk",
+                        }
+                    },
+                    Passphrase = null,
+                    SendIntervalMilliseconds = 1000,
+                },
+                new RebroadcastSettings() {
+                    UniqueId = 2,
+                    Enabled = false,
+                    Format = RebroadcastFormat.Port30003,
+                    Name = "Server 2",
+                    IsTransmitter = true,
+                    TransmitAddress = "remote.address.com",
+                    Port = 10001,
+                    UseKeepAlive = false,
+                    IdleTimeoutMilliseconds = 20000,
+                    ReceiverId = 1,
+                    StaleSeconds = 10,
+                    Access = {
+                        DefaultAccess = DefaultAccess.Allow,
+                        Addresses = {
+                            "192.168.0.7",
+                        },
+                    },
+                    Passphrase = "Two",
+                    SendIntervalMilliseconds = 2000,
+                },
+            });
+        }
+
+        private static void CreateKnownReceivers(Configuration configuration)
+        {
+            configuration.Receivers.Clear();
+            configuration.Receivers.AddRange(new Receiver[] {
+                new Receiver() {
+                    Enabled = true,
+                    UniqueId = 1,
+                    Name = "First",
+                    DataSource = DataSource.Port30003,
+                    ConnectionType = ConnectionType.TCP,
+                    AutoReconnectAtStartup = false,
+                    IsPassive = true,
+                    Address = "192.168.0.1",
+                    Port = 30004,
+                    UseKeepAlive = true,
+                    IdleTimeoutMilliseconds = 30000,
+                    ComPort = null,
+                    BaudRate = 19200,
+                    DataBits = 7,
+                    StopBits = StopBits.One,
+                    Parity = Parity.Even,
+                    Handshake = Handshake.XOnXOff,
+                    StartupText = "Start",
+                    ShutdownText = "",
+                    ReceiverLocationId = 1,
+                    Access = {
+                        DefaultAccess = DefaultAccess.Deny,
+                        Addresses = {
+                            "1.2.3.4/10",
+                            "virtualradarserver.co.uk",
+                        }
+                    },
+                    Passphrase = null,
+                    ReceiverUsage = ReceiverUsage.Normal,
+                    IsSatcomFeed = true,
+                },
+                new Receiver() {
+                    Enabled = false,
+                    UniqueId = 2,
+                    Name = "Second",
+                    DataSource = DataSource.Beast,
+                    ConnectionType = ConnectionType.COM,
+                    AutoReconnectAtStartup = true,
+                    IsPassive = false,
+                    Address = "127.0.0.1",
+                    Port = 30003,
+                    UseKeepAlive = false,
+                    IdleTimeoutMilliseconds = 20000,
+                    ComPort = "COM3",
+                    BaudRate = 2400,
+                    DataBits = 8,
+                    StopBits = StopBits.OnePointFive,
+                    Parity = Parity.Odd,
+                    Handshake = Handshake.RequestToSend,
+                    StartupText = "",
+                    ShutdownText = "Stop",
+                    ReceiverLocationId = 2,
+                    Access = {
+                        DefaultAccess = DefaultAccess.Allow,
+                        Addresses = {
+                            "192.168.0.7",
+                        },
+                    },
+                    Passphrase = "Two",
+                    ReceiverUsage = ReceiverUsage.MergeOnly,
+                    IsSatcomFeed = false,
+                },
+            });
+        }
+
+        private static void CreateKnownMergedFeeds(Configuration configuration)
+        {
+            configuration.MergedFeeds.Clear();
+            configuration.MergedFeeds.AddRange(new MergedFeed[] {
+                new MergedFeed() {
+                    Enabled = true,
+                    UniqueId = 1,
+                    Name = "First",
+                    IcaoTimeout = 1000,
+                    IgnoreAircraftWithNoPosition = false,
+                    ReceiverUsage = ReceiverUsage.Normal,
+                    ReceiverIds = { 1, 2 },
+                    ReceiverFlags = {
+                        new MergedFeedReceiver() { UniqueId = 1, IsMlatFeed = false, },
+                        new MergedFeedReceiver() { UniqueId = 2, IsMlatFeed = true, },
+                    }
+                },
+                new MergedFeed() {
+                    Enabled = false,
+                    UniqueId = 2,
+                    Name = "Second",
+                    IcaoTimeout = 2000,
+                    IgnoreAircraftWithNoPosition = true,
+                    ReceiverUsage = ReceiverUsage.HideFromWebSite,
+                    ReceiverIds = { 2, 1 },
+                    ReceiverFlags = {
+                        new MergedFeedReceiver() { UniqueId = 2, IsMlatFeed = true, },
+                        new MergedFeedReceiver() { UniqueId = 1, IsMlatFeed = false, },
+                    }
+                },
+            });
+        }
+
+        private static void CreateKnownMonoSettings(Configuration configuration)
+        {
+            configuration.MonoSettings = new MonoSettings() {
+                UseMarkerLabels = false,
+            };
         }
         #endregion
 

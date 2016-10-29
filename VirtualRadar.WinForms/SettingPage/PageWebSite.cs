@@ -113,6 +113,7 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxEnableCompression,                 r => r.EnableCompression,                    (r,v) => r.EnableCompression = v));
             AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxEnableCorsSupport,                 r => r.EnableCorsSupport,                    (r,v) => r.EnableCorsSupport = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
             AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxUseGoogleMapsKeyWithLocalRequests, r => r.UseGoogleMapsAPIKeyWithLocalRequests, (r,v) => r.UseGoogleMapsAPIKeyWithLocalRequests = v));
+            AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxUseSvgGraphics,                    r => r.UseSvgGraphics,                       (r,v) => r.UseSvgGraphics = v));
 
             AddControlBinder(new TextBoxStringBinder<GoogleMapSettings>(settings, textBoxDirectoryEntryKey, r => r.DirectoryEntryKey, (r,v) => r.DirectoryEntryKey = v));
             AddControlBinder(new TextBoxStringBinder<GoogleMapSettings>(settings, textBoxAllowCorsDomains,  r => r.AllowCorsDomains,  (r,v) => r.AllowCorsDomains = v));
@@ -141,6 +142,7 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(checkBoxPreferIataAirportCodes,               Strings.PreferIataAirportCodes,             Strings.OptionsDescribeWebSitePreferIataAirportCodes);
             SetInlineHelp(checkBoxEnableCorsSupport,                    Strings.EnableCorsSupport,                  Strings.OptionsDescribeWebSiteEnableCorsSupport);
             SetInlineHelp(checkBoxUseGoogleMapsKeyWithLocalRequests,    Strings.UseGoogleMapsKeyWithLocalRequests,  Strings.OptionsDescribeUseGoogleMapsKeyWithLocalRequests);
+            SetInlineHelp(checkBoxUseSvgGraphics,                       Strings.UseSvgGraphics,                     Strings.OptionsDescribeUseSvgGraphics);
 
             SetInlineHelp(comboBoxProxyType,                Strings.ProxyType,          Strings.OptionsDescribeProxyType);
             SetInlineHelp(checkBoxEnableBundling,           Strings.EnableBundling,     Strings.OptionsDescribeEnableBundling);

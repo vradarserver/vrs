@@ -275,6 +275,16 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _UseGoogleMapsAPIKeyWithLocalRequests, value, nameof(UseGoogleMapsAPIKeyWithLocalRequests)); }
         }
 
+        private bool _UseSvgGraphics;
+        /// <summary>
+        /// Gets or sets a value indicating that the website should use SVG map markers etc.
+        /// </summary>
+        public bool UseSvgGraphics
+        {
+            get { return _UseSvgGraphics; }
+            set { SetField(ref _UseSvgGraphics, value, nameof(UseSvgGraphics)); }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -328,6 +338,7 @@ namespace VirtualRadar.Interface.Settings
             EnableBundling = true;
             EnableMinifying = true;
             EnableCompression = true;
+            UseSvgGraphics = true;
         }
     }
 }

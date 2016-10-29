@@ -172,6 +172,12 @@ namespace VirtualRadar.Interface.WebSite
         public string GoogleMapsApiKey { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that SVG graphics should be used wherever possible.
+        /// </summary>
+        [DataMember]
+        public bool UseSvgGraphics { get; set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public ServerConfigJson()
@@ -210,6 +216,7 @@ namespace VirtualRadar.Interface.WebSite
             result.RefreshSeconds = RefreshSeconds;
             result.Receivers.AddRange(Receivers.Select(r => (ServerReceiverJson)r.Clone()));
             result.UseMarkerLabels = UseMarkerLabels;
+            result.UseSvgGraphics = UseSvgGraphics;
             result.VrsVersion = VrsVersion;
 
             return result;

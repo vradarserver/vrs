@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="About" xml:space="preserve">
     <value>About</value>
@@ -2733,5 +2733,12 @@ Show this message.</value>
   </data>
   <data name="Help" xml:space="preserve">
     <value>Help</value>
+  </data>
+  <data name="OptionsDescribeUseSvgGraphics" xml:space="preserve">
+    <value>Yes to allow the use of SVG graphics on the web site, no to disable SVG graphics. SVG graphics reduce the load on the web server and look better on high resolution screens.</value>
+  </data>
+  <data name="UseSvgGraphics" xml:space="preserve">
+    <value>Use SVG graphics</value>
+    <comment>SVG is a graphics file format</comment>
   </data>
 </root>

@@ -51,6 +51,7 @@ namespace Test.VirtualRadar.Interface.WebSite
             TestUtilities.TestProperty(json, r => r.MinimumRefreshSeconds, 0, 123);
             TestUtilities.TestProperty(json, r => r.RefreshSeconds, 0, 123);
             TestUtilities.TestProperty(json, r => r.UseMarkerLabels, false);
+            TestUtilities.TestProperty(json, r => r.UseSvgGraphics, false);
             TestUtilities.TestProperty(json, r => r.VrsVersion, null, "Abc");
         }
 
@@ -63,41 +64,43 @@ namespace Test.VirtualRadar.Interface.WebSite
 
                     object expected = null;
                     switch(property.Name) {
-                        case "GoogleMapsApiKey":                        expected = json.GoogleMapsApiKey = pass == 0 ? "A" : "B"; break;
-                        case "InitialDistanceUnit":                     expected = json.InitialDistanceUnit = pass == 0 ? "A": "B"; break;
-                        case "InitialHeightUnit":                       expected = json.InitialHeightUnit = pass == 0 ? "A" : "B"; break;
-                        case "InitialLatitude":                         expected = json.InitialLatitude = pass == 0 ? 1.234 : 5.678; break;
-                        case "InitialLongitude":                        expected = json.InitialLongitude = pass == 0 ? 1.234 : 5.678; break;
-                        case "InitialMapType":                          expected = json.InitialMapType = pass == 0 ? "A" : "B"; break;
-                        case "InitialSettings":                         expected = json.InitialSettings = pass == 0 ? "A" : "B"; break;
-                        case "InitialSpeedUnit":                        expected = json.InitialSpeedUnit = pass == 0 ? "A" : "B"; break;
-                        case "InitialZoom":                             expected = json.InitialZoom = pass == 0 ? 1 : 2; break;
-                        case "InternetClientCanRunReports":             expected = json.InternetClientCanRunReports = pass == 0; break;
-                        case "InternetClientCanShowPinText":            expected = json.InternetClientCanShowPinText = pass == 0; break;
-                        case "InternetClientsCanPlayAudio":             expected = json.InternetClientsCanPlayAudio = pass == 0; break;
-                        case "InternetClientsCanSeeAircraftPictures":   expected = json.InternetClientsCanSeeAircraftPictures = pass == 0; break;
-                        case "InternetClientsCanSeePolarPlots":         expected = json.InternetClientsCanSeePolarPlots = pass == 0; break;
-                        case "InternetClientsCanSubmitRoutes":          expected = json.InternetClientsCanSubmitRoutes = pass == 0; break;
-                        case "InternetClientTimeoutMinutes":            expected = json.InternetClientTimeoutMinutes = pass == 0 ? 1 : 2; break;
-                        case "IsAudioEnabled":                          expected = json.IsAudioEnabled = pass == 0; break;
-                        case "IsLocalAddress":                          expected = json.IsLocalAddress = pass == 0; break;
-                        case "IsMono":                                  expected = json.IsMono = pass == 0; break;
-                        case "MinimumRefreshSeconds":                   expected = json.MinimumRefreshSeconds = pass == 0 ? 1 : 2; break;
-                        case "RefreshSeconds":                          expected = json.RefreshSeconds = pass == 0 ? 1 : 2; break;
-                        case "UseMarkerLabels":                         expected = json.UseMarkerLabels = pass == 0; break;
-                        case "VrsVersion":                              expected = json.VrsVersion = pass == 0 ? "A" : "B"; break;
-                        case "Receivers":
+                        case nameof(ServerConfigJson.GoogleMapsApiKey):                         expected = json.GoogleMapsApiKey = pass == 0 ? "A" : "B"; break;
+                        case nameof(ServerConfigJson.InitialDistanceUnit):                      expected = json.InitialDistanceUnit = pass == 0 ? "A": "B"; break;
+                        case nameof(ServerConfigJson.InitialHeightUnit):                        expected = json.InitialHeightUnit = pass == 0 ? "A" : "B"; break;
+                        case nameof(ServerConfigJson.InitialLatitude):                          expected = json.InitialLatitude = pass == 0 ? 1.234 : 5.678; break;
+                        case nameof(ServerConfigJson.InitialLongitude):                         expected = json.InitialLongitude = pass == 0 ? 1.234 : 5.678; break;
+                        case nameof(ServerConfigJson.InitialMapType):                           expected = json.InitialMapType = pass == 0 ? "A" : "B"; break;
+                        case nameof(ServerConfigJson.InitialSettings):                          expected = json.InitialSettings = pass == 0 ? "A" : "B"; break;
+                        case nameof(ServerConfigJson.InitialSpeedUnit):                         expected = json.InitialSpeedUnit = pass == 0 ? "A" : "B"; break;
+                        case nameof(ServerConfigJson.InitialZoom):                              expected = json.InitialZoom = pass == 0 ? 1 : 2; break;
+                        case nameof(ServerConfigJson.InternetClientCanRunReports):              expected = json.InternetClientCanRunReports = pass == 0; break;
+                        case nameof(ServerConfigJson.InternetClientCanShowPinText):             expected = json.InternetClientCanShowPinText = pass == 0; break;
+                        case nameof(ServerConfigJson.InternetClientsCanPlayAudio):              expected = json.InternetClientsCanPlayAudio = pass == 0; break;
+                        case nameof(ServerConfigJson.InternetClientsCanSeeAircraftPictures):    expected = json.InternetClientsCanSeeAircraftPictures = pass == 0; break;
+                        case nameof(ServerConfigJson.InternetClientsCanSeePolarPlots):          expected = json.InternetClientsCanSeePolarPlots = pass == 0; break;
+                        case nameof(ServerConfigJson.InternetClientsCanSubmitRoutes):           expected = json.InternetClientsCanSubmitRoutes = pass == 0; break;
+                        case nameof(ServerConfigJson.InternetClientTimeoutMinutes):             expected = json.InternetClientTimeoutMinutes = pass == 0 ? 1 : 2; break;
+                        case nameof(ServerConfigJson.IsAudioEnabled):                           expected = json.IsAudioEnabled = pass == 0; break;
+                        case nameof(ServerConfigJson.IsLocalAddress):                           expected = json.IsLocalAddress = pass == 0; break;
+                        case nameof(ServerConfigJson.IsMono):                                   expected = json.IsMono = pass == 0; break;
+                        case nameof(ServerConfigJson.MinimumRefreshSeconds):                    expected = json.MinimumRefreshSeconds = pass == 0 ? 1 : 2; break;
+                        case nameof(ServerConfigJson.RefreshSeconds):                           expected = json.RefreshSeconds = pass == 0 ? 1 : 2; break;
+                        case nameof(ServerConfigJson.UseMarkerLabels):                          expected = json.UseMarkerLabels = pass == 0; break;
+                        case nameof(ServerConfigJson.UseSvgGraphics):                           expected = json.UseSvgGraphics = pass == 0; break;
+                        case nameof(ServerConfigJson.VrsVersion):                               expected = json.VrsVersion = pass == 0 ? "A" : "B"; break;
+                        case nameof(ServerConfigJson.Receivers):
                             json.Receivers.Add(new ServerReceiverJson() {
                                 UniqueId = pass == 0 ? 1 : 2,
                                 Name = pass == 0 ? "First" : "Second",
                             });
                             break;
-                        default:                                throw new NotImplementedException(property.Name);
+                        default:
+                            throw new NotImplementedException(property.Name);
                     }
 
                     var actual = (ServerConfigJson)json.Clone();
 
-                    if(property.Name != "Receivers") {
+                    if(property.Name != nameof(ServerConfigJson.Receivers)) {
                         var actualValue = property.GetValue(actual, null);
                         Assert.AreEqual(expected, actualValue, "for property {0}", property.Name);
                     } else {

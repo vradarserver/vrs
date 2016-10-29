@@ -71,7 +71,7 @@ var VRS;
             return this._Settings.matches ? this._Settings.matches(aircraft) : false;
         };
         AircraftMarker.prototype.useEmbeddedSvg = function () {
-            return VRS.globalOptions.aircraftMarkerUseSvg && this._Settings.embeddedSvg;
+            return VRS.SvgGenerator.useSvgGraphics() && this._Settings.embeddedSvg;
         };
         AircraftMarker.prototype.getSvgFillColour = function (aircraft, isSelected) {
             return isSelected ? VRS.globalOptions.svgAircraftMarkerSelectedFill : VRS.globalOptions.svgAircraftMarkerNormalFill;
@@ -131,7 +131,6 @@ var VRS;
     VRS.globalOptions.aircraftMarkerClustererMaxZoom = VRS.globalOptions.aircraftMarkerClustererMaxZoom || 5;
     VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize = VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize || 1;
     VRS.globalOptions.aircraftMarkerClustererUserCanConfigure = VRS.globalOptions.aircraftMarkerClustererUserCanConfigure !== false;
-    VRS.globalOptions.aircraftMarkerUseSvg = VRS.globalOptions.aircraftMarkerUseSvg !== false;
     VRS.globalOptions.aircraftMarkers = VRS.globalOptions.aircraftMarkers || [
         new VRS.AircraftMarker({
             normalFileName: 'GroundVehicle.png',
@@ -1919,12 +1918,10 @@ var VRS;
             }
         };
         AircraftPlotter.prototype.configurationChanged = function () {
-            var destroyAndRepaintMarkers = this.configureSuppressTextOnImages();
+            this.configureSuppressTextOnImages();
             if (!this._Suspended) {
-                if (destroyAndRepaintMarkers) {
-                    this.removeAllMarkers();
-                    this.refreshMarkers(null, null, true);
-                }
+                this.removeAllMarkers();
+                this.refreshMarkers(null, null, true);
             }
         };
         return AircraftPlotter;

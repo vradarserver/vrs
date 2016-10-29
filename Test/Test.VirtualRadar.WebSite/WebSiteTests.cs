@@ -2189,6 +2189,7 @@ namespace Test.VirtualRadar.WebSite
                     case "AudioEnabled":            _Configuration.AudioSettings.Enabled = worksheet.Bool("Value"); break;
                     case "CanShowPolarPlots":       _Configuration.InternetClientSettings.CanShowPolarPlots = worksheet.Bool("Value"); break;
                     case "UseMarkerLabels":         _Configuration.MonoSettings.UseMarkerLabels = worksheet.Bool("Value"); break;
+                    case "UseSvgGraphics":          _Configuration.GoogleMapSettings.UseSvgGraphics = worksheet.Bool("Value"); break;
                     default:                        throw new NotImplementedException();
                 }
             }
@@ -2223,6 +2224,7 @@ namespace Test.VirtualRadar.WebSite
                 case "AudioEnabled":                Assert.AreEqual(worksheet.Bool("JsonValue"), json.IsAudioEnabled); break;
                 case "CanShowPolarPlots":           Assert.AreEqual(worksheet.Bool("JsonValue"), json.InternetClientsCanSeePolarPlots); break;
                 case "UseMarkerLabels":             Assert.AreEqual(worksheet.Bool("JsonValue"), json.UseMarkerLabels); break;
+                case "UseSvgGraphics":              Assert.AreEqual(worksheet.Bool("JsonValue"), json.UseSvgGraphics); break;
                 default:                            throw new NotImplementedException();
             }
         }

@@ -151,7 +151,7 @@ namespace VRS
          */
         useEmbeddedSvg()
         {
-            return VRS.globalOptions.aircraftMarkerUseSvg && this._Settings.embeddedSvg;
+            return SvgGenerator.useSvgGraphics() && this._Settings.embeddedSvg;
         }
 
         /**
@@ -220,7 +220,6 @@ namespace VRS
     VRS.globalOptions.aircraftMarkerClustererMaxZoom = VRS.globalOptions.aircraftMarkerClustererMaxZoom || 5;                           // The maximum zoom level at which to cluster map markers or null if there is no maximum.
     VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize = VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize || 1;     // The minimum number of adjacent markers in a map marker cluster.
     VRS.globalOptions.aircraftMarkerClustererUserCanConfigure = VRS.globalOptions.aircraftMarkerClustererUserCanConfigure !== false;    // True if the user can configure the map marker clusterer.
-    VRS.globalOptions.aircraftMarkerUseSvg = VRS.globalOptions.aircraftMarkerUseSvg !== false;
 
     // The order in which these appear in the list is important. Earlier items take precedence over later items.
     VRS.globalOptions.aircraftMarkers = VRS.globalOptions.aircraftMarkers || [
@@ -2828,13 +2827,11 @@ namespace VRS
          */
         private configurationChanged()
         {
-            var destroyAndRepaintMarkers = this.configureSuppressTextOnImages();
+            this.configureSuppressTextOnImages();
 
             if(!this._Suspended) {
-                if(destroyAndRepaintMarkers) {
-                    this.removeAllMarkers();
-                    this.refreshMarkers(null, null, true);
-                }
+                this.removeAllMarkers();
+                this.refreshMarkers(null, null, true);
             }
         }
     }

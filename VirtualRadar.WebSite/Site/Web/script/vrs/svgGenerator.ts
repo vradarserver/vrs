@@ -68,6 +68,14 @@ namespace VRS
         }
 
         /**
+         * Returns true if SVG graphics should be used, false if they should not.
+         */
+        public static useSvgGraphics() : boolean
+        {
+            return VRS.serverConfig ? VRS.serverConfig.get().UseSvgGraphics : false;
+        }
+
+        /**
          * Generates a disconnected DOM element for an aircraft marker's SVG.
          * @param embeddedSvg
          * @param fillColour

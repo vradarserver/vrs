@@ -104,6 +104,7 @@ namespace VirtualRadar.WebSite
                     IsAudioEnabled = configuration.AudioSettings.Enabled,
                     IsMono = isMono,
                     UseMarkerLabels = isMono ? configuration.MonoSettings.UseMarkerLabels : false,
+                    UseSvgGraphics = configuration.GoogleMapSettings.UseSvgGraphics,
                     MinimumRefreshSeconds = configuration.GoogleMapSettings.MinimumRefreshSeconds,
                     RefreshSeconds = configuration.GoogleMapSettings.InitialRefreshSeconds,
                     VrsVersion = applicationInformation.ShortVersion,

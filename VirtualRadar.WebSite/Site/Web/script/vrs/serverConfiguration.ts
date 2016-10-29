@@ -34,6 +34,7 @@ namespace VRS
         VrsVersion:                             string;
         IsMono:                                 boolean;
         UseMarkerLabels:                        boolean;
+        UseSvgGraphics:                         boolean;
         Receivers:                              IServerConfigReceiver[];
         IsLocalAddress:                         boolean;
         IsAudioEnabled:                         boolean;
