@@ -30,7 +30,7 @@ namespace VirtualRadar.Interface.Settings
         public bool Enabled
         {
             get { return _Enabled; }
-            set { SetField(ref _Enabled, value, () => Enabled); }
+            set { SetField(ref _Enabled, value, nameof(Enabled)); }
         }
 
         private int _UniqueId;
@@ -40,7 +40,7 @@ namespace VirtualRadar.Interface.Settings
         public int UniqueId
         {
             get { return _UniqueId; }
-            set { SetField(ref _UniqueId, value, () => UniqueId); }
+            set { SetField(ref _UniqueId, value, nameof(UniqueId)); }
         }
 
         private string _Name;
@@ -50,7 +50,7 @@ namespace VirtualRadar.Interface.Settings
         public string Name
         {
             get { return _Name; }
-            set { SetField(ref _Name, value, () => Name); }
+            set { SetField(ref _Name, value, nameof(Name)); }
         }
 
         private string _DataSource;
@@ -61,7 +61,7 @@ namespace VirtualRadar.Interface.Settings
         public string DataSource
         {
             get { return _DataSource; }
-            set { SetField(ref _DataSource, value, () => DataSource); }
+            set { SetField(ref _DataSource, value, nameof(DataSource)); }
         }
 
         private ConnectionType _ConnectionType;
@@ -71,7 +71,7 @@ namespace VirtualRadar.Interface.Settings
         public ConnectionType ConnectionType
         {
             get { return _ConnectionType; }
-            set { SetField(ref _ConnectionType, value, () => ConnectionType); }
+            set { SetField(ref _ConnectionType, value, nameof(ConnectionType)); }
         }
 
         private bool _AutoReconnectAtStartup;
@@ -81,7 +81,7 @@ namespace VirtualRadar.Interface.Settings
         public bool AutoReconnectAtStartup
         {
             get { return _AutoReconnectAtStartup; }
-            set { SetField(ref _AutoReconnectAtStartup, value, () => AutoReconnectAtStartup); }
+            set { SetField(ref _AutoReconnectAtStartup, value, nameof(AutoReconnectAtStartup)); }
         }
 
         private bool _IsSatcomFeed;
@@ -95,7 +95,7 @@ namespace VirtualRadar.Interface.Settings
         public bool IsSatcomFeed
         {
             get { return _IsSatcomFeed; }
-            set { SetField(ref _IsSatcomFeed, value, () => IsSatcomFeed); }
+            set { SetField(ref _IsSatcomFeed, value, nameof(IsSatcomFeed)); }
         }
 
         private bool _IsPassive;
@@ -111,7 +111,7 @@ namespace VirtualRadar.Interface.Settings
         public bool IsPassive
         {
             get { return _IsPassive; }
-            set { SetField(ref _IsPassive, value, () => IsPassive); }
+            set { SetField(ref _IsPassive, value, nameof(IsPassive)); }
         }
 
         private Access _Access;
@@ -121,7 +121,7 @@ namespace VirtualRadar.Interface.Settings
         public Access Access
         {
             get { return _Access; }
-            set { SetField(ref _Access, value, () => Access); }
+            set { SetField(ref _Access, value, nameof(Access)); }
         }
 
         private string _Address;
@@ -131,7 +131,7 @@ namespace VirtualRadar.Interface.Settings
         public string Address
         {
             get { return _Address; }
-            set { SetField(ref _Address, value, () => Address); }
+            set { SetField(ref _Address, value, nameof(Address)); }
         }
 
         private int _Port;
@@ -141,7 +141,7 @@ namespace VirtualRadar.Interface.Settings
         public int Port
         {
             get { return _Port; }
-            set { SetField(ref _Port, value, () => Port); }
+            set { SetField(ref _Port, value, nameof(Port)); }
         }
 
         private bool _UseKeepAlive;
@@ -151,7 +151,7 @@ namespace VirtualRadar.Interface.Settings
         public bool UseKeepAlive
         {
             get { return _UseKeepAlive; }
-            set { SetField(ref _UseKeepAlive, value, () => UseKeepAlive); }
+            set { SetField(ref _UseKeepAlive, value, nameof(UseKeepAlive)); }
         }
 
         private int _IdleTimeoutMilliseconds;
@@ -162,7 +162,7 @@ namespace VirtualRadar.Interface.Settings
         public int IdleTimeoutMilliseconds
         {
             get { return _IdleTimeoutMilliseconds; }
-            set { SetField(ref _IdleTimeoutMilliseconds, value, () => IdleTimeoutMilliseconds); }
+            set { SetField(ref _IdleTimeoutMilliseconds, value, nameof(IdleTimeoutMilliseconds)); }
         }
 
         private string _Passphrase;
@@ -175,7 +175,7 @@ namespace VirtualRadar.Interface.Settings
         public string Passphrase
         {
             get { return _Passphrase; }
-            set { SetField(ref _Passphrase, value, () => Passphrase); }
+            set { SetField(ref _Passphrase, value, nameof(Passphrase)); }
         }
 
         private string _ComPort;
@@ -185,7 +185,7 @@ namespace VirtualRadar.Interface.Settings
         public string ComPort
         {
             get { return _ComPort; }
-            set { SetField(ref _ComPort, value, () => ComPort); }
+            set { SetField(ref _ComPort, value, nameof(ComPort)); }
         }
 
         private int _BaudRate;
@@ -195,7 +195,7 @@ namespace VirtualRadar.Interface.Settings
         public int BaudRate
         {
             get { return _BaudRate; }
-            set { SetField(ref _BaudRate, value, () => BaudRate); }
+            set { SetField(ref _BaudRate, value, nameof(BaudRate)); }
         }
 
         private int _DataBits;
@@ -205,7 +205,7 @@ namespace VirtualRadar.Interface.Settings
         public int DataBits
         {
             get { return _DataBits; }
-            set { SetField(ref _DataBits, value, () => DataBits); }
+            set { SetField(ref _DataBits, value, nameof(DataBits)); }
         }
 
         private StopBits _StopBits;
@@ -215,7 +215,7 @@ namespace VirtualRadar.Interface.Settings
         public StopBits StopBits
         {
             get { return _StopBits; }
-            set { SetField(ref _StopBits, value, () => StopBits); }
+            set { SetField(ref _StopBits, value, nameof(StopBits)); }
         }
 
         private Parity _Parity;
@@ -225,7 +225,7 @@ namespace VirtualRadar.Interface.Settings
         public Parity Parity
         {
             get { return _Parity; }
-            set { SetField(ref _Parity, value, () => Parity); }
+            set { SetField(ref _Parity, value, nameof(Parity)); }
         }
 
         private Handshake _Handshake;
@@ -235,7 +235,7 @@ namespace VirtualRadar.Interface.Settings
         public Handshake Handshake
         {
             get { return _Handshake; }
-            set { SetField(ref _Handshake, value, () => Handshake); }
+            set { SetField(ref _Handshake, value, nameof(Handshake)); }
         }
 
         private string _StartupText;
@@ -246,7 +246,7 @@ namespace VirtualRadar.Interface.Settings
         public string StartupText
         {
             get { return _StartupText; }
-            set { SetField(ref _StartupText, value, () => StartupText); }
+            set { SetField(ref _StartupText, value, nameof(StartupText)); }
         }
 
         private string _ShutdownText;
@@ -257,7 +257,7 @@ namespace VirtualRadar.Interface.Settings
         public string ShutdownText
         {
             get { return _ShutdownText; }
-            set { SetField(ref _ShutdownText, value, () => ShutdownText); }
+            set { SetField(ref _ShutdownText, value, nameof(ShutdownText)); }
         }
 
         private int _ReceiverLocationId;
@@ -267,7 +267,7 @@ namespace VirtualRadar.Interface.Settings
         public int ReceiverLocationId
         {
             get { return _ReceiverLocationId; }
-            set { SetField(ref _ReceiverLocationId, value, () => ReceiverLocationId); }
+            set { SetField(ref _ReceiverLocationId, value, nameof(ReceiverLocationId)); }
         }
 
         private ReceiverUsage _ReceiverUsage;
@@ -277,7 +277,7 @@ namespace VirtualRadar.Interface.Settings
         public ReceiverUsage ReceiverUsage
         {
             get { return _ReceiverUsage; }
-            set { SetField(ref _ReceiverUsage, value, () => ReceiverUsage); }
+            set { SetField(ref _ReceiverUsage, value, nameof(ReceiverUsage)); }
         }
 
         /// <summary>
@@ -291,28 +291,29 @@ namespace VirtualRadar.Interface.Settings
         /// <param name="args"></param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            EventHelper.Raise(PropertyChanged, this, args);
+            var handler = PropertyChanged;
+            if(handler != null) {
+                handler(this, args);
+            }
         }
 
         /// <summary>
-        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>, but only when the value has changed.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="field"></param>
         /// <param name="value"></param>
-        /// <param name="selectorExpression"></param>
-        /// <returns></returns>
-        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        /// <param name="fieldName"></param>
+        /// <returns>True if the value was set because it had changed, false if the value did not change and the event was not raised.</returns>
+        protected bool SetField<T>(ref T field, T value, string fieldName)
         {
-            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
+            var result = !EqualityComparer<T>.Default.Equals(field, value);
+            if(result) {
+                field = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(fieldName));
+            }
 
-            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
-            MemberExpression body = selectorExpression.Body as MemberExpression;
-            if(body == null) throw new ArgumentException("The body must be a member expression");
-            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
-
-            return true;
+            return result;
         }
 
         /// <summary>

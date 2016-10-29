@@ -28,7 +28,7 @@ namespace VirtualRadar.Interface.Settings
         public bool CanRunReports
         {
             get { return _CanRunReports; }
-            set { SetField(ref _CanRunReports, value, () => CanRunReports); }
+            set { SetField(ref _CanRunReports, value, nameof(CanRunReports)); }
         }
 
         private bool _CanShowPinText;
@@ -38,7 +38,7 @@ namespace VirtualRadar.Interface.Settings
         public bool CanShowPinText
         {
             get { return _CanShowPinText; }
-            set { SetField(ref _CanShowPinText, value, () => CanShowPinText); }
+            set { SetField(ref _CanShowPinText, value, nameof(CanShowPinText)); }
         }
 
         private bool _CanPlayAudio;
@@ -48,7 +48,7 @@ namespace VirtualRadar.Interface.Settings
         public bool CanPlayAudio
         {
             get { return _CanPlayAudio; }
-            set { SetField(ref _CanPlayAudio, value, () => CanPlayAudio); }
+            set { SetField(ref _CanPlayAudio, value, nameof(CanPlayAudio)); }
         }
 
         private bool _CanShowPictures;
@@ -58,7 +58,7 @@ namespace VirtualRadar.Interface.Settings
         public bool CanShowPictures
         {
             get { return _CanShowPictures; }
-            set { SetField(ref _CanShowPictures, value, () => CanShowPictures); }
+            set { SetField(ref _CanShowPictures, value, nameof(CanShowPictures)); }
         }
 
         private int _TimeoutMinutes;
@@ -69,7 +69,7 @@ namespace VirtualRadar.Interface.Settings
         public int TimeoutMinutes
         {
             get { return _TimeoutMinutes; }
-            set { SetField(ref _TimeoutMinutes, value, () => TimeoutMinutes); }
+            set { SetField(ref _TimeoutMinutes, value, nameof(TimeoutMinutes)); }
         }
 
         private bool _AllowInternetProximityGadgets;
@@ -79,7 +79,7 @@ namespace VirtualRadar.Interface.Settings
         public bool AllowInternetProximityGadgets
         {
             get { return _AllowInternetProximityGadgets; }
-            set { SetField(ref _AllowInternetProximityGadgets, value, () => AllowInternetProximityGadgets); }
+            set { SetField(ref _AllowInternetProximityGadgets, value, nameof(AllowInternetProximityGadgets)); }
         }
 
         private bool _CanSubmitRoutes;
@@ -89,7 +89,7 @@ namespace VirtualRadar.Interface.Settings
         public bool CanSubmitRoutes
         {
             get { return _CanSubmitRoutes; }
-            set { SetField(ref _CanSubmitRoutes, value, () => CanSubmitRoutes); }
+            set { SetField(ref _CanSubmitRoutes, value, nameof(CanSubmitRoutes)); }
         }
 
         private bool _CanShowPolarPlots;
@@ -99,7 +99,7 @@ namespace VirtualRadar.Interface.Settings
         public bool CanShowPolarPlots
         {
             get { return _CanShowPolarPlots; }
-            set { SetField(ref _CanShowPolarPlots, value, () => CanShowPolarPlots); }
+            set { SetField(ref _CanShowPolarPlots, value, nameof(CanShowPolarPlots)); }
         }
 
         /// <summary>
@@ -113,28 +113,29 @@ namespace VirtualRadar.Interface.Settings
         /// <param name="args"></param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            EventHelper.Raise(PropertyChanged, this, args);
+            var handler = PropertyChanged;
+            if(handler != null) {
+                handler(this, args);
+            }
         }
 
         /// <summary>
-        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>, but only when the value has changed.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="field"></param>
         /// <param name="value"></param>
-        /// <param name="selectorExpression"></param>
-        /// <returns></returns>
-        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        /// <param name="fieldName"></param>
+        /// <returns>True if the value was set because it had changed, false if the value did not change and the event was not raised.</returns>
+        protected bool SetField<T>(ref T field, T value, string fieldName)
         {
-            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
+            var result = !EqualityComparer<T>.Default.Equals(field, value);
+            if(result) {
+                field = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(fieldName));
+            }
 
-            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
-            MemberExpression body = selectorExpression.Body as MemberExpression;
-            if(body == null) throw new ArgumentException("The body must be a member expression");
-            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
-
-            return true;
+            return result;
         }
 
         /// <summary>

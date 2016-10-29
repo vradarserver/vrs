@@ -35,7 +35,7 @@ namespace VirtualRadar.Database.Users
             {
                 var oldUniqueId = UniqueId;
                 var oldIsPersisted = IsPersisted;
-                SetField(ref _Id, value, () => Id);
+                SetField(ref _Id, value, nameof(Id));
                 if(UniqueId != oldUniqueId) {
                     OnPropertyChanged(new PropertyChangedEventArgs(nameof(UniqueId)));
                 }
@@ -66,7 +66,7 @@ namespace VirtualRadar.Database.Users
         public bool Enabled
         {
             get { return _Enabled; }
-            set { SetField(ref _Enabled, value, () => Enabled); }
+            set { SetField(ref _Enabled, value, nameof(Enabled)); }
         }
 
         private string _LoginName;
@@ -76,7 +76,7 @@ namespace VirtualRadar.Database.Users
         public string LoginName
         {
             get { return _LoginName; }
-            set { SetField(ref _LoginName, value, () => LoginName); }
+            set { SetField(ref _LoginName, value, nameof(LoginName)); }
         }
 
         private string _Name;
@@ -86,7 +86,7 @@ namespace VirtualRadar.Database.Users
         public string Name
         {
             get { return _Name; }
-            set { SetField(ref _Name, value, () => Name); }
+            set { SetField(ref _Name, value, nameof(Name)); }
         }
 
         private string _UIPassword;
@@ -96,7 +96,7 @@ namespace VirtualRadar.Database.Users
         public string UIPassword
         {
             get { return _UIPassword; }
-            set { SetField(ref _UIPassword, value, () => UIPassword); }
+            set { SetField(ref _UIPassword, value, nameof(UIPassword)); }
         }
 
         private int _PasswordHashVersion;
@@ -106,7 +106,7 @@ namespace VirtualRadar.Database.Users
         public int PasswordHashVersion
         {
             get { return _PasswordHashVersion; }
-            set { SetField(ref _PasswordHashVersion, value, () => PasswordHashVersion); }
+            set { SetField(ref _PasswordHashVersion, value, nameof(PasswordHashVersion)); }
         }
 
         private byte[] _PasswordHash;
@@ -116,7 +116,7 @@ namespace VirtualRadar.Database.Users
         public byte[] PasswordHash
         {
             get { return _PasswordHash; }
-            set { SetField(ref _PasswordHash, value, () => PasswordHash); }
+            set { SetField(ref _PasswordHash, value, nameof(PasswordHash)); }
         }
 
         private DateTime _CreatedUtc;
@@ -126,7 +126,7 @@ namespace VirtualRadar.Database.Users
         public DateTime CreatedUtc
         {
             get { return _CreatedUtc; }
-            set { SetField(ref _CreatedUtc, value, () => CreatedUtc); }
+            set { SetField(ref _CreatedUtc, value, nameof(CreatedUtc)); }
         }
 
         private DateTime _UpdatedUtc;
@@ -136,7 +136,7 @@ namespace VirtualRadar.Database.Users
         public DateTime UpdatedUtc
         {
             get { return _UpdatedUtc; }
-            set { SetField(ref _UpdatedUtc, value, () => UpdatedUtc); }
+            set { SetField(ref _UpdatedUtc, value, nameof(UpdatedUtc)); }
         }
 
         private Hash _Hash;
@@ -162,7 +162,7 @@ namespace VirtualRadar.Database.Users
         public object Tag
         {
             get { return _Tag; }
-            set { SetField(ref _Tag, value, () => Tag); }
+            set { SetField(ref _Tag, value, nameof(Tag)); }
         }
 
         /// <summary>
@@ -176,28 +176,29 @@ namespace VirtualRadar.Database.Users
         /// <param name="args"></param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            EventHelper.Raise(PropertyChanged, this, args);
+            var handler = PropertyChanged;
+            if(handler != null) {
+                handler(this, args);
+            }
         }
 
         /// <summary>
-        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>, but only when the value has changed.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="field"></param>
         /// <param name="value"></param>
-        /// <param name="selectorExpression"></param>
-        /// <returns></returns>
-        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        /// <param name="fieldName"></param>
+        /// <returns>True if the value was set because it had changed, false if the value did not change and the event was not raised.</returns>
+        protected bool SetField<T>(ref T field, T value, string fieldName)
         {
-            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
+            var result = !EqualityComparer<T>.Default.Equals(field, value);
+            if(result) {
+                field = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(fieldName));
+            }
 
-            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
-            MemberExpression body = selectorExpression.Body as MemberExpression;
-            if(body == null) throw new ArgumentException("The body must be a member expression");
-            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
-
-            return true;
+            return result;
         }
     }
 }

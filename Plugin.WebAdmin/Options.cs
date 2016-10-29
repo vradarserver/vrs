@@ -30,7 +30,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         public long DataVersion
         {
             get { return _DataVersion; }
-            set { SetField(ref _DataVersion, value, () => DataVersion); }
+            set { SetField(ref _DataVersion, value, nameof(DataVersion)); }
         }
 
         private bool _Enabled;
@@ -40,7 +40,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         public bool Enabled
         {
             get { return _Enabled; }
-            set { SetField(ref _Enabled, value, () => Enabled); }
+            set { SetField(ref _Enabled, value, nameof(Enabled)); }
         }
 
         private Access _Access;
@@ -50,7 +50,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         public Access Access
         {
             get { return _Access; }
-            set { SetField(ref _Access, value, () => Access); }
+            set { SetField(ref _Access, value, nameof(Access)); }
         }
 
         /// <summary>
@@ -64,28 +64,29 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <param name="args"></param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            if(PropertyChanged != null) PropertyChanged(this, args);
+            var handler = PropertyChanged;
+            if(handler != null) {
+                handler(this, args);
+            }
         }
 
         /// <summary>
-        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>, but only when the value has changed.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="field"></param>
         /// <param name="value"></param>
-        /// <param name="selectorExpression"></param>
-        /// <returns></returns>
-        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        /// <param name="fieldName"></param>
+        /// <returns>True if the value was set because it had changed, false if the value did not change and the event was not raised.</returns>
+        protected bool SetField<T>(ref T field, T value, string fieldName)
         {
-            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
+            var result = !EqualityComparer<T>.Default.Equals(field, value);
+            if(result) {
+                field = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(fieldName));
+            }
 
-            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
-            MemberExpression body = selectorExpression.Body as MemberExpression;
-            if(body == null) throw new ArgumentException("The body must be a member expression");
-            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
-
-            return true;
+            return result;
         }
 
         /// <summary>

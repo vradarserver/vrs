@@ -44,7 +44,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
         public bool PluginEnabled
         {
             get { return _PluginEnabled; }
-            set { SetField(ref _PluginEnabled, value, () => PluginEnabled); }
+            set { SetField(ref _PluginEnabled, value, nameof(PluginEnabled)); }
         }
 
         private bool _AllowUpdateOfOtherDatabases;
@@ -54,7 +54,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
         public bool AllowUpdateOfOtherDatabases
         {
             get { return _AllowUpdateOfOtherDatabases; }
-            set { SetField(ref _AllowUpdateOfOtherDatabases, value, () => AllowUpdateOfOtherDatabases); }
+            set { SetField(ref _AllowUpdateOfOtherDatabases, value, nameof(AllowUpdateOfOtherDatabases)); }
         }
 
         private string _DatabaseFileName;
@@ -64,7 +64,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
         public string DatabaseFileName
         {
             get { return _DatabaseFileName; }
-            set { SetField(ref _DatabaseFileName, value, () => DatabaseFileName); }
+            set { SetField(ref _DatabaseFileName, value, nameof(DatabaseFileName)); }
         }
 
         private bool _SaveDownloadedAircraftDetails;
@@ -74,7 +74,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
         public bool SaveDownloadedAircraftDetails
         {
             get { return _SaveDownloadedAircraftDetails; }
-            set { SetField(ref _SaveDownloadedAircraftDetails, value, () => SaveDownloadedAircraftDetails); }
+            set { SetField(ref _SaveDownloadedAircraftDetails, value, nameof(SaveDownloadedAircraftDetails)); }
         }
 
         private bool _RefreshOutOfDateAircraft;
@@ -84,7 +84,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
         public bool RefreshOutOfDateAircraft
         {
             get { return _RefreshOutOfDateAircraft; }
-            set { SetField(ref _RefreshOutOfDateAircraft, value, () => RefreshOutOfDateAircraft); }
+            set { SetField(ref _RefreshOutOfDateAircraft, value, nameof(RefreshOutOfDateAircraft)); }
         }
 
         private int _ReceiverId;
@@ -94,7 +94,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
         public int ReceiverId
         {
             get { return _ReceiverId; }
-            set { SetField(ref _ReceiverId, value, () => ReceiverId); }
+            set { SetField(ref _ReceiverId, value, nameof(ReceiverId)); }
         }
 
         private List<CombinedFeed> _CombinedFeeds = new List<CombinedFeed>();
@@ -113,7 +113,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
         public string OnlineLookupWriteActionNotice
         {
             get { return _OnlineLookupWriteActionNotice; }
-            set { SetField(ref _OnlineLookupWriteActionNotice, value, () => OnlineLookupWriteActionNotice); }
+            set { SetField(ref _OnlineLookupWriteActionNotice, value, nameof(OnlineLookupWriteActionNotice)); }
         }
 
         /// <summary>
@@ -169,28 +169,29 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WinForms
         /// <param name="args"></param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            EventHelper.Raise(PropertyChanged, this, args);
+            var handler = PropertyChanged;
+            if(handler != null) {
+                handler(this, args);
+            }
         }
 
         /// <summary>
-        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>, but only when the value has changed.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="field"></param>
         /// <param name="value"></param>
-        /// <param name="selectorExpression"></param>
-        /// <returns></returns>
-        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        /// <param name="fieldName"></param>
+        /// <returns>True if the value was set because it had changed, false if the value did not change and the event was not raised.</returns>
+        protected bool SetField<T>(ref T field, T value, string fieldName)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
+            var result = !EqualityComparer<T>.Default.Equals(field, value);
+            if(result) {
+                field = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(fieldName));
+            }
 
-            if (selectorExpression == null) throw new ArgumentNullException("selectorExpression");
-            MemberExpression body = selectorExpression.Body as MemberExpression;
-            if (body == null) throw new ArgumentException("The body must be a member expression");
-            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
-
-            return true;
+            return result;
         }
 
         /// <summary>

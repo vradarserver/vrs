@@ -32,7 +32,7 @@ namespace VirtualRadar.WinForms
         public ReceiverClass ReceiverClass
         {
             get { return _ReceiverClass; }
-            set { SetField(ref _ReceiverClass, value, () => ReceiverClass); }
+            set { SetField(ref _ReceiverClass, value, nameof(ReceiverClass)); }
         }
 
         private SdrDecoder _SdrDecoder;
@@ -42,7 +42,7 @@ namespace VirtualRadar.WinForms
         public SdrDecoder SdrDecoder
         {
             get { return _SdrDecoder; }
-            set { SetField(ref _SdrDecoder, value, () => SdrDecoder); }
+            set { SetField(ref _SdrDecoder, value, nameof(SdrDecoder)); }
         }
 
         private DedicatedReceiver _DedicatedReceiver;
@@ -52,7 +52,7 @@ namespace VirtualRadar.WinForms
         public DedicatedReceiver DedicatedReceiver
         {
             get { return _DedicatedReceiver; }
-            set { SetField(ref _DedicatedReceiver, value, () => DedicatedReceiver); }
+            set { SetField(ref _DedicatedReceiver, value, nameof(DedicatedReceiver)); }
         }
 
         private ConnectionType _ConnectionType;
@@ -62,7 +62,7 @@ namespace VirtualRadar.WinForms
         public ConnectionType ConnectionType
         {
             get { return _ConnectionType; }
-            set { SetField(ref _ConnectionType, value, () => ConnectionType); }
+            set { SetField(ref _ConnectionType, value, nameof(ConnectionType)); }
         }
 
         private KineticConnection _KineticConnection;
@@ -73,7 +73,7 @@ namespace VirtualRadar.WinForms
         public KineticConnection KineticConnection
         {
             get { return _KineticConnection; }
-            set { SetField(ref _KineticConnection, value, () => KineticConnection); }
+            set { SetField(ref _KineticConnection, value, nameof(KineticConnection)); }
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace VirtualRadar.WinForms
         public YesNo UseLoopbackAddress
         {
             get { return _UseLoopbackAddress; }
-            set { SetField(ref _UseLoopbackAddress, value, () => UseLoopbackAddress); }
+            set { SetField(ref _UseLoopbackAddress, value, nameof(UseLoopbackAddress)); }
         }
 
         /// <summary>
@@ -112,29 +112,43 @@ namespace VirtualRadar.WinForms
         public string NetworkAddress
         {
             get { return _NetworkAddress; }
-            set { SetField(ref _NetworkAddress, value, () => NetworkAddress); }
+            set { SetField(ref _NetworkAddress, value, nameof(NetworkAddress)); }
         }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Raises <see cref="PropertyChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            EventHelper.Raise(PropertyChanged, this, args);
+            var handler = PropertyChanged;
+            if(handler != null) {
+                handler(this, args);
+            }
         }
 
-        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        /// <summary>
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>, but only when the value has changed.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <param name="fieldName"></param>
+        /// <returns>True if the value was set because it had changed, false if the value did not change and the event was not raised.</returns>
+        protected bool SetField<T>(ref T field, T value, string fieldName)
         {
-            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
+            var result = !EqualityComparer<T>.Default.Equals(field, value);
+            if(result) {
+                field = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(fieldName));
+            }
 
-            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
-            MemberExpression body = selectorExpression.Body as MemberExpression;
-            if(body == null) throw new ArgumentException("The body must be a member expression");
-            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
-
-            return true;
+            return result;
         }
     }
 }

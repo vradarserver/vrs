@@ -31,7 +31,7 @@ namespace VirtualRadar.Interface.Settings
         public int UniqueId
         {
             get { return _UniqueId; }
-            set { SetField(ref _UniqueId, value, () => UniqueId); }
+            set { SetField(ref _UniqueId, value, nameof(UniqueId)); }
         }
 
         private string _Name;
@@ -41,7 +41,7 @@ namespace VirtualRadar.Interface.Settings
         public string Name
         {
             get { return _Name; }
-            set { SetField(ref _Name, value, () => Name); }
+            set { SetField(ref _Name, value, nameof(Name)); }
         }
 
         private double _Latitude;
@@ -51,7 +51,7 @@ namespace VirtualRadar.Interface.Settings
         public double Latitude
         {
             get { return _Latitude; }
-            set { SetField(ref _Latitude, value, () => Latitude); }
+            set { SetField(ref _Latitude, value, nameof(Latitude)); }
         }
 
         private double _Longitude;
@@ -61,7 +61,7 @@ namespace VirtualRadar.Interface.Settings
         public double Longitude
         {
             get { return _Longitude; }
-            set { SetField(ref _Longitude, value, () => Longitude); }
+            set { SetField(ref _Longitude, value, nameof(Longitude)); }
         }
 
         private bool _IsBaseStationLocation;
@@ -71,7 +71,7 @@ namespace VirtualRadar.Interface.Settings
         public bool IsBaseStationLocation
         {
             get { return _IsBaseStationLocation; }
-            set { SetField(ref _IsBaseStationLocation, value, () => IsBaseStationLocation); }
+            set { SetField(ref _IsBaseStationLocation, value, nameof(IsBaseStationLocation)); }
         }
 
         /// <summary>
@@ -85,28 +85,29 @@ namespace VirtualRadar.Interface.Settings
         /// <param name="args"></param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            EventHelper.Raise(PropertyChanged, this, args);
+            var handler = PropertyChanged;
+            if(handler != null) {
+                handler(this, args);
+            }
         }
 
         /// <summary>
-        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>, but only when the value has changed.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="field"></param>
         /// <param name="value"></param>
-        /// <param name="selectorExpression"></param>
-        /// <returns></returns>
-        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        /// <param name="fieldName"></param>
+        /// <returns>True if the value was set because it had changed, false if the value did not change and the event was not raised.</returns>
+        protected bool SetField<T>(ref T field, T value, string fieldName)
         {
-            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
+            var result = !EqualityComparer<T>.Default.Equals(field, value);
+            if(result) {
+                field = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(fieldName));
+            }
 
-            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
-            MemberExpression body = selectorExpression.Body as MemberExpression;
-            if(body == null) throw new ArgumentException("The body must be a member expression");
-            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
-
-            return true;
+            return result;
         }
 
         /// <summary>

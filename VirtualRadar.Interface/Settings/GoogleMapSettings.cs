@@ -30,7 +30,7 @@ namespace VirtualRadar.Interface.Settings
         public string InitialSettings
         {
             get { return _InitialSettings; }
-            set { SetField(ref _InitialSettings, value, () => InitialSettings); }
+            set { SetField(ref _InitialSettings, value, nameof(InitialSettings)); }
         }
 
         private double _InitialMapLatitude;
@@ -40,7 +40,7 @@ namespace VirtualRadar.Interface.Settings
         public double InitialMapLatitude
         {
             get { return _InitialMapLatitude; }
-            set { SetField(ref _InitialMapLatitude, value, () => InitialMapLatitude); }
+            set { SetField(ref _InitialMapLatitude, value, nameof(InitialMapLatitude)); }
         }
 
         private double _InitialMapLongitude;
@@ -50,7 +50,7 @@ namespace VirtualRadar.Interface.Settings
         public double InitialMapLongitude
         {
             get { return _InitialMapLongitude; }
-            set { SetField(ref _InitialMapLongitude, value, () => InitialMapLongitude); }
+            set { SetField(ref _InitialMapLongitude, value, nameof(InitialMapLongitude)); }
         }
 
         private string _InitialMapType;
@@ -60,7 +60,7 @@ namespace VirtualRadar.Interface.Settings
         public string InitialMapType
         {
             get { return _InitialMapType; }
-            set { SetField(ref _InitialMapType, value, () => InitialMapType); }
+            set { SetField(ref _InitialMapType, value, nameof(InitialMapType)); }
         }
 
         private int _InitialMapZoom;
@@ -70,7 +70,7 @@ namespace VirtualRadar.Interface.Settings
         public int InitialMapZoom
         {
             get { return _InitialMapZoom; }
-            set { SetField(ref _InitialMapZoom, value, () => InitialMapZoom); }
+            set { SetField(ref _InitialMapZoom, value, nameof(InitialMapZoom)); }
         }
 
         private int _InitialRefreshSeconds;
@@ -84,7 +84,7 @@ namespace VirtualRadar.Interface.Settings
         public int InitialRefreshSeconds
         {
             get { return _InitialRefreshSeconds; }
-            set { SetField(ref _InitialRefreshSeconds, value, () => InitialRefreshSeconds); }
+            set { SetField(ref _InitialRefreshSeconds, value, nameof(InitialRefreshSeconds)); }
         }
 
         private int _MinimumRefreshSeconds;
@@ -98,7 +98,7 @@ namespace VirtualRadar.Interface.Settings
         public int MinimumRefreshSeconds
         {
             get { return _MinimumRefreshSeconds; }
-            set { SetField(ref _MinimumRefreshSeconds, value, () => MinimumRefreshSeconds); }
+            set { SetField(ref _MinimumRefreshSeconds, value, nameof(MinimumRefreshSeconds)); }
         }
 
         private int _ShortTrailLengthSeconds;
@@ -111,7 +111,7 @@ namespace VirtualRadar.Interface.Settings
         public int ShortTrailLengthSeconds
         {
             get { return _ShortTrailLengthSeconds; }
-            set { SetField(ref _ShortTrailLengthSeconds, value, () => ShortTrailLengthSeconds); }
+            set { SetField(ref _ShortTrailLengthSeconds, value, nameof(ShortTrailLengthSeconds)); }
         }
 
         private DistanceUnit _InitialDistanceUnit;
@@ -121,7 +121,7 @@ namespace VirtualRadar.Interface.Settings
         public DistanceUnit InitialDistanceUnit
         {
             get { return _InitialDistanceUnit; }
-            set { SetField(ref _InitialDistanceUnit, value, () => InitialDistanceUnit); }
+            set { SetField(ref _InitialDistanceUnit, value, nameof(InitialDistanceUnit)); }
         }
 
         private HeightUnit _InitialHeightUnit;
@@ -131,7 +131,7 @@ namespace VirtualRadar.Interface.Settings
         public HeightUnit InitialHeightUnit
         {
             get { return _InitialHeightUnit; }
-            set { SetField(ref _InitialHeightUnit, value, () => InitialHeightUnit); }
+            set { SetField(ref _InitialHeightUnit, value, nameof(InitialHeightUnit)); }
         }
 
         private SpeedUnit _InitialSpeedUnit;
@@ -141,7 +141,7 @@ namespace VirtualRadar.Interface.Settings
         public SpeedUnit InitialSpeedUnit
         {
             get { return _InitialSpeedUnit; }
-            set { SetField(ref _InitialSpeedUnit, value, () => InitialSpeedUnit); }
+            set { SetField(ref _InitialSpeedUnit, value, nameof(InitialSpeedUnit)); }
         }
 
         private bool _PreferIataAirportCodes;
@@ -151,7 +151,7 @@ namespace VirtualRadar.Interface.Settings
         public bool PreferIataAirportCodes
         {
             get { return _PreferIataAirportCodes; }
-            set { SetField(ref _PreferIataAirportCodes, value, () => PreferIataAirportCodes); }
+            set { SetField(ref _PreferIataAirportCodes, value, nameof(PreferIataAirportCodes)); }
         }
 
         private bool _EnableBundling;
@@ -161,7 +161,7 @@ namespace VirtualRadar.Interface.Settings
         public bool EnableBundling
         {
             get { return _EnableBundling; }
-            set { SetField(ref _EnableBundling, value, () => EnableBundling); }
+            set { SetField(ref _EnableBundling, value, nameof(EnableBundling)); }
         }
 
         private bool _EnableMinifying;
@@ -171,7 +171,7 @@ namespace VirtualRadar.Interface.Settings
         public bool EnableMinifying
         {
             get { return _EnableMinifying; }
-            set { SetField(ref _EnableMinifying, value, () => EnableMinifying); }
+            set { SetField(ref _EnableMinifying, value, nameof(EnableMinifying)); }
         }
 
         private bool _EnableCompression;
@@ -181,7 +181,7 @@ namespace VirtualRadar.Interface.Settings
         public bool EnableCompression
         {
             get { return _EnableCompression; }
-            set { SetField(ref _EnableCompression, value, () => EnableCompression); }
+            set { SetField(ref _EnableCompression, value, nameof(EnableCompression)); }
         }
 
         private int _WebSiteReceiverId;
@@ -191,7 +191,7 @@ namespace VirtualRadar.Interface.Settings
         public int WebSiteReceiverId
         {
             get { return _WebSiteReceiverId; }
-            set { SetField(ref _WebSiteReceiverId, value, () => WebSiteReceiverId); }
+            set { SetField(ref _WebSiteReceiverId, value, nameof(WebSiteReceiverId)); }
         }
 
         private string _DirectoryEntryKey;
@@ -201,7 +201,7 @@ namespace VirtualRadar.Interface.Settings
         public string DirectoryEntryKey
         {
             get { return _DirectoryEntryKey; }
-            set { SetField(ref _DirectoryEntryKey, value, () => DirectoryEntryKey); }
+            set { SetField(ref _DirectoryEntryKey, value, nameof(DirectoryEntryKey)); }
         }
 
         private int _ClosestAircraftReceiverId;
@@ -211,7 +211,7 @@ namespace VirtualRadar.Interface.Settings
         public int ClosestAircraftReceiverId
         {
             get { return _ClosestAircraftReceiverId; }
-            set { SetField(ref _ClosestAircraftReceiverId, value, () => ClosestAircraftReceiverId); }
+            set { SetField(ref _ClosestAircraftReceiverId, value, nameof(ClosestAircraftReceiverId)); }
         }
 
         private int _FlightSimulatorXReceiverId;
@@ -221,7 +221,7 @@ namespace VirtualRadar.Interface.Settings
         public int FlightSimulatorXReceiverId
         {
             get { return _FlightSimulatorXReceiverId; }
-            set { SetField(ref _FlightSimulatorXReceiverId, value, () => FlightSimulatorXReceiverId); }
+            set { SetField(ref _FlightSimulatorXReceiverId, value, nameof(FlightSimulatorXReceiverId)); }
         }
 
         private ProxyType _ProxyType;
@@ -231,7 +231,7 @@ namespace VirtualRadar.Interface.Settings
         public ProxyType ProxyType
         {
             get { return _ProxyType; }
-            set { SetField(ref _ProxyType, value, () => ProxyType); }
+            set { SetField(ref _ProxyType, value, nameof(ProxyType)); }
         }
 
         private bool _EnableCorsSupport;
@@ -241,7 +241,7 @@ namespace VirtualRadar.Interface.Settings
         public bool EnableCorsSupport
         {
             get { return _EnableCorsSupport; }
-            set { SetField(ref _EnableCorsSupport, value, () => EnableCorsSupport); }
+            set { SetField(ref _EnableCorsSupport, value, nameof(EnableCorsSupport)); }
         }
 
         private string _AllowCorsDomains;
@@ -251,7 +251,7 @@ namespace VirtualRadar.Interface.Settings
         public string AllowCorsDomains
         {
             get { return _AllowCorsDomains; }
-            set { SetField(ref _AllowCorsDomains, value, () => AllowCorsDomains); }
+            set { SetField(ref _AllowCorsDomains, value, nameof(AllowCorsDomains)); }
         }
 
         private string _GoogleMapsApiKey;
@@ -261,7 +261,7 @@ namespace VirtualRadar.Interface.Settings
         public string GoogleMapsApiKey
         {
             get { return _GoogleMapsApiKey; }
-            set { SetField(ref _GoogleMapsApiKey, value, () => GoogleMapsApiKey); }
+            set { SetField(ref _GoogleMapsApiKey, value, nameof(GoogleMapsApiKey)); }
         }
 
         private bool _UseGoogleMapsAPIKeyWithLocalRequests;
@@ -272,7 +272,7 @@ namespace VirtualRadar.Interface.Settings
         public bool UseGoogleMapsAPIKeyWithLocalRequests
         {
             get { return _UseGoogleMapsAPIKeyWithLocalRequests; }
-            set { SetField(ref _UseGoogleMapsAPIKeyWithLocalRequests, value, () => UseGoogleMapsAPIKeyWithLocalRequests); }
+            set { SetField(ref _UseGoogleMapsAPIKeyWithLocalRequests, value, nameof(UseGoogleMapsAPIKeyWithLocalRequests)); }
         }
 
         /// <summary>
@@ -286,28 +286,29 @@ namespace VirtualRadar.Interface.Settings
         /// <param name="args"></param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            EventHelper.Raise(PropertyChanged, this, args);
+            var handler = PropertyChanged;
+            if(handler != null) {
+                handler(this, args);
+            }
         }
 
         /// <summary>
-        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>, but only when the value has changed.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="field"></param>
         /// <param name="value"></param>
-        /// <param name="selectorExpression"></param>
-        /// <returns></returns>
-        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        /// <param name="fieldName"></param>
+        /// <returns>True if the value was set because it had changed, false if the value did not change and the event was not raised.</returns>
+        protected bool SetField<T>(ref T field, T value, string fieldName)
         {
-            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
+            var result = !EqualityComparer<T>.Default.Equals(field, value);
+            if(result) {
+                field = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(fieldName));
+            }
 
-            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
-            MemberExpression body = selectorExpression.Body as MemberExpression;
-            if(body == null) throw new ArgumentException("The body must be a member expression");
-            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
-
-            return true;
+            return result;
         }
 
         /// <summary>

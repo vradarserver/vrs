@@ -36,7 +36,7 @@ namespace VirtualRadar.Interface.Settings
         public int ReceiverRange
         {
             get { return _ReceiverRange; }
-            set { SetField(ref _ReceiverRange, value, () => ReceiverRange); }
+            set { SetField(ref _ReceiverRange, value, nameof(ReceiverRange)); }
         }
 
         private bool _IgnoreMilitaryExtendedSquitter;
@@ -46,7 +46,7 @@ namespace VirtualRadar.Interface.Settings
         public bool IgnoreMilitaryExtendedSquitter
         {
             get { return _IgnoreMilitaryExtendedSquitter; }
-            set { SetField(ref _IgnoreMilitaryExtendedSquitter, value, () => IgnoreMilitaryExtendedSquitter); }
+            set { SetField(ref _IgnoreMilitaryExtendedSquitter, value, nameof(IgnoreMilitaryExtendedSquitter)); }
         }
 
         private bool _SuppressReceiverRangeCheck;
@@ -57,7 +57,7 @@ namespace VirtualRadar.Interface.Settings
         public bool SuppressReceiverRangeCheck
         {
             get { return _SuppressReceiverRangeCheck; }
-            set { SetField(ref _SuppressReceiverRangeCheck, value, () => SuppressReceiverRangeCheck); }
+            set { SetField(ref _SuppressReceiverRangeCheck, value, nameof(SuppressReceiverRangeCheck)); }
         }
 
         private bool _UseLocalDecodeForInitialPosition;
@@ -74,7 +74,7 @@ namespace VirtualRadar.Interface.Settings
         public bool UseLocalDecodeForInitialPosition
         {
             get { return _UseLocalDecodeForInitialPosition; }
-            set { SetField(ref _UseLocalDecodeForInitialPosition, value, () => UseLocalDecodeForInitialPosition); }
+            set { SetField(ref _UseLocalDecodeForInitialPosition, value, nameof(UseLocalDecodeForInitialPosition)); }
         }
 
         private int _AirborneGlobalPositionLimit;
@@ -84,7 +84,7 @@ namespace VirtualRadar.Interface.Settings
         public int AirborneGlobalPositionLimit
         {
             get { return _AirborneGlobalPositionLimit; }
-            set { SetField(ref _AirborneGlobalPositionLimit, value, () => AirborneGlobalPositionLimit); }
+            set { SetField(ref _AirborneGlobalPositionLimit, value, nameof(AirborneGlobalPositionLimit)); }
         }
 
         private int _FastSurfaceGlobalPositionLimit;
@@ -94,7 +94,7 @@ namespace VirtualRadar.Interface.Settings
         public int FastSurfaceGlobalPositionLimit
         {
             get { return _FastSurfaceGlobalPositionLimit; }
-            set { SetField(ref _FastSurfaceGlobalPositionLimit, value, () => FastSurfaceGlobalPositionLimit); }
+            set { SetField(ref _FastSurfaceGlobalPositionLimit, value, nameof(FastSurfaceGlobalPositionLimit)); }
         }
 
         private int _SlowSurfaceGlobalPositionLimit;
@@ -104,7 +104,7 @@ namespace VirtualRadar.Interface.Settings
         public int SlowSurfaceGlobalPositionLimit
         {
             get { return _SlowSurfaceGlobalPositionLimit; }
-            set { SetField(ref _SlowSurfaceGlobalPositionLimit, value, () => SlowSurfaceGlobalPositionLimit); }
+            set { SetField(ref _SlowSurfaceGlobalPositionLimit, value, nameof(SlowSurfaceGlobalPositionLimit)); }
         }
 
         private double _AcceptableAirborneSpeed;
@@ -114,7 +114,7 @@ namespace VirtualRadar.Interface.Settings
         public double AcceptableAirborneSpeed
         {
             get { return _AcceptableAirborneSpeed; }
-            set { SetField(ref _AcceptableAirborneSpeed, value, () => AcceptableAirborneSpeed); }
+            set { SetField(ref _AcceptableAirborneSpeed, value, nameof(AcceptableAirborneSpeed)); }
         }
 
         private double _AcceptableAirSurfaceTransitionSpeed;
@@ -124,7 +124,7 @@ namespace VirtualRadar.Interface.Settings
         public double AcceptableAirSurfaceTransitionSpeed
         {
             get { return _AcceptableAirSurfaceTransitionSpeed; }
-            set { SetField(ref _AcceptableAirSurfaceTransitionSpeed, value, () => AcceptableAirSurfaceTransitionSpeed); }
+            set { SetField(ref _AcceptableAirSurfaceTransitionSpeed, value, nameof(AcceptableAirSurfaceTransitionSpeed)); }
         }
 
         private double _AcceptableSurfaceSpeed;
@@ -134,7 +134,7 @@ namespace VirtualRadar.Interface.Settings
         public double AcceptableSurfaceSpeed
         {
             get { return _AcceptableSurfaceSpeed; }
-            set { SetField(ref _AcceptableSurfaceSpeed, value, () => AcceptableSurfaceSpeed); }
+            set { SetField(ref _AcceptableSurfaceSpeed, value, nameof(AcceptableSurfaceSpeed)); }
         }
 
         private bool _IgnoreCallsignsInBds20;
@@ -144,7 +144,7 @@ namespace VirtualRadar.Interface.Settings
         public bool IgnoreCallsignsInBds20
         {
             get { return _IgnoreCallsignsInBds20; }
-            set { SetField(ref _IgnoreCallsignsInBds20, value, () => IgnoreCallsignsInBds20); }
+            set { SetField(ref _IgnoreCallsignsInBds20, value, nameof(IgnoreCallsignsInBds20)); }
         }
 
         private int _AcceptIcaoInPI0Count;
@@ -155,7 +155,7 @@ namespace VirtualRadar.Interface.Settings
         public int AcceptIcaoInPI0Count
         {
             get { return _AcceptIcaoInPI0Count; }
-            set { SetField(ref _AcceptIcaoInPI0Count, value, () => AcceptIcaoInPI0Count); }
+            set { SetField(ref _AcceptIcaoInPI0Count, value, nameof(AcceptIcaoInPI0Count)); }
         }
 
         private int _AcceptIcaoInPI0Seconds;
@@ -165,7 +165,7 @@ namespace VirtualRadar.Interface.Settings
         public int AcceptIcaoInPI0Seconds
         {
             get { return _AcceptIcaoInPI0Seconds; }
-            set { SetField(ref _AcceptIcaoInPI0Seconds, value, () => AcceptIcaoInPI0Seconds); }
+            set { SetField(ref _AcceptIcaoInPI0Seconds, value, nameof(AcceptIcaoInPI0Seconds)); }
         }
 
         private int _AcceptIcaoInNonPICount;
@@ -176,7 +176,7 @@ namespace VirtualRadar.Interface.Settings
         public int AcceptIcaoInNonPICount
         {
             get { return _AcceptIcaoInNonPICount; }
-            set { SetField(ref _AcceptIcaoInNonPICount, value, () => AcceptIcaoInNonPICount); }
+            set { SetField(ref _AcceptIcaoInNonPICount, value, nameof(AcceptIcaoInNonPICount)); }
         }
 
         private int _AcceptIcaoInNonPISeconds;
@@ -186,7 +186,7 @@ namespace VirtualRadar.Interface.Settings
         public int AcceptIcaoInNonPISeconds
         {
             get { return _AcceptIcaoInNonPISeconds; }
-            set { SetField(ref _AcceptIcaoInNonPISeconds, value, () => AcceptIcaoInNonPISeconds); }
+            set { SetField(ref _AcceptIcaoInNonPISeconds, value, nameof(AcceptIcaoInNonPISeconds)); }
         }
 
         private bool _SuppressIcao0;
@@ -196,7 +196,7 @@ namespace VirtualRadar.Interface.Settings
         public bool SuppressIcao0
         {
             get { return _SuppressIcao0; }
-            set { SetField(ref _SuppressIcao0, value, () => SuppressIcao0); }
+            set { SetField(ref _SuppressIcao0, value, nameof(SuppressIcao0)); }
         }
 
         private bool _IgnoreInvalidCodeBlockInParityMessages;
@@ -207,7 +207,7 @@ namespace VirtualRadar.Interface.Settings
         public bool IgnoreInvalidCodeBlockInParityMessages
         {
             get { return _IgnoreInvalidCodeBlockInParityMessages; }
-            set { SetField(ref _IgnoreInvalidCodeBlockInParityMessages, value, () => IgnoreInvalidCodeBlockInParityMessages); }
+            set { SetField(ref _IgnoreInvalidCodeBlockInParityMessages, value, nameof(IgnoreInvalidCodeBlockInParityMessages)); }
         }
 
         private bool _IgnoreInvalidCodeBlockInOtherMessages;
@@ -218,7 +218,7 @@ namespace VirtualRadar.Interface.Settings
         public bool IgnoreInvalidCodeBlockInOtherMessages
         {
             get { return _IgnoreInvalidCodeBlockInOtherMessages; }
-            set { SetField(ref _IgnoreInvalidCodeBlockInOtherMessages, value, () => IgnoreInvalidCodeBlockInOtherMessages); }
+            set { SetField(ref _IgnoreInvalidCodeBlockInOtherMessages, value, nameof(IgnoreInvalidCodeBlockInOtherMessages)); }
         }
 
         private bool _SuppressTisbDecoding;
@@ -228,7 +228,7 @@ namespace VirtualRadar.Interface.Settings
         public bool SuppressTisbDecoding
         {
             get { return _SuppressTisbDecoding; }
-            set { SetField(ref _SuppressTisbDecoding, value, () => SuppressTisbDecoding); }
+            set { SetField(ref _SuppressTisbDecoding, value, nameof(SuppressTisbDecoding)); }
         }
 
         /// <summary>
@@ -242,28 +242,29 @@ namespace VirtualRadar.Interface.Settings
         /// <param name="args"></param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            EventHelper.Raise(PropertyChanged, this, args);
+            var handler = PropertyChanged;
+            if(handler != null) {
+                handler(this, args);
+            }
         }
 
         /// <summary>
-        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>, but only when the value has changed.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="field"></param>
         /// <param name="value"></param>
-        /// <param name="selectorExpression"></param>
-        /// <returns></returns>
-        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        /// <param name="fieldName"></param>
+        /// <returns>True if the value was set because it had changed, false if the value did not change and the event was not raised.</returns>
+        protected bool SetField<T>(ref T field, T value, string fieldName)
         {
-            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
+            var result = !EqualityComparer<T>.Default.Equals(field, value);
+            if(result) {
+                field = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(fieldName));
+            }
 
-            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
-            MemberExpression body = selectorExpression.Body as MemberExpression;
-            if(body == null) throw new ArgumentException("The body must be a member expression");
-            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
-
-            return true;
+            return result;
         }
 
         /// <summary>

@@ -46,7 +46,7 @@ namespace VirtualRadar.Interface.Settings
         public BaseStationSettings BaseStationSettings
         {
             get { return _BaseStationSettings; }
-            set { SetField(ref _BaseStationSettings, value, () => BaseStationSettings); }
+            set { SetField(ref _BaseStationSettings, value, nameof(BaseStationSettings)); }
         }
 
         private FlightRouteSettings _FlightRouteSettings;
@@ -56,7 +56,7 @@ namespace VirtualRadar.Interface.Settings
         public FlightRouteSettings FlightRouteSettings
         {
             get { return _FlightRouteSettings; }
-            set { SetField(ref _FlightRouteSettings, value, () => FlightRouteSettings); }
+            set { SetField(ref _FlightRouteSettings, value, nameof(FlightRouteSettings)); }
         }
 
         private WebServerSettings _WebServerSettings;
@@ -66,7 +66,7 @@ namespace VirtualRadar.Interface.Settings
         public WebServerSettings WebServerSettings
         {
             get { return _WebServerSettings; }
-            set { SetField(ref _WebServerSettings, value, () => WebServerSettings); }
+            set { SetField(ref _WebServerSettings, value, nameof(WebServerSettings)); }
         }
 
         private GoogleMapSettings _GoogleMapSettings;
@@ -76,7 +76,7 @@ namespace VirtualRadar.Interface.Settings
         public GoogleMapSettings GoogleMapSettings
         {
             get { return _GoogleMapSettings; }
-            set { SetField(ref _GoogleMapSettings, value, () => GoogleMapSettings); }
+            set { SetField(ref _GoogleMapSettings, value, nameof(GoogleMapSettings)); }
         }
 
         private VersionCheckSettings _VersionCheckSettings;
@@ -86,7 +86,7 @@ namespace VirtualRadar.Interface.Settings
         public VersionCheckSettings VersionCheckSettings
         {
             get { return _VersionCheckSettings; }
-            set { SetField(ref _VersionCheckSettings, value, () => VersionCheckSettings); }
+            set { SetField(ref _VersionCheckSettings, value, nameof(VersionCheckSettings)); }
         }
 
         private InternetClientSettings _InternetClientSettings;
@@ -96,7 +96,7 @@ namespace VirtualRadar.Interface.Settings
         public InternetClientSettings InternetClientSettings
         {
             get { return _InternetClientSettings; }
-            set { SetField(ref _InternetClientSettings, value, () => InternetClientSettings); }
+            set { SetField(ref _InternetClientSettings, value, nameof(InternetClientSettings)); }
         }
 
         private AudioSettings _AudioSettings;
@@ -106,7 +106,7 @@ namespace VirtualRadar.Interface.Settings
         public AudioSettings AudioSettings
         {
             get { return _AudioSettings; }
-            set { SetField(ref _AudioSettings, value, () => AudioSettings); }
+            set { SetField(ref _AudioSettings, value, nameof(AudioSettings)); }
         }
 
         private RawDecodingSettings _RawDecodingSettings;
@@ -116,7 +116,7 @@ namespace VirtualRadar.Interface.Settings
         public RawDecodingSettings RawDecodingSettings
         {
             get { return _RawDecodingSettings; }
-            set { SetField(ref _RawDecodingSettings, value, () => RawDecodingSettings); }
+            set { SetField(ref _RawDecodingSettings, value, nameof(RawDecodingSettings)); }
         }
 
         private MonoSettings _MonoSettings;
@@ -126,7 +126,7 @@ namespace VirtualRadar.Interface.Settings
         public MonoSettings MonoSettings
         {
             get { return _MonoSettings; }
-            set { SetField(ref _MonoSettings, value, () => MonoSettings); }
+            set { SetField(ref _MonoSettings, value, nameof(MonoSettings)); }
         }
 
         private NotifyList<Receiver> _Receivers = new NotifyList<Receiver>();
@@ -164,28 +164,29 @@ namespace VirtualRadar.Interface.Settings
         /// <param name="args"></param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            EventHelper.Raise(PropertyChanged, this, args);
+            var handler = PropertyChanged;
+            if(handler != null) {
+                handler(this, args);
+            }
         }
 
         /// <summary>
-        /// Changes the field's value and raises <see cref="PropertyChanged"/>.
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>, but only when the value has changed.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="field"></param>
         /// <param name="value"></param>
-        /// <param name="selectorExpression"></param>
-        /// <returns></returns>
-        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        /// <param name="fieldName"></param>
+        /// <returns>True if the value was set because it had changed, false if the value did not change and the event was not raised.</returns>
+        protected bool SetField<T>(ref T field, T value, string fieldName)
         {
-            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
+            var result = !EqualityComparer<T>.Default.Equals(field, value);
+            if(result) {
+                field = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(fieldName));
+            }
 
-            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
-            MemberExpression body = selectorExpression.Body as MemberExpression;
-            if(body == null) throw new ArgumentException("The body must be a member expression");
-            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
-
-            return true;
+            return result;
         }
 
         /// <summary>

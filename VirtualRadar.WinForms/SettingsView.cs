@@ -196,7 +196,7 @@ namespace VirtualRadar.WinForms
             get { return _Configuration; }
             set {
                 _ConfigurationListener.Initialise(value);
-                SetField(ref _Configuration, value, () => Configuration);
+                SetField(ref _Configuration, value, nameof(Configuration));
             }
         }
 
@@ -237,7 +237,7 @@ namespace VirtualRadar.WinForms
         public string AircraftOnlineLookupDataSupplier
         {
             get { return _AircraftOnlineLookupDataSupplier; }
-            set { SetField(ref _AircraftOnlineLookupDataSupplier, value, () => AircraftOnlineLookupDataSupplier); }
+            set { SetField(ref _AircraftOnlineLookupDataSupplier, value, nameof(AircraftOnlineLookupDataSupplier)); }
         }
 
         private string _AircraftOnlineLookupDataSupplierCredits;
@@ -247,7 +247,7 @@ namespace VirtualRadar.WinForms
         public string AircraftOnlineLookupDataSupplierCredits
         {
             get { return _AircraftOnlineLookupDataSupplierCredits; }
-            set { SetField(ref _AircraftOnlineLookupDataSupplierCredits, value, () => AircraftOnlineLookupDataSupplierCredits); }
+            set { SetField(ref _AircraftOnlineLookupDataSupplierCredits, value, nameof(AircraftOnlineLookupDataSupplierCredits)); }
         }
 
         private string _AircraftOnlineLookupDataSupplierUrl;
@@ -257,7 +257,7 @@ namespace VirtualRadar.WinForms
         public string AircraftOnlineLookupDataSupplierUrl
         {
             get { return _AircraftOnlineLookupDataSupplierUrl; }
-            set { SetField(ref _AircraftOnlineLookupDataSupplierUrl, value, () => AircraftOnlineLookupDataSupplierUrl); }
+            set { SetField(ref _AircraftOnlineLookupDataSupplierUrl, value, nameof(AircraftOnlineLookupDataSupplierUrl)); }
         }
         #endregion
 
@@ -273,28 +273,29 @@ namespace VirtualRadar.WinForms
         /// <param name="args"></param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            EventHelper.Raise(PropertyChanged, this, args);
+            var handler = PropertyChanged;
+            if(handler != null) {
+                handler(this, args);
+            }
         }
 
         /// <summary>
-        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>, but only when the value has changed.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="field"></param>
         /// <param name="value"></param>
-        /// <param name="selectorExpression"></param>
-        /// <returns></returns>
-        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        /// <param name="fieldName"></param>
+        /// <returns>True if the value was set because it had changed, false if the value did not change and the event was not raised.</returns>
+        protected bool SetField<T>(ref T field, T value, string fieldName)
         {
-            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
+            var result = !EqualityComparer<T>.Default.Equals(field, value);
+            if(result) {
+                field = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(fieldName));
+            }
 
-            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
-            MemberExpression body = selectorExpression.Body as MemberExpression;
-            if(body == null) throw new ArgumentException("The body must be a member expression");
-            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
-
-            return true;
+            return result;
         }
 
         /// <summary>

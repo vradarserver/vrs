@@ -116,7 +116,7 @@ namespace VirtualRadar.Interface.Settings
         public string DatabaseFileName
         {
             get { return _DatabaseFileName; }
-            set { SetField(ref _DatabaseFileName, value, () => DatabaseFileName); }
+            set { SetField(ref _DatabaseFileName, value, nameof(DatabaseFileName)); }
         }
 
         private string _OperatorFlagsFolder;
@@ -126,7 +126,7 @@ namespace VirtualRadar.Interface.Settings
         public string OperatorFlagsFolder
         {
             get { return _OperatorFlagsFolder; }
-            set { SetField(ref _OperatorFlagsFolder, value, () => OperatorFlagsFolder); }
+            set { SetField(ref _OperatorFlagsFolder, value, nameof(OperatorFlagsFolder)); }
         }
 
         private string _SilhouettesFolder;
@@ -136,7 +136,7 @@ namespace VirtualRadar.Interface.Settings
         public string SilhouettesFolder
         {
             get { return _SilhouettesFolder; }
-            set { SetField(ref _SilhouettesFolder, value, () => SilhouettesFolder); }
+            set { SetField(ref _SilhouettesFolder, value, nameof(SilhouettesFolder)); }
         }
 
         private string _OutlinesFolder;
@@ -146,7 +146,7 @@ namespace VirtualRadar.Interface.Settings
         public string OutlinesFolder
         {
             get { return _OutlinesFolder; }
-            set { SetField(ref _OutlinesFolder, value, () => OutlinesFolder); }
+            set { SetField(ref _OutlinesFolder, value, nameof(OutlinesFolder)); }
         }
 
         private string _PicturesFolder;
@@ -156,7 +156,7 @@ namespace VirtualRadar.Interface.Settings
         public string PicturesFolder
         {
             get { return _PicturesFolder; }
-            set { SetField(ref _PicturesFolder, value, () => PicturesFolder); }
+            set { SetField(ref _PicturesFolder, value, nameof(PicturesFolder)); }
         }
 
         private bool _SearchPictureSubFolders;
@@ -166,7 +166,7 @@ namespace VirtualRadar.Interface.Settings
         public bool SearchPictureSubFolders
         {
             get { return _SearchPictureSubFolders; }
-            set { SetField(ref _SearchPictureSubFolders, value, () => SearchPictureSubFolders); }
+            set { SetField(ref _SearchPictureSubFolders, value, nameof(SearchPictureSubFolders)); }
         }
 
         private int _DisplayTimeoutSeconds;
@@ -176,7 +176,7 @@ namespace VirtualRadar.Interface.Settings
         public int DisplayTimeoutSeconds
         {
             get { return _DisplayTimeoutSeconds; }
-            set { SetField(ref _DisplayTimeoutSeconds, value, () => DisplayTimeoutSeconds); }
+            set { SetField(ref _DisplayTimeoutSeconds, value, nameof(DisplayTimeoutSeconds)); }
         }
 
         private int _TrackingTimeoutSeconds;
@@ -186,7 +186,7 @@ namespace VirtualRadar.Interface.Settings
         public int TrackingTimeoutSeconds
         {
             get { return _TrackingTimeoutSeconds; }
-            set { SetField(ref _TrackingTimeoutSeconds, value, () => TrackingTimeoutSeconds); }
+            set { SetField(ref _TrackingTimeoutSeconds, value, nameof(TrackingTimeoutSeconds)); }
         }
 
         private int _SatcomDisplayTimeoutMinutes;
@@ -196,7 +196,7 @@ namespace VirtualRadar.Interface.Settings
         public int SatcomDisplayTimeoutMinutes
         {
             get { return _SatcomDisplayTimeoutMinutes; }
-            set { SetField(ref _SatcomDisplayTimeoutMinutes, value, () => SatcomDisplayTimeoutMinutes); }
+            set { SetField(ref _SatcomDisplayTimeoutMinutes, value, nameof(SatcomDisplayTimeoutMinutes)); }
         }
 
         private int _SatcomTrackingTimeoutMinutes;
@@ -206,7 +206,7 @@ namespace VirtualRadar.Interface.Settings
         public int SatcomTrackingTimeoutMinutes
         {
             get { return _SatcomTrackingTimeoutMinutes; }
-            set { SetField(ref _SatcomTrackingTimeoutMinutes, value, () => SatcomTrackingTimeoutMinutes); }
+            set { SetField(ref _SatcomTrackingTimeoutMinutes, value, nameof(SatcomTrackingTimeoutMinutes)); }
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace VirtualRadar.Interface.Settings
         public bool MinimiseToSystemTray
         {
             get { return _MinimiseToSystemTray; }
-            set { SetField(ref _MinimiseToSystemTray, value, () => MinimiseToSystemTray); }
+            set { SetField(ref _MinimiseToSystemTray, value, nameof(MinimiseToSystemTray)); }
         }
 
         private int _AutoSavePolarPlotsMinutes;
@@ -236,7 +236,7 @@ namespace VirtualRadar.Interface.Settings
         public int AutoSavePolarPlotsMinutes
         {
             get { return _AutoSavePolarPlotsMinutes; }
-            set { SetField(ref _AutoSavePolarPlotsMinutes, value, () => AutoSavePolarPlotsMinutes); }
+            set { SetField(ref _AutoSavePolarPlotsMinutes, value, nameof(AutoSavePolarPlotsMinutes)); }
         }
 
         private bool _LookupAircraftDetailsOnline;
@@ -246,7 +246,7 @@ namespace VirtualRadar.Interface.Settings
         public bool LookupAircraftDetailsOnline
         {
             get { return _LookupAircraftDetailsOnline; }
-            set { SetField(ref _LookupAircraftDetailsOnline, value, () => LookupAircraftDetailsOnline); }
+            set { SetField(ref _LookupAircraftDetailsOnline, value, nameof(LookupAircraftDetailsOnline)); }
         }
 
         private bool _DownloadGlobalAirPressureReadings;
@@ -257,7 +257,7 @@ namespace VirtualRadar.Interface.Settings
         public bool DownloadGlobalAirPressureReadings
         {
             get { return _DownloadGlobalAirPressureReadings; }
-            set { SetField(ref _DownloadGlobalAirPressureReadings, value, () => DownloadGlobalAirPressureReadings); }
+            set { SetField(ref _DownloadGlobalAirPressureReadings, value, nameof(DownloadGlobalAirPressureReadings)); }
         }
 
         /// <summary>
@@ -271,28 +271,29 @@ namespace VirtualRadar.Interface.Settings
         /// <param name="args"></param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
         {
-            EventHelper.Raise(PropertyChanged, this, args);
+            var handler = PropertyChanged;
+            if(handler != null) {
+                handler(this, args);
+            }
         }
 
         /// <summary>
-        /// Sets the field's value and raises <see cref="PropertyChanged"/>.
+        /// Sets the field's value and raises <see cref="PropertyChanged"/>, but only when the value has changed.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="field"></param>
         /// <param name="value"></param>
-        /// <param name="selectorExpression"></param>
-        /// <returns></returns>
-        protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+        /// <param name="fieldName"></param>
+        /// <returns>True if the value was set because it had changed, false if the value did not change and the event was not raised.</returns>
+        protected bool SetField<T>(ref T field, T value, string fieldName)
         {
-            if(EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
+            var result = !EqualityComparer<T>.Default.Equals(field, value);
+            if(result) {
+                field = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(fieldName));
+            }
 
-            if(selectorExpression == null) throw new ArgumentNullException("selectorExpression");
-            MemberExpression body = selectorExpression.Body as MemberExpression;
-            if(body == null) throw new ArgumentException("The body must be a member expression");
-            OnPropertyChanged(new PropertyChangedEventArgs(body.Member.Name));
-
-            return true;
+            return result;
         }
 
         /// <summary>
