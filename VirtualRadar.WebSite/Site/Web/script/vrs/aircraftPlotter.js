@@ -145,6 +145,7 @@ var VRS;
         new VRS.AircraftMarker({
             normalFileName: 'Tower.png',
             selectedFileName: 'Tower.png',
+            embeddedSvg: VRS.EmbeddedSvgs.Marker_Tower,
             size: { width: 20, height: 20 },
             isAircraft: false,
             isPre22Icon: true,

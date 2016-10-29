@@ -633,6 +633,65 @@ namespace VRS
             aircraftMarkerStatusFillPaths: [ 'outline-path' ]
         };
 
+        public static Marker_Tower: EmbeddedSvg = {
+            svg: `<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   width="20"
+   height="20"
+   viewBox="0 0 20 20"
+   id="svg2"
+   version="1.1" >
+  <defs
+     id="defs4">
+    <filter
+       style="color-interpolation-filters:sRGB"
+       id="shadow-filter">
+      <feFlood
+         flood-opacity="1"
+         flood-color="rgb(0,0,0)"
+         result="flood" />
+      <feComposite
+         in="flood"
+         in2="SourceGraphic"
+         operator="in"
+         result="composite" />
+      <feGaussianBlur
+         in="composite"
+         stdDeviation="1"
+         result="blur" />
+      <feComposite
+         in="SourceGraphic"
+         in2="blur"
+         operator="over" />
+    </filter>
+  </defs>
+  <g
+     id="outer-circle">
+    <circle
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#shadow-filter)"
+       id="outer-circle-path"
+       cx="10"
+       cy="10"
+       r="7" />
+  </g>
+  <g
+     id="inner-circle">
+    <circle
+       style="opacity:1;fill:#30ff37;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="inner-circle-path"
+       cx="10"
+       cy="10"
+       r="3" />
+  </g>
+</svg>`,
+            aircraftMarkerStatusFillPaths: null
+        };
+
         public static Marker_TypeA340: EmbeddedSvg = {
             svg: `<svg
    xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
