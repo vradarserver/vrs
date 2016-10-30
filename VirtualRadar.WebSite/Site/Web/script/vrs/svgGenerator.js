@@ -23,7 +23,7 @@ var VRS;
             return this._XmlSerialiser.serializeToString(svg);
         };
         SvgGenerator.useSvgGraphics = function () {
-            return VRS.serverConfig ? VRS.serverConfig.get().UseSvgGraphics : false;
+            return Modernizr.svg && (VRS.serverConfig ? VRS.serverConfig.get().UseSvgGraphics : false);
         };
         SvgGenerator.prototype.generateAircraftMarker = function (embeddedSvg, fillColour, width, height, rotation, addAltitudeStalk, pinTextLines, pinTextLineHeight) {
             var result = this.createSvgNode(width * 2, height * 2, this.buildViewBox(0, 0, width, height));

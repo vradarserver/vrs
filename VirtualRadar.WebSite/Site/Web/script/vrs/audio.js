@@ -124,32 +124,10 @@ var VRS;
                 return pane;
             };
             this.isSupported = function () {
-                if (_this._BrowserSupportsAudio === undefined) {
-                    _this._BrowserSupportsAudio = false;
-                    try {
-                        var audioElement = new Audio();
-                        _this._BrowserSupportsAudio = audioElement.play !== undefined;
-                        if (_this._BrowserSupportsAudio) {
-                            _this._BrowserSupportsAudio = audioElement.canPlayType !== undefined;
-                        }
-                        if (_this._BrowserSupportsAudio) {
-                            _this._BrowserSupportsAudio = false;
-                            var testCodecs = ['audio/x-wav;codecs=1', 'audio/wav;codecs=1'];
-                            $.each(testCodecs, function (idx, codecAsObject) {
-                                var canPlay = audioElement.canPlayType(String(codecAsObject));
-                                _this._BrowserSupportsAudio = canPlay && canPlay !== 'no';
-                                return !_this._BrowserSupportsAudio;
-                            });
-                        }
-                    }
-                    catch (e) {
-                        _this._BrowserSupportsAudio = false;
-                    }
-                }
-                return _this._BrowserSupportsAudio;
+                return Modernizr.audio && Modernizr.wavaudio;
             };
             this.isAutoplaySupported = function () {
-                return !VRS.browserHelper.isProbablyIPad() && !VRS.browserHelper.isProbablyIPhone();
+                return Modernizr.autoplayaudio;
             };
             this.canPlayAudio = function (mustAllowAutoPlay) {
                 if (mustAllowAutoPlay === void 0) { mustAllowAutoPlay = true; }

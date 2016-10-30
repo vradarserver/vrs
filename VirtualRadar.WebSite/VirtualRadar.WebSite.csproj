@@ -292,6 +292,7 @@
       <DependentUpon>jqueryuihelper.ts</DependentUpon>
     </Content>
     <Content Include="Site\Web\script\markercluster.js" />
+    <Content Include="Site\Web\script\modernizr.js" />
     <Content Include="Site\Web\script\vrs\airportDataApi.js">
       <DependentUpon>airportDataApi.ts</DependentUpon>
     </Content>
@@ -902,6 +903,8 @@
   <ItemGroup>
     <TypeScriptCompile Include="Site\typings\globalOptions.d.ts" />
     <TypeScriptCompile Include="Site\typings\markerclustererplus.d.ts" />
+    <TypeScriptCompile Include="Site\typings\modernizr-tests.d.ts" />
+    <TypeScriptCompile Include="Site\typings\modernizr.d.ts" />
     <TypeScriptCompile Include="Site\Web\script\i18n\localise.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.ui.widget.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftDetail.ts" />
@@ -937,6 +940,7 @@
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.splitter.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftPositionMap.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jqueryuihelper.ts" />
+    <TypeScriptCompile Include="Site\Web\script\modernizr-tests.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraft.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftAutoSelect.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftFilter.ts" />
