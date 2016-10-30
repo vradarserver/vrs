@@ -259,9 +259,7 @@ var VRS;
                 case VRS.ReportSurface.List:
                     return VRS.format.pictureHtml(json.reg, json.icao, json.picX, json.picY, VRS.globalOptions.aircraftPictureSizeList);
                 case VRS.ReportSurface.DetailBody:
-                    return VRS.format.pictureHtml(json.reg, json.icao, json.picX, json.picY, !VRS.globalOptions.isMobile ? VRS.globalOptions.aircraftPictureSizeDesktopDetail
-                        : VRS.browserHelper.isProbablyPhone() ? VRS.globalOptions.aircraftPictureSizeIPhoneDetail
-                            : VRS.globalOptions.aircraftPictureSizeIPadDetail, false, true);
+                    return VRS.format.pictureHtml(json.reg, json.icao, json.picX, json.picY, !VRS.globalOptions.isMobile ? VRS.globalOptions.aircraftPictureSizeDesktopDetail : VRS.globalOptions.aircraftPictureSizeMobileDetail, false, true);
                 default:
                     throw 'Unexpected surface ' + surface;
             }

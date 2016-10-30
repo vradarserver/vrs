@@ -491,9 +491,7 @@ namespace VRS
                         json.icao,
                         json.picX,
                         json.picY,
-                        !VRS.globalOptions.isMobile ?               VRS.globalOptions.aircraftPictureSizeDesktopDetail
-                            : VRS.browserHelper.isProbablyPhone() ? VRS.globalOptions.aircraftPictureSizeIPhoneDetail
-                            :                                       VRS.globalOptions.aircraftPictureSizeIPadDetail,
+                        !VRS.globalOptions.isMobile ? VRS.globalOptions.aircraftPictureSizeDesktopDetail : VRS.globalOptions.aircraftPictureSizeMobileDetail,
                         false, true);
                 default:
                     throw 'Unexpected surface ' + surface;

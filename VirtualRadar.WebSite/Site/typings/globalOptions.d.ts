@@ -50,8 +50,7 @@
         /* enums */
         aircraftPictureSizeDesktopDetail?: ISizePartial;            // The width or height in pixels of aircraft pictures on the desktop page.
         aircraftPictureSizeInfoWindow?: ISize;                      // The width and height in pixels of the mobile page's info window.
-        aircraftPictureSizeIPadDetail?: ISizePartial;               // The width or height in pixels of aircraft pictures when viewed on tablets.
-        aircraftPictureSizeIPhoneDetail?: ISizePartial;             // The width or height in pixels of aircraft pictures when viewed on phones.
+        aircraftPictureSizeMobileDetail?: ISizePartial;             // The width or height in pixels of aircraft pictures when viewed on mobile devices.
         aircraftPictureSizeList?: ISize;                            // The width and height in pixels of aircraft picture thumbnails in the aircraft list.
 
         /* linksRenderer */

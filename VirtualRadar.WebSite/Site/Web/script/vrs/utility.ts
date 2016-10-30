@@ -169,14 +169,6 @@ namespace VRS
     {
         private _ForceFrame: string;
         private _ForceFrameHasBeenRead: boolean;
-        private _IsProbablyIPad: boolean;
-        private _IsProbablyIPhone: boolean;
-        private _IsProbablyAndroid: boolean;
-        private _IsProbablyAndroidPhone: boolean;
-        private _IsProbablyAndroidTablet: boolean;
-        private _IsProbablyWindowsPhone: boolean;
-        private _IsProbablyTablet: boolean;
-        private _IsProbablyPhone: boolean;
         private _IsHighDpi: boolean;
         private _NotOnline: boolean;
 
@@ -196,121 +188,16 @@ namespace VRS
         }
 
         /**
-         * Returns true if the browser is probably running on an iPad. Actual iPads should be automatically detected but
-         * you can force it for any page by passing 'isIpad=1' on the query string (case insensitive, any non-zero value will do).
-         */
-        isProbablyIPad(): boolean
-        {
-            if(this._IsProbablyIPad === undefined) {
-                if(purl) {
-                    var pageUrl = $.url();
-                    if(pageUrl.param('isIpad')) this._IsProbablyIPad = true;
-                }
-                if(this._IsProbablyIPad === undefined) this._IsProbablyIPad = navigator.userAgent.indexOf('iPad') !== -1;
-            }
-
-            return this._IsProbablyIPad;
-        }
-
-        /**
-         * Returns true if the browser is probably running on an iPhone. Actual iPhones should be automatically detected
-         * but you can force it by passing 'isIphone=1' on the query string (case insensitive, any non-zero value will work).
-         */
-        isProbablyIPhone() : boolean
-        {
-            if(this._IsProbablyIPhone === undefined) {
-                if(purl) {
-                    var pageUrl = $.url();
-                    if(pageUrl.param('isIphone')) this._IsProbablyIPhone = true;
-                }
-                if(this._IsProbablyIPhone === undefined) this._IsProbablyIPhone = navigator.userAgent.indexOf('iPhone') !== -1;
-            }
-
-            return this._IsProbablyIPhone;
-        }
-
-        /**
-         * Returns true if the browser is probably running on an Android device.
-         */
-        isProbablyAndroid() : boolean
-        {
-            if(this._IsProbablyAndroid === undefined) this._IsProbablyAndroid = navigator.userAgent.indexOf('; Android ') !== -1;
-            return this._IsProbablyAndroid;
-        };
-
-        /**
-         * Returns true if the browser is probably running on an Android phone.
-         */
-        isProbablyAndroidPhone() : boolean
-        {
-            if(this._IsProbablyAndroidPhone === undefined) this._IsProbablyAndroidPhone = this.isProbablyAndroid() && navigator.userAgent.indexOf(' Mobile') !== -1;
-            return this._IsProbablyAndroidPhone;
-        }
-
-        /**
-         * Returns true if the browser is probably running on an Android tablet.
-         */
-        isProbablyAndroidTablet() : boolean
-        {
-            if(this._IsProbablyAndroidTablet === undefined) this._IsProbablyAndroidTablet = this.isProbablyAndroid() && !this.isProbablyAndroidPhone();
-            return this._IsProbablyAndroidTablet;
-        }
-
-        /**
-         * Returns true if the browser is probably running on a Windows phone.
-         */
-        isProbablyWindowsPhone() : boolean
-        {
-            if(this._IsProbablyWindowsPhone === undefined) this._IsProbablyWindowsPhone = navigator.userAgent.indexOf('; Windows Phone ') !== -1;
-            return this._IsProbablyWindowsPhone;
-        };
-
-
-        /**
-         * Returns true if the browser is probably running on a tablet. iPads and Android tablets are automatically
-         * detected, for other tablets you need to pass 'isTablet=1' on the query string (case insensitive, any non-zero
-         * value will do).
-         */
-        isProbablyTablet() : boolean
-        {
-            if(this._IsProbablyTablet === undefined) {
-                if(this.isProbablyIPad() || this.isProbablyAndroidTablet()) this._IsProbablyTablet = true;
-                else if(purl) {
-                    var pageUrl = $.url();
-                    if(pageUrl.param('isTablet')) this._IsProbablyTablet = true;
-                } else this._IsProbablyTablet = false;
-            }
-            return this._IsProbablyTablet;
-        }
-
-        /**
-         * Returns true if the browser is probably running on a phone. iPhones, Android and Windows phones are automatically
-         * detected, for other phones you need to pass 'isPhone=1' on the query string (case insensitive, any non-zero
-         * value will do).
-         */
-        isProbablyPhone() : boolean
-        {
-            if(this._IsProbablyPhone === undefined) {
-                if(this.isProbablyIPhone() || this.isProbablyAndroidPhone() || this.isProbablyWindowsPhone()) this._IsProbablyPhone = true;
-                else if(purl) {
-                    var pageUrl = $.url();
-                    if(pageUrl.param('isPhone')) this._IsProbablyPhone = true;
-                } else this._IsProbablyPhone = false;
-            }
-            return this._IsProbablyPhone;
-        }
-
-        /**
          * Returns true if the browser is probably running on a high DPI display.
          */
         isHighDpi() : boolean
         {
             if(this._IsHighDpi === undefined) {
                 this._IsHighDpi = false;
-                if(window.devicePixelRatio > 1) this._IsHighDpi = true;
-                else {
-                    var query = '(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-resolution: 1.5dppx)';
-                    if(window.matchMedia && window.matchMedia(query).matches) this._IsHighDpi = true;
+                if(window.devicePixelRatio > 1) {
+                    this._IsHighDpi = true;
+                } else {
+                    this._IsHighDpi = Modernizr.mq('(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-resolution: 1.5dppx)');
                 }
             }
 

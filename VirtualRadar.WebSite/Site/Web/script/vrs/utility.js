@@ -106,89 +106,14 @@ var VRS;
             }
             return this._ForceFrame;
         };
-        BrowserHelper.prototype.isProbablyIPad = function () {
-            if (this._IsProbablyIPad === undefined) {
-                if (purl) {
-                    var pageUrl = $.url();
-                    if (pageUrl.param('isIpad'))
-                        this._IsProbablyIPad = true;
-                }
-                if (this._IsProbablyIPad === undefined)
-                    this._IsProbablyIPad = navigator.userAgent.indexOf('iPad') !== -1;
-            }
-            return this._IsProbablyIPad;
-        };
-        BrowserHelper.prototype.isProbablyIPhone = function () {
-            if (this._IsProbablyIPhone === undefined) {
-                if (purl) {
-                    var pageUrl = $.url();
-                    if (pageUrl.param('isIphone'))
-                        this._IsProbablyIPhone = true;
-                }
-                if (this._IsProbablyIPhone === undefined)
-                    this._IsProbablyIPhone = navigator.userAgent.indexOf('iPhone') !== -1;
-            }
-            return this._IsProbablyIPhone;
-        };
-        BrowserHelper.prototype.isProbablyAndroid = function () {
-            if (this._IsProbablyAndroid === undefined)
-                this._IsProbablyAndroid = navigator.userAgent.indexOf('; Android ') !== -1;
-            return this._IsProbablyAndroid;
-        };
-        ;
-        BrowserHelper.prototype.isProbablyAndroidPhone = function () {
-            if (this._IsProbablyAndroidPhone === undefined)
-                this._IsProbablyAndroidPhone = this.isProbablyAndroid() && navigator.userAgent.indexOf(' Mobile') !== -1;
-            return this._IsProbablyAndroidPhone;
-        };
-        BrowserHelper.prototype.isProbablyAndroidTablet = function () {
-            if (this._IsProbablyAndroidTablet === undefined)
-                this._IsProbablyAndroidTablet = this.isProbablyAndroid() && !this.isProbablyAndroidPhone();
-            return this._IsProbablyAndroidTablet;
-        };
-        BrowserHelper.prototype.isProbablyWindowsPhone = function () {
-            if (this._IsProbablyWindowsPhone === undefined)
-                this._IsProbablyWindowsPhone = navigator.userAgent.indexOf('; Windows Phone ') !== -1;
-            return this._IsProbablyWindowsPhone;
-        };
-        ;
-        BrowserHelper.prototype.isProbablyTablet = function () {
-            if (this._IsProbablyTablet === undefined) {
-                if (this.isProbablyIPad() || this.isProbablyAndroidTablet())
-                    this._IsProbablyTablet = true;
-                else if (purl) {
-                    var pageUrl = $.url();
-                    if (pageUrl.param('isTablet'))
-                        this._IsProbablyTablet = true;
-                }
-                else
-                    this._IsProbablyTablet = false;
-            }
-            return this._IsProbablyTablet;
-        };
-        BrowserHelper.prototype.isProbablyPhone = function () {
-            if (this._IsProbablyPhone === undefined) {
-                if (this.isProbablyIPhone() || this.isProbablyAndroidPhone() || this.isProbablyWindowsPhone())
-                    this._IsProbablyPhone = true;
-                else if (purl) {
-                    var pageUrl = $.url();
-                    if (pageUrl.param('isPhone'))
-                        this._IsProbablyPhone = true;
-                }
-                else
-                    this._IsProbablyPhone = false;
-            }
-            return this._IsProbablyPhone;
-        };
         BrowserHelper.prototype.isHighDpi = function () {
             if (this._IsHighDpi === undefined) {
                 this._IsHighDpi = false;
-                if (window.devicePixelRatio > 1)
+                if (window.devicePixelRatio > 1) {
                     this._IsHighDpi = true;
+                }
                 else {
-                    var query = '(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-resolution: 1.5dppx)';
-                    if (window.matchMedia && window.matchMedia(query).matches)
-                        this._IsHighDpi = true;
+                    this._IsHighDpi = Modernizr.mq('(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-resolution: 1.5dppx)');
                 }
             }
             return this._IsHighDpi;

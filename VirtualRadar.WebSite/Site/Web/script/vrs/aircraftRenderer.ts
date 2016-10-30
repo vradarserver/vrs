@@ -901,10 +901,9 @@ namespace VRS
                     return aircraft.formatPictureHtml(VRS.globalOptions.aircraftPictureSizeList, true, false, VRS.globalOptions.aircraftPictureSizeList);
                 case VRS.RenderSurface.DetailBody:
                     return aircraft.formatPictureHtml(
-                        !VRS.globalOptions.isMobile ?               VRS.globalOptions.aircraftPictureSizeDesktopDetail
-                            : VRS.browserHelper.isProbablyPhone() ? VRS.globalOptions.aircraftPictureSizeIPhoneDetail
-                            :                                       VRS.globalOptions.aircraftPictureSizeIPadDetail,
-                        false, true);
+                        !VRS.globalOptions.isMobile ? VRS.globalOptions.aircraftPictureSizeDesktopDetail : VRS.globalOptions.aircraftPictureSizeMobileDetail,
+                        false, true
+                    );
                 default:
                     throw 'Unexpected surface ' + surface;
             }

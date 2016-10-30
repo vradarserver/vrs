@@ -286,6 +286,7 @@ body.wait .modal {
 .vrsAircraftDetail li.wide img {
     border: 1px solid #a0a0a0;
     margin: 2px;
+    max-width: 95%;
 }
 .vrsAircraftDetail li.multiline {
     float: none;
