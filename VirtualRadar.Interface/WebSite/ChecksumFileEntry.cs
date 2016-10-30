@@ -73,6 +73,16 @@ namespace VirtualRadar.Interface.WebSite
             if(!File.Exists(fileName)) throw new InvalidOperationException($"{fileName} does not exist");
 
             var bytes = File.ReadAllBytes(fileName);
+            return GenerateChecksum(bytes);
+        }
+
+        /// <summary>
+        /// Generates a checksum from a collection of bytes.
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static string GenerateChecksum(byte[] bytes)
+        {
             return _ChecksumCalculator.ComputeChecksumString(bytes, 0, bytes.Length);
         }
 

@@ -84,11 +84,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ServerConfigJsonPage.cs" />
-    <Compile Include="SiteResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SiteResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="TextContent.cs" />
     <Compile Include="TextPage.cs" />
     <Compile Include="WebAdminViewManagerStub.cs" />
@@ -147,7 +142,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Site\Checksums.txt" />
     <Content Include="OldSite\Diagnostics\AircraftList.htm" />
     <Content Include="OldSite\Common.js" />
     <Content Include="OldSite\Events.js" />
@@ -185,6 +179,7 @@
     <Content Include="OldSite\iPhone\iPhoneMapStylesheet.css" />
     <Content Include="OldSite\jQuery\jQuery-1.6.4.js" />
     <Content Include="OldSite\jQuery\jQuery-1.6.4.min.js" />
+    <Content Include="Site\Checksums.txt" />
     <Content Include="Site\Web\css\jquery-ui\images\ui-bg_flat_thick_40_eeeeee_40x40.png" />
     <Content Include="Site\Web\css\vrs-print.css" />
     <Content Include="Site\Web\fonts\icomoon-content.txt" />
@@ -548,10 +543,6 @@
     <Content Include="Site\Web\zz-norel-marker-contact-sheet.html" />
     <Content Include="Site\Web\zz-norel-test.html" />
     <Content Include="Site\Web\_WARNING.txt" />
-    <EmbeddedResource Include="SiteResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>SiteResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Site\Web\favicon.ico" />
     <Content Include="Site\Web\images\regions\en.bmp" />
     <Content Include="Site\Web\images\regions\fr.bmp" />
@@ -898,7 +889,6 @@
       <LastGenOutput>translations.d.ts</LastGenOutput>
     </None>
     <None Include="_PostBuild.bat" />
-    <None Include="_PostBuild.sh" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Site\typings\globalOptions.d.ts" />
@@ -1038,10 +1028,11 @@
     <PreBuildEvent Condition="'$(OS)' == 'Unix'">mono "$(SolutionDir)Dependencies\ChecksumFiles.exe" -root:"$(ProjectDir)Site\Web" -out:"$(ProjectDir)Site\Checksums.txt"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)_PostBuild.bat" "$(ProjectDir)Site\Web" "$(SolutionDir)VirtualRadar\bin\x86\$(ConfigurationName)\Web"</PostBuildEvent>
+    <PostBuildEvent>call "$(ProjectDir)_PostBuild.bat" "$(SolutionDir)" "$(ProjectDir)" "$(ConfigurationName)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)ThirdParty\ChecksumFiles\bin\$(ConfigurationName)\ChecksumFiles.exe" -root:"$(ProjectDir)Site\Web" -out:"$(ProjectDir)Site\Checksums.txt"</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

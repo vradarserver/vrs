@@ -195,7 +195,13 @@ namespace VirtualRadar.WebSite
                 Folder = String.Format("{0}{1}", Path.Combine(runtime.ExecutablePath, "Web"), Path.DirectorySeparatorChar),
                 Priority = 0,
             };
-            defaultSiteRoot.Checksums.AddRange(ChecksumFile.Load(SiteResources.Checksums));
+
+            var checksumsFileName = Path.Combine(runtime.ExecutablePath, "Checksums.txt");
+            if(!File.Exists(checksumsFileName)) {
+                throw new FileNotFoundException($"Cannot find {checksumsFileName}");
+            }
+            defaultSiteRoot.Checksums.AddRange(ChecksumFile.Load(File.ReadAllText(checksumsFileName), enforceContentChecksum: true));
+
             AddSiteRoot(defaultSiteRoot);
         }
         #endregion

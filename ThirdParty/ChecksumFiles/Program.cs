@@ -30,11 +30,30 @@ namespace ChecksumFiles
                 if(!Directory.Exists(root)) Usage(String.Format("{0} does not exist or is not a folder", root));
 
                 var outFileName = cmdArgs.OptionalString("out");
+                if(outFileName != null) {
+                    var folder = Path.GetDirectoryName(Path.GetFullPath(outFileName));
+                    if(!Directory.Exists(folder)) {
+                        Directory.CreateDirectory(folder);
+                    }
+                }
                 var outWriter = outFileName == null ? Console.Out : new StreamWriter(outFileName, false);
 
                 GenerateChecksums(root, outWriter);
 
-                if(outFileName != null) outWriter.Dispose();
+                if(outFileName != null) {
+                    outWriter.Dispose();
+                }
+
+                if(cmdArgs.HasKeyWithNoValue("addContentChecksum")) {
+                    var checksums = File.ReadAllLines(outFileName);
+                    var checksumBytes = Encoding.UTF8.GetBytes(String.Concat(checksums));
+                    var checksum = ChecksumBytes(checksumBytes);
+
+                    var contentLines = new List<string>();
+                    contentLines.Add(FormatChecksumLine(checksum, checksums.Sum(r => r.Length), "\\**CONTENT CHECKSUM**"));
+                    contentLines.AddRange(checksums);
+                    File.WriteAllLines(outFileName, contentLines);
+                }
             } catch(Exception ex) {
                 Usage(String.Format("Exception caught: {0}", ex.ToString()));
             }
@@ -42,7 +61,7 @@ namespace ChecksumFiles
 
         static void Usage(string message)
         {
-            Console.WriteLine("ChecksumFiles <-root folder> [-out output file]");
+            Console.WriteLine("ChecksumFiles <-root folder> [-out output file] [-addContentChecksum]");
 
             if(!String.IsNullOrEmpty(message)) Console.WriteLine("{0}{1}", Environment.NewLine, message);
             Environment.Exit(1);
@@ -53,14 +72,24 @@ namespace ChecksumFiles
             foreach(var fileName in Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories)) {
                 var relativePath = fileName.Substring(folder.Length);
                 var checksum = ChecksumFile(fileName);
-                output.WriteLine("{0} {1,9} {2}", checksum, new FileInfo(fileName).Length, relativePath);
+                output.WriteLine(FormatChecksumLine(checksum, new FileInfo(fileName).Length, relativePath));
             }
         }
 
         static string ChecksumFile(string fileName)
         {
             var content = File.ReadAllBytes(fileName);
+            return ChecksumBytes(content);
+        }
+
+        static string ChecksumBytes(byte[] content)
+        {
             return _Crc64.ComputeChecksumString(content, 0, content.Length);
+        }
+
+        static string FormatChecksumLine(string checksum, long fileLength, string relativePath)
+        {
+            return String.Format("{0} {1,9} {2}", checksum, fileLength, relativePath);
         }
     }
 }

@@ -3,8 +3,7 @@ var VRS;
     VRS.globalOptions = VRS.globalOptions || {};
     VRS.globalOptions.aircraftPictureSizeDesktopDetail = VRS.globalOptions.aircraftPictureSizeDesktopDetail || { width: 350 };
     VRS.globalOptions.aircraftPictureSizeInfoWindow = VRS.globalOptions.aircraftPictureSizeInfoWindow || { width: 85, height: 40 };
-    VRS.globalOptions.aircraftPictureSizeIPadDetail = VRS.globalOptions.aircraftPictureSizeIPadDetail || { width: 680 };
-    VRS.globalOptions.aircraftPictureSizeIPhoneDetail = VRS.globalOptions.aircraftPictureSizeIPhoneDetail || { width: 260 };
+    VRS.globalOptions.aircraftPictureSizeMobileDetail = VRS.globalOptions.aircraftPictureSizeMobileDetail || { width: 680 };
     VRS.globalOptions.aircraftPictureSizeList = VRS.globalOptions.aircraftPictureSizeList || { width: 60, height: 40 };
     VRS.AircraftFilterProperty = {
         Airport: 'air',
