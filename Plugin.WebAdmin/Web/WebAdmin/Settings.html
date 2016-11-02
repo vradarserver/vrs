@@ -32,7 +32,7 @@
                                 </button>
                             </div>
                             <div class="col-sm-10" data-bind="visible: SaveAttempted">
-                                <div class="alert alert-success">
+                                <div class="alert" data-bind="css: { 'alert-success': SaveSuccessful, 'alert-danger': !SaveSuccessful() }">
                                     <span data-bind="text: SavedMessage"></span>
                                 </div>
                             </div>
@@ -1522,7 +1522,7 @@
                                     </button>
                                 </div>
                                 <div class="col-sm-10" data-bind="visible: SaveAttempted">
-                                    <div class="alert alert-success">
+                                    <div class="alert" data-bind="css: { 'alert-success': SaveSuccessful, 'alert-danger': !SaveSuccessful() }">
                                         <span data-bind="text: SavedMessage"></span>
                                     </div>
                                 </div>
