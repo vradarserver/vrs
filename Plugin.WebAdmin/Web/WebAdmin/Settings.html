@@ -25,6 +25,21 @@
                             ::WA_Title_Options::
                         </h1>
 
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-info" data-bind="click: $.proxy(pageHandler.save, pageHandler)">
+                                    ::Save::
+                                </button>
+                            </div>
+                            <div class="col-sm-10" data-bind="visible: SaveAttempted">
+                                <div class="alert alert-success">
+                                    <span data-bind="text: SavedMessage"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr />
+
                         <div id="failure-message" class="alert alert-danger"></div>
 
                         <div class="panel-group" role="tablist" aria-multiselectable="true">
@@ -1500,7 +1515,7 @@
 
                             <hr />
 
-                            <div class="row" id="save-button">
+                            <div class="row">
                                 <div class="col-sm-2">
                                     <button type="button" class="btn btn-info" data-bind="click: $.proxy(pageHandler.save, pageHandler)">
                                         ::Save::
