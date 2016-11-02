@@ -37,6 +37,15 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row" data-bind="visible: ValidationErrorMessages().length">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <div class="alert alert-danger">
+                                    <ul data-bind="foreach: ValidationErrorMessages">
+                                        <li data-bind="text: $data"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
 
                         <hr />
 
@@ -1516,15 +1525,8 @@
                             <hr />
 
                             <div class="row">
-                                <div class="col-sm-2">
-                                    <button type="button" class="btn btn-info" data-bind="click: $.proxy(pageHandler.save, pageHandler)">
-                                        ::Save::
-                                    </button>
-                                </div>
-                                <div class="col-sm-10" data-bind="visible: SaveAttempted">
-                                    <div class="alert" data-bind="css: { 'alert-success': SaveSuccessful, 'alert-danger': !SaveSuccessful() }">
-                                        <span data-bind="text: SavedMessage"></span>
-                                    </div>
+                                <div class="col-sm-12 text-center">
+                                    <a href="#page-container">::WA_ScrollToTop::</a>
                                 </div>
                             </div>
 

@@ -63,6 +63,7 @@ var VRS;
                 PageHandler.prototype.save = function () {
                     var _this = this;
                     this._Model.SaveAttempted(false);
+                    this._Model.ValidationErrorMessages([]);
                     this.sendAndApplyConfiguration('RaiseSaveClicked', function (state) {
                         if (state.Response && state.Response.Outcome) {
                             _this._Model.SaveAttempted(true);
@@ -78,6 +79,19 @@ var VRS;
                                     _this._Model.SavedMessage(VRS.WebAdmin.$$.WA_Conflicting_Update);
                                     break;
                             }
+                            var errorProperties = _this._ViewId.recursiveFindValidationProperties(_this._Model, function (name, value) {
+                                return value.IsError();
+                            });
+                            var errorMessages = [];
+                            $.each(errorProperties, function (idx, value) {
+                                var errorMessage = value.Message();
+                                if (errorMessage !== '' && errorMessage !== undefined && errorMessage !== null) {
+                                    if (VRS.arrayHelper.indexOf(errorMessages, errorMessage) === -1) {
+                                        errorMessages.push(errorMessage);
+                                    }
+                                }
+                            });
+                            _this._Model.ValidationErrorMessages(errorMessages);
                         }
                     });
                 };
@@ -215,7 +229,8 @@ var VRS;
                                     '{root}': function (root) {
                                         root.SaveAttempted = ko.observable(false);
                                         root.SaveSuccessful = ko.observable(false);
-                                        root.SavedMessage = ko.observable("");
+                                        root.SavedMessage = ko.observable('');
+                                        root.ValidationErrorMessages = ko.observableArray([]);
                                         root.TestConnectionOutcome = ko.observable(null);
                                         root.CurrentUserName = ko.observable(state.Response.CurrentUserName);
                                         root.SelectedMergedFeed = ko.observable(null);

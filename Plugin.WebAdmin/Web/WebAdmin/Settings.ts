@@ -7,6 +7,7 @@
         SaveAttempted?:                     KnockoutObservable<boolean>;
         SaveSuccessful?:                    KnockoutObservable<boolean>;
         SavedMessage?:                      KnockoutObservable<string>;
+        ValidationErrorMessages?:           KnockoutObservableArray<string>;
         TestConnectionOutcome:              KnockoutObservable<ViewJson.ITestConnectionOutcomeModel>;
 
         CurrentUserName?:                   KnockoutObservable<string>;
@@ -221,16 +222,32 @@
         save()
         {
             this._Model.SaveAttempted(false);
+            this._Model.ValidationErrorMessages([]);
 
             this.sendAndApplyConfiguration('RaiseSaveClicked', (state: IResponse<ViewJson.IViewModel>) => {
                 if(state.Response && state.Response.Outcome) {
                     this._Model.SaveAttempted(true);
                     this._Model.SaveSuccessful(state.Response.Outcome === "Saved");
+
                     switch(state.Response.Outcome || "") {
                         case "Saved":               this._Model.SavedMessage(VRS.WebAdmin.$$.WA_Saved); break;
                         case "FailedValidation":    this._Model.SavedMessage(VRS.WebAdmin.$$.WA_Validation_Failed); break;
                         case "ConflictingUpdate":   this._Model.SavedMessage(VRS.WebAdmin.$$.WA_Conflicting_Update); break;
                     }
+
+                    var errorProperties = this._ViewId.recursiveFindValidationProperties(this._Model, (name: string, value: VirtualRadar.Interface.View.IValidationModelField_KO) => {
+                        return value.IsError();
+                    });
+                    var errorMessages: string[] = [];
+                    $.each(errorProperties, (idx: number, value: VirtualRadar.Interface.View.IValidationModelField_KO) => {
+                        var errorMessage = value.Message();
+                        if(errorMessage !== ''  && errorMessage !== undefined && errorMessage !== null) {
+                            if(VRS.arrayHelper.indexOf(errorMessages, errorMessage) === -1) {
+                                errorMessages.push(errorMessage);
+                            }
+                        }
+                    });
+                    this._Model.ValidationErrorMessages(errorMessages);
                 }
             });
         }
@@ -415,7 +432,8 @@
                             {
                                 root.SaveAttempted = ko.observable(false);
                                 root.SaveSuccessful = ko.observable(false);
-                                root.SavedMessage = ko.observable("");
+                                root.SavedMessage = ko.observable('');
+                                root.ValidationErrorMessages = ko.observableArray([]);
 
                                 root.TestConnectionOutcome = <KnockoutObservable<ViewJson.ITestConnectionOutcomeModel>> ko.observable(null);
                                 root.CurrentUserName = ko.observable(state.Response.CurrentUserName);

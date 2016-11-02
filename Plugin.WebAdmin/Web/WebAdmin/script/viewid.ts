@@ -348,6 +348,45 @@
             return result;
         }
 
+        recursiveFindValidationProperties(root: Object, 
+                                          filter: (name: string, value: VirtualRadar.Interface.View.IValidationModelField_KO) => boolean = null
+                                         ) : VirtualRadar.Interface.View.IValidationModelField_KO[]
+        {
+            var result: VirtualRadar.Interface.View.IValidationModelField_KO[] = [];
+            this.recurseThroughValidationProperties(root, result, filter);
+
+            return result;
+        }
+
+        private recurseThroughValidationProperties(obj: Object,
+                                                   validationProperties: VirtualRadar.Interface.View.IValidationModelField_KO[],
+                                                   filter: (name: string, value: VirtualRadar.Interface.View.IValidationModelField_KO) => boolean
+                                                  )
+        {
+            if($.isPlainObject(obj)) {
+                this.findValidationProperties(obj, filter, validationProperties);
+
+                $.each(obj, (name: string, value: Object) => {
+                    if(value !== null && value !== undefined) {
+                        if(ko.isObservable(value)) {
+                            value = ko.unwrap(value);
+                        }
+                        if(value !== null && value !== undefined && obj.hasOwnProperty(name)) {
+                            if($.isPlainObject(value)) {
+                                this.recurseThroughValidationProperties(value, validationProperties, filter);
+                            } else if($.isArray(value)) {
+                                $.each(value, (idx: number, item: Object) => {
+                                    this.recurseThroughValidationProperties(item, validationProperties, filter);
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        
+
         /**
          * Returns a description of an enum value.
          */

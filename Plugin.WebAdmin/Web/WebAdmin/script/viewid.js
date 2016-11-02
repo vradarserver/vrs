@@ -299,6 +299,35 @@ var VRS;
                 });
                 return result;
             };
+            ViewId.prototype.recursiveFindValidationProperties = function (root, filter) {
+                if (filter === void 0) { filter = null; }
+                var result = [];
+                this.recurseThroughValidationProperties(root, result, filter);
+                return result;
+            };
+            ViewId.prototype.recurseThroughValidationProperties = function (obj, validationProperties, filter) {
+                var _this = this;
+                if ($.isPlainObject(obj)) {
+                    this.findValidationProperties(obj, filter, validationProperties);
+                    $.each(obj, function (name, value) {
+                        if (value !== null && value !== undefined) {
+                            if (ko.isObservable(value)) {
+                                value = ko.unwrap(value);
+                            }
+                            if (value !== null && value !== undefined && obj.hasOwnProperty(name)) {
+                                if ($.isPlainObject(value)) {
+                                    _this.recurseThroughValidationProperties(value, validationProperties, filter);
+                                }
+                                else if ($.isArray(value)) {
+                                    $.each(value, function (idx, item) {
+                                        _this.recurseThroughValidationProperties(item, validationProperties, filter);
+                                    });
+                                }
+                            }
+                        }
+                    });
+                }
+            };
             ViewId.prototype.describeEnum = function (enumValue, enumModels) {
                 var enumModel = VRS.arrayHelper.findFirst(enumModels, function (r) { return r.Value === enumValue; });
                 return enumModel ? enumModel.Description : null;
