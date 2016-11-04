@@ -269,6 +269,7 @@ namespace VirtualRadar.Library.Network
                 server.Connector.ConnectionClosed += Connector_ClientDisconnected;
                 server.Connector.UseKeepAlive = rebroadcastSettings.UseKeepAlive;
                 server.Format = rebroadcastSettings.Format;
+                server.SendIntervalMilliseconds = rebroadcastSettings.SendIntervalMilliseconds;
 
                 ConfigureAuthentication(rebroadcastSettings, server);
 

@@ -258,6 +258,14 @@ namespace Test.VirtualRadar.Library.Network
                 }
             }
         }
+
+        [TestMethod]
+        public void RebroadcastServerManager_Initialise_Sets_SendInterval_Correctly()
+        {
+            _RebroadcastSettings.SendIntervalMilliseconds = 123456;
+            _Manager.Initialise();
+            Assert.AreEqual(123456, _Server.Object.SendIntervalMilliseconds);
+        }
         #endregion
 
         #region ConfigurationChanged
