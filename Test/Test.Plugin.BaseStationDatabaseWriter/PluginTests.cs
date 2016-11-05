@@ -645,7 +645,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, Icao24 = "Y" };
+            var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, Icao24 = "B" };
             _Listener.Raise(m => m.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
 
             _BaseStationDatabase.Setup(d => d.UpdateFlight(It.IsAny<BaseStationFlight>())).Callback((BaseStationFlight flight) => {
@@ -937,7 +937,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, Icao24 = "Y" };
+            var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, Icao24 = "B" };
             _Listener.Raise(m => m.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
 
             _BaseStationDatabase.Setup(d => d.UpdateFlight(It.IsAny<BaseStationFlight>())).Callback((BaseStationFlight flight) => {
@@ -1010,8 +1010,8 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         [TestMethod]
         public void Plugin_Hooks_Feed_If_Changed_In_Options()
         {
-            BaseStationAircraft aircraft = new BaseStationAircraft() { AircraftID = 5832, ModeS = "X" };
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns(aircraft);
+            BaseStationAircraft aircraft = new BaseStationAircraft() { AircraftID = 5832, ModeS = "A" };
+            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("A")).Returns(aircraft);
 
             SetEnabledOption(true);
             _OptionsView.Setup(v => v.ReceiverId).Returns(2);
@@ -1022,7 +1022,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Listener = _Listeners[1];
 
-            var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, Icao24 = "X" };
+            var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, Icao24 = "A" };
             _Listener.Raise(m => m.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
@@ -1032,8 +1032,8 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         [TestMethod]
         public void Plugin_Unhooks_Old_Feed_If_Changed_In_Options()
         {
-            BaseStationAircraft aircraft = new BaseStationAircraft() { AircraftID = 5832, ModeS = "X" };
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns(aircraft);
+            BaseStationAircraft aircraft = new BaseStationAircraft() { AircraftID = 5832, ModeS = "A" };
+            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("A")).Returns(aircraft);
 
             SetEnabledOption(true);
             _OptionsView.Setup(v => v.ReceiverId).Returns(2);
@@ -1041,7 +1041,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.ShowWinFormsOptionsUI();
 
-            var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, Icao24 = "X" };
+            var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, Icao24 = "A" };
             _Listener.Raise(m => m.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
 
             _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Never());
@@ -1051,14 +1051,14 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         public void Plugin_Unhooks_Old_Feed_If_Disabled_In_Configuration_Changes()
         {
             SetEnabledOption(true);
-            BaseStationAircraft aircraft = new BaseStationAircraft() { AircraftID = 5832, ModeS = "X" };
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns(aircraft);
+            BaseStationAircraft aircraft = new BaseStationAircraft() { AircraftID = 5832, ModeS = "A" };
+            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("A")).Returns(aircraft);
             _Plugin.Startup(_StartupParameters);
 
             FeedHelper.RemoveFeed(_Feeds, _Listeners, 1);
             _FeedManger.Raise(r => r.FeedsChanged += null, EventArgs.Empty);
 
-            var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, Icao24 = "X" };
+            var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, Icao24 = "A" };
             _Listener.Raise(m => m.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
 
             _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Never());
@@ -1069,15 +1069,15 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             SetReceiverIdOption(3);
             SetEnabledOption(true);
-            BaseStationAircraft aircraft = new BaseStationAircraft() { AircraftID = 5832, ModeS = "X" };
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns(aircraft);
+            BaseStationAircraft aircraft = new BaseStationAircraft() { AircraftID = 5832, ModeS = "A" };
+            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("A")).Returns(aircraft);
             _Plugin.Startup(_StartupParameters);
 
             FeedHelper.AddFeeds(_Feeds, _Listeners, 3);
             _Listener = _Listeners[2];
             _FeedManger.Raise(r => r.FeedsChanged += null, EventArgs.Empty);
 
-            var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, Icao24 = "X" };
+            var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, Icao24 = "A" };
             _Listener.Raise(m => m.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
@@ -1108,7 +1108,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, Icao24 = "Y" };
+            var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, Icao24 = "B" };
             _Listener.Raise(m => m.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
 
             _BaseStationDatabase.Setup(d => d.UpdateFlight(It.IsAny<BaseStationFlight>())).Callback((BaseStationFlight flight) => {
@@ -1419,24 +1419,24 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
 
             BaseStationAircraft aircraft = null;
-            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("X", It.IsAny<Func<string, BaseStationAircraft>>()))
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("A", It.IsAny<Func<string, BaseStationAircraft>>()))
                                 .Returns((string icao, Func<string, BaseStationAircraft> callback) => {
                                     aircraft = callback(icao);
                                     return aircraft;
                                 });
 
             var codeBlock = new CodeBlock() { Country = "Elbonia" };
-            _StandingDataManager.Setup(m => m.FindCodeBlock("X")).Returns(codeBlock);
+            _StandingDataManager.Setup(m => m.FindCodeBlock("A")).Returns(codeBlock);
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             _BaseStationDatabase.Verify(d => d.GetOrInsertAircraftByCode(It.IsAny<string>(), It.IsAny<Func<string, BaseStationAircraft>>()), Times.Once());
             Assert.AreEqual(0, aircraft.AircraftID);
-            Assert.AreEqual("X", aircraft.ModeS);
+            Assert.AreEqual("A", aircraft.ModeS);
             Assert.AreEqual("Elbonia", aircraft.ModeSCountry);
             Assert.AreEqual(_Provider.Object.LocalNow, aircraft.FirstCreated);
             Assert.AreEqual(_Provider.Object.LocalNow, aircraft.LastModified);
@@ -1477,8 +1477,8 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
 
             bool sawInsertOfNull = false;
-            _StandingDataManager.Setup(m => m.FindCodeBlock("X")).Returns((CodeBlock)null);
-            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("X", It.IsAny<Func<string, BaseStationAircraft>>()))
+            _StandingDataManager.Setup(m => m.FindCodeBlock("A")).Returns((CodeBlock)null);
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("A", It.IsAny<Func<string, BaseStationAircraft>>()))
                                 .Returns((string icao, Func<string, BaseStationAircraft> callback) => {
                                     var result = callback(icao);
                                     sawInsertOfNull = result.ModeSCountry == null;
@@ -1487,7 +1487,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            var message = new BaseStationMessage() { Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
@@ -1500,10 +1500,10 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
 
             bool sawInsertOfNull = false;
-            _StandingDataManager.Setup(m => m.FindCodeBlock("X")).Returns(new CodeBlock() {
+            _StandingDataManager.Setup(m => m.FindCodeBlock("A")).Returns(new CodeBlock() {
                 Country = "Unknown or unassigned country",
             });
-            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("X", It.IsAny<Func<string, BaseStationAircraft>>()))
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("A", It.IsAny<Func<string, BaseStationAircraft>>()))
                                 .Returns((string icao, Func<string, BaseStationAircraft> callback) => {
                                     var result = callback(icao);
                                     sawInsertOfNull = result.ModeSCountry == null;
@@ -1512,7 +1512,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            var message = new BaseStationMessage() { Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
@@ -1524,17 +1524,17 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             SetEnabledOption(true);
 
-            _StandingDataManager.Setup(m => m.FindCodeBlock("X")).Returns((CodeBlock)null);
-            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("X", It.IsAny<Func<string, BaseStationAircraft>>()))
-                                .Returns(new BaseStationAircraft() { AircraftID = 100, ModeS = "X", });
+            _StandingDataManager.Setup(m => m.FindCodeBlock("A")).Returns((CodeBlock)null);
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("A", It.IsAny<Func<string, BaseStationAircraft>>()))
+                                .Returns(new BaseStationAircraft() { AircraftID = 100, ModeS = "A", });
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            var message = new BaseStationMessage() { Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
-            _StandingDataManager.Setup(m => m.FindCodeBlock("X")).Returns(new CodeBlock() { Country = "Y" });
+            _StandingDataManager.Setup(m => m.FindCodeBlock("A")).Returns(new CodeBlock() { Country = "Y" });
             _StandingDataManager.Raise(r => r.LoadCompleted += null, EventArgs.Empty);
 
             _BaseStationDatabase.Verify(d => d.UpdateAircraftModeSCountry(100, "Y"), Times.Once());
@@ -1545,15 +1545,15 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             SetEnabledOption(true);
 
-            _StandingDataManager.Setup(m => m.FindCodeBlock("X")).Returns((CodeBlock)null);
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns((BaseStationAircraft)null);
+            _StandingDataManager.Setup(m => m.FindCodeBlock("A")).Returns((CodeBlock)null);
+            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("A")).Returns((BaseStationAircraft)null);
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            var message = new BaseStationMessage() { Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
 
-            _StandingDataManager.Setup(m => m.FindCodeBlock("X")).Returns((CodeBlock)null);
+            _StandingDataManager.Setup(m => m.FindCodeBlock("A")).Returns((CodeBlock)null);
             _StandingDataManager.Raise(r => r.LoadCompleted += null, EventArgs.Empty);
 
             _BaseStationDatabase.Verify(d => d.UpdateAircraftModeSCountry(It.IsAny<int>(), It.IsAny<string>()), Times.Never());
@@ -1564,12 +1564,12 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             SetEnabledOption(true);
 
-            _StandingDataManager.Setup(m => m.FindCodeBlock("X")).Returns(new CodeBlock() { Country = "UK" });
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns((BaseStationAircraft)null);
+            _StandingDataManager.Setup(m => m.FindCodeBlock("A")).Returns(new CodeBlock() { Country = "UK" });
+            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("A")).Returns((BaseStationAircraft)null);
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            var message = new BaseStationMessage() { Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
@@ -1622,13 +1622,13 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
                 Assert.AreEqual(null, flight.NumAirCallRepMsgRec);
                 Assert.AreEqual(null, flight.NumPosMsgRec);
             });
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns((BaseStationAircraft)null);
+            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("A")).Returns((BaseStationAircraft)null);
             _BaseStationDatabase.Setup(d => d.InsertSession(It.IsAny<BaseStationSession>())).Callback((BaseStationSession s) => { s.SessionID = 42; });
             _BaseStationDatabase.Setup(d => d.InsertAircraft(It.IsAny<BaseStationAircraft>())).Callback((BaseStationAircraft a) => { a.AircraftID = 5483; });
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", FlightId = 429, SessionId = 1239, Callsign = "ABC123", Altitude = 31, Emergency = true,
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", FlightId = 429, SessionId = 1239, Callsign = "ABC123", Altitude = 31, Emergency = true,
                 GroundSpeed = 289, IdentActive = true, Latitude = 31.1F, Longitude = 123.1F, MessageGenerated = DateTime.Now, MessageLogged = DateTime.Now, MessageNumber = 12389, MessageType = BaseStationMessageType.Transmission,
                 OnGround = true, Squawk = 1293, SquawkHasChanged = true, StatusCode = BaseStationStatusCode.None, Track = 12.4F, TransmissionType = BaseStationTransmissionType.AirToAir, VerticalRate = 18 };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
@@ -1673,7 +1673,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         public void Plugin_Aircraft_And_Flight_Records_Inserted_Within_Transaction()
         {
             SetEnabledOption(true);
-            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("Z", It.IsAny<Func<string, BaseStationAircraft>>()))
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("C", It.IsAny<Func<string, BaseStationAircraft>>()))
                                 .Callback(() => {
                                     _BaseStationDatabase.Verify(d => d.StartTransaction(), Times.AtLeastOnce());
                                 })
@@ -1689,12 +1689,12 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
                 _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Once());
             });
             _BaseStationDatabase.Setup(d => d.InsertFlight(It.IsAny<BaseStationFlight>())).Callback(() => {
-                _BaseStationDatabase.Verify(d => d.GetOrInsertAircraftByCode("Z", It.IsAny<Func<string, BaseStationAircraft>>()), Times.Once());
+                _BaseStationDatabase.Verify(d => d.GetOrInsertAircraftByCode("C", It.IsAny<Func<string, BaseStationAircraft>>()), Times.Once());
             });
 
             _Plugin.Startup(_StartupParameters);
 
-            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(new BaseStationMessage() { Icao24 = "Z", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir }));
+            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(new BaseStationMessage() { Icao24 = "C", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir }));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             _BaseStationDatabase.Verify(d => d.EndTransaction(), Times.AtLeastOnce());
@@ -1707,11 +1707,11 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
 
             BaseStationAircraft aircraft = new BaseStationAircraft();
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns(aircraft);
+            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("A")).Returns(aircraft);
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X" };
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A" };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
 
             _BaseStationDatabase.Verify(d => d.InsertAircraft(It.IsAny<BaseStationAircraft>()), Times.Never());
@@ -1724,13 +1724,13 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
 
             BaseStationFlight flight = null;
-            BaseStationAircraft aircraft = new BaseStationAircraft() { AircraftID = 5832, ModeS = "X" };
-            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("X", It.IsAny<Func<string, BaseStationAircraft>>())).Returns(aircraft);
+            BaseStationAircraft aircraft = new BaseStationAircraft() { AircraftID = 5832, ModeS = "A" };
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("A", It.IsAny<Func<string, BaseStationAircraft>>())).Returns(aircraft);
             _BaseStationDatabase.Setup(d => d.InsertFlight(It.IsAny<BaseStationFlight>())).Callback((BaseStationFlight f) => { flight = f; });
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
             _HeartbeatService.Raise(s => s.SlowTick += null, EventArgs.Empty);
 
@@ -1744,12 +1744,12 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
 
             BaseStationAircraft aircraft = new BaseStationAircraft();
-            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("X", It.IsAny<Func<string, BaseStationAircraft>>())).Returns(aircraft);
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("A", It.IsAny<Func<string, BaseStationAircraft>>())).Returns(aircraft);
 
             _Plugin.Startup(_StartupParameters);
 
-            var messageX = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
-            var messageY = new BaseStationMessage() { AircraftId = 42, Icao24 = "Y", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            var messageX = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            var messageY = new BaseStationMessage() { AircraftId = 42, Icao24 = "B", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(messageX));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(messageX));
@@ -1757,8 +1757,8 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(messageY));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
-            _BaseStationDatabase.Verify(d => d.GetOrInsertAircraftByCode("X", It.IsAny<Func<string, BaseStationAircraft>>()), Times.Once());
-            _BaseStationDatabase.Verify(d => d.GetOrInsertAircraftByCode("Y", It.IsAny<Func<string, BaseStationAircraft>>()), Times.Once());
+            _BaseStationDatabase.Verify(d => d.GetOrInsertAircraftByCode("A", It.IsAny<Func<string, BaseStationAircraft>>()), Times.Once());
+            _BaseStationDatabase.Verify(d => d.GetOrInsertAircraftByCode("B", It.IsAny<Func<string, BaseStationAircraft>>()), Times.Once());
         }
 
         [TestMethod]
@@ -1766,12 +1766,12 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             SetEnabledOption(true);
 
-            BaseStationAircraft aircraft = new BaseStationAircraft() { AircraftID = 5832, ModeS = "X" };
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns(aircraft);
+            BaseStationAircraft aircraft = new BaseStationAircraft() { AircraftID = 5832, ModeS = "A" };
+            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("A")).Returns(aircraft);
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
             _HeartbeatService.Raise(s => s.SlowTick += null, EventArgs.Empty);
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
@@ -1786,11 +1786,11 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             SetEnabledOption(false);
 
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns((BaseStationAircraft)null);
+            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("A")).Returns((BaseStationAircraft)null);
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X" };
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A" };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
 
             _BaseStationDatabase.Verify(d => d.InsertAircraft(It.IsAny<BaseStationAircraft>()), Times.Never());
@@ -1806,11 +1806,11 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
             SetDBHistory(false);
 
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("X")).Returns((BaseStationAircraft)null);
+            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("A")).Returns((BaseStationAircraft)null);
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X" };
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A" };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
 
             _BaseStationDatabase.Verify(d => d.InsertAircraft(It.IsAny<BaseStationAircraft>()), Times.Never());
@@ -1843,14 +1843,14 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             var exception = new InvalidOperationException();
             SetEnabledOption(true);
-            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("X", It.IsAny<Func<string, BaseStationAircraft>>()))
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("A", It.IsAny<Func<string, BaseStationAircraft>>()))
                                 .Callback(() => {  throw exception; });
 
             _Plugin.Startup(_StartupParameters);
 
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
@@ -1871,7 +1871,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
@@ -1892,7 +1892,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
@@ -1913,7 +1913,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
@@ -1935,7 +1935,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", FlightId = 429, SessionId = 1239, Callsign = null, MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", FlightId = 429, SessionId = 1239, Callsign = null, MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
@@ -1955,7 +1955,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", FlightId = 429, SessionId = 1239, Callsign = "ABC123", Altitude = 31, Emergency = true,
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", FlightId = 429, SessionId = 1239, Callsign = "ABC123", Altitude = 31, Emergency = true,
                 GroundSpeed = 289, IdentActive = true, Latitude = 31.1F, Longitude = 123.1F, MessageGenerated = DateTime.Now, MessageLogged = DateTime.Now, MessageNumber = 12389, MessageType = BaseStationMessageType.Transmission,
                 OnGround = true, Squawk = 1293, SquawkHasChanged = true, StatusCode = BaseStationStatusCode.None, Track = 12.4F, TransmissionType = BaseStationTransmissionType.AirToAir, VerticalRate = 18 };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
@@ -1982,7 +1982,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", FlightId = 429, SessionId = 1239, Callsign = "ABC123", Altitude = 31, Emergency = true,
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", FlightId = 429, SessionId = 1239, Callsign = "ABC123", Altitude = 31, Emergency = true,
                 GroundSpeed = 289, IdentActive = true, Latitude = 31.1F, Longitude = 123.1F, MessageGenerated = DateTime.Now, MessageLogged = DateTime.Now, MessageNumber = 12389, MessageType = BaseStationMessageType.Transmission,
                 OnGround = true, Squawk = 1293, SquawkHasChanged = true, StatusCode = BaseStationStatusCode.None, Track = 12.4F, TransmissionType = BaseStationTransmissionType.AirToAir, VerticalRate = 18 };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
@@ -2019,7 +2019,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", FlightId = 429, SessionId = 1239, Callsign = "ABC123", Altitude = 31, Emergency = true,
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", FlightId = 429, SessionId = 1239, Callsign = "ABC123", Altitude = 31, Emergency = true,
                 GroundSpeed = 289, IdentActive = true, Latitude = 31.1F, Longitude = 123.1F, MessageGenerated = DateTime.Now, MessageLogged = DateTime.Now, MessageNumber = 12389, MessageType = BaseStationMessageType.Transmission,
                 OnGround = true, Squawk = 1293, SquawkHasChanged = true, StatusCode = BaseStationStatusCode.None, Track = 12.4F, TransmissionType = BaseStationTransmissionType.AirToAir, VerticalRate = 18 };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
@@ -2056,7 +2056,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", FlightId = 429, SessionId = 1239, Callsign = "ABC123", Altitude = 31, Emergency = true,
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", FlightId = 429, SessionId = 1239, Callsign = "ABC123", Altitude = 31, Emergency = true,
                 GroundSpeed = 289, IdentActive = true, Latitude = 31.1F, Longitude = 123.1F, MessageGenerated = DateTime.Now, MessageLogged = DateTime.Now, MessageNumber = 12389, MessageType = BaseStationMessageType.Transmission,
                 OnGround = true, Squawk = 1293, SquawkHasChanged = true, StatusCode = BaseStationStatusCode.None, Track = 12.4F, TransmissionType = BaseStationTransmissionType.AirToAir, VerticalRate = 18 };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
@@ -2105,7 +2105,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
                 Assert.AreEqual(String.Format("Exception caught: {0}", exception.Message), _Plugin.StatusDescription);
             };
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
 
             var endTime = SetProviderTimes(startTime.AddMinutes(MinutesBeforeFlightClosed));
@@ -2125,7 +2125,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _Plugin.Startup(_StartupParameters);
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", FlightId = 429, SessionId = 1239, Callsign = null, Altitude = 31, Emergency = true,
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", FlightId = 429, SessionId = 1239, Callsign = null, Altitude = 31, Emergency = true,
                 GroundSpeed = 289, IdentActive = true, Latitude = 31.1F, Longitude = 123.1F, MessageGenerated = DateTime.Now, MessageLogged = DateTime.Now, MessageNumber = 12389, MessageType = BaseStationMessageType.Transmission,
                 OnGround = true, Squawk = 1293, SquawkHasChanged = true, StatusCode = BaseStationStatusCode.None, Track = 12.4F, TransmissionType = BaseStationTransmissionType.AirToAir, VerticalRate = 18 };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
@@ -2198,7 +2198,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             var isMlat = worksheet.Bool("IsMlat");
 
             for(int i = 0;i < worksheet.Int("Count");++i) {
-                var message = new BaseStationMessage() { Icao24 = "Z", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+                var message = new BaseStationMessage() { Icao24 = "C", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
                 var args = new BaseStationMessageEventArgs(message, isOutOfBand: isMlat, isSatcomFeed: false);
 
                 var valueText = worksheet.EString(String.Format("MsgValue{0}", i + 1));
@@ -2242,7 +2242,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             var messageProperty = typeof(BaseStationMessage).GetProperty(worksheet.String("MsgProperty"));
             for(int i = 0;i < worksheet.Int("Count");++i) {
-                var message = new BaseStationMessage() { Icao24 = "Z", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+                var message = new BaseStationMessage() { Icao24 = "C", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
 
                 var valueText = worksheet.EString(String.Format("MsgValue{0}", i + 1));
                 messageProperty.SetValue(message, TestUtilities.ChangeType(valueText, messageProperty.PropertyType, CultureInfo.InvariantCulture), null);
@@ -2281,7 +2281,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Plugin.Startup(_StartupParameters);
 
             var message = new BaseStationMessage() {
-                Icao24 = "Z",
+                Icao24 = "C",
                 MessageType = worksheet.ParseEnum<BaseStationMessageType>("MessageType"),
                 TransmissionType = worksheet.ParseEnum<BaseStationTransmissionType>("TransmissionType"),
                 StatusCode = worksheet.ParseEnum<BaseStationStatusCode>("StatusCode"),
@@ -2317,10 +2317,10 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             SetEnabledOption(true);
 
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("Z")).Returns(new BaseStationAircraft() { AircraftID = 4722 });
+            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("C")).Returns(new BaseStationAircraft() { AircraftID = 4722 });
             _BaseStationDatabase.Setup(d => d.InsertSession(It.IsAny<BaseStationSession>())).Callback((BaseStationSession session) => { session.SessionID = 318; });
 
-            var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, AircraftId = 2372211, SessionId = -1, Icao24 = "Z" };
+            var message = new BaseStationMessage() { MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir, AircraftId = 2372211, SessionId = -1, Icao24 = "C" };
 
             _Plugin.Startup(_StartupParameters);
 
@@ -2387,7 +2387,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             BaseStationFlight flight = null;
             _BaseStationDatabase.Setup(d => d.UpdateFlight(It.IsAny<BaseStationFlight>())).Callback((BaseStationFlight f) => { flight = f; });
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", FlightId = 429, SessionId = 1239, Callsign = "ABC123", Altitude = 31, Emergency = true,
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", FlightId = 429, SessionId = 1239, Callsign = "ABC123", Altitude = 31, Emergency = true,
                 GroundSpeed = 289, IdentActive = true, Latitude = 0F, Longitude = 0F, MessageGenerated = DateTime.Now, MessageLogged = DateTime.Now, MessageNumber = 12389, MessageType = BaseStationMessageType.Transmission,
                 OnGround = true, Squawk = 1293, SquawkHasChanged = true, StatusCode = BaseStationStatusCode.None, Track = 12.4F, TransmissionType = BaseStationTransmissionType.AirToAir, VerticalRate = 18 };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
@@ -2411,7 +2411,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             BaseStationFlight flight = null;
             _BaseStationDatabase.Setup(d => d.UpdateFlight(It.IsAny<BaseStationFlight>())).Callback((BaseStationFlight f) => { flight = f; });
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", FlightId = 429, SessionId = 1239, Callsign = "ABC123", Altitude = 31, Emergency = true,
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", FlightId = 429, SessionId = 1239, Callsign = "ABC123", Altitude = 31, Emergency = true,
                 GroundSpeed = 289, IdentActive = true, Latitude = 0F, Longitude = 0.1F, MessageGenerated = DateTime.Now, MessageLogged = DateTime.Now, MessageNumber = 12389, MessageType = BaseStationMessageType.Transmission,
                 OnGround = true, Squawk = 1293, SquawkHasChanged = true, StatusCode = BaseStationStatusCode.None, Track = 12.4F, TransmissionType = BaseStationTransmissionType.AirToAir, VerticalRate = 18 };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
@@ -2435,7 +2435,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             BaseStationFlight flight = null;
             _BaseStationDatabase.Setup(d => d.UpdateFlight(It.IsAny<BaseStationFlight>())).Callback((BaseStationFlight f) => { flight = f; });
 
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "X", FlightId = 429, SessionId = 1239, Callsign = "ABC123", Altitude = 31, Emergency = true,
+            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", FlightId = 429, SessionId = 1239, Callsign = "ABC123", Altitude = 31, Emergency = true,
                 GroundSpeed = 289, IdentActive = true, Latitude = 0.1F, Longitude = 0F, MessageGenerated = DateTime.Now, MessageLogged = DateTime.Now, MessageNumber = 12389, MessageType = BaseStationMessageType.Transmission,
                 OnGround = true, Squawk = 1293, SquawkHasChanged = true, StatusCode = BaseStationStatusCode.None, Track = 12.4F, TransmissionType = BaseStationTransmissionType.AirToAir, VerticalRate = 18 };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));

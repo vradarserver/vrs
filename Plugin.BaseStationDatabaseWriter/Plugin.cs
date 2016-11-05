@@ -96,7 +96,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// <summary>
         /// A map of ICAO24 codes to a private class holding the database records being maintained for the flight.
         /// </summary>
-        private Dictionary<string, FlightRecords> _FlightMap = new Dictionary<string, FlightRecords>();
+        private Dictionary<int, FlightRecords> _FlightMap = new Dictionary<int, FlightRecords>();
 
         /// <summary>
         /// The feed whose aircraft messages are being recorded in the database.
@@ -533,53 +533,73 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 lock(_SyncLock) {
                     if(_Session != null) {
                         var localNow = Provider.LocalNow;
+                        var icao24 = NormaliseIcao24(message.Icao24);
+                        if(icao24 > 0) {
+                            FlightRecords flightRecords;
+                            if(!_FlightMap.TryGetValue(icao24, out flightRecords)) {
+                                flightRecords = new FlightRecords() {
+                                    Aircraft = new BaseStationAircraft() {
+                                        ModeS = message.Icao24,
+                                        FirstCreated = localNow,
+                                    },
+                                    Flight = new BaseStationFlight() {
+                                        Callsign = message.Callsign,
+                                        StartTime = localNow,
+                                        NumADSBMsgRec = 0,
+                                        NumAirCallRepMsgRec = 0,
+                                        NumAirPosMsgRec = 0,
+                                        NumAirToAirMsgRec = 0,
+                                        NumAirVelMsgRec = 0,
+                                        NumIDMsgRec = 0,
+                                        NumModeSMsgRec = 0,
+                                        NumPosMsgRec = 0,
+                                        NumSurAltMsgRec = 0,
+                                        NumSurIDMsgRec = 0,
+                                        NumSurPosMsgRec = 0,
+                                    },
+                                };
 
-                        FlightRecords flightRecords;
-                        if(!_FlightMap.TryGetValue(message.Icao24, out flightRecords)) {
-                            flightRecords = new FlightRecords() {
-                                Aircraft = new BaseStationAircraft() {
-                                    ModeS = message.Icao24,
-                                    FirstCreated = localNow,
-                                },
-                                Flight = new BaseStationFlight() {
-                                    Callsign = message.Callsign,
-                                    StartTime = localNow,
-                                    NumADSBMsgRec = 0,
-                                    NumAirCallRepMsgRec = 0,
-                                    NumAirPosMsgRec = 0,
-                                    NumAirToAirMsgRec = 0,
-                                    NumAirVelMsgRec = 0,
-                                    NumIDMsgRec = 0,
-                                    NumModeSMsgRec = 0,
-                                    NumPosMsgRec = 0,
-                                    NumSurAltMsgRec = 0,
-                                    NumSurIDMsgRec = 0,
-                                    NumSurPosMsgRec = 0,
-                                },
-                            };
+                                _FlightMap.Add(icao24, flightRecords);
+                            }
 
-                            _FlightMap.Add(message.Icao24, flightRecords);
-                        }
+                            var flight = flightRecords.Flight;
+                            flightRecords.EndTimeUtc = Provider.UtcNow;
+                            flight.EndTime = localNow;
+                            if(!isMlat) {
+                                if(message.SquawkHasChanged.GetValueOrDefault()) flight.HadAlert = true;
+                                if(message.IdentActive.GetValueOrDefault()) flight.HadSpi = true;
+                                if(message.Squawk == 7500 || message.Squawk == 7600 || message.Squawk == 7700) flight.HadEmergency = true;
+                            }
+                            UpdateFirstLastValues(message, flight, flightRecords, isMlat);
+                            UpdateMessageCounters(message, flight);
 
-                        var flight = flightRecords.Flight;
-                        flightRecords.EndTimeUtc = Provider.UtcNow;
-                        flight.EndTime = localNow;
-                        if(!isMlat) {
-                            if(message.SquawkHasChanged.GetValueOrDefault()) flight.HadAlert = true;
-                            if(message.IdentActive.GetValueOrDefault()) flight.HadSpi = true;
-                            if(message.Squawk == 7500 || message.Squawk == 7600 || message.Squawk == 7700) flight.HadEmergency = true;
-                        }
-                        UpdateFirstLastValues(message, flight, flightRecords, isMlat);
-                        UpdateMessageCounters(message, flight);
-
-                        if(!String.IsNullOrEmpty(message.Callsign)) {
-                            if(message.Callsign != flightRecords.Flight.Callsign) {
-                                flightRecords.Flight.Callsign = message.Callsign;
+                            if(!String.IsNullOrEmpty(message.Callsign)) {
+                                if(message.Callsign != flightRecords.Flight.Callsign) {
+                                    flightRecords.Flight.Callsign = message.Callsign;
+                                }
                             }
                         }
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Converts an ICAO24 string (i.e. six digit hex string) to the ICAO24 number.
+        /// </summary>
+        /// <param name="icaoString"></param>
+        /// <returns></returns>
+        private int NormaliseIcao24(string icaoString)
+        {
+            var result = 0;
+
+            try {
+                result = Convert.ToInt32(icaoString, 16);
+            } catch {
+                result = 0;
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -834,7 +854,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             var utcNow = Provider.UtcNow;
 
-            KeyValuePair<string, FlightRecords>[] flushEntries = null;
+            KeyValuePair<int, FlightRecords>[] flushEntries = null;
             lock(_SyncLock) {
                 flushEntries = (flushAll ? _FlightMap : _FlightMap.Where(kvp => kvp.Value.EndTimeUtc.AddMinutes(25) <= utcNow)).ToArray();
             }
