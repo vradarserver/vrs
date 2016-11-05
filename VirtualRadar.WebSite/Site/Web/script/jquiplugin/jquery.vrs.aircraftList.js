@@ -330,8 +330,9 @@ var VRS;
                 var handler = VRS.renderPropertyHandlers[columnId];
                 if (!handler)
                     throw 'No handler has been registered for property ID ' + columnId;
+                var headingText = handler.suppressLabelCallback(VRS.RenderSurface.List) ? '' : VRS.globalisation.getText(handler.headingKey);
                 var cell = $('<th/>')
-                    .text(VRS.globalisation.getText(handler.headingKey))
+                    .text(headingText)
                     .appendTo(trow);
                 if (i + 1 == countColumns)
                     cell.addClass('lastColumn');
