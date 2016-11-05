@@ -80,8 +80,9 @@ namespace Test.VirtualRadar.Interface
         public void CustomConvert_Icao24_All_Valid_Hex_Digits_Are_Valid()
         {
             foreach(var ch in new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F' }) {
-                var text = new String(ch, 1);
-                Assert.AreNotEqual(-1, CustomConvert.Icao24(text), $"Failed on {ch}");
+                var text = new String(ch, 6);
+                var expected = Convert.ToInt32(text, 16);
+                Assert.AreEqual(expected, CustomConvert.Icao24(text), $"Failed on {ch}");
             }
         }
         #endregion
