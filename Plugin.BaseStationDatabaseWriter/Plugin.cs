@@ -533,7 +533,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 lock(_SyncLock) {
                     if(_Session != null) {
                         var localNow = Provider.LocalNow;
-                        var icao24 = NormaliseIcao24(message.Icao24);
+                        var icao24 = CustomConvert.Icao24(message.Icao24);
                         if(icao24 > 0) {
                             FlightRecords flightRecords;
                             if(!_FlightMap.TryGetValue(icao24, out flightRecords)) {
@@ -582,24 +582,6 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Converts an ICAO24 string (i.e. six digit hex string) to the ICAO24 number.
-        /// </summary>
-        /// <param name="icaoString"></param>
-        /// <returns></returns>
-        private int NormaliseIcao24(string icaoString)
-        {
-            var result = 0;
-
-            try {
-                result = Convert.ToInt32(icaoString, 16);
-            } catch {
-                result = 0;
-            }
-
-            return result;
         }
 
         /// <summary>

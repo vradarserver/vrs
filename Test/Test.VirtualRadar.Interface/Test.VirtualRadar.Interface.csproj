@@ -79,6 +79,7 @@
     <Compile Include="BaseStation\BaseStationSupplementaryMessageTests.cs" />
     <Compile Include="BaseStation\BaseStationMessageTests.cs" />
     <Compile Include="BaseStation\BaseStationTranslatorExceptionTests.cs" />
+    <Compile Include="CustomConvertTests.cs" />
     <Compile Include="EventHelperTests.cs" />
     <Compile Include="ExpiringDictionaryTests.cs" />
     <Compile Include="ExpiringListTests.cs" />

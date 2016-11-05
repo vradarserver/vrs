@@ -321,10 +321,8 @@ namespace VirtualRadar.Database.StandingData
                                 var icao = chunks[0];
                                 var mil = chunks.Length > 1 ? chunks[1] : "";
 
-                                int bitmask;
-                                try {
-                                    bitmask = Convert.ToInt32(icao, 16);
-                                } catch {
+                                int bitmask = CustomConvert.Icao24(icao);
+                                if(bitmask == -1) {
                                     log.WriteLine("Invalid ICAO {0} at line {1} of local codeblock override", icao, lineNumber);
                                     continue;
                                 }
@@ -692,13 +690,7 @@ namespace VirtualRadar.Database.StandingData
             CodeBlock result = null;
 
             if(!String.IsNullOrEmpty(icao24)) {
-                int icaoValue;
-                try {
-                    icaoValue = Convert.ToInt32(icao24, 16);
-                } catch {
-                    icaoValue = -1;
-                }
-
+                int icaoValue = CustomConvert.Icao24(icao24);
                 if(icaoValue != -1) {
                     List<CodeBlockBitMask> codeBlockCache;
                     lock(_CodeBlockCacheLock) {

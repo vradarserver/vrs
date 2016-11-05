@@ -447,7 +447,7 @@ namespace VirtualRadar.Library.BaseStation
         {
             try {
                 if(message.MessageType == BaseStationMessageType.Transmission) {
-                    var uniqueId = ConvertIcaoToUniqueId(message.Icao24);
+                    var uniqueId = CustomConvert.Icao24(message.Icao24);
                     if(uniqueId != -1) {
                         var now = _Clock.UtcNow;
 
@@ -843,26 +843,7 @@ namespace VirtualRadar.Library.BaseStation
         }
         #endregion
 
-        #region ConvertIcaoToUniqueId, GenerateDataVersion
-        /// <summary>
-        /// Derives the unique identifier for the aircraft from an ICAO24 code.
-        /// </summary>
-        /// <param name="icao"></param>
-        /// <returns></returns>
-        private int ConvertIcaoToUniqueId(string icao)
-        {
-            int uniqueId = -1;
-            if(_SanityChecker != null && _SanityChecker.IsGoodAircraftIcao(icao)) {
-                try {
-                    uniqueId = Convert.ToInt32(icao, 16);
-                } catch(Exception ex) {
-                    Debug.WriteLine(String.Format("BaseStationAircraftList.ConvertIcaoToUniqueId caught exception {0}", ex.ToString()));
-                }
-            }
-
-            return uniqueId;
-        }
-
+        #region GenerateDataVersion
         /// <summary>
         /// Sets a valid DataVersion for an aircraft. The DataVersion should increment across all aircraft changes
         /// in the aircraft list, not just for a single aircraft.
@@ -1033,7 +1014,7 @@ namespace VirtualRadar.Library.BaseStation
         {
             try {
                 var aircraftDetail = args.Value;
-                var uniqueId = ConvertIcaoToUniqueId(aircraftDetail.Icao24);
+                var uniqueId = CustomConvert.Icao24(aircraftDetail.Icao24);
                 if(uniqueId != -1) {
                     var aircraftMap = _AircraftMap;
                     IAircraft aircraft;
@@ -1062,7 +1043,7 @@ namespace VirtualRadar.Library.BaseStation
         {
             try {
                 var callsignRouteDetail = args.Value;
-                var uniqueId = ConvertIcaoToUniqueId(callsignRouteDetail.Icao24);
+                var uniqueId = CustomConvert.Icao24(callsignRouteDetail.Icao24);
                 if(uniqueId != -1) {
                     var aircraftMap = _AircraftMap;
                     IAircraft aircraft;
@@ -1110,14 +1091,16 @@ namespace VirtualRadar.Library.BaseStation
         /// <param name="args"></param>
         private void BaseStationListener_PositionReset(object sender, EventArgs<string> args)
         {
-            var key = ConvertIcaoToUniqueId(args.Value);
-            _SanityChecker.ResetAircraft(key);
+            var key = CustomConvert.Icao24(args.Value);
+            if(key != -1) {
+                _SanityChecker.ResetAircraft(key);
 
-            var aircraftMap = _AircraftMap;
-            IAircraft aircraft;
-            if(aircraftMap.TryGetValue(key, out aircraft)) {
-                lock(aircraft) {
-                    aircraft.ResetCoordinates();
+                var aircraftMap = _AircraftMap;
+                IAircraft aircraft;
+                if(aircraftMap.TryGetValue(key, out aircraft)) {
+                    lock(aircraft) {
+                        aircraft.ResetCoordinates();
+                    }
                 }
             }
         }

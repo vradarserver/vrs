@@ -172,11 +172,7 @@ namespace VirtualRadar.Plugin.FeedFilter.Json
 
         private int ConvertToNumber(string candidate)
         {
-            try {
-                return Convert.ToInt32(candidate, 16);
-            } catch(FormatException) {
-                return -1;
-            }
+            return CustomConvert.Icao24(candidate);
         }
 
         private void AddToErrorList(string candidate, List<string> errorList)

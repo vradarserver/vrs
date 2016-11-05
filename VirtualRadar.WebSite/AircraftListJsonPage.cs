@@ -180,13 +180,9 @@ namespace VirtualRadar.WebSite
             var icaos = request.FormValues["icaos"];
             if(!String.IsNullOrEmpty(icaos)) {
                 foreach(var icao in icaos.Split('-')) {
-                    try {
-                        var id = Convert.ToInt32(icao, 16);
-                        if(id >= 0x000000 && id <= 0xffffff) {
-                            ids.Add(id);
-                        }
-                    } catch {
-                        // Ignore garbage that comes in on the post
+                    var id = CustomConvert.Icao24(icao);
+                    if(id != -1) {
+                        ids.Add(id);
                     }
                 }
             }

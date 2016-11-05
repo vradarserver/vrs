@@ -219,7 +219,7 @@ namespace VirtualRadar.Library.BaseStation
         #region Encode..., Decode...
         private static void EncodeIcao(Stream stream, string icao)
         {
-            int value = Convert.ToInt32(icao, 16);
+            int value = CustomConvert.Icao24(icao);
             Encode24BitInt(stream, value);
         }
 
