@@ -97,7 +97,8 @@ var VRS;
                         map: state.mapContainer,
                         unitDisplayPreferences: options.unitDisplayPreferences,
                         getAircraft: $.proxy(this._getAircraft, this),
-                        getSelectedAircraft: $.proxy(this._getSelectedAircraft, this)
+                        getSelectedAircraft: $.proxy(this._getSelectedAircraft, this),
+                        suppressMarkerClustering: true
                     });
                 }
                 state.mapTypeChangedHookResult = state.mapPlugin.hookMapTypeChanged(this._mapTypeChanged, this);

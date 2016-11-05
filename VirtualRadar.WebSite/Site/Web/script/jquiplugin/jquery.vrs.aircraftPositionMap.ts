@@ -233,11 +233,12 @@ namespace VRS
                 state.mapPlugin = VRS.jQueryUIHelper.getMapPlugin(state.mapContainer);
                 if(state.mapPlugin && state.mapPlugin.isOpen()) {
                     state.aircraftPlotter = new VRS.AircraftPlotter({
-                        plotterOptions:         options.plotterOptions,
-                        map:                    state.mapContainer,
-                        unitDisplayPreferences: options.unitDisplayPreferences,
-                        getAircraft:            $.proxy(this._getAircraft, this),
-                        getSelectedAircraft:    $.proxy(this._getSelectedAircraft, this)
+                        plotterOptions:             options.plotterOptions,
+                        map:                        state.mapContainer,
+                        unitDisplayPreferences:     options.unitDisplayPreferences,
+                        getAircraft:                $.proxy(this._getAircraft, this),
+                        getSelectedAircraft:        $.proxy(this._getSelectedAircraft, this),
+                        suppressMarkerClustering:   true
                     });
                 }
 

@@ -915,6 +915,7 @@ var VRS;
                 allowRotation: VRS.globalOptions.aircraftMarkerRotate,
                 rotationGranularity: VRS.globalOptions.aircraftMarkerRotationGranularity,
                 suppressAltitudeStalkAboveZoom: VRS.globalOptions.aircraftMarkerSuppressAltitudeStalkZoomLevel,
+                suppressMarkerClustering: false,
                 normalTrailColour: VRS.globalOptions.aircraftMarkerTrailColourNormal,
                 selectedTrailColour: VRS.globalOptions.aircraftMarkerTrailColourSelected,
                 normalTrailWidth: VRS.globalOptions.aircraftMarkerTrailWidthNormal,
@@ -927,7 +928,7 @@ var VRS;
             }, settings);
             this._Settings = settings;
             this._Map = VRS.jQueryUIHelper.getMapPlugin(settings.map);
-            if (VRS.globalOptions.aircraftMarkerClustererEnabled) {
+            if (VRS.globalOptions.aircraftMarkerClustererEnabled && !settings.suppressMarkerClustering) {
                 this._MapMarkerClusterer = this._Map.createMapMarkerClusterer({
                     maxZoom: settings.plotterOptions.getAircraftMarkerClustererMaxZoom(),
                     minimumClusterSize: VRS.globalOptions.aircraftMarkerClustererMinimumClusterSize
