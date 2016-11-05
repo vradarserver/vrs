@@ -1531,6 +1531,8 @@ namespace VRS
             this._MapMarkerClickedHook =                            this._Map.hookMarkerClicked((event: Event, data: IMapMarkerEventArgs) => this.selectAircraftById(<number>(data.id)));
             this._CurrentLocationChangedHook =                      VRS.currentLocation ? VRS.currentLocation.hookCurrentLocationChanged(this.currentLocationChanged, this) : null;
             this._ConfigurationChangedHook =                        VRS.globalDispatch.hook(VRS.globalEvent.serverConfigChanged, this.configurationChanged, this);
+
+            this.refreshRangeCircles();
         }
 
         getName() : string

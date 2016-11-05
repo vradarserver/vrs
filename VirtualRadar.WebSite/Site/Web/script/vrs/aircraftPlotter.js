@@ -957,6 +957,7 @@ var VRS;
             this._MapMarkerClickedHook = this._Map.hookMarkerClicked(function (event, data) { return _this.selectAircraftById((data.id)); });
             this._CurrentLocationChangedHook = VRS.currentLocation ? VRS.currentLocation.hookCurrentLocationChanged(this.currentLocationChanged, this) : null;
             this._ConfigurationChangedHook = VRS.globalDispatch.hook(VRS.globalEvent.serverConfigChanged, this.configurationChanged, this);
+            this.refreshRangeCircles();
         }
         AircraftPlotter.prototype.getName = function () {
             return this._Settings.name;
