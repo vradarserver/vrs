@@ -1687,6 +1687,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="OptionsDescribeUserPassword" xml:space="preserve">
     <value>登录时必须提供的用户密码</value>
   </data>
+  <data name="OptionsDescribeUseSvgGraphics" xml:space="preserve">
+    <value>Yes to allow the use of SVG graphics on the web site, no to disable SVG graphics. SVG graphics reduce the load on the web server and look better on high resolution screens.</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="OptionsDescribeWebServerAllowInternetProximityGadgets" xml:space="preserve">
     <value>是 来自 Internet 的邻近小工具连接被允许获取航空器数据,否 将不能.局域网中邻近小工具不受本设置影响.</value>
   </data>
@@ -2741,6 +2745,10 @@ Suggestion made if the exception could indicate that the port number is in use.<
   <data name="UseSlewMethod" xml:space="preserve">
     <value>使用 "slew" 方式</value>
     <comment>"Slew" may not need translating? It is a mode in Flight Simulator X that allows aircraft to be positioned anywhere the user likes.</comment>
+  </data>
+  <data name="UseSvgGraphics" xml:space="preserve">
+    <value>Use SVG graphics</value>
+    <comment>** SAME AS ENGLISH ** SVG is a graphics file format</comment>
   </data>
   <data name="Version" xml:space="preserve">
     <value>版本</value>

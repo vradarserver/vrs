@@ -1653,6 +1653,10 @@
   <data name="OptionsDescribeUserPassword" xml:space="preserve">
     <value>Пароль, который должен ввести пользователь при входе.</value>
   </data>
+  <data name="OptionsDescribeUseSvgGraphics" xml:space="preserve">
+    <value>Yes to allow the use of SVG graphics on the web site, no to disable SVG graphics. SVG graphics reduce the load on the web server and look better on high resolution screens.</value>
+    <comment>** SAME AS ENGLISH **</comment>
+  </data>
   <data name="OptionsDescribeWebServerAllowInternetProximityGadgets" xml:space="preserve">
     <value>"Да" - если гаджетам, подключенным из Интернет, разрешено получать данные, "Нет" - если не разрешено. На гаджеты из локальной сети параметр не влияет.</value>
   </data>
@@ -2693,6 +2697,10 @@ Suggestion made if the exception could indicate that the port number is in use.<
   <data name="UseSlewMethod" xml:space="preserve">
     <value>Использовать "slew" метод</value>
     <comment>"Slew" may not need translating? It is a mode in Flight Simulator X that allows aircraft to be positioned anywhere the user likes.</comment>
+  </data>
+  <data name="UseSvgGraphics" xml:space="preserve">
+    <value>Use SVG graphics</value>
+    <comment>** SAME AS ENGLISH ** SVG is a graphics file format</comment>
   </data>
   <data name="Version" xml:space="preserve">
     <value>Версия</value>
