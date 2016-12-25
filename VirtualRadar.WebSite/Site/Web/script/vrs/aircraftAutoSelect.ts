@@ -42,7 +42,8 @@ namespace VRS
             name: 'VRS.AircraftAutoSelect'
         });
         private _Events = {
-            enabledChanged: 'enabledChanged'
+            enabledChanged:         'enabledChanged',
+            aircraftSelectedByIcao: 'aircraftSelectedByIcao'
         };
 
         private _AircraftList: AircraftList;
@@ -54,6 +55,8 @@ namespace VRS
         private _Filters: AircraftFilter[];
         private _AircraftListUpdatedHook: IEventHandle;
         private _SelectedAircraftChangedHook: IEventHandle;
+        private _SelectAircraftByIcao: string;
+        private _AutoClearSelectAircraftByIcao = true;
 
         constructor(aircraftList: AircraftList, name?: string)
         {
@@ -145,11 +148,44 @@ namespace VRS
         }
 
         /**
+         * Gets or sets the ICAO that will be selected on the next update.
+         */
+        getSelectAircraftByIcao = () : string =>
+        {
+            return this._SelectAircraftByIcao;
+        }
+        setSelectAircraftByIcao = (icao: string) =>
+        {
+            this._SelectAircraftByIcao = icao;
+        }
+
+        /**
+         * Gets or sets a value indicating that SelectAircraftByIcao will be automatically cleared after the next
+         * fetch of the aircraft list.
+         */
+        getAutoClearSelectAircraftByIcao = () : boolean =>
+        {
+            return this._AutoClearSelectAircraftByIcao;
+        }
+        setAutoClearSelectAircraftByIcao = (value: boolean) =>
+        {
+            this._AutoClearSelectAircraftByIcao = value;
+        }
+
+        /**
          * Raised after the Enabled property value has changed.
          */
         hookEnabledChanged = (callback: () => void, forceThis?: Object) : IEventHandle =>
         {
             return this._Dispatcher.hook(this._Events.enabledChanged, callback, forceThis);
+        }
+
+        /**
+         * Raised after an aircraft is selected by ICAO.
+         */
+        hookAircraftSelectedByIcao = (callback: () => void, forceThis?: Object) : IEventHandle =>
+        {
+            return this._Dispatcher.hook(this._Events.aircraftSelectedByIcao, callback, forceThis);
         }
 
         /**
@@ -379,10 +415,23 @@ namespace VRS
             var self = this;
             var selectedAircraft = this._AircraftList.getSelectedAircraft();
             var autoSelectAircraft = this.closestAircraft(this._AircraftList);
+            var autoSelectedByIcao = false;
+
+            if(this._SelectAircraftByIcao) {
+                var aircraftByIcao = this._AircraftList.findAircraftByIcao(this._SelectAircraftByIcao);
+                if(aircraftByIcao) {
+                    autoSelectAircraft = aircraftByIcao;
+                    autoSelectedByIcao = true;
+                }
+
+                if(this._AutoClearSelectAircraftByIcao) {
+                    this._SelectAircraftByIcao = null;
+                }
+            }
 
             var useAutoSelectedAircraft = function() {
                 if(autoSelectAircraft !== selectedAircraft) {
-                    self._AircraftList.setSelectedAircraft(autoSelectAircraft, false);
+                    self._AircraftList.setSelectedAircraft(autoSelectAircraft, autoSelectedByIcao);
                     selectedAircraft = autoSelectAircraft;
                 }
             };
@@ -414,6 +463,10 @@ namespace VRS
                 if(reselectAircraft) {
                     this._AircraftList.setSelectedAircraft(reselectAircraft, false);
                 }
+            }
+
+            if(autoSelectedByIcao) {
+                this._Dispatcher.raise(this._Events.aircraftSelectedByIcao);
             }
         }
 

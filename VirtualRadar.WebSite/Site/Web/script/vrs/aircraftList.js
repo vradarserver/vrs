@@ -15,6 +15,19 @@ var VRS;
             var aircraft = this[id];
             return aircraft && aircraft instanceof VRS.Aircraft ? this[id] : undefined;
         };
+        AircraftCollection.prototype.findAircraft = function (callback) {
+            var result = null;
+            for (var id in this) {
+                var aircraft = this[id];
+                if (aircraft && aircraft instanceof VRS.Aircraft) {
+                    if (callback(aircraft)) {
+                        result = aircraft;
+                        break;
+                    }
+                }
+            }
+            return result;
+        };
         AircraftCollection.prototype.toList = function (filterCallback) {
             var result = [];
             this.foreachAircraft(function (aircraft) {
@@ -138,6 +151,14 @@ var VRS;
         };
         AircraftList.prototype.toList = function (filterCallback) {
             return this._Aircraft.toList(filterCallback);
+        };
+        AircraftList.prototype.findAircraft = function (callback) {
+            return this._Aircraft.findAircraft(callback);
+        };
+        AircraftList.prototype.findAircraftByIcao = function (icao) {
+            return this.findAircraft(function (aircraft) {
+                return aircraft.icao.val === icao;
+            });
         };
         AircraftList.prototype.getAllAircraftIdsString = function () {
             var result = '';

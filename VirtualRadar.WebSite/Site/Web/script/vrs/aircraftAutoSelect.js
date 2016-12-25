@@ -13,8 +13,10 @@ var VRS;
                 name: 'VRS.AircraftAutoSelect'
             });
             this._Events = {
-                enabledChanged: 'enabledChanged'
+                enabledChanged: 'enabledChanged',
+                aircraftSelectedByIcao: 'aircraftSelectedByIcao'
             };
+            this._AutoClearSelectAircraftByIcao = true;
             this.dispose = function () {
                 if (_this._AircraftListUpdatedHook)
                     _this._AircraftList.unhook(_this._AircraftListUpdatedHook);
@@ -62,8 +64,23 @@ var VRS;
                         _this._Filters[index] = aircraftFilter;
                 }
             };
+            this.getSelectAircraftByIcao = function () {
+                return _this._SelectAircraftByIcao;
+            };
+            this.setSelectAircraftByIcao = function (icao) {
+                _this._SelectAircraftByIcao = icao;
+            };
+            this.getAutoClearSelectAircraftByIcao = function () {
+                return _this._AutoClearSelectAircraftByIcao;
+            };
+            this.setAutoClearSelectAircraftByIcao = function (value) {
+                _this._AutoClearSelectAircraftByIcao = value;
+            };
             this.hookEnabledChanged = function (callback, forceThis) {
                 return _this._Dispatcher.hook(_this._Events.enabledChanged, callback, forceThis);
+            };
+            this.hookAircraftSelectedByIcao = function (callback, forceThis) {
+                return _this._Dispatcher.hook(_this._Events.aircraftSelectedByIcao, callback, forceThis);
             };
             this.unhook = function (hookResult) {
                 _this._Dispatcher.unhook(hookResult);
@@ -215,9 +232,20 @@ var VRS;
                 var self = _this;
                 var selectedAircraft = _this._AircraftList.getSelectedAircraft();
                 var autoSelectAircraft = _this.closestAircraft(_this._AircraftList);
+                var autoSelectedByIcao = false;
+                if (_this._SelectAircraftByIcao) {
+                    var aircraftByIcao = _this._AircraftList.findAircraftByIcao(_this._SelectAircraftByIcao);
+                    if (aircraftByIcao) {
+                        autoSelectAircraft = aircraftByIcao;
+                        autoSelectedByIcao = true;
+                    }
+                    if (_this._AutoClearSelectAircraftByIcao) {
+                        _this._SelectAircraftByIcao = null;
+                    }
+                }
                 var useAutoSelectedAircraft = function () {
                     if (autoSelectAircraft !== selectedAircraft) {
-                        self._AircraftList.setSelectedAircraft(autoSelectAircraft, false);
+                        self._AircraftList.setSelectedAircraft(autoSelectAircraft, autoSelectedByIcao);
                         selectedAircraft = autoSelectAircraft;
                     }
                 };
@@ -249,6 +277,9 @@ var VRS;
                     if (reselectAircraft) {
                         _this._AircraftList.setSelectedAircraft(reselectAircraft, false);
                     }
+                }
+                if (autoSelectedByIcao) {
+                    _this._Dispatcher.raise(_this._Events.aircraftSelectedByIcao);
                 }
             };
             this.selectedAircraftChanged = function () {

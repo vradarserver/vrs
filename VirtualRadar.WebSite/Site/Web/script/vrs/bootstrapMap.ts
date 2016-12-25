@@ -368,6 +368,14 @@ namespace VRS
             if(VRS.AircraftAutoSelect) {
                 pageSettings.aircraftAutoSelect = new VRS.AircraftAutoSelect(pageSettings.aircraftList);
                 pageSettings.aircraftAutoSelect.loadAndApplyState();
+
+                if(purl) {
+                    var preselectIcao = $.url().param('icao');
+                    if(preselectIcao !== null && preselectIcao !== undefined && preselectIcao.length === 6) {
+                        pageSettings.aircraftAutoSelect.setSelectAircraftByIcao(preselectIcao.toUpperCase());
+                        pageSettings.aircraftAutoSelect.setAutoClearSelectAircraftByIcao(true);
+                    }
+                }
             }
 
             // Create the object that can filter the aircraft list

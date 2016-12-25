@@ -43,6 +43,29 @@ namespace VRS
         }
 
         /**
+         * Passes each aircraft to the callback in turn until the callback returns true. Returns
+         * the aircraft that the callback returned true for or null if the callback never returned
+         * true.
+         * @param callback
+         */
+        findAircraft(callback: (Aircraft: Aircraft) => boolean) : Aircraft
+        {
+            var result: Aircraft = null;
+
+            for(var id in this) {
+                var aircraft = this[id];
+                if(aircraft && aircraft instanceof VRS.Aircraft) {
+                    if(callback(aircraft)) {
+                        result = aircraft;
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /**
          * Returns the list of aircraft as an unordered array.
          */
         toList(filterCallback?: (aircraft:Aircraft) => boolean) : Aircraft[]
@@ -306,6 +329,27 @@ namespace VRS
         findAircraftById = function(id: number) : Aircraft
         {
             return this._Aircraft.findAircraftById(id);
+        }
+
+        /**
+         * Passes each aircraft to a callback, if the callback returns true then that aircraft gets
+         * returned, otherwise null is returned.
+         * @param callback
+         */
+        findAircraft(callback: (Aircraft: Aircraft) => boolean) : Aircraft
+        {
+            return this._Aircraft.findAircraft(callback);
+        }
+
+        /**
+         * Returns the aircraft with the ICAO passed across or null if no such aircraft could be found.
+         * @param icao
+         */
+        findAircraftByIcao(icao: string) : Aircraft
+        {
+            return this.findAircraft((aircraft: Aircraft) => {
+                return aircraft.icao.val === icao;
+            });
         }
 
         /**
