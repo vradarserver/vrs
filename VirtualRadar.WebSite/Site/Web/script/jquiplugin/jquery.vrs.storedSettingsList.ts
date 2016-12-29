@@ -193,9 +193,9 @@ namespace VRS
 
             var hasContent = false;
             var keys = VRS.configStorage.getAllVirtualRadarKeys().sort();
-            $.each(keys, function() {
+            $.each(keys, (idx, key) => {
                 hasContent = true;
-                var keyName = String(this);
+                var keyName = String(key);
                 var listItem =
                         $('<li/>')
                             .text(keyName)
