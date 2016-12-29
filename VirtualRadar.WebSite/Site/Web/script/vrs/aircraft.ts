@@ -376,6 +376,7 @@ namespace VRS
         latitude:               NumberValue =                       new NumberValue();
         longitude:              NumberValue =                       new NumberValue();
         isMlat:                 BoolValue =                         new BoolValue();
+        positionAgeSeconds:     NumberValue =                       new NumberValue();
         positionTime:           NumberValue =                       new NumberValue();
         positionStale:          BoolValue =                         new BoolValue();
         speed:                  NumberValue =                       new NumberValue();
@@ -430,7 +431,7 @@ namespace VRS
          * and not for every value on every refresh. At best that can cause flicker, at worst it
          * can hammer the browser.
          */
-        applyJson(aircraftJson: IAircraftListAircraft, aircraftListFetcher: AircraftListFetcher, settings: Aircraft_ApplyJsonSettings)
+        applyJson(aircraftJson: IAircraftListAircraft, aircraftListFetcher: AircraftListFetcher, settings: Aircraft_ApplyJsonSettings, serverTicks: number)
         {
             this.id = aircraftJson.Id;
             this.secondsTracked = aircraftJson.TSecs;
@@ -453,6 +454,7 @@ namespace VRS
             this.setValue(this.isMlat,               aircraftJson.Mlat);
             this.setValue(this.positionTime,         aircraftJson.PosTime);
             this.setValue(this.positionStale,        !!aircraftJson.PosStale, true);
+            this.setValue(this.positionAgeSeconds,   isNaN(this.positionTime.val) ? undefined : Math.max(0, (serverTicks - this.positionTime.val) / 1000));
             this.setValue(this.speed,                aircraftJson.Spd);
             this.setValue(this.speedType,            aircraftJson.SpdTyp);
             this.setValue(this.verticalSpeed,        aircraftJson.Vsi);
@@ -1161,6 +1163,14 @@ namespace VRS
         }
 
         /**
+         * Formats the position age in seconds as a string.
+         */
+        formatPositionAgeSeconds() : string
+        {
+            return VRS.format.positionAgeSeconds(this.positionAgeSeconds.val);
+        }
+
+        /**
          * Returns the formatted name of the receiver that last picked up a message for this aircraft.
          */
         formatReceiver() : string
@@ -1201,7 +1211,7 @@ namespace VRS
         }
 
         /**
-         * Formats the seconds tracks as a string.
+         * Formats the seconds tracked as a string.
          */
         formatSecondsTracked() : string
         {

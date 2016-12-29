@@ -909,6 +909,7 @@ namespace VRS
             }
         }
     });
+
     VRS.renderPropertyHandlers[VRS.RenderProperty.PositionOnMap] = new VRS.RenderPropertyHandler({
         property:               VRS.RenderProperty.PositionOnMap,
         surfaces:               VRS.RenderSurface.DetailBody,
@@ -1179,6 +1180,17 @@ namespace VRS
         alignment:              VRS.Alignment.Right,
         hasChangedCallback:     function() { return true; },
         contentCallback:        function(aircraft) { return aircraft.formatSecondsTracked(); }
+    });
+
+    VRS.renderPropertyHandlers[VRS.RenderProperty.PositionAgeSeconds] = new VRS.RenderPropertyHandler({
+        property:               VRS.RenderProperty.PositionAgeSeconds,
+        surfaces:               VRS.RenderSurface.DetailBody | VRS.RenderSurface.InfoWindow | VRS.RenderSurface.List | VRS.RenderSurface.Marker,
+        headingKey:             'ListPositionAge',
+        labelKey:               'PositionAge',
+        sortableField:          VRS.AircraftListSortableField.PositionTime,
+        alignment:              VRS.Alignment.Right,
+        hasChangedCallback:     function(aircraft: Aircraft) { return aircraft.positionAgeSeconds.chg; },
+        contentCallback:        function(aircraft) { return aircraft.formatPositionAgeSeconds(); }
     });
 
     VRS.renderPropertyHandlers[VRS.RenderProperty.Tisb] = new VRS.RenderPropertyHandler({

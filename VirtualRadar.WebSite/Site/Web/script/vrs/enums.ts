@@ -81,6 +81,7 @@ namespace VRS
         ModelIcao:          'typ',
         Operator:           'opr',
         OperatorIcao:       'opi',
+        PositionTime:       'pot',
         Receiver:           'rec',
         Registration:       'reg',
         Serial:             'ser',
@@ -378,6 +379,7 @@ namespace VRS
         OperatorIcao:                   'opi',
         Picture:                        'pct',      // Pre-2.0.2 this was pic
         PictureOrThumbnails:            'pic',      // Took over pic from 2.0.2 onwards
+        PositionAgeSeconds:             'pas',
         PositionOnMap:                  'pom',
         Receiver:                       'rec',
         Registration:                   'reg',

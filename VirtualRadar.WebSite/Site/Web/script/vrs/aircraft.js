@@ -159,6 +159,7 @@ var VRS;
             this.latitude = new NumberValue();
             this.longitude = new NumberValue();
             this.isMlat = new BoolValue();
+            this.positionAgeSeconds = new NumberValue();
             this.positionTime = new NumberValue();
             this.positionStale = new BoolValue();
             this.speed = new NumberValue();
@@ -208,7 +209,7 @@ var VRS;
                 return VRS.format.serial(this.serial.val);
             };
         }
-        Aircraft.prototype.applyJson = function (aircraftJson, aircraftListFetcher, settings) {
+        Aircraft.prototype.applyJson = function (aircraftJson, aircraftListFetcher, settings, serverTicks) {
             this.id = aircraftJson.Id;
             this.secondsTracked = aircraftJson.TSecs;
             this._AircraftListFetcher = aircraftListFetcher;
@@ -229,6 +230,7 @@ var VRS;
             this.setValue(this.isMlat, aircraftJson.Mlat);
             this.setValue(this.positionTime, aircraftJson.PosTime);
             this.setValue(this.positionStale, !!aircraftJson.PosStale, true);
+            this.setValue(this.positionAgeSeconds, isNaN(this.positionTime.val) ? undefined : Math.max(0, (serverTicks - this.positionTime.val) / 1000));
             this.setValue(this.speed, aircraftJson.Spd);
             this.setValue(this.speedType, aircraftJson.SpdTyp);
             this.setValue(this.verticalSpeed, aircraftJson.Vsi);
@@ -637,6 +639,9 @@ var VRS;
         };
         Aircraft.prototype.formatPictureHtml = function (requestSize, allowResizeUp, linkToOriginal, blankSize) {
             return VRS.format.pictureHtml(this.registration.val, this.icao.val, this.pictureWidth.val, this.pictureHeight.val, requestSize, allowResizeUp, linkToOriginal, blankSize);
+        };
+        Aircraft.prototype.formatPositionAgeSeconds = function () {
+            return VRS.format.positionAgeSeconds(this.positionAgeSeconds.val);
         };
         Aircraft.prototype.formatReceiver = function () {
             return VRS.format.receiver(this.receiverId.val, this._AircraftListFetcher);

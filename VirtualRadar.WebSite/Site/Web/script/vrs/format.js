@@ -396,6 +396,14 @@ var VRS;
         Format.prototype.popularName = function (popularName) {
             return popularName || '';
         };
+        Format.prototype.positionAgeSeconds = function (seconds) {
+            var result = '';
+            if (!isNaN(seconds)) {
+                var hms = VRS.timeHelper.secondsToHoursMinutesSeconds(seconds);
+                result = VRS.$$.formatHoursMinutesSeconds(hms.hours, hms.minutes, hms.seconds);
+            }
+            return result;
+        };
         Format.prototype.pressure = function (value, unit, showUnit) {
             var result = '';
             value = VRS.unitConverter.convertPressure(value, VRS.Pressure.InHg, unit);

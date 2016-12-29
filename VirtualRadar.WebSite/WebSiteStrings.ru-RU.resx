@@ -932,6 +932,10 @@
   <data name="ListPopularName" xml:space="preserve">
     <value>Прозвище</value>
   </data>
+  <data name="ListPositionAge" xml:space="preserve">
+    <value>Posn. Age</value>
+    <comment>** SAME AS ENGLISH ** List heading for value showing how many seconds old a position is</comment>
+  </data>
   <data name="ListPressureAltitude" xml:space="preserve">
     <value>Высота (ISA)</value>
   </data>
@@ -1281,6 +1285,10 @@
   </data>
   <data name="PopularName" xml:space="preserve">
     <value>Популярное название</value>
+  </data>
+  <data name="PositionAge" xml:space="preserve">
+    <value>Position Age</value>
+    <comment>** SAME AS ENGLISH ** How many seconds old a position is</comment>
   </data>
   <data name="PositionAndAltitude" xml:space="preserve">
     <value>Цветовая градация высоты</value>

@@ -703,6 +703,21 @@ namespace VRS
         }
 
         /**
+         * Formats the position age in seconds seconds as a string.
+         */
+        positionAgeSeconds(seconds: number) : string
+        {
+            var result = '';
+
+            if(!isNaN(seconds)) {
+                var hms = VRS.timeHelper.secondsToHoursMinutesSeconds(seconds);
+                result = VRS.$$.formatHoursMinutesSeconds(hms.hours, hms.minutes, hms.seconds);
+            }
+
+            return result;
+        }
+
+        /**
          * Formats the pressure for display.
          */
         pressure(value: number, unit: PressureEnum, showUnit: boolean) : string
@@ -901,7 +916,7 @@ namespace VRS
         }
 
         /**
-         * Formats the seconds tracks as a string.
+         * Formats the seconds tracked as a string.
          */
         secondsTracked(secondsTracked: number) : string
         {

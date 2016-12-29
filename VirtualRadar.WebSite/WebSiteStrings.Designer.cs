@@ -2401,6 +2401,15 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Posn. Age.
+        /// </summary>
+        public static string ListPositionAge {
+            get {
+                return ResourceManager.GetString("ListPositionAge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Altitude (ISA).
         /// </summary>
         public static string ListPressureAltitude {
@@ -3423,6 +3432,15 @@ namespace VirtualRadar.WebSite {
         public static string PopularName {
             get {
                 return ResourceManager.GetString("PopularName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Position Age.
+        /// </summary>
+        public static string PositionAge {
+            get {
+                return ResourceManager.GetString("PositionAge", resourceCulture);
             }
         }
         

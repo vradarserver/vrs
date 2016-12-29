@@ -264,6 +264,12 @@ namespace VRS
         getStringCallback:  function(aircraft) { return aircraft.operatorIcao.val; }
     });
 
+    VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.PositionTime] = new VRS.AircraftListSortHandler({
+        field:              VRS.AircraftListSortableField.PositionTime,
+        labelKey:           'PositionAge',
+        getNumberCallback:  function(aircraft) { return aircraft.positionTime.val; }
+    });
+
     VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.Receiver] = new VRS.AircraftListSortHandler({
         field:              VRS.AircraftListSortableField.Receiver,
         labelKey:           'Receiver',

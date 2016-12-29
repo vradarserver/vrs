@@ -204,18 +204,18 @@ var VRS;
                     if (isNaN(aircraftJson.Id))
                         continue;
                     var id = aircraftJson.Id;
-                    var existing = this._Aircraft[id];
-                    var isNew = !existing;
+                    var aircraftState = this._Aircraft[id];
+                    var isNew = !aircraftState;
                     if (!isNew)
                         delete this._Aircraft[id];
                     else {
-                        existing = new VRS.Aircraft();
-                        newAircraft[id] = existing;
+                        aircraftState = new VRS.Aircraft();
+                        newAircraft[id] = aircraftState;
                     }
-                    existing.applyJson(aircraftJson, aircraftListFetcher, aircraftApplyJsonSettings);
-                    aircraft[id] = existing;
+                    aircraftState.applyJson(aircraftJson, aircraftListFetcher, aircraftApplyJsonSettings, this._ServerTicks);
+                    aircraft[id] = aircraftState;
                     if (isNew && this._SelectedAircraft && this._SelectedAircraft.id === id)
-                        reselectedAircraft = existing;
+                        reselectedAircraft = aircraftState;
                 }
                 var offRadar = this._Aircraft;
                 this._Aircraft = aircraft;
