@@ -401,6 +401,13 @@ namespace VRS
                     unitDisplayPreferences: pageSettings.unitDisplayPreferences
                 });
                 pageSettings.aircraftPlotter.refreshRangeCircles();
+
+                if(purl) {
+                    var initialMovingMapStatus = $.url().param('movingMap');
+                    if(initialMovingMapStatus !== null && initialMovingMapStatus !== undefined) {
+                        pageSettings.aircraftPlotter.setMovingMap(initialMovingMapStatus !== '0');
+                    }
+                }
             }
 
             // Create the info window that gets shown against the selected aircraft.

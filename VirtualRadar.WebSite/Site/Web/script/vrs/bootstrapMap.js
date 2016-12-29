@@ -146,6 +146,12 @@ var VRS;
                     unitDisplayPreferences: pageSettings.unitDisplayPreferences
                 });
                 pageSettings.aircraftPlotter.refreshRangeCircles();
+                if (purl) {
+                    var initialMovingMapStatus = $.url().param('movingMap');
+                    if (initialMovingMapStatus !== null && initialMovingMapStatus !== undefined) {
+                        pageSettings.aircraftPlotter.setMovingMap(initialMovingMapStatus !== '0');
+                    }
+                }
             }
             if (VRS.jQueryUIHelper.getAircraftInfoWindowPlugin && pageSettings.aircraftPlotterOptions) {
                 pageSettings.infoWindowJQ = $('<div/>')
