@@ -95,7 +95,7 @@ namespace VRS
         {
             var lhsValue = this.GetNumberCallback(lhs, unitDisplayPreferences);
             var rhsValue = this.GetNumberCallback(rhs, unitDisplayPreferences);
-            if(!lhsValue && lhsValue !== 0) return rhsValue === undefined ? 0 : -1;
+            if(!lhsValue && lhsValue !== 0) return -1;
             if(!rhsValue && rhsValue !== 0) return 1;
             return lhsValue - rhsValue;
         }
@@ -105,7 +105,13 @@ namespace VRS
          */
         private compareStringValues(lhs: Aircraft, rhs: Aircraft, unitDisplayPreferences: UnitDisplayPreferences) : number
         {
-            return (this.GetStringCallback(lhs, unitDisplayPreferences) || '').localeCompare(this.GetStringCallback(rhs, unitDisplayPreferences) || '');
+            var lhsString = this.GetStringCallback(lhs, unitDisplayPreferences);
+            var rhsString = this.GetStringCallback(rhs, unitDisplayPreferences);
+
+            if(lhsString === undefined || lhsString === null) return -1;
+            if(rhsString === undefined || rhsString === null) return 1;
+
+            return lhsString.localeCompare(rhsString);
         }
     }
 
@@ -264,10 +270,10 @@ namespace VRS
         getStringCallback:  function(aircraft) { return aircraft.operatorIcao.val; }
     });
 
-    VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.PositionTime] = new VRS.AircraftListSortHandler({
-        field:              VRS.AircraftListSortableField.PositionTime,
+    VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.PositionAgeSeconds] = new VRS.AircraftListSortHandler({
+        field:              VRS.AircraftListSortableField.PositionAgeSeconds,
         labelKey:           'PositionAge',
-        getNumberCallback:  function(aircraft) { return aircraft.positionTime.val; }
+        getNumberCallback:  function(aircraft) { return aircraft.positionAgeSeconds.val; }
     });
 
     VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.Receiver] = new VRS.AircraftListSortHandler({

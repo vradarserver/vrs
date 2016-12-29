@@ -81,7 +81,7 @@ namespace VRS
         ModelIcao:          'typ',
         Operator:           'opr',
         OperatorIcao:       'opi',
-        PositionTime:       'pot',
+        PositionAgeSeconds: 'pas',
         Receiver:           'rec',
         Registration:       'reg',
         Serial:             'ser',

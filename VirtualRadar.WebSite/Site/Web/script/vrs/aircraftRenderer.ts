@@ -1187,7 +1187,7 @@ namespace VRS
         surfaces:               VRS.RenderSurface.DetailBody | VRS.RenderSurface.InfoWindow | VRS.RenderSurface.List | VRS.RenderSurface.Marker,
         headingKey:             'ListPositionAge',
         labelKey:               'PositionAge',
-        sortableField:          VRS.AircraftListSortableField.PositionTime,
+        sortableField:          VRS.AircraftListSortableField.PositionAgeSeconds,
         alignment:              VRS.Alignment.Right,
         hasChangedCallback:     function(aircraft: Aircraft) { return aircraft.positionAgeSeconds.chg; },
         contentCallback:        function(aircraft) { return aircraft.formatPositionAgeSeconds(); }
