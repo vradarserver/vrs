@@ -14,6 +14,11 @@
         <script src="script/vrs/embeddedSvgs.js" type="text/javascript"></script>
         <script src="script/vrs/svgGenerator.js" type="text/javascript"></script>
         <script src="script/vrs/aircraftPlotter.js" type="text/javascript"></script>
+
+        <script type="text/javascript">
+            // ADD YOUR CUSTOM AIRCRAFT MARKERS BELOW THIS LINE
+        </script>
+
         <style type="text/css">
             body {
                 font-family: sans-serif;
@@ -28,6 +33,18 @@
             }
             .detail span:not(:first-child) {
                 margin-left: 10px;
+            }
+            .heading {
+                font-weight: 700;
+            }
+            .marker-heading {
+                color: #ff00dc;
+            }
+            .fileName {
+                color: #ff00dc;
+            }
+            .missing-svg {
+                margin-bottom: 0.9em;
             }
             code {
                 font-size: 8pt;
@@ -59,7 +76,7 @@
                 $.each(VRS.globalOptions.aircraftMarkers, function(idx, marker) {
                     $('#sheet')
                     .append($('<p />')
-                        .append($('<span />')
+                        .append($('<span class="heading marker-heading" />')
                             .text(marker.getNormalFileName())
                         )
                     )
@@ -101,18 +118,16 @@
                                 break;
                         }
                         heading += ':';
-                        if(fileName !== '') {
-                            heading += ' ' + fileName + ' in ' + folder;
-                        }
 
-                        if(heading !== '') {
-                            $('#sheet')
-                            .append($('<p />')
-                                .append($('<span />')
-                                    .text(heading)
-                                )
-                            );
-                        }
+                        $('#sheet')
+                        .append($('<p />')
+                            .append($('<span class="heading" />')
+                                .text(heading)
+                            )
+                            .append($('<span class="fileName" />')
+                                .text(fileName === '' ? '' : (' ' + fileName))
+                            )
+                        );
 
                         var container = $('<div />').addClass('container');
                         $('#sheet').append(container);
@@ -131,7 +146,7 @@
                                 case ImageSet.SvgSelected:
                                     var embeddedSvg = marker.getEmbeddedSvg();
                                     if(!embeddedSvg) {
-                                        $('<p><b>No embedded SVG declared</b></p>')
+                                        $('<p class="missing-svg">No embedded SVG</p>')
                                             .appendTo(container);
                                     } else {
                                         var size = marker.getSize();
