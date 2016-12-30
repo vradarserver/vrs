@@ -160,6 +160,14 @@ var VRS;
             matches: function (aircraft) { return aircraft.species.val === VRS.Species.Helicopter; }
         }),
         new VRS.AircraftMarker({
+            normalFileName: 'Balloon.png',
+            selectedFileName: 'Balloon-Selected.png',
+            embeddedSvg: VRS.EmbeddedSvgs.Marker_Balloon,
+            size: { width: 20, height: 25 },
+            canRotate: false,
+            matches: function (aircraft) { return aircraft.modelIcao.val === 'BALL'; }
+        }),
+        new VRS.AircraftMarker({
             normalFileName: 'Type-GLID.png',
             selectedFileName: 'Type-GLID-Selected.png',
             embeddedSvg: VRS.EmbeddedSvgs.Marker_TypeGLID,

@@ -101,7 +101,7 @@ var VRS;
             }
             var centerX = width / 2;
             var pinTextHeight = pinTextLineHeight * countLines;
-            var startY = height - (pinTextHeight + 7);
+            var startY = height - (pinTextHeight + 5);
             var pinTextGroup = this.addSvgElement(svg, 'g', {
                 id: 'pin-text',
                 x: 0,
@@ -119,8 +119,8 @@ var VRS;
             }
             for (var i = 0; i < countLines; ++i) {
                 var text = pinTextLines[i];
-                if (text === null) {
-                    text = '';
+                if (text === null || text === undefined || text === '') {
+                    text = ' ';
                 }
                 var tspan = this.addSvgElement(textElement, 'tspan', {
                     x: centerX,
