@@ -8,7 +8,11 @@
 
         <title>Marker Contact Sheet</title>
         <script src="script/jquery.js" type="text/javascript"></script>
+        <script src="script/modernizr.js" type="text/javascript"></script>
         <script src="script/vrs/enums.js" type="text/javascript"></script>
+        <script src="script/vrs/utility.js" type="text/javascript"></script>
+        <script src="script/vrs/embeddedSvgs.js" type="text/javascript"></script>
+        <script src="script/vrs/svgGenerator.js" type="text/javascript"></script>
         <script src="script/vrs/aircraftPlotter.js" type="text/javascript"></script>
         <style type="text/css">
             body {
@@ -35,11 +39,21 @@
         </div>
         <script type="text/javascript">
             var _StepAngle = 11.25;
-        
+            var _SvgGenerator = new VRS.SvgGenerator();
+
             function formFullPath(rotationAngle, folder, fileName)
             {
                 return folder + '/top/no-cache/Rotate-' + rotationAngle + '/' + fileName;
             }
+
+            ImageSet = {
+                BitmapNormal:   0,
+                BitmapSelected: 1,
+                SvgNormal:      2,
+                SvgSelected:    3,
+
+                Count:          4
+            };
         
             jQuery(document).ready(function($) {
                 $.each(VRS.globalOptions.aircraftMarkers, function(idx, marker) {
@@ -65,28 +79,78 @@
                         .text(marker.getMatches().toString())
                     );
                     
-                    for(var innerCount = 0;innerCount < 2;++innerCount) {
+                    for(var imageSet = 0;imageSet < ImageSet.Count;++imageSet) {
                         var folder = marker.getFolder();
-                        var fileName = innerCount == 0 ? marker.getNormalFileName() : marker.getSelectedFileName();
-                        if(innerCount == 1) {
-                            if(fileName == marker.getNormalFileName()) continue;
+                        var heading = '';
+                        var fileName = '';
+
+                        switch(imageSet) {
+                            case ImageSet.BitmapNormal:
+                                heading = 'BITMAP-NORMAL';
+                                fileName = marker.getNormalFileName();
+                                break;
+                            case ImageSet.BitmapSelected:
+                                heading = 'BITMAP-SELECTED';
+                                fileName = marker.getSelectedFileName();
+                                break;
+                            case ImageSet.SvgNormal:
+                                heading = 'SVG-NORMAL';
+                                break;
+                            case ImageSet.SvgSelected:
+                                heading = 'SVG-SELECTED';
+                                break;
+                        }
+                        heading += ':';
+                        if(fileName !== '') {
+                            heading += ' ' + fileName + ' in ' + folder;
+                        }
+
+                        if(heading !== '') {
                             $('#sheet')
                             .append($('<p />')
                                 .append($('<span />')
-                                    .text(fileName)
+                                    .text(heading)
                                 )
                             );
                         }
-                    
+
                         var container = $('<div />').addClass('container');
                         $('#sheet').append(container);
-                    
+
                         var step = marker.getCanRotate() ? _StepAngle : 999;
                         for(var angle = 0;angle < 361;angle += step) {
                             var normalisedAngle = angle % 360;
-                            $('<img />')
-                                .attr('src', formFullPath(normalisedAngle, folder, fileName))
-                                .appendTo(container);
+                            switch(imageSet) {
+                                case ImageSet.BitmapNormal:
+                                case ImageSet.BitmapSelected:
+                                    $('<img />')
+                                        .attr('src', formFullPath(normalisedAngle, folder, fileName))
+                                        .appendTo(container);
+                                    break;
+                                case ImageSet.SvgNormal:
+                                case ImageSet.SvgSelected:
+                                    var embeddedSvg = marker.getEmbeddedSvg();
+                                    if(!embeddedSvg) {
+                                        $('<p><b>No embedded SVG declared</b></p>')
+                                            .appendTo(container);
+                                    } else {
+                                        var size = marker.getSize();
+                                        var isSelected = imageSet === ImageSet.SvgSelected;
+                                        var svg = _SvgGenerator.generateAircraftMarker(
+                                            embeddedSvg,
+                                            isSelected ? VRS.globalOptions.svgAircraftMarkerSelectedFill : VRS.globalOptions.svgAircraftMarkerNormalFill,
+                                            size.width,
+                                            size.height,
+                                            normalisedAngle,
+                                            false,
+                                            [],
+                                            0,
+                                            VRS.browserHelper.isHighDpi()
+                                        );
+                                        container[0].appendChild(svg);
+                                    }
+                                    break;
+                            }
                         }
                     }
                     $('#sheet').append('<hr />');
