@@ -125,14 +125,14 @@ namespace VRS
   </defs>
   <g
      id="paths"
-     style="opacity:1">
+     style="display:inline">
     <path
-       style="opacity:1;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#shadow-filter)"
-       d="m 8.5520923,21.906407 c 0.9791668,0 1.9583337,0 2.9375007,0 -0.01042,0.604167 -0.02083,1.208333 -0.03125,1.8125 -0.96875,-0.01042 -1.9375006,-0.02083 -2.9062507,-0.03125 0,-0.59375 0,-1.1875 0,-1.78125 z"
+       style="opacity:1;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#shadow-filter)"
+       d="m 8.0208423,19.562657 c 1.3333334,0 2.6666677,0 4.0000007,0 2.105091,-2.800126 4.222521,-5.659386 5.604961,-8.899686 C 18.657193,8.3140058 17.895505,5.3200728 15.773645,3.8389018 12.971283,1.8276909 9.1006804,1.6200797 5.9473448,2.8858993 3.7232712,3.7434188 1.9282603,5.8559708 1.8958243,8.3051068 c -0.06138,1.7827722 0.95542,3.3619812 1.7676235,4.8795442 1.2995485,2.225035 2.7888644,4.335676 4.3573945,6.378006 z"
        id="outline-path-envelope" />
     <path
-       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#shadow-filter)"
-       d="m 8.0208423,19.562657 c 1.3333334,0 2.6666677,0 4.0000007,0 2.105091,-2.800126 4.222521,-5.659386 5.604961,-8.899686 C 18.657193,8.3140058 17.895505,5.3200728 15.773645,3.8389018 12.971283,1.8276909 9.1006804,1.6200797 5.9473448,2.8858993 3.7232712,3.7434188 1.9282603,5.8559708 1.8958243,8.3051068 c -0.06138,1.7827722 0.95542,3.3619812 1.7676235,4.8795442 1.2995485,2.225035 2.7888644,4.335676 4.3573945,6.378006 z"
+       style="opacity:1;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 8.5520923,22.0 c 0.9791668,0 1.9583337,0 2.9375007,0 -0.01042,0.604167 -0.02083,1.208333 -0.03125,1.8125 -0.96875,-0.01042 -1.9375006,-0.02083 -2.9062507,-0.03125 0,-0.59375 0,-1.1875 0,-1.78125 z"
        id="solid-path-gondola" />
   </g>
 </svg>`,
