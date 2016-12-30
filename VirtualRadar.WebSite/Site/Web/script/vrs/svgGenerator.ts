@@ -85,8 +85,9 @@ namespace VRS
          * @param addAltitudeStalk
          * @param pinTextLines
          * @param pinTextLineHeight
+         * @param isHighDpi
          */
-        public generateAircraftMarker(embeddedSvg: EmbeddedSvg, fillColour: string, width: number, height: number, rotation: number, addAltitudeStalk: boolean, pinTextLines: string[], pinTextLineHeight: number) : Element
+        public generateAircraftMarker(embeddedSvg: EmbeddedSvg, fillColour: string, width: number, height: number, rotation: number, addAltitudeStalk: boolean, pinTextLines: string[], pinTextLineHeight: number, isHighDpi: boolean) : Element
         {
             var result = this.createSvgNode(width * 2, height * 2, this.buildViewBox(0, 0, width, height));
 

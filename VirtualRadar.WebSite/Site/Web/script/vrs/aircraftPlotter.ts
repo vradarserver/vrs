@@ -1903,6 +1903,7 @@ namespace VRS
             var aircraft = details.aircraft;
             var marker = this.getAircraftMarkerSettings(aircraft);
             var useSvg = marker.useEmbeddedSvg();
+            var isHighDpi = VRS.browserHelper.isHighDpi();
 
             details.isSvg = !!useSvg;
 
@@ -1962,7 +1963,7 @@ namespace VRS
 
             var requestSize = size;
             var multiplier = 1;
-            if(!useSvg && VRS.browserHelper.isHighDpi()) {
+            if(!useSvg && isHighDpi) {
                 multiplier = 2;
                 requestSize = {
                     width: size.width * multiplier,
@@ -1974,7 +1975,7 @@ namespace VRS
             url += '/top';
             url += '/Wdth-' + requestSize.width;
             url += '/Hght-' + requestSize.height;
-            if(VRS.browserHelper.isHighDpi()) {
+            if(isHighDpi) {
                 url += '/hiDpi';
             }
             if(details.iconRotation || details.iconRotation === 0) {
@@ -2003,7 +2004,8 @@ namespace VRS
                     details.iconRotation,
                     hasAltitudeStalk,
                     pinTextLines > 0 ? details.pinTexts : null,
-                    this._Settings.pinTextLineHeight
+                    this._Settings.pinTextLineHeight,
+                    isHighDpi
                 );
                 var svgText = this._SvgGenerator.serialiseSvg(svg);
                 url = 'data:image/svg+xml;charset=UTF-8;base64,' + VRS.stringUtility.safeBtoa(svgText);

@@ -1238,6 +1238,7 @@ var VRS;
             var aircraft = details.aircraft;
             var marker = this.getAircraftMarkerSettings(aircraft);
             var useSvg = marker.useEmbeddedSvg();
+            var isHighDpi = VRS.browserHelper.isHighDpi();
             details.isSvg = !!useSvg;
             var size = marker.getSize();
             size = { width: size.width, height: size.height };
@@ -1290,7 +1291,7 @@ var VRS;
             }
             var requestSize = size;
             var multiplier = 1;
-            if (!useSvg && VRS.browserHelper.isHighDpi()) {
+            if (!useSvg && isHighDpi) {
                 multiplier = 2;
                 requestSize = {
                     width: size.width * multiplier,
@@ -1301,7 +1302,7 @@ var VRS;
             url += '/top';
             url += '/Wdth-' + requestSize.width;
             url += '/Hght-' + requestSize.height;
-            if (VRS.browserHelper.isHighDpi()) {
+            if (isHighDpi) {
                 url += '/hiDpi';
             }
             if (details.iconRotation || details.iconRotation === 0) {
@@ -1320,7 +1321,7 @@ var VRS;
             var urlChanged = details.iconUrl !== url;
             details.iconUrl = url;
             if (useSvg && urlChanged) {
-                var svg = this._SvgGenerator.generateAircraftMarker(marker.getEmbeddedSvg(), marker.getSvgFillColour(aircraft, isSelectedAircraft), requestSize.width, requestSize.height, details.iconRotation, hasAltitudeStalk, pinTextLines > 0 ? details.pinTexts : null, this._Settings.pinTextLineHeight);
+                var svg = this._SvgGenerator.generateAircraftMarker(marker.getEmbeddedSvg(), marker.getSvgFillColour(aircraft, isSelectedAircraft), requestSize.width, requestSize.height, details.iconRotation, hasAltitudeStalk, pinTextLines > 0 ? details.pinTexts : null, this._Settings.pinTextLineHeight, isHighDpi);
                 var svgText = this._SvgGenerator.serialiseSvg(svg);
                 url = 'data:image/svg+xml;charset=UTF-8;base64,' + VRS.stringUtility.safeBtoa(svgText);
                 svg = null;
