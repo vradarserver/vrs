@@ -7,6 +7,7 @@ var VRS;
                 normalFileName: null,
                 selectedFileName: settings.normalFileName || null,
                 embeddedSvg: null,
+                svgFillColourCallback: function (aircraft, isSelected) { return isSelected ? VRS.globalOptions.svgAircraftMarkerSelectedFill : VRS.globalOptions.svgAircraftMarkerNormalFill; },
                 size: { width: 35, height: 35 },
                 isAircraft: true,
                 canRotate: true,
@@ -74,7 +75,7 @@ var VRS;
             return VRS.SvgGenerator.useSvgGraphics() && this._Settings.embeddedSvg;
         };
         AircraftMarker.prototype.getSvgFillColour = function (aircraft, isSelected) {
-            return isSelected ? VRS.globalOptions.svgAircraftMarkerSelectedFill : VRS.globalOptions.svgAircraftMarkerNormalFill;
+            return this._Settings.svgFillColourCallback(aircraft, isSelected);
         };
         return AircraftMarker;
     }());

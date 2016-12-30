@@ -26,7 +26,8 @@ namespace VRS
         selectedFileName?: string;
 
         // The embedded SVG for the aircraft
-        embeddedSvg?: EmbeddedSvg;
+        embeddedSvg?:           EmbeddedSvg;
+        svgFillColourCallback?: (aircraft: Aircraft, isSelected: boolean) => string;
 
         // Settings common to all aircraft markers
         size?: ISize;
@@ -46,14 +47,15 @@ namespace VRS
         constructor(settings: AircraftMarker_Settings)
         {
             this._Settings = $.extend({
-                folder:             'images/web-markers',
-                normalFileName :    null,
-                selectedFileName:   settings.normalFileName || null,
-                embeddedSvg:        null,
-                size:               { width: 35, height: 35 },
-                isAircraft:         true,
-                canRotate:          true,
-                isPre22Icon:        false
+                folder:                 'images/web-markers',
+                normalFileName :        null,
+                selectedFileName:       settings.normalFileName || null,
+                embeddedSvg:            null,
+                svgFillColourCallback:  (aircraft, isSelected) => isSelected ? VRS.globalOptions.svgAircraftMarkerSelectedFill : VRS.globalOptions.svgAircraftMarkerNormalFill,
+                size:                   { width: 35, height: 35 },
+                isAircraft:             true,
+                canRotate:              true,
+                isPre22Icon:            false
             }, settings);
         }
 
@@ -161,7 +163,7 @@ namespace VRS
          */
         getSvgFillColour(aircraft: Aircraft, isSelected: boolean) : string
         {
-            return isSelected ? VRS.globalOptions.svgAircraftMarkerSelectedFill : VRS.globalOptions.svgAircraftMarkerNormalFill;
+            return this._Settings.svgFillColourCallback(aircraft, isSelected);
         }
     }
 
