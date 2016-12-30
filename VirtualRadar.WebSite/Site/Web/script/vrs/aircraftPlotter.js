@@ -1239,7 +1239,6 @@ var VRS;
             var marker = this.getAircraftMarkerSettings(aircraft);
             var useSvg = marker.useEmbeddedSvg();
             var isHighDpi = VRS.browserHelper.isHighDpi();
-            isHighDpi = true;
             details.isSvg = !!useSvg;
             var size = marker.getSize();
             size = { width: size.width, height: size.height };
