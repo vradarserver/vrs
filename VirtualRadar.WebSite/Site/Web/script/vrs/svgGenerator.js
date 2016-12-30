@@ -26,7 +26,7 @@ var VRS;
             return Modernizr.svg && (VRS.serverConfig ? VRS.serverConfig.get().UseSvgGraphics : false);
         };
         SvgGenerator.prototype.generateAircraftMarker = function (embeddedSvg, fillColour, width, height, rotation, addAltitudeStalk, pinTextLines, pinTextLineHeight, isHighDpi) {
-            var result = this.createSvgNode(width * 2, height * 2, this.buildViewBox(0, 0, width, height));
+            var result = this.createSvgNode(width, height, this.buildViewBox(0, 0, width, height));
             var marker = this.convertXmlIntoNode(embeddedSvg.svg);
             var markerWidth = Number(marker.getAttribute('width'));
             var markerHeight = Number(marker.getAttribute('height'));
