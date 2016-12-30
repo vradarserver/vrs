@@ -142,8 +142,7 @@ namespace VRS
                 x: offsetX,
                 y: 0,
                 width: markerWidth,
-                height: markerHeight,
-                viewBox: this.buildViewBox(offsetX, 0, markerWidth, markerHeight)
+                height: markerHeight
             });
             if(rotation > 0) {
                 this.setAttribute(markerGroup, {

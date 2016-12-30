@@ -1905,6 +1905,8 @@ namespace VRS
             var useSvg = marker.useEmbeddedSvg();
             var isHighDpi = VRS.browserHelper.isHighDpi();
 
+isHighDpi = true;
+
             details.isSvg = !!useSvg;
 
             var size = marker.getSize();
