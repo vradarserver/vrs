@@ -75,32 +75,53 @@ namespace VirtualRadar.WebSite
         /// <summary>
         /// A private class that describes a root folder that we are serving files from.
         /// </summary>
-        class Root
+        sealed class Root : IDisposable
         {
             /// <summary>
-            /// Gets or sets the <see cref="SiteRoot"/> that represents the folder.
+            /// A map of checksum entries keyed by normalised request paths for files.
             /// </summary>
-            public SiteRoot SiteRoot { get; set; }
+            private Dictionary<string, ChecksumFileEntry> _RequestChecksumMap = new Dictionary<string, ChecksumFileEntry>();
+
+            /// <summary>
+            /// A map of checksum filenames and the local checksums that have been calculated for them.
+            /// </summary>
+            private Dictionary<string, string> _LocalFileChecksumMap = new Dictionary<string, string>();
+
+            /// <summary>
+            /// Locks write access to the fields.
+            /// </summary>
+            private object _SyncLock = new Object();
+
+            /// <summary>
+            /// The object that will watch for changes in checksummed files. If the root has no checksums then
+            /// this will be null.
+            /// </summary>
+            private IFileSystemWatcher _FileSystemWatcher;
+
+            /// <summary>
+            /// Gets the <see cref="SiteRoot"/> that represents the folder.
+            /// </summary>
+            public SiteRoot SiteRoot { get; private set; }
 
             /// <summary>
             /// Gets the original folder from <see cref="SiteRoot"/>.
             /// </summary>
-            public string Folder { get; set; }
+            public string Folder { get; private set; }
 
             /// <summary>
             /// Gets the original priority from <see cref="SiteRoot"/>.
             /// </summary>
-            public int Priority { get; set; }
-
-            /// <summary>
-            /// Gets a map of checksum entries keyed by normalised request paths for files.
-            /// </summary>
-            public Dictionary<string, ChecksumFileEntry> RequestChecksumMap { get; private set; }
+            public int Priority { get; private set; }
 
             /// <summary>
             /// Gets a value indicating that modified files are not to be served from this folder.
             /// </summary>
-            public bool IsProtectedContent { get { return RequestChecksumMap.Count > 0; } }
+            public bool IsProtectedContent
+            {
+                get {
+                    return _RequestChecksumMap.Count > 0;
+                }
+            }
 
             /// <summary>
             /// Creates a new object.
@@ -113,9 +134,101 @@ namespace VirtualRadar.WebSite
                 Folder = folder;
                 Priority = siteRoot.Priority;
 
-                RequestChecksumMap = new Dictionary<string,ChecksumFileEntry>();
                 foreach(var checksum in siteRoot.Checksums) {
-                    RequestChecksumMap.Add(NormaliseRequestPath(checksum.FileName), checksum);
+                    _RequestChecksumMap.Add(NormaliseRequestPath(checksum.FileName), checksum);
+                }
+
+                CreateFileSystemWatcher();
+            }
+
+            private void CreateFileSystemWatcher()
+            {
+                if(IsProtectedContent) {
+                    var watcher = Factory.Singleton.Resolve<IFileSystemWatcher>();
+                    watcher.Path = Folder;
+                    watcher.NotifyFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security | NotifyFilters.Size;
+                    watcher.Filter = "*";
+                    watcher.IncludeSubdirectories = true;
+                    watcher.Changed += FileSystemWatcher_Changed;
+                    watcher.Deleted += FileSystemWatcher_Deleted;
+                    watcher.Renamed += FileSystemWatcher_Renamed;
+                    watcher.Error += FileSystemWatcher_Error;
+
+                    lock(_SyncLock) {
+                        _FileSystemWatcher = watcher;
+                        _FileSystemWatcher.Enabled = true;
+                    }
+                }
+            }
+
+            private void DestroyFileSystemWatcher()
+            {
+                lock(_SyncLock) {
+                    if(_FileSystemWatcher != null) {
+                        _FileSystemWatcher.Enabled = false;
+                        _FileSystemWatcher.Changed -= FileSystemWatcher_Changed;
+                        _FileSystemWatcher.Deleted -= FileSystemWatcher_Deleted;
+                        _FileSystemWatcher.Renamed -= FileSystemWatcher_Renamed;
+                        _FileSystemWatcher.Error -= FileSystemWatcher_Error;
+                        _FileSystemWatcher.Dispose();
+
+                        _FileSystemWatcher = null;
+                    }
+                }
+            }
+
+            private void FileSystemWatcher_Error(object sender, ErrorEventArgs e)
+            {
+                DestroyFileSystemWatcher();
+                ResetLocalFileChecksumMap();
+                CreateFileSystemWatcher();
+            }
+
+            private void FileSystemWatcher_Renamed(object sender, RenamedEventArgs e)
+            {
+                ResetLocalFileChecksumMap();
+            }
+
+            private void FileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)
+            {
+                ResetLocalFileChecksumMap();
+            }
+
+            private void FileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
+            {
+                ResetLocalFileChecksumMap();
+            }
+
+            /// <summary>
+            /// Finalises the object.
+            /// </summary>
+            ~Root()
+            {
+                Dispose(false);
+            }
+
+            /// <summary>
+            /// See interface docs.
+            /// </summary>
+            public void Dispose()
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            /// <summary>
+            /// Disposes or finalises the object.
+            /// </summary>
+            /// <param name="disposing"></param>
+            /// <remarks>
+            /// Note that it's possible for a site root to be disposed / removed while it is being used in the
+            /// handling of a request.
+            /// </remarks>
+            private void Dispose(bool disposing)
+            {
+                if(disposing) {
+                    DestroyFileSystemWatcher();
+                    ResetLocalFileChecksumMap();
                 }
             }
 
@@ -128,9 +241,12 @@ namespace VirtualRadar.WebSite
             public ChecksumFileEntry FindChecksum(string requestPath, bool requestPathIsNormalised = false)
             {
                 ChecksumFileEntry result = null;
+
                 if(IsProtectedContent) {
-                    if(!requestPathIsNormalised) requestPath = NormaliseRequestPath(requestPath);
-                    RequestChecksumMap.TryGetValue(requestPath, out result);
+                    if(!requestPathIsNormalised) {
+                        requestPath = NormaliseRequestPath(requestPath);
+                    }
+                    _RequestChecksumMap.TryGetValue(requestPath, out result);
                 }
 
                 return result;
@@ -148,13 +264,57 @@ namespace VirtualRadar.WebSite
                 if(result) {
                     result = File.Exists(fileName);
                     if(result) {
-                        var checksum = ChecksumFileEntry.GenerateChecksum(fileName);
+                        string checksum = GetOrGenerateLocalFileChecksum(entry, fileName);
                         var length = ChecksumFileEntry.GetFileSize(fileName);
                         result = checksum == entry.Checksum && length == entry.FileSize;
                     }
                 }
 
                 return result;
+            }
+
+            /// <summary>
+            /// Returns the cached checksum for the file, generating it if it's not already cached.
+            /// </summary>
+            /// <param name="entry"></param>
+            /// <param name="fileName"></param>
+            /// <returns></returns>
+            private string GetOrGenerateLocalFileChecksum(ChecksumFileEntry entry, string fileName)
+            {
+                string result = null;
+
+                var localFileChecksumMap = _LocalFileChecksumMap;
+                var watcher = _FileSystemWatcher;
+                var checksumKey = entry.FileName;
+                var fileSystemWatcherMissing = watcher == null || !watcher.Enabled;
+
+                if(fileSystemWatcherMissing || !localFileChecksumMap.TryGetValue(checksumKey, out result)) {
+                    result = ChecksumFileEntry.GenerateChecksum(fileName);
+
+                    if(!fileSystemWatcherMissing) {
+                        lock(_SyncLock) {
+                            var newMap = CollectionHelper.ShallowCopy(_LocalFileChecksumMap);
+                            if(newMap.ContainsKey(checksumKey)) {
+                                newMap[checksumKey] = result;
+                            } else {
+                                newMap.Add(checksumKey, result);
+                            }
+                            _LocalFileChecksumMap = newMap;
+                        }
+                    }
+                }
+
+                return result;
+            }
+
+            /// <summary>
+            /// Resets the local file checksum map without affecting requests that are already running.
+            /// </summary>
+            private void ResetLocalFileChecksumMap()
+            {
+                lock(_SyncLock) {
+                    _LocalFileChecksumMap = new Dictionary<string, string>();
+                }
             }
         }
         #endregion
@@ -258,7 +418,10 @@ namespace VirtualRadar.WebSite
         public void RemoveSiteRoot(SiteRoot siteRoot)
         {
             var root = _Roots.SingleOrDefault(r => r.SiteRoot == siteRoot);
-            if(root != null) _Roots.Remove(root);
+            if(root != null) {
+                _Roots.Remove(root);
+                root.Dispose();
+            }
         }
 
         /// <summary>
