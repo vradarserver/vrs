@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Threading;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.WinForms
 {
@@ -115,11 +116,6 @@ namespace VirtualRadar.WinForms
         {
             get { return HasPreferredUIFont ? _PreferredUIFontClashesWithAutoSize : false; }
         }
-
-        /// <summary>
-        /// Gets or sets a value indicating that font replacement should not be performed.
-        /// </summary>
-        public static bool DisableFontReplacement;
         #endregion
 
         #region GetFont
@@ -150,7 +146,7 @@ namespace VirtualRadar.WinForms
             if(!_SearchedForAlternateUIFonts) {
                 _SearchedForAlternateUIFonts = true;
 
-                if(!DisableFontReplacement) {
+                if(!ProgramLifetime.DisableFontReplacement) {
                     var preferredFontFamilies =     new List<string> {}; // { "Segoe UI", "Ubuntu", };
                     var preferredSizes =            new List<float>  {}; // { 9F,         9F, };
                     var preferredDisableAutoSize =  new List<bool>   {}; // { true,       true, };

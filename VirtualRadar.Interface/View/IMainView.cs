@@ -175,6 +175,11 @@ namespace VirtualRadar.Interface.View
         /// <param name="openOnPageTitle"></param>
         /// <param name="openOnConfigurationObject"></param>
         void ShowSettingsConfigurationUI(string openOnPageTitle, object openOnConfigurationObject);
+
+        /// <summary>
+        /// Tells the main view to close. This will begin a clean shutdown of the application.
+        /// </summary>
+        void CloseView();
         #endregion
     }
 }

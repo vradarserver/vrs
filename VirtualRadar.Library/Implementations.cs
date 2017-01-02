@@ -105,6 +105,7 @@ namespace VirtualRadar.Library
             factory.Register<IClock, Clock>();
             factory.Register<IConnectionLogger, ConnectionLogger>();
             factory.Register<IDirectoryCache, DirectoryCache>();
+            factory.Register<IExceptionReporter, ExceptionReporter>();
             factory.Register<IExternalIPAddressService, ExternalIPAddressService>();
             factory.Register<IFileSystemWatcher, FileSystemWatcherWrapper>();
             factory.Register<IHeartbeatService, HeartbeatService>();

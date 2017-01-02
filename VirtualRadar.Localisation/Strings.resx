@@ -618,13 +618,6 @@ Russian translation by Sergey Serov /sergsero and friends.
     <value>Default Settings Saved</value>
     <comment>Title for an error message box</comment>
   </data>
-  <data name="DotNetVersionTooLowFull" xml:space="preserve">
-    <value>This program needs the full .NET 3.5 Framework installed. Would you like to be taken to the .NET 3.5 download page on Microsoft's web site?</value>
-  </data>
-  <data name="DotNetVersionTooLowTitle" xml:space="preserve">
-    <value>Wrong Version of .NET Framework</value>
-    <comment>Title for an error message box</comment>
-  </data>
   <data name="ExceptionWhenCheckingFile" xml:space="preserve">
     <value>Could not check filename: {0}</value>
     <comment>Where {0} is an exception message</comment>
@@ -694,13 +687,6 @@ Suggestion made if the exception could indicate that the port number is in use.<
   </data>
   <data name="WebServer" xml:space="preserve">
     <value>Web Server</value>
-  </data>
-  <data name="WindowsVersionTooLowFull" xml:space="preserve">
-    <value>This program will not work on the operating system you are using. If you are running Windows XP then please install Service Pack 2 or higher.</value>
-  </data>
-  <data name="WindowsVersionTooLowTitle" xml:space="preserve">
-    <value>HttpListener Not Supported by O/S</value>
-    <comment>Title for an error message box</comment>
   </data>
   <data name="CannotParseRouteFile" xml:space="preserve">
     <value>Could not parse the route state file</value>

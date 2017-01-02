@@ -1480,24 +1480,6 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This program needs the full .NET 3.5 Framework installed. Would you like to be taken to the .NET 3.5 download page on Microsoft&apos;s web site?.
-        /// </summary>
-        public static string DotNetVersionTooLowFull {
-            get {
-                return ResourceManager.GetString("DotNetVersionTooLowFull", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Wrong Version of .NET Framework.
-        /// </summary>
-        public static string DotNetVersionTooLowTitle {
-            get {
-                return ResourceManager.GetString("DotNetVersionTooLowTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Download.
         /// </summary>
         public static string Download {
@@ -7324,24 +7306,6 @@ namespace VirtualRadar.Localisation {
         public static string WebSiteUser {
             get {
                 return ResourceManager.GetString("WebSiteUser", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This program will not work on the operating system you are using. If you are running Windows XP then please install Service Pack 2 or higher..
-        /// </summary>
-        public static string WindowsVersionTooLowFull {
-            get {
-                return ResourceManager.GetString("WindowsVersionTooLowFull", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to HttpListener Not Supported by O/S.
-        /// </summary>
-        public static string WindowsVersionTooLowTitle {
-            get {
-                return ResourceManager.GetString("WindowsVersionTooLowTitle", resourceCulture);
             }
         }
         

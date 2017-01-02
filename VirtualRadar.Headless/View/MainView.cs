@@ -33,12 +33,14 @@ namespace VirtualRadar.Headless.View
         // Disable the warning about events not being used
         #pragma warning disable 0067
 
-        #region Fields
         // Objects that are being held for _Presenter while it doesn't exist.
         private IUniversalPlugAndPlayManager _UPnpManager;
-        #endregion
 
-        #region Properties
+        /// <summary>
+        /// True if <see cref="CloseView"/> is called.
+        /// </summary>
+        private bool _ForceQuit;
+
         private int _InvalidPluginCount;
         /// <summary>
         /// See interface docs.
@@ -138,9 +140,7 @@ namespace VirtualRadar.Headless.View
         /// See interface docs.
         /// </summary>
         public string WebServerExternalAddress { get; set; }
-        #endregion
 
-        #region Events exposed
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -165,9 +165,7 @@ namespace VirtualRadar.Headless.View
         /// See interface docs.
         /// </summary>
         public event EventHandler ToggleUPnpStatus;
-        #endregion
 
-        #region ShowView
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -179,7 +177,7 @@ namespace VirtualRadar.Headless.View
             presenter.Initialise(this);
 
             Console.WriteLine(Strings.PressQToQuit);
-            for(var quit = false;!quit;) {
+            for(var quit = false;!quit && !_ForceQuit;) {
                 var key = Console.ReadKey(intercept: true);
                 if(key != null && key.Key == ConsoleKey.Q) quit = true;
                 else {
@@ -189,9 +187,15 @@ namespace VirtualRadar.Headless.View
 
             return DialogResult.OK;
         }
-        #endregion
 
-        #region MainView methods
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void CloseView()
+        {
+            _ForceQuit = true;
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -286,6 +290,6 @@ namespace VirtualRadar.Headless.View
         {
             return new object();
         }
-        #endregion
+
     }
 }

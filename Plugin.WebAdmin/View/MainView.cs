@@ -154,6 +154,11 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             return DialogResult.OK;
         }
 
+        public void CloseView()
+        {
+            ;
+        }
+
         [WebAdminMethod]
         public ViewModel GetState()
         {

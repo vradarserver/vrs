@@ -81,7 +81,7 @@ namespace VirtualRadar
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public CultureInfo CultureInfo { get { return Program.ForcedCultureInfo; } }
+        public CultureInfo CultureInfo { get { return ProgramLifetime.ForcedCultureInfo; } }
 
         /// <summary>
         /// See interface docs.

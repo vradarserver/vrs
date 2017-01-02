@@ -16,8 +16,7 @@
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>
-    </StartArguments>
+    <StartArguments>-nogui</StartArguments>
     <StartAction>Project</StartAction>
     <StartProgram>C:\Source\CodePlex\VRS\VirtualRadar\bin\AnyCPU\Debug\VirtualRadar.exe</StartProgram>
   </PropertyGroup>

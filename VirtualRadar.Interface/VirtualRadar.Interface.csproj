@@ -123,6 +123,7 @@
     <Compile Include="Network\IRebroadcastFormatProvider.cs" />
     <Compile Include="Network\RebroadcastFormatName.cs" />
     <Compile Include="Presenter\IAircraftOnlineLookupLogPresenter.cs" />
+    <Compile Include="ProgramLifetime.cs" />
     <Compile Include="QueueRepository.cs" />
     <Compile Include="BaseStation\BaseStationSupplementaryMessage.cs" />
     <Compile Include="BaseStation\BaseStationTranslatorException.cs" />

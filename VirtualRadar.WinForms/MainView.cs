@@ -324,7 +324,7 @@ namespace VirtualRadar.WinForms
         }
         #endregion
 
-        #region ShowView
+        #region ShowView, CloseView
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -334,6 +334,14 @@ namespace VirtualRadar.WinForms
             Application.Run(this);
 
             return DialogResult.OK;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void CloseView()
+        {
+            Close();
         }
         #endregion
 
