@@ -59,6 +59,11 @@ namespace VirtualRadar.WinForms
         /// </summary>
         private Dictionary<int, StatisticsView> _StatisticsViews = new Dictionary<int,StatisticsView>();
 
+        /// <summary>
+        /// True if the form has been closed.
+        /// </summary>
+        private bool _Closed;
+
         // Objects that are being held for _Presenter while it doesn't exist.
         private ISimpleAircraftList _FlightSimulatorXAircraftList;
         private IUniversalPlugAndPlayManager _UPnpManager;
@@ -341,7 +346,13 @@ namespace VirtualRadar.WinForms
         /// </summary>
         public void CloseView()
         {
-            Close();
+            if(InvokeRequired) {
+                BeginInvoke(new MethodInvoker(() => CloseView()));
+            } else {
+                if(!_Closed) {
+                    Close();
+                }
+            }
         }
         #endregion
 
@@ -496,6 +507,16 @@ namespace VirtualRadar.WinForms
         #endregion
 
         #region Events consumed
+        /// <summary>
+        /// Called when the form is closed.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            _Closed = true;
+        }
+
         /// <summary>
         /// Called when the form is ready for use but not yet on screen.
         /// </summary>

@@ -121,9 +121,11 @@ namespace VirtualRadar.Library
             factory.Register<IXmlSerialiser, XmlSerialiser>();
 
             if(Type.GetType("Mono.Runtime") == null) {
+                factory.Register<IShutdownSignalHandler, DotNetShutdownSignalHandler>();
                 factory.Register<ISpeechSynthesizerWrapper, DotNetSpeechSynthesizerWrapper>();
                 factory.Register<VirtualRadar.Interface.FlightSimulatorX.ISimConnectWrapper, FlightSimulatorX.DotNetSimConnectWrapper>();
             } else {
+                factory.Register<IShutdownSignalHandler, MonoShutdownSignalHandler>();
                 factory.Register<ISpeechSynthesizerWrapper, MonoSpeechSynthesizerWrapper>();
                 factory.Register<VirtualRadar.Interface.FlightSimulatorX.ISimConnectWrapper, FlightSimulatorX.MonoSimConnectWrapper>();
             }

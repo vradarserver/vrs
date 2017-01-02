@@ -262,6 +262,7 @@ namespace VirtualRadar.Interface
                 flightSimulatorXAircraftList = splashScreen.FlightSimulatorXAircraftList;
             }
 
+            var shutdownSignalHandler = Factory.Singleton.Resolve<IShutdownSignalHandler>().Singleton;
             try {
                 if(loadSucceded) {
                     var pluginManager = Factory.Singleton.Resolve<IPluginManager>().Singleton;
@@ -274,18 +275,29 @@ namespace VirtualRadar.Interface
                         }
                     }
 
-                    using(var mainWindow = Factory.Singleton.Resolve<IMainView>()) {
-                        MainView = mainWindow;
-                        mainWindow.Initialise(uPnpManager, flightSimulatorXAircraftList);
-                        mainWindow.ShowView();
+                    try {
+                        using(var mainWindow = Factory.Singleton.Resolve<IMainView>()) {
+                            MainView = mainWindow;
+                            mainWindow.Initialise(uPnpManager, flightSimulatorXAircraftList);
+
+                            shutdownSignalHandler.CloseMainViewOnShutdownSignal();
+
+                            mainWindow.ShowView();
+                        }
+                    } finally {
+                        MainView = null;
                     }
                 }
             } finally {
+                shutdownSignalHandler.Cleanup();
+
                 using(var shutdownWindow = Factory.Singleton.Resolve<IShutdownView>()) {
                     shutdownWindow.Initialise(uPnpManager, baseStationAircraftList);
                     shutdownWindow.ShowView();
                     Thread.Sleep(1000);
                 }
+
+                Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Clean shutdown complete");
             }
         }
 

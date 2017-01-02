@@ -178,10 +178,13 @@ namespace VirtualRadar.Headless.View
 
             Console.WriteLine(Strings.PressQToQuit);
             for(var quit = false;!quit && !_ForceQuit;) {
-                var key = Console.ReadKey(intercept: true);
-                if(key != null && key.Key == ConsoleKey.Q) quit = true;
-                else {
-                    Thread.Sleep(1);
+                Thread.Sleep(1);
+
+                if(Console.KeyAvailable) {
+                    var key = Console.ReadKey(intercept: true);
+                    if(key != null && key.Key == ConsoleKey.Q) {
+                        quit = true;
+                    }
                 }
             }
 

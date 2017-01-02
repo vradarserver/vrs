@@ -44,6 +44,9 @@
       <HintPath>..\Dependencies\Microsoft.FlightSimulator.SimConnect.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Mono.Posix">
+      <HintPath>..\Dependencies\MonoBuilds\Mono.Posix.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\Dependencies\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -92,6 +95,7 @@
     <Compile Include="BitStream.cs" />
     <Compile Include="ConnectionLogger.cs" />
     <Compile Include="DirectoryCache.cs" />
+    <Compile Include="DotNetShutdownSignalHandler.cs" />
     <Compile Include="DotNetSpeechSynthesizerWrapper.cs" />
     <Compile Include="ExceptionReporter.cs" />
     <Compile Include="FileSystemWatcherWrapper.cs" />
@@ -107,6 +111,7 @@
     <Compile Include="Listener\CompressedReceiverProvider.cs" />
     <Compile Include="Listener\ReceiverFormatManager.cs" />
     <Compile Include="Listener\Sbs3ReceiverProvider.cs" />
+    <Compile Include="MonoShutdownSignalHandler.cs" />
     <Compile Include="Network\Connection.cs" />
     <Compile Include="Network\Connector.cs" />
     <Compile Include="Network\ConnectorActivityLog.cs" />
