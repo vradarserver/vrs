@@ -45,6 +45,9 @@ namespace VirtualRadar
 
             InitialiseClassFactory();
 
+            if(ProgramLifetime.Headless) {
+                VirtualRadar.Interop.Console.ShowConsole();
+            }
             if(args.Contains("-showConfigFolder")) {
                 ShowConfigurationFolder();
             }
@@ -70,7 +73,6 @@ namespace VirtualRadar
                 VirtualRadar.WinForms.Implementations.Register(Factory.Singleton);
             } else {
                 VirtualRadar.Headless.Implementations.Register(Factory.Singleton);
-                VirtualRadar.Interop.Console.ShowConsole();
             }
         }
 

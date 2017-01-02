@@ -37,6 +37,7 @@ namespace VirtualRadar
         private static string _Copyright;
         private static bool _Headless;
         private static DateTime _BuildDate;
+        private static bool _IsService;
 
         /// <summary>
         /// See interface docs.
@@ -89,6 +90,11 @@ namespace VirtualRadar
         public bool Headless { get { return _Headless; } }
 
         /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IsService {get { return _IsService; } }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public ApplicationInformation()
@@ -116,6 +122,15 @@ namespace VirtualRadar
         public static void SetHeadless(bool headless)
         {
             _Headless = headless;
+        }
+
+        /// <summary>
+        /// Sets the <see cref="IsService"/> property.
+        /// </summary>
+        /// <param name="isService"></param>
+        public static void SetIsService(bool isService)
+        {
+            _IsService = isService;
         }
 
         /// <summary>

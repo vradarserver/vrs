@@ -94,6 +94,7 @@
     <Compile Include="BaseStation\BaseStationMessageTranslator.cs" />
     <Compile Include="BitStream.cs" />
     <Compile Include="ConnectionLogger.cs" />
+    <Compile Include="ConsoleWrapper.cs" />
     <Compile Include="DirectoryCache.cs" />
     <Compile Include="DotNetShutdownSignalHandler.cs" />
     <Compile Include="DotNetSpeechSynthesizerWrapper.cs" />

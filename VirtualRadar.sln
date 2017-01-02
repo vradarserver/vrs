@@ -5,6 +5,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar", "VirtualRadar\VirtualRadar.csproj", "{11805B5F-027A-4ED6-9491-DC85A3B2462D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{336BA243-B238-4C73-97B5-ABACDFF4DB4F} = {336BA243-B238-4C73-97B5-ABACDFF4DB4F}
+		{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E} = {17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}
 		{86248078-7A1C-486D-8D08-064CC14FDB70} = {86248078-7A1C-486D-8D08-064CC14FDB70}
 		{FE25F47B-7A81-4A04-8E00-99C36BCA8E03} = {FE25F47B-7A81-4A04-8E00-99C36BCA8E03}
 		{2BCFACA1-27D3-4D74-B528-3F702E17DC01} = {2BCFACA1-27D3-4D74-B528-3F702E17DC01}
@@ -106,6 +107,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KdTreeLib", "ThirdParty\KdTreeLib\KdTreeLib.csproj", "{68C8066D-7844-41C2-993D-3160798164D1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChecksumFiles", "ThirdParty\ChecksumFiles\ChecksumFiles.csproj", "{FA2466BB-95ED-47CE-B996-6641E228916C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar-Service", "VirtualRadar-Service\VirtualRadar-Service.csproj", "{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -501,6 +504,16 @@ Global
 		{FA2466BB-95ED-47CE-B996-6641E228916C}.Release|Mixed Platforms.Build.0 = Release|x86
 		{FA2466BB-95ED-47CE-B996-6641E228916C}.Release|x86.ActiveCfg = Release|x86
 		{FA2466BB-95ED-47CE-B996-6641E228916C}.Release|x86.Build.0 = Release|x86
+		{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}.Debug|x86.ActiveCfg = Debug|x86
+		{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}.Debug|x86.Build.0 = Debug|x86
+		{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}.Release|Any CPU.ActiveCfg = Release|x86
+		{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}.Release|Mixed Platforms.Build.0 = Release|x86
+		{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}.Release|x86.ActiveCfg = Release|x86
+		{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

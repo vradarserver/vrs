@@ -113,6 +113,7 @@
     <Compile Include="IAirPressureDownloader.cs" />
     <Compile Include="IAirPressureManager.cs" />
     <Compile Include="IAirPressureLookup.cs" />
+    <Compile Include="IConsole.cs" />
     <Compile Include="IFileSystemWatcher.cs" />
     <Compile Include="IShutdownSignalHandler.cs" />
     <Compile Include="IPAddressHelper.cs" />

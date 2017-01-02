@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VirtualRadar</RootNamespace>
+    <AssemblyName>VirtualRadar-Service</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>application.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\VirtualRadar\ApplicationInformation.cs">
+      <Link>ApplicationInformation.cs</Link>
+    </Compile>
+    <Compile Include="..\VirtualRadar\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Command.cs" />
+    <Compile Include="CommandLineParser.cs" />
+    <Compile Include="ConsoleWrapper.cs" />
+    <Compile Include="Options.cs" />
+    <Compile Include="ProjectInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ProjectInstaller.Designer.cs">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Service.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Service.Designer.cs">
+      <DependentUpon>Service.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="_PostBuild.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="application.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
+      <Project>{6ad23cd7-fb9f-448e-85ea-cb5aaa4e9fee}</Project>
+      <Name>InterfaceFactory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SQLiteWrapper.DotNet\SQLiteWrapper.DotNet.csproj">
+      <Project>{ddf2a51a-4ab8-4338-94ae-6320637ae3d7}</Project>
+      <Name>SQLiteWrapper.DotNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Database\VirtualRadar.Database.csproj">
+      <Project>{049a9a56-990e-4f99-99f7-cc09767508d9}</Project>
+      <Name>VirtualRadar.Database</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Headless\VirtualRadar.Headless.csproj">
+      <Project>{573ddcfe-821e-4f58-8e6f-89fa0c0cc879}</Project>
+      <Name>VirtualRadar.Headless</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
+      <Project>{8ef81105-f45d-4edb-996c-de7d5644b1e7}</Project>
+      <Name>VirtualRadar.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Interop\VirtualRadar.Interop.csproj">
+      <Project>{801d6f1c-21a1-4336-9f32-16d5c16b3c81}</Project>
+      <Name>VirtualRadar.Interop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Library\VirtualRadar.Library.csproj">
+      <Project>{4bc834f4-005b-4ef9-bda4-078c3f1745d3}</Project>
+      <Name>VirtualRadar.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
+      <Project>{fd3e36e1-35ea-46f3-a30b-65cea7d92b7e}</Project>
+      <Name>VirtualRadar.Localisation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Resources\VirtualRadar.Resources.csproj">
+      <Project>{b74413ac-8898-45da-b4bd-82e4f9f58d72}</Project>
+      <Name>VirtualRadar.Resources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.WebServer\VirtualRadar.WebServer.csproj">
+      <Project>{368d365b-d45a-439e-b649-0512c395351f}</Project>
+      <Name>VirtualRadar.WebServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.WebSite\VirtualRadar.WebSite.csproj">
+      <Project>{eacc3459-9586-4977-a664-ae5827699b30}</Project>
+      <Name>VirtualRadar.WebSite</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ProjectInstaller.resx">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>"$(ProjectDir)\_PostBuild.bat" "$(TargetDir)" "$(TargetFileName)" "$(SolutionDir)" "$(ConfigurationName)"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Localisation;
 
@@ -24,9 +25,22 @@ namespace VirtualRadar.Headless
     class MessageBox : IMessageBox
     {
         /// <summary>
+        /// The console wrapper to send messages to.
+        /// </summary>
+        private static IConsole _Console;
+
+        /// <summary>
         /// The colour to use when highlighting text.
         /// </summary>
         static readonly ConsoleColor HighlightColour = ConsoleColor.White;
+
+        /// <summary>
+        /// The static initialiser.
+        /// </summary>
+        static MessageBox()
+        {
+            _Console = Factory.Singleton.Resolve<IConsole>().Singleton;
+        }
 
         /// <summary>
         /// See interface docs.
@@ -34,7 +48,7 @@ namespace VirtualRadar.Headless
         /// <param name="message"></param>
         public void Show(string message)
         {
-            Console.WriteLine(message);
+            _Console.WriteLine(message);
         }
 
         /// <summary>
@@ -46,10 +60,10 @@ namespace VirtualRadar.Headless
         {
             var currentColour = Console.ForegroundColor;
             try {
-                Console.ForegroundColor = HighlightColour;
-                Console.WriteLine(title);
+                _Console.ForegroundColor = HighlightColour;
+                _Console.WriteLine(title);
             } finally {
-                Console.ForegroundColor = currentColour;
+                _Console.ForegroundColor = currentColour;
             }
 
             Show(message);
@@ -132,28 +146,28 @@ namespace VirtualRadar.Headless
         /// <param name="defaultMessageBoxButton"></param>
         private static void ShowButtonsPrompt(List<MessageBoxButton> messageBoxButtons, MessageBoxButton defaultMessageBoxButton)
         {
-            Console.Write(String.Join("   ", messageBoxButtons.Select(r => r.ToString()).ToArray()));
-            Console.Write("   [");
+            _Console.Write(String.Join("   ", messageBoxButtons.Select(r => r.ToString()).ToArray()));
+            _Console.Write("   [");
 
             bool isFirstChar = true;
             foreach(var messageBoxButton in messageBoxButtons) {
                 if(isFirstChar) isFirstChar = false;
-                else Console.Write('/');
+                else _Console.Write('/');
 
                 if(messageBoxButton != defaultMessageBoxButton) {
-                    Console.Write(Char.ToLower(messageBoxButton.Shortcut));
+                    _Console.Write(Char.ToLower(messageBoxButton.Shortcut));
                 } else {
-                    var currentColour = Console.ForegroundColor;
+                    var currentColour = _Console.ForegroundColor;
                     try {
-                        Console.ForegroundColor = HighlightColour;
-                        Console.Write(Char.ToUpper(messageBoxButton.Shortcut));
+                        _Console.ForegroundColor = HighlightColour;
+                        _Console.Write(Char.ToUpper(messageBoxButton.Shortcut));
                     } finally {
-                        Console.ForegroundColor = currentColour;
+                        _Console.ForegroundColor = currentColour;
                     }
                 }
             }
 
-            Console.Write("]: ");
+            _Console.Write("]: ");
         }
 
         /// <summary>
@@ -168,7 +182,7 @@ namespace VirtualRadar.Headless
             var result = DialogResult.None;
 
             do {
-                var keyChar = Console.ReadKey(intercept: true);
+                var keyChar = _Console.ReadKey(intercept: true);
                 if(keyChar.Key == ConsoleKey.Enter) {
                     result = defaultMessageBoxButton.DialogResult;
                 } else {
@@ -176,9 +190,11 @@ namespace VirtualRadar.Headless
                     if(button != null) result = button.DialogResult;
                 }
 
-                if(result == DialogResult.None) Console.Beep();
+                if(result == DialogResult.None) {
+                    _Console.Beep();
+                }
             } while(result == DialogResult.None);
-            Console.WriteLine();
+            _Console.WriteLine();
 
             return result;
         }

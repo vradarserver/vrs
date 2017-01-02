@@ -90,7 +90,7 @@ namespace VirtualRadar.Headless.View
 
         public void ReportProgress(string text)
         {
-            Console.WriteLine(text);
+            _Console.WriteLine(text);
         }
 
         public void ReportProblem(string message, string title, bool quitApplication)

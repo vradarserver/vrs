@@ -70,5 +70,10 @@ namespace VirtualRadar.Interface
         /// Gets a value indicating that the program is running without a GUI.
         /// </summary>
         bool Headless { get; }
+
+        /// <summary>
+        /// Gets a value indicating that the program is running as a service.
+        /// </summary>
+        bool IsService { get; }
     }
 }

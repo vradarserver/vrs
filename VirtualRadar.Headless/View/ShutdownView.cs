@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using InterfaceFactory;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.View;
@@ -59,7 +60,7 @@ namespace VirtualRadar.Headless.View
         /// <param name="text"></param>
         public void ReportProgress(string text)
         {
-            Console.WriteLine(text);
+            _Console.WriteLine(text);
         }
     }
 }

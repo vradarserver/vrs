@@ -30,6 +30,7 @@ xcopy /eiy %SolutionDir%SQLiteWrapper.DotNet.AnyCPU\bin\%ConfigurationName%\* %D
 
 rem Remove the 32-bit required flag from all VRS DLLs and EXEs
 %CORFLAGS% %DEST%\VirtualRadar.exe /32BITREQ- /NOLOGO
+%CORFLAGS% %DEST%\VirtualRadar-Service.exe /32BITREQ- /NOLOGO
 for /f %%f in ('dir /s/b %DEST%\VirtualRadar.*.dll') do (%CORFLAGS% %%f /32BITREQ- /NOLOGO)
 
 rem Copy in the AnyCPU interop folders

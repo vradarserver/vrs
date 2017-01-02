@@ -104,6 +104,7 @@ namespace VirtualRadar.Library
             factory.Register<ICallsignParser, CallsignParser>();
             factory.Register<IClock, Clock>();
             factory.Register<IConnectionLogger, ConnectionLogger>();
+            factory.Register<IConsole, ConsoleWrapper>();
             factory.Register<IDirectoryCache, DirectoryCache>();
             factory.Register<IExceptionReporter, ExceptionReporter>();
             factory.Register<IExternalIPAddressService, ExternalIPAddressService>();

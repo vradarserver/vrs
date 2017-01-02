@@ -49,6 +49,11 @@ namespace VirtualRadar.Interface
         private const string _SingleInstanceMutexName = "VirtualRadarServer-SJKADBK42348J";
 
         /// <summary>
+        /// A wait handle that is signalled when the program has shut down.
+        /// </summary>
+        private static readonly EventWaitHandle _ShutdownCompleteWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
+
+        /// <summary>
         /// Gets or sets the culture info that was forced into use by the -culture command-line switch.
         /// </summary>
         public static CultureInfo ForcedCultureInfo { get; private set; }
@@ -252,53 +257,67 @@ namespace VirtualRadar.Interface
             ISimpleAircraftList flightSimulatorXAircraftList = null;
             bool loadSucceded = false;
 
-            using(var splashScreen = Factory.Singleton.Resolve<ISplashView>()) {
-                splashScreen.Initialise(args, BackgroundThread_ExceptionCaught);
-                splashScreen.ShowView();
-
-                loadSucceded = splashScreen.LoadSucceeded;
-                uPnpManager = splashScreen.UPnpManager;
-                baseStationAircraftList = splashScreen.BaseStationAircraftList;
-                flightSimulatorXAircraftList = splashScreen.FlightSimulatorXAircraftList;
-            }
-
-            var shutdownSignalHandler = Factory.Singleton.Resolve<IShutdownSignalHandler>().Singleton;
             try {
-                if(loadSucceded) {
-                    var pluginManager = Factory.Singleton.Resolve<IPluginManager>().Singleton;
-                    foreach(var plugin in pluginManager.LoadedPlugins) {
+                using(var splashScreen = Factory.Singleton.Resolve<ISplashView>()) {
+                    splashScreen.Initialise(args, BackgroundThread_ExceptionCaught);
+                    splashScreen.ShowView();
+
+                    loadSucceded = splashScreen.LoadSucceeded;
+                    uPnpManager = splashScreen.UPnpManager;
+                    baseStationAircraftList = splashScreen.BaseStationAircraftList;
+                    flightSimulatorXAircraftList = splashScreen.FlightSimulatorXAircraftList;
+                }
+
+                var shutdownSignalHandler = Factory.Singleton.Resolve<IShutdownSignalHandler>().Singleton;
+                try {
+                    if(loadSucceded) {
+                        var pluginManager = Factory.Singleton.Resolve<IPluginManager>().Singleton;
+                        foreach(var plugin in pluginManager.LoadedPlugins) {
+                            try {
+                                plugin.GuiThreadStartup();
+                            } catch(Exception ex) {
+                                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                                log.WriteLine($"Caught exception in {plugin.Name} plugin while calling GuiThreadStartup: {ex}");
+                            }
+                        }
+
                         try {
-                            plugin.GuiThreadStartup();
-                        } catch(Exception ex) {
-                            var log = Factory.Singleton.Resolve<ILog>().Singleton;
-                            log.WriteLine($"Caught exception in {plugin.Name} plugin while calling GuiThreadStartup: {ex}");
+                            using(var mainWindow = Factory.Singleton.Resolve<IMainView>()) {
+                                MainView = mainWindow;
+                                mainWindow.Initialise(uPnpManager, flightSimulatorXAircraftList);
+
+                                shutdownSignalHandler.CloseMainViewOnShutdownSignal();
+
+                                mainWindow.ShowView();
+                            }
+                        } finally {
+                            MainView = null;
                         }
                     }
+                } finally {
+                    shutdownSignalHandler.Cleanup();
 
-                    try {
-                        using(var mainWindow = Factory.Singleton.Resolve<IMainView>()) {
-                            MainView = mainWindow;
-                            mainWindow.Initialise(uPnpManager, flightSimulatorXAircraftList);
-
-                            shutdownSignalHandler.CloseMainViewOnShutdownSignal();
-
-                            mainWindow.ShowView();
-                        }
-                    } finally {
-                        MainView = null;
+                    using(var shutdownWindow = Factory.Singleton.Resolve<IShutdownView>()) {
+                        shutdownWindow.Initialise(uPnpManager, baseStationAircraftList);
+                        shutdownWindow.ShowView();
+                        Thread.Sleep(1000);
                     }
+
+                    Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Clean shutdown complete");
                 }
             } finally {
-                shutdownSignalHandler.Cleanup();
-
-                using(var shutdownWindow = Factory.Singleton.Resolve<IShutdownView>()) {
-                    shutdownWindow.Initialise(uPnpManager, baseStationAircraftList);
-                    shutdownWindow.ShowView();
-                    Thread.Sleep(1000);
-                }
-
-                Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Clean shutdown complete");
+                _ShutdownCompleteWaitHandle.Set();
             }
+        }
+
+        /// <summary>
+        /// Waits for the program to shutdown.
+        /// </summary>
+        /// <param name="timeoutMilliseconds">The number of milliseconds to wait or -1 to wait indefinitely.</param>
+        /// <returns>True if the shutdown event was picked up, false if the wait timed out.</returns>
+        public static bool WaitForShutdown(int timeoutMilliseconds)
+        {
+            return MainView == null || _ShutdownCompleteWaitHandle.WaitOne(timeoutMilliseconds);
         }
 
         /// <summary>

@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using InterfaceFactory;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.View;
 
 namespace VirtualRadar.Headless.View
@@ -22,6 +24,14 @@ namespace VirtualRadar.Headless.View
     /// </summary>
     class BaseView
     {
+        // The console wrapper to send messages to
+        protected IConsole _Console;
+
+        public BaseView()
+        {
+            _Console = Factory.Singleton.Resolve<IConsole>().Singleton;
+        }
+
         /// <summary>
         /// Finalises the object.
         /// </summary>

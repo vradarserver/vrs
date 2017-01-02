@@ -51,7 +51,9 @@ namespace VirtualRadar.Headless.View
             set {
                 if(_InvalidPluginCount != value) {
                     _InvalidPluginCount = value;
-                    if(_InvalidPluginCount != 0) Console.WriteLine(Strings.InvalidPluginsCount, _InvalidPluginCount);
+                    if(_InvalidPluginCount != 0) {
+                        _Console.WriteLine(Strings.InvalidPluginsCount, _InvalidPluginCount);
+                    }
                 }
             }
         }
@@ -71,7 +73,9 @@ namespace VirtualRadar.Headless.View
             set {
                 if(_NewVersionAvailable != value) {
                     _NewVersionAvailable = value;
-                    if(_NewVersionAvailable) Console.WriteLine(Strings.LaterVersionAvailable);
+                    if(_NewVersionAvailable) {
+                        _Console.WriteLine(Strings.LaterVersionAvailable);
+                    }
                 }
             }
         }
@@ -116,7 +120,9 @@ namespace VirtualRadar.Headless.View
             set {
                 if(_WebServerLocalAddress != value) {
                     _WebServerLocalAddress = value;
-                    if(!String.IsNullOrEmpty(_WebServerLocalAddress)) Console.WriteLine(Strings.LocalAddress, _WebServerLocalAddress);
+                    if(!String.IsNullOrEmpty(_WebServerLocalAddress)) {
+                        _Console.WriteLine(Strings.LocalAddress, _WebServerLocalAddress);
+                    }
                 }
             }
         }
@@ -131,7 +137,9 @@ namespace VirtualRadar.Headless.View
             set {
                 if(_WebServerNetworkAddress != value) {
                     _WebServerNetworkAddress = value;
-                    if(!String.IsNullOrEmpty(_WebServerNetworkAddress)) Console.WriteLine(Strings.NetworkAddress, _WebServerNetworkAddress);
+                    if(!String.IsNullOrEmpty(_WebServerNetworkAddress)) {
+                        _Console.WriteLine(Strings.NetworkAddress, _WebServerNetworkAddress);
+                    }
                 }
             }
         }
@@ -176,12 +184,12 @@ namespace VirtualRadar.Headless.View
             presenter.UPnpManager = _UPnpManager;
             presenter.Initialise(this);
 
-            Console.WriteLine(Strings.PressQToQuit);
+            _Console.WriteLine(Strings.PressQToQuit);
             for(var quit = false;!quit && !_ForceQuit;) {
                 Thread.Sleep(1);
 
-                if(Console.KeyAvailable) {
-                    var key = Console.ReadKey(intercept: true);
+                if(_Console.KeyAvailable) {
+                    var key = _Console.ReadKey(intercept: true);
                     if(key != null && key.Key == ConsoleKey.Q) {
                         quit = true;
                     }
