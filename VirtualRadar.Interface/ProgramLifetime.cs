@@ -46,7 +46,7 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// The name of the mutex that we use to ensure only one instance will run.
         /// </summary>
-        private const string _SingleInstanceMutexName = "VirtualRadarServer-SJKADBK42348J";
+        private const string _SingleInstanceMutexName = "Global\\VirtualRadarServer-SJKADBK42348J";
 
         /// <summary>
         /// A wait handle that is signalled when the program has shut down.
@@ -203,42 +203,50 @@ namespace VirtualRadar.Interface
         public static void SingleInstanceStart(string[] args)
         {
             bool mutexAcquired;
-            using(var singleInstanceMutex = CreateSingleInstanceMutex(out mutexAcquired, AllowMultipleInstances)) {
+            var singleInstanceMutex = CreateSingleInstanceMutex(out mutexAcquired, AllowMultipleInstances);
+            if(singleInstanceMutex != null) {
                 try {
                     StartApplication(args);
                 } finally {
                     if(mutexAcquired) {
                         singleInstanceMutex.ReleaseMutex();
                     }
+                    singleInstanceMutex.Dispose();
                 }
             }
         }
 
         /// <summary>
         /// Creates the mutex that will be held for the duration of the application. The mutex is used to prevent
-        /// multiple instances from running. Quits the program if another instance is seen.
+        /// multiple instances from running. Returns null if another instance is seen.
         /// </summary>
         /// <returns></returns>
         public static Mutex CreateSingleInstanceMutex(out bool mutexAcquired, bool allowMultipleInstances)
         {
+            Mutex result = null;
             mutexAcquired = false;
-            var result = new Mutex(false, _SingleInstanceMutexName);
 
             var runtimeEnvironment = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton;
-            if(!runtimeEnvironment.IsMono) {
+            if(runtimeEnvironment.IsMono) {
+                result = new Mutex(false, _SingleInstanceMutexName);
+            } else {
                 var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
                 var securitySettings = new MutexSecurity();
                 securitySettings.AddAccessRule(allowEveryoneRule);
-                result.SetAccessControl(securitySettings);
+
+                bool createdNew;
+                result = new Mutex(false, _SingleInstanceMutexName, out createdNew, securitySettings);
 
                 if(!allowMultipleInstances) {
                     try {
                         mutexAcquired = result.WaitOne(1000, false);
                         if(!mutexAcquired) {
                             Factory.Singleton.Resolve<IMessageBox>().Show(Strings.AnotherInstanceRunningFull, Strings.AnotherInstanceRunningTitle);
-                            Environment.Exit(1);
+                            result = null;
                         }
-                    } catch(AbandonedMutexException) { }
+                    } catch(AbandonedMutexException) {
+                        mutexAcquired = true;
+                    }
                 }
             }
 
