@@ -29,6 +29,11 @@ namespace VirtualRadar
         public string Password { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating how the service should start up.
+        /// </summary>
+        public StartupType StartupType { get; set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public Options()

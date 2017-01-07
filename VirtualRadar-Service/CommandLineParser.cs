@@ -44,6 +44,9 @@ namespace VirtualRadar
                     case "-password":
                         result.Password = UseNextArg("password", nextArg, ref i);
                         break;
+                    case "-startup":
+                        result.StartupType = ParseEnum<StartupType>(UseNextArg("startup type", nextArg, ref i));
+                        break;
                     default:
                         Usage($"Unrecognised argument {arg}");
                         break;
@@ -71,6 +74,28 @@ namespace VirtualRadar
         }
 
         /// <summary>
+        /// Parses an enum value.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="arg"></param>
+        /// <returns></returns>
+        private static T ParseEnum<T>(string arg)
+        {
+            if(String.IsNullOrEmpty(arg)) {
+                Usage($"Missing {typeof(T).Name} value");
+            }
+
+            T result = default(T);
+            try {
+                result = (T)Enum.Parse(typeof(T), arg, ignoreCase: true);
+            } catch {
+                Usage($"{arg} is not a valid {typeof(T).Name} value");
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Displays the command-line arguments usage message and then exits the program.
         /// </summary>
         /// <param name="message"></param>
@@ -86,6 +111,8 @@ namespace VirtualRadar
             Console.WriteLine($"Install options:");
             Console.WriteLine($"  -user name       The account that will run the service [{defaults.UserName}]");
             Console.WriteLine($"  -password value  The password for the account [will prompt if not supplied]");
+            Console.WriteLine($"  -startup value   How to start the service [{defaults.StartupType}]");
+            Console.WriteLine("                       {0}", String.Join(" ", Enum.GetNames(typeof(StartupType))));
             Console.WriteLine();
             Console.WriteLine($"Service options:");
             Console.WriteLine($"  -debugOnStart    Trigger a debug interrupt when starting the service");

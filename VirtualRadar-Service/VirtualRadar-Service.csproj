@@ -63,12 +63,6 @@
     <Compile Include="CommandLineParser.cs" />
     <Compile Include="ConsoleWrapper.cs" />
     <Compile Include="Options.cs" />
-    <Compile Include="ProjectInstaller.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ProjectInstaller.Designer.cs">
-      <DependentUpon>ProjectInstaller.cs</DependentUpon>
-    </Compile>
     <Compile Include="Service.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -76,6 +70,10 @@
       <DependentUpon>Service.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="ProjectInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="StartupType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -129,11 +127,6 @@
       <Project>{eacc3459-9586-4977-a664-ae5827699b30}</Project>
       <Name>VirtualRadar.WebSite</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ProjectInstaller.resx">
-      <DependentUpon>ProjectInstaller.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

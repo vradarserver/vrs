@@ -21,6 +21,7 @@ namespace VirtualRadar
             } else {
                 try {
                     var options = CommandLineParser.Parse(args);
+                    ProjectInstaller.Options = options;
 
                     switch(options.Command) {
                         case Command.Install:   InstallService(options); break;
@@ -49,9 +50,7 @@ namespace VirtualRadar
         /// <returns></returns>
         static bool ServiceIsInstalled()
         {
-            var projectInstaller = new ProjectInstaller();
-            var serviceName = (projectInstaller.VrsServiceInstaller.ServiceName ?? "").ToLower();
-
+            var serviceName = ProjectInstaller.ServiceName.ToLower();
             return ServiceController.GetServices().Any(r => (r.ServiceName ?? "").ToLower() == serviceName);
         }
 
@@ -70,14 +69,7 @@ namespace VirtualRadar
                     options.Password = CommandLineParser.AskForPassword($"Password for {options.UserName}");
                 }
 
-                var args = new List<string>();
-                if(!String.IsNullOrEmpty(options.UserName) && !String.IsNullOrEmpty(options.Password)) {
-                    args.Add($"/username={options.UserName}");
-                    args.Add($"/password={options.Password}");
-                }
-                args.Add(ServiceFullPath());
-
-                ManagedInstallerClass.InstallHelper(args.ToArray());
+                ManagedInstallerClass.InstallHelper(new string[] { ServiceFullPath() });
             }
         }
 
