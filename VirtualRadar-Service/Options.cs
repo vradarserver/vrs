@@ -34,6 +34,11 @@ namespace VirtualRadar
         public StartupType StartupType { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that the installer should not check to see whether the web admin plugin has been installed.
+        /// </summary>
+        public bool SkipWebAdminPluginCheck { get; set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public Options()

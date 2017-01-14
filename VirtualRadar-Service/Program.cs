@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration.Install;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.ServiceProcess;
@@ -55,6 +56,18 @@ namespace VirtualRadar
         }
 
         /// <summary>
+        /// Returns true if the web admin plugin is installed.
+        /// </summary>
+        /// <returns></returns>
+        static bool WebAdminPluginIsInstalled()
+        {
+            var root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var pluginFullPath = Path.Combine(root, "Plugins", "WebAdmin", "VirtualRadar.Plugin.WebAdmin.dll");
+
+            return File.Exists(pluginFullPath);
+        }
+
+        /// <summary>
         /// Installs the service.
         /// </summary>
         /// <param name="options"></param>
@@ -64,6 +77,8 @@ namespace VirtualRadar
 
             if(ServiceIsInstalled()) {
                 Console.WriteLine("Service is already installed");
+            } else if(!options.SkipWebAdminPluginCheck && !WebAdminPluginIsInstalled()) {
+                Console.WriteLine("The web admin plugin has not been installed");
             } else {
                 if(!String.IsNullOrEmpty(options.UserName) && String.IsNullOrEmpty(options.Password)) {
                     options.Password = CommandLineParser.AskForPassword($"Password for {options.UserName}");

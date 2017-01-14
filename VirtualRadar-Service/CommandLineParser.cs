@@ -47,6 +47,9 @@ namespace VirtualRadar
                     case "-startup":
                         result.StartupType = ParseEnum<StartupType>(UseNextArg("startup type", nextArg, ref i));
                         break;
+                    case "-nowebadmin":
+                        result.SkipWebAdminPluginCheck = true;
+                        break;
                     default:
                         Usage($"Unrecognised argument {arg}");
                         break;
@@ -112,7 +115,8 @@ namespace VirtualRadar
             Console.WriteLine($"  -user name       The account that will run the service [{defaults.UserName}]");
             Console.WriteLine($"  -password value  The password for the account [will prompt if not supplied]");
             Console.WriteLine($"  -startup value   How to start the service [{defaults.StartupType}]");
-            Console.WriteLine("                       {0}", String.Join(" ", Enum.GetNames(typeof(StartupType))));
+            Console.WriteLine( "                     {0}", String.Join(" ", Enum.GetNames(typeof(StartupType))));
+            Console.WriteLine($"  -noWebAdmin      Skip the check for the web admin plugin");
             Console.WriteLine();
             Console.WriteLine($"Service options:");
             Console.WriteLine($"  -debugOnStart    Trigger a debug interrupt when starting the service");
