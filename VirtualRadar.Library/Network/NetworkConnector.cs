@@ -532,7 +532,10 @@ namespace VirtualRadar.Library.Network
         private void SendAuthentication(SocketConnection connection, IConnectorAuthentication authentication)
         {
             var bytes = authentication.SendAuthentication();
-            connection.Socket.Send(bytes);
+            var socket = connection.Socket;
+            if(socket != null) {
+                socket.Send(bytes);
+            }
         }
 
         /// <summary>
@@ -548,7 +551,8 @@ namespace VirtualRadar.Library.Network
             var readBuffer = new byte[512];
             var finished = false;
             while(!finished) {
-                var bytesRead = connection.Socket.Receive(readBuffer);
+                var socket = connection.Socket;
+                var bytesRead = socket == null ? 0 : socket.Receive(readBuffer);
                 finished = bytesRead == 0;
                 if(!finished) {
                     var offset = result.Length;
