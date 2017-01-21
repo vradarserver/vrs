@@ -46,7 +46,7 @@ namespace VirtualRadar.Library.Network
         public IPEndPoint LocalEndPoint
         {
             get {
-                var socket = GetSocket();
+                var socket = Socket;
                 IPEndPoint result = null;
 
                 try {
@@ -66,7 +66,7 @@ namespace VirtualRadar.Library.Network
         public IPEndPoint RemoteEndPoint
         {
             get {
-                var socket = GetSocket();
+                var socket = Socket;
                 IPEndPoint result = null;
 
                 try {
@@ -99,17 +99,6 @@ namespace VirtualRadar.Library.Network
         }
 
         /// <summary>
-        /// Gets a reference to the socket that cannot be changed from other threads.
-        /// </summary>
-        /// <returns></returns>
-        private Socket GetSocket()
-        {
-            lock(_SyncLock) {
-                return Socket;
-            }
-        }
-
-        /// <summary>
         /// See the base docs.
         /// </summary>
         protected override void AbandonConnection()
@@ -130,7 +119,7 @@ namespace VirtualRadar.Library.Network
                     } catch {}
                     try {
                         ((IDisposable)socket).Dispose();
-                    } catch { }
+                    } catch {}
                 }
             }
 
@@ -146,7 +135,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="op"></param>
         protected override void DoRead(ReadWriteOperation op)
         {
-            var socket = GetSocket();
+            var socket = Socket;
             if(socket != null) {
                 try {
                     op.BytesRead = socket.Receive(op.Buffer, op.Offset, op.Length, SocketFlags.None);
@@ -165,7 +154,7 @@ namespace VirtualRadar.Library.Network
         /// <param name="op"></param>
         protected override void DoWrite(ReadWriteOperation op)
         {
-            var socket = GetSocket();
+            var socket = Socket;
             if(socket != null) {
                 try {
                     socket.Send(op.Buffer, op.Offset, op.Length, SocketFlags.None);
