@@ -41,6 +41,11 @@ namespace VirtualRadar.Interface.Network
         ConnectionStatus ConnectionStatus { get; }
 
         /// <summary>
+        /// Gets or sets a value indicating that the connection status is mirrored by the owning connector.
+        /// </summary>
+        bool IsConnectionStateMirrored { get; set; }
+
+        /// <summary>
         /// Gets the connector that owns this connection.
         /// </summary>
         IConnector Connector { get; }

@@ -727,6 +727,10 @@ namespace VirtualRadar.Library.Network
                 }
 
                 if(mirrorConnectionState) {
+                    if(connection.IsConnectionStateMirrored) {
+                        throw new InvalidOperationException($"An attempt was made to hook the connection state changed event twice for a connection to {Name}");
+                    }
+                    connection.IsConnectionStateMirrored = true;
                     connection.ConnectionStateChanged += Connection_ConnectionStateChanged;
                 }
             }
@@ -751,7 +755,15 @@ namespace VirtualRadar.Library.Network
                 }
 
                 if(stopMirroringConnectionState) {
+                    if(!connection.IsConnectionStateMirrored) {
+                        throw new InvalidOperationException($"An attempt was made to unhook the connection state changed event for {Name} when it hadn't already been hooked");
+                    }
+                    connection.IsConnectionStateMirrored = false;
                     connection.ConnectionStateChanged -= Connection_ConnectionStateChanged;
+                }
+
+                if(!stopMirroringConnectionState && connection.IsConnectionStateMirrored) {
+                    throw new InvalidOperationException($"A connection state changed event was left hooked on a connection to {Name}");
                 }
 
                 if(raiseConnectionClosed) {
