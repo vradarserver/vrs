@@ -98,7 +98,7 @@ namespace VirtualRadar.Library.ModeS
                     if(Statistics != null) {
                         Statistics.Lock(r => {
                             ++r.ModeSMessagesReceived;
-                            ++r.ModeSDFCount[(int)result.DownlinkFormat];
+                            ++r.ModeSDFStatistics[(int)result.DownlinkFormat].MessagesReceived;
                             if(isLongFrame) ++r.ModeSLongFrameMessagesReceived;
                             else ++r.ModeSShortFrameMessagesReceived;
                         });

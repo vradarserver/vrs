@@ -49,9 +49,10 @@
             this.label15 = new System.Windows.Forms.Label();
             this.labelNoAdsbPayload = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.listViewModeSDFCounts = new System.Windows.Forms.ListView();
+            this.listViewModeSDFStatistics = new System.Windows.Forms.ListView();
             this.columnHeaderDF = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderCount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderPIBadParity = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.labelPIBadParity = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.labelShortFrameUnusable = new System.Windows.Forms.Label();
@@ -87,9 +88,11 @@
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerAdsbMessageCounts)).BeginInit();
             this.splitContainerAdsbMessageCounts.Panel1.SuspendLayout();
             this.splitContainerAdsbMessageCounts.Panel2.SuspendLayout();
             this.splitContainerAdsbMessageCounts.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerEverythingVsAdsb)).BeginInit();
             this.splitContainerEverythingVsAdsb.Panel1.SuspendLayout();
             this.splitContainerEverythingVsAdsb.Panel2.SuspendLayout();
             this.splitContainerEverythingVsAdsb.SuspendLayout();
@@ -280,7 +283,7 @@
             this.groupBox3.Controls.Add(this.label15);
             this.groupBox3.Controls.Add(this.labelNoAdsbPayload);
             this.groupBox3.Controls.Add(this.label13);
-            this.groupBox3.Controls.Add(this.listViewModeSDFCounts);
+            this.groupBox3.Controls.Add(this.listViewModeSDFStatistics);
             this.groupBox3.Controls.Add(this.labelPIBadParity);
             this.groupBox3.Controls.Add(this.label11);
             this.groupBox3.Controls.Add(this.labelShortFrameUnusable);
@@ -338,34 +341,41 @@
             this.label13.TabIndex = 15;
             this.label13.Text = "::NoAdsbPayload:::";
             // 
-            // listViewModeSDFCounts
+            // listViewModeSDFStatistics
             // 
-            this.listViewModeSDFCounts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.listViewModeSDFStatistics.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.listViewModeSDFCounts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.listViewModeSDFStatistics.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderDF,
-            this.columnHeaderCount});
-            this.listViewModeSDFCounts.FullRowSelect = true;
-            this.listViewModeSDFCounts.GridLines = true;
-            this.listViewModeSDFCounts.HideSelection = false;
-            this.listViewModeSDFCounts.Location = new System.Drawing.Point(338, 19);
-            this.listViewModeSDFCounts.Name = "listViewModeSDFCounts";
-            this.listViewModeSDFCounts.Size = new System.Drawing.Size(339, 127);
-            this.listViewModeSDFCounts.TabIndex = 0;
-            this.listViewModeSDFCounts.UseCompatibleStateImageBehavior = false;
-            this.listViewModeSDFCounts.View = System.Windows.Forms.View.Details;
+            this.columnHeaderCount,
+            this.columnHeaderPIBadParity});
+            this.listViewModeSDFStatistics.FullRowSelect = true;
+            this.listViewModeSDFStatistics.GridLines = true;
+            this.listViewModeSDFStatistics.HideSelection = false;
+            this.listViewModeSDFStatistics.Location = new System.Drawing.Point(338, 19);
+            this.listViewModeSDFStatistics.Name = "listViewModeSDFStatistics";
+            this.listViewModeSDFStatistics.Size = new System.Drawing.Size(339, 127);
+            this.listViewModeSDFStatistics.TabIndex = 0;
+            this.listViewModeSDFStatistics.UseCompatibleStateImageBehavior = false;
+            this.listViewModeSDFStatistics.View = System.Windows.Forms.View.Details;
             // 
             // columnHeaderDF
             // 
             this.columnHeaderDF.Text = "::DF::";
-            this.columnHeaderDF.Width = 169;
+            this.columnHeaderDF.Width = 155;
             // 
             // columnHeaderCount
             // 
             this.columnHeaderCount.Text = "::Count::";
             this.columnHeaderCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.columnHeaderCount.Width = 130;
+            this.columnHeaderCount.Width = 80;
+            // 
+            // columnHeaderPIBadParity
+            // 
+            this.columnHeaderPIBadParity.Text = "::PIBadParity::";
+            this.columnHeaderPIBadParity.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.columnHeaderPIBadParity.Width = 80;
             // 
             // labelPIBadParity
             // 
@@ -731,9 +741,11 @@
             this.groupBox4.PerformLayout();
             this.splitContainerAdsbMessageCounts.Panel1.ResumeLayout(false);
             this.splitContainerAdsbMessageCounts.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerAdsbMessageCounts)).EndInit();
             this.splitContainerAdsbMessageCounts.ResumeLayout(false);
             this.splitContainerEverythingVsAdsb.Panel1.ResumeLayout(false);
             this.splitContainerEverythingVsAdsb.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerEverythingVsAdsb)).EndInit();
             this.splitContainerEverythingVsAdsb.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -766,7 +778,7 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label labelBadChecksum;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.ListView listViewModeSDFCounts;
+        private System.Windows.Forms.ListView listViewModeSDFStatistics;
         private System.Windows.Forms.ColumnHeader columnHeaderDF;
         private System.Windows.Forms.ColumnHeader columnHeaderCount;
         private System.Windows.Forms.Label labelNoAdsbPayload;
@@ -796,5 +808,6 @@
         private System.Windows.Forms.SplitContainer splitContainerEverythingVsAdsb;
         private System.Windows.Forms.Label labelCurrentBufferSize;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ColumnHeader columnHeaderPIBadParity;
     }
 }

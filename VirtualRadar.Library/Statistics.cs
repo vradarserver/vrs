@@ -93,7 +93,7 @@ namespace VirtualRadar.Library
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public long[] ModeSDFCount { get; private set; }
+        public ModeSDFStatistics[] ModeSDFStatistics { get; private set; }
 
         /// <summary>
         /// See interface docs.
@@ -147,9 +147,24 @@ namespace VirtualRadar.Library
         {
             if(!_Initialised) {
                 AdsbTypeCount = new long[256];
-                ModeSDFCount = new long[Enum.GetValues(typeof(DownlinkFormat)).OfType<DownlinkFormat>().Select(r => (int)r).Max() + 1];
                 AdsbMessageFormatCount = new long[Enum.GetValues(typeof(MessageFormat)).OfType<MessageFormat>().Select(r => (int)r).Max() + 1];
+
+                ModeSDFStatistics = new ModeSDFStatistics[32];
+                ResetModeSDFStatistics();
+
                 _Initialised = true;
+            }
+        }
+
+        /// <summary>
+        /// Resets the <see cref="ModeSDFStatistics"/> array.
+        /// </summary>
+        private void ResetModeSDFStatistics()
+        {
+            for(var i = 0;i < ModeSDFStatistics.Length;++i) {
+                ModeSDFStatistics[i] = new ModeSDFStatistics() {
+                    DF = (DownlinkFormat)i
+                };
             }
         }
 
@@ -174,8 +189,8 @@ namespace VirtualRadar.Library
             if(_Initialised) {
                 Lock(r => {
                     Array.Clear(AdsbTypeCount, 0, AdsbTypeCount.Length);
-                    Array.Clear(ModeSDFCount, 0, ModeSDFCount.Length);
                     Array.Clear(AdsbMessageFormatCount, 0, AdsbMessageFormatCount.Length);
+                    ResetModeSDFStatistics();
                     AdsbAircraftTracked = 0;
                     AdsbCount = 0;
                     AdsbPositionsExceededSpeedCheck = 0;

@@ -114,12 +114,14 @@
                                 <tr>
                                     <th>::DF::</th>
                                     <th class="text-right">::Count::</th>
+                                    <th class="text-right">::PIBadParity::</th>
                                 </tr>
                             </thead>
-                            <tbody data-bind="foreach: ModeSDFCount">
+                            <tbody data-bind="foreach: ModeSDFStatistics">
                                 <tr>
-                                    <td data-bind="text: DF"></td>
-                                    <td data-bind="text: FormattedVal" class="text-right"></td>
+                                    <td data-bind="text: DFAndName"></td>
+                                    <td data-bind="text: FormattedMessagesReceived" class="text-right"></td>
+                                    <td data-bind="text: FormattedBadParityPI" class="text-right"></td>
                                 </tr>
                             </tbody>
                         </table>

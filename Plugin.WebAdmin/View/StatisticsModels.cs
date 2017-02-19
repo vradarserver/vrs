@@ -58,7 +58,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Statistics
 
         public double ModeSPIBadParityRatio { get; set; }
 
-        public ModeSDFCountModel[] ModeSDFCount { get; private set; }
+        public ModeSDFStatisticsModel[] ModeSDFStatistics { get; private set; }
 
         public long AdsbMessages { get; set; }
 
@@ -109,18 +109,22 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Statistics
             this.ReceiverBadChecksum =                  view.ReceiverBadChecksum;
             this.ReceiverThroughput =                   view.ReceiverThroughput;
 
-            this.AdsbMessageTypeCount =     SetArray(view.AdsbMessageTypeCount, (idx, value) => new AdsbMessageTypeCountModel(idx, value));
-            this.AdsbMessageFormatCount =   SetArray(view.AdsbMessageFormatCount, (idx, value) => new AdsbMessageFormatCountModel((MessageFormat)idx, value));
-            this.ModeSDFCount =             SetArray(view.ModeSDFCount, (idx, value) => new ModeSDFCountModel((DownlinkFormat)idx, value));
+            this.AdsbMessageTypeCount =     SetArray(view.AdsbMessageTypeCount, value => value != 0L, (idx, value) => new AdsbMessageTypeCountModel(idx, value));
+            this.AdsbMessageFormatCount =   SetArray(view.AdsbMessageFormatCount, value => value != 0L, (idx, value) => new AdsbMessageFormatCountModel((MessageFormat)idx, value));
+            this.ModeSDFStatistics =        SetArray(
+                view.ModeSDFStatistics,
+                value => value != null && (value.MessagesReceived != 0 || value.BadParityPI != 0),
+                (idx, value) => new ModeSDFStatisticsModel(value)
+            );
         }
 
-        private T[] SetArray<T>(long[] sourceArray, Func<int, long, T> createModel)
+        private TModel[] SetArray<TModel, TSource>(TSource[] sourceArray, Func<TSource, bool> showSourceValue, Func<int, TSource, TModel> createModel)
         {
-            var result = new List<T>();
+            var result = new List<TModel>();
 
             for(var i = 0;i < sourceArray.Length;++i) {
                 var value = sourceArray[i];
-                if(value != 0) {
+                if(showSourceValue(value)) {
                     result.Add(createModel(i, value));
                 }
             }
@@ -155,16 +159,22 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Statistics
         }
     }
 
-    public class ModeSDFCountModel
+    public class ModeSDFStatisticsModel
     {
         public int DF { get; set; }
 
-        public long Val { get; set; }
+        public string DFName { get; set; }
 
-        public ModeSDFCountModel(DownlinkFormat format, long value)
+        public long MessagesReceived { get; set; }
+
+        public long BadParityPI { get; set; }
+
+        public ModeSDFStatisticsModel(ModeSDFStatistics value)
         {
-            DF = (int)format;
-            Val = value;
+            DF =                (int)value.DF;
+            DFName =            Enum.GetName(typeof(DownlinkFormat), value.DF);
+            MessagesReceived =  value.MessagesReceived;
+            BadParityPI =       value.BadParityPI;
         }
     }
 }

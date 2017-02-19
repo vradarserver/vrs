@@ -444,7 +444,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {
         ModeSWithPI: number;
         ModeSPIBadParity: number;
         ModeSPIBadParityRatio: number;
-        ModeSDFCount: VirtualRadar.Plugin.WebAdmin.View.Statistics.IModeSDFCountModel[];
+        ModeSDFStatistics: VirtualRadar.Plugin.WebAdmin.View.Statistics.IModeSDFStatisticsModel[];
         AdsbMessages: number;
         AdsbRejected: number;
         AdsbRejectedRatio: number;
@@ -454,9 +454,11 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {
         AdsbMessageTypeCount: VirtualRadar.Plugin.WebAdmin.View.Statistics.IAdsbMessageTypeCountModel[];
         AdsbMessageFormatCount: VirtualRadar.Plugin.WebAdmin.View.Statistics.IAdsbMessageFormatCountModel[];
     }
-    interface IModeSDFCountModel {
+    interface IModeSDFStatisticsModel {
         DF: number;
-        Val: number;
+        DFName: string;
+        MessagesReceived: number;
+        BadParityPI: number;
     }
     interface IAdsbMessageTypeCountModel {
         N: number;
@@ -924,7 +926,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {
         ModeSWithPI: KnockoutObservable<number>;
         ModeSPIBadParity: KnockoutObservable<number>;
         ModeSPIBadParityRatio: KnockoutObservable<number>;
-        ModeSDFCount: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Statistics.IModeSDFCountModel_KO>;
+        ModeSDFStatistics: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Statistics.IModeSDFStatisticsModel_KO>;
         AdsbMessages: KnockoutObservable<number>;
         AdsbRejected: KnockoutObservable<number>;
         AdsbRejectedRatio: KnockoutObservable<number>;
@@ -934,9 +936,11 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Statistics {
         AdsbMessageTypeCount: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Statistics.IAdsbMessageTypeCountModel_KO>;
         AdsbMessageFormatCount: KnockoutViewModelArray<VirtualRadar.Plugin.WebAdmin.View.Statistics.IAdsbMessageFormatCountModel_KO>;
     }
-    interface IModeSDFCountModel_KO {
+    interface IModeSDFStatisticsModel_KO {
         DF: KnockoutObservable<number>;
-        Val: KnockoutObservable<number>;
+        DFName: KnockoutObservable<string>;
+        MessagesReceived: KnockoutObservable<number>;
+        BadParityPI: KnockoutObservable<number>;
     }
     interface IAdsbMessageTypeCountModel_KO {
         N: KnockoutObservable<number>;

@@ -90,6 +90,11 @@ namespace VirtualRadar.Library.Network
             }
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IsConnectionStateMirrored { get; set; }
+
         private long _BytesRead;
         /// <summary>
         /// See interface docs.

@@ -73,7 +73,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public double ModeSPIBadParityRatio { get; set; }
 
-        public long[] ModeSDFCount { get; private set; }
+        public ModeSDFStatistics[] ModeSDFStatistics { get; private set; }
 
         public long AdsbMessages { get; set; }
 
@@ -111,7 +111,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             _FeedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
 
             AdsbMessageTypeCount = new long[256];
-            ModeSDFCount = new long[Enum.GetValues(typeof(DownlinkFormat)).OfType<DownlinkFormat>().Select(r => (int)r).Max() + 1];
+            ModeSDFStatistics = new ModeSDFStatistics[32];
             AdsbMessageFormatCount = new long[Enum.GetValues(typeof(MessageFormat)).OfType<MessageFormat>().Select(r => (int)r).Max() + 1];
         }
 

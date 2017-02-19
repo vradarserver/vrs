@@ -119,7 +119,7 @@ namespace VirtualRadar.Interface.View
         /// <summary>
         /// Gets an array of counters of Mode-S messages indexed by the message's DF.
         /// </summary>
-        long[] ModeSDFCount { get; }
+        ModeSDFStatistics[] ModeSDFStatistics { get; }
 
         /// <summary>
         /// Gets or sets the count of ADS-B messages seen.
