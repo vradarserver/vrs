@@ -982,6 +982,7 @@ namespace Test.VirtualRadar.Library.Listener
 
                 long expected = piValue == null || piValue == 0 ? 0L : 1L;
                 Assert.AreEqual(expected, _Statistics.Object.ModeSWithBadParityPIField);
+                Assert.AreEqual(expected, _Statistics.Object.ModeSDFStatistics[(int)_ModeSMessage.DownlinkFormat].BadParityPI);
             }
         }
 

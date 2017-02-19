@@ -76,8 +76,21 @@ var VRS;
                                     root.FormattedPositionsReset = ko.computed(function () { return VRS.stringUtility.formatNumber(root.PositionsReset(), 'N0'); });
                                     root.FormattedPositionsOutOfRange = ko.computed(function () { return VRS.stringUtility.formatNumber(root.PositionsOutOfRange(), 'N0'); });
                                 },
-                                '{root}.ModeSDFCount[i]': function (model) {
-                                    model.FormattedVal = ko.computed(function () { return VRS.stringUtility.formatNumber(model.Val(), 'N0'); });
+                                '{root}.ModeSDFStatistics[i]': function (model) {
+                                    model.DFAndName = ko.computed(function () {
+                                        var result = String(model.DF());
+                                        if (model.DFName() !== null) {
+                                            result += ' ' + model.DFName();
+                                        }
+                                        return result;
+                                    });
+                                    model.FormattedBadParityPI = ko.computed(function () {
+                                        var percentage = model.MessagesReceived() == 0 ? 0 : (model.BadParityPI() / model.MessagesReceived()) * 100;
+                                        var result = VRS.stringUtility.formatNumber(model.BadParityPI(), 'N0');
+                                        result += ' (' + VRS.stringUtility.formatNumber(percentage, 'N2') + '%)';
+                                        return result;
+                                    });
+                                    model.FormattedMessagesReceived = ko.computed(function () { return VRS.stringUtility.formatNumber(model.MessagesReceived(), 'N0'); });
                                 },
                                 '{root}.AdsbMessageTypeCount[i]': function (model) {
                                     model.FormattedVal = ko.computed(function () { return VRS.stringUtility.formatNumber(model.Val(), 'N0'); });

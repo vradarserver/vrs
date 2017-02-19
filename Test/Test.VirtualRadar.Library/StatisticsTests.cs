@@ -37,8 +37,12 @@ namespace Test.VirtualRadar.Library
         {
             _Statistics.Initialise();
 
+            Assert.IsTrue(_Statistics.ModeSDFStatistics.Length >= 32);
             foreach(DownlinkFormat df in Enum.GetValues(typeof(DownlinkFormat))) {
-                Assert.AreEqual(0, _Statistics.ModeSDFCount[(int)df]);
+                var modeSDFStatistic = _Statistics.ModeSDFStatistics[(int)df];
+                Assert.AreEqual(df, modeSDFStatistic.DF);
+                Assert.AreEqual(0, modeSDFStatistic.BadParityPI);
+                Assert.AreEqual(0, modeSDFStatistic.MessagesReceived);
             }
 
             for(var i = 0;i < 256;++i) {
@@ -100,7 +104,7 @@ namespace Test.VirtualRadar.Library
                     case "ConnectionTimeUtc":                               _Statistics.ConnectionTimeUtc = DateTime.UtcNow; break;
                     case "CurrentBufferSize":                               _Statistics.CurrentBufferSize = 1; break;
                     case "FailedChecksumMessages":                          _Statistics.FailedChecksumMessages = 1; break;
-                    case "ModeSDFCount":                                    _Statistics.ModeSDFCount[0] = 1; break;
+                    case "ModeSDFStatistics":                               _Statistics.ModeSDFStatistics[0].MessagesReceived = 1; break;
                     case "ModeSLongFrameMessagesReceived":                  _Statistics.ModeSLongFrameMessagesReceived = 1; break;
                     case "ModeSMessagesReceived":                           _Statistics.ModeSMessagesReceived = 1; break;
                     case "ModeSNotAdsbCount":                               _Statistics.ModeSNotAdsbCount = 1; break;
@@ -131,7 +135,7 @@ namespace Test.VirtualRadar.Library
                     case "ConnectionTimeUtc":                               Assert.IsNotNull(_Statistics.ConnectionTimeUtc); break;
                     case "CurrentBufferSize":                               Assert.AreEqual(0L, _Statistics.CurrentBufferSize); break;
                     case "FailedChecksumMessages":                          Assert.AreEqual(0L, _Statistics.FailedChecksumMessages); break;
-                    case "ModeSDFCount":                                    Assert.AreEqual(0L, _Statistics.ModeSDFCount[0]); break;
+                    case "ModeSDFStatistics":                               Assert.AreEqual(0L, _Statistics.ModeSDFStatistics[0].MessagesReceived); break;
                     case "ModeSLongFrameMessagesReceived":                  Assert.AreEqual(0L, _Statistics.ModeSLongFrameMessagesReceived); break;
                     case "ModeSMessagesReceived":                           Assert.AreEqual(0L, _Statistics.ModeSMessagesReceived); break;
                     case "ModeSNotAdsbCount":                               Assert.AreEqual(0L, _Statistics.ModeSNotAdsbCount); break;
@@ -166,7 +170,7 @@ namespace Test.VirtualRadar.Library
                     case "ConnectionTimeUtc":                               _Statistics.ConnectionTimeUtc = DateTime.UtcNow; break;
                     case "CurrentBufferSize":                               _Statistics.CurrentBufferSize = 1L; break;
                     case "FailedChecksumMessages":                          _Statistics.FailedChecksumMessages = 1; break;
-                    case "ModeSDFCount":                                    _Statistics.ModeSDFCount[0] = 1; break;
+                    case "ModeSDFStatistics":                               _Statistics.ModeSDFStatistics[0].MessagesReceived = 1; break;
                     case "ModeSLongFrameMessagesReceived":                  _Statistics.ModeSLongFrameMessagesReceived = 1; break;
                     case "ModeSMessagesReceived":                           _Statistics.ModeSMessagesReceived = 1; break;
                     case "ModeSNotAdsbCount":                               _Statistics.ModeSNotAdsbCount = 1; break;
@@ -197,7 +201,7 @@ namespace Test.VirtualRadar.Library
                     case "ConnectionTimeUtc":                               Assert.IsNull(_Statistics.ConnectionTimeUtc); break;
                     case "CurrentBufferSize":                               Assert.AreEqual(1L, _Statistics.CurrentBufferSize); break;
                     case "FailedChecksumMessages":                          Assert.AreEqual(1L, _Statistics.FailedChecksumMessages); break;
-                    case "ModeSDFCount":                                    Assert.AreEqual(1L, _Statistics.ModeSDFCount[0]); break;
+                    case "ModeSDFStatistics":                               Assert.AreEqual(1L, _Statistics.ModeSDFStatistics[0].MessagesReceived); break;
                     case "ModeSLongFrameMessagesReceived":                  Assert.AreEqual(1L, _Statistics.ModeSLongFrameMessagesReceived); break;
                     case "ModeSMessagesReceived":                           Assert.AreEqual(1L, _Statistics.ModeSMessagesReceived); break;
                     case "ModeSNotAdsbCount":                               Assert.AreEqual(1L, _Statistics.ModeSNotAdsbCount); break;

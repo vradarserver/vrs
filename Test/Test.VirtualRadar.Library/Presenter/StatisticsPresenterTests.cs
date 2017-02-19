@@ -9,6 +9,7 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -52,7 +53,7 @@ namespace Test.VirtualRadar.Library.Presenter
 
             _View.Setup(r => r.Statistics).Returns(_Statistics.Object);
             _View.Setup(r => r.AdsbMessageTypeCount).Returns(new long[256]);
-            _View.Setup(r => r.ModeSDFCount).Returns(new long[Enum.GetValues(typeof(DownlinkFormat)).OfType<DownlinkFormat>().Select(r => (int)r).Max() + 1]);
+            _View.Setup(r => r.ModeSDFStatistics).Returns(new ModeSDFStatistics[32]);
             _View.Setup(r => r.AdsbMessageFormatCount).Returns(new long[Enum.GetValues(typeof(MessageFormat)).OfType<MessageFormat>().Select(r => (int)r).Max() + 1]);
         }
 
@@ -124,6 +125,39 @@ namespace Test.VirtualRadar.Library.Presenter
                     }
                     _View.Verify(r => r.UpdateCounters(), Times.Exactly(2));
                     break;
+                case "ListObjects":
+                    var statList = (IList)typeof(IStatistics).GetProperty(statistic1).GetValue(_Statistics.Object, null);
+                    var viewList = GetViewListObjects(viewProperty);
+
+                    var listLength = statList.Count;
+                    Assert.IsTrue(listLength > 0);
+                    var elementType = statList.GetType().GetElementType();
+                    for(var i = 0;i < listLength;++i) {
+                        if(elementType == typeof(ModeSDFStatistics)) {
+                            statList[i] = new ModeSDFStatistics() {
+                                DF = (DownlinkFormat)i,
+                                BadParityPI = i + 1,
+                                MessagesReceived = i - 1,
+                            };
+                        } else {
+                            throw new NotImplementedException();
+                        }
+                    }
+
+                    _HeartbeatService.Raise(r => r.FastTick += null, EventArgs.Empty);
+
+                    for(var i = 0;i < listLength;++i) {
+                        Assert.AreNotEqual(statList[i], viewList[i], "The view object must be a clone of the statistic object, not the actual statistic object");
+                        if(elementType == typeof(ModeSDFStatistics)) {
+                            var viewElement = (ModeSDFStatistics)viewList[i];
+                            Assert.AreEqual((DownlinkFormat)i, viewElement.DF);
+                            Assert.AreEqual(i + 1, viewElement.BadParityPI);
+                            Assert.AreEqual(i - 1, viewElement.MessagesReceived);
+                        } else {
+                            throw new NotImplementedException();
+                        }
+                    }
+                    break;
                 case "Ratio":
                     SetStatistic(statistic1, 400L);
                     SetStatistic(statistic2, 100L);
@@ -185,6 +219,12 @@ namespace Test.VirtualRadar.Library.Presenter
         {
             var property = typeof(IStatisticsView).GetProperty(propertyName);
             return (long[])property.GetValue(_View.Object, null);
+        }
+
+        private IList GetViewListObjects(string propertyName)
+        {
+            var property = typeof(IStatisticsView).GetProperty(propertyName);
+            return (IList)property.GetValue(_View.Object, null);
         }
 
         [TestMethod]

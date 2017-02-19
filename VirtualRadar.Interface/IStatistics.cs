@@ -87,9 +87,13 @@ namespace VirtualRadar.Interface
         long FailedChecksumMessages { get; set; }
 
         /// <summary>
-        /// Gets an array, indexable by (int)<see cref="VirtualRadar.Interface.ModeS.DownlinkFormat"/>, recording the count of each Mode-S message type received.
+        /// Gets an array, indexable by (int)<see cref="VirtualRadar.Interface.ModeS.DownlinkFormat"/>, recording statistics for each Mode-S message type received.
         /// </summary>
-        long[] ModeSDFCount { get; }
+        /// <remarks>
+        /// Writes to the elements of the array should be protected by the same locking mechanism that protects
+        /// writes to the statistics object.
+        /// </remarks>
+        ModeSDFStatistics[] ModeSDFStatistics { get; }
 
         /// <summary>
         /// Gets or sets the count of ADS-B messages decoded.

@@ -25,9 +25,11 @@
         FormattedPositionsOutOfRange?:                  KnockoutComputed<string>;
     }
 
-    interface ModeSDFCountModel extends ViewJson.IModeSDFCountModel_KO
+    interface ModeSDFStatisticsModel extends ViewJson.IModeSDFStatisticsModel_KO
     {
-        FormattedVal?: KnockoutComputed<string>;
+        DFAndName?:                 KnockoutComputed<string>;
+        FormattedMessagesReceived?: KnockoutComputed<string>;
+        FormattedBadParityPI?:      KnockoutComputed<string>;
     }
 
     interface AdsbMessageTypeCountModel extends ViewJson.IAdsbMessageTypeCountModel_KO
@@ -127,9 +129,22 @@
                             root.FormattedPositionsOutOfRange = ko.computed(() => VRS.stringUtility.formatNumber(root.PositionsOutOfRange(), 'N0'));
                         },
 
-                        '{root}.ModeSDFCount[i]' : function(model: ModeSDFCountModel)
+                        '{root}.ModeSDFStatistics[i]' : function(model: ModeSDFStatisticsModel)
                         {
-                            model.FormattedVal = ko.computed(() => VRS.stringUtility.formatNumber(model.Val(), 'N0'));
+                            model.DFAndName = ko.computed(() => {
+                                var result = String(model.DF());
+                                if(model.DFName() !== null) {
+                                    result += ' ' + model.DFName();
+                                }
+                                return result;
+                            });
+                            model.FormattedBadParityPI = ko.computed(() => {
+                                var percentage = model.MessagesReceived() == 0 ? 0 : (model.BadParityPI() / model.MessagesReceived()) * 100;
+                                var result = VRS.stringUtility.formatNumber(model.BadParityPI(), 'N0');
+                                result += ' (' + VRS.stringUtility.formatNumber(percentage, 'N2') + '%)';
+                                return result;
+                            });
+                            model.FormattedMessagesReceived = ko.computed(() => VRS.stringUtility.formatNumber(model.MessagesReceived(), 'N0'));
                         },
 
                         '{root}.AdsbMessageTypeCount[i]' : function(model: AdsbMessageTypeCountModel)

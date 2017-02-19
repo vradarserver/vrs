@@ -117,8 +117,8 @@ namespace Test.VirtualRadar.Library.ModeS
             var reply = _Translator.Translate(bytes.ToArray(), 0, null, false);
 
             Assert.AreEqual(1L, _Statistics.Object.ModeSMessagesReceived);
-            for(var i = 0;i < _Statistics.Object.ModeSDFCount.Length;++i) {
-                Assert.AreEqual(i == (int)reply.DownlinkFormat ? 1L : 0L, _Statistics.Object.ModeSDFCount[i], i.ToString());
+            for(var i = 0;i < _Statistics.Object.ModeSDFStatistics.Length;++i) {
+                Assert.AreEqual(i == (int)reply.DownlinkFormat ? 1L : 0L, _Statistics.Object.ModeSDFStatistics[i].MessagesReceived, i.ToString());
             }
             bool isLongFrame = (int)reply.DownlinkFormat >= 16;
             Assert.AreEqual(!isLongFrame ? 1L : 0L, _Statistics.Object.ModeSShortFrameMessagesReceived);

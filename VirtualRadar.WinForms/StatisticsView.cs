@@ -157,7 +157,7 @@ namespace VirtualRadar.WinForms
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public long[] ModeSDFCount { get; private set; }
+        public ModeSDFStatistics[] ModeSDFStatistics { get; private set; }
 
         /// <summary>
         /// See interface docs.
@@ -239,7 +239,7 @@ namespace VirtualRadar.WinForms
             InitializeComponent();
 
             AdsbMessageTypeCount = new long[256];
-            ModeSDFCount = new long[Enum.GetValues(typeof(DownlinkFormat)).OfType<DownlinkFormat>().Select(r => (int)r).Max() + 1];
+            ModeSDFStatistics = new ModeSDFStatistics[32];
             AdsbMessageFormatCount = new long[Enum.GetValues(typeof(MessageFormat)).OfType<MessageFormat>().Select(r => (int)r).Max() + 1];
         }
         #endregion
@@ -268,7 +268,23 @@ namespace VirtualRadar.WinForms
                 UpdateCounterLabel(labelLongFrame, ModeSLongFrame);
                 UpdateCounterLabel(labelPIPresent, ModeSWithPI);
                 UpdateRatioLabel(labelPIBadParity, ModeSPIBadParity, ModeSPIBadParityRatio);
-                UpdateCounterListView(listViewModeSDFCounts, ModeSDFCount);
+                UpdateGenericListView(
+                    listViewModeSDFStatistics,
+                    ModeSDFStatistics,
+                    2,
+                    value => value != null && (value.MessagesReceived != 0 || value.BadParityPI != 0),
+                    (value, column) => {
+                        switch(column) {
+                            case 0:     return value.MessagesReceived.ToString("N0");
+                            case 1:     return $"{value.BadParityPI:N0} ({CalculatePercentage(value.BadParityPI, value.MessagesReceived):N2}%)";
+                            default:    throw new NotImplementedException();
+                        }
+                    },
+                    index => {
+                        var downlinkFormat = Enum.GetName(typeof(DownlinkFormat), index);
+                        return downlinkFormat == null ? index.ToString() : $"{index} ({downlinkFormat})";
+                    }
+                );
 
                 UpdateCounterLabel(labelAdsbMessages, AdsbMessages);
                 UpdateRatioLabel(labelAdsbRejected, AdsbRejected, AdsbRejectedRatio);
@@ -278,6 +294,17 @@ namespace VirtualRadar.WinForms
                 UpdateCounterListView(listViewAdsbTypeCounts, AdsbMessageTypeCount);
                 UpdateCounterListView(listViewAdsbMessageFormatCounts, AdsbMessageFormatCount, i => ((MessageFormat)i).ToString());
             }
+        }
+
+        /// <summary>
+        /// Returns the percentage representated by a numerator and a denominator.
+        /// </summary>
+        /// <param name="numerator"></param>
+        /// <param name="denominator"></param>
+        /// <returns></returns>
+        private double CalculatePercentage(double numerator, double denominator)
+        {
+            return denominator == 0.0 ? 0.0 : (numerator / denominator) * 100.0;
         }
 
         /// <summary>
@@ -324,18 +351,47 @@ namespace VirtualRadar.WinForms
         /// <param name="indexToLabelFunc"></param>
         private void UpdateCounterListView(ListView listView, long[] counters, Func<int, string> indexToLabelFunc = null)
         {
+            UpdateGenericListView<long>(
+                listView,
+                counters,
+                1,
+                value => value != 0,
+                (value, col) => value.ToString("N0"),
+                indexToLabelFunc
+            );
+        }
+
+        /// <summary>
+        /// Refreshes the content of a listview that shows the content of arbitrary objects.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="listView"></param>
+        /// <param name="values"></param>
+        /// <param name="countValueColumns"></param>
+        /// <param name="showValue"></param>
+        /// <param name="extractColumnText"></param>
+        /// <param name="indexToLabelFunc"></param>
+        private void UpdateGenericListView<T>(ListView listView, T[] values, int countValueColumns, Func<T, bool> showValue, Func<T, int, string> extractColumnText, Func<int, string> indexToLabelFunc = null)
+        {
             var linesUsed = 0;
-            for(var i = 0;i < counters.Length;++i) {
-                var value = counters[i];
-                if(value != 0L) {
-                    var indexText = indexToLabelFunc == null ? i.ToString() : indexToLabelFunc(i);
-                    var valueText = String.Format("{0:N0}", value);
+            for(var valueIndex = 0;valueIndex < values.Length;++valueIndex) {
+                var value = values[valueIndex];
+                if(showValue(value)) {
+                    var indexText = indexToLabelFunc == null ? valueIndex.ToString() : indexToLabelFunc(valueIndex);
 
                     ListViewItem listViewItem = linesUsed < listView.Items.Count ? listView.Items[linesUsed] : null;
-                    if(listViewItem == null) listView.Items.Add(new ListViewItem(new string[] { indexText, valueText }));
-                    else {
-                        if(listViewItem.SubItems[0].Text != indexText) listViewItem.SubItems[0].Text = indexText;
-                        if(listViewItem.SubItems[1].Text != valueText) listViewItem.SubItems[1].Text = valueText;
+                    if(listViewItem == null) {
+                        listViewItem = new ListViewItem();
+                        listView.Items.Add(listViewItem);
+                    }
+
+                    for(var columnIndex = 0;columnIndex < countValueColumns + 1;++columnIndex) {
+                        var valueText = (columnIndex == 0 ? indexText : extractColumnText(value, columnIndex - 1)) ?? "";
+                        if(listViewItem.SubItems.Count <= columnIndex) {
+                            listViewItem.SubItems.Add(valueText);
+                        } else if(listViewItem.SubItems[columnIndex].Text != valueText) {
+                            listViewItem.SubItems[columnIndex].Text = valueText;
+                        }
                     }
 
                     ++linesUsed;

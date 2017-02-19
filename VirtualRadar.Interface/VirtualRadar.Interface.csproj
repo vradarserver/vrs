@@ -121,6 +121,7 @@
     <Compile Include="Listener\IReceiverFormatManager.cs" />
     <Compile Include="Listener\IReceiverFormatProvider.cs" />
     <Compile Include="Listener\ReceiverFormatName.cs" />
+    <Compile Include="ModeSDFStatistics.cs" />
     <Compile Include="Network\IRebroadcastFormatManager.cs" />
     <Compile Include="Network\IRebroadcastFormatProvider.cs" />
     <Compile Include="Network\RebroadcastFormatName.cs" />

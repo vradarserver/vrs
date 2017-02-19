@@ -658,9 +658,16 @@ namespace VirtualRadar.Library.Listener
 
                         if((hasPIField || isPIWithBadParity || adsbMessage == null) && Statistics != null) {
                             Statistics.Lock(r => {
-                                if(hasPIField) ++r.ModeSWithPIField;
-                                if(isPIWithBadParity) ++r.ModeSWithBadParityPIField;
-                                if(adsbMessage == null) ++r.ModeSNotAdsbCount;
+                                if(hasPIField) {
+                                    ++r.ModeSWithPIField;
+                                }
+                                if(isPIWithBadParity) {
+                                    ++r.ModeSWithBadParityPIField;
+                                    ++r.ModeSDFStatistics[(int)modeSMessage.DownlinkFormat].BadParityPI;
+                                }
+                                if(adsbMessage == null) {
+                                    ++r.ModeSNotAdsbCount;
+                                }
                             });
                         }
 
