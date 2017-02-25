@@ -739,7 +739,7 @@ namespace VRS
                 disabled: function() { return !selectedAircraft; },
                 clickCallback: function() {
                     if(selectedAircraft) {
-                        pageSettings.mapPlugin.panTo(VRS.currentLocation.getCurrentLocation());
+                        pageSettings.mapPlugin.panTo(selectedAircraft.getPosition());
                     }
                 }
             });
