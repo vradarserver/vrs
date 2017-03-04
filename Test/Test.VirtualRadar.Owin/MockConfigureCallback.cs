@@ -18,7 +18,7 @@ using Owin;
 namespace Test.VirtualRadar.Owin
 {
     /// <summary>
-    /// An observable callback that can be used with <see cref="IOwinConfiguration"/>.
+    /// An observable callback that can be used with <see cref="VirtualRadar.Interface.Owin.IWebAppConfiguration"/>.
     /// </summary>
     class MockConfigureCallback
     {

@@ -28,7 +28,7 @@ namespace VirtualRadar.Owin
         /// <param name="factory"></param>
         public static void Register(IClassFactory factory)
         {
-            factory.Register<Interface.WebServer.IOwinConfiguration, OwinConfiguration>();
+            factory.Register<Interface.Owin.IWebAppConfiguration, WebAppConfiguration>();
         }
     }
 }

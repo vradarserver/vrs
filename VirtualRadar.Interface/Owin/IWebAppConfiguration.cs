@@ -13,13 +13,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Owin;
 
-namespace VirtualRadar.Interface.WebServer
+namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// The interface for objects that represent a callback that is called when an OWIN web app is configured.
+    /// The interface for a singleton that handles the configuration of the OWIN pipeline for the application.
     /// </summary>
-    public interface IOwinConfigureCallbackHandle
+    public interface IWebAppConfiguration : ISingleton<IWebAppConfiguration>
     {
+        /// <summary>
+        /// Records a method that will be called with the <see cref="IAppBuilder"/> passed to <see cref="Configure"/>.
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <param name="priority">A value indicating the order in which callbacks are called, lowest first.</param>
+        /// <returns>A handle that can be passed to <see cref="RemoveCallback"/>.</returns>
+        IWebAppConfigurationCallbackHandle AddCallback(Action<IAppBuilder> callback, MiddlewarePriority priority);
+
+        /// <summary>
+        /// Removes the callback associated with the handle passed across.
+        /// </summary>
+        /// <param name="callbackHandle"></param>
+        void RemoveCallback(IWebAppConfigurationCallbackHandle callbackHandle);
+
+        /// <summary>
+        /// Configures a new instance of an OWIN web app by calling each registered callback in ascending order of priority.
+        /// </summary>
+        /// <param name="appBuilder"></param>
+        /// <remarks>
+        /// Callbacks that have been added with the same priority value are called in random order.
+        /// </remarks>
+        void Configure(IAppBuilder appBuilder);
     }
 }

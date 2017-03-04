@@ -19,6 +19,7 @@ using InterfaceFactory;
 using Microsoft.Owin.Hosting;
 using Owin;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.WebServer;
 
@@ -36,9 +37,9 @@ namespace VirtualRadar.WebServer.HttpListener
         private WebServerShim _OldServerShim;
 
         /// <summary>
-        /// The handle for the callback we have registered with <see cref="IOwinConfiguration"/>.
+        /// The handle for the callback we have registered with <see cref="IWebAppConfiguration"/>.
         /// </summary>
-        private IOwinConfigureCallbackHandle _ConfigureCallbackHandle;
+        private IWebAppConfigurationCallbackHandle _ConfigureCallbackHandle;
 
         /// <summary>
         /// The handle to the OWIN web application.
@@ -46,9 +47,9 @@ namespace VirtualRadar.WebServer.HttpListener
         private IDisposable _WebApp;
 
         /// <summary>
-        /// A reference to the singleton <see cref="IOwinConfiguration"/>.
+        /// A reference to the singleton <see cref="IWebAppConfiguration"/>.
         /// </summary>
-        private IOwinConfiguration _OwinConfiguration;
+        private IWebAppConfiguration _WebAppConfiguration;
 
         /// <summary>
         /// See interface docs.
@@ -282,7 +283,7 @@ namespace VirtualRadar.WebServer.HttpListener
 
         public OwinWebServer()
         {
-            _OwinConfiguration = Factory.Singleton.Resolve<IOwinConfiguration>().Singleton;
+            _WebAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>().Singleton;
         }
 
         public void AddAdministratorPath(string pathFromRoot)
@@ -320,7 +321,7 @@ namespace VirtualRadar.WebServer.HttpListener
         private void RegisterConfigureCallback()
         {
             if(_ConfigureCallbackHandle == null) {
-                _ConfigureCallbackHandle = _OwinConfiguration.AddConfigureCallback(ConfigureOwin, MiddlewarePriority.Normal);
+                _ConfigureCallbackHandle = _WebAppConfiguration.AddCallback(ConfigureOwin, MiddlewarePriority.Normal);
             }
         }
 
@@ -330,7 +331,7 @@ namespace VirtualRadar.WebServer.HttpListener
                 var handle = _ConfigureCallbackHandle;
                 _ConfigureCallbackHandle = null;
 
-                _OwinConfiguration.RemoveConfigureCallback(handle);
+                _WebAppConfiguration.RemoveCallback(handle);
             }
         }
 
@@ -343,7 +344,7 @@ namespace VirtualRadar.WebServer.HttpListener
                 };
                 startOptions.Urls.Add(Prefix);
 
-                _WebApp = WebApp.Start(startOptions, _OwinConfiguration.Configure);
+                _WebApp = WebApp.Start(startOptions, _WebAppConfiguration.Configure);
                 _Online = true;
                 OnOnlineChanged(EventArgs.Empty);
             }

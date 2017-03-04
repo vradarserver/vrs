@@ -12,7 +12,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VirtualRadar.Interface.WebServer;
+using VirtualRadar.Interface.Owin;
 using InterfaceFactory;
 using Owin;
 using Moq;
@@ -20,92 +20,92 @@ using Moq;
 namespace Test.VirtualRadar.Owin
 {
     [TestClass]
-    public class OwinConfigurationTests
+    public class WebAppConfigurationTests
     {
         public TestContext TestContext { get; set; }
-        private IOwinConfiguration _OwinConfiguration;
+        private IWebAppConfiguration _Configuration;
         private Mock<IAppBuilder> _AppBuilder;
 
         [TestInitialize]
         public void TestInitialise()
         {
-            _OwinConfiguration = Factory.Singleton.Resolve<IOwinConfiguration>();
+            _Configuration = Factory.Singleton.Resolve<IWebAppConfiguration>();
             _AppBuilder = new Mock<IAppBuilder>();
         }
 
         [TestMethod]
-        public void OwinConfiguration_Singleton_Is_Not_Null()
+        public void WebAppConfiguration_Singleton_Is_Not_Null()
         {
-            Assert.IsNotNull(_OwinConfiguration.Singleton);
+            Assert.IsNotNull(_Configuration.Singleton);
         }
 
         [TestMethod]
-        public void OwinConfiguration_Singleton_Exposes_A_Static_Object()
+        public void WebAppConfiguration_Singleton_Exposes_A_Static_Object()
         {
-            var other = Factory.Singleton.Resolve<IOwinConfiguration>();
-            Assert.AreSame(_OwinConfiguration.Singleton, other.Singleton);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void OwinConfiguration_AddConfigureCallback_Throws_If_Passed_Null()
-        {
-            _OwinConfiguration.AddConfigureCallback(null, MiddlewarePriority.Normal);
-        }
-
-        [TestMethod]
-        public void OwinConfiguration_AddConfigureCallback_Callback_Returns_Handle()
-        {
-            var callback = new MockConfigureCallback();
-            Assert.IsNotNull(_OwinConfiguration.AddConfigureCallback(callback.Callback, MiddlewarePriority.Normal));
+            var other = Factory.Singleton.Resolve<IWebAppConfiguration>();
+            Assert.AreSame(_Configuration.Singleton, other.Singleton);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void OwinConfiguration_RemoveConfigureCallback_Throws_If_Passed_Null()
+        public void WebAppConfiguration_AddCallback_Throws_If_Passed_Null()
         {
-            _OwinConfiguration.RemoveConfigureCallback(null);
+            _Configuration.AddCallback(null, MiddlewarePriority.Normal);
         }
 
         [TestMethod]
-        public void OwinConfiguration_RemoveConfigureCallback_Does_Nothing_If_Passed_Same_Handle_Twice()
+        public void WebAppConfiguration_AddCallback_Callback_Returns_Handle()
         {
             var callback = new MockConfigureCallback();
-            var handle = _OwinConfiguration.AddConfigureCallback(callback.Callback, MiddlewarePriority.Normal);
-
-            _OwinConfiguration.RemoveConfigureCallback(handle);
-            _OwinConfiguration.RemoveConfigureCallback(handle);
+            Assert.IsNotNull(_Configuration.AddCallback(callback.Callback, MiddlewarePriority.Normal));
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void OwinConfiguration_Configure_Throws_If_Passed_Null()
+        public void WebAppConfiguration_RemoveCallback_Throws_If_Passed_Null()
         {
-            _OwinConfiguration.Configure(null);
+            _Configuration.RemoveCallback(null);
         }
 
         [TestMethod]
-        public void OwinConfiguration_Configure_Calls_Registered_Callback()
+        public void WebAppConfiguration_RemoveCallback_Does_Nothing_If_Passed_Same_Handle_Twice()
         {
             var callback = new MockConfigureCallback();
-            _OwinConfiguration.AddConfigureCallback(callback.Callback, MiddlewarePriority.Normal);
+            var handle = _Configuration.AddCallback(callback.Callback, MiddlewarePriority.Normal);
 
-            _OwinConfiguration.Configure(_AppBuilder.Object);
+            _Configuration.RemoveCallback(handle);
+            _Configuration.RemoveCallback(handle);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void WebAppConfiguration_Configure_Throws_If_Passed_Null()
+        {
+            _Configuration.Configure(null);
+        }
+
+        [TestMethod]
+        public void WebAppConfiguration_Configure_Calls_Registered_Callback()
+        {
+            var callback = new MockConfigureCallback();
+            _Configuration.AddCallback(callback.Callback, MiddlewarePriority.Normal);
+
+            _Configuration.Configure(_AppBuilder.Object);
 
             Assert.AreEqual(1, callback.CallCount);
             Assert.AreSame(_AppBuilder.Object, callback.AppBuilder);
         }
 
         [TestMethod]
-        public void OwinConfiguration_Configure_Calls_Registered_Callbacks_In_Correct_Order()
+        public void WebAppConfiguration_Configure_Calls_Registered_Callbacks_In_Correct_Order()
         {
             var firstCallback = new MockConfigureCallback();
             var secondCallback = new MockConfigureCallback();
             var thirdCallback = new MockConfigureCallback();
 
-            _OwinConfiguration.AddConfigureCallback(secondCallback.Callback, MiddlewarePriority.Normal);
-            _OwinConfiguration.AddConfigureCallback(thirdCallback.Callback,  MiddlewarePriority.Late);
-            _OwinConfiguration.AddConfigureCallback(firstCallback.Callback,  MiddlewarePriority.Early);
+            _Configuration.AddCallback(secondCallback.Callback, MiddlewarePriority.Normal);
+            _Configuration.AddCallback(thirdCallback.Callback,  MiddlewarePriority.Late);
+            _Configuration.AddCallback(firstCallback.Callback,  MiddlewarePriority.Early);
 
             firstCallback.Action = r => {
                 Assert.AreEqual(0, secondCallback.CallCount, "2nd callback called before 1st");
@@ -120,7 +120,7 @@ namespace Test.VirtualRadar.Owin
                 Assert.AreEqual(1, secondCallback.CallCount, "2nd callback not called before 3rd");
             };
 
-            _OwinConfiguration.Configure(_AppBuilder.Object);
+            _Configuration.Configure(_AppBuilder.Object);
 
             Assert.AreEqual(1, firstCallback.CallCount);
             Assert.AreEqual(1, secondCallback.CallCount);
@@ -128,13 +128,13 @@ namespace Test.VirtualRadar.Owin
         }
 
         [TestMethod]
-        public void OwinConfiguration_Configure_Does_Not_Call_Callbacks_That_Have_Been_Removed()
+        public void WebAppConfiguration_Configure_Does_Not_Call_Callbacks_That_Have_Been_Removed()
         {
             var callback = new MockConfigureCallback();
-            var handle = _OwinConfiguration.AddConfigureCallback(callback.Callback, MiddlewarePriority.Normal);
-            _OwinConfiguration.RemoveConfigureCallback(handle);
+            var handle = _Configuration.AddCallback(callback.Callback, MiddlewarePriority.Normal);
+            _Configuration.RemoveCallback(handle);
 
-            _OwinConfiguration.Configure(_AppBuilder.Object);
+            _Configuration.Configure(_AppBuilder.Object);
 
             Assert.AreEqual(0, callback.CallCount);
         }

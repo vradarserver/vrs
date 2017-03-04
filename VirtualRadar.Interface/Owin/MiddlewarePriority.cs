@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VirtualRadar.Interface.WebServer
+namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
     /// An enumeration of standard priorities to use when adding callbacks to
-    /// <see cref="IOwinConfiguration"/>.
+    /// <see cref="IWebAppConfiguration"/>.
     /// </summary>
     public enum MiddlewarePriority
     {

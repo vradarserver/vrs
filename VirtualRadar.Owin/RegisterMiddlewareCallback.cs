@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Owin;
-using VirtualRadar.Interface.WebServer;
+using VirtualRadar.Interface.Owin;
 
 namespace VirtualRadar.Owin
 {
@@ -22,7 +22,7 @@ namespace VirtualRadar.Owin
     /// Describes a method that will be called when middleware needs to be registered with a
     /// new instance of an OWIN web app.
     /// </summary>
-    class RegisterMiddlewareCallback : IOwinConfigureCallbackHandle
+    class RegisterMiddlewareCallback : IWebAppConfigurationCallbackHandle
     {
         /// <summary>
         /// Gets the callback.

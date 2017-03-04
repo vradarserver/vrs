@@ -161,9 +161,9 @@
     <Compile Include="View\ValidationModelFieldAttribute.cs" />
     <Compile Include="View\ValidationModelHelper.cs" />
     <Compile Include="View\EnumModel.cs" />
-    <Compile Include="WebServer\IOwinConfigureCallbackHandle.cs" />
-    <Compile Include="WebServer\IOwinConfiguration.cs" />
-    <Compile Include="WebServer\MiddlewarePriority.cs" />
+    <Compile Include="Owin\IWebAppConfigurationCallbackHandle.cs" />
+    <Compile Include="Owin\IWebAppConfiguration.cs" />
+    <Compile Include="Owin\MiddlewarePriority.cs" />
     <Compile Include="WebSite\WebAdminMethodAttribute.cs" />
     <Compile Include="WebSite\WebAdminModels.cs" />
     <Compile Include="WebSite\WebAdminView.cs" />

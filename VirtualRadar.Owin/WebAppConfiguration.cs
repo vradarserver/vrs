@@ -14,24 +14,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Owin;
-using VirtualRadar.Interface.WebServer;
+using VirtualRadar.Interface.Owin;
 
 namespace VirtualRadar.Owin
 {
     /// <summary>
-    /// Default implementation of <see cref="IOwinConfiguration"/>.
+    /// Default implementation of <see cref="IWebAppConfiguration"/>.
     /// </summary>
-    class OwinConfiguration : IOwinConfiguration
+    class WebAppConfiguration : IWebAppConfiguration
     {
-        private static OwinConfiguration _Singleton;
+        private static WebAppConfiguration _Singleton;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IOwinConfiguration Singleton
+        public IWebAppConfiguration Singleton
         {
             get {
                 if(_Singleton == null) {
-                    _Singleton = new OwinConfiguration();
+                    _Singleton = new WebAppConfiguration();
                 }
                 return _Singleton;
             }
@@ -48,7 +48,7 @@ namespace VirtualRadar.Owin
         /// <param name="callback"></param>
         /// <param name="priority"></param>
         /// <returns></returns>
-        public IOwinConfigureCallbackHandle AddConfigureCallback(Action<IAppBuilder> callback, MiddlewarePriority priority)
+        public IWebAppConfigurationCallbackHandle AddCallback(Action<IAppBuilder> callback, MiddlewarePriority priority)
         {
             if(callback == null) {
                 throw new ArgumentNullException(nameof(callback));
@@ -64,7 +64,7 @@ namespace VirtualRadar.Owin
         /// See interface docs.
         /// </summary>
         /// <param name="configureCallbackHandle"></param>
-        public void RemoveConfigureCallback(IOwinConfigureCallbackHandle configureCallbackHandle)
+        public void RemoveCallback(IWebAppConfigurationCallbackHandle configureCallbackHandle)
         {
             if(configureCallbackHandle == null) {
                 throw new ArgumentNullException(nameof(configureCallbackHandle));

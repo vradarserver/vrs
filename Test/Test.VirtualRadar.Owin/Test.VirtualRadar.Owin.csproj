@@ -61,7 +61,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInitialise.cs" />
     <Compile Include="MockConfigureCallback.cs" />
-    <Compile Include="OwinConfigurationTests.cs" />
+    <Compile Include="WebAppConfigurationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
