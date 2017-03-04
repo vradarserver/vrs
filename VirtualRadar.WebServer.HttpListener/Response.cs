@@ -156,29 +156,6 @@ namespace VirtualRadar.WebServer.HttpListener
         }
 
         /// <summary>
-        /// Returns true if the browser appears to be one that does not deal well with compressed responses.
-        /// </summary>
-        /// <param name="userAgent"></param>
-        /// <returns>True if compression could break the browser, false if the browser should be alright.</returns>
-        /// <remarks><para>
-        /// In testing compression has worked fine on everything except iOS Mobile Safari. On there I randomly get instances where the browser
-        /// requests a file, I send the file back (compressed) and then the browser acts as if it hasn't received it and pauses for 75 seconds
-        /// until it finally realises that it's there and then continues with the page load. If I disable compression then this effect is not
-        /// seen. When I look on Wireshark the file has been sent correctly - it hangs on a random file, it's not always the same one. As far
-        /// as I can see I'm sending the right headers. If I run it on the iOS simulator it's fine, it's just my iPad that's having problems.
-        /// For now, just in case it's ALL iPads that get the problem, I'm disabling compression if the user agent declares itself to be iOS
-        /// Safari. Mac OS/X Safari is fine. I've also added a configuration switch that can be used to switch compression off entirely.
-        /// </para><para>
-        /// The problem only affects Safari - if you use Chrome on the iPad it's fine, no hangs.
-        /// </para></remarks>
-        private bool IsBadBrowser(string userAgent)
-        {
-            // Chrome on iPad: Mozilla/5.0 (iPad; CPU OS 6_0_1 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) CriOS/31.0.1650.18 Mobile/10A523 Safari/8536.25
-            // Safari on iPad: Mozilla/5.0 (iPad; CPU OS 6_0_1 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A523 Safari/8536.25
-            return !String.IsNullOrEmpty(userAgent) && (userAgent.Contains("iPad;") || userAgent.Contains("iPhone;")) && userAgent.Contains("Safari/") && !userAgent.Contains("CriOS/");
-        }
-
-        /// <summary>
         /// See interface docs.
         /// </summary>
         public void Close()
