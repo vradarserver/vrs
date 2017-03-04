@@ -31,6 +31,16 @@ namespace VirtualRadar.WebServer.HttpListener
         private IOwinResponse _Response;
 
         /// <summary>
+        /// Gets or sets a value indicating that we should not allow the request to be processed by any other
+        /// OWIN middleware components.
+        /// </summary>
+        /// <remarks>
+        /// At the time of writing this is set for redirects. If we let the request carry on through the
+        /// pipeline then the 302 status gets changed to a 404.
+        /// </remarks>
+        internal bool StopProcessing { get; set; }
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public long ContentLength
@@ -94,6 +104,7 @@ namespace VirtualRadar.WebServer.HttpListener
         public Response(IOwinResponse response)
         {
             _Response = response;
+            StopProcessing = true;
         }
 
         /// <summary>

@@ -70,7 +70,9 @@ namespace VirtualRadar.WebServer.HttpListener
                 var context = new Context(environment);
                 HandleRequest(context);
 
-                await next.Invoke(environment);
+                if(!context.StopProcessing) {
+                    await next.Invoke(environment);
+                }
             };
 
             return appFunc;

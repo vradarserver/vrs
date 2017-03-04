@@ -33,15 +33,31 @@ namespace VirtualRadar.WebServer.HttpListener
         /// </summary>
         internal OwinResponse OwinResponse { get; private set; }
 
+        private Request _Request;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IRequest Request { get; private set; }
+        public IRequest Request
+        {
+            get { return _Request; }
+        }
+
+        private Response _Response;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public IResponse Response
+        {
+            get { return _Response; }
+        }
 
         /// <summary>
-        /// See interface docs.
+        /// Exposes the response's internal StopProcessing flag.
         /// </summary>
-        public IResponse Response { get; private set; }
+        internal bool StopProcessing
+        {
+            get { return _Response?.StopProcessing ?? false; }
+        }
 
         /// <summary>
         /// See interface docs.
@@ -62,8 +78,8 @@ namespace VirtualRadar.WebServer.HttpListener
             OwinRequest = new OwinRequest(environment);
             OwinResponse = new OwinResponse(environment);
 
-            Request = new Request(OwinRequest);
-            Response = new Response(OwinResponse);
+            _Request = new Request(OwinRequest);
+            _Response = new Response(OwinResponse);
 
             var basicIdentity = OwinRequest.User == null ? null : OwinRequest.User.Identity;
             if(basicIdentity != null) {
