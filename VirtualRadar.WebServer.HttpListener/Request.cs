@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2017 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,25 +17,37 @@ using System.Net;
 using System.IO;
 using System.Collections.Specialized;
 using System.Web;
+using Microsoft.Owin;
 
-namespace VirtualRadar.WebServer
+namespace VirtualRadar.WebServer.HttpListener
 {
     /// <summary>
-    /// A wrapper around an HttpListenerRequest.
+    /// A wrapper around an IOwinRequest.
     /// </summary>
     class Request : IRequest
     {
         /// <summary>
-        /// The underlying request object that we're wrapping.
+        /// The underlying OWIN environment object that we're wrapping.
         /// </summary>
-        private HttpListenerRequest _Request;
+        private IOwinRequest _Request;
 
+        private CookieCollection _Cookies;
         /// <summary>
         /// See interface docs.
         /// </summary>
         public CookieCollection Cookies
         {
-            get { return _Request.Cookies; }
+            get {
+                if(_Cookies == null) {
+                    var cookies = new CookieCollection();
+                    foreach(var cookie in _Request.Cookies) {
+                        cookies.Add(new Cookie(cookie.Key, cookie.Value));
+                    }
+                    _Cookies = cookies;
+                }
+
+                return _Cookies;
+            }
         }
 
         private NameValueCollection _FormValues;
@@ -58,12 +70,23 @@ namespace VirtualRadar.WebServer
         /// </summary>
         public int MaximumPostBodySize { get; set; }
 
+        private NameValueCollection _Headers;
         /// <summary>
         /// See interface docs.
         /// </summary>
         public NameValueCollection Headers
         {
-            get { return _Request.Headers; }
+            get {
+                if(_Headers == null) {
+                    var headers = new NameValueCollection();
+                    foreach(var headerKey in _Request.Headers.Keys) {
+                        headers.Add(headerKey, _Request.Headers[headerKey]);
+                    }
+                    _Headers = headers;
+                }
+
+                return _Headers;
+            }
         }
 
         /// <summary>
@@ -71,7 +94,7 @@ namespace VirtualRadar.WebServer
         /// </summary>
         public string HttpMethod
         {
-            get { return _Request.HttpMethod; }
+            get { return _Request.Method; }
         }
 
         /// <summary>
@@ -79,7 +102,7 @@ namespace VirtualRadar.WebServer
         /// </summary>
         public Stream InputStream
         {
-            get { return _Request.InputStream; }
+            get { return _Request.Body; }
         }
 
         /// <summary>
@@ -87,7 +110,24 @@ namespace VirtualRadar.WebServer
         /// </summary>
         public bool IsLocal
         {
-            get { return _Request.IsLocal; }
+            get {
+                // Ported from HttpRequest source
+                var remoteAddress = _Request.RemoteIpAddress;
+
+                if(String.IsNullOrEmpty(remoteAddress)) {
+                    return false;
+                }
+
+                if(remoteAddress == "127.0.0.1" || remoteAddress == "::1") {
+                    return true;
+                }
+
+                if(remoteAddress == _Request.LocalIpAddress) {
+                    return true;
+                }
+
+                return false;
+            }
         }
 
         /// <summary>
@@ -95,23 +135,54 @@ namespace VirtualRadar.WebServer
         /// </summary>
         public string RawUrl
         {
-            get { return _Request.RawUrl; }
+            get {
+                // Working off the "URI reconstruction algorithm" from OWIN.ORG (http://owin.org/html/owin.html#53-paths):
+                var requestPathBase = (string)_Request.Environment["owin.RequestPathBase"];
+                var requestPath =     (string)_Request.Environment["owin.RequestPath"];
+                var queryString =     (string)_Request.Environment["owin.RequestQueryString"];
+
+                var result = new StringBuilder();
+                result.Append(requestPathBase);
+                result.Append(requestPath);
+                if(!String.IsNullOrEmpty(queryString)) {
+                    result.Append('?');
+                    result.Append(queryString);
+                }
+
+                return result.ToString();
+            }
         }
 
+        private IPEndPoint _RemoteEndPoint;
         /// <summary>
         /// See interface docs.
         /// </summary>
         public IPEndPoint RemoteEndPoint
         {
-            get { return _Request.RemoteEndPoint; }
+            get {
+                if(_RemoteEndPoint == null) {
+                    var remoteEndPoint = new IPEndPoint(IPAddress.Parse(_Request.RemoteIpAddress), _Request.RemotePort.GetValueOrDefault());
+                    _RemoteEndPoint = remoteEndPoint;
+                }
+
+                return _RemoteEndPoint;
+            }
         }
 
+        private IPEndPoint _LocalEndPoint;
         /// <summary>
         /// See interface docs.
         /// </summary>
         public IPEndPoint LocalEndPoint
         {
-            get { return _Request.LocalEndPoint; }
+            get {
+                if(_LocalEndPoint == null) {
+                    var localEndPoint = new IPEndPoint(IPAddress.Parse(_Request.LocalIpAddress), _Request.LocalPort.GetValueOrDefault());
+                    _LocalEndPoint = localEndPoint;
+                }
+
+                return _LocalEndPoint;
+            }
         }
 
         /// <summary>
@@ -119,7 +190,7 @@ namespace VirtualRadar.WebServer
         /// </summary>
         public Uri Url
         {
-            get { return _Request.Url; }
+            get { return _Request.Uri; }
         }
 
         /// <summary>
@@ -127,7 +198,7 @@ namespace VirtualRadar.WebServer
         /// </summary>
         public string UserAgent
         {
-            get { return _Request.UserAgent; }
+            get { return _Request.Headers["User-Agent"]; }
         }
 
         /// <summary>
@@ -135,7 +206,7 @@ namespace VirtualRadar.WebServer
         /// </summary>
         public string UserHostName
         {
-            get { return _Request.UserHostName; }
+            get { return _Request.Host.Value; }
         }
 
         /// <summary>
@@ -154,10 +225,10 @@ namespace VirtualRadar.WebServer
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        /// <param name="request"></param>
-        public Request(HttpListenerRequest request)
+        /// <param name="owinRequest"></param>
+        public Request(IOwinRequest owinRequest)
         {
-            _Request = request;
+            _Request = owinRequest;
             MaximumPostBodySize = 4 * 1024 * 1024;
         }
 
@@ -172,24 +243,22 @@ namespace VirtualRadar.WebServer
             if(parameterIndex != -1) contentType = contentType.Substring(0, parameterIndex).Trim();
 
             if(HttpMethod == "POST" && contentType == "application/x-www-form-urlencoded") {
-                if(_Request.ContentLength64 <= MaximumPostBodySize) {
-                    var charset = Encoding.UTF8;
-                    if(parameter.StartsWith("charset=")) charset = ParseEncoding(parameter.Substring(8).Trim());
+                var charset = Encoding.UTF8;
+                if(parameter.StartsWith("charset=")) charset = ParseEncoding(parameter.Substring(8).Trim());
 
-                    string content = ReadBodyAsString(charset);
-                    if(!String.IsNullOrEmpty(content)) {
-                        for(int start = 0, end = 0;start < content.Length;start = end + 1) {
-                            end = content.IndexOf('&', start);
-                            if(end == -1) end = content.Length;
-                            var nameValue = content.Substring(start, end - start);
+                string content = ReadBodyAsString(charset);
+                if(!String.IsNullOrEmpty(content)) {
+                    for(int start = 0, end = 0;start < content.Length;start = end + 1) {
+                        end = content.IndexOf('&', start);
+                        if(end == -1) end = content.Length;
+                        var nameValue = content.Substring(start, end - start);
 
-                            var separator = nameValue.IndexOf('=');
-                            var name = separator == -1 ? nameValue : nameValue.Substring(0, separator).Trim();
-                            var value = separator == -1 ? "" : nameValue.Substring(separator + 1);
-                            value = HttpUtility.UrlDecode(value);
-                            if(!String.IsNullOrEmpty(name)) {
-                                _FormValues[name] = value;
-                            }
+                        var separator = nameValue.IndexOf('=');
+                        var name = separator == -1 ? nameValue : nameValue.Substring(0, separator).Trim();
+                        var value = separator == -1 ? "" : nameValue.Substring(separator + 1);
+                        value = HttpUtility.UrlDecode(value);
+                        if(!String.IsNullOrEmpty(name)) {
+                            _FormValues[name] = value;
                         }
                     }
                 }

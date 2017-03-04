@@ -51,8 +51,6 @@ namespace VirtualRadar.WebSite
 
             public CookieCollection Cookies { get { return DummyCookies; } }
 
-            public long ContentLength64 { get { return 0L; } }
-
             public NameValueCollection FormValues { get { return DummyFormValues; } }
 
             public NameValueCollection Headers { get { return DummyHeaders; } }

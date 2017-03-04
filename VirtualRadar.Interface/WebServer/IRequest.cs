@@ -24,11 +24,6 @@ namespace VirtualRadar.Interface.WebServer
     public interface IRequest
     {
         /// <summary>
-        /// Gets the number of bytes of the content exposed by <see cref="InputStream"/>.
-        /// </summary>
-        long ContentLength64 { get; }
-
-        /// <summary>
         /// Gets the cookies on the request.
         /// </summary>
         CookieCollection Cookies { get; }

@@ -130,8 +130,6 @@ namespace Test.VirtualRadar.WebSite
             _Request = new Mock<IRequest>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Response = new Mock<IResponse>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
 
-            _Request.Setup(m => m.ContentLength64).Returns(() => { return _Request.Object.InputStream == null ? 0L : _Request.Object.InputStream.Length; });
-
             _OutputStream = new MemoryStream();
             _Response.Setup(m => m.OutputStream).Returns(_OutputStream);
 
