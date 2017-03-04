@@ -15,6 +15,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
 using Microsoft.Owin.Hosting;
 using Owin;
 using VirtualRadar.Interface;
@@ -33,6 +34,21 @@ namespace VirtualRadar.WebServer.HttpListener
         /// The shim that integrates the old style non-OWIN web site in with OWIN.
         /// </summary>
         private WebServerShim _OldServerShim;
+
+        /// <summary>
+        /// The handle for the callback we have registered with <see cref="IOwinConfiguration"/>.
+        /// </summary>
+        private IOwinConfigureCallbackHandle _ConfigureCallbackHandle;
+
+        /// <summary>
+        /// The handle to the OWIN web application.
+        /// </summary>
+        private IDisposable _WebApp;
+
+        /// <summary>
+        /// A reference to the singleton <see cref="IOwinConfiguration"/>.
+        /// </summary>
+        private IOwinConfiguration _OwinConfiguration;
 
         /// <summary>
         /// See interface docs.
@@ -264,12 +280,18 @@ namespace VirtualRadar.WebServer.HttpListener
             EventHelper.RaiseQuickly(ResponseSent, this, args);
         }
 
+        public OwinWebServer()
+        {
+            _OwinConfiguration = Factory.Singleton.Resolve<IOwinConfiguration>().Singleton;
+        }
+
         public void AddAdministratorPath(string pathFromRoot)
         {
         }
 
         public void Dispose()
         {
+            DeregisterConfigureCallback();
             StopHosting();
         }
 
@@ -295,15 +317,33 @@ namespace VirtualRadar.WebServer.HttpListener
         {
         }
 
-        private IDisposable _WebApp;
+        private void RegisterConfigureCallback()
+        {
+            if(_ConfigureCallbackHandle == null) {
+                _ConfigureCallbackHandle = _OwinConfiguration.AddConfigureCallback(ConfigureOwin, MiddlewarePriority.Normal);
+            }
+        }
+
+        private void DeregisterConfigureCallback()
+        {
+            if(_ConfigureCallbackHandle != null) {
+                var handle = _ConfigureCallbackHandle;
+                _ConfigureCallbackHandle = null;
+
+                _OwinConfiguration.RemoveConfigureCallback(handle);
+            }
+        }
+
         private void StartHosting()
         {
             if(_WebApp == null) {
+                RegisterConfigureCallback();
+
                 var startOptions = new StartOptions() {
                 };
                 startOptions.Urls.Add(Prefix);
 
-                _WebApp = WebApp.Start(startOptions, ConfigureOwin);
+                _WebApp = WebApp.Start(startOptions, _OwinConfiguration.Configure);
                 _Online = true;
                 OnOnlineChanged(EventArgs.Empty);
             }

@@ -43,6 +43,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Dependencies\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -157,6 +161,9 @@
     <Compile Include="View\ValidationModelFieldAttribute.cs" />
     <Compile Include="View\ValidationModelHelper.cs" />
     <Compile Include="View\EnumModel.cs" />
+    <Compile Include="WebServer\IOwinConfigureCallbackHandle.cs" />
+    <Compile Include="WebServer\IOwinConfiguration.cs" />
+    <Compile Include="WebServer\MiddlewarePriority.cs" />
     <Compile Include="WebSite\WebAdminMethodAttribute.cs" />
     <Compile Include="WebSite\WebAdminModels.cs" />
     <Compile Include="WebSite\WebAdminView.cs" />
@@ -533,6 +540,7 @@
     <None Include="Adsb\_VirtualRadarInterfaceAdsb.cd" />
     <None Include="BaseStation\_VirtualRadarInterfaceBaseStation.cd" />
     <None Include="Database\_VirtualRadarInterfaceDatabase.cd" />
+    <None Include="packages.config" />
     <None Include="SQLite\_VirtualRadarInterfaceSQLite.cd" />
     <None Include="StandingData\_VirtualRadarInterfaceData.cd" />
     <None Include="FlightSimulatorX\_VirtualRadarInterfaceFlightSimulatorX.cd" />
