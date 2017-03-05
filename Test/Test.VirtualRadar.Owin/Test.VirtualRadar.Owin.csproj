@@ -35,6 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Moq">
       <HintPath>..\..\Dependencies\Moq.dll</HintPath>
     </Reference>
@@ -60,8 +64,12 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AssemblyInitialise.cs" />
+    <Compile Include="Configuration\AuthenticationConfigurationTests.cs" />
+    <Compile Include="Middleware\BasicAuthenticationFilterTests.cs" />
     <Compile Include="MockConfigureCallback.cs" />
-    <Compile Include="WebAppConfigurationTests.cs" />
+    <Compile Include="MockOwinEnvironment.cs" />
+    <Compile Include="Configuration\WebAppConfigurationTests.cs" />
+    <Compile Include="MockOwinPipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +93,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

@@ -52,6 +52,11 @@ namespace VirtualRadar.WebServer.HttpListener
         private IWebAppConfiguration _WebAppConfiguration;
 
         /// <summary>
+        /// A reference to the singleton <see cref="IAuthenticationConfiguration"/>.
+        /// </summary>
+        private IAuthenticationConfiguration _AuthenticationConfiguration;
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public AuthenticationSchemes AuthenticationScheme
@@ -284,10 +289,12 @@ namespace VirtualRadar.WebServer.HttpListener
         public OwinWebServer()
         {
             _WebAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>().Singleton;
+            _AuthenticationConfiguration = Factory.Singleton.Resolve<IAuthenticationConfiguration>().Singleton;
         }
 
         public void AddAdministratorPath(string pathFromRoot)
         {
+            _AuthenticationConfiguration.AddAdministratorPath(pathFromRoot);
         }
 
         public void Dispose()
@@ -298,7 +305,7 @@ namespace VirtualRadar.WebServer.HttpListener
 
         public string[] GetAdministratorPaths()
         {
-            return new string[] {};
+            return _AuthenticationConfiguration.GetAdministratorPaths();
         }
 
         public IDictionary<string, Access> GetRestrictedPathsMap()
@@ -308,6 +315,7 @@ namespace VirtualRadar.WebServer.HttpListener
 
         public void RemoveAdministratorPath(string pathFromRoot)
         {
+            _AuthenticationConfiguration.RemoveAdministratorPath(pathFromRoot);
         }
 
         public void ResetCredentialCache()

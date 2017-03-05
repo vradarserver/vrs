@@ -44,6 +44,11 @@ namespace VirtualRadar.Library.Settings
         /// The object that listens to the configuration for illegal modifications.
         /// </summary>
         private IConfigurationListener _ConfigurationListener;
+
+        /// <summary>
+        /// A list of weak references to subscribers of configuration changed events.
+        /// </summary>
+        private List<WeakReference<ISharedConfigurationSubscriber>> _Subscribers;
         #endregion
 
         #region Properties
@@ -107,6 +112,11 @@ namespace VirtualRadar.Library.Settings
 
                         _ConfigurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
                         _ConfigurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
+
+                        _Subscribers = new List<WeakReference<ISharedConfigurationSubscriber>>();
+
+                        var heartbeat = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
+                        heartbeat.SlowTick += HeartBeat_SlowTick;
                     }
 
                     if(_Configuration != null) _ConfigurationListener.Release();
@@ -115,6 +125,65 @@ namespace VirtualRadar.Library.Settings
                     _ConfigurationListener.Initialise(configuration);
 
                     _Configuration = configuration;
+                }
+            }
+        }
+        #endregion
+
+        #region Subscriptions - AddWeakSubscription
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="subscriber"></param>
+        public void AddWeakSubscription(ISharedConfigurationSubscriber subscriber)
+        {
+            if(_Subscribers == null) {
+                LoadConfiguration(forceLoad: false);
+            }
+
+            lock(_SyncLock) {
+                var subscribers = CollectionHelper.ShallowCopy(_Subscribers);
+                subscribers.Add(new WeakReference<ISharedConfigurationSubscriber>(subscriber));
+                _Subscribers = subscribers;
+            }
+        }
+
+        /// <summary>
+        /// Calls subscribers to tell them about the configuration change.
+        /// </summary>
+        private void CallSubscribers()
+        {
+            var weakReferences = _Subscribers;
+
+            foreach(var weakReference in weakReferences) {
+                ISharedConfigurationSubscriber subscriber;
+                if(weakReference.TryGetTarget(out subscriber)) {
+                    try {
+                        subscriber.SharedConfigurationChanged(this);
+                    } catch(Exception ex) {
+                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        log.WriteLine("Caught exception while calling ISharedConfiguration subscriber: {0}", ex);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Removes weak references that no longer point at active objects.
+        /// </summary>
+        private void RemoveDeadSubscribers()
+        {
+            lock(_SyncLock) {
+                var removeList = new List<WeakReference<ISharedConfigurationSubscriber>>();
+                foreach(var weakReference in _Subscribers) {
+                    ISharedConfigurationSubscriber subscriber;
+                    if(!weakReference.TryGetTarget(out subscriber)) {
+                        removeList.Add(weakReference);
+                    }
+                }
+
+                foreach(var removeEntry in removeList) {
+                    _Subscribers.Remove(removeEntry);
                 }
             }
         }
@@ -130,6 +199,7 @@ namespace VirtualRadar.Library.Settings
         {
             LoadConfiguration(forceLoad: true);
             OnConfigurationChanged(EventArgs.Empty);
+            CallSubscribers();
         }
 
         /// <summary>
@@ -143,6 +213,16 @@ namespace VirtualRadar.Library.Settings
                 e.Record == null ? "" : String.Format("{0}.", e.Record.GetType().Name),
                 e.PropertyName
             ));
+        }
+
+        /// <summary>
+        /// Called every few seconds by the heartbeat timer.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HeartBeat_SlowTick(object sender, EventArgs e)
+        {
+            RemoveDeadSubscribers();
         }
         #endregion
     }

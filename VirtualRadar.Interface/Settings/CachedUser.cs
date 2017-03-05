@@ -13,36 +13,54 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Owin;
-using VirtualRadar.Interface.Owin;
 
-namespace VirtualRadar.Owin
+namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
-    /// Describes a method that will be called when middleware needs to be registered with a
-    /// new instance of an OWIN web app.
+    /// A user record that has been cached by an instance of <see cref="IUserCache{T}"/>.
     /// </summary>
-    class RegisterMiddlewareCallback : IWebAppConfigurationCallbackHandle
+    public class CachedUser
     {
         /// <summary>
-        /// Gets the callback.
+        /// Gets the user's record as loaded from the database.
         /// </summary>
-        public Action<IAppBuilder> Callback { get; private set; }
+        public IUser User { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating the order in which callbacks are called, lowest first.
+        /// Gets a value indicating that the user is flagged as a web content user.
         /// </summary>
-        public int Priority { get; private set; }
+        public bool IsWebContentUser { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating that the user is flagged as an administrator.
+        /// </summary>
+        public bool IsAdministrator { get; private set; }
+
+        /// <summary>
+        /// Gets or sets extra information attached to the user when it was cached.
+        /// </summary>
+        public object Tag { get; set; }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        /// <param name="callback"></param>
-        /// <param name="priority"></param>
-        public RegisterMiddlewareCallback(Action<IAppBuilder> callback, int priority)
+        /// <param name="user"></param>
+        /// <param name="isWebContentUser"></param>
+        /// <param name="isAdministrator"></param>
+        public CachedUser(IUser user, bool isWebContentUser, bool isAdministrator)
         {
-            Callback = callback;
-            Priority = priority;
+            User = user;
+            IsWebContentUser = isWebContentUser;
+            IsAdministrator = isAdministrator;
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return User?.LoginName ?? "";
         }
     }
 }

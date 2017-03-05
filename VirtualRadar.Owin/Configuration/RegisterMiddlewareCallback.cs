@@ -12,30 +12,37 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using InterfaceFactory;
-using VirtualRadar.Interface;
-using Moq;
-using System.Globalization;
+using System.Threading.Tasks;
+using Owin;
+using VirtualRadar.Interface.Owin;
 
-namespace Test.VirtualRadar.Owin
+namespace VirtualRadar.Owin.Configuration
 {
-    [TestClass]
-    public static class AssemblyInitialise
+    /// <summary>
+    /// Describes a method that will be called when middleware needs to be registered with a
+    /// new instance of an OWIN web app.
+    /// </summary>
+    class RegisterMiddlewareCallback : IWebAppConfigurationCallbackHandle
     {
-        public static readonly Mock<IApplicationInformation> ApplicationInformation = new Mock<IApplicationInformation>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-        public static readonly Mock<IRuntimeEnvironment> RuntimeEnvironment = new Mock<IRuntimeEnvironment>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+        /// <summary>
+        /// Gets the callback.
+        /// </summary>
+        public Action<IAppBuilder> Callback { get; private set; }
 
-        [AssemblyInitialize]
-        public static void Initialise(TestContext testContext)
+        /// <summary>
+        /// Gets a value indicating the order in which callbacks are called, lowest first.
+        /// </summary>
+        public int Priority { get; private set; }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <param name="priority"></param>
+        public RegisterMiddlewareCallback(Action<IAppBuilder> callback, int priority)
         {
-            global::VirtualRadar.Owin.Implementations.Register(Factory.Singleton);
-
-            Factory.Singleton.RegisterInstance<IApplicationInformation>(ApplicationInformation.Object);
-            ApplicationInformation.Setup(a => a.CultureInfo).Returns((CultureInfo)null);
-
-            Factory.Singleton.RegisterInstance<IRuntimeEnvironment>(RuntimeEnvironment.Object);
-            RuntimeEnvironment.Setup(r => r.IsTest).Returns(true);
+            Callback = callback;
+            Priority = priority;
         }
     }
 }

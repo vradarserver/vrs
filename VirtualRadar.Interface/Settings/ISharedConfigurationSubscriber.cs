@@ -12,30 +12,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using InterfaceFactory;
-using VirtualRadar.Interface;
-using Moq;
-using System.Globalization;
+using System.Threading.Tasks;
 
-namespace Test.VirtualRadar.Owin
+namespace VirtualRadar.Interface.Settings
 {
-    [TestClass]
-    public static class AssemblyInitialise
+    /// <summary>
+    /// An interface that objects should implement if they want to use <see cref="ISharedConfiguration"/>
+    /// to listen for configuration changed events without having a strong reference held against them.
+    /// </summary>
+    public interface ISharedConfigurationSubscriber
     {
-        public static readonly Mock<IApplicationInformation> ApplicationInformation = new Mock<IApplicationInformation>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-        public static readonly Mock<IRuntimeEnvironment> RuntimeEnvironment = new Mock<IRuntimeEnvironment>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-
-        [AssemblyInitialize]
-        public static void Initialise(TestContext testContext)
-        {
-            global::VirtualRadar.Owin.Implementations.Register(Factory.Singleton);
-
-            Factory.Singleton.RegisterInstance<IApplicationInformation>(ApplicationInformation.Object);
-            ApplicationInformation.Setup(a => a.CultureInfo).Returns((CultureInfo)null);
-
-            Factory.Singleton.RegisterInstance<IRuntimeEnvironment>(RuntimeEnvironment.Object);
-            RuntimeEnvironment.Setup(r => r.IsTest).Returns(true);
-        }
+        /// <summary>
+        /// This will be called after the shared configuration has loaded a fresh configuration.
+        /// </summary>
+        void SharedConfigurationChanged(ISharedConfiguration sharedConfiguration);
     }
 }

@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using Owin;
 using VirtualRadar.Interface.Owin;
 
-namespace VirtualRadar.Owin
+namespace VirtualRadar.Owin.Configuration
 {
     /// <summary>
     /// Default implementation of <see cref="IWebAppConfiguration"/>.
@@ -32,6 +32,7 @@ namespace VirtualRadar.Owin
             get {
                 if(_Singleton == null) {
                     _Singleton = new WebAppConfiguration();
+                    StandardPipeline.Register(_Singleton);
                 }
                 return _Singleton;
             }

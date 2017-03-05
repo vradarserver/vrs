@@ -71,5 +71,12 @@ namespace VirtualRadar.Interface.Settings
         /// a function and getting inconsistencies.
         /// </remarks>
         Configuration Get();
+
+        /// <summary>
+        /// Adds a weak reference to an object with a method that will be called whenever the
+        /// shared configuration changes.
+        /// </summary>
+        /// <param name="subscriber"></param>
+        void AddWeakSubscription(ISharedConfigurationSubscriber subscriber);
     }
 }

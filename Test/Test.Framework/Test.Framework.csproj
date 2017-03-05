@@ -59,6 +59,7 @@
     <Compile Include="EventRecorder.cs" />
     <Compile Include="ExcelWorksheetData.cs" />
     <Compile Include="NamespaceDoc.cs" />
+    <Compile Include="OwinConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FeedHelper.cs" />
     <Compile Include="RequestReceivedEventArgsHelper.cs" />

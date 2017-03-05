@@ -17,7 +17,7 @@ using InterfaceFactory;
 using Owin;
 using Moq;
 
-namespace Test.VirtualRadar.Owin
+namespace Test.VirtualRadar.Owin.Configuration
 {
     [TestClass]
     public class WebAppConfigurationTests

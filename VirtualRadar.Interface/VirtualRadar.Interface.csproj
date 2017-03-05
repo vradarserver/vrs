@@ -129,6 +129,10 @@
     <Compile Include="Network\IRebroadcastFormatManager.cs" />
     <Compile Include="Network\IRebroadcastFormatProvider.cs" />
     <Compile Include="Network\RebroadcastFormatName.cs" />
+    <Compile Include="Owin\IAuthenticationConfiguration.cs" />
+    <Compile Include="Owin\IBasicAuthenticationFilter.cs" />
+    <Compile Include="Owin\Roles.cs" />
+    <Compile Include="Owin\StandardPipelinePriority.cs" />
     <Compile Include="Presenter\IAircraftOnlineLookupLogPresenter.cs" />
     <Compile Include="ProgramLifetime.cs" />
     <Compile Include="QueueRepository.cs" />
@@ -152,6 +156,9 @@
     <Compile Include="IStandaloneAircraftOnlineLookupCache.cs" />
     <Compile Include="Listener\IMergedFeedComponentListener.cs" />
     <Compile Include="Presenter\IBackgroundThreadQueuesPresenter.cs" />
+    <Compile Include="Settings\CachedUser.cs" />
+    <Compile Include="Settings\ISharedConfigurationSubscriber.cs" />
+    <Compile Include="Settings\IUserCache.cs" />
     <Compile Include="Settings\MergedFeedReceiver.cs" />
     <Compile Include="Settings\ReceiverUsage.cs" />
     <Compile Include="StandingData\EnginePlacement.cs" />

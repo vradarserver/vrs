@@ -12,30 +12,50 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using InterfaceFactory;
-using VirtualRadar.Interface;
-using Moq;
-using System.Globalization;
+using System.Threading.Tasks;
 
 namespace Test.VirtualRadar.Owin
 {
-    [TestClass]
-    public static class AssemblyInitialise
+    using AppFunc = Func<IDictionary<string, object>, Task>;
+
+    /// <summary>
+    /// Mocks an OWIN pipeline.
+    /// </summary>
+    class MockOwinPipeline
     {
-        public static readonly Mock<IApplicationInformation> ApplicationInformation = new Mock<IApplicationInformation>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-        public static readonly Mock<IRuntimeEnvironment> RuntimeEnvironment = new Mock<IRuntimeEnvironment>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+        /// <summary>
+        /// Gets or sets a flag indicating that the next task in the pipeline was called.
+        /// </summary>
+        public bool NextMiddlewareCalled { get; set; }
 
-        [AssemblyInitialize]
-        public static void Initialise(TestContext testContext)
+        /// <summary>
+        /// Calls the middleware passed across. Sets or clears <see cref="NextMiddlewareCalled"/> if the
+        /// middleware calls the next function in the chain.
+        /// </summary>
+        /// <param name="appFunc"></param>
+        /// <param name="environment"></param>
+        public void CallMiddleware(Func<AppFunc, AppFunc> middlewareEntryPoint, IDictionary<string, object> environment)
         {
-            global::VirtualRadar.Owin.Implementations.Register(Factory.Singleton);
+            NextMiddlewareCalled = false;
 
-            Factory.Singleton.RegisterInstance<IApplicationInformation>(ApplicationInformation.Object);
-            ApplicationInformation.Setup(a => a.CultureInfo).Returns((CultureInfo)null);
+            AppFunc nextMiddleware = (IDictionary<string, object> env) => {
+                NextMiddlewareCalled = true;
+                return Task.FromResult(0);
+            };
 
-            Factory.Singleton.RegisterInstance<IRuntimeEnvironment>(RuntimeEnvironment.Object);
-            RuntimeEnvironment.Setup(r => r.IsTest).Returns(true);
+            AppFunc testMiddleware = middlewareEntryPoint(nextMiddleware);
+            testMiddleware.Invoke(environment);
+        }
+
+        /// <summary>
+        /// Calls the middleware passed across. Sets or clears <see cref="NextMiddlewareCalled"/> if the
+        /// middleware calls the next function in the chain.
+        /// </summary>
+        /// <param name="middlewareEntryPoint"></param>
+        /// <param name="environment"></param>
+        public void CallMiddleware(Func<AppFunc, AppFunc> middlewareEntryPoint, MockOwinEnvironment environment)
+        {
+            CallMiddleware(middlewareEntryPoint, environment.Environment);
         }
     }
 }

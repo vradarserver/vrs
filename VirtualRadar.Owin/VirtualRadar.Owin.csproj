@@ -53,9 +53,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Implementations.cs" />
-    <Compile Include="WebAppConfiguration.cs" />
+    <Compile Include="Configuration\AuthenticationConfiguration.cs" />
+    <Compile Include="Middleware\BasicAuthenticationFilter.cs" />
+    <Compile Include="StandardPipeline.cs" />
+    <Compile Include="Configuration\WebAppConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegisterMiddlewareCallback.cs" />
+    <Compile Include="Configuration\RegisterMiddlewareCallback.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
