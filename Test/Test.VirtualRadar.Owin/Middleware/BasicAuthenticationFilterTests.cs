@@ -197,6 +197,43 @@ namespace Test.VirtualRadar.Owin.Middleware
         }
 
         [TestMethod]
+        public void BasicAuthenticationFilter_Does_Not_Set_Principal_When_User_Not_Authorised()
+        {
+            SetGlobalAuthentication(true);
+            AddUserToCache("user", "password");
+            _Environment.SetBasicCredentials("user", "not password");
+
+            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+
+            AssertSendCredentialsSent();
+            Assert.IsNull(_Environment.Request.User);
+        }
+
+        [TestMethod]
+        public void BasicAuthenticationFilter_Does_Not_Set_Principal_When_No_Credentials_Supplied()
+        {
+            SetGlobalAuthentication(true);
+
+            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+
+            AssertSendCredentialsSent();
+            Assert.IsNull(_Environment.Request.User);
+        }
+
+        [TestMethod]
+        public void BasicAuthenticationFilter_Does_Not_Set_Principal_When_Unnecessary_Credentials_Supplied()
+        {
+            SetGlobalAuthentication(false);
+            AddUserToCache("user", "password");
+            _Environment.SetBasicCredentials("user", "password");
+
+            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+
+            AssertRequestAllowed();
+            Assert.IsNull(_Environment.Request.User);
+        }
+
+        [TestMethod]
         public void BasicAuthenticationFilter_Sets_Roles_For_WebContent_Users()
         {
             SetGlobalAuthentication(true);
@@ -263,6 +300,19 @@ namespace Test.VirtualRadar.Owin.Middleware
         }
 
         [TestMethod]
+        public void BasicAuthenticationFilter_Sets_Principal_When_Administrator_Credentials_Supplied_For_Administrator_Path()
+        {
+            SetAdministratorPath("/admin/");
+            _Environment.RequestPath = "/admin/index.html";
+            AddUserToCache("admin", "adminPassword", isAdministrator: true);
+            _Environment.SetBasicCredentials("admin", "adminPassword");
+
+            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+
+            Assert.IsNotNull(_Environment.Request.User);
+        }
+
+        [TestMethod]
         public void BasicAuthenticationFilter_Blocks_Requests_For_Administrator_Paths_If_WebContentUser_Credentials_Supplied()
         {
             SetAdministratorPath("/admin/");
@@ -273,6 +323,19 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
 
             AssertSendCredentialsSent();
+        }
+
+        [TestMethod]
+        public void BasicAuthenticationFilter_Does_Not_Set_Principal_For_Administrator_Paths_If_WebContentUser_Credentials_Supplied()
+        {
+            SetAdministratorPath("/admin/");
+            _Environment.RequestPath = "/admin/index.html";
+            AddUserToCache("user", "password", isAdministrator: false);
+            _Environment.SetBasicCredentials("user", "password");
+
+            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+
+            Assert.IsNull(_Environment.Request.User);
         }
 
         [TestMethod]
