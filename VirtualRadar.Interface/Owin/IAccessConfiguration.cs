@@ -11,38 +11,51 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Owin;
+using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// The interface for a singleton that handles the configuration of the OWIN pipeline for the application.
+    /// The interface for a singleton object that supplies configuration details to the middleware
+    /// that allows or disallows access based on the IP address of the requestor.
     /// </summary>
-    public interface IWebAppConfiguration : ISingleton<IWebAppConfiguration>
+    public interface IAccessConfiguration : ISingleton<IAccessConfiguration>
     {
         /// <summary>
-        /// Records a method that will be called with the <see cref="IAppBuilder"/> passed to <see cref="Configure"/>.
+        /// Returns a map of restricted paths to the <see cref="Access"/> describing which IPAddresses can access the path.
         /// </summary>
-        /// <param name="callback"></param>
-        /// <param name="priority">A value indicating the order in which callbacks are called, lowest first. See <see cref="StandardPipelinePriority"/>.</param>
-        /// <returns>A handle that can be passed to <see cref="RemoveCallback"/>.</returns>
-        IWebAppConfigurationCallbackHandle AddCallback(Action<IAppBuilder> callback, int priority);
-
-        /// <summary>
-        /// Removes the callback associated with the handle passed across.
-        /// </summary>
-        /// <param name="callbackHandle"></param>
-        void RemoveCallback(IWebAppConfigurationCallbackHandle callbackHandle);
-
-        /// <summary>
-        /// Configures a new instance of an OWIN web app by calling each registered callback in ascending order of priority.
-        /// </summary>
-        /// <param name="appBuilder"></param>
+        /// <returns></returns>
         /// <remarks>
-        /// Callbacks that have been added with the same priority value are called in random order.
+        /// Implementations must ensure that the dictionary that is returned uses the ordinal case-insensitive
+        /// string comparer.
         /// </remarks>
-        void Configure(IAppBuilder appBuilder);
+        IDictionary<string, Access> GetRestrictedPathsMap();
+
+        /// <summary>
+        /// Sets access on a restricted path. If <paramref name="access"/> is null then the restrictions are removed
+        /// from the path.
+        /// </summary>
+        /// <param name="pathFromRoot"></param>
+        /// <param name="access"></param>
+        void SetRestrictedPath(string pathFromRoot, Access access);
+
+        /// <summary>
+        /// Returns true if the IP address passed across is allowed to access the supplied path and file.
+        /// </summary>
+        /// <param name="pathAndFile"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        bool IsPathAccessible(string pathAndFile, string ipAddress);
+
+        /// <summary>
+        /// Returns true if the IP address passed across is allowed to access the supplied path and file.
+        /// </summary>
+        /// <param name="pathAndFile"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        bool IsPathAccessible(string pathAndFile, IPAddress ipAddress);
     }
 }

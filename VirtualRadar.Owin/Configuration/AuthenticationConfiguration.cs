@@ -53,7 +53,7 @@ namespace VirtualRadar.Owin.Configuration
         /// <param name="pathFromRoot"></param>
         public void AddAdministratorPath(string pathFromRoot)
         {
-            pathFromRoot = NormalisePathFromRoot(pathFromRoot);
+            pathFromRoot = UriHelper.NormalisePathFromRoot(pathFromRoot, convertToLowerCase: true);
 
             var administratorPaths = _AdministratorPaths;
             if(!administratorPaths.Contains(pathFromRoot)) {
@@ -73,7 +73,7 @@ namespace VirtualRadar.Owin.Configuration
         /// <param name="pathFromRoot"></param>
         public void RemoveAdministratorPath(string pathFromRoot)
         {
-            pathFromRoot = NormalisePathFromRoot(pathFromRoot);
+            pathFromRoot = UriHelper.NormalisePathFromRoot(pathFromRoot, convertToLowerCase: true);
 
             var administratorPaths = _AdministratorPaths;
             if(administratorPaths.Contains(pathFromRoot)) {
@@ -117,21 +117,6 @@ namespace VirtualRadar.Owin.Configuration
             }
 
             return result;
-        }
-
-        /// <summary>
-        /// Normalises the path from root - slashes are added to the start and end of the path if required
-        /// and the entire path is converted to lowercase.
-        /// </summary>
-        /// <param name="pathFromRoot"></param>
-        /// <returns></returns>
-        private static string NormalisePathFromRoot(string pathFromRoot)
-        {
-            pathFromRoot = (pathFromRoot ?? "").Trim().ToLower();
-            if(!pathFromRoot.StartsWith("/")) pathFromRoot = String.Format("/{0}", pathFromRoot);
-            if(!pathFromRoot.EndsWith("/")) pathFromRoot = String.Format("{0}/", pathFromRoot);
-
-            return pathFromRoot;
         }
     }
 }

@@ -28,8 +28,11 @@ namespace VirtualRadar.Owin
         /// <param name="factory"></param>
         public static void Register(IClassFactory factory)
         {
+            factory.Register<Interface.Owin.IAccessConfiguration, Configuration.AccessConfiguration>();
             factory.Register<Interface.Owin.IAuthenticationConfiguration, Configuration.AuthenticationConfiguration>();
             factory.Register<Interface.Owin.IWebAppConfiguration, Configuration.WebAppConfiguration>();
+
+            factory.Register<Interface.Owin.IAccessFilter, Middleware.AccessFilter>();
             factory.Register<Interface.Owin.IBasicAuthenticationFilter, Middleware.BasicAuthenticationFilter>();
         }
     }

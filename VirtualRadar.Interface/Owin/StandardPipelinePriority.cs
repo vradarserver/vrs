@@ -12,8 +12,13 @@ namespace VirtualRadar.Interface.Owin
     public static class StandardPipelinePriority
     {
         /// <summary>
+        /// The normal priority for access checking.
+        /// </summary>
+        public static readonly int Access = -1000000;
+
+        /// <summary>
         /// The normal priority for authentication.
         /// </summary>
-        public static readonly int Authentication = -10000;
+        public static readonly int Authentication = Access + 100;
     }
 }

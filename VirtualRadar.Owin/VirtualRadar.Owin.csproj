@@ -52,8 +52,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\AccessConfiguration.cs" />
     <Compile Include="Implementations.cs" />
     <Compile Include="Configuration\AuthenticationConfiguration.cs" />
+    <Compile Include="Middleware\AccessFilter.cs" />
     <Compile Include="Middleware\BasicAuthenticationFilter.cs" />
     <Compile Include="StandardPipeline.cs" />
     <Compile Include="Configuration\WebAppConfiguration.cs" />

@@ -57,6 +57,11 @@ namespace VirtualRadar.WebServer.HttpListener
         private IAuthenticationConfiguration _AuthenticationConfiguration;
 
         /// <summary>
+        /// A reference to the singleton <see cref="IAccessConfiguration"/>.
+        /// </summary>
+        private IAccessConfiguration _AccessConfiguration;
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public AuthenticationSchemes AuthenticationScheme
@@ -290,6 +295,7 @@ namespace VirtualRadar.WebServer.HttpListener
         {
             _WebAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>().Singleton;
             _AuthenticationConfiguration = Factory.Singleton.Resolve<IAuthenticationConfiguration>().Singleton;
+            _AccessConfiguration = Factory.Singleton.Resolve<IAccessConfiguration>().Singleton;
         }
 
         public void AddAdministratorPath(string pathFromRoot)
@@ -310,7 +316,7 @@ namespace VirtualRadar.WebServer.HttpListener
 
         public IDictionary<string, Access> GetRestrictedPathsMap()
         {
-            return new Dictionary<string, Access>();
+            return _AccessConfiguration.GetRestrictedPathsMap();
         }
 
         public void RemoveAdministratorPath(string pathFromRoot)
@@ -324,12 +330,13 @@ namespace VirtualRadar.WebServer.HttpListener
 
         public void SetRestrictedPath(string pathFromRoot, Access access)
         {
+            _AccessConfiguration.SetRestrictedPath(pathFromRoot, access);
         }
 
         private void RegisterConfigureCallback()
         {
             if(_ConfigureCallbackHandle == null) {
-                _ConfigureCallbackHandle = _WebAppConfiguration.AddCallback(ConfigureOwin, MiddlewarePriority.Normal);
+                _ConfigureCallbackHandle = _WebAppConfiguration.AddCallback(AddShimMiddleware, priority: 0);
             }
         }
 
@@ -371,7 +378,7 @@ namespace VirtualRadar.WebServer.HttpListener
             }
         }
 
-        private void ConfigureOwin(IAppBuilder appBuilder)
+        private void AddShimMiddleware(IAppBuilder appBuilder)
         {
             _OldServerShim = new WebServerShim(this);
             _OldServerShim.Configure(appBuilder);

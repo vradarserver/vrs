@@ -135,7 +135,8 @@ namespace VirtualRadar.Owin.Middleware
             var result = true;
 
             var sharedConfig = _SharedConfiguration.Get();
-            var request = new OwinRequest(environment);
+            var context = PipelineContext.GetOrCreate(environment);
+            var request = context.Request;
 
             var isAdminOnlyPath = _AuthenticationConfiguration.IsAdministratorPath(request.Path.Value);
             var isGlobalAuthenticationEnabled = sharedConfig.WebServerSettings.AuthenticationScheme == AuthenticationSchemes.Basic;

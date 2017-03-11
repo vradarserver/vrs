@@ -39,6 +39,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Dependencies\Newtonsoft.Json.dll</HintPath>
@@ -129,8 +133,14 @@
     <Compile Include="Network\IRebroadcastFormatManager.cs" />
     <Compile Include="Network\IRebroadcastFormatProvider.cs" />
     <Compile Include="Network\RebroadcastFormatName.cs" />
+    <Compile Include="Owin\EnvironmentKey.cs" />
+    <Compile Include="Owin\IAccessConfiguration.cs" />
+    <Compile Include="Owin\IAccessFilter.cs" />
     <Compile Include="Owin\IAuthenticationConfiguration.cs" />
     <Compile Include="Owin\IBasicAuthenticationFilter.cs" />
+    <Compile Include="Owin\PipelineContext.cs" />
+    <Compile Include="Owin\PipelineRequest.cs" />
+    <Compile Include="Owin\PipelineResponse.cs" />
     <Compile Include="Owin\Roles.cs" />
     <Compile Include="Owin\StandardPipelinePriority.cs" />
     <Compile Include="Presenter\IAircraftOnlineLookupLogPresenter.cs" />
@@ -162,6 +172,7 @@
     <Compile Include="Settings\MergedFeedReceiver.cs" />
     <Compile Include="Settings\ReceiverUsage.cs" />
     <Compile Include="StandingData\EnginePlacement.cs" />
+    <Compile Include="UriHelper.cs" />
     <Compile Include="View\IAircraftOnlineLookupLogView.cs" />
     <Compile Include="View\IBackgroundThreadQueuesView.cs" />
     <Compile Include="View\ValidationModelField.cs" />
@@ -170,7 +181,6 @@
     <Compile Include="View\EnumModel.cs" />
     <Compile Include="Owin\IWebAppConfigurationCallbackHandle.cs" />
     <Compile Include="Owin\IWebAppConfiguration.cs" />
-    <Compile Include="Owin\MiddlewarePriority.cs" />
     <Compile Include="WebSite\WebAdminMethodAttribute.cs" />
     <Compile Include="WebSite\WebAdminModels.cs" />
     <Compile Include="WebSite\WebAdminView.cs" />

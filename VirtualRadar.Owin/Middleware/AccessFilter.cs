@@ -11,44 +11,65 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using InterfaceFactory;
-using Owin;
 using VirtualRadar.Interface.Owin;
-using VirtualRadar.Owin.Middleware;
 
-namespace VirtualRadar.Owin
+namespace VirtualRadar.Owin.Middleware
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
     /// <summary>
-    /// Registers the standard pipeline with an OWIN web app.
+    /// Default implementation of <see cref="IAccessFilter"/>.
     /// </summary>
-    static class StandardPipeline
+    class AccessFilter : IAccessFilter
     {
         /// <summary>
-        /// Registers all of the standard pipeline middleware.
+        /// The singleton <see cref="IAccessConfiguration"/>.
         /// </summary>
-        /// <param name="webAppConfiguration"></param>
-        public static void Register(IWebAppConfiguration webAppConfiguration)
+        private IAccessConfiguration _AccessConfiguration;
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        public AccessFilter()
         {
-            webAppConfiguration.AddCallback(UseAccessFilter,                StandardPipelinePriority.Access);
-            webAppConfiguration.AddCallback(UseBasicAuthenticationFilter,   StandardPipelinePriority.Authentication);
+            _AccessConfiguration = Factory.Singleton.Resolve<IAccessConfiguration>().Singleton;
         }
 
-        private static void UseAccessFilter(IAppBuilder app)
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="next"></param>
+        /// <returns></returns>
+        public AppFunc FilterRequest(AppFunc next)
         {
-            var filter = Factory.Singleton.Resolve<IAccessFilter>();
-            var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
-            app.Use(middleware);
+            AppFunc appFunc = async(IDictionary<string, object> environment) => {
+                if(AllowAccess(environment)) {
+                    await next.Invoke(environment);
+                }
+            };
+
+            return appFunc;
         }
 
-        private static void UseBasicAuthenticationFilter(IAppBuilder app)
+        /// <summary>
+        /// Returns true if the request passes the access configuration.
+        /// </summary>
+        /// <param name="environment"></param>
+        /// <returns></returns>
+        private bool AllowAccess(IDictionary<string, object> environment)
         {
-            var filter = Factory.Singleton.Resolve<IBasicAuthenticationFilter>();
-            var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
-            app.Use(middleware);
+            var context = PipelineContext.GetOrCreate(environment);
+            var result = _AccessConfiguration.IsPathAccessible(context.Request.Path.Value, context.Request.RemoteIpAddressParsed);
+
+            if(!result) {
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+            }
+
+            return result;
         }
     }
 }

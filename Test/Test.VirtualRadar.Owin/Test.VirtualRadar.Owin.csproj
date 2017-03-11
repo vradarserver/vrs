@@ -64,7 +64,9 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AssemblyInitialise.cs" />
+    <Compile Include="Configuration\AccessConfigurationTests.cs" />
     <Compile Include="Configuration\AuthenticationConfigurationTests.cs" />
+    <Compile Include="Middleware\AccessFilterTests.cs" />
     <Compile Include="Middleware\BasicAuthenticationFilterTests.cs" />
     <Compile Include="MockConfigureCallback.cs" />
     <Compile Include="MockOwinEnvironment.cs" />
@@ -80,6 +82,10 @@
     <ProjectReference Include="..\..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
       <Project>{8ef81105-f45d-4edb-996c-de7d5644b1e7}</Project>
       <Name>VirtualRadar.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VirtualRadar.Library\VirtualRadar.Library.csproj">
+      <Project>{4bc834f4-005b-4ef9-bda4-078c3f1745d3}</Project>
+      <Name>VirtualRadar.Library</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\VirtualRadar.Owin\VirtualRadar.Owin.csproj">
       <Project>{a91617bc-3503-4e70-8c66-f5a9a9ff6ae0}</Project>

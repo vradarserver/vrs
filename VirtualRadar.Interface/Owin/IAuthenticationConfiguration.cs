@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// A singleton class that handles the configuration of the custom authentication OWIN middleware.
+    /// The interface for a singleton object that supplies additional configuration for the authentication
+    /// middleware.
     /// </summary>
     /// <remarks>
     /// Authentication middleware is expected to automatically reconfigure itself when the application's

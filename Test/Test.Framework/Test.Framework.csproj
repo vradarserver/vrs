@@ -92,6 +92,7 @@
     <None Include="TestFiles\StandingDataTest\FlightNumberCoverage.csv" />
     <None Include="TestFiles\StandingDataTest\FlightNumberVotes.csv" />
     <None Include="TestFiles\StandingDataTest\StandingData.sqb" />
+    <None Include="TestFiles\OwinTests.xls" />
     <None Include="TestFiles\WebSiteTests.xls" />
     <None Include="TestFiles\WebServerTests.xls" />
     <None Include="TestFiles\DataTests.xls" />

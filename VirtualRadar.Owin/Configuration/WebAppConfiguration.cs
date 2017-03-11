@@ -49,13 +49,13 @@ namespace VirtualRadar.Owin.Configuration
         /// <param name="callback"></param>
         /// <param name="priority"></param>
         /// <returns></returns>
-        public IWebAppConfigurationCallbackHandle AddCallback(Action<IAppBuilder> callback, MiddlewarePriority priority)
+        public IWebAppConfigurationCallbackHandle AddCallback(Action<IAppBuilder> callback, int priority)
         {
             if(callback == null) {
                 throw new ArgumentNullException(nameof(callback));
             }
 
-            var result = new RegisterMiddlewareCallback(callback, (int)priority);
+            var result = new RegisterMiddlewareCallback(callback, priority);
             _Callbacks.Add(result);
 
             return result;

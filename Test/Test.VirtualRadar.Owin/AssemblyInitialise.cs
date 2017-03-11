@@ -29,6 +29,7 @@ namespace Test.VirtualRadar.Owin
         [AssemblyInitialize]
         public static void Initialise(TestContext testContext)
         {
+            global::VirtualRadar.Library.Implementations.Register(Factory.Singleton);
             global::VirtualRadar.Owin.Implementations.Register(Factory.Singleton);
 
             Factory.Singleton.RegisterInstance<IApplicationInformation>(ApplicationInformation.Object);

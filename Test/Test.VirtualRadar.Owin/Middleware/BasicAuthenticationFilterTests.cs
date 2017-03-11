@@ -65,6 +65,12 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Pipeline = new MockOwinPipeline();
         }
 
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            Factory.RestoreSnapshot(_Snapshot);
+        }
+
         private CachedUser AddUserToCache(string loginName = "default", string password = "password", bool isWebContentUser = true, bool isAdministrator = false)
         {
             if(isAdministrator) {
@@ -118,12 +124,6 @@ namespace Test.VirtualRadar.Owin.Middleware
             Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
             Assert.IsNull(_Environment.Response.Headers["WWW-Authenticate"]);
             Assert.AreEqual(200, _Environment.Response.StatusCode);
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-            Factory.RestoreSnapshot(_Snapshot);
         }
 
         [TestMethod]

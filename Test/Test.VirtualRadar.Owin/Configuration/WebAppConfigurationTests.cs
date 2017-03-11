@@ -50,14 +50,14 @@ namespace Test.VirtualRadar.Owin.Configuration
         [ExpectedException(typeof(ArgumentNullException))]
         public void WebAppConfiguration_AddCallback_Throws_If_Passed_Null()
         {
-            _Configuration.AddCallback(null, MiddlewarePriority.Normal);
+            _Configuration.AddCallback(null, 0);
         }
 
         [TestMethod]
         public void WebAppConfiguration_AddCallback_Callback_Returns_Handle()
         {
             var callback = new MockConfigureCallback();
-            Assert.IsNotNull(_Configuration.AddCallback(callback.Callback, MiddlewarePriority.Normal));
+            Assert.IsNotNull(_Configuration.AddCallback(callback.Callback, 0));
         }
 
         [TestMethod]
@@ -71,7 +71,7 @@ namespace Test.VirtualRadar.Owin.Configuration
         public void WebAppConfiguration_RemoveCallback_Does_Nothing_If_Passed_Same_Handle_Twice()
         {
             var callback = new MockConfigureCallback();
-            var handle = _Configuration.AddCallback(callback.Callback, MiddlewarePriority.Normal);
+            var handle = _Configuration.AddCallback(callback.Callback, 0);
 
             _Configuration.RemoveCallback(handle);
             _Configuration.RemoveCallback(handle);
@@ -88,7 +88,7 @@ namespace Test.VirtualRadar.Owin.Configuration
         public void WebAppConfiguration_Configure_Calls_Registered_Callback()
         {
             var callback = new MockConfigureCallback();
-            _Configuration.AddCallback(callback.Callback, MiddlewarePriority.Normal);
+            _Configuration.AddCallback(callback.Callback, 0);
 
             _Configuration.Configure(_AppBuilder.Object);
 
@@ -103,9 +103,9 @@ namespace Test.VirtualRadar.Owin.Configuration
             var secondCallback = new MockConfigureCallback();
             var thirdCallback = new MockConfigureCallback();
 
-            _Configuration.AddCallback(secondCallback.Callback, MiddlewarePriority.Normal);
-            _Configuration.AddCallback(thirdCallback.Callback,  MiddlewarePriority.Late);
-            _Configuration.AddCallback(firstCallback.Callback,  MiddlewarePriority.Early);
+            _Configuration.AddCallback(secondCallback.Callback, 0);
+            _Configuration.AddCallback(thirdCallback.Callback,  1);
+            _Configuration.AddCallback(firstCallback.Callback,  -1);
 
             firstCallback.Action = r => {
                 Assert.AreEqual(0, secondCallback.CallCount, "2nd callback called before 1st");
@@ -131,7 +131,7 @@ namespace Test.VirtualRadar.Owin.Configuration
         public void WebAppConfiguration_Configure_Does_Not_Call_Callbacks_That_Have_Been_Removed()
         {
             var callback = new MockConfigureCallback();
-            var handle = _Configuration.AddCallback(callback.Callback, MiddlewarePriority.Normal);
+            var handle = _Configuration.AddCallback(callback.Callback, 0);
             _Configuration.RemoveCallback(handle);
 
             _Configuration.Configure(_AppBuilder.Object);

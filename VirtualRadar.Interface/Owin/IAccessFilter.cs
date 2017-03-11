@@ -13,42 +13,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
-using Owin;
-using VirtualRadar.Interface.Owin;
-using VirtualRadar.Owin.Middleware;
+using VirtualRadar.Interface.Settings;
 
-namespace VirtualRadar.Owin
+namespace VirtualRadar.Interface.Owin
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
     /// <summary>
-    /// Registers the standard pipeline with an OWIN web app.
+    /// The interface for the middleware that rejects requests that do not meet <see cref="Access"/> criteria.
     /// </summary>
-    static class StandardPipeline
+    public interface IAccessFilter
     {
         /// <summary>
-        /// Registers all of the standard pipeline middleware.
+        /// Stops processing requests that fail to meet <see cref="Access"/> criteria held by the singleton
+        /// <see cref="IAccessConfiguration"/>.
         /// </summary>
-        /// <param name="webAppConfiguration"></param>
-        public static void Register(IWebAppConfiguration webAppConfiguration)
-        {
-            webAppConfiguration.AddCallback(UseAccessFilter,                StandardPipelinePriority.Access);
-            webAppConfiguration.AddCallback(UseBasicAuthenticationFilter,   StandardPipelinePriority.Authentication);
-        }
-
-        private static void UseAccessFilter(IAppBuilder app)
-        {
-            var filter = Factory.Singleton.Resolve<IAccessFilter>();
-            var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
-            app.Use(middleware);
-        }
-
-        private static void UseBasicAuthenticationFilter(IAppBuilder app)
-        {
-            var filter = Factory.Singleton.Resolve<IBasicAuthenticationFilter>();
-            var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
-            app.Use(middleware);
-        }
+        /// <param name="next"></param>
+        /// <returns></returns>
+        AppFunc FilterRequest(AppFunc next);
     }
 }

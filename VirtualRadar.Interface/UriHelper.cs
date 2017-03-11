@@ -13,42 +13,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
-using Owin;
-using VirtualRadar.Interface.Owin;
-using VirtualRadar.Owin.Middleware;
 
-namespace VirtualRadar.Owin
+namespace VirtualRadar.Interface
 {
-    using AppFunc = Func<IDictionary<string, object>, Task>;
-
     /// <summary>
-    /// Registers the standard pipeline with an OWIN web app.
+    /// Utility methods that can help when dealing with URLs.
     /// </summary>
-    static class StandardPipeline
+    public static class UriHelper
     {
         /// <summary>
-        /// Registers all of the standard pipeline middleware.
+        /// Adds slashes to the start and end of the path (if required). A null or empty input
+        /// results in an output of '/'.
         /// </summary>
-        /// <param name="webAppConfiguration"></param>
-        public static void Register(IWebAppConfiguration webAppConfiguration)
+        /// <param name="pathFromRoot"></param>
+        /// <param name="convertToLowerCase"></param>
+        /// <returns></returns>
+        public static string NormalisePathFromRoot(string pathFromRoot, bool convertToLowerCase = false)
         {
-            webAppConfiguration.AddCallback(UseAccessFilter,                StandardPipelinePriority.Access);
-            webAppConfiguration.AddCallback(UseBasicAuthenticationFilter,   StandardPipelinePriority.Authentication);
-        }
+            pathFromRoot = (pathFromRoot ?? "").Trim();
+            if(convertToLowerCase) {
+                pathFromRoot = pathFromRoot.ToLower();
+            }
 
-        private static void UseAccessFilter(IAppBuilder app)
-        {
-            var filter = Factory.Singleton.Resolve<IAccessFilter>();
-            var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
-            app.Use(middleware);
-        }
+            if(!pathFromRoot.StartsWith("/")) pathFromRoot = String.Format("/{0}", pathFromRoot);
+            if(!pathFromRoot.EndsWith("/"))   pathFromRoot = String.Format("{0}/", pathFromRoot);
 
-        private static void UseBasicAuthenticationFilter(IAppBuilder app)
-        {
-            var filter = Factory.Singleton.Resolve<IBasicAuthenticationFilter>();
-            var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
-            app.Use(middleware);
+            return pathFromRoot;
         }
     }
 }
