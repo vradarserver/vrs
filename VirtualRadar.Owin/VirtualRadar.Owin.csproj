@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\AccessConfiguration.cs" />
+    <Compile Include="Configuration\RedirectionConfiguration.cs" />
     <Compile Include="Implementations.cs" />
     <Compile Include="Configuration\AuthenticationConfiguration.cs" />
     <Compile Include="Middleware\AccessFilter.cs" />

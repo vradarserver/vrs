@@ -13,28 +13,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
 
-namespace VirtualRadar.Owin
+namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// Registers implementations of interfaces with a class factory.
+    /// A data transfer object that carries the request context when determining whether a request
+    /// needs to be redirected.
     /// </summary>
-    public static class Implementations
+    public class RedirectionRequestContext
     {
         /// <summary>
-        /// Registers implementations of interfaces.
+        /// Gets or sets a value indicating that the request may have come from a mobile device.
         /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
-        {
-            factory.Register<Interface.Owin.IAccessConfiguration, Configuration.AccessConfiguration>();
-            factory.Register<Interface.Owin.IAuthenticationConfiguration, Configuration.AuthenticationConfiguration>();
-            factory.Register<Interface.Owin.IRedirectionConfiguration, Configuration.RedirectionConfiguration>();
-            factory.Register<Interface.Owin.IWebAppConfiguration, Configuration.WebAppConfiguration>();
-
-            factory.Register<Interface.Owin.IAccessFilter, Middleware.AccessFilter>();
-            factory.Register<Interface.Owin.IBasicAuthenticationFilter, Middleware.BasicAuthenticationFilter>();
-        }
+        public bool IsMobile { get; set; }
     }
 }

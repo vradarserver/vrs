@@ -138,9 +138,12 @@
     <Compile Include="Owin\IAccessFilter.cs" />
     <Compile Include="Owin\IAuthenticationConfiguration.cs" />
     <Compile Include="Owin\IBasicAuthenticationFilter.cs" />
+    <Compile Include="Owin\IRedirectionConfiguration.cs" />
     <Compile Include="Owin\PipelineContext.cs" />
     <Compile Include="Owin\PipelineRequest.cs" />
     <Compile Include="Owin\PipelineResponse.cs" />
+    <Compile Include="Owin\RedirectionContext.cs" />
+    <Compile Include="Owin\RedirectionRequestContext.cs" />
     <Compile Include="Owin\Roles.cs" />
     <Compile Include="Owin\StandardPipelinePriority.cs" />
     <Compile Include="Presenter\IAircraftOnlineLookupLogPresenter.cs" />

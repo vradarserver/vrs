@@ -13,28 +13,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
 
-namespace VirtualRadar.Owin
+namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// Registers implementations of interfaces with a class factory.
+    /// An enumeration of the different circumstances that redirections can take place.
     /// </summary>
-    public static class Implementations
+    [Flags]
+    public enum RedirectionContext : uint
     {
         /// <summary>
-        /// Registers implementations of interfaces.
+        /// The direction applies under all circumstances.
         /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
-        {
-            factory.Register<Interface.Owin.IAccessConfiguration, Configuration.AccessConfiguration>();
-            factory.Register<Interface.Owin.IAuthenticationConfiguration, Configuration.AuthenticationConfiguration>();
-            factory.Register<Interface.Owin.IRedirectionConfiguration, Configuration.RedirectionConfiguration>();
-            factory.Register<Interface.Owin.IWebAppConfiguration, Configuration.WebAppConfiguration>();
+        Any = 0,
 
-            factory.Register<Interface.Owin.IAccessFilter, Middleware.AccessFilter>();
-            factory.Register<Interface.Owin.IBasicAuthenticationFilter, Middleware.BasicAuthenticationFilter>();
-        }
+        /// <summary>
+        /// The direction is only applied when the request appears to be coming from a mobile device.
+        /// </summary>
+        /// <remarks>
+        /// Note that the current implementation uses UA sniffing to determine the device, it is far
+        /// from reliable.
+        /// </remarks>
+        Mobile = 0x00000001,
     }
 }

@@ -13,28 +13,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
 
-namespace VirtualRadar.Owin
+namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// Registers implementations of interfaces with a class factory.
+    /// The interface for a singleton object that holds the configuration for the redirection middleware.
     /// </summary>
-    public static class Implementations
+    public interface IRedirectionConfiguration : ISingleton<IRedirectionConfiguration>
     {
         /// <summary>
-        /// Registers implementations of interfaces.
+        /// Registers a redirection from one path to another.
         /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
-        {
-            factory.Register<Interface.Owin.IAccessConfiguration, Configuration.AccessConfiguration>();
-            factory.Register<Interface.Owin.IAuthenticationConfiguration, Configuration.AuthenticationConfiguration>();
-            factory.Register<Interface.Owin.IRedirectionConfiguration, Configuration.RedirectionConfiguration>();
-            factory.Register<Interface.Owin.IWebAppConfiguration, Configuration.WebAppConfiguration>();
+        /// <param name="pathFromRoot"></param>
+        /// <param name="redirectToPathFromRoot"></param>
+        /// <param name="redirectionContext"></param>
+        /// <remarks>
+        /// If a redirection already exists for the parameters passed across then it is replaced with the new redirection.
+        /// </remarks>
+        void AddRedirection(string pathFromRoot, string redirectToPathFromRoot, RedirectionContext redirectionContext);
 
-            factory.Register<Interface.Owin.IAccessFilter, Middleware.AccessFilter>();
-            factory.Register<Interface.Owin.IBasicAuthenticationFilter, Middleware.BasicAuthenticationFilter>();
-        }
+        /// <summary>
+        /// Deregisters a previously registered redirection.
+        /// </summary>
+        /// <param name="pathFromRoot"></param>
+        /// <param name="redirectionContext"></param>
+        void RemoveRedirection(string pathFromRoot, RedirectionContext redirectionContext);
+
+        /// <summary>
+        /// Returns the path from root to redirect to given the parameters passed across or null if no redirection is active
+        /// for the path supplied.
+        /// </summary>
+        /// <param name="pathFromRoot"></param>
+        /// <param name="requestContext"></param>
+        /// <returns></returns>
+        string RedirectToPathFromRoot(string pathFromRoot, RedirectionRequestContext requestContext);
     }
 }
