@@ -22,21 +22,18 @@ namespace VirtualRadar.Owin.Middleware
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
     /// <summary>
-    /// Default implementation of <see cref="IAccessFilter"/>.
+    /// The default implementation of <see cref="IRedirectionFilter"/>.
     /// </summary>
-    class AccessFilter : IAccessFilter
+    class RedirectionFilter : IRedirectionFilter
     {
-        /// <summary>
-        /// The singleton <see cref="IAccessConfiguration"/>.
-        /// </summary>
-        private IAccessConfiguration _AccessConfiguration;
+        private IRedirectionConfiguration _RedirectionConfiguration;
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public AccessFilter()
+        public RedirectionFilter()
         {
-            _AccessConfiguration = Factory.Singleton.Resolve<IAccessConfiguration>().Singleton;
+            _RedirectionConfiguration = Factory.Singleton.Resolve<IRedirectionConfiguration>().Singleton;
         }
 
         /// <summary>
@@ -47,7 +44,7 @@ namespace VirtualRadar.Owin.Middleware
         public AppFunc FilterRequest(AppFunc next)
         {
             AppFunc appFunc = async(IDictionary<string, object> environment) => {
-                if(AllowAccess(environment)) {
+                if(!Redirect(environment)) {
                     await next.Invoke(environment);
                 }
             };
@@ -56,20 +53,56 @@ namespace VirtualRadar.Owin.Middleware
         }
 
         /// <summary>
-        /// Returns true if the request passes the access configuration.
+        /// Examines the request, if it needs to be redirected then the response is set up and true
+        /// returned otherwise false is returned.
         /// </summary>
         /// <param name="environment"></param>
         /// <returns></returns>
-        private bool AllowAccess(IDictionary<string, object> environment)
+        private bool Redirect(IDictionary<string, object> environment)
         {
             var context = PipelineContext.GetOrCreate(environment);
-            var result = _AccessConfiguration.IsPathAccessible(context.Request.PathNormalised.Value, context.Request.RemoteIpAddressParsed);
+            var request = context.Request;
+            var response = context.Response;
 
-            if(!result) {
-                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+            var redirectionRequestContext = new RedirectionRequestContext() {
+                IsMobile = request.IsMobileUserAgentString,
+            };
+
+            var newPath = _RedirectionConfiguration.RedirectToPathFromRoot(request.PathNormalised.Value, redirectionRequestContext);
+            var result = newPath != null;
+            if(result) {
+                response.StatusCode = (int)HttpStatusCode.Redirect;
+                response.Headers.Add("Location", new string[] { BuildNewPath(request, newPath) });
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Constructs the URL to jump to.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="newPath"></param>
+        /// <returns></returns>
+        private string BuildNewPath(PipelineRequest request, string newPath)
+        {
+            var isHttp = String.Equals(request.Scheme, "http", StringComparison.OrdinalIgnoreCase);
+            var isHttps = !isHttp && String.Equals(request.Scheme, "https", StringComparison.OrdinalIgnoreCase);
+
+            var host = request.Host.Value ?? "";
+            if(isHttp && host.EndsWith(":80")) {
+                host = host.Substring(0, host.Length - 3);
+            } else if(isHttps && host.EndsWith(":443")) {
+                host = host.Substring(0, host.Length - 4);
+            }
+
+            return PipelineContext.ConstructUrl(
+                request.Scheme,
+                host,
+                request.PathBase.Value,
+                newPath,
+                request.QueryString.Value
+            );
         }
     }
 }

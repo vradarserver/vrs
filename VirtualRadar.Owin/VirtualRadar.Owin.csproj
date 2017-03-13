@@ -58,6 +58,7 @@
     <Compile Include="Configuration\AuthenticationConfiguration.cs" />
     <Compile Include="Middleware\AccessFilter.cs" />
     <Compile Include="Middleware\BasicAuthenticationFilter.cs" />
+    <Compile Include="Middleware\RedirectionFilter.cs" />
     <Compile Include="StandardPipeline.cs" />
     <Compile Include="Configuration\WebAppConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -957,50 +957,6 @@ namespace Test.VirtualRadar.WebSite
             _WebServer.Raise(m => m.RequestReceived += null, args);
             Assert.AreEqual(0, _OutputStream.Length);
         }
-
-        [TestMethod]
-        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "DefaultPage$")]
-        public void WebSite_AttachSiteToServer_Causes_Correct_Default_Page_To_Be_Served()
-        {
-            ExcelWorksheetData worksheet = new ExcelWorksheetData(TestContext);
-
-            _Configuration.GoogleMapSettings.ProxyType = worksheet.ParseEnum<ProxyType>("ProxyType");
-
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            _WebServer.Object.Root = worksheet.String("Root");
-
-            //if(!worksheet.NBool("Isolate").GetValueOrDefault()) return;
-
-            var localEndPointAddress = worksheet.String("LocalEndPoint");
-            var localIPAddress = localEndPointAddress.Split(':')[0];
-            var localIPPort = int.Parse(localEndPointAddress.Split(':')[1]);
-            var localEndPoint = new IPEndPoint(IPAddress.Parse(localIPAddress), localIPPort);
-
-            var endPoint = new IPEndPoint(IPAddress.Parse("192.168.0.200"), 1234);
-            var url = new Uri(worksheet.String("Url"));
-            _Request.Setup(r => r.RemoteEndPoint).Returns(endPoint);
-            _Request.Setup(r => r.LocalEndPoint).Returns(localEndPoint);
-            _Request.Setup(r => r.Url).Returns(url);
-            _Request.Setup(r => r.RawUrl).Returns(worksheet.String("RawUrl"));
-            _Request.Setup(r => r.UserHostName).Returns(worksheet.String("UserHostName"));
-
-            if(worksheet.Bool("IsAndroid")) RequestReceivedEventArgsHelper.SetAndroidUserAgent(_Request);
-            if(worksheet.Bool("IsIPad")) RequestReceivedEventArgsHelper.SetIPadUserAgent(_Request);
-            if(worksheet.Bool("IsIPhone")) RequestReceivedEventArgsHelper.SetIPhoneUserAgent(_Request);
-            if(worksheet.Bool("IsIPod")) RequestReceivedEventArgsHelper.SetIPodUserAgent(_Request);
-
-            var args = new RequestReceivedEventArgs(_Request.Object, _Response.Object, _WebServer.Object.Root);
-            _WebServer.Raise(m => m.RequestReceived += null, args);
-            Assert.AreEqual(worksheet.Bool("Handled"), args.Handled);
-
-            if(worksheet.String("RedirectUrl") == null) _Response.Verify(r => r.Redirect(It.IsAny<string>()), Times.Never());
-            else {
-                _Response.Verify(r => r.Redirect(It.IsAny<string>()), Times.Once());
-                _Response.Verify(r => r.Redirect(worksheet.String("RedirectUrl")), Times.Once());
-                Assert.AreEqual(0L, _OutputStream.Length);
-            }
-        }
         #endregion
 
         #region AddSiteRoot

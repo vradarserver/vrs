@@ -13,29 +13,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
 
-namespace VirtualRadar.Owin
+namespace VirtualRadar.Interface.Owin
 {
+    using AppFunc = Func<IDictionary<string, object>, Task>;
+
     /// <summary>
-    /// Registers implementations of interfaces with a class factory.
+    /// The interface for a filter that halts processing of a request and redirects it if the request
+    /// path matches a path registered with the singleton <see cref="IRedirectionConfiguration"/>
     /// </summary>
-    public static class Implementations
+    public interface IRedirectionFilter
     {
         /// <summary>
-        /// Registers implementations of interfaces.
+        /// Redirects the request if it matches a registered redirection path.
         /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
-        {
-            factory.Register<Interface.Owin.IAccessConfiguration, Configuration.AccessConfiguration>();
-            factory.Register<Interface.Owin.IAuthenticationConfiguration, Configuration.AuthenticationConfiguration>();
-            factory.Register<Interface.Owin.IRedirectionConfiguration, Configuration.RedirectionConfiguration>();
-            factory.Register<Interface.Owin.IWebAppConfiguration, Configuration.WebAppConfiguration>();
-
-            factory.Register<Interface.Owin.IAccessFilter, Middleware.AccessFilter>();
-            factory.Register<Interface.Owin.IBasicAuthenticationFilter, Middleware.BasicAuthenticationFilter>();
-            factory.Register<Interface.Owin.IRedirectionFilter, Middleware.RedirectionFilter>();
-        }
+        /// <param name="next"></param>
+        /// <returns></returns>
+        AppFunc FilterRequest(AppFunc next);
     }
 }

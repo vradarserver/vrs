@@ -35,6 +35,7 @@ namespace VirtualRadar.Owin
         {
             webAppConfiguration.AddCallback(UseAccessFilter,                StandardPipelinePriority.Access);
             webAppConfiguration.AddCallback(UseBasicAuthenticationFilter,   StandardPipelinePriority.Authentication);
+            webAppConfiguration.AddCallback(UseRedirectionFilter,           StandardPipelinePriority.Redirection);
         }
 
         private static void UseAccessFilter(IAppBuilder app)
@@ -47,6 +48,13 @@ namespace VirtualRadar.Owin
         private static void UseBasicAuthenticationFilter(IAppBuilder app)
         {
             var filter = Factory.Singleton.Resolve<IBasicAuthenticationFilter>();
+            var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
+            app.Use(middleware);
+        }
+
+        private static void UseRedirectionFilter(IAppBuilder app)
+        {
+            var filter = Factory.Singleton.Resolve<IRedirectionFilter>();
             var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
             app.Use(middleware);
         }

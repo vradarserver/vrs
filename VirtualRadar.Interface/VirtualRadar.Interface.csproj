@@ -138,6 +138,7 @@
     <Compile Include="Owin\IAccessFilter.cs" />
     <Compile Include="Owin\IAuthenticationConfiguration.cs" />
     <Compile Include="Owin\IBasicAuthenticationFilter.cs" />
+    <Compile Include="Owin\IRedirectionFilter.cs" />
     <Compile Include="Owin\IRedirectionConfiguration.cs" />
     <Compile Include="Owin\PipelineContext.cs" />
     <Compile Include="Owin\PipelineRequest.cs" />

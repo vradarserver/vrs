@@ -20,5 +20,10 @@ namespace VirtualRadar.Interface.Owin
         /// The normal priority for authentication.
         /// </summary>
         public static readonly int Authentication = Access + 100;
+
+        /// <summary>
+        /// The normal priority for redirecting requests.
+        /// </summary>
+        public static readonly int Redirection = Authentication + 100;
     }
 }

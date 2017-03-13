@@ -123,5 +123,19 @@ namespace Test.VirtualRadar.Owin.Middleware
 
             Assert.AreNotEqual((int)HttpStatusCode.Forbidden, _Environment.Response.StatusCode);
         }
+
+        [TestMethod]
+        public void AccessFilter_Considers_Empty_Path_To_Be_Root()
+        {
+            Configure_Acceptable_Request();
+            Configure_Access("/", "192.168.0.1", canAccess: false);
+
+            _Environment.RequestPath = "";
+            _Environment.Request.RemoteIpAddress = "192.168.0.1";
+
+            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+
+            Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
+        }
     }
 }

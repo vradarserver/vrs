@@ -138,7 +138,7 @@ namespace VirtualRadar.Owin.Middleware
             var context = PipelineContext.GetOrCreate(environment);
             var request = context.Request;
 
-            var isAdminOnlyPath = _AuthenticationConfiguration.IsAdministratorPath(request.Path.Value);
+            var isAdminOnlyPath = _AuthenticationConfiguration.IsAdministratorPath(request.PathNormalised.Value);
             var isGlobalAuthenticationEnabled = sharedConfig.WebServerSettings.AuthenticationScheme == AuthenticationSchemes.Basic;
 
             if(isAdminOnlyPath || isGlobalAuthenticationEnabled) {

@@ -287,6 +287,17 @@ namespace Test.VirtualRadar.Owin.Middleware
         }
 
         [TestMethod]
+        public void BasicAuthenticationFilter_Considers_Empty_Request_Path_To_Be_Root()
+        {
+            SetAdministratorPath("/");
+            _Environment.RequestPath = "";
+
+            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+
+            AssertSendCredentialsSent();
+        }
+
+        [TestMethod]
         public void BasicAuthenticationFilter_Allows_Requests_For_Administrator_Paths_If_Administrator_Credentials_Supplied()
         {
             SetAdministratorPath("/admin/");

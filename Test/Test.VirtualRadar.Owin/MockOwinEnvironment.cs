@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Microsoft.Owin;
 using Owin;
 using Test.Framework;
+using VirtualRadar.Interface.Owin;
 
 namespace Test.VirtualRadar.Owin
 {
@@ -34,12 +35,12 @@ namespace Test.VirtualRadar.Owin
         /// <summary>
         /// Gets a request object that has been mapped to the environment.
         /// </summary>
-        public OwinRequest Request { get; private set; }
+        public PipelineRequest Request { get; private set; }
 
         /// <summary>
         /// Gets a response object that has been mapped to the environment.
         /// </summary>
-        public OwinResponse Response { get; private set; }
+        public PipelineResponse Response { get; private set; }
 
         private CancellationToken _CallCancelled = CancellationToken.None;
         /// <summary>
@@ -78,8 +79,8 @@ namespace Test.VirtualRadar.Owin
         /// </summary>
         public MockOwinEnvironment()
         {
-            Request = new OwinRequest(Environment);
-            Response = new OwinResponse(Environment);
+            Request = new PipelineRequest(Environment);
+            Response = new PipelineResponse(Environment);
 
             AddRequiredFields();
         }
@@ -193,6 +194,22 @@ namespace Test.VirtualRadar.Owin
             var encodeString = $"{userName}:{password}";
             var bytes = Encoding.UTF8.GetBytes(encodeString);
             return Convert.ToBase64String(bytes);
+        }
+
+        /// <summary>
+        /// Constructs a URL from the parts passed across.
+        /// </summary>
+        /// <param name="scheme"></param>
+        /// <param name="hostHeaders"></param>
+        /// <param name="pathBase"></param>
+        /// <param name="path"></param>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public static string ConstructUrl(string scheme, string[] hostHeaders, PathString pathBase, PathString path, QueryString query)
+        {
+            var result = new StringBuilder();
+
+            return result.ToString();
         }
 
         /// <summary>

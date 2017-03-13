@@ -25,6 +25,7 @@ using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
 using System.Windows.Forms;
 using System.Collections.Specialized;
+using VirtualRadar.Interface.Owin;
 
 namespace VirtualRadar.WebSite
 {
@@ -347,6 +348,10 @@ namespace VirtualRadar.WebSite
 
                 server.AuthenticationRequired += Server_AuthenticationRequired;
 
+                var redirection = Factory.Singleton.Resolve<IRedirectionConfiguration>().Singleton;
+                redirection.AddRedirection("/", "/desktop.html", RedirectionContext.Any);
+                redirection.AddRedirection("/", "/mobile.html", RedirectionContext.Mobile);
+
                 _Bundler = Factory.Singleton.Resolve<IBundler>();
                 _Bundler.AttachToWebSite(this);
 
@@ -472,45 +477,8 @@ namespace VirtualRadar.WebSite
         {
             if(args == null) throw new ArgumentNullException("args");
 
-            if(args.PathAndFile == "/") RedirectToDefaultPage(args);
-            else {
-                foreach(var page in _Pages) {
-                    page.HandleRequest(WebServer, args);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Redirects the browser to the appropriate default page.
-        /// </summary>
-        /// <param name="args"></param>
-        private void RedirectToDefaultPage(RequestReceivedEventArgs args)
-        {
-            switch(args.Request.Url.Scheme) {
-                case "http":
-                case "https":
-                    var hostName = _ProxyType == ProxyType.Reverse ? args.Request.LocalEndPoint.Address.ToString() : args.Request.UserHostName;
-                    if(_ProxyType == ProxyType.Reverse) {
-                        var isDefaultPort = false;
-                        switch(args.Request.Url.Scheme) {
-                            case "http":        isDefaultPort = args.Request.LocalEndPoint.Port == 80; break;
-                            case "https":       isDefaultPort = args.Request.LocalEndPoint.Port == 443; break;
-                        }
-                        if(!isDefaultPort) hostName = String.Format("{0}:{1}", hostName, args.Request.LocalEndPoint.Port);
-                    }
-
-                    string redirectUrl = String.Format("{0}://{1}{2}{3}{4}{5}",
-                        /* 0 */ args.Request.Url.Scheme,
-                        /* 1 */ hostName,
-                        /* 2 */ args.Request.Url.AbsolutePath,
-                        /* 3 */ args.Request.Url.AbsolutePath.EndsWith("/") ? "" : "/",
-                        /* 4 */ args.IsAndroid || args.IsIPad || args.IsIPhone || args.IsIPod ? "mobile.html" : "desktop.html",
-                        /* 5 */ args.Request.Url.Query ?? "");
-                    args.Handled = true;
-                    args.Response.Redirect(redirectUrl);
-                    break;
-                default:
-                    break;
+            foreach(var page in _Pages) {
+                page.HandleRequest(WebServer, args);
             }
         }
 

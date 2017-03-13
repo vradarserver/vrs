@@ -18,6 +18,16 @@ namespace VirtualRadar.Interface.Owin
         public static readonly string PipelineContext = "vrs.PipelineContext";
 
         /// <summary>
+        /// The user agent string on the request appears to be from a mobile device.
+        /// </summary>
+        public static readonly string RequestIsMobileUserAgentString = "vrs.RequestMobileUserAgentString";
+
+        /// <summary>
+        /// The request path where an empty path is turned into a forward-slash.
+        /// </summary>
+        public static readonly string RequestPathNormalised = "vrs.RequestPathNormalised";
+
+        /// <summary>
         /// The request IP address parsed into a System.Net IPAddress.
         /// </summary>
         public static readonly string RequestRemoteIpAddressParsed = "vrs.RequestRemoteIpAddressParsed";

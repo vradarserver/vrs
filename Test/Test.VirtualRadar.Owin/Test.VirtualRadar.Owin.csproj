@@ -69,6 +69,7 @@
     <Compile Include="Configuration\RedirectionConfigurationTests.cs" />
     <Compile Include="Middleware\AccessFilterTests.cs" />
     <Compile Include="Middleware\BasicAuthenticationFilterTests.cs" />
+    <Compile Include="Middleware\RedirectionFilterTests.cs" />
     <Compile Include="MockConfigureCallback.cs" />
     <Compile Include="MockOwinEnvironment.cs" />
     <Compile Include="Configuration\WebAppConfigurationTests.cs" />
