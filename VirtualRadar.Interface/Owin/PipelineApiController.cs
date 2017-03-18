@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Web.Http;
+using System.Net;
 
 namespace VirtualRadar.Interface.Owin
 {
@@ -24,12 +25,32 @@ namespace VirtualRadar.Interface.Owin
     public class PipelineApiController : ApiController
     {
         /// <summary>
-        /// Retrieves the VRS / OWIN context for the request.
+        /// Gets the VRS / OWIN context for the request.
         /// </summary>
         public PipelineContext PipelineContext
         {
             get {
                 return PipelineContext.GetOrCreate(Request.GetOwinEnvironment());
+            }
+        }
+
+        /// <summary>
+        /// Gets the VRS / OWIN request.
+        /// </summary>
+        public PipelineRequest PipelineRequest
+        {
+            get {
+                return PipelineContext.Request;
+            }
+        }
+
+        /// <summary>
+        /// Gets the VRS / OWIN response.
+        /// </summary>
+        public PipelineResponse PipelineResponse
+        {
+            get {
+                return PipelineContext.Response;
             }
         }
     }

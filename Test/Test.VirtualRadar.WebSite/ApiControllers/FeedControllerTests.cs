@@ -29,7 +29,6 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
     [TestClass]
     public class FeedControllerTests : ControllerTests
     {
-        public TestContext TestContext { get; set; }
         private Mock<IFeedManager> _FeedManager;
         private List<Mock<IFeed>> _VisibleFeeds;
 
