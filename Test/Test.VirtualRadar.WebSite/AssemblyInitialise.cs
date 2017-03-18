@@ -26,17 +26,8 @@ namespace Test.VirtualRadar.WebSite
         {
             Implementations.Register(Factory.Singleton);
 
-            // The code relies upon a couple of classes implemented elsewhere. The tests are in effect checking that these implementations
-            // are functioning correctly, which on the face of it isn't right. However I am loathe (in the case of the use of IResponder) to
-            // say that the public behaviour of IWebSite is that it uses an IResponder under these circumstances and does not use it under
-            // the others. I want IWebSite implementations to be free to produce output how they like. For the time being I'll leave that
-            // one alone.
-            //
-            // The reliance upon IAircraftComparer is hard to defend in principle but it's hard to actually test that IAircraftComparer is
-            // called correctly. It is invoked by the .NET framework sort methods so we can't really predict how many times it will be called
-            // or which parameters will be passed to it. It was more pragmatic to say that we test the output of the sorts rather than attempt
-            // to check that .NET's usage of IAircraftComparer looked alright.
             global::VirtualRadar.Library.Implementations.Register(Factory.Singleton);   // <-- need IAircraftComparer defined for sort tests.
+            global::VirtualRadar.Owin.Implementations.Register(Factory.Singleton);      // <-- need most of this for web API controller tests.
             global::VirtualRadar.WebServer.Implementations.Register(Factory.Singleton); // <-- need IResponder defined for response content tests.
         }
     }

@@ -20,6 +20,7 @@ using VirtualRadar.Owin.Middleware;
 
 namespace VirtualRadar.Owin
 {
+    using System.Web.Http;
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
     /// <summary>
@@ -36,6 +37,9 @@ namespace VirtualRadar.Owin
             webAppConfiguration.AddCallback(UseAccessFilter,                StandardPipelinePriority.Access);
             webAppConfiguration.AddCallback(UseBasicAuthenticationFilter,   StandardPipelinePriority.Authentication);
             webAppConfiguration.AddCallback(UseRedirectionFilter,           StandardPipelinePriority.Redirection);
+
+            webAppConfiguration.AddCallback(ConfigureHttpConfiguration,     StandardPipelinePriority.WebApiConfiguration);
+            webAppConfiguration.AddCallback(UseWebApi,                      StandardPipelinePriority.WebApi);
         }
 
         private static void UseAccessFilter(IAppBuilder app)
@@ -57,6 +61,23 @@ namespace VirtualRadar.Owin
             var filter = Factory.Singleton.Resolve<IRedirectionFilter>();
             var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
             app.Use(middleware);
+        }
+
+        private static void ConfigureHttpConfiguration(IAppBuilder app)
+        {
+            var configuration = Factory.Singleton.Resolve<IWebAppConfiguration>().Singleton.GetHttpConfiguration();
+            configuration.MapHttpAttributeRoutes();
+            configuration.Routes.MapHttpRoute(
+                name:           "DefaultApi",
+                routeTemplate:  "api/{controller}/{id}",
+                defaults:       new { id = RouteParameter.Optional }
+            );
+        }
+
+        private static void UseWebApi(IAppBuilder app)
+        {
+            var configuration = Factory.Singleton.Resolve<IWebAppConfiguration>().Singleton.GetHttpConfiguration();
+            app.UseWebApi(configuration);
         }
     }
 }

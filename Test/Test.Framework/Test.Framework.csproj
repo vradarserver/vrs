@@ -78,6 +78,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="TestFiles\AircraftTests.xls" />
     <None Include="TestFiles\BaseStation.sqb" />
     <None Include="TestFiles\BaseStationTests.xls" />

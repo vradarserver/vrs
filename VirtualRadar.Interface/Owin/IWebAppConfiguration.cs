@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Http;
 using Owin;
 
 namespace VirtualRadar.Interface.Owin
@@ -44,5 +45,17 @@ namespace VirtualRadar.Interface.Owin
         /// Callbacks that have been added with the same priority value are called in random order.
         /// </remarks>
         void Configure(IAppBuilder appBuilder);
+
+        /// <summary>
+        /// Returns the HTTP configuration that will be used for Web API initialisation.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// The implementation of <see cref="Configure"/> is expected to create a new configuration before calling any
+        /// callbacks. Callbacks that want to modify the configuration before it is passed to the Web API initialisation
+        /// procedure must set a priority that is lower than the Web API's priority and then call this method to retrieve
+        /// the configuration instance.
+        /// </remarks>
+        HttpConfiguration GetHttpConfiguration();
     }
 }

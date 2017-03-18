@@ -158,6 +158,7 @@
     <EmbeddedResource Include="WinForms\OptionsView.resx">
       <DependentUpon>OptionsView.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.ttf" />

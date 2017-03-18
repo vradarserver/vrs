@@ -336,7 +336,7 @@ namespace VirtualRadar.WebServer.HttpListener
         private void RegisterConfigureCallback()
         {
             if(_ConfigureCallbackHandle == null) {
-                _ConfigureCallbackHandle = _WebAppConfiguration.AddCallback(AddShimMiddleware, priority: 0);
+                _ConfigureCallbackHandle = _WebAppConfiguration.AddCallback(AddShimMiddleware, priority: 10000);
             }
         }
 

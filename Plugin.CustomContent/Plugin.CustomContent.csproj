@@ -126,6 +126,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Typings\translations-customcontentstrings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>translations-customcontentstrings.d.ts</LastGenOutput>

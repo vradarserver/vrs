@@ -138,5 +138,37 @@ namespace Test.VirtualRadar.Owin.Configuration
 
             Assert.AreEqual(0, callback.CallCount);
         }
+
+        [TestMethod]
+        public void WebAppConfiguration_GetHttpConfiguration_Returns_Null_If_Configure_Has_Never_Been_Called()
+        {
+            Assert.IsNull(_Configuration.GetHttpConfiguration());
+        }
+
+        [TestMethod]
+        public void WebAppConfiguration_GetHttpConfiguration_Returns_Object_If_Configure_Has_Been_Called()
+        {
+            _Configuration.Configure(_AppBuilder.Object);
+            Assert.IsNotNull(_Configuration.GetHttpConfiguration());
+        }
+
+        [TestMethod]
+        public void WebAppConfiguration_GetHttpConfiguration_Returns_Same_Object_On_Every_Call()
+        {
+            _Configuration.Configure(_AppBuilder.Object);
+
+            var instance = _Configuration.GetHttpConfiguration();
+            Assert.AreSame(instance, _Configuration.GetHttpConfiguration());
+        }
+
+        [TestMethod]
+        public void WebAppConfiguration_GetHttpConfiguration_Returns_New_Object_After_Every_Configure_Call()
+        {
+            _Configuration.Configure(_AppBuilder.Object);
+            var instance = _Configuration.GetHttpConfiguration();
+
+            _Configuration.Configure(_AppBuilder.Object);
+            Assert.AreNotSame(instance, _Configuration.GetHttpConfiguration());
+        }
     }
 }

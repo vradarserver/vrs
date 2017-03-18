@@ -151,6 +151,7 @@
     <TypeScriptCompile Include="Typings\knockout.mapping.d.ts" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Typings\DatabaseEditorPluginModels.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

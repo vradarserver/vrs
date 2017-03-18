@@ -121,6 +121,7 @@
       <LastGenOutput>PluginStrings.de-DE.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Typings\Manager.ttinclude" />
     <None Include="_PostBuildCopyLanguage.bat" />

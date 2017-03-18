@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Http;
 using Owin;
 using VirtualRadar.Interface.Owin;
 
@@ -42,6 +43,11 @@ namespace VirtualRadar.Owin.Configuration
         /// The list of callbacks that will register middleware for us.
         /// </summary>
         private List<RegisterMiddlewareCallback> _Callbacks = new List<RegisterMiddlewareCallback>();
+
+        /// <summary>
+        /// The configuration object that is exposed by <see cref="GetHttpConfiguration"/>.
+        /// </summary>
+        private HttpConfiguration _HttpConfiguration;
 
         /// <summary>
         /// See interface docs.
@@ -84,9 +90,20 @@ namespace VirtualRadar.Owin.Configuration
                 throw new ArgumentNullException(nameof(appBuilder));
             }
 
+            _HttpConfiguration = new HttpConfiguration();
+
             foreach(var callback in _Callbacks.OrderBy(r => r.Priority)) {
                 callback.Callback(appBuilder);
             }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public HttpConfiguration GetHttpConfiguration()
+        {
+            return _HttpConfiguration;
         }
     }
 }
