@@ -1,4 +1,4 @@
-﻿// Copyright © 2014 onwards, Andrew Whewell
+﻿// Copyright © 2017 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,47 +12,39 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Runtime.Serialization;
-using VirtualRadar.Interface.Listener;
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VirtualRadar.Interface.Owin;
 
-namespace VirtualRadar.Interface.WebSite
+namespace Test.VirtualRadar.Interface.Owin
 {
-    /// <summary>
-    /// The JSON that describes all of the available polar plots for a single feed.
-    /// </summary>
-    [DataContract]
-    public class PolarPlotsJson
+    [TestClass]
+    public class PipelineResponseTests
     {
-        /// <summary>
-        /// Gets or sets the unique identifier of the feed.
-        /// </summary>
-        [DataMember(Name="feedId")]
-        public int FeedId { get; set; }
+        public TestContext TestContext { get; set; }
 
-        /// <summary>
-        /// Gets the list of slices.
-        /// </summary>
-        [DataMember(Name="slices")]
-        public List<PolarPlotsSliceJson> Slices { get; private set; } = new List<PolarPlotsSliceJson>();
+        private Dictionary<string, object> _Environment;
+        private PipelineResponse _Response;
 
-        /// <summary>
-        /// Creates and returns a model from an <see cref="IPolarPlotter"/>.
-        /// </summary>
-        /// <param name="feedId"></param>
-        /// <param name="polarPlotter"></param>
-        /// <returns></returns>
-        public static PolarPlotsJson ToModel(int feedId, IPolarPlotter polarPlotter)
+        [TestInitialize]
+        public void TestInitialise()
         {
-            PolarPlotsJson result = null;
+            _Environment = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            _Response = new PipelineResponse(_Environment);
+        }
 
-            if(polarPlotter != null) {
-                result = new PolarPlotsJson() {
-                    FeedId = feedId,
-                };
-                result.Slices.AddRange(polarPlotter.TakeSnapshot().Select(r => PolarPlotsSliceJson.ToModel(r)));
-            }
+        private void AddResponseHeaders()
+        {
+            _Environment["owin.ResponseHeaders"] = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
+        }
 
-            return result;
+        [TestMethod]
+        public void PipelineResponse_Constructor_Initialises_To_Known_State()
+        {
+            Assert.AreSame(_Environment, _Response.Environment);
+
+            var defaultCtor = new PipelineResponse();
+            Assert.IsNotNull(defaultCtor.Environment);
         }
     }
 }

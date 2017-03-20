@@ -105,6 +105,21 @@ namespace Test.VirtualRadar.Owin.Middleware
         }
 
         [TestMethod]
+        public void AccessFilter_Passes_Correct_Environment_Values_To_AccessConfiguration_When_Called_Via_Proxy()
+        {
+            Configure_Acceptable_Request();
+            Configure_Access("/file.txt", "1.2.3.4", canAccess: false);
+
+            _Environment.RequestPath = "/file.txt";
+            _Environment.Request.RemoteIpAddress = "192.168.0.1";
+            _Environment.Request.Headers.Add("X-Forwarded-For", new string[] { "1.2.3.4" });        // This should put 1.2.3.4 into the client IP address on the request
+
+            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+
+            Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
+        }
+
+        [TestMethod]
         public void AccessFilter_Sets_Forbidden_Status_When_Access_Blocked()
         {
             Configure_Unacceptable_Request();

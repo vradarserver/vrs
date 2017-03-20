@@ -1,4 +1,4 @@
-﻿// Copyright © 2014 onwards, Andrew Whewell
+﻿// Copyright © 2017 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,47 +12,51 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Runtime.Serialization;
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Test.Framework;
 using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.WebSite;
 
-namespace VirtualRadar.Interface.WebSite
+namespace Test.VirtualRadar.Interface.WebSite
 {
-    /// <summary>
-    /// The JSON that describes all of the available polar plots for a single feed.
-    /// </summary>
-    [DataContract]
-    public class PolarPlotsJson
+    [TestClass]
+    public class PolarPlotJsonTests
     {
-        /// <summary>
-        /// Gets or sets the unique identifier of the feed.
-        /// </summary>
-        [DataMember(Name="feedId")]
-        public int FeedId { get; set; }
+        private PolarPlotJson _Json;
 
-        /// <summary>
-        /// Gets the list of slices.
-        /// </summary>
-        [DataMember(Name="slices")]
-        public List<PolarPlotsSliceJson> Slices { get; private set; } = new List<PolarPlotsSliceJson>();
-
-        /// <summary>
-        /// Creates and returns a model from an <see cref="IPolarPlotter"/>.
-        /// </summary>
-        /// <param name="feedId"></param>
-        /// <param name="polarPlotter"></param>
-        /// <returns></returns>
-        public static PolarPlotsJson ToModel(int feedId, IPolarPlotter polarPlotter)
+        [TestInitialize]
+        public void TestInitialise()
         {
-            PolarPlotsJson result = null;
+            _Json = new PolarPlotJson();
+        }
 
-            if(polarPlotter != null) {
-                result = new PolarPlotsJson() {
-                    FeedId = feedId,
-                };
-                result.Slices.AddRange(polarPlotter.TakeSnapshot().Select(r => PolarPlotsSliceJson.ToModel(r)));
-            }
+        [TestMethod]
+        public void PolarPlotJson_Constructor_Initialises_To_Known_Values()
+        {
+            TestUtilities.TestProperty(_Json, r => r.Latitude, 0F, 2F);
+            TestUtilities.TestProperty(_Json, r => r.Longitude, 0F, 99F);
+        }
 
-            return result;
+        [TestMethod]
+        public void PolarPlotJson_ToModel_Returns_Copy_Of_Polar_Plot()
+        {
+            var model = PolarPlotJson.ToModel(new PolarPlot() {
+                Altitude =  12345,
+                Angle =     70,
+                Distance =  14.3,
+                Latitude =  51.3412,
+                Longitude = -0.6234,
+            });
+
+            Assert.AreEqual(51.3412F, model.Latitude, 0.1F);
+            Assert.AreEqual(-0.6234F, model.Longitude, 0.1F);
+        }
+
+        [TestMethod]
+        public void PolarPlotJson_ToModel_Returns_Null_If_Passed_Null()
+        {
+            Assert.IsNull(PolarPlotJson.ToModel(null));
         }
     }
 }

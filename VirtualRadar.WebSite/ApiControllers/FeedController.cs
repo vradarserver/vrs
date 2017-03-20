@@ -49,5 +49,31 @@ namespace VirtualRadar.WebSite.ApiControllers
             var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
             return FeedJson.ToModel(feedManager.GetByUniqueId(id, ignoreInvisibleFeeds: true));
         }
+
+        /// <summary>
+        /// Returns the polar plot for a feed.
+        /// </summary>
+        /// <param name="feedId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("api/1.00/feed/{feedId}/polar-plot")]
+        [Route("PolarPlot.json")]                       // pre-version 3 route
+        public PolarPlotsJson GetPolarPlot(int feedId = -1)
+        {
+            var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+            var feed = feedManager.GetByUniqueId(feedId, ignoreInvisibleFeeds: true);
+            var plotter = feed?.AircraftList?.PolarPlotter;
+
+            if(plotter != null && PipelineRequest.IsInternet) {
+                var configuration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton.Get();
+                if(!configuration.InternetClientSettings.CanShowPolarPlots) {
+                    plotter = null;
+                }
+            }
+
+            var result = plotter != null ? PolarPlotsJson.ToModel(feed.UniqueId, plotter) : new PolarPlotsJson() { FeedId = feedId, };
+
+            return result;
+        }
     }
 }

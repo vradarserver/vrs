@@ -13,23 +13,43 @@ namespace VirtualRadar.Interface.Owin
     public static class EnvironmentKey
     {
         /// <summary>
+        /// The IP address of the machine that originally requested the page from the server.
+        /// </summary>
+        public static readonly string ClientIpAddress = "vrs.ClientIpAddress";
+
+        /// <summary>
+        /// The values used to determine the Client IP Address and Proxy IP Address.
+        /// </summary>
+        public static readonly string ClientIpAddressBasis = "vrs.ClientIpAddressBasis";
+
+        /// <summary>
+        /// The request IP address that has been parsed into a System.Net IPAddress.
+        /// </summary>
+        public static readonly string ClientIpAddressParsed = "vrs.RemoteIpAddressParsed";
+
+        /// <summary>
+        /// The request IP address and port joined together into an IPEndPoint.
+        /// </summary>
+        public static readonly string ClientIpEndPoint = "vrs.RemoteIpEndPoint";
+
+        /// <summary>
+        /// The is local or LAN bool inferred from the request address.
+        /// </summary>
+        public static readonly string IsLocalOrLan = "vrs.IsLocalOrLan";
+
+        /// <summary>
+        /// The user agent string on the request appears to be from a mobile device.
+        /// </summary>
+        public static readonly string IsMobileUserAgentString = "vrs.IsMobileUserAgentString";
+
+        /// <summary>
         /// A <see cref="PipelineContext"/> that can be shared between all middleware.
         /// </summary>
         public static readonly string PipelineContext = "vrs.PipelineContext";
 
         /// <summary>
-        /// The user agent string on the request appears to be from a mobile device.
+        /// The IP address of the proxy that the request came through, if any.
         /// </summary>
-        public static readonly string RequestIsMobileUserAgentString = "vrs.RequestMobileUserAgentString";
-
-        /// <summary>
-        /// The request path where an empty path is turned into a forward-slash.
-        /// </summary>
-        public static readonly string RequestPathNormalised = "vrs.RequestPathNormalised";
-
-        /// <summary>
-        /// The request IP address parsed into a System.Net IPAddress.
-        /// </summary>
-        public static readonly string RequestRemoteIpAddressParsed = "vrs.RequestRemoteIpAddressParsed";
+        public static readonly string ProxyIpAddress = "vrs.ProxyIpAddress";
     }
 }

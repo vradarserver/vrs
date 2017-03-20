@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using VirtualRadar.Interface.Listener;
 
 namespace VirtualRadar.Interface.WebSite
 {
@@ -38,14 +39,26 @@ namespace VirtualRadar.Interface.WebSite
         /// Gets or sets the plots for the slice.
         /// </summary>
         [DataMember(Name="plots")]
-        public List<PolarPlotJson> Plots { get; private set; }
+        public List<PolarPlotJson> Plots { get; private set; } = new List<PolarPlotJson>();
 
         /// <summary>
-        /// Creates a new object.
+        /// Returns a new <see cref="PolarPlotsSliceJson"/> built from a listener's polar plot slice.
         /// </summary>
-        public PolarPlotsSliceJson()
+        /// <param name="slice"></param>
+        /// <returns></returns>
+        public static PolarPlotsSliceJson ToModel(PolarPlotSlice slice)
         {
-            Plots = new List<PolarPlotJson>();
+            PolarPlotsSliceJson result = null;
+
+            if(slice != null) {
+                result = new PolarPlotsSliceJson() {
+                    StartAltitude =     slice.AltitudeLower,
+                    FinishAltitude =    slice.AltitudeHigher,
+                };
+                result.Plots.AddRange(slice.PolarPlots.OrderBy(r => r.Key).Select(r => PolarPlotJson.ToModel(r.Value)));
+            }
+
+            return result;
         }
     }
 }

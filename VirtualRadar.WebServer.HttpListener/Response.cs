@@ -17,6 +17,7 @@ using System.Net;
 using System.IO;
 using System.IO.Compression;
 using Microsoft.Owin;
+using VirtualRadar.Interface.Owin;
 
 namespace VirtualRadar.WebServer.HttpListener
 {
@@ -28,7 +29,7 @@ namespace VirtualRadar.WebServer.HttpListener
         /// <summary>
         /// The response object that we are wrapping.
         /// </summary>
-        private IOwinResponse _Response;
+        private PipelineResponse _Response;
 
         /// <summary>
         /// Gets or sets a value indicating that we should not allow the request to be processed by any other
@@ -100,10 +101,10 @@ namespace VirtualRadar.WebServer.HttpListener
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        /// <param name="response"></param>
-        public Response(IOwinResponse response)
+        /// <param name="pipelineResponse"></param>
+        public Response(PipelineResponse pipelineResponse)
         {
-            _Response = response;
+            _Response = pipelineResponse;
             StopProcessing = true;
         }
 

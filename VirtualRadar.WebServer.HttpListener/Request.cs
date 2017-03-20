@@ -18,6 +18,7 @@ using System.IO;
 using System.Collections.Specialized;
 using System.Web;
 using Microsoft.Owin;
+using VirtualRadar.Interface.Owin;
 
 namespace VirtualRadar.WebServer.HttpListener
 {
@@ -27,9 +28,9 @@ namespace VirtualRadar.WebServer.HttpListener
     class Request : IRequest
     {
         /// <summary>
-        /// The underlying OWIN environment object that we're wrapping.
+        /// The underlying request object that we're wrapping.
         /// </summary>
-        private IOwinRequest _Request;
+        private PipelineRequest _Request;
 
         private CookieCollection _Cookies;
         /// <summary>
@@ -198,7 +199,7 @@ namespace VirtualRadar.WebServer.HttpListener
         /// </summary>
         public string UserAgent
         {
-            get { return _Request.Headers["User-Agent"]; }
+            get { return _Request.UserAgent; }
         }
 
         /// <summary>
@@ -225,10 +226,10 @@ namespace VirtualRadar.WebServer.HttpListener
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        /// <param name="owinRequest"></param>
-        public Request(IOwinRequest owinRequest)
+        /// <param name="pipelineRequest"></param>
+        public Request(PipelineRequest pipelineRequest)
         {
-            _Request = owinRequest;
+            _Request = pipelineRequest;
             MaximumPostBodySize = 4 * 1024 * 1024;
         }
 

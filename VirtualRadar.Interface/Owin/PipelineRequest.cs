@@ -1,4 +1,14 @@
-﻿using System;
+﻿// Copyright © 2017 onwards, Andrew Whewell
+// All rights reserved.
+//
+// Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+//    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+//    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+//    * Neither the name of the author nor the names of the program's contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -14,46 +24,17 @@ namespace VirtualRadar.Interface.Owin
     public class PipelineRequest : OwinRequest
     {
         /// <summary>
-        /// As per the OwinRequest.Path exception an empty string path is returned as /.
+        /// As per the OwinRequest.Path except an empty string path is returned as /.
         /// </summary>
         public PathString PathNormalised
         {
             get {
-                return GetOrSet<PathString>(EnvironmentKey.RequestPathNormalised, () => {
-                    var path = Path;
-                    if(path.Value == "") {
-                        path = new PathString("/");
-                    }
-                    return path;
-                });
-            }
-            set {
-                var path = value;
-                if(path.Value == "") {
-                    path = new PathString("/");
+                var result = Path;
+                if(result.Value == "") {
+                    result = new PathString("/");
                 }
-                Set<PathString>(EnvironmentKey.RequestPathNormalised, path);
+                return result;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets the <see cref="RemoteIpAddress"/> parsed into a System.Net IPAddress.
-        /// </summary>
-        public IPAddress RemoteIpAddressParsed
-        {
-            get {
-                return GetOrSet<IPAddress>(EnvironmentKey.RequestRemoteIpAddressParsed, () => {
-                    var remoteIpAddress = RemoteIpAddress;
-                    var parsed = IPAddress.None;
-                    if(!String.IsNullOrEmpty(remoteIpAddress)) {
-                        if(!IPAddress.TryParse(remoteIpAddress, out parsed)) {
-                            parsed = IPAddress.None;
-                        }
-                    }
-                    return parsed;
-                });
-            }
-            set { Set(EnvironmentKey.RequestRemoteIpAddressParsed, value); }
         }
 
         /// <summary>
@@ -62,18 +43,113 @@ namespace VirtualRadar.Interface.Owin
         public bool IsMobileUserAgentString
         {
             get {
-                return GetOrSet<bool>(EnvironmentKey.RequestIsMobileUserAgentString, () => {
-                    var result = false;
-                    var userAgent = UserAgent;
-                    if(!String.IsNullOrEmpty(userAgent)) {
-                        var tokens = userAgent.Split(' ', '/', '(', ')');
-                        result = tokens.Any(r => 
-                            String.Equals("mobile", r, StringComparison.OrdinalIgnoreCase) ||
-                            String.Equals("iemobile", r, StringComparison.OrdinalIgnoreCase)
-                        );
+                return GetOrSetTranslation<string, bool>(
+                    null,
+                    EnvironmentKey.IsMobileUserAgentString,
+                    UserAgent,
+                    () => {
+                        var result = false;
+                        var userAgent = UserAgent;
+                        if(!String.IsNullOrEmpty(userAgent)) {
+                            var tokens = userAgent.Split(' ', '/', '(', ')', ';');
+                            result = tokens.Any(r => 
+                                String.Equals("mobile", r, StringComparison.OrdinalIgnoreCase) ||
+                                String.Equals("iemobile", r, StringComparison.OrdinalIgnoreCase) ||
+                                String.Equals("android", r, StringComparison.OrdinalIgnoreCase) ||
+                                String.Equals("playstation", r, StringComparison.OrdinalIgnoreCase) ||
+                                String.Equals("nintendo", r, StringComparison.OrdinalIgnoreCase) ||
+                                r.StartsWith("appletv", StringComparison.OrdinalIgnoreCase)
+                            );
+                        }
+                        return result;
                     }
-                    return result;
-                });
+                );
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating that the request came from the LAN or was local.
+        /// </summary>
+        public bool IsLocalOrLan
+        {
+            get {
+                return GetOrSetTranslation<string, bool>(
+                    null,
+                    EnvironmentKey.IsLocalOrLan,
+                    ClientIpAddress,
+                    () => {
+                        return IPEndPointHelper.IsLocalOrLanAddress(ClientIpEndPoint);
+                    }
+                );
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating that the request came from the Internet. Shorthand for !IsLocalOrLan.
+        /// </summary>
+        public bool IsInternet
+        {
+            get {
+                return !IsLocalOrLan;
+            }
+        }
+
+        /// <summary>
+        /// Gets the IP address of the machine that made the request on the server. If the request
+        /// came from a proxy server on the LAN then it is the address of the machine that accesssed
+        /// the proxy server, as opposed to RequestIpAddress which would be the address of the proxy
+        /// server.
+        /// </summary>
+        public string ClientIpAddress
+        {
+            get {
+                DetermineClientAndProxyAddresses();
+                return Get<string>(EnvironmentKey.ClientIpAddress);
+            }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="ClientIpAddress"/> parsed into a System.Net IPAddress.
+        /// </summary>
+        public IPAddress ClientIpAddressParsed
+        {
+            get {
+                return GetOrSetTranslation<string, IPAddress>(
+                    null,
+                    EnvironmentKey.ClientIpAddressParsed,
+                    ClientIpAddress,
+                    () => {
+                        return ParseIpAddress(ClientIpAddress);
+                    }
+                );
+            }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="ClientIpAddress"/> and <see cref="RemotePort"/> parsed and joined together into an end point.
+        /// </summary>
+        public IPEndPoint ClientIpEndPoint
+        {
+            get {
+                return GetOrSetTranslation<string, IPEndPoint>(
+                    null,
+                    EnvironmentKey.ClientIpEndPoint,
+                    String.Format("{0}:{1}", ClientIpAddress, RemotePort),
+                    () => {
+                        return new IPEndPoint(ClientIpAddressParsed, RemotePort.GetValueOrDefault());
+                    }
+                );
+            }
+        }
+
+        /// <summary>
+        /// Gets the address of the reverse proxy that the request came through, if known.
+        /// </summary>
+        public string ProxyIpAddress
+        {
+            get {
+                DetermineClientAndProxyAddresses();
+                return Get<string>(EnvironmentKey.ProxyIpAddress);
             }
         }
 
@@ -111,6 +187,70 @@ namespace VirtualRadar.Interface.Owin
         protected virtual T GetOrSet<T>(string key, Func<T> buildFunc)
         {
             return PipelineContext.GetOrSet<T>(Environment, key, buildFunc);
+        }
+
+        /// <summary>
+        /// See <see cref="PipelineContext.GetOrSetTranslation{TOriginal, TTranslation}(IDictionary{string, object}, string, string, TOriginal, Func{TTranslation})"/>.
+        /// </summary>
+        /// <typeparam name="TOriginal"></typeparam>
+        /// <typeparam name="TTranslation"></typeparam>
+        /// <param name="originalKey"></param>
+        /// <param name="translationKey"></param>
+        /// <param name="currentValue"></param>
+        /// <param name="buildTranslation"></param>
+        /// <returns></returns>
+        protected virtual TTranslation GetOrSetTranslation<TOriginal, TTranslation>(string originalKey, string translationKey, TOriginal currentValue, Func<TTranslation> buildTranslation)
+        {
+            return PipelineContext.GetOrSetTranslation<TOriginal, TTranslation>(Environment, originalKey, translationKey, currentValue, buildTranslation);
+        }
+
+        /// <summary>
+        /// Parses an IP address. If the address is unparseable then IPAddress.None is returned.
+        /// </summary>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        private IPAddress ParseIpAddress(string ipAddress)
+        {
+            var result = IPAddress.None;
+
+            if(!String.IsNullOrEmpty(ipAddress)) {
+                if(!IPAddress.TryParse(ipAddress, out result)) {
+                    result = IPAddress.None;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Tries to determine the true IP address of the client and the address of the proxy, if any. If the
+        /// values have already been calculated and aren't going to change then this does nothing.
+        /// </summary>
+        private void DetermineClientAndProxyAddresses()
+        {
+            var translationBasis = String.Format("{0}-{1}", RemoteIpAddress, Headers["X-Forwarded-For"]);
+            if(!String.Equals(translationBasis, Get<string>(EnvironmentKey.ClientIpAddressBasis))) {
+                Set<string>(EnvironmentKey.ClientIpAddressBasis, translationBasis);
+
+                var localOrLanRequest = IPEndPointHelper.IsLocalOrLanAddress(new IPEndPoint(ParseIpAddress(RemoteIpAddress), RemotePort.GetValueOrDefault()));
+                var xff = localOrLanRequest ? Headers["X-Forwarded-For"] : null;
+
+                if(!String.IsNullOrEmpty(xff)) {
+                    xff = xff.Split(',').Last().Trim();
+                    IPAddress ipAddress;
+                    if(!IPAddress.TryParse(xff, out ipAddress)) {
+                        xff = null;
+                    }
+                }
+
+                if(String.IsNullOrEmpty(xff)) {
+                    Set<string>(EnvironmentKey.ClientIpAddress, RemoteIpAddress);
+                    Set<string>(EnvironmentKey.ProxyIpAddress, null);
+                } else {
+                    Set<string>(EnvironmentKey.ClientIpAddress, xff);
+                    Set<string>(EnvironmentKey.ProxyIpAddress, RemoteIpAddress);
+                }
+            }
         }
     }
 }

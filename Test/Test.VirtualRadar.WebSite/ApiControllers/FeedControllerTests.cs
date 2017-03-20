@@ -31,26 +31,60 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
     {
         private Mock<IFeedManager> _FeedManager;
         private List<Mock<IFeed>> _VisibleFeeds;
+        private Mock<IBaseStationAircraftList> _AircraftList;
+        private Mock<IPolarPlotter> _PolarPlotter;
+        private List<PolarPlotSlice> _Slices;
 
         protected override void ExtraInitialise()
         {
+            _Configuration.InternetClientSettings.CanShowPolarPlots = true;
+
+            _Slices = new List<PolarPlotSlice>();
+
+            _PolarPlotter = TestUtilities.CreateMockInstance<IPolarPlotter>();
+            _PolarPlotter.Setup(r => r.TakeSnapshot()).Returns(_Slices);
+
+            _AircraftList = TestUtilities.CreateMockInstance<IBaseStationAircraftList>();
+            _AircraftList.SetupGet(r => r.PolarPlotter).Returns(_PolarPlotter.Object);
+
             _FeedManager = TestUtilities.CreateMockSingleton<IFeedManager>();
             _VisibleFeeds = new List<Mock<IFeed>>();
+            _FeedManager.Setup(r => r.GetByUniqueId(It.IsAny<int>(), It.IsAny<bool>())).Returns((IFeed)null);
             _FeedManager.SetupGet(r => r.VisibleFeeds).Returns(() => {
                 return _VisibleFeeds.Select(r => r.Object).ToArray();
             });
         }
 
-        private Mock<IFeed> CreateFeed(int uniqueId = 1, string name = "My Feed", bool hasPlotter = true, bool isVisible = true)
+        private Mock<IFeed> CreateFeed(int uniqueId = 1, string name = "My Feed", bool hasPlotter = true, bool isVisible = true, bool hasDistinctAircraftList = false)
         {
             var result = TestUtilities.CreateMockInstance<IFeed>();
             result.SetupGet(r => r.UniqueId).Returns(uniqueId);
             result.SetupGet(r => r.Name).Returns(name);
             result.SetupGet(r => r.IsVisible).Returns(isVisible);
 
-            var aircraftList = TestUtilities.CreateMockInstance<IBaseStationAircraftList>();
-            aircraftList.SetupGet(r => r.PolarPlotter).Returns(hasPlotter ? TestUtilities.CreateMockInstance<IPolarPlotter>().Object : null);
-            result.SetupGet(r => r.AircraftList).Returns(aircraftList.Object);
+            if(hasDistinctAircraftList) {
+                var aircraftList = TestUtilities.CreateMockInstance<IBaseStationAircraftList>();
+                aircraftList.SetupGet(r => r.PolarPlotter).Returns(hasPlotter ? TestUtilities.CreateMockInstance<IPolarPlotter>().Object : null);
+                result.SetupGet(r => r.AircraftList).Returns(aircraftList.Object);
+            } else {
+                if(!hasPlotter) {
+                    _AircraftList.SetupGet(r => r.PolarPlotter).Returns((IPolarPlotter)null);
+                }
+                result.SetupGet(r => r.AircraftList).Returns(_AircraftList.Object);
+            }
+
+            return result;
+        }
+
+        private PolarPlotSlice CreatePolarPlotSlice(int lowAltitude, int highAltitude, params PolarPlot[] points)
+        {
+            var result = new PolarPlotSlice() {
+                AltitudeLower =     lowAltitude,
+                AltitudeHigher =    highAltitude,
+            };
+            foreach(var point in points) {
+                result.PolarPlots.Add(point.Angle, point);
+            }
 
             return result;
         }
@@ -62,11 +96,12 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             return feed;
         }
 
+        #region GetFeeds
         [TestMethod]
         public async Task FeedController_GetFeeds_Returns_All_Visible_Feeds()
         {
-            _VisibleFeeds.Add(CreateFeed(uniqueId: 1, name: "First", hasPlotter: true));
-            _VisibleFeeds.Add(CreateFeed(uniqueId: 2, name: "Second", hasPlotter: false));
+            _VisibleFeeds.Add(CreateFeed(uniqueId: 1, name: "First", hasPlotter: true, hasDistinctAircraftList: true));
+            _VisibleFeeds.Add(CreateFeed(uniqueId: 2, name: "Second", hasPlotter: false, hasDistinctAircraftList: true));
 
             var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds");
             var content = await response.Content.ReadAsStringAsync();
@@ -94,7 +129,9 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             Assert.AreEqual(0, feeds.Length);
         }
+        #endregion
 
+        #region GetFeed
         [TestMethod]
         public async Task FeedController_GetFeed_Returns_Feed_If_Known()
         {
@@ -135,5 +172,153 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             Assert.IsNull(feed);
         }
+        #endregion
+
+        #region GetPolarPlot
+        [TestMethod]
+        public async Task FeedController_GetPolarPlot_Returns_Object()
+        {
+            ConfigureGetFeedById(CreateFeed());
+
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/1/polar-plot");
+            var content = await response.Content.ReadAsStringAsync();
+            var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.IsNotNull(json);
+            Assert.AreEqual(1, json.FeedId);
+            Assert.IsNotNull(json.Slices);
+        }
+
+        [TestMethod]
+        public async Task FeedController_GetPolarPlot_Returns_Object_For_Version_2_Route()
+        {
+            ConfigureGetFeedById(CreateFeed());
+
+            var response = await _Server.HttpClient.GetAsync("/PolarPlot.json?feedId=1");
+            var content = await response.Content.ReadAsStringAsync();
+            var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.IsNotNull(json);
+            Assert.AreEqual(1, json.FeedId);
+            Assert.IsNotNull(json.Slices);
+        }
+
+        [TestMethod]
+        public async Task FeedController_GetPolarPlot_Returns_Slices()
+        {
+            ConfigureGetFeedById(CreateFeed(uniqueId: 2));
+            _Slices.Add(CreatePolarPlotSlice(100, 199, new PolarPlot() { Angle = 1, Altitude = 150, Distance = 7, Latitude = 10.1, Longitude = 11.2 }));
+
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/2/polar-plot");
+            var content = await response.Content.ReadAsStringAsync();
+            var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
+
+            Assert.AreEqual(2, json.FeedId);
+            Assert.AreEqual(1, json.Slices.Count);
+
+            var slice = json.Slices[0];
+            Assert.AreEqual(100, slice.StartAltitude);
+            Assert.AreEqual(199, slice.FinishAltitude);
+            Assert.AreEqual(1, slice.Plots.Count);
+            Assert.AreEqual(10.1F, slice.Plots[0].Latitude);
+            Assert.AreEqual(11.2F, slice.Plots[0].Longitude);
+        }
+
+        [TestMethod]
+        public async Task FeedController_GetPolarPlot_Returns_No_Slices_If_Invalid_ID_Supplied()
+        {
+            ConfigureGetFeedById(CreateFeed(uniqueId: 2));
+
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/1/polar-plot");
+            var content = await response.Content.ReadAsStringAsync();
+            var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(1, json.FeedId);
+            Assert.AreEqual(0, json.Slices.Count);
+        }
+
+        [TestMethod]
+        public async Task FeedController_GetPolarPlot_Returns_No_Slices_If_Feed_Is_Invisible()
+        {
+            ConfigureGetFeedById(CreateFeed(uniqueId: 1, isVisible: false));
+
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/1/polar-plot");
+            var content = await response.Content.ReadAsStringAsync();
+            var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(1, json.FeedId);
+            Assert.AreEqual(0, json.Slices.Count);
+        }
+
+        [TestMethod]
+        public async Task FeedController_GetPolarPlot_Returns_No_Slices_If_Feed_Has_No_Aircraft_List()
+        {
+            var feed = CreateFeed(uniqueId: 1);
+            feed.SetupGet(r => r.AircraftList).Returns((IBaseStationAircraftList)null);
+            ConfigureGetFeedById(feed);
+
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/1/polar-plot");
+            var content = await response.Content.ReadAsStringAsync();
+            var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(1, json.FeedId);
+            Assert.AreEqual(0, json.Slices.Count);
+        }
+
+        [TestMethod]
+        public async Task FeedController_GetPolarPlot_Returns_No_Slices_If_Feed_Has_No_Plotter()
+        {
+            ConfigureGetFeedById(CreateFeed(uniqueId: 1, hasPlotter: false));
+
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/1/polar-plot");
+            var content = await response.Content.ReadAsStringAsync();
+            var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(1, json.FeedId);
+            Assert.AreEqual(0, json.Slices.Count);
+        }
+
+        [TestMethod]
+        public async Task FeedController_GetPolarPlot_Returns_No_Slices_If_Prohibited_By_Configuration()
+        {
+            _Configuration.InternetClientSettings.CanShowPolarPlots = false;
+            _RemoteIpAddress = "1.2.3.4";
+
+            ConfigureGetFeedById(CreateFeed(uniqueId: 1));
+            _Slices.Add(CreatePolarPlotSlice(100, 199, new PolarPlot() { Angle = 1, Altitude = 150, Distance = 7, Latitude = 10.1, Longitude = 11.2 }));
+
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/1/polar-plot");
+            var content = await response.Content.ReadAsStringAsync();
+            var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(1, json.FeedId);
+            Assert.AreEqual(0, json.Slices.Count);
+        }
+
+        [TestMethod]
+        public async Task FeedController_GetPolarPlot_Returns_Slices_If_Prohibited_By_Configuration_But_Accessed_Locally()
+        {
+            _Configuration.InternetClientSettings.CanShowPolarPlots = false;
+            _RemoteIpAddress = "192.168.0.1";
+
+            ConfigureGetFeedById(CreateFeed(uniqueId: 1));
+            _Slices.Add(CreatePolarPlotSlice(100, 199, new PolarPlot() { Angle = 1, Altitude = 150, Distance = 7, Latitude = 10.1, Longitude = 11.2 }));
+
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/1/polar-plot");
+            var content = await response.Content.ReadAsStringAsync();
+            var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(1, json.FeedId);
+            Assert.AreEqual(1, json.Slices.Count);
+        }
+        #endregion
     }
 }

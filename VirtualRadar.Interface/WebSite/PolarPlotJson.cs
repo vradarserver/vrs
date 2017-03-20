@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using VirtualRadar.Interface.Listener;
 
 namespace VirtualRadar.Interface.WebSite
 {
@@ -33,5 +34,24 @@ namespace VirtualRadar.Interface.WebSite
         /// </summary>
         [DataMember(Name="lng")]
         public float Longitude { get; set; }
+
+        /// <summary>
+        /// Creates a new <see cref="PolarPlotJson"/> from an aircraft list's <see cref="PolarPlot"/>.
+        /// </summary>
+        /// <param name="polarPlot"></param>
+        /// <returns></returns>
+        public static PolarPlotJson ToModel(PolarPlot polarPlot)
+        {
+            PolarPlotJson result = null;
+
+            if(polarPlot != null) {
+                result = new PolarPlotJson() {
+                    Latitude =  (float)polarPlot.Latitude,
+                    Longitude = (float)polarPlot.Longitude,
+                };
+            }
+
+            return result;
+        }
     }
 }

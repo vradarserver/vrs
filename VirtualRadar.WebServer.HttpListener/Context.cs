@@ -15,6 +15,7 @@ using System.Text;
 using VirtualRadar.Interface.WebServer;
 using System.Net;
 using Microsoft.Owin;
+using VirtualRadar.Interface.Owin;
 
 namespace VirtualRadar.WebServer.HttpListener
 {
@@ -23,6 +24,11 @@ namespace VirtualRadar.WebServer.HttpListener
     /// </summary>
     class Context : IContext
     {
+        /// <summary>
+        /// The context that this object is wrapping.
+        /// </summary>
+        private PipelineContext _Context;
+
         /// <summary>
         /// The OWIN request that <see cref="Request"/> is wrapping.
         /// </summary>
@@ -62,10 +68,13 @@ namespace VirtualRadar.WebServer.HttpListener
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string BasicUserName { get; private set; }
+        public string BasicUserName
+        {
+            get { return _Context.Request.User?.Identity?.Name; }
+        }
 
         /// <summary>
-        /// See interface docs.
+        /// See interface docs... not sure where this is used?
         /// </summary>
         public string BasicPassword { get; private set; }
 
@@ -75,17 +84,9 @@ namespace VirtualRadar.WebServer.HttpListener
         /// <param name="environment"></param>
         public Context(IDictionary<string, object> environment)
         {
-            OwinRequest = new OwinRequest(environment);
-            OwinResponse = new OwinResponse(environment);
-
-            _Request = new Request(OwinRequest);
-            _Response = new Response(OwinResponse);
-
-            var basicIdentity = OwinRequest.User == null ? null : OwinRequest.User.Identity;
-            if(basicIdentity != null) {
-                BasicUserName = basicIdentity.Name;
-                BasicPassword = "";
-            }
+            _Context = PipelineContext.GetOrCreate(environment);
+            _Request = new Request(_Context.Request);
+            _Response = new Response(_Context.Response);
         }
     }
 }

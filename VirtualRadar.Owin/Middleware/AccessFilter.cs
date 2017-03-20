@@ -63,7 +63,7 @@ namespace VirtualRadar.Owin.Middleware
         private bool AllowAccess(IDictionary<string, object> environment)
         {
             var context = PipelineContext.GetOrCreate(environment);
-            var result = _AccessConfiguration.IsPathAccessible(context.Request.PathNormalised.Value, context.Request.RemoteIpAddressParsed);
+            var result = _AccessConfiguration.IsPathAccessible(context.Request.PathNormalised.Value, context.Request.ClientIpAddressParsed);
 
             if(!result) {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;

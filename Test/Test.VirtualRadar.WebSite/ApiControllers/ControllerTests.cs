@@ -17,6 +17,7 @@ using InterfaceFactory;
 using Microsoft.Owin.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Owin;
 using Test.Framework;
 using Test.VirtualRadar.WebSite.MockOwinMiddleware;
 using VirtualRadar.Interface.Owin;
@@ -32,9 +33,11 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         protected Mock<ISharedConfiguration> _SharedConfiguration;
         protected Configuration _Configuration;
 
+        protected IWebAppConfigurationCallbackHandle _TestMiddlewareCallback;
         protected MockAccessFilter _AccessFilter;
         protected MockBasicAuthenticationFilter _BasicAuthenticationFilter;
         protected MockRedirectionFilter _RedirectionFilter;
+        protected string _RemoteIpAddress;
 
         protected TestServer _Server;
 
@@ -47,14 +50,17 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _SharedConfiguration.Setup(r => r.Get()).Returns(_Configuration);
             _UserManager = TestUtilities.CreateMockSingleton<IUserManager>();
 
+            _RemoteIpAddress = "127.0.0.1";
             _AccessFilter = MockAccessFilter.CreateAndRegister();
             _BasicAuthenticationFilter = MockBasicAuthenticationFilter.CreateAndRegister();
             _RedirectionFilter = MockRedirectionFilter.CreateAndRegister();
 
+            var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>().Singleton;
+            _TestMiddlewareCallback = webAppConfiguration.AddCallback(UseTestMiddleware, StandardPipelinePriority.Access - 1000000);
+
             ExtraInitialise();
 
             _Server = TestServer.Create(app => {
-                var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>().Singleton;
                 webAppConfiguration.Configure(app);
             });
         }
@@ -67,6 +73,11 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestCleanup]
         public void TestCleanup()
         {
+            if(_TestMiddlewareCallback != null) {
+                Factory.Singleton.Resolve<IWebAppConfiguration>().Singleton.RemoveCallback(_TestMiddlewareCallback);
+                _TestMiddlewareCallback = null;
+            }
+
             if(_Server != null) {
                 _Server.Dispose();
                 _Server = null;
@@ -80,6 +91,31 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         protected virtual void ExtraCleanup()
         {
             ;
+        }
+
+        void UseTestMiddleware(IAppBuilder app)
+        {
+            // The intention is for this to get called at the start of the pipeline
+            Func<Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task>> middleware = 
+            (Func<IDictionary<string, object>, Task> next) => {
+                Func<IDictionary<string, object>, Task> appFunc = async(IDictionary<string, object> environment) => {
+                    SetEnvironmentValue(environment, "server.RemoteIpAddress", _RemoteIpAddress);
+
+                    await next.Invoke(environment);
+                };
+
+                return appFunc;
+            };
+            app.Use(middleware);
+        }
+
+        void SetEnvironmentValue<T>(IDictionary<string, object> environment, string key, T value)
+        {
+            if(!environment.ContainsKey(key)) {
+                environment.Add(key, value);
+            } else {
+                environment[key] = value;
+            }
         }
     }
 }

@@ -369,7 +369,6 @@ namespace VirtualRadar.WebSite
                 _Pages.Add(_ReportRowsJsonPage);
                 _Pages.Add(_ClosestAircraftJsonPage);
                 _Pages.Add(new AirportDataProxyPage(this));
-                _Pages.Add(new PolarPlotJsonPage(this));
 
                 _JavaScriptInjectors.Add(new WebSiteStringsInjector());
 
