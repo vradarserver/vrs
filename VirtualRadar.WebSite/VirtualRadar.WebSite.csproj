@@ -82,7 +82,7 @@
     <Compile Include="AircraftListJsonPage.cs" />
     <Compile Include="AirportDataProxyPage.cs" />
     <Compile Include="ApiControllers\DirectoryEntryController.cs" />
-    <Compile Include="ApiControllers\FeedController.cs" />
+    <Compile Include="ApiControllers\FeedsController.cs" />
     <Compile Include="AudioPage.cs" />
     <Compile Include="Bundler.cs" />
     <Compile Include="CorsPreflightPage.cs" />

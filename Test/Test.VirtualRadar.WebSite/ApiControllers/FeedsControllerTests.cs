@@ -27,7 +27,7 @@ using VirtualRadar.Interface.WebSite;
 namespace Test.VirtualRadar.WebSite.ApiControllers
 {
     [TestClass]
-    public class FeedControllerTests : ControllerTests
+    public class FeedsControllerTests : ControllerTests
     {
         private Mock<IFeedManager> _FeedManager;
         private List<Mock<IFeed>> _VisibleFeeds;
@@ -98,7 +98,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
         #region GetFeeds
         [TestMethod]
-        public async Task FeedController_GetFeeds_Returns_All_Visible_Feeds()
+        public async Task FeedsController_GetFeeds_Returns_All_Visible_Feeds()
         {
             _VisibleFeeds.Add(CreateFeed(uniqueId: 1, name: "First", hasPlotter: true, hasDistinctAircraftList: true));
             _VisibleFeeds.Add(CreateFeed(uniqueId: 2, name: "Second", hasPlotter: false, hasDistinctAircraftList: true));
@@ -120,7 +120,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedController_GetFeeds_Returns_Empty_Array_If_All_Feeds_Are_Invisible()
+        public async Task FeedsController_GetFeeds_Returns_Empty_Array_If_All_Feeds_Are_Invisible()
         {
             var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds");
             var content = await response.Content.ReadAsStringAsync();
@@ -133,11 +133,11 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
         #region GetFeed
         [TestMethod]
-        public async Task FeedController_GetFeed_Returns_Feed_If_Known()
+        public async Task FeedsController_GetFeed_Returns_Feed_If_Known()
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 1, name: "Feed", hasPlotter: true, isVisible: true));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/1");
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/1");
             var content = await response.Content.ReadAsStringAsync();
             var feed = JsonConvert.DeserializeObject<FeedJson>(content);
 
@@ -148,11 +148,11 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedController_GetFeed_Returns_Null_If_ID_Is_Unknown()
+        public async Task FeedsController_GetFeed_Returns_Null_If_ID_Is_Unknown()
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 1));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/2");
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/2");
             var content = await response.Content.ReadAsStringAsync();
             var feed = JsonConvert.DeserializeObject<FeedJson>(content);
 
@@ -161,11 +161,11 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedController_GetFeed_Returns_Null_If_Feed_Is_Invisible()
+        public async Task FeedsController_GetFeed_Returns_Null_If_Feed_Is_Invisible()
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 1, isVisible: false));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/1");
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/1");
             var content = await response.Content.ReadAsStringAsync();
             var feed = JsonConvert.DeserializeObject<FeedJson>(content);
 
@@ -176,11 +176,11 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
         #region GetPolarPlot
         [TestMethod]
-        public async Task FeedController_GetPolarPlot_Returns_Object()
+        public async Task FeedsController_GetPolarPlot_Returns_Object()
         {
             ConfigureGetFeedById(CreateFeed());
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/1/polar-plot");
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/1/polar-plot");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
 
@@ -191,7 +191,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedController_GetPolarPlot_Returns_Object_For_Version_2_Route()
+        public async Task FeedsController_GetPolarPlot_Returns_Object_For_Version_2_Route()
         {
             ConfigureGetFeedById(CreateFeed());
 
@@ -206,12 +206,12 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedController_GetPolarPlot_Returns_Slices()
+        public async Task FeedsController_GetPolarPlot_Returns_Slices()
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 2));
             _Slices.Add(CreatePolarPlotSlice(100, 199, new PolarPlot() { Angle = 1, Altitude = 150, Distance = 7, Latitude = 10.1, Longitude = 11.2 }));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/2/polar-plot");
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/2/polar-plot");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
 
@@ -227,11 +227,11 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedController_GetPolarPlot_Returns_No_Slices_If_Invalid_ID_Supplied()
+        public async Task FeedsController_GetPolarPlot_Returns_No_Slices_If_Invalid_ID_Supplied()
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 2));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/1/polar-plot");
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/1/polar-plot");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
 
@@ -241,11 +241,11 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedController_GetPolarPlot_Returns_No_Slices_If_Feed_Is_Invisible()
+        public async Task FeedsController_GetPolarPlot_Returns_No_Slices_If_Feed_Is_Invisible()
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 1, isVisible: false));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/1/polar-plot");
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/1/polar-plot");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
 
@@ -255,13 +255,13 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedController_GetPolarPlot_Returns_No_Slices_If_Feed_Has_No_Aircraft_List()
+        public async Task FeedsController_GetPolarPlot_Returns_No_Slices_If_Feed_Has_No_Aircraft_List()
         {
             var feed = CreateFeed(uniqueId: 1);
             feed.SetupGet(r => r.AircraftList).Returns((IBaseStationAircraftList)null);
             ConfigureGetFeedById(feed);
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/1/polar-plot");
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/1/polar-plot");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
 
@@ -271,11 +271,11 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedController_GetPolarPlot_Returns_No_Slices_If_Feed_Has_No_Plotter()
+        public async Task FeedsController_GetPolarPlot_Returns_No_Slices_If_Feed_Has_No_Plotter()
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 1, hasPlotter: false));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/1/polar-plot");
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/1/polar-plot");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
 
@@ -285,7 +285,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedController_GetPolarPlot_Returns_No_Slices_If_Prohibited_By_Configuration()
+        public async Task FeedsController_GetPolarPlot_Returns_No_Slices_If_Prohibited_By_Configuration()
         {
             _Configuration.InternetClientSettings.CanShowPolarPlots = false;
             _RemoteIpAddress = "1.2.3.4";
@@ -293,7 +293,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             ConfigureGetFeedById(CreateFeed(uniqueId: 1));
             _Slices.Add(CreatePolarPlotSlice(100, 199, new PolarPlot() { Angle = 1, Altitude = 150, Distance = 7, Latitude = 10.1, Longitude = 11.2 }));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/1/polar-plot");
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/1/polar-plot");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
 
@@ -303,7 +303,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedController_GetPolarPlot_Returns_Slices_If_Prohibited_By_Configuration_But_Accessed_Locally()
+        public async Task FeedsController_GetPolarPlot_Returns_Slices_If_Prohibited_By_Configuration_But_Accessed_Locally()
         {
             _Configuration.InternetClientSettings.CanShowPolarPlots = false;
             _RemoteIpAddress = "192.168.0.1";
@@ -311,7 +311,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             ConfigureGetFeedById(CreateFeed(uniqueId: 1));
             _Slices.Add(CreatePolarPlotSlice(100, 199, new PolarPlot() { Angle = 1, Altitude = 150, Distance = 7, Latitude = 10.1, Longitude = 11.2 }));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feed/1/polar-plot");
+            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/1/polar-plot");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
 

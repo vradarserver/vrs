@@ -25,7 +25,7 @@ namespace VirtualRadar.WebSite.ApiControllers
     /// <summary>
     /// API methods that deal with aircraft data feeds.
     /// </summary>
-    public class FeedController : PipelineApiController
+    public class FeedsController : PipelineApiController
     {
         /// <summary>
         /// Returns a list of every public facing feed.
@@ -43,7 +43,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet, Route("api/1.00/feed/{id}")]
+        [HttpGet, Route("api/1.00/feeds/{id}")]
         public FeedJson GetFeed(int id)
         {
             var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
@@ -56,7 +56,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         /// <param name="feedId"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("api/1.00/feed/{feedId}/polar-plot")]
+        [Route("api/1.00/feeds/{feedId}/polar-plot")]
         [Route("PolarPlot.json")]                       // pre-version 3 route
         public PolarPlotsJson GetPolarPlot(int feedId = -1)
         {
