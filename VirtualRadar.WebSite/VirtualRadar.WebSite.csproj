@@ -80,7 +80,7 @@
   <ItemGroup>
     <Compile Include="AircraftListJsonBuilder.cs" />
     <Compile Include="AircraftListJsonPage.cs" />
-    <Compile Include="AirportDataProxyPage.cs" />
+    <Compile Include="ApiControllers\AircraftController.cs" />
     <Compile Include="ApiControllers\DirectoryEntryController.cs" />
     <Compile Include="ApiControllers\FeedsController.cs" />
     <Compile Include="AudioPage.cs" />
