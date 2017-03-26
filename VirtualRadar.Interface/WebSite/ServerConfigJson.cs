@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using InterfaceFactory;
+using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Interface.WebSite
 {
@@ -20,7 +22,7 @@ namespace VirtualRadar.Interface.WebSite
     /// The JSON object that carries server settings to the site.
     /// </summary>
     [DataContract]
-    public class ServerConfigJson : ICloneable
+    public class ServerConfigJson
     {
         /// <summary>
         /// Gets or sets the version number of the server.
@@ -49,7 +51,7 @@ namespace VirtualRadar.Interface.WebSite
         /// Gets a collection of receiver names.
         /// </summary>
         [DataMember]
-        public List<ServerReceiverJson> Receivers { get; private set; }
+        public List<ServerReceiverJson> Receivers { get; private set; } = new List<ServerReceiverJson>();
 
         /// <summary>
         /// Gets or sets a value indicating that the browser address is probably a local address.
@@ -178,48 +180,115 @@ namespace VirtualRadar.Interface.WebSite
         public bool UseSvgGraphics { get; set; }
 
         /// <summary>
-        /// Creates a new object.
+        /// Returns a new model.
         /// </summary>
-        public ServerConfigJson()
+        /// <param name="isLocalAddress"></param>
+        /// <returns></returns>
+        public static ServerConfigJson ToModel(bool isLocalAddress)
         {
-            Receivers = new List<ServerReceiverJson>();
+            var applicationInformation = Factory.Singleton.Resolve<IApplicationInformation>();
+            var runtimeEnvironment = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton;
+            var configuration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton.Get();
+
+            var isMono = runtimeEnvironment.IsMono;
+
+            var result = new ServerConfigJson() {
+                InitialDistanceUnit =                   GetDistanceUnit(configuration.GoogleMapSettings.InitialDistanceUnit),
+                InitialHeightUnit =                     GetHeightUnit(configuration.GoogleMapSettings.InitialHeightUnit),
+                InitialLatitude =                       configuration.GoogleMapSettings.InitialMapLatitude,
+                InitialLongitude =                      configuration.GoogleMapSettings.InitialMapLongitude,
+                InitialMapType =                        GetMapType(configuration.GoogleMapSettings.InitialMapType),
+                InitialSettings =                       configuration.GoogleMapSettings.InitialSettings,
+                InitialSpeedUnit =                      GetSpeedUnit(configuration.GoogleMapSettings.InitialSpeedUnit),
+                InitialZoom =                           configuration.GoogleMapSettings.InitialMapZoom,
+                InternetClientCanRunReports =           configuration.InternetClientSettings.CanRunReports,
+                InternetClientCanShowPinText =          configuration.InternetClientSettings.CanShowPinText,
+                InternetClientsCanPlayAudio =           configuration.InternetClientSettings.CanPlayAudio,
+                InternetClientsCanSubmitRoutes =        configuration.InternetClientSettings.CanSubmitRoutes,
+                InternetClientsCanSeeAircraftPictures = configuration.InternetClientSettings.CanShowPictures,
+                InternetClientsCanSeePolarPlots =       configuration.InternetClientSettings.CanShowPolarPlots,
+                InternetClientTimeoutMinutes =          configuration.InternetClientSettings.TimeoutMinutes,
+                IsAudioEnabled =                        configuration.AudioSettings.Enabled,
+                IsLocalAddress =                        isLocalAddress,
+                IsMono =                                isMono,
+                UseMarkerLabels =                       isMono ? configuration.MonoSettings.UseMarkerLabels : false,
+                UseSvgGraphics =                        configuration.GoogleMapSettings.UseSvgGraphics,
+                MinimumRefreshSeconds =                 configuration.GoogleMapSettings.MinimumRefreshSeconds,
+                RefreshSeconds =                        configuration.GoogleMapSettings.InitialRefreshSeconds,
+                VrsVersion =                            applicationInformation.ShortVersion,
+            };
+            result.Receivers.AddRange(configuration.Receivers.Select(r => ServerReceiverJson.ToModel(r)).Where(r => r != null));
+            result.Receivers.AddRange(configuration.MergedFeeds.Select(r => ServerReceiverJson.ToModel(r)).Where(r => r != null));
+
+            if(!isLocalAddress || configuration.GoogleMapSettings.UseGoogleMapsAPIKeyWithLocalRequests) {
+                result.GoogleMapsApiKey = configuration.GoogleMapSettings.GoogleMapsApiKey;
+                if(result.GoogleMapsApiKey == "") {
+                    result.GoogleMapsApiKey = null;
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
-        /// See interface.
+        /// Translates from a Google map type to a JavaScript map type.
         /// </summary>
+        /// <param name="mapType"></param>
         /// <returns></returns>
-        public virtual object Clone()
+        private static string GetMapType(string mapType)
         {
-            var result = (ServerConfigJson)Activator.CreateInstance(GetType());
+            switch(mapType ?? "") {
+                case "HYBRID":          return "h";
+                case "ROADMAP":         return "m";
+                case "TERRAIN":         return "t";
+                case "SATELLITE":       return "s";
+                case "HIGHCONTRAST":    return "o";
+                default:                return null;
+            }
+        }
 
-            result.GoogleMapsApiKey = GoogleMapsApiKey;
-            result.InitialDistanceUnit = InitialDistanceUnit;
-            result.InitialHeightUnit = InitialHeightUnit;
-            result.InitialLatitude = InitialLatitude;
-            result.InitialLongitude = InitialLongitude;
-            result.InitialMapType = InitialMapType;
-            result.InitialSettings = InitialSettings;
-            result.InitialSpeedUnit = InitialSpeedUnit;
-            result.InitialZoom = InitialZoom;
-            result.InternetClientCanRunReports = InternetClientCanRunReports;
-            result.InternetClientCanShowPinText = InternetClientCanShowPinText;
-            result.InternetClientsCanPlayAudio = InternetClientsCanPlayAudio;
-            result.InternetClientsCanSubmitRoutes = InternetClientsCanSubmitRoutes;
-            result.InternetClientTimeoutMinutes = InternetClientTimeoutMinutes;
-            result.InternetClientsCanSeeAircraftPictures = InternetClientsCanSeeAircraftPictures;
-            result.InternetClientsCanSeePolarPlots = InternetClientsCanSeePolarPlots;
-            result.IsAudioEnabled = IsAudioEnabled;
-            result.IsLocalAddress = IsLocalAddress;
-            result.IsMono = IsMono;
-            result.MinimumRefreshSeconds = MinimumRefreshSeconds;
-            result.RefreshSeconds = RefreshSeconds;
-            result.Receivers.AddRange(Receivers.Select(r => (ServerReceiverJson)r.Clone()));
-            result.UseMarkerLabels = UseMarkerLabels;
-            result.UseSvgGraphics = UseSvgGraphics;
-            result.VrsVersion = VrsVersion;
+        /// <summary>
+        /// Translates from an internal distance unit to a JavaScript distance unit.
+        /// </summary>
+        /// <param name="distanceUnit"></param>
+        /// <returns></returns>
+        private static string GetDistanceUnit(DistanceUnit distanceUnit)
+        {
+            switch(distanceUnit) {
+                case DistanceUnit.Kilometres:       return "km";
+                case DistanceUnit.Miles:            return "sm";
+                case DistanceUnit.NauticalMiles:    return "nm";
+                default:                            throw new NotImplementedException();
+            }
+        }
 
-            return result;
+        /// <summary>
+        /// Translates from an internal height unit to a JavaScript height unit.
+        /// </summary>
+        /// <param name="heightUnit"></param>
+        /// <returns></returns>
+        private static string GetHeightUnit(HeightUnit heightUnit)
+        {
+            switch(heightUnit) {
+                case HeightUnit.Feet:               return "f";
+                case HeightUnit.Metres:             return "m";
+                default:                            throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Translates from an internal speed unit to a JavaScript speed unit.
+        /// </summary>
+        /// <param name="speedUnit"></param>
+        /// <returns></returns>
+        private static string GetSpeedUnit(SpeedUnit speedUnit)
+        {
+            switch(speedUnit) {
+                case SpeedUnit.KilometresPerHour:   return "km";
+                case SpeedUnit.Knots:               return "kt";
+                case SpeedUnit.MilesPerHour:        return "ml";
+                default:                            throw new NotImplementedException();
+            }
         }
     }
 }

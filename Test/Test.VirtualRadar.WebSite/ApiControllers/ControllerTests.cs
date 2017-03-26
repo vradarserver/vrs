@@ -28,6 +28,8 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
     [TestClass]
     public abstract class ControllerTests
     {
+        public TestContext TestContext { get; set; }
+
         protected IClassFactory _Snapshot;
         protected Mock<IUserManager> _UserManager;
         protected Mock<ISharedConfiguration> _SharedConfiguration;

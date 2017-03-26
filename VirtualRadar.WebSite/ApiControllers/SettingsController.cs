@@ -1,4 +1,4 @@
-﻿// Copyright © 2013 onwards, Andrew Whewell
+﻿// Copyright © 2017 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,66 +11,32 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
+using System.Threading.Tasks;
+using System.Web.Http;
+using InterfaceFactory;
+using VirtualRadar.Interface;
+using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.WebSite;
 
-namespace VirtualRadar.Interface.WebSite
+namespace VirtualRadar.WebSite.ApiControllers
 {
     /// <summary>
-    /// The JSON object that describes a receiver that the server is listening to.
+    /// Handles requests for configuration settings.
     /// </summary>
-    [DataContract]
-    public class ServerReceiverJson
+    public class SettingsController : PipelineApiController
     {
         /// <summary>
-        /// Gets or sets the unique ID of the receiver.
+        /// Returns the server's configuration.
         /// </summary>
-        [DataMember]
-        public int UniqueId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the receiver.
-        /// </summary>
-        [DataMember]
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Returns a new object from a receiver.
-        /// </summary>
-        /// <param name="receiver"></param>
         /// <returns></returns>
-        public static ServerReceiverJson ToModel(Receiver receiver)
+        [HttpGet]
+        [Route("api/1.00/settings/server")]
+        [Route("ServerConfig.json")]                // pre version 3 route
+        public ServerConfigJson GetServerConfig()
         {
-            ServerReceiverJson result = null;
-
-            if(receiver != null && receiver.ReceiverUsage == ReceiverUsage.Normal) {
-                result = new ServerReceiverJson() {
-                    UniqueId =      receiver.UniqueId,
-                    Name =          receiver.Name,
-                };
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Returns a new object from a merged feed.
-        /// </summary>
-        /// <param name="mergedFeed"></param>
-        /// <returns></returns>
-        public static ServerReceiverJson ToModel(MergedFeed mergedFeed)
-        {
-            ServerReceiverJson result = null;
-
-            if(mergedFeed != null && mergedFeed.ReceiverUsage == ReceiverUsage.Normal) {
-                result = new ServerReceiverJson() {
-                    UniqueId =  mergedFeed.UniqueId,
-                    Name =      mergedFeed.Name,
-                };
-            }
-
-            return result;
+            return ServerConfigJson.ToModel(PipelineRequest.IsLocalOrLan);
         }
     }
 }

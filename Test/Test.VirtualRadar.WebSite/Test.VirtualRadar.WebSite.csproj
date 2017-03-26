@@ -95,6 +95,7 @@
     <Compile Include="ApiControllers\ControllerTests.cs" />
     <Compile Include="ApiControllers\DirectoryEntryControllerTests.cs" />
     <Compile Include="ApiControllers\FeedsControllerTests.cs" />
+    <Compile Include="ApiControllers\SettingsControllerTests.cs" />
     <Compile Include="AssemblyInitialise.cs" />
     <Compile Include="BundlerTests.cs" />
     <Compile Include="MinifierTests.cs" />
