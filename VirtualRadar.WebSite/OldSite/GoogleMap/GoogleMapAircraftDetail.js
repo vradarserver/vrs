@@ -319,6 +319,7 @@ function GoogleMapAircraftDetail(mapMode, events, options, aircraftCollection, s
                         var afr = aircraft.getAFR();
                         html += '<a href="http://www.airport-data.com/aircraft/' + encodeURI(aircraft.Reg.replace('+', ' ', 'g')) + '.html" target="_airportData">www.airport-data.com</a>';
                         html += ' :: <a href="http://www.airliners.net/search/photo.search?regsearch=' + aircraft.Reg + '" target="_airlinersnet">www.airliners.net</a>';
+                        html += ' :: <a href="https://www.planelogger.com/aircraft/AdsbView/' + aircraft.Reg + '" target="_planelogger">www.planelogger.com</a>';
                         if(afr.length > 0) html += ' :: <a href="http://www.airframes.org/reg/' + afr + '" target="_airframesorg">www.airframes.org</a>';
                     }
                     linksElement.innerHTML = html;
