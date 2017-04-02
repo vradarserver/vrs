@@ -281,6 +281,9 @@ var VRS;
             enumerable: true,
             configurable: true
         });
+        PlottedDetail.prototype.resetId = function () {
+            this._Id = null;
+        };
         return PlottedDetail;
     }());
     var AircraftPlotterOptions = (function () {
@@ -1203,7 +1206,7 @@ var VRS;
             details.mapMarker = null;
             details.mapPolylines = [];
             delete this._PlottedDetail[details.id];
-            details.id = null;
+            details.resetId();
             details.pinTexts = null;
             details.iconUrl = null;
         };

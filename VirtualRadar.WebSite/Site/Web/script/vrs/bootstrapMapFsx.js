@@ -8,11 +8,12 @@ var VRS;
     var BootstrapMapFsx = (function (_super) {
         __extends(BootstrapMapFsx, _super);
         function BootstrapMapFsx() {
-            _super.call(this, {
+            var _this = _super.call(this, {
                 configPrefix: 'fsx',
                 suppressTitleUpdate: true
-            });
+            }) || this;
             document.title = VRS.$$.FlightSimTitle;
+            return _this;
         }
         return BootstrapMapFsx;
     }(VRS.BootstrapMap));

@@ -91,8 +91,9 @@ var VRS;
     var ReportDetailPlugin = (function (_super) {
         __extends(ReportDetailPlugin, _super);
         function ReportDetailPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getReportDetailOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getReportDetailOptions();
+            return _this;
         }
         ReportDetailPlugin.prototype._getState = function () {
             var result = this.element.data('reportDetailPanelState');

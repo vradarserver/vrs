@@ -8,6 +8,7 @@ var VRS;
     var BootstrapMap = (function (_super) {
         __extends(BootstrapMap, _super);
         function BootstrapMap(settings) {
+            var _this = this;
             settings = $.extend({
                 dispatcherName: 'VRS.BootstrapMap',
                 suppressTitleUpdate: false,
@@ -15,7 +16,8 @@ var VRS;
                 settingsMenuAlignment: VRS.Alignment.Left,
                 showOptionsInPage: false
             }, settings);
-            _super.call(this, settings);
+            _this = _super.call(this, settings) || this;
+            return _this;
         }
         BootstrapMap.prototype.initialise = function (pageSettings) {
             var _this = this;

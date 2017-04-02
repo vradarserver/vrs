@@ -109,8 +109,9 @@ var VRS;
     var AircraftDetailPlugin = (function (_super) {
         __extends(AircraftDetailPlugin, _super);
         function AircraftDetailPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getAircraftDetailOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getAircraftDetailOptions();
+            return _this;
         }
         AircraftDetailPlugin.prototype._getState = function () {
             var result = this.element.data('aircraftDetailPluginState');

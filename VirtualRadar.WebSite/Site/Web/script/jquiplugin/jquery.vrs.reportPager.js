@@ -43,8 +43,9 @@ var VRS;
     var ReportPagerPlugin = (function (_super) {
         __extends(ReportPagerPlugin, _super);
         function ReportPagerPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getReportPagerOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getReportPagerOptions();
+            return _this;
         }
         ReportPagerPlugin.prototype._getState = function () {
             var result = this.element.data('reportPagerState');

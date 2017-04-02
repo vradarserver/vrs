@@ -18,7 +18,7 @@ var VRS;
     var StoredSettingsList = (function (_super) {
         __extends(StoredSettingsList, _super);
         function StoredSettingsList() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         StoredSettingsList.prototype._getState = function () {
             var result = this.element.data('storedSettingsState');

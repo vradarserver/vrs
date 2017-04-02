@@ -17,8 +17,9 @@ var VRS;
     var OptionFieldDatePlugin = (function (_super) {
         __extends(OptionFieldDatePlugin, _super);
         function OptionFieldDatePlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getOptionFieldDateOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getOptionFieldDateOptions();
+            return _this;
         }
         OptionFieldDatePlugin.prototype._create = function () {
             var options = this.options;

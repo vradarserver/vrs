@@ -17,8 +17,9 @@ var VRS;
     var OptionFieldRadioButtonPlugin = (function (_super) {
         __extends(OptionFieldRadioButtonPlugin, _super);
         function OptionFieldRadioButtonPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getOptionFieldRadioButtonOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getOptionFieldRadioButtonOptions();
+            return _this;
         }
         OptionFieldRadioButtonPlugin.prototype._create = function () {
             var options = this.options;

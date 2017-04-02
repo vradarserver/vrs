@@ -80,8 +80,9 @@ var VRS;
     var ReportListPlugin = (function (_super) {
         __extends(ReportListPlugin, _super);
         function ReportListPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getReportListOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getReportListOptions();
+            return _this;
         }
         ReportListPlugin.prototype._getState = function () {
             var result = this.element.data('reportListPluginState');

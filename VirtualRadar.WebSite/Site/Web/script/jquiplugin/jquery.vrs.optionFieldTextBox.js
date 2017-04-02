@@ -17,8 +17,9 @@ var VRS;
     var OptionFieldTextBoxPlugin = (function (_super) {
         __extends(OptionFieldTextBoxPlugin, _super);
         function OptionFieldTextBoxPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getOptionFieldTextBoxOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getOptionFieldTextBoxOptions();
+            return _this;
         }
         OptionFieldTextBoxPlugin.prototype._create = function () {
             var options = this.options;

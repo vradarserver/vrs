@@ -8,7 +8,7 @@ var VRS;
     var BootstrapMapMobile = (function (_super) {
         __extends(BootstrapMapMobile, _super);
         function BootstrapMapMobile() {
-            _super.call(this, {
+            return _super.call(this, {
                 configPrefix: 'mobile',
                 reportUrl: 'mobileReport.html',
                 mapSettings: {
@@ -19,7 +19,7 @@ var VRS;
                 settingsPosition: VRS.MapPosition.TopLeft,
                 settingsMenuAlignment: VRS.Alignment.Left,
                 showOptionsInPage: true
-            });
+            }) || this;
         }
         return BootstrapMapMobile;
     }(VRS.BootstrapMap));

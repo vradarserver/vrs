@@ -25,8 +25,9 @@ var VRS;
     var OptionPanePlugin = (function (_super) {
         __extends(OptionPanePlugin, _super);
         function OptionPanePlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getOptionPaneOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getOptionPaneOptions();
+            return _this;
         }
         OptionPanePlugin.prototype._getState = function () {
             var result = this.element.data('vrsOptionPaneState');

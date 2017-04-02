@@ -18,10 +18,11 @@ var VRS;
     var TimeoutMessageBoxPlugin = (function (_super) {
         __extends(TimeoutMessageBoxPlugin, _super);
         function TimeoutMessageBoxPlugin() {
-            _super.apply(this, arguments);
-            this.options = {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.options = {
                 aircraftListFetcher: null
             };
+            return _this;
         }
         TimeoutMessageBoxPlugin.prototype._getState = function () {
             var result = this.element.data('vrsTimeoutMessageBoxState');

@@ -23,8 +23,9 @@ var VRS;
     var OptionFieldLabelPlugin = (function (_super) {
         __extends(OptionFieldLabelPlugin, _super);
         function OptionFieldLabelPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getOptionFieldLabelOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getOptionFieldLabelOptions();
+            return _this;
         }
         OptionFieldLabelPlugin.prototype._getState = function () {
             var result = this.element.data('optionFieldLabelState');

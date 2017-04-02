@@ -8,9 +8,9 @@ var VRS;
     var BootstrapReportDesktop = (function (_super) {
         __extends(BootstrapReportDesktop, _super);
         function BootstrapReportDesktop() {
-            _super.call(this, {
+            return _super.call(this, {
                 configPrefix: 'desktop-report'
-            });
+            }) || this;
         }
         return BootstrapReportDesktop;
     }(VRS.BootstrapReport));

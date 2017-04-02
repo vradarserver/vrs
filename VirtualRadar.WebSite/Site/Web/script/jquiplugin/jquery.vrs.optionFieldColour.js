@@ -23,8 +23,9 @@ var VRS;
     var OptionFieldColourPlugin = (function (_super) {
         __extends(OptionFieldColourPlugin, _super);
         function OptionFieldColourPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getOptionFieldColourOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getOptionFieldColourOptions();
+            return _this;
         }
         OptionFieldColourPlugin.prototype._getState = function () {
             var result = this.element.data('optionColourWidgetState');

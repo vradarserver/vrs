@@ -8,10 +8,10 @@ var VRS;
     var BootstrapMapDesktop = (function (_super) {
         __extends(BootstrapMapDesktop, _super);
         function BootstrapMapDesktop() {
-            _super.call(this, {
+            return _super.call(this, {
                 configPrefix: 'desktop',
                 reportUrl: 'desktopReport.html'
-            });
+            }) || this;
         }
         return BootstrapMapDesktop;
     }(VRS.BootstrapMap));

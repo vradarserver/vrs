@@ -23,8 +23,9 @@ var VRS;
     var OptionFieldLinkLabelPlugin = (function (_super) {
         __extends(OptionFieldLinkLabelPlugin, _super);
         function OptionFieldLinkLabelPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getOptionFieldLinkLabelOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getOptionFieldLinkLabelOptions();
+            return _this;
         }
         OptionFieldLinkLabelPlugin.prototype._getState = function () {
             var result = this.element.data('optionFieldLinkLabelState');

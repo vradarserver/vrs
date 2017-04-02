@@ -35,8 +35,9 @@ var VRS;
     var MapNextPageButton = (function (_super) {
         __extends(MapNextPageButton, _super);
         function MapNextPageButton() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getMapNextPageButtonOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getMapNextPageButtonOptions();
+            return _this;
         }
         MapNextPageButton.prototype._getState = function () {
             var result = this.element.data('vrsMapNextPageButtonState');

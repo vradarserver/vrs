@@ -8,13 +8,14 @@ var VRS;
     var AircraftFilterPropertyHandler = (function (_super) {
         __extends(AircraftFilterPropertyHandler, _super);
         function AircraftFilterPropertyHandler(settings) {
-            _super.call(this, $.extend({
+            var _this = _super.call(this, $.extend({
                 propertyEnumObject: VRS.AircraftFilterProperty
-            }, settings));
+            }, settings)) || this;
             if (!settings.getValueCallback)
                 throw 'You must supply a getValueCallback';
-            this.property = settings.property;
-            this.getValueCallback = settings.getValueCallback;
+            _this.property = settings.property;
+            _this.getValueCallback = settings.getValueCallback;
+            return _this;
         }
         return AircraftFilterPropertyHandler;
     }(VRS.FilterPropertyHandler));
@@ -206,13 +207,13 @@ var VRS;
     var AircraftFilter = (function (_super) {
         __extends(AircraftFilter, _super);
         function AircraftFilter(property, valueCondition) {
-            _super.call(this, {
+            return _super.call(this, {
                 property: property,
                 valueCondition: valueCondition,
                 propertyEnumObject: VRS.AircraftFilterProperty,
                 cloneCallback: function (property, filter) { return new VRS.AircraftFilter(property, filter); },
                 filterPropertyHandlers: VRS.aircraftFilterPropertyHandlers
-            });
+            }) || this;
         }
         AircraftFilter.prototype.passes = function (aircraft, options) {
             var result = false;
@@ -234,13 +235,13 @@ var VRS;
     var AircraftFilterHelper = (function (_super) {
         __extends(AircraftFilterHelper, _super);
         function AircraftFilterHelper() {
-            _super.call(this, {
+            return _super.call(this, {
                 propertyEnumObject: VRS.AircraftFilterProperty,
                 filterPropertyHandlers: VRS.aircraftFilterPropertyHandlers,
                 createFilterCallback: function (propertyHandler, valueCondition) {
                     return new VRS.AircraftFilter(propertyHandler.property, valueCondition);
                 }
-            });
+            }) || this;
         }
         AircraftFilterHelper.prototype.aircraftPasses = function (aircraft, aircraftFilters, options) {
             var result = true;

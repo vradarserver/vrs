@@ -24,8 +24,9 @@ var VRS;
     var OptionFieldPaneListPlugin = (function (_super) {
         __extends(OptionFieldPaneListPlugin, _super);
         function OptionFieldPaneListPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getOptionFieldPaneListOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getOptionFieldPaneListOptions();
+            return _this;
         }
         OptionFieldPaneListPlugin.prototype._getState = function () {
             var result = this.element.data('optionFieldPanelListState');

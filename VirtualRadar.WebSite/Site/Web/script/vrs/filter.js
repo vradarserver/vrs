@@ -30,8 +30,9 @@ var VRS;
     var OneValueCondition = (function (_super) {
         __extends(OneValueCondition, _super);
         function OneValueCondition(condition, reverseCondition, value) {
-            _super.call(this, condition, reverseCondition);
-            this._Value = value;
+            var _this = _super.call(this, condition, reverseCondition) || this;
+            _this._Value = value;
+            return _this;
         }
         OneValueCondition.prototype.getValue = function () {
             return this._Value;
@@ -65,9 +66,10 @@ var VRS;
     var TwoValueCondition = (function (_super) {
         __extends(TwoValueCondition, _super);
         function TwoValueCondition(condition, reverseCondition, value1, value2) {
-            _super.call(this, condition, reverseCondition);
-            this._Value1 = value1;
-            this._Value2 = value2;
+            var _this = _super.call(this, condition, reverseCondition) || this;
+            _this._Value1 = value1;
+            _this._Value2 = value2;
+            return _this;
         }
         TwoValueCondition.prototype.getValue1 = function () {
             return this._Value1;

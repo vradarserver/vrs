@@ -25,8 +25,9 @@ var VRS;
     var OptionFieldButtonPlugin = (function (_super) {
         __extends(OptionFieldButtonPlugin, _super);
         function OptionFieldButtonPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getOptionFieldButtonOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getOptionFieldButtonOptions();
+            return _this;
         }
         OptionFieldButtonPlugin.prototype._getState = function () {
             var result = this.element.data('optionFieldButtonState');

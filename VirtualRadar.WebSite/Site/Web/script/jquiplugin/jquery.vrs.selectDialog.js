@@ -24,8 +24,9 @@ var VRS;
     var SelectDialog = (function (_super) {
         __extends(SelectDialog, _super);
         function SelectDialog() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getSelectDialogOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getSelectDialogOptions();
+            return _this;
         }
         SelectDialog.prototype._create = function () {
             var options = this.options;
@@ -47,8 +48,8 @@ var VRS;
                     .val(item.getValue())
                     .text(item.getText())
                     .appendTo(select);
-                if (item.selected)
-                    option.prop('selected', item.selected);
+                if (item.getSelected())
+                    option.prop('selected', item.getSelected());
             }
             if (options.value) {
                 var value = options.value;

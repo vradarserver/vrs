@@ -39,8 +39,9 @@ var VRS;
     var PagePanel = (function (_super) {
         __extends(PagePanel, _super);
         function PagePanel() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getPagePanelOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getPagePanelOptions();
+            return _this;
         }
         PagePanel.prototype._getState = function () {
             var result = this.element.data('vrsPageHeaderPanelState');

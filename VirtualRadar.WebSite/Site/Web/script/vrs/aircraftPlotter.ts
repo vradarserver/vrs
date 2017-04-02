@@ -379,6 +379,11 @@ namespace VRS
             return this._Id;
         }
 
+        resetId()
+        {
+            this._Id = null;
+        }
+
         /**
          * The map marker for the aircraft.
          */
@@ -1857,7 +1862,7 @@ namespace VRS
             details.mapMarker = null;
             details.mapPolylines = [];
             delete this._PlottedDetail[details.id];
-            details.id = null;
+            details.resetId();
             details.pinTexts = null;
             details.iconUrl = null;
         }
