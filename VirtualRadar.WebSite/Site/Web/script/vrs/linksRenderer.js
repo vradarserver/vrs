@@ -94,8 +94,9 @@ var VRS;
     var LinkRenderHandler_AutoRefreshPluginBase = (function (_super) {
         __extends(LinkRenderHandler_AutoRefreshPluginBase, _super);
         function LinkRenderHandler_AutoRefreshPluginBase(settings) {
-            _super.call(this, settings);
-            this._LinksRendererPlugin = [];
+            var _this = _super.call(this, settings) || this;
+            _this._LinksRendererPlugin = [];
+            return _this;
         }
         LinkRenderHandler_AutoRefreshPluginBase.prototype.disposeBase = function () {
             this._LinksRendererPlugin = [];
@@ -114,7 +115,7 @@ var VRS;
     var AutoSelectLinkRenderHelper = (function (_super) {
         __extends(AutoSelectLinkRenderHelper, _super);
         function AutoSelectLinkRenderHelper(aircraftAutoSelect) {
-            _super.call(this, {
+            var _this = _super.call(this, {
                 linkSite: VRS.LinkSite.None,
                 displayOrder: -1,
                 canLinkAircraft: function () { return true; },
@@ -128,9 +129,10 @@ var VRS;
                     event.stopPropagation();
                     return false;
                 }
-            });
-            this._AircraftAutoSelect = aircraftAutoSelect;
-            this._AutoSelectEnabledChangedHook = aircraftAutoSelect.hookEnabledChanged(this.autoSelectEnabledChanged, this);
+            }) || this;
+            _this._AircraftAutoSelect = aircraftAutoSelect;
+            _this._AutoSelectEnabledChangedHook = aircraftAutoSelect.hookEnabledChanged(_this.autoSelectEnabledChanged, _this);
+            return _this;
         }
         AutoSelectLinkRenderHelper.prototype.dispose = function () {
             if (this._AutoSelectEnabledChangedHook) {
@@ -149,7 +151,7 @@ var VRS;
     var CentreOnSelectedAircraftLinkRenderHandler = (function (_super) {
         __extends(CentreOnSelectedAircraftLinkRenderHandler, _super);
         function CentreOnSelectedAircraftLinkRenderHandler(aircraftList, mapPlugin) {
-            _super.call(this, {
+            return _super.call(this, {
                 linkSite: VRS.LinkSite.None,
                 displayOrder: -1,
                 canLinkAircraft: function (aircraft) { return aircraft && mapPlugin && aircraftList && aircraft.hasPosition() && !aircraft.positionStale.val; },
@@ -163,7 +165,7 @@ var VRS;
                     event.stopPropagation();
                     return false;
                 }
-            });
+            }) || this;
         }
         return CentreOnSelectedAircraftLinkRenderHandler;
     }(LinkRenderHandler));
@@ -171,7 +173,7 @@ var VRS;
     var HideAircraftNotOnMapLinkRenderHandler = (function (_super) {
         __extends(HideAircraftNotOnMapLinkRenderHandler, _super);
         function HideAircraftNotOnMapLinkRenderHandler(aircraftListFetcher) {
-            _super.call(this, {
+            var _this = _super.call(this, {
                 linkSite: VRS.LinkSite.None,
                 displayOrder: -1,
                 canLinkAircraft: function () { return true; },
@@ -185,9 +187,10 @@ var VRS;
                     event.stopPropagation();
                     return false;
                 }
-            });
-            this._AircraftListFetcher = aircraftListFetcher;
-            this._HideAircraftNotOnMapHook = aircraftListFetcher.hookHideAircraftNotOnMapChanged(this.hideAircraftChanged, this);
+            }) || this;
+            _this._AircraftListFetcher = aircraftListFetcher;
+            _this._HideAircraftNotOnMapHook = aircraftListFetcher.hookHideAircraftNotOnMapChanged(_this.hideAircraftChanged, _this);
+            return _this;
         }
         HideAircraftNotOnMapLinkRenderHandler.prototype.dispose = function () {
             if (this._HideAircraftNotOnMapHook) {
@@ -206,7 +209,7 @@ var VRS;
     var JumpToAircraftDetailPageRenderHandler = (function (_super) {
         __extends(JumpToAircraftDetailPageRenderHandler, _super);
         function JumpToAircraftDetailPageRenderHandler() {
-            _super.call(this, {
+            return _super.call(this, {
                 linkSite: VRS.LinkSite.None,
                 displayOrder: -1,
                 canLinkAircraft: function () { return true; },
@@ -221,7 +224,7 @@ var VRS;
                     event.stopPropagation();
                     return false;
                 }
-            });
+            }) || this;
         }
         return JumpToAircraftDetailPageRenderHandler;
     }(LinkRenderHandler));
@@ -229,7 +232,7 @@ var VRS;
     var PauseLinkRenderHandler = (function (_super) {
         __extends(PauseLinkRenderHandler, _super);
         function PauseLinkRenderHandler(aircraftListFetcher) {
-            _super.call(this, {
+            var _this = _super.call(this, {
                 linkSite: VRS.LinkSite.None,
                 displayOrder: -1,
                 canLinkAircraft: function () { return true; },
@@ -242,9 +245,10 @@ var VRS;
                     event.stopPropagation();
                     return false;
                 }
-            });
-            this._AircraftListFetcher = aircraftListFetcher;
-            this._PausedChangedHook = aircraftListFetcher.hookPausedChanged(this.pausedChanged, this);
+            }) || this;
+            _this._AircraftListFetcher = aircraftListFetcher;
+            _this._PausedChangedHook = aircraftListFetcher.hookPausedChanged(_this.pausedChanged, _this);
+            return _this;
         }
         PauseLinkRenderHandler.prototype.dispose = function () {
             if (this._PausedChangedHook) {

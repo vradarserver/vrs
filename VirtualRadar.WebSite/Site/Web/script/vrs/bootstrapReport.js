@@ -8,13 +8,15 @@ var VRS;
     var BootstrapReport = (function (_super) {
         __extends(BootstrapReport, _super);
         function BootstrapReport(settings) {
+            var _this = this;
             settings = $.extend({
                 dispatcherName: 'VRS.BootstrapReport',
                 suppressTitleUpdate: false,
                 settingsPosition: VRS.MapPosition.TopLeft,
                 settingsMenuAlignment: VRS.Alignment.Left
             }, settings);
-            _super.call(this, settings);
+            _this = _super.call(this, settings) || this;
+            return _this;
         }
         BootstrapReport.prototype.initialise = function (userPageSettings) {
             var _this = this;

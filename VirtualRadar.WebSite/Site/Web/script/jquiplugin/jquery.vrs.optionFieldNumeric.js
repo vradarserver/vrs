@@ -23,8 +23,9 @@ var VRS;
     var OptionFieldNumericPlugin = (function (_super) {
         __extends(OptionFieldNumericPlugin, _super);
         function OptionFieldNumericPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getOptionFieldNumericOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getOptionFieldNumericOptions();
+            return _this;
         }
         OptionFieldNumericPlugin.prototype._getState = function () {
             var result = this.element.data('optionFieldNumericState');

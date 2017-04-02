@@ -24,8 +24,9 @@ var VRS;
     var OptionFieldComboBoxPlugin = (function (_super) {
         __extends(OptionFieldComboBoxPlugin, _super);
         function OptionFieldComboBoxPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getOptionFieldComboBoxOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getOptionFieldComboBoxOptions();
+            return _this;
         }
         OptionFieldComboBoxPlugin.prototype._getState = function () {
             var result = this.element.data('optionFieldComboBoxState');

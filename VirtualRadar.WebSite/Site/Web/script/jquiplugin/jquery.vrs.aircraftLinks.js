@@ -26,8 +26,9 @@ var VRS;
     var AircraftLinksPlugin = (function (_super) {
         __extends(AircraftLinksPlugin, _super);
         function AircraftLinksPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getAircraftLinksOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getAircraftLinksOptions();
+            return _this;
         }
         AircraftLinksPlugin.prototype._getState = function () {
             var result = this.element.data('aircraftLinksPluginState');

@@ -23,8 +23,9 @@ var VRS;
     var OptionFieldCheckBoxPlugin = (function (_super) {
         __extends(OptionFieldCheckBoxPlugin, _super);
         function OptionFieldCheckBoxPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getOptionFieldCheckBoxOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getOptionFieldCheckBoxOptions();
+            return _this;
         }
         OptionFieldCheckBoxPlugin.prototype._getState = function () {
             var result = this.element.data('optionFieldCheckBoxState');

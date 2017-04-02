@@ -24,7 +24,7 @@ var VRS;
     var StringValue = (function (_super) {
         __extends(StringValue, _super);
         function StringValue(value) {
-            _super.call(this, value);
+            return _super.call(this, value) || this;
         }
         return StringValue;
     }(Value));
@@ -32,7 +32,7 @@ var VRS;
     var BoolValue = (function (_super) {
         __extends(BoolValue, _super);
         function BoolValue(value) {
-            _super.call(this, value);
+            return _super.call(this, value) || this;
         }
         return BoolValue;
     }(Value));
@@ -40,7 +40,7 @@ var VRS;
     var NumberValue = (function (_super) {
         __extends(NumberValue, _super);
         function NumberValue(value) {
-            _super.call(this, value);
+            return _super.call(this, value) || this;
         }
         return NumberValue;
     }(Value));
@@ -89,7 +89,7 @@ var VRS;
     var RouteValue = (function (_super) {
         __extends(RouteValue, _super);
         function RouteValue(value) {
-            _super.call(this, value);
+            return _super.call(this, value) || this;
         }
         RouteValue.prototype.getAirportCode = function () {
             if (this._AirportCodeDerivedFromVal !== this.val) {
@@ -104,8 +104,9 @@ var VRS;
     var AirportDataThumbnailValue = (function (_super) {
         __extends(AirportDataThumbnailValue, _super);
         function AirportDataThumbnailValue(value) {
-            _super.call(this, value);
-            this._LastResetChgValue = false;
+            var _this = _super.call(this, value) || this;
+            _this._LastResetChgValue = false;
+            return _this;
         }
         AirportDataThumbnailValue.prototype.resetChg = function () {
             if (this.chg && this._LastResetChgValue)

@@ -39,8 +39,9 @@ var VRS;
     var AircraftPositionMapPlugin = (function (_super) {
         __extends(AircraftPositionMapPlugin, _super);
         function AircraftPositionMapPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getAircraftPositionMapOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getAircraftPositionMapOptions();
+            return _this;
         }
         AircraftPositionMapPlugin.prototype._getState = function () {
             var result = this.element.data('aircraftPositionMapState');

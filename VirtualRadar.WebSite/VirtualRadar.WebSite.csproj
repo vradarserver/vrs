@@ -895,6 +895,7 @@
     <TypeScriptCompile Include="Site\typings\markerclustererplus.d.ts" />
     <TypeScriptCompile Include="Site\typings\modernizr-tests.d.ts" />
     <TypeScriptCompile Include="Site\typings\modernizr.d.ts" />
+    <TypeScriptCompile Include="Site\typings\navigator.d.ts" />
     <TypeScriptCompile Include="Site\Web\script\i18n\localise.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.ui.widget.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftDetail.ts" />

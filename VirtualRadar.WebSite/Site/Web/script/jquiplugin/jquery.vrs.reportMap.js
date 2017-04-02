@@ -48,8 +48,9 @@ var VRS;
     var ReportMapPlugin = (function (_super) {
         __extends(ReportMapPlugin, _super);
         function ReportMapPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getReportMapOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getReportMapOptions();
+            return _this;
         }
         ReportMapPlugin.prototype._getState = function () {
             var result = this.element.data('reportMapState');

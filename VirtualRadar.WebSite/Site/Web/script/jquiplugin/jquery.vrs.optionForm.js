@@ -27,8 +27,9 @@ var VRS;
     var OptionForm = (function (_super) {
         __extends(OptionForm, _super);
         function OptionForm() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getOptionFormOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getOptionFormOptions();
+            return _this;
         }
         OptionForm.prototype._getState = function () {
             var result = this.element.data('vrsOptionFormState');

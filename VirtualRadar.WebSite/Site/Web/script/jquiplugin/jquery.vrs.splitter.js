@@ -154,11 +154,12 @@ var VRS;
     var SplitterPane = (function (_super) {
         __extends(SplitterPane, _super);
         function SplitterPane() {
-            _super.apply(this, arguments);
-            this.options = {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.options = {
                 isVertical: false,
                 minPixels: 1,
             };
+            return _this;
         }
         SplitterPane.prototype._getState = function () {
             var result = this.element.data('splitterPaneState');
@@ -258,8 +259,8 @@ var VRS;
     var Splitter = (function (_super) {
         __extends(Splitter, _super);
         function Splitter() {
-            _super.apply(this, arguments);
-            this.options = {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.options = {
                 name: undefined,
                 vertical: true,
                 savePane: 1,
@@ -272,6 +273,7 @@ var VRS;
                 splitterGroupPersistence: null,
                 isTopLevelSplitter: false,
             };
+            return _this;
         }
         Splitter.prototype._getState = function () {
             var result = this.element.data('splitterState');

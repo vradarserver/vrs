@@ -803,9 +803,10 @@ var VRS;
     var MapPlugin = (function (_super) {
         __extends(MapPlugin, _super);
         function MapPlugin() {
-            _super.call(this);
-            this._EventPluginName = 'vrsMap';
-            this.options = VRS.jQueryUIHelper.getMapOptions();
+            var _this = _super.call(this) || this;
+            _this._EventPluginName = 'vrsMap';
+            _this.options = VRS.jQueryUIHelper.getMapOptions();
+            return _this;
         }
         MapPlugin.prototype._getState = function () {
             var result = this.element.data('mapPluginState');

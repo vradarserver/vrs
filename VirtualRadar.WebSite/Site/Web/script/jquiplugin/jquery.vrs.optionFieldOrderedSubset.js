@@ -29,8 +29,9 @@ var VRS;
     var OptionFieldOrderedSubsetPlugin = (function (_super) {
         __extends(OptionFieldOrderedSubsetPlugin, _super);
         function OptionFieldOrderedSubsetPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getOptionFieldOrderedSubsetOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getOptionFieldOrderedSubsetOptions();
+            return _this;
         }
         OptionFieldOrderedSubsetPlugin.prototype._getState = function () {
             var result = this.element.data('vrsOptionFieldOrderedSubsetState');

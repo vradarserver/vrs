@@ -23,8 +23,9 @@ var VRS;
     var OptionDialog = (function (_super) {
         __extends(OptionDialog, _super);
         function OptionDialog() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getOptionDialogOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getOptionDialogOptions();
+            return _this;
         }
         OptionDialog.prototype._create = function () {
             var _this = this;

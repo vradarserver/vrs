@@ -38,8 +38,9 @@ var VRS;
     var MenuPlugin = (function (_super) {
         __extends(MenuPlugin, _super);
         function MenuPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getMenuOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getMenuOptions();
+            return _this;
         }
         MenuPlugin.prototype._getState = function () {
             var result = this.element.data('vrsMenuState');

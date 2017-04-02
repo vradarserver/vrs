@@ -8,10 +8,10 @@ var VRS;
     var BootstrapReportMobile = (function (_super) {
         __extends(BootstrapReportMobile, _super);
         function BootstrapReportMobile() {
-            _super.call(this, {
+            return _super.call(this, {
                 configPrefix: 'mobile-report',
                 showOptionsInPage: true
-            });
+            }) || this;
         }
         return BootstrapReportMobile;
     }(VRS.BootstrapReport));

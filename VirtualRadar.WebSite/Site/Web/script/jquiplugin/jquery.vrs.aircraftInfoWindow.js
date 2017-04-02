@@ -68,8 +68,9 @@ var VRS;
     var AircraftInfoWindowPlugin = (function (_super) {
         __extends(AircraftInfoWindowPlugin, _super);
         function AircraftInfoWindowPlugin() {
-            _super.call(this);
-            this.options = VRS.jQueryUIHelper.getAircraftInfoWindowOptions();
+            var _this = _super.call(this) || this;
+            _this.options = VRS.jQueryUIHelper.getAircraftInfoWindowOptions();
+            return _this;
         }
         AircraftInfoWindowPlugin.prototype._getState = function () {
             var result = this.element.data('aircraftInfoWindowState');
