@@ -961,79 +961,6 @@ namespace Test.VirtualRadar.WebSite
 
         #region AddSiteRoot
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void WebSite_AddSiteRoot_Throws_If_SiteRoot_Is_Null()
-        {
-            _WebSite.AddSiteRoot(null);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void WebSite_AddSiteRoot_Throws_If_SiteRoot_Folder_Is_Null()
-        {
-            _WebSite.AddSiteRoot(new SiteRoot() { Folder = null });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void WebSite_AddSiteRoot_Throws_If_SiteRoot_Folder_Is_Empty()
-        {
-            _WebSite.AddSiteRoot(new SiteRoot() { Folder = "" });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void WebSite_AddSiteRoot_Throws_If_Folder_Does_Not_Exist()
-        {
-            _WebSite.AddSiteRoot(new SiteRoot() { Folder = @"C:\DOES-NOT-EXIST" });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void WebSite_AddSiteRoot_Throws_If_Folder_Is_Relative()
-        {
-            _WebSite.AddSiteRoot(new SiteRoot() { Folder = "." });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void WebSite_AddSiteRoot_Throws_If_Folder_Is_Already_A_Site_Root()
-        {
-            _WebSite.AddSiteRoot(new SiteRoot() { Folder = TestContext.TestDeploymentDir });
-            _WebSite.AddSiteRoot(new SiteRoot() { Folder = TestContext.TestDeploymentDir });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void WebSite_AddSiteRoot_Is_Not_Case_Sensitive_When_Searching_For_Duplicate_Folders()
-        {
-            _WebSite.AddSiteRoot(new SiteRoot() { Folder = TestContext.TestDeploymentDir.ToUpper() });
-            _WebSite.AddSiteRoot(new SiteRoot() { Folder = TestContext.TestDeploymentDir.ToLower() });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void WebSite_AddSiteRoot_Flattens_Traversal_Folders_When_Searching_For_Duplicate_Folders()
-        {
-            var anotherWayToFolder = String.Format(@"{0}\..\{1}", TestContext.TestDeploymentDir, Path.GetFileName(TestContext.TestDeploymentDir));
-            _WebSite.AddSiteRoot(new SiteRoot() { Folder = TestContext.TestDeploymentDir });
-            _WebSite.AddSiteRoot(new SiteRoot() { Folder = anotherWayToFolder });
-        }
-
-        [TestMethod]
-        public void WebSite_AddSiteRoot_Adds_Trailing_Directory_Separator_To_Folder()
-        {
-            var folder = TestContext.TestDeploymentDir;
-            if(folder[folder.Length - 1] == '\\') folder = folder.Substring(0, folder.Length - 1);
-
-            _WebSite.AddSiteRoot(new SiteRoot() { Folder = folder });
-
-            var folders = _WebSite.GetSiteRootFolders();
-            Assert.IsFalse(folders.Any(r => r.ToLower() == folder.ToLower()));
-            Assert.IsTrue(folders.Any(r => r.ToLower() == (folder + '\\').ToLower()));
-        }
-
-        [TestMethod]
         public void WebSite_AddSiteRoot_Can_Serve_Unprotected_Content()
         {
             var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
@@ -1065,84 +992,6 @@ namespace Test.VirtualRadar.WebSite
         }
         #endregion
 
-        #region RemoveSiteRoot
-        [TestMethod]
-        public void WebSite_RemoveSiteRoot_Does_Nothing_If_Passed_Null()
-        {
-            _WebSite.RemoveSiteRoot(null);
-            Assert.AreEqual(1, _WebSite.GetSiteRootFolders().Count);
-        }
-
-        [TestMethod]
-        public void WebSite_RemoveSiteRoot_Removes_Added_Site()
-        {
-            var siteRoot = new SiteRoot() { Folder = TestContext.TestDeploymentDir };
-            _WebSite.AddSiteRoot(siteRoot);
-            _WebSite.RemoveSiteRoot(siteRoot);
-
-            Assert.IsFalse(_WebSite.IsSiteRootActive(siteRoot, false));
-            Assert.AreEqual(1, _WebSite.GetSiteRootFolders().Count);
-        }
-
-        [TestMethod]
-        public void WebSite_RemoveSiteRoot_Ignores_Sites_Not_Added()
-        {
-            var siteRoot = new SiteRoot() { Folder = TestContext.TestDeploymentDir };
-            _WebSite.RemoveSiteRoot(siteRoot);
-            Assert.IsFalse(_WebSite.IsSiteRootActive(siteRoot, false));
-        }
-        #endregion
-
-        #region IsSiteRootActive
-        [TestMethod]
-        public void WebSite_IsSiteRootActive_Returns_False_If_Passed_Null()
-        {
-            Assert.IsFalse(_WebSite.IsSiteRootActive(null, false));
-        }
-
-        [TestMethod]
-        public void WebSite_IsSiteRootActive_Returns_False_If_SiteRoot_Not_Added()
-        {
-            var siteRoot = new SiteRoot() { Folder = TestContext.TestDeploymentDir };
-            Assert.IsFalse(_WebSite.IsSiteRootActive(siteRoot, false));
-        }
-
-        [TestMethod]
-        public void WebSite_IsSiteRootActive_Returns_True_If_SiteRoot_Added()
-        {
-            var siteRoot = new SiteRoot() { Folder = TestContext.TestDeploymentDir };
-            _WebSite.AddSiteRoot(siteRoot);
-            Assert.IsTrue(_WebSite.IsSiteRootActive(siteRoot, false));
-        }
-
-        [TestMethod]
-        public void WebSite_IsSiteRootActive_Returns_True_If_SiteRoot_Folder_Changed_And_Folders_Are_Ignored()
-        {
-            var siteRoot = new SiteRoot() { Folder = TestContext.TestDeploymentDir };
-            _WebSite.AddSiteRoot(siteRoot);
-            siteRoot.Folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            Assert.IsTrue(_WebSite.IsSiteRootActive(siteRoot, false));
-        }
-
-        [TestMethod]
-        public void WebSite_IsSiteRootActive_Returns_True_If_SiteRoot_Folder_Changed_And_Folders_Are_Significant()
-        {
-            var siteRoot = new SiteRoot() { Folder = TestContext.TestDeploymentDir };
-            _WebSite.AddSiteRoot(siteRoot);
-            siteRoot.Folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            Assert.IsFalse(_WebSite.IsSiteRootActive(siteRoot, true));
-        }
-
-        [TestMethod]
-        public void WebSite_IsSiteRootActive_Returns_True_If_Changed_Folder_Points_To_Original_Folder()
-        {
-            var siteRoot = new SiteRoot() { Folder = TestContext.TestDeploymentDir };
-            _WebSite.AddSiteRoot(siteRoot);
-            siteRoot.Folder = Path.Combine(siteRoot.Folder, String.Format(@"..\{0}", Path.GetFileName(siteRoot.Folder)));
-            Assert.IsTrue(_WebSite.IsSiteRootActive(siteRoot, true));
-        }
-        #endregion
-
         #region GetSiteRootFolders
         [TestMethod]
         public void WebSite_GetSiteRootFolders_Includes_Default_Folder()
@@ -1150,24 +999,6 @@ namespace Test.VirtualRadar.WebSite
             var folders = _WebSite.GetSiteRootFolders();
             Assert.AreEqual(1, folders.Count);
             Assert.AreEqual(1, folders.Count(r => r.ToLower() == (_WebRoot + '\\').ToLower()));
-        }
-
-        [TestMethod]
-        public void WebSite_GetSiteRootFolders_Includes_Sites_Added_In_Order_Of_Priority()
-        {
-            for(var i = 0;i < 4;++i) {
-                var expectCustomFirst = i % 2 == 0;
-                var customFolder = TestContext.TestDeploymentDir + '\\';
-                var siteRoot = new SiteRoot() { Folder = customFolder, Priority = expectCustomFirst ? -1 : 1 };
-                _WebSite.AddSiteRoot(siteRoot);
-
-                var folders = _WebSite.GetSiteRootFolders();
-                Assert.AreEqual(2, folders.Count);
-                var customIsFirst = folders[0].ToLower() == customFolder.ToLower();
-
-                Assert.AreEqual(expectCustomFirst, customIsFirst);
-                _WebSite.RemoveSiteRoot(siteRoot);
-            }
         }
         #endregion
 

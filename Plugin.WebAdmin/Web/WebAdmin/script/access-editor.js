@@ -2,12 +2,12 @@ var VRS;
 (function (VRS) {
     var WebAdmin;
     (function (WebAdmin) {
-        var DefaultAccess;
         (function (DefaultAccess) {
             DefaultAccess[DefaultAccess["Unrestricted"] = 0] = "Unrestricted";
             DefaultAccess[DefaultAccess["Allow"] = 1] = "Allow";
             DefaultAccess[DefaultAccess["Deny"] = 2] = "Deny";
-        })(DefaultAccess = WebAdmin.DefaultAccess || (WebAdmin.DefaultAccess = {}));
+        })(WebAdmin.DefaultAccess || (WebAdmin.DefaultAccess = {}));
+        var DefaultAccess = WebAdmin.DefaultAccess;
         var AccessEditor = (function () {
             function AccessEditor() {
             }

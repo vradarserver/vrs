@@ -201,9 +201,9 @@ var Bootstrap;
             }
             return result;
         };
+        Helper._UniqueId = 0;
         return Helper;
     }());
-    Helper._UniqueId = 0;
     Bootstrap.Helper = Helper;
 })(Bootstrap || (Bootstrap = {}));
 //# sourceMappingURL=bootstrap-helper.js.map

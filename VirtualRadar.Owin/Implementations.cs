@@ -30,11 +30,13 @@ namespace VirtualRadar.Owin
         {
             factory.Register<Interface.Owin.IAccessConfiguration, Configuration.AccessConfiguration>();
             factory.Register<Interface.Owin.IAuthenticationConfiguration, Configuration.AuthenticationConfiguration>();
+            factory.Register<Interface.Owin.IFileSystemConfiguration, Configuration.FileSystemConfiguration>();
             factory.Register<Interface.Owin.IRedirectionConfiguration, Configuration.RedirectionConfiguration>();
             factory.Register<Interface.Owin.IWebAppConfiguration, Configuration.WebAppConfiguration>();
 
             factory.Register<Interface.Owin.IAccessFilter, Middleware.AccessFilter>();
             factory.Register<Interface.Owin.IBasicAuthenticationFilter, Middleware.BasicAuthenticationFilter>();
+            factory.Register<Interface.Owin.IFileSystemServer, Middleware.FileSystemServer>();
             factory.Register<Interface.Owin.IRedirectionFilter, Middleware.RedirectionFilter>();
         }
     }

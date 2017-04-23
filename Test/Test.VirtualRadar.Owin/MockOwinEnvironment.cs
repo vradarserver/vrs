@@ -74,6 +74,15 @@ namespace Test.VirtualRadar.Owin
             set { Request.Path = new PathString(value); }
         }
 
+        private MemoryStream _ResponseBodyStream = new MemoryStream();
+        /// <summary>
+        /// Gets a byte array that represents the content of the response body.
+        /// </summary>
+        public byte[] ResponseBodyBytes
+        {
+            get { return _ResponseBodyStream.ToArray(); }
+        }
+
         /// <summary>
         /// Creates a new object.
         /// </summary>
@@ -105,7 +114,7 @@ namespace Test.VirtualRadar.Owin
         {
             AddOwinEnvironment();
             AddRequestEnvironment();
-            AddResponseEnvironment();
+            AddResponseEnvironment(body: _ResponseBodyStream);
         }
 
         /// <summary>
