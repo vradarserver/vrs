@@ -12,12 +12,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using InterfaceFactory;
+using Newtonsoft.Json;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Owin;
+using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.WebServer;
+using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.WebSite.ApiControllers
 {
@@ -58,5 +64,81 @@ namespace VirtualRadar.WebSite.ApiControllers
 
             return result;
         }
+
+        /// <summary>
+        /// Returns the closest aircraft to a location. Itended for use with the proximity gadget.
+        /// </summary>
+        /// <param name="lat"></param>
+        /// <param name="lng"></param>
+        /// <returns></returns>
+        /// <remarks><para>
+        /// This API endpoint has a couple of kludges to work around bugs and limitations in different
+        /// versions of the proximity gadget. The two to be most aware of are: 1) values that would
+        /// normally be integers or floating point numbers are returned as strings and 2) the result
+        /// is always JSON, regardless of the type requested, and the JSON is always sent with a mime
+        /// type of text rather than JSON.
+        /// </para><para>
+        /// Windows 7 was the last version of Windows to support desktop gadgets. Sooner or later this
+        /// API and the proximity gadget are going to be tied up in a sack and thrown off a bridge.
+        /// </para></remarks>
+        [HttpGet]
+        [Route("api/1.00/aircraft/closest")]
+        [Route("ClosestAircraft.json")]             // pre-version 3 route
+        public HttpResponseMessage GetClosest(double? lat = null, double? lng = null)
+        {
+            ProximityGadgetAircraftJson result = null;
+
+            var context = PipelineContext;
+            var config = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton.Get();
+            if(!context.Request.IsInternet || config.InternetClientSettings.AllowInternetProximityGadgets) {
+                var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+                var feed = feedManager.GetByUniqueId(config.GoogleMapSettings.ClosestAircraftReceiverId, ignoreInvisibleFeeds: true);
+
+                if(feed?.AircraftList != null) {
+                    long unused1, unused2;
+                    var aircraftList = feed.AircraftList.TakeSnapshot(out unused1, out unused2);
+
+                    result = ProximityGadgetAircraftJson.ToModel(aircraftList, lat, lng);
+                }
+
+                if(result == null) {
+                    result = new ProximityGadgetAircraftJson() {
+                        WarningMessage = "Receiver is offline",
+                    };
+                }
+            }
+
+            var json = JsonConvert.SerializeObject(result);
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Content = new StringContent(json, Encoding.UTF8, MimeType.Text);
+
+            return response;
+        }
+        //public ProximityGadgetAircraftJson GetClosest(double? lat = null, double? lng = null)
+        //{
+        //    ProximityGadgetAircraftJson result = null;
+
+        //    var context = PipelineContext;
+        //    var config = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton.Get();
+        //    if(!context.Request.IsInternet || config.InternetClientSettings.AllowInternetProximityGadgets) {
+        //        var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+        //        var feed = feedManager.GetByUniqueId(config.GoogleMapSettings.ClosestAircraftReceiverId, ignoreInvisibleFeeds: true);
+
+        //        if(feed?.AircraftList != null) {
+        //            long unused1, unused2;
+        //            var aircraftList = feed.AircraftList.TakeSnapshot(out unused1, out unused2);
+
+        //            result = ProximityGadgetAircraftJson.ToModel(aircraftList, lat, lng);
+        //        }
+
+        //        if(result == null) {
+        //            result = new ProximityGadgetAircraftJson() {
+        //                WarningMessage = "Receiver is offline",
+        //            };
+        //        }
+        //    }
+
+        //    return result;
+        //}
     }
 }

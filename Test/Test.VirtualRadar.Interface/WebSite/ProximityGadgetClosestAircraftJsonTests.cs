@@ -15,12 +15,17 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VirtualRadar.Interface.WebSite;
 using Test.Framework;
+using VirtualRadar.Interface;
+using InterfaceFactory;
+using System.Globalization;
 
 namespace Test.VirtualRadar.Interface.WebSite
 {
     [TestClass]
     public class ProximityGadgetClosestAircraftJsonTests
     {
+        public TestContext TestContext { get; set; }
+
         [TestMethod]
         public void ProximityGadgetClosestAircraftJson_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
@@ -49,6 +54,126 @@ namespace Test.VirtualRadar.Interface.WebSite
             TestUtilities.TestProperty(json, "Type", null, "Abc");
             TestUtilities.TestProperty(json, "VerticalRate", null, "Abc");
             Assert.AreEqual(0, json.Stopovers.Count);
+        }
+
+        [TestMethod]
+        public void ProximityGadgetClosestAircraftJson_ToModel_Returns_Null_If_Passed_Null()
+        {
+            Assert.IsNull(ProximityGadgetClosestAircraftJson.ToModel(null, 1.0, 1.0));
+        }
+
+        [TestMethod]
+        public void ProximityGadgetClosestAircraftJson_ToModel_Handles_Reference_Origin_Of_Null()
+        {
+            var aircraft = TestUtilities.CreateMockInstance<IAircraft>();
+            aircraft.Object.Latitude = 1;
+            aircraft.Object.Longitude = 1;
+
+            var model = ProximityGadgetClosestAircraftJson.ToModel(aircraft.Object, null, null);
+
+            Assert.AreEqual("1", model.Latitude);
+            Assert.AreEqual("1", model.Longitude);
+            Assert.IsNull(model.DistanceFromHere);
+            Assert.IsNull(model.BearingFromHere);
+        }
+
+        [TestMethod]
+        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "ClosestAircraftJson$")]
+        public void ProximityGadgetClosestAircraftJson_ToModel_Converts_From_IAircraft_Correctly()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+
+            var aircraft = TestUtilities.CreateMockInstance<IAircraft>();
+            aircraft.Object.Latitude = 1;
+            aircraft.Object.Longitude = 1;
+
+            var aircraftProperty = typeof(IAircraft).GetProperty(worksheet.String("AircraftProperty"));
+            var aircraftValue = TestUtilities.ChangeType(worksheet.EString("AircraftValue"), aircraftProperty.PropertyType, new CultureInfo("en-GB"));
+            aircraftProperty.SetValue(aircraft.Object, aircraftValue, null);
+
+            var model = ProximityGadgetClosestAircraftJson.ToModel(aircraft.Object, 1.0, 1.0);
+
+            var modelProperty = typeof(ProximityGadgetClosestAircraftJson).GetProperty(worksheet.String("JsonProperty"));
+            var expected = TestUtilities.ChangeType(worksheet.EString("JsonValue"), modelProperty.PropertyType, new CultureInfo("en-GB"));
+            var actual = modelProperty.GetValue(model, null);
+
+            Assert.AreEqual(expected, actual, modelProperty.Name);
+        }
+
+        [TestMethod]
+        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "ClosestAircraftJson$")]
+        public void ProximityGadgetClosestAircraftJson_ToModel_Handles_Regional_Settings_Correctly()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+
+            using(var switcher = new CultureSwitcher("de-DE")) {
+                var aircraft = TestUtilities.CreateMockInstance<IAircraft>();
+                aircraft.Object.Latitude = 1;
+                aircraft.Object.Longitude = 1;
+
+                var aircraftProperty = typeof(IAircraft).GetProperty(worksheet.String("AircraftProperty"));
+                var aircraftValue = TestUtilities.ChangeType(worksheet.EString("AircraftValue"), aircraftProperty.PropertyType, new CultureInfo("en-GB"));
+                aircraftProperty.SetValue(aircraft.Object, aircraftValue, null);
+
+                var model = ProximityGadgetClosestAircraftJson.ToModel(aircraft.Object, 1.0, 1.0);
+
+                var modelProperty = typeof(ProximityGadgetClosestAircraftJson).GetProperty(worksheet.String("JsonProperty"));
+                var expected = TestUtilities.ChangeType(worksheet.EString("JsonValue"), modelProperty.PropertyType, new CultureInfo("en-GB"));
+                var actual = modelProperty.GetValue(model, null);
+
+                Assert.AreEqual(expected, actual, modelProperty.Name);
+            }
+        }
+
+        [TestMethod]
+        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "ClosestAircraftTrigonometry$")]
+        public void ProximityGadgetClosestAircraftJson_ToModel_Fills_Calculated_Details_Correctly()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var originLatitude = worksheet.NDouble("GadgetLat");
+            var originLongitude = worksheet.NDouble("GadgetLng");
+
+            var aircraft = TestUtilities.CreateMockInstance<IAircraft>();
+
+            bool hasPosition = worksheet.String("AircraftLat") != null;
+            if(hasPosition) {
+                aircraft.Object.Latitude = worksheet.NFloat("AircraftLat");
+                aircraft.Object.Longitude = worksheet.NFloat("AircraftLng");
+            }
+
+            var model = ProximityGadgetClosestAircraftJson.ToModel(aircraft.Object, originLatitude, originLongitude);
+
+            Assert.AreEqual(worksheet.EString("Bearing"), model.BearingFromHere);
+            Assert.AreEqual(worksheet.EString("Distance"), model.DistanceFromHere);
+        }
+
+        [TestMethod]
+        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "ClosestAircraftTrigonometry$")]
+        public void ProximityGadgetClosestAircraftJson_ToModel_Fills_Calculated_Details_Correctly_For_Non_UK_Regions()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+
+            using(var switcher = new CultureSwitcher("de-DE")) {
+                var originLatitude = worksheet.NDouble("GadgetLat");
+                var originLongitude = worksheet.NDouble("GadgetLng");
+
+                var aircraft = TestUtilities.CreateMockInstance<IAircraft>();
+
+                bool hasPosition = worksheet.String("AircraftLat") != null;
+                if(hasPosition) {
+                    aircraft.Object.Latitude = worksheet.NFloat("AircraftLat");
+                    aircraft.Object.Longitude = worksheet.NFloat("AircraftLng");
+                }
+
+                var model = ProximityGadgetClosestAircraftJson.ToModel(aircraft.Object, originLatitude, originLongitude);
+
+                Assert.AreEqual(worksheet.EString("Bearing"), model.BearingFromHere);
+                Assert.AreEqual(worksheet.EString("Distance"), model.DistanceFromHere);
+            }
         }
     }
 }

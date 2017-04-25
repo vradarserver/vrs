@@ -13,12 +13,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using System.Globalization;
 
 namespace VirtualRadar.Interface.WebSite
 {
     /// <summary>
     /// The DTO that carries information about the closest aircraft to the Windows Vista/7 proximity gadget.
     /// </summary>
+    /// <remarks>
+    /// Note that values that would normally be integers and floating point numbers are represented here (and
+    /// in the resulting JSON) as strings. This is a hangover from a bug in an earlier version of the proximity
+    /// gadget.
+    /// </remarks>
     [DataContract]
     public class ProximityGadgetClosestAircraftJson
     {
@@ -147,7 +153,7 @@ namespace VirtualRadar.Interface.WebSite
         /// Gets or sets a list of airports that the aircraft will be stopping at on its way to <see cref="Destination"/>.
         /// </summary>
         [DataMember(Name="via", EmitDefaultValue=false)]
-        public List<string> Stopovers { get; private set; }
+        public List<string> Stopovers { get; private set; } = new List<string>();
 
         /// <summary>
         /// Gets or sets the bearing from the browser to the aircraft in degrees from 0° north.
@@ -162,11 +168,71 @@ namespace VirtualRadar.Interface.WebSite
         public string Track { get; set; }
 
         /// <summary>
-        /// Creates a new object.
+        /// Creates a new model from an aircraft object passed across. The aircraft passed in is assumed to be a clone, i.e.
+        /// the properties on the aircraft cannot change over the lifetime of the call.
         /// </summary>
-        public ProximityGadgetClosestAircraftJson()
+        /// <param name="aircraft"></param>
+        /// <param name="originLatitude">The latitude to measure distances from.</param>
+        /// <param name="originLongitude">The longitude to measure distances from.</param>
+        /// <returns></returns>
+        public static ProximityGadgetClosestAircraftJson ToModel(IAircraft aircraft, double? originLatitude, double? originLongitude)
         {
-            Stopovers = new List<string>();
+            ProximityGadgetClosestAircraftJson result = null;
+
+            if(aircraft != null) {
+                double? distance = null;
+                if(aircraft.Latitude != null && aircraft.Longitude != null) {
+                    distance = GreatCircleMaths.Distance(originLatitude, originLongitude, aircraft.Latitude, aircraft.Longitude);
+                }
+
+                result = new ProximityGadgetClosestAircraftJson() {
+                    Altitude = FormatNullable(aircraft.Altitude),
+                    BearingFromHere = FormatNullable(GreatCircleMaths.Bearing(originLatitude, originLongitude, aircraft.Latitude, aircraft.Longitude, null, false, false), null, 1),
+                    Callsign = aircraft.Callsign,
+                    Destination = aircraft.Destination,
+                    DistanceFromHere = FormatNullable(distance, null, 2),
+                    Emergency = aircraft.Emergency.GetValueOrDefault(),
+                    GroundSpeed = FormatNullable(aircraft.GroundSpeed),
+                    HasPicture = !String.IsNullOrEmpty(aircraft.PictureFileName),
+                    Icao24 = aircraft.Icao24 ?? "",
+                    Icao24Invalid = aircraft.Icao24Invalid,
+                    Latitude = FormatNullable(aircraft.Latitude),
+                    Longitude = FormatNullable(aircraft.Longitude),
+                    Manufacturer = aircraft.Manufacturer,
+                    Model = aircraft.Model,
+                    Operator = aircraft.Operator,
+                    OperatorIcao = aircraft.OperatorIcao,
+                    Origin = aircraft.Origin,
+                    Registration = aircraft.Registration,
+                    Squawk = aircraft.Squawk.GetValueOrDefault() == 0 ? null : String.Format("{0:0000}", aircraft.Squawk),
+                    Track = FormatNullable(aircraft.Track, null, 1),
+                    Type = aircraft.Type,
+                    VerticalRate = FormatNullable(aircraft.VerticalRate),
+                };
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Formats the nullable value as a string using the invariant culture and plain formatting (no thousands separators etc).
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="nullValue"></param>
+        /// <param name="decimalPlaces"></param>
+        /// <returns></returns>
+        private static string FormatNullable<T>(T? value, string nullValue = null, int decimalPlaces = -1)
+            where T: struct
+        {
+            string result = nullValue;
+
+            if(value != null) {
+                var formatString = decimalPlaces < 0 ? "{0}" : String.Format("{{0:F{0}}}", decimalPlaces);
+                result = String.Format(CultureInfo.InvariantCulture, formatString, value);
+            }
+
+            return result;
         }
     }
 }

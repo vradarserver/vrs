@@ -26,10 +26,6 @@ namespace VirtualRadar.Interface.WebSite
         /// <summary>
         /// Gets or sets the closest aircraft, if any.
         /// </summary>
-        /// <remarks>
-        /// This is an object because the historical code would write {} if there wasn't a closest aircraft and I want
-        /// to keep the same behaviour. When I come to revamp the proximity gadget I will change this.
-        /// </remarks>
         [DataMember(Name="closest", EmitDefaultValue=false)]
         public ProximityGadgetClosestAircraftJson ClosestAircraft { get; set; }
 
@@ -37,7 +33,7 @@ namespace VirtualRadar.Interface.WebSite
         /// Gets a list of every aircraft that is transmitting an emergency squawk.
         /// </summary>
         [DataMember(Name="emergencyAircraft")]
-        public List<ProximityGadgetClosestAircraftJson> EmergencyAircraft { get; private set; }
+        public List<ProximityGadgetClosestAircraftJson> EmergencyAircraft { get; private set; } = new List<ProximityGadgetClosestAircraftJson>();
 
         /// <summary>
         /// Gets or sets the content of any warnings that need to be transmitted back to the gadget.
@@ -46,11 +42,47 @@ namespace VirtualRadar.Interface.WebSite
         public string WarningMessage { get; set; }
 
         /// <summary>
-        /// Creates a new object.
+        /// Returns a model given an aircraft list and a point to measure from.
         /// </summary>
-        public ProximityGadgetAircraftJson()
+        /// <param name="aircraftList"></param>
+        /// <param name="originLatitude"></param>
+        /// <param name="originLongitude"></param>
+        /// <returns></returns>
+        public static ProximityGadgetAircraftJson ToModel(IEnumerable<IAircraft> aircraftList, double? originLatitude, double? originLongitude)
         {
-            EmergencyAircraft = new List<ProximityGadgetClosestAircraftJson>();
+            ProximityGadgetAircraftJson result = null;
+
+            if(aircraftList != null) {
+                result = new ProximityGadgetAircraftJson();
+
+                if(originLatitude == null || originLongitude == null) {
+                    result.WarningMessage = "Position not supplied";
+                } else {
+                    IAircraft closestAircraft = null;
+                    double? closestDistance = null;
+
+                    foreach(var aircraft in aircraftList) {
+                        double? distance = null;
+                        if(aircraft.Latitude != null && aircraft.Longitude != null) {
+                            distance = GreatCircleMaths.Distance(originLatitude, originLongitude, aircraft.Latitude, aircraft.Longitude);
+                            if(distance != null && closestAircraft == null || distance < closestDistance) {
+                                closestAircraft = aircraft;
+                                closestDistance = distance;
+                            }
+                        }
+
+                        if(aircraft.Emergency == true) {
+                            result.EmergencyAircraft.Add(ProximityGadgetClosestAircraftJson.ToModel(aircraft, originLatitude, originLongitude));
+                        }
+                    }
+
+                    if(closestAircraft != null) {
+                        result.ClosestAircraft = ProximityGadgetClosestAircraftJson.ToModel(closestAircraft, originLatitude, originLongitude);
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }

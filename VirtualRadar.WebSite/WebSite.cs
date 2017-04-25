@@ -241,11 +241,6 @@ namespace VirtualRadar.WebSite
         private ImagePage _ImagePage;
 
         /// <summary>
-        /// The page that handles requests from the proximity gadget.
-        /// </summary>
-        private ClosestAircraftJsonPage _ClosestAircraftJsonPage;
-
-        /// <summary>
         /// The page that handles requests for report rows.
         /// </summary>
         private ReportRowsJsonPage _ReportRowsJsonPage;
@@ -315,7 +310,6 @@ namespace VirtualRadar.WebSite
             Provider = Factory.Singleton.Resolve<IWebSiteProvider>();
 
             _AircraftListJsonPage = new AircraftListJsonPage(this);
-            _ClosestAircraftJsonPage = new ClosestAircraftJsonPage(this);
             _CorsPreflightPage = new CorsPreflightPage(this);
             _FileSystemPage = new FileSystemPage(this);
             _ImagePage = new ImagePage(this);
@@ -366,7 +360,6 @@ namespace VirtualRadar.WebSite
                 _Pages.Add(new AudioPage(this));
                 _Pages.Add(new FaviconPage(this));
                 _Pages.Add(_ReportRowsJsonPage);
-                _Pages.Add(_ClosestAircraftJsonPage);
 
                 _JavaScriptInjectors.Add(new WebSiteStringsInjector());
 
