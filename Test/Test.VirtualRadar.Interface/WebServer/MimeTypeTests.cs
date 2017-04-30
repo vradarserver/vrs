@@ -101,6 +101,29 @@ namespace Test.VirtualRadar.Interface.WebServer
         }
         #endregion
 
+        #region GetKnownExtensions
+        [TestMethod]
+        [DataSource("Data Source='LibraryTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "MimeTypes$")]
+        public void MimeType_GetKnownExtensions_Returns_Reasonable_List()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var mimeType = worksheet.String("MimeType");
+            var extension = worksheet.String("Extension");
+
+            var extensions = MimeType.GetKnownExtensions();
+            Assert.IsTrue(extensions.Contains(extension.ToLower()));
+        }
+
+        [TestMethod]
+        public void MimeType_GetKnownExtensions_Returns_Unique_List()
+        {
+            var extensions = MimeType.GetKnownExtensions();
+            var distinctExtensions = extensions.Distinct().ToArray();
+            Assert.AreEqual(extensions.Length, distinctExtensions.Length);
+        }
+        #endregion
+
         #region GetContentClassification
         [TestMethod]
         [DataSource("Data Source='LibraryTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",

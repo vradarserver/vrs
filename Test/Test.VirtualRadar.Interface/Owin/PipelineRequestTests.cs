@@ -38,6 +38,7 @@ namespace Test.VirtualRadar.Interface.Owin
             _Request = new PipelineRequest(_Environment);
         }
 
+        #region Constructor
         [TestMethod]
         public void PipelineRequest_Constructor_Initialises_To_Known_State()
         {
@@ -46,7 +47,9 @@ namespace Test.VirtualRadar.Interface.Owin
             var defaultCtor = new PipelineRequest();
             Assert.IsNotNull(defaultCtor.Environment);
         }
+        #endregion
 
+        #region PathNormalised
         [TestMethod]
         public void PipelineRequest_PathNormalised_Returns_Root_If_Path_Is_Empty()
         {
@@ -77,7 +80,161 @@ namespace Test.VirtualRadar.Interface.Owin
             _Request.Path = new PathString("/hello");
             Assert.AreEqual("/hello", _Request.PathNormalised.Value);
         }
+        #endregion
 
+        #region FlattenedPath
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Returns_Path_If_Not_Empty()
+        {
+            _Request.Path = new PathString("/file.txt");
+            Assert.AreEqual("/file.txt", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Returns_Root_If_Path_Is_Null_PathString()
+        {
+            _Request.Path = new PathString(null);
+            Assert.AreEqual("/", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Returns_Root_If_Path_Is_Empty()
+        {
+            _Request.Path = new PathString("");
+            Assert.AreEqual("/", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Picks_Up_Changes_To_Path()
+        {
+            _Request.Path = new PathString("");
+            Assert.AreEqual("/", _Request.FlattenedPath);
+
+            _Request.Path = new PathString("/hello");
+            Assert.AreEqual("/hello", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Processes_Directory_Traversal_Path_Parts()
+        {
+            _Request.Path = new PathString("/1/../2");
+            Assert.AreEqual("/2", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Can_Traverse_More_Than_One_Level()
+        {
+            _Request.Path = new PathString("/1/2/3/4/5/6/../../../../3.1");
+            Assert.AreEqual("/1/2/3.1", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Can_Traverse_In_More_Than_One_Group()
+        {
+            _Request.Path = new PathString("/1/2/3/../a/b/../../X/y/z");
+            Assert.AreEqual("/1/2/X/y/z", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Moves_Up_One_Part_If_Traversal_Is_Last_Part_FileName()
+        {
+            _Request.Path = new PathString("/1/2/..");
+            Assert.AreEqual("/1/", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Moves_Up_One_Part_If_Traversal_Is_Last_Part_Folder()
+        {
+            _Request.Path = new PathString("/1/2/../");
+            Assert.AreEqual("/1/", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Cannot_Traverse_Out_Of_Root()
+        {
+            _Request.Path = new PathString("/../../../1");
+            Assert.AreEqual("/1", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Handles_Traversal_To_Root()
+        {
+            _Request.Path = new PathString("/1/..");
+            Assert.AreEqual("/", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Handles_Traversal_Out_Of_Root_From_Root()
+        {
+            _Request.Path = new PathString("/..");
+            Assert.AreEqual("/", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Removes_Current_Directory_Parts()
+        {
+            _Request.Path = new PathString("/1/./2");
+            Assert.AreEqual("/1/2", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Removes_Runs_Of_Current_Directory_Parts()
+        {
+            _Request.Path = new PathString("/././1");
+            Assert.AreEqual("/1", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Handles_Current_Directory_As_Last_Part_FileName()
+        {
+            _Request.Path = new PathString("/1/.");
+            Assert.AreEqual("/1/", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Handles_Current_Directory_As_Last_Part_Folder()
+        {
+            _Request.Path = new PathString("/1/./");
+            Assert.AreEqual("/1/", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Handles_Current_Directory_Part_In_Root()
+        {
+            _Request.Path = new PathString("/.");
+            Assert.AreEqual("/", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Removes_Empty_Path_Parts()
+        {
+            _Request.Path = new PathString("/1//2");
+            Assert.AreEqual("/1/2", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Handles_Trailing_Empty_Path_Parts()
+        {
+            _Request.Path = new PathString("/1//");
+            Assert.AreEqual("/1/", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Removes_Empty_Path_Parts_From_Root()
+        {
+            _Request.Path = new PathString("//");
+            Assert.AreEqual("/", _Request.FlattenedPath);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FlattenedPath_Leaves_Trailing_Slash_Intact()
+        {
+            _Request.Path = new PathString("/1/");
+            Assert.AreEqual("/1/", _Request.FlattenedPath);
+        }
+        #endregion
+
+        #region ClientIpAddressParsed
         [TestMethod]
         public void PipelineRequest_ClientIpAddressParsed_Returns_Parsed_Address()
         {
@@ -132,7 +289,9 @@ namespace Test.VirtualRadar.Interface.Owin
 
             Assert.AreEqual("5.6.7.8", parsed.ToString());
         }
+        #endregion
 
+        #region ClientIpEndPoint
         [TestMethod]
         public void PipelineRequest_ClientIpEndPoint_Returns_Parsed_IPAddress_And_Port()
         {
@@ -182,7 +341,9 @@ namespace Test.VirtualRadar.Interface.Owin
             _Request.RemotePort = 123;
             Assert.AreEqual(new IPEndPoint(IPAddress.Parse("5.6.7.8"), 123), _Request.ClientIpEndPoint);
         }
+        #endregion
 
+        #region IsMobileUserAgentString
         [TestMethod]
         [DataSource("Data Source='OwinTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "MobileUserAgent$")]
@@ -213,7 +374,9 @@ namespace Test.VirtualRadar.Interface.Owin
         {
             Assert.AreEqual(false, _Request.IsMobileUserAgentString);
         }
+        #endregion
 
+        #region UserAgent
         [TestMethod]
         public void PipelineRequest_UserAgent_Returns_UserAgent_Header()
         {
@@ -229,7 +392,9 @@ namespace Test.VirtualRadar.Interface.Owin
 
             Assert.AreEqual("agent", _Request.Headers["User-Agent"]);
         }
+        #endregion
 
+        #region IsLocalOrLan
         [TestMethod]
         public void PipelineRequest_IsLocalOrLan_Calls_Down_To_IPEndpointHelper_IsLocalOrLan()
         {
@@ -261,7 +426,9 @@ namespace Test.VirtualRadar.Interface.Owin
 
             Assert.IsFalse(_Request.IsLocalOrLan);
         }
+        #endregion
 
+        #region IsInternet / ProxyAddress
         [TestMethod]
         [DataSource("Data Source='OwinTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "IsInternet$")]
@@ -284,5 +451,6 @@ namespace Test.VirtualRadar.Interface.Owin
             Assert.AreEqual(clientIpAddress, _Request.ClientIpAddress, comments);
             Assert.AreEqual(isInternet, _Request.IsInternet, comments);
         }
+        #endregion
     }
 }

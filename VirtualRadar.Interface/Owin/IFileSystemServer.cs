@@ -24,6 +24,11 @@ namespace VirtualRadar.Interface.Owin
     public interface IFileSystemServer
     {
         /// <summary>
+        /// Gets or sets the provider that handles interactions with the file system for the middleware.
+        /// </summary>
+        IFileSystemProvider FileSystemProvider { get; set; }
+
+        /// <summary>
         /// Handles the request.
         /// </summary>
         /// <param name="next"></param>

@@ -152,6 +152,7 @@
     <Compile Include="Owin\IAuthenticationConfiguration.cs" />
     <Compile Include="Owin\IBasicAuthenticationFilter.cs" />
     <Compile Include="Owin\IFileSystemConfiguration.cs" />
+    <Compile Include="Owin\IFileSystemProvider.cs" />
     <Compile Include="Owin\IFileSystemServer.cs" />
     <Compile Include="Owin\IRedirectionFilter.cs" />
     <Compile Include="Owin\IRedirectionConfiguration.cs" />
@@ -192,6 +193,7 @@
     <Compile Include="Settings\MergedFeedReceiver.cs" />
     <Compile Include="Settings\ReceiverUsage.cs" />
     <Compile Include="StandingData\EnginePlacement.cs" />
+    <Compile Include="StringBuilderExtensions.cs" />
     <Compile Include="UriHelper.cs" />
     <Compile Include="View\IAircraftOnlineLookupLogView.cs" />
     <Compile Include="View\IBackgroundThreadQueuesView.cs" />

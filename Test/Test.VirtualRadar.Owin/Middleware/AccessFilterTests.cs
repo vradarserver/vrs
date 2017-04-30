@@ -152,5 +152,34 @@ namespace Test.VirtualRadar.Owin.Middleware
 
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
         }
+
+        [TestMethod]
+        public void AccessFilter_Ignores_CurrentFolder_Path_Part()
+        {
+            Configure_Acceptable_Request();
+            Configure_Access("/protected", "192.168.0.1", canAccess: false);
+
+            _Environment.RequestPath = "/./protected";
+            _Environment.Request.RemoteIpAddress = "192.168.0.1";
+
+            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+
+            Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
+        }
+
+        [TestMethod]
+        public void AccessFilter_Flattens_Directory_Traversal_Path_Parts()
+        {
+            Configure_Acceptable_Request();
+            Configure_Access("/allowed", "192.168.0.1", canAccess: true);
+            Configure_Access("/protected", "192.168.0.1", canAccess: false);
+
+            _Environment.RequestPath = "/allowed/../protected";
+            _Environment.Request.RemoteIpAddress = "192.168.0.1";
+
+            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+
+            Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
+        }
     }
 }

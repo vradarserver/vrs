@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using InterfaceFactory;
@@ -33,21 +34,27 @@ namespace Test.VirtualRadar.Owin.Middleware
         private IFileSystemServer _Server;
         private MockOwinEnvironment _Environment;
         private MockOwinPipeline _Pipeline;
-        private IFileSystemConfiguration _ServerConfiguration;
-        private string _WebRoot;
+        private MockFileSystemProvider _FileSystem;
+        private Mock<IFileSystemConfiguration> _ServerConfiguration;
+        private Dictionary<string, string> _SiteRoots;
 
         [TestInitialize]
         public void TestInitialise()
         {
             _Snapshot = Factory.TakeSnapshot();
-            _ServerConfiguration = Factory.Singleton.Resolve<IFileSystemConfiguration>();
-            TestUtilities.CreateMockSingletonHost(_ServerConfiguration);
+            _ServerConfiguration = TestUtilities.CreateMockSingleton<IFileSystemConfiguration>();
+
+            _SiteRoots = new Dictionary<string, string>();
+            _ServerConfiguration.Setup(r => r.GetSiteRootFolders()).Returns(() => {
+                return _SiteRoots.Keys.ToList();
+            });
 
             _Server = Factory.Singleton.Resolve<IFileSystemServer>();
+            _FileSystem = new MockFileSystemProvider();
+            _Server.FileSystemProvider = _FileSystem;
+
             _Environment = new MockOwinEnvironment();
             _Pipeline = new MockOwinPipeline();
-
-            _WebRoot = $"{TestContext.TestDeploymentDir}\\FileSystemServerTests";
         }
 
         [TestCleanup]
@@ -56,11 +63,25 @@ namespace Test.VirtualRadar.Owin.Middleware
             Factory.RestoreSnapshot(_Snapshot);
         }
 
-        private void ConfigureSingleRootWithoutChecksums()
+        private void AddSiteRoot(string folder)
         {
-            _ServerConfiguration.AddSiteRoot(new SiteRoot() {
-                Folder = _WebRoot
-            });
+            if(!_SiteRoots.ContainsKey(folder)) {
+                _SiteRoots.Add(folder, null);
+            }
+        }
+
+        private void AddSiteRootAndFile(string siteRoot, string pathFromSiteRoot, byte[] content)
+        {
+            AddSiteRoot(siteRoot);
+            var fullPath = Path.Combine(siteRoot, pathFromSiteRoot);
+            _FileSystem.AddFile(fullPath, content);
+        }
+
+        private void AddSiteRootAndFile(string siteRoot, string pathFromSiteRoot, string content)
+        {
+            AddSiteRoot(siteRoot);
+            var fullPath = Path.Combine(siteRoot, pathFromSiteRoot);
+            _FileSystem.AddFile(fullPath, Encoding.UTF8.GetBytes(content ?? ""));
         }
 
         private void ConfigureRequest(string path)
@@ -68,38 +89,132 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Environment.RequestPath = path;
         }
 
-        private void AssertFileReturned(string mimeType, params string[] filePathParts)
+        private void AssertFileReturned(string mimeType, byte[] content)
         {
             var filePath = Path.Combine(TestContext.TestDeploymentDir, "FileSystemServerTests");
-            foreach(var filePathPart in filePathParts) {
-                filePath = Path.Combine(filePath, filePathPart);
-            }
 
-            var fileBytes = File.ReadAllBytes(filePath);
-
-            Assert.AreEqual(fileBytes.Length, _Environment.Response.ContentLength);
+            Assert.AreEqual(content.Length, _Environment.Response.ContentLength);
             Assert.AreEqual(mimeType, _Environment.Response.ContentType);
-            Assert.IsTrue(fileBytes.SequenceEqual(_Environment.ResponseBodyBytes));
+            Assert.IsTrue(content.SequenceEqual(_Environment.ResponseBodyBytes));
             Assert.AreEqual(200, _Environment.Response.StatusCode);
         }
 
-        [TestMethod]
-        public void FileSystemServer_Calls_Next_Middlware_By_Default()
+        private void AssertFileReturned(string mimeType, string content)
         {
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            AssertFileReturned(mimeType, Encoding.UTF8.GetBytes(content));
+        }
 
-            Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
+        private void AssertNoFileReturned()
+        {
+            Assert.IsNull(_Environment.Response.ContentLength);
+            Assert.IsNull(_Environment.Response.ContentType);
+            Assert.AreEqual(0, _Environment.ResponseBodyBytes.Length);
+        }
+
+        [TestMethod]
+        public void FileSystemServer_Constructor_Initialises_Properties_To_Known_Values()
+        {
+            var server = Factory.Singleton.Resolve<IFileSystemServer>();
+            Assert.IsNotNull(server.FileSystemProvider);
+        }
+
+        [TestMethod]
+        public void FileSystemServer_FileSystemProvider_Remains_Consistent()
+        {
+            var server = Factory.Singleton.Resolve<IFileSystemServer>();
+            var provider = server.FileSystemProvider;
+            Assert.AreSame(provider, server.FileSystemProvider);
         }
 
         [TestMethod]
         public void FileSystemServer_Serves_Files_In_SiteRoot()
         {
-            ConfigureSingleRootWithoutChecksums();
+            var content = "Hello World!";
+            AddSiteRootAndFile(@"c:\web\root", "Hello World.txt", content);
             ConfigureRequest("/Hello World.txt");
 
             _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
 
-            AssertFileReturned(MimeType.Text, "Hello World.txt");
+            AssertFileReturned(MimeType.Text, content);
+            Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
+        }
+
+        [TestMethod]
+        public void FileSystemServer_Ignores_Requests_That_Do_Not_Match_Filenames()
+        {
+            AddSiteRootAndFile(@"c:\web\root", "Exists.txt", "I am here");
+            ConfigureRequest("/Hello World.txt");
+
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            AssertNoFileReturned();
+            Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
+        }
+
+        [TestMethod]
+        public void FileSystemServer_Ignores_Requests_That_Attempt_To_Move_Out_Of_Root()
+        {
+            AddSiteRootAndFile(@"c:\web\root", "Allowed.txt", "Allowed");
+            _FileSystem.AddFile(@"c:\web\NotAllowed.txt", Encoding.UTF8.GetBytes("NotAllowed"));
+            ConfigureRequest("/../NotAllowed.txt");
+
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            AssertNoFileReturned();
+            Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
+        }
+
+        [TestMethod]
+        public void FileSystemServer_Ignores_Requests_For_Root()
+        {
+            AddSiteRootAndFile(@"c:\web\root", "Content.txt", "Content");
+            ConfigureRequest("/");
+
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            AssertNoFileReturned();
+            Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
+        }
+
+        [TestMethod]
+        public void FileSystemServer_Ignores_Requests_For_Folders_With_Same_Name_As_File()
+        {
+            AddSiteRootAndFile(@"c:\web\root", "Content.txt", "Content");
+            ConfigureRequest("/Content.txt/");
+
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            AssertNoFileReturned();
+            Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
+        }
+
+        [TestMethod]
+        public void FileSystemServer_Infers_Mime_Type_From_File_Extension()
+        {
+            foreach(var extension in MimeType.GetKnownExtensions()) {
+                TestCleanup();
+                TestInitialise();
+
+                AddSiteRootAndFile(@"c:\web\root", $"file.{extension}", extension);
+                ConfigureRequest($"/file.{extension}");
+
+                _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+                var expectedMimeType = MimeType.GetForExtension(extension);
+                AssertFileReturned(expectedMimeType, extension);
+            }
+        }
+
+        [TestMethod]
+        public void FileSystemServer_Files_With_No_Extension_Are_Sent_As_Byte_Stream()
+        {
+            var content = Encoding.UTF8.GetBytes("Content");
+            AddSiteRootAndFile(@"c:\web\root", "NoExtension", content);
+            ConfigureRequest("/NoExtension");
+
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            AssertFileReturned("application/octet-stream", content);
         }
     }
 }

@@ -13,33 +13,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
 
-namespace VirtualRadar.Owin
+namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// Registers implementations of interfaces with a class factory.
+    /// The interface for providers that abstract away the file system for OWIN middleware.
     /// </summary>
-    public static class Implementations
+    public interface IFileSystemProvider
     {
         /// <summary>
-        /// Registers implementations of interfaces.
+        /// Returns true if the file exists.
         /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
-        {
-            factory.Register<Interface.Owin.IAccessConfiguration, Configuration.AccessConfiguration>();
-            factory.Register<Interface.Owin.IAuthenticationConfiguration, Configuration.AuthenticationConfiguration>();
-            factory.Register<Interface.Owin.IFileSystemConfiguration, Configuration.FileSystemConfiguration>();
-            factory.Register<Interface.Owin.IRedirectionConfiguration, Configuration.RedirectionConfiguration>();
-            factory.Register<Interface.Owin.IWebAppConfiguration, Configuration.WebAppConfiguration>();
+        /// <param name="fileName">The name of the file. Case sensitivity depends on the underlying operating system.</param>
+        /// <returns></returns>
+        bool FileExists(string fileName);
 
-            factory.Register<Interface.Owin.IAccessFilter, Middleware.AccessFilter>();
-            factory.Register<Interface.Owin.IBasicAuthenticationFilter, Middleware.BasicAuthenticationFilter>();
-            factory.Register<Interface.Owin.IFileSystemServer, Middleware.FileSystemServer>();
-            factory.Register<Interface.Owin.IRedirectionFilter, Middleware.RedirectionFilter>();
-
-            factory.Register<Interface.Owin.IFileSystemProvider, Providers.FileSystemProvider>();
-        }
+        /// <summary>
+        /// Returns the byte content of a file.
+        /// </summary>
+        /// <param name="fileName">The name of the file. Case sensitivity depends on the underlying operating system.</param>
+        /// <returns></returns>
+        byte[] FileReadAllBytes(string fileName);
     }
 }

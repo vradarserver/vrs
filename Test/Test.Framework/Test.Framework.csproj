@@ -103,7 +103,6 @@
     <Content Include="TestFiles\AltitudeImageTest-01.png" />
     <Content Include="TestFiles\DLH.bmp" />
     <EmbeddedResource Include="TestFiles\favicon.ico" />
-    <Content Include="TestFiles\FileSystemServerTests\Hello World.txt" />
     <Content Include="TestFiles\OversizedLogo.bmp" />
     <Content Include="TestFiles\Picture-120x140-Resized-60x40.png" />
     <Content Include="TestFiles\Picture-120x140.png" />

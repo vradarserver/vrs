@@ -10,36 +10,37 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
+using VirtualRadar.Interface.Owin;
 
-namespace VirtualRadar.Owin
+namespace VirtualRadar.Owin.Providers
 {
     /// <summary>
-    /// Registers implementations of interfaces with a class factory.
+    /// The default file system provider.
     /// </summary>
-    public static class Implementations
+    class FileSystemProvider : IFileSystemProvider
     {
         /// <summary>
-        /// Registers implementations of interfaces.
+        /// See interface docs.
         /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public bool FileExists(string fileName)
         {
-            factory.Register<Interface.Owin.IAccessConfiguration, Configuration.AccessConfiguration>();
-            factory.Register<Interface.Owin.IAuthenticationConfiguration, Configuration.AuthenticationConfiguration>();
-            factory.Register<Interface.Owin.IFileSystemConfiguration, Configuration.FileSystemConfiguration>();
-            factory.Register<Interface.Owin.IRedirectionConfiguration, Configuration.RedirectionConfiguration>();
-            factory.Register<Interface.Owin.IWebAppConfiguration, Configuration.WebAppConfiguration>();
+            return File.Exists(fileName);
+        }
 
-            factory.Register<Interface.Owin.IAccessFilter, Middleware.AccessFilter>();
-            factory.Register<Interface.Owin.IBasicAuthenticationFilter, Middleware.BasicAuthenticationFilter>();
-            factory.Register<Interface.Owin.IFileSystemServer, Middleware.FileSystemServer>();
-            factory.Register<Interface.Owin.IRedirectionFilter, Middleware.RedirectionFilter>();
-
-            factory.Register<Interface.Owin.IFileSystemProvider, Providers.FileSystemProvider>();
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public byte[] FileReadAllBytes(string fileName)
+        {
+            return File.ReadAllBytes(fileName);
         }
     }
 }

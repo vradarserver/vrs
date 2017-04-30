@@ -17,7 +17,10 @@ using VirtualRadar.Interface.Owin;
 
 namespace VirtualRadar.Owin.Middleware
 {
+    using System.IO;
+    using System.Net;
     using InterfaceFactory;
+    using VirtualRadar.Interface.WebServer;
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
     /// <summary>
@@ -25,6 +28,31 @@ namespace VirtualRadar.Owin.Middleware
     /// </summary>
     class FileSystemServer : IFileSystemServer
     {
+        private IFileSystemProvider _FileSystemProvider;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public IFileSystemProvider FileSystemProvider
+        {
+            get
+            {
+                var result = _FileSystemProvider;
+                if(result == null) {
+                    result = Factory.Singleton.Resolve<IFileSystemProvider>();
+                    _FileSystemProvider = result;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                if(value != null) {
+                    _FileSystemProvider = value;
+                }
+            }
+        }
+
         private IFileSystemConfiguration _Configuration;
 
         /// <summary>
@@ -60,6 +88,45 @@ namespace VirtualRadar.Owin.Middleware
             var context = PipelineContext.GetOrCreate(environment);
             var request = context.Request;
             var response = context.Response;
+
+            var relativePath = ConvertRequestPathToRelativeFilePath(request.FlattenedPath);
+
+            if(!String.IsNullOrEmpty(relativePath)) {
+                foreach(var siteRoot in _Configuration.GetSiteRootFolders()) {
+                    var fullPath = Path.Combine(siteRoot, relativePath);
+
+                    if(FileSystemProvider.FileExists(fullPath)) {
+                        var extension = Path.GetExtension(fullPath);
+                        var mimeType = MimeType.GetForExtension(extension) ?? "application/octet-stream";
+
+                        var content = FileSystemProvider.FileReadAllBytes(fullPath);
+                        response.ContentLength = content.Length;
+                        response.Body.Write(content, 0, content.Length);
+                        response.StatusCode = (int)HttpStatusCode.OK;
+                        response.ContentType = mimeType;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Converts a request path to a relative file path.
+        /// </summary>
+        /// <param name="requestPath"></param>
+        /// <returns></returns>
+        private string ConvertRequestPathToRelativeFilePath(string requestPath)
+        {
+            var result = requestPath;
+
+            if(!String.IsNullOrEmpty(result)) {
+                if(result[0] == '/') {
+                    result = result.Substring(1);
+                }
+
+                result = result.Replace('/', Path.DirectorySeparatorChar);
+            }
+
+            return result;
         }
     }
 }

@@ -343,33 +343,16 @@ namespace Test.Framework
             if(!typeof(ISingleton<T>).IsAssignableFrom(typeof(T))) throw new InvalidOperationException($"{typeof(T).Name} does not implement {typeof(ISingleton<>).Name}");
 
             Mock<T> result = new Mock<T>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-            CreateMockSingletonHost<T>(result.Object);
-
-            return result;
-        }
-
-        /// <summary>
-        /// As per CreateMockSingleton, except this takes an actual object and creates a strict mock that
-        /// returns the object when Singleton is called.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="singleton"></param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Occasionally a test wants to use an actual object rather than a mock, but it wants it embedded
-        /// within a strict mock that checks that the Singleton property is being used correctly.
-        /// </remarks>
-        public static void CreateMockSingletonHost<T>(T singleton)
-            where T: class
-        {
             var strict = new Mock<T>(MockBehavior.Strict);
 
             var parameter = Expression.Parameter(typeof(ISingleton<T>));
             var body = Expression.Property(parameter, "Singleton");
             var lambda = Expression.Lambda<Func<T, T>>(body, parameter);
-            strict.Setup(lambda).Returns(singleton);
+            strict.Setup(lambda).Returns(result.Object);
 
             Factory.Singleton.RegisterInstance(typeof(T), strict.Object);
+
+            return result;
         }
 
         /// <summary>

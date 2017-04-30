@@ -132,11 +132,11 @@ var VRS;
                 }
                 return result;
             };
-            Menu.suppressNavbar = false;
-            Menu.suppressSidebar = false;
-            Menu.suppressSubmenus = false;
             return Menu;
         }());
+        Menu.suppressNavbar = false;
+        Menu.suppressSidebar = false;
+        Menu.suppressSubmenus = false;
         WebAdmin.Menu = Menu;
         WebAdmin.menu = new Menu();
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
