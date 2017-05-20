@@ -224,13 +224,13 @@ namespace Test.VirtualRadar.Owin.Configuration
         }
 
         [TestMethod]
-        public void FileSystemConfiguration_RaiseHtmlLoadedFromFile_Raises_HtmlLoadedFromFile()
+        public void FileSystemConfiguration_RaiseTextLoadedFromFile_Raises_TextLoadedFromFile()
         {
             var eventRecorder = new EventRecorder<TextContentEventArgs>();
-            _Configuration.HtmlLoadedFromFile += eventRecorder.Handler;
+            _Configuration.TextLoadedFromFile += eventRecorder.Handler;
 
-            var args = new TextContentEventArgs(null, null, null);
-            _Configuration.RaiseHtmlLoadedFromFile(args);
+            var args = new TextContentEventArgs(null, null, null, null);
+            _Configuration.RaiseTextLoadedFromFile(args);
 
             Assert.AreEqual(1, eventRecorder.CallCount);
             Assert.AreSame(_Configuration, eventRecorder.Sender);

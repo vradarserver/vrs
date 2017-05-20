@@ -297,7 +297,7 @@ namespace VirtualRadar.Owin.Configuration
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public event EventHandler<TextContentEventArgs> HtmlLoadedFromFile;
+        public event EventHandler<TextContentEventArgs> TextLoadedFromFile;
 
         /// <summary>
         /// See interface docs.
@@ -372,9 +372,9 @@ namespace VirtualRadar.Owin.Configuration
         /// See interface docs.
         /// </summary>
         /// <param name="args"></param>
-        public void RaiseHtmlLoadedFromFile(TextContentEventArgs args)
+        public void RaiseTextLoadedFromFile(TextContentEventArgs args)
         {
-            EventHelper.Raise(HtmlLoadedFromFile, this, () => args);
+            EventHelper.Raise(TextLoadedFromFile, this, () => args);
         }
 
         /// <summary>

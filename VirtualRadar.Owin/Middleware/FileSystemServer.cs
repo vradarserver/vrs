@@ -102,14 +102,19 @@ namespace VirtualRadar.Owin.Middleware
                         var mimeType = MimeType.GetForExtension(extension) ?? "application/octet-stream";
 
                         var content = FileSystemProvider.FileReadAllBytes(fullPath);
-                        if(mimeType == MimeType.Html) {
+                        if(mimeType == MimeType.Css ||
+                           mimeType == MimeType.Html ||
+                           mimeType == MimeType.Javascript ||
+                           mimeType == MimeType.Text)
+                        {
                             var textContent = TextContent.Load(content);
                             var args = new TextContentEventArgs(
                                 request.FlattenedPath,
                                 textContent.Content,
-                                textContent.Encoding
+                                textContent.Encoding,
+                                mimeType
                             );
-                            _Configuration.RaiseHtmlLoadedFromFile(args);
+                            _Configuration.RaiseTextLoadedFromFile(args);
 
                             textContent.Content = args.Content;
                             content = textContent.GetBytes(includePreamble: true);

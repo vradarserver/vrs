@@ -486,7 +486,7 @@ namespace VirtualRadar.WebSite
                     } else {
                         if(isHtml) {
                             ModifyAndSendContent(args, requestFile.FileName, extension, r => {
-                                var textContentArgs = new TextContentEventArgs(args.PathAndFile, r.Content, r.Encoding);
+                                var textContentArgs = new TextContentEventArgs(args.PathAndFile, r.Content, r.Encoding, MimeType.Html);
                                 _WebSite.OnHtmlLoadedFromFile(textContentArgs);
                                 r.Content = textContentArgs.Content;
 

@@ -24,10 +24,29 @@ namespace VirtualRadar.Interface.Owin
     public interface IFileSystemConfiguration : ISingleton<IFileSystemConfiguration>
     {
         /// <summary>
-        /// Raised when an HTML file is loaded from a disk-bound file. Listeners can modify the HTML before
-        /// it is sent.
+        /// Raised when certain text files are loaded by file system middleware from a disk-bound file. Listeners
+        /// can modify the text before it is sent.
         /// </summary>
-        event EventHandler<TextContentEventArgs> HtmlLoadedFromFile;
+        /// <remarks>
+        /// <para>
+        /// The mime types that the event is raised for are:
+        /// </para>
+        /// <list type="bullet">
+        ///     <item>
+        ///         <description><see cref="VirtualRadar.Interface.WebServer.MimeType.Css"/></description>
+        ///     </item>
+        ///     <item>
+        ///         <description><see cref="VirtualRadar.Interface.WebServer.MimeType.Html"/></description>
+        ///     </item>
+        ///     <item>
+        ///         <description><see cref="VirtualRadar.Interface.WebServer.MimeType.Javascript"/></description>
+        ///     </item>
+        ///     <item>
+        ///         <description><see cref="VirtualRadar.Interface.WebServer.MimeType.Text"/></description>
+        ///     </item>
+        /// </list>
+        /// </remarks>
+        event EventHandler<TextContentEventArgs> TextLoadedFromFile;
 
         /// <summary>
         /// Adds a folder from which files can be served by the site.
@@ -56,9 +75,9 @@ namespace VirtualRadar.Interface.Owin
         List<string> GetSiteRootFolders();
 
         /// <summary>
-        /// Raises <see cref="HtmlLoadedFromFile"/>.
+        /// Raises <see cref="TextLoadedFromFile"/>.
         /// </summary>
         /// <param name="args"></param>
-        void RaiseHtmlLoadedFromFile(TextContentEventArgs args);
+        void RaiseTextLoadedFromFile(TextContentEventArgs args);
     }
 }

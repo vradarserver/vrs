@@ -218,26 +218,57 @@ namespace Test.VirtualRadar.Owin.Middleware
         }
 
         [TestMethod]
-        public void FileSystemServer_HtmlFiles_Raise_HtmlLoadedFromFile()
+        public void FileSystemServer_TextLoadedFromFile_Raised_For_Supported_Mime_Types()
         {
-            AddSiteRootAndFile(@"c:\web\root", "Folder/File.html", "Hello");
-            ConfigureRequest("/Folder/File.html");
+            foreach(var kvp in new Dictionary<string, string>() {
+                { ".css",   MimeType.Css },
+                { ".html",  MimeType.Html },
+                { ".js",    MimeType.Javascript },
+                { ".txt",   MimeType.Text }
+            }) {
+                TestCleanup();
+                TestInitialise();
+
+                var extension = kvp.Key;
+                var mimeType = kvp.Value;
+                var errorMessage = $"extension={extension}, mimeType={mimeType}";
+
+                AddSiteRootAndFile(@"c:\web\root", $"Folder/File{extension}", "Hello");
+                ConfigureRequest($"/Folder/File{extension}");
+
+                TextContentEventArgs args = null;
+                _ServerConfiguration.Setup(r => r.RaiseTextLoadedFromFile(It.IsAny<TextContentEventArgs>())).Callback((TextContentEventArgs e) => {
+                    args = e;
+                });
+
+                _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+                _ServerConfiguration.Verify(r => r.RaiseTextLoadedFromFile(It.IsAny<TextContentEventArgs>()), Times.Once(), errorMessage);
+                Assert.AreEqual($"/Folder/File{extension}", args.PathAndFile, errorMessage);
+                Assert.AreEqual("Hello", args.Content, errorMessage);
+                Assert.AreEqual(Encoding.UTF8.EncodingName, args.Encoding.EncodingName, errorMessage);
+                Assert.AreEqual(mimeType, args.MimeType, errorMessage);
+            }
+        }
+
+        [TestMethod]
+        public void FileSystemServer_TextLoadedFromFile_Not_Raised_For_Other_Mime_Types()
+        {
+            AddSiteRootAndFile(@"c:\web\root", "Folder/File.ts", "Hello");
+            ConfigureRequest($"/Folder/File.ts");
 
             TextContentEventArgs args = null;
-            _ServerConfiguration.Setup(r => r.RaiseHtmlLoadedFromFile(It.IsAny<TextContentEventArgs>())).Callback((TextContentEventArgs e) => {
+            _ServerConfiguration.Setup(r => r.RaiseTextLoadedFromFile(It.IsAny<TextContentEventArgs>())).Callback((TextContentEventArgs e) => {
                 args = e;
             });
 
             _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
 
-            _ServerConfiguration.Verify(r => r.RaiseHtmlLoadedFromFile(It.IsAny<TextContentEventArgs>()), Times.Once());
-            Assert.AreEqual("/Folder/File.html", args.PathAndFile);
-            Assert.AreEqual("Hello", args.Content);
-            Assert.AreEqual(Encoding.UTF8.EncodingName, args.Encoding.EncodingName);
+            _ServerConfiguration.Verify(r => r.RaiseTextLoadedFromFile(It.IsAny<TextContentEventArgs>()), Times.Never());
         }
 
         [TestMethod]
-        public void FileSystemServer_HtmlFiles_HtmlLoadedFromFile_Reports_Encoding_Correctly()
+        public void FileSystemServer_TextLoadedFromFile_Reports_Encoding_Correctly()
         {
             var content = "£1.23";
             var bytes = Encoding.UTF32.GetPreamble().Concat(Encoding.UTF32.GetBytes(content)).ToArray();
@@ -245,25 +276,26 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigureRequest("/Folder/File.html");
 
             TextContentEventArgs args = null;
-            _ServerConfiguration.Setup(r => r.RaiseHtmlLoadedFromFile(It.IsAny<TextContentEventArgs>())).Callback((TextContentEventArgs e) => {
+            _ServerConfiguration.Setup(r => r.RaiseTextLoadedFromFile(It.IsAny<TextContentEventArgs>())).Callback((TextContentEventArgs e) => {
                 args = e;
             });
 
             _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
 
-            _ServerConfiguration.Verify(r => r.RaiseHtmlLoadedFromFile(It.IsAny<TextContentEventArgs>()), Times.Once());
+            _ServerConfiguration.Verify(r => r.RaiseTextLoadedFromFile(It.IsAny<TextContentEventArgs>()), Times.Once());
             Assert.AreEqual("/Folder/File.html", args.PathAndFile);
             Assert.AreEqual("£1.23", args.Content);
             Assert.AreEqual(Encoding.UTF32.EncodingName, args.Encoding.EncodingName);
+            Assert.AreEqual(MimeType.Html, args.MimeType);
         }
 
         [TestMethod]
-        public void FileSystemServer_HtmlFiles_HtmlLoadedFromFile_Can_Change_Content()
+        public void FileSystemServer_TextLoadedFromFile_Can_Change_Content()
         {
             AddSiteRootAndFile(@"c:\web\root", "Folder/File.html", "Hello");
             ConfigureRequest("/Folder/File.html");
 
-            _ServerConfiguration.Setup(r => r.RaiseHtmlLoadedFromFile(It.IsAny<TextContentEventArgs>())).Callback((TextContentEventArgs e) => {
+            _ServerConfiguration.Setup(r => r.RaiseTextLoadedFromFile(It.IsAny<TextContentEventArgs>())).Callback((TextContentEventArgs e) => {
                 e.Content = "New Content";
             });
 
@@ -273,14 +305,14 @@ namespace Test.VirtualRadar.Owin.Middleware
         }
 
         [TestMethod]
-        public void FileSystemServer_HtmlFiles_HtmlLoadedFromFile_Preserves_Encoding()
+        public void FileSystemServer_TextLoadedFromFile_Preserves_Encoding()
         {
             var content = "Hello";
             var bytes = Encoding.UTF32.GetPreamble().Concat(Encoding.UTF32.GetBytes(content)).ToArray();
             AddSiteRootAndFile(@"c:\web\root", "Folder/File.html", bytes);
             ConfigureRequest("/Folder/File.html");
 
-            _ServerConfiguration.Setup(r => r.RaiseHtmlLoadedFromFile(It.IsAny<TextContentEventArgs>())).Callback((TextContentEventArgs e) => {
+            _ServerConfiguration.Setup(r => r.RaiseTextLoadedFromFile(It.IsAny<TextContentEventArgs>())).Callback((TextContentEventArgs e) => {
                 e.Content = "New Content";
             });
 

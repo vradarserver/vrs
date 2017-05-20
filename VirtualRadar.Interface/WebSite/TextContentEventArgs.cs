@@ -42,16 +42,23 @@ namespace VirtualRadar.Interface.WebSite
         public Encoding Encoding { get; set; }
 
         /// <summary>
+        /// Gets or sets the mime type of the content.
+        /// </summary>
+        public string MimeType { get; set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="pathAndFile"></param>
         /// <param name="content"></param>
         /// <param name="encoding"></param>
-        public TextContentEventArgs(string pathAndFile, string content, Encoding encoding)
+        /// <param name="mimeType"></param>
+        public TextContentEventArgs(string pathAndFile, string content, Encoding encoding, string mimeType)
         {
             PathAndFile = pathAndFile;
             Content = content;
             Encoding = encoding;
+            MimeType = mimeType;
         }
     }
 }
