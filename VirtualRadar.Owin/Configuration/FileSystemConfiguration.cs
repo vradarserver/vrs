@@ -297,6 +297,11 @@ namespace VirtualRadar.Owin.Configuration
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public event EventHandler<TextContentEventArgs> HtmlLoadedFromFile;
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="siteRoot"></param>
         public void AddSiteRoot(SiteRoot siteRoot)
         {
@@ -361,6 +366,15 @@ namespace VirtualRadar.Owin.Configuration
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="args"></param>
+        public void RaiseHtmlLoadedFromFile(TextContentEventArgs args)
+        {
+            EventHelper.Raise(HtmlLoadedFromFile, this, () => args);
         }
 
         /// <summary>

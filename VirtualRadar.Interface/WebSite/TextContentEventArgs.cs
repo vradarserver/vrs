@@ -22,11 +22,6 @@ namespace VirtualRadar.Interface.WebSite
     public class TextContentEventArgs : EventArgs
     {
         /// <summary>
-        /// Gets the request that generated this content.
-        /// </summary>
-        public IRequest Request { get; private set; }
-
-        /// <summary>
         /// Gets the path and file of the request from root.
         /// </summary>
         /// <remarks>
@@ -49,13 +44,11 @@ namespace VirtualRadar.Interface.WebSite
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        /// <param name="request"></param>
         /// <param name="pathAndFile"></param>
         /// <param name="content"></param>
         /// <param name="encoding"></param>
-        public TextContentEventArgs(IRequest request, string pathAndFile, string content, Encoding encoding)
+        public TextContentEventArgs(string pathAndFile, string content, Encoding encoding)
         {
-            Request = request;
             PathAndFile = pathAndFile;
             Content = content;
             Encoding = encoding;

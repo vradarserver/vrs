@@ -216,5 +216,78 @@ namespace Test.VirtualRadar.Owin.Middleware
 
             AssertFileReturned("application/octet-stream", content);
         }
+
+        [TestMethod]
+        public void FileSystemServer_HtmlFiles_Raise_HtmlLoadedFromFile()
+        {
+            AddSiteRootAndFile(@"c:\web\root", "Folder/File.html", "Hello");
+            ConfigureRequest("/Folder/File.html");
+
+            TextContentEventArgs args = null;
+            _ServerConfiguration.Setup(r => r.RaiseHtmlLoadedFromFile(It.IsAny<TextContentEventArgs>())).Callback((TextContentEventArgs e) => {
+                args = e;
+            });
+
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            _ServerConfiguration.Verify(r => r.RaiseHtmlLoadedFromFile(It.IsAny<TextContentEventArgs>()), Times.Once());
+            Assert.AreEqual("/Folder/File.html", args.PathAndFile);
+            Assert.AreEqual("Hello", args.Content);
+            Assert.AreEqual(Encoding.UTF8.EncodingName, args.Encoding.EncodingName);
+        }
+
+        [TestMethod]
+        public void FileSystemServer_HtmlFiles_HtmlLoadedFromFile_Reports_Encoding_Correctly()
+        {
+            var content = "£1.23";
+            var bytes = Encoding.UTF32.GetPreamble().Concat(Encoding.UTF32.GetBytes(content)).ToArray();
+            AddSiteRootAndFile(@"c:\web\root", "Folder/File.html", bytes);
+            ConfigureRequest("/Folder/File.html");
+
+            TextContentEventArgs args = null;
+            _ServerConfiguration.Setup(r => r.RaiseHtmlLoadedFromFile(It.IsAny<TextContentEventArgs>())).Callback((TextContentEventArgs e) => {
+                args = e;
+            });
+
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            _ServerConfiguration.Verify(r => r.RaiseHtmlLoadedFromFile(It.IsAny<TextContentEventArgs>()), Times.Once());
+            Assert.AreEqual("/Folder/File.html", args.PathAndFile);
+            Assert.AreEqual("£1.23", args.Content);
+            Assert.AreEqual(Encoding.UTF32.EncodingName, args.Encoding.EncodingName);
+        }
+
+        [TestMethod]
+        public void FileSystemServer_HtmlFiles_HtmlLoadedFromFile_Can_Change_Content()
+        {
+            AddSiteRootAndFile(@"c:\web\root", "Folder/File.html", "Hello");
+            ConfigureRequest("/Folder/File.html");
+
+            _ServerConfiguration.Setup(r => r.RaiseHtmlLoadedFromFile(It.IsAny<TextContentEventArgs>())).Callback((TextContentEventArgs e) => {
+                e.Content = "New Content";
+            });
+
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            AssertFileReturned(MimeType.Html, "New Content");
+        }
+
+        [TestMethod]
+        public void FileSystemServer_HtmlFiles_HtmlLoadedFromFile_Preserves_Encoding()
+        {
+            var content = "Hello";
+            var bytes = Encoding.UTF32.GetPreamble().Concat(Encoding.UTF32.GetBytes(content)).ToArray();
+            AddSiteRootAndFile(@"c:\web\root", "Folder/File.html", bytes);
+            ConfigureRequest("/Folder/File.html");
+
+            _ServerConfiguration.Setup(r => r.RaiseHtmlLoadedFromFile(It.IsAny<TextContentEventArgs>())).Callback((TextContentEventArgs e) => {
+                e.Content = "New Content";
+            });
+
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            var expectedBytes = Encoding.UTF32.GetPreamble().Concat(Encoding.UTF32.GetBytes("New Content")).ToArray();
+            AssertFileReturned(MimeType.Html, expectedBytes);
+        }
     }
 }

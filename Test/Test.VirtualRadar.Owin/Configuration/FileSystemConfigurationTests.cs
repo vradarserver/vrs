@@ -16,6 +16,7 @@ using System.Text;
 using System.Threading.Tasks;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Test.Framework;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.WebSite;
 
@@ -220,6 +221,20 @@ namespace Test.VirtualRadar.Owin.Configuration
                 _Configuration.RemoveSiteRoot(abcSiteRoot);
                 _Configuration.RemoveSiteRoot(xyzSiteRoot);
             }
+        }
+
+        [TestMethod]
+        public void FileSystemConfiguration_RaiseHtmlLoadedFromFile_Raises_HtmlLoadedFromFile()
+        {
+            var eventRecorder = new EventRecorder<TextContentEventArgs>();
+            _Configuration.HtmlLoadedFromFile += eventRecorder.Handler;
+
+            var args = new TextContentEventArgs(null, null, null);
+            _Configuration.RaiseHtmlLoadedFromFile(args);
+
+            Assert.AreEqual(1, eventRecorder.CallCount);
+            Assert.AreSame(_Configuration, eventRecorder.Sender);
+            Assert.AreSame(args, eventRecorder.Args);
         }
     }
 }

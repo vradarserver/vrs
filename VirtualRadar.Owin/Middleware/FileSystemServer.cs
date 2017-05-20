@@ -20,7 +20,9 @@ namespace VirtualRadar.Owin.Middleware
     using System.IO;
     using System.Net;
     using InterfaceFactory;
+    using VirtualRadar.Interface;
     using VirtualRadar.Interface.WebServer;
+    using VirtualRadar.Interface.WebSite;
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
     /// <summary>
@@ -100,6 +102,19 @@ namespace VirtualRadar.Owin.Middleware
                         var mimeType = MimeType.GetForExtension(extension) ?? "application/octet-stream";
 
                         var content = FileSystemProvider.FileReadAllBytes(fullPath);
+                        if(mimeType == MimeType.Html) {
+                            var textContent = TextContent.Load(content);
+                            var args = new TextContentEventArgs(
+                                request.FlattenedPath,
+                                textContent.Content,
+                                textContent.Encoding
+                            );
+                            _Configuration.RaiseHtmlLoadedFromFile(args);
+
+                            textContent.Content = args.Content;
+                            content = textContent.GetBytes(includePreamble: true);
+                        }
+
                         response.ContentLength = content.Length;
                         response.Body.Write(content, 0, content.Length);
                         response.StatusCode = (int)HttpStatusCode.OK;

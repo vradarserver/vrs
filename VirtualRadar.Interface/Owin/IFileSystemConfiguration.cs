@@ -18,11 +18,17 @@ using VirtualRadar.Interface.WebSite;
 namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// The interface for the singleton object that can be used to configure the behaviour
-    /// of the <see cref="IFileSystemServer"/> middleware.
+    /// The interface for the singleton object that can be used to configure and modify
+    /// the behaviour of the <see cref="IFileSystemServer"/> middleware.
     /// </summary>
     public interface IFileSystemConfiguration : ISingleton<IFileSystemConfiguration>
     {
+        /// <summary>
+        /// Raised when an HTML file is loaded from a disk-bound file. Listeners can modify the HTML before
+        /// it is sent.
+        /// </summary>
+        event EventHandler<TextContentEventArgs> HtmlLoadedFromFile;
+
         /// <summary>
         /// Adds a folder from which files can be served by the site.
         /// </summary>
@@ -48,5 +54,11 @@ namespace VirtualRadar.Interface.Owin
         /// </summary>
         /// <returns></returns>
         List<string> GetSiteRootFolders();
+
+        /// <summary>
+        /// Raises <see cref="HtmlLoadedFromFile"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        void RaiseHtmlLoadedFromFile(TextContentEventArgs args);
     }
 }
