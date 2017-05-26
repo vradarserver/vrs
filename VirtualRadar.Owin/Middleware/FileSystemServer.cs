@@ -100,30 +100,34 @@ namespace VirtualRadar.Owin.Middleware
                     if(FileSystemProvider.FileExists(fullPath)) {
                         var extension = Path.GetExtension(fullPath);
                         var mimeType = MimeType.GetForExtension(extension) ?? "application/octet-stream";
-
                         var content = FileSystemProvider.FileReadAllBytes(fullPath);
-                        if(mimeType == MimeType.Css ||
-                           mimeType == MimeType.Html ||
-                           mimeType == MimeType.Javascript ||
-                           mimeType == MimeType.Text)
-                        {
-                            var textContent = TextContent.Load(content);
-                            var args = new TextContentEventArgs(
-                                request.FlattenedPath,
-                                textContent.Content,
-                                textContent.Encoding,
-                                mimeType
-                            );
-                            _Configuration.RaiseTextLoadedFromFile(args);
 
-                            textContent.Content = args.Content;
-                            content = textContent.GetBytes(includePreamble: true);
+                        if(!_Configuration.IsFileUnmodified(siteRoot, request.FlattenedPath, content)) {
+                            response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        } else {
+                            if(mimeType == MimeType.Css ||
+                                mimeType == MimeType.Html ||
+                                mimeType == MimeType.Javascript ||
+                                mimeType == MimeType.Text)
+                            {
+                                var textContent = TextContent.Load(content);
+                                var args = new TextContentEventArgs(
+                                    request.FlattenedPath,
+                                    textContent.Content,
+                                    textContent.Encoding,
+                                    mimeType
+                                );
+                                _Configuration.RaiseTextLoadedFromFile(args);
+
+                                textContent.Content = args.Content;
+                                content = textContent.GetBytes(includePreamble: true);
+                            }
+
+                            response.ContentLength = content.Length;
+                            response.Body.Write(content, 0, content.Length);
+                            response.StatusCode = (int)HttpStatusCode.OK;
+                            response.ContentType = mimeType;
                         }
-
-                        response.ContentLength = content.Length;
-                        response.Body.Write(content, 0, content.Length);
-                        response.StatusCode = (int)HttpStatusCode.OK;
-                        response.ContentType = mimeType;
                     }
                 }
             }

@@ -48,6 +48,11 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ServerConfiguration.Setup(r => r.GetSiteRootFolders()).Returns(() => {
                 return _SiteRoots.Keys.ToList();
             });
+            _ServerConfiguration.Setup(r => r.IsFileUnmodified(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<byte[]>())).Returns(
+                (string siteRootFolder, string requestPath, byte[] fileContent) => {
+                    return true;
+                }
+            );
 
             _Server = Factory.Singleton.Resolve<IFileSystemServer>();
             _FileSystem = new MockFileSystemProvider();
@@ -218,6 +223,35 @@ namespace Test.VirtualRadar.Owin.Middleware
         }
 
         [TestMethod]
+        public void FileSystemServer_Files_That_Fail_Checksum_Are_Not_Served()
+        {
+            var content = Encoding.UTF8.GetBytes("Sticky Fingers");
+            AddSiteRootAndFile(@"c:\web\root", "file.txt", content);
+            _ServerConfiguration.Setup(r => r.IsFileUnmodified(@"c:\web\root", "/file.txt", It.IsAny<byte[]>())).Returns(false);
+
+            ConfigureRequest("/file.txt");
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            Assert.AreEqual(400, _Environment.Response.StatusCode);
+            Assert.AreEqual(0, _Environment.ResponseBodyBytes.Length);
+        }
+
+        [TestMethod]
+        public void FileSystemServer_Tests_Flattened_Paths_For_Checksums()
+        {
+            var content = Encoding.UTF8.GetBytes("Wild Horses");
+            AddSiteRootAndFile(@"c:\web\root", "file.txt", content);
+            _FileSystem.AddFile(@"c:\web\root\subfolder\otherfile.txt", new byte[0]);
+            _ServerConfiguration.Setup(r => r.IsFileUnmodified(@"c:\web\root", "/file.txt", It.IsAny<byte[]>())).Returns(false);
+
+            ConfigureRequest("/subfolder/../file.txt");
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            Assert.AreEqual(400, _Environment.Response.StatusCode);
+            Assert.AreEqual(0, _Environment.ResponseBodyBytes.Length);
+        }
+
+        [TestMethod]
         public void FileSystemServer_TextLoadedFromFile_Raised_For_Supported_Mime_Types()
         {
             foreach(var kvp in new Dictionary<string, string>() {
@@ -320,6 +354,29 @@ namespace Test.VirtualRadar.Owin.Middleware
 
             var expectedBytes = Encoding.UTF32.GetPreamble().Concat(Encoding.UTF32.GetBytes("New Content")).ToArray();
             AssertFileReturned(MimeType.Html, expectedBytes);
+        }
+
+        [TestMethod]
+        public void FileSystemServer_TextLoadedFromFile_Modifications_Do_Not_Affect_Checksum_Test()
+        {
+            var content = Encoding.UTF8.GetBytes("Can't You Hear Me Knocking");
+            AddSiteRootAndFile(@"c:\web\root", "file.txt", content);
+            byte[] checksumTestContent = null;
+
+            _ServerConfiguration.Setup(r => r.IsFileUnmodified(@"c:\web\root", "/file.txt", It.IsAny<byte[]>())).Returns(
+                (string siteRootFolder, string requestPath, byte[] fileContent) => {
+                checksumTestContent = fileContent;
+                    return true;
+                }
+            );
+            _ServerConfiguration.Setup(r => r.RaiseTextLoadedFromFile(It.IsAny<TextContentEventArgs>())).Callback((TextContentEventArgs e) => {
+                e.Content = "You Gotta Move";
+            });
+
+            ConfigureRequest("/file.txt");
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            Assert.IsTrue(content.SequenceEqual(checksumTestContent));
         }
     }
 }
