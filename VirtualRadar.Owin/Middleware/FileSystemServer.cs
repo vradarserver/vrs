@@ -103,13 +103,17 @@ namespace VirtualRadar.Owin.Middleware
                         var content = FileSystemProvider.FileReadAllBytes(fullPath);
 
                         if(!_Configuration.IsFileUnmodified(siteRoot, request.FlattenedPath, content)) {
-                            response.StatusCode = (int)HttpStatusCode.BadRequest;
+                            if(mimeType != MimeType.Html) {
+                                response.StatusCode = (int)HttpStatusCode.BadRequest;
+                            } else {
+                                content = Encoding.UTF8.GetBytes("<HTML><HEAD><TITLE>No</TITLE></HEAD><BODY>VRS will not serve content that has been tampered with. Install the custom content plugin if you want to alter the site's files.</BODY></HTML>");
+                                SendContent(response, content, mimeType);
+                            }
                         } else {
                             if(mimeType == MimeType.Css ||
-                                mimeType == MimeType.Html ||
-                                mimeType == MimeType.Javascript ||
-                                mimeType == MimeType.Text)
-                            {
+                               mimeType == MimeType.Html ||
+                               mimeType == MimeType.Javascript ||
+                               mimeType == MimeType.Text) {
                                 var textContent = TextContent.Load(content);
                                 var args = new TextContentEventArgs(
                                     request.FlattenedPath,
@@ -123,14 +127,25 @@ namespace VirtualRadar.Owin.Middleware
                                 content = textContent.GetBytes(includePreamble: true);
                             }
 
-                            response.ContentLength = content.Length;
-                            response.Body.Write(content, 0, content.Length);
-                            response.StatusCode = (int)HttpStatusCode.OK;
-                            response.ContentType = mimeType;
+                            SendContent(response, content, mimeType);
                         }
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Sends content back to the caller.
+        /// </summary>
+        /// <param name="response"></param>
+        /// <param name="content"></param>
+        /// <param name="mimeType"></param>
+        private static void SendContent(PipelineResponse response, byte[] content, string mimeType)
+        {
+            response.ContentLength = content.Length;
+            response.Body.Write(content, 0, content.Length);
+            response.StatusCode = (int)HttpStatusCode.OK;
+            response.ContentType = mimeType;
         }
 
         /// <summary>

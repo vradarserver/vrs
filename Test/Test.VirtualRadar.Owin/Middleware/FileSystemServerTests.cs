@@ -237,6 +237,22 @@ namespace Test.VirtualRadar.Owin.Middleware
         }
 
         [TestMethod]
+        public void FileSystemServer_Html_Files_That_Fail_Checksum_Return_Error_Message()
+        {
+            var content = Encoding.UTF8.GetBytes("Opportunity Three");
+            AddSiteRootAndFile(@"c:\web\root", "file.html", content);
+            _ServerConfiguration.Setup(r => r.IsFileUnmodified(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<byte[]>())).Returns(false);
+
+            ConfigureRequest("/file.html");
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            var expectedResponse = "<HTML><HEAD><TITLE>No</TITLE></HEAD><BODY>VRS will not serve content that has been tampered with. Install the custom content plugin if you want to alter the site's files.</BODY></HTML>";
+            var expectedBytes = Encoding.UTF8.GetBytes(expectedResponse);
+            Assert.AreEqual(200, _Environment.Response.StatusCode);
+            Assert.IsTrue(_Environment.ResponseBodyBytes.SequenceEqual(expectedBytes));
+        }
+
+        [TestMethod]
         public void FileSystemServer_Tests_Flattened_Paths_For_Checksums()
         {
             var content = Encoding.UTF8.GetBytes("Wild Horses");
