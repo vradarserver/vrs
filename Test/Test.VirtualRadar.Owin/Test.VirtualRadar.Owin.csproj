@@ -90,7 +90,6 @@
     <Compile Include="Middleware\FileSystemServerTests.cs" />
     <Compile Include="Middleware\RedirectionFilterTests.cs" />
     <Compile Include="MockConfigureCallback.cs" />
-    <Compile Include="MockFileSystemProvider.cs" />
     <Compile Include="MockOwinEnvironment.cs" />
     <Compile Include="Configuration\WebAppConfigurationTests.cs" />
     <Compile Include="MockOwinPipeline.cs" />

@@ -26,12 +26,12 @@ namespace VirtualRadar.Interface.WebSite
         public string Folder { get; set; }
 
         /// <summary>
-        /// Gets or sets a value that indicates the order in which site roots are searched for files to serve. Lower numbers are searched before
-        /// higher numbers. The VRS default website has a priority of 0.
+        /// Gets or sets a value that indicates the order in which site roots are searched for files to serve.
+        /// Lower numbers are searched before higher numbers. The VRS default website has a priority of 0.
         /// </summary>
         /// <remarks>
-        /// The default priority is 100. The relative order of two site roots with the same priority is not defined and may not be constant over
-        /// the life of the site.
+        /// The default priority is 100. The relative order of two site roots with the same priority is not
+        /// defined and may not be constant over the life of the site.
         /// </remarks>
         public int Priority { get; set; }
 

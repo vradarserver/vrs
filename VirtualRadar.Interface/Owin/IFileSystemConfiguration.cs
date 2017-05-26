@@ -75,6 +75,16 @@ namespace VirtualRadar.Interface.Owin
         List<string> GetSiteRootFolders();
 
         /// <summary>
+        /// Returns false if the <paramref name="siteRootFolder"/> has checksums registered against it and
+        /// the file for <see cref="requestPath"/> does not match the checksum.
+        /// </summary>
+        /// <param name="siteRootFolder">The case sensitive site root folder as returned by <see cref="GetSiteRootFolders"/></param>
+        /// <param name="requestPath">The request path from root. Case insensitive.</param>
+        /// <param name="fileContent">The content loaded from the file identified by <paramref name="siteRootFolder"/> and <paramref name="requestPath"/>.</param>
+        /// <returns></returns>
+        bool IsFileUnmodified(string siteRootFolder, string requestPath, byte[] fileContent);
+
+        /// <summary>
         /// Raises <see cref="TextLoadedFromFile"/>.
         /// </summary>
         /// <param name="args"></param>

@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
 using System.IO;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.WebSite
 {
@@ -25,13 +26,6 @@ namespace VirtualRadar.Interface.WebSite
         /// <summary>
         /// The object that calculates checksums for us.
         /// </summary>
-        /// <remarks>
-        /// Originally the code used MD5 to calculate checksums, which was actually
-        /// pretty fast... on modern chips it's quicker than calculating the CRC.
-        /// However MD5 isn't FIPS approved, so users with the FIPS switch turned
-        /// on in Windows couldn't run VRS. It would give them an exception whenever
-        /// they tried to view the website. Hence the move to CRC64s.
-        /// </remarks>
         private static Crc64 _ChecksumCalculator = new Crc64();
 
         /// <summary>
@@ -69,10 +63,13 @@ namespace VirtualRadar.Interface.WebSite
         /// <returns></returns>
         public static string GenerateChecksum(string fileName)
         {
-            if(fileName == null) throw new ArgumentNullException("fileName");
-            if(!File.Exists(fileName)) throw new InvalidOperationException($"{fileName} does not exist");
+            var fileSystem = Factory.Singleton.Resolve<IFileSystemProvider>();
 
-            var bytes = File.ReadAllBytes(fileName);
+            if(fileName == null) {
+                throw new ArgumentNullException(nameof(fileName));
+            }
+
+            var bytes = fileSystem.FileReadAllBytes(fileName);
             return GenerateChecksum(bytes);
         }
 
@@ -93,10 +90,13 @@ namespace VirtualRadar.Interface.WebSite
         /// <returns></returns>
         public static long GetFileSize(string fileName)
         {
-            if(fileName == null) throw new ArgumentNullException("fileName");
-            if(!File.Exists(fileName)) throw new InvalidOperationException($"{fileName} does not exist");
+            var fileSystem = Factory.Singleton.Resolve<IFileSystemProvider>();
 
-            return new FileInfo(fileName).Length;
+            if(fileName == null) {
+                throw new ArgumentNullException(nameof(fileName));
+            }
+
+            return fileSystem.FileSize(fileName);
         }
 
         /// <summary>
@@ -107,12 +107,19 @@ namespace VirtualRadar.Interface.WebSite
         /// <returns></returns>
         public static string GetFileNameFromFullPath(string rootFolder, string fileName)
         {
-            if(String.IsNullOrEmpty(rootFolder)) throw new ArgumentNullException("rootFolder");
+            if(String.IsNullOrEmpty(rootFolder)) {
+                throw new ArgumentNullException(nameof(rootFolder));
+            }
+
             rootFolder = rootFolder.Replace("/", "\\");
             fileName = fileName.Replace("/", "\\");
-            if(rootFolder[rootFolder.Length - 1] != '\\') rootFolder += '\\';
+            if(rootFolder[rootFolder.Length - 1] != '\\') {
+                rootFolder += '\\';
+            }
 
-            if(!fileName.StartsWith(rootFolder)) throw new InvalidOperationException($"{fileName} does not start with {rootFolder}");
+            if(!fileName.StartsWith(rootFolder)) {
+                throw new InvalidOperationException($"{fileName} does not start with {rootFolder}");
+            }
 
             return fileName.Substring(rootFolder.Length - 1);
         }
@@ -124,7 +131,9 @@ namespace VirtualRadar.Interface.WebSite
         /// <returns></returns>
         public string GetFullPathFromRoot(string rootFolder)
         {
-            if(rootFolder == null) throw new ArgumentNullException("rootFolder");
+            if(rootFolder == null) {
+                throw new ArgumentNullException(nameof(rootFolder));
+            }
 
             string result = null;
             if(!String.IsNullOrEmpty(FileName)) {

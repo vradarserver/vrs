@@ -58,6 +58,7 @@
     <Compile Include="ClockMock.cs" />
     <Compile Include="EventRecorder.cs" />
     <Compile Include="ExcelWorksheetData.cs" />
+    <Compile Include="MockFileSystemProvider.cs" />
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="OwinConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

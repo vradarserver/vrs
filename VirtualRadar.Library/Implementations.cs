@@ -109,6 +109,7 @@ namespace VirtualRadar.Library
             factory.Register<IDirectoryCache, DirectoryCache>();
             factory.Register<IExceptionReporter, ExceptionReporter>();
             factory.Register<IExternalIPAddressService, ExternalIPAddressService>();
+            factory.Register<IFileSystemProvider, FileSystemProvider>();
             factory.Register<IFileSystemWatcher, FileSystemWatcherWrapper>();
             factory.Register<IHeartbeatService, HeartbeatService>();
             factory.Register<IImageDimensionsFetcher, ImageDimensionsFetcher>();

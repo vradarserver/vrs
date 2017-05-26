@@ -16,7 +16,9 @@ using System.Text;
 using System.Threading.Tasks;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Test.Framework;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.WebSite;
 
@@ -26,12 +28,27 @@ namespace Test.VirtualRadar.Owin.Configuration
     public class FileSystemConfigurationTests
     {
         public TestContext TestContext { get; set; }
+        private IClassFactory _Snapshot;
+        private Mock<IFileSystemWatcher> _FileSystemWatcher;
+        private MockFileSystemProvider _FileSystemProvider;
         private IFileSystemConfiguration _Configuration;
 
         [TestInitialize]
         public void TestInitialise()
         {
+            _Snapshot = Factory.TakeSnapshot();
+
+            _FileSystemWatcher = TestUtilities.CreateMockImplementation<IFileSystemWatcher>();
+            _FileSystemProvider = new MockFileSystemProvider();
+            Factory.Singleton.RegisterInstance<IFileSystemProvider>(_FileSystemProvider);
+
             _Configuration = Factory.Singleton.Resolve<IFileSystemConfiguration>();
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            Factory.RestoreSnapshot(_Snapshot);
         }
 
         [TestMethod]
@@ -86,38 +103,44 @@ namespace Test.VirtualRadar.Owin.Configuration
         [ExpectedException(typeof(InvalidOperationException))]
         public void FileSystemConfiguration_AddSiteRoot_Throws_If_Folder_Is_Already_A_Site_Root()
         {
-            _Configuration.AddSiteRoot(new SiteRoot() { Folder = TestContext.TestDeploymentDir });
-            _Configuration.AddSiteRoot(new SiteRoot() { Folder = TestContext.TestDeploymentDir });
+            _FileSystemProvider.AddFolder(@"c:\web");
+
+            _Configuration.AddSiteRoot(new SiteRoot() { Folder = @"c:\web" });
+            _Configuration.AddSiteRoot(new SiteRoot() { Folder = @"c:\web" });
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void FileSystemConfiguration_AddSiteRoot_Is_Not_Case_Sensitive_When_Searching_For_Duplicate_Folders()
         {
-            _Configuration.AddSiteRoot(new SiteRoot() { Folder = TestContext.TestDeploymentDir.ToUpper() });
-            _Configuration.AddSiteRoot(new SiteRoot() { Folder = TestContext.TestDeploymentDir.ToLower() });
+            _FileSystemProvider.AddFolder(@"c:\web");
+
+            _Configuration.AddSiteRoot(new SiteRoot() { Folder = @"c:\web" });
+            _Configuration.AddSiteRoot(new SiteRoot() { Folder = @"C:\WEB" });
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void FileSystemConfiguration_AddSiteRoot_Flattens_Traversal_Folders_When_Searching_For_Duplicate_Folders()
         {
-            var anotherWayToFolder = String.Format(@"{0}\..\{1}", TestContext.TestDeploymentDir, Path.GetFileName(TestContext.TestDeploymentDir));
-            _Configuration.AddSiteRoot(new SiteRoot() { Folder = TestContext.TestDeploymentDir });
-            _Configuration.AddSiteRoot(new SiteRoot() { Folder = anotherWayToFolder });
+            _FileSystemProvider.AddFolder(@"c:\web");
+            _FileSystemProvider.AddFolder(@"c:\web\subfolder");
+
+            _Configuration.AddSiteRoot(new SiteRoot() { Folder = @"c:\web" });
+            _Configuration.AddSiteRoot(new SiteRoot() { Folder = @"c:\web\subfolder\.." });
         }
 
         [TestMethod]
         public void FileSystemConfiguration_AddSiteRoot_Adds_Trailing_Directory_Separator_To_Folder()
         {
-            var folder = TestContext.TestDeploymentDir;
-            if(folder[folder.Length - 1] == '\\') folder = folder.Substring(0, folder.Length - 1);
+            var folder = @"c:\web";
+            _FileSystemProvider.AddFolder(folder);
 
             _Configuration.AddSiteRoot(new SiteRoot() { Folder = folder });
 
             var folders = _Configuration.GetSiteRootFolders();
-            Assert.IsFalse(folders.Any(r => r.ToLower() == folder.ToLower()));
-            Assert.IsTrue(folders.Any(r => r.ToLower() == (folder + '\\').ToLower()));
+            var siteRootFolder = folders[0];
+            Assert.AreEqual(Path.DirectorySeparatorChar, siteRootFolder[siteRootFolder.Length - 1]);
         }
 
         [TestMethod]
@@ -130,7 +153,8 @@ namespace Test.VirtualRadar.Owin.Configuration
         [TestMethod]
         public void FileSystemConfiguration_RemoveSiteRoot_Removes_Added_Site()
         {
-            var siteRoot = new SiteRoot() { Folder = TestContext.TestDeploymentDir };
+            _FileSystemProvider.AddFolder(@"c:\web");
+            var siteRoot = new SiteRoot() { Folder = @"c:\web" };
             _Configuration.AddSiteRoot(siteRoot);
             _Configuration.RemoveSiteRoot(siteRoot);
 
@@ -141,7 +165,8 @@ namespace Test.VirtualRadar.Owin.Configuration
         [TestMethod]
         public void FileSystemConfiguration_RemoveSiteRoot_Ignores_Sites_Not_Added()
         {
-            var siteRoot = new SiteRoot() { Folder = TestContext.TestDeploymentDir };
+            _FileSystemProvider.AddFolder(@"c:\web");
+            var siteRoot = new SiteRoot() { Folder = @"c:\web" };
             _Configuration.RemoveSiteRoot(siteRoot);
             Assert.IsFalse(_Configuration.IsSiteRootActive(siteRoot, false));
         }
@@ -162,35 +187,52 @@ namespace Test.VirtualRadar.Owin.Configuration
         [TestMethod]
         public void FileSystemConfiguration_IsSiteRootActive_Returns_True_If_SiteRoot_Added()
         {
-            var siteRoot = new SiteRoot() { Folder = TestContext.TestDeploymentDir };
+            _FileSystemProvider.AddFolder(@"c:\web");
+            var siteRoot = new SiteRoot() { Folder = @"c:\web" };
             _Configuration.AddSiteRoot(siteRoot);
+
             Assert.IsTrue(_Configuration.IsSiteRootActive(siteRoot, false));
         }
 
         [TestMethod]
         public void FileSystemConfiguration_IsSiteRootActive_Returns_True_If_SiteRoot_Folder_Changed_And_Folders_Are_Ignored()
         {
-            var siteRoot = new SiteRoot() { Folder = TestContext.TestDeploymentDir };
+            _FileSystemProvider.AddFolder(@"c:\web");
+            _FileSystemProvider.AddFolder(@"c:\other");
+
+            var siteRoot = new SiteRoot() { Folder = @"c:\web" };
             _Configuration.AddSiteRoot(siteRoot);
-            siteRoot.Folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            siteRoot.Folder = @"c:\other";
+
             Assert.IsTrue(_Configuration.IsSiteRootActive(siteRoot, false));
         }
 
         [TestMethod]
         public void FileSystemConfiguration_IsSiteRootActive_Returns_True_If_SiteRoot_Folder_Changed_And_Folders_Are_Significant()
         {
-            var siteRoot = new SiteRoot() { Folder = TestContext.TestDeploymentDir };
+            _FileSystemProvider.AddFolder(@"c:\web");
+            _FileSystemProvider.AddFolder(@"c:\other");
+
+            var siteRoot = new SiteRoot() { Folder = @"c:\web" };
             _Configuration.AddSiteRoot(siteRoot);
-            siteRoot.Folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            siteRoot.Folder = @"c:\other";
+
             Assert.IsFalse(_Configuration.IsSiteRootActive(siteRoot, true));
         }
 
         [TestMethod]
         public void FileSystemConfiguration_IsSiteRootActive_Returns_True_If_Changed_Folder_Points_To_Original_Folder()
         {
-            var siteRoot = new SiteRoot() { Folder = TestContext.TestDeploymentDir };
+            _FileSystemProvider.AddFolder(@"c:\web");
+            _FileSystemProvider.AddFolder(@"c:\web\subfolder");
+
+            var siteRoot = new SiteRoot() { Folder = @"c:\web" };
             _Configuration.AddSiteRoot(siteRoot);
-            siteRoot.Folder = Path.Combine(siteRoot.Folder, String.Format(@"..\{0}", Path.GetFileName(siteRoot.Folder)));
+
+            siteRoot.Folder = @"c:\web\subfolder\..";
+
             Assert.IsTrue(_Configuration.IsSiteRootActive(siteRoot, true));
         }
 
@@ -204,10 +246,14 @@ namespace Test.VirtualRadar.Owin.Configuration
         [TestMethod]
         public void FileSystemConfiguration_GetSiteRootFolders_Includes_Sites_Added_In_Order_Of_Priority()
         {
+            var abcFolder = @"c:\web\abc";
+            var xyzFolder = @"c:\web\xyz";
+
+            _FileSystemProvider.AddFolder(abcFolder);
+            _FileSystemProvider.AddFolder(xyzFolder);
+
             for(var i = 0;i < 2;++i) {
                 var expectAbcFirst = i % 2 == 0;
-                var abcFolder = $"{TestContext.TestDeploymentDir}\\StandingDataTest\\";
-                var xyzFolder = $"{TestContext.TestDeploymentDir}\\SubFolder\\";
                 var abcSiteRoot = new SiteRoot() { Folder = abcFolder, Priority = expectAbcFirst ? -1 : 1 };
                 var xyzSiteRoot = new SiteRoot() { Folder = xyzFolder, Priority = expectAbcFirst ? 1 : -1 };
                 _Configuration.AddSiteRoot(abcSiteRoot);
@@ -215,7 +261,7 @@ namespace Test.VirtualRadar.Owin.Configuration
 
                 var folders = _Configuration.GetSiteRootFolders();
                 Assert.AreEqual(2, folders.Count);
-                var abcIsFirst = folders[0].ToLower() == abcFolder.ToLower();
+                var abcIsFirst = folders[0].ToLower().TrimEnd('\\', '/') == abcFolder.ToLower();
 
                 Assert.AreEqual(expectAbcFirst, abcIsFirst);
                 _Configuration.RemoveSiteRoot(abcSiteRoot);
@@ -235,6 +281,85 @@ namespace Test.VirtualRadar.Owin.Configuration
             Assert.AreEqual(1, eventRecorder.CallCount);
             Assert.AreSame(_Configuration, eventRecorder.Sender);
             Assert.AreSame(args, eventRecorder.Args);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void FileSystemConfiguration_IsFileUnmodified_Throws_If_SiteRootFolder_Is_Null()
+        {
+            _Configuration.IsFileUnmodified(null, "/", new byte[0]);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void FileSystemConfiguration_IsFileUnmodified_Throws_If_RequestPath_Is_Null()
+        {
+            _Configuration.IsFileUnmodified(@"c:\web", null, new byte[0]);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void FileSystemConfiguration_IsFileUnmodified_Throws_If_Content_Is_Null()
+        {
+            _Configuration.IsFileUnmodified(@"c:\web", "/", null);
+        }
+
+        private ChecksumFileEntry CreateChecksummedFile(string webRoot, string pathFromWebRoot, byte[] content)
+        {
+            var fileName = Path.Combine(webRoot, pathFromWebRoot);
+            _FileSystemProvider.AddOrOverwriteFile(fileName, content);
+
+            var fullPathFromRoot = (pathFromWebRoot[0] == '\\' ? pathFromWebRoot : "\\" + pathFromWebRoot);
+
+            var result = new ChecksumFileEntry() {
+                FileName = fullPathFromRoot,
+                FileSize = content.Length,
+                Checksum = ChecksumFileEntry.GenerateChecksum(content),
+            };
+
+            return result;
+        }
+
+        private ChecksumFileEntry CreateChecksummedFile(string webRoot, string pathFromWebRoot, string content)
+        {
+            return CreateChecksummedFile(webRoot, pathFromWebRoot, Encoding.UTF8.GetBytes(content));
+        }
+
+        [TestMethod]
+        public void FileSystemConfiguration_IsFileUnmodified_Returns_False_If_File_Modified()
+        {
+            var webRoot = @"c:\web";
+
+            _Configuration.AddSiteRoot(new SiteRoot() {
+                Folder = webRoot,
+                Checksums = {
+                    CreateChecksummedFile(webRoot, "File.txt", "Old Content"),
+                }
+            });
+
+            var newBytes = Encoding.UTF8.GetBytes("New content");
+            _FileSystemProvider.OverwriteFile($@"{webRoot}\File.txt", newBytes);
+
+            var isUnmodified = _Configuration.IsFileUnmodified(webRoot, "/file.txt", newBytes);
+            Assert.IsFalse(isUnmodified);
+        }
+
+        [TestMethod]
+        public void FileSystemConfiguration_IsFileUnmodified_Returns_True_If_Modified_Was_Not_Checksummed()
+        {
+            var webRoot = @"c:\web";
+
+            CreateChecksummedFile(webRoot, "File.txt", "Old Content");
+
+            _Configuration.AddSiteRoot(new SiteRoot() {
+                Folder = webRoot,
+            });
+
+            var newBytes = Encoding.UTF8.GetBytes("New content");
+            _FileSystemProvider.OverwriteFile($@"{webRoot}\File.txt", newBytes);
+
+            var isUnmodified = _Configuration.IsFileUnmodified(webRoot, "/file.txt", newBytes);
+            Assert.IsTrue(isUnmodified);
         }
     }
 }

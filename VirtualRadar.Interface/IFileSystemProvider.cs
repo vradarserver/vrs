@@ -14,13 +14,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VirtualRadar.Interface.Owin
+namespace VirtualRadar.Interface
 {
     /// <summary>
-    /// The interface for providers that abstract away the file system for OWIN middleware.
+    /// The interface for providers that abstract away the file system.
     /// </summary>
     public interface IFileSystemProvider
     {
+        /// <summary>
+        /// Returns true if the directory exists.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        bool DirectoryExists(string path);
+
         /// <summary>
         /// Returns true if the file exists.
         /// </summary>
@@ -34,5 +41,12 @@ namespace VirtualRadar.Interface.Owin
         /// <param name="fileName">The name of the file. Case sensitivity depends on the underlying operating system.</param>
         /// <returns></returns>
         byte[] FileReadAllBytes(string fileName);
+
+        /// <summary>
+        /// Returns the size of a file.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        long FileSize(string fileName);
     }
 }

@@ -75,7 +75,6 @@
     <Compile Include="Configuration\AuthenticationConfiguration.cs" />
     <Compile Include="Middleware\AccessFilter.cs" />
     <Compile Include="Middleware\BasicAuthenticationFilter.cs" />
-    <Compile Include="Providers\FileSystemProvider.cs" />
     <Compile Include="Middleware\FileSystemServer.cs" />
     <Compile Include="Middleware\RedirectionFilter.cs" />
     <Compile Include="StandardPipeline.cs" />

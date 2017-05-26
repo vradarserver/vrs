@@ -38,20 +38,9 @@ namespace VirtualRadar.Owin.Configuration
             private Dictionary<string, ChecksumFileEntry> _RequestChecksumMap = new Dictionary<string, ChecksumFileEntry>();
 
             /// <summary>
-            /// A map of checksum filenames and the local checksums that have been calculated for them.
-            /// </summary>
-            private Dictionary<string, string> _LocalFileChecksumMap = new Dictionary<string, string>();
-
-            /// <summary>
             /// Locks write access to the fields.
             /// </summary>
             private object _SyncLock = new Object();
-
-            /// <summary>
-            /// The object that will watch for changes in checksummed files. If the root has no checksums then
-            /// this will be null.
-            /// </summary>
-            private IFileSystemWatcher _FileSystemWatcher;
 
             /// <summary>
             /// Gets the <see cref="SiteRoot"/> that represents the folder.
@@ -92,66 +81,6 @@ namespace VirtualRadar.Owin.Configuration
                 foreach(var checksum in siteRoot.Checksums) {
                     _RequestChecksumMap.Add(NormaliseRequestPath(checksum.FileName), checksum);
                 }
-
-                CreateFileSystemWatcher();
-            }
-
-            private void CreateFileSystemWatcher()
-            {
-                if(IsProtectedContent) {
-                    var watcher = Factory.Singleton.Resolve<IFileSystemWatcher>();
-                    watcher.Path = Folder;
-                    watcher.NotifyFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security | NotifyFilters.Size;
-                    watcher.Filter = "*";
-                    watcher.IncludeSubdirectories = true;
-                    watcher.Changed += FileSystemWatcher_Changed;
-                    watcher.Deleted += FileSystemWatcher_Deleted;
-                    watcher.Renamed += FileSystemWatcher_Renamed;
-                    watcher.Error += FileSystemWatcher_Error;
-
-                    lock(_SyncLock) {
-                        _FileSystemWatcher = watcher;
-                        _FileSystemWatcher.Enabled = true;
-                    }
-                }
-            }
-
-            private void DestroyFileSystemWatcher()
-            {
-                lock(_SyncLock) {
-                    if(_FileSystemWatcher != null) {
-                        _FileSystemWatcher.Enabled = false;
-                        _FileSystemWatcher.Changed -= FileSystemWatcher_Changed;
-                        _FileSystemWatcher.Deleted -= FileSystemWatcher_Deleted;
-                        _FileSystemWatcher.Renamed -= FileSystemWatcher_Renamed;
-                        _FileSystemWatcher.Error -= FileSystemWatcher_Error;
-                        _FileSystemWatcher.Dispose();
-
-                        _FileSystemWatcher = null;
-                    }
-                }
-            }
-
-            private void FileSystemWatcher_Error(object sender, ErrorEventArgs e)
-            {
-                DestroyFileSystemWatcher();
-                ResetLocalFileChecksumMap();
-                CreateFileSystemWatcher();
-            }
-
-            private void FileSystemWatcher_Renamed(object sender, RenamedEventArgs e)
-            {
-                ResetLocalFileChecksumMap();
-            }
-
-            private void FileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)
-            {
-                ResetLocalFileChecksumMap();
-            }
-
-            private void FileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
-            {
-                ResetLocalFileChecksumMap();
             }
 
             /// <summary>
@@ -182,8 +111,6 @@ namespace VirtualRadar.Owin.Configuration
             private void Dispose(bool disposing)
             {
                 if(disposing) {
-                    DestroyFileSystemWatcher();
-                    ResetLocalFileChecksumMap();
                 }
             }
 
@@ -211,65 +138,18 @@ namespace VirtualRadar.Owin.Configuration
             /// Tests whether the file described by the checksum entry has been altered.
             /// </summary>
             /// <param name="entry"></param>
-            /// <param name="fileName"></param>
+            /// <param name="content"></param>
             /// <returns></returns>
-            public bool TestChecksum(ChecksumFileEntry entry, string fileName)
+            public bool TestChecksum(ChecksumFileEntry entry, byte[] content)
             {
-                var result = entry != null;
-                if(result) {
-                    result = File.Exists(fileName);
-                    if(result) {
-                        string checksum = GetOrGenerateLocalFileChecksum(entry, fileName);
-                        var length = ChecksumFileEntry.GetFileSize(fileName);
-                        result = checksum == entry.Checksum && length == entry.FileSize;
-                    }
+                var result = entry == null;
+
+                if(!result) {
+                    var checksum = ChecksumFileEntry.GenerateChecksum(content);
+                    result = checksum == entry.Checksum;
                 }
 
                 return result;
-            }
-
-            /// <summary>
-            /// Returns the cached checksum for the file, generating it if it's not already cached.
-            /// </summary>
-            /// <param name="entry"></param>
-            /// <param name="fileName"></param>
-            /// <returns></returns>
-            private string GetOrGenerateLocalFileChecksum(ChecksumFileEntry entry, string fileName)
-            {
-                string result = null;
-
-                var localFileChecksumMap = _LocalFileChecksumMap;
-                var watcher = _FileSystemWatcher;
-                var checksumKey = entry.FileName;
-                var fileSystemWatcherMissing = watcher == null || !watcher.Enabled;
-
-                if(fileSystemWatcherMissing || !localFileChecksumMap.TryGetValue(checksumKey, out result)) {
-                    result = ChecksumFileEntry.GenerateChecksum(fileName);
-
-                    if(!fileSystemWatcherMissing) {
-                        lock(_SyncLock) {
-                            var newMap = CollectionHelper.ShallowCopy(_LocalFileChecksumMap);
-                            if(newMap.ContainsKey(checksumKey)) {
-                                newMap[checksumKey] = result;
-                            } else {
-                                newMap.Add(checksumKey, result);
-                            }
-                            _LocalFileChecksumMap = newMap;
-                        }
-                    }
-                }
-
-                return result;
-            }
-
-            /// <summary>
-            /// Resets the local file checksum map without affecting requests that are already running.
-            /// </summary>
-            private void ResetLocalFileChecksumMap()
-            {
-                lock(_SyncLock) {
-                    _LocalFileChecksumMap = new Dictionary<string, string>();
-                }
             }
         }
         #endregion
@@ -305,13 +185,15 @@ namespace VirtualRadar.Owin.Configuration
         /// <param name="siteRoot"></param>
         public void AddSiteRoot(SiteRoot siteRoot)
         {
+            var fileSystem = Factory.Singleton.Resolve<IFileSystemProvider>();
+
             if(siteRoot == null) {
                 throw new ArgumentNullException(nameof(siteRoot));
             }
             if(String.IsNullOrEmpty(siteRoot.Folder)) {
                 throw new ArgumentException(nameof(siteRoot.Folder));
             }
-            if(!Directory.Exists(siteRoot.Folder)) {
+            if(!fileSystem.DirectoryExists(siteRoot.Folder)) {
                 throw new InvalidOperationException($"{siteRoot.Folder} does not exist");
             }
             if(!Path.IsPathRooted(siteRoot.Folder)) {
@@ -378,6 +260,42 @@ namespace VirtualRadar.Owin.Configuration
         }
 
         /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="siteRootFolder"></param>
+        /// <param name="requestPath"></param>
+        /// <param name="fileContent"></param>
+        /// <returns></returns>
+        public bool IsFileUnmodified(string siteRootFolder, string requestPath, byte[] fileContent)
+        {
+            if(String.IsNullOrEmpty(siteRootFolder)) {
+                throw new ArgumentNullException($"{nameof(siteRootFolder)} is null or empty");
+            }
+            if(String.IsNullOrEmpty(requestPath)) {
+                throw new ArgumentNullException($"{nameof(requestPath)} is null or empty");
+            }
+            if(fileContent == null) {
+                throw new ArgumentNullException(nameof(fileContent));
+            }
+
+            var root = FindRoot(siteRootFolder);
+            var checksumEntry = root.FindChecksum(requestPath);
+
+            return root.TestChecksum(checksumEntry, fileContent);
+        }
+
+        /// <summary>
+        /// Returns the site root matching the folder passed across.
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <returns></returns>
+        private Root FindRoot(string folder)
+        {
+            var normalisedFolder = NormalisePath(folder);
+            return _Roots.FirstOrDefault(r => r.Folder == normalisedFolder);
+        }
+
+        /// <summary>
         /// Returns a normalised version of a request path.
         /// </summary>
         /// <param name="requestPath"></param>
@@ -395,8 +313,13 @@ namespace VirtualRadar.Owin.Configuration
         private static string NormalisePath(string folder)
         {
             folder = Path.GetFullPath(folder ?? "");
-            if(Path.AltDirectorySeparatorChar != Path.DirectorySeparatorChar) folder = folder.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-            if(folder[folder.Length - 1] != Path.DirectorySeparatorChar) folder += Path.DirectorySeparatorChar;
+
+            if(Path.AltDirectorySeparatorChar != Path.DirectorySeparatorChar) {
+                folder = folder.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            }
+            if(folder[folder.Length - 1] != Path.DirectorySeparatorChar) {
+                folder += Path.DirectorySeparatorChar;
+            }
 
             return folder;
         }

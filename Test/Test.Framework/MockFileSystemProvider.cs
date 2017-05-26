@@ -15,14 +15,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VirtualRadar.Interface;
-using VirtualRadar.Interface.Owin;
 
-namespace Test.VirtualRadar.Owin
+namespace Test.Framework
 {
     /// <summary>
     /// Configurable mock file system provider.
     /// </summary>
-    class MockFileSystemProvider : IFileSystemProvider
+    public class MockFileSystemProvider : IFileSystemProvider
     {
         class MockFileSystemEntity
         {
@@ -96,6 +95,11 @@ namespace Test.VirtualRadar.Owin
 
                 Content = content;
             }
+
+            public void ChangeContent(byte[] content)
+            {
+                Content = content;
+            }
         }
 
         /// <summary>
@@ -145,6 +149,40 @@ namespace Test.VirtualRadar.Owin
             {
                 var result = new MockFile(_Provider, this, name, content);
                 Contents.Add(result);
+
+                return result;
+            }
+
+            public MockFile DeleteFile(string name)
+            {
+                var result = FindFile(name);
+                if(result != null) {
+                    Contents.Remove(result);
+                }
+
+                return result;
+            }
+
+            public MockFile OverwriteFile(string name, byte[] content)
+            {
+                var result = FindFile(name);
+
+                if(result != null) {
+                    result.ChangeContent(content);
+                }
+
+                return result;
+            }
+
+            public MockFile AddOrOverwriteFile(string name, byte[] content)
+            {
+                var result = FindFile(name);
+
+                if(result == null) {
+                    result = AddFile(name, content);
+                } else {
+                    result.ChangeContent(content);
+                }
 
                 return result;
             }
@@ -217,6 +255,26 @@ namespace Test.VirtualRadar.Owin
         public void AddFile(string path, byte[] content)
         {
             CreatePathAndPerformActionOnFile(path, (folder, fileName) => folder.AddFile(fileName, content));
+        }
+
+        /// <summary>
+        /// Overwrites a fully pathed file.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="content"></param>
+        public void OverwriteFile(string path, byte[] content)
+        {
+            FollowPathAndPerformActionOnFile(path, (folder, fileName) => folder.OverwriteFile(fileName, content), throwIfNotFound: true);
+        }
+
+        /// <summary>
+        /// Adds or overwrites a fully pathed file.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="content"></param>
+        public void AddOrOverwriteFile(string path, byte[] content)
+        {
+            CreatePathAndPerformActionOnFile(path, (folder, fileName) => folder.AddOrOverwriteFile(fileName, content));
         }
 
         /// <summary>
@@ -335,6 +393,39 @@ namespace Test.VirtualRadar.Owin
         }
 
         /// <summary>
+        /// Follows the folders for the entire path and then passes the <see cref="MockFolder"/> to the
+        /// <paramref name="folderAction"/> passed across.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="folderAction"></param>
+        /// <param name="throwIfNotFound"></param>
+        private void FollowPathAndPerformActionOnFolder(string path, Action<MockFolder> folderAction, bool throwIfNotFound = false)
+        {
+            var pathParts = DecomposePath(path);
+            if(pathParts.Count > 0) {
+                var folder = _Root;
+                var currentFolder = new StringBuilder();
+
+                foreach(var pathPart in pathParts) {
+                    currentFolder.Append($"{Path.DirectorySeparatorChar}{pathPart}");
+
+                    folder = folder.FindFolder(pathPart);
+                    if(folder == null) {
+                        if(throwIfNotFound) {
+                            throw new DirectoryNotFoundException($"{currentFolder} cannot be found");
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                if(folder != null) {
+                    folderAction(folder);
+                }
+            }
+        }
+
+        /// <summary>
         /// Returns the file at the path specified.
         /// </summary>
         /// <param name="path"></param>
@@ -356,6 +447,37 @@ namespace Test.VirtualRadar.Owin
         }
 
         /// <summary>
+        /// Returns the folder at the path specified.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="throwIfNotFound"></param>
+        /// <returns></returns>
+        private MockFolder FindFolder(string path, bool throwIfNotFound = false)
+        {
+            MockFolder result = null;
+
+            FollowPathAndPerformActionOnFolder(path, folder => {
+                result = folder;
+            }, throwIfNotFound);
+
+            if(result == null && throwIfNotFound) {
+                throw new DirectoryNotFoundException($"{path} cannot be found");
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public bool DirectoryExists(string path)
+        {
+            return FindFolder(path, throwIfNotFound: false) != null;
+        }
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         /// <param name="fileName"></param>
@@ -374,6 +496,17 @@ namespace Test.VirtualRadar.Owin
         {
             var mockFile = FindFile(fileName, throwIfNotFound: true);
             return mockFile.Content;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public long FileSize(string fileName)
+        {
+            var mockFile = FindFile(fileName, throwIfNotFound: true);
+            return mockFile.Content.LongLength;
         }
     }
 }

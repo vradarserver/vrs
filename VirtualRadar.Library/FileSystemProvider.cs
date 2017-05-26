@@ -14,15 +14,25 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VirtualRadar.Interface.Owin;
+using VirtualRadar.Interface;
 
-namespace VirtualRadar.Owin.Providers
+namespace VirtualRadar.Library
 {
     /// <summary>
     /// The default file system provider.
     /// </summary>
     class FileSystemProvider : IFileSystemProvider
     {
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public bool DirectoryExists(string path)
+        {
+            return Directory.Exists(path);
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -41,6 +51,16 @@ namespace VirtualRadar.Owin.Providers
         public byte[] FileReadAllBytes(string fileName)
         {
             return File.ReadAllBytes(fileName);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public long FileSize(string fileName)
+        {
+            return new FileInfo(fileName).Length;
         }
     }
 }
