@@ -142,9 +142,9 @@ namespace VirtualRadar.Owin.Configuration
             /// <returns></returns>
             public bool TestChecksum(ChecksumFileEntry entry, byte[] content)
             {
-                var result = entry == null;
+                var result = entry != null;
 
-                if(!result) {
+                if(result) {
                     var checksum = ChecksumFileEntry.GenerateChecksum(content);
                     result = checksum == entry.Checksum;
                 }
@@ -279,9 +279,14 @@ namespace VirtualRadar.Owin.Configuration
             }
 
             var root = FindRoot(siteRootFolder);
-            var checksumEntry = root.FindChecksum(requestPath);
+            var result = !root.IsProtectedContent;
 
-            return root.TestChecksum(checksumEntry, fileContent);
+            if(!result) {
+                var checksumEntry = root.FindChecksum(requestPath);
+                result = root.TestChecksum(checksumEntry, fileContent);
+            }
+
+            return result;
         }
 
         /// <summary>

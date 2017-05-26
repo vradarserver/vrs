@@ -361,5 +361,23 @@ namespace Test.VirtualRadar.Owin.Configuration
             var isUnmodified = _Configuration.IsFileUnmodified(webRoot, "/file.txt", newBytes);
             Assert.IsTrue(isUnmodified);
         }
+
+        [TestMethod]
+        public void FileSystemConfiguration_IsFileUnmodified_Returns_False_If_File_Is_In_Protected_Root_Without_Checksum()
+        {
+            var webRoot = @"c:\web";
+
+            _Configuration.AddSiteRoot(new SiteRoot() {
+                Folder = webRoot,
+                Checksums = {
+                    // Having a checksum for a file in the web root indicates that all files under the web root
+                    // are checksummed. Serving files from the root without a checksum is not allowed.
+                    CreateChecksummedFile(webRoot, "SomeOtherFile.txt", "Opportunity Three"),
+                }
+            });
+
+            var isUnmodified = _Configuration.IsFileUnmodified(webRoot, "/file.txt", Encoding.UTF8.GetBytes("The Only One I Know"));
+            Assert.IsFalse(isUnmodified);
+        }
     }
 }
