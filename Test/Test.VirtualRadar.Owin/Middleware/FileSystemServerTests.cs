@@ -253,6 +253,19 @@ namespace Test.VirtualRadar.Owin.Middleware
         }
 
         [TestMethod]
+        public void FileSystemServer_If_File_Exists_In_Two_Roots_Then_First_Root_Returned_By_Configuration_Is_Used()
+        {
+            var content = Encoding.UTF8.GetBytes("Sproston Green");
+            AddSiteRootAndFile(@"c:\first",  "file.html", content);
+            AddSiteRootAndFile(@"c:\second", "file.html", "DO NOT USE THIS ONE");
+
+            ConfigureRequest("/file.html");
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            AssertFileReturned(MimeType.Html, content);
+        }
+
+        [TestMethod]
         public void FileSystemServer_Tests_Flattened_Paths_For_Checksums()
         {
             var content = Encoding.UTF8.GetBytes("Wild Horses");

@@ -92,7 +92,6 @@ namespace VirtualRadar.Owin.Middleware
             var response = context.Response;
 
             var relativePath = ConvertRequestPathToRelativeFilePath(request.FlattenedPath);
-
             if(!String.IsNullOrEmpty(relativePath)) {
                 foreach(var siteRoot in _Configuration.GetSiteRootFolders()) {
                     var fullPath = Path.Combine(siteRoot, relativePath);
@@ -102,36 +101,52 @@ namespace VirtualRadar.Owin.Middleware
                         var mimeType = MimeType.GetForExtension(extension) ?? "application/octet-stream";
                         var content = FileSystemProvider.FileReadAllBytes(fullPath);
 
-                        if(!_Configuration.IsFileUnmodified(siteRoot, request.FlattenedPath, content)) {
+                        if(_Configuration.IsFileUnmodified(siteRoot, request.FlattenedPath, content)) {
+                            content = RaiseTextLoadedFromFile(request, content, mimeType);
+                            SendContent(response, content, mimeType);
+                        } else {
                             if(mimeType != MimeType.Html) {
                                 response.StatusCode = (int)HttpStatusCode.BadRequest;
                             } else {
                                 content = Encoding.UTF8.GetBytes("<HTML><HEAD><TITLE>No</TITLE></HEAD><BODY>VRS will not serve content that has been tampered with. Install the custom content plugin if you want to alter the site's files.</BODY></HTML>");
                                 SendContent(response, content, mimeType);
                             }
-                        } else {
-                            if(mimeType == MimeType.Css ||
-                               mimeType == MimeType.Html ||
-                               mimeType == MimeType.Javascript ||
-                               mimeType == MimeType.Text) {
-                                var textContent = TextContent.Load(content);
-                                var args = new TextContentEventArgs(
-                                    request.FlattenedPath,
-                                    textContent.Content,
-                                    textContent.Encoding,
-                                    mimeType
-                                );
-                                _Configuration.RaiseTextLoadedFromFile(args);
-
-                                textContent.Content = args.Content;
-                                content = textContent.GetBytes(includePreamble: true);
-                            }
-
-                            SendContent(response, content, mimeType);
                         }
+
+                        break;
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Raises the TextLoadedFromFile event on the singleton configuration object if the mime type indicates
+        /// that it's a recognised text file.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="content"></param>
+        /// <param name="mimeType"></param>
+        /// <returns></returns>
+        private byte[] RaiseTextLoadedFromFile(PipelineRequest request, byte[] content, string mimeType)
+        {
+            if(mimeType == MimeType.Css ||
+               mimeType == MimeType.Html ||
+               mimeType == MimeType.Javascript ||
+               mimeType == MimeType.Text) {
+                var textContent = TextContent.Load(content);
+                var args = new TextContentEventArgs(
+                    request.FlattenedPath,
+                    textContent.Content,
+                    textContent.Encoding,
+                    mimeType
+                );
+                _Configuration.RaiseTextLoadedFromFile(args);
+
+                textContent.Content = args.Content;
+                content = textContent.GetBytes(includePreamble: true);
+            }
+
+            return content;
         }
 
         /// <summary>
