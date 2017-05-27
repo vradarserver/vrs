@@ -35,5 +35,10 @@ namespace VirtualRadar.Interface.Owin
         /// The normal priority for Microsft Web API requests.
         /// </summary>
         public static readonly int WebApi = 0;
+
+        /// <summary>
+        /// The normal priority for file system requests.
+        /// </summary>
+        public static readonly int FileSystemServer = WebApi + 100;
     }
 }

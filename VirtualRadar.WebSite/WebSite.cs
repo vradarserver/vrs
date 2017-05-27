@@ -231,11 +231,6 @@ namespace VirtualRadar.WebSite
         private CorsPreflightPage _CorsPreflightPage;
 
         /// <summary>
-        /// The page that deals with serving requests from the file system.
-        /// </summary>
-        private FileSystemPage _FileSystemPage;
-
-        /// <summary>
         /// The page that will deal with requests for images.
         /// </summary>
         private ImagePage _ImagePage;
@@ -311,7 +306,6 @@ namespace VirtualRadar.WebSite
 
             _AircraftListJsonPage = new AircraftListJsonPage(this);
             _CorsPreflightPage = new CorsPreflightPage(this);
-            _FileSystemPage = new FileSystemPage(this);
             _ImagePage = new ImagePage(this);
             _ReportRowsJsonPage = new ReportRowsJsonPage(this);
         }
@@ -353,13 +347,14 @@ namespace VirtualRadar.WebSite
                 _Minifier.Initialise();
 
                 _Pages.Add(_CorsPreflightPage);
-                _Pages.Add(_FileSystemPage);
                 _Pages.Add(new TextPage(this));
                 _Pages.Add(_AircraftListJsonPage);
                 _Pages.Add(_ImagePage);
                 _Pages.Add(new AudioPage(this));
-                _Pages.Add(new FaviconPage(this));
                 _Pages.Add(_ReportRowsJsonPage);
+
+                var fileSystemConfiguration = Factory.Singleton.Resolve<IFileSystemConfiguration>().Singleton;
+                fileSystemConfiguration.TextLoadedFromFile += FileSystemConfiguration_TextLoadedFromFile;
 
                 _JavaScriptInjectors.Add(new WebSiteStringsInjector());
 
@@ -424,7 +419,8 @@ namespace VirtualRadar.WebSite
         /// <param name="siteRoot"></param>
         public void AddSiteRoot(SiteRoot siteRoot)
         {
-            _FileSystemPage.AddSiteRoot(siteRoot);
+            var configuration = Factory.Singleton.Resolve<IFileSystemConfiguration>().Singleton;
+            configuration.AddSiteRoot(siteRoot);
         }
 
         /// <summary>
@@ -433,7 +429,8 @@ namespace VirtualRadar.WebSite
         /// <param name="siteRoot"></param>
         public void RemoveSiteRoot(SiteRoot siteRoot)
         {
-            _FileSystemPage.RemoveSiteRoot(siteRoot);
+            var configuration = Factory.Singleton.Resolve<IFileSystemConfiguration>().Singleton;
+            configuration.RemoveSiteRoot(siteRoot);
         }
 
         /// <summary>
@@ -444,7 +441,8 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         public bool IsSiteRootActive(SiteRoot siteRoot, bool folderMustMatch)
         {
-            return _FileSystemPage.IsSiteRootActive(siteRoot, folderMustMatch);
+            var configuration = Factory.Singleton.Resolve<IFileSystemConfiguration>().Singleton;
+            return configuration.IsSiteRootActive(siteRoot, folderMustMatch);
         }
 
         /// <summary>
@@ -453,7 +451,8 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         public List<string> GetSiteRootFolders()
         {
-            return _FileSystemPage.GetSiteRootFolders();
+            var configuration = Factory.Singleton.Resolve<IFileSystemConfiguration>().Singleton;
+            return configuration.GetSiteRootFolders();
         }
         #endregion
 
@@ -512,17 +511,17 @@ namespace VirtualRadar.WebSite
             return result;
         }
 
-        /// <summary>
-        /// Injects content into the JavaScript file passed across.
-        /// </summary>
-        /// <param name="requestPathAndFile"></param>
-        /// <param name="textContent"></param>
-        internal void InjectIntoJavaScript(string requestPathAndFile, TextContent textContent)
-        {
-            foreach(var injector in _JavaScriptInjectors) {
-                injector.InjectIntoContent(requestPathAndFile, textContent);
-            }
-        }
+//        /// <summary>
+//        /// Injects content into the JavaScript file passed across.
+//        /// </summary>
+//        /// <param name="requestPathAndFile"></param>
+//        /// <param name="textContent"></param>
+//        internal void InjectIntoJavaScript(string requestPathAndFile, TextContent textContent)
+//        {
+//            foreach(var injector in _JavaScriptInjectors) {
+//                injector.InjectIntoContent(requestPathAndFile, textContent);
+//            }
+//        }
 
         /// <summary>
         /// Minifies JavaScript on behalf of a page.
@@ -684,6 +683,29 @@ namespace VirtualRadar.WebSite
         private void Server_RequestReceived(object sender, RequestReceivedEventArgs args)
         {
             RequestContent(args);
+        }
+
+        /// <summary>
+        /// Raised when the OWIN file system server is about to serve a text file.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void FileSystemConfiguration_TextLoadedFromFile(object sender, TextContentEventArgs args)
+        {
+            if(args.MimeType == MimeType.Html) {
+                OnHtmlLoadedFromFile(args);
+            } else if(args.MimeType == MimeType.Javascript) {
+                var textContent = new TextContent() {
+                    Content = args.Content,
+                    Encoding = args.Encoding,
+                };
+
+                foreach(var injector in _JavaScriptInjectors) {
+                    injector.InjectIntoContent(args.PathAndFile, textContent);
+                }
+
+                args.Content = textContent.Content;
+            }
         }
         #endregion
     }

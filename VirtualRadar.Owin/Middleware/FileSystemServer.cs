@@ -157,10 +157,10 @@ namespace VirtualRadar.Owin.Middleware
         /// <param name="mimeType"></param>
         private static void SendContent(PipelineResponse response, byte[] content, string mimeType)
         {
+            response.ContentType = mimeType;
+            response.StatusCode = (int)HttpStatusCode.OK;
             response.ContentLength = content.Length;
             response.Body.Write(content, 0, content.Length);
-            response.StatusCode = (int)HttpStatusCode.OK;
-            response.ContentType = mimeType;
         }
 
         /// <summary>

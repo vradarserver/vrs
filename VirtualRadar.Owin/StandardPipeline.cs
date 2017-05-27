@@ -40,6 +40,8 @@ namespace VirtualRadar.Owin
 
             webAppConfiguration.AddCallback(ConfigureHttpConfiguration,     StandardPipelinePriority.WebApiConfiguration);
             webAppConfiguration.AddCallback(UseWebApi,                      StandardPipelinePriority.WebApi);
+
+            webAppConfiguration.AddCallback(UseFileSystemServer,            StandardPipelinePriority.FileSystemServer);
         }
 
         private static void UseAccessFilter(IAppBuilder app)
@@ -78,6 +80,13 @@ namespace VirtualRadar.Owin
         {
             var configuration = Factory.Singleton.Resolve<IWebAppConfiguration>().Singleton.GetHttpConfiguration();
             app.UseWebApi(configuration);
+        }
+
+        private static void UseFileSystemServer(IAppBuilder app)
+        {
+            var server = Factory.Singleton.Resolve<IFileSystemServer>();
+            var middleware = new Func<AppFunc, AppFunc>(server.HandleRequest);
+            app.Use(middleware);
         }
     }
 }

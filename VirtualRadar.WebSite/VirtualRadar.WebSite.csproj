@@ -87,8 +87,6 @@
     <Compile Include="AudioPage.cs" />
     <Compile Include="Bundler.cs" />
     <Compile Include="CorsPreflightPage.cs" />
-    <Compile Include="FaviconPage.cs" />
-    <Compile Include="FileSystemPage.cs" />
     <Compile Include="FontCache.cs" />
     <Compile Include="HtmlLocaliser.cs" />
     <Compile Include="ImagePage.cs" />
