@@ -141,7 +141,17 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
 
             AssertFileReturned(MimeType.Text, content);
-            Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
+        }
+
+        [TestMethod]
+        public void FileSystemServer_Stops_Pipeline_If_File_Served()
+        {
+            AddSiteRootAndFile(@"c:\web\root", "Distant.mp3", "Past");
+            ConfigureRequest("/Distant.mp3");
+
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
         }
 
         [TestMethod]
@@ -154,6 +164,38 @@ namespace Test.VirtualRadar.Owin.Middleware
 
             AssertNoFileReturned();
             Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
+        }
+
+        [TestMethod]
+        public void FileSystemServer_Ignores_Requests_Containing_Invalid_Path_Characters()
+        {
+            AddSiteRoot(@"c:\web");
+
+            foreach(var invalidPathChar in Path.GetInvalidPathChars()) {
+                var badRequest = $"/web/-{invalidPathChar}-/File.txt";
+                ConfigureRequest(badRequest);
+
+                _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+                AssertNoFileReturned();
+                Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
+            }
+        }
+
+        [TestMethod]
+        public void FileSystemServer_Ignores_Requests_Containing_Invalid_Filename_Characters()
+        {
+            AddSiteRoot(@"c:\web");
+
+            foreach(var invalidFileNameChar in Path.GetInvalidFileNameChars()) {
+                var badRequest = $"/web/-{invalidFileNameChar}-.txt";
+                ConfigureRequest(badRequest);
+
+                _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+                AssertNoFileReturned();
+                Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
+            }
         }
 
         [TestMethod]

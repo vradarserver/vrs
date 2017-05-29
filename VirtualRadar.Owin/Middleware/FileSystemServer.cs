@@ -73,25 +73,30 @@ namespace VirtualRadar.Owin.Middleware
         public AppFunc HandleRequest(AppFunc next)
         {
             AppFunc appFunc = async(IDictionary<string, object> environment) => {
-                ServeFromFileSystem(environment);
-
-                await next.Invoke(environment);
+                var context = PipelineContext.GetOrCreate(environment);
+                if(!ServeFromFileSystem(environment)) {
+                    await next.Invoke(environment);
+                }
             };
 
             return appFunc;
         }
 
         /// <summary>
-        /// Honours requests for files from the file system.
+        /// Honours requests for files from the file system. Returns false if no file matched the request.
         /// </summary>
         /// <param name="environment"></param>
-        private void ServeFromFileSystem(IDictionary<string, object> environment)
+        /// <returns></returns>
+        private bool ServeFromFileSystem(IDictionary<string, object> environment)
         {
+            var result = false;
+
             var context = PipelineContext.GetOrCreate(environment);
             var request = context.Request;
             var response = context.Response;
 
             var relativePath = ConvertRequestPathToRelativeFilePath(request.FlattenedPath);
+            relativePath = RejectInvalidCharacters(relativePath);
             if(!String.IsNullOrEmpty(relativePath)) {
                 foreach(var siteRoot in _Configuration.GetSiteRootFolders()) {
                     var fullPath = Path.Combine(siteRoot, relativePath);
@@ -113,10 +118,13 @@ namespace VirtualRadar.Owin.Middleware
                             }
                         }
 
+                        result = true;
                         break;
                     }
                 }
             }
+
+            return result;
         }
 
         /// <summary>
@@ -178,6 +186,28 @@ namespace VirtualRadar.Owin.Middleware
                 }
 
                 result = result.Replace('/', Path.DirectorySeparatorChar);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns null if the path contains invalid file system characters.
+        /// </summary>
+        /// <param name="relativePath"></param>
+        /// <returns></returns>
+        private string RejectInvalidCharacters(string relativePath)
+        {
+            var result = relativePath;
+
+            if(!String.IsNullOrEmpty(relativePath)) {
+                var chunks = relativePath.Split(Path.DirectorySeparatorChar);
+                for(var i = 0;result != null && i < chunks.Length;++i) {
+                    var badCharacters = i + 1 < chunks.Length ? Path.GetInvalidPathChars() : Path.GetInvalidFileNameChars();
+                    if(chunks[i].Any(r => badCharacters.Contains(r))) {
+                        result = null;
+                    }
+                }
             }
 
             return result;

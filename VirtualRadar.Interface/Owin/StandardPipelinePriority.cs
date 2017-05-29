@@ -11,6 +11,10 @@ namespace VirtualRadar.Interface.Owin
     /// </summary>
     public static class StandardPipelinePriority
     {
+        /***********************************************************************************************
+         * Middleware that has to run before *ANYTHING* else
+         **********************************************************************************************/
+
         /// <summary>
         /// The normal priority for access checking.
         /// </summary>
@@ -26,6 +30,10 @@ namespace VirtualRadar.Interface.Owin
         /// </summary>
         public static readonly int Redirection = Authentication + 100;
 
+        /***********************************************************************************************
+         * 3rd party frameworks that short-circuit pipeline processing if they handle a request
+         **********************************************************************************************/
+
         /// <summary>
         /// The normal priority for callbacks that configure HttpConfiguration for Web API.
         /// </summary>
@@ -35,6 +43,10 @@ namespace VirtualRadar.Interface.Owin
         /// The normal priority for Microsft Web API requests.
         /// </summary>
         public static readonly int WebApi = 0;
+
+        /***********************************************************************************************
+         * VRS middleware that runs only if 3rd party frameworks have not yet handled the request
+         **********************************************************************************************/
 
         /// <summary>
         /// The normal priority for file system requests.

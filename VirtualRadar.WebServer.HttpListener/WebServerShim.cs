@@ -20,6 +20,7 @@ using Microsoft.Owin;
 using Owin;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.WebServer;
+using VirtualRadar.Interface.Owin;
 
 namespace VirtualRadar.WebServer.HttpListener
 {
@@ -68,6 +69,7 @@ namespace VirtualRadar.WebServer.HttpListener
         {
             AppFunc appFunc = async(IDictionary<string, object> environment) => {
                 var context = new Context(environment);
+
                 HandleRequest(context);
 
                 if(!context.StopProcessing) {
