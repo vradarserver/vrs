@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="Configuration\AccessConfiguration.cs" />
     <Compile Include="Configuration\FileSystemServerConfiguration.cs" />
+    <Compile Include="Configuration\ImageServerConfiguration.cs" />
     <Compile Include="Configuration\RedirectionConfiguration.cs" />
     <Compile Include="Implementations.cs" />
     <Compile Include="Configuration\AuthenticationConfiguration.cs" />

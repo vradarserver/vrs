@@ -467,6 +467,9 @@ namespace Test.Framework
             return result;
         }
 
+        public int DirectoryExists_CallCount { get; private set; }
+        public Dictionary<string, int> DirectoryExists_CallCountByPath { get; private set; }  = new Dictionary<string, int>();
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -474,8 +477,20 @@ namespace Test.Framework
         /// <returns></returns>
         public bool DirectoryExists(string path)
         {
+            ++DirectoryExists_CallCount;
+            var pathCallCountKey = path ?? "";
+            int pathCallCount;
+            if(DirectoryExists_CallCountByPath.TryGetValue(pathCallCountKey, out pathCallCount)) {
+                DirectoryExists_CallCountByPath[pathCallCountKey]++;
+            } else {
+                DirectoryExists_CallCountByPath.Add(pathCallCountKey, 1);
+            }
+
             return FindFolder(path, throwIfNotFound: false) != null;
         }
+
+        public int FileExists_CallCount { get; private set; }
+        public Dictionary<string, int> FileExists_CallCountByFileName { get; private set; }  = new Dictionary<string, int>();
 
         /// <summary>
         /// See interface docs.
@@ -484,6 +499,15 @@ namespace Test.Framework
         /// <returns></returns>
         public bool FileExists(string fileName)
         {
+            ++FileExists_CallCount;
+            var fileNameCallCountKey = fileName ?? "";
+            int fileNameCallCount;
+            if(FileExists_CallCountByFileName.TryGetValue(fileNameCallCountKey, out fileNameCallCount)) {
+                FileExists_CallCountByFileName[fileNameCallCountKey]++;
+            } else {
+                FileExists_CallCountByFileName.Add(fileNameCallCountKey, 1);
+            }
+
             return FindFile(fileName, throwIfNotFound: false) != null;
         }
 

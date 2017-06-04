@@ -154,6 +154,7 @@
     <Compile Include="Owin\IFileSystemServerConfiguration.cs" />
     <Compile Include="IFileSystemProvider.cs" />
     <Compile Include="Owin\IFileSystemServer.cs" />
+    <Compile Include="Owin\IImageServerConfiguration.cs" />
     <Compile Include="Owin\IRedirectionFilter.cs" />
     <Compile Include="Owin\IRedirectionConfiguration.cs" />
     <Compile Include="Owin\PipelineApiController.cs" />

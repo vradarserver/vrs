@@ -84,6 +84,7 @@
     <Compile Include="Configuration\AccessConfigurationTests.cs" />
     <Compile Include="Configuration\AuthenticationConfigurationTests.cs" />
     <Compile Include="Configuration\FileSystemServerConfigurationTests.cs" />
+    <Compile Include="Configuration\ImageServerConfigurationTests.cs" />
     <Compile Include="Configuration\RedirectionConfigurationTests.cs" />
     <Compile Include="Middleware\AccessFilterTests.cs" />
     <Compile Include="Middleware\BasicAuthenticationFilterTests.cs" />

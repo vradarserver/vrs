@@ -13,32 +13,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
 
-namespace VirtualRadar.Owin
+namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// Registers implementations of interfaces with a class factory.
+    /// The interface for a singleton object that holds configuration information for
+    /// <see cref="IImageServer"/> middleware.
     /// </summary>
-    public static class Implementations
+    public interface IImageServerConfiguration : ISingleton<IImageServerConfiguration>
     {
         /// <summary>
-        /// Registers implementations of interfaces.
+        /// Gets the operator flag folder from current configuration or null if the configured folder
+        /// does not exist or is not accessible.
         /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
-        {
-            factory.Register<Interface.Owin.IAccessConfiguration, Configuration.AccessConfiguration>();
-            factory.Register<Interface.Owin.IAuthenticationConfiguration, Configuration.AuthenticationConfiguration>();
-            factory.Register<Interface.Owin.IFileSystemServerConfiguration, Configuration.FileSystemServerConfiguration>();
-            factory.Register<Interface.Owin.IImageServerConfiguration, Configuration.ImageServerConfiguration>();
-            factory.Register<Interface.Owin.IRedirectionConfiguration, Configuration.RedirectionConfiguration>();
-            factory.Register<Interface.Owin.IWebAppConfiguration, Configuration.WebAppConfiguration>();
+        string OperatorFolder { get; }
 
-            factory.Register<Interface.Owin.IAccessFilter, Middleware.AccessFilter>();
-            factory.Register<Interface.Owin.IBasicAuthenticationFilter, Middleware.BasicAuthenticationFilter>();
-            factory.Register<Interface.Owin.IFileSystemServer, Middleware.FileSystemServer>();
-            factory.Register<Interface.Owin.IRedirectionFilter, Middleware.RedirectionFilter>();
-        }
+        /// <summary>
+        /// Gets the silhouette flag folder from current configuration or null if the configured folder
+        /// does not exist or is not accessible.
+        /// </summary>
+        string SilhouettesFolder { get; }
+
+        /// <summary>
+        /// Gets the instance of <see cref="IAircraftPictureManager"/> that all instances of image server
+        /// middleware should share.
+        /// </summary>
+        IAircraftPictureManager AircraftPictureManager { get; }
+
+        /// <summary>
+        /// Gets the instance of <see cref="IDirectoryCache"/> that all instances of image server middleware
+        /// should share.
+        /// </summary>
+        IDirectoryCache AircraftPictureCache { get; }
     }
 }
