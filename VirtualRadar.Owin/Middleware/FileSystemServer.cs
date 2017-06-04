@@ -55,14 +55,14 @@ namespace VirtualRadar.Owin.Middleware
             }
         }
 
-        private IFileSystemConfiguration _Configuration;
+        private IFileSystemServerConfiguration _Configuration;
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
         public FileSystemServer()
         {
-            _Configuration = Factory.Singleton.Resolve<IFileSystemConfiguration>().Singleton;
+            _Configuration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
         }
 
         /// <summary>

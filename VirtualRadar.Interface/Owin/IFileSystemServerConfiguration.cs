@@ -21,7 +21,7 @@ namespace VirtualRadar.Interface.Owin
     /// The interface for the singleton object that can be used to configure and modify
     /// the behaviour of the <see cref="IFileSystemServer"/> middleware.
     /// </summary>
-    public interface IFileSystemConfiguration : ISingleton<IFileSystemConfiguration>
+    public interface IFileSystemServerConfiguration : ISingleton<IFileSystemServerConfiguration>
     {
         /// <summary>
         /// Raised when certain text files are loaded by file system middleware from a disk-bound file. Listeners

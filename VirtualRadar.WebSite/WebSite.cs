@@ -353,7 +353,7 @@ namespace VirtualRadar.WebSite
                 _Pages.Add(new AudioPage(this));
                 _Pages.Add(_ReportRowsJsonPage);
 
-                var fileSystemConfiguration = Factory.Singleton.Resolve<IFileSystemConfiguration>().Singleton;
+                var fileSystemConfiguration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
                 fileSystemConfiguration.TextLoadedFromFile += FileSystemConfiguration_TextLoadedFromFile;
 
                 _JavaScriptInjectors.Add(new WebSiteStringsInjector());
@@ -419,7 +419,7 @@ namespace VirtualRadar.WebSite
         /// <param name="siteRoot"></param>
         public void AddSiteRoot(SiteRoot siteRoot)
         {
-            var configuration = Factory.Singleton.Resolve<IFileSystemConfiguration>().Singleton;
+            var configuration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
             configuration.AddSiteRoot(siteRoot);
         }
 
@@ -429,7 +429,7 @@ namespace VirtualRadar.WebSite
         /// <param name="siteRoot"></param>
         public void RemoveSiteRoot(SiteRoot siteRoot)
         {
-            var configuration = Factory.Singleton.Resolve<IFileSystemConfiguration>().Singleton;
+            var configuration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
             configuration.RemoveSiteRoot(siteRoot);
         }
 
@@ -441,7 +441,7 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         public bool IsSiteRootActive(SiteRoot siteRoot, bool folderMustMatch)
         {
-            var configuration = Factory.Singleton.Resolve<IFileSystemConfiguration>().Singleton;
+            var configuration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
             return configuration.IsSiteRootActive(siteRoot, folderMustMatch);
         }
 
@@ -451,7 +451,7 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         public List<string> GetSiteRootFolders()
         {
-            var configuration = Factory.Singleton.Resolve<IFileSystemConfiguration>().Singleton;
+            var configuration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
             return configuration.GetSiteRootFolders();
         }
         #endregion

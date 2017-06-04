@@ -22,9 +22,9 @@ using VirtualRadar.Interface.WebSite;
 namespace VirtualRadar.Owin.Configuration
 {
     /// <summary>
-    /// The default implementation of <see cref="IFileSystemConfiguration"/>.
+    /// The default implementation of <see cref="IFileSystemServerConfiguration"/>.
     /// </summary>
-    class FileSystemConfiguration : IFileSystemConfiguration
+    class FileSystemServerConfiguration : IFileSystemServerConfiguration
     {
         #region Private class - Root
         /// <summary>
@@ -159,16 +159,16 @@ namespace VirtualRadar.Owin.Configuration
         /// </summary>
         private List<Root> _Roots = new List<Root>();
 
-        private static IFileSystemConfiguration _Singleton;
+        private static IFileSystemServerConfiguration _Singleton;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IFileSystemConfiguration Singleton
+        public IFileSystemServerConfiguration Singleton
         {
             get
             {
                 if(_Singleton == null) {
-                    _Singleton = new FileSystemConfiguration();
+                    _Singleton = new FileSystemServerConfiguration();
                 }
                 return _Singleton;
             }

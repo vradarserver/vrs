@@ -35,14 +35,14 @@ namespace Test.VirtualRadar.Owin.Middleware
         private MockOwinEnvironment _Environment;
         private MockOwinPipeline _Pipeline;
         private MockFileSystemProvider _FileSystem;
-        private Mock<IFileSystemConfiguration> _ServerConfiguration;
+        private Mock<IFileSystemServerConfiguration> _ServerConfiguration;
         private Dictionary<string, string> _SiteRoots;
 
         [TestInitialize]
         public void TestInitialise()
         {
             _Snapshot = Factory.TakeSnapshot();
-            _ServerConfiguration = TestUtilities.CreateMockSingleton<IFileSystemConfiguration>();
+            _ServerConfiguration = TestUtilities.CreateMockSingleton<IFileSystemServerConfiguration>();
 
             _SiteRoots = new Dictionary<string, string>();
             _ServerConfiguration.Setup(r => r.GetSiteRootFolders()).Returns(() => {

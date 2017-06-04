@@ -25,13 +25,13 @@ using VirtualRadar.Interface.WebSite;
 namespace Test.VirtualRadar.Owin.Configuration
 {
     [TestClass]
-    public class FileSystemConfigurationTests
+    public class FileSystemServerConfigurationTests
     {
         public TestContext TestContext { get; set; }
         private IClassFactory _Snapshot;
         private Mock<IFileSystemWatcher> _FileSystemWatcher;
         private MockFileSystemProvider _FileSystemProvider;
-        private IFileSystemConfiguration _Configuration;
+        private IFileSystemServerConfiguration _Configuration;
 
         [TestInitialize]
         public void TestInitialise()
@@ -42,7 +42,7 @@ namespace Test.VirtualRadar.Owin.Configuration
             _FileSystemProvider = new MockFileSystemProvider();
             Factory.Singleton.RegisterInstance<IFileSystemProvider>(_FileSystemProvider);
 
-            _Configuration = Factory.Singleton.Resolve<IFileSystemConfiguration>();
+            _Configuration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>();
         }
 
         [TestCleanup]
@@ -60,7 +60,7 @@ namespace Test.VirtualRadar.Owin.Configuration
         [TestMethod]
         public void FileSystemConfiguration_Singleton_Is_Same_Instance_Across_All_Instances()
         {
-            var other = Factory.Singleton.Resolve<IFileSystemConfiguration>();
+            var other = Factory.Singleton.Resolve<IFileSystemServerConfiguration>();
             Assert.AreSame(_Configuration.Singleton, other.Singleton);
         }
 
