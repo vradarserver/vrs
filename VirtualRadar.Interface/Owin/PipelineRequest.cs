@@ -50,6 +50,48 @@ namespace VirtualRadar.Interface.Owin
         }
 
         /// <summary>
+        /// The filename portion of the request URL. If no filename has been specified then an empty string is returned.
+        /// </summary>
+        public string FileName
+        {
+            get {
+                var path = FlattenedPath;
+                var lastFolderIndex = path.LastIndexOf('/');
+                return lastFolderIndex == -1 ? "" : path.Substring(lastFolderIndex + 1);
+            }
+        }
+
+        /// <summary>
+        /// All of the portions of the request URL that were separated by forward-slash. If the URL was not terminated with
+        /// a forward-slash then the final portion (which is assumed to be the filename) is not included.
+        /// </summary>
+        /// <remarks>
+        /// For example, if the URL is '/folder/filename' then this will return an array of one string containing 'folder'. However,
+        /// if the URL is '/folder/subfolder/' then you will get two strings back - 'folder' and 'subfolder'.
+        /// </remarks>
+        public string[] PathParts
+        {
+            get {
+                var result = new List<string>();
+                var path = PathNormalised.Value;
+
+                var startPart = -1;
+                for(var i = 0;i < path.Length;++i) {
+                    if(path[i] == '/') {
+                        if(startPart > -1) {
+                            result.Add(path.Substring(startPart, i - startPart));
+                            startPart = -1;
+                        }
+                    } else if(startPart == -1) {
+                        startPart = i;
+                    }
+                }
+
+                return result.ToArray();
+            }
+        }
+
+        /// <summary>
         /// Gets or sets an indicator that the user-agent indicates that the request MIGHT be from a mobile device.
         /// </summary>
         public bool IsMobileUserAgentString

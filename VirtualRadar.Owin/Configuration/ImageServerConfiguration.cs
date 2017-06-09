@@ -17,6 +17,7 @@ using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Owin.Configuration
 {

@@ -234,6 +234,88 @@ namespace Test.VirtualRadar.Interface.Owin
         }
         #endregion
 
+        #region FileName
+        [TestMethod]
+        public void PipelineRequest_FileName_Returns_Empty_String_For_Root()
+        {
+            _Request.Path = new PathString("/");
+            Assert.AreEqual("", _Request.FileName);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FileName_Returns_Trailing_Portion_Of_Request_Url()
+        {
+            _Request.Path = new PathString("/folder/filename");
+            Assert.AreEqual("filename", _Request.FileName);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FileName_Returns_Empty_String_For_Trailing_Slash_Requests()
+        {
+            _Request.Path = new PathString("/folder/");
+            Assert.AreEqual("", _Request.FileName);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FileName_Ignores_Directory_Traversal_Sequences()
+        {
+            _Request.Path = new PathString("/folder/..");
+            Assert.AreEqual("", _Request.FileName);
+
+            _Request.Path = new PathString("/folder/.");
+            Assert.AreEqual("", _Request.FileName);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_FileName_Includes_Extension()
+        {
+            _Request.Path = new PathString("/folder/filename.txt");
+            Assert.AreEqual("filename.txt", _Request.FileName);
+        }
+        #endregion
+
+        #region PathParts
+        [TestMethod]
+        public void PipelineRequest_PathParts_Returns_Empty_Array_For_Root()
+        {
+            _Request.Path = new PathString("/");
+            Assert.AreEqual(0, _Request.PathParts.Length);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_PathParts_Returns_Folders_In_Request_URL()
+        {
+            _Request.Path = new PathString("/folder1/folder2/");
+            var pathParts = _Request.PathParts;
+
+            Assert.AreEqual(2, pathParts.Length);
+            Assert.AreEqual("folder1", pathParts[0]);
+            Assert.AreEqual("folder2", pathParts[1]);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_PathParts_Ignores_FileName_Portion_Of_URL()
+        {
+            _Request.Path = new PathString("/folder/filename");
+            var pathParts = _Request.PathParts;
+
+            Assert.AreEqual(1, pathParts.Length);
+            Assert.AreEqual("folder", pathParts[0]);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_PathParts_Includes_Directory_Traversal_Characters()
+        {
+            _Request.Path = new PathString("/folder/.././");
+            var pathParts = _Request.PathParts;
+
+            Assert.AreEqual(3, pathParts.Length);
+            Assert.AreEqual("folder", pathParts[0]);
+            Assert.AreEqual("..", pathParts[1]);
+            Assert.AreEqual(".", pathParts[2]);
+        }
+        #endregion
+
         #region ClientIpAddressParsed
         [TestMethod]
         public void PipelineRequest_ClientIpAddressParsed_Returns_Parsed_Address()

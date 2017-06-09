@@ -51,6 +51,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
@@ -89,6 +90,7 @@
     <Compile Include="Middleware\AccessFilterTests.cs" />
     <Compile Include="Middleware\BasicAuthenticationFilterTests.cs" />
     <Compile Include="Middleware\FileSystemServerTests.cs" />
+    <Compile Include="Middleware\ImageServerTests.cs" />
     <Compile Include="Middleware\RedirectionFilterTests.cs" />
     <Compile Include="MockConfigureCallback.cs" />
     <Compile Include="MockOwinEnvironment.cs" />
@@ -112,6 +114,10 @@
     <ProjectReference Include="..\..\VirtualRadar.Owin\VirtualRadar.Owin.csproj">
       <Project>{a91617bc-3503-4e70-8c66-f5a9a9ff6ae0}</Project>
       <Name>VirtualRadar.Owin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VirtualRadar.WebSite\VirtualRadar.WebSite.csproj">
+      <Project>{eacc3459-9586-4977-a664-ae5827699b30}</Project>
+      <Name>VirtualRadar.WebSite</Name>
     </ProjectReference>
     <ProjectReference Include="..\Test.Framework\Test.Framework.csproj">
       <Project>{94f0a821-51bb-4381-9413-1a3fad661d82}</Project>

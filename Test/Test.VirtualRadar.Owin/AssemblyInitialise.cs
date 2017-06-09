@@ -31,6 +31,7 @@ namespace Test.VirtualRadar.Owin
         {
             global::VirtualRadar.Library.Implementations.Register(Factory.Singleton);
             global::VirtualRadar.Owin.Implementations.Register(Factory.Singleton);
+            global::VirtualRadar.WebSite.Implementations.Register(Factory.Singleton);
 
             Factory.Singleton.RegisterInstance<IApplicationInformation>(ApplicationInformation.Object);
             ApplicationInformation.Setup(a => a.CultureInfo).Returns((CultureInfo)null);

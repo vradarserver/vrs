@@ -10,19 +10,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
+using VirtualRadar.Interface.WebServer;
+using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Owin.Middleware
 {
-    using System.IO;
-    using System.Net;
-    using InterfaceFactory;
-    using VirtualRadar.Interface;
-    using VirtualRadar.Interface.WebServer;
-    using VirtualRadar.Interface.WebSite;
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
     /// <summary>
