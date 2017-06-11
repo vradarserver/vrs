@@ -21,6 +21,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Test.Framework;
 using VirtualRadar.Interface.Owin;
+using VirtualRadar.Interface.WebSite;
+using VirtualRadar.Resources;
 
 namespace Test.VirtualRadar.Owin.Middleware
 {
@@ -91,8 +93,8 @@ namespace Test.VirtualRadar.Owin.Middleware
             if(expectedWidth > -1) Assert.AreEqual(expectedWidth, image.Width);
             if(expectedHeight > -1) Assert.AreEqual(expectedHeight, image.Height);
 
-            for(int y = 0;y < image.Height;++y) {
-                for(int x = 0;x < image.Width;++x) {
+            for(var y = 0;y < image.Height;++y) {
+                for(var x = 0;x < image.Width;++x) {
                     CompareColours(color, image.GetPixel(x, y), x, y);
                 }
             }
@@ -108,14 +110,36 @@ namespace Test.VirtualRadar.Owin.Middleware
             Assert.AreEqual(expectedImage.Height, actualImage.Height, message);
             Assert.AreEqual(expectedImage.Width, actualImage.Width, message);
 
-            for(int y = 0;y < expectedImage.Height;++y) {
-                for(int x = 0;x < expectedImage.Width;++x) {
+            for(var y = 0;y < expectedImage.Height;++y) {
+                for(var x = 0;x < expectedImage.Width;++x) {
                     var expectedPixel = expectedImage.GetPixel(x, y);
                     var actualPixel = actualImage.GetPixel(x, y);
 
                     CompareColours(expectedPixel, actualPixel, x, y, message);
                 }
             }
+        }
+
+        /// <summary>
+        /// Checks that two images are not identical.
+        /// </summary>
+        /// <param name="expectedImage"></param>
+        /// <param name="actualImage"></param>
+        private void AssertImagesAreNotIdentical(Bitmap expectedImage, Bitmap actualImage, string message = "")
+        {
+            bool identical = expectedImage.Height == actualImage.Height && expectedImage.Width == actualImage.Width;
+            if(identical) {
+                for(var y = 0;identical && y < expectedImage.Height;++y) {
+                    for(var x = 0;identical && x < expectedImage.Width;++x) {
+                        var expectedPixel = expectedImage.GetPixel(x, y);
+                        var actualPixel = actualImage.GetPixel(x, y);
+
+                        identical = expectedPixel == actualPixel;
+                    }
+                }
+            }
+
+            Assert.IsFalse(identical, message);
         }
 
         private void CompareColours(Color expectedPixel, Color actualPixel, int x, int y, string message = "")
@@ -129,6 +153,17 @@ namespace Test.VirtualRadar.Owin.Middleware
                 Assert.AreEqual(expectedPixel.G, actualPixel.G, delta, "x = {0}, y = {1} {2}", x, y, message);
                 Assert.AreEqual(expectedPixel.B, actualPixel.B, delta, "x = {0}, y = {1} {2}", x, y, message);
             }
+        }
+
+        private Mock<IWebSiteGraphics> ReplaceWebSiteGraphics()
+        {
+            var result = TestUtilities.CreateMockSingleton<IWebSiteGraphics>();
+            result.Setup(r => r.UseImage(It.IsAny<Image>(), It.IsAny<Image>()))
+                           .Returns((Image tempImage, Image newImage) => {
+                                return newImage;
+                           });
+
+            return result;
         }
 
         [TestMethod]
@@ -248,6 +283,34 @@ namespace Test.VirtualRadar.Owin.Middleware
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
                     AssertImagesAreIdentical(TestImages.AltitudeImageTest_01_png, siteImage);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Can_Dynamically_Add_Text()
+        {
+            var textLines = new List<string>();
+            var webSiteGraphics = ReplaceWebSiteGraphics();
+            webSiteGraphics.Setup(r => r.AddTextLines(It.IsAny<Image>(), It.IsAny<IEnumerable<string>>(), It.IsAny<bool>(), It.IsAny<bool>()))
+                           .Returns((Image image, IEnumerable<string> lines, bool unused2, bool unused3) => {
+                                textLines.AddRange(lines);
+                                return (Image)image.Clone();
+                           });
+            _Server = Factory.Singleton.Resolve<IImageServer>();
+
+            _Environment.RequestPath = "/Images/PL1-Hello/PL2-There/TestSquare.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            webSiteGraphics.Verify(r => r.AddTextLines(It.IsAny<Image>(), It.IsAny<IEnumerable<string>>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Once());
+            Assert.AreEqual(2, textLines.Count);
+            Assert.AreEqual("Hello", textLines[0]);
+            Assert.AreEqual("There", textLines[1]);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    // Note that in real life IWebSiteGraphics would have done something with the image, but here all
+                    // we can reasonably do is make sure that something that looks like an image was returned...
                 }
             }
         }

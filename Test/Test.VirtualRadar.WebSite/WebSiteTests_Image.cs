@@ -320,34 +320,34 @@ namespace Test.VirtualRadar.WebSite
 //            }
 //        }
 
-        [TestMethod]
-        public void WebSite_Image_Can_Dynamically_Add_Text()
-        {
-            _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            // This is tricky to test as we can't really reliably compare images that have had text drawn on them. I think the images will be
-            // slightly different between systems. Instead we just check that something changes about the image.
-            for(var lineNumber = 0;lineNumber < 12;++lineNumber) {
-                ConfigurePictureManagerForPathAndFile(TestContext.TestDeploymentDir, "TestSquare.png");
-                var expectDifference = lineNumber >= 1 && lineNumber <= 9;
-                string message = lineNumber.ToString();
-
-                CreateMonochromeImage("TextImageTest.png", 50, 50, Brushes.Black);
-                _OutputStream.SetLength(0);
-
-                var pathAndFile = String.Format("/Images/PL{0}-!/File-TestSquare/Size-Full/Picture.png", lineNumber);
-                _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-
-                using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                    Assert.AreEqual(9, siteImage.Width, message);
-                    Assert.AreEqual(9, siteImage.Height, message);
-
-                    if(expectDifference) AssertImagesAreNotIdentical("TestSquare.png", siteImage, message);
-                    else                 AssertImagesAreIdentical("TestSquare.png", siteImage, message);
-                }
-            }
-        }
+//        [TestMethod]
+//        public void WebSite_Image_Can_Dynamically_Add_Text()
+//        {
+//            _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            // This is tricky to test as we can't really reliably compare images that have had text drawn on them. I think the images will be
+//            // slightly different between systems. Instead we just check that something changes about the image.
+//            for(var lineNumber = 0;lineNumber < 12;++lineNumber) {
+//                ConfigurePictureManagerForPathAndFile(TestContext.TestDeploymentDir, "TestSquare.png");
+//                var expectDifference = lineNumber >= 1 && lineNumber <= 9;
+//                string message = lineNumber.ToString();
+//
+//                CreateMonochromeImage("TextImageTest.png", 50, 50, Brushes.Black);
+//                _OutputStream.SetLength(0);
+//
+//                var pathAndFile = String.Format("/Images/PL{0}-!/File-TestSquare/Size-Full/Picture.png", lineNumber);
+//                _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//                using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                    Assert.AreEqual(9, siteImage.Width, message);
+//                    Assert.AreEqual(9, siteImage.Height, message);
+//
+//                    if(expectDifference) AssertImagesAreNotIdentical("TestSquare.png", siteImage, message);
+//                    else                 AssertImagesAreIdentical("TestSquare.png", siteImage, message);
+//                }
+//            }
+//        }
 
         [TestMethod]
         public void WebSite_Image_Will_Not_Dynamically_Add_Text_If_Configuration_Prohibits_It()

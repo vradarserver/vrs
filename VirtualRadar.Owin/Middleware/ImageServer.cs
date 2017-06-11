@@ -186,6 +186,7 @@ namespace VirtualRadar.Owin.Middleware
                     result = BuildInitialImage(imageRequest, context.Request, ref stockImage, ref tempImage);
 
                     if(result) {
+                        var addTextLines = imageRequest.HasTextLines;// && (!args.IsInternetRequest || _InternetClientCanShowText);
                         if(imageRequest.RotateDegrees > 0.0) {
                             tempImage = _Graphics.UseImage(tempImage, _Graphics.RotateImage(tempImage ?? stockImage, imageRequest.RotateDegrees.Value));
                         }
@@ -196,6 +197,9 @@ namespace VirtualRadar.Owin.Middleware
                             tempImage = _Graphics.UseImage(tempImage, _Graphics.AddAltitudeStalk(tempImage ?? stockImage, imageRequest.Height.GetValueOrDefault(), imageRequest.CentreX.GetValueOrDefault()));
                         } else if(imageRequest.Height != null) {
                             tempImage = _Graphics.UseImage(tempImage, _Graphics.HeightenImage(tempImage ?? stockImage, imageRequest.Height.Value, imageRequest.CentreImageVertically));
+                        }
+                        if(addTextLines) {
+                            tempImage = _Graphics.UseImage(tempImage, _Graphics.AddTextLines(tempImage ?? stockImage, imageRequest.TextLines, centreText: true, isHighDpi: imageRequest.IsHighDpi));
                         }
                     }
 

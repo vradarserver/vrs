@@ -120,6 +120,10 @@
       <Project>{a91617bc-3503-4e70-8c66-f5a9a9ff6ae0}</Project>
       <Name>VirtualRadar.Owin</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\VirtualRadar.Resources\VirtualRadar.Resources.csproj">
+      <Project>{B74413AC-8898-45DA-B4BD-82E4F9F58D72}</Project>
+      <Name>VirtualRadar.Resources</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\VirtualRadar.WebSite\VirtualRadar.WebSite.csproj">
       <Project>{eacc3459-9586-4977-a664-ae5827699b30}</Project>
       <Name>VirtualRadar.WebSite</Name>
