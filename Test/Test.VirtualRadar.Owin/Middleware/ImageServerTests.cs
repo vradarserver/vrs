@@ -21,6 +21,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Test.Framework;
 using VirtualRadar.Interface.Owin;
+using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.WebSite;
 using VirtualRadar.Resources;
 
@@ -38,6 +39,8 @@ namespace Test.VirtualRadar.Owin.Middleware
         private Mock<IImageServerConfiguration> _ServerConfiguration;
         private MockFileSystemProvider _FileSystem;
         private Mock<IFileSystemServerConfiguration> _FileSystemServerConfiguration;
+        private global::VirtualRadar.Interface.Settings.Configuration _ProgramConfiguration;
+        private Mock<ISharedConfiguration> _SharedConfiguration;
 
         private Color _Black = Color.FromArgb(0, 0, 0);
         private Color _White = Color.FromArgb(255, 255, 255);
@@ -52,6 +55,10 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Snapshot = Factory.TakeSnapshot();
             _ServerConfiguration = TestUtilities.CreateMockSingleton<IImageServerConfiguration>();
 
+            _ProgramConfiguration = new global::VirtualRadar.Interface.Settings.Configuration();
+            _SharedConfiguration = TestUtilities.CreateMockSingleton<ISharedConfiguration>();
+            _SharedConfiguration.Setup(r => r.Get()).Returns(_ProgramConfiguration);
+
             _FileSystemServerConfiguration = TestUtilities.CreateMockSingleton<IFileSystemServerConfiguration>();
             _FileSystemServerConfiguration.Setup(r => r.GetSiteRootFolders()).Returns(() => new List<string>() {
                 @"c:\web\",
@@ -62,6 +69,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Server = Factory.Singleton.Resolve<IImageServer>();
 
             _Environment = new MockOwinEnvironment();
+            _Environment.Request.RemoteIpAddress = "127.0.0.1";
             _Pipeline = new MockOwinPipeline();
         }
 
@@ -313,6 +321,51 @@ namespace Test.VirtualRadar.Owin.Middleware
                     // we can reasonably do is make sure that something that looks like an image was returned...
                 }
             }
+        }
+
+        [TestMethod]
+        public void ImageServer_Will_Not_Dynamically_Add_Text_If_Configuration_Prohibits_It()
+        {
+            // Get an image without text to start with
+            _Environment.RequestPath = "/Images/Hght-200/Wdth-60/Airplane.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            byte[] imageWithoutText = _Environment.ResponseBodyBytes;
+
+            // Ask for the same image from the Internet but with a line of text 
+            _Environment.Reset();
+            _ProgramConfiguration.InternetClientSettings.CanShowPinText = true;
+            _Environment.RequestPath = "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png";
+            _Environment.Request.RemoteIpAddress = "1.2.3.4";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            byte[] internetWithText = _Environment.ResponseBodyBytes;
+            Assert.IsFalse(imageWithoutText.SequenceEqual(internetWithText));
+
+            // Ask for same image with text from the Internet when the configuration prohibits it
+            _Environment.Reset();
+            _ProgramConfiguration.InternetClientSettings.CanShowPinText = false;
+            _Environment.RequestPath = "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png";
+            _Environment.Request.RemoteIpAddress = "1.2.3.4";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            byte[] internetWithoutText = _Environment.ResponseBodyBytes;
+            Assert.IsTrue(imageWithoutText.SequenceEqual(internetWithoutText));
+
+            // Ask for the same image from the LAN but with a line of text 
+            _Environment.Reset();
+            _ProgramConfiguration.InternetClientSettings.CanShowPinText = true;
+            _Environment.RequestPath = "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png";
+            _Environment.Request.RemoteIpAddress = "192.168.2.3";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            byte[] lanWithText = _Environment.ResponseBodyBytes;
+            Assert.IsFalse(imageWithoutText.SequenceEqual(lanWithText));
+
+            // Ask for same image with text from the LAN when the configuration prohibits it
+            _Environment.Reset();
+            _ProgramConfiguration.InternetClientSettings.CanShowPinText = false;
+            _Environment.RequestPath = "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png";
+            _Environment.Request.RemoteIpAddress = "192.168.2.3";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            byte[] lanWithoutText = _Environment.ResponseBodyBytes;
+            Assert.IsFalse(imageWithoutText.SequenceEqual(lanWithoutText));
         }
     }
 }

@@ -19,6 +19,7 @@ using System.Text;
 using System.Threading.Tasks;
 using InterfaceFactory;
 using VirtualRadar.Interface.Owin;
+using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
 using VirtualRadar.Resources;
@@ -126,9 +127,14 @@ namespace VirtualRadar.Owin.Middleware
         }
 
         /// <summary>
-        /// The shared configuration object.
+        /// The shared image server configuration object.
         /// </summary>
-        private IImageServerConfiguration _Configuration;
+        private IImageServerConfiguration _ImageServerConfiguration;
+
+        /// <summary>
+        /// The shared program configuration object.
+        /// </summary>
+        private ISharedConfiguration _SharedConfiguration;
 
         /// <summary>
         /// The shared graphics object.
@@ -140,7 +146,8 @@ namespace VirtualRadar.Owin.Middleware
         /// </summary>
         public ImageServer()
         {
-            _Configuration = Factory.Singleton.Resolve<IImageServerConfiguration>().Singleton;
+            _ImageServerConfiguration = Factory.Singleton.Resolve<IImageServerConfiguration>().Singleton;
+            _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
             _Graphics = Factory.Singleton.Resolve<IWebSiteGraphics>().Singleton;
         }
 
@@ -186,7 +193,9 @@ namespace VirtualRadar.Owin.Middleware
                     result = BuildInitialImage(imageRequest, context.Request, ref stockImage, ref tempImage);
 
                     if(result) {
-                        var addTextLines = imageRequest.HasTextLines;// && (!args.IsInternetRequest || _InternetClientCanShowText);
+                        var configuration = _SharedConfiguration.Get();
+
+                        var addTextLines = imageRequest.HasTextLines && (!context.Request.IsInternet || configuration.InternetClientSettings.CanShowPinText);
                         if(imageRequest.RotateDegrees > 0.0) {
                             tempImage = _Graphics.UseImage(tempImage, _Graphics.RotateImage(tempImage ?? stockImage, imageRequest.RotateDegrees.Value));
                         }
@@ -386,6 +395,7 @@ namespace VirtualRadar.Owin.Middleware
             if(imageRequest.WebSiteFileName != null) {
             } else {
                 switch(imageRequest.ImageName) {
+                    case "AIRPLANE":                stockImage = Images.Clone_Marker_Airplane(); break;
                     case "BLANK":                   tempImage  = _Graphics.CreateBlankImage(imageRequest.Width.GetValueOrDefault(), imageRequest.Height.GetValueOrDefault()); break;
                     case "TESTSQUARE":              stockImage = Images.Clone_TestSquare(); break;
                     default:                        result = false; break;

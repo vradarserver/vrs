@@ -101,6 +101,8 @@ namespace Test.VirtualRadar.Owin
         public void Reset(bool addRequiredFields = true)
         {
             Environment.Clear();
+            _ResponseBodyStream.Dispose();
+            _ResponseBodyStream = new MemoryStream();
 
             if(addRequiredFields) {
                 AddRequiredFields();
