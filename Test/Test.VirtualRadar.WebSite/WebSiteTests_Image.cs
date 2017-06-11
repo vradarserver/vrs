@@ -204,27 +204,27 @@ namespace Test.VirtualRadar.WebSite
             _Response.Verify(r => r.EnableCompression(_Request.Object), Times.Never());
         }
 
-        [TestMethod]
-        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "BlankImage$")]
-        public void WebSite_Image_Can_Create_Blank_Images_Dynamically()
-        {
-            ExcelWorksheetData worksheet = new ExcelWorksheetData(TestContext);
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            var args = RequestReceivedEventArgsHelper.Create(_Request, _Response, worksheet.String("PathAndFile"), false);
-            _WebServer.Raise(m => m.RequestReceived += null, args);
-
-            if(worksheet.String("Width") == null) {
-                Assert.AreEqual(false, args.Handled);
-                Assert.AreEqual(0, _OutputStream.Length);
-                Assert.AreEqual(0, _Response.Object.ContentLength);
-            } else {
-                using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                    AssertImageIsMonochrome(siteImage, _Transparent, worksheet.Int("Width"), worksheet.Int("Height"));
-                }
-            }
-        }
+//        [TestMethod]
+//        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+//                    "BlankImage$")]
+//        public void WebSite_Image_Can_Create_Blank_Images_Dynamically()
+//        {
+//            ExcelWorksheetData worksheet = new ExcelWorksheetData(TestContext);
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            var args = RequestReceivedEventArgsHelper.Create(_Request, _Response, worksheet.String("PathAndFile"), false);
+//            _WebServer.Raise(m => m.RequestReceived += null, args);
+//
+//            if(worksheet.String("Width") == null) {
+//                Assert.AreEqual(false, args.Handled);
+//                Assert.AreEqual(0, _OutputStream.Length);
+//                Assert.AreEqual(0, _Response.Object.ContentLength);
+//            } else {
+//                using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                    AssertImageIsMonochrome(siteImage, _Transparent, worksheet.Int("Width"), worksheet.Int("Height"));
+//                }
+//            }
+//        }
 
         [TestMethod]
         public void WebSite_Image_Can_Dynamically_Rotate_Images()

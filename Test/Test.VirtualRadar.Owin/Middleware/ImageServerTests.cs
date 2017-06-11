@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -33,6 +34,8 @@ namespace Test.VirtualRadar.Owin.Middleware
         private MockOwinEnvironment _Environment;
         private MockOwinPipeline _Pipeline;
         private Mock<IImageServerConfiguration> _ServerConfiguration;
+        private MockFileSystemProvider _FileSystem;
+        private Mock<IFileSystemServerConfiguration> _FileSystemServerConfiguration;
 
         private Color _Black = Color.FromArgb(0, 0, 0);
         private Color _White = Color.FromArgb(255, 255, 255);
@@ -47,6 +50,13 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Snapshot = Factory.TakeSnapshot();
             _ServerConfiguration = TestUtilities.CreateMockSingleton<IImageServerConfiguration>();
 
+            _FileSystemServerConfiguration = TestUtilities.CreateMockSingleton<IFileSystemServerConfiguration>();
+            _FileSystemServerConfiguration.Setup(r => r.GetSiteRootFolders()).Returns(() => new List<string>() {
+                @"c:\web\",
+            });
+            _FileSystemServerConfiguration.Setup(r => r.IsFileUnmodified(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<byte[]>())).Returns(true);
+            _FileSystem = new MockFileSystemProvider();
+
             _Server = Factory.Singleton.Resolve<IImageServer>();
 
             _Environment = new MockOwinEnvironment();
@@ -57,6 +67,16 @@ namespace Test.VirtualRadar.Owin.Middleware
         public void TestCleanup()
         {
             Factory.RestoreSnapshot(_Snapshot);
+        }
+
+        private void AddFileSystemImageFile(Image image, string fileName, ImageFormat imageFormat)
+        {
+            using(var stream = new MemoryStream()) {
+                using(var imageCopy = (Image)image.Clone()) {
+                    imageCopy.Save(stream, imageFormat);
+                    _FileSystem.AddFile($@"c:\web\{fileName}", stream.ToArray());
+                }
+            }
         }
 
         /// <summary>
@@ -109,6 +129,39 @@ namespace Test.VirtualRadar.Owin.Middleware
                 using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                     using(var image = (Bitmap)Bitmap.FromStream(stream)) {
                         AssertImageIsMonochrome(image, _Transparent, worksheet.Int("Width"), worksheet.Int("Height"));
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Can_Dynamically_Rotate_Images()
+        {
+            foreach(var rotateDegrees in new int[] { 0, 90, 180, 270 }) {
+                TestCleanup();
+                TestInitialise();
+
+                _Environment.RequestPath = $"/Images/Rotate-{rotateDegrees}/TestSquare.png";
+                _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+                using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                    using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                        Assert.AreEqual(9, siteImage.Width);
+                        Assert.AreEqual(9, siteImage.Height);
+
+                        // Determine the colours we expect to see at the 12 o'clock, 3 o'clock, 6 o'clock and 9 o'clock positions
+                        Color p12 = _White, p3 = _White, p6 = _White, p9 = _White;
+                        switch(rotateDegrees) {
+                            case 0: p12 = _Black; p3 = _Green; p6 = _Blue; p9 = _Red; break;
+                            case 90: p12 = _Red; p3 = _Black; p6 = _Green; p9 = _Blue; break;
+                            case 180: p12 = _Blue; p3 = _Red; p6 = _Black; p9 = _Green; break;
+                            case 270: p12 = _Green; p3 = _Blue; p6 = _Red; p9 = _Black; break;
+                        }
+
+                        Assert.AreEqual(p12, siteImage.GetPixel(4, 1), rotateDegrees.ToString());
+                        Assert.AreEqual(p3, siteImage.GetPixel(7, 4), rotateDegrees.ToString());
+                        Assert.AreEqual(p6, siteImage.GetPixel(4, 7), rotateDegrees.ToString());
+                        Assert.AreEqual(p9, siteImage.GetPixel(1, 4), rotateDegrees.ToString());
                     }
                 }
             }

@@ -103,6 +103,8 @@
   <ItemGroup>
     <Content Include="TestFiles\AltitudeImageTest-01.png" />
     <Content Include="TestFiles\DLH.bmp" />
+    <Content Include="TestFiles\TestSquare.bmp" />
+    <Content Include="TestFiles\TestSquare.png" />
     <EmbeddedResource Include="TestFiles\favicon.ico" />
     <Content Include="TestFiles\OversizedLogo.bmp" />
     <Content Include="TestFiles\Picture-120x140-Resized-60x40.png" />
@@ -114,8 +116,6 @@
     <Content Include="TestFiles\Picture-700x400.png" />
     <Content Include="TestFiles\SampleMessages.txt" />
     <Content Include="TestFiles\SubFolder\VIR.bmp" />
-    <Content Include="TestFiles\TestSquare.bmp" />
-    <Content Include="TestFiles\TestSquare.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

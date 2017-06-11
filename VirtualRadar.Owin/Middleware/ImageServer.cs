@@ -21,6 +21,7 @@ using InterfaceFactory;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
+using VirtualRadar.Resources;
 
 namespace VirtualRadar.Owin.Middleware
 {
@@ -183,6 +184,12 @@ namespace VirtualRadar.Owin.Middleware
 
                 try {
                     result = BuildInitialImage(imageRequest, context.Request, ref stockImage, ref tempImage);
+
+                    if(result) {
+                        if(imageRequest.RotateDegrees > 0.0) {
+                            tempImage = _Graphics.UseImage(tempImage, _Graphics.RotateImage(tempImage ?? stockImage, imageRequest.RotateDegrees.Value));
+                        }
+                    }
 
                     if(result) {
                         var image = tempImage ?? stockImage;
@@ -368,6 +375,7 @@ namespace VirtualRadar.Owin.Middleware
             } else {
                 switch(imageRequest.ImageName) {
                     case "BLANK":                   tempImage  = _Graphics.CreateBlankImage(imageRequest.Width.GetValueOrDefault(), imageRequest.Height.GetValueOrDefault()); break;
+                    case "TESTSQUARE":              stockImage = Images.Clone_TestSquare(); break;
                     default:                        result = false; break;
                 }
             }

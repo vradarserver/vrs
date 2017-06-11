@@ -98,6 +98,10 @@
       <Project>{8ef81105-f45d-4edb-996c-de7d5644b1e7}</Project>
       <Name>VirtualRadar.Interface</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Resources\VirtualRadar.Resources.csproj">
+      <Project>{b74413ac-8898-45da-b4bd-82e4f9f58d72}</Project>
+      <Name>VirtualRadar.Resources</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
