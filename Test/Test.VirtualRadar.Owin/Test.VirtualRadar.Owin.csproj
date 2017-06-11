@@ -139,8 +139,9 @@
       <LastGenOutput>TestImages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="TestImages\" />
+    <Content Include="TestImages\AltitudeImageTest-01.png" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

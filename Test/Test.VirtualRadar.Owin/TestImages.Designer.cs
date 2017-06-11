@@ -59,5 +59,15 @@ namespace Test.VirtualRadar.Owin {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap AltitudeImageTest_01_png {
+            get {
+                object obj = ResourceManager.GetObject("AltitudeImageTest_01_png", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

@@ -308,17 +308,17 @@ namespace Test.VirtualRadar.WebSite
 //            }
 //        }
 
-        [TestMethod]
-        public void WebSite_Image_Can_Dynamically_Add_Altitude_Stalk()
-        {
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            var pathAndFile = "/Images/Hght-15/CenX-4/Alt-/TestSquare.png";
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                AssertImagesAreIdentical("AltitudeImageTest-01.png", siteImage);
-            }
-        }
+//        [TestMethod]
+//        public void WebSite_Image_Can_Dynamically_Add_Altitude_Stalk()
+//        {
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//            var pathAndFile = "/Images/Hght-15/CenX-4/Alt-/TestSquare.png";
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                AssertImagesAreIdentical("AltitudeImageTest-01.png", siteImage);
+//            }
+//        }
 
         [TestMethod]
         public void WebSite_Image_Can_Dynamically_Add_Text()

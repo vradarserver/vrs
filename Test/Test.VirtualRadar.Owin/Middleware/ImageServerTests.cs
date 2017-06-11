@@ -98,6 +98,26 @@ namespace Test.VirtualRadar.Owin.Middleware
             }
         }
 
+        /// <summary>
+        /// Checks that two images are identical.
+        /// </summary>
+        /// <param name="expectedImage"></param>
+        /// <param name="actualImage"></param>
+        private void AssertImagesAreIdentical(Bitmap expectedImage, Bitmap actualImage, string message = "")
+        {
+            Assert.AreEqual(expectedImage.Height, actualImage.Height, message);
+            Assert.AreEqual(expectedImage.Width, actualImage.Width, message);
+
+            for(int y = 0;y < expectedImage.Height;++y) {
+                for(int x = 0;x < expectedImage.Width;++x) {
+                    var expectedPixel = expectedImage.GetPixel(x, y);
+                    var actualPixel = actualImage.GetPixel(x, y);
+
+                    CompareColours(expectedPixel, actualPixel, x, y, message);
+                }
+            }
+        }
+
         private void CompareColours(Color expectedPixel, Color actualPixel, int x, int y, string message = "")
         {
             if(expectedPixel.A == 0)    Assert.IsTrue(actualPixel.A < 250, "x = {0}, y = {1} {2}", x, y, message);
@@ -215,6 +235,19 @@ namespace Test.VirtualRadar.Owin.Middleware
                         Assert.AreEqual(_Green, siteImage.GetPixel(8, 4));
                         Assert.AreEqual(_Blue, siteImage.GetPixel(3, 9));
                     }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Can_Dynamically_Add_Altitude_Stalk()
+        {
+            _Environment.RequestPath = "/Images/Hght-15/CenX-4/Alt-/TestSquare.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    AssertImagesAreIdentical(TestImages.AltitudeImageTest_01_png, siteImage);
                 }
             }
         }
