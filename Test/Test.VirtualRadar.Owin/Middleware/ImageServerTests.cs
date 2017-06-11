@@ -20,6 +20,7 @@ using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Test.Framework;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.WebSite;
@@ -41,6 +42,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         private Mock<IFileSystemServerConfiguration> _FileSystemServerConfiguration;
         private global::VirtualRadar.Interface.Settings.Configuration _ProgramConfiguration;
         private Mock<ISharedConfiguration> _SharedConfiguration;
+        private Mock<IImageFileManager> _ImageFileManager;
 
         private Color _Black = Color.FromArgb(0, 0, 0);
         private Color _White = Color.FromArgb(255, 255, 255);
@@ -53,18 +55,23 @@ namespace Test.VirtualRadar.Owin.Middleware
         public void TestInitialise()
         {
             _Snapshot = Factory.TakeSnapshot();
-            _ServerConfiguration = TestUtilities.CreateMockSingleton<IImageServerConfiguration>();
 
             _ProgramConfiguration = new global::VirtualRadar.Interface.Settings.Configuration();
             _SharedConfiguration = TestUtilities.CreateMockSingleton<ISharedConfiguration>();
             _SharedConfiguration.Setup(r => r.Get()).Returns(_ProgramConfiguration);
+
+            _FileSystem = new MockFileSystemProvider();
+            Factory.Singleton.RegisterInstance<IFileSystemProvider>(_FileSystem);
 
             _FileSystemServerConfiguration = TestUtilities.CreateMockSingleton<IFileSystemServerConfiguration>();
             _FileSystemServerConfiguration.Setup(r => r.GetSiteRootFolders()).Returns(() => new List<string>() {
                 @"c:\web\",
             });
             _FileSystemServerConfiguration.Setup(r => r.IsFileUnmodified(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<byte[]>())).Returns(true);
-            _FileSystem = new MockFileSystemProvider();
+
+            _ImageFileManager = TestUtilities.CreateMockImplementation<IImageFileManager>();
+            _ServerConfiguration = TestUtilities.CreateMockSingleton<IImageServerConfiguration>();
+            _ServerConfiguration.SetupGet(r => r.ImageFileManager).Returns(_ImageFileManager.Object);
 
             _Server = Factory.Singleton.Resolve<IImageServer>();
 
@@ -79,12 +86,12 @@ namespace Test.VirtualRadar.Owin.Middleware
             Factory.RestoreSnapshot(_Snapshot);
         }
 
-        private void AddFileSystemImageFile(Image image, string fileName, ImageFormat imageFormat)
+        private void AddFileSystemImageFile(Image image, string fileName, ImageFormat imageFormat, string path = @"c:\web")
         {
             using(var stream = new MemoryStream()) {
                 using(var imageCopy = (Image)image.Clone()) {
                     imageCopy.Save(stream, imageFormat);
-                    _FileSystem.AddFile($@"c:\web\{fileName}", stream.ToArray());
+                    _FileSystem.AddFile(Path.Combine(path, fileName), stream.ToArray());
                 }
             }
         }
@@ -135,7 +142,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         /// <param name="actualImage"></param>
         private void AssertImagesAreNotIdentical(Bitmap expectedImage, Bitmap actualImage, string message = "")
         {
-            bool identical = expectedImage.Height == actualImage.Height && expectedImage.Width == actualImage.Width;
+            var identical = expectedImage.Height == actualImage.Height && expectedImage.Width == actualImage.Width;
             if(identical) {
                 for(var y = 0;identical && y < expectedImage.Height;++y) {
                     for(var x = 0;identical && x < expectedImage.Width;++x) {
@@ -156,7 +163,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             else                        Assert.IsTrue(actualPixel.A > 10, "x = {0}, y = {1} {2}", x, y, message);
 
             if(expectedPixel.A > 0) {
-                double delta = 5.0;
+                var delta = 5.0;
                 Assert.AreEqual(expectedPixel.R, actualPixel.R, delta, "x = {0}, y = {1} {2}", x, y, message);
                 Assert.AreEqual(expectedPixel.G, actualPixel.G, delta, "x = {0}, y = {1} {2}", x, y, message);
                 Assert.AreEqual(expectedPixel.B, actualPixel.B, delta, "x = {0}, y = {1} {2}", x, y, message);
@@ -366,6 +373,40 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
             byte[] lanWithoutText = _Environment.ResponseBodyBytes;
             Assert.IsFalse(imageWithoutText.SequenceEqual(lanWithoutText));
+        }
+
+        [TestMethod]
+        public void ImageServer_Can_Serve_Operator_Logos()
+        {
+            _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns(@"c:\flags");
+            AddFileSystemImageFile(TestImages.DLH_bmp, "DLH.bmp", ImageFormat.Bmp, @"c:\flags");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\DLH.bmp")).Returns(TestImages.DLH_bmp);
+
+            _Environment.RequestPath = "/Images/File-DLH/OpFlag.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    AssertImagesAreIdentical(TestImages.DLH_bmp, siteImage);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Can_Serve_Silhouettes()
+        {
+            _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns(@"c:\types");
+            AddFileSystemImageFile(TestImages.DLH_bmp, "DLH.bmp", ImageFormat.Bmp, @"c:\types");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\DLH.bmp")).Returns(TestImages.DLH_bmp);
+
+            _Environment.RequestPath = "/Images/File-DLH/Type.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    AssertImagesAreIdentical(TestImages.DLH_bmp, siteImage);
+                }
+            }
         }
     }
 }

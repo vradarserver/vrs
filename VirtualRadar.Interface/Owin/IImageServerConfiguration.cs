@@ -46,5 +46,11 @@ namespace VirtualRadar.Interface.Owin
         /// should share.
         /// </summary>
         IDirectoryCache AircraftPictureCache { get; }
+
+        /// <summary>
+        /// Gets the instance of <see cref="IImageFileManager"/> that all instances of image server middleware
+        /// should share.
+        /// </summary>
+        IImageFileManager ImageFileManager { get; }
     }
 }

@@ -18,6 +18,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using InterfaceFactory;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.WebServer;
@@ -195,7 +196,6 @@ namespace VirtualRadar.Owin.Middleware
                     if(result) {
                         var configuration = _SharedConfiguration.Get();
 
-                        var addTextLines = imageRequest.HasTextLines && (!context.Request.IsInternet || configuration.InternetClientSettings.CanShowPinText);
                         if(imageRequest.RotateDegrees > 0.0) {
                             tempImage = _Graphics.UseImage(tempImage, _Graphics.RotateImage(tempImage ?? stockImage, imageRequest.RotateDegrees.Value));
                         }
@@ -207,6 +207,7 @@ namespace VirtualRadar.Owin.Middleware
                         } else if(imageRequest.Height != null) {
                             tempImage = _Graphics.UseImage(tempImage, _Graphics.HeightenImage(tempImage ?? stockImage, imageRequest.Height.Value, imageRequest.CentreImageVertically));
                         }
+                        var addTextLines = imageRequest.HasTextLines && (!context.Request.IsInternet || configuration.InternetClientSettings.CanShowPinText);
                         if(addTextLines) {
                             tempImage = _Graphics.UseImage(tempImage, _Graphics.AddTextLines(tempImage ?? stockImage, imageRequest.TextLines, centreText: true, isHighDpi: imageRequest.IsHighDpi));
                         }
@@ -397,7 +398,9 @@ namespace VirtualRadar.Owin.Middleware
                 switch(imageRequest.ImageName) {
                     case "AIRPLANE":                stockImage = Images.Clone_Marker_Airplane(); break;
                     case "BLANK":                   tempImage  = _Graphics.CreateBlankImage(imageRequest.Width.GetValueOrDefault(), imageRequest.Height.GetValueOrDefault()); break;
+                    case "OPFLAG":                  tempImage  = CreateLogoImage(imageRequest.File, _ImageServerConfiguration.OperatorFolder); break;
                     case "TESTSQUARE":              stockImage = Images.Clone_TestSquare(); break;
+                    case "TYPE":                    tempImage  = CreateLogoImage(imageRequest.File, _ImageServerConfiguration.SilhouettesFolder); break;
                     default:                        result = false; break;
                 }
             }
@@ -407,6 +410,39 @@ namespace VirtualRadar.Owin.Middleware
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Creates an image corresponding to the operator ICAO code or silhoutte passed across.
+        /// </summary>
+        /// <param name="logo"></param>
+        /// <param name="folder"></param>
+        /// <returns></returns>
+        private Image CreateLogoImage(string logo, string folder)
+        {
+            Image result = null;
+
+            const int width = 85;
+            const int height = 20;
+
+            if(!String.IsNullOrEmpty(folder)) {
+                foreach(var chunk in logo.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries)) {
+                    if(chunk.IndexOfAny(Path.GetInvalidFileNameChars()) == -1 && chunk.IndexOfAny(Path.GetInvalidPathChars()) == -1) {
+                        string fullPath = Path.Combine(folder, String.Format("{0}.bmp", chunk));
+                        var fileSystem = Factory.Singleton.Resolve<IFileSystemProvider>();
+                        if(fileSystem.FileExists(fullPath)) {
+                            result = _ImageServerConfiguration.ImageFileManager.LoadFromFile(fullPath);
+
+                            if(result.Width != width)   result = _Graphics.UseImage(result, _Graphics.WidenImage(result, width, true));
+                            if(result.Height != height) result = _Graphics.UseImage(result, _Graphics.HeightenImage(result, height, true));
+
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return result ?? _Graphics.CreateBlankImage(width, height);
         }
     }
 }

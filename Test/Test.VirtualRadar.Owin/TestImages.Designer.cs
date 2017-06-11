@@ -69,5 +69,15 @@ namespace Test.VirtualRadar.Owin {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap DLH_bmp {
+            get {
+                object obj = ResourceManager.GetObject("DLH_bmp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

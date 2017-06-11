@@ -349,47 +349,47 @@ namespace Test.VirtualRadar.WebSite
 //            }
 //        }
 
-        [TestMethod]
-        public void WebSite_Image_Will_Not_Dynamically_Add_Text_If_Configuration_Prohibits_It()
-        {
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            // Get a blank image to start with
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, "/Images/Hght-200/Wdth-60/Airplane.png", false));
-            byte[] blankImage = _OutputStream.ToArray();
-
-            // Ask for the same image from the Internet but with a line of text 
-            _OutputStream.SetLength(0);
-            _Configuration.InternetClientSettings.CanShowPinText = true;
-            _ConfigurationStorage.Raise(c => c.ConfigurationChanged += null, EventArgs.Empty);
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png", true));
-            byte[] internetWithText = _OutputStream.ToArray();
-            Assert.IsFalse(blankImage.SequenceEqual(internetWithText));
-
-            // Ask for same image with text from the Internet when the configuration prohibits it
-            _OutputStream.SetLength(0);
-            _Configuration.InternetClientSettings.CanShowPinText = false;
-            _ConfigurationStorage.Raise(c => c.ConfigurationChanged += null, EventArgs.Empty);
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png", true));
-            byte[] internetWithoutText = _OutputStream.ToArray();
-            Assert.IsTrue(blankImage.SequenceEqual(internetWithoutText));
-
-            // Ask for the same image from the LAN but with a line of text 
-            _OutputStream.SetLength(0);
-            _Configuration.InternetClientSettings.CanShowPinText = true;
-            _ConfigurationStorage.Raise(c => c.ConfigurationChanged += null, EventArgs.Empty);
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png", false));
-            byte[] lanWithText = _OutputStream.ToArray();
-            Assert.IsFalse(blankImage.SequenceEqual(lanWithText));
-
-            // Ask for same image with text from the LAN when the configuration prohibits it
-            _OutputStream.SetLength(0);
-            _Configuration.InternetClientSettings.CanShowPinText = false;
-            _ConfigurationStorage.Raise(c => c.ConfigurationChanged += null, EventArgs.Empty);
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png", false));
-            byte[] lanWithoutText = _OutputStream.ToArray();
-            Assert.IsFalse(blankImage.SequenceEqual(lanWithoutText));
-        }
+//        [TestMethod]
+//        public void WebSite_Image_Will_Not_Dynamically_Add_Text_If_Configuration_Prohibits_It()
+//        {
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            // Get a blank image to start with
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, "/Images/Hght-200/Wdth-60/Airplane.png", false));
+//            byte[] blankImage = _OutputStream.ToArray();
+//
+//            // Ask for the same image from the Internet but with a line of text 
+//            _OutputStream.SetLength(0);
+//            _Configuration.InternetClientSettings.CanShowPinText = true;
+//            _ConfigurationStorage.Raise(c => c.ConfigurationChanged += null, EventArgs.Empty);
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png", true));
+//            byte[] internetWithText = _OutputStream.ToArray();
+//            Assert.IsFalse(blankImage.SequenceEqual(internetWithText));
+//
+//            // Ask for same image with text from the Internet when the configuration prohibits it
+//            _OutputStream.SetLength(0);
+//            _Configuration.InternetClientSettings.CanShowPinText = false;
+//            _ConfigurationStorage.Raise(c => c.ConfigurationChanged += null, EventArgs.Empty);
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png", true));
+//            byte[] internetWithoutText = _OutputStream.ToArray();
+//            Assert.IsTrue(blankImage.SequenceEqual(internetWithoutText));
+//
+//            // Ask for the same image from the LAN but with a line of text 
+//            _OutputStream.SetLength(0);
+//            _Configuration.InternetClientSettings.CanShowPinText = true;
+//            _ConfigurationStorage.Raise(c => c.ConfigurationChanged += null, EventArgs.Empty);
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png", false));
+//            byte[] lanWithText = _OutputStream.ToArray();
+//            Assert.IsFalse(blankImage.SequenceEqual(lanWithText));
+//
+//            // Ask for same image with text from the LAN when the configuration prohibits it
+//            _OutputStream.SetLength(0);
+//            _Configuration.InternetClientSettings.CanShowPinText = false;
+//            _ConfigurationStorage.Raise(c => c.ConfigurationChanged += null, EventArgs.Empty);
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png", false));
+//            byte[] lanWithoutText = _OutputStream.ToArray();
+//            Assert.IsFalse(blankImage.SequenceEqual(lanWithoutText));
+//        }
 
         [TestMethod]
         public void WebSite_Image_Can_Serve_Operator_Logos()    { Do_Image_Can_Serve_Logo(true); }

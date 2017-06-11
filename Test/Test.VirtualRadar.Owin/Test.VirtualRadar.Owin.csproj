@@ -146,6 +146,7 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="TestImages\AltitudeImageTest-01.png" />
+    <Content Include="TestImages\DLH.bmp" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

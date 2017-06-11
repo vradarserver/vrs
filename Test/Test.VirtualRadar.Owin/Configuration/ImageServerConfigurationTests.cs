@@ -166,5 +166,11 @@ namespace Test.VirtualRadar.Owin.Configuration
         {
             Assert.IsNotNull(_Configuration.AircraftPictureCache);
         }
+
+        [TestMethod]
+        public void ImageServerConfiguration_ImageFileManager_Is_Not_Null()
+        {
+            Assert.IsNotNull(_Configuration.ImageFileManager);
+        }
     }
 }
