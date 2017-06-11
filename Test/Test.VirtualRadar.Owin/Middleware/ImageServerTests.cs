@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -405,6 +406,268 @@ namespace Test.VirtualRadar.Owin.Middleware
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
                     AssertImagesAreIdentical(TestImages.DLH_bmp, siteImage);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Can_Serve_Alternative_Operator_Logos()
+        {
+            _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns(@"c:\flags");
+            AddFileSystemImageFile(TestImages.DLH_bmp, "DLH.bmp", ImageFormat.Bmp, @"c:\flags");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\DLH.bmp")).Returns(TestImages.DLH_bmp);
+
+            _Environment.RequestPath = "/Images/File-DOESNOTEXIST|DLH/OpFlag.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    AssertImagesAreIdentical(TestImages.DLH_bmp, siteImage);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Can_Serve_Alternative_Silhouettes()
+        {
+            _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns(@"c:\types");
+            AddFileSystemImageFile(TestImages.DLH_bmp, "DLH.bmp", ImageFormat.Bmp, @"c:\types");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\DLH.bmp")).Returns(TestImages.DLH_bmp);
+
+            _Environment.RequestPath = "/Images/File-DOESNOTEXIST|DLH/Type.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    AssertImagesAreIdentical(TestImages.DLH_bmp, siteImage);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Resizes_Small_Operator_Logos_To_Fit_Standard_Size()
+        {
+            _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns(@"c:\flags");
+            AddFileSystemImageFile(TestImages.TestSquare_bmp, "TestSquare.bmp", ImageFormat.Bmp, @"c:\flags");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\TestSquare.bmp")).Returns(TestImages.TestSquare_bmp);
+
+            _Environment.RequestPath = "/Images/File-TestSquare/OpFlag.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    Assert.AreEqual(85, siteImage.Width);
+                    Assert.AreEqual(20, siteImage.Height);
+
+                    // Should have placed the small image (TestSquare is 9x9) in the centre as per rules for WDTH and HGHT
+                    Assert.AreEqual(_Transparent, siteImage.GetPixel(0, 0));
+                    Assert.AreEqual(_White, siteImage.GetPixel(39, 7));
+                    Assert.AreEqual(_Black, siteImage.GetPixel(42, 7));
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Resizes_Small_Silhouettes_To_Fit_Standard_Size()
+        {
+            _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns(@"c:\types");
+            AddFileSystemImageFile(TestImages.TestSquare_bmp, "TestSquare.bmp", ImageFormat.Bmp, @"c:\types");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\TestSquare.bmp")).Returns(TestImages.TestSquare_bmp);
+
+            _Environment.RequestPath = "/Images/File-TestSquare/Type.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    Assert.AreEqual(85, siteImage.Width);
+                    Assert.AreEqual(20, siteImage.Height);
+
+                    // Should have placed the small image (TestSquare is 9x9) in the centre as per rules for WDTH and HGHT
+                    Assert.AreEqual(_Transparent, siteImage.GetPixel(0, 0));
+                    Assert.AreEqual(_White, siteImage.GetPixel(39, 7));
+                    Assert.AreEqual(_Black, siteImage.GetPixel(42, 7));
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Resizes_Large_Operator_Logos_To_Fit_Standard_Size()
+        {
+            _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns(@"c:\flags");
+            AddFileSystemImageFile(TestImages.OversizedLogo_bmp, "OversizeLogo.bmp", ImageFormat.Bmp, @"c:\flags");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\OversizeLogo.bmp")).Returns(TestImages.OversizedLogo_bmp);
+
+            _Environment.RequestPath = "/Images/File-OversizeLogo/OpFlag.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    Assert.AreEqual(85, siteImage.Width);
+                    Assert.AreEqual(20, siteImage.Height);
+
+                    // Should have placed the large image in the centre - the image is 87x22 whereas the standard size is 85x20 so by centreing
+                    // it we should have cropped a 1 pixel border off the image, which leaves a black pixel in each corner
+                    Assert.AreEqual(_Black, siteImage.GetPixel(0, 0));
+                    Assert.AreEqual(_White, siteImage.GetPixel(1, 0));
+                    Assert.AreEqual(_Black, siteImage.GetPixel(84, 0));
+                    Assert.AreEqual(_Black, siteImage.GetPixel(0, 19));
+                    Assert.AreEqual(_Black, siteImage.GetPixel(84, 19));
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Resizes_Large_Silhouettes_To_Fit_Standard_Size()
+        {
+            _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns(@"c:\types");
+            AddFileSystemImageFile(TestImages.OversizedLogo_bmp, "OversizeLogo.bmp", ImageFormat.Bmp, @"c:\types");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\OversizeLogo.bmp")).Returns(TestImages.OversizedLogo_bmp);
+
+            _Environment.RequestPath = "/Images/File-OversizeLogo/Type.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    Assert.AreEqual(85, siteImage.Width);
+                    Assert.AreEqual(20, siteImage.Height);
+
+                    // Should have placed the large image in the centre - the image is 87x22 whereas the standard size is 85x20 so by centreing
+                    // it we should have cropped a 1 pixel border off the image, which leaves a black pixel in each corner
+                    Assert.AreEqual(_Black, siteImage.GetPixel(0, 0));
+                    Assert.AreEqual(_White, siteImage.GetPixel(1, 0));
+                    Assert.AreEqual(_Black, siteImage.GetPixel(84, 0));
+                    Assert.AreEqual(_Black, siteImage.GetPixel(0, 19));
+                    Assert.AreEqual(_Black, siteImage.GetPixel(84, 19));
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Returns_Blank_When_OperatorFolder_Not_Configured()
+        {
+            _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns((string)null);
+            _Environment.RequestPath = "/Images/File-BA/OpFlag.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    AssertImageIsMonochrome(siteImage, Color.Transparent, 85, 20);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Returns_Blank_When_SilhouettesFolder_Not_Configured()
+        {
+            _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns((string)null);
+            _Environment.RequestPath = "/Images/File-BA/Type.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    AssertImageIsMonochrome(siteImage, Color.Transparent, 85, 20);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Returns_Blank_When_OperatorFlag_Not_Found()
+        {
+            _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns(@"c:\flags");
+            _Environment.RequestPath = "/Images/File-DLH/OpFlag.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    AssertImageIsMonochrome(siteImage, Color.Transparent, 85, 20);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Returns_Blank_When_Silhouette_Not_Found()
+        {
+            _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns(@"c:\types");
+            _Environment.RequestPath = "/Images/File-DLH/Type.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    AssertImageIsMonochrome(siteImage, Color.Transparent, 85, 20);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Returns_Blank_When_OperatorFlagCode_Contains_Invalid_Characters()
+        {
+            _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns(@"c:\flags");
+
+            foreach(var badChar in Path.GetInvalidFileNameChars().Concat(Path.GetInvalidPathChars())) {
+                var fileName = "BA" + badChar;
+                _Environment.Reset();
+                _Environment.RequestPath = String.Format("/Images/File-{0}/OpFlag.png", HttpUtility.UrlEncode(fileName));
+                _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+                using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                    using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                        AssertImageIsMonochrome(siteImage, Color.Transparent, 85, 20);
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Returns_Blank_When_Silhouette_Contains_Invalid_Characters()
+        {
+            _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns(@"c:\types");
+
+            foreach(var badChar in Path.GetInvalidFileNameChars().Concat(Path.GetInvalidPathChars())) {
+                var fileName = "A380" + badChar;
+                _Environment.Reset();
+                _Environment.RequestPath = String.Format("/Images/File-{0}/Type.png", HttpUtility.UrlEncode(fileName));
+                _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+                using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                    using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                        AssertImageIsMonochrome(siteImage, Color.Transparent, 85, 20);
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Returns_Blank_When_OperatorFlag_Includes_Directory_Traversal()
+        {
+            _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns(@"c:\flags\subfolder");
+            _FileSystem.AddFolder(@"c:\flags\subfolder");
+            AddFileSystemImageFile(TestImages.DLH_bmp, "DLH.bmp", ImageFormat.Bmp, @"c:\flags");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\DLH.bmp")).Returns(TestImages.DLH_bmp);
+
+            _Environment.RequestPath = "/Images/File-..\\DLH/OpFlag.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    AssertImageIsMonochrome(siteImage, Color.Transparent, 85, 20);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Returns_Blank_When_Silhouette_Includes_Directory_Traversal()
+        {
+            _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns(@"c:\types\subfolder");
+            _FileSystem.AddFolder(@"c:\types\subfolder");
+            AddFileSystemImageFile(TestImages.DLH_bmp, "DLH.bmp", ImageFormat.Bmp, @"c:\types");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\DLH.bmp")).Returns(TestImages.DLH_bmp);
+
+            _Environment.RequestPath = "/Images/File-..\\DLH/Type.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    AssertImageIsMonochrome(siteImage, Color.Transparent, 85, 20);
                 }
             }
         }

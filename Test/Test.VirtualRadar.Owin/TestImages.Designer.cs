@@ -79,5 +79,25 @@ namespace Test.VirtualRadar.Owin {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap OversizedLogo_bmp {
+            get {
+                object obj = ResourceManager.GetObject("OversizedLogo_bmp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TestSquare_bmp {
+            get {
+                object obj = ResourceManager.GetObject("TestSquare_bmp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

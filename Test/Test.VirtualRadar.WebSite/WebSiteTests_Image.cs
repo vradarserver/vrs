@@ -391,201 +391,201 @@ namespace Test.VirtualRadar.WebSite
 //            Assert.IsFalse(blankImage.SequenceEqual(lanWithoutText));
 //        }
 
-        [TestMethod]
-        public void WebSite_Image_Can_Serve_Operator_Logos()    { Do_Image_Can_Serve_Logo(true); }
+//        [TestMethod]
+//        public void WebSite_Image_Can_Serve_Operator_Logos()    { Do_Image_Can_Serve_Logo(true); }
 
-        [TestMethod]
-        public void WebSite_Image_Can_Serve_Silhouettes()       { Do_Image_Can_Serve_Logo(false); }
+//        [TestMethod]
+//        public void WebSite_Image_Can_Serve_Silhouettes()       { Do_Image_Can_Serve_Logo(false); }
 
-        private void Do_Image_Can_Serve_Logo(bool isOpFlag)
-        {
-            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = TestContext.TestDeploymentDir;
-            else         _Configuration.BaseStationSettings.SilhouettesFolder = TestContext.TestDeploymentDir;
-            _WebSite.AttachSiteToServer(_WebServer.Object);
+//        private void Do_Image_Can_Serve_Logo(bool isOpFlag)
+//        {
+//            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = TestContext.TestDeploymentDir;
+//            else         _Configuration.BaseStationSettings.SilhouettesFolder = TestContext.TestDeploymentDir;
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            var pathAndFile = String.Format("/Images/File-DLH/{0}.png", isOpFlag ? "OpFlag" : "Type");
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                AssertImagesAreIdentical("DLH.bmp", siteImage);
+//            }
+//        }
 
-            var pathAndFile = String.Format("/Images/File-DLH/{0}.png", isOpFlag ? "OpFlag" : "Type");
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//        [TestMethod]
+//        public void WebSite_Image_Does_Not_Throw_Exception_When_OperatorFlagCode_Contains_Invalid_Characters()
+//        {
+//            _Configuration.BaseStationSettings.OperatorFlagsFolder = TestContext.TestDeploymentDir;
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            foreach(var badChar in Path.GetInvalidFileNameChars().Concat(Path.GetInvalidPathChars())) {
+//                var fileName = "BA" + badChar;
+//                var pathAndFile = String.Format("/Images/File-{0}/OpFlag.png", HttpUtility.UrlEncode(fileName));
+//                _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//            }
+//        }
 
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                AssertImagesAreIdentical("DLH.bmp", siteImage);
-            }
-        }
+//        [TestMethod]
+//        public void WebSite_Image_Does_Not_Throw_Exception_When_Model_Icao_Contains_Invalid_Characters()
+//        {
+//            _Configuration.BaseStationSettings.SilhouettesFolder = TestContext.TestDeploymentDir;
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            foreach(var badChar in Path.GetInvalidFileNameChars().Concat(Path.GetInvalidPathChars())) {
+//                var fileName = "BA" + badChar;
+//                var pathAndFile = String.Format("/Images/File-{0}/Type.png", HttpUtility.UrlEncode(fileName));
+//                _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//            }
+//        }
 
-        [TestMethod]
-        public void WebSite_Image_Does_Not_Throw_Exception_When_OperatorFlagCode_Contains_Invalid_Characters()
-        {
-            _Configuration.BaseStationSettings.OperatorFlagsFolder = TestContext.TestDeploymentDir;
-            _WebSite.AttachSiteToServer(_WebServer.Object);
+//        [TestMethod]
+//        public void WebSite_Image_Can_Serve_Alternative_Operator_Logos()    { Do_Image_Can_Serve_Alternative_Logo(true); }
 
-            foreach(var badChar in Path.GetInvalidFileNameChars().Concat(Path.GetInvalidPathChars())) {
-                var fileName = "BA" + badChar;
-                var pathAndFile = String.Format("/Images/File-{0}/OpFlag.png", HttpUtility.UrlEncode(fileName));
-                _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-            }
-        }
+//        [TestMethod]
+//        public void WebSite_Image_Can_Serve_Alternative_Silhouettes()       { Do_Image_Can_Serve_Alternative_Logo(false); }
 
-        [TestMethod]
-        public void WebSite_Image_Does_Not_Throw_Exception_When_Model_Icao_Contains_Invalid_Characters()
-        {
-            _Configuration.BaseStationSettings.SilhouettesFolder = TestContext.TestDeploymentDir;
-            _WebSite.AttachSiteToServer(_WebServer.Object);
+//        private void Do_Image_Can_Serve_Alternative_Logo(bool isOpFlag)
+//        {
+//            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = TestContext.TestDeploymentDir;
+//            else         _Configuration.BaseStationSettings.SilhouettesFolder = TestContext.TestDeploymentDir;
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            var pathAndFile = String.Format("/Images/File-DOESNOTEXIST|DLH/{0}.png", isOpFlag ? "OpFlag" : "Type");
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                AssertImagesAreIdentical("DLH.bmp", siteImage);
+//            }
+//        }
 
-            foreach(var badChar in Path.GetInvalidFileNameChars().Concat(Path.GetInvalidPathChars())) {
-                var fileName = "BA" + badChar;
-                var pathAndFile = String.Format("/Images/File-{0}/Type.png", HttpUtility.UrlEncode(fileName));
-                _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-            }
-        }
+//        [TestMethod]
+//        public void WebSite_Image_Resizes_Small_Operator_Logos_To_Fit_Standard_Size()   { Do_Image_Resizes_Small_Logos_To_Fit_Standard_Size(true); }
 
-        [TestMethod]
-        public void WebSite_Image_Can_Serve_Alternative_Operator_Logos()    { Do_Image_Can_Serve_Alternative_Logo(true); }
+//        [TestMethod]
+//        public void WebSite_Image_Resizes_Small_Silhouettes_To_Fit_Standard_Size()      { Do_Image_Resizes_Small_Logos_To_Fit_Standard_Size(false); }
 
-        [TestMethod]
-        public void WebSite_Image_Can_Serve_Alternative_Silhouettes()       { Do_Image_Can_Serve_Alternative_Logo(false); }
+//        private void Do_Image_Resizes_Small_Logos_To_Fit_Standard_Size(bool isOpFlag)
+//        {
+//            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = TestContext.TestDeploymentDir;
+//            else         _Configuration.BaseStationSettings.SilhouettesFolder = TestContext.TestDeploymentDir;
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            var pathAndFile = String.Format("/Images/File-TestSquare/{0}.png", isOpFlag ? "OpFlag" : "Type");
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                Assert.AreEqual(85, siteImage.Width);
+//                Assert.AreEqual(20, siteImage.Height);
+//
+//                // Should have placed the small image (TestSquare is 9x9) in the centre as per rules for WDTH and HGHT
+//                Assert.AreEqual(_Transparent, siteImage.GetPixel(0, 0));
+//                Assert.AreEqual(_White, siteImage.GetPixel(39, 7));
+//                Assert.AreEqual(_Black, siteImage.GetPixel(42, 7));
+//            }
+//        }
 
-        private void Do_Image_Can_Serve_Alternative_Logo(bool isOpFlag)
-        {
-            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = TestContext.TestDeploymentDir;
-            else         _Configuration.BaseStationSettings.SilhouettesFolder = TestContext.TestDeploymentDir;
-            _WebSite.AttachSiteToServer(_WebServer.Object);
+//        [TestMethod]
+//        public void WebSite_Image_Resizes_Large_Operator_Logos_To_Fit_Standard_Size()   { Do_Image_Resizes_Large_Logos_To_Fit_Standard_Size(true); }
 
-            var pathAndFile = String.Format("/Images/File-DOESNOTEXIST|DLH/{0}.png", isOpFlag ? "OpFlag" : "Type");
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//        [TestMethod]
+//        public void WebSite_Image_Resizes_Large_Silhouettes_To_Fit_Standard_Size()      { Do_Image_Resizes_Large_Logos_To_Fit_Standard_Size(false); }
 
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                AssertImagesAreIdentical("DLH.bmp", siteImage);
-            }
-        }
+//        private void Do_Image_Resizes_Large_Logos_To_Fit_Standard_Size(bool isOpFlag)
+//        {
+//            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = TestContext.TestDeploymentDir;
+//            else         _Configuration.BaseStationSettings.SilhouettesFolder = TestContext.TestDeploymentDir;
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            var pathAndFile = String.Format("/Images/File-OversizedLogo/{0}.png", isOpFlag ? "OpFlag" : "Type");
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                Assert.AreEqual(85, siteImage.Width);
+//                Assert.AreEqual(20, siteImage.Height);
+//
+//                // Should have placed the large image in the centre - the image is 87x22 whereas the standard size is 85x20 so by centreing
+//                // it we should have cropped a 1 pixel border off the image, which leaves a black pixel in each corner
+//                Assert.AreEqual(_Black, siteImage.GetPixel(0, 0));
+//                Assert.AreEqual(_White, siteImage.GetPixel(1, 0));
+//                Assert.AreEqual(_Black, siteImage.GetPixel(84, 0));
+//                Assert.AreEqual(_Black, siteImage.GetPixel(0, 19));
+//                Assert.AreEqual(_Black, siteImage.GetPixel(84, 19));
+//            }
+//        }
 
-        [TestMethod]
-        public void WebSite_Image_Resizes_Small_Operator_Logos_To_Fit_Standard_Size()   { Do_Image_Resizes_Small_Logos_To_Fit_Standard_Size(true); }
+//        [TestMethod]
+//        public void WebSite_Image_Returns_Blank_Image_If_OperatorFlagsFolder_Not_Configured()   { Do_Image_Returns_Blank_Image_If_Logo_Not_Configured(true); }
 
-        [TestMethod]
-        public void WebSite_Image_Resizes_Small_Silhouettes_To_Fit_Standard_Size()      { Do_Image_Resizes_Small_Logos_To_Fit_Standard_Size(false); }
+//        [TestMethod]
+//        public void WebSite_Image_Returns_Blank_Image_If_SilhouettesFolder_Not_Configured()     { Do_Image_Returns_Blank_Image_If_Logo_Not_Configured(false); }
 
-        private void Do_Image_Resizes_Small_Logos_To_Fit_Standard_Size(bool isOpFlag)
-        {
-            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = TestContext.TestDeploymentDir;
-            else         _Configuration.BaseStationSettings.SilhouettesFolder = TestContext.TestDeploymentDir;
-            _WebSite.AttachSiteToServer(_WebServer.Object);
+//        private void Do_Image_Returns_Blank_Image_If_Logo_Not_Configured(bool isOpFlag)
+//        {
+//            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = null;
+//            else         _Configuration.BaseStationSettings.SilhouettesFolder = null;
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            var pathAndFile = String.Format("/Images/File-DLH/{0}.png", isOpFlag ? "OpFlag" : "Type");
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                Assert.AreEqual(85, siteImage.Width);
+//                Assert.AreEqual(20, siteImage.Height);
+//                AssertImageIsMonochrome(siteImage, _Transparent);
+//            }
+//        }
 
-            var pathAndFile = String.Format("/Images/File-TestSquare/{0}.png", isOpFlag ? "OpFlag" : "Type");
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//        [TestMethod]
+//        public void WebSite_Image_Returns_Blank_Image_If_Operator_Flag_File_Not_Found() { Do_Image_Returns_Blank_Image_If_Logo_File_Not_Found(true); }
 
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                Assert.AreEqual(85, siteImage.Width);
-                Assert.AreEqual(20, siteImage.Height);
+//        [TestMethod]
+//        public void WebSite_Image_Returns_Blank_Image_If_Silhouette_File_Not_Found()    { Do_Image_Returns_Blank_Image_If_Logo_File_Not_Found(false); }
 
-                // Should have placed the small image (TestSquare is 9x9) in the centre as per rules for WDTH and HGHT
-                Assert.AreEqual(_Transparent, siteImage.GetPixel(0, 0));
-                Assert.AreEqual(_White, siteImage.GetPixel(39, 7));
-                Assert.AreEqual(_Black, siteImage.GetPixel(42, 7));
-            }
-        }
+//        private void Do_Image_Returns_Blank_Image_If_Logo_File_Not_Found(bool isOpFlag)
+//        {
+//            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = TestContext.TestDeploymentDir;
+//            else         _Configuration.BaseStationSettings.SilhouettesFolder = TestContext.TestDeploymentDir;
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            var pathAndFile = String.Format("/Images/File-DoesNotExist/{0}.png", isOpFlag ? "OpFlag" : "Type");
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                Assert.AreEqual(85, siteImage.Width);
+//                Assert.AreEqual(20, siteImage.Height);
+//                AssertImageIsMonochrome(siteImage, _Transparent);
+//            }
+//        }
 
-        [TestMethod]
-        public void WebSite_Image_Resizes_Large_Operator_Logos_To_Fit_Standard_Size()   { Do_Image_Resizes_Large_Logos_To_Fit_Standard_Size(true); }
+//        [TestMethod]
+//        public void WebSite_Image_Render_Operator_Flag_Picks_Up_Changes_In_Configuration_Folder()   { Do_Image_Render_Logo_Picks_Up_Changes_In_Configuration_Folder(true); }
 
-        [TestMethod]
-        public void WebSite_Image_Resizes_Large_Silhouettes_To_Fit_Standard_Size()      { Do_Image_Resizes_Large_Logos_To_Fit_Standard_Size(false); }
+//        [TestMethod]
+//        public void WebSite_Image_Render_Silhouette_Picks_Up_Changes_In_Configuration_Folder()      { Do_Image_Render_Logo_Picks_Up_Changes_In_Configuration_Folder(false); }
 
-        private void Do_Image_Resizes_Large_Logos_To_Fit_Standard_Size(bool isOpFlag)
-        {
-            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = TestContext.TestDeploymentDir;
-            else         _Configuration.BaseStationSettings.SilhouettesFolder = TestContext.TestDeploymentDir;
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            var pathAndFile = String.Format("/Images/File-OversizedLogo/{0}.png", isOpFlag ? "OpFlag" : "Type");
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                Assert.AreEqual(85, siteImage.Width);
-                Assert.AreEqual(20, siteImage.Height);
-
-                // Should have placed the large image in the centre - the image is 87x22 whereas the standard size is 85x20 so by centreing
-                // it we should have cropped a 1 pixel border off the image, which leaves a black pixel in each corner
-                Assert.AreEqual(_Black, siteImage.GetPixel(0, 0));
-                Assert.AreEqual(_White, siteImage.GetPixel(1, 0));
-                Assert.AreEqual(_Black, siteImage.GetPixel(84, 0));
-                Assert.AreEqual(_Black, siteImage.GetPixel(0, 19));
-                Assert.AreEqual(_Black, siteImage.GetPixel(84, 19));
-            }
-        }
-
-        [TestMethod]
-        public void WebSite_Image_Returns_Blank_Image_If_OperatorFlagsFolder_Not_Configured()   { Do_Image_Returns_Blank_Image_If_Logo_Not_Configured(true); }
-
-        [TestMethod]
-        public void WebSite_Image_Returns_Blank_Image_If_SilhouettesFolder_Not_Configured()     { Do_Image_Returns_Blank_Image_If_Logo_Not_Configured(false); }
-
-        private void Do_Image_Returns_Blank_Image_If_Logo_Not_Configured(bool isOpFlag)
-        {
-            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = null;
-            else         _Configuration.BaseStationSettings.SilhouettesFolder = null;
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            var pathAndFile = String.Format("/Images/File-DLH/{0}.png", isOpFlag ? "OpFlag" : "Type");
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                Assert.AreEqual(85, siteImage.Width);
-                Assert.AreEqual(20, siteImage.Height);
-                AssertImageIsMonochrome(siteImage, _Transparent);
-            }
-        }
-
-        [TestMethod]
-        public void WebSite_Image_Returns_Blank_Image_If_Operator_Flag_File_Not_Found() { Do_Image_Returns_Blank_Image_If_Logo_File_Not_Found(true); }
-
-        [TestMethod]
-        public void WebSite_Image_Returns_Blank_Image_If_Silhouette_File_Not_Found()    { Do_Image_Returns_Blank_Image_If_Logo_File_Not_Found(false); }
-
-        private void Do_Image_Returns_Blank_Image_If_Logo_File_Not_Found(bool isOpFlag)
-        {
-            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = TestContext.TestDeploymentDir;
-            else         _Configuration.BaseStationSettings.SilhouettesFolder = TestContext.TestDeploymentDir;
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            var pathAndFile = String.Format("/Images/File-DoesNotExist/{0}.png", isOpFlag ? "OpFlag" : "Type");
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                Assert.AreEqual(85, siteImage.Width);
-                Assert.AreEqual(20, siteImage.Height);
-                AssertImageIsMonochrome(siteImage, _Transparent);
-            }
-        }
-
-        [TestMethod]
-        public void WebSite_Image_Render_Operator_Flag_Picks_Up_Changes_In_Configuration_Folder()   { Do_Image_Render_Logo_Picks_Up_Changes_In_Configuration_Folder(true); }
-
-        [TestMethod]
-        public void WebSite_Image_Render_Silhouette_Picks_Up_Changes_In_Configuration_Folder()      { Do_Image_Render_Logo_Picks_Up_Changes_In_Configuration_Folder(false); }
-
-        private void Do_Image_Render_Logo_Picks_Up_Changes_In_Configuration_Folder(bool isOpFlag)
-        {
-            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = "c:\\Whatever, this don't exist, whatever";
-            else         _Configuration.BaseStationSettings.SilhouettesFolder = "c:\\Whatever, this don't exist, whatever";
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            var pathAndFile = String.Format("/Images/File-DLH/{0}.png", isOpFlag ? "OpFlag" : "Type");
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                AssertImageIsMonochrome(siteImage, _Transparent);
-            }
-
-            _OutputStream.SetLength(0);
-
-            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = TestContext.TestDeploymentDir;
-            else         _Configuration.BaseStationSettings.SilhouettesFolder = TestContext.TestDeploymentDir;
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
-
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                AssertImagesAreIdentical("DLH.bmp", siteImage);
-            }
-        }
+//        private void Do_Image_Render_Logo_Picks_Up_Changes_In_Configuration_Folder(bool isOpFlag)
+//        {
+//            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = "c:\\Whatever, this don't exist, whatever";
+//            else         _Configuration.BaseStationSettings.SilhouettesFolder = "c:\\Whatever, this don't exist, whatever";
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            var pathAndFile = String.Format("/Images/File-DLH/{0}.png", isOpFlag ? "OpFlag" : "Type");
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                AssertImageIsMonochrome(siteImage, _Transparent);
+//            }
+//
+//            _OutputStream.SetLength(0);
+//
+//            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = TestContext.TestDeploymentDir;
+//            else         _Configuration.BaseStationSettings.SilhouettesFolder = TestContext.TestDeploymentDir;
+//            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
+//
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                AssertImagesAreIdentical("DLH.bmp", siteImage);
+//            }
+//        }
 
         [TestMethod]
         public void WebSite_Image_Returns_Blank_Image_If_Attempt_Made_To_Move_Out_Of_OperatorFlagsFolder()  { Do_Image_Returns_Blank_Image_If_Attempt_Made_To_Move_Out_Of_Logo_Folder(true); }

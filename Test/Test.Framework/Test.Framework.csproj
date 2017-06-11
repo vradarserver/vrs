@@ -101,10 +101,8 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="TestFiles\TestSquare.bmp" />
     <Content Include="TestFiles\TestSquare.png" />
     <EmbeddedResource Include="TestFiles\favicon.ico" />
-    <Content Include="TestFiles\OversizedLogo.bmp" />
     <Content Include="TestFiles\Picture-120x140-Resized-60x40.png" />
     <Content Include="TestFiles\Picture-120x140.png" />
     <Content Include="TestFiles\Picture-120x80-Resized-60x40.png" />
