@@ -166,5 +166,31 @@ namespace Test.VirtualRadar.Owin.Middleware
                 }
             }
         }
+
+        [TestMethod]
+        public void ImageServer_Can_Dynamically_Widen_Images()
+        {
+            _Environment.RequestPath = "/Images/Wdth-11/TestSquare.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    Assert.AreEqual(11, siteImage.Width);
+                    Assert.AreEqual(9, siteImage.Height);
+
+                    foreach(var x in new int[] { 0, 10 }) {
+                        for(var y = 0;y < 9;++y) {
+                            Assert.AreEqual(_Transparent, siteImage.GetPixel(x, y), "x = {0}, y = {1}", x, y);
+                        }
+                    }
+
+                    Assert.AreEqual(_White, siteImage.GetPixel(1, 0));
+                    Assert.AreEqual(_Black, siteImage.GetPixel(4, 0));
+                    Assert.AreEqual(_Red, siteImage.GetPixel(1, 3));
+                    Assert.AreEqual(_Green, siteImage.GetPixel(9, 3));
+                    Assert.AreEqual(_Blue, siteImage.GetPixel(4, 8));
+                }
+            }
+        }
     }
 }

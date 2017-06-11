@@ -189,6 +189,9 @@ namespace VirtualRadar.Owin.Middleware
                         if(imageRequest.RotateDegrees > 0.0) {
                             tempImage = _Graphics.UseImage(tempImage, _Graphics.RotateImage(tempImage ?? stockImage, imageRequest.RotateDegrees.Value));
                         }
+                        if(imageRequest.Width != null) {
+                            tempImage = _Graphics.UseImage(tempImage, _Graphics.WidenImage(tempImage ?? stockImage, imageRequest.Width.Value, imageRequest.CentreImageHorizontally));
+                        }
                     }
 
                     if(result) {

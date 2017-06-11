@@ -226,62 +226,62 @@ namespace Test.VirtualRadar.WebSite
 //            }
 //        }
 
-        [TestMethod]
-        public void WebSite_Image_Can_Dynamically_Rotate_Images()
-        {
-            foreach(var rotateDegrees in new int[] { 0, 90, 180, 270 }) {
-                TestCleanup();
-                TestInitialise();
-                _WebSite.AttachSiteToServer(_WebServer.Object);
+//        [TestMethod]
+//        public void WebSite_Image_Can_Dynamically_Rotate_Images()
+//        {
+//            foreach(var rotateDegrees in new int[] { 0, 90, 180, 270 }) {
+//                TestCleanup();
+//                TestInitialise();
+//                _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//                var pathAndFile = String.Format("/Images/Rotate-{0}/TestSquare.png", rotateDegrees);
+//                _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//                using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                    Assert.AreEqual(9, siteImage.Width);
+//                    Assert.AreEqual(9, siteImage.Height);
+//
+//                    // Determine the colours we expect to see at the 12 o'clock, 3 o'clock, 6 o'clock and 9 o'clock positions
+//                    Color p12 = _White, p3 = _White, p6 = _White, p9 = _White;
+//                    switch(rotateDegrees) {
+//                        case 0:     p12 = _Black;  p3 = _Green;   p6 = _Blue;    p9 = _Red;     break;
+//                        case 90:    p12 = _Red;    p3 = _Black;   p6 = _Green;   p9 = _Blue;    break;
+//                        case 180:   p12 = _Blue;   p3 = _Red;     p6 = _Black;   p9 = _Green;   break;
+//                        case 270:   p12 = _Green;  p3 = _Blue;    p6 = _Red;     p9 = _Black;   break;
+//                    }
+//
+//                    Assert.AreEqual(p12, siteImage.GetPixel(4, 1), rotateDegrees.ToString());
+//                    Assert.AreEqual(p3,  siteImage.GetPixel(7, 4), rotateDegrees.ToString());
+//                    Assert.AreEqual(p6,  siteImage.GetPixel(4, 7), rotateDegrees.ToString());
+//                    Assert.AreEqual(p9,  siteImage.GetPixel(1, 4), rotateDegrees.ToString());
+//                }
+//            }
+//        }
 
-                var pathAndFile = String.Format("/Images/Rotate-{0}/TestSquare.png", rotateDegrees);
-                _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-
-                using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                    Assert.AreEqual(9, siteImage.Width);
-                    Assert.AreEqual(9, siteImage.Height);
-
-                    // Determine the colours we expect to see at the 12 o'clock, 3 o'clock, 6 o'clock and 9 o'clock positions
-                    Color p12 = _White, p3 = _White, p6 = _White, p9 = _White;
-                    switch(rotateDegrees) {
-                        case 0:     p12 = _Black;  p3 = _Green;   p6 = _Blue;    p9 = _Red;     break;
-                        case 90:    p12 = _Red;    p3 = _Black;   p6 = _Green;   p9 = _Blue;    break;
-                        case 180:   p12 = _Blue;   p3 = _Red;     p6 = _Black;   p9 = _Green;   break;
-                        case 270:   p12 = _Green;  p3 = _Blue;    p6 = _Red;     p9 = _Black;   break;
-                    }
-
-                    Assert.AreEqual(p12, siteImage.GetPixel(4, 1), rotateDegrees.ToString());
-                    Assert.AreEqual(p3,  siteImage.GetPixel(7, 4), rotateDegrees.ToString());
-                    Assert.AreEqual(p6,  siteImage.GetPixel(4, 7), rotateDegrees.ToString());
-                    Assert.AreEqual(p9,  siteImage.GetPixel(1, 4), rotateDegrees.ToString());
-                }
-            }
-        }
-
-        [TestMethod]
-        public void WebSite_Image_Can_Dynamically_Widen_Images()
-        {
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            var pathAndFile = "/Images/Wdth-11/TestSquare.png";
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                Assert.AreEqual(11, siteImage.Width);
-                Assert.AreEqual(9, siteImage.Height);
-
-                foreach(var x in new int[] { 0, 10 }) {
-                    for(var y = 0;y < 9;++y) {
-                        Assert.AreEqual(_Transparent, siteImage.GetPixel(x, y), "x = {0}, y = {1}", x, y);
-                    }
-                }
-
-                Assert.AreEqual(_White, siteImage.GetPixel(1, 0));
-                Assert.AreEqual(_Black, siteImage.GetPixel(4, 0));
-                Assert.AreEqual(_Red, siteImage.GetPixel(1, 3));
-                Assert.AreEqual(_Green, siteImage.GetPixel(9, 3));
-                Assert.AreEqual(_Blue, siteImage.GetPixel(4, 8));
-            }
-        }
+//        [TestMethod]
+//        public void WebSite_Image_Can_Dynamically_Widen_Images()
+//        {
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//            var pathAndFile = "/Images/Wdth-11/TestSquare.png";
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                Assert.AreEqual(11, siteImage.Width);
+//                Assert.AreEqual(9, siteImage.Height);
+//
+//                foreach(var x in new int[] { 0, 10 }) {
+//                    for(var y = 0;y < 9;++y) {
+//                        Assert.AreEqual(_Transparent, siteImage.GetPixel(x, y), "x = {0}, y = {1}", x, y);
+//                    }
+//                }
+//
+//                Assert.AreEqual(_White, siteImage.GetPixel(1, 0));
+//                Assert.AreEqual(_Black, siteImage.GetPixel(4, 0));
+//                Assert.AreEqual(_Red, siteImage.GetPixel(1, 3));
+//                Assert.AreEqual(_Green, siteImage.GetPixel(9, 3));
+//                Assert.AreEqual(_Blue, siteImage.GetPixel(4, 8));
+//            }
+//        }
 
         [TestMethod]
         public void WebSite_Image_Can_Dynamically_Change_Height_Of_Images()
