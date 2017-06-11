@@ -192,6 +192,9 @@ namespace VirtualRadar.Owin.Middleware
                         if(imageRequest.Width != null) {
                             tempImage = _Graphics.UseImage(tempImage, _Graphics.WidenImage(tempImage ?? stockImage, imageRequest.Width.Value, imageRequest.CentreImageHorizontally));
                         }
+                        if(imageRequest.Height != null) {
+                            tempImage = _Graphics.UseImage(tempImage, _Graphics.HeightenImage(tempImage ?? stockImage, imageRequest.Height.Value, imageRequest.CentreImageVertically));
+                        }
                     }
 
                     if(result) {

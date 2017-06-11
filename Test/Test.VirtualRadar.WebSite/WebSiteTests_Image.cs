@@ -283,30 +283,30 @@ namespace Test.VirtualRadar.WebSite
 //            }
 //        }
 
-        [TestMethod]
-        public void WebSite_Image_Can_Dynamically_Change_Height_Of_Images()
-        {
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            var pathAndFile = "/Images/Hght-11/TestSquare.png";
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                Assert.AreEqual(9, siteImage.Width);
-                Assert.AreEqual(11, siteImage.Height);
-
-                for(var x = 0;x < 9;++x) {
-                    foreach(var y in new int[] { 0, 10 }) {
-                        Assert.AreEqual(_Transparent, siteImage.GetPixel(x, y), "x = {0}, y = {1}", x, y);
-                    }
-
-                    Assert.AreEqual(_White, siteImage.GetPixel(0, 1));
-                    Assert.AreEqual(_Black, siteImage.GetPixel(3, 1));
-                    Assert.AreEqual(_Red, siteImage.GetPixel(0, 4));
-                    Assert.AreEqual(_Green, siteImage.GetPixel(8, 4));
-                    Assert.AreEqual(_Blue, siteImage.GetPixel(3, 9));
-                }
-            }
-        }
+//        [TestMethod]
+//        public void WebSite_Image_Can_Dynamically_Change_Height_Of_Images()
+//        {
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//            var pathAndFile = "/Images/Hght-11/TestSquare.png";
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                Assert.AreEqual(9, siteImage.Width);
+//                Assert.AreEqual(11, siteImage.Height);
+//
+//                for(var x = 0;x < 9;++x) {
+//                    foreach(var y in new int[] { 0, 10 }) {
+//                        Assert.AreEqual(_Transparent, siteImage.GetPixel(x, y), "x = {0}, y = {1}", x, y);
+//                    }
+//
+//                    Assert.AreEqual(_White, siteImage.GetPixel(0, 1));
+//                    Assert.AreEqual(_Black, siteImage.GetPixel(3, 1));
+//                    Assert.AreEqual(_Red, siteImage.GetPixel(0, 4));
+//                    Assert.AreEqual(_Green, siteImage.GetPixel(8, 4));
+//                    Assert.AreEqual(_Blue, siteImage.GetPixel(3, 9));
+//                }
+//            }
+//        }
 
         [TestMethod]
         public void WebSite_Image_Can_Dynamically_Add_Altitude_Stalk()
