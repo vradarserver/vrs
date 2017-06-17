@@ -143,6 +143,11 @@ namespace VirtualRadar.Owin.Middleware
         private IWebSiteGraphics _Graphics;
 
         /// <summary>
+        /// The shared aircraft picture manager object.
+        /// </summary>
+        private IAircraftPictureManager _AircraftPictureManager;
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public ImageServer()
@@ -150,6 +155,7 @@ namespace VirtualRadar.Owin.Middleware
             _ImageServerConfiguration = Factory.Singleton.Resolve<IImageServerConfiguration>().Singleton;
             _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
             _Graphics = Factory.Singleton.Resolve<IWebSiteGraphics>().Singleton;
+            _AircraftPictureManager = Factory.Singleton.Resolve<IAircraftPictureManager>().Singleton;
         }
 
         /// <summary>
@@ -398,7 +404,16 @@ namespace VirtualRadar.Owin.Middleware
                 switch(imageRequest.ImageName) {
                     case "AIRPLANE":                stockImage = Images.Clone_Marker_Airplane(); break;
                     case "BLANK":                   tempImage  = _Graphics.CreateBlankImage(imageRequest.Width.GetValueOrDefault(), imageRequest.Height.GetValueOrDefault()); break;
+                    case "IPHONESPLASH":
+                        var webSiteAddress = new StringBuilder();
+                        webSiteAddress.Append(String.IsNullOrEmpty(request.Scheme) ? "http" : request.Scheme);
+                        webSiteAddress.Append("://");
+                        webSiteAddress.Append(String.IsNullOrEmpty(request.Host.Value) ? "127.0.0.1" : request.Host.Value);
+                        webSiteAddress.Append(request.PathBase.Value);
+                        tempImage  = _Graphics.CreateIPhoneSplash(webSiteAddress.ToString(), request.IsTabletUserAgentString, new List<string>(request.PathParts));
+                        break;
                     case "OPFLAG":                  tempImage  = CreateLogoImage(imageRequest.File, _ImageServerConfiguration.OperatorFolder); break;
+                    case "PICTURE":                 tempImage  = CreateAirplanePicture(imageRequest.File, imageRequest.Size, request.IsInternet, imageRequest.Width, imageRequest.Height); imageRequest.Width = imageRequest.Height = null; break;
                     case "TESTSQUARE":              stockImage = Images.Clone_TestSquare(); break;
                     case "TYPE":                    tempImage  = CreateLogoImage(imageRequest.File, _ImageServerConfiguration.SilhouettesFolder); break;
                     default:                        result = false; break;
@@ -443,6 +458,55 @@ namespace VirtualRadar.Owin.Middleware
             }
 
             return result ?? _Graphics.CreateBlankImage(width, height);
+        }
+
+        /// <summary>
+        /// Loads an aircraft image and sizes it according to the size passed across.
+        /// </summary>
+        /// <param name="airplaneId"></param>
+        /// <param name="standardSize"></param>
+        /// <param name="isInternetClient"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        private Image CreateAirplanePicture(string airplaneId, StandardWebSiteImageSize standardSize, bool isInternetClient, int? width, int? height)
+        {
+            Bitmap result = null;
+
+            var settings = _SharedConfiguration.Get();
+
+            if((settings.InternetClientSettings.CanShowPictures || !isInternetClient) && !String.IsNullOrEmpty(airplaneId)) {
+                var lastSpacePosn = airplaneId.LastIndexOf(' ');
+                var registration = lastSpacePosn == -1 ? null : airplaneId.Substring(0, lastSpacePosn);
+                var icao = airplaneId.Substring(lastSpacePosn + 1);
+
+                if(registration != null && registration.Length == 0) registration = null;
+                if(icao != null && icao.Length == 0) icao = null;
+
+                result = (Bitmap)_AircraftPictureManager.LoadPicture(_ImageServerConfiguration.AircraftPictureCache, icao, registration);
+                if(result != null) {
+                    int newWidth = -1, newHeight = -1, minWidth = -1;
+                    var resizeMode = ResizeImageMode.Stretch;
+                    bool preferSpeed = false;
+                    switch(standardSize) {
+                        case StandardWebSiteImageSize.IPadDetail:           newWidth = 680; break;
+                        case StandardWebSiteImageSize.IPhoneDetail:         newWidth = 260; break;
+                        case StandardWebSiteImageSize.PictureDetail:        newWidth = 350; minWidth = 350; break;
+                        case StandardWebSiteImageSize.PictureListThumbnail: newWidth = 60; newHeight = 40; resizeMode = ResizeImageMode.Centre; break;
+                        case StandardWebSiteImageSize.BaseStation:          newWidth = 200; newHeight = 133; break;
+                    }
+                    if(width != null) newWidth = width.Value;
+                    if(height != null) newHeight = height.Value;
+
+                    if((newWidth != -1 || newHeight != -1) && (minWidth == -1 || result.Width > newWidth)) {
+                        if(newWidth == -1)          newWidth = (int)(((double)newHeight * ((double)result.Width / (double)result.Height)) + 0.5);
+                        else if(newHeight == -1)    newHeight = (int)(((double)newWidth / ((double)result.Width / (double)result.Height)) + 0.5);
+                        result = (Bitmap)_Graphics.UseImage(result, _Graphics.ResizeBitmap(result, newWidth, newHeight, resizeMode, Brushes.Transparent, preferSpeed));
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }

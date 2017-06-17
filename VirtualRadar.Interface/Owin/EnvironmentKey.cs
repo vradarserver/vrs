@@ -43,6 +43,11 @@ namespace VirtualRadar.Interface.Owin
         public static readonly string IsMobileUserAgentString = "vrs.IsMobileUserAgentString";
 
         /// <summary>
+        /// The user agent string on the request appears to be from a tablet device.
+        /// </summary>
+        public static readonly string IsTabletUserAgentString = "vrs.IsTabletUserAgentString";
+
+        /// <summary>
         /// A <see cref="PipelineContext"/> that can be shared between all middleware.
         /// </summary>
         public static readonly string PipelineContext = "vrs.PipelineContext";

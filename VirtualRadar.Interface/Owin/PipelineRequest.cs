@@ -92,7 +92,7 @@ namespace VirtualRadar.Interface.Owin
         }
 
         /// <summary>
-        /// Gets or sets an indicator that the user-agent indicates that the request MIGHT be from a mobile device.
+        /// Gets a value derived from the user-agent which indicates that the request MIGHT be from a mobile device.
         /// </summary>
         public bool IsMobileUserAgentString
         {
@@ -114,6 +114,29 @@ namespace VirtualRadar.Interface.Owin
                                 String.Equals("nintendo", r, StringComparison.OrdinalIgnoreCase) ||
                                 r.StartsWith("appletv", StringComparison.OrdinalIgnoreCase)
                             );
+                        }
+                        return result;
+                    }
+                );
+            }
+        }
+
+        /// <summary>
+        /// Gets a value derived from the user-agent which indicates that the request MIGHT be from a tablet.
+        /// </summary>
+        public bool IsTabletUserAgentString
+        {
+            get {
+                return GetOrSetTranslation<string, bool>(
+                    null,
+                    EnvironmentKey.IsTabletUserAgentString,
+                    UserAgent,
+                    () => {
+                        var result = false;
+                        var userAgent = UserAgent;
+                        if(!String.IsNullOrEmpty(userAgent)) {
+                            var tokens = userAgent.Split(' ', '/', '(', ')', ';');
+                            result = tokens.Any(r => String.Equals("ipad", r, StringComparison.OrdinalIgnoreCase));
                         }
                         return result;
                     }

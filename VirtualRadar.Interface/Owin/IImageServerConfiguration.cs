@@ -36,14 +36,8 @@ namespace VirtualRadar.Interface.Owin
         string SilhouettesFolder { get; }
 
         /// <summary>
-        /// Gets the instance of <see cref="IAircraftPictureManager"/> that all instances of image server
-        /// middleware should share.
-        /// </summary>
-        IAircraftPictureManager AircraftPictureManager { get; }
-
-        /// <summary>
         /// Gets the instance of <see cref="IDirectoryCache"/> that all instances of image server middleware
-        /// should share.
+        /// should share when fetching aircraft pictures.
         /// </summary>
         IDirectoryCache AircraftPictureCache { get; }
 

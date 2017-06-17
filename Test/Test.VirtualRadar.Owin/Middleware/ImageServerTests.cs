@@ -44,6 +44,8 @@ namespace Test.VirtualRadar.Owin.Middleware
         private global::VirtualRadar.Interface.Settings.Configuration _ProgramConfiguration;
         private Mock<ISharedConfiguration> _SharedConfiguration;
         private Mock<IImageFileManager> _ImageFileManager;
+        private Mock<IAircraftPictureManager> _AircraftPictureManager;
+        private Mock<IDirectoryCache> _AircraftPictureCache;
 
         private Color _Black = Color.FromArgb(0, 0, 0);
         private Color _White = Color.FromArgb(255, 255, 255);
@@ -71,8 +73,11 @@ namespace Test.VirtualRadar.Owin.Middleware
             _FileSystemServerConfiguration.Setup(r => r.IsFileUnmodified(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<byte[]>())).Returns(true);
 
             _ImageFileManager = TestUtilities.CreateMockImplementation<IImageFileManager>();
+            _AircraftPictureManager = TestUtilities.CreateMockSingleton<IAircraftPictureManager>();
+            _AircraftPictureCache = TestUtilities.CreateMockImplementation<IDirectoryCache>();
             _ServerConfiguration = TestUtilities.CreateMockSingleton<IImageServerConfiguration>();
             _ServerConfiguration.SetupGet(r => r.ImageFileManager).Returns(_ImageFileManager.Object);
+            _ServerConfiguration.SetupGet(r => r.AircraftPictureCache).Returns(_AircraftPictureCache.Object);
 
             _Server = Factory.Singleton.Resolve<IImageServer>();
 
@@ -87,6 +92,29 @@ namespace Test.VirtualRadar.Owin.Middleware
             Factory.RestoreSnapshot(_Snapshot);
         }
 
+        private string CreateMonochromeImage(string fileName, int width, int height, Brush color, string folder = @"c:\web")
+        {
+            var fullPath = Path.Combine(folder, fileName);
+
+            var imageFormat = ImageFormat.Bmp;
+            switch(Path.GetExtension(fileName).ToLower()) {
+                case ".bmp":    break;
+                case ".png":    imageFormat = ImageFormat.Png; break;
+                default:        throw new NotImplementedException();
+            }
+
+            using(var stream = new MemoryStream()) {
+                using(var image = new Bitmap(width, height, PixelFormat.Format32bppArgb)) {
+                    using(var graphics = Graphics.FromImage(image)) {
+                        graphics.FillRectangle(color, 0, 0, width, height);
+                    }
+                    AddFileSystemImageFile(image, fileName, imageFormat, folder);
+                }
+            }
+
+            return fullPath;
+        }
+
         private void AddFileSystemImageFile(Image image, string fileName, ImageFormat imageFormat, string path = @"c:\web")
         {
             using(var stream = new MemoryStream()) {
@@ -95,6 +123,53 @@ namespace Test.VirtualRadar.Owin.Middleware
                     _FileSystem.AddFile(Path.Combine(path, fileName), stream.ToArray());
                 }
             }
+        }
+
+        private void ConfigurePictureManagerForFile(string imageFullPath, int width, int height, string icao24 = null, string registration = null, DateTime? lastModifiedTime = null)
+        {
+            if(icao24 != null || registration != null) {
+                _AircraftPictureManager.Setup(r => r.FindPicture(_AircraftPictureCache.Object, icao24, registration))
+                .Returns((IDirectoryCache cache, string i1, string r1) => {
+                    var result = GetFakePictureDetail(imageFullPath, width, height, lastModifiedTime);
+                    return result;
+                });
+
+                _AircraftPictureManager.Setup(r => r.LoadPicture(_AircraftPictureCache.Object, icao24, registration))
+                .Returns((IDirectoryCache cache, string i1, string r1) => {
+                    var result = GetFakePicture(imageFullPath);
+                    return result;
+                });
+            }
+        }
+
+        private PictureDetail GetFakePictureDetail(string imageFullPath, int width, int height, DateTime? lastModifiedTime)
+        {
+            PictureDetail result = null;
+            var bytes = _FileSystem.FileExists(imageFullPath) ? _FileSystem.FileReadAllBytes(imageFullPath) : null;
+            if(bytes != null) {
+                result = new PictureDetail() {
+                    FileName =          imageFullPath,
+                    Height =            height,
+                    Width =             width,
+                    Length =            bytes.Length,
+                    LastModifiedTime =  lastModifiedTime == null ? DateTime.UtcNow : lastModifiedTime.Value,
+                };
+            }
+
+            return result;
+        }
+
+        private Image GetFakePicture(string imageFullPath)
+        {
+            Image result = null;
+            var bytes = _FileSystem.FileExists(imageFullPath) ? _FileSystem.FileReadAllBytes(imageFullPath) : null;
+            if(bytes != null) {
+                using(var stream = new MemoryStream(bytes)) {
+                    result = Image.FromStream(stream);
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -668,6 +743,74 @@ namespace Test.VirtualRadar.Owin.Middleware
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
                     AssertImageIsMonochrome(siteImage, Color.Transparent, 85, 20);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Can_Return_IPhone_Splash_Screen()
+        {
+            // The content of this is built dynamically and while we could compare checksums I suspect that over different machines you'd get
+            // slightly different results. So this test just checks that if you ask for a splash screen then you get something back that's the
+            // right size and has what looks to be the correct colour background.
+            _Environment.RequestPath = "/Images/IPhoneSplash.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    Assert.AreEqual(320, siteImage.Width);
+                    Assert.AreEqual(460, siteImage.Height);
+                    Assert.AreEqual(_Black, siteImage.GetPixel(10, 10));
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Can_Return_IPad_Splash_Screen_Via_UserAgent_String()
+        {
+            // See notes on iPhone version
+            _Environment.Request.UserAgent = "(iPad;something)";
+            _Environment.RequestPath = "/Images/IPhoneSplash.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    Assert.AreEqual(768, siteImage.Width);
+                    Assert.AreEqual(1004, siteImage.Height);
+                    Assert.AreEqual(_Black, siteImage.GetPixel(10, 10));
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Can_Return_IPad_Splash_Screen_Via_Explicit_Instruction()
+        {
+            // See notes on iPhone version
+
+            _Environment.RequestPath = "/Images/File-IPad/IPhoneSplash.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    Assert.AreEqual(768, siteImage.Width);
+                    Assert.AreEqual(1004, siteImage.Height);
+                    Assert.AreEqual(_Black, siteImage.GetPixel(10, 10));
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Can_Display_Aircraft_Picture_Correctly()
+        {
+            CreateMonochromeImage("AnAircraftPicture.png", 10, 10, Brushes.White, folder: @"c:\pictures");
+            ConfigurePictureManagerForFile(@"c:\pictures\AnAircraftPicture.png", 10, 10, "112233", "G-ABCD");
+
+            _Environment.RequestPath = "/Images/Size-Full/File-G-ABCD 112233/Picture.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    AssertImageIsMonochrome(siteImage, _White, 10, 10);
                 }
             }
         }

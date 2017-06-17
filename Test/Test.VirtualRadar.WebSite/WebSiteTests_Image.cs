@@ -587,118 +587,118 @@ namespace Test.VirtualRadar.WebSite
 //            }
 //        }
 
-        [TestMethod]
-        public void WebSite_Image_Returns_Blank_Image_If_Attempt_Made_To_Move_Out_Of_OperatorFlagsFolder()  { Do_Image_Returns_Blank_Image_If_Attempt_Made_To_Move_Out_Of_Logo_Folder(true); }
+//        [TestMethod]
+//        public void WebSite_Image_Returns_Blank_Image_If_Attempt_Made_To_Move_Out_Of_OperatorFlagsFolder()  { Do_Image_Returns_Blank_Image_If_Attempt_Made_To_Move_Out_Of_Logo_Folder(true); }
 
-        [TestMethod]
-        public void WebSite_Image_Returns_Blank_Image_If_Attempt_Made_To_Move_Out_Of_SilhouettesFolder()    { Do_Image_Returns_Blank_Image_If_Attempt_Made_To_Move_Out_Of_Logo_Folder(false); }
+//        [TestMethod]
+//        public void WebSite_Image_Returns_Blank_Image_If_Attempt_Made_To_Move_Out_Of_SilhouettesFolder()    { Do_Image_Returns_Blank_Image_If_Attempt_Made_To_Move_Out_Of_Logo_Folder(false); }
 
-        private void Do_Image_Returns_Blank_Image_If_Attempt_Made_To_Move_Out_Of_Logo_Folder(bool isOpFlag)
-        {
-            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = Path.Combine(TestContext.TestDeploymentDir, "SubFolder");
-            else         _Configuration.BaseStationSettings.SilhouettesFolder = Path.Combine(TestContext.TestDeploymentDir, "SubFolder");
-            _WebSite.AttachSiteToServer(_WebServer.Object);
+//        private void Do_Image_Returns_Blank_Image_If_Attempt_Made_To_Move_Out_Of_Logo_Folder(bool isOpFlag)
+//        {
+//            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = Path.Combine(TestContext.TestDeploymentDir, "SubFolder");
+//            else         _Configuration.BaseStationSettings.SilhouettesFolder = Path.Combine(TestContext.TestDeploymentDir, "SubFolder");
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            var pathAndFile = String.Format("/Images/File-VIR/{0}.png", isOpFlag ? "OpFlag" : "Type");
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                AssertImagesAreIdentical("SubFolder\\Vir.bmp", siteImage);
+//            }
+//
+//            _OutputStream.SetLength(0);
+//            pathAndFile = String.Format("/Images/File-..\\DLH/{0}.png", isOpFlag ? "OpFlag" : "Type");
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                Assert.AreNotEqual(0, siteImage.Width);
+//                AssertImageIsMonochrome(siteImage, _Transparent);
+//            }
+//
+//            _OutputStream.SetLength(0);
+//            pathAndFile = String.Format("/Images/File-..%5CDLH/{0}.png", isOpFlag ? "OpFlag" : "Type");
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                Assert.AreNotEqual(0, siteImage.Width);
+//                AssertImageIsMonochrome(siteImage, _Transparent);
+//            }
+//
+//            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = TestContext.TestDeploymentDir;
+//            else         _Configuration.BaseStationSettings.SilhouettesFolder = TestContext.TestDeploymentDir;
+//            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
+//
+//            _OutputStream.SetLength(0);
+//            pathAndFile = String.Format("/Images/File-SubFolder\\VIR/{0}.png", isOpFlag ? "OpFlag" : "Type");
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                Assert.AreNotEqual(0, siteImage.Width);
+//                AssertImageIsMonochrome(siteImage, _Transparent);
+//            }
+//
+//            _OutputStream.SetLength(0);
+//            pathAndFile = String.Format("/Images/File-SubFolder%5CVIR/{0}.png", isOpFlag ? "OpFlag" : "Type");
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                Assert.AreNotEqual(0, siteImage.Width);
+//                AssertImageIsMonochrome(siteImage, _Transparent);
+//            }
+//        }
 
-            var pathAndFile = String.Format("/Images/File-VIR/{0}.png", isOpFlag ? "OpFlag" : "Type");
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                AssertImagesAreIdentical("SubFolder\\Vir.bmp", siteImage);
-            }
+//        [TestMethod]
+//        public void WebSite_Image_Can_Return_IPhone_Splash_Screen()
+//        {
+//            // The content of this is built dynamically and while we could compare checksums I suspect that over different machines you'd get
+//            // slightly different results. So this test just checks that if you ask for a splash screen then you get something back that's the
+//            // right size and has what looks to be the correct colour background.
+//            _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            string pathAndFile = "/Images/IPhoneSplash.png";
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                Assert.AreEqual(320, siteImage.Width);
+//                Assert.AreEqual(460, siteImage.Height);
+//                Assert.AreEqual(_Black, siteImage.GetPixel(10, 10));
+//            }
+//        }
 
-            _OutputStream.SetLength(0);
-            pathAndFile = String.Format("/Images/File-..\\DLH/{0}.png", isOpFlag ? "OpFlag" : "Type");
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                Assert.AreNotEqual(0, siteImage.Width);
-                AssertImageIsMonochrome(siteImage, _Transparent);
-            }
+//        [TestMethod]
+//        public void WebSite_Image_Can_Return_IPad_Splash_Screen_Via_UserAgent_String()
+//        {
+//            // See notes on iPhone version
+//
+//            _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            string pathAndFile = "/Images/IPhoneSplash.png";
+//            var args = RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false);
+//            RequestReceivedEventArgsHelper.SetIPadUserAgent(_Request);
+//            _WebServer.Raise(m => m.RequestReceived += null, args);
+//
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                Assert.AreEqual(768, siteImage.Width);
+//                Assert.AreEqual(1004, siteImage.Height);
+//                Assert.AreEqual(_Black, siteImage.GetPixel(10, 10));
+//            }
+//        }
 
-            _OutputStream.SetLength(0);
-            pathAndFile = String.Format("/Images/File-..%5CDLH/{0}.png", isOpFlag ? "OpFlag" : "Type");
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                Assert.AreNotEqual(0, siteImage.Width);
-                AssertImageIsMonochrome(siteImage, _Transparent);
-            }
-
-            if(isOpFlag) _Configuration.BaseStationSettings.OperatorFlagsFolder = TestContext.TestDeploymentDir;
-            else         _Configuration.BaseStationSettings.SilhouettesFolder = TestContext.TestDeploymentDir;
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
-
-            _OutputStream.SetLength(0);
-            pathAndFile = String.Format("/Images/File-SubFolder\\VIR/{0}.png", isOpFlag ? "OpFlag" : "Type");
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                Assert.AreNotEqual(0, siteImage.Width);
-                AssertImageIsMonochrome(siteImage, _Transparent);
-            }
-
-            _OutputStream.SetLength(0);
-            pathAndFile = String.Format("/Images/File-SubFolder%5CVIR/{0}.png", isOpFlag ? "OpFlag" : "Type");
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                Assert.AreNotEqual(0, siteImage.Width);
-                AssertImageIsMonochrome(siteImage, _Transparent);
-            }
-        }
-
-        [TestMethod]
-        public void WebSite_Image_Can_Return_IPhone_Splash_Screen()
-        {
-            // The content of this is built dynamically and while we could compare checksums I suspect that over different machines you'd get
-            // slightly different results. So this test just checks that if you ask for a splash screen then you get something back that's the
-            // right size and has what looks to be the correct colour background.
-            _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            string pathAndFile = "/Images/IPhoneSplash.png";
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                Assert.AreEqual(320, siteImage.Width);
-                Assert.AreEqual(460, siteImage.Height);
-                Assert.AreEqual(_Black, siteImage.GetPixel(10, 10));
-            }
-        }
-
-        [TestMethod]
-        public void WebSite_Image_Can_Return_IPad_Splash_Screen_Via_UserAgent_String()
-        {
-            // See notes on iPhone version
-
-            _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            string pathAndFile = "/Images/IPhoneSplash.png";
-            var args = RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false);
-            RequestReceivedEventArgsHelper.SetIPadUserAgent(_Request);
-            _WebServer.Raise(m => m.RequestReceived += null, args);
-
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                Assert.AreEqual(768, siteImage.Width);
-                Assert.AreEqual(1004, siteImage.Height);
-                Assert.AreEqual(_Black, siteImage.GetPixel(10, 10));
-            }
-        }
-
-        [TestMethod]
-        public void WebSite_Image_Can_Return_IPad_Splash_Screen_Via_Explicit_Instruction()
-        {
-            // See notes on iPhone version
-
-            _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            string pathAndFile = "/Images/File-IPad/IPhoneSplash.png";
-            var args = RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false);
-            _WebServer.Raise(m => m.RequestReceived += null, args);
-
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                Assert.AreEqual(768, siteImage.Width);
-                Assert.AreEqual(1004, siteImage.Height);
-                Assert.AreEqual(_Black, siteImage.GetPixel(10, 10));
-            }
-        }
+//        [TestMethod]
+//        public void WebSite_Image_Can_Return_IPad_Splash_Screen_Via_Explicit_Instruction()
+//        {
+//            // See notes on iPhone version
+//
+//            _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            string pathAndFile = "/Images/File-IPad/IPhoneSplash.png";
+//            var args = RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false);
+//            _WebServer.Raise(m => m.RequestReceived += null, args);
+//
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                Assert.AreEqual(768, siteImage.Width);
+//                Assert.AreEqual(1004, siteImage.Height);
+//                Assert.AreEqual(_Black, siteImage.GetPixel(10, 10));
+//            }
+//        }
 
         [TestMethod]
         public void WebSite_Image_Can_Display_Aircraft_Picture_Correctly()

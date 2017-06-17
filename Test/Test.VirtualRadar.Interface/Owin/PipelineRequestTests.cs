@@ -458,6 +458,40 @@ namespace Test.VirtualRadar.Interface.Owin
         }
         #endregion
 
+        #region IsTabletUserAgentString
+        [TestMethod]
+        public void PipelineRequest_IsTabletUserAgentString_Returns_True_For_Ipad_UserAgent()
+        {
+            _Request.UserAgent = "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25";
+
+            Assert.AreEqual(true, _Request.IsTabletUserAgentString);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_IsTabletUserAgentString_Returns_True_For_Other_UserAgent()
+        {
+            _Request.UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25";
+
+            Assert.AreEqual(false, _Request.IsTabletUserAgentString);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_IsTabletUserAgentString_Copes_If_UserAgent_Changes()
+        {
+            _Request.UserAgent = "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25";
+            Assert.AreEqual(true, _Request.IsTabletUserAgentString);
+
+            _Request.UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25";
+            Assert.AreEqual(false, _Request.IsTabletUserAgentString);
+        }
+
+        [TestMethod]
+        public void PipelineRequest_IsTabletUserAgentString_Returns_False_If_There_Is_No_User_Agent()
+        {
+            Assert.AreEqual(false, _Request.IsTabletUserAgentString);
+        }
+        #endregion
+
         #region UserAgent
         [TestMethod]
         public void PipelineRequest_UserAgent_Returns_UserAgent_Header()
