@@ -74,6 +74,8 @@ namespace Test.VirtualRadar.Owin.Middleware
 
             _ImageFileManager = TestUtilities.CreateMockImplementation<IImageFileManager>();
             _AircraftPictureManager = TestUtilities.CreateMockSingleton<IAircraftPictureManager>();
+            _AircraftPictureManager.Setup(r => r.FindPicture(It.IsAny<IDirectoryCache>(), It.IsAny<string>(), It.IsAny<string>())).Returns((PictureDetail)null);
+            _AircraftPictureManager.Setup(r => r.LoadPicture(It.IsAny<IDirectoryCache>(), It.IsAny<string>(), It.IsAny<string>())).Returns((Image)null);
             _AircraftPictureCache = TestUtilities.CreateMockImplementation<IDirectoryCache>();
             _ServerConfiguration = TestUtilities.CreateMockSingleton<IImageServerConfiguration>();
             _ServerConfiguration.SetupGet(r => r.ImageFileManager).Returns(_ImageFileManager.Object);
@@ -812,6 +814,95 @@ namespace Test.VirtualRadar.Owin.Middleware
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
                     AssertImageIsMonochrome(siteImage, _White, 10, 10);
                 }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Calls_Aircraft_Manager_Correctly_When_Registration_Is_Missing()
+        {
+            _Environment.RequestPath = "/Images/Size-Full/File- 112233/Picture.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            _AircraftPictureManager.Verify(m => m.LoadPicture(_AircraftPictureCache.Object, "112233", null), Times.Once());
+        }
+
+        [TestMethod]
+        public void ImageServer_Calls_Aircraft_Manager_Correctly_When_Icao_Is_Missing()
+        {
+            _Environment.RequestPath = "/Images/Size-Full/File-G-ABCD /Picture.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            _AircraftPictureManager.Verify(m => m.LoadPicture(_AircraftPictureCache.Object, null, "G-ABCD"), Times.Once());
+        }
+
+        [TestMethod]
+        public void ImageServer_Copes_If_Aircraft_Picture_Does_Not_Exist()
+        {
+            _Environment.RequestPath = "/Images/Size-Full/File-G-ABCD 112233/Picture.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
+        }
+
+        [TestMethod]
+        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "PictureResize$")]
+        public void ImageServer_Renders_Pictures_At_Correct_Size()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var originalWidth = worksheet.Int("OriginalWidth");
+            var originalHeight = worksheet.Int("OriginalHeight");
+            var newWidth = worksheet.Int("NewWidth");
+            var newHeight = worksheet.Int("NewHeight");
+            var size = worksheet.String("Size");
+
+            CreateMonochromeImage("ImageRenderSize.png", originalWidth, originalHeight, Brushes.Red);
+            ConfigurePictureManagerForFile(@"c:\web\ImageRenderSize.png", originalWidth, originalHeight, "ICAO", "REG");
+
+            _Environment.RequestPath = $"/Images/Size-{size}/File-REG ICAO/Picture.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    AssertImageIsMonochrome(siteImage, _Red, newWidth, newHeight);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Can_Render_Aircraft_Full_Sized_Picture()
+        {
+            _ProgramConfiguration.BaseStationSettings.PicturesFolder = @"c:\pictures";
+            AddFileSystemImageFile(TestImages.Picture_700x400_png, "Picture-700x400.png", ImageFormat.Png, path: @"c:\pictures");
+            ConfigurePictureManagerForFile(@"c:\pictures\Picture-700x400.png", 700, 400, icao24: "Picture-700x400", registration: null);
+
+            _Environment.RequestPath = "/Images/Size-Full/File-Picture-700x400/Picture.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    AssertImagesAreIdentical(TestImages.Picture_700x400_png, siteImage);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ImageServer_Ignores_Requests_For_Pictures_From_Internet_When_Prohibited()
+        {
+            _ProgramConfiguration.BaseStationSettings.PicturesFolder = @"c:\web";
+            CreateMonochromeImage("Test.png", 10, 10, Brushes.Blue);
+            ConfigurePictureManagerForFile(@"c:\web\Test.png", 10, 10, "ICAO", "REG");
+
+            _ProgramConfiguration.InternetClientSettings.CanShowPictures = false;
+
+            foreach(var size in new string[] { "DETAIL", "FULL", "LIST", "IPADDETAIL", "IPHONEDETAIL" }) {
+                _Environment.Reset();
+
+                _Environment.RequestPath = $"/Images/Size-{size}/File-REG ICAO/Picture.png";
+                _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+                Assert.AreEqual(0, _Environment.ResponseBodyBytes.Length);
+                Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
             }
         }
     }

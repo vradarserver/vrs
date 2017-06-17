@@ -101,15 +101,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="TestFiles\TestSquare.png" />
     <EmbeddedResource Include="TestFiles\favicon.ico" />
-    <Content Include="TestFiles\Picture-120x140-Resized-60x40.png" />
-    <Content Include="TestFiles\Picture-120x140.png" />
-    <Content Include="TestFiles\Picture-120x80-Resized-60x40.png" />
-    <Content Include="TestFiles\Picture-120x80.png" />
-    <Content Include="TestFiles\Picture-140x80-Resized-60x40.png" />
-    <Content Include="TestFiles\Picture-140x80.png" />
-    <Content Include="TestFiles\Picture-700x400.png" />
     <Content Include="TestFiles\SampleMessages.txt" />
     <Content Include="TestFiles\SubFolder\VIR.bmp" />
   </ItemGroup>

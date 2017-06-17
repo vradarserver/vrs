@@ -149,7 +149,15 @@
     <Content Include="TestImages\AltitudeImageTest-01.png" />
     <Content Include="TestImages\DLH.bmp" />
     <Content Include="TestImages\OversizedLogo.bmp" />
+    <Content Include="TestImages\Picture-120x140-Resized-60x40.png" />
+    <Content Include="TestImages\Picture-120x140.png" />
+    <Content Include="TestImages\Picture-120x80-Resized-60x40.png" />
+    <Content Include="TestImages\Picture-120x80.png" />
+    <Content Include="TestImages\Picture-140x80-Resized-60x40.png" />
+    <Content Include="TestImages\Picture-140x80.png" />
+    <Content Include="TestImages\Picture-700x400.png" />
     <Content Include="TestImages\TestSquare.bmp" />
+    <Content Include="TestImages\TestSquare.png" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

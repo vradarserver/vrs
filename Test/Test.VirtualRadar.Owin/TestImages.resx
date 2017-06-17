@@ -127,7 +127,31 @@
   <data name="OversizedLogo_bmp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>testimages\oversizedlogo.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Picture_120x140_png" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>testimages\picture-120x140.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Picture_120x140_Resized_60x40_png" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>testimages\picture-120x140-resized-60x40.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Picture_120x80_png" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>testimages\picture-120x80.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Picture_120x80_Resized_60x40_png" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>testimages\picture-120x80-resized-60x40.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Picture_140x80_png" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>testimages\picture-140x80.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Picture_140x80_Resized_60x40_png" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>testimages\picture-140x80-resized-60x40.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Picture_700x400_png" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>testimages\picture-700x400.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="TestSquare_bmp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>testimages\testsquare.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TestSquare_png" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>testimages\testsquare.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

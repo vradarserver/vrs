@@ -93,9 +93,89 @@ namespace Test.VirtualRadar.Owin {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Picture_120x140_png {
+            get {
+                object obj = ResourceManager.GetObject("Picture_120x140_png", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Picture_120x140_Resized_60x40_png {
+            get {
+                object obj = ResourceManager.GetObject("Picture_120x140_Resized_60x40_png", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Picture_120x80_png {
+            get {
+                object obj = ResourceManager.GetObject("Picture_120x80_png", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Picture_120x80_Resized_60x40_png {
+            get {
+                object obj = ResourceManager.GetObject("Picture_120x80_Resized_60x40_png", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Picture_140x80_png {
+            get {
+                object obj = ResourceManager.GetObject("Picture_140x80_png", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Picture_140x80_Resized_60x40_png {
+            get {
+                object obj = ResourceManager.GetObject("Picture_140x80_Resized_60x40_png", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Picture_700x400_png {
+            get {
+                object obj = ResourceManager.GetObject("Picture_700x400_png", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap TestSquare_bmp {
             get {
                 object obj = ResourceManager.GetObject("TestSquare_bmp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TestSquare_png {
+            get {
+                object obj = ResourceManager.GetObject("TestSquare_png", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

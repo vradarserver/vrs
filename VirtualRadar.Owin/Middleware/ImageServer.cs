@@ -487,7 +487,7 @@ namespace VirtualRadar.Owin.Middleware
                 if(result != null) {
                     int newWidth = -1, newHeight = -1, minWidth = -1;
                     var resizeMode = ResizeImageMode.Stretch;
-                    bool preferSpeed = false;
+                    var preferSpeed = false;
                     switch(standardSize) {
                         case StandardWebSiteImageSize.IPadDetail:           newWidth = 680; break;
                         case StandardWebSiteImageSize.IPhoneDetail:         newWidth = 260; break;

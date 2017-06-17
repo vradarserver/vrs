@@ -700,118 +700,118 @@ namespace Test.VirtualRadar.WebSite
 //            }
 //        }
 
-        [TestMethod]
-        public void WebSite_Image_Can_Display_Aircraft_Picture_Correctly()
-        {
-            _WebSite.AttachSiteToServer(_WebServer.Object);
+//        [TestMethod]
+//        public void WebSite_Image_Can_Display_Aircraft_Picture_Correctly()
+//        {
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            CreateMonochromeImage("AnAircraftPicture.png", 10, 10, Brushes.White);
+//            ConfigurePictureManagerForPathAndFile(TestContext.TestDeploymentDir, "AnAircraftPicture.png", "112233", "G-ABCD");
+//
+//            string pathAndFile = "/Images/Size-Full/File-G-ABCD 112233/Picture.png";
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                AssertImageIsMonochrome(siteImage, _White, 10, 10);
+//            }
+//        }
 
-            CreateMonochromeImage("AnAircraftPicture.png", 10, 10, Brushes.White);
-            ConfigurePictureManagerForPathAndFile(TestContext.TestDeploymentDir, "AnAircraftPicture.png", "112233", "G-ABCD");
+//        [TestMethod]
+//        public void WebSite_Image_Calls_Aircraft_Manager_Correctly_When_Registration_Is_Missing()
+//        {
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            string pathAndFile = "/Images/Size-Full/File- 112233/Picture.png";
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//            _AircraftPictureManager.Verify(m => m.LoadPicture(_DirectoryCache.Object, "112233", null), Times.Once());
+//        }
 
-            string pathAndFile = "/Images/Size-Full/File-G-ABCD 112233/Picture.png";
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//        [TestMethod]
+//        public void WebSite_Image_Calls_Aircraft_Manager_Correctly_When_Icao_Is_Missing()
+//        {
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            string pathAndFile = "/Images/Size-Full/File-G-ABCD /Picture.png";
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//            _AircraftPictureManager.Verify(m => m.LoadPicture(_DirectoryCache.Object, null, "G-ABCD"), Times.Once());
+//        }
 
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                AssertImageIsMonochrome(siteImage, _White, 10, 10);
-            }
-        }
+//        [TestMethod]
+//        public void WebSite_Image_Copes_If_Aircraft_Picture_Does_Not_Exist()
+//        {
+//            _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            _AircraftPictureManager.Setup(p => p.LoadPicture(_DirectoryCache.Object, It.IsAny<string>(), It.IsAny<string>())).Returns((Image)null);
+//
+//            string pathAndFile = "/Images/Size-Full/File-G-ABCD 112233/Picture.png";
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//            Assert.AreEqual((HttpStatusCode)0, _Response.Object.StatusCode);
+//            Assert.AreEqual(0, _Response.Object.ContentLength);
+//            Assert.AreEqual(0, _Response.Object.OutputStream.Length);
+//        }
 
-        [TestMethod]
-        public void WebSite_Image_Calls_Aircraft_Manager_Correctly_When_Registration_Is_Missing()
-        {
-            _WebSite.AttachSiteToServer(_WebServer.Object);
+//        [TestMethod]
+//        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+//                    "PictureResize$")]
+//        public void WebSite_Image_Renders_Pictures_At_Correct_Size()
+//        {
+//            var worksheet = new ExcelWorksheetData(TestContext);
+//
+//            CreateMonochromeImage("ImageRenderSize.png", worksheet.Int("OriginalWidth"), worksheet.Int("OriginalHeight"), Brushes.Red);
+//            ConfigurePictureManagerForPathAndFile(TestContext.TestDeploymentDir, "ImageRenderSize.png");
+//
+//            _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            string pathAndFile = String.Format("/Images/Size-{0}/File-ImageRenderSize/Picture.png", worksheet.String("Size"));
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                AssertImageIsMonochrome(siteImage, _Red, worksheet.Int("NewWidth"), worksheet.Int("NewHeight"));
+//            }
+//        }
 
-            string pathAndFile = "/Images/Size-Full/File- 112233/Picture.png";
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//        [TestMethod]
+//        public void WebSite_Image_Can_Render_Aircraft_Full_Sized_Picture()
+//        {
+//            _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
+//            ConfigurePictureManagerForPathAndFile(TestContext.TestDeploymentDir, "Picture-700x400.png");
+//
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            string pathAndFile = "/Images/Size-Full/File-Picture-700x400/Picture.png";
+//            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
+//
+//            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                AssertImagesAreIdentical("Picture-700x400.png", siteImage);
+//            }
+//        }
 
-            _AircraftPictureManager.Verify(m => m.LoadPicture(_DirectoryCache.Object, "112233", null), Times.Once());
-        }
-
-        [TestMethod]
-        public void WebSite_Image_Calls_Aircraft_Manager_Correctly_When_Icao_Is_Missing()
-        {
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            string pathAndFile = "/Images/Size-Full/File-G-ABCD /Picture.png";
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-
-            _AircraftPictureManager.Verify(m => m.LoadPicture(_DirectoryCache.Object, null, "G-ABCD"), Times.Once());
-        }
-
-        [TestMethod]
-        public void WebSite_Image_Copes_If_Aircraft_Picture_Does_Not_Exist()
-        {
-            _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            _AircraftPictureManager.Setup(p => p.LoadPicture(_DirectoryCache.Object, It.IsAny<string>(), It.IsAny<string>())).Returns((Image)null);
-
-            string pathAndFile = "/Images/Size-Full/File-G-ABCD 112233/Picture.png";
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-
-            Assert.AreEqual((HttpStatusCode)0, _Response.Object.StatusCode);
-            Assert.AreEqual(0, _Response.Object.ContentLength);
-            Assert.AreEqual(0, _Response.Object.OutputStream.Length);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "PictureResize$")]
-        public void WebSite_Image_Renders_Pictures_At_Correct_Size()
-        {
-            var worksheet = new ExcelWorksheetData(TestContext);
-
-            CreateMonochromeImage("ImageRenderSize.png", worksheet.Int("OriginalWidth"), worksheet.Int("OriginalHeight"), Brushes.Red);
-            ConfigurePictureManagerForPathAndFile(TestContext.TestDeploymentDir, "ImageRenderSize.png");
-
-            _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            string pathAndFile = String.Format("/Images/Size-{0}/File-ImageRenderSize/Picture.png", worksheet.String("Size"));
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                AssertImageIsMonochrome(siteImage, _Red, worksheet.Int("NewWidth"), worksheet.Int("NewHeight"));
-            }
-        }
-
-        [TestMethod]
-        public void WebSite_Image_Can_Render_Aircraft_Full_Sized_Picture()
-        {
-            _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
-            ConfigurePictureManagerForPathAndFile(TestContext.TestDeploymentDir, "Picture-700x400.png");
-
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            string pathAndFile = "/Images/Size-Full/File-Picture-700x400/Picture.png";
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
-
-            using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                AssertImagesAreIdentical("Picture-700x400.png", siteImage);
-            }
-        }
-
-        [TestMethod]
-        public void WebSite_Image_Ignores_Requests_For_Pictures_From_Internet_When_Prohibited()
-        {
-            _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
-            ConfigurePictureManagerForPathAndFile(TestContext.TestDeploymentDir, "TestSquare.png");
-
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            foreach(var size in new string[] { "DETAIL", "FULL", "LIST", "IPADDETAIL", "IPHONEDETAIL" }) {
-                string pathAndFile = String.Format("/Images/Size-{0}/File-TestSquare/Picture.png", size);
-
-                _Configuration.InternetClientSettings.CanShowPictures = false;
-
-                _OutputStream.SetLength(0);
-                _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, true));
-
-                Assert.AreEqual((HttpStatusCode)0, _Response.Object.StatusCode, size);   // WebServer should eventually send 403 but we're not responsible for doing that
-                Assert.AreEqual(0, _Response.Object.ContentLength, size);
-                Assert.AreEqual(0, _OutputStream.Length, size);
-            }
-        }
+//        [TestMethod]
+//        public void WebSite_Image_Ignores_Requests_For_Pictures_From_Internet_When_Prohibited()
+//        {
+//            _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
+//            ConfigurePictureManagerForPathAndFile(TestContext.TestDeploymentDir, "TestSquare.png");
+//
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            foreach(var size in new string[] { "DETAIL", "FULL", "LIST", "IPADDETAIL", "IPHONEDETAIL" }) {
+//                string pathAndFile = String.Format("/Images/Size-{0}/File-TestSquare/Picture.png", size);
+//
+//                _Configuration.InternetClientSettings.CanShowPictures = false;
+//
+//                _OutputStream.SetLength(0);
+//                _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, true));
+//
+//                Assert.AreEqual((HttpStatusCode)0, _Response.Object.StatusCode, size);   // WebServer should eventually send 403 but we're not responsible for doing that
+//                Assert.AreEqual(0, _Response.Object.ContentLength, size);
+//                Assert.AreEqual(0, _OutputStream.Length, size);
+//            }
+//        }
 
         [TestMethod]
         public void WebSite_Image_Picks_Up_Configuration_Changes_For_Internet_Viewing_Of_Pictures()
