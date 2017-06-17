@@ -397,13 +397,39 @@ namespace VirtualRadar.Owin.Middleware
         /// <returns></returns>
         private bool BuildInitialImage(ImageRequest imageRequest, PipelineRequest request, ref Image stockImage, ref Image tempImage)
         {
-            bool result = true;
+            var result = true;
 
             if(imageRequest.WebSiteFileName != null) {
             } else {
                 switch(imageRequest.ImageName) {
                     case "AIRPLANE":                stockImage = Images.Clone_Marker_Airplane(); break;
+                    case "AIRPLANESELECTED":        stockImage = Images.Clone_Marker_AirplaneSelected(); break;
                     case "BLANK":                   tempImage  = _Graphics.CreateBlankImage(imageRequest.Width.GetValueOrDefault(), imageRequest.Height.GetValueOrDefault()); break;
+                    case "CHEVRONBLUECIRCLE":       stockImage = Images.Clone_ChevronBlueCircle(); break;
+                    case "CHEVRONGREENCIRCLE":      stockImage = Images.Clone_ChevronGreenCircle(); break;
+                    case "CHEVRONREDCIRCLE":        stockImage = Images.Clone_ChevronRedCircle(); break;
+                    case "CLOSESLIDER":             stockImage = Images.Clone_CloseSlider(); break;
+                    case "COMPASS":                 stockImage = Images.Clone_Compass(); break;
+                    case "CORNER-TL":               stockImage = Images.Clone_Corner_TopLeft(); break;
+                    case "CORNER-TR":               stockImage = Images.Clone_Corner_TopRight(); break;
+                    case "CORNER-BL":               stockImage = Images.Clone_Corner_BottomLeft(); break;
+                    case "CORNER-BR":               stockImage = Images.Clone_Corner_BottomRight(); break;
+                    case "CROSSHAIR":               stockImage = Images.Clone_Crosshair(); break;
+                    case "GOTOCURRENTLOCATION":     stockImage = Images.Clone_GotoCurrentLocation(); break;
+                    case "GROUNDVEHICLE":           stockImage = Images.Clone_FollowMe(); break;
+                    case "GROUNDVEHICLESELECTED":   stockImage = Images.Clone_FollowMe(); break;
+                    case "HEADING":                 stockImage = Images.Clone_SmallPlaneNorth(); break;
+                    case "HIDELIST":                stockImage = Images.Clone_HideList(); break;
+                    case "IPHONEBACKBUTTON":        stockImage = Images.Clone_IPhoneBackButton(); break;
+                    case "IPHONEBLUEBUTTON":        stockImage = Images.Clone_IPhoneBlueButton(); break;
+                    case "IPHONECHEVRON":           stockImage = Images.Clone_IPhoneChevron(); break;
+                    case "IPHONEGRAYBUTTON":        stockImage = Images.Clone_IPhoneGrayButton(); break;
+                    case "IPHONEICON":              stockImage = Images.Clone_IPhoneIcon(); break;
+                    case "IPHONELISTGROUP":         stockImage = Images.Clone_IPhoneListGroup(); break;
+                    case "IPHONEONOFF":             stockImage = Images.Clone_IPhoneOnOff(); break;
+                    case "IPHONEPINSTRIPES":        stockImage = Images.Clone_IPhonePinstripes(); break;
+                    case "IPHONESELECTEDTICK":      stockImage = Images.Clone_IPhoneSelectedTick(); break;
+                    case "IPHONESELECTION":         stockImage = Images.Clone_IPhoneSelection(); break;
                     case "IPHONESPLASH":
                         var webSiteAddress = new StringBuilder();
                         webSiteAddress.Append(String.IsNullOrEmpty(request.Scheme) ? "http" : request.Scheme);
@@ -412,10 +438,34 @@ namespace VirtualRadar.Owin.Middleware
                         webSiteAddress.Append(request.PathBase.Value);
                         tempImage  = _Graphics.CreateIPhoneSplash(webSiteAddress.ToString(), request.IsTabletUserAgentString, new List<string>(request.PathParts));
                         break;
+                    case "IPHONETOOLBAR":           stockImage = Images.Clone_IPhoneToolbar(); break;
+                    case "IPHONETOOLBUTTON":        stockImage = Images.Clone_IPhoneToolButton(); break;
+                    case "IPHONEWHITEBUTTON":       stockImage = Images.Clone_IPhoneWhiteButton(); break;
+                    case "MINUS":                   stockImage = Images.Clone_Collapse(); break;
+                    case "MOVINGMAPCHECKED":        stockImage = Images.Clone_MovingMapChecked(); break;
+                    case "MOVINGMAPUNCHECKED":      stockImage = Images.Clone_MovingMapUnchecked(); break;
+                    case "OPENSLIDER":              stockImage = Images.Clone_OpenSlider(); break;
                     case "OPFLAG":                  tempImage  = CreateLogoImage(imageRequest.File, _ImageServerConfiguration.OperatorFolder); break;
                     case "PICTURE":                 tempImage  = CreateAirplanePicture(imageRequest.File, imageRequest.Size, request.IsInternet, imageRequest.Width, imageRequest.Height); imageRequest.Width = imageRequest.Height = null; break;
+                    case "PLUS":                    stockImage = Images.Clone_Expand(); break;
+                    case "ROWHEADER":               stockImage = Images.Clone_RowHeader(); break;
+                    case "ROWHEADERSELECTED":       stockImage = Images.Clone_RowHeaderSelected(); break;
+                    case "SHOWLIST":                stockImage = Images.Clone_ShowList(); break;
                     case "TESTSQUARE":              stockImage = Images.Clone_TestSquare(); break;
+                    case "TOWER":                   stockImage = Images.Clone_Tower(); break;
+                    case "TOWERSELECTED":           stockImage = Images.Clone_Tower(); break;
+                    case "TRANSPARENT-25":          stockImage = Images.Clone_Transparent_25(); break;
+                    case "TRANSPARENT-50":          stockImage = Images.Clone_Transparent_50(); break;
                     case "TYPE":                    tempImage  = CreateLogoImage(imageRequest.File, _ImageServerConfiguration.SilhouettesFolder); break;
+                    case "VOLUME0":                 stockImage = Images.Clone_Volume0(); break;
+                    case "VOLUME25":                stockImage = Images.Clone_Volume25(); break;
+                    case "VOLUME50":                stockImage = Images.Clone_Volume50(); break;
+                    case "VOLUME75":                stockImage = Images.Clone_Volume75(); break;
+                    case "VOLUME100":               stockImage = Images.Clone_Volume100(); break;
+                    case "VOLUMEDOWN":              stockImage = Images.Clone_VolumeDown(); break;
+                    case "VOLUMEMUTE":              stockImage = Images.Clone_VolumeMute(); break;
+                    case "VOLUMEUP":                stockImage = Images.Clone_VolumeUp(); break;
+                    case "YOUAREHERE":              stockImage = Images.Clone_BlueBall(); break;
                     default:                        result = false; break;
                 }
             }

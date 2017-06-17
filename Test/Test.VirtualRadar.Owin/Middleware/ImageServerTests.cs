@@ -238,13 +238,13 @@ namespace Test.VirtualRadar.Owin.Middleware
         private void CompareColours(Color expectedPixel, Color actualPixel, int x, int y, string message = "")
         {
             if(expectedPixel.A == 0)    Assert.IsTrue(actualPixel.A < 250, "x = {0}, y = {1} {2}", x, y, message);
-            else                        Assert.IsTrue(actualPixel.A > 10, "x = {0}, y = {1} {2}", x, y, message);
+            else                        Assert.IsTrue(actualPixel.A > 0, "x = {0}, y = {1} {2}", x, y, message);
 
             if(expectedPixel.A > 0) {
-                var delta = 5.0;
-                Assert.AreEqual(expectedPixel.R, actualPixel.R, delta, "x = {0}, y = {1} {2}", x, y, message);
-                Assert.AreEqual(expectedPixel.G, actualPixel.G, delta, "x = {0}, y = {1} {2}", x, y, message);
-                Assert.AreEqual(expectedPixel.B, actualPixel.B, delta, "x = {0}, y = {1} {2}", x, y, message);
+                var colourDelta = 5.0;
+                Assert.AreEqual(expectedPixel.R, actualPixel.R, colourDelta, "x = {0}, y = {1} {2}", x, y, message);
+                Assert.AreEqual(expectedPixel.G, actualPixel.G, colourDelta, "x = {0}, y = {1} {2}", x, y, message);
+                Assert.AreEqual(expectedPixel.B, actualPixel.B, colourDelta, "x = {0}, y = {1} {2}", x, y, message);
             }
         }
 
@@ -257,6 +257,31 @@ namespace Test.VirtualRadar.Owin.Middleware
                            });
 
             return result;
+        }
+
+        [TestMethod]
+        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "StockResourceImages$")]
+        public void ImageServer_Serves_All_Stock_Resource_Images()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var requestImageName = worksheet.String("RequestImageName");
+            var stockImagePropertyName = worksheet.String("StockImage");
+
+            var cloneMethod = typeof(Images).GetMethod($"Clone_{stockImagePropertyName}", new Type[0]);
+            var expectedImage = (Bitmap)cloneMethod.Invoke(null, new object[0]);
+            try {
+                _Environment.RequestPath = $"/Images/{requestImageName}.png";
+                _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+                using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                    using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                        AssertImagesAreIdentical(expectedImage, siteImage);
+                    }
+                }
+            } finally {
+                expectedImage.Dispose();
+            }
         }
 
         [TestMethod]
