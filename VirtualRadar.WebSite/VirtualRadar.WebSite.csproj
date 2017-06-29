@@ -250,12 +250,16 @@
     <Content Include="Site\Web\images\regions\no.bmp" />
     <Content Include="Site\Web\images\regions\se.bmp" />
     <Content Include="Site\Web\images\regions\sr.bmp" />
+    <Content Include="Site\Web\images\regions\tr.bmp" />
     <Content Include="Site\Web\images\regions\zh.bmp" />
     <Content Include="Site\Web\mobileReport.html" />
     <Content Include="Site\Web\robots.txt" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.de-DE.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.de.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.tr.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.tr-TR.js" />
     <Content Include="Site\Web\script\i18n\strings.de.js" />
+    <Content Include="Site\Web\script\i18n\strings.tr.js" />
     <Content Include="Site\Web\script\i18n\strings.pt-br.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fi-FI.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fi.js" />
@@ -875,6 +879,7 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WebSiteStrings.ru-RU.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="WebSiteStrings.tr-TR.resx" />
     <EmbeddedResource Include="WebSiteStrings.zh-CN.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WebSiteStrings.zh-CN.Designer.cs</LastGenOutput>

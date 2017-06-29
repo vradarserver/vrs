@@ -667,13 +667,6 @@ Exibe essas mensagens.</value>
   <data name="Disconnecting" xml:space="preserve">
     <value>Desconectando</value>
   </data>
-  <data name="DotNetVersionTooLowFull" xml:space="preserve">
-    <value>Este programa precisa do .NET 3.5 Framework instalado. Você deseja ir até a pagina da Microsoft para baixar o .NET 3.5 Framework?</value>
-  </data>
-  <data name="DotNetVersionTooLowTitle" xml:space="preserve">
-    <value>Versão incompatível do .NET Framework</value>
-    <comment>Title for an error message box</comment>
-  </data>
   <data name="Download" xml:space="preserve">
     <value>Baixar</value>
   </data>
@@ -2790,13 +2783,6 @@ Suggestion made if the exception could indicate that the port number is in use.<
   </data>
   <data name="WebSiteUser" xml:space="preserve">
     <value>Usuário do Web Site</value>
-  </data>
-  <data name="WindowsVersionTooLowFull" xml:space="preserve">
-    <value>Este programa não vai funcionar no sistema operacional que você está usando. Se você estiver unsado o Windows XP, instale o Service Pack 2 ou superior.</value>
-  </data>
-  <data name="WindowsVersionTooLowTitle" xml:space="preserve">
-    <value>HttpListener Não suportado pelo O/S</value>
-    <comment>Title for an error message box</comment>
   </data>
   <data name="Wizard" xml:space="preserve">
     <value>Assistente</value>

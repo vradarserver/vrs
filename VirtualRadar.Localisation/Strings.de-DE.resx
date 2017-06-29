@@ -658,13 +658,6 @@ Show this message.</value>
   <data name="Disconnecting" xml:space="preserve">
     <value>unterbreche Verbindung</value>
   </data>
-  <data name="DotNetVersionTooLowFull" xml:space="preserve">
-    <value>This program needs the full .NET 3.5 Framework installed. Möchten Sie zur .NET 3.5 Download Seite von Microsoft's weitergeleitet werden?</value>
-  </data>
-  <data name="DotNetVersionTooLowTitle" xml:space="preserve">
-    <value>Falsche Version des .NET Framework</value>
-    <comment>Title for an error message box</comment>
-  </data>
   <data name="Download" xml:space="preserve">
     <value>Herunterladen</value>
   </data>
@@ -2766,13 +2759,6 @@ Suggestion made if the exception could indicate that the port number is in use.<
   </data>
   <data name="WebSiteUser" xml:space="preserve">
     <value>Webseiten Benutzer</value>
-  </data>
-  <data name="WindowsVersionTooLowFull" xml:space="preserve">
-    <value>Dieses Betriebssystem ist nicht unterstützt. Wenn Sie Windows XP verwenden installieren Sie bitte Service Pack 2 oder höher.</value>
-  </data>
-  <data name="WindowsVersionTooLowTitle" xml:space="preserve">
-    <value>HttpListener vom Betriebssytem nicht unterstützt</value>
-    <comment>Title for an error message box</comment>
   </data>
   <data name="Wizard" xml:space="preserve">
     <value>Assistent</value>

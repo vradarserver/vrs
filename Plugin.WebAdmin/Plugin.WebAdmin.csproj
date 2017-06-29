@@ -288,6 +288,7 @@
       <LastGenOutput>WebAdminStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="WebAdminStrings.ru-RU.resx" />
+    <EmbeddedResource Include="WebAdminStrings.tr-TR.resx" />
     <EmbeddedResource Include="WebAdminStrings.zh-CN.resx" />
     <EmbeddedResource Include="WinForms\OptionsView.resx">
       <DependentUpon>OptionsView.cs</DependentUpon>

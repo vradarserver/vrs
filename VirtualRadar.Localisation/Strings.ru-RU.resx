@@ -658,13 +658,6 @@
   <data name="Disconnecting" xml:space="preserve">
     <value>Отключение</value>
   </data>
-  <data name="DotNetVersionTooLowFull" xml:space="preserve">
-    <value>Программе необходим установленный .NET 3.5 Framework. Хотите его загрузить с сайта Microsoft?</value>
-  </data>
-  <data name="DotNetVersionTooLowTitle" xml:space="preserve">
-    <value>Неподходящая версия .NET Framework</value>
-    <comment>Title for an error message box</comment>
-  </data>
   <data name="Download" xml:space="preserve">
     <value>Скачать</value>
   </data>
@@ -2746,13 +2739,6 @@ Suggestion made if the exception could indicate that the port number is in use.<
   </data>
   <data name="WebSiteUser" xml:space="preserve">
     <value>Пользователь ВЕБ-сайта</value>
-  </data>
-  <data name="WindowsVersionTooLowFull" xml:space="preserve">
-    <value>Программа не будет работать в используемой вами операционной системе. Если вы работаете в Windows XP, то необходимо установить пакет Service Pack 2 или выше.</value>
-  </data>
-  <data name="WindowsVersionTooLowTitle" xml:space="preserve">
-    <value>HttpListener не поддерживается операционной системой</value>
-    <comment>Title for an error message box</comment>
   </data>
   <data name="Wizard" xml:space="preserve">
     <value>Мастер</value>

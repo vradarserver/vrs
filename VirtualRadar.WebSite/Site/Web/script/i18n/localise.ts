@@ -529,21 +529,21 @@ namespace VRS
     export var globalisation = new VRS.Localise();
 
     // English
-    VRS.globalisation.addCultureInfo('en',      { language: 'en',                    englishName: 'English', forceCultureName: 'en-GB', topLevel: true });  // Globalize uses American settings for the default 'en' language. This is a British program :P
-    VRS.globalisation.addCultureInfo('en-029',  { language: 'en',                    englishName: 'English (Caribbean)' });
-    VRS.globalisation.addCultureInfo('en-AU',   { language: 'en', countryFlag: 'au', englishName: 'English (Australia)' });
-    VRS.globalisation.addCultureInfo('en-BZ',   { language: 'en', countryFlag: 'bz', englishName: 'English (Belize)' });
-    VRS.globalisation.addCultureInfo('en-CA',   { language: 'en', countryFlag: 'ca', englishName: 'English (Canada)' });
-    VRS.globalisation.addCultureInfo('en-GB',   { language: 'en',                    englishName: 'English (United Kingdom)' });
-    VRS.globalisation.addCultureInfo('en-IE',   { language: 'en', countryFlag: 'ie', englishName: 'English (Ireland)' });
-    VRS.globalisation.addCultureInfo('en-IN',   { language: 'en', countryFlag: 'in', englishName: 'English (India)' });
-    VRS.globalisation.addCultureInfo('en-JM',   { language: 'en', countryFlag: 'jm', englishName: 'English (Jamaica)' });
-    VRS.globalisation.addCultureInfo('en-MY',   { language: 'en', countryFlag: 'my', englishName: 'English (Malaysia)' });
-    VRS.globalisation.addCultureInfo('en-NZ',   { language: 'en', countryFlag: 'nz', englishName: 'English (New Zealand)' });
-    VRS.globalisation.addCultureInfo('en-SG',   { language: 'en', countryFlag: 'sg', englishName: 'English (Singapore)' });
-    VRS.globalisation.addCultureInfo('en-TT',   { language: 'en', countryFlag: 'tt', englishName: 'English (Trinidad and Tobago)', nativeName: 'English (Trinidad y Tobago)' });
-    VRS.globalisation.addCultureInfo('en-US',   { language: 'en', countryFlag: 'us', englishName: 'English (United States)' });
-    VRS.globalisation.addCultureInfo('en-ZA',   { language: 'en', countryFlag: 'za', englishName: 'English (South Africa)' });
+    VRS.globalisation.addCultureInfo('en',     { language: 'en',                    englishName: 'English', forceCultureName: 'en-GB', topLevel: true });  // Globalize uses American settings for the default 'en' language. This is a British program :P
+    VRS.globalisation.addCultureInfo('en-029', { language: 'en',                    englishName: 'English (Caribbean)' });
+    VRS.globalisation.addCultureInfo('en-AU',  { language: 'en', countryFlag: 'au', englishName: 'English (Australia)' });
+    VRS.globalisation.addCultureInfo('en-BZ',  { language: 'en', countryFlag: 'bz', englishName: 'English (Belize)' });
+    VRS.globalisation.addCultureInfo('en-CA',  { language: 'en', countryFlag: 'ca', englishName: 'English (Canada)' });
+    VRS.globalisation.addCultureInfo('en-GB',  { language: 'en',                    englishName: 'English (United Kingdom)' });
+    VRS.globalisation.addCultureInfo('en-IE',  { language: 'en', countryFlag: 'ie', englishName: 'English (Ireland)' });
+    VRS.globalisation.addCultureInfo('en-IN',  { language: 'en', countryFlag: 'in', englishName: 'English (India)' });
+    VRS.globalisation.addCultureInfo('en-JM',  { language: 'en', countryFlag: 'jm', englishName: 'English (Jamaica)' });
+    VRS.globalisation.addCultureInfo('en-MY',  { language: 'en', countryFlag: 'my', englishName: 'English (Malaysia)' });
+    VRS.globalisation.addCultureInfo('en-NZ',  { language: 'en', countryFlag: 'nz', englishName: 'English (New Zealand)' });
+    VRS.globalisation.addCultureInfo('en-SG',  { language: 'en', countryFlag: 'sg', englishName: 'English (Singapore)' });
+    VRS.globalisation.addCultureInfo('en-TT',  { language: 'en', countryFlag: 'tt', englishName: 'English (Trinidad and Tobago)', nativeName: 'English (Trinidad y Tobago)' });
+    VRS.globalisation.addCultureInfo('en-US',  { language: 'en', countryFlag: 'us', englishName: 'English (United States)' });
+    VRS.globalisation.addCultureInfo('en-ZA',  { language: 'en', countryFlag: 'za', englishName: 'English (South Africa)' });
 
     // German
     VRS.globalisation.addCultureInfo('de',    { language: 'de',                    englishName: 'German',           nativeName: 'Deutsch', topLevel: true });
@@ -567,5 +567,9 @@ namespace VRS
     VRS.globalisation.addCultureInfo('zh-CN', { language: 'zh', englishName: 'Chinese (China)',         nativeName: '中文 (中国)' });
 
     // Portuguese
-    VRS.globalisation.addCultureInfo('pt-BR',   { language: 'pt-BR', groupLanguage: 'pt', englishName: 'Portuguese (Brazil)', nativeName: 'Português (Brasil)',  countryFlag: 'br', topLevel: true });
+    VRS.globalisation.addCultureInfo('pt-BR', { language: 'pt-BR', groupLanguage: 'pt', englishName: 'Portuguese (Brazil)', nativeName: 'Português (Brasil)',  countryFlag: 'br', topLevel: true });
+
+    // Turkish
+    VRS.globalisation.addCultureInfo('tr',    { language: 'tr', groupLanguage: 'tr', englishName: 'Turkish',          nativeName: 'Türkçe',           countryFlag: 'tr', topLevel: true });
+    VRS.globalisation.addCultureInfo('tr-TR', { language: 'tr', groupLanguage: 'tr', englishName: 'Turkish (Turkey)', nativeName: 'Türkçe (Türkiye)', countryFlag: 'tr' });
 }
