@@ -202,6 +202,7 @@
     <None Include="_PostBuildCopyLanguage.bat" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DatabaseEditorStrings.tr-TR.resx" />
     <EmbeddedResource Include="DatabaseEditorStrings.zh-CN.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>DatabaseEditorStrings.zh-CN.Designer.cs</LastGenOutput>

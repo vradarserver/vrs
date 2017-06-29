@@ -118,103 +118,124 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="About" xml:space="preserve">
-    <value>A propos</value>
-    <comment>e.g. About Virtual Radar Server</comment>
+    <value>About</value>
+    <comment>** SAME AS ENGLISH ** e.g. About Virtual Radar Server</comment>
   </data>
   <data name="AcceptableAirborneSpeedOutOfBounds" xml:space="preserve">
-    <value>La vitesse acceptable doit être comprise entre 0,005 et 45,0</value>
+    <value>The acceptable airborne local position speed must be between 0.005 and 45.0</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AcceptableAirSurfaceTransitionSpeedOutOfBounds" xml:space="preserve">
-    <value>La vitesse de transition acceptable doit être comprise entre 0,003 et 20,0</value>
+    <value>The acceptable transition position speed must be between 0.003 and 20.0</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AcceptableSurfaceSpeedOutOfBounds" xml:space="preserve">
-    <value>La vitesse de surface acceptable doit être comprise entre 0,001 et 10.0</value>
+    <value>The acceptable surface position speed must be between 0.001 and 10.0</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AcceptIcaoInNonPICount" xml:space="preserve">
-    <value>Nombre de messages mode-S</value>
+    <value>Mode-S message count</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AcceptIcaoInNonPICountOutOfBounds" xml:space="preserve">
-    <value>Le nombre de message Mode-S doit être compris entre 0 et 100</value>
+    <value>The Mode-S message count must be between 0 and 100</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AcceptIcaoInNonPISeconds" xml:space="preserve">
-    <value>Messges mode-S par seconde</value>
+    <value>Mode-S message seconds</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AcceptIcaoInNonPISecondsOutOfBounds" xml:space="preserve">
-    <value>Le nombre de messages Mode-S par seconde doit être compris entre 1 et 30</value>
+    <value>The Mode-S seconds must be between 1 and 30</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AcceptIcaoInPI0Count" xml:space="preserve">
-    <value>Nombre de Messages ADS-B</value>
+    <value>ADS-B message count</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AcceptIcaoInPI0CountOutOfBounds" xml:space="preserve">
-    <value>Le nombre de messages ADS-B doit être compris entre 1 et 10</value>
+    <value>The ADS-B message count must be between 1 and 10</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AcceptIcaoInPI0Seconds" xml:space="preserve">
-    <value>Messages ADS-B par seconde</value>
+    <value>ADS-B message seconds</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AcceptIcaoInPI0SecondsOutOfBounds" xml:space="preserve">
-    <value>Le nombre de message ADS-B par seconde doit être compris entre 1 et 60</value>
+    <value>The ADS-B seconds must be between 1 and 60</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Access" xml:space="preserve">
-    <value>Accès</value>
+    <value>Access</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AccessControl" xml:space="preserve">
-    <value>Contrôle d'accès</value>
+    <value>Access Control</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AcronymByte" xml:space="preserve">
-    <value>o</value>
-    <comment>Shorthand for byte</comment>
+    <value>B</value>
+    <comment>** SAME AS ENGLISH ** Shorthand for byte</comment>
   </data>
   <data name="AcronymGigabyte" xml:space="preserve">
-    <value>Go</value>
-    <comment>Shorthand for 1024 x 1024 x 1024 bytes</comment>
+    <value>GB</value>
+    <comment>** SAME AS ENGLISH ** Shorthand for 1024 x 1024 x 1024 bytes</comment>
   </data>
   <data name="AcronymKilobyte" xml:space="preserve">
-    <value>Ko</value>
-    <comment>Shorthand for 1024 bytes</comment>
+    <value>KB</value>
+    <comment>** SAME AS ENGLISH ** Shorthand for 1024 bytes</comment>
   </data>
   <data name="AcronymKilobytePerSecond" xml:space="preserve">
-    <value>Ko/sec</value>
+    <value>KB/sec</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AcronymMegabyte" xml:space="preserve">
-    <value>Mo</value>
-    <comment>Shorthand for 1024 x 1024 bytes</comment>
+    <value>MB</value>
+    <comment>** SAME AS ENGLISH ** Shorthand for 1024 x 1024 bytes</comment>
   </data>
   <data name="AcronymTerrabyte" xml:space="preserve">
-    <value>To</value>
-    <comment>Shorthand for 1024 x 1024 x 1024 x 1024 bytes</comment>
+    <value>TB</value>
+    <comment>** SAME AS ENGLISH ** Shorthand for 1024 x 1024 x 1024 x 1024 bytes</comment>
   </data>
   <data name="Activity" xml:space="preserve">
-    <value>Activité</value>
+    <value>Activity</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Add" xml:space="preserve">
-    <value>Ajouter</value>
+    <value>Add</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Administrators" xml:space="preserve">
     <value>Administrators</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ADSB" xml:space="preserve">
-    <value>ASD-B</value>
+    <value>ADS-B</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ADSBAircraft" xml:space="preserve">
-    <value>Avion ADS-B</value>
-    <comment>The aircraft picked up by an ADS-B radio</comment>
+    <value>ADS-B aircraft</value>
+    <comment>** SAME AS ENGLISH ** The aircraft picked up by an ADS-B radio</comment>
   </data>
   <data name="AdsbRejected" xml:space="preserve">
-    <value>Asd-B rejeté</value>
+    <value>ADS-B rejected</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AirborneGlobal" xml:space="preserve">
     <value>Airborne global</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AirborneGlobalPositionLimitOutOfBounds" xml:space="preserve">
-    <value>La limite de position globale doit être comprise entre 1 et 30</value>
+    <value>The airborne global position limit must be between 1 and 30</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AircraftCountTitle" xml:space="preserve">
-    <value>Avion suivi</value>
+    <value>Aircraft Tracked</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AircraftData" xml:space="preserve">
-    <value>Données avion</value>
+    <value>Aircraft Data</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AircraftDetailOnlineLookupLog" xml:space="preserve">
     <value>Aircraft Detail Online Lookup Log</value>
@@ -229,11 +250,12 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AllCaps" xml:space="preserve">
-    <value>Tout</value>
-    <comment>"All" in capitals - used in combo boxes to select all options</comment>
+    <value>ALL</value>
+    <comment>** SAME AS ENGLISH ** "All" in capitals - used in combo boxes to select all options</comment>
   </data>
   <data name="AllowAccess" xml:space="preserve">
-    <value>Permettre</value>
+    <value>Allow</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AllowCorsDomainsRequired" xml:space="preserve">
     <value>You must supply a semicolon separated list of allowed CORS domains</value>
@@ -244,34 +266,37 @@
     <comment>** SAME AS ENGLISH ** CORS is the name of a web standard</comment>
   </data>
   <data name="AllowInternetProximityGadgets" xml:space="preserve">
-    <value>Autoriser gadgets Internet</value>
-    <comment>Allow Windows 7 desktop gadgets that display the closest aircraft details to connect from the Internet</comment>
+    <value>Allow Internet proximity gadgets</value>
+    <comment>** SAME AS ENGLISH ** Allow Windows 7 desktop gadgets that display the closest aircraft details to connect from the Internet</comment>
   </data>
   <data name="AllowTheseAddresses" xml:space="preserve">
-    <value>Autoriser ces adresses</value>
+    <value>Allow these addresses</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AnotherInstanceRunningFull" xml:space="preserve">
-    <value>Il y a une autre instance de Virtual Radar Serveur en cours d'exécution.</value>
+    <value>There is another instance of Virtual Radar Server already running.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AnotherInstanceRunningTitle" xml:space="preserve">
-    <value>Une autre instance est en cours d'exécution</value>
-    <comment>Title for an error message box</comment>
+    <value>Another Instance is Running</value>
+    <comment>** SAME AS ENGLISH ** Title for an error message box</comment>
   </data>
   <data name="ApplicationDescription" xml:space="preserve">
-    <value>CETTE APPLICATION EST GRATUITE.
+    <value>THIS APPLICATION IS FREE.
 
-Il s'agit d'un serveur Web simple qui peut être utilisé pour afficher l'avion reçu par une installation BaseStation.
+This is a simple web server that can be used to display the aircraft picked up by an ADS-B receiver.
 
-Civilian and military code groups are courtesy of the countries.dat file maintained by Kinetic forum user 'SabreJV' and hosted by Kinetic forum user 'Bones' (http://www.homepages.mcb.net/bones/SBS/Kinetic_Utilities.htm).
+Application icon courtesy of aha-soft (http://www.aha-soft.com).
 
-Icône application de Aha-Soft (http://www.aha-soft.com).
+Civilian and military code groups are courtesy of the countries.dat file maintained by Kinetic forum user 'SabreJV' and hosted by Kinetic forum user 'Bones'.
 
 Brazilian Portuguese translation by Alan Farley
 Chinese translation by Vincent Deng
 French translation by Francois /F5ANN.
 German translation by Annette Shaupp.
-Russian translation by Sergey Serov /sergsero and friends.</value>
-    <comment>** MULTILINE, PLEASE CLICK IN FIELD TO SEE ALL **</comment>
+Russian translation by Sergey Serov /sergsero and friends.
+</value>
+    <comment>** SAME AS ENGLISH ** ** MULTILINE, PLEASE CLICK IN FIELD TO SEE ALL **</comment>
   </data>
   <data name="Audio" xml:space="preserve">
     <value>Audio</value>
@@ -282,112 +307,132 @@ Russian translation by Sergey Serov /sergsero and friends.</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AutomaticallyDownloadNewRoutes" xml:space="preserve">
-    <value>Télécharge automatiquement les nouvelles routes</value>
+    <value>Download flight route updates</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AutoReconnectAtStartup" xml:space="preserve">
-    <value>Re-connexion automatique au démarrage</value>
+    <value>Reconnect at startup</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AutoSavePolarPlots" xml:space="preserve">
-    <value>Sauvegarde automatique données de couverture</value>
+    <value>Auto-save range plots</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AutoSavePolarPlotsOutOfBounds" xml:space="preserve">
-    <value>La valeur de sauvegarde automatique doit être au minimum 0</value>
+    <value>The auto-save polar plots value must be at least 0.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="AutoStartUPnP" xml:space="preserve">
-    <value>Mettre le serveur sur Internet au démarrage</value>
+    <value>Put server onto Internet at startup</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Back" xml:space="preserve">
-    <value>Retour</value>
+    <value>Back</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="BackgroundThreadQueues" xml:space="preserve">
     <value>Queues</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="BadChecksum" xml:space="preserve">
-    <value>Erreur checksum</value>
+    <value>Bad checksum</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="BadListenerTimeout" xml:space="preserve">
-    <value>Temps dépassé</value>
+    <value>Bad Listener Timeout</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="BadlyFormatted" xml:space="preserve">
-    <value>Mauvais format</value>
+    <value>Badly formatted</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="BaseStation" xml:space="preserve">
     <value>BaseStation</value>
     <comment>** SAME AS ENGLISH ** May not need to be translated, it's the name of a program</comment>
   </data>
   <data name="BaseStationStatus" xml:space="preserve">
-    <value>Statut de BaseStation</value>
-    <comment>BaseStation is a program name and does not need translating, status refers to TCP connection to program</comment>
+    <value>Basestation status</value>
+    <comment>** SAME AS ENGLISH ** BaseStation is a program name and does not need translating, status refers to TCP connection to program</comment>
   </data>
   <data name="BeastModeSFeed" xml:space="preserve">
-    <value>AVR ou Beast données brutes</value>
-    <comment>'Beast' is the name of a product and may not need translating</comment>
+    <value>AVR or Beast Raw Feed</value>
+    <comment>** SAME AS ENGLISH ** 'Beast' is the name of a product and may not need translating</comment>
   </data>
   <data name="BytesBuffered" xml:space="preserve">
-    <value>Octets dans le buffer</value>
+    <value>Bytes Buffered</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="BytesReceived" xml:space="preserve">
-    <value>Octets reçus</value>
+    <value>Bytes received</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="BytesSent" xml:space="preserve">
-    <value>Octets envoyés</value>
+    <value>Bytes Sent</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="BytesStale" xml:space="preserve">
-    <value>Octets rejetés</value>
+    <value>Bytes Discarded</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>Annuler</value>
+    <value>Cancel</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CanConnectWithSettings" xml:space="preserve">
-    <value>Une connexion peut être fait avec ces paramètres</value>
+    <value>A connection can be made with these settings</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CannotCommunicateWithFlightSimulatorX" xml:space="preserve">
-    <value>Impossible de communiquer avec Flight Simulator X</value>
-    <comment>"Flight Simulator X" may not need translating</comment>
+    <value>Cannot communicate with Flight Simulator X</value>
+    <comment>** SAME AS ENGLISH ** "Flight Simulator X" may not need translating</comment>
   </data>
   <data name="CannotConnect" xml:space="preserve">
-    <value>Impossible de se connecter</value>
+    <value>Cannot connect</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CannotConnectToBaseStationFull" xml:space="preserve">
-    <value>Impossible de se connecter avec BaseStation: {0}</value>
-    <comment>Where {0} is an exception message</comment>
+    <value>Cannot connect to data feed: {0}</value>
+    <comment>** SAME AS ENGLISH ** Where {0} is an exception message</comment>
   </data>
   <data name="CannotConnectToBaseStationTitle" xml:space="preserve">
-    <value>Impossible de se connecter avec BaseStation</value>
+    <value>Cannot Connect to Data Feed</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CannotConnectWithSettings" xml:space="preserve">
-    <value>Une connexion ne peut être faite avec ces paramètres.</value>
+    <value>A connection cannot be made with these settings.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CannotDetermineNetworkAddress" xml:space="preserve">
-    <value>Impossible de déterminer l'adresse réseau</value>
+    <value>Cannot determine network address</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CannotLoadFlightRouteDataFull" xml:space="preserve">
-    <value>Impossible de charger les données de route de vol - {0}</value>
-    <comment>Where {0} is an exception message</comment>
+    <value>Could not load the flight route data - {0}</value>
+    <comment>** SAME AS ENGLISH ** Where {0} is an exception message</comment>
   </data>
   <data name="CannotLoadFlightRouteDataTitle" xml:space="preserve">
-    <value>Impossible de charger des données de route de vol</value>
-    <comment>Title for an error message box</comment>
+    <value>Could Not Load Flight Route Data</value>
+    <comment>** SAME AS ENGLISH ** Title for an error message box</comment>
   </data>
   <data name="CannotOpenBaseStationDatabaseFull" xml:space="preserve">
-    <value>Impossible de se connecter à la base de données BaseStation à {0}</value>
-    <comment>Where {0} is a filename. BaseStation is the name of a program and may not need translating</comment>
+    <value>Could not connect to the BaseStation database at {0}</value>
+    <comment>** SAME AS ENGLISH ** Where {0} is a filename. BaseStation is the name of a program and may not need translating</comment>
   </data>
   <data name="CannotOpenBaseStationDatabaseTitle" xml:space="preserve">
-    <value>Impossible d'ouvrir la base de données BaseStation</value>
-    <comment>BaseStation is the name of a program and may not need translating</comment>
+    <value>Cannot Open BaseStation Database</value>
+    <comment>** SAME AS ENGLISH ** BaseStation is the name of a program and may not need translating</comment>
   </data>
   <data name="CannotOpenDatabaseWantToAutoFix" xml:space="preserve">
-    <value>Ne peut ouvrir {0}, le gestionnaire de base de données retourne une erreur: {1}\r\n\r\n Voulez vous essayer de résoudre le problème automatiquement, et essayer d'ouvrir à nouveau le fichier ?</value>
-    <comment>\r\n is a newline in the message dialog, keep those intact</comment>
+    <value>Could not open {0}, the database engine reported an error: {1}\r\n\r\nWould you like to try an automatic fix of the problem and try to open the file again?</value>
+    <comment>** SAME AS ENGLISH ** \r\n is a newline in the message dialog, keep those intact</comment>
   </data>
   <data name="CannotParseRouteFile" xml:space="preserve">
-    <value>Impossible d'analyser le fichier d'état de route</value>
-    <comment>Route as in flight route, state file is a file containing version numbers of flight route data</comment>
+    <value>Could not parse the route state file</value>
+    <comment>** SAME AS ENGLISH ** Route as in flight route, state file is a file containing version numbers of flight route data</comment>
   </data>
   <data name="CannotResolveAddress" xml:space="preserve">
-    <value>Ne peut accèder à cette addresse</value>
+    <value>The address {0} cannot be resolved</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CannotStartDefaultBrowser" xml:space="preserve">
     <value>Could not start the default browser, do you have one registered? The exception was "{0}".</value>
@@ -398,45 +443,52 @@ Russian translation by Sergey Serov /sergsero and friends.</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CannotStartWebServerFull" xml:space="preserve">
-    <value>Impossible de démarrer le serveur Web</value>
+    <value>Cannot start the web server on port {0}</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CannotStartWebServerTitle" xml:space="preserve">
-    <value>Impossible de démarrer le serveur Web</value>
-    <comment>Title for an error message box</comment>
+    <value>Cannot Start Web Server</value>
+    <comment>** SAME AS ENGLISH ** Title for an error message box</comment>
   </data>
   <data name="CaughtExceptionInReverseDNS" xml:space="preserve">
-    <value>Exception reverse DNS</value>
+    <value>Caught exception while doing reverse DNS</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CheckForNewVersions" xml:space="preserve">
-    <value>Vérifier nouvelle version du programme</value>
+    <value>Check for program updates</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Cidr" xml:space="preserve">
     <value>CIDR</value>
     <comment>** SAME AS ENGLISH ** CIDR = Classless Inter-Domain Routing, standard TCP/IP term</comment>
   </data>
   <data name="CidrEdit" xml:space="preserve">
-    <value>Editeur CIDR</value>
-    <comment>CIDR = Classless Inter-Domain Routing, standard TCP/IP term</comment>
+    <value>CIDR Editor</value>
+    <comment>** SAME AS ENGLISH ** CIDR = Classless Inter-Domain Routing, standard TCP/IP term</comment>
   </data>
   <data name="CidrInvalid" xml:space="preserve">
-    <value>Adresse invalide</value>
-    <comment>CIDR = Classless Inter-Domain Routing, standard TCP/IP term</comment>
+    <value>Invalid address</value>
+    <comment>** SAME AS ENGLISH ** CIDR = Classless Inter-Domain Routing, standard TCP/IP term</comment>
   </data>
   <data name="Close" xml:space="preserve">
-    <value>Fermer</value>
-    <comment>As in close a dialog box or window</comment>
+    <value>Close</value>
+    <comment>** SAME AS ENGLISH ** As in close a dialog box or window</comment>
   </data>
   <data name="ClosestAircraftReceiverId" xml:space="preserve">
-    <value>Récepteur le plus proche</value>
+    <value>Closest aircraft receiver</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ClosestAircraftReceiverRequired" xml:space="preserve">
-    <value>SVP, spécifier le récepteur utilisé par le widget de l'avion le plus proche</value>
+    <value>Please specify the receiver that the Closest Aircraft desktop widget will use</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CoarseListenerTimeoutInvalid" xml:space="preserve">
-    <value>La limite de timeout doit être au minimum de 10 s</value>
+    <value>The -ListenerTimeout must be at least 10 seconds</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CoarseListenerTimeoutUnparseable" xml:space="preserve">
-    <value>Ne peut analyser la valeur de timeout de "{0}"</value>
+    <value>Cannot parse the -ListenerTimeout value of "{0}"</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CommandLineHelp" xml:space="preserve">
     <value>-culture:xx-YY
@@ -466,107 +518,132 @@ Show this message.</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CompressedPort30003" xml:space="preserve">
-    <value>VRS format 30003</value>
+    <value>Compressed VRS</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Configuration" xml:space="preserve">
     <value>Configuration</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ConfigurationFolder" xml:space="preserve">
-    <value>Dossier de configuration</value>
+    <value>Configuration folder</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Connected" xml:space="preserve">
-    <value>Connecté</value>
-    <comment>As in a connection between two computers</comment>
+    <value>Connected</value>
+    <comment>** SAME AS ENGLISH ** As in a connection between two computers</comment>
   </data>
   <data name="ConnectedSuccessfully" xml:space="preserve">
-    <value>Connecté avec succès</value>
+    <value>Connected Successfully</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Connecting" xml:space="preserve">
-    <value>Connexion</value>
+    <value>Connecting</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Connection" xml:space="preserve">
-    <value>Connexion</value>
+    <value>Connection</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ConnectionClientLog" xml:space="preserve">
-    <value>Connexion de clients sur le Serveur Web</value>
-    <comment>Logged connections of clients to the web server</comment>
+    <value>Connection Client Log</value>
+    <comment>** SAME AS ENGLISH ** Logged connections of clients to the web server</comment>
   </data>
   <data name="ConnectionParameters" xml:space="preserve">
-    <value>Paramètres de connection</value>
+    <value>Connection Parameters</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ConnectionSessionLog" xml:space="preserve">
-    <value>Sessions d'un client connecté au Serveur Web</value>
-    <comment>Logged sessions for a client connecting to the web server</comment>
+    <value>Connection Session Log</value>
+    <comment>** SAME AS ENGLISH ** Logged sessions for a client connecting to the web server</comment>
   </data>
   <data name="ConnectionSnapshotTakenBody" xml:space="preserve">
-    <value>Une capture a été prise des connexions en cours</value>
+    <value>A snapshot has been taken of the current connections</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ConnectionSnapshotTakenTitle" xml:space="preserve">
-    <value>Capture effectuée</value>
+    <value>Snapshot Taken</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ConnectionStatus" xml:space="preserve">
-    <value>Statut connexion</value>
+    <value>Connection status</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ConnectionStatusTitle" xml:space="preserve">
-    <value>Etat de connexion</value>
+    <value>Connection Status</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ConnectionType" xml:space="preserve">
-    <value>Type de connexion</value>
+    <value>Connection type</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Connector" xml:space="preserve">
-    <value>Connecteur</value>
+    <value>Connector</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ConnectorActivityLog" xml:space="preserve">
-    <value>Log d'activité connecteur</value>
+    <value>Connector Activity Log</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ConnectToFlightSimulatorX" xml:space="preserve">
-    <value>Connectez-vous à Flight Simulator X</value>
-    <comment>Flight Simulator X is the name of a program, it may not need translating</comment>
+    <value>Connect to Flight Simulator X</value>
+    <comment>** SAME AS ENGLISH ** Flight Simulator X is the name of a program, it may not need translating</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>Contenu</value>
+    <value>Content</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ContrastMapTitle" xml:space="preserve">
-    <value>Contraste</value>
+    <value>Contrast</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ConvertedBasicAuthenticationUser" xml:space="preserve">
     <value>Converted Basic Authentication User</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Copy" xml:space="preserve">
-    <value>Copie</value>
+    <value>Copy</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CopyFromClipboard" xml:space="preserve">
-    <value>Copie à partir du presse papier</value>
+    <value>Copy from clipboard</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Copyright" xml:space="preserve">
     <value>Copyright © 2010 onwards, Andrew Whewell</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CopyToClipboard" xml:space="preserve">
-    <value>Copier vers le presse papier</value>
+    <value>Copy to clipboard</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CouldNotCheckForUpdate" xml:space="preserve">
-    <value>Impossible de vérifier s'il existe une version plus récente</value>
+    <value>Could not check for a later version</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CouldNotConnect" xml:space="preserve">
-    <value>Impossible de se connecter</value>
+    <value>could not connect</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CouldNotFindManifest" xml:space="preserve">
-    <value>Manifeste introuvable</value>
+    <value>Could not find manifest</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CouldNotLoadGoogleMaps" xml:space="preserve">
-    <value>Impossible de charger Google Map</value>
+    <value>Could not load Google Maps</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CouldNotParseManifest" xml:space="preserve">
-    <value>Manifeste introuvable: {0}</value>
+    <value>Could not parse manifest: {0}</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Count" xml:space="preserve">
-    <value>Compte</value>
+    <value>Count</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CountPluginsCouldNotBeLoaded" xml:space="preserve">
-    <value>{0:N0} plugin(s) ne peut être chargé(s)</value>
+    <value>{0:N0} plugin(s) could not be loaded</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Country" xml:space="preserve">
     <value>Country</value>
@@ -581,151 +658,180 @@ Show this message.</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="CurrentRouteData" xml:space="preserve">
-    <value>Données de l'itinéraire actuel</value>
-    <comment>Label for status message describing the flight route data held by the program</comment>
+    <value>Current route data</value>
+    <comment>** SAME AS ENGLISH ** Label for status message describing the flight route data held by the program</comment>
   </data>
   <data name="Data" xml:space="preserve">
-    <value>Données</value>
+    <value>Data</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DatabaseFileName" xml:space="preserve">
-    <value>Nom de fichier Base de données </value>
+    <value>Database filename</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DataFeedStatus" xml:space="preserve">
-    <value>État de flux de données</value>
+    <value>Data feed status</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DataProvider" xml:space="preserve">
     <value>Data provider</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DataSource" xml:space="preserve">
-    <value>Source de données</value>
-    <comment>As in SBS1 / Port 30003 data / SBS-3 etc.</comment>
+    <value>Data source</value>
+    <comment>** SAME AS ENGLISH ** As in SBS1 / Port 30003 data / SBS-3 etc.</comment>
   </data>
   <data name="DataSourceNetworkAddressMissing" xml:space="preserve">
-    <value>Veuillez entrer l'adresse IP pour se connecter à la source de données</value>
+    <value>Please enter the IP address of the data source to connect to</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DataSourceRequired" xml:space="preserve">
     <value>You must choose a feed format</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DaysBetweenChecks" xml:space="preserve">
-    <value>Nombre de jours avant vérification de nouvelle version</value>
+    <value>Days between checks</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DaysBetweenChecksOutOfBounds" xml:space="preserve">
-    <value>L' intervalle de contrôle de versions doit être compris entre 1 et 365</value>
+    <value>The check for new versions interval must be between 1 and 365</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DecoderSettings" xml:space="preserve">
-    <value>Configuration décodeur</value>
+    <value>Decoder settings</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DefaultAccess" xml:space="preserve">
-    <value>Accès par défaut</value>
+    <value>Default access</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DefaultConfiguration" xml:space="preserve">
-    <value>Configuration par défaut</value>
+    <value>Default Configuration</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DefaultSettingsSavedFull" xml:space="preserve">
-    <value>Paramètres de configuration par défaut sauvegardés - Re-démarrer Virtual Radar Server</value>
+    <value>Default configuration settings saved - please try to start Virtual Radar Server again</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DefaultSettingsSavedTitle" xml:space="preserve">
-    <value>Paramètres par défaut sauvegardés</value>
-    <comment>Title for an error message box</comment>
+    <value>Default Settings Saved</value>
+    <comment>** SAME AS ENGLISH ** Title for an error message box</comment>
   </data>
   <data name="DefaultVersion" xml:space="preserve">
-    <value>Version par défaut</value>
+    <value>Default Version</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DefaultVoice" xml:space="preserve">
-    <value>Voix par défaut</value>
-    <comment>As in the default computer text-to-speech voice</comment>
+    <value>Default voice</value>
+    <comment>** SAME AS ENGLISH ** As in the default computer text-to-speech voice</comment>
   </data>
   <data name="Delete" xml:space="preserve">
-    <value>Supprimer</value>
+    <value>Delete</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DenyAccess" xml:space="preserve">
-    <value>Refus</value>
+    <value>Deny</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DenyTheseAddresses" xml:space="preserve">
-    <value>Refuser ces adresses</value>
+    <value>Deny these addresses</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Description" xml:space="preserve">
     <value>Description</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DesktopSite" xml:space="preserve">
-    <value>Site "desktop"</value>
+    <value>Desktop site</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DesktopVersion" xml:space="preserve">
     <value>Desktop Version</value>
     <comment>** SAME AS ENGLISH ** The version of the site for desktop computers</comment>
   </data>
   <data name="DesktopVersionOld" xml:space="preserve">
-    <value>Ancienne version desktop</value>
+    <value>Old Desktop Version</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DF" xml:space="preserve">
     <value>DF</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DirectoryEntryKey" xml:space="preserve">
-    <value>Clé publique</value>
+    <value>Public directory key</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Disconnected" xml:space="preserve">
-    <value>Déconnecté</value>
+    <value>Disconnected</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Disconnecting" xml:space="preserve">
-    <value>Déconnexion</value>
+    <value>Disconnecting</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Download" xml:space="preserve">
-    <value>Télécharger</value>
+    <value>Download</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DownloadData" xml:space="preserve">
-    <value>Télécharger les Données</value>
-    <comment>Title of dialog box that lets the user force the download of flight route data</comment>
+    <value>Download Data</value>
+    <comment>** SAME AS ENGLISH ** Title of dialog box that lets the user force the download of flight route data</comment>
   </data>
   <data name="DownloadGlobalAirPressureReadings" xml:space="preserve">
     <value>Download air pressure readings</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DownloadingPleaseWait" xml:space="preserve">
-    <value>Téléchargement, patientez, s'il vous plaît </value>
+    <value>Downloading, please wait</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Dropped" xml:space="preserve">
     <value>Dropped</value>
     <comment>** SAME AS ENGLISH ** As in the number of items discarded from a queue</comment>
   </data>
   <data name="Duration" xml:space="preserve">
-    <value>Durée</value>
+    <value>Duration</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DurationBeforeAircraftRemovedFromMapOutOfBounds" xml:space="preserve">
-    <value>Le délai d'affichage doit être compris entre 5 et 540</value>
+    <value>The display timeout must be between 5 and 540</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="DurationOfShortTrailsOutOfBounds" xml:space="preserve">
-    <value>La valeur trainée courte doit être comprise entre 1 et 1800</value>
+    <value>The short trail value must be between 1 and 1800</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Edit" xml:space="preserve">
-    <value>Editer</value>
+    <value>Edit</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="EnableBundling" xml:space="preserve">
-    <value>Activez le groupement</value>
-    <comment>"Bundling" is where multiple files are bundled together into a single file to improve a page's load time</comment>
+    <value>Enable bundling</value>
+    <comment>** SAME AS ENGLISH ** "Bundling" is where multiple files are bundled together into a single file to improve a page's load time</comment>
   </data>
   <data name="EnableCompression" xml:space="preserve">
-    <value>Activer la compression</value>
+    <value>Enable compression</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="EnableCorsSupport" xml:space="preserve">
     <value>Enable CORS support</value>
     <comment>** SAME AS ENGLISH ** CORS is the name of a web standard</comment>
   </data>
   <data name="Enabled" xml:space="preserve">
-    <value>Activé</value>
+    <value>Enabled</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="EnableMinifying" xml:space="preserve">
-    <value>Permettre réduction</value>
-    <comment>"Minifying" is where a CSS or JavaScript source file is compressed to improve a page's load time and to improve the speed at which they are executed by the browser.</comment>
+    <value>Enable minifying</value>
+    <comment>** SAME AS ENGLISH ** "Minifying" is where a CSS or JavaScript source file is compressed to improve a page's load time and to improve the speed at which they are executed by the browser.</comment>
   </data>
   <data name="EnableUPnp" xml:space="preserve">
-    <value>Activer UPnP</value>
+    <value>Enable UPnP</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="EndDateCannotBeBeforeStartDate" xml:space="preserve">
-    <value>La date de fin doit être égale ou après la date de début</value>
+    <value>The end date must be on or after the start date</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Environment" xml:space="preserve">
     <value>Environment</value>
@@ -752,100 +858,116 @@ Show this message.</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ExceptionWhenCheckingFile" xml:space="preserve">
-    <value>Impossible de vérifier le nom de fichier: {0}</value>
-    <comment>Where {0} is an exception message</comment>
+    <value>Could not check filename: {0}</value>
+    <comment>** SAME AS ENGLISH ** Where {0} is an exception message</comment>
   </data>
   <data name="ExceptionWhenCheckingFolder" xml:space="preserve">
-    <value>Impossible de vérifier le dossier: {0}</value>
-    <comment>Where {0} is the name of a folder</comment>
+    <value>Could not check folder: {0}</value>
+    <comment>** SAME AS ENGLISH ** Where {0} is the name of a folder</comment>
   </data>
   <data name="ExceptionWhenCheckingValue" xml:space="preserve">
-    <value>Exception  lors de la vérification de la valeur : {0}</value>
+    <value>Exception caught when checking value: {0}</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ExportedSettings" xml:space="preserve">
-    <value>Export des paramètres</value>
+    <value>Exported settings</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ExtendedBaseStation" xml:space="preserve">
     <value>BaseStation + MLAT</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="FakeAircraftMode" xml:space="preserve">
-    <value>Mode faux avions</value>
-    <comment>Title for dialog box that lets devs create pretend aircraft to test how they appear on the map</comment>
+    <value>Fake Aircraft Mode</value>
+    <comment>** SAME AS ENGLISH ** Title for dialog box that lets devs create pretend aircraft to test how they appear on the map</comment>
   </data>
   <data name="FastSurfaceGlobal" xml:space="preserve">
     <value>Fast surface global</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="FastSurfaceGlobalPositionLimitOutOfBounds" xml:space="preserve">
-    <value>La limite de position globale rapide de surface doit être comprise entre 1 et 75</value>
+    <value>The fast surface global position limit must be between 1 and 75</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="FeedAndServerNamesMustBeUnique" xml:space="preserve">
-    <value>Les récepteurs, Flux fusionnés et serveurs de rediffusion doivent avoir un nom unique</value>
+    <value>Receivers, merged feeds and rebroadcast servers must have unique names</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="FeedStatus" xml:space="preserve">
-    <value>Etat du flux</value>
+    <value>Feed status</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Feet" xml:space="preserve">
-    <value>Pieds</value>
+    <value>Feet</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Finish" xml:space="preserve">
-    <value>Terminé</value>
+    <value>Finish</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="FirstSeen" xml:space="preserve">
-    <value>Vu pour la première fois</value>
+    <value>First Seen</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="FlagsFolder" xml:space="preserve">
-    <value>Dossier drapeaux</value>
-    <comment>The folder containing images of country or airline flags</comment>
+    <value>Flags folder</value>
+    <comment>** SAME AS ENGLISH ** The folder containing images of country or airline flags</comment>
   </data>
   <data name="FlightSimulatorXIsNotInstalled" xml:space="preserve">
-    <value>Flight Simulator X n'est pas installé (ne peut pas charger SimConnect)</value>
-    <comment>"Flight Simulator X" and "SimConnect" may not need translating</comment>
+    <value>Flight Simulator X is not installed (cannot load SimConnect)</value>
+    <comment>** SAME AS ENGLISH ** "Flight Simulator X" and "SimConnect" may not need translating</comment>
   </data>
   <data name="FlightSimulatorXReceiverId" xml:space="preserve">
-    <value>Récepteur X Flight Simulateur</value>
+    <value>Flight Simulator X receiver</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="FlightSimulatorXReceiverRequired" xml:space="preserve">
-    <value>SVPspécifiez le récepteur utilisé par FSX</value>
+    <value>Please specify the receiver that the FSX ride-along feature will use</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="FlightSimulatorXShutdown" xml:space="preserve">
-    <value>Déconnecté suite à une sortie de Flight Simulator X</value>
+    <value>Disconnected due to Flight Simulator X exiting</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="FlightSimVersion" xml:space="preserve">
-    <value>Version Flight Sim</value>
-    <comment>The version of the site that shows aircraft in Flight Simulator X</comment>
+    <value>Flight Sim Version</value>
+    <comment>** SAME AS ENGLISH ** The version of the site that shows aircraft in Flight Simulator X</comment>
   </data>
   <data name="FlightSimVersionOld" xml:space="preserve">
-    <value>Ancienne version de Flight Sim</value>
+    <value>Old Flight Sim Version</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="FolderDoesNotExistFull" xml:space="preserve">
-    <value>Le dossier {0} n'existe pas</value>
-    <comment>Where {0} is the name of a folder</comment>
+    <value>The folder {0} does not exist</value>
+    <comment>** SAME AS ENGLISH ** Where {0} is the name of a folder</comment>
   </data>
   <data name="FolderDoesNotExistTitle" xml:space="preserve">
-    <value>Dossier n'existe pas</value>
-    <comment>Title for an error message box</comment>
+    <value>Folder Does Not Exist</value>
+    <comment>** SAME AS ENGLISH ** Title for an error message box</comment>
   </data>
   <data name="Format" xml:space="preserve">
     <value>Format</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="FormatNotSupportedForReceiverType" xml:space="preserve">
-    <value>Format non supporté par le type de récepteur</value>
+    <value>Format not supported for receiver type</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Forward" xml:space="preserve">
-    <value>Avant</value>
+    <value>Forward</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="From" xml:space="preserve">
-    <value>De</value>
+    <value>From</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="FromAddress" xml:space="preserve">
-    <value>de l'adresse</value>
+    <value>From address</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="General" xml:space="preserve">
-    <value>Général</value>
-    <comment>Miscellaneous options</comment>
+    <value>General</value>
+    <comment>** SAME AS ENGLISH ** Miscellaneous options</comment>
   </data>
   <data name="GoogleMaps" xml:space="preserve">
     <value>Google Maps</value>
@@ -856,7 +978,8 @@ Show this message.</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="GoogleMapZoomOutOfBounds" xml:space="preserve">
-    <value>Le niveau de zoom de Google Maps doit être compris entre 0 et 19</value>
+    <value>The Google Maps zoom level must be between 0 and 19</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Help" xml:space="preserve">
     <value>Help</value>
@@ -871,39 +994,48 @@ Show this message.</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ICAO" xml:space="preserve">
-    <value>OACI</value>
-    <comment>The initials of the United Nations organisation</comment>
+    <value>ICAO</value>
+    <comment>** SAME AS ENGLISH ** The initials of the United Nations organisation</comment>
   </data>
   <data name="IcaoTimeout" xml:space="preserve">
-    <value>ICAOTimeout</value>
+    <value>ICAO timeout</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="IcaoTimeoutOutOfBounds" xml:space="preserve">
-    <value>Le time out doit être compris entre 1 et 30 s</value>
+    <value>The timeout must be between 1 and 30 seconds</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="IcaoTimeoutTitle" xml:space="preserve">
     <value>ICAO Timeout</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="IdleTimeout" xml:space="preserve">
-    <value>Idle Timeout</value>
+    <value>Idle timeout</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="IgnoreAircraftWithNoPosition" xml:space="preserve">
-    <value>Ignorer les avions sans position</value>
+    <value>Ignore aircraft with no position</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="IgnoreBadMessages" xml:space="preserve">
-    <value>Ignore les messages mal formatés</value>
+    <value>Ignore badly formatted messages</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="IgnoreCallsignsInBds20" xml:space="preserve">
-    <value>Ignorer l'indicatif (callsign) des messages BDS code 2,0</value>
+    <value>Ignore callsigns from BDS2,0 messages</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="IgnoreMilitaryExtendedSquitter" xml:space="preserve">
-    <value>Ignorer DF19/AF0 (militaire)</value>
+    <value>Ignore DF19/AF0</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="IgnoreModeS" xml:space="preserve">
-    <value>Ignorer mode-S</value>
+    <value>Ignore Mode-S</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="IgnoreUnassignedIcao" xml:space="preserve">
-    <value>Ignorer les codes ICAO non attribués</value>
+    <value>Ignore unassigned ICAO</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Images" xml:space="preserve">
     <value>Images</value>
@@ -914,108 +1046,128 @@ Show this message.</value>
     <comment>** SAME AS ENGLISH ** As in "include this item in the list"</comment>
   </data>
   <data name="InitialDistanceUnits" xml:space="preserve">
-    <value>Unité initiale de distance</value>
+    <value>Initial distance units</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="InitialHeightUnits" xml:space="preserve">
-    <value>Unité initiale d'altitude</value>
+    <value>Initial height units</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="InitialLatitude" xml:space="preserve">
-    <value>Latitude initiale</value>
-    <comment>As in a line of latitude on a map</comment>
+    <value>Initial latitude</value>
+    <comment>** SAME AS ENGLISH ** As in a line of latitude on a map</comment>
   </data>
   <data name="InitialLongitude" xml:space="preserve">
-    <value>Longitude initiale</value>
-    <comment>As in a line of longitude on a map</comment>
+    <value>Initial longitude</value>
+    <comment>** SAME AS ENGLISH ** As in a line of longitude on a map</comment>
   </data>
   <data name="InitialMapType" xml:space="preserve">
-    <value>Type de carte initiale</value>
-    <comment>Default Google map type</comment>
+    <value>Initial map type</value>
+    <comment>** SAME AS ENGLISH ** Default Google map type</comment>
   </data>
   <data name="InitialRefresh" xml:space="preserve">
-    <value>Secondes entre les rafraichissements cartographiques</value>
-    <comment>Number of seconds between each update of the map</comment>
+    <value>Initial refresh</value>
+    <comment>** SAME AS ENGLISH ** Number of seconds between each update of the map</comment>
   </data>
   <data name="InitialRefreshLessThanMinimumRefresh" xml:space="preserve">
-    <value>La valeur initiale de rafraîchissement ne peut pas être inférieure à la valeur minimale de rafraîchissement</value>
+    <value>The initial refresh value cannot be less than the minimum refresh value</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="InitialRefreshOutOfBounds" xml:space="preserve">
-    <value>La valeur initiale de rafraîchissemen doit être comprise entre 0 et 3600</value>
+    <value>The initial refresh value must be between 0 and 3600</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="InitialSettingsTitle" xml:space="preserve">
-    <value>Configuration initiale</value>
+    <value>Initial Settings</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="InitialSpeedUnits" xml:space="preserve">
-    <value>Unité initiale de vitesse</value>
+    <value>Initial speed units</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="InitialZoom" xml:space="preserve">
-    <value>Zoom par défaut sur Google Map</value>
-    <comment>Default level of zoom on Google map</comment>
+    <value>Initial zoom</value>
+    <comment>** SAME AS ENGLISH ** Default level of zoom on Google map</comment>
   </data>
   <data name="InNonPI0Messages" xml:space="preserve">
-    <value>Dans d'autres messages</value>
+    <value>In other messages</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="InPI0Messages" xml:space="preserve">
-    <value>Dans les messages de parité</value>
+    <value>In parity messages</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="InternalErrorFeedIdIsNotUnique" xml:space="preserve">
-    <value>Erreur interne: Identificateur du flux de données non unique</value>
+    <value>Internal error: feed identifier is not unique</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="InternalErrorFeedIdIsZero" xml:space="preserve">
-    <value>Erreur interne: Identificateur du flux de données est zéro</value>
+    <value>Internal error: feed identifier is zero</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Internet" xml:space="preserve">
     <value>Internet</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="InternetClientCanShowPolarPlots" xml:space="preserve">
-    <value>Le client internet peut voir la couverture du récepteur</value>
+    <value>Internet users can see receiver range plots</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="InternetClientCanSubmitRoutes" xml:space="preserve">
-    <value>Un utilisateur internet peut soumettre une route</value>
+    <value>Internet users can submit routes</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="InternetClients" xml:space="preserve">
-    <value>Clients Internet</value>
-    <comment>Options that affect clients connecting to the web server from the Internet (instead of from the local network)</comment>
+    <value>Internet Clients</value>
+    <comment>** SAME AS ENGLISH ** Options that affect clients connecting to the web server from the Internet (instead of from the local network)</comment>
   </data>
   <data name="InternetUserCanSeeLabels" xml:space="preserve">
-    <value>Les utilisateurs Internet peuvent voir les labels</value>
+    <value>Internet users can see aircraft labels</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="InternetUserIdleTimeoutOutOfBounds" xml:space="preserve">
-    <value>Le délai d'inactivité pour les utilisateurs Internet doit être compris entre 0 et 1440</value>
+    <value>The idle timeout for Internet users must be between 0 and 1440</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="InternetUsersCanListenToAudio" xml:space="preserve">
-    <value>Les utilisateurs internet peuvent écouter l'audio</value>
+    <value>Internet users can listen to audio</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="InternetUsersCanRunReports" xml:space="preserve">
-    <value>L' utilisateur internet peut créer des rapports</value>
+    <value>Internet users can run reports</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="InternetUsersCanViewPictures" xml:space="preserve">
-    <value>L' utilisateur internet peutvoir les photos d'avions</value>
+    <value>Internet users can see aircraft pictures</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="InvalidConfigurationFileFull" xml:space="preserve">
-    <value>Il y a eu un problème («{0}») lors du chargement du fichier de configuration de {1}. Cela peut avoir été causé par un bug qui permettrait à une valeur non valide de s' inscrire pour l'un des paramètres de configuration. Voulez-vous réinitialiser la configuration sur les paramètres par défaut et essayer à nouveau?</value>
-    <comment>Where {0} is an exception message and {1} is a filename</comment>
+    <value>There was a problem ('{0}') when loading the configuration file from {1}. This may have been caused by a bug that allowed an invalid value to be entered for one of the configuration settings. Do you want to reset the configuration back to the default settings and try again?</value>
+    <comment>** SAME AS ENGLISH ** Where {0} is an exception message and {1} is a filename</comment>
   </data>
   <data name="InvalidConfigurationFileTitle" xml:space="preserve">
-    <value>Reset des paramètres de configuration?</value>
-    <comment>Title for an error message box</comment>
+    <value>Reset Configuration Settings?</value>
+    <comment>** SAME AS ENGLISH ** Title for an error message box</comment>
   </data>
   <data name="InvalidPlugins" xml:space="preserve">
-    <value>Plugins invalide</value>
+    <value>Invalid Plugins</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="InvalidPluginsCount" xml:space="preserve">
     <value>Invalid plugins: {0}</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="IPAddress" xml:space="preserve">
-    <value>Adresse IP</value>
+    <value>IP Address</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="IsSatcomFeed" xml:space="preserve">
     <value>Is SatCom ACARS feed</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="JustFlightSimulatorX" xml:space="preserve">
-    <value>Flight Simulator X seulement</value>
+    <value>Flight Simulator X Only</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Kilometres" xml:space="preserve">
     <value>Kilometres</value>
@@ -1026,47 +1178,56 @@ Show this message.</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="KilometresPerHour" xml:space="preserve">
-    <value>Kilometres heure</value>
+    <value>Kilometres per Hour</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Km" xml:space="preserve">
-    <value>Km</value>
-    <comment>Abbreviation of kilometres</comment>
+    <value>km</value>
+    <comment>** SAME AS ENGLISH ** Abbreviation of kilometres</comment>
   </data>
   <data name="Knots" xml:space="preserve">
-    <value>Noeuds</value>
+    <value>Knots</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="LastConnectorException" xml:space="preserve">
-    <value>Dernière exception</value>
+    <value>Last Exception</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="LastRequest" xml:space="preserve">
-    <value>Dernière requête</value>
-    <comment>The time of the last request from a client to the server</comment>
+    <value>Last Request</value>
+    <comment>** SAME AS ENGLISH ** The time of the last request from a client to the server</comment>
   </data>
   <data name="LastSeen" xml:space="preserve">
-    <value>Vu la dernière fois</value>
+    <value>Last Seen</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="LastURL" xml:space="preserve">
-    <value>Dernière URL</value>
-    <comment>The last URL requested by a client</comment>
+    <value>Last URL</value>
+    <comment>** SAME AS ENGLISH ** The last URL requested by a client</comment>
   </data>
   <data name="LaterVersionAvailable" xml:space="preserve">
-    <value>Il ya une version plus récente de ce programme disponible</value>
+    <value>There is a later version of this program available</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="LatestVersion" xml:space="preserve">
-    <value>Ceci est la version disponible la plus récente du programme </value>
+    <value>This is the most up-to-date version of the program available</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Latitude" xml:space="preserve">
     <value>Latitude</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="LatitudeCannotBeZero" xml:space="preserve">
-    <value>La latitude ne peut pas être égal à 0</value>
+    <value>The latitude cannot be 0</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="LatitudeOutOfBounds" xml:space="preserve">
-    <value>La latitude doit être comprise entre-90.0 (au sud) et 90,0 (Nord)</value>
+    <value>The latitude must be between -90.0 (south) and 90.0 (north)</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="License" xml:space="preserve">
-    <value>Licence</value>
+    <value>License</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="LicenseContent" xml:space="preserve">
     <value>Copyright © 2010 onwards, Andrew Whewell
@@ -1089,35 +1250,44 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Location" xml:space="preserve">
-    <value>Localisation</value>
+    <value>Location</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="LocationDoesNotExist" xml:space="preserve">
-    <value>Cette localisation n'existe pas</value>
+    <value>This location does not exist</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="LoginName" xml:space="preserve">
-    <value>Nom Login</value>
+    <value>Login name</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="LoginNameExists" xml:space="preserve">
-    <value>Ce nom de Login est déjà utilisé</value>
+    <value>The login name is already in use</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="LoginNameMissing" xml:space="preserve">
-    <value>Le nom de connexion de l'utilisateur n'a pas été fourni.</value>
+    <value>The user's login name has not been supplied</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="LoginNameTitle" xml:space="preserve">
-    <value>Nom Login</value>
+    <value>Login Name</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="LoginNameUnknown" xml:space="preserve">
-    <value>Ne peut trouver d'utilisateur avec le login '{0}'</value>
+    <value>Cannot find a user with the login name '{0}'</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="LongFrame" xml:space="preserve">
-    <value>Trame longue</value>
+    <value>Long frame</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Longitude" xml:space="preserve">
     <value>Longitude</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="LongitudeOutOfBounds" xml:space="preserve">
-    <value>La longitude doit être comprise entre -180.0 (est) et 180.0 (Ouest)</value>
+    <value>The longitude must be between 180.0 (east) and -180.0 (west)</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="LookupAircraftDetailsOnline" xml:space="preserve">
     <value>Lookup aircraft details online</value>
@@ -1128,69 +1298,84 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="MaxAirborneSpeed" xml:space="preserve">
-    <value>Vitesse avion max.</value>
+    <value>Max airborne speed</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="MaxSurfaceSpeed" xml:space="preserve">
-    <value>Vitesse sol max.</value>
+    <value>Max surface speed</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="MaxTransitionSpeed" xml:space="preserve">
-    <value>Vitesse de transition max.</value>
+    <value>Max transition speed</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuAbout" xml:space="preserve">
-    <value>&amp;A propos...</value>
+    <value>&amp;About...</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuAircraftOnlineDetailLookupLog" xml:space="preserve">
     <value>Aircraft Online Lookup Log</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuCheckForUpdates" xml:space="preserve">
-    <value>&amp;Contrôle de mise à jour</value>
+    <value>&amp;Check for Updates</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuConfigureFeed" xml:space="preserve">
-    <value>Configure le flux de données</value>
+    <value>Configure Feed</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuConfigureRebroadcastServer" xml:space="preserve">
-    <value>Configure le serveur de rediffusion</value>
+    <value>Configure Rebroadcast Server</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuConnectionClientLog" xml:space="preserve">
-    <value>Connection &amp;Client...</value>
+    <value>Connection &amp;Client Log...</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuConnectionSessionLog" xml:space="preserve">
-    <value>Connexion &amp;Session...</value>
+    <value>Connection &amp;Session Log...</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuDebug" xml:space="preserve">
-    <value>&amp;Débogage</value>
+    <value>&amp;Debug</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuDiagnostics" xml:space="preserve">
     <value>&amp;Diagnostics</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuDownloadData" xml:space="preserve">
-    <value>Télécharger les D&amp;onnées...</value>
+    <value>Download D&amp;ata...</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuExit" xml:space="preserve">
-    <value>&amp;Quitter</value>
+    <value>E&amp;xit</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuFakeAircraftMode" xml:space="preserve">
-    <value>mode faux '&amp;Avions...</value>
+    <value>&amp;Fake Aircraft Mode...</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuFile" xml:space="preserve">
-    <value>&amp;Fichier</value>
-    <comment>Top-level menu</comment>
+    <value>&amp;File</value>
+    <comment>** SAME AS ENGLISH ** Top-level menu</comment>
   </data>
   <data name="menuFlightSimulatorXMode" xml:space="preserve">
     <value>Flight &amp;Simulator X Mode...</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuHelp" xml:space="preserve">
-    <value>&amp;Aide</value>
-    <comment>Top-level menu</comment>
+    <value>&amp;Help</value>
+    <comment>** SAME AS ENGLISH ** Top-level menu</comment>
   </data>
   <data name="menuOpenConnectionActivityLog" xml:space="preserve">
-    <value>Ouvrir Log d'activité de &amp;Connection</value>
+    <value>Open &amp;Connection Activity Log</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuOpenVirtualRadarLog" xml:space="preserve">
-    <value>Ouvrir &amp;VirtualRadarLog.txt</value>
+    <value>Open &amp;VirtualRadarLog.txt</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuOptions" xml:space="preserve">
     <value>&amp;Options...</value>
@@ -1201,36 +1386,44 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuReconnectToDataFeed" xml:space="preserve">
-    <value>&amp;Reconnecter au flux de données</value>
+    <value>&amp;Reconnect to Data Feed</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuResetReceiverRange" xml:space="preserve">
-    <value>Reset du diagramme de couverture du récepteur</value>
+    <value>Reset Receiver Range &amp;Plot</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuShowExceptions" xml:space="preserve">
-    <value>Montrer les exceptions</value>
+    <value>Show Exceptions</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuShowQueues" xml:space="preserve">
     <value>Show &amp;Queues...</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuShowWindow" xml:space="preserve">
-    <value>&amp;Montre la fenêtre</value>
+    <value>&amp;Show Window</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuStatistics" xml:space="preserve">
-    <value>&amp;Statistiques</value>
+    <value>Statistics</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="menuTools" xml:space="preserve">
-    <value>&amp;Outils</value>
-    <comment>Top-level menu</comment>
+    <value>&amp;Tools</value>
+    <comment>** SAME AS ENGLISH ** Top-level menu</comment>
   </data>
   <data name="menuUsers" xml:space="preserve">
-    <value>&amp;Utilisateurs</value>
+    <value>&amp;Users...</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="MergedFeedNeedsAtLeastTwoReceivers" xml:space="preserve">
-    <value>Mixer les flux demande au moins 2 récepteurs</value>
+    <value>Please supply at least 2 receivers to merge</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="MergedFeeds" xml:space="preserve">
-    <value>Mixer les flux</value>
+    <value>Merged Feeds</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="MergeOnly" xml:space="preserve">
     <value>Merge only</value>
@@ -1241,10 +1434,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="MessagesReceived" xml:space="preserve">
-    <value>Messages reçus</value>
+    <value>Messages received</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="MessageType" xml:space="preserve">
-    <value>Type de message</value>
+    <value>Message Type</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Metres" xml:space="preserve">
     <value>Metres</value>
@@ -1255,120 +1450,144 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="MilesPerHour" xml:space="preserve">
-    <value>Miles par heure</value>
+    <value>Miles per Hour</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="MinimiseToSystemTray" xml:space="preserve">
-    <value>Minimise dans la barre d'état</value>
+    <value>Minimise to system tray</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="MinimumRefresh" xml:space="preserve">
-    <value>Minimum de secondes entre les rafraichissements de la carte</value>
-    <comment>The smallest number of seconds a browser can request between map updates</comment>
+    <value>Minimum refresh</value>
+    <comment>** SAME AS ENGLISH ** The smallest number of seconds a browser can request between map updates</comment>
   </data>
   <data name="MinimumRefreshOutOfBounds" xml:space="preserve">
-    <value>La valeur minimale de rafraîchissement doit être comprise entre 0 et 3600</value>
+    <value>The minimum refresh value must be between 0 and 3600</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Minutes" xml:space="preserve">
     <value>minutes</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Miscellaneous" xml:space="preserve">
-    <value>Divers</value>
+    <value>Miscellaneous</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="MissingFileName" xml:space="preserve">
-    <value>Nom de fichier manquant</value>
+    <value>Missing filename</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="MissingFolder" xml:space="preserve">
-    <value>Dossier manquant</value>
+    <value>Missing folder</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="MLAT" xml:space="preserve">
     <value>MLAT</value>
     <comment>** SAME AS ENGLISH ** Short for multilateration. If there's no equivalent then just leave it as MLAT</comment>
   </data>
   <data name="MobileSite" xml:space="preserve">
-    <value>Site mobile</value>
+    <value>Mobile site</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="MobileVersion" xml:space="preserve">
-    <value>Version mobile</value>
-    <comment>The version of the site for smartphones and tablet computers</comment>
+    <value>Mobile Version</value>
+    <comment>** SAME AS ENGLISH ** The version of the site for smartphones and tablet computers</comment>
   </data>
   <data name="MobileVersionOld" xml:space="preserve">
-    <value>Ancienne version mobile</value>
+    <value>Old Mobile Version</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Model" xml:space="preserve">
     <value>Model</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ModeS" xml:space="preserve">
-    <value>ModeS</value>
+    <value>Mode-S</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="MonoSettings" xml:space="preserve">
     <value>Mono Settings</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Name" xml:space="preserve">
-    <value>Nom</value>
+    <value>Name</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="NameCannotContainComma" xml:space="preserve">
-    <value>Le nom ne peut contenir de virgule</value>
+    <value>The name cannot contain a comma</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="NameMustBeUnique" xml:space="preserve">
-    <value>Veuillez entrer un nom qui n'a pas déjà été utilisé</value>
+    <value>Please enter a name that has not already been used</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="NameRequired" xml:space="preserve">
-    <value>Veuillez entrer un nom</value>
+    <value>Please enter a name</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="NameTitle" xml:space="preserve">
-    <value>Nom</value>
+    <value>Name</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="NauticalMiles" xml:space="preserve">
-    <value>Miles nautiques</value>
+    <value>Nautical Miles</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Network" xml:space="preserve">
-    <value>Réseau</value>
-    <comment>As in a TCP/IP network or the Internet</comment>
+    <value>Network</value>
+    <comment>** SAME AS ENGLISH ** As in a TCP/IP network or the Internet</comment>
   </data>
   <data name="NetworkAddress" xml:space="preserve">
     <value>Network address: {0}</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="New" xml:space="preserve">
-    <value>Nouveau</value>
+    <value>New</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Next" xml:space="preserve">
-    <value>Suivant</value>
+    <value>Next</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="No" xml:space="preserve">
-    <value>Non</value>
+    <value>No</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="NoAdsbPayload" xml:space="preserve">
-    <value>Transpondeur non ADS-B</value>
+    <value>No ADS-B payload</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="None" xml:space="preserve">
-    <value>Aucun</value>
+    <value>None</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Normal" xml:space="preserve">
     <value>Normal</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="NoSnapshotBody" xml:space="preserve">
-    <value>Aucune capture effectuée</value>
+    <value>No snapshot has yet been taken</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="NoSnapshotTitle" xml:space="preserve">
-    <value>Pas de capture</value>
+    <value>No Snapshot</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="NotApplicableAbbr" xml:space="preserve">
     <value>N/A</value>
     <comment>** SAME AS ENGLISH ** Abbreviation of "not applicable"</comment>
   </data>
   <data name="NotConnected" xml:space="preserve">
-    <value>Non connecté</value>
-    <comment>As in a connection between two computers</comment>
+    <value>Not connected</value>
+    <comment>** SAME AS ENGLISH ** As in a connection between two computers</comment>
   </data>
   <data name="NotExportedSiteSettings" xml:space="preserve">
-    <value>Ce n'est pas un jeux valide de paramètres de site exportés</value>
+    <value>Not a valid set of exported site settings</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="NotLoaded" xml:space="preserve">
-    <value>Pas chargé</value>
+    <value>Not loaded</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="NotYetKnown" xml:space="preserve">
     <value>Not yet known</value>
@@ -1383,8 +1602,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>** SAME AS ENGLISH ** As used on OK buttons</comment>
   </data>
   <data name="Operator" xml:space="preserve">
-    <value>Opérateur</value>
-    <comment>As in the organisation operating an aircraft</comment>
+    <value>Operator</value>
+    <comment>** SAME AS ENGLISH ** As in the organisation operating an aircraft</comment>
   </data>
   <data name="OptionDescribeReceiverUsageHideFromWebSite" xml:space="preserve">
     <value>This receiver will not appear on the web site but it can have rebroadcast servers set up for it and it can be merged with other feeds.</value>
@@ -1403,133 +1622,172 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDataSourcesDataFeed" xml:space="preserve">
-    <value>Données</value>
+    <value>Data Feed</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDataSourcesSheetTitle" xml:space="preserve">
-    <value>Source de données</value>
+    <value>Data Sources</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeCidr" xml:space="preserve">
-    <value>Soit une seule adresse IP, ou une plage d'adresses en format CIDR (ex 192.168.0.41 ou 192.168.0.0/24</value>
+    <value>Either a single IP address or a range of addresses in CIDR format (e.g. 192.168.0.41 or 192.168.0.0/24).</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeClosestAircraftReceiverId" xml:space="preserve">
-    <value>Récepteur à utiliser pour les détails demandés par le widget d'avion le plus proche</value>
+    <value>The receiver to use when the Closest Aircraft desktop widget asks for details of the closest aircraft.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcePassiveReceiver" xml:space="preserve">
-    <value>Oui si le récepteur doit attendre qu'un autre ordinateur soit connecté pourt envoyer les données; Non si il doit se connecter à un autre ordinateur recevoir le flux de données de celui-ci.</value>
+    <value>Yes if the receiver should wait for another computer to connect and push a feed to it; no if it should actively connect to another computer and pull the feed from it.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesAddress" xml:space="preserve">
-    <value>L'adresse réseau du récepteur ou du programme qui envoie des données de l'avion. Utilisé uniquement pour les flux de données réseau.</value>
+    <value>The network address of the receiver or program that is sending aircraft data. Only used for Network data feeds.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesAutoReconnectAtStartup" xml:space="preserve">
-    <value>Oui pour essayer automatiquement d'établir une connexion à une source de données lorsque le programme démarre, Non pour essayer une fois seulement et signaler une erreur si la connexion ne peut pas être établie.</value>
+    <value>Yes to automatically keep trying to establish a connection to a data source when the program starts, no to only try once and report an error if the connection cannot be made.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesBaudRate" xml:space="preserve">
-    <value>La vitesse en bauds à utiliser lors de la communication avec le périphérique série. Utilisé uniquement pour une transmission série.</value>
+    <value>The speed in pulses per second to use when communicating with the serial device. Only used for serial feeds.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesComPort" xml:space="preserve">
-    <value>Le nom du périphérique pour lire les données de série. Utilisé uniquement pour une transmission en série.</value>
+    <value>The name of the serial device to read data from. Only used for serial feeds.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesConnectionType" xml:space="preserve">
-    <value>Comment Virtual Radar Server doit se connecter au récepteur ou au programme.</value>
+    <value>How Virtual Radar Server should connect to the receiver or program.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesDatabaseFileName" xml:space="preserve">
-    <value>Le chemin complet et le nom de la base de données BaseStation qui contient des informations supplémentaires sur l'avion.</value>
+    <value>The full path and file name of the BaseStation database that contains additional information about the aircraft.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesDataBits" xml:space="preserve">
-    <value>Le nombre de bits de données lors de la communication avec le périphérique série. Utilisé uniquement pour une transmission en série.</value>
+    <value>The number of bits to send per byte when communicating with the serial device. Only used for serial feeds.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesDataSource" xml:space="preserve">
-    <value>Le récepteur ou le programme qui enverra des données de l'avion à Virtual Radar Server. L' option AVR supporte *, @ et : messages ainsi que les messages au format binaire du Beast.</value>
+    <value>The receiver or program that will be sending aircraft data to Virtual Radar Server. The AVR option supports *, @ and : messages as well as Beast binary format messages.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesFlagsFolder" xml:space="preserve">
-    <value>Le dossier qui contient les fichiers d'image logos opérateur en utilisant le code opérateur OACI comme nom de fichier.</value>
+    <value>The folder that contains operator flag image files using the ICAO operator code as the file name.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesHandshake" xml:space="preserve">
-    <value>Le protocole de contrôle de flux à utiliser lors de la communication avec le périphérique série. Utilisé uniquement pour une transmission en série.</value>
+    <value>The flow control protocol to use when communicating with the serial device. Only used for serial feeds.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesIdleTimeout" xml:space="preserve">
-    <value>Le nombre de secondes avant disconnection du flux, quand aucune données n'est reçue.</value>
+    <value>The number of seconds to wait before disconnecting the feed when no data has been received and keep-alive packets are not being used.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesIgnoreBadConnection" xml:space="preserve">
-    <value>"Non" pour vous déconnecter à la réception d'un message mal formaté , "Oui" pour ignorer les messages incorrects et restez connecté.</value>
+    <value>No to disconnect from the data feed if a badly formatted message is received, yes to ignore bad messages and stay connected to the feed.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesLookupAircraftDetailsOnline" xml:space="preserve">
     <value>Yes if missing aircraft details should be fetched from an online source and cached locally, no to only use the local BaseStation.sqb as a source of aircraft data</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesParity" xml:space="preserve">
-    <value>Le contrôle de parité à appliquer pendant la communication avec le périphérique série. Utilisé uniquement pour une transmission en série.</value>
+    <value>The parity check to apply when communicating with the serial device. Only used for serial feeds.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesPicturesFolder" xml:space="preserve">
-    <value>Le dossier qui contient des photographies de l'avion à l'aide de l'immatriculation de l'aéronef et/ou code OACI comme nom de fichier.</value>
+    <value>The folder that contains photographs of the aircraft using the aircraft registration and/or ICAO code as the file name.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesPort" xml:space="preserve">
-    <value>Le port sur lequel le récepteur ou le programme envoie les données de l'avion. Utilisé uniquement pour les flux de données réseau.</value>
+    <value>The port that the receiver or program is sending aircraft data on. Only used for Network data feeds.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesSearchPictureSubFolders" xml:space="preserve">
-    <value>Oui pour chercher dans les sous-répertoires d'images, non pour chercher uniquement dans le répertoire d'images</value>
+    <value>Yes to search within sub-folders of the pictures folder for pictures, no to only search within the pictures folder.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesShutdownText" xml:space="preserve">
-    <value>La commande envoyée au récepteur lors de la déconnexion. Les récepteurs MiniADSB doivent recevoir à #43-00\r. Utilisé uniquement pour une transmission en série.</value>
+    <value>The command to send to the receiver when disconnecting. MiniADSB-based receivers should be sent #43-00\r. Only used for serial feeds.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesSilhouettesFolder" xml:space="preserve">
-    <value>Le dossier qui contient les fichiers d'image de silhouette en utilisant la code OACI de modèle d'avion comme nom de fichier.</value>
+    <value>The folder that contains silhouette image files using the aircraft ICAO model type code as the file name.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesStartupText" xml:space="preserve">
-    <value>La commande envoyée au récepteur une fois qu'une connexion a été établie. Les récepteurs MiniADSB doivent recevoir #43-02\r. Utilisé uniquement pour une transmission en série.</value>
+    <value>The command to send to the receiver once a connection has been established. MiniADSB-based receivers should be sent #43-02\r. Only used for serial feeds.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesStopBits" xml:space="preserve">
-    <value>Le nombre de bits à la fin de chaque octet lorsqu'il communique avec le périphérique série. Utilisé uniquement pour une transmission en série.</value>
+    <value>The number of bits at the end of each byte when communicating with the serial device. Only used for serial feeds.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDataSourcesUseKeepAlive" xml:space="preserve">
     <value>Yes to use keep-alive packets to detect a feed that has gone down, no to reset the connection if no data is received after a given number of seconds.</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDefaultAccess" xml:space="preserve">
-    <value>Autoriser ou  refuser les connexions provenant d'adresses qui ne correspondent pas l'une des adresses CIDR.</value>
+    <value>Whether to allow or reject connections from addresses that do not match any of the CIDR addresses.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDirectoryEntryKey" xml:space="preserve">
-    <value>Utilisé pour confirmer que le site que vous avez ajouté au répertoire des sites publics de Virtual Radar Server vous appartient. Vous pouvez ajouter votre site dans l'annuaire en allant sur le site des routes (http://sdm.virtualradarserver.co.uk), créer un compte, puis entrez les coordonnées de votre site dans la section Compte. Copiez la clé de ces informations dans ce domaine. \ R \ n \ r \ nSi vous ne voulez pas que votre site soit ajouté au répertoire public alors laissez cette entrée vide.</value>
+    <value>This is used to confirm that the site that you have added to the public directory of Virtual Radar Server sites belongs to you. You can add your site to the directory by going to the routes site (http://sdm.virtualradarserver.co.uk), creating an account and then enter your site's details in the Account section. Copy the key from those details into this field.\r\n\r\nIf you do not want your site added to the public directory then leave this entry empty.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeDownloadGlobalAirPressureReadings" xml:space="preserve">
     <value>Yes to periodically download air pressure settings from the Internet, no to disable the downloads. Air pressure readings are used to convert from the pressure altitudes reported by the aircraft to the actual altitude.</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeEnableBundling" xml:space="preserve">
-    <value>Oui pour fusionner des fichiers multiples CSS ou JavaScript en un seul téléchargement, non pour conserver les fichiers distincts.</value>
+    <value>Yes to merge multiple CSS or JavaScript files into a single download, no to keep the files separate.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeEnableCompression" xml:space="preserve">
-    <value>Oui, pour comprimer les réponses vers le navigateur, Non pour envoyer les réponses non compressées</value>
+    <value>Yes to compress responses sent to browsers, no to send responses uncompressed</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeEnableMinifying" xml:space="preserve">
-    <value>Oui pour compresser des fichiers CSS et JavaScript et les envoyer vers le navigateur et non pour envoyer les fichiers inchangés.</value>
+    <value>Yes to compress CSS and JavaScript files when serving them to a browser, no to send the files unchanged.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeFlightSimulatorXReceiverId" xml:space="preserve">
-    <value>Le récepteur qui sera utilisé par la fonctionnalité de Flight Simulator X « ride-along ».</value>
+    <value>The receiver that will be used by the Flight Simulator X "ride-along" feature.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeGeneralAudioEnabled" xml:space="preserve">
-    <value>"Oui" pour activer les fonctions audio du site web, "Non" pour la désactiver.</value>
+    <value>Yes to enable the audio features of the web site, no to disable them.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeGeneralAutoSavePolarPlotsMinutes" xml:space="preserve">
-    <value>Le nombre de minutes de pause entre les sauvegardes automatiques des diagrammes de couverture du récepteur. Zéro pour désactiver la sauvegarde automatique, et sauvegarde à la fermeture du programme</value>
+    <value>The number of minutes to pause between automatic saves of the receiver range plots. Set this to zero to disable periodic automatic saving and to only save when the program shuts down.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeGeneralCheckForNewVersions" xml:space="preserve">
-    <value>"Oui" pour permettre au programme de vous avertir lorsqu' une nouvelle version du programme peut être téléchargé,"Non" pour désactiver la vérification.</value>
+    <value>Yes to allow the program to notify you when a new version of the program is available for download, no to disable the check.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeGeneralCheckForNewVersionsPeriodDays" xml:space="preserve">
-    <value>Nombre de jours entre les vérifications de nouvelles versions.</value>
+    <value>How many days to wait between checks for new versions.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeGeneralDisplayTimeoutSeconds" xml:space="preserve">
-    <value>Le nombre de secondes devant s'écouler depuis la dernière réception d'un message d'un aéronef avant qu'il soit supprimé de l'affichage du site web.</value>
+    <value>The number of seconds that must elapse since a message from an aircraft was last received before it will be removed from the web site display.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeGeneralDownloadFlightRoutes" xml:space="preserve">
-    <value>Coché pour permettre au programme de télécharger automatiquement les mises à jour pour les routes de vol, décoché pour désactiver la mise à jour automatique.</value>
+    <value>Yes to allow the program to automatically download updates to the flight routes, no to disable automatic updating.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeGeneralReadingSpeed" xml:space="preserve">
-    <value>Une valeur qui indique la rapidité à laquelle le texte qui a été convertie en parole doit être prononcé. La valeur 0 est la vitesse normale, les valeurs négatives sont plus lentes que la normales des valeurs positives sont plus rapides.</value>
+    <value>A value indicating how quickly text that has been converted to speech should be spoken. A value of 0 is normal speed, negative values are slower than normal, positive values are quicker.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeGeneralRebroadcastServers" xml:space="preserve">
-    <value>La configuration des serveurs qui rediffusent les messages transmis par le récepteur.</value>
+    <value>The configuration of servers that rebroadcast messages transmitted by the receiver.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeGeneralSatcomDisplayTimeout" xml:space="preserve">
     <value>The number of minutes that aircraft on a satellite feed remain on the map after the last transmission is received.</value>
@@ -1540,23 +1798,28 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeGeneralShortTrailLengthSeconds" xml:space="preserve">
-    <value>Le nombre de secondes de mouvement affiché lorsque l' utilisateur regarde les traces courtes sur le site web.</value>
+    <value>How many seconds of movement will be shown when the user views short trails on the web site.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeGeneralTextToSpeechVoice" xml:space="preserve">
-    <value>La voix à utiliser lors de la conversion de texte par synthèse vocale.</value>
+    <value>The voice to use when converting text to speech. Leave empty to use the default voice.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeGeneralTrackingTimeoutSeconds" xml:space="preserve">
-    <value>Le nombre de secondes qui doit s' être écoulé depuis qu' un message d'un avion a été reçu avant qu'il ne cesse d'être suivi.</value>
+    <value>The number of seconds that must elapse since a message from an aircraft was last received before it will stop being tracked.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeGoogleMapsAPIKey" xml:space="preserve">
     <value>Enter the Google Maps API key that should be used when the site is put onto the Internet. You do not need a Google Maps API key if the server is only being used on the local network.</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeIcaoTimeout" xml:space="preserve">
-    <value>Le nombre de secondes qui doivent s'écouler avant qu'un récepteur ne soit plus considéré être le seul récepteur autorisé à recevoir des messages pour un ICAO. Si ce temps est trop faible, alors vous obtiendrez les avions sautant en arrière. Si elle est trop élevée, alors vous obtiendrez des pauses lorsque les avions se déplacent d'un récepteur à un autre</value>
+    <value>The number of seconds that must elapse before a receiver is no longer considered to be the only receiver allowed to receive messages for an ICAO. If this is too low then you will get planes appearing to jump backwards. If it is too high then you will get pauses when planes move from one receiver to another.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeIgnoreAircraftWithNoPosition" xml:space="preserve">
-    <value>Oui pour n'afficher que les aéronefs qui transmettent leurs positions, non pour montrer tous les aéronefs sur le flux fusionné.</value>
+    <value>Yes to only show aircraft that are transmitting positions, no to show all aircraft on the merged feed.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeIsMlatFeed" xml:space="preserve">
     <value>Yes if position messages on this feed should be treated as calculated MLAT positions. Only required for MLAT feeds that do not identify the calculated position messages.</value>
@@ -1567,198 +1830,256 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeLoginName" xml:space="preserve">
-    <value>Le nom que l'utilisateur doit entrer quand il se connecte</value>
+    <value>The name the user enters when logging in.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeMergedFeedEnabled" xml:space="preserve">
-    <value>Oui pour activer le flux fusionné, non pour le désactivez.</value>
+    <value>Yes to enable this merged feed, no to disable it.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeMergedFeedName" xml:space="preserve">
-    <value>Le nom unique à donner à ce flux fusionné. Doit également être unique sur tous les récepteurs.</value>
+    <value>The unique name to give to this merged feed. Must also be unique across all receivers.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeMergedFeedReceviers" xml:space="preserve">
-    <value>Les récepteurs qui sont fusionnés dans ce flux.</value>
+    <value>The receivers that are merged into this feed.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeMinimiseToSystemTray" xml:space="preserve">
-    <value>Oui pour minimiser l'application dans la barre d'état système, non pour la minimiser dans la barre des tâches.</value>
+    <value>Yes to minimise the application to the system tray, no to minimise it to the taskbar.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeMonoUseMarkerLabels" xml:space="preserve">
     <value>Yes to show aircraft label text using the Google marker labels library, no to draw the text onto the image as it does when running under Microsoft .NET. Some native graphics libraries may throw exceptions if this is set to no.</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribePassphrase" xml:space="preserve">
-    <value>Le mot de passe utilisé pour protéger la connexion d'un accès non autorisé. Laissez vide si aucun mot de passe n'est nécessaire.</value>
+    <value>The passphrase used to protect the connection from unauthorised access. Leave empty if no passphrase is required.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeProxyType" xml:space="preserve">
-    <value>Le type de proxy devant le serveur. Si vous ne savez pas laisser sur 'Inconnu'</value>
+    <value>The type of proxy that the server is behind. If you aren't sure whether the server is behind a proxy then leave the setting at 'Unknown'.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedAcceptableAirborneSpeed" xml:space="preserve">
-    <value>Le nombre de kilomètres qu'un aéronef peut parcourir en 30 secondes pour qu' un décodage locale soitt censé être non valide. ICAO recommande des valeurs 11,112 km. Des valeurs élevées empêchent la détection de positions locales décodées inexactes.</value>
+    <value>The number of kilometres that an aircraft can travel in 30 seconds before a local decode is deemed to be invalid. ICAO recommend 11.112 km. High values prevent detection of inaccurate local decode positions.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedAcceptableAirSurfaceTransitionSpeed" xml:space="preserve">
-    <value>Le nombre de kilomètres qu'un avion décollant ou atterrissant peut parcourir en 30 secondes pour qu'un décodage locale soit censé être non valide. ICAO recommande des valeurs de 4,63 km. Des valeurs élevées empêchent la détection de positions locales décodées inexactes.</value>
+    <value>The number of kilometres that an aircraft taking off or landing can travel in 30 seconds before a local decode is deemed to be invalid. ICAO recommend 4.63 km. High values prevent detection of inaccurate local decode positions.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedAcceptableSurfaceSpeed" xml:space="preserve">
-    <value>Le nombre de kilomètres qu' un véhiculeau sol peut parcourir en 30 secondes pour qu' un décodage local soit considéré non valide. ICAO recommandons 1,4 km. Des valeurs élevées empêchent la détection de positions locales décodées inexactes.</value>
+    <value>The number of kilometres that an vehicle on the surface can travel in 30 seconds before a local decode is deemed to be invalid. ICAO recommend 1.4km. High values prevent detection of inaccurate local decode positions.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedAcceptIcaoInNonPICount" xml:space="preserve">
-    <value>Le nombre de fois où un code ICAO24 doit être vu dans un message avec un mauvais contrôle de parité avant d'être acceptés. Si la valeur est 0, alors seulement les codes ICAO24 des messages avec contrôle de parité bons seront acceptés. Une fois accepté tous les messages supplémentaires pour ce code ICAO24 seront utilisés.</value>
+    <value>The number of times an ICAO24 must be seen in a message that has no parity before it will be accepted. If 0 then only ICAO24s from messages with good parity will be accepted. Once accepted all further messages for the ICAO24 will be used.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedAcceptIcaoInNonPISeconds" xml:space="preserve">
-    <value>Le nombre de secondes pendant lequel les messages qui n'ont pas de bon contrôle de parité doivent être reçus avant que le code ICAO24 soit accepté.</value>
+    <value>The number of seconds over which messages that have no parity must be received before the ICAO24 will be accepted.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedAcceptIcaoInPI0Count" xml:space="preserve">
-    <value>Le nombre de fois qu'un code ICAO24 doit être vu dans un message qui a un bon contrôle de parité avant d'être accepté. Une fois accepté tous les messages supplémentaires pour ce code ICAO24 seront utilisés.</value>
+    <value>The number of times an ICAO24 must be seen in a message that has good parity before it will be accepted. Once accepted all further messages for the ICAO24 will be used.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedAcceptIcaoInPI0Seconds" xml:space="preserve">
-    <value>Le nombre de secondes pendant lequel les messages qui ont un bon contrôle de parité doivent être reçues avant que le code ICAO24 ne soit accepté.</value>
+    <value>The number of seconds over which messages that have good parity must be received before the ICAO24 will be accepted.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedAcceptIgnoreBadCodeblockNonPI0" xml:space="preserve">
-    <value>Oui pour  ignorer les codes ICAO qui ne sont pas affectés à un pays au moment de décider si un message qui ne contient pas de parité comporte un code  ICAO valide.</value>
+    <value>Yes to ignore ICAOs that are not assigned to a country when deciding if a message that does not contain parity holds a valid ICAO.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedAcceptIgnoreBadCodeblockPI0" xml:space="preserve">
-    <value>Oui pour  ignorer les codes ICAO qui ne sont pas affectés à un pays pour décider si un message avec parité correcte comporte un code ICAO valide.</value>
+    <value>Yes to ignore ICAOs that are not assigned to a country when deciding if a message containing parity holds a valid ICAO.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedAirborneGlobalPositionLimit" xml:space="preserve">
-    <value>Le nombre de secondes qui peuvent s'écouler entre des messages de position impairs/pairs en décodage global. ICAO recommande 10 secondes. Des valeurs élevées peuvent entrainer l'apparition d'avions à plusieurs centaines de kilomètres de leur emplacement véritable.</value>
+    <value>The number of seconds that can elapse between odd/even format airborne position messages in global decoding. ICAO recommend 10 seconds. High values can cause aircraft to initially appear several hundred miles from their true location.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedFastSurfaceGlobalPositionLimit" xml:space="preserve">
-    <value>Le nombre de secondes qui peuvent s'écouler entre des messages de position impairs/pairs en décodage global des véhicules au sol qui se déplacent à plus de 25 noeuds. ICAO recommande 25 secondes. Des valeurs élevées peuvent entrainer l'apparition de véhicules à plusieurs centaines de kilomètres de leur emplacement véritable.</value>
+    <value>The number of seconds that can elapse between odd/even format surface position messages in global decoding for vehicles travelling over 25 knots. ICAO recommend 25 seconds. High values can cause vehicles to initially appear several hundred miles from their true location.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedIgnoreCallsignsInBds20" xml:space="preserve">
-    <value>Oui si VRS doit extraire les indicatifs seulement des messages ADS-B, Non si VRS doit aussi essayer de détecter les messages BDS code 2,0 et en extraire les indicatifs.</value>
+    <value>Yes if VRS should only extract callsigns from ADS-B messages, no if it should also try to detect BDS2,0 messages and extract callsigns from those.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedIgnoreMilitaryExtendedSquitter" xml:space="preserve">
-    <value>"Oui" pour ignorer les messages DF19/AF0, "Non" pour les décoder comme s'ils étaient des messages DF17. Certains documents ICAO considèrent qu'ils peuvent être traités comme des messages DF17, d'autres documents non.</value>
+    <value>Yes to ignore DF19/AF0 messages, no to decode them as if they were DF17 messages. Some ICAO documents state that they can be treated as DF17 messages, other documents disagree.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedReceiverLocation" xml:space="preserve">
-    <value>L'emplacement du récepteur. Les messages de position ADS-B pour le trafic de surface décodent 8 emplacements possibles au sol parmi lesquels l'endroit le plus proche du récepteur est sélectionné.</value>
+    <value>The location of the receiver. ADS-B position messages for surface traffic decode into 8 possible locations on the Earth from which the location closest to the receiver is selected.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedReceiverRange" xml:space="preserve">
-    <value>La portée maximale du récepteur. Tous les messages ADS-B décodant une position supérieure à cette valeur sont ignorés.</value>
+    <value>The maximum range of the receiver. Any ADS-B messages decoding to a position further away from the receiver's location than this value are discarded.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedSlowSurfaceGlobalPositionLimit" xml:space="preserve">
-    <value>Le nombre de secondes qui peuvent s'écouler entre messages impairs/pairs de décodage global des véhicules qui se déplacent à 25 noeuds ou moins. ICAO recommande 50 secondes. Des valeurs élevées peuvent entrainer l'apparition de véhicules à plusieurs centaines de kilomètres de leur emplacement véritable.</value>
+    <value>The number of seconds that can elapse between odd/even format surface position messages in global decoding for vehicles travelling at or below 25 knots. ICAO recommend 50 seconds. High values can cause vehicles to initially appear several hundred miles from their true location.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedSuppressIcao0" xml:space="preserve">
-    <value>Oui pour ignorer les avions qui transmettent le code Mode-S 000000 Mode-S invalidet, Non pour les montrer.</value>
+    <value>Yes to ignore aircraft that transmit the invalid 000000 Mode-S identifier, no to show them.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedSuppressReceiverRangeCheck" xml:space="preserve">
-    <value>"Oui " si l'emplacement du récepteur ou la distance de couverture ne sont pas exacts. "Non" ignorera toutes les positions qui sont en dehors de la portée du récepteur.</value>
+    <value>Set to 'Yes' if the receiver location or range are not accurate. A setting of 'No' will discard any positions that are outside the range of the receiver.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedSuppressTisbMessages" xml:space="preserve">
     <value>Set to 'Yes' if you do not want to use TIS-B messages to track aircraft.</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRawFeedUseLocalDecodeForInitialPosition" xml:space="preserve">
-    <value>«Oui» indique la position des aéronefs plus tôt, mais à des distances extrêmes les avions sont plus enclins à être à une position inexacte. Ne prend effet que si la localisation du récepteur a été entrée.</value>
+    <value>'Yes' will show aircraft positions earlier but aircraft at extreme ranges are more likely to first appear at an inaccurate position. Only takes effect if a receiver location has been entered.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRebroadcastIdleTimeout" xml:space="preserve">
-    <value>Le nombre de secondes à attendre côté  réception pour accuser réception d'un paquet avant que la connexion soitt fermée. Seulement utilisé si vous n' utilisez pas les paquets mémorisés.</value>
+    <value>The number of seconds to wait for the receiving side to acknowledge receipt of a packet before the connection is closed. Only used if not using keep-alive packets.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRebroadcastIsTransmitter" xml:space="preserve">
-    <value>Oui pour vous connecter et envoyer le flux de données à un seul ordinateur, Non pour attendre qu'un autre ordinateurs se connecte à ce serveur et en recoivent les données.</value>
+    <value>Yes to connect and push the feed to a single computer, no to wait for other computers to connect to this server and pull the feed from it.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRebroadcastReceiver" xml:space="preserve">
-    <value>Récepteur de re-diffusion</value>
+    <value>The receiver that you want to rebroadcast messages from.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRebroadcastSendInterval" xml:space="preserve">
     <value>The number of seconds to wait between sending batches of messages. Only the Aircraft List (JSON) format supports this setting.</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRebroadcastServerEnabled" xml:space="preserve">
-    <value>Oui si ce serveur de rediffusion peut traiter les demandes pour le flux de données , non si il ne peut pas.</value>
+    <value>Yes if this rebroadcast server can serve requests for a data feed, no if it cannot.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRebroadcastServerFormat" xml:space="preserve">
-    <value>Format des données du flux</value>
+    <value>The format of the data feed to serve.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRebroadcastServerName" xml:space="preserve">
-    <value>Nom unique du serveur de rediffusion</value>
+    <value>The unique name to give to the rebroadcast server.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRebroadcastServerPort" xml:space="preserve">
-    <value>Port du flux de rediffusion</value>
+    <value>The port to serve the data feed from.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRebroadcastStaleSeconds" xml:space="preserve">
-    <value>La durée en secondes de conservation d'un message dans le buffer du serveur de rediffusion avant qu'il soit supprimé</value>
+    <value>The duration, in seconds, that a message will remain buffered on a rebroadcast server before it is discarded.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRebroadcastTransmitAddress" xml:space="preserve">
-    <value>L'adresse de l'ordinateur destinataire du flux de données</value>
+    <value>The address of the computer to push the feed to.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeRebroadcastUseKeepAlive" xml:space="preserve">
-    <value>Oui pour utiliser des paquets keep-alive pour détecter une interruption du flux, Non pour réinitialiser la connexion si aucune donnée n'est reçue après un nombre donné de secondes.</value>
+    <value>Yes to use keep-alive packets to detect a feed that has gone down, no to reset the connection if no data is received after a given number of seconds.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeReceiverEnabled" xml:space="preserve">
-    <value>Oui pour activer ce récepteur, non pour le désactiver. Au moins un récepteur doit être activé</value>
+    <value>Yes to enable this receiver, no to disable it. Note that at least one receiver must be enabled.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeReceiverLocationLatitude" xml:space="preserve">
-    <value>La latitude du récepteur. La valeur peut être comprise entre-90 ° et 90 °, mais ne peut pas être exactement zéro.</value>
+    <value>The latitude of the receiver. This can be between -90° and 90° but cannot be exactly zero.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeReceiverLocationLongitude" xml:space="preserve">
-    <value>La longitude du récepteur. La valeur peut être comprise entre-180 ° et 180 °.</value>
+    <value>The longitude of the receiver. This can be between -180° and 180°.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeReceiverLocationName" xml:space="preserve">
-    <value>Le nom unique de l'emplacement.</value>
+    <value>The unique name for the location.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeReceiverName" xml:space="preserve">
-    <value>Le nom unique pour ce récepteur. Doit également être unique sur tous les flux fusionnées.</value>
+    <value>The unique name for this receiver. Must also be unique across all merged feeds.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeUseGoogleMapsKeyWithLocalRequests" xml:space="preserve">
     <value>Yes if the Google Maps API key should be used for requests from the local loopback and local area network as well as requests from the Internet, no if the API key should not be used for local loopback and LAN requests.</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeUserEnabled" xml:space="preserve">
-    <value>Oui si le compte de l'utilisateur est activée, Non  si l'utilisateur ne peut pas se connecter.</value>
+    <value>Yes if the user's account is enabled, no if the user may not log in.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeUserName" xml:space="preserve">
-    <value>Le vrai nom de l'utilisateur.</value>
+    <value>The real name of the user.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeUserPassword" xml:space="preserve">
-    <value>Le mot de passe que l'utilisateur doit fournir lors de la connexion.</value>
+    <value>The password that the user must supply when logging in.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeUseSvgGraphics" xml:space="preserve">
     <value>Yes to allow the use of SVG graphics on the web site, no to disable SVG graphics. SVG graphics reduce the load on the web server and look better on high resolution screens.</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebServerAllowInternetProximityGadgets" xml:space="preserve">
-    <value>Coché si les connexions proximity gadgets à partir d'Internet sont autorisés à extraire les données de l'avion, décoché si elles ne peuvent pas. Les proximity Gadgets sur le réseau local ne sont pas affectés par ce paramètre.</value>
+    <value>Yes if proximity gadgets connecting from the Internet are allowed to fetch aircraft data, no if they cannot. Proximity gadgets on the local network are not affected by this setting.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebServerAutoStartUPnp" xml:space="preserve">
-    <value>Coché pour rendre automatiquement VRS accessible par Internet lorsque le programme démarre,décoché si vous voulez qu'il soit inaccessible jusqu'à ce qu'il soit manuellement connecté.</value>
+    <value>Yes to automatically make VRS accessible from the Internet when the program starts, no if you want it to be inaccessible until manually connected.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebServerEnableUPnpFeatures" xml:space="preserve">
-    <value>"Oui" pour activer les fonctionnalités Universal Plug and Play du programme,"Non" pour la désactiver.</value>
+    <value>Yes to enable the Universal Plug and Play features of the program, no to disable them.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebServerInternetClientCanPlayAudio" xml:space="preserve">
-    <value>"Oui" si les utilisateurs qui se connectent depuis Internet sont autorisés à utiliser les fonctionnalités audio,"Non" s'ils ne peuvent pas. Les fonctions audio consomment de la bande passante et accroîssent la charge du serveur. Les utilisateurs du réseau local ne sont pas affectés par ce paramètre.</value>
+    <value>Yes if users connecting from the Internet are allowed to use the audio features, no if they cannot. Audio features consume bandwidth and increase server workload. Local network users are not affected by this setting.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebServerInternetClientCanRunReports" xml:space="preserve">
-    <value>"Oui" si les utilisateurs qui se connectent depuis Internet sont autorisés à exécuter des rapports et "Non" s'ils ne peuvent pas. L'exécution de rapports consommede la bande passante et augmente la charge du serveur. Les utilisateurs du réseau local ne sont pas affectés par ce paramètre.</value>
+    <value>Yes if users connecting from the Internet are allowed to run reports, no if they cannot. Running reports consumes bandwidth and increases server workload. Local network users are not affected by this setting.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebServerInternetClientCanSeeLabels" xml:space="preserve">
-    <value>"Oui" si les utilisateurs qui se connectent depuis Internet sont autorisés à voir les étiquettes d'avion, "Non" s'ils ne peuvent pas. Les étiquettes d'avion consomment de la bande passante. Les utilisateurs du réseau local ne sont pas affectés par ce paramètre.</value>
+    <value>Yes if users connecting from the Internet are allowed to view aircraft labels, no if they cannot. Aircraft labels consume bandwidth. Local network users are not affected by this setting.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebServerInternetClientCanSeePictures" xml:space="preserve">
-    <value>"Oui" si les utilisateurs qui se connectent depuis Internet sont autorisés à voir les photos d'avion,"Non" s'ils ne le sont pas. Les photos d'avions consomment de la bande passante et leur redimensionnement peut augmenter la charge du serveur. Les utilisateurs du réseau local ne sont pas affectés par ce paramètre.</value>
+    <value>Yes if users connecting from the Internet are allowed to view pictures of aircraft, no if they are not. Aircraft pictures consume bandwidth and resizing them can increase server workload. Local network users are not affected by this setting.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebServerInternetClientCanShowPolarPlots" xml:space="preserve">
-    <value>Oui, si les clients internet sont autorisés à voir la couverture du récepteur. Noter que cette information peur permettre de localiser le récepteur</value>
+    <value>Yes if users connecting from the Internet can see plots of receiver ranges. Note that these plots can pinpoint the receiver's location.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebServerInternetClientCanSubmitRoutes" xml:space="preserve">
-    <value>"Oui" si les utilisateurs d'Internet sont autorisés à voir les liens vers les routes soumises, "NON", s'ils le peuvent pas.</value>
+    <value>Yes if browsers connecting from the Internet are allowed to see links to submit routes, no if they cannot.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebServerInternetClientTimeoutMinutes" xml:space="preserve">
-    <value>Combien de minutes d'inactivité peuvent s'écouler avant que le site cesse de répondre à un utilisateur connecté depuis Internet. 0 désactive cette fonctionnalité. Les utilisateurs du réseau local ne sont jamais expirés.</value>
+    <value>How many minutes of inactivity can elapse before the site will stop responding to a user connecting from the Internet. 0 disables this feature. Local network users are never timed out.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebServerIsOnlyVirtualRadarServerOnLan" xml:space="preserve">
-    <value>"Oui" si c'est le seul ordinateur exécutant VRS sur ce réseau que vous souhaitez mettre sur l'Internet, "Non" s'il ne l'est pas.</value>
+    <value>Yes if this is the only computer running VRS on this network that you want to put onto the Internet, no if it is not.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebServerPermittedUsers" xml:space="preserve">
-    <value>Choisissez les utilisateurs autorisés à se connecter au serveur Web</value>
+    <value>Select the users that have permission to connect to the web server</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebServerUPnpPort" xml:space="preserve">
-    <value>Numéro de port que le trafic Internet connectera sur le routeur UPnP pour accéder à Virtual Server de Radar.</value>
+    <value>The port number that Internet traffic will connect to on the UPnP router to access Virtual Radar Server.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebServerUserMustAuthenticate" xml:space="preserve">
-    <value>"Oui" si les utilisateurs doivent s'authentifier pour accéder au site web, décoché s'ils ne le doivent pas.</value>
+    <value>Yes if users must authenticate before browing the web site, no if they do not.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebSiteAllowCorsDomains" xml:space="preserve">
     <value>A semicolon separated list of domains that can request content via CORS.</value>
@@ -1769,91 +2090,116 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebSiteInitialDistanceUnit" xml:space="preserve">
-    <value>Comment les distances sont indiquées. Seulement utilisé par un navigateur à la première visite sur le site web.</value>
+    <value>How distances are shown. Only used on a browser's first visit to the web site.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebSiteInitialGoogleMapLatitude" xml:space="preserve">
-    <value>La ligne de latitude pour centrer la carte. Seulement utilisé par un navigateur à la première visite sur le site web.</value>
+    <value>The line of latitude to centre the map on. Only used on a browser's first visit to the web site.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebSiteInitialGoogleMapLongitude" xml:space="preserve">
-    <value>La ligne de longitude pour centrer la carte. Seulement utilisé par un navigateur à la première visite sur le site web.</value>
+    <value>The line of longitude to centre the map on. Only used on a browser's first visit to the web site.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebSiteInitialGoogleMapRefreshSeconds" xml:space="preserve">
-    <value>Le nombre de secondes entre les mises à jour des données d'avion sur le site web.Seulement utilisé par un navigateur à la première visite sur le site web.</value>
+    <value>The number of seconds between updates of aircraft data on the web site. Only used on a browser's first visit to the web site.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebSiteInitialGoogleMapSettings" xml:space="preserve">
-    <value>Utilisez les liens vers les sites mobiles et de bureau pour configurer le site que vous souhaitez voir apparaitre aux nouveaux utilisateurs. Puis cliquez sur le lien vers Paramètres du site, cliquez sur exporter Paramètres et  copier les paramètres exportés dans ce domaine.</value>
+    <value>Use the links to the Desktop and Mobile sites to configure the site as you want it to appear to new users. Then click the link to the Settings site, click Export Settings and copy the exported settings into this field.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebSiteInitialGoogleMapType" xml:space="preserve">
-    <value>Le type de carte à afficher. Seulement utilisé par un navigateur à la première visite sur le site web.</value>
+    <value>The type of map to display. Only used on a browser's first visit to the web site.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebSiteInitialGoogleMapZoom" xml:space="preserve">
-    <value>Le niveau de zoom à utiliser, où 0 indique la terre entièrement dézoomé et des nombres plus élevés (jusqu'à environ 20) pour afficher plus de détails. Seulement utilisé par un navigateur à la première visite sur le site web.</value>
+    <value>The zoom level to use, where 0 shows the Earth fully zoomed out and higher numbers (up to about 20) show more detail. Only used on a browser's first visit to the web site.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebSiteInitialHeightUnit" xml:space="preserve">
-    <value>Affichent les altitudes. Seulement utilisé par un navigateur à la première visite sur le site web.</value>
+    <value>How heights are shown. Only used on a browser's first visit to the web site.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebSiteInitialSpeedUnit" xml:space="preserve">
-    <value>Affichent les vitesses. Seulement utilisé par un navigateur à la première visite sur le site web.</value>
+    <value>How speeds are shown. Only used on a browser's first visit to the web site.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebSiteMinimumGoogleMapRefreshSeconds" xml:space="preserve">
-    <value>Le plus petit nombre de secondes que le site web permet à l'utilisateur de choisir entre les actualisations des données de l'avion.</value>
+    <value>The smallest number of seconds that the web site will allow the user to choose when selecting the number of seconds between refreshes of aircraft data.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebSitePreferIataAirportCodes" xml:space="preserve">
-    <value>"Oui" pour l'affichage des codes IATA de l'aéroport (par exemple LHR), "NON" pour afficher les codes OACI des aéroports (par exemple EGLL).</value>
+    <value>Yes to display IATA airport codes (e.g. LHR), no to display ICAO airport codes (e.g. EGLL).</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsDescribeWebSiteReceiverId" xml:space="preserve">
-    <value>Le récepteur à montrer aux utilisateurs lorsqu'ils rendent la première fois sur le site web.</value>
+    <value>The receiver to show to users when they first visit the web site.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsGeneralCategory" xml:space="preserve">
-    <value>Paramètres généraux</value>
-    <comment>As in miscellaneous settings</comment>
+    <value>General Settings</value>
+    <comment>** SAME AS ENGLISH ** As in miscellaneous settings</comment>
   </data>
   <data name="OptionsRawFeedAcceptIcaoAsValidCategory" xml:space="preserve">
-    <value>Configuration de validation de nr ICAO </value>
+    <value>ICAO24 Validation Settings</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsRawFeedDecoderParametersCategory" xml:space="preserve">
-    <value>Paramètres de décodage des données brutes</value>
+    <value>Raw Decoding Parameters</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsRawFeedReceiverDetailsCategory" xml:space="preserve">
-    <value>Détails récepteur</value>
+    <value>Receiver Details</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsRawFeedSheetTitle" xml:space="preserve">
-    <value>Décodage de flux données brutes</value>
+    <value>Raw Feed Decoding</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsUPnPCategory" xml:space="preserve">
     <value>UPnP</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsWebServerInternetClientsCategory" xml:space="preserve">
-    <value>Restrictions sur les utilisateurs d'Internet</value>
+    <value>Restrictions on Internet Users</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsWebServerSheetTitle" xml:space="preserve">
-    <value>Serveur Web</value>
+    <value>Web Server</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsWebSiteCustomisationCategory" xml:space="preserve">
-    <value>Personnalisation de Site Web</value>
+    <value>Web Site Customisation</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsWebSiteSettingsCategory" xml:space="preserve">
-    <value>Paramètres du Site Web</value>
+    <value>Web Site Settings</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="OptionsWebSiteTitle" xml:space="preserve">
-    <value>Site Web </value>
+    <value>Web Site</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Other" xml:space="preserve">
-    <value>Autres</value>
+    <value>Other</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PassiveReceiver" xml:space="preserve">
     <value>Push receiver</value>
     <comment>** SAME AS ENGLISH ** Passive means the receiver waits for a connection to be made to it instead of actively connecting with another computer. A passive receiver has the feed pushed to it, a non-passive receiver pulls the feed from the other computer</comment>
   </data>
   <data name="Passphrase" xml:space="preserve">
-    <value>PassPhrase</value>
+    <value>Passphrase</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>Mot de passe</value>
+    <value>Password</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PasswordMissing" xml:space="preserve">
-    <value>Le mot de passe n'a pas été fourni</value>
+    <value>The password has not been supplied</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PasswordMissingOnCommandLine" xml:space="preserve">
     <value>You must supply a password with the -password option</value>
@@ -1868,87 +2214,112 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>** SAME AS ENGLISH ** As in the largest number of something, the maximum</comment>
   </data>
   <data name="PermittedUsers" xml:space="preserve">
-    <value>Utilisateurs autorisés</value>
+    <value>Permitted users</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PIBadParity" xml:space="preserve">
-    <value>Mauvaise parité PI</value>
+    <value>Bad parity PI</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PicturesFolder" xml:space="preserve">
-    <value>Dossier Images</value>
+    <value>Pictures folder</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PIPresent" xml:space="preserve">
-    <value>PI présent</value>
+    <value>PI present</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PKilometres" xml:space="preserve">
-    <value>(kilomètre)</value>
+    <value>(kilometres)</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PKilometresOver30Seconds" xml:space="preserve">
-    <value>(km/30 secondes)</value>
+    <value>(km / 30 seconds)</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PlaneFinder" xml:space="preserve">
     <value>Plane Finder Radar</value>
     <comment>** SAME AS ENGLISH ** PlaneFinder is the name of a web site and a receiver manufacturer</comment>
   </data>
   <data name="PleaseConfigureAtLeastOneReceiver" xml:space="preserve">
-    <value>Veuillez configurer au moins un récepteur.</value>
+    <value>Please configure at least one receiver.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PleaseEnableAtLeastOneReceiver" xml:space="preserve">
-    <value>S'il vous plaît autoriser au moins un récepteur.</value>
+    <value>Please enable at least one receiver.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PleaseEnterNameForLocation" xml:space="preserve">
-    <value>Entrez un nom pour cette localisation</value>
+    <value>Please enter a name for the location</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PleaseEnterUniqueNameForLocation" xml:space="preserve">
-    <value>Ce nom de localisation est déjà utilisé</value>
+    <value>This name has been used for another location</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PleaseSelectAFile" xml:space="preserve">
-    <value>Sélectionnez un fichier SVP</value>
+    <value>Please select a file</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PleaseSelectAFolder" xml:space="preserve">
-    <value>Sélectionnez un dossier SVP</value>
+    <value>Please select a folder</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PleaseSelectFlagsFolder" xml:space="preserve">
-    <value>Sélectionnez le dossier des logos opérateurs SVP</value>
+    <value>Please select the folder holding operator logo images</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PleaseSelectPicturesFolder" xml:space="preserve">
-    <value>Sélectionnez le dossier des photos d'avionsPlease SVP</value>
+    <value>Please select the folder containing aircraft pictures</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PleaseSelectSilhouettesFolder" xml:space="preserve">
-    <value>Sélectionnez le dossier des silhouettes d'avions</value>
+    <value>Please select the folder containing aircraft silhouette images</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PleaseSelectSiteRootFolder" xml:space="preserve">
-    <value>S'il vous plaît sélectionnez le dossier racine du site serveur</value>
+    <value>Please select the root folder of the site to serve</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PluginCannotBeLoaded" xml:space="preserve">
-    <value>Le plugin ne peut être chargé {0}</value>
+    <value>Plugin could not be loaded: {0}</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PluginDoesNotHaveJustOneIPlugin" xml:space="preserve">
-    <value>Le plugin a plus d'un plugin</value>
+    <value>The plugin does not have just one class that implements IPlugin</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PluginFileName" xml:space="preserve">
-    <value>Nom du fichier Plugin</value>
+    <value>Plugin File Name</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PluginMaximumVersionNotMet" xml:space="preserve">
-    <value>Le Plugin n'est pas compatible avec les anciennes versions de VRS {0}</value>
+    <value>Plugin does not work with versions of VRS past {0}</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PluginMaximumVersionUnparseable" xml:space="preserve">
-    <value>La Version du plugin ne peut être analysée</value>
+    <value>The manifest's maximum version cannot be parsed</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PluginMinimumVersionNotMet" xml:space="preserve">
-    <value>Le Plugin est compatible avec la version {0} (ou supérieure ) de VRS</value>
+    <value>Plugin needs version {0} (or better) of VRS</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PluginMinumumVersionUnparseable" xml:space="preserve">
-    <value>La version du plugin ne peut être analysée</value>
+    <value>The manifest's minimum version cannot be parsed</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Plugins" xml:space="preserve">
     <value>Plugins</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PluginThrewExceptionFull" xml:space="preserve">
-    <value>Le Plugin {0}a rencontré une exception ({1}) au démarage - Il est toujours chargé,mais peut ne pas fonctionner correctement</value>
+    <value>Plugin {0} threw an exception ({1}) when it was started - it remains loaded but may not behave correctly. Full details are in the log.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PluginThrewExceptionTitle" xml:space="preserve">
-    <value>Un Plugin a rencontré une exception au démarage</value>
+    <value>A Plugin Threw An Exception During Startup</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PMinutes" xml:space="preserve">
     <value>(minutes)</value>
@@ -1963,57 +2334,72 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>** SAME AS ENGLISH ** BaseStation does not need translating</comment>
   </data>
   <data name="PortIsUsedByWebServer" xml:space="preserve">
-    <value>Le port {0} est utilisé par le serveur Web</value>
+    <value>Port {0} is being used by the web server</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PortMustBeUnique" xml:space="preserve">
-    <value>S'il vous plaît entrer dans un numéro de port qui n'a pas déjà été utilisé</value>
+    <value>Please enter a port that has not already been used</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PortOutOfBounds" xml:space="preserve">
-    <value>Le port de source de données doit être compris entre 1 et 65535</value>
+    <value>The port must be between 1 and 65535</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PositionResets" xml:space="preserve">
-    <value>Réinitialiser la position</value>
+    <value>Position resets</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PositionsOutOfRange" xml:space="preserve">
-    <value>Position hors des limites</value>
+    <value>Positions out of range</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PreferIataAirportCodes" xml:space="preserve">
-    <value>Affiche le code IATA d'aéroport</value>
+    <value>Show IATA airport codes</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PresetConfigurations" xml:space="preserve">
-    <value>Configurations par défaut</value>
+    <value>Preset Configurations</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PressQToQuit" xml:space="preserve">
     <value>Press Q to quit</value>
     <comment>** SAME AS ENGLISH ** You can have any key you like here, as long as it's Q</comment>
   </data>
   <data name="ProxyType" xml:space="preserve">
-    <value>Type de proxy</value>
+    <value>Proxy type</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PSeconds" xml:space="preserve">
-    <value>(secondes)</value>
+    <value>(seconds)</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="PutOnInternet" xml:space="preserve">
-    <value>Mettre sur Internet</value>
+    <value>Put onto Internet</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Range" xml:space="preserve">
-    <value>Rayon</value>
+    <value>Range</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RawDecoding" xml:space="preserve">
-    <value>Décodage données brutes</value>
+    <value>Raw Decoding</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ReadBufferSize" xml:space="preserve">
-    <value>Taille buffer</value>
+    <value>Read buffer size</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ReadingSpeed" xml:space="preserve">
-    <value>Vitesse de lecture</value>
-    <comment>How quickly some text is spoken</comment>
+    <value>Reading speed</value>
+    <comment>** SAME AS ENGLISH ** How quickly some text is spoken</comment>
   </data>
   <data name="ReadingSpeedOutOfBounds" xml:space="preserve">
-    <value>La vitesse de synthèse vocale doit être comprise entre -10 et 10</value>
+    <value>The text to speech speed must be between -10 and 10</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Reason" xml:space="preserve">
-    <value>Cause</value>
+    <value>Reason</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RebroadcastFormatAvr" xml:space="preserve">
     <value>AVR</value>
@@ -2028,45 +2414,56 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>** SAME AS ENGLISH ** A rebroadcast server that transmits Kinetic Port 30003 format messages converted from raw messages transmitted by the receiver that VRS is listening to</comment>
   </data>
   <data name="RebroadcastFormatRequired" xml:space="preserve">
-    <value>Veuillez sélectionner le format de message de rediffusion</value>
+    <value>Please select the rebroadcast message format</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RebroadcastOptionsTitle" xml:space="preserve">
-    <value>Serveurs de rediffusion</value>
+    <value>Rebroadcast Servers</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RebroadcastSendIntervalOutOfBounds" xml:space="preserve">
     <value>The send interval must be between 1 and 30 seconds</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RebroadcastServer" xml:space="preserve">
-    <value>Serveurs de rediffusion</value>
+    <value>Rebroadcast server</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RebroadcastServerIdleTimeoutOutOfBounds" xml:space="preserve">
-    <value>L' idle Timeout doit être au minimum de 5 secondes</value>
+    <value>The idle timeout must be at least 5 seconds</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RebroadcastServersDescribeMany" xml:space="preserve">
-    <value>{0} serveurs configurés , {1} activé</value>
+    <value>{0} servers configured, {1} enabled</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RebroadcastServersDescribeSingle" xml:space="preserve">
-    <value>1 serveur configuré, {0} activé</value>
+    <value>1 server configured, {0} enabled</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RebroadcastServersLabel" xml:space="preserve">
-    <value>Serveurs de rediffusion</value>
+    <value>Rebroadcast servers</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RebroadcastServersNoneConfigured" xml:space="preserve">
     <value>None</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RebroadcastServersStatus" xml:space="preserve">
-    <value>Etat Serveurs de rediffusion</value>
+    <value>Rebroadcast server status</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RebroadcastServersTitle" xml:space="preserve">
-    <value>Serveurs de rediffusion</value>
+    <value>Rebroadcast Servers</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizConnectionTypeTitle" xml:space="preserve">
-    <value>Comment est connecté le récepteur</value>
+    <value>How is the receiver connected?</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizDedicatedAirNavRadarBox" xml:space="preserve">
-    <value>Airnav RadarBox</value>
+    <value>AirNav Systems RadarBox</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizDedicatedBeast" xml:space="preserve">
     <value>Beast</value>
@@ -2081,43 +2478,56 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizDedicatedTitle" xml:space="preserve">
-    <value>Quel type de matériel utilisez-vous?</value>
+    <value>What kind of hardware are you using?</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizFinishAction" xml:space="preserve">
-    <value>Clic "terminer" pour changer de récepteur, ou "annuler" pour annuler les changements</value>
+    <value>Click Finish to modify the current receiver or Cancel to abandon your changes.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizFinishTitle" xml:space="preserve">
-    <value>Terminé</value>
+    <value>Finished</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizKineticConDirect" xml:space="preserve">
-    <value>Non, connecté directement au récepteur</value>
+    <value>No, connect directly to the receiver</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizKineticConNote" xml:space="preserve">
-    <value>Note: La connexion directe avec le matériel est pris en charge uniquement sur le réseau. Le récepteur doit avoir la dernière version du firmware installée.</value>
+    <value>Note: Connecting directly to the hardware is only supported over the network. The receiver must have the latest firmware installed.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizKineticConTitle" xml:space="preserve">
-    <value>Utilisez-vous BaseStation ?</value>
+    <value>Are you using BaseStation?</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizLoopbackTitle" xml:space="preserve">
-    <value>Est-ce que {0} est actif sur cet ordinateur</value>
+    <value>Is {0} running on this computer?</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizNetworkHardwareAddressTitle" xml:space="preserve">
-    <value>Entrer l'adresse réseau {0}</value>
+    <value>Enter the network address of {0}</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizNetworkProgramAddressTitle" xml:space="preserve">
-    <value>Entrer l'adresse réseau de l'ordinateur actif {0}</value>
+    <value>Enter the network address of the computer that is running {0}</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizReceiverClassDedicated" xml:space="preserve">
-    <value>Un récepteur qui reçoit et décode les signaux transpondeur</value>
+    <value>A radio that receives and decodes transponder signals</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizReceiverClassSdr" xml:space="preserve">
-    <value>Un récepteur SDR</value>
+    <value>A software defined radio</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizReceiverClassTitle" xml:space="preserve">
-    <value>A quel type de récepteur souhaitez vous vous connecter?</value>
+    <value>What kind of receiver do you want to connect to?</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizSdrAdsbSharp" xml:space="preserve">
-    <value>ADS-B Sharp</value>
+    <value>ADSBSharp</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizSdrDump1090" xml:space="preserve">
     <value>Dump1090</value>
@@ -2140,123 +2550,144 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizSdrTitle" xml:space="preserve">
-    <value>Quel programme de décodage utilisez-vous avec le SDR?</value>
+    <value>Which decoder program are you using with the SDR?</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizSourceTheReceiver" xml:space="preserve">
-    <value>Le récepteur.</value>
+    <value>the receiver</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RecConWizSourceTheSdr" xml:space="preserve">
-    <value>Le décoder SDR.</value>
+    <value>the SDR decoder</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ReceivedCountMessages" xml:space="preserve">
-    <value>Reçu {0:N0} messages</value>
-    <comment>Where {0:N0} is an integer</comment>
+    <value>Received {0:N0} messages</value>
+    <comment>** SAME AS ENGLISH ** Where {0:N0} is an integer</comment>
   </data>
   <data name="Receiver" xml:space="preserve">
-    <value>Récepteur</value>
+    <value>Receiver</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ReceiverCannotBeMergeOnly" xml:space="preserve">
     <value>This receiver cannot be set to merge-only</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ReceiverConfigurationWizard" xml:space="preserve">
-    <value>Configuration récepteur</value>
+    <value>Receiver Configuration Wizard</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ReceiverIdleTimeoutOutOfBounds" xml:space="preserve">
-    <value>L' idle Timeout doit être au minimum de 5 secondes</value>
+    <value>The idle timeout must be at least 5 seconds</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ReceiverLocation" xml:space="preserve">
-    <value>Localisation récepteur</value>
+    <value>Receiver location</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ReceiverLocationsTitle" xml:space="preserve">
-    <value>Localisation récepteur</value>
+    <value>Receiver Locations</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ReceiverMustBeVisible" xml:space="preserve">
     <value>This receiver cannot be hidden from the web site</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ReceiverOrMergedFeedDoesNotExist" xml:space="preserve">
-    <value>Ce récepteur ou le flux fusionné n'a pas été activé</value>
+    <value>This receiver or merged feed has not been enabled</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ReceiverRange" xml:space="preserve">
-    <value>Rayon de couverture récepteur (km)</value>
+    <value>Receiver range</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ReceiverRangeOutOfBounds" xml:space="preserve">
-    <value>Le rayon de couverture du récepteur doit être compris entre 0 et 99999</value>
+    <value>The receiver range must be between 0 and 99999</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ReceiverRequired" xml:space="preserve">
-    <value>SVPspécifiez un récepteur</value>
+    <value>Please specify a receiver.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Receivers" xml:space="preserve">
-    <value>Récepteurs</value>
+    <value>Receivers</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Reconnecting" xml:space="preserve">
-    <value>Reconnexion</value>
+    <value>Reconnecting</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Refresh" xml:space="preserve">
-    <value>Actualiser</value>
+    <value>Refresh</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Reg" xml:space="preserve">
-    <value>Immatriculation</value>
-    <comment>As in aircraft registration</comment>
+    <value>Registration</value>
+    <comment>** SAME AS ENGLISH ** As in aircraft registration</comment>
   </data>
   <data name="Remove" xml:space="preserve">
-    <value>Enlever</value>
+    <value>Remove</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RemoveFromDisplay" xml:space="preserve">
-    <value>Oter de l'écran</value>
+    <value>Remove from display</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RemoveFromDisplaySatcom" xml:space="preserve">
     <value>JAERO display timeout</value>
     <comment>** SAME AS ENGLISH ** JAERO is the name of a program</comment>
   </data>
   <data name="RemoveFromTracking" xml:space="preserve">
-    <value>Oter du suivi</value>
+    <value>Remove from tracking</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RemoveFromTrackingSatcom" xml:space="preserve">
     <value>JAERO tracking timeout</value>
     <comment>** SAME AS ENGLISH ** JAERO is the name of a program</comment>
   </data>
   <data name="Requests" xml:space="preserve">
-    <value>Demande</value>
-    <comment>The number of requests a server gets</comment>
+    <value>Requests</value>
+    <comment>** SAME AS ENGLISH ** The number of requests a server gets</comment>
   </data>
   <data name="Reset" xml:space="preserve">
     <value>Reset</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ResetCounters" xml:space="preserve">
-    <value>Réinitialiser les compteurs</value>
+    <value>Reset Counters</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ResetPortAssignmentsOnStartup" xml:space="preserve">
-    <value>Réinitialiser les affectations de port au démarrage</value>
+    <value>Reset port assignments on startup</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Reverse" xml:space="preserve">
-    <value>Arrière</value>
+    <value>Reverse</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ReverseDNS" xml:space="preserve">
     <value>Reverse DNS</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="RideAircraft" xml:space="preserve">
-    <value>Vue du cockpit de l'avion</value>
-    <comment>Ride in the cockpit of an aircraft (using Flight Simulator X)</comment>
+    <value>Ride Aircraft</value>
+    <comment>** SAME AS ENGLISH ** Ride in the cockpit of an aircraft (using Flight Simulator X)</comment>
   </data>
   <data name="RidingAircraft" xml:space="preserve">
-    <value>Vue du cockpit de l'avion {0}</value>
-    <comment>Riding in the cockpit of the aircraft whose registration is {0}</comment>
+    <value>Riding {0}</value>
+    <comment>** SAME AS ENGLISH ** Riding in the cockpit of the aircraft whose registration is {0}</comment>
   </data>
   <data name="RouteFileStatus" xml:space="preserve">
-    <value>Chargées{0:N0} routes pour la période {1:d} et {2:d}</value>
-    <comment>Routes are flight routes, {0} is the number of routes loaded, {1} and {2} are the start and end dates of the period over which flight routes were compiled</comment>
+    <value>Loaded {0:N0} routes for the period {1:d} to {2:d}</value>
+    <comment>** SAME AS ENGLISH ** Routes are flight routes, {0} is the number of routes loaded, {1} and {2} are the start and end dates of the period over which flight routes were compiled</comment>
   </data>
   <data name="RouteStateFileContentInvalid" xml:space="preserve">
-    <value>La route contenu dans le fichier d'état n'est pas valide</value>
-    <comment>Route as in flight route, state file is a file containing version numbers of flight route data</comment>
+    <value>Route state file content is invalid</value>
+    <comment>** SAME AS ENGLISH ** Route as in flight route, state file is a file containing version numbers of flight route data</comment>
   </data>
   <data name="RouteStateFileInvalid" xml:space="preserve">
-    <value>Le fichier d'état Route n'est pas valide</value>
-    <comment>Route as in flight route</comment>
+    <value>Route state file is invalid</value>
+    <comment>** SAME AS ENGLISH ** Route as in flight route</comment>
   </data>
   <data name="SatcomTrackingTimeoutLessThanDisplayTimeout" xml:space="preserve">
     <value>The JAERO tracking timeout cannot be less than the display timeout</value>
@@ -2267,28 +2698,32 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Save" xml:space="preserve">
-    <value>Sauvegarder</value>
+    <value>Save</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SavingPolarPlots" xml:space="preserve">
-    <value>Sauvegarder le diagramme de couverture récepteur</value>
+    <value>Saving receiver range plots</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SBS3ModeSFeed" xml:space="preserve">
-    <value>SBS-3 Mode-S</value>
+    <value>SBS-3 Raw Feed</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SearchPictureSubFolders" xml:space="preserve">
-    <value>Sous répertoire d'images</value>
+    <value>Search sub-folders for pictures</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Seconds" xml:space="preserve">
-    <value>Secondes</value>
-    <comment>As in hours, minutes, seconds</comment>
+    <value>seconds</value>
+    <comment>** SAME AS ENGLISH ** As in hours, minutes, seconds</comment>
   </data>
   <data name="SelectAnAircraftToRide" xml:space="preserve">
-    <value>Sélectionnez un avion pour lvue du cockpit</value>
-    <comment>Validation message, refers to riding in cockpit of an aircraft in Flight Simulator X</comment>
+    <value>Select an aircraft to ride first</value>
+    <comment>** SAME AS ENGLISH ** Validation message, refers to riding in cockpit of an aircraft in Flight Simulator X</comment>
   </data>
   <data name="SelectBaseStationDatabaseFile" xml:space="preserve">
-    <value>Sélectionnez le fichier base de données BaseStation</value>
-    <comment>BaseStation is the name of a program and may not need translating</comment>
+    <value>Select BaseStation Database File</value>
+    <comment>** SAME AS ENGLISH ** BaseStation is the name of a program and may not need translating</comment>
   </data>
   <data name="SendEvery" xml:space="preserve">
     <value>Send every</value>
@@ -2299,77 +2734,88 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>** SAME AS ENGLISH ** As in a serial number, not a serial port</comment>
   </data>
   <data name="SerialBaudRate" xml:space="preserve">
-    <value>Débit en bauds</value>
-    <comment>As in the baud rate of a serial port</comment>
+    <value>Baud rate</value>
+    <comment>** SAME AS ENGLISH ** As in the baud rate of a serial port</comment>
   </data>
   <data name="SerialBaudRateInvalidValue" xml:space="preserve">
-    <value>Veuillez entrer un débit en bauds valide (par exemple 115200 ou 921600)</value>
+    <value>Please enter a valid baud rate (such as 115200 or 921600)</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SerialComPort" xml:space="preserve">
     <value>COM port</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SerialComPortMissing" xml:space="preserve">
-    <value>Entrez le port COM auquel le récepteur est connecté</value>
+    <value>Please enter the COM port that the receiver is connected to</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SerialComPortUnknown" xml:space="preserve">
-    <value>Ce port COM n'existe pas</value>
+    <value>The COM port does not exist</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SerialDataBits" xml:space="preserve">
     <value>Data bits</value>
     <comment>** SAME AS ENGLISH ** As in the bits per byte when talking over a serial port</comment>
   </data>
   <data name="SerialDataBitsOutOfBounds" xml:space="preserve">
-    <value>Les bits de données doivent être comprise entre 5 et 8</value>
+    <value>The data bits must be between 5 and 8</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SerialHandshake" xml:space="preserve">
     <value>Handshake</value>
     <comment>** SAME AS ENGLISH ** As in the handshaking protocol to use when talking over a serial port. Also known as flow control.</comment>
   </data>
   <data name="SerialHandshakeNone" xml:space="preserve">
-    <value>Sans</value>
+    <value>None</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SerialHandshakeRts" xml:space="preserve">
-    <value>Matériel</value>
+    <value>Hardware</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SerialHandshakeRtsXOnXOff" xml:space="preserve">
-    <value>Matériel et XOn / XOff</value>
+    <value>Hardware and XOn / XOff</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SerialHandshakeXOnXOff" xml:space="preserve">
     <value>XOn / XOff</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SerialParity" xml:space="preserve">
-    <value>Parité</value>
-    <comment>As in the parity check to apply when talking over a serial port.</comment>
+    <value>Parity</value>
+    <comment>** SAME AS ENGLISH ** As in the parity check to apply when talking over a serial port.</comment>
   </data>
   <data name="SerialParityEven" xml:space="preserve">
-    <value>Paire</value>
+    <value>Even</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SerialParityMark" xml:space="preserve">
     <value>Mark</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SerialParityNone" xml:space="preserve">
-    <value>Sans</value>
+    <value>None</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SerialParityOdd" xml:space="preserve">
-    <value>Impaire</value>
+    <value>Odd</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SerialParitySpace" xml:space="preserve">
-    <value>Espace</value>
+    <value>Space</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SerialSettings" xml:space="preserve">
-    <value>Série</value>
-    <comment>As in the settings for serial communications</comment>
+    <value>Serial</value>
+    <comment>** SAME AS ENGLISH ** As in the settings for serial communications</comment>
   </data>
   <data name="SerialShutdownText" xml:space="preserve">
-    <value>Commande d'arrêt</value>
-    <comment>Text sent to a COM device when disconnecting.</comment>
+    <value>Shutdown command</value>
+    <comment>** SAME AS ENGLISH ** Text sent to a COM device when disconnecting.</comment>
   </data>
   <data name="SerialStartupText" xml:space="preserve">
-    <value>Commande de démarrage</value>
-    <comment>Text sent to a COM device when first connected.</comment>
+    <value>Startup command</value>
+    <comment>** SAME AS ENGLISH ** Text sent to a COM device when first connected.</comment>
   </data>
   <data name="SerialStopBits" xml:space="preserve">
     <value>Stop bits</value>
@@ -2396,275 +2842,335 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <comment>** SAME AS ENGLISH ** The number of times someone has connected to the server</comment>
   </data>
   <data name="SettingsPage" xml:space="preserve">
-    <value>Config. Page </value>
+    <value>Settings Page</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SettingsSite" xml:space="preserve">
-    <value>Configuration site</value>
+    <value>Settings site</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ShortFrame" xml:space="preserve">
-    <value>Messages courts</value>
+    <value>Short frame</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ShortFrameUnusable" xml:space="preserve">
-    <value>Message court inutilisable</value>
+    <value>Unusable</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ShortTrailDuration" xml:space="preserve">
-    <value>Durée traces courtes</value>
+    <value>Short trail duration</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Show" xml:space="preserve">
-    <value>Voir</value>
+    <value>Show</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ShowInternetAddress" xml:space="preserve">
-    <value>Montre l'adresse Internet</value>
+    <value>Show Internet address</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ShowLocalAddress" xml:space="preserve">
-    <value>Afficher l'adresse locale</value>
-    <comment>As in show the address of the server on 127.0.0.1</comment>
+    <value>Show local address</value>
+    <comment>** SAME AS ENGLISH ** As in show the address of the server on 127.0.0.1</comment>
   </data>
   <data name="ShowNetworkAddress" xml:space="preserve">
-    <value>Afficher l'adresse réseau</value>
-    <comment>As in show the address of the server on the network</comment>
+    <value>Show network address</value>
+    <comment>** SAME AS ENGLISH ** As in show the address of the server on the network</comment>
   </data>
   <data name="ShuttingDown" xml:space="preserve">
-    <value>Arrêter Virtual Radar Server</value>
+    <value>Shutting Down Virtual Radar Server</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ShuttingDownAirPressureManager" xml:space="preserve">
     <value>Shutting down air pressure manager</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ShuttingDownBaseStationAircraftList" xml:space="preserve">
-    <value>Fermeture de la liste d'avions</value>
+    <value>Shutting down aircraft list</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ShuttingDownBaseStationDatabase" xml:space="preserve">
-    <value>Fermeture de la base de données BaseStation</value>
-    <comment>BaseStation is the name of an application</comment>
+    <value>Closing BaseStation database</value>
+    <comment>** SAME AS ENGLISH ** BaseStation is the name of an application</comment>
   </data>
   <data name="ShuttingDownBaseStationListener" xml:space="preserve">
-    <value>Fermeture de la connexion à BaseStation</value>
+    <value>Closing connection to data feed</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ShuttingDownConnectionLogger" xml:space="preserve">
-    <value>Fermeture de la connexion logger</value>
+    <value>Shutting down connection logger</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ShuttingDownLogDatabase" xml:space="preserve">
-    <value>Fermeture log base de donnée</value>
+    <value>Closing log database</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ShuttingDownOnlineLookupManager" xml:space="preserve">
     <value>Shutting down online lookup manager</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ShuttingDownPlugin" xml:space="preserve">
-    <value>Fermeture du Plugin</value>
+    <value>Shutting down {0} plugin</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ShuttingDownRebroadcastServer" xml:space="preserve">
-    <value>Arrêt du serveur de rediffudion</value>
+    <value>Shutting down rebroadcast servers</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ShuttingDownUPnpManager" xml:space="preserve">
-    <value>Fermeture UPnP</value>
+    <value>Shutting down UPnP</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ShuttingDownUserManager" xml:space="preserve">
-    <value>Fermer le gestionnaire utilisateurs</value>
+    <value>Shutting down user manager</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ShuttingDownWebServer" xml:space="preserve">
-    <value>Fermeture de la connexion serveur web</value>
+    <value>Shutting down web server</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SilhouettesFolder" xml:space="preserve">
-    <value>Dossier silhouettes </value>
-    <comment>The folder containing images of aircraft silhouettes</comment>
+    <value>Silhouettes folder</value>
+    <comment>** SAME AS ENGLISH ** The folder containing images of aircraft silhouettes</comment>
   </data>
   <data name="SlowSurfaceGlobal" xml:space="preserve">
     <value>Slow surface global</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SlowSurfaceGlobalPositionLimitOutOfBounds" xml:space="preserve">
-    <value>La limite de position global de surface lente doit être compris entre 1 et 150</value>
+    <value>The slow surface global position limit must be between 1 and 150</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SomeRouteFilesMissing" xml:space="preserve">
-    <value>Certains fichiers routes sont manquants </value>
-    <comment>As in flight routes</comment>
+    <value>Some route files are missing</value>
+    <comment>** SAME AS ENGLISH ** As in flight routes</comment>
   </data>
   <data name="SomethingDoesNotExist" xml:space="preserve">
-    <value>«{0}» 'n'existe pas</value>
-    <comment>Where {0} is a filename or a folder name</comment>
+    <value>"{0}" does not exist</value>
+    <comment>** SAME AS ENGLISH ** Where {0} is a filename or a folder name</comment>
   </data>
   <data name="Source" xml:space="preserve">
     <value>Source</value>
     <comment>** SAME AS ENGLISH ** As in whether a connection was from the local network or the Internet</comment>
   </data>
   <data name="SpeedChecksExceeded" xml:space="preserve">
-    <value>Dépassement de contrôle de vitesse</value>
+    <value>Speed checks exceeded</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenConnectingToBaseStation" xml:space="preserve">
-    <value>Connexion à BaseStation</value>
+    <value>Connecting to data feed</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenInitialisingAircraftList" xml:space="preserve">
-    <value>Initialisation liste d'avions</value>
+    <value>Initialising aircraft list</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenInitialisingAirPressureManager" xml:space="preserve">
     <value>Initialising air pressure manager</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenInitialisingBaseStationListener" xml:space="preserve">
-    <value>Initialisation BaseStation</value>
+    <value>Initialising data feed listener</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenInitialisingConnectionLogger" xml:space="preserve">
-    <value>Initialisation logger de connexion</value>
+    <value>Initialising connection logger</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenInitialisingLog" xml:space="preserve">
-    <value>Initialisation log</value>
+    <value>Initialising the log</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenInitialisingUPnPManager" xml:space="preserve">
-    <value>Initialisation UPnP manager</value>
+    <value>Initialising UPnP manager</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenInitialisingUserManager" xml:space="preserve">
-    <value>Initialisation gestionnaire utilisateur </value>
+    <value>Initialising user manager</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenLoadingConfiguration" xml:space="preserve">
-    <value>Charge la configuration</value>
+    <value>Loading the configuration</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenLoadingStandingData" xml:space="preserve">
-    <value>Charge les données</value>
+    <value>Loading standing data</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenOpeningBaseStationDatabase" xml:space="preserve">
-    <value>Ouverture de la base de donnée BaseStation</value>
+    <value>Opening the BaseStation database</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenParsingCommandLineParameters" xml:space="preserve">
-    <value>Analyseles paramètres de la ligne de commande</value>
+    <value>Parsing command-line parameters</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenStartingConnectionLogger" xml:space="preserve">
-    <value>Démarrage connexion logger</value>
+    <value>Starting connection logger</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenStartingDataUpdate" xml:space="preserve">
-    <value>Démarrage du contrôle pour mise à jour des données</value>
+    <value>Starting background check for data update</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenStartingOnlineLookupManager" xml:space="preserve">
     <value>Initialising online lookup manager</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenStartingPictureFolderCache" xml:space="preserve">
-    <value>Démarrage du cache de dossier images</value>
+    <value>Starting picture folder cache</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenStartingPlugins" xml:space="preserve">
-    <value>Démarrage plugins</value>
+    <value>Starting plugins</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenStartingRebroadcastServers" xml:space="preserve">
-    <value>Démarrage serveurs de rediffusion</value>
+    <value>Starting rebroadcast servers</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenStartingUPnP" xml:space="preserve">
-    <value>Connexion du serveur à Internet via UPnP</value>
+    <value>Connecting server to Internet via UPnP</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SplashScreenStartingWebServer" xml:space="preserve">
-    <value>Démarrage du serveur web</value>
+    <value>Starting web server</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Stale" xml:space="preserve">
-    <value>Obsolète</value>
+    <value>Stale</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="StaleSeconds" xml:space="preserve">
-    <value>Age message max.</value>
-    <comment>Any messages older than this many seconds are discarded instead of being sent</comment>
+    <value>Max. message age</value>
+    <comment>** SAME AS ENGLISH ** Any messages older than this many seconds are discarded instead of being sent</comment>
   </data>
   <data name="StaleSecondsOutOfBounds" xml:space="preserve">
-    <value>L'age d'un message doit être au minimum d' 1 seconde</value>
+    <value>The maximum message age must be at least 1 second</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Start" xml:space="preserve">
-    <value>Démarrer</value>
+    <value>Start</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="StatisticsTitle" xml:space="preserve">
     <value>Statistics</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Status" xml:space="preserve">
-    <value>Statut</value>
-    <comment>The current state of something</comment>
+    <value>Status</value>
+    <comment>** SAME AS ENGLISH ** The current state of something</comment>
   </data>
   <data name="StatusCode" xml:space="preserve">
-    <value>Code Statut</value>
+    <value>Status Code</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="StopRidingAircraft" xml:space="preserve">
-    <value>Arrêt de la vue du cockpit</value>
-    <comment>Stop riding in the cockpit of an aircraft</comment>
+    <value>Stop Ride</value>
+    <comment>** SAME AS ENGLISH ** Stop riding in the cockpit of an aircraft</comment>
   </data>
   <data name="SuggestUseDifferentPortFull" xml:space="preserve">
-    <value>Le serveur web ne peut pas démarrer car un autre programme est à l'écoute sur le même port, exécutez le programme d'installation de Virtual Radar Server à nouveau et choisir un autre port.
+    <value>If the web server cannot start because another program is listening to the port then run the Virtual Radar Server installer again and choose a different port.
 
-Par exemple, lorsque le programme d'installation demande un numéro de port essayez 8080 au lieu de 80.</value>
-    <comment>** MULTILINE, PLEASE CLICK IN FIELD TO SEE ALL **
+For example when the installer asks for a port number try 8080 instead of 80.</value>
+    <comment>** SAME AS ENGLISH ** ** MULTILINE, PLEASE CLICK IN FIELD TO SEE ALL **
 Suggestion made if the exception could indicate that the port number is in use.</comment>
   </data>
   <data name="SuggestUseDifferentPortTitle" xml:space="preserve">
-    <value>Solution Possible</value>
-    <comment>Title for an error message box</comment>
+    <value>Possible Solution</value>
+    <comment>** SAME AS ENGLISH ** Title for an error message box</comment>
   </data>
   <data name="SuppressICAO0" xml:space="preserve">
-    <value>Supprimer ICAO 000000</value>
+    <value>Suppress ICAO 000000</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SuppressReceiverRangeCheck" xml:space="preserve">
-    <value>Affiche l'avion même si hors de portée du récepteur</value>
+    <value>Show aircraft outside receiver range</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="SuppressTisbMessages" xml:space="preserve">
     <value>Suppress TIS-B messages</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="TakeOffInternet" xml:space="preserve">
-    <value>Quitter Internet</value>
+    <value>Take off Internet</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="TakeWebServerOffline" xml:space="preserve">
-    <value>Mettre Hors Ligne</value>
+    <value>Take Offline</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="TakeWebServerOnline" xml:space="preserve">
-    <value>Mettre en Ligne</value>
+    <value>Take Online</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="TestAudioSettings" xml:space="preserve">
     <value>Test Audio</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="TestConnection" xml:space="preserve">
-    <value>Test de Connexion</value>
-    <comment>Testing the connection to a computer</comment>
+    <value>Test Connection</value>
+    <comment>** SAME AS ENGLISH ** Testing the connection to a computer</comment>
   </data>
   <data name="TextToSpeechVoice" xml:space="preserve">
-    <value>Voix de synthèse vocale</value>
+    <value>Text-to-speech voice</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="TheseSettingsOnlyAffectInternetBrowsers" xml:space="preserve">
-    <value>Ces paramètres n'affectent que les navigateurs qui se connectent à partir d'Internet.</value>
+    <value>These settings only affect browsers that connect from the Internet.</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Throughput" xml:space="preserve">
-    <value>Débit</value>
+    <value>Throughput</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Time" xml:space="preserve">
-    <value>Temps</value>
+    <value>Time</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Title64Bit" xml:space="preserve">
     <value>x64</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="To" xml:space="preserve">
-    <value>Pour</value>
+    <value>To</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ToAddress" xml:space="preserve">
-    <value>A adresse</value>
+    <value>To address</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="TotalBadMessages" xml:space="preserve">
-    <value>Messages erronés</value>
+    <value>Bad messages</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="TotalBadMessagesTitle" xml:space="preserve">
-    <value>Total de messages erronés</value>
+    <value>Bad Messages</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="TotalMessages" xml:space="preserve">
-    <value>Nombre total de messages</value>
+    <value>Total messages</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="TotalMessagesTitle" xml:space="preserve">
-    <value>Total de messages</value>
+    <value>Total Messages</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="TrackingAircraft" xml:space="preserve">
-    <value>Avions suivis</value>
+    <value>Aircraft tracked</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="TrackingTimeoutLessThanDisplayTimeout" xml:space="preserve">
-    <value>La lilmite de temps de suivi ne peut être inférieur au à la limite de temps d'affichage</value>
+    <value>The tracking timeout cannot be less than the display timeout</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="TrackingTimeoutOutOfBounds" xml:space="preserve">
-    <value>La lilmite de temps de suivi ne peut être inférieur à 3600</value>
+    <value>The tracking timeout cannot be more than 18000</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="TransmissionType" xml:space="preserve">
-    <value>Type de transmission</value>
+    <value>Transmission Type</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="TransmitFeed" xml:space="preserve">
     <value>Push feed</value>
@@ -2675,117 +3181,132 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <comment>** SAME AS ENGLISH ** As in aircraft type</comment>
   </data>
   <data name="UNC" xml:space="preserve">
-    <value>Adresse</value>
-    <comment>As in a UNC kind of address, but not using technical acronyms if possible</comment>
+    <value>Address</value>
+    <comment>** SAME AS ENGLISH ** As in a UNC kind of address, but not using technical acronyms if possible</comment>
   </data>
   <data name="Unknown" xml:space="preserve">
-    <value>Inconnu</value>
+    <value>Unknown</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UnrecognisedCommandLineParameterFull" xml:space="preserve">
-    <value>Le paramètre de ligne de commande {0} n'est pas reconnu</value>
-    <comment>Where {0} is a string</comment>
+    <value>The command-line parameter {0} is unrecognised</value>
+    <comment>** SAME AS ENGLISH ** Where {0} is a string</comment>
   </data>
   <data name="UnrecognisedCommandLineParameterTitle" xml:space="preserve">
-    <value>Les paramètre de la ligne de Commande ne sont pas reconnus</value>
-    <comment>Title for an error message box</comment>
+    <value>Unrecognised Command-Line Parameter</value>
+    <comment>** SAME AS ENGLISH ** Title for an error message box</comment>
   </data>
   <data name="UnrestrictedAccess" xml:space="preserve">
-    <value>Sans restriction</value>
+    <value>Unrestricted</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UpdateFromBaseStationDatabase" xml:space="preserve">
-    <value>Mise à jour à partir de la base de données Basestation</value>
+    <value>Update from BaseStation database</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UPnpActive" xml:space="preserve">
-    <value>Le serveur web est sur Internet</value>
+    <value>The web server is on the Internet</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UPnpActiveWhileDisabled" xml:space="preserve">
-    <value>Le support UPnP est désactivé, mais le serveur est sur Internet</value>
-    <comment>UPnP may not need translating</comment>
+    <value>UPnP support has been disabled but the server is on the Internet</value>
+    <comment>** SAME AS ENGLISH ** UPnP may not need translating</comment>
   </data>
   <data name="UPnpDisabled" xml:space="preserve">
-    <value>Le support UPnP est désactivé</value>
-    <comment>UPnP probably does not need translating</comment>
+    <value>UPnP support has not been enabled</value>
+    <comment>** SAME AS ENGLISH ** UPnP probably does not need translating</comment>
   </data>
   <data name="UPnpInactive" xml:space="preserve">
-    <value>Le serveur web n'est pas sur Internet</value>
+    <value>The web server is not on the Internet</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UPnPNotPresent" xml:space="preserve">
-    <value>Il n'y a pas de router supportant UPnP sur le réseau</value>
-    <comment>UPnP need not be translated</comment>
+    <value>Cannot find a router on the network that supports UPnP</value>
+    <comment>** SAME AS ENGLISH ** UPnP need not be translated</comment>
   </data>
   <data name="UPnpNotSupported" xml:space="preserve">
-    <value>Cette version de Windows ne supporte pas UPnP</value>
-    <comment>UPnP does not need to be translated</comment>
+    <value>This version of Windows does not support UPnP</value>
+    <comment>** SAME AS ENGLISH ** UPnP does not need to be translated</comment>
   </data>
   <data name="UPnpPort" xml:space="preserve">
-    <value>Port Internet</value>
-    <comment>As in a TCP/IP port number, not the sailing kind</comment>
+    <value>UPnP port number</value>
+    <comment>** SAME AS ENGLISH ** As in a TCP/IP port number, not the sailing kind</comment>
   </data>
   <data name="UPnpPortOutOfBounds" xml:space="preserve">
-    <value>Le port UPnP doit être compris entre 1 et 65535</value>
-    <comment>UPnP may not need translating</comment>
+    <value>The UPnP port must be between 1 and 65535</value>
+    <comment>** SAME AS ENGLISH ** UPnP may not need translating</comment>
   </data>
   <data name="USB" xml:space="preserve">
     <value>USB</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="USBOverCOM" xml:space="preserve">
-    <value>Série</value>
-    <comment>As in a serial port, serial communications etc.</comment>
+    <value>Serial</value>
+    <comment>** SAME AS ENGLISH ** As in a serial port, serial communications etc.</comment>
   </data>
   <data name="UseDefaultPort" xml:space="preserve">
-    <value>Utiliser le port par dédaut</value>
+    <value>Use default port</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UseFreezeMethod" xml:space="preserve">
-    <value>Utilisez la méthode «freeze» </value>
-    <comment>"Freeze" may not need translating? It is a mode in Flight Simulator X that allows aircraft to be positioned anywhere the user likes.</comment>
+    <value>Use "freeze" method</value>
+    <comment>** SAME AS ENGLISH ** "Freeze" may not need translating? It is a mode in Flight Simulator X that allows aircraft to be positioned anywhere the user likes.</comment>
   </data>
   <data name="UseGoogleMapsKeyWithLocalRequests" xml:space="preserve">
     <value>Use Google Maps API key with local requests</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UseIcaoSpecificationSettings" xml:space="preserve">
-    <value>Utiliser les paramètres ICAO</value>
+    <value>Use ICAO specification settings</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UseKeepAlive" xml:space="preserve">
-    <value>Emettre les paquets mémorisés</value>
+    <value>Send keep-alive packets</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UseLocalDecodeForInitialPosition" xml:space="preserve">
-    <value>Utiliser le décodage local pour fixer la position initiale</value>
+    <value>Use local decoding for initial position fix</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UseMarkerLabels" xml:space="preserve">
     <value>Use marker labels</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="User" xml:space="preserve">
-    <value>Utilisateur.</value>
+    <value>User</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UserAlreadyExists" xml:space="preserve">
     <value>User Already Exists</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UseRecommendedSettings" xml:space="preserve">
-    <value>Utiliser les paramètres recommandés</value>
+    <value>Use recommended settings</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UserManager" xml:space="preserve">
-    <value>Gestionnaire utilisateur.</value>
+    <value>User manager</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UserManagerName" xml:space="preserve">
     <value>Virtual Radar Server</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UserMustAuthenticate" xml:space="preserve">
-    <value>L'utilisateur doit s'authentifier</value>
+    <value>User must authenticate</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UserNameMissing" xml:space="preserve">
-    <value>Nom d'utilisateur manquant</value>
+    <value>User Name Missing</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Users" xml:space="preserve">
-    <value>Utilisateurs</value>
+    <value>Users</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="UseSlewMethod" xml:space="preserve">
-    <value>Utilisez la méthode «slew» méthode</value>
-    <comment>"Slew" may not need translating? It is a mode in Flight Simulator X that allows aircraft to be positioned anywhere the user likes.</comment>
+    <value>Use "slew" method</value>
+    <comment>** SAME AS ENGLISH ** "Slew" may not need translating? It is a mode in Flight Simulator X that allows aircraft to be positioned anywhere the user likes.</comment>
   </data>
   <data name="UseSvgGraphics" xml:space="preserve">
     <value>Use SVG graphics</value>
@@ -2796,40 +3317,48 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <comment>** SAME AS ENGLISH ** e.g. Version 1.2.3.4</comment>
   </data>
   <data name="VersionCheckResult" xml:space="preserve">
-    <value>Résultat de la Vérification de la Version</value>
-    <comment>Title for a dialog box displaying the result of a check for a later version</comment>
+    <value>Version Check Result</value>
+    <comment>** SAME AS ENGLISH ** Title for a dialog box displaying the result of a check for a later version</comment>
   </data>
   <data name="VirtualRadarServer" xml:space="preserve">
     <value>Virtual Radar Server</value>
     <comment>** SAME AS ENGLISH ** The name of the application</comment>
   </data>
   <data name="Waiting" xml:space="preserve">
-    <value>Attends...</value>
+    <value>Waiting</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Warning" xml:space="preserve">
-    <value>Attention</value>
+    <value>Warning</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WebServer" xml:space="preserve">
-    <value>Serveur Web</value>
+    <value>Web Server</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WebServerOffline" xml:space="preserve">
-    <value>Le serveur web est déconnecté</value>
+    <value>The web server is offline</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WebServerOnline" xml:space="preserve">
-    <value>Le serveur web est en ligne</value>
+    <value>The web server is online</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WebServerStatus" xml:space="preserve">
-    <value>Etat du serveur web</value>
+    <value>Web server status</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WebSiteAdministrator" xml:space="preserve">
     <value>Web Site Admin</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WebSiteReceiverId" xml:space="preserve">
-    <value>Récepteur site Web</value>
+    <value>Web site receiver</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WebSiteReceiverRequired" xml:space="preserve">
-    <value>SVP spécifiez le récepteur à montrer initialement sur le site Web</value>
+    <value>Please specify the initial receiver to show on the web site</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WebSiteUrl" xml:space="preserve">
     <value>Web site URL</value>
@@ -2848,6 +3377,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="Yes" xml:space="preserve">
-    <value>Oui</value>
+    <value>Yes</value>
+    <comment>** SAME AS ENGLISH **</comment>
   </data>
 </root>

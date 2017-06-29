@@ -151,6 +151,7 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>FeedFilterStrings.ru-RU.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="FeedFilterStrings.tr-TR.resx" />
     <EmbeddedResource Include="FeedFilterStrings.zh-CN.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>FeedFilterStrings.zh-CN.Designer.cs</LastGenOutput>

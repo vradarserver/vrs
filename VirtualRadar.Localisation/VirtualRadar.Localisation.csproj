@@ -82,6 +82,7 @@
       <LastGenOutput>Strings.ru-RU.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Strings.tr-TR.resx" />
     <EmbeddedResource Include="Strings.zh-CN.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

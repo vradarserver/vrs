@@ -355,5 +355,7 @@ var VRS;
     VRS.globalisation.addCultureInfo('zh', { language: 'zh', englishName: 'Chinese', nativeName: '中文', topLevel: true });
     VRS.globalisation.addCultureInfo('zh-CN', { language: 'zh', englishName: 'Chinese (China)', nativeName: '中文 (中国)' });
     VRS.globalisation.addCultureInfo('pt-BR', { language: 'pt-BR', groupLanguage: 'pt', englishName: 'Portuguese (Brazil)', nativeName: 'Português (Brasil)', countryFlag: 'br', topLevel: true });
+    VRS.globalisation.addCultureInfo('tr', { language: 'tr', groupLanguage: 'tr', englishName: 'Turkish', nativeName: 'Türkçe', countryFlag: 'tr', topLevel: true });
+    VRS.globalisation.addCultureInfo('tr-TR', { language: 'tr', groupLanguage: 'tr', englishName: 'Turkish (Turkey)', nativeName: 'Türkçe (Türkiye)', countryFlag: 'tr' });
 })(VRS || (VRS = {}));
 //# sourceMappingURL=localise.js.map

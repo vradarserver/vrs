@@ -671,13 +671,6 @@ Show this message.</value>
   <data name="Disconnecting" xml:space="preserve">
     <value>正在断开连接</value>
   </data>
-  <data name="DotNetVersionTooLowFull" xml:space="preserve">
-    <value>程序需要安装完整的 .NET 3.5 Framework. 想转到微软网站 .NET 3.5下载页面吗 ?</value>
-  </data>
-  <data name="DotNetVersionTooLowTitle" xml:space="preserve">
-    <value>.NET Framework 版本错误</value>
-    <comment>Title for an error message box</comment>
-  </data>
   <data name="Download" xml:space="preserve">
     <value>下载</value>
   </data>
@@ -2797,13 +2790,6 @@ Suggestion made if the exception could indicate that the port number is in use.<
   <data name="WebSiteUser" xml:space="preserve">
     <value>Web Site User</value>
     <comment>** SAME AS ENGLISH **</comment>
-  </data>
-  <data name="WindowsVersionTooLowFull" xml:space="preserve">
-    <value>本程序在您使用的操作系统下无法工作. 如果您正在运行 Windows XP 请安装 Service Pack 2 或者更高版本.</value>
-  </data>
-  <data name="WindowsVersionTooLowTitle" xml:space="preserve">
-    <value>HttpListener 不被操作系统支持</value>
-    <comment>Title for an error message box</comment>
   </data>
   <data name="Wizard" xml:space="preserve">
     <value>向导</value>
