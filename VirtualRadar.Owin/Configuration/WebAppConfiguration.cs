@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using InterfaceFactory;
 using Owin;
 using VirtualRadar.Interface.Owin;
 
@@ -33,7 +34,8 @@ namespace VirtualRadar.Owin.Configuration
             get {
                 if(_Singleton == null) {
                     _Singleton = new WebAppConfiguration();
-                    StandardPipeline.Register(_Singleton);
+                    var standardPipeline = Factory.Singleton.Resolve<IStandardPipeline>();
+                    standardPipeline.Register(_Singleton);
                 }
                 return _Singleton;
             }

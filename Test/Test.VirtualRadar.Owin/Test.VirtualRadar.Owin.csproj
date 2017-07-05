@@ -88,6 +88,7 @@
     <Compile Include="Configuration\FileSystemServerConfigurationTests.cs" />
     <Compile Include="Configuration\ImageServerConfigurationTests.cs" />
     <Compile Include="Configuration\RedirectionConfigurationTests.cs" />
+    <Compile Include="FakePiplineTests.cs" />
     <Compile Include="Middleware\AccessFilterTests.cs" />
     <Compile Include="Middleware\BasicAuthenticationFilterTests.cs" />
     <Compile Include="Middleware\FileSystemServerTests.cs" />
@@ -98,6 +99,7 @@
     <Compile Include="Configuration\WebAppConfigurationTests.cs" />
     <Compile Include="MockOwinPipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StandardPipelineTests.cs" />
     <Compile Include="TestImages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

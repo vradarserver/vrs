@@ -13,35 +13,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
+using VirtualRadar.Interface.WebSite;
 
-namespace VirtualRadar.Owin
+namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// Registers implementations of interfaces with a class factory.
+    /// Manages a fake OWIN middleware pipeline.
     /// </summary>
-    public static class Implementations
+    /// <remarks>
+    /// Fake pipelines can be used to call OWIN middleware as if they were being called for a live
+    /// HTTP request.
+    /// </remarks>
+    public interface IFakePipeline
     {
         /// <summary>
-        /// Registers implementations of interfaces.
+        /// Configures the pipeline using the standard web site middleware.
         /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
-        {
-            factory.Register<Interface.Owin.IAccessConfiguration, Configuration.AccessConfiguration>();
-            factory.Register<Interface.Owin.IAuthenticationConfiguration, Configuration.AuthenticationConfiguration>();
-            factory.Register<Interface.Owin.IFileSystemServerConfiguration, Configuration.FileSystemServerConfiguration>();
-            factory.Register<Interface.Owin.IImageServerConfiguration, Configuration.ImageServerConfiguration>();
-            factory.Register<Interface.Owin.IRedirectionConfiguration, Configuration.RedirectionConfiguration>();
-            factory.Register<Interface.Owin.IWebAppConfiguration, Configuration.WebAppConfiguration>();
+        void ConfigureStandardPipeline();
 
-            factory.Register<Interface.Owin.IAccessFilter, Middleware.AccessFilter>();
-            factory.Register<Interface.Owin.IBasicAuthenticationFilter, Middleware.BasicAuthenticationFilter>();
-            factory.Register<Interface.Owin.IFileSystemServer, Middleware.FileSystemServer>();
-            factory.Register<Interface.Owin.IImageServer, Middleware.ImageServer>();
-            factory.Register<Interface.Owin.IRedirectionFilter, Middleware.RedirectionFilter>();
+        /// <summary>
+        /// Configures the pipeline using the web app configuration passed across.
+        /// </summary>
+        /// <param name="webAppConfiguration"></param>
+        void ConfigureCustomPipeline(IWebAppConfiguration webAppConfiguration);
 
-            factory.Register<Interface.Owin.IStandardPipeline, StandardPipeline>();
-        }
+        /// <summary>
+        /// Sends an anonymous GET request from the local loopback:10000 to loopback:10001 through the pipeline.
+        /// </summary>
+        /// <param name="pathAndFile"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This should correspond closely to the old RequestSimpleContent call on IWebSite. The user agent is
+        /// set to FAKE REQUEST, the user host name is FAKE.HOST.NAME. No cookies are sent.
+        /// </remarks>
+        SimpleContent SendSimpleRequest(string pathAndFile);
     }
 }

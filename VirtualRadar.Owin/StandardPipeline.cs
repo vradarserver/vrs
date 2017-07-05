@@ -26,14 +26,22 @@ namespace VirtualRadar.Owin
     /// <summary>
     /// Registers the standard pipeline with an OWIN web app.
     /// </summary>
-    static class StandardPipeline
+    class StandardPipeline : IStandardPipeline
     {
+        private IWebAppConfiguration _WebAppConfiguration;
+
         /// <summary>
-        /// Registers all of the standard pipeline middleware.
+        /// See interface.
         /// </summary>
         /// <param name="webAppConfiguration"></param>
-        public static void Register(IWebAppConfiguration webAppConfiguration)
+        public void Register(IWebAppConfiguration webAppConfiguration)
         {
+            if(_WebAppConfiguration != null) {
+                throw new InvalidOperationException("You can only call IStandardPipeline.Register() once per object");
+            }
+
+            _WebAppConfiguration = webAppConfiguration;
+
             webAppConfiguration.AddCallback(UseAccessFilter,                StandardPipelinePriority.Access);
             webAppConfiguration.AddCallback(UseBasicAuthenticationFilter,   StandardPipelinePriority.Authentication);
             webAppConfiguration.AddCallback(UseRedirectionFilter,           StandardPipelinePriority.Redirection);
@@ -44,30 +52,30 @@ namespace VirtualRadar.Owin
             webAppConfiguration.AddCallback(UseFileSystemServer,            StandardPipelinePriority.FileSystemServer);
         }
 
-        private static void UseAccessFilter(IAppBuilder app)
+        private void UseAccessFilter(IAppBuilder app)
         {
             var filter = Factory.Singleton.Resolve<IAccessFilter>();
             var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
             app.Use(middleware);
         }
 
-        private static void UseBasicAuthenticationFilter(IAppBuilder app)
+        private void UseBasicAuthenticationFilter(IAppBuilder app)
         {
             var filter = Factory.Singleton.Resolve<IBasicAuthenticationFilter>();
             var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
             app.Use(middleware);
         }
 
-        private static void UseRedirectionFilter(IAppBuilder app)
+        private void UseRedirectionFilter(IAppBuilder app)
         {
             var filter = Factory.Singleton.Resolve<IRedirectionFilter>();
             var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
             app.Use(middleware);
         }
 
-        private static void ConfigureHttpConfiguration(IAppBuilder app)
+        private void ConfigureHttpConfiguration(IAppBuilder app)
         {
-            var configuration = Factory.Singleton.Resolve<IWebAppConfiguration>().Singleton.GetHttpConfiguration();
+            var configuration = _WebAppConfiguration.GetHttpConfiguration();
             configuration.MapHttpAttributeRoutes();
             configuration.Routes.MapHttpRoute(
                 name:           "DefaultApi",
@@ -76,13 +84,13 @@ namespace VirtualRadar.Owin
             );
         }
 
-        private static void UseWebApi(IAppBuilder app)
+        private void UseWebApi(IAppBuilder app)
         {
-            var configuration = Factory.Singleton.Resolve<IWebAppConfiguration>().Singleton.GetHttpConfiguration();
+            var configuration = _WebAppConfiguration.GetHttpConfiguration();
             app.UseWebApi(configuration);
         }
 
-        private static void UseFileSystemServer(IAppBuilder app)
+        private void UseFileSystemServer(IAppBuilder app)
         {
             var server = Factory.Singleton.Resolve<IFileSystemServer>();
             var middleware = new Func<AppFunc, AppFunc>(server.HandleRequest);

@@ -13,35 +13,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
 
-namespace VirtualRadar.Owin
+namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// Registers implementations of interfaces with a class factory.
+    /// Constructs the chain of middleware that HTTP requests will be passed through.
     /// </summary>
-    public static class Implementations
+    public interface IStandardPipeline
     {
         /// <summary>
-        /// Registers implementations of interfaces.
+        /// Adds all of the standard pipeline middleware to the web app configuration passed across.
         /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
-        {
-            factory.Register<Interface.Owin.IAccessConfiguration, Configuration.AccessConfiguration>();
-            factory.Register<Interface.Owin.IAuthenticationConfiguration, Configuration.AuthenticationConfiguration>();
-            factory.Register<Interface.Owin.IFileSystemServerConfiguration, Configuration.FileSystemServerConfiguration>();
-            factory.Register<Interface.Owin.IImageServerConfiguration, Configuration.ImageServerConfiguration>();
-            factory.Register<Interface.Owin.IRedirectionConfiguration, Configuration.RedirectionConfiguration>();
-            factory.Register<Interface.Owin.IWebAppConfiguration, Configuration.WebAppConfiguration>();
-
-            factory.Register<Interface.Owin.IAccessFilter, Middleware.AccessFilter>();
-            factory.Register<Interface.Owin.IBasicAuthenticationFilter, Middleware.BasicAuthenticationFilter>();
-            factory.Register<Interface.Owin.IFileSystemServer, Middleware.FileSystemServer>();
-            factory.Register<Interface.Owin.IImageServer, Middleware.ImageServer>();
-            factory.Register<Interface.Owin.IRedirectionFilter, Middleware.RedirectionFilter>();
-
-            factory.Register<Interface.Owin.IStandardPipeline, StandardPipeline>();
-        }
+        /// <param name="webAppConfiguration"></param>
+        void Register(IWebAppConfiguration webAppConfiguration);
     }
 }
