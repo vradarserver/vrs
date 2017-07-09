@@ -151,7 +151,7 @@
     <Compile Include="Owin\IAccessFilter.cs" />
     <Compile Include="Owin\IAuthenticationConfiguration.cs" />
     <Compile Include="Owin\IBasicAuthenticationFilter.cs" />
-    <Compile Include="Owin\IFakePipeline.cs" />
+    <Compile Include="Owin\ILoopbackHost.cs" />
     <Compile Include="Owin\IFileSystemServerConfiguration.cs" />
     <Compile Include="IFileSystemProvider.cs" />
     <Compile Include="Owin\IFileSystemServer.cs" />

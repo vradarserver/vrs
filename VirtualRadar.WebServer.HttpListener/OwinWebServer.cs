@@ -47,7 +47,7 @@ namespace VirtualRadar.WebServer.HttpListener
         private IDisposable _WebApp;
 
         /// <summary>
-        /// A reference to the singleton <see cref="IWebAppConfiguration"/>.
+        /// The <see cref="IWebAppConfiguration"/> that can be used to configure OWIN web apps.
         /// </summary>
         private IWebAppConfiguration _WebAppConfiguration;
 
@@ -293,9 +293,12 @@ namespace VirtualRadar.WebServer.HttpListener
 
         public OwinWebServer()
         {
-            _WebAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>().Singleton;
+            _WebAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
             _AuthenticationConfiguration = Factory.Singleton.Resolve<IAuthenticationConfiguration>().Singleton;
             _AccessConfiguration = Factory.Singleton.Resolve<IAccessConfiguration>().Singleton;
+
+            var standardPipeline = Factory.Singleton.Resolve<IStandardPipeline>();
+            standardPipeline.Register(_WebAppConfiguration);
         }
 
         public void AddAdministratorPath(string pathFromRoot)

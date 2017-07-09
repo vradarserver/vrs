@@ -41,6 +41,7 @@ namespace VirtualRadar.Owin
             factory.Register<Interface.Owin.IImageServer, Middleware.ImageServer>();
             factory.Register<Interface.Owin.IRedirectionFilter, Middleware.RedirectionFilter>();
 
+            factory.Register<Interface.Owin.ILoopbackHost, LoopbackHost>();
             factory.Register<Interface.Owin.IStandardPipeline, StandardPipeline>();
         }
     }

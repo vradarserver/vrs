@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Web.Http;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +21,6 @@ using VirtualRadar.Owin.Middleware;
 
 namespace VirtualRadar.Owin
 {
-    using System.Web.Http;
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
     /// <summary>

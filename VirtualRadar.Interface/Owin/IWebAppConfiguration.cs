@@ -19,9 +19,9 @@ using Owin;
 namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// The interface for a singleton that handles the configuration of the OWIN pipeline for the application.
+    /// The interface for an object that handles the configuration of the OWIN pipeline for the application.
     /// </summary>
-    public interface IWebAppConfiguration : ISingleton<IWebAppConfiguration>
+    public interface IWebAppConfiguration
     {
         /// <summary>
         /// Records a method that will be called with the <see cref="IAppBuilder"/> passed to <see cref="Configure"/>.

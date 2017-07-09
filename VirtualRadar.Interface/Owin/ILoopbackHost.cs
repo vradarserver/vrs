@@ -18,13 +18,13 @@ using VirtualRadar.Interface.WebSite;
 namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// Manages a fake OWIN middleware pipeline.
+    /// Manages a host that is not attached to a web server, it just calls OWIN middleware.
     /// </summary>
     /// <remarks>
-    /// Fake pipelines can be used to call OWIN middleware as if they were being called for a live
+    /// This class can be used to call OWIN middleware nodes as if they were being called for a live
     /// HTTP request.
     /// </remarks>
-    public interface IFakePipeline
+    public interface ILoopbackHost
     {
         /// <summary>
         /// Configures the pipeline using the standard web site middleware.

@@ -88,7 +88,7 @@
     <Compile Include="Configuration\FileSystemServerConfigurationTests.cs" />
     <Compile Include="Configuration\ImageServerConfigurationTests.cs" />
     <Compile Include="Configuration\RedirectionConfigurationTests.cs" />
-    <Compile Include="FakePiplineTests.cs" />
+    <Compile Include="LoopbackHostTests.cs" />
     <Compile Include="Middleware\AccessFilterTests.cs" />
     <Compile Include="Middleware\BasicAuthenticationFilterTests.cs" />
     <Compile Include="Middleware\FileSystemServerTests.cs" />

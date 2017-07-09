@@ -75,6 +75,7 @@
     <Compile Include="Configuration\RedirectionConfiguration.cs" />
     <Compile Include="Implementations.cs" />
     <Compile Include="Configuration\AuthenticationConfiguration.cs" />
+    <Compile Include="LoopbackHost.cs" />
     <Compile Include="Middleware\AccessFilter.cs" />
     <Compile Include="Middleware\BasicAuthenticationFilter.cs" />
     <Compile Include="Middleware\FileSystemServer.cs" />

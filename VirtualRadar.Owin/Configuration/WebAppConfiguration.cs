@@ -25,22 +25,6 @@ namespace VirtualRadar.Owin.Configuration
     /// </summary>
     class WebAppConfiguration : IWebAppConfiguration
     {
-        private static WebAppConfiguration _Singleton;
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IWebAppConfiguration Singleton
-        {
-            get {
-                if(_Singleton == null) {
-                    _Singleton = new WebAppConfiguration();
-                    var standardPipeline = Factory.Singleton.Resolve<IStandardPipeline>();
-                    standardPipeline.Register(_Singleton);
-                }
-                return _Singleton;
-            }
-        }
-
         /// <summary>
         /// The list of callbacks that will register middleware for us.
         /// </summary>

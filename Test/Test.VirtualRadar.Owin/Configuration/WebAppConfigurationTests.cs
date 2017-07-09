@@ -34,19 +34,6 @@ namespace Test.VirtualRadar.Owin.Configuration
         }
 
         [TestMethod]
-        public void WebAppConfiguration_Singleton_Is_Not_Null()
-        {
-            Assert.IsNotNull(_Configuration.Singleton);
-        }
-
-        [TestMethod]
-        public void WebAppConfiguration_Singleton_Exposes_A_Static_Object()
-        {
-            var other = Factory.Singleton.Resolve<IWebAppConfiguration>();
-            Assert.AreSame(_Configuration.Singleton, other.Singleton);
-        }
-
-        [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void WebAppConfiguration_AddCallback_Throws_If_Passed_Null()
         {
