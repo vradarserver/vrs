@@ -400,6 +400,7 @@ namespace VirtualRadar.Owin.Middleware
             var result = true;
 
             if(imageRequest.WebSiteFileName != null) {
+                stockImage = _ImageServerConfiguration.ImageFileManager.LoadFromStandardPipeline(imageRequest.WebSiteFileName, !imageRequest.NoCache);
             } else {
                 switch(imageRequest.ImageName) {
                     case "AIRPLANE":                stockImage = Images.Clone_Marker_Airplane(); break;

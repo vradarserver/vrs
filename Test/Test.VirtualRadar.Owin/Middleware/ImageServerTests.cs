@@ -930,5 +930,50 @@ namespace Test.VirtualRadar.Owin.Middleware
                 Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
             }
         }
+
+        [TestMethod]
+        public void ImageServer_Sends_Requests_For_Image_Files_Through_ImageFileManager()
+        {
+            _Environment.RequestPath = $"/Images/Web/File.bmp";
+            _ImageFileManager.Setup(r => r.LoadFromStandardPipeline("/images/File.bmp", true)).Returns((Image)TestImages.DLH_bmp.Clone());
+
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            _ImageFileManager.Verify(r => r.LoadFromStandardPipeline("/images/File.bmp", true), Times.Once());
+        }
+
+        [TestMethod]
+        public void ImageServer_Web_Request_SubFolders_Corrected_Extracted()
+        {
+            _Environment.RequestPath = $"/Images/Web-SubFolder\\ChildFolder/File.bmp";
+            _ImageFileManager.Setup(r => r.LoadFromStandardPipeline("/images/SubFolder/ChildFolder/File.bmp", true)).Returns((Image)TestImages.DLH_bmp.Clone());
+
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            _ImageFileManager.Verify(r => r.LoadFromStandardPipeline("/images/SubFolder/ChildFolder/File.bmp", true), Times.Once());
+        }
+
+        [TestMethod]
+        public void ImageServer_Can_Request_Uncached_Images()
+        {
+            _Environment.RequestPath = $"/Images/Web/no-cache/File.bmp";
+            _ImageFileManager.Setup(r => r.LoadFromStandardPipeline("/images/File.bmp", false)).Returns((Image)TestImages.DLH_bmp.Clone());
+
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            _ImageFileManager.Verify(r => r.LoadFromStandardPipeline("/images/File.bmp", false), Times.Once());
+        }
+
+        [TestMethod]
+        public void ImageServer_Internet_Cannot_Request_Uncached_Images()
+        {
+            _Environment.Request.RemoteIpAddress = "1.2.3.4";
+            _Environment.RequestPath = $"/Images/Web/no-cache/File.bmp";
+            _ImageFileManager.Setup(r => r.LoadFromStandardPipeline("/images/File.bmp", true)).Returns((Image)TestImages.DLH_bmp.Clone());
+
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            _ImageFileManager.Verify(r => r.LoadFromStandardPipeline("/images/File.bmp", true), Times.Once());
+        }
     }
 }

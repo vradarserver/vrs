@@ -45,5 +45,14 @@ namespace VirtualRadar.Interface
         /// <param name="useImageCache"></param>
         /// <returns></returns>
         Image LoadFromWebSite(IWebSite webSite, string webPathAndFileName, bool useImageCache);
+
+        /// <summary>
+        /// Loads an image using the standard web site pipeline. If caching is allowed then a clone of the
+        /// cached image is always returned.
+        /// </summary>
+        /// <param name="webPathAndFileName"></param>
+        /// <param name="useImageCache"></param>
+        /// <returns></returns>
+        Image LoadFromStandardPipeline(string webPathAndFileName, bool useImageCache);
     }
 }
