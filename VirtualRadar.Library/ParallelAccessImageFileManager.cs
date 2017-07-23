@@ -69,13 +69,22 @@ namespace VirtualRadar.Library
         private ILoopbackHost _LoopbackHost;
 
         /// <summary>
-        /// Creates a new object.
+        /// True if the class has been initialised.
         /// </summary>
-        public ParallelAccessImageFileManager()
+        private bool _Initialised;
+
+        private void Initialise()
         {
-            _Clock = Factory.Singleton.Resolve<IClock>();
-            _LoopbackHost = Factory.Singleton.Resolve<ILoopbackHost>();
-            _LoopbackHost.ConfigureStandardPipeline();
+            if(!_Initialised) {
+                lock(_SyncLock) {
+                    if(!_Initialised) {
+                        _Initialised = true;
+                        _Clock = Factory.Singleton.Resolve<IClock>();
+                        _LoopbackHost = Factory.Singleton.Resolve<ILoopbackHost>();
+                        _LoopbackHost.ConfigureStandardPipeline();
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -85,6 +94,8 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         public Image LoadFromFile(string fileName)
         {
+            Initialise();
+
             Bitmap result = null;
             if(!String.IsNullOrEmpty(fileName)) result = (Bitmap)Bitmap.FromFile(fileName);
 
@@ -99,6 +110,7 @@ namespace VirtualRadar.Library
         public Size ImageFileDimensions(string fileName)
         {
             Size result = Size.Empty;
+            Initialise();
 
             var image = LoadFromFile(fileName);
             if(image != null) {
@@ -139,6 +151,7 @@ namespace VirtualRadar.Library
         {
             Image result = null;
 
+            Initialise();
             if(!useImageCache) {
                 result = buildImage();
             } else {

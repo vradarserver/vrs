@@ -50,6 +50,7 @@ namespace VirtualRadar.Owin
             webAppConfiguration.AddCallback(UseWebApi,                      StandardPipelinePriority.WebApi);
 
             webAppConfiguration.AddCallback(UseFileSystemServer,            StandardPipelinePriority.FileSystemServer);
+            webAppConfiguration.AddCallback(UseImageServer,                 StandardPipelinePriority.ImageServer);
         }
 
         private void UseAccessFilter(IAppBuilder app)
@@ -93,6 +94,13 @@ namespace VirtualRadar.Owin
         private void UseFileSystemServer(IAppBuilder app)
         {
             var server = Factory.Singleton.Resolve<IFileSystemServer>();
+            var middleware = new Func<AppFunc, AppFunc>(server.HandleRequest);
+            app.Use(middleware);
+        }
+
+        private void UseImageServer(IAppBuilder app)
+        {
+            var server = Factory.Singleton.Resolve<IImageServer>();
             var middleware = new Func<AppFunc, AppFunc>(server.HandleRequest);
             app.Use(middleware);
         }

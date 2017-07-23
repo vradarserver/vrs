@@ -115,11 +115,6 @@ namespace VirtualRadar.Owin.Configuration
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IDirectoryCache AircraftPictureCache { get; private set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
         public IImageFileManager ImageFileManager { get; private set; }
 
         /// <summary>
@@ -128,7 +123,6 @@ namespace VirtualRadar.Owin.Configuration
         public ImageServerConfiguration()
         {
             _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
-            AircraftPictureCache = Factory.Singleton.Resolve<IDirectoryCache>();
             ImageFileManager = Factory.Singleton.Resolve<IImageFileManager>();
         }
     }

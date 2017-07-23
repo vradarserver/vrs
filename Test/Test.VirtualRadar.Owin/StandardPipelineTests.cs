@@ -59,6 +59,7 @@ namespace Test.VirtualRadar.Owin
         private Mock<IBasicAuthenticationFilter> _MockBasicAuthenticationFilter;
         private Mock<IRedirectionFilter> _MockRedirectionFilter;
         private Mock<IFileSystemServer> _MockFileSystemServer;
+        private Mock<IImageServer> _MockImageServer;
         private MiddlewareDetail _LastMiddlewareBeforeWebApiInit;
 
         [TestInitialize]
@@ -72,6 +73,7 @@ namespace Test.VirtualRadar.Owin
             _MockRedirectionFilter =            CreateMockMiddleware<IRedirectionFilter>(nameof(IRedirectionFilter.FilterRequest));
             _LastMiddlewareBeforeWebApiInit =   _ExpectedMiddleware[_ExpectedMiddleware.Count - 1];
             _MockFileSystemServer =             CreateMockMiddleware<IFileSystemServer>(nameof(IFileSystemServer.HandleRequest));
+            _MockImageServer =                  CreateMockMiddleware<IImageServer>(nameof(IImageServer.HandleRequest));
 
             _StandardPipeline = Factory.Singleton.Resolve<IStandardPipeline>();
         }

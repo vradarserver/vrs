@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Http;
 using InterfaceFactory;
 using Microsoft.Owin.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -35,7 +36,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         protected Mock<ISharedConfiguration> _SharedConfiguration;
         protected Configuration _Configuration;
 
-        protected IWebAppConfigurationCallbackHandle _TestMiddlewareCallback;
+        protected IWebAppConfiguration _WebAppConfiguration;
         protected MockAccessFilter _AccessFilter;
         protected MockBasicAuthenticationFilter _BasicAuthenticationFilter;
         protected MockRedirectionFilter _RedirectionFilter;
@@ -57,13 +58,15 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _BasicAuthenticationFilter = MockBasicAuthenticationFilter.CreateAndRegister();
             _RedirectionFilter = MockRedirectionFilter.CreateAndRegister();
 
-            var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>().Singleton;
-            _TestMiddlewareCallback = webAppConfiguration.AddCallback(UseTestMiddleware, StandardPipelinePriority.Access - 1000000);
+            _WebAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
+            _WebAppConfiguration.AddCallback(UsetTestEnvironmentSetup,   StandardPipelinePriority.Access - 1);
+            _WebAppConfiguration.AddCallback(ConfigureHttpConfiguration, StandardPipelinePriority.WebApiConfiguration);
+            _WebAppConfiguration.AddCallback(UseWebApi,                  StandardPipelinePriority.WebApi);
 
             ExtraInitialise();
 
             _Server = TestServer.Create(app => {
-                webAppConfiguration.Configure(app);
+                _WebAppConfiguration.Configure(app);
             });
         }
 
@@ -75,11 +78,6 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestCleanup]
         public void TestCleanup()
         {
-            if(_TestMiddlewareCallback != null) {
-                Factory.Singleton.Resolve<IWebAppConfiguration>().Singleton.RemoveCallback(_TestMiddlewareCallback);
-                _TestMiddlewareCallback = null;
-            }
-
             if(_Server != null) {
                 _Server.Dispose();
                 _Server = null;
@@ -95,7 +93,24 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             ;
         }
 
-        void UseTestMiddleware(IAppBuilder app)
+        private void ConfigureHttpConfiguration(IAppBuilder app)
+        {
+            var configuration = _WebAppConfiguration.GetHttpConfiguration();
+            configuration.MapHttpAttributeRoutes();
+            configuration.Routes.MapHttpRoute(
+                name:           "DefaultApi",
+                routeTemplate:  "api/{controller}/{id}",
+                defaults:       new { id = RouteParameter.Optional }
+            );
+        }
+
+        private void UseWebApi(IAppBuilder app)
+        {
+            var configuration = _WebAppConfiguration.GetHttpConfiguration();
+            app.UseWebApi(configuration);
+        }
+
+        void UsetTestEnvironmentSetup(IAppBuilder app)
         {
             // The intention is for this to get called at the start of the pipeline
             Func<Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task>> middleware = 

@@ -231,11 +231,6 @@ namespace VirtualRadar.WebSite
         private CorsPreflightPage _CorsPreflightPage;
 
         /// <summary>
-        /// The page that will deal with requests for images.
-        /// </summary>
-        private ImagePage _ImagePage;
-
-        /// <summary>
         /// The page that handles requests for report rows.
         /// </summary>
         private ReportRowsJsonPage _ReportRowsJsonPage;
@@ -306,7 +301,6 @@ namespace VirtualRadar.WebSite
 
             _AircraftListJsonPage = new AircraftListJsonPage(this);
             _CorsPreflightPage = new CorsPreflightPage(this);
-            _ImagePage = new ImagePage(this);
             _ReportRowsJsonPage = new ReportRowsJsonPage(this);
         }
         #endregion
@@ -349,7 +343,6 @@ namespace VirtualRadar.WebSite
                 _Pages.Add(_CorsPreflightPage);
                 _Pages.Add(new TextPage(this));
                 _Pages.Add(_AircraftListJsonPage);
-                _Pages.Add(_ImagePage);
                 _Pages.Add(new AudioPage(this));
                 _Pages.Add(_ReportRowsJsonPage);
 

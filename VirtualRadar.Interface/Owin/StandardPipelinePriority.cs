@@ -52,5 +52,10 @@ namespace VirtualRadar.Interface.Owin
         /// The normal priority for file system requests.
         /// </summary>
         public static readonly int FileSystemServer = WebApi + 100;
+
+        /// <summary>
+        /// The normal priority for image requests.
+        /// </summary>
+        public static readonly int ImageServer = FileSystemServer + 100;
     }
 }

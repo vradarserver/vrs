@@ -148,6 +148,11 @@ namespace VirtualRadar.Owin.Middleware
         private IAircraftPictureManager _AircraftPictureManager;
 
         /// <summary>
+        /// The cache used to hold aircraft pictures.
+        /// </summary>
+        private IAutoConfigPictureFolderCache _AutoConfigPictureFolderCache;
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public ImageServer()
@@ -156,6 +161,7 @@ namespace VirtualRadar.Owin.Middleware
             _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
             _Graphics = Factory.Singleton.Resolve<IWebSiteGraphics>().Singleton;
             _AircraftPictureManager = Factory.Singleton.Resolve<IAircraftPictureManager>().Singleton;
+            _AutoConfigPictureFolderCache = Factory.Singleton.Resolve<IAutoConfigPictureFolderCache>().Singleton;
         }
 
         /// <summary>
@@ -534,7 +540,7 @@ namespace VirtualRadar.Owin.Middleware
                 if(registration != null && registration.Length == 0) registration = null;
                 if(icao != null && icao.Length == 0) icao = null;
 
-                result = (Bitmap)_AircraftPictureManager.LoadPicture(_ImageServerConfiguration.AircraftPictureCache, icao, registration);
+                result = (Bitmap)_AircraftPictureManager.LoadPicture(_AutoConfigPictureFolderCache.DirectoryCache, icao, registration);
                 if(result != null) {
                     int newWidth = -1, newHeight = -1, minWidth = -1;
                     var resizeMode = ResizeImageMode.Stretch;

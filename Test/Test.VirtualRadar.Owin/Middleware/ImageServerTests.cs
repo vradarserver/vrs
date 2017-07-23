@@ -45,6 +45,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         private Mock<ISharedConfiguration> _SharedConfiguration;
         private Mock<IImageFileManager> _ImageFileManager;
         private Mock<IAircraftPictureManager> _AircraftPictureManager;
+        private Mock<IAutoConfigPictureFolderCache> _AutoConfigurePictureCache;
         private Mock<IDirectoryCache> _AircraftPictureCache;
 
         private Color _Black = Color.FromArgb(0, 0, 0);
@@ -77,9 +78,10 @@ namespace Test.VirtualRadar.Owin.Middleware
             _AircraftPictureManager.Setup(r => r.FindPicture(It.IsAny<IDirectoryCache>(), It.IsAny<string>(), It.IsAny<string>())).Returns((PictureDetail)null);
             _AircraftPictureManager.Setup(r => r.LoadPicture(It.IsAny<IDirectoryCache>(), It.IsAny<string>(), It.IsAny<string>())).Returns((Image)null);
             _AircraftPictureCache = TestUtilities.CreateMockImplementation<IDirectoryCache>();
+            _AutoConfigurePictureCache = TestUtilities.CreateMockSingleton<IAutoConfigPictureFolderCache>();
+            _AutoConfigurePictureCache.SetupGet(r => r.DirectoryCache).Returns(_AircraftPictureCache.Object);
             _ServerConfiguration = TestUtilities.CreateMockSingleton<IImageServerConfiguration>();
             _ServerConfiguration.SetupGet(r => r.ImageFileManager).Returns(_ImageFileManager.Object);
-            _ServerConfiguration.SetupGet(r => r.AircraftPictureCache).Returns(_AircraftPictureCache.Object);
 
             _Server = Factory.Singleton.Resolve<IImageServer>();
 

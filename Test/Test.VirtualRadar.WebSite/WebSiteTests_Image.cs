@@ -813,45 +813,45 @@ namespace Test.VirtualRadar.WebSite
 //            }
 //        }
 
-        [TestMethod]
-        public void WebSite_Image_Picks_Up_Configuration_Changes_For_Internet_Viewing_Of_Pictures()
-        {
-            _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
-            ConfigurePictureManagerForPathAndFile(TestContext.TestDeploymentDir, "TestSquare.png");
-
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            foreach(var size in new string[] { "DETAIL", "FULL", "LIST", "IPADDETAIL", "IPHONEDETAIL" }) {
-                ConfigurePictureManagerForPathAndFile(TestContext.TestDeploymentDir, "TestSquare.png");
-                string pathAndFile = String.Format("/Images/Size-{0}/File-TestSquare/Picture.png", size);
-
-                _OutputStream.SetLength(0);
-                _Response = new Mock<IResponse>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-                _Response.Setup(m => m.OutputStream).Returns(_OutputStream);
-
-                _Configuration.InternetClientSettings.CanShowPictures = true;
-                _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
-
-                _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, true));
-
-                Assert.AreEqual(HttpStatusCode.OK, _Response.Object.StatusCode, size);
-                using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
-                    Assert.AreNotEqual(0, siteImage.Width, size);
-                }
-
-                _Configuration.InternetClientSettings.CanShowPictures = false;
-                _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
-
-                _OutputStream.SetLength(0);
-                _Response = new Mock<IResponse>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-                _Response.Setup(m => m.OutputStream).Returns(_OutputStream);
-
-                _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, true));
-
-                Assert.AreEqual((HttpStatusCode)0, _Response.Object.StatusCode, size);   // WebServer should eventually send 403 but we're not responsible for doing that
-                Assert.AreEqual(0, _Response.Object.ContentLength, size);
-                Assert.AreEqual(0, _OutputStream.Length, size);
-            }
-        }
+//        [TestMethod]
+//        public void WebSite_Image_Picks_Up_Configuration_Changes_For_Internet_Viewing_Of_Pictures()
+//        {
+//            _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
+//            ConfigurePictureManagerForPathAndFile(TestContext.TestDeploymentDir, "TestSquare.png");
+//
+//            _WebSite.AttachSiteToServer(_WebServer.Object);
+//
+//            foreach(var size in new string[] { "DETAIL", "FULL", "LIST", "IPADDETAIL", "IPHONEDETAIL" }) {
+//                ConfigurePictureManagerForPathAndFile(TestContext.TestDeploymentDir, "TestSquare.png");
+//                string pathAndFile = String.Format("/Images/Size-{0}/File-TestSquare/Picture.png", size);
+//
+//                _OutputStream.SetLength(0);
+//                _Response = new Mock<IResponse>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+//                _Response.Setup(m => m.OutputStream).Returns(_OutputStream);
+//
+//                _Configuration.InternetClientSettings.CanShowPictures = true;
+//                _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
+//
+//                _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, true));
+//
+//                Assert.AreEqual(HttpStatusCode.OK, _Response.Object.StatusCode, size);
+//                using(var siteImage = (Bitmap)Bitmap.FromStream(_OutputStream)) {
+//                    Assert.AreNotEqual(0, siteImage.Width, size);
+//                }
+//
+//                _Configuration.InternetClientSettings.CanShowPictures = false;
+//                _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
+//
+//                _OutputStream.SetLength(0);
+//                _Response = new Mock<IResponse>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+//                _Response.Setup(m => m.OutputStream).Returns(_OutputStream);
+//
+//                _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, true));
+//
+//                Assert.AreEqual((HttpStatusCode)0, _Response.Object.StatusCode, size);   // WebServer should eventually send 403 but we're not responsible for doing that
+//                Assert.AreEqual(0, _Response.Object.ContentLength, size);
+//                Assert.AreEqual(0, _OutputStream.Length, size);
+//            }
+//        }
     }
 }
