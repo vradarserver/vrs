@@ -36,6 +36,7 @@ namespace Test.VirtualRadar.Owin
         private ILoopbackHost _LoopbackHost;
         private Mock<IStandardPipeline> _StandardPipeline;
         private IWebAppConfiguration _WebAppConfiguration;
+        private IDictionary<string, object> _Environment;
 
         [TestInitialize]
         public void TestInitialise()
@@ -44,8 +45,32 @@ namespace Test.VirtualRadar.Owin
 
             _StandardPipeline = TestUtilities.CreateMockImplementation<IStandardPipeline>();
             _WebAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
+            _Environment = null;
 
             _LoopbackHost = Factory.Singleton.Resolve<ILoopbackHost>();
+        }
+
+        private void AddCallback(Func<IDictionary<string, object>, bool> callNextMiddleware)
+        {
+            _WebAppConfiguration.AddCallback((IAppBuilder app) => {
+                var middleware = new Func<AppFunc, AppFunc>((AppFunc next) => {
+                    AppFunc result = async(IDictionary<string, object> env) => {
+                        if(callNextMiddleware(env)) {
+                            await next.Invoke(env);
+                        }
+                    };
+                    return result;
+                });
+                app.Use(middleware);
+            }, 0);
+        }
+
+        private void RecordEnvironment()
+        {
+            AddCallback((IDictionary<string, object> environment) => {
+                _Environment = environment;
+                return true;
+            });
         }
 
         [TestCleanup]
@@ -99,34 +124,16 @@ namespace Test.VirtualRadar.Owin
             _LoopbackHost.SendSimpleRequest("/file.txt");
         }
 
-        private void AddCallback(Func<IDictionary<string, object>, bool> callNextMiddleware)
-        {
-            _WebAppConfiguration.AddCallback((IAppBuilder app) => {
-                var middleware = new Func<AppFunc, AppFunc>((AppFunc next) => {
-                    AppFunc result = async(IDictionary<string, object> env) => {
-                        if(callNextMiddleware(env)) {
-                            await next.Invoke(env);
-                        }
-                    };
-                    return result;
-                });
-                app.Use(middleware);
-            }, 0);
-        }
-
         [TestMethod]
         public void LoopbackHost_SendSimpleRequest_Uses_Owin_Compliant_Environment()
         {
-            IDictionary<string, object> env = null;
-            AddCallback((IDictionary<string, object> environment) => {
-                env = environment;
-                return true;
-            });
+            RecordEnvironment();
 
             _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
             _LoopbackHost.SendSimpleRequest("/file.txt?a=1&amp;b=2");
 
-            Assert.IsNotNull(env);
+            Assert.IsNotNull(_Environment);
+            var env = _Environment;
 
             // Mandatory context elements
             Assert.AreEqual("1.0.0", env["owin.version"]);
@@ -152,22 +159,84 @@ namespace Test.VirtualRadar.Owin
         [TestMethod]
         public void LoopbackHost_SendSimpleRequest_Forces_Leading_Slash_On_PathAndFile()
         {
-            throw new NotImplementedException();        // "file.txt" should have a path of "/file.txt", "" should have a path of "/" etc.
+            RecordEnvironment();
+            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+
+            _LoopbackHost.SendSimpleRequest("file.txt");
+            Assert.AreEqual("/file.txt", _Environment["owin.requestpath"]);
+        }
+
+        [TestMethod]
+        public void LoopbackHost_SendSimpleRequest_Sets_Correct_PathAndFile_For_Empty_String()
+        {
+            RecordEnvironment();
+            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+
+            _LoopbackHost.SendSimpleRequest("");
+            Assert.AreEqual("/", _Environment["owin.requestpath"]);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void LoopbackHost_SendSimpleRequest_Rejects_Requests_For_Null_PathAndFile()
+        {
+            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+            _LoopbackHost.SendSimpleRequest(null);
         }
 
         [TestMethod]
         public void LoopbackHost_SendSimpleRequest_Uses_Empty_String_When_Request_Has_No_Query_String()
         {
-            IDictionary<string, object> env = null;
-            AddCallback((IDictionary<string, object> environment) => {
-                env = environment;
-                return true;
-            });
+            RecordEnvironment();
             _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
 
             _LoopbackHost.SendSimpleRequest("/file.txt");
-            Assert.AreEqual("/file.txt", env["owin.requestpath"]);
-            Assert.AreEqual("", env["owin.requestquerystring"]);
+            Assert.AreEqual("/file.txt", _Environment["owin.requestpath"]);
+            Assert.AreEqual("", _Environment["owin.requestquerystring"]);
+        }
+
+        [TestMethod]
+        public void LoopbackHost_SendSimpleRequest_Returns_Status_To_Caller()
+        {
+            AddCallback((IDictionary<string, object> environment) => {
+                var context = PipelineContext.GetOrCreate(environment);
+                context.Response.StatusCode = 123;
+                return false;
+            });
+            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+
+            var result = _LoopbackHost.SendSimpleRequest("/test");
+
+            Assert.AreEqual(123, (int)result.HttpStatusCode);
+        }
+
+        [TestMethod]
+        public void LoopbackHost_SendSimpleRequest_Returns_Response_Stream_Content_To_Caller()
+        {
+            var bodyBytes = Encoding.UTF8.GetBytes("Up at the Lake");
+            AddCallback((IDictionary<string, object> environment) => {
+                var context = PipelineContext.GetOrCreate(environment);
+                context.Response.Body.Write(bodyBytes, 0, bodyBytes.Length);
+                return false;
+            });
+            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+
+            var result = _LoopbackHost.SendSimpleRequest("/test");
+
+            Assert.IsTrue(bodyBytes.SequenceEqual(result.Content));
+        }
+
+        [TestMethod]
+        public void LoopbackHost_SendSimpleRequest_Returns_Empty_Content_Array_When_Response_Has_No_Body()
+        {
+            AddCallback((IDictionary<string, object> environment) => {
+                return false;
+            });
+            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+
+            var result = _LoopbackHost.SendSimpleRequest("/test");
+
+            Assert.AreEqual(0, result.Content.Length);
         }
     }
 }

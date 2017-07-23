@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -85,39 +86,46 @@ namespace VirtualRadar.Owin
             using(var responseStream = new MemoryStream()) {
                 var environment = CreateCompliantOwinEnvironment(pathAndFile, responseStream);
                 _MiddlewareChain.Invoke(environment);
-            }
 
-            return null;
+                //var context = PipelineContext.GetOrCreate(environment);
+                return new SimpleContent() {
+                    HttpStatusCode = (HttpStatusCode)environment["owin.ResponseStatusCode"],
+                    Content = responseStream.ToArray(),
+                };
+            }
         }
 
         private IDictionary<string, object> CreateCompliantOwinEnvironment(string pathAndFile, Stream responseStream)
         {
-            var environment = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-
-            environment["owin.CallCancelled"] = new CancellationToken();
-            environment["owin.Version"] = "1.0.0";
-
-            var requestHeaders =  new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
-            var responseHeaders = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
+            if(pathAndFile == null) {
+                throw new ArgumentNullException(nameof(pathAndFile));
+            }
 
             var queryStringIndex = pathAndFile.IndexOf('?');
             var justPathAndFile = queryStringIndex == -1 ? pathAndFile : pathAndFile.Substring(0, queryStringIndex);
             var queryString = queryStringIndex == -1 ? "" : pathAndFile.Substring(queryStringIndex + 1);
 
-            environment["owin.RequestBody"] = Stream.Null;
-            environment["owin.RequestHeaders"] = requestHeaders;
-            environment["owin.RequestMethod"] = "GET";
-            environment["owin.RequestProtocol"] = "HTTP/1.1";
-            environment["owin.RequestScheme"] = "http";
-            environment["owin.RequestPathBase"] = "/VirtualRadar";
-            environment["owin.RequestPath"] = justPathAndFile;
-            environment["owin.RequestQueryString"] = queryString;
+            if(justPathAndFile == "" || justPathAndFile[0] != '/') {
+                justPathAndFile = "/" + justPathAndFile;
+            }
 
-            environment["owin.ResponseBody"] = responseStream;
-            environment["owin.ResponseHeaders"] = responseHeaders;
-            environment["owin.ResponseStatusCode"] = 200;               // I would prefer 404, and AppBuilder supplies a default of 404... but the spec says the default is 200
+            return new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase) {
+                ["owin.CallCancelled"] = new CancellationToken(),
+                ["owin.Version"] = "1.0.0",
 
-            return environment;
+                ["owin.RequestBody"] = Stream.Null,
+                ["owin.RequestHeaders"] = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase),
+                ["owin.RequestMethod"] = "GET",
+                ["owin.RequestProtocol"] = "HTTP/1.1",
+                ["owin.RequestScheme"] = "http",
+                ["owin.RequestPathBase"] = "/VirtualRadar",
+                ["owin.RequestPath"] = justPathAndFile,
+                ["owin.RequestQueryString"] = queryString,
+
+                ["owin.ResponseBody"] = responseStream,
+                ["owin.ResponseHeaders"] = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase),
+                ["owin.ResponseStatusCode"] = 200               // I would prefer 404, and AppBuilder supplies a default of 404... but the spec says the default is 200
+            };
         }
     }
 }
