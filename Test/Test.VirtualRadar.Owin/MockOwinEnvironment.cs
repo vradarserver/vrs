@@ -10,11 +10,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.Owin;
 using Owin;
 using Test.Framework;
@@ -195,6 +197,44 @@ namespace Test.VirtualRadar.Owin
         }
 
         /// <summary>
+        /// Sets the request URL.
+        /// </summary>
+        /// <param name="unencodedPathAndFile"></param>
+        /// <param name="unencodedQueryStrings">Pass unencoded keys and values. Keys with null values are added as '?value' whereas keys with empty strings are added as '?value='.</param>
+        public void SetRequestUrl(string unencodedPathAndFile, string[,] unencodedQueryStrings = null)
+        {
+            unencodedPathAndFile = unencodedPathAndFile ?? "";
+            if(unencodedPathAndFile == "" || unencodedPathAndFile[0] != '/') {
+                unencodedPathAndFile = $"/{unencodedPathAndFile}";
+            }
+
+            RequestPath = unencodedPathAndFile;
+
+            if(unencodedQueryStrings != null) {
+                if(unencodedQueryStrings.GetLength(1) != 2) {
+                    throw new ArgumentOutOfRangeException($"The unencoded query strings array must be 2D");
+                }
+
+                var buffer = new StringBuilder();
+                for(var i = 0;i < unencodedQueryStrings.GetLength(0);++i) {
+                    var key =   unencodedQueryStrings[i, 0];
+                    var value = unencodedQueryStrings[i, 1];
+
+                    if(i > 0) {
+                        buffer.Append('&');
+                    }
+                    buffer.Append(HttpUtility.UrlEncode(key));
+
+                    if(value != null) {
+                        buffer.AppendFormat("={0}", HttpUtility.UrlEncode(value));
+                    }
+                }
+
+                Request.QueryString = new QueryString(buffer.ToString());
+            }
+        }
+
+        /// <summary>
         /// Converts the username and password into a MIME64 string of username:password.
         /// </summary>
         /// <param name="userName"></param>
@@ -205,22 +245,6 @@ namespace Test.VirtualRadar.Owin
             var encodeString = $"{userName}:{password}";
             var bytes = Encoding.UTF8.GetBytes(encodeString);
             return Convert.ToBase64String(bytes);
-        }
-
-        /// <summary>
-        /// Constructs a URL from the parts passed across.
-        /// </summary>
-        /// <param name="scheme"></param>
-        /// <param name="hostHeaders"></param>
-        /// <param name="pathBase"></param>
-        /// <param name="path"></param>
-        /// <param name="query"></param>
-        /// <returns></returns>
-        public static string ConstructUrl(string scheme, string[] hostHeaders, PathString pathBase, PathString path, QueryString query)
-        {
-            var result = new StringBuilder();
-
-            return result.ToString();
         }
 
         /// <summary>

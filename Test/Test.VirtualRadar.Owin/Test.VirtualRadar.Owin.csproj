@@ -90,6 +90,7 @@
     <Compile Include="Configuration\RedirectionConfigurationTests.cs" />
     <Compile Include="LoopbackHostTests.cs" />
     <Compile Include="Middleware\AccessFilterTests.cs" />
+    <Compile Include="Middleware\AudioServerTests.cs" />
     <Compile Include="Middleware\BasicAuthenticationFilterTests.cs" />
     <Compile Include="Middleware\FileSystemServerTests.cs" />
     <Compile Include="Middleware\ImageServerTests.cs" />

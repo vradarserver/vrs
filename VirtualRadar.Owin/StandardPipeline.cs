@@ -51,6 +51,7 @@ namespace VirtualRadar.Owin
 
             webAppConfiguration.AddCallback(UseFileSystemServer,            StandardPipelinePriority.FileSystemServer);
             webAppConfiguration.AddCallback(UseImageServer,                 StandardPipelinePriority.ImageServer);
+            webAppConfiguration.AddCallback(UseAudioServer,                 StandardPipelinePriority.AudioServer);
         }
 
         private void UseAccessFilter(IAppBuilder app)
@@ -101,6 +102,13 @@ namespace VirtualRadar.Owin
         private void UseImageServer(IAppBuilder app)
         {
             var server = Factory.Singleton.Resolve<IImageServer>();
+            var middleware = new Func<AppFunc, AppFunc>(server.HandleRequest);
+            app.Use(middleware);
+        }
+
+        private void UseAudioServer(IAppBuilder app)
+        {
+            var server = Factory.Singleton.Resolve<IAudioServer>();
             var middleware = new Func<AppFunc, AppFunc>(server.HandleRequest);
             app.Use(middleware);
         }

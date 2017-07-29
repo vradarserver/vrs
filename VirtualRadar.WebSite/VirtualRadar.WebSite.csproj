@@ -84,7 +84,6 @@
     <Compile Include="ApiControllers\DirectoryEntryController.cs" />
     <Compile Include="ApiControllers\FeedsController.cs" />
     <Compile Include="ApiControllers\SettingsController.cs" />
-    <Compile Include="AudioPage.cs" />
     <Compile Include="Bundler.cs" />
     <Compile Include="CorsPreflightPage.cs" />
     <Compile Include="FontCache.cs" />

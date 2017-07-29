@@ -149,6 +149,7 @@
     <Compile Include="Owin\EnvironmentKey.cs" />
     <Compile Include="Owin\IAccessConfiguration.cs" />
     <Compile Include="Owin\IAccessFilter.cs" />
+    <Compile Include="Owin\IAudioServer.cs" />
     <Compile Include="Owin\IAuthenticationConfiguration.cs" />
     <Compile Include="Owin\IBasicAuthenticationFilter.cs" />
     <Compile Include="Owin\ILoopbackHost.cs" />

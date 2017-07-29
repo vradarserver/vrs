@@ -64,7 +64,6 @@ namespace Test.VirtualRadar.WebSite
         private Mock<IBaseStationDatabase> _BaseStationDatabase;
         private Mock<IAutoConfigBaseStationDatabase> _AutoConfigBaseStationDatabase;
         private Mock<IImageFileManager> _ImageFileManager;
-        private Mock<IAudio> _Audio;
         private List<BaseStationFlight> _DatabaseFlights;
         private BaseStationAircraft _DatabaseAircraft;
         private List<BaseStationFlight> _DatabaseFlightsForAircraft;
@@ -189,7 +188,6 @@ namespace Test.VirtualRadar.WebSite
                 return Bitmap.FromFile(fileName);
             });
 
-            _Audio = TestUtilities.CreateMockImplementation<IAudio>();
             _AircraftPictureManager = TestUtilities.CreateMockSingleton<IAircraftPictureManager>();
             _AutoConfigPictureFolderCache = TestUtilities.CreateMockSingleton<IAutoConfigPictureFolderCache>();
             _DirectoryCache = new Mock<IDirectoryCache>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
@@ -1837,68 +1835,68 @@ namespace Test.VirtualRadar.WebSite
         #endregion
 
         #region Audio
-        [TestMethod]
-        public void WebSite_Audio_Can_Synthesise_Text_Correctly()
-        {
-            var wavAudio = new byte[] { 0x01, 0x02, 0x03 };
-            _Audio.Setup(p => p.SpeechToWavBytes(It.IsAny<string>())).Returns(wavAudio);
-
-            SendRequest("/Audio?cmd=say&line=Hello%20World!");
-
-            _Audio.Verify(a => a.SpeechToWavBytes("Hello World!"), Times.Once());
-
-            Assert.AreEqual(3, _Response.Object.ContentLength);
-            Assert.AreEqual(MimeType.WaveAudio, _Response.Object.MimeType);
-            Assert.AreEqual(HttpStatusCode.OK, _Response.Object.StatusCode);
-
-            Assert.AreEqual(3, _OutputStream.Length);
-            Assert.IsTrue(_OutputStream.ToArray().SequenceEqual(wavAudio));
-        }
-
-        [TestMethod]
-        public void WebSite_Audio_Ignores_Unknown_Commands()
-        {
-            SendRequest("/Audio?line=Hello%20World!");
-
-            Assert.AreEqual((HttpStatusCode)0, _Response.Object.StatusCode);
-            Assert.AreEqual(0, _Response.Object.ContentLength);
-            Assert.AreEqual(0, _OutputStream.Length);
-        }
-
-        [TestMethod]
-        public void WebSite_Audio_Ignores_Speak_Command_With_No_Speech_Text()
-        {
-            SendRequest("/Audio?cmd=say");
-
-            Assert.AreEqual((HttpStatusCode)0, _Response.Object.StatusCode);
-            Assert.AreEqual(0, _Response.Object.ContentLength);
-            Assert.AreEqual(0, _OutputStream.Length);
-        }
-
-        [TestMethod]
-        public void WebSite_Audio_Honours_Configuration_Options()
-        {
-            _Audio.Setup(a => a.SpeechToWavBytes(It.IsAny<string>())).Returns(new byte[] { 0x01, 0xff });
-
-            _Configuration.InternetClientSettings.CanPlayAudio = false;
-
-            SendRequest("/Audio?cmd=say&line=whatever", true);
-            Assert.AreEqual(0, _OutputStream.Length);
-
-            SendRequest("/Audio?cmd=say&line=whatever", false);
-            Assert.AreEqual(2, _OutputStream.Length);
-            _OutputStream.SetLength(0);
-
-            _Configuration.InternetClientSettings.CanPlayAudio = true;
-            _ConfigurationStorage.Raise(e => e.ConfigurationChanged += null, EventArgs.Empty);
-
-            SendRequest("/Audio?cmd=say&line=whatever", true);
-            Assert.AreEqual(2, _OutputStream.Length);
-            _OutputStream.SetLength(0);
-
-            SendRequest("/Audio?cmd=say&line=whatever", false);
-            Assert.AreEqual(2, _OutputStream.Length);
-        }
+//        [TestMethod]
+//        public void WebSite_Audio_Can_Synthesise_Text_Correctly()
+//        {
+//            var wavAudio = new byte[] { 0x01, 0x02, 0x03 };
+//            _Audio.Setup(p => p.SpeechToWavBytes(It.IsAny<string>())).Returns(wavAudio);
+//
+//            SendRequest("/Audio?cmd=say&line=Hello%20World!");
+//
+//            _Audio.Verify(a => a.SpeechToWavBytes("Hello World!"), Times.Once());
+//
+//            Assert.AreEqual(3, _Response.Object.ContentLength);
+//            Assert.AreEqual(MimeType.WaveAudio, _Response.Object.MimeType);
+//            Assert.AreEqual(HttpStatusCode.OK, _Response.Object.StatusCode);
+//
+//            Assert.AreEqual(3, _OutputStream.Length);
+//            Assert.IsTrue(_OutputStream.ToArray().SequenceEqual(wavAudio));
+//        }
+//
+//        [TestMethod]
+//        public void WebSite_Audio_Ignores_Unknown_Commands()
+//        {
+//            SendRequest("/Audio?line=Hello%20World!");
+//
+//            Assert.AreEqual((HttpStatusCode)0, _Response.Object.StatusCode);
+//            Assert.AreEqual(0, _Response.Object.ContentLength);
+//            Assert.AreEqual(0, _OutputStream.Length);
+//        }
+//
+//        [TestMethod]
+//        public void WebSite_Audio_Ignores_Speak_Command_With_No_Speech_Text()
+//        {
+//            SendRequest("/Audio?cmd=say");
+//
+//            Assert.AreEqual((HttpStatusCode)0, _Response.Object.StatusCode);
+//            Assert.AreEqual(0, _Response.Object.ContentLength);
+//            Assert.AreEqual(0, _OutputStream.Length);
+//        }
+//
+//        [TestMethod]
+//        public void WebSite_Audio_Honours_Configuration_Options()
+//        {
+//            _Audio.Setup(a => a.SpeechToWavBytes(It.IsAny<string>())).Returns(new byte[] { 0x01, 0xff });
+//
+//            _Configuration.InternetClientSettings.CanPlayAudio = false;
+//
+//            SendRequest("/Audio?cmd=say&line=whatever", true);
+//            Assert.AreEqual(0, _OutputStream.Length);
+//
+//            SendRequest("/Audio?cmd=say&line=whatever", false);
+//            Assert.AreEqual(2, _OutputStream.Length);
+//            _OutputStream.SetLength(0);
+//
+//            _Configuration.InternetClientSettings.CanPlayAudio = true;
+//            _ConfigurationStorage.Raise(e => e.ConfigurationChanged += null, EventArgs.Empty);
+//
+//            SendRequest("/Audio?cmd=say&line=whatever", true);
+//            Assert.AreEqual(2, _OutputStream.Length);
+//            _OutputStream.SetLength(0);
+//
+//            SendRequest("/Audio?cmd=say&line=whatever", false);
+//            Assert.AreEqual(2, _OutputStream.Length);
+//        }
         #endregion
     }
 }

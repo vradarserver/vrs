@@ -343,7 +343,6 @@ namespace VirtualRadar.WebSite
                 _Pages.Add(_CorsPreflightPage);
                 _Pages.Add(new TextPage(this));
                 _Pages.Add(_AircraftListJsonPage);
-                _Pages.Add(new AudioPage(this));
                 _Pages.Add(_ReportRowsJsonPage);
 
                 var fileSystemConfiguration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;

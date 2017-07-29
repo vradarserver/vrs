@@ -57,5 +57,10 @@ namespace VirtualRadar.Interface.Owin
         /// The normal priority for image requests.
         /// </summary>
         public static readonly int ImageServer = FileSystemServer + 100;
+
+        /// <summary>
+        /// The normal priority for audio requests.
+        /// </summary>
+        public static readonly int AudioServer = ImageServer + 100;
     }
 }
