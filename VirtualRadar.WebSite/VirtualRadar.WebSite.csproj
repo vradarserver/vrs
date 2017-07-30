@@ -88,7 +88,6 @@
     <Compile Include="CorsPreflightPage.cs" />
     <Compile Include="FontCache.cs" />
     <Compile Include="HtmlLocaliser.cs" />
-    <Compile Include="ImagePage.cs" />
     <Compile Include="Implementations.cs" />
     <Compile Include="JavaScriptInjector.cs" />
     <Compile Include="Minifier.cs" />

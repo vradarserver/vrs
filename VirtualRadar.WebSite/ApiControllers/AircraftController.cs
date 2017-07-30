@@ -114,31 +114,5 @@ namespace VirtualRadar.WebSite.ApiControllers
 
             return response;
         }
-        //public ProximityGadgetAircraftJson GetClosest(double? lat = null, double? lng = null)
-        //{
-        //    ProximityGadgetAircraftJson result = null;
-
-        //    var context = PipelineContext;
-        //    var config = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton.Get();
-        //    if(!context.Request.IsInternet || config.InternetClientSettings.AllowInternetProximityGadgets) {
-        //        var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
-        //        var feed = feedManager.GetByUniqueId(config.GoogleMapSettings.ClosestAircraftReceiverId, ignoreInvisibleFeeds: true);
-
-        //        if(feed?.AircraftList != null) {
-        //            long unused1, unused2;
-        //            var aircraftList = feed.AircraftList.TakeSnapshot(out unused1, out unused2);
-
-        //            result = ProximityGadgetAircraftJson.ToModel(aircraftList, lat, lng);
-        //        }
-
-        //        if(result == null) {
-        //            result = new ProximityGadgetAircraftJson() {
-        //                WarningMessage = "Receiver is offline",
-        //            };
-        //        }
-        //    }
-
-        //    return result;
-        //}
     }
 }
