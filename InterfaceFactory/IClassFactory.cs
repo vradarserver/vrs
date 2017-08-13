@@ -74,6 +74,28 @@ namespace InterfaceFactory
         object Resolve(Type interfaceType);
 
         /// <summary>
+        /// Returns a new instance of an object that has been marked as a singleton with the <see cref="SingletonAttribute"/>.
+        /// </summary>
+        /// <typeparam name="T"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Attempts to use this to resolve objects that have not been marked as singletons will trigger an exception.
+        /// Objects created using this method will not be returned by calls to <see cref="Resolve"/>.
+        /// </remarks>
+        T ResolveNewInstance<T>() where T: class;
+
+        /// <summary>
+        /// Returns a new instance of an object that has been marked as a singleton with the <see cref="SingletonAttribute"/>.
+        /// </summary>
+        /// <param name="interfaceType"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Attempts to use this to resolve objects that have not been marked as singletons will trigger an exception.
+        /// Objects created using this method will not be returned by calls to <see cref="Resolve"/>.
+        /// </remarks>
+        object ResolveNewInstance(Type interfaceType);
+
+        /// <summary>
         /// Returns a copy of the factory.
         /// </summary>
         /// <returns>A copy of the factory with all of the current interface registrations. Changes to the registrations

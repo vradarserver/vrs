@@ -46,7 +46,7 @@ namespace VirtualRadar.WebSite
         /// <summary>
         /// Gets or sets the aircraft list that is keeping track of aircraft in a flight simulator.
         /// </summary>
-        public ISimpleAircraftList FlightSimulatorAircraftList { get; set; }
+        public IFlightSimulatorAircraftList FlightSimulatorAircraftList { get; set; }
 
         /// <summary>
         /// See base class.

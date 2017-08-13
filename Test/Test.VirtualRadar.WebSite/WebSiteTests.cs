@@ -56,7 +56,7 @@ namespace Test.VirtualRadar.WebSite
         private Mock<IConfigurationStorage> _ConfigurationStorage;
         private Mock<ISharedConfiguration> _SharedConfiguration;
         private Configuration _Configuration;
-        private Mock<ISimpleAircraftList> _FlightSimulatorAircraftList;
+        private Mock<IFlightSimulatorAircraftList> _FlightSimulatorAircraftList;
         private List<IAircraft> _FlightSimulatorAircraft;
         private AircraftListAddress _AircraftListAddress;
         private AircraftListFilter _AircraftListFilter;
@@ -160,7 +160,7 @@ namespace Test.VirtualRadar.WebSite
                 return _PolarPlotSlices;
             });
 
-            _FlightSimulatorAircraftList = new Mock<ISimpleAircraftList>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+            _FlightSimulatorAircraftList = new Mock<IFlightSimulatorAircraftList>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _FlightSimulatorAircraft = new List<IAircraft>();
             long of1, of2;
             _FlightSimulatorAircraftList.Setup(m => m.TakeSnapshot(out of1, out of2)).Returns(_FlightSimulatorAircraft);

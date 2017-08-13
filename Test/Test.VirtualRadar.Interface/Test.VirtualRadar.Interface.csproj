@@ -57,6 +57,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="WindowsBase" />
@@ -91,6 +92,7 @@
     <Compile Include="EventHelperTests.cs" />
     <Compile Include="ExpiringDictionaryTests.cs" />
     <Compile Include="ExpiringListTests.cs" />
+    <Compile Include="HttpContentHelperTests.cs" />
     <Compile Include="IPAddressHelperTests.cs" />
     <Compile Include="Owin\PipelineContextTests.cs" />
     <Compile Include="Owin\PipelineRequestTests.cs" />

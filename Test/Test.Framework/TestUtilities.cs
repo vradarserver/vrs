@@ -21,6 +21,7 @@ using Moq;
 using System.Linq.Expressions;
 using InterfaceFactory;
 using VirtualRadar.Interface;
+using System.Collections.Specialized;
 
 namespace Test.Framework
 {
@@ -185,7 +186,8 @@ namespace Test.Framework
         /// <param name="obj">The object to assign to.</param>
         /// <param name="property">The property to assign.</param>
         /// <param name="useValue1">True if the first constant value should be assigned, false if the second (different) constant value should be assigned.</param>
-        public static void AssignPropertyValue(object obj, PropertyInfo property, bool useValue1)
+        /// <param name="generateValue">Optional func that generates one of two different values for any non-standard type. Expected to throw an exception if the type is unrecognised.</param>
+        public static void AssignPropertyValue(object obj, PropertyInfo property, bool useValue1, Func<Type, bool, object> generateValue = null)
         {
             var type = property.PropertyType;
             if(type == typeof(string))          property.SetValue(obj, useValue1 ? "VALUE1" : "VALUE2", null);
@@ -208,28 +210,58 @@ namespace Test.Framework
             else if(type == typeof(double?))    property.SetValue(obj, useValue1 ? (double?)null : 2.0, null);
             else if(type == typeof(DateTime?))  property.SetValue(obj, useValue1 ? (DateTime?)null : new DateTime(1920, 8, 17), null);
 
-            else                                throw new NotImplementedException($"Need to add support for property type {type.Name}");
+            else {
+                if(generateValue == null) {
+                    throw new NotImplementedException($"Need to add support for property type {type.Name}");
+                } else {
+                    property.SetValue(obj, generateValue(type, useValue1));
+                }
+            }
         }
         #endregion
 
-        #region TestSimpleEquals, TestSimpleClone
+        #region TestSimpleEquals, TestSimpleGetHashCode
         /// <summary>
         /// Tests that an object whose Equals method tests all of its public properties is behaving correctly. Only
         /// works with objects that have a simple constructor.
         /// </summary>
         /// <param name="type"></param>
         /// <param name="expectedEquals"></param>
-        public static void TestSimpleEquals(Type type, bool expectedEquals)
+        /// <param name="generateValue">Optional func that generates one of two different values for any non-standard type. Expected to throw an exception if the type is unrecognised.</param>
+        public static void TestSimpleEquals(Type type, bool expectedEquals, Func<Type, bool, object> generateValue = null)
         {
-            foreach(var property in type.GetProperties()) {
+            foreach(var property in type.GetProperties().Where(r => r.CanRead && r.CanWrite)) {
                 var instance1 = Activator.CreateInstance(type);
                 var instance2 = Activator.CreateInstance(type);
 
-                AssignPropertyValue(instance1, property, true);
-                AssignPropertyValue(instance2, property, expectedEquals);
+                AssignPropertyValue(instance1, property, true, generateValue);
+                AssignPropertyValue(instance2, property, expectedEquals, generateValue);
 
                 Assert.AreEqual(expectedEquals, instance1.Equals(instance2), "Property that failed: {0}", property.Name);
             }
+        }
+
+        /// <summary>
+        /// Tests that an object whose GetHashCode method tests all of its public properties is behaving correctly. Only
+        /// works with objects that have a simple constructor.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="expectedEquals"></param>
+        /// <param name="generateValue">Optional func that generates one of two different values for any non-standard type. Expected to throw an exception if the type is unrecognised.</param>
+        /// <remarks>
+        /// This only checks that two objects that would pass equality for <see cref="TestSimpleEquals"/> have the same hash code.
+        /// </remarks>
+        public static void TestSimpleGetHashCode(Type type, Func<Type, bool, object> generateValue = null)
+        {
+            var instance1 = Activator.CreateInstance(type);
+            var instance2 = Activator.CreateInstance(type);
+
+            foreach(var property in type.GetProperties().Where(r => r.CanRead && r.CanWrite)) {
+                AssignPropertyValue(instance1, property, true, generateValue);
+                AssignPropertyValue(instance2, property, true, generateValue);
+            }
+
+            Assert.AreEqual(instance1.GetHashCode(), instance2.GetHashCode());
         }
         #endregion
 

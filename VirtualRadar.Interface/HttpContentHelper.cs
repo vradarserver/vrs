@@ -1,4 +1,4 @@
-﻿// Copyright © 2013 onwards, Andrew Whewell
+﻿// Copyright © 2017 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,69 +10,39 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace VirtualRadar.Interface
 {
     /// <summary>
-    /// Describes a filter.
+    /// Static methods that can help when dealing with <see cref="HttpContent"/>.
     /// </summary>
-    public class Filter
+    public static class HttpContentHelper
     {
         /// <summary>
-        /// Gets or sets the condition that indicates how the parameters should be tested against an aircraft.
+        /// Generates <see cref="FormUrlEncodedContent"/> content from a 2D array of string keys and values.
         /// </summary>
-        public FilterCondition Condition { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating that the result of the test should be reversed.
-        /// </summary>
-        public bool ReverseCondition { get; set; }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public Filter()
-        {
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="unencodedKeyValues"></param>
         /// <returns></returns>
-        public override bool Equals(object obj)
+        public static FormUrlEncodedContent FormUrlEncoded(string[,] unencodedKeyValues)
         {
-            var result = Object.ReferenceEquals(this, obj);
-            if(!result) {
-                if(obj is Filter other) {
-                    result = Condition == other.Condition &&
-                             ReverseCondition == other.ReverseCondition;
-                }
+            if(unencodedKeyValues == null) {
+                throw new ArgumentNullException(nameof(unencodedKeyValues));
+            }
+            if(unencodedKeyValues.GetLength(1) != 2) {
+                throw new ArgumentOutOfRangeException($"You must pass a two dimensional array to {nameof(FormUrlEncoded)}");
             }
 
-            return result;
-        }
+            var kvpList = new List<KeyValuePair<string, string>>();
+            for(var i = 0;i < unencodedKeyValues.GetLength(0);++i) {
+                kvpList.Add(new KeyValuePair<string, string>(unencodedKeyValues[i,0], unencodedKeyValues[i, 1]));
+            }
 
-        /// <summary>
-        /// See base docs. Note that filters do not make suitable keys.
-        /// </summary>
-        /// <returns></returns>
-        public override int GetHashCode()
-        {
-            unchecked {
-                return Condition.GetHashCode() * (ReverseCondition.GetHashCode() + 1);
-            };
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return String.Format("{0}{1}", ReverseCondition ? "Not " : "", Condition);
+            return new FormUrlEncodedContent(kvpList);
         }
     }
 }

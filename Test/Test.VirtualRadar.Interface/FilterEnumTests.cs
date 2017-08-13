@@ -67,5 +67,33 @@ namespace Test.VirtualRadar.Interface
                 }
             }
         }
+
+        [TestMethod]
+        public void FilterEnum_Equals_Returns_True_When_All_Properties_Match()
+        {
+            TestUtilities.TestSimpleEquals(typeof(FilterEnum<MyEnum>), true, GenerateValue);
+        }
+
+        [TestMethod]
+        public void FilterBool_Equals_Returns_True_When_Any_Properties_Do_Not_Match()
+        {
+            TestUtilities.TestSimpleEquals(typeof(FilterEnum<MyEnum>), false, GenerateValue);
+        }
+
+        [TestMethod]
+        public void FilterEnum_GetHashCode_Returns_Correct_Value()
+        {
+            TestUtilities.TestSimpleGetHashCode(typeof(FilterEnum<MyEnum>), GenerateValue);
+        }
+
+        private object GenerateValue(Type type, bool useValue1)
+        {
+            if(type == typeof(FilterCondition)) {
+                return useValue1 ? FilterCondition.Equals : FilterCondition.Invalid;
+            } else if(type == typeof(MyEnum)) {
+                return useValue1 ? MyEnum.Value1 : MyEnum.Value2;
+            }
+            throw new NotImplementedException($"Need to add support for property type {type.Name}");
+        }
     }
 }

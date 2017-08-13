@@ -59,5 +59,43 @@ namespace VirtualRadar.Interface
 
             return result;
         }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            var result = base.Equals(obj);
+            if(result) {
+                result = false;
+                if(obj is FilterBool other) {
+                    result = Value == other.Value;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See base docs. Do not use these objects as keys!
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            unchecked {
+                return base.GetHashCode() * Value.GetHashCode();
+            }
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return $"{base.ToString()} {Value}";
+        }
     }
 }

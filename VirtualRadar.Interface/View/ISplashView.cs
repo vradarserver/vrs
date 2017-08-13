@@ -45,7 +45,11 @@ namespace VirtualRadar.Interface.View
         /// <summary>
         /// Gets or sets the aircraft list tracking simulated aircraft in FSX that the presenter will create in the background.
         /// </summary>
-        ISimpleAircraftList FlightSimulatorXAircraftList { get; set; }
+        /// <remarks>
+        /// Note that this is here for historical reasons and will go away in a code cleanup. The interface is now
+        /// tagged as singleton and can be accessed from anywhere.
+        /// </remarks>
+        IFlightSimulatorAircraftList FlightSimulatorXAircraftList { get; set; }
 
         /// <summary>
         /// Gets or sets the universal plug and play manager that the presenter creates for the application.

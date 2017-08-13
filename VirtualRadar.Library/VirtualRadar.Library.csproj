@@ -102,6 +102,7 @@
     <Compile Include="ExceptionReporter.cs" />
     <Compile Include="FileSystemProvider.cs" />
     <Compile Include="FileSystemWatcherWrapper.cs" />
+    <Compile Include="FlightSimulatorAircraftList.cs" />
     <Compile Include="ImageDimensionsFetcher.cs" />
     <Compile Include="Listener\AircraftListJsonMessageBytesExtractor.cs" />
     <Compile Include="Listener\AircraftListJsonMessageConverter.cs" />

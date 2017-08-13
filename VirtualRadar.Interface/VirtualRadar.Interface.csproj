@@ -52,6 +52,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
@@ -130,12 +131,14 @@
     <Compile Include="BackgroundThreadQueueMechanism.cs" />
     <Compile Include="CollectionHelper.cs" />
     <Compile Include="EventHelperException.cs" />
+    <Compile Include="HttpContentHelper.cs" />
     <Compile Include="IAircraftOnlineLookupLog.cs" />
     <Compile Include="IAirPressureDownloader.cs" />
     <Compile Include="IAirPressureManager.cs" />
     <Compile Include="IAirPressureLookup.cs" />
     <Compile Include="IConsole.cs" />
     <Compile Include="IFileSystemWatcher.cs" />
+    <Compile Include="IFlightSimulatorAircraftList.cs" />
     <Compile Include="IShutdownSignalHandler.cs" />
     <Compile Include="IPAddressHelper.cs" />
     <Compile Include="Listener\IPlaneFinderMessageBytesExtractor.cs" />
@@ -209,6 +212,7 @@
     <Compile Include="View\EnumModel.cs" />
     <Compile Include="Owin\IWebAppConfigurationCallbackHandle.cs" />
     <Compile Include="Owin\IWebAppConfiguration.cs" />
+    <Compile Include="WebSite\GetAircraftListModel.cs" />
     <Compile Include="WebSite\WebAdminMethodAttribute.cs" />
     <Compile Include="WebSite\WebAdminModels.cs" />
     <Compile Include="WebSite\WebAdminView.cs" />

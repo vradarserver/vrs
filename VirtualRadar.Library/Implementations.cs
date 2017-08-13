@@ -111,6 +111,7 @@ namespace VirtualRadar.Library
             factory.Register<IExternalIPAddressService, ExternalIPAddressService>();
             factory.Register<IFileSystemProvider, FileSystemProvider>();
             factory.Register<IFileSystemWatcher, FileSystemWatcherWrapper>();
+            factory.Register<IFlightSimulatorAircraftList, FlightSimulatorAircraftList>();
             factory.Register<IHeartbeatService, HeartbeatService>();
             factory.Register<IImageDimensionsFetcher, ImageDimensionsFetcher>();
             factory.Register<IImageFileManager, ParallelAccessImageFileManager>();

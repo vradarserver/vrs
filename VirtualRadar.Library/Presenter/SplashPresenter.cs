@@ -344,7 +344,7 @@ namespace VirtualRadar.Library.Presenter
 
             var webSite = Factory.Singleton.Resolve<IWebSite>();
             webSite.BaseStationDatabase = Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>().Singleton.Database;
-            webSite.FlightSimulatorAircraftList = Factory.Singleton.Resolve<ISimpleAircraftList>();
+            webSite.FlightSimulatorAircraftList = Factory.Singleton.Resolve<IFlightSimulatorAircraftList>();
             webSite.StandingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
 
             webSite.AttachSiteToServer(webServer);

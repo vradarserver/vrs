@@ -151,5 +151,31 @@ namespace Test.VirtualRadar.Interface
                 }
             }
         }
+
+        [TestMethod]
+        public void FilterString_Equals_Returns_True_When_All_Properties_Match()
+        {
+            TestUtilities.TestSimpleEquals(typeof(FilterString), true, GenerateValue);
+        }
+
+        [TestMethod]
+        public void FilterString_Equals_Returns_True_When_Any_Properties_Do_Not_Match()
+        {
+            TestUtilities.TestSimpleEquals(typeof(FilterString), false, GenerateValue);
+        }
+
+        [TestMethod]
+        public void FilterString_GetHashCode_Returns_Correct_Value()
+        {
+            TestUtilities.TestSimpleGetHashCode(typeof(FilterString), GenerateValue);
+        }
+
+        private object GenerateValue(Type type, bool useValue1)
+        {
+            if(type == typeof(FilterCondition)) {
+                return useValue1 ? FilterCondition.Contains : FilterCondition.Equals;
+            }
+            throw new NotImplementedException($"Need to add support for property type {type.Name}");
+        }
     }
 }

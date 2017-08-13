@@ -54,7 +54,7 @@ namespace VirtualRadar.Headless.View
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public ISimpleAircraftList FlightSimulatorXAircraftList { get; set; }
+        public IFlightSimulatorAircraftList FlightSimulatorXAircraftList { get; set; }
 
         /// <summary>
         /// See interface docs.

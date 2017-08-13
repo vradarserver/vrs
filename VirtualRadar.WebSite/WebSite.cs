@@ -245,7 +245,7 @@ namespace VirtualRadar.WebSite
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public ISimpleAircraftList FlightSimulatorAircraftList
+        public IFlightSimulatorAircraftList FlightSimulatorAircraftList
         {
             get { return _AircraftListJsonPage.FlightSimulatorAircraftList; }
             set { _AircraftListJsonPage.FlightSimulatorAircraftList = value; }

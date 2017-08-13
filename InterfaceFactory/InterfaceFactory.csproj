@@ -49,6 +49,7 @@
     <Compile Include="IClassFactory.cs" />
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SingletonAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="_InterfaceFactory.cd" />
