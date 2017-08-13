@@ -749,6 +749,25 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                 }
             }
         }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Filters_Accept_Full_Set_Of_Bounds()
+        {
+            var response = await _Server.HttpClient.PostAsync($"AircraftList.json?FNBnd=1.2&FSBnd=3.4&FWBnd=5.6&FEBnd=7.8", _EmptyPostBody);
+
+            Assert.AreEqual(1.2, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.First.Latitude);
+            Assert.AreEqual(5.6, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.First.Longitude);
+            Assert.AreEqual(3.4, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.Second.Latitude);
+            Assert.AreEqual(7.8, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.Second.Longitude);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Filters_Ignore_Partial_Set_Of_Bounds()
+        {
+            var response = await _Server.HttpClient.PostAsync($"AircraftList.json?FNBnd=1.2&FWBnd=5.6", _EmptyPostBody);
+
+            Assert.IsNull(_ActualAircraftListJsonBuilderArgs.Filter);
+        }
         #endregion
     }
 }

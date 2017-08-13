@@ -171,6 +171,8 @@ namespace VirtualRadar.WebSite.ApiControllers
                 }
             }
 
+            result = DecodeBounds(result, query["FNBND"], query["FWBND"], query["FSBND"], query["FEBND"]);
+
             return result;
         }
 
@@ -286,6 +288,26 @@ namespace VirtualRadar.WebSite.ApiControllers
                     filter.Value = value;
                     DoAssignFilter(ref result, assignFilter, filter);
                     break;
+            }
+
+            return result;
+        }
+
+        private AircraftListJsonBuilderFilter DecodeBounds(AircraftListJsonBuilderFilter result, string northText, string westText, string southText, string eastText)
+        {
+            if(!String.IsNullOrEmpty(northText) && !String.IsNullOrEmpty(westText) && !String.IsNullOrEmpty(southText) && !String.IsNullOrEmpty(eastText)) {
+                if(double.TryParse(northText, NumberStyles.Any, CultureInfo.InvariantCulture, out double north) &&
+                   double.TryParse(southText, NumberStyles.Any, CultureInfo.InvariantCulture, out double south) &&
+                   double.TryParse(westText,  NumberStyles.Any, CultureInfo.InvariantCulture, out double west) &&
+                   double.TryParse(eastText,  NumberStyles.Any, CultureInfo.InvariantCulture, out double east)) {
+                    if(result == null) {
+                        result = new AircraftListJsonBuilderFilter();
+                    }
+                    result.PositionWithin = new Pair<Coordinate>(
+                        new Coordinate(north, west),
+                        new Coordinate(south, east)
+                    );
+                }
             }
 
             return result;
