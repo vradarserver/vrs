@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,24 +17,48 @@ using System.Threading.Tasks;
 namespace VirtualRadar.Interface.WebSite
 {
     /// <summary>
-    /// The model that carries arguments to the endpoints that fetch aircraft lists.
+    /// All of the filter fields allowable in a <see cref="GetAircraftListFilter"/>.
     /// </summary>
-    public class GetAircraftListModel
+    public enum GetAircraftListFilterField
     {
-        public double? Latitude { get; set; }
+        None,
 
-        public double? Longitude { get; set; }
+        Airport,
 
-        public long LastDataVersion { get; set; } = -1L;
+        Altitude,
 
-        public long ServerTicks { get; set; } = -1L;
+        Callsign,
 
-        public bool ResendTrails { get; set; }
+        Country,
 
-        public int SelectedAircraft { get; set; } = -1;
+        Distance,
 
-        public bool FlightSimulator { get; set; }
+        EngineType,
 
-        public List<GetAircraftListFilter> Filters { get; set; } = new List<GetAircraftListFilter>();
+        HasPosition,
+
+        Icao,
+
+        IsMilitary,
+
+        ModelIcao,
+
+        Operator,
+
+        OperatorIcao,
+
+        Registration,
+
+        Species,
+
+        Squawk,
+
+        IsInteresting,
+
+        UserTag,
+
+        WTC,
+
+        PositionBounds,
     }
 }

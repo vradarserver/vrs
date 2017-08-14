@@ -335,7 +335,7 @@ namespace VirtualRadar.WebSite
             switch(conditionChar) {
                 case 'L':   filterRange.LowerValue = QueryNDateTime(value); break;
                 case 'U':   filterRange.UpperValue = QueryNDateTime(value); break;
-                default:    filterRange.Condition = FilterCondition.Invalid; break;
+                default:    filterRange.Condition = FilterCondition.Missing; break;
             }
 
             return filterRange;
@@ -355,7 +355,7 @@ namespace VirtualRadar.WebSite
             switch(conditionChar) {
                 case 'L':   filterRange.LowerValue = QueryNDouble(value); break;
                 case 'U':   filterRange.UpperValue = QueryNDouble(value); break;
-                default:    filterRange.Condition = FilterCondition.Invalid; break;
+                default:    filterRange.Condition = FilterCondition.Missing; break;
             }
 
             return filterRange;
@@ -375,7 +375,7 @@ namespace VirtualRadar.WebSite
             switch(conditionChar) {
                 case 'L':   filterRange.LowerValue = QueryNInt(value); break;
                 case 'U':   filterRange.UpperValue = QueryNInt(value); break;
-                default:    filterRange.Condition = FilterCondition.Invalid; break;
+                default:    filterRange.Condition = FilterCondition.Missing; break;
             }
 
             return filterRange;

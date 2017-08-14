@@ -21,9 +21,9 @@ namespace VirtualRadar.Interface
     public enum FilterCondition
     {
         /// <summary>
-        /// The filter condition is invalid or missing.
+        /// The filter condition is missing.
         /// </summary>
-        Invalid,
+        Missing,
 
         /// <summary>
         /// The value must lie between two inclusive values.

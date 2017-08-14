@@ -18,24 +18,63 @@ using System.Threading.Tasks;
 namespace VirtualRadar.Interface.WebSite
 {
     /// <summary>
-    /// The model that carries arguments to the endpoints that fetch aircraft lists.
+    /// Describes a single filter in the v3 AircraftList.json call parameters.
     /// </summary>
-    public class GetAircraftListModel
+    public class GetAircraftListFilter
     {
-        public double? Latitude { get; set; }
+        /// <summary>
+        /// Gets or sets the field to apply the filter to.
+        /// </summary>
+        public GetAircraftListFilterField Field { get; set; }
 
-        public double? Longitude { get; set; }
+        /// <summary>
+        /// Gets or sets the filter condition.
+        /// </summary>
+        public FilterCondition Condition { get; set; }
 
-        public long LastDataVersion { get; set; } = -1L;
+        /// <summary>
+        /// Gets or sets a value indicating that the condition is reversed.
+        /// </summary>
+        public bool Not { get; set; }
 
-        public long ServerTicks { get; set; } = -1L;
+        /// <summary>
+        /// Gets or sets the string value of the filter.
+        /// </summary>
+        public string Value { get; set; }
 
-        public bool ResendTrails { get; set; }
+        /// <summary>
+        /// Gets or sets the bool value of the filter.
+        /// </summary>
+        public bool? Is { get; set; }
 
-        public int SelectedAircraft { get; set; } = -1;
+        /// <summary>
+        /// Gets or sets the lower end of a range.
+        /// </summary>
+        public double? From { get; set; }
 
-        public bool FlightSimulator { get; set; }
+        /// <summary>
+        /// Gets or sets an upper end to a range.
+        /// </summary>
+        public double? To { get; set; }
 
-        public List<GetAircraftListFilter> Filters { get; set; } = new List<GetAircraftListFilter>();
+        /// <summary>
+        /// Gets the northern edge of a bound.
+        /// </summary>
+        public double? North { get; set; }
+
+        /// <summary>
+        /// Gets the southern edge of a bound.
+        /// </summary>
+        public double? South { get; set; }
+
+        /// <summary>
+        /// Gets the western edge of a bound.
+        /// </summary>
+        public double? West { get; set; }
+
+        /// <summary>
+        /// Gets an eastern edge of a bound.
+        /// </summary>
+        public double? East { get; set; }
     }
 }

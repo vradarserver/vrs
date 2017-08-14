@@ -25,7 +25,7 @@ namespace Test.VirtualRadar.Interface
         public void FilterString_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
             var filter = new FilterString();
-            TestUtilities.TestProperty(filter, r => r.Condition, FilterCondition.Invalid, FilterCondition.Equals);
+            TestUtilities.TestProperty(filter, r => r.Condition, FilterCondition.Missing, FilterCondition.Equals);
             TestUtilities.TestProperty(filter, r => r.ReverseCondition, false);
             TestUtilities.TestProperty(filter, r => r.Value, null, "Abc");
 
@@ -69,7 +69,7 @@ namespace Test.VirtualRadar.Interface
                             var result = filter.Passes(testValue);
 
                             var expectedResult = true;
-                            if(condition != FilterCondition.Between && condition != FilterCondition.Invalid) {
+                            if(condition != FilterCondition.Between && condition != FilterCondition.Missing) {
                                 if(String.IsNullOrEmpty(value)) {
                                     if(condition != FilterCondition.Equals) expectedResult = true;
                                     else {
@@ -124,7 +124,7 @@ namespace Test.VirtualRadar.Interface
                             var result = filter.Passes(testValue);
 
                             var expectedResult = true;
-                            if(condition != FilterCondition.Between && condition != FilterCondition.Invalid) {
+                            if(condition != FilterCondition.Between && condition != FilterCondition.Missing) {
                                 if(String.IsNullOrEmpty(value)) {
                                     if(condition != FilterCondition.Equals) expectedResult = true;
                                     else {

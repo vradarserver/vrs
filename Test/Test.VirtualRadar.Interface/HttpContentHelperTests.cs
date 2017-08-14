@@ -21,6 +21,7 @@ namespace Test.VirtualRadar.Interface
     [TestClass]
     public class HttpContentHelperTests
     {
+        #region FormUrlEncoded
         [TestMethod]
         public void HttpContentHelper_FormUrlEncoded_Returns_FormUrlEncodedContent()
         {
@@ -96,5 +97,31 @@ namespace Test.VirtualRadar.Interface
         {
             HttpContentHelper.FormUrlEncoded(new [,] { { "1", "2", "3" } });
         }
+        #endregion
+
+        #region StringContentJson
+        [TestMethod]
+        public void HttpContentHelper_StringContentJson_Encodes_Object_As_Json()
+        {
+            var content = HttpContentHelper.StringContentJson(new { Value = 1 });
+            var text = content.ReadAsStringAsync().Result;
+
+            Assert.AreEqual(@"{""Value"":1}", text);
+        }
+
+        [TestMethod]
+        public void HttpContentHelper_StringContentJson_Has_Correct_ContentType()
+        {
+            var content = HttpContentHelper.StringContentJson(new { Value = 1 });
+            Assert.AreEqual("application/json; charset=utf-8", content.Headers.ContentType.ToString());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void HttpContentHelper_StringContentJson_Throws_On_Null_Object()
+        {
+            HttpContentHelper.StringContentJson(null);
+        }
+        #endregion
     }
 }

@@ -97,7 +97,149 @@ namespace VirtualRadar.WebSite.ApiControllers
                 SelectedAircraftId =    model?.SelectedAircraft ?? -1,
                 ServerTimeTicks =       model?.ServerTicks ?? -1L,
                 SourceFeedId =          feedId,
+                Filter =                ExpandModelFilters(model?.Filters),
             });
+        }
+
+        private AircraftListJsonBuilderFilter ExpandModelFilters(List<GetAircraftListFilter> filters)
+        {
+            AircraftListJsonBuilderFilter result = null;
+
+            if(filters != null) {
+                foreach(var jsonFilter in filters) {
+                    switch(jsonFilter.Field) {
+                        case GetAircraftListFilterField.Airport:        result = JsonToStringFilter(jsonFilter, result,       (f,v) => f.Airport = v); break;
+                        case GetAircraftListFilterField.Altitude:       result = JsonToIntRangeFilter(jsonFilter, result,     (f,v) => f.Altitude = v); break;
+                        case GetAircraftListFilterField.Callsign:       result = JsonToStringFilter(jsonFilter, result,       (f,v) => f.Callsign = v); break;
+                        case GetAircraftListFilterField.Country:        result = JsonToStringFilter(jsonFilter, result,       (f,v) => f.Icao24Country = v); break;
+                        case GetAircraftListFilterField.Distance:       result = JsonToDoubleRangeFilter(jsonFilter, result,  (f,v) => f.Distance = v); break;
+                        case GetAircraftListFilterField.HasPosition:    result = JsonToBoolFilter(jsonFilter, result,         (f,v) => f.MustTransmitPosition = v); break;
+                        case GetAircraftListFilterField.Icao:           result = JsonToStringFilter(jsonFilter, result,       (f,v) => f.Icao24 = v); break;
+                        case GetAircraftListFilterField.IsInteresting:  result = JsonToBoolFilter(jsonFilter, result,         (f,v) => f.IsInteresting = v); break;
+                        case GetAircraftListFilterField.IsMilitary:     result = JsonToBoolFilter(jsonFilter, result,         (f,v) => f.IsMilitary = v); break;
+                        case GetAircraftListFilterField.ModelIcao:      result = JsonToStringFilter(jsonFilter, result,       (f,v) => f.Type = v); break;
+                        case GetAircraftListFilterField.Operator:       result = JsonToStringFilter(jsonFilter, result,       (f,v) => f.Operator = v); break;
+                        case GetAircraftListFilterField.OperatorIcao:   result = JsonToStringFilter(jsonFilter, result,       (f,v) => f.OperatorIcao = v); break;
+                        case GetAircraftListFilterField.PositionBounds: result = JsonToCoordPair(jsonFilter, result,          (f,v) => f.PositionWithin = v); break;
+                        case GetAircraftListFilterField.Registration:   result = JsonToStringFilter(jsonFilter, result,       (f,v) => f.Registration = v); break;
+                        case GetAircraftListFilterField.Squawk:         result = JsonToIntRangeFilter(jsonFilter, result,     (f,v) => f.Squawk = v); break;
+                        case GetAircraftListFilterField.UserTag:        result = JsonToStringFilter(jsonFilter, result,       (f,v) => f.UserTag = v); break;
+
+                        case GetAircraftListFilterField.EngineType:     result = JsonToEnumFilter<EngineType>(jsonFilter, result,             (f,v) => f.EngineType = v); break;
+                        case GetAircraftListFilterField.Species:        result = JsonToEnumFilter<Species>(jsonFilter, result,                (f,v) => f.Species = v); break;
+                        case GetAircraftListFilterField.WTC:            result = JsonToEnumFilter<WakeTurbulenceCategory>(jsonFilter, result, (f,v) => f.WakeTurbulenceCategory = v); break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private AircraftListJsonBuilderFilter JsonToBoolFilter(GetAircraftListFilter jsonFilter, AircraftListJsonBuilderFilter result, Action<AircraftListJsonBuilderFilter, FilterBool> assignFilter)
+        {
+            switch(jsonFilter.Condition) {
+                case FilterCondition.Missing:
+                case FilterCondition.Equals:
+                    if(jsonFilter.Is != null) {
+                        DoAssignFilter(ref result, assignFilter, new FilterBool() {
+                            Condition =         FilterCondition.Equals,
+                            Value =             jsonFilter.Is.Value,
+                            ReverseCondition =  jsonFilter.Not,
+                        });
+                    }
+                    break;
+            }
+
+            return result;
+        }
+
+        private AircraftListJsonBuilderFilter JsonToCoordPair(GetAircraftListFilter jsonFilter, AircraftListJsonBuilderFilter result, Action<AircraftListJsonBuilderFilter, Pair<Coordinate>> assignPair)
+        {
+            if(jsonFilter.North != null && jsonFilter.South != null && jsonFilter.West != null && jsonFilter.East != null) {
+                if(result == null) {
+                    result = new AircraftListJsonBuilderFilter();
+                }
+
+                result.PositionWithin = new Pair<Coordinate>(
+                    new Coordinate(jsonFilter.North.Value, jsonFilter.West.Value),
+                    new Coordinate(jsonFilter.South.Value, jsonFilter.East.Value)
+                );
+            }
+
+            return result;
+        }
+
+        private AircraftListJsonBuilderFilter JsonToDoubleRangeFilter(GetAircraftListFilter jsonFilter, AircraftListJsonBuilderFilter result, Action<AircraftListJsonBuilderFilter, FilterRange<double>> assignFilter)
+        {
+            switch(jsonFilter.Condition) {
+                case FilterCondition.Missing:
+                case FilterCondition.Between:
+                    DoAssignFilter(ref result, assignFilter, new FilterRange<double>() {
+                        Condition =         FilterCondition.Between,
+                        LowerValue =        jsonFilter.From,
+                        UpperValue =        jsonFilter.To,
+                        ReverseCondition =  jsonFilter.Not,
+                    });
+                    break;
+            }
+
+            return result;
+        }
+
+        private AircraftListJsonBuilderFilter JsonToEnumFilter<T>(GetAircraftListFilter jsonFilter, AircraftListJsonBuilderFilter result, Action<AircraftListJsonBuilderFilter, FilterEnum<T>> assignFilter)
+            where T: struct, IComparable
+        {
+            switch(jsonFilter.Condition) {
+                case FilterCondition.Missing:
+                case FilterCondition.Equals:
+                    if(!String.IsNullOrEmpty(jsonFilter.Value) && Enum.TryParse<T>(jsonFilter.Value, out T enumValue)) {
+                        if(Enum.IsDefined(typeof(T), enumValue)) {
+                            DoAssignFilter(ref result, assignFilter, new FilterEnum<T>() {
+                                Condition =         FilterCondition.Equals,
+                                Value =             enumValue,
+                                ReverseCondition =  jsonFilter.Not,
+                            });
+                        }
+                    }
+                    break;
+            }
+
+            return result;
+        }
+
+        private AircraftListJsonBuilderFilter JsonToIntRangeFilter(GetAircraftListFilter jsonFilter, AircraftListJsonBuilderFilter result, Action<AircraftListJsonBuilderFilter, FilterRange<int>> assignFilter)
+        {
+            switch(jsonFilter.Condition) {
+                case FilterCondition.Missing:
+                case FilterCondition.Between:
+                    DoAssignFilter(ref result, assignFilter, new FilterRange<int>() {
+                        Condition =         FilterCondition.Between,
+                        LowerValue =        (int?)jsonFilter.From,
+                        UpperValue =        (int?)jsonFilter.To,
+                        ReverseCondition =  jsonFilter.Not,
+                    });
+                    break;
+            }
+
+            return result;
+        }
+
+        private AircraftListJsonBuilderFilter JsonToStringFilter(GetAircraftListFilter jsonFilter, AircraftListJsonBuilderFilter result, Action<AircraftListJsonBuilderFilter, FilterString> assignFilter)
+        {
+            switch(jsonFilter.Condition) {
+                case FilterCondition.Contains:
+                case FilterCondition.EndsWith:
+                case FilterCondition.Equals:
+                case FilterCondition.StartsWith:
+                    DoAssignFilter(ref result, assignFilter, new FilterString() {
+                        Condition =         jsonFilter.Condition,
+                        Value =             jsonFilter.Value ?? "",
+                        ReverseCondition =  jsonFilter.Not,
+                    });
+                    break;
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -247,10 +389,11 @@ namespace VirtualRadar.WebSite.ApiControllers
         private AircraftListJsonBuilderFilter DecodeEnumFilter<T>(string prefix, string key, string value, AircraftListJsonBuilderFilter result, Action<AircraftListJsonBuilderFilter, FilterEnum<T>> assignFilter)
             where T: struct, IComparable
         {
-            if(!String.IsNullOrEmpty(value) && int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue)) {
-                if(Enum.IsDefined(typeof(T), intValue)) {
-                    var filter = new FilterEnum<T>();
-                    filter.Value = (T)((object)intValue);
+            if(!String.IsNullOrEmpty(value) && Enum.TryParse<T>(value, out T enumValue)) {
+                if(Enum.IsDefined(typeof(T), enumValue)) {
+                    var filter = new FilterEnum<T>() {
+                        Value = enumValue,
+                    };
                     if(DecodeFilter(prefix, filter, key) == 'Q') {
                         DoAssignFilter(ref result, assignFilter, filter);
                     }

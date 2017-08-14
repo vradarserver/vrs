@@ -646,57 +646,80 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             var worksheet = new ExcelWorksheetData(TestContext);
 
-            var key = HttpUtility.UrlEncode(worksheet.String("Key"));
-            var value = HttpUtility.UrlEncode(worksheet.EString("Value"));
+            var key = HttpUtility.UrlEncode(worksheet.String("V2Key"));
+            var value = HttpUtility.UrlEncode(worksheet.EString("V2Value"));
 
             if(!String.IsNullOrEmpty(key)) {
                 var queryString = $"{key}={value}";
-
-                var response = await _Server.HttpClient.PostAsync($"AircraftList.json?{queryString}", _EmptyPostBody);
-
-                AircraftListJsonBuilderFilter jsonFilter = null;
-
-                var filterPropertyName = worksheet.String("FilterProperty");
-                if(filterPropertyName != null) {
-                    jsonFilter = new AircraftListJsonBuilderFilter();
-
-                    var propertyInfo = typeof(AircraftListJsonBuilderFilter).GetProperty(filterPropertyName);
-                    var filter = (Filter)Activator.CreateInstance(propertyInfo.PropertyType);
-                    filter.Condition = worksheet.ParseEnum<FilterCondition>("Condition");
-                    filter.ReverseCondition = worksheet.Bool("ReverseCondition");
-
-                    if(filter is FilterBool filterBool) {
-                        filterBool.Value = worksheet.Bool("FilterValue");
-                    } else if(filter is FilterEnum<EngineType> filterEngineType) {
-                        filterEngineType.Value = worksheet.ParseEnum<EngineType>("FilterValue");
-                    } else if(filter is FilterEnum<Species> filterSpecies) {
-                        filterSpecies.Value = worksheet.ParseEnum<Species>("FilterValue");
-                    } else if(filter is FilterEnum<WakeTurbulenceCategory> filterWakeTurblenceCategory) {
-                        filterWakeTurblenceCategory.Value = worksheet.ParseEnum<WakeTurbulenceCategory>("FilterValue");
-                    } else if(filter is FilterRange<double> filterDoubleRange) {
-                        filterDoubleRange.LowerValue = worksheet.NDouble("LowerValue");
-                        filterDoubleRange.UpperValue = worksheet.NDouble("UpperValue");
-                    } else if(filter is FilterRange<int> filterIntRange) {
-                        filterIntRange.LowerValue = worksheet.NInt("LowerValue");
-                        filterIntRange.UpperValue = worksheet.NInt("UpperValue");
-                    } else if(filter is FilterString filterString) {
-                        filterString.Value = worksheet.EString("FilterValue");
-                    } else {
-                        Assert.Fail($"Need code to fill {filter.GetType().Name} filters");
-                    }
-
-                    propertyInfo.SetValue(jsonFilter, filter);
-                }
-
-                var expected = ExpectedAircraftListJsonBuilderArgs(filter: jsonFilter);
-                AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+                await FeedsController_AircraftList_Accepts_Filter_Requests_Worker(worksheet, $"AircraftList.json?{queryString}", _EmptyPostBody);
             }
         }
 
         [TestMethod]
         [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "AircraftListFilter$")]
+        public async Task FeedsController_AircraftList_Accepts_Filter_Requests_V3()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+
+            var filterJson = worksheet.String("V3Json");
+
+            if(!String.IsNullOrEmpty(filterJson)) {
+                var deserialisedJson = JsonConvert.DeserializeObject<GetAircraftListFilter>(filterJson);
+                await FeedsController_AircraftList_Accepts_Filter_Requests_Worker(worksheet, "/api/1.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                    Filters = new GetAircraftListFilter[] {
+                        deserialisedJson
+                    }
+                }));
+            }
+        }
+
+        private async Task FeedsController_AircraftList_Accepts_Filter_Requests_Worker(ExcelWorksheetData worksheet, string url, HttpContent postBody)
+        {
+            var response = await _Server.HttpClient.PostAsync(url, postBody);
+
+            AircraftListJsonBuilderFilter jsonFilter = null;
+
+            var filterPropertyName = worksheet.String("FilterProperty");
+            if(filterPropertyName != null) {
+                jsonFilter = new AircraftListJsonBuilderFilter();
+
+                var propertyInfo = typeof(AircraftListJsonBuilderFilter).GetProperty(filterPropertyName);
+                var filter = (Filter)Activator.CreateInstance(propertyInfo.PropertyType);
+                filter.Condition = worksheet.ParseEnum<FilterCondition>("Condition");
+                filter.ReverseCondition = worksheet.Bool("ReverseCondition");
+
+                if(filter is FilterBool filterBool) {
+                    filterBool.Value = worksheet.Bool("FilterValue");
+                } else if(filter is FilterEnum<EngineType> filterEngineType) {
+                    filterEngineType.Value = worksheet.ParseEnum<EngineType>("FilterValue");
+                } else if(filter is FilterEnum<Species> filterSpecies) {
+                    filterSpecies.Value = worksheet.ParseEnum<Species>("FilterValue");
+                } else if(filter is FilterEnum<WakeTurbulenceCategory> filterWakeTurblenceCategory) {
+                    filterWakeTurblenceCategory.Value = worksheet.ParseEnum<WakeTurbulenceCategory>("FilterValue");
+                } else if(filter is FilterRange<double> filterDoubleRange) {
+                    filterDoubleRange.LowerValue = worksheet.NDouble("LowerValue");
+                    filterDoubleRange.UpperValue = worksheet.NDouble("UpperValue");
+                } else if(filter is FilterRange<int> filterIntRange) {
+                    filterIntRange.LowerValue = worksheet.NInt("LowerValue");
+                    filterIntRange.UpperValue = worksheet.NInt("UpperValue");
+                } else if(filter is FilterString filterString) {
+                    filterString.Value = worksheet.EString("FilterValue");
+                } else {
+                    Assert.Fail($"Need code to fill {filter.GetType().Name} filters");
+                }
+
+                propertyInfo.SetValue(jsonFilter, filter);
+            }
+
+            var expected = ExpectedAircraftListJsonBuilderArgs(filter: jsonFilter);
+            AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+        }
+
+        [TestMethod]
+        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "AircraftListFilterName$")]
-        public async Task FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions()
+        public async Task FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V2()
         {
             var worksheet = new ExcelWorksheetData(TestContext);
 
@@ -751,7 +774,65 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Filters_Accept_Full_Set_Of_Bounds()
+        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "AircraftListFilterName$")]
+        public async Task FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V3()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+
+            var propertyName = HttpUtility.UrlEncode(worksheet.String("FilterProperty"));
+            var fieldName = HttpUtility.UrlEncode(worksheet.String("V3FieldName"));
+
+            var property = typeof(AircraftListJsonBuilderFilter).GetProperty(propertyName);
+            var filterType = property.PropertyType;
+
+            var isStringFilter = typeof(FilterString).IsAssignableFrom(filterType);
+            var isIntRangeFilter = typeof(FilterRange<int>).IsAssignableFrom(filterType);
+            var isDoubleRangeFilter = typeof(FilterRange<double>).IsAssignableFrom(filterType);
+            var isEnumFilter = filterType.IsGenericType && filterType.GetGenericTypeDefinition() == typeof(FilterEnum<>);
+            var isBoolFilter = typeof(FilterBool).IsAssignableFrom(filterType);
+
+            foreach(FilterCondition condition in Enum.GetValues(typeof(FilterCondition))) {
+                var filter = new GetAircraftListFilter() {
+                    Field = (GetAircraftListFilterField)Enum.Parse(typeof(GetAircraftListFilterField), fieldName),
+                    Condition = condition,
+                    Value = isStringFilter || isEnumFilter ? "1" : null,
+                    Is = isBoolFilter ? true : (bool?)null,
+                    From = isIntRangeFilter || isDoubleRangeFilter ? 1 : (double?)null,
+                    To = isIntRangeFilter || isDoubleRangeFilter ? 2 : (double?)null,
+                };
+
+                TestCleanup();
+                TestInitialise();
+
+                var conditionIsValid = false;
+                switch(condition) {
+                    case FilterCondition.Between:       conditionIsValid = isIntRangeFilter || isDoubleRangeFilter; break;
+                    case FilterCondition.Contains:
+                    case FilterCondition.EndsWith:
+                    case FilterCondition.StartsWith:    conditionIsValid = isStringFilter; break;
+                    case FilterCondition.Equals:        conditionIsValid = isStringFilter || isEnumFilter || isBoolFilter; break;
+                    case FilterCondition.Missing:       conditionIsValid = isIntRangeFilter || isDoubleRangeFilter || isEnumFilter || isBoolFilter; break;
+                }
+
+                var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                    Filters = new GetAircraftListFilter[] {
+                        filter
+                    }
+                }));
+                var filterUsed = _ActualAircraftListJsonBuilderArgs.Filter;
+                var actualFilter = filterUsed == null ? null : property.GetValue(_ActualAircraftListJsonBuilderArgs.Filter, null);
+
+                if(conditionIsValid) {
+                    Assert.IsNotNull(actualFilter, $"Request for {fieldName} {condition} should have filled {propertyName} but it did not");
+                } else {
+                    Assert.IsNull(actualFilter, $"Request for {fieldName} {condition} should not have filled {propertyName} but it did");
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Filters_Accept_Full_Set_Of_Bounds_V2()
         {
             var response = await _Server.HttpClient.PostAsync($"AircraftList.json?FNBnd=1.2&FSBnd=3.4&FWBnd=5.6&FEBnd=7.8", _EmptyPostBody);
 
@@ -762,9 +843,48 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Filters_Ignore_Partial_Set_Of_Bounds()
+        public async Task FeedsController_AircraftList_Filters_Accept_Full_Set_Of_Bounds_V3()
+        {
+            var filter = new GetAircraftListFilter() {
+                Field = GetAircraftListFilterField.PositionBounds,
+                North = 1.2,
+                South = 3.4,
+                West = 5.6,
+                East = 7.8,
+            };
+            var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                Filters = new GetAircraftListFilter[] {
+                    filter
+                }
+            }));
+
+            Assert.AreEqual(1.2, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.First.Latitude);
+            Assert.AreEqual(5.6, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.First.Longitude);
+            Assert.AreEqual(3.4, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.Second.Latitude);
+            Assert.AreEqual(7.8, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.Second.Longitude);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Filters_Ignore_Partial_Set_Of_Bounds_V2()
         {
             var response = await _Server.HttpClient.PostAsync($"AircraftList.json?FNBnd=1.2&FWBnd=5.6", _EmptyPostBody);
+
+            Assert.IsNull(_ActualAircraftListJsonBuilderArgs.Filter);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Filters_Ignore_Partial_Set_Of_Bounds_V3()
+        {
+            var filter = new GetAircraftListFilter() {
+                Field = GetAircraftListFilterField.PositionBounds,
+                North = 1.2,
+                West = 5.6,
+            };
+            var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                Filters = new GetAircraftListFilter[] {
+                    filter
+                }
+            }));
 
             Assert.IsNull(_ActualAircraftListJsonBuilderArgs.Filter);
         }

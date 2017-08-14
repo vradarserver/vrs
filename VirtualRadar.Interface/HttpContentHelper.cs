@@ -15,6 +15,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using VirtualRadar.Interface.WebServer;
 
 namespace VirtualRadar.Interface
 {
@@ -43,6 +45,20 @@ namespace VirtualRadar.Interface
             }
 
             return new FormUrlEncodedContent(kvpList);
+        }
+
+        /// <summary>
+        /// Generates <see cref="StringContent"/> content from an object that gets serialised into JSON.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static StringContent StringContentJson(object obj)
+        {
+            if(obj == null) {
+                throw new ArgumentNullException(nameof(obj));
+            }
+
+            return new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json");
         }
     }
 }

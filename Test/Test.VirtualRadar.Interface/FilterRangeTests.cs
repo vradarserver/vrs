@@ -25,7 +25,7 @@ namespace Test.VirtualRadar.Interface
         public void FilterRange_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
             var filter = new FilterRange<int>();
-            TestUtilities.TestProperty(filter, r => r.Condition, FilterCondition.Invalid, FilterCondition.Equals);
+            TestUtilities.TestProperty(filter, r => r.Condition, FilterCondition.Missing, FilterCondition.Equals);
             TestUtilities.TestProperty(filter, r => r.ReverseCondition, false);
             TestUtilities.TestProperty(filter, r => r.LowerValue, null, 1);
             TestUtilities.TestProperty(filter, r => r.UpperValue, null, 2);
@@ -138,7 +138,7 @@ namespace Test.VirtualRadar.Interface
         private object GenerateValue(Type type, bool useValue1)
         {
             if(type == typeof(FilterCondition)) {
-                return useValue1 ? FilterCondition.Between : FilterCondition.Invalid;
+                return useValue1 ? FilterCondition.Between : FilterCondition.Missing;
             }
             throw new NotImplementedException($"Need to add support for property type {type.Name}");
         }
