@@ -79,6 +79,21 @@ namespace VirtualRadar.WebSite.ApiControllers
             return result;
         }
 
+        private AircraftListJson BuildAircraftList(AircraftListJsonBuilderArgs builderArgs)
+        {
+            if(builderArgs.IsFlightSimulatorList) {
+                builderArgs.AircraftList = Factory.Singleton.Resolve<IFlightSimulatorAircraftList>();
+                builderArgs.SourceFeedId = -1;
+            }
+            builderArgs.IsInternetClient = PipelineRequest.IsInternet;
+
+            //TODO: Stop creating builders, share one between all instances of the controller
+            var builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
+            builder.Initialise(new WebSiteProvider());
+
+            return builder.Build(builderArgs);
+        }
+
         /// <summary>
         /// Returns a list of all aircraft on the feed.
         /// </summary>
@@ -264,20 +279,6 @@ namespace VirtualRadar.WebSite.ApiControllers
                 SourceFeedId =          feed,
                 Filter =                AircraftListJsonBuilderFilterFromQueryString(),
             });
-        }
-
-        private AircraftListJson BuildAircraftList(AircraftListJsonBuilderArgs builderArgs)
-        {
-            if(builderArgs.IsFlightSimulatorList) {
-                builderArgs.AircraftList = Factory.Singleton.Resolve<IFlightSimulatorAircraftList>();
-                builderArgs.SourceFeedId = -1;
-            }
-            builderArgs.IsInternetClient = PipelineRequest.IsInternet;
-
-            var builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
-            builder.Initialise(new WebSiteProvider());
-
-            return builder.Build(builderArgs);
         }
 
         private AircraftListJsonBuilderFilter AircraftListJsonBuilderFilterFromQueryString()

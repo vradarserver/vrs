@@ -40,7 +40,6 @@ namespace TypeLite.TsModels {
         /// </remarks>
         public TsType BaseType { get; internal set; }
 
-        // TODO document
         public IList<TsType> Interfaces { get; internal set; }
 
         /// <summary>
