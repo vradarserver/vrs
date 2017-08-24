@@ -99,7 +99,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                 }
             });
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/aircraft/4008F6/airport-data-thumbnails?reg=G%2DVROS&numThumbs=2");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/4008F6/airport-data-thumbnails?reg=G%2DVROS&numThumbs=2");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<AirportDataThumbnailsJson>(content);
 
@@ -141,7 +141,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             SetupAirportDataDotCom("4008F6", "G-VROS", 1, HttpStatusCode.OK, new AirportDataThumbnailsJson() { Status = 200 });
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/aircraft/4008f6/airport-data-thumbnails?reg=g%2dvros&numThumbs=1");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/4008f6/airport-data-thumbnails?reg=g%2dvros&numThumbs=1");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<AirportDataThumbnailsJson>(content);
 
@@ -153,7 +153,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             SetupAirportDataDotCom("4008F6", null, 1, HttpStatusCode.OK, new AirportDataThumbnailsJson() { Status = 200 });
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/aircraft/4008f6/airport-data-thumbnails?numThumbs=1");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/4008f6/airport-data-thumbnails?numThumbs=1");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<AirportDataThumbnailsJson>(content);
 
@@ -165,7 +165,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             SetupAirportDataDotCom("4008F6", "G-VROS", 1, HttpStatusCode.OK, new AirportDataThumbnailsJson() { Status = 200 });
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/aircraft/4008f6/airport-data-thumbnails?reg=G%2DVROS");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/4008f6/airport-data-thumbnails?reg=G%2DVROS");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<AirportDataThumbnailsJson>(content);
 
@@ -187,7 +187,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         public async Task AircraftController_GetAddcThumbnails_Returns_Error_If_Icao_Is_Garbage()
         {
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/aircraft/garbage/airport-data-thumbnails?reg=g%2dvros&numThumbs=1");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/garbage/airport-data-thumbnails?reg=g%2dvros&numThumbs=1");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<AirportDataThumbnailsJson>(content);
 
@@ -201,7 +201,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             SetupAirportDataDotCom("4008F6", "G-VROS", 1, HttpStatusCode.BadRequest, null);
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/aircraft/4008F6/airport-data-thumbnails?reg=G%2DVROS&numThumbs=1");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/4008F6/airport-data-thumbnails?reg=G%2DVROS&numThumbs=1");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<AirportDataThumbnailsJson>(content);
 
@@ -218,7 +218,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                 throw new InvalidOperationException();
             });
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/aircraft/4008F6/airport-data-thumbnails?reg=G%2DVROS&numThumbs=1");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/4008F6/airport-data-thumbnails?reg=G%2DVROS&numThumbs=1");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<AirportDataThumbnailsJson>(content);
 
@@ -231,7 +231,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         public async Task AircraftController_GetClosest_Returns_Warning_If_Position_Not_Supplied()
         {
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/aircraft/closest");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/closest");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<ProximityGadgetAircraftJson>(content);
 
@@ -246,7 +246,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             SetupSnapshot(SetupClosestAircraftList(10), CreateAircraft(icao: 0x400f86, latitude: 1, longitude: 2));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/aircraft/closest?lat=7&lng=8");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/closest?lat=7&lng=8");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<ProximityGadgetAircraftJson>(content);
 
@@ -274,7 +274,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _FeedManager.Setup(r => r.GetByUniqueId(10, true)).Returns((IFeed)null);
             _FeedManager.Setup(r => r.GetByUniqueId(10, false)).Returns(_Feed.Object);
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/aircraft/closest?lat=7&lng=8");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/closest?lat=7&lng=8");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<ProximityGadgetAircraftJson>(content);
 
@@ -287,7 +287,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             SetupSnapshot(SetupClosestAircraftList(10), CreateAircraft(icao: 0x400f86, latitude: 1, longitude: 2));
             _Feed.SetupGet(r => r.AircraftList).Returns((IBaseStationAircraftList)null);
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/aircraft/closest?lat=7&lng=8");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/closest?lat=7&lng=8");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<ProximityGadgetAircraftJson>(content);
 
@@ -300,7 +300,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _Configuration.InternetClientSettings.AllowInternetProximityGadgets = false;
 
             _RemoteIpAddress = "1.2.3.4";
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/aircraft/closest?lat=7&lng=8");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/closest?lat=7&lng=8");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<ProximityGadgetAircraftJson>(content);
             Assert.IsNull(json);
@@ -312,7 +312,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _Configuration.InternetClientSettings.AllowInternetProximityGadgets = true;
 
             _RemoteIpAddress = "1.2.3.4";
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/aircraft/closest?lat=7&lng=8");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/closest?lat=7&lng=8");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<ProximityGadgetAircraftJson>(content);
             Assert.IsNotNull(json);
@@ -329,7 +329,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             SetupSnapshot(SetupClosestAircraftList(10), CreateAircraft(icao: 0x400f86, latitude: 1, longitude: 2));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/aircraft/closest?lat=7&lng=8");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/closest?lat=7&lng=8");
 
             Assert.IsTrue(response.Content.Headers.ContentType.ToString().StartsWith(MimeType.Text));
         }

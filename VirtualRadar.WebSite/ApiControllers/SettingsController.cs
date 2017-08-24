@@ -32,7 +32,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("api/1.00/settings/server")]
+        [Route("api/3.00/settings/server")]
         [Route("ServerConfig.json")]                // pre version 3 route
         public ServerConfigJson GetServerConfig()
         {

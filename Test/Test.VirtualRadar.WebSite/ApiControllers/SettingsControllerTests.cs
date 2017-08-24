@@ -40,7 +40,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             _RemoteIpAddress = "127.0.0.1";
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/settings/server");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/settings/server");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<ServerConfigJson>(content);
 
@@ -52,7 +52,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             _RemoteIpAddress = "1.2.3.4";
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/settings/server");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/settings/server");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<ServerConfigJson>(content);
 

@@ -40,7 +40,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         /// <param name="numThumbs"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("api/1.00/aircraft/{icao}/airport-data-thumbnails")]
+        [Route("api/3.00/aircraft/{icao}/airport-data-thumbnails")]
         [Route("AirportDataThumbnails.json")]                               // Pre-version 3 route
         public AirportDataThumbnailsJson GetAirportDataDotComThumbnails(string icao, string reg = null, int numThumbs = 1)
         {
@@ -82,7 +82,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         /// API and the proximity gadget are going to be tied up in a sack and thrown off a bridge.
         /// </para></remarks>
         [HttpGet]
-        [Route("api/1.00/aircraft/closest")]
+        [Route("api/3.00/aircraft/closest")]
         [Route("ClosestAircraft.json")]             // pre-version 3 route
         public HttpResponseMessage GetClosest(double? lat = null, double? lng = null)
         {

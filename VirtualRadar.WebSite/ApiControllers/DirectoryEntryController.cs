@@ -45,7 +45,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         /// directory.
         /// </remarks>
         [HttpGet]
-        [Route("api/1.00/directory-entry/{key}")]
+        [Route("api/3.00/directory-entry/{key}")]
         [Route("DirectoryEntry.json")]                  // Pre-version 3 path
         [ResponseType(typeof(DirectoryEntryJson))]
         public IHttpActionResult GetDirectoryEntry(string key = null)

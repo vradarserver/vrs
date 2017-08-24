@@ -88,7 +88,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             var key = Guid.NewGuid();
             SetKey(key);
 
-            var response = await _Server.HttpClient.GetAsync($"/api/1.00/directory-entry/{key}");
+            var response = await _Server.HttpClient.GetAsync($"/api/3.00/directory-entry/{key}");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<DirectoryEntryJson>(content);
 
@@ -116,7 +116,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             var key = Guid.NewGuid();
             SetKey(key, ensureUppercase: true);
 
-            var response = await _Server.HttpClient.GetAsync($"/api/1.00/directory-entry/{key.ToString().ToLower()}");
+            var response = await _Server.HttpClient.GetAsync($"/api/3.00/directory-entry/{key.ToString().ToLower()}");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<DirectoryEntryJson>(content);
 
@@ -131,7 +131,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             SetKey(key);
             SetVersionNumber("1.2.3");
 
-            var response = await _Server.HttpClient.GetAsync($"/api/1.00/directory-entry/{key}");
+            var response = await _Server.HttpClient.GetAsync($"/api/3.00/directory-entry/{key}");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<DirectoryEntryJson>(content);
 
@@ -145,7 +145,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             SetKey(key);
             SetCountVisibleFeeds(2);
 
-            var response = await _Server.HttpClient.GetAsync($"/api/1.00/directory-entry/{key}");
+            var response = await _Server.HttpClient.GetAsync($"/api/3.00/directory-entry/{key}");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<DirectoryEntryJson>(content);
 
@@ -161,7 +161,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             feedMocks[1].SetupGet(r => r.AircraftList).Returns((IBaseStationAircraftList)null);
 
-            var response = await _Server.HttpClient.GetAsync($"/api/1.00/directory-entry/{key}");
+            var response = await _Server.HttpClient.GetAsync($"/api/3.00/directory-entry/{key}");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<DirectoryEntryJson>(content);
 
@@ -175,7 +175,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             SetKey(key);
             SetAircraftListCounts(7, 42, 28);
 
-            var response = await _Server.HttpClient.GetAsync($"/api/1.00/directory-entry/{key}");
+            var response = await _Server.HttpClient.GetAsync($"/api/3.00/directory-entry/{key}");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<DirectoryEntryJson>(content);
 
@@ -187,13 +187,13 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             SetKey(Guid.NewGuid());
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/directory-entry");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/directory-entry");
             var content = await response.Content.ReadAsByteArrayAsync();
 
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
             //Assert.AreEqual(0, content.Length);       web api returns a route not found message in the body because {key} is part of the route
 
-            response = await _Server.HttpClient.GetAsync("/api/1.00/directory-entry/");
+            response = await _Server.HttpClient.GetAsync("/api/3.00/directory-entry/");
             content = await response.Content.ReadAsByteArrayAsync();
 
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
@@ -217,7 +217,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             SetKey(Guid.NewGuid());
         
-            var response = await _Server.HttpClient.GetAsync($"/api/1.00/directory-entry/{Guid.NewGuid()}");
+            var response = await _Server.HttpClient.GetAsync($"/api/3.00/directory-entry/{Guid.NewGuid()}");
             var content = await response.Content.ReadAsByteArrayAsync();
         
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);

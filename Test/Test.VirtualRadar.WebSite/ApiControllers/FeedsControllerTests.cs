@@ -271,7 +271,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _VisibleFeeds.Add(CreateFeed(uniqueId: 1, name: "First", hasPlotter: true, hasDistinctAircraftList: true));
             _VisibleFeeds.Add(CreateFeed(uniqueId: 2, name: "Second", hasPlotter: false, hasDistinctAircraftList: true));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds");
             var content = await response.Content.ReadAsStringAsync();
             var feeds = JsonConvert.DeserializeObject<FeedJson[]>(content);
 
@@ -290,7 +290,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         public async Task FeedsController_GetFeeds_Returns_Empty_Array_If_All_Feeds_Are_Invisible()
         {
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds");
             var content = await response.Content.ReadAsStringAsync();
             var feeds = JsonConvert.DeserializeObject<FeedJson[]>(content);
 
@@ -305,7 +305,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 1, name: "Feed", hasPlotter: true, isVisible: true));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/1");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/1");
             var content = await response.Content.ReadAsStringAsync();
             var feed = JsonConvert.DeserializeObject<FeedJson>(content);
 
@@ -320,7 +320,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 1));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/2");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/2");
             var content = await response.Content.ReadAsStringAsync();
             var feed = JsonConvert.DeserializeObject<FeedJson>(content);
 
@@ -333,7 +333,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 1, isVisible: false));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/1");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/1");
             var content = await response.Content.ReadAsStringAsync();
             var feed = JsonConvert.DeserializeObject<FeedJson>(content);
 
@@ -348,7 +348,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             ConfigureGetFeedById(CreateFeed());
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/polar-plot/1");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/polar-plot/1");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
 
@@ -379,7 +379,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             ConfigureGetFeedById(CreateFeed(uniqueId: 2));
             _Slices.Add(CreatePolarPlotSlice(100, 199, new PolarPlot() { Angle = 1, Altitude = 150, Distance = 7, Latitude = 10.1, Longitude = 11.2 }));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/polar-plot/2");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/polar-plot/2");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
 
@@ -399,7 +399,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 2));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/polar-plot/1");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/polar-plot/1");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
 
@@ -413,7 +413,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 1, isVisible: false));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/polar-plot/1");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/polar-plot/1");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
 
@@ -429,7 +429,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             feed.SetupGet(r => r.AircraftList).Returns((IBaseStationAircraftList)null);
             ConfigureGetFeedById(feed);
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/polar-plot/1");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/polar-plot/1");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
 
@@ -443,7 +443,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 1, hasPlotter: false));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/polar-plot/1");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/polar-plot/1");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
 
@@ -461,7 +461,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             ConfigureGetFeedById(CreateFeed(uniqueId: 1));
             _Slices.Add(CreatePolarPlotSlice(100, 199, new PolarPlot() { Angle = 1, Altitude = 150, Distance = 7, Latitude = 10.1, Longitude = 11.2 }));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/polar-plot/1");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/polar-plot/1");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
 
@@ -479,7 +479,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             ConfigureGetFeedById(CreateFeed(uniqueId: 1));
             _Slices.Add(CreatePolarPlotSlice(100, 199, new PolarPlot() { Angle = 1, Altitude = 150, Distance = 7, Latitude = 10.1, Longitude = 11.2 }));
 
-            var response = await _Server.HttpClient.GetAsync("/api/1.00/feeds/polar-plot/1");
+            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/polar-plot/1");
             var content = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
 
@@ -502,7 +502,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         public async Task FeedsController_AircraftList_Returns_Default_Aircraft_List_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", _EmptyPostBody);
+            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", _EmptyPostBody);
 
             var expected = ExpectedAircraftListJsonBuilderArgs();
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
@@ -520,7 +520,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         public async Task FeedsController_AircraftList_Can_Specify_Feed_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list/7", _EmptyPostBody);
+            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list/7", _EmptyPostBody);
 
             var expected = ExpectedAircraftListJsonBuilderArgs(feedId: 7);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
@@ -538,7 +538,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         public async Task FeedsController_AircraftList_Can_Specify_Browser_Location_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.FormUrlEncoded(new [,] {
+            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.FormUrlEncoded(new [,] {
                 { "Latitude",  "1.2" },
                 { "Longitude", "3.4" },
             }));
@@ -566,14 +566,14 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         public async Task FeedsController_AircraftList_Identifies_Internet_Clients_V3()
         {
             _RemoteIpAddress = "127.0.0.1";
-            await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", _EmptyPostBody);
+            await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", _EmptyPostBody);
             Assert.AreEqual(false, _ActualAircraftListJsonBuilderArgs.IsInternetClient);
 
             TestCleanup();
             TestInitialise();
 
             _RemoteIpAddress = "1.2.3.4";
-            await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", _EmptyPostBody);
+            await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", _EmptyPostBody);
             Assert.AreEqual(true, _ActualAircraftListJsonBuilderArgs.IsInternetClient);
         }
 
@@ -589,7 +589,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         public async Task FeedsController_AircraftList_Can_Specify_Last_DataVersion_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.FormUrlEncoded(new [,] {
+            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.FormUrlEncoded(new [,] {
                 { "LastDataVersion", "12" },
             }));
 
@@ -609,7 +609,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         public async Task FeedsController_AircraftList_Can_Specify_ServerTimeTicks_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.FormUrlEncoded(new [,] {
+            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.FormUrlEncoded(new [,] {
                 { "ServerTicks", "12" },
             }));
 
@@ -629,7 +629,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         public async Task FeedsController_AircraftList_Can_Force_Resend_Of_Trails_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.FormUrlEncoded(new [,] {
+            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.FormUrlEncoded(new [,] {
                 { "ResendTrails", "true" },
             }));
 
@@ -649,7 +649,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         public async Task FeedsController_AircraftList_Can_Specify_SelectedAircraft_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.FormUrlEncoded(new [,] {
+            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.FormUrlEncoded(new [,] {
                 { "SelectedAircraft", "8" },
             }));
 
@@ -669,7 +669,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         public async Task FeedsController_AircraftList_Can_Specify_FSX_AircraftList_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.FormUrlEncoded(new [,] {
+            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.FormUrlEncoded(new [,] {
                 { "FlightSimulator", "true" },
             }));
 
@@ -689,7 +689,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         public async Task FeedsController_AircraftList_Ignores_Feed_For_FSX_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list/7", HttpContentHelper.FormUrlEncoded(new [,] {
+            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list/7", HttpContentHelper.FormUrlEncoded(new [,] {
                 { "FlightSimulator", "true" },
             }));
 
@@ -724,7 +724,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             if(!String.IsNullOrEmpty(filterJson)) {
                 var deserialisedJson = JsonConvert.DeserializeObject<GetAircraftListFilter>(filterJson);
-                await FeedsController_AircraftList_Accepts_Filter_Requests_Worker(worksheet, "/api/1.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                await FeedsController_AircraftList_Accepts_Filter_Requests_Worker(worksheet, "/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
                     Filters = new GetAircraftListFilter[] {
                         deserialisedJson
                     }
@@ -873,7 +873,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                     case FilterCondition.Missing:       conditionIsValid = isIntRangeFilter || isDoubleRangeFilter || isEnumFilter || isBoolFilter; break;
                 }
 
-                var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
                     Filters = new GetAircraftListFilter[] {
                         filter
                     }
@@ -910,7 +910,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                 West = 5.6,
                 East = 7.8,
             };
-            var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
                 Filters = new GetAircraftListFilter[] {
                     filter
                 }
@@ -938,7 +938,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                 North = 1.2,
                 West = 5.6,
             };
-            var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
                 Filters = new GetAircraftListFilter[] {
                     filter
                 }
@@ -979,7 +979,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                 TestInitialise();
 
                 var expected = ExpectedAircraftListJsonBuilderArgs(trailType: trailType);
-                var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
                     TrailType = trailType,
                 }));
 
@@ -1018,7 +1018,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                         sortColumn1: aircraftComparerColumn,
                         sortAscending1: ascending
                     );
-                    var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                    var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
                         SortBy = new object [] {
                             new { Col = aircraftComparerColumn, Asc = ascending },
                         }
@@ -1068,7 +1068,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                         sortColumn2: aircraftComparerColumn,
                         sortAscending2: ascending
                     );
-                    var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                    var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
                         SortBy = new object [] {
                             new { Col = AircraftComparerColumn.Altitude },
                             new { Col = aircraftComparerColumn, Asc = ascending },
@@ -1101,7 +1101,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                 0x4008f6,
             });
 
-            var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
                 PreviousAircraft = new string [] {
                     "4008f6",
                 }
@@ -1133,7 +1133,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                 0xA88CC0,
             });
 
-            var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
                 PreviousAircraft = new string [] {
                     "4008f6", "A88CC0",
                 }
@@ -1159,7 +1159,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             var expected = ExpectedAircraftListJsonBuilderArgs();
 
-            var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
                 PreviousAircraft = new string [] {
                     "ANDREW",
                 }

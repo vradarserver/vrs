@@ -35,7 +35,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         /// Returns a list of every public facing feed.
         /// </summary>
         /// <returns></returns>
-        [HttpGet, Route("api/1.00/feeds")]
+        [HttpGet, Route("api/3.00/feeds")]
         public FeedJson[] GetFeeds()
         {
             var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
@@ -47,7 +47,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet, Route("api/1.00/feeds/{id}")]
+        [HttpGet, Route("api/3.00/feeds/{id}")]
         public FeedJson GetFeed(int id)
         {
             var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
@@ -60,7 +60,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         /// <param name="feedId"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("api/1.00/feeds/polar-plot/{feedId}")]
+        [Route("api/3.00/feeds/polar-plot/{feedId}")]
         [Route("PolarPlot.json")]                       // pre-version 3 route
         public PolarPlotsJson GetPolarPlot(int feedId = -1)
         {
@@ -101,7 +101,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         /// <param name="feedId">The numeric feed ID. If not supplied then the default feed is used.</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("api/1.00/feeds/aircraft-list/{feedId?}")]
+        [Route("api/3.00/feeds/aircraft-list/{feedId?}")]
         public AircraftListJson AircraftList(GetAircraftListModel model, int feedId = -1)
         {
             var args = new AircraftListJsonBuilderArgs() {
