@@ -41,6 +41,8 @@ namespace VirtualRadar.Interface.WebSite
         public TrailType TrailType { get; set; }
 
         public List<GetAircraftListSortByModel> SortBy { get; set; } = new List<GetAircraftListSortByModel>();
+
+        public List<string> PreviousAircraft { get; set; } = new List<string>();
     }
 
     public class GetAircraftListSortByModel
@@ -48,5 +50,10 @@ namespace VirtualRadar.Interface.WebSite
         public string Col { get; set; }
 
         public bool Asc { get; set; } = true;
+    }
+
+    public class GetAircraftListPreviousAircraftV2Model
+    {
+        public string Icaos { get; set; }
     }
 }

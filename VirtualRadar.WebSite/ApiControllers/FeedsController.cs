@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -116,6 +117,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 TrailType =             model?.TrailType ?? TrailType.None,
             };
             SortByFromModel(args, model);
+            PreviousAircraftFromModel(args, model);
 
             return BuildAircraftList(args);
         }
@@ -128,6 +130,18 @@ namespace VirtualRadar.WebSite.ApiControllers
                 for(var i = 0;i < Math.Min(2, model.SortBy.Count);++i) {
                     var sortBy = model.SortBy[i];
                     args.SortBy.Add(new KeyValuePair<string, bool>(sortBy.Col, sortBy.Asc));
+                }
+            }
+        }
+
+        private void PreviousAircraftFromModel(AircraftListJsonBuilderArgs args, GetAircraftListModel model)
+        {
+            if(model != null && model.PreviousAircraft != null && model.PreviousAircraft.Count > 0) {
+                foreach(var icao in model.PreviousAircraft) {
+                    var id = CustomConvert.Icao24(icao);
+                    if(id != -1) {
+                        args.PreviousAircraft.Add(id);
+                    }
                 }
             }
         }
@@ -296,8 +310,32 @@ namespace VirtualRadar.WebSite.ApiControllers
                 TrailType =             TrailTypeFromCode(trFmt),
             };
             SortByFromQueryString(args);
+            PreviousAircraftFromPostBody(args);
 
             return BuildAircraftList(args);
+        }
+
+        private void PreviousAircraftFromPostBody(AircraftListJsonBuilderArgs args)
+        {
+            var bodyStream = PipelineContext.Request.Body;
+            if(bodyStream != null && bodyStream != Stream.Null) {
+                using(var reader = new StreamReader(bodyStream)) {
+                    var content = reader.ReadToEnd()?.Trim();
+                    if(!String.IsNullOrEmpty(content)) {
+                        var icaosIdx = content.IndexOf("icaos=", StringComparison.OrdinalIgnoreCase);
+                        var icaos = icaosIdx == -1 ? "" : content.Substring(icaosIdx + 6).Trim();
+
+                        if(!String.IsNullOrEmpty(icaos)) {
+                            foreach(var icao in icaos.Split('-')) {
+                                var id = CustomConvert.Icao24(icao);
+                                if(id != -1) {
+                                    args.PreviousAircraft.Add(id);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private TrailType TrailTypeFromCode(string trFmt)
