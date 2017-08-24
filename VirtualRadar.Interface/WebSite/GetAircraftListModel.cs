@@ -37,5 +37,16 @@ namespace VirtualRadar.Interface.WebSite
         public bool FlightSimulator { get; set; }
 
         public List<GetAircraftListFilter> Filters { get; set; } = new List<GetAircraftListFilter>();
+
+        public TrailType TrailType { get; set; }
+
+        public List<GetAircraftListSortByModel> SortBy { get; set; } = new List<GetAircraftListSortByModel>();
+    }
+
+    public class GetAircraftListSortByModel
+    {
+        public string Col { get; set; }
+
+        public bool Asc { get; set; } = true;
     }
 }

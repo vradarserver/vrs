@@ -103,7 +103,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         [Route("api/1.00/feeds/aircraft-list/{feedId?}")]
         public AircraftListJson AircraftList(GetAircraftListModel model, int feedId = -1)
         {
-            return BuildAircraftList(new AircraftListJsonBuilderArgs() {
+            var args = new AircraftListJsonBuilderArgs() {
                 BrowserLatitude =       model?.Latitude,
                 BrowserLongitude =      model?.Longitude,
                 IsFlightSimulatorList = model?.FlightSimulator ?? false,
@@ -113,7 +113,23 @@ namespace VirtualRadar.WebSite.ApiControllers
                 ServerTimeTicks =       model?.ServerTicks ?? -1L,
                 SourceFeedId =          feedId,
                 Filter =                ExpandModelFilters(model?.Filters),
-            });
+                TrailType =             model?.TrailType ?? TrailType.None,
+            };
+            SortByFromModel(args, model);
+
+            return BuildAircraftList(args);
+        }
+
+        private void SortByFromModel(AircraftListJsonBuilderArgs args, GetAircraftListModel model)
+        {
+            if(model == null || model.SortBy == null || model.SortBy.Count == 0) {
+                SetDefaultAircraftListSortBy(args);
+            } else {
+                for(var i = 0;i < Math.Min(2, model.SortBy.Count);++i) {
+                    var sortBy = model.SortBy[i];
+                    args.SortBy.Add(new KeyValuePair<string, bool>(sortBy.Col, sortBy.Asc));
+                }
+            }
         }
 
         private AircraftListJsonBuilderFilter ExpandModelFilters(List<GetAircraftListFilter> filters)
@@ -264,11 +280,10 @@ namespace VirtualRadar.WebSite.ApiControllers
         [HttpPost]
         [Route("AircraftList.json")]            // pre-version 3 route
         [Route("FlightSimList.json")]           // pre-version 3 route
-        public AircraftListJson AircraftListV2([FromUri] int feed = -1, double? lat = null, double? lng = null, long ldv = -1, long stm = -1, byte refreshTrails = 0, int selAc = -1)
+        public AircraftListJson AircraftListV2([FromUri] int feed = -1, double? lat = null, double? lng = null, long ldv = -1, long stm = -1, byte refreshTrails = 0, int selAc = -1, string trFmt = null)
         {
             var isFlightSimList = RequestContext.RouteData.Route.RouteTemplate == "FlightSimList.json";
-
-            return BuildAircraftList(new AircraftListJsonBuilderArgs() {
+            var args = new AircraftListJsonBuilderArgs() {
                 BrowserLatitude =       lat,
                 BrowserLongitude =      lng,
                 IsFlightSimulatorList = isFlightSimList,
@@ -278,7 +293,53 @@ namespace VirtualRadar.WebSite.ApiControllers
                 ServerTimeTicks =       stm,
                 SourceFeedId =          feed,
                 Filter =                AircraftListJsonBuilderFilterFromQueryString(),
-            });
+                TrailType =             TrailTypeFromCode(trFmt),
+            };
+            SortByFromQueryString(args);
+
+            return BuildAircraftList(args);
+        }
+
+        private TrailType TrailTypeFromCode(string trFmt)
+        {
+            var result = TrailType.None;
+
+            if(!String.IsNullOrEmpty(trFmt)) {
+                switch(trFmt) {
+                    case "F":   result = TrailType.Full; break;
+                    case "FA":  result = TrailType.FullAltitude; break;
+                    case "FS":  result = TrailType.FullSpeed; break;
+                    case "S":   result = TrailType.Short; break;
+                    case "SA":  result = TrailType.ShortAltitude; break;
+                    case "SS":  result = TrailType.ShortSpeed; break;
+                }
+            }
+
+            return result;
+        }
+
+        private void SortByFromQueryString(AircraftListJsonBuilderArgs args)
+        {
+            var query = PipelineContext.Request.Query;
+
+            var sortBy1 = (query["sortBy1"] ?? "").ToUpper();
+            if(sortBy1 == "") {
+                SetDefaultAircraftListSortBy(args);
+            } else {
+                var sortOrder1 = (query["sortOrder1"] ?? "").ToUpper();
+                args.SortBy.Add(new KeyValuePair<string, bool>(sortBy1, sortOrder1 == "ASC"));
+
+                var sortBy2 = (query["sortBy2"] ?? "").ToUpper();
+                if(sortBy2 != "") {
+                    var sortOrder2 = (query["sortOrder2"] ?? "").ToUpper();
+                    args.SortBy.Add(new KeyValuePair<string, bool>(sortBy2, sortOrder2 == "ASC"));
+                }
+            }
+        }
+
+        private static void SetDefaultAircraftListSortBy(AircraftListJsonBuilderArgs args)
+        {
+            args.SortBy.Add(new KeyValuePair<string, bool>(AircraftComparerColumn.FirstSeen, false));
         }
 
         private AircraftListJsonBuilderFilter AircraftListJsonBuilderFilterFromQueryString()

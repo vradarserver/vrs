@@ -129,10 +129,15 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             int selectedAircraftID = -1,
             long serverTimeTicks = -1,
             bool isFlightSimulator = false,
-            AircraftListJsonBuilderFilter filter = null
+            AircraftListJsonBuilderFilter filter = null,
+            TrailType trailType = TrailType.None,
+            string sortColumn1 = null,
+            bool sortAscending1 = false,
+            string sortColumn2 = null,
+            bool sortAscending2 = false
         )
         {
-            return new AircraftListJsonBuilderArgs() {
+            var result = new AircraftListJsonBuilderArgs() {
                 AircraftList =          isFlightSimulator ? _FlightSimulatorAircraftList.Object : null,
                 BrowserLatitude =       latitude,
                 BrowserLongitude =      longitude,
@@ -143,7 +148,19 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                 SelectedAircraftId =    selectedAircraftID,
                 ServerTimeTicks =       serverTimeTicks,
                 SourceFeedId =          feedId,
+                TrailType =             trailType,
             };
+
+            if(sortColumn1 == null) {
+                result.SortBy.Add(new KeyValuePair<string, bool>(AircraftComparerColumn.FirstSeen, false));
+            } else {
+                result.SortBy.Add(new KeyValuePair<string, bool>(sortColumn1, sortAscending1));
+                if(sortColumn2 != null) {
+                    result.SortBy.Add(new KeyValuePair<string, bool>(sortColumn2, sortAscending2));
+                }
+            }
+
+            return result;
         }
 
         private void AssertBuilderArgsAreEqual(AircraftListJsonBuilderArgs expected, AircraftListJsonBuilderArgs actual)
@@ -168,8 +185,10 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             Assert.AreEqual(expected.SelectedAircraftId,    actual.SelectedAircraftId);
             Assert.AreEqual(expected.ServerTimeTicks,       actual.ServerTimeTicks);
             Assert.AreEqual(expected.SourceFeedId,          actual.SourceFeedId);
+            Assert.AreEqual(expected.TrailType,             actual.TrailType);
 
             AssertFiltersAreEqual(expected.Filter, actual.Filter);
+            AssertSortColumnsAreEqual(expected.SortBy, actual.SortBy);
         }
 
         private void AssertFiltersAreEqual(AircraftListJsonBuilderFilter expected, AircraftListJsonBuilderFilter actual)
@@ -204,6 +223,33 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             Assert.AreEqual(expected.Type,                      actual.Type);
             Assert.AreEqual(expected.UserTag,                   actual.UserTag);
             Assert.AreEqual(expected.WakeTurbulenceCategory,    actual.WakeTurbulenceCategory);
+        }
+
+        private void AssertSortColumnsAreEqual(List<KeyValuePair<string, bool>> expected, List<KeyValuePair<string, bool>> actual)
+        {
+            Assert.AreEqual(expected.Count, actual.Count);
+
+            for(var i = 0;i < expected.Count;++i) {
+                var expectedSortColumn = expected[i].Key;
+                var actualSortColumn = actual[i].Key;
+
+                var expectedAscending = expected[i].Value;
+                var actualAscending = actual[i].Value;
+
+                Assert.AreEqual(expectedSortColumn, actualSortColumn, $"Expected sort column {expectedSortColumn}, actual was {actualSortColumn} for index {i}");
+                Assert.AreEqual(expectedAscending, actualAscending, $"Expected ascending {expectedAscending}, actual was {actualAscending} for index {i}");
+            }
+        }
+
+        private static List<string> AircraftComparerColumns()
+        {
+            var result = new List<string>();
+
+            foreach(var field in typeof(AircraftComparerColumn).GetFields().Where(r => r.FieldType == typeof(string) && r.IsLiteral)) {
+                result.Add((string)field.GetValue(null));
+            }
+
+            return result;
         }
 
         #region GetFeeds
@@ -887,6 +933,139 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             }));
 
             Assert.IsNull(_ActualAircraftListJsonBuilderArgs.Filter);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Can_Specify_Trail_Format_V2()
+        {
+            foreach(var queryStringValue in new string[] { "F", "FA", "FS", "S", "SA", "SS" }) {
+                TestCleanup();
+                TestInitialise();
+
+                var trailType = TrailType.None;
+                switch(queryStringValue) {
+                    case "F":   trailType = TrailType.Full; break;
+                    case "FA":  trailType = TrailType.FullAltitude; break;
+                    case "FS":  trailType = TrailType.FullSpeed; break;
+                    case "S":   trailType = TrailType.Short; break;
+                    case "SA":  trailType = TrailType.ShortAltitude; break;
+                    case "SS":  trailType = TrailType.ShortSpeed; break;
+                }
+
+                var expected = ExpectedAircraftListJsonBuilderArgs(trailType: trailType);
+                var response = await _Server.HttpClient.PostAsync($"AircraftList.json?trFmt={queryStringValue}", _EmptyPostBody);
+
+                AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+            }
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Can_Specify_Trail_Format_V3()
+        {
+            foreach(TrailType trailType in Enum.GetValues(typeof(TrailType))) {
+                TestCleanup();
+                TestInitialise();
+
+                var expected = ExpectedAircraftListJsonBuilderArgs(trailType: trailType);
+                var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                    TrailType = trailType,
+                }));
+
+                AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+            }
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Can_Specify_Single_Sort_Column_V2()
+        {
+            foreach(var aircraftComparerColumn in AircraftComparerColumns()) {
+                foreach(var sortOrder in new string[] { "asc", "desc" }) {
+                    TestCleanup();
+                    TestInitialise();
+
+                    var expected = ExpectedAircraftListJsonBuilderArgs(
+                        sortColumn1: aircraftComparerColumn,
+                        sortAscending1: sortOrder == "asc"
+                    );
+                    var response = await _Server.HttpClient.PostAsync($"AircraftList.json?sortBy1={aircraftComparerColumn}&sortOrder1={sortOrder}", _EmptyPostBody);
+
+                    AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Can_Specify_Single_Sort_Column_V3()
+        {
+            foreach(var aircraftComparerColumn in AircraftComparerColumns()) {
+                foreach(var ascending in new bool[] { true, false }) {
+                    TestCleanup();
+                    TestInitialise();
+
+                    var expected = ExpectedAircraftListJsonBuilderArgs(
+                        sortColumn1: aircraftComparerColumn,
+                        sortAscending1: ascending
+                    );
+                    var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                        SortBy = new object [] {
+                            new { Col = aircraftComparerColumn, Asc = ascending },
+                        }
+                    }));
+
+                    AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Can_Specify_Two_Sort_Columns_V2()
+        {
+            foreach(var aircraftComparerColumn in AircraftComparerColumns()) {
+                foreach(var sortOrder in new string[] { "asc", "desc" }) {
+                    TestCleanup();
+                    TestInitialise();
+
+                    var expected = ExpectedAircraftListJsonBuilderArgs(
+                        sortColumn1: AircraftComparerColumn.Altitude,
+                        sortAscending1: true,
+
+                        sortColumn2: aircraftComparerColumn,
+                        sortAscending2: sortOrder == "asc"
+                    );
+                    var response = await _Server.HttpClient.PostAsync($"AircraftList.json?sortBy1={AircraftComparerColumn.Altitude}&sortOrder1=ASC" +
+                        $"&sortBy2={aircraftComparerColumn}&sortOrder2={sortOrder}",
+                    _EmptyPostBody);
+
+                    AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Can_Specify_Two_Sort_Columns_V3()
+        {
+            foreach(var aircraftComparerColumn in AircraftComparerColumns()) {
+                foreach(var ascending in new bool[] { true, false }) {
+                    TestCleanup();
+                    TestInitialise();
+
+                    var expected = ExpectedAircraftListJsonBuilderArgs(
+                        sortColumn1: AircraftComparerColumn.Altitude,
+                        sortAscending1: true,
+
+                        sortColumn2: aircraftComparerColumn,
+                        sortAscending2: ascending
+                    );
+                    var response = await _Server.HttpClient.PostAsync("/api/1.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                        SortBy = new object [] {
+                            new { Col = AircraftComparerColumn.Altitude },
+                            new { Col = aircraftComparerColumn, Asc = ascending },
+                        }
+                    }));
+
+                    AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+                }
+            }
         }
         #endregion
     }
