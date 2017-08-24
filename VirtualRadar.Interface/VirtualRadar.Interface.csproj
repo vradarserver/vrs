@@ -215,6 +215,7 @@
     <Compile Include="WebSite\GetAircraftListFilter.cs" />
     <Compile Include="WebSite\GetAircraftListFilterField.cs" />
     <Compile Include="WebSite\GetAircraftListModel.cs" />
+    <Compile Include="WebSite\GetAircraftListSortByModel.cs" />
     <Compile Include="WebSite\WebAdminMethodAttribute.cs" />
     <Compile Include="WebSite\WebAdminModels.cs" />
     <Compile Include="WebSite\WebAdminView.cs" />

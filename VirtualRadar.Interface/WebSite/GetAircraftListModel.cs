@@ -22,38 +22,60 @@ namespace VirtualRadar.Interface.WebSite
     /// </summary>
     public class GetAircraftListModel
     {
+        /// <summary>
+        /// The browser's latitude.
+        /// </summary>
         public double? Latitude { get; set; }
 
+        /// <summary>
+        /// The browser's longitude.
+        /// </summary>
         public double? Longitude { get; set; }
 
+        /// <summary>
+        /// The last data version received by the browser.
+        /// </summary>
         public long LastDataVersion { get; set; } = -1L;
 
+        /// <summary>
+        /// The last server ticks value received by the browser.
+        /// </summary>
         public long ServerTicks { get; set; } = -1L;
 
+        /// <summary>
+        /// True if the browser wants trails resent for every aircraft in the list, not just those
+        /// that have changed since the last fetch.
+        /// </summary>
         public bool ResendTrails { get; set; }
 
+        /// <summary>
+        /// The ID of the aircraft currently selected by the user.
+        /// </summary>
         public int SelectedAircraft { get; set; } = -1;
 
+        /// <summary>
+        /// True if the user wants the FSX aircraft list rather than the real life aircraft list.
+        /// </summary>
         public bool FlightSimulator { get; set; }
 
-        public List<GetAircraftListFilter> Filters { get; set; } = new List<GetAircraftListFilter>();
-
+        /// <summary>
+        /// The type of aircraft trails that the user would like to see.
+        /// </summary>
         public TrailType TrailType { get; set; }
 
+        /// <summary>
+        /// A collection of objects used to filter the aircraft list before sending it to the browser.
+        /// </summary>
+        public List<GetAircraftListFilter> Filters { get; set; } = new List<GetAircraftListFilter>();
+
+        /// <summary>
+        /// A collection of objects used to sort the aircraft list before sending it to the user.
+        /// </summary>
         public List<GetAircraftListSortByModel> SortBy { get; set; } = new List<GetAircraftListSortByModel>();
 
+        /// <summary>
+        /// A collection of all aircraft ICAOs that the browser is currently tracking.
+        /// </summary>
         public List<string> PreviousAircraft { get; set; } = new List<string>();
-    }
-
-    public class GetAircraftListSortByModel
-    {
-        public string Col { get; set; }
-
-        public bool Asc { get; set; } = true;
-    }
-
-    public class GetAircraftListPreviousAircraftV2Model
-    {
-        public string Icaos { get; set; }
     }
 }
