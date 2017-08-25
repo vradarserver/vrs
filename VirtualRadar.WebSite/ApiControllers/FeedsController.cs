@@ -96,7 +96,7 @@ namespace VirtualRadar.WebSite.ApiControllers
 
             var sharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
             var configLastChanged = JavascriptHelper.ToJavascriptTicks(sharedConfiguration.GetConfigurationChangedUtc());
-            if(configLastChanged < builderArgs.ServerTimeTicks) {
+            if(configLastChanged > builderArgs.ServerTimeTicks) {
                 result.ServerConfigChanged = true;
             }
 

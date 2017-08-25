@@ -221,11 +221,6 @@ namespace VirtualRadar.WebSite
         private List<Page> _Pages = new List<Page>();
 
         /// <summary>
-        /// The page that will deal with requests for aircraft lists.
-        /// </summary>
-        private AircraftListJsonPage _AircraftListJsonPage;
-
-        /// <summary>
         /// The page that deals with identifying CORS requests, validating them and handling CORS options requests.
         /// </summary>
         private CorsPreflightPage _CorsPreflightPage;
@@ -247,8 +242,8 @@ namespace VirtualRadar.WebSite
         /// </summary>
         public IFlightSimulatorAircraftList FlightSimulatorAircraftList
         {
-            get { return _AircraftListJsonPage.FlightSimulatorAircraftList; }
-            set { _AircraftListJsonPage.FlightSimulatorAircraftList = value; }
+            get { return Factory.Singleton.Resolve<IFlightSimulatorAircraftList>(); }
+            set { ; }
         }
 
         /// <summary>
@@ -299,7 +294,6 @@ namespace VirtualRadar.WebSite
         {
             Provider = Factory.Singleton.Resolve<IWebSiteProvider>();
 
-            _AircraftListJsonPage = new AircraftListJsonPage(this);
             _CorsPreflightPage = new CorsPreflightPage(this);
             _ReportRowsJsonPage = new ReportRowsJsonPage(this);
         }
@@ -342,7 +336,6 @@ namespace VirtualRadar.WebSite
 
                 _Pages.Add(_CorsPreflightPage);
                 _Pages.Add(new TextPage(this));
-                _Pages.Add(_AircraftListJsonPage);
                 _Pages.Add(_ReportRowsJsonPage);
 
                 var fileSystemConfiguration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;

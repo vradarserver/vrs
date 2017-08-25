@@ -1190,7 +1190,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
 
-            var response = await _Server.HttpClient.PostAsync($"AircraftList.json?stm={configLastLoadedTicks + 1}", _EmptyPostBody);
+            var response = await _Server.HttpClient.PostAsync($"AircraftList.json?stm={configLastLoadedTicks - 1}", _EmptyPostBody);
             var jsonText = response.Content.ReadAsStringAsync().Result;
             var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
 
@@ -1206,7 +1206,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
 
             var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
-                ServerTicks = configLastLoadedTicks + 1,
+                ServerTicks = configLastLoadedTicks - 1,
             }));
             var jsonText = response.Content.ReadAsStringAsync().Result;
             var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
@@ -1222,7 +1222,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
 
-            var response = await _Server.HttpClient.PostAsync($"AircraftList.json?stm={configLastLoadedTicks - 1}", _EmptyPostBody);
+            var response = await _Server.HttpClient.PostAsync($"AircraftList.json?stm={configLastLoadedTicks + 1}", _EmptyPostBody);
             var jsonText = response.Content.ReadAsStringAsync().Result;
             var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
 
@@ -1238,7 +1238,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
 
             var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
-                ServerTicks = configLastLoadedTicks - 1,
+                ServerTicks = configLastLoadedTicks + 1,
             }));
             var jsonText = response.Content.ReadAsStringAsync().Result;
             var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
