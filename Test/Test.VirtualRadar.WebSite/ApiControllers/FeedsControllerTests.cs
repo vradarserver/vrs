@@ -1181,6 +1181,70 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Sets_ServerConfigChanged_If_Changed_V2()
+        {
+            var configLastLoaded = new DateTime(1, 7, 29);
+            var configLastLoadedTicks = JavascriptHelper.ToJavascriptTicks(configLastLoaded);
+
+            _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
+
+            var response = await _Server.HttpClient.PostAsync($"AircraftList.json?stm={configLastLoadedTicks + 1}", _EmptyPostBody);
+            var jsonText = response.Content.ReadAsStringAsync().Result;
+            var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
+
+            Assert.IsTrue(aircraftList.ServerConfigChanged);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Sets_ServerConfigChanged_If_Changed_V3()
+        {
+            var configLastLoaded = new DateTime(1, 7, 29);
+            var configLastLoadedTicks = JavascriptHelper.ToJavascriptTicks(configLastLoaded);
+
+            _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
+
+            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                ServerTicks = configLastLoadedTicks + 1,
+            }));
+            var jsonText = response.Content.ReadAsStringAsync().Result;
+            var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
+
+            Assert.IsTrue(aircraftList.ServerConfigChanged);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Clears_ServerConfigChanged_If_Not_Changed_V2()
+        {
+            var configLastLoaded = new DateTime(1, 7, 29);
+            var configLastLoadedTicks = JavascriptHelper.ToJavascriptTicks(configLastLoaded);
+
+            _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
+
+            var response = await _Server.HttpClient.PostAsync($"AircraftList.json?stm={configLastLoadedTicks - 1}", _EmptyPostBody);
+            var jsonText = response.Content.ReadAsStringAsync().Result;
+            var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
+
+            Assert.IsFalse(aircraftList.ServerConfigChanged);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Clears_ServerConfigChanged_If_Not_Changed_V3()
+        {
+            var configLastLoaded = new DateTime(1, 7, 29);
+            var configLastLoadedTicks = JavascriptHelper.ToJavascriptTicks(configLastLoaded);
+
+            _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
+
+            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                ServerTicks = configLastLoadedTicks - 1,
+            }));
+            var jsonText = response.Content.ReadAsStringAsync().Result;
+            var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
+
+            Assert.IsFalse(aircraftList.ServerConfigChanged);
+        }
         #endregion
     }
 }

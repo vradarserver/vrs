@@ -92,7 +92,15 @@ namespace VirtualRadar.WebSite.ApiControllers
             var builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
             builder.Initialise(new WebSiteProvider());
 
-            return builder.Build(builderArgs);
+            var result = builder.Build(builderArgs);
+
+            var sharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+            var configLastChanged = JavascriptHelper.ToJavascriptTicks(sharedConfiguration.GetConfigurationChangedUtc());
+            if(configLastChanged < builderArgs.ServerTimeTicks) {
+                result.ServerConfigChanged = true;
+            }
+
+            return result;
         }
 
         /// <summary>

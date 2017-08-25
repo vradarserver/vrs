@@ -24,7 +24,6 @@ namespace VirtualRadar.Library.Settings
     /// </summary>
     class SharedConfiguration : ISharedConfiguration
     {
-        #region Fields
         /// <summary>
         /// The lock that stops two threads from simultaenously loading configurations.
         /// </summary>
@@ -34,6 +33,11 @@ namespace VirtualRadar.Library.Settings
         /// The current configuration.
         /// </summary>
         private Configuration _Configuration;
+
+        /// <summary>
+        /// The date and time (at UTC) when the configuration was loaded.
+        /// </summary>
+        private DateTime _ConfigurationLoadedUtc;
 
         /// <summary>
         /// The object that loads the configuration.
@@ -49,9 +53,7 @@ namespace VirtualRadar.Library.Settings
         /// A list of weak references to subscribers of configuration changed events.
         /// </summary>
         private List<WeakReference<ISharedConfigurationSubscriber>> _Subscribers;
-        #endregion
 
-        #region Properties
         private static ISharedConfiguration _Singleton = new SharedConfiguration();
         /// <summary>
         /// See interface docs.
@@ -60,9 +62,7 @@ namespace VirtualRadar.Library.Settings
         {
             get { return _Singleton; }
         }
-        #endregion
 
-        #region Events exposed
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -80,11 +80,9 @@ namespace VirtualRadar.Library.Settings
                 log.WriteLine("Caught exception in shared ConfigurationChanged handler: {0}", ex.ToString());
             });
         }
-        #endregion
 
-        #region Get, LoadConfiguration
         /// <summary>
-        /// Gets the current configuration.
+        /// See interface docs.
         /// </summary>
         /// <returns></returns>
         public Configuration Get()
@@ -96,6 +94,19 @@ namespace VirtualRadar.Library.Settings
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public DateTime GetConfigurationChangedUtc()
+        {
+            if(_ConfigurationLoadedUtc == default(DateTime)) {
+                LoadConfiguration(forceLoad: false);
+            }
+
+            return _ConfigurationLoadedUtc;
         }
 
         /// <summary>
@@ -119,18 +130,19 @@ namespace VirtualRadar.Library.Settings
                         heartbeat.SlowTick += HeartBeat_SlowTick;
                     }
 
-                    if(_Configuration != null) _ConfigurationListener.Release();
+                    if(_Configuration != null) {
+                        _ConfigurationListener.Release();
+                    }
 
                     var configuration = _ConfigurationStorage.Load();
+                    _ConfigurationLoadedUtc = DateTime.UtcNow;
                     _ConfigurationListener.Initialise(configuration);
 
                     _Configuration = configuration;
                 }
             }
         }
-        #endregion
 
-        #region Subscriptions - AddWeakSubscription
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -187,9 +199,7 @@ namespace VirtualRadar.Library.Settings
                 }
             }
         }
-        #endregion
 
-        #region Event handlers
         /// <summary>
         /// Called when the configuration changes.
         /// </summary>
@@ -224,6 +234,5 @@ namespace VirtualRadar.Library.Settings
         {
             RemoveDeadSubscribers();
         }
-        #endregion
     }
 }

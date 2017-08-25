@@ -20,35 +20,6 @@ namespace VirtualRadar.Interface.Settings
     /// <summary>
     /// Exposes the current configuration.
     /// </summary>
-    /// <remarks><para>
-    /// For a long time if you wanted to get the current configuration you had to
-    /// hook the ConfigurationChanged event on IConfigurationStorage and call Load
-    /// when the configuration changed. This was fine, it worked, but there were
-    /// two problems with it:
-    /// </para>
-    /// <list type="number">
-    /// <item><description>
-    /// Hooking the event was awkward for objects with a limited lifetime. It meant
-    /// that they had to be disposable so that there was a point where the unhook
-    /// could take place.
-    /// </description></item>
-    /// <item><description>
-    /// When the configuration changes dozens of objects jump in and call Load. Load
-    /// reads the configuration off disk, so you had dozens of redundant reads.
-    /// </description></item>
-    /// </list>
-    /// <para>
-    /// This class aims to get around these problems. When a configuration value is
-    /// required a class can call <see cref="Get"/>. The configuration returned is
-    /// guaranteed to be current and consistent - if the configuration is changed
-    /// after <see cref="Get"/> is called it won't affect the configuration returned
-    /// by the method.
-    /// </para><para>
-    /// The drawback is that the configuration is shared. Any changes that you make
-    /// to the configuration will affect everything using this object. To protect
-    /// against bugs introduced by this kind of behaviour the object listens for
-    /// changes to the configuration and throws an exception when they're detected.
-    /// </para></remarks>
     public interface ISharedConfiguration : ISingleton<ISharedConfiguration>
     {
         /// <summary>
@@ -71,6 +42,16 @@ namespace VirtualRadar.Interface.Settings
         /// a function and getting inconsistencies.
         /// </remarks>
         Configuration Get();
+
+        /// <summary>
+        /// Returns the date and time that the configuration was last loaded.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Note that the configuration could potentially change between calling this method
+        /// and calling <see cref="Get"/>.
+        /// </remarks>
+        DateTime GetConfigurationChangedUtc();
 
         /// <summary>
         /// Adds a weak reference to an object with a method that will be called whenever the
