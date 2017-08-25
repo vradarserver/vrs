@@ -351,7 +351,7 @@ namespace VirtualRadar.WebSite.ApiControllers
             var result = TrailType.None;
 
             if(!String.IsNullOrEmpty(trFmt)) {
-                switch(trFmt) {
+                switch(trFmt.ToUpper()) {
                     case "F":   result = TrailType.Full; break;
                     case "FA":  result = TrailType.FullAltitude; break;
                     case "FS":  result = TrailType.FullSpeed; break;

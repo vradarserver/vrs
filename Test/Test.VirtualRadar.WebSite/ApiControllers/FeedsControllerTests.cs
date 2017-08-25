@@ -972,6 +972,25 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
+        public async Task FeedsController_AircraftList_Trail_Format_Is_Case_Insensitive_V2()
+        {
+            foreach(var upperCase in new bool[] { true, false }) {
+                TestCleanup();
+                TestInitialise();
+
+                var queryString = "trfmt=fa";
+                if(upperCase) {
+                    queryString = queryString.ToUpper();
+                }
+
+                var expected = ExpectedAircraftListJsonBuilderArgs(trailType: TrailType.FullAltitude);
+                var response = await _Server.HttpClient.PostAsync($"AircraftList.json?{queryString}", _EmptyPostBody);
+
+                AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+            }
+        }
+
+        [TestMethod]
         public async Task FeedsController_AircraftList_Can_Specify_Trail_Format_V3()
         {
             foreach(TrailType trailType in Enum.GetValues(typeof(TrailType))) {
