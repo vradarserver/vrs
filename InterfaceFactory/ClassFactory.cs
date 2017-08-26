@@ -162,9 +162,20 @@ namespace InterfaceFactory
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public T Resolve<T>()
-            where T: class
+            where T : class
         {
             return (T)Resolve(typeof(T));
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T ResolveSingleton<T>()
+            where T: class
+        {
+            return (T)ResolveSingleton(typeof(T));
         }
 
         /// <summary>
@@ -174,6 +185,26 @@ namespace InterfaceFactory
         /// <returns></returns>
         public object Resolve(Type interfaceType)
         {
+            return Resolve(interfaceType, out Implementation unused);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="interfaceType"></param>
+        /// <returns></returns>
+        public object ResolveSingleton(Type interfaceType)
+        {
+            var result = Resolve(interfaceType, out Implementation implementation);
+            if(!implementation.IsSingleton) {
+                throw new ClassFactoryException($"{interfaceType?.FullName} is not a singleton");
+            }
+
+            return result;
+        }
+
+        private object Resolve(Type interfaceType, out Implementation implementation)
+        {
             var singletonMap = _SingletonMap;
 
             if(interfaceType == null) {
@@ -182,12 +213,11 @@ namespace InterfaceFactory
             if(!interfaceType.IsInterface) {
                 throw new ClassFactoryException(String.Format("{0} is not an interface", interfaceType.Name));
             }
-            if(!_ImplementationMap.ContainsKey(interfaceType) && !singletonMap.ContainsKey(interfaceType)) {
+            if(!_ImplementationMap.TryGetValue(interfaceType, out implementation) && !singletonMap.ContainsKey(interfaceType)) {
                 throw new ClassFactoryException($"{interfaceType.Name} has not had an implementation registered for it");
             }
 
             if(!FetchSingleton(interfaceType, out object result)) {
-                var implementation = _ImplementationMap[interfaceType];
                 result = implementation.CreateInstance();
 
                 if(implementation.IsSingleton) {

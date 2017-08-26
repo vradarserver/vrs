@@ -242,7 +242,7 @@ namespace VirtualRadar.WebSite
         /// </summary>
         public IFlightSimulatorAircraftList FlightSimulatorAircraftList
         {
-            get { return Factory.Singleton.Resolve<IFlightSimulatorAircraftList>(); }
+            get { return Factory.Singleton.ResolveSingleton<IFlightSimulatorAircraftList>(); }
             set { ; }
         }
 

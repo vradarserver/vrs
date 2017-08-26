@@ -268,6 +268,46 @@ namespace Test.InterfaceFactory
         }
         #endregion
 
+        #region ResolveSingleton
+        [TestMethod]
+        public void ClassFactory_ResolveSingleton_Resolves_Singletons()
+        {
+            _ClassFactory.Register<ISi, Si>();
+
+            var instance1 = _ClassFactory.ResolveSingleton<ISi>();
+            var instance2 = _ClassFactory.ResolveSingleton<ISi>();
+
+            Assert.AreSame(instance1, instance2);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ClassFactoryException))]
+        public void ClassFactory_ResolveSingleton_Does_Not_Resolve_Non_Singletons()
+        {
+            _ClassFactory.Register<IX, X>();
+            _ClassFactory.ResolveSingleton<IX>();
+        }
+
+        [TestMethod]
+        public void ClassFactory_ResolveSingleton_NonGeneric_Resolves_Singletons()
+        {
+            _ClassFactory.Register<ISi, Si>();
+
+            var instance1 = (ISi)_ClassFactory.ResolveSingleton(typeof(ISi));
+            var instance2 = (ISi)_ClassFactory.ResolveSingleton(typeof(ISi));
+
+            Assert.AreSame(instance1, instance2);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ClassFactoryException))]
+        public void ClassFactory_ResolveSingleton_NonGeneric_Does_Not_Resolve_Non_Singletons()
+        {
+            _ClassFactory.Register<IX, X>();
+            _ClassFactory.ResolveSingleton(typeof(IX));
+        }
+        #endregion
+
         #region ResolveNewInstance
         [TestMethod]
         public void ClassFactory_ResolveNewInstance_Returns_New_Instances_Of_Singletons()

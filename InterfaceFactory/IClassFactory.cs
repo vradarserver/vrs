@@ -64,6 +64,11 @@ namespace InterfaceFactory
         /// </summary>
         /// <typeparam name="T">The interface that the returned object will implement.</typeparam>
         /// <returns>An object that implements T.</returns>
+        /// <remarks>
+        /// This method will return single instances for interfaces that are tagged with the <see cref="SingletonAttribute"/>.
+        /// However, the preferred method of instantiating singletons is via <see cref="ResolveSingleton"/>, just because
+        /// it makes it more obvious as to what's going on.
+        /// </remarks>
         T Resolve<T>() where T: class;
 
         /// <summary>
@@ -71,7 +76,26 @@ namespace InterfaceFactory
         /// </summary>
         /// <param name="interfaceType">The interface that the returned object will implement.</param>
         /// <returns>An object that implements interfaceType.</returns>
+        /// <remarks>
+        /// This method will return single instances for interfaces that are tagged with the <see cref="SingletonAttribute"/>.
+        /// However, the preferred method of instantiating singletons is via <see cref="ResolveSingleton"/>, just because
+        /// it makes it more obvious as to what's going on.
+        /// </remarks>
         object Resolve(Type interfaceType);
+
+        /// <summary>
+        /// As per <see cref="Resolve{T}()" /> but will only instantiate interfaces that are tagged with <see cref="SingletonAttribute"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        T ResolveSingleton<T>() where T: class;
+
+        /// <summary>
+        /// As per <see cref="Resolve(Type)"/> but will only instantiate interfaces that are tagged with <see cref="SingletonAttribute"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        object ResolveSingleton(Type interfaceType);
 
         /// <summary>
         /// Returns a new instance of an object that has been marked as a singleton with the <see cref="SingletonAttribute"/>.

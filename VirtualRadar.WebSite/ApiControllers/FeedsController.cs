@@ -83,7 +83,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         private AircraftListJson BuildAircraftList(AircraftListJsonBuilderArgs builderArgs)
         {
             if(builderArgs.IsFlightSimulatorList) {
-                builderArgs.AircraftList = Factory.Singleton.Resolve<IFlightSimulatorAircraftList>();
+                builderArgs.AircraftList = Factory.Singleton.ResolveSingleton<IFlightSimulatorAircraftList>();
                 builderArgs.SourceFeedId = -1;
             }
             builderArgs.IsInternetClient = PipelineRequest.IsInternet;
