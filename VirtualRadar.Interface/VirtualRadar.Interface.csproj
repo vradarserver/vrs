@@ -155,6 +155,7 @@
     <Compile Include="Owin\IAudioServer.cs" />
     <Compile Include="Owin\IAuthenticationConfiguration.cs" />
     <Compile Include="Owin\IBasicAuthenticationFilter.cs" />
+    <Compile Include="Owin\ICorsHandler.cs" />
     <Compile Include="Owin\ILoopbackHost.cs" />
     <Compile Include="Owin\IFileSystemServerConfiguration.cs" />
     <Compile Include="IFileSystemProvider.cs" />

@@ -58,6 +58,7 @@ namespace Test.VirtualRadar.Owin
         private Mock<IAccessFilter> _MockAccessFilter;
         private Mock<IBasicAuthenticationFilter> _MockBasicAuthenticationFilter;
         private Mock<IRedirectionFilter> _MockRedirectionFilter;
+        private Mock<ICorsHandler> _MockCorsHandler;
         private Mock<IFileSystemServer> _MockFileSystemServer;
         private Mock<IImageServer> _MockImageServer;
         private Mock<IAudioServer> _MockAudioServer;
@@ -72,6 +73,7 @@ namespace Test.VirtualRadar.Owin
             _MockAccessFilter =                 CreateMockMiddleware<IAccessFilter>(nameof(IAccessFilter.FilterRequest));
             _MockBasicAuthenticationFilter =    CreateMockMiddleware<IBasicAuthenticationFilter>(nameof(IBasicAuthenticationFilter.FilterRequest));
             _MockRedirectionFilter =            CreateMockMiddleware<IRedirectionFilter>(nameof(IRedirectionFilter.FilterRequest));
+            _MockCorsHandler =                  CreateMockMiddleware<ICorsHandler>(nameof(ICorsHandler.HandleRequest));
             _LastMiddlewareBeforeWebApiInit =   _ExpectedMiddleware[_ExpectedMiddleware.Count - 1];
             _MockFileSystemServer =             CreateMockMiddleware<IFileSystemServer>(nameof(IFileSystemServer.HandleRequest));
             _MockImageServer =                  CreateMockMiddleware<IImageServer>(nameof(IImageServer.HandleRequest));

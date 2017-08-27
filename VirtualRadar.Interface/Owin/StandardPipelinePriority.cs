@@ -30,6 +30,11 @@ namespace VirtualRadar.Interface.Owin
         /// </summary>
         public static readonly int Redirection = Authentication + 100;
 
+        /// <summary>
+        /// The normal priority for handling CORS requests.
+        /// </summary>
+        public static readonly int Cors = Redirection + 100;
+
         /***********************************************************************************************
          * 3rd party frameworks that short-circuit pipeline processing if they handle a request
          **********************************************************************************************/

@@ -84,7 +84,6 @@
     <Compile Include="ApiControllers\FeedsController.cs" />
     <Compile Include="ApiControllers\SettingsController.cs" />
     <Compile Include="Bundler.cs" />
-    <Compile Include="CorsPreflightPage.cs" />
     <Compile Include="FontCache.cs" />
     <Compile Include="HtmlLocaliser.cs" />
     <Compile Include="Implementations.cs" />

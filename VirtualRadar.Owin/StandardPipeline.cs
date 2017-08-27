@@ -45,6 +45,7 @@ namespace VirtualRadar.Owin
             webAppConfiguration.AddCallback(UseAccessFilter,                StandardPipelinePriority.Access);
             webAppConfiguration.AddCallback(UseBasicAuthenticationFilter,   StandardPipelinePriority.Authentication);
             webAppConfiguration.AddCallback(UseRedirectionFilter,           StandardPipelinePriority.Redirection);
+            webAppConfiguration.AddCallback(UseCorsHandler,                 StandardPipelinePriority.Cors);
 
             webAppConfiguration.AddCallback(ConfigureHttpConfiguration,     StandardPipelinePriority.WebApiConfiguration);
             webAppConfiguration.AddCallback(UseWebApi,                      StandardPipelinePriority.WebApi);
@@ -72,6 +73,13 @@ namespace VirtualRadar.Owin
         {
             var filter = Factory.Singleton.Resolve<IRedirectionFilter>();
             var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
+            app.Use(middleware);
+        }
+
+        private void UseCorsHandler(IAppBuilder app)
+        {
+            var handler = Factory.Singleton.Resolve<ICorsHandler>();
+            var middleware = new Func<AppFunc, AppFunc>(handler.HandleRequest);
             app.Use(middleware);
         }
 

@@ -221,11 +221,6 @@ namespace VirtualRadar.WebSite
         private List<Page> _Pages = new List<Page>();
 
         /// <summary>
-        /// The page that deals with identifying CORS requests, validating them and handling CORS options requests.
-        /// </summary>
-        private CorsPreflightPage _CorsPreflightPage;
-
-        /// <summary>
         /// The page that handles requests for report rows.
         /// </summary>
         private ReportRowsJsonPage _ReportRowsJsonPage;
@@ -294,7 +289,6 @@ namespace VirtualRadar.WebSite
         {
             Provider = Factory.Singleton.Resolve<IWebSiteProvider>();
 
-            _CorsPreflightPage = new CorsPreflightPage(this);
             _ReportRowsJsonPage = new ReportRowsJsonPage(this);
         }
         #endregion
@@ -334,7 +328,6 @@ namespace VirtualRadar.WebSite
                 _Minifier = Factory.Singleton.Resolve<IMinifier>();
                 _Minifier.Initialise();
 
-                _Pages.Add(_CorsPreflightPage);
                 _Pages.Add(new TextPage(this));
                 _Pages.Add(_ReportRowsJsonPage);
 
