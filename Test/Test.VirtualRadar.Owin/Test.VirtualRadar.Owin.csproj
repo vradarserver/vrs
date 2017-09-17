@@ -88,6 +88,7 @@
     <Compile Include="Configuration\FileSystemServerConfigurationTests.cs" />
     <Compile Include="Configuration\ImageServerConfigurationTests.cs" />
     <Compile Include="Configuration\RedirectionConfigurationTests.cs" />
+    <Compile Include="Configuration\ResponseStreamWrapperConfigurationTests.cs" />
     <Compile Include="LoopbackHostTests.cs" />
     <Compile Include="Middleware\AccessFilterTests.cs" />
     <Compile Include="Middleware\AudioServerTests.cs" />
@@ -96,6 +97,7 @@
     <Compile Include="Middleware\FileSystemServerTests.cs" />
     <Compile Include="Middleware\ImageServerTests.cs" />
     <Compile Include="Middleware\RedirectionFilterTests.cs" />
+    <Compile Include="Middleware\ResponseStreamWrapperTests.cs" />
     <Compile Include="MockConfigureCallback.cs" />
     <Compile Include="MockOwinEnvironment.cs" />
     <Compile Include="Configuration\WebAppConfigurationTests.cs" />

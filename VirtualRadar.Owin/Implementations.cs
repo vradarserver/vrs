@@ -33,6 +33,7 @@ namespace VirtualRadar.Owin
             factory.Register<Interface.Owin.IFileSystemServerConfiguration, Configuration.FileSystemServerConfiguration>();
             factory.Register<Interface.Owin.IImageServerConfiguration, Configuration.ImageServerConfiguration>();
             factory.Register<Interface.Owin.IRedirectionConfiguration, Configuration.RedirectionConfiguration>();
+            factory.Register<Interface.Owin.IResponseStreamWrapperConfiguration, Configuration.ResponseStreamWrapperConfiguration>();
             factory.Register<Interface.Owin.IWebAppConfiguration, Configuration.WebAppConfiguration>();
 
             factory.Register<Interface.Owin.IAccessFilter, Middleware.AccessFilter>();
@@ -42,6 +43,7 @@ namespace VirtualRadar.Owin
             factory.Register<Interface.Owin.IFileSystemServer, Middleware.FileSystemServer>();
             factory.Register<Interface.Owin.IImageServer, Middleware.ImageServer>();
             factory.Register<Interface.Owin.IRedirectionFilter, Middleware.RedirectionFilter>();
+            factory.Register<Interface.Owin.IResponseStreamWrapper, Middleware.ResponseStreamWrapper>();
 
             factory.Register<Interface.Owin.ILoopbackHost, LoopbackHost>();
             factory.Register<Interface.Owin.IStandardPipeline, StandardPipeline>();

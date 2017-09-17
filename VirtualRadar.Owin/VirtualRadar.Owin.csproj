@@ -73,6 +73,7 @@
     <Compile Include="Configuration\FileSystemServerConfiguration.cs" />
     <Compile Include="Configuration\ImageServerConfiguration.cs" />
     <Compile Include="Configuration\RedirectionConfiguration.cs" />
+    <Compile Include="Configuration\ResponseStreamWrapperConfiguration.cs" />
     <Compile Include="Implementations.cs" />
     <Compile Include="Configuration\AuthenticationConfiguration.cs" />
     <Compile Include="LoopbackHost.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Middleware\FileSystemServer.cs" />
     <Compile Include="Middleware\ImageServer.cs" />
     <Compile Include="Middleware\RedirectionFilter.cs" />
+    <Compile Include="Middleware\ResponseStreamWrapper.cs" />
     <Compile Include="StandardPipeline.cs" />
     <Compile Include="Configuration\WebAppConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

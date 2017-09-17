@@ -35,6 +35,11 @@ namespace VirtualRadar.Interface.Owin
         /// </summary>
         public static readonly int Cors = Redirection + 100;
 
+        /// <summary>
+        /// The normal priority for wrapping the response stream so that it can be manipulated after the pipeline has finished.
+        /// </summary>
+        public static readonly int ResponseStreamWrapper = Cors + 100;
+
         /***********************************************************************************************
          * 3rd party frameworks that short-circuit pipeline processing if they handle a request
          **********************************************************************************************/
