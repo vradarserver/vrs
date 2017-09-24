@@ -26,11 +26,18 @@ namespace VirtualRadar.Interface.Owin
     /// This middleware needs to be used fairly early on, before any middleware that generates content
     /// appears. The wrapper doesn't do anything much, it just wraps the stream with a memory stream.
     /// However, it will make callbacks to <see cref="IStreamManipulator"/> objects that have been
-    /// registered with the singleton <see cref="IResponseStreamWrapperConfiguration"/>. It is those
-    /// objects that will be compressing streams, minifying JavaScript, logging outcomes etc. etc.
+    /// registered with the <see cref="IWebAppConfiguration"/>. It is those objects that will be
+    /// compressing streams, minifying JavaScript, logging outcomes etc. etc.
     /// </remarks>
     public interface IResponseStreamWrapper
     {
+        /// <summary>
+        /// Initialises the wrapper with the manipulators that will be called for every request, in the
+        /// order in which they should be called.
+        /// </summary>
+        /// <param name="streamManipulators"></param>
+        void Initialise(IEnumerable<IStreamManipulator> streamManipulators);
+
         /// <summary>
         /// Wraps the request stream with a memory stream.
         /// </summary>

@@ -31,6 +31,11 @@ namespace VirtualRadar.Owin.Configuration
         private List<RegisterMiddlewareCallback> _Callbacks = new List<RegisterMiddlewareCallback>();
 
         /// <summary>
+        /// The list of stream manipulators that should be used by the <see cref="IResponseStreamWrapper"/> (if present).
+        /// </summary>
+        private List<RegisterStreamManipulator> _StreamManipulators = new List<RegisterStreamManipulator>();
+
+        /// <summary>
         /// The configuration object that is exposed by <see cref="GetHttpConfiguration"/>.
         /// </summary>
         private HttpConfiguration _HttpConfiguration;
@@ -90,6 +95,40 @@ namespace VirtualRadar.Owin.Configuration
         public HttpConfiguration GetHttpConfiguration()
         {
             return _HttpConfiguration;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="streamManipulator"></param>
+        /// <param name="priority"></param>
+        public void AddStreamManipulator(IStreamManipulator streamManipulator, int priority)
+        {
+            if(streamManipulator == null) {
+                throw new ArgumentNullException(nameof(streamManipulator));
+            }
+
+            if(!_StreamManipulators.Any(r => Object.ReferenceEquals(r.StreamManipulator, streamManipulator))) {
+                _StreamManipulators.Add(new RegisterStreamManipulator(streamManipulator, priority));
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="streamManipulator"></param>
+        public void RemoveStreamManipulator(IStreamManipulator streamManipulator)
+        {
+            _StreamManipulators.Remove(_StreamManipulators.FirstOrDefault(r => Object.Equals(r.StreamManipulator, streamManipulator)));
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public IStreamManipulator[] GetStreamManipulators()
+        {
+            return _StreamManipulators.OrderBy(r => r.Priority).Select(r => r.StreamManipulator).ToArray();
         }
     }
 }

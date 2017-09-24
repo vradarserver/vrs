@@ -45,7 +45,6 @@ namespace Test.VirtualRadar.Owin.Middleware
         private IClassFactory _Snapshot;
         private MockOwinEnvironment _Environment;
         private MockOwinPipeline _Pipeline;
-        private Mock<IResponseStreamWrapperConfiguration> _Config;
         private StreamManipulator _Manipulator;
         private List<IStreamManipulator> _StreamManipulators;
         private IResponseStreamWrapper _Wrapper;
@@ -55,11 +54,9 @@ namespace Test.VirtualRadar.Owin.Middleware
         {
             _Snapshot = Factory.TakeSnapshot();
 
-            _Config = TestUtilities.CreateMockImplementation<IResponseStreamWrapperConfiguration>();
             _Manipulator = new StreamManipulator();
             _StreamManipulators = new List<IStreamManipulator>();
             _StreamManipulators.Add(_Manipulator);
-            _Config.Setup(r => r.GetStreamManipulators()).Returns(() => _StreamManipulators.ToArray());
 
             _Wrapper = Factory.Singleton.Resolve<IResponseStreamWrapper>();
 
@@ -75,16 +72,31 @@ namespace Test.VirtualRadar.Owin.Middleware
             Factory.RestoreSnapshot(_Snapshot);
         }
 
-        [TestMethod]
-        public void ResponseStreamWrapper_Always_Calls_Next_Middleware()
+        private void InitialiseWrapper()
         {
+            _Wrapper.Initialise(_StreamManipulators);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ResponseStreamWrapper_Initialise_Throws_If_Passed_Null()
+        {
+            _Wrapper.Initialise(null);
+        }
+
+        [TestMethod]
+        public void ResponseStreamWrapper_WrapResponseStream_Always_Calls_Next_Middleware()
+        {
+            InitialiseWrapper();
             _Pipeline.CallMiddleware(_Wrapper.WrapResponseStream, _Environment.Environment);
             Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
         }
 
         [TestMethod]
-        public void ResponseStreamWrapper_Calls_StreamManipulators_After_Pipeline_Has_Finished()
+        public void ResponseStreamWrapper_WrapResponseStream_Calls_StreamManipulators_After_Pipeline_Has_Finished()
         {
+            InitialiseWrapper();
+
             using(var originalStream = new MemoryStream()) {
                 _Environment.Response.Body = originalStream;
 
@@ -103,8 +115,10 @@ namespace Test.VirtualRadar.Owin.Middleware
         }
 
         [TestMethod]
-        public void ResponseStreamWrapper_Copies_Content_Of_Stream_Back_To_Original_Stream_On_Completion()
+        public void ResponseStreamWrapper_WrapResponseStream_Copies_Content_Of_Stream_Back_To_Original_Stream_On_Completion()
         {
+            InitialiseWrapper();
+
             using(var originalStream = new MemoryStream()) {
                 _Environment.Response.Body = originalStream;
 
@@ -122,8 +136,10 @@ namespace Test.VirtualRadar.Owin.Middleware
         }
 
         [TestMethod]
-        public void ResponseStreamWrapper_Puts_Original_Stream_Back()
+        public void ResponseStreamWrapper_WrapResponseStream_Puts_Original_Stream_Back()
         {
+            InitialiseWrapper();
+
             using(var originalStream = new MemoryStream()) {
                 _Environment.Response.Body = originalStream;
 
@@ -135,8 +151,10 @@ namespace Test.VirtualRadar.Owin.Middleware
 
         [TestMethod]
         [ExpectedException(typeof(ObjectDisposedException))]
-        public void ResponseStreamWrapper_Disposes_Of_Wrapper_Stream()
+        public void ResponseStreamWrapper_WrapResponseStream_Disposes_Of_Wrapper_Stream()
         {
+            InitialiseWrapper();
+
             Stream actualStream = null;
             _Manipulator.ManipulateCallback = () => {
                 actualStream = _Environment.Response.Body;

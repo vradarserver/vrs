@@ -26,17 +26,15 @@ namespace VirtualRadar.Owin.Middleware
     /// </summary>
     class ResponseStreamWrapper : IResponseStreamWrapper
     {
-        /// <summary>
-        /// The singleton configuration object.
-        /// </summary>
-        private IResponseStreamWrapperConfiguration _Configuration;
+        private IStreamManipulator[] _StreamManipulators;
 
         /// <summary>
-        /// Creates a new object.
+        /// See interface docs.
         /// </summary>
-        public ResponseStreamWrapper()
+        /// <param name="streamManipulators"></param>
+        public void Initialise(IEnumerable<IStreamManipulator> streamManipulators)
         {
-            _Configuration = Factory.Singleton.ResolveSingleton<IResponseStreamWrapperConfiguration>();
+            _StreamManipulators = streamManipulators.ToArray();
         }
 
         /// <summary>
@@ -55,7 +53,7 @@ namespace VirtualRadar.Owin.Middleware
 
                     await next.Invoke(environment);
 
-                    foreach(var streamManipulator in _Configuration.GetStreamManipulators()) {
+                    foreach(var streamManipulator in _StreamManipulators) {
                         streamManipulator.ManipulateResponseStream(environment);
                     }
 

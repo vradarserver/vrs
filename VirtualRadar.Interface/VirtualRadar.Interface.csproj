@@ -165,7 +165,6 @@
     <Compile Include="Owin\IRedirectionFilter.cs" />
     <Compile Include="Owin\IRedirectionConfiguration.cs" />
     <Compile Include="Owin\IResponseStreamWrapper.cs" />
-    <Compile Include="Owin\IResponseStreamWrapperConfiguration.cs" />
     <Compile Include="Owin\IStandardPipeline.cs" />
     <Compile Include="Owin\IStreamManipulator.cs" />
     <Compile Include="Owin\PipelineApiController.cs" />

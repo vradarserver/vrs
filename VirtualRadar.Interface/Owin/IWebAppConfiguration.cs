@@ -38,6 +38,28 @@ namespace VirtualRadar.Interface.Owin
         void RemoveCallback(IWebAppConfigurationCallbackHandle callbackHandle);
 
         /// <summary>
+        /// Adds a stream manipulator to the list of manipulators that are called when a request has finished.
+        /// </summary>
+        /// <param name="streamManipulator"></param>
+        /// <param name="priority"></param>
+        /// <remarks>
+        /// These are intended for use with an <see cref="IResponseStreamWrapper"/>.
+        /// </remarks>
+        void AddStreamManipulator(IStreamManipulator streamManipulator, int priority);
+
+        /// <summary>
+        /// Removes a stream manipulator from the list of manipulators that are called when a request has finished.
+        /// </summary>
+        /// <param name="streamManipulator"></param>
+        void RemoveStreamManipulator(IStreamManipulator streamManipulator);
+
+        /// <summary>
+        /// Returns an array of registered stream manipulators in the order in which they should be called.
+        /// </summary>
+        /// <returns></returns>
+        IStreamManipulator[] GetStreamManipulators();
+
+        /// <summary>
         /// Configures a new instance of an OWIN web app by calling each registered callback in ascending order of priority.
         /// </summary>
         /// <param name="appBuilder"></param>

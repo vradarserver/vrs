@@ -13,42 +13,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
+using VirtualRadar.Interface.Owin;
 
-namespace VirtualRadar.Interface.Owin
+namespace VirtualRadar.Owin.Configuration
 {
     /// <summary>
-    /// The definition of a singleton object that can be used to maniuplate the response stream via the
-    /// <see cref="IResponseStreamWrapper"/> middleware.
+    /// Records an instance of an <see cref="IStreamManipulator"/> that will be used when configuring
+    /// an OWIN pipeline.
     /// </summary>
-    [Singleton]
-    public interface IResponseStreamWrapperConfiguration
+    class RegisterStreamManipulator
     {
         /// <summary>
-        /// Adds a stream manipulator to the list of manipulators that are called when a request has finished.
+        /// Gets the manipulator.
         /// </summary>
-        /// <param name="streamManipulator"></param>
-        /// <remarks>
-        /// These are held as weak references. It is permissable to add the same object twice - the second and
-        /// subsequent adds are ignored, the manipulator will only be called once per request.
-        /// </remarks>
-        void AddStreamManipulator(IStreamManipulator streamManipulator);
+        public IStreamManipulator StreamManipulator { get; private set; }
 
         /// <summary>
-        /// Removes a stream manipulator from the list of manipulators that are called when a request has finished.
+        /// Gets a value indicating the order in which manipulators are called, lowest first.
         /// </summary>
-        /// <param name="streamManipulator"></param>
-        /// <remarks>
-        /// It is permissible to remove a manipulator twice, the second and subsequent removes are ignored. Note that
-        /// because of timing issues it is possible that your manipulator might be called on another thread while the
-        /// remove call is running.
-        /// </remarks>
-        void RemoveStreamManipulator(IStreamManipulator streamManipulator);
+        public int Priority { get; private set; }
 
         /// <summary>
-        /// Returns an array of registered stream manipulators in the order in which they should be called.
+        /// Creates a new object.
         /// </summary>
-        /// <returns></returns>
-        IStreamManipulator[] GetStreamManipulators();
+        /// <param name="streamManipulator"></param>
+        /// <param name="priority"></param>
+        public RegisterStreamManipulator(IStreamManipulator streamManipulator, int priority)
+        {
+            StreamManipulator = streamManipulator;
+            Priority = priority;
+        }
     }
 }

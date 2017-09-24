@@ -9,6 +9,7 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,6 +23,15 @@ namespace Test.VirtualRadar.Owin.Configuration
     [TestClass]
     public class WebAppConfigurationTests
     {
+        class StreamManipulator : IStreamManipulator
+        {
+            public int ResponseStreamPriority { get; set; }
+
+            public void ManipulateResponseStream(IDictionary<string, object> environment)
+            {
+            }
+        }
+
         public TestContext TestContext { get; set; }
         private IWebAppConfiguration _Configuration;
         private Mock<IAppBuilder> _AppBuilder;
@@ -31,6 +41,12 @@ namespace Test.VirtualRadar.Owin.Configuration
         {
             _Configuration = Factory.Singleton.Resolve<IWebAppConfiguration>();
             _AppBuilder = new Mock<IAppBuilder>();
+        }
+
+        private void AssertRegisteredStreamManipulators(params IStreamManipulator[] expected)
+        {
+            var actual = _Configuration.GetStreamManipulators();
+            Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
         [TestMethod]
@@ -156,6 +172,79 @@ namespace Test.VirtualRadar.Owin.Configuration
 
             _Configuration.Configure(_AppBuilder.Object);
             Assert.AreNotSame(instance, _Configuration.GetHttpConfiguration());
+        }
+
+        [TestMethod]
+        public void WebAppConfiguration_AddStreamManipulator_Adds_Manipulator()
+        {
+            var m1 = new StreamManipulator();
+            _Configuration.AddStreamManipulator(m1, 0);
+
+            AssertRegisteredStreamManipulators(m1);
+        }
+
+        [TestMethod]
+        public void WebAppConfiguration_AddStreamManipulator_Ignores_Double_Adds()
+        {
+            var m1 = new StreamManipulator();
+            _Configuration.AddStreamManipulator(m1, 0);
+            _Configuration.AddStreamManipulator(m1, 1);
+
+            AssertRegisteredStreamManipulators(m1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void WebAppConfiguration_AddStreamManipulator_Throws_If_Passed_Null()
+        {
+            _Configuration.AddStreamManipulator(null, 0);
+        }
+
+        [TestMethod]
+        public void WebAppConfiguration_AddStreamManipulator_Sorts_By_Priority()
+        {
+            var m1 = new StreamManipulator() { ResponseStreamPriority = -1 };
+            var m2 = new StreamManipulator() { ResponseStreamPriority = 0 };
+            var m3 = new StreamManipulator() { ResponseStreamPriority = 1 };
+
+            _Configuration.AddStreamManipulator(m2, 0);
+            _Configuration.AddStreamManipulator(m3, 1);
+            _Configuration.AddStreamManipulator(m1, -1);
+
+            AssertRegisteredStreamManipulators(m1, m2, m3);
+        }
+
+        [TestMethod]
+        public void WebAppConfiguration_RemoveStreamManipulator_Removes_Manipulator()
+        {
+            var m1 = new StreamManipulator();
+            _Configuration.AddStreamManipulator(m1, 0);
+            _Configuration.RemoveStreamManipulator(m1);
+
+            AssertRegisteredStreamManipulators();
+        }
+
+        [TestMethod]
+        public void WebAppConfiguration_RemoveStreamManipulator_Only_Removes_Requested_Manipulator()
+        {
+            var m1 = new StreamManipulator();
+            var m2 = new StreamManipulator();
+            _Configuration.AddStreamManipulator(m1, 0);
+            _Configuration.AddStreamManipulator(m2, 1);
+            _Configuration.RemoveStreamManipulator(m1);
+
+            AssertRegisteredStreamManipulators(m2);
+        }
+
+        [TestMethod]
+        public void WebAppConfiguration_RemoveStreamManipulator_Allows_Double_Removal()
+        {
+            var m1 = new StreamManipulator();
+            _Configuration.AddStreamManipulator(m1, 0);
+            _Configuration.RemoveStreamManipulator(m1);
+            _Configuration.RemoveStreamManipulator(m1);
+
+            AssertRegisteredStreamManipulators();
         }
     }
 }

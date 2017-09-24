@@ -23,15 +23,6 @@ namespace VirtualRadar.Interface.Owin
     public interface IStreamManipulator
     {
         /// <summary>
-        /// Gets the relative order in which this manipulator should be called relative to other manipulators. Lower values are called first.
-        /// </summary>
-        /// <remarks>
-        /// Do not rely on this being referenced during individual calls - this might only be used when sorting stream manipulators
-        /// as they are added to the configuration. It would be mildly expensive to keep sorting manipulators on every request.
-        /// </remarks>
-        int ResponseStreamPriority { get; }
-
-        /// <summary>
         /// Called after all of the middleware has run for a request.
         /// </summary>
         /// <param name="environment">The OWIN environment for the request.</param>

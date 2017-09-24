@@ -33,7 +33,6 @@ namespace VirtualRadar.Owin
             factory.Register<Interface.Owin.IFileSystemServerConfiguration, Configuration.FileSystemServerConfiguration>();
             factory.Register<Interface.Owin.IImageServerConfiguration, Configuration.ImageServerConfiguration>();
             factory.Register<Interface.Owin.IRedirectionConfiguration, Configuration.RedirectionConfiguration>();
-            factory.Register<Interface.Owin.IResponseStreamWrapperConfiguration, Configuration.ResponseStreamWrapperConfiguration>();
             factory.Register<Interface.Owin.IWebAppConfiguration, Configuration.WebAppConfiguration>();
 
             factory.Register<Interface.Owin.IAccessFilter, Middleware.AccessFilter>();
