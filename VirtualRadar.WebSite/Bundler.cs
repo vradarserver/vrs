@@ -72,10 +72,6 @@ namespace VirtualRadar.WebSite
         private void Dispose(bool disposing)
         {
             if(disposing) {
-                if(_Minifier != null) {
-                    _Minifier.Dispose();
-                    _Minifier = null;
-                }
                 if(_ConfigurationStorageHooked) {
                     var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
                     configurationStorage.ConfigurationChanged -= ConfigurationChanged;
@@ -105,7 +101,6 @@ namespace VirtualRadar.WebSite
 
             if(_Minifier == null) {
                 _Minifier = Factory.Singleton.Resolve<IMinifier>();
-                _Minifier.Initialise();
             }
 
             WebSite = webSite;

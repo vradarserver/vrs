@@ -54,6 +54,8 @@ namespace VirtualRadar.Owin
             webAppConfiguration.AddCallback(UseFileSystemServer,            StandardPipelinePriority.FileSystemServer);
             webAppConfiguration.AddCallback(UseImageServer,                 StandardPipelinePriority.ImageServer);
             webAppConfiguration.AddCallback(UseAudioServer,                 StandardPipelinePriority.AudioServer);
+
+            webAppConfiguration.AddStreamManipulator(Factory.Singleton.Resolve<IJavascriptManipulator>(), StreamManipulatorPriority.JavascriptManipulator);
         }
 
         private void UseAccessFilter(IAppBuilder app)
@@ -87,6 +89,8 @@ namespace VirtualRadar.Owin
         private void UseResponseStreamWrapper(IAppBuilder app)
         {
             var wrapper = Factory.Singleton.Resolve<IResponseStreamWrapper>();
+            wrapper.Initialise(_WebAppConfiguration.GetStreamManipulators());
+
             var middleware = new Func<AppFunc, AppFunc>(wrapper.WrapResponseStream);
             app.Use(middleware);
         }

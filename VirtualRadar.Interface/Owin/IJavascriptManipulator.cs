@@ -1,4 +1,4 @@
-﻿// Copyright © 2013 onwards, Andrew Whewell
+﻿// Copyright © 2017 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,26 +12,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace VirtualRadar.Interface.WebSite
+namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// The interface for an object that can minify JavaScript and CSS.
+    /// The interface for objects that manipulate Javascript responses.
     /// </summary>
-    public interface IMinifier
+    public interface IJavascriptManipulator : IStreamManipulator
     {
-        /// <summary>
-        /// Returns the JavaScript passed across with the content compressed as much as possible.
-        /// </summary>
-        /// <param name="javaScriptContent"></param>
-        /// <returns></returns>
-        string MinifyJavaScript(string javaScriptContent);
-
-        /// <summary>
-        /// Returns the CSS passed across with the content compressed as much as possible.
-        /// </summary>
-        /// <param name="cssContent"></param>
-        /// <returns></returns>
-        string MinifyCss(string cssContent);
     }
 }

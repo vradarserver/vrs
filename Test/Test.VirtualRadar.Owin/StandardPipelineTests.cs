@@ -65,6 +65,9 @@ namespace Test.VirtualRadar.Owin
         private Mock<IAudioServer> _MockAudioServer;
         private MiddlewareDetail _LastMiddlewareBeforeWebApiInit;
 
+        private List<IStreamManipulator> _ExpectedStreamManipulators;
+        private Mock<IJavascriptManipulator> _MockJavascriptManipulator;
+
         [TestInitialize]
         public void TestInitialise()
         {
@@ -81,6 +84,9 @@ namespace Test.VirtualRadar.Owin
             _MockImageServer =                  CreateMockMiddleware<IImageServer>(nameof(IImageServer.HandleRequest));
             _MockAudioServer =                  CreateMockMiddleware<IAudioServer>(nameof(IAudioServer.HandleRequest));
 
+            _ExpectedStreamManipulators = new List<IStreamManipulator>();
+            _MockJavascriptManipulator = CreateMockStreamManipulator<IJavascriptManipulator>();
+
             _StandardPipeline = Factory.Singleton.Resolve<IStandardPipeline>();
         }
 
@@ -96,6 +102,15 @@ namespace Test.VirtualRadar.Owin
             return result;
         }
 
+        private Mock<T> CreateMockStreamManipulator<T>()
+            where T: class, IStreamManipulator
+        {
+            var result = TestUtilities.CreateMockImplementation<T>();
+            _ExpectedStreamManipulators.Add(result.Object);
+
+            return result;
+        }
+
         [TestCleanup]
         public void TestCleanup()
         {
@@ -105,6 +120,11 @@ namespace Test.VirtualRadar.Owin
         [TestMethod]
         public void StandardPipeline_Adds_Standard_Middleware_With_Correct_Priorities()
         {
+            var actualStreamManipulators = new List<IStreamManipulator>();
+            _MockResponseStreamWrapper.Setup(r => r.Initialise(It.IsAny<IEnumerable<IStreamManipulator>>())).Callback((IEnumerable<IStreamManipulator> manipulators) => {
+                actualStreamManipulators.AddRange(manipulators);
+            });
+
             var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
             _StandardPipeline.Register(webAppConfiguration);
 
@@ -136,6 +156,9 @@ namespace Test.VirtualRadar.Owin
 
             // The web api was initialised at the right point in the chain
             Assert.IsTrue(_LastMiddlewareBeforeWebApiInit.IsSameAs(targetBeforeWebApiAdded), $"Web API should have been initialised after {_LastMiddlewareBeforeWebApiInit}, was actually after {targetBeforeWebApiAdded}");
+
+            // The response stream wrapper was initialised correctly
+            Assert.IsTrue(_ExpectedStreamManipulators.SequenceEqual(actualStreamManipulators));
         }
 
         [TestMethod]
@@ -161,6 +184,15 @@ namespace Test.VirtualRadar.Owin
             var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
             _StandardPipeline.Register(webAppConfiguration);
             _StandardPipeline.Register(webAppConfiguration);
+        }
+
+        [TestMethod]
+        public void StandardPipeline_Register_Adds_Standard_StreamManipulators()
+        {
+            var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
+            _StandardPipeline.Register(webAppConfiguration);
+
+            Assert.IsTrue(_ExpectedStreamManipulators.SequenceEqual(webAppConfiguration.GetStreamManipulators()));
         }
     }
 }

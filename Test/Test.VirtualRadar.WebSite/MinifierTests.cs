@@ -24,13 +24,12 @@ namespace Test.VirtualRadar.WebSite
     [TestClass]
     public class MinifierTests
     {
-        #region TestContext, TestInitialise, TestCleanup
         public TestContext TestContext { get; set; }
 
         private IClassFactory _OriginalClassFactory;
         private IMinifier _Minifier { get; set; }
         private Configuration _Configuration;
-        private Mock<IConfigurationStorage> _ConfigurationStorage;
+        private Mock<ISharedConfiguration> _SharedConfiguration;
 
         [TestInitialize]
         public void TestInitialise()
@@ -38,8 +37,8 @@ namespace Test.VirtualRadar.WebSite
             _OriginalClassFactory = Factory.TakeSnapshot();
 
             _Configuration = new Configuration();
-            _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
-            _ConfigurationStorage.Setup(r => r.Load()).Returns(_Configuration);
+            _SharedConfiguration = TestUtilities.CreateMockSingleton<ISharedConfiguration>();
+            _SharedConfiguration.Setup(r => r.Get()).Returns(_Configuration);
 
             _Minifier = Factory.Singleton.Resolve<IMinifier>();
         }
@@ -48,73 +47,17 @@ namespace Test.VirtualRadar.WebSite
         public void TestCleanup()
         {
             Factory.RestoreSnapshot(_OriginalClassFactory);
-            _Minifier.Dispose();
-        }
-        #endregion
-
-        #region Dispose
-        [TestMethod]
-        public void Minifier_Dispose_Unhooks_IConfigurationStorage()
-        {
-            _Minifier.Initialise();
-            _Minifier.Dispose();
-
-            _Configuration.GoogleMapSettings.EnableMinifying = false;
-            _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
-
-            var javaScript = "// This is a comment\r\nvar x = 1;\r\n";
-            Assert.AreNotEqual(javaScript, _Minifier.MinifyJavaScript(javaScript));
-        }
-
-        [TestMethod]
-        public void Minifier_Dispose_Can_Be_Safely_Called_Before_Initialise()
-        {
-            _Minifier.Dispose();
-        }
-
-        [TestMethod]
-        public void Minifier_Dispose_Can_Be_Safely_Called_Twice()
-        {
-            _Minifier.Initialise();
-            _Minifier.Dispose();
-            _Minifier.Dispose();
-        }
-        #endregion
-
-        #region Initialise
-        [TestMethod]
-        public void Minifier_Initialise_Hooks_IConfigurationStorage()
-        {
-            _Configuration.GoogleMapSettings.EnableMinifying = false;
-            _Minifier.Initialise();
-
-            var javaScript = "// This is a comment\r\nvar x = 1;\r\n";
-            _Configuration.GoogleMapSettings.EnableMinifying = true;
-            _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
-
-            Assert.AreNotEqual(javaScript, _Minifier.MinifyJavaScript(javaScript));
-        }
-        #endregion
-
-        #region MinifyJavascript
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Minifier_MinifyJavaScript_Throws_If_Called_Before_Initialise()
-        {
-            _Minifier.MinifyJavaScript(null);
         }
 
         [TestMethod]
         public void Minifier_MinifyJavaScript_Returns_Null_If_Passed_Null()
         {
-            _Minifier.Initialise();
             Assert.IsNull(_Minifier.MinifyJavaScript(null));
         }
 
         [TestMethod]
         public void Minifier_MinifyJavaScript_Returns_Empty_String_If_Passed_Empty_String()
         {
-            _Minifier.Initialise();
             Assert.AreEqual("", _Minifier.MinifyJavaScript(""));
         }
 
@@ -130,7 +73,6 @@ namespace Test.VirtualRadar.WebSite
                            "  this.publicFunction = function() { return 'a'; }\r\n" +
                            "}\r\n";
 
-            _Minifier.Initialise();
             var minified = _Minifier.MinifyJavaScript(expanded);
 
             Assert.AreNotEqual(expanded, minified);
@@ -146,42 +88,29 @@ namespace Test.VirtualRadar.WebSite
         {
             _Configuration.GoogleMapSettings.EnableMinifying = false;
 
-            _Minifier.Initialise();
             var javaScript = "// This is a comment\r\nvar x = 1;\r\n";
             var minified = _Minifier.MinifyJavaScript(javaScript);
 
             Assert.AreEqual(javaScript, minified);
         }
-        #endregion
-
-        #region MinifyCss
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Minifier_MinifyCss_Throws_If_Called_Before_Initialise()
-        {
-            _Minifier.MinifyCss(null);
-        }
 
         [TestMethod]
         public void Minifier_MinifyCss_Returns_Null_If_Passed_Null()
         {
-            _Minifier.Initialise();
             Assert.IsNull(_Minifier.MinifyCss(null));
         }
 
         [TestMethod]
         public void Minifier_MinifyCss_Returns_Empty_String_If_Passed_Empty_String()
         {
-            _Minifier.Initialise();
             Assert.AreEqual("", _Minifier.MinifyCss(""));
         }
 
         [TestMethod]
-        public void Minifier_MinifyCss_Compresses_Javascript()
+        public void Minifier_MinifyCss_Compresses_CSS()
         {
             var css = "/* This is a comment */\r\nHTML, BODY\r\n{\r\n    background: #000000; }\r\n";
 
-            _Minifier.Initialise();
             var minified = _Minifier.MinifyCss(css);
 
             Assert.AreNotEqual(css, minified);
@@ -195,12 +124,10 @@ namespace Test.VirtualRadar.WebSite
         {
             _Configuration.GoogleMapSettings.EnableMinifying = false;
 
-            _Minifier.Initialise();
             var css = "/* A comment */\r\nHTML { color: #001122; }\r\n";
             var minified = _Minifier.MinifyCss(css);
 
             Assert.AreEqual(css, minified);
         }
-        #endregion
     }
 }

@@ -10,61 +10,66 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Owin;
-using VirtualRadar.Interface.WebServer;
+using InterfaceFactory;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VirtualRadar.Interface;
 
-namespace VirtualRadar.Interface.Owin
+namespace Test.VirtualRadar.Owin.StreamManipulator
 {
-    /// <summary>
-    /// Wraps an OwinResponse response object.
-    /// </summary>
-    public class PipelineResponse : OwinResponse
+    [TestClass]
+    public class ManipulatorTests
     {
-        /// <summary>
-        /// Gets a value indicating that the response content type is a Javascript MIME type.
-        /// </summary>
-        public bool IsJavascriptContentType
+        public TestContext TestContext { get; set; }
+        private IClassFactory _Snapshot;
+        protected MockOwinEnvironment _Environment;
+
+        [TestInitialize]
+        public void TestInitialise()
         {
-            get {
-                switch((ContentType ?? "").ToLower()) {
-                    case "application/javascript":
-                    case "application/ecmascript":
-                    case "text/javascript":
-                    case "text/ecmascript":
-                        return true;
-                }
-                return false;
-            }
+            _Snapshot = Factory.TakeSnapshot();
+            _Environment = new MockOwinEnvironment();
+
+            ExtraInitialise();
         }
 
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public PipelineResponse() : base()
+        protected virtual void ExtraInitialise()
         {
+            ;
         }
 
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        /// <param name="environment"></param>
-        public PipelineResponse(IDictionary<string, object> environment) : base(environment)
+        [TestCleanup]
+        public void TestCleanup()
         {
+            ExtraCleanup();
+
+            Factory.RestoreSnapshot(_Snapshot);
         }
 
-        /// <summary>
-        /// See <see cref="PipelineContext.GetOrSet{T}(IDictionary{string, object}, string, Func{T})"/>.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="key"></param>
-        /// <param name="buildFunc"></param>
-        /// <returns></returns>
-        protected virtual T GetOrSet<T>(string key, Func<T> buildFunc)
+        protected virtual void ExtraCleanup()
         {
-            return PipelineContext.GetOrSet<T>(Environment, key, buildFunc);
+            ;
+        }
+
+        protected void SetResponseContent(string mimeType, string body, Encoding encoding = null, bool addPreamble = false)
+        {
+            encoding = encoding ?? Encoding.UTF8;
+
+            var preamble = !addPreamble ? new byte[0] : encoding.GetPreamble();
+            var bodyBytes = encoding.GetBytes(body);
+
+            _Environment.Response.ContentType = mimeType;
+            _Environment.Response.ContentLength = preamble.Length + bodyBytes.Length;
+            _Environment.Response.Body.Write(preamble, 0, preamble.Length);
+            _Environment.Response.Body.Write(bodyBytes, 0, bodyBytes.Length);
+        }
+
+        protected TextContent GetResponseContent()
+        {
+            return TextContent.Load(_Environment.ResponseBodyBytes);
         }
     }
 }

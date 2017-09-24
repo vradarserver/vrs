@@ -495,13 +495,6 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
-        public void WebSite_AttachSiteToServer_Initialises_Minifier()
-        {
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            _Minifier.Verify(r => r.Initialise(), Times.Once());
-        }
-
-        [TestMethod]
         public void WebSite_AttachSiteToServer_Initialises_Bundler()
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);

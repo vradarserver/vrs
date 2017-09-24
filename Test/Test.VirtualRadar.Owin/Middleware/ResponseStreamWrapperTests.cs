@@ -136,6 +136,25 @@ namespace Test.VirtualRadar.Owin.Middleware
         }
 
         [TestMethod]
+        public void ResponseStreamWrapper_WrapResponseStream_Writes_Correct_ContentLength()
+        {
+            InitialiseWrapper();
+
+            using(var originalStream = new MemoryStream()) {
+                _Environment.Response.Body = originalStream;
+
+                _Manipulator.ManipulateCallback = () => {
+                    var actualStream = _Environment.Response.Body;
+                    actualStream.WriteByte(123);
+                };
+
+                _Pipeline.CallMiddleware(_Wrapper.WrapResponseStream, _Environment.Environment);
+
+                Assert.AreEqual(1, _Environment.Response.ContentLength);
+            }
+        }
+
+        [TestMethod]
         public void ResponseStreamWrapper_WrapResponseStream_Puts_Original_Stream_Back()
         {
             InitialiseWrapper();

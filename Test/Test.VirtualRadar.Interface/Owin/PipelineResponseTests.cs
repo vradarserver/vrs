@@ -16,6 +16,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VirtualRadar.Interface.Owin;
+using VirtualRadar.Interface.WebServer;
 
 namespace Test.VirtualRadar.Interface.Owin
 {
@@ -32,11 +33,17 @@ namespace Test.VirtualRadar.Interface.Owin
         {
             _Environment = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
             _Response = new PipelineResponse(_Environment);
+            _Environment["owin.ResponseHeaders"] = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
         }
 
-        private void AddResponseHeaders()
+        private void SetContentType(string contentType)
         {
-            _Environment["owin.ResponseHeaders"] = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
+            var headers = (Dictionary<string, string[]>)_Environment["owin.ResponseHeaders"];
+            if(headers.ContainsKey("Content-Type")) {
+                headers["Content-Type"] = new string[] { contentType };
+            } else {
+                headers.Add("Content-Type", new string[] { contentType });
+            }
         }
 
         [TestMethod]
@@ -46,6 +53,21 @@ namespace Test.VirtualRadar.Interface.Owin
 
             var defaultCtor = new PipelineResponse();
             Assert.IsNotNull(defaultCtor.Environment);
+        }
+
+        [TestMethod]
+        public void PipelineResponse_IsJavascriptContentType_Returns_True_For_Javascript_Mime_Types()
+        {
+            Assert.IsFalse(_Response.IsJavascriptContentType);
+
+            foreach(var mimeType in new string[] { MimeType.Javascript, "application/javascript", "application/ecmascript", "text/javascript", "text/ecmascript" }) {
+                SetContentType(mimeType);
+                Assert.IsTrue(_Response.IsJavascriptContentType);
+                SetContentType(mimeType.ToLower());
+                Assert.IsTrue(_Response.IsJavascriptContentType);
+                SetContentType(mimeType.ToUpper());
+                Assert.IsTrue(_Response.IsJavascriptContentType);
+            }
         }
     }
 }

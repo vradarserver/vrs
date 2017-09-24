@@ -58,6 +58,7 @@ namespace VirtualRadar.Owin.Middleware
                     }
 
                     if(originalStream != Stream.Null && wrapperStream != Stream.Null && wrapperStream.Length > 0) {
+                        context.Response.ContentLength = wrapperStream.Length;
                         wrapperStream.Position = 0;
                         wrapperStream.CopyTo(originalStream);
                     }

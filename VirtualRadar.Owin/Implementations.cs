@@ -44,6 +44,8 @@ namespace VirtualRadar.Owin
             factory.Register<Interface.Owin.IRedirectionFilter, Middleware.RedirectionFilter>();
             factory.Register<Interface.Owin.IResponseStreamWrapper, Middleware.ResponseStreamWrapper>();
 
+            factory.Register<Interface.Owin.IJavascriptManipulator, StreamManipulator.JavascriptManipulator>();
+
             factory.Register<Interface.Owin.ILoopbackHost, LoopbackHost>();
             factory.Register<Interface.Owin.IStandardPipeline, StandardPipeline>();
         }

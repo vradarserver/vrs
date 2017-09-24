@@ -234,15 +234,6 @@ namespace Test.VirtualRadar.WebSite
 
             Assert.AreEqual(false, args.Handled);
         }
-
-        [TestMethod]
-        public void Bundler_Dispose_Disposes_Of_Minifier()
-        {
-            _Bundler.AttachToWebSite(_WebSite.Object);
-            _Bundler.Dispose();
-
-            _Minifier.Verify(r => r.Dispose(), Times.Once());
-        }
         #endregion
 
         #region AttachToWebSite
@@ -267,21 +258,6 @@ namespace Test.VirtualRadar.WebSite
             _Bundler.AttachToWebSite(_WebSite.Object);
             Assert.AreSame(_WebServer.Object, _Bundler.WebServer);
             Assert.AreSame(_WebSite.Object, _Bundler.WebSite);
-        }
-
-        [TestMethod]
-        public void Bundler_AttachToWebSite_Initialises_Minifier()
-        {
-            _Bundler.AttachToWebSite(_WebSite.Object);
-            _Minifier.Verify(r => r.Initialise(), Times.Once());
-        }
-
-        [TestMethod]
-        public void Bundler_AttachToWebSite_Only_Initialises_Minifier_Once()
-        {
-            _Bundler.AttachToWebSite(_WebSite.Object);
-            _Bundler.AttachToWebSite(_WebSite.Object);
-            _Minifier.Verify(r => r.Initialise(), Times.Once());
         }
         #endregion
 

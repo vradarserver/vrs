@@ -190,11 +190,6 @@ namespace VirtualRadar.WebSite
         private IBundler _Bundler;
 
         /// <summary>
-        /// The object that will minify JavaScript and CSS for us.
-        /// </summary>
-        private IMinifier _Minifier;
-
-        /// <summary>
         /// The type of proxy that the server is sitting behind.
         /// </summary>
         private ProxyType _ProxyType;
@@ -324,9 +319,6 @@ namespace VirtualRadar.WebSite
 
                 _Bundler = Factory.Singleton.Resolve<IBundler>();
                 _Bundler.AttachToWebSite(this);
-
-                _Minifier = Factory.Singleton.Resolve<IMinifier>();
-                _Minifier.Initialise();
 
                 _Pages.Add(new TextPage(this));
                 _Pages.Add(_ReportRowsJsonPage);
@@ -508,10 +500,7 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         internal string MinifyJavaScript(TextContent textContent)
         {
-            var result = _Minifier.MinifyJavaScript(textContent.Content);
-            textContent.Content = result;
-
-            return result;
+            return textContent.Content;
         }
 
         /// <summary>
