@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2017 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,52 +12,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// A collection of assorted methods that help make dealing with Javascript a bit easier.
+    /// The interface for objects that can manipulate text responses before they are sent back
+    /// to the browser.
     /// </summary>
-    public static class JavascriptHelper
+    public interface ITextResponseManipulator
     {
         /// <summary>
-        /// The number of .NET ticks that represent midnight January 1st 1970.
+        /// Manipulates the text content being sent back to the browser.
         /// </summary>
-        private const long DotNetTicksMidnight1stJanuary1970 = 621355968000000000L;
-
-        /// <summary>
-        /// The number of .NET ticks in a Javascript tick.
-        /// </summary>
-        private const long DotNetTicksPerMillisecond = 10000L;
-
-        /// <summary>
-        /// Returns the Javascript equivalent of the .NET ticks passed across.
-        /// </summary>
-        /// <param name="dotNetTicks"></param>
-        /// <returns></returns>
-        public static long ToJavascriptTicks(long dotNetTicks)
-        {
-            return (dotNetTicks - DotNetTicksMidnight1stJanuary1970) / DotNetTicksPerMillisecond;
-        }
-
-        /// <summary>
-        /// Returns the Javascript ticks that represent the .NET date passed across.
-        /// </summary>
-        /// <param name="date"></param>
-        /// <returns></returns>
-        public static long ToJavascriptTicks(DateTime date)
-        {
-            return ToJavascriptTicks(date.Ticks);
-        }
-
-        /// <summary>
-        /// Formats a string so that it can be used in a JavaScript string literal.
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        public static string FormatStringLiteral(string text)
-        {
-            return text == null ? "null" : String.Format("'{0}'", text.Replace("'", "\\'"));
-        }
+        /// <param name="environment"></param>
+        /// <param name="textContent"></param>
+        void ManipulateTextResponse(IDictionary<string, object> environment, TextContent textContent);
     }
 }

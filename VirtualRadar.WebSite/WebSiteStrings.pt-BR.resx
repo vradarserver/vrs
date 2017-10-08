@@ -1942,4 +1942,8 @@
   <data name="Yes" xml:space="preserve">
     <value>Sim</value>
   </data>
+  <data name="LanguageCode" xml:space="preserve">
+    <value>pt-BR</value>
+    <comment>DO NOT TRANSLATE. Used by unit tests.</comment>
+  </data>
 </root>

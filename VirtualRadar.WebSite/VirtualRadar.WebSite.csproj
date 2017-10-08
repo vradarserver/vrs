@@ -105,6 +105,7 @@
     <Compile Include="WebSiteExtender.cs" />
     <Compile Include="WebSiteGraphics.cs" />
     <Compile Include="WebSiteProvider.cs" />
+    <Compile Include="WebSiteStringsManipulator.cs" />
     <Compile Include="WebSiteStrings.de-DE.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -135,7 +136,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>WebSiteStrings.zh-CN.resx</DependentUpon>
     </Compile>
-    <Compile Include="WebSiteStringsInjector.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">

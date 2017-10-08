@@ -17,12 +17,32 @@ using System.Threading.Tasks;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Owin;
 
 namespace Test.VirtualRadar.Owin.StreamManipulator
 {
     [TestClass]
     public class ManipulatorTests
     {
+        public class TextManipulator : ITextResponseManipulator
+        {
+            public IDictionary<string, object> Environment { get; private set; }
+            public TextContent TextContent { get; private set; }
+            public int CallCount { get; private set; }
+            public Action<IDictionary<string, object>, TextContent> Callback { get; set; }
+
+            public void ManipulateTextResponse(IDictionary<string, object> environment, TextContent textContent)
+            {
+                Environment = environment;
+                TextContent = textContent;
+                ++CallCount;
+
+                if(Callback != null) {
+                    Callback(environment, textContent);
+                }
+            }
+        }
+
         public TestContext TestContext { get; set; }
         private IClassFactory _Snapshot;
         protected MockOwinEnvironment _Environment;

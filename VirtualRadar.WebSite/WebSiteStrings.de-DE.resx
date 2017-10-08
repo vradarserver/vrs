@@ -1951,4 +1951,8 @@
   <data name="Yes" xml:space="preserve">
     <value>Ja</value>
   </data>
+  <data name="LanguageCode" xml:space="preserve">
+    <value>de-DE</value>
+    <comment>DO NOT TRANSLATE. Used by unit tests.</comment>
+  </data>
 </root>

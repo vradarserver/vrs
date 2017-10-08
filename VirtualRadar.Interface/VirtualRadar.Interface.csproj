@@ -156,6 +156,7 @@
     <Compile Include="Owin\IAuthenticationConfiguration.cs" />
     <Compile Include="Owin\IBasicAuthenticationFilter.cs" />
     <Compile Include="Owin\ICorsHandler.cs" />
+    <Compile Include="Owin\IJavascriptManipulatorConfiguration.cs" />
     <Compile Include="Owin\ILoopbackHost.cs" />
     <Compile Include="Owin\IFileSystemServerConfiguration.cs" />
     <Compile Include="IFileSystemProvider.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="Owin\IResponseStreamWrapper.cs" />
     <Compile Include="Owin\IStandardPipeline.cs" />
     <Compile Include="Owin\IStreamManipulator.cs" />
+    <Compile Include="Owin\ITextResponseManipulator.cs" />
     <Compile Include="Owin\PipelineApiController.cs" />
     <Compile Include="Owin\PipelineContext.cs" />
     <Compile Include="Owin\PipelineRequest.cs" />

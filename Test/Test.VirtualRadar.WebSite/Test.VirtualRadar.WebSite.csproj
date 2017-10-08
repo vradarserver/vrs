@@ -107,6 +107,7 @@
     <Compile Include="MockOwinMiddleware\MockFilter.cs" />
     <Compile Include="MockOwinMiddleware\MockRedirectionFilter.cs" />
     <Compile Include="WebSiteExtenderTests.cs" />
+    <Compile Include="WebSiteStringsManipulatorTests.cs" />
     <Compile Include="WebSiteTests_Image.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebSiteTests.cs" />

@@ -31,6 +31,7 @@ namespace VirtualRadar.Owin
             factory.Register<Interface.Owin.IAccessConfiguration, Configuration.AccessConfiguration>();
             factory.Register<Interface.Owin.IAuthenticationConfiguration, Configuration.AuthenticationConfiguration>();
             factory.Register<Interface.Owin.IFileSystemServerConfiguration, Configuration.FileSystemServerConfiguration>();
+            factory.Register<Interface.Owin.IJavascriptManipulatorConfiguration, Configuration.JavascriptManipulatorConfiguration>();
             factory.Register<Interface.Owin.IImageServerConfiguration, Configuration.ImageServerConfiguration>();
             factory.Register<Interface.Owin.IRedirectionConfiguration, Configuration.RedirectionConfiguration>();
             factory.Register<Interface.Owin.IWebAppConfiguration, Configuration.WebAppConfiguration>();

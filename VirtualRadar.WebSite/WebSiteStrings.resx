@@ -1824,4 +1824,8 @@
     <value>Position Age</value>
     <comment>How many seconds old a position is</comment>
   </data>
+  <data name="LanguageCode" xml:space="preserve">
+    <value>en-EN</value>
+    <comment>DO NOT TRANSLATE. Used by unit tests.</comment>
+  </data>
 </root>

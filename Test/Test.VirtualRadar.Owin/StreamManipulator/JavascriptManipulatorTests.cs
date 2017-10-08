@@ -26,15 +26,35 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
     [TestClass]
     public class JavascriptManipulatorTests : ManipulatorTests
     {
+        private Mock<IJavascriptManipulatorConfiguration> _Config;
         private IJavascriptManipulator _Manipulator;
         private Mock<IMinifier> _Minifier;
+        private List<ITextResponseManipulator> _Manipulators;
 
         protected override void ExtraInitialise()
         {
+            _Config = TestUtilities.CreateMockImplementation<IJavascriptManipulatorConfiguration>();
+            _Manipulators = new List<ITextResponseManipulator>();
+            _Config.Setup(r => r.GetTextResponseManipulators()).Returns(() => _Manipulators);
+
             _Minifier = TestUtilities.CreateMockImplementation<IMinifier>();
             _Minifier.Setup(r => r.MinifyJavaScript(It.IsAny<string>())).Returns((string r) => r);
 
             _Manipulator = Factory.Singleton.Resolve<IJavascriptManipulator>();
+        }
+
+        [TestMethod]
+        public void JavascriptManipulator_ManipulateResponseStream_Calls_Any_Registered_Manipulators()
+        {
+            var manipulator = new TextManipulator();
+            _Manipulators.Add(manipulator);
+
+            SetResponseContent(MimeType.Javascript, "a");
+            _Manipulator.ManipulateResponseStream(_Environment.Environment);
+
+            Assert.AreEqual(1, manipulator.CallCount);
+            Assert.AreSame(_Environment.Environment, manipulator.Environment);
+            Assert.AreEqual("a", manipulator.TextContent.Content);
         }
 
         [TestMethod]

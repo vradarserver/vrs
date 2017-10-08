@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 onwards, Andrew Whewell
+﻿// Copyright © 2017 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,19 +10,20 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Resources;
 using System.Text;
+using System.Threading.Tasks;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Owin;
 using VirtualRadar.Localisation;
 
 namespace VirtualRadar.WebSite
 {
     /// <summary>
-    /// The class that handles injecting RESX strings into the translation JavaScript files.
+    /// Injects strings out of a RESX file into the web site strings JavaScript file requested
+    /// by the browser.
     /// </summary>
-    class WebSiteStringsInjector : JavaScriptInjector
+    public class WebSiteStringsManipulator : ITextResponseManipulator
     {
         /// <summary>
         /// Map of culture names to localisers.
@@ -30,27 +31,27 @@ namespace VirtualRadar.WebSite
         private Dictionary<string, ResourceStrings> _ResourceStringsMap = new Dictionary<string, ResourceStrings>();
 
         /// <summary>
-        /// The object that locks <see cref="LocalisedStringsMap"/> to a single thread.
+        /// The object that locks <see cref="_ResourceStringsMap"/> to a single thread.
         /// </summary>
         private object _SyncLock = new object();
 
         /// <summary>
-        /// When overridden by the derivee this optionally injects content into the JavaScript file.
+        /// See interface docs.
         /// </summary>
-        /// <param name="pathAndFile"></param>
-        /// <param name="content"></param>
-        protected override void DoInjectIntoContent(string pathAndFile, TextContent content)
+        /// <param name="environment"></param>
+        /// <param name="textContent"></param>
+        public void ManipulateTextResponse(IDictionary<string, object> environment, Interface.TextContent textContent)
         {
-            var javaScriptLanguage = ExtractJavaScriptLanguage(pathAndFile);
+            var javaScriptLanguage = ExtractJavaScriptLanguage(environment);
             if(javaScriptLanguage != null) {
                 switch(javaScriptLanguage) {
-                    case "en":      InjectResxProperties(content, "en-GB"); break;
-                    case "de":      InjectResxProperties(content, "de-DE"); break;
-                    case "fr":      InjectResxProperties(content, "fr-FR"); break;
-                    case "pt-br":   InjectResxProperties(content, "pt-BR"); break;
-                    case "ru":      InjectResxProperties(content, "ru-RU"); break;
-                    case "tr":      InjectResxProperties(content, "tr-TR"); break;
-                    case "zh":      InjectResxProperties(content, "zh-CN"); break;
+                    case "en":      InjectResxProperties(textContent, "en-GB"); break;
+                    case "de":      InjectResxProperties(textContent, "de-DE"); break;
+                    case "fr":      InjectResxProperties(textContent, "fr-FR"); break;
+                    case "pt-br":   InjectResxProperties(textContent, "pt-BR"); break;
+                    case "ru":      InjectResxProperties(textContent, "ru-RU"); break;
+                    case "tr":      InjectResxProperties(textContent, "tr-TR"); break;
+                    case "zh":      InjectResxProperties(textContent, "zh-CN"); break;
                     // Do not throw an exception if not known, someone might be doing their own strings file
                 }
             }
@@ -59,21 +60,23 @@ namespace VirtualRadar.WebSite
         /// <summary>
         /// Returns the language from the JavaScript language filename or null if this isn't a JavaScript language file.
         /// </summary>
-        /// <param name="pathAndFile"></param>
+        /// <param name="environment"></param>
         /// <returns></returns>
-        private string ExtractJavaScriptLanguage(string pathAndFile)
+        private string ExtractJavaScriptLanguage(IDictionary<string, object> environment)
         {
             string result = null;
-
             const string pathAndFilePrefix = "/script/i18n/strings.";
-            if(pathAndFile.StartsWith(pathAndFilePrefix, StringComparison.OrdinalIgnoreCase)) {
-                var javaScriptLanguage = pathAndFile.Substring(pathAndFilePrefix.Length);
-                var dotIndex = javaScriptLanguage.IndexOf('.');
-                if(dotIndex != -1) {
-                    var extension = javaScriptLanguage.Substring(dotIndex);
-                    if(String.Equals(".js", extension, StringComparison.OrdinalIgnoreCase) ||
-                       extension.StartsWith(".js?", StringComparison.OrdinalIgnoreCase)) {
-                        result = javaScriptLanguage.Substring(0, dotIndex).ToLower();
+
+            if(environment.TryGetValue("owin.RequestPath", out object owinPath)) {
+                if(owinPath is string pathAndFile && pathAndFile.StartsWith(pathAndFilePrefix, StringComparison.OrdinalIgnoreCase)) {
+                    var javaScriptLanguage = pathAndFile.Substring(pathAndFilePrefix.Length);
+                    var dotIndex = javaScriptLanguage.IndexOf('.');
+                    if(dotIndex != -1) {
+                        var extension = javaScriptLanguage.Substring(dotIndex);
+                        if(String.Equals(".js", extension, StringComparison.OrdinalIgnoreCase) ||
+                           extension.StartsWith(".js?", StringComparison.OrdinalIgnoreCase)) {
+                            result = javaScriptLanguage.Substring(0, dotIndex).ToLower();
+                        }
                     }
                 }
             }
@@ -86,16 +89,16 @@ namespace VirtualRadar.WebSite
         /// </summary>
         /// <param name="content"></param>
         /// <param name="cultureName"></param>
-        private void InjectResxProperties(TextContent content, string cultureName)
+        private void InjectResxProperties(Interface.TextContent textContent, string cultureName)
         {
             var resourceStrings = FetchResourceStrings(cultureName);
             if(resourceStrings != null) {
-                var injectPoint = content.Content.IndexOf("    // [[ MARKER END SIMPLE STRINGS ]]");
+                var injectPoint = textContent.Content.IndexOf("    // [[ MARKER END SIMPLE STRINGS ]]");
                 if(injectPoint != -1) {
-                    content.Content = String.Format("{0}{1}{2}",
-                        content.Content.Substring(0, injectPoint),
+                    textContent.Content = String.Format("{0}{1}{2}",
+                        textContent.Content.Substring(0, injectPoint),
                         BuildLanguageStrings(resourceStrings),
-                        content.Content.Substring(injectPoint)
+                        textContent.Content.Substring(injectPoint)
                     );
                 }
             }
@@ -108,12 +111,15 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         private ResourceStrings FetchResourceStrings(string cultureName)
         {
-            ResourceStrings result;
-
-            lock(_SyncLock) {
-                if(!_ResourceStringsMap.TryGetValue(cultureName, out result)) {
-                    result = new ResourceStrings(typeof(WebSiteStrings), cultureName);
-                    _ResourceStringsMap.Add(cultureName, result);
+            var resourceMap = _ResourceStringsMap;
+            if(!resourceMap.TryGetValue(cultureName, out ResourceStrings result)) {
+                lock(_SyncLock) {
+                    if(!_ResourceStringsMap.TryGetValue(cultureName, out result)) {
+                        resourceMap = CollectionHelper.ShallowCopy(_ResourceStringsMap);
+                        result = new ResourceStrings(typeof(WebSiteStrings), cultureName);
+                        resourceMap.Add(cultureName, result);
+                        _ResourceStringsMap = resourceMap;
+                    }
                 }
             }
 
@@ -129,8 +135,8 @@ namespace VirtualRadar.WebSite
         {
             var result = new StringBuilder();
 
-            foreach(var stringName in stringsMap.GetStringNames()) {
-                result.AppendFormat("    VRS.$$.{0} = {1};\r\n", stringName, FormatJavaScriptStringLiteral(stringsMap.GetLocalisedString(stringName)));
+            foreach(var stringName in stringsMap.GetStringNames().OrderBy(r => r)) {
+                result.AppendFormat("    VRS.$$.{0} = {1};\r\n", stringName, JavascriptHelper.FormatStringLiteral(stringsMap.GetLocalisedString(stringName)));
             }
 
             return result.ToString();

@@ -72,6 +72,7 @@
     <Compile Include="Configuration\AccessConfiguration.cs" />
     <Compile Include="Configuration\FileSystemServerConfiguration.cs" />
     <Compile Include="Configuration\ImageServerConfiguration.cs" />
+    <Compile Include="Configuration\JavascriptManipulatorConfiguration.cs" />
     <Compile Include="Configuration\RedirectionConfiguration.cs" />
     <Compile Include="Configuration\RegisterStreamManipulator.cs" />
     <Compile Include="Implementations.cs" />

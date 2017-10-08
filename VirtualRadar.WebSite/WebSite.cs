@@ -180,6 +180,11 @@ namespace VirtualRadar.WebSite
         Dictionary<string, CachedUser> _AdministratorUsers = new Dictionary<string,CachedUser>();
 
         /// <summary>
+        /// The object that will inject web site strings into the site for us.
+        /// </summary>
+        private WebSiteStringsManipulator _WebSiteStringsManipulator = new WebSiteStringsManipulator();
+
+        /// <summary>
         /// A reference to the singleton user manager - saves us having to keep reloading it.
         /// </summary>
         private IUserManager _UserManager;
@@ -326,7 +331,8 @@ namespace VirtualRadar.WebSite
                 var fileSystemConfiguration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
                 fileSystemConfiguration.TextLoadedFromFile += FileSystemConfiguration_TextLoadedFromFile;
 
-                _JavaScriptInjectors.Add(new WebSiteStringsInjector());
+                var javascriptManipulatorConfig = Factory.Singleton.ResolveSingleton<IJavascriptManipulatorConfiguration>();
+                javascriptManipulatorConfig.AddTextResponseManipulator(_WebSiteStringsManipulator);
 
                 foreach(var page in _Pages) {
                     page.Provider = Provider;

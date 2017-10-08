@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2017 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,52 +12,67 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using VirtualRadar.Interface;
+using VirtualRadar.Interface.Owin;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.Owin.Configuration
 {
     /// <summary>
-    /// A collection of assorted methods that help make dealing with Javascript a bit easier.
+    /// Default implementation of <see cref="IJavascriptManipulatorConfiguration"/>.
     /// </summary>
-    public static class JavascriptHelper
+    class JavascriptManipulatorConfiguration : IJavascriptManipulatorConfiguration
     {
         /// <summary>
-        /// The number of .NET ticks that represent midnight January 1st 1970.
+        /// The manipulators that have been registered.
         /// </summary>
-        private const long DotNetTicksMidnight1stJanuary1970 = 621355968000000000L;
+        private List<ITextResponseManipulator> _Manipulators = new List<ITextResponseManipulator>();
 
         /// <summary>
-        /// The number of .NET ticks in a Javascript tick.
+        /// The lock to use when overwriting _Manipulators.
         /// </summary>
-        private const long DotNetTicksPerMillisecond = 10000L;
+        private object _SyncLock = new object();
 
         /// <summary>
-        /// Returns the Javascript equivalent of the .NET ticks passed across.
+        /// See interface docs.
         /// </summary>
-        /// <param name="dotNetTicks"></param>
-        /// <returns></returns>
-        public static long ToJavascriptTicks(long dotNetTicks)
+        /// <param name="manipulator"></param>
+        public void AddTextResponseManipulator(ITextResponseManipulator manipulator)
         {
-            return (dotNetTicks - DotNetTicksMidnight1stJanuary1970) / DotNetTicksPerMillisecond;
+            if(manipulator == null) {
+                throw new ArgumentNullException(nameof(manipulator));
+            }
+
+            lock(_SyncLock) {
+                if(!_Manipulators.Any(r => Object.ReferenceEquals(manipulator, r))) {
+                    var newList = CollectionHelper.ShallowCopy(_Manipulators);
+                    newList.Add(manipulator);
+                    _Manipulators = newList;
+                }
+            }
         }
 
         /// <summary>
-        /// Returns the Javascript ticks that represent the .NET date passed across.
+        /// See interface docs.
         /// </summary>
-        /// <param name="date"></param>
-        /// <returns></returns>
-        public static long ToJavascriptTicks(DateTime date)
+        /// <param name="manipulator"></param>
+        public void RemoveTextResponseManipulator(ITextResponseManipulator manipulator)
         {
-            return ToJavascriptTicks(date.Ticks);
+            lock(_SyncLock) {
+                var newList = CollectionHelper.ShallowCopy(_Manipulators);
+                newList.Remove(manipulator);
+                _Manipulators = newList;
+            }
         }
 
         /// <summary>
-        /// Formats a string so that it can be used in a JavaScript string literal.
+        /// See interface docs.
         /// </summary>
-        /// <param name="text"></param>
         /// <returns></returns>
-        public static string FormatStringLiteral(string text)
+        public IEnumerable<ITextResponseManipulator> GetTextResponseManipulators()
         {
-            return text == null ? "null" : String.Format("'{0}'", text.Replace("'", "\\'"));
+            var result = _Manipulators;
+            return result;
         }
     }
 }

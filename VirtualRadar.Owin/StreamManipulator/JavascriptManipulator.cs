@@ -32,11 +32,17 @@ namespace VirtualRadar.Owin.StreamManipulator
         private IMinifier _Minifier;
 
         /// <summary>
+        /// Singleton configuration object.
+        /// </summary>
+        private IJavascriptManipulatorConfiguration _Config;
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public JavascriptManipulator()
         {
             _Minifier = Factory.Singleton.Resolve<IMinifier>();
+            _Config = Factory.Singleton.ResolveSingleton<IJavascriptManipulatorConfiguration>();
         }
 
         /// <summary>
@@ -50,6 +56,10 @@ namespace VirtualRadar.Owin.StreamManipulator
                 var stream = context.Response.Body;
                 stream.Position = 0;
                 var textContent = TextContent.Load(stream, leaveOpen: true);
+
+                foreach(var manipulator in _Config.GetTextResponseManipulators()) {
+                    manipulator.ManipulateTextResponse(environment, textContent);
+                }
 
                 var newContent = _Minifier.MinifyJavaScript(textContent.Content);
                 if(newContent.Length < textContent.Content.Length) {
