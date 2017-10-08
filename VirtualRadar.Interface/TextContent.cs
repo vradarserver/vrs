@@ -22,10 +22,28 @@ namespace VirtualRadar.Interface
     /// </summary>
     public class TextContent
     {
+        private string _Content = "";
         /// <summary>
         /// Gets or sets the text content of a file without the encoding preamble.
         /// </summary>
-        public string Content { get; set; } = "";
+        /// <remarks>
+        /// Setting this property always sets  </remarks>
+        public string Content
+        {
+            get { return _Content; }
+            set {
+                _Content = value;
+                IsDirty = true;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a flag indicating that the <see cref="Content"/> may have changed.
+        /// </summary>
+        /// <remarks>
+        /// Always set to true by the setter for <see cref="Content"/>.
+        /// </remarks>
+        public bool IsDirty { get; set; }
 
         /// <summary>
         /// Gets or sets the best guess at the encoding of the original file.
@@ -65,6 +83,7 @@ namespace VirtualRadar.Interface
                 var currentStreamPosition = stream.Position;
 
                 result.Content = streamReader.ReadToEnd();
+                result.IsDirty = false;
                 result.Encoding = streamReader.CurrentEncoding;
 
                 stream.Position = currentStreamPosition;

@@ -66,6 +66,7 @@ namespace Test.VirtualRadar.Owin
         private MiddlewareDetail _LastMiddlewareBeforeWebApiInit;
 
         private List<IStreamManipulator> _ExpectedStreamManipulators;
+        private Mock<IHtmlManipulator> _MockHtmlManipulator;
         private Mock<IJavascriptManipulator> _MockJavascriptManipulator;
 
         [TestInitialize]
@@ -86,6 +87,7 @@ namespace Test.VirtualRadar.Owin
 
             _ExpectedStreamManipulators = new List<IStreamManipulator>();
             _MockJavascriptManipulator = CreateMockStreamManipulator<IJavascriptManipulator>();
+            _MockHtmlManipulator = CreateMockStreamManipulator<IHtmlManipulator>();
 
             _StandardPipeline = Factory.Singleton.Resolve<IStandardPipeline>();
         }

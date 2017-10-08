@@ -26,7 +26,9 @@ namespace InterfaceFactory
         /// </summary>
         /// <typeparam name="TI">The interface type.</typeparam>
         /// <typeparam name="TM">The concrete type that implements TI.</typeparam>
-        void Register<TI, TM>();
+        void Register<TI, TM>()
+            where TI: class
+            where TM: class, TI;
 
         /// <summary>
         /// Registers an implementation of an interface. A new instance of the implementation will

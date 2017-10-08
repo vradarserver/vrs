@@ -13,15 +13,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VirtualRadar.Interface;
-using VirtualRadar.Interface.Owin;
 
-namespace VirtualRadar.Owin.Configuration
+namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// Default implementation of <see cref="IJavascriptManipulatorConfiguration"/>.
+    /// The interface for objects that manipulate HTML responses.
     /// </summary>
-    class JavascriptManipulatorConfiguration : BaseTextResponseManipulatorConfiguration, IJavascriptManipulatorConfiguration
+    public interface IHtmlManipulator : IStreamManipulator
     {
     }
 }

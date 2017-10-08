@@ -13,15 +13,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
 
-namespace VirtualRadar.Owin.Configuration
+namespace Test.VirtualRadar.Owin.Configuration
 {
     /// <summary>
-    /// Default implementation of <see cref="IJavascriptManipulatorConfiguration"/>.
+    /// Base class for text manipulator configuration tests.
     /// </summary>
-    class JavascriptManipulatorConfiguration : BaseTextResponseManipulatorConfiguration, IJavascriptManipulatorConfiguration
+    [TestClass]
+    public abstract class ManipulatorConfigurationTests
     {
+        protected class TextResponseManipulator : ITextResponseManipulator
+        {
+            public IDictionary<string, object> Environment { get; private set; }
+            public TextContent TextContent { get; private set; }
+
+            public void ManipulateTextResponse(IDictionary<string, object> environment, TextContent textContent)
+            {
+                Environment = environment;
+                TextContent = textContent;
+            }
+        }
+
+        public TestContext TestContext { get; set; }
+        protected TextResponseManipulator _Manipulator;
+
+        [TestInitialize]
+        public void TestInitialise()
+        {
+            _Manipulator = new TextResponseManipulator();
+            ExtraConfiguration();
+        }
+
+        protected abstract void ExtraConfiguration();
     }
 }

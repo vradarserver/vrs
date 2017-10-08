@@ -87,7 +87,9 @@
     <Compile Include="Configuration\AuthenticationConfigurationTests.cs" />
     <Compile Include="Configuration\FileSystemServerConfigurationTests.cs" />
     <Compile Include="Configuration\ImageServerConfigurationTests.cs" />
+    <Compile Include="Configuration\HtmlManipulatorConfigurationTests.cs" />
     <Compile Include="Configuration\JavascriptManipulatorConfigurationTests.cs" />
+    <Compile Include="Configuration\ManipulatorConfigurationTests.cs" />
     <Compile Include="Configuration\RedirectionConfigurationTests.cs" />
     <Compile Include="LoopbackHostTests.cs" />
     <Compile Include="Middleware\AccessFilterTests.cs" />
@@ -104,6 +106,7 @@
     <Compile Include="MockOwinPipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StandardPipelineTests.cs" />
+    <Compile Include="StreamManipulator\HtmlManipulatorTests.cs" />
     <Compile Include="StreamManipulator\JavascriptManipulatorTests.cs" />
     <Compile Include="StreamManipulator\ManipulatorTests.cs" />
     <Compile Include="TestImages.Designer.cs">

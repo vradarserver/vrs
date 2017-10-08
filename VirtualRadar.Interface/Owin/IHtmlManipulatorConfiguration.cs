@@ -13,73 +13,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Owin;
-using VirtualRadar.Interface.WebServer;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// Wraps an OwinResponse response object.
+    /// The interface for a singleton object that records the configuration of the HTML manipulator.
     /// </summary>
-    public class PipelineResponse : OwinResponse
+    [Singleton]
+    public interface IHtmlManipulatorConfiguration
     {
         /// <summary>
-        /// Gets a value indicating that the response content type is a Javascript MIME type.
+        /// Adds a manipulator that can change the HTML before it is sent back to the browser.
         /// </summary>
-        public bool IsJavascriptContentType
-        {
-            get {
-                switch((ContentType ?? "").ToLower()) {
-                    case "application/javascript":
-                    case "application/ecmascript":
-                    case "text/javascript":
-                    case "text/ecmascript":
-                        return true;
-                }
-                return false;
-            }
-        }
+        /// <param name="manipulator"></param>
+        /// <remarks>
+        /// Repeated adds of the same manipulator object are ignored.
+        /// </remarks>
+        void AddTextResponseManipulator(ITextResponseManipulator manipulator);
 
         /// <summary>
-        /// Gets a value indicating that the response content type is an HTML MIME type.
+        /// Removes a manipulator that had been previously registered.
         /// </summary>
-        public bool IsHtmlContentType
-        {
-            get {
-                switch((ContentType ?? "").ToLower()) {
-                    case "text/html":
-                    case "application/xhtml+xml":
-                        return true;
-                }
-                return false;
-            }
-        }
+        /// <param name="manipulator"></param>
+        /// <remarks>
+        /// Repeated removals of the same manipulator object are ignored.
+        /// </remarks>
+        void RemoveTextResponseManipulator(ITextResponseManipulator manipulator);
 
         /// <summary>
-        /// Creates a new object.
+        /// Returns the text response manipulators that have been registered.
         /// </summary>
-        public PipelineResponse() : base()
-        {
-        }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        /// <param name="environment"></param>
-        public PipelineResponse(IDictionary<string, object> environment) : base(environment)
-        {
-        }
-
-        /// <summary>
-        /// See <see cref="PipelineContext.GetOrSet{T}(IDictionary{string, object}, string, Func{T})"/>.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="key"></param>
-        /// <param name="buildFunc"></param>
         /// <returns></returns>
-        protected virtual T GetOrSet<T>(string key, Func<T> buildFunc)
-        {
-            return PipelineContext.GetOrSet<T>(Environment, key, buildFunc);
-        }
+        IEnumerable<ITextResponseManipulator> GetTextResponseManipulators();
     }
 }

@@ -31,6 +31,7 @@ namespace VirtualRadar.Owin
             factory.Register<Interface.Owin.IAccessConfiguration, Configuration.AccessConfiguration>();
             factory.Register<Interface.Owin.IAuthenticationConfiguration, Configuration.AuthenticationConfiguration>();
             factory.Register<Interface.Owin.IFileSystemServerConfiguration, Configuration.FileSystemServerConfiguration>();
+            factory.Register<Interface.Owin.IHtmlManipulatorConfiguration, Configuration.HtmlManipulatorConfiguration>();
             factory.Register<Interface.Owin.IJavascriptManipulatorConfiguration, Configuration.JavascriptManipulatorConfiguration>();
             factory.Register<Interface.Owin.IImageServerConfiguration, Configuration.ImageServerConfiguration>();
             factory.Register<Interface.Owin.IRedirectionConfiguration, Configuration.RedirectionConfiguration>();
@@ -45,6 +46,7 @@ namespace VirtualRadar.Owin
             factory.Register<Interface.Owin.IRedirectionFilter, Middleware.RedirectionFilter>();
             factory.Register<Interface.Owin.IResponseStreamWrapper, Middleware.ResponseStreamWrapper>();
 
+            factory.Register<Interface.Owin.IHtmlManipulator, StreamManipulator.HtmlManipulator>();
             factory.Register<Interface.Owin.IJavascriptManipulator, StreamManipulator.JavascriptManipulator>();
 
             factory.Register<Interface.Owin.ILoopbackHost, LoopbackHost>();

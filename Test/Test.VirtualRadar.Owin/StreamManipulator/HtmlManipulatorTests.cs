@@ -19,37 +19,32 @@ using Moq;
 using Test.Framework;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.WebServer;
-using VirtualRadar.Interface.WebSite;
 
 namespace Test.VirtualRadar.Owin.StreamManipulator
 {
     [TestClass]
-    public class JavascriptManipulatorTests : ManipulatorTests
+    public class HtmlManipulatorTests : ManipulatorTests
     {
-        private Mock<IJavascriptManipulatorConfiguration> _Config;
-        private IJavascriptManipulator _Manipulator;
+        private Mock<IHtmlManipulatorConfiguration> _Config;
+        private IHtmlManipulator _Manipulator;
         private List<ITextResponseManipulator> _Manipulators;
-        private Mock<IMinifier> _Minifier;
 
         protected override void ExtraInitialise()
         {
-            _Config = TestUtilities.CreateMockImplementation<IJavascriptManipulatorConfiguration>();
+            _Config = TestUtilities.CreateMockImplementation<IHtmlManipulatorConfiguration>();
             _Manipulators = new List<ITextResponseManipulator>();
             _Config.Setup(r => r.GetTextResponseManipulators()).Returns(() => _Manipulators);
 
-            _Minifier = TestUtilities.CreateMockImplementation<IMinifier>();
-            _Minifier.Setup(r => r.MinifyJavaScript(It.IsAny<string>())).Returns((string r) => r);
-
-            _Manipulator = Factory.Singleton.Resolve<IJavascriptManipulator>();
+            _Manipulator = Factory.Singleton.Resolve<IHtmlManipulator>();
         }
 
         [TestMethod]
-        public void JavascriptManipulator_ManipulateResponseStream_Calls_Any_Registered_Manipulators()
+        public void HtmlManipulator_ManipulateResponseStream_Calls_Any_Registered_Manipulators()
         {
             var manipulator = new TextManipulator();
             _Manipulators.Add(manipulator);
 
-            SetResponseContent(MimeType.Javascript, "a");
+            SetResponseContent(MimeType.Html, "a");
             _Manipulator.ManipulateResponseStream(_Environment.Environment);
 
             Assert.AreEqual(1, manipulator.CallCount);
@@ -58,26 +53,26 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
         }
 
         [TestMethod]
-        public void JavascriptManipulator_Initialises_TextContent_IsDirty_To_False()
+        public void HtmlManipulator_Initialises_TextContent_IsDirty_To_False()
         {
             var manipulator = new TextManipulator();
             _Manipulators.Add(manipulator);
 
-            SetResponseContent(MimeType.Javascript, "a");
+            SetResponseContent(MimeType.Html, "a");
             _Manipulator.ManipulateResponseStream(_Environment.Environment);
 
             Assert.IsFalse(manipulator.TextContent.IsDirty);
         }
 
         [TestMethod]
-        public void JavascriptManipulator_ManipulateResponseStream_Writes_Manipulated_Response()
+        public void HtmlManipulator_ManipulateResponseStream_Writes_Manipulated_Response()
         {
             var manipulator = new TextManipulator {
                 Callback = (env, content) => content.Content = "b"
             };
             _Manipulators.Add(manipulator);
 
-            SetResponseContent(MimeType.Javascript, "a");
+            SetResponseContent(MimeType.Html, "a");
             _Manipulator.ManipulateResponseStream(_Environment.Environment);
 
             var textContent = GetResponseContent();
@@ -86,7 +81,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
         }
 
         [TestMethod]
-        public void JavascriptManipulator_ManipulateResponseStream_Only_Writes_Dirty_TextContent()
+        public void HtmlManipulator_ManipulateResponseStream_Only_Writes_Dirty_TextContent()
         {
             var manipulator = new TextManipulator {
                 Callback = (env, content) => {
@@ -96,66 +91,11 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             };
             _Manipulators.Add(manipulator);
 
-            SetResponseContent(MimeType.Javascript, "a");
+            SetResponseContent(MimeType.Html, "a");
             _Manipulator.ManipulateResponseStream(_Environment.Environment);
 
             var textContent = GetResponseContent();
             Assert.AreEqual("a", textContent.Content);
-        }
-
-        [TestMethod]
-        public void JavascriptManipulator_ManipulateResponseStream_Minifies_Javascript()
-        {
-            SetResponseContent(MimeType.Javascript, "a");
-            _Manipulator.ManipulateResponseStream(_Environment.Environment);
-            _Minifier.Verify(r => r.MinifyJavaScript("a"), Times.Once());
-        }
-
-        [TestMethod]
-        public void JavascriptManipulator_ManipulateResponseStream_Does_Not_Minify_NonJavascript()
-        {
-            SetResponseContent(MimeType.Html, "a");
-            _Manipulator.ManipulateResponseStream(_Environment.Environment);
-            _Minifier.Verify(r => r.MinifyJavaScript(It.IsAny<string>()), Times.Never());
-        }
-
-        [TestMethod]
-        public void JavascriptManipulator_ManipulateResponseStream_Writes_Minified_Javascript_To_Stream()
-        {
-            SetResponseContent(MimeType.Javascript, "abc");
-            _Minifier.Setup(r => r.MinifyJavaScript("abc")).Returns("z");
-
-            _Manipulator.ManipulateResponseStream(_Environment.Environment);
-
-            var textContent = GetResponseContent();
-            Assert.AreEqual("z", textContent.Content);
-            Assert.AreNotEqual(0, _Environment.Response.Body.Position);    // MemoryStream will throw an exception if you read this after it's been disposed
-        }
-
-        [TestMethod]
-        public void JavascriptManipulator_ManipulateResponseStream_Ignores_Minifier_Output_If_Not_Shorter_Than_Original()
-        {
-            SetResponseContent(MimeType.Javascript, "abc");
-            _Minifier.Setup(r => r.MinifyJavaScript("abc")).Returns("xyz");
-
-            _Manipulator.ManipulateResponseStream(_Environment.Environment);
-
-            Assert.AreEqual("abc", GetResponseContent().Content);
-        }
-
-        [TestMethod]
-        public void JavaScriptManipulator_ManipulateResponseStream_Writes_Preamble_If_Original_Had_Preamble()
-        {
-            SetResponseContent(MimeType.Javascript, "abc", Encoding.Unicode, addPreamble: true);
-            _Minifier.Setup(r => r.MinifyJavaScript("abc")).Returns("z");
-
-            _Manipulator.ManipulateResponseStream(_Environment.Environment);
-
-            var textContent = GetResponseContent();
-            Assert.AreEqual("z", textContent.Content);
-            Assert.AreEqual(Encoding.Unicode.EncodingName, textContent.Encoding.EncodingName);
-            Assert.IsTrue(textContent.HadPreamble);
-            Assert.AreEqual(Encoding.Unicode.GetPreamble().Length + 2, _Environment.Response.Body.Length);
         }
     }
 }

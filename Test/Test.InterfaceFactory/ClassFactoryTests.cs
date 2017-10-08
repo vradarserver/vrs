@@ -98,13 +98,6 @@ namespace Test.InterfaceFactory
         {
             _ClassFactory.Register<IX, IX>();
         }
-
-        [TestMethod]
-        [ExpectedException(typeof(ClassFactoryException))]
-        public void ClassFactory_RegisterGeneric_Throws_If_ImplementationType_Does_Not_Implement_InterfaceType()
-        {
-            _ClassFactory.Register<IX, Y>();
-        }
         #endregion
 
         #region Register (callback version)

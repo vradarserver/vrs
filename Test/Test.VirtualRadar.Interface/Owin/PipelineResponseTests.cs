@@ -69,5 +69,20 @@ namespace Test.VirtualRadar.Interface.Owin
                 Assert.IsTrue(_Response.IsJavascriptContentType);
             }
         }
+
+        [TestMethod]
+        public void PipelineResponse_IsHtmlContentType_Returns_True_For_Html_Mime_Types()
+        {
+            Assert.IsFalse(_Response.IsHtmlContentType);
+
+            foreach(var mimeType in new string[] { MimeType.Html, "text/html", "application/xhtml+xml" }) {
+                SetContentType(mimeType);
+                Assert.IsTrue(_Response.IsHtmlContentType);
+                SetContentType(mimeType.ToLower());
+                Assert.IsTrue(_Response.IsHtmlContentType);
+                SetContentType(mimeType.ToUpper());
+                Assert.IsTrue(_Response.IsHtmlContentType);
+            }
+        }
     }
 }

@@ -70,7 +70,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\AccessConfiguration.cs" />
+    <Compile Include="Configuration\BaseTextResponseManipulatorConfiguration.cs" />
     <Compile Include="Configuration\FileSystemServerConfiguration.cs" />
+    <Compile Include="Configuration\HtmlManipulatorConfiguration.cs" />
     <Compile Include="Configuration\ImageServerConfiguration.cs" />
     <Compile Include="Configuration\JavascriptManipulatorConfiguration.cs" />
     <Compile Include="Configuration\RedirectionConfiguration.cs" />
@@ -90,6 +92,7 @@
     <Compile Include="Configuration\WebAppConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration\RegisterMiddlewareCallback.cs" />
+    <Compile Include="StreamManipulator\HtmlManipulator.cs" />
     <Compile Include="StreamManipulator\JavascriptManipulator.cs" />
   </ItemGroup>
   <ItemGroup>

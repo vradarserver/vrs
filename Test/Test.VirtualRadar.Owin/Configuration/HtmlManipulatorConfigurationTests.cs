@@ -21,17 +21,17 @@ using VirtualRadar.Interface.Owin;
 namespace Test.VirtualRadar.Owin.Configuration
 {
     [TestClass]
-    public class JavascriptManipulatorConfigurationTests : ManipulatorConfigurationTests
+    public class HtmlManipulatorConfigurationTests : ManipulatorConfigurationTests
     {
-        private IJavascriptManipulatorConfiguration _Config;
+        private IHtmlManipulatorConfiguration _Config;
 
         protected override void ExtraConfiguration()
         {
-            _Config = Factory.Singleton.ResolveNewInstance<IJavascriptManipulatorConfiguration>();
+            _Config = Factory.Singleton.ResolveNewInstance<IHtmlManipulatorConfiguration>();
         }
 
         [TestMethod]
-        public void JavascriptManipulatorConfiguration_AddTextResponseManipulator_Adds_Manipulator()
+        public void HtmlManipulatorConfiguration_AddTextResponseManipulator_Adds_Manipulator()
         {
             _Config.AddTextResponseManipulator(_Manipulator);
 
@@ -42,13 +42,13 @@ namespace Test.VirtualRadar.Owin.Configuration
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void JavascriptManipulatorConfiguration_AddTextResponseManipulator_Throws_If_Passed_Null()
+        public void HtmlManipulatorConfiguration_AddTextResponseManipulator_Throws_If_Passed_Null()
         {
             _Config.AddTextResponseManipulator(null);
         }
 
         [TestMethod]
-        public void JavascriptManipulatorConfiguration_AddTextResponseManipulator_Ignores_Double_Add()
+        public void HtmlManipulatorConfiguration_AddTextResponseManipulator_Ignores_Double_Add()
         {
             _Config.AddTextResponseManipulator(_Manipulator);
             _Config.AddTextResponseManipulator(_Manipulator);
@@ -59,7 +59,7 @@ namespace Test.VirtualRadar.Owin.Configuration
         }
 
         [TestMethod]
-        public void JavascriptManipulatorConfiguration_RemoveTextResponseManipulator_Removes_Manipulator()
+        public void HtmlManipulatorConfiguration_RemoveTextResponseManipulator_Removes_Manipulator()
         {
             _Config.AddTextResponseManipulator(_Manipulator);
             _Config.RemoveTextResponseManipulator(_Manipulator);
@@ -69,13 +69,13 @@ namespace Test.VirtualRadar.Owin.Configuration
         }
 
         [TestMethod]
-        public void JavascriptManipulatorConfiguration_RemoveTextResponseManipulator_Ignores_Null_Removal()
+        public void HtmlManipulatorConfiguration_RemoveTextResponseManipulator_Ignores_Null_Removal()
         {
             _Config.RemoveTextResponseManipulator(null);
         }
 
         [TestMethod]
-        public void JavascriptManipulatorConfiguration_RemoveTextResponseManipulator_Ignores_Double_Removal()
+        public void HtmlManipulatorConfiguration_RemoveTextResponseManipulator_Ignores_Double_Removal()
         {
             _Config.AddTextResponseManipulator(_Manipulator);
             _Config.RemoveTextResponseManipulator(_Manipulator);

@@ -28,9 +28,19 @@ namespace Test.VirtualRadar.Interface
         {
             var textContent = new TextContent();
 
+            TestUtilities.TestProperty(textContent, r => r.IsDirty, false);
             TestUtilities.TestProperty(textContent, r => r.Content, "", "Abc");
             TestUtilities.TestProperty(textContent, r => r.Encoding, Encoding.UTF8, Encoding.UTF32);
             TestUtilities.TestProperty(textContent, r => r.HadPreamble, false);
+        }
+
+        [TestMethod]
+        public void TextContent_Content_Sets_IsDirty()
+        {
+            var textContent = new TextContent();
+            textContent.Content = "1";
+
+            Assert.IsTrue(textContent.IsDirty);
         }
 
         [TestMethod]
@@ -69,6 +79,7 @@ namespace Test.VirtualRadar.Interface
                         var textContent = TextContent.Load(stream);
 
                         Assert.AreEqual(preamble.Length > 0, textContent.HadPreamble, errorText);
+                        Assert.IsFalse(textContent.IsDirty);
 
                         // Without a preamble we always assume that the content is UTF8, so things might get a bit weird here
                         if(preamble.Length > 0) {
@@ -100,6 +111,7 @@ namespace Test.VirtualRadar.Interface
                     var textContent = TextContent.Load(bytes);
 
                     Assert.AreEqual(preamble.Length > 0, textContent.HadPreamble, errorText);
+                    Assert.IsFalse(textContent.IsDirty);
 
                     // Without a preamble we always assume that the content is UTF8, so things might get a bit weird here
                     if(preamble.Length > 0) {

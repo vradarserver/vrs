@@ -10,60 +10,47 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
-using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Owin.StreamManipulator
 {
     /// <summary>
-    /// The default implementation of <see cref="IJavascriptManipulator"/>.
+    /// Default implementation of <see cref="IHtmlManipulator"/>.
     /// </summary>
-    class JavascriptManipulator : IJavascriptManipulator
+    class HtmlManipulator : IHtmlManipulator
     {
-        /// <summary>
-        /// The minifier that will minify Javascript responses for us.
-        /// </summary>
-        private IMinifier _Minifier;
-
         /// <summary>
         /// Singleton configuration object.
         /// </summary>
-        private IJavascriptManipulatorConfiguration _Config;
+        private IHtmlManipulatorConfiguration _Config;
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public JavascriptManipulator()
+        public HtmlManipulator()
         {
-            _Minifier = Factory.Singleton.Resolve<IMinifier>();
-            _Config = Factory.Singleton.ResolveSingleton<IJavascriptManipulatorConfiguration>();
+            _Config = Factory.Singleton.ResolveSingleton<IHtmlManipulatorConfiguration>();
         }
 
         /// <summary>
-        /// See interface docs.
+        /// See base docs.
         /// </summary>
         /// <param name="environment"></param>
         public void ManipulateResponseStream(IDictionary<string, object> environment)
         {
             var context = PipelineContext.GetOrCreate(environment);
-            if(context.Response.IsJavascriptContentType) {
+            if(context.Response.IsHtmlContentType) {
                 var stream = context.Response.Body;
                 stream.Position = 0;
                 var textContent = TextContent.Load(stream, leaveOpen: true);
 
                 foreach(var manipulator in _Config.GetTextResponseManipulators()) {
                     manipulator.ManipulateTextResponse(environment, textContent);
-                }
-
-                var newContent = _Minifier.MinifyJavaScript(textContent.Content);
-                if(newContent.Length < textContent.Content.Length) {
-                    textContent.Content = newContent;
                 }
 
                 if(textContent.IsDirty) {

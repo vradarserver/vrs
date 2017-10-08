@@ -62,6 +62,8 @@ namespace InterfaceFactory
         /// <typeparam name="TI">Interface type</typeparam>
         /// <typeparam name="TM">Implementation type</typeparam>
         public void Register<TI, TM>()
+            where TI: class
+            where TM: class, TI
         {
             Register(typeof(TI), typeof(TM));
         }

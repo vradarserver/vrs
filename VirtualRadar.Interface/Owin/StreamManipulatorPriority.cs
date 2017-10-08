@@ -24,6 +24,11 @@ namespace VirtualRadar.Interface.Owin
         /// <summary>
         /// The normal priority for Javascript manipulation.
         /// </summary>
-        public static int JavascriptManipulator       = 0;
+        public static int JavascriptManipulator =       0;
+
+        /// <summary>
+        /// The normal priority for HTML manipulation.
+        /// </summary>
+        public static int HtmlManipulator =             1;
     }
 }

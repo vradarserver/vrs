@@ -10,69 +10,69 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
-using VirtualRadar.Interface.WebSite;
 
-namespace VirtualRadar.Owin.StreamManipulator
+namespace VirtualRadar.Owin.Configuration
 {
     /// <summary>
-    /// The default implementation of <see cref="IJavascriptManipulator"/>.
+    /// The base for all configuration objects that handle text response manipulators.
     /// </summary>
-    class JavascriptManipulator : IJavascriptManipulator
+    class BaseTextResponseManipulatorConfiguration
     {
         /// <summary>
-        /// The minifier that will minify Javascript responses for us.
+        /// The manipulators that have been registered.
         /// </summary>
-        private IMinifier _Minifier;
+        private List<ITextResponseManipulator> _Manipulators = new List<ITextResponseManipulator>();
 
         /// <summary>
-        /// Singleton configuration object.
+        /// The lock to use when overwriting _Manipulators.
         /// </summary>
-        private IJavascriptManipulatorConfiguration _Config;
+        private object _SyncLock = new object();
 
         /// <summary>
-        /// Creates a new object.
+        /// See interface docs.
         /// </summary>
-        public JavascriptManipulator()
+        /// <param name="manipulator"></param>
+        public void AddTextResponseManipulator(ITextResponseManipulator manipulator)
         {
-            _Minifier = Factory.Singleton.Resolve<IMinifier>();
-            _Config = Factory.Singleton.ResolveSingleton<IJavascriptManipulatorConfiguration>();
+            if(manipulator == null) {
+                throw new ArgumentNullException(nameof(manipulator));
+            }
+
+            lock(_SyncLock) {
+                if(!_Manipulators.Any(r => Object.ReferenceEquals(manipulator, r))) {
+                    var newList = CollectionHelper.ShallowCopy(_Manipulators);
+                    newList.Add(manipulator);
+                    _Manipulators = newList;
+                }
+            }
         }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="environment"></param>
-        public void ManipulateResponseStream(IDictionary<string, object> environment)
+        /// <param name="manipulator"></param>
+        public void RemoveTextResponseManipulator(ITextResponseManipulator manipulator)
         {
-            var context = PipelineContext.GetOrCreate(environment);
-            if(context.Response.IsJavascriptContentType) {
-                var stream = context.Response.Body;
-                stream.Position = 0;
-                var textContent = TextContent.Load(stream, leaveOpen: true);
-
-                foreach(var manipulator in _Config.GetTextResponseManipulators()) {
-                    manipulator.ManipulateTextResponse(environment, textContent);
-                }
-
-                var newContent = _Minifier.MinifyJavaScript(textContent.Content);
-                if(newContent.Length < textContent.Content.Length) {
-                    textContent.Content = newContent;
-                }
-
-                if(textContent.IsDirty) {
-                    stream.Position = 0;
-                    stream.SetLength(0);
-                    var bytes = textContent.GetBytes(includePreamble: true);
-                    stream.Write(bytes, 0, bytes.Length);
-                }
+            lock(_SyncLock) {
+                var newList = CollectionHelper.ShallowCopy(_Manipulators);
+                newList.Remove(manipulator);
+                _Manipulators = newList;
             }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<ITextResponseManipulator> GetTextResponseManipulators()
+        {
+            var result = _Manipulators;
+            return result;
         }
     }
 }

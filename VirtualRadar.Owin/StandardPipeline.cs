@@ -55,6 +55,7 @@ namespace VirtualRadar.Owin
             webAppConfiguration.AddCallback(UseImageServer,                 StandardPipelinePriority.ImageServer);
             webAppConfiguration.AddCallback(UseAudioServer,                 StandardPipelinePriority.AudioServer);
 
+            webAppConfiguration.AddStreamManipulator(Factory.Singleton.Resolve<IHtmlManipulator>(),       StreamManipulatorPriority.HtmlManipulator);
             webAppConfiguration.AddStreamManipulator(Factory.Singleton.Resolve<IJavascriptManipulator>(), StreamManipulatorPriority.JavascriptManipulator);
         }
 
