@@ -211,11 +211,6 @@ namespace VirtualRadar.WebSite
         private List<HtmlContentInjector> _HtmlContentInjectors = new List<HtmlContentInjector>();
 
         /// <summary>
-        /// The list of JavaScript injectors.
-        /// </summary>
-        private List<JavaScriptInjector> _JavaScriptInjectors = new List<JavaScriptInjector>();
-
-        /// <summary>
         /// A list of objects that can supply content for us.
         /// </summary>
         private List<Page> _Pages = new List<Page>();
@@ -667,17 +662,6 @@ namespace VirtualRadar.WebSite
         {
             if(args.MimeType == MimeType.Html) {
                 OnHtmlLoadedFromFile(args);
-            } else if(args.MimeType == MimeType.Javascript) {
-                var textContent = new TextContent() {
-                    Content = args.Content,
-                    Encoding = args.Encoding,
-                };
-
-                foreach(var injector in _JavaScriptInjectors) {
-                    injector.InjectIntoContent(args.PathAndFile, textContent);
-                }
-
-                args.Content = textContent.Content;
             }
         }
         #endregion

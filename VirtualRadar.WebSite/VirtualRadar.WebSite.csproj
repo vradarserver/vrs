@@ -87,7 +87,6 @@
     <Compile Include="FontCache.cs" />
     <Compile Include="HtmlLocaliser.cs" />
     <Compile Include="Implementations.cs" />
-    <Compile Include="JavaScriptInjector.cs" />
     <Compile Include="Minifier.cs" />
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="Page.cs" />
