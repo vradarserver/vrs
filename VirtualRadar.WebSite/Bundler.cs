@@ -28,7 +28,6 @@ namespace VirtualRadar.WebSite
     /// </summary>
     sealed class Bundler : IBundler
     {
-        #region Fields
         private const string StartJavaScriptBundleComment = "<!-- [[ JS BUNDLE START ]] -->";
         private const string EndBundleComment =             "<!-- [[ BUNDLE END ]] -->";
 
@@ -38,9 +37,7 @@ namespace VirtualRadar.WebSite
         private bool _WebServerHooked;
         private IMinifier _Minifier;
         private Dictionary<string, List<string>> _BundleToRequestFileNameMap = new Dictionary<string,List<string>>();
-        #endregion
 
-        #region Properties
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -50,9 +47,7 @@ namespace VirtualRadar.WebSite
         /// See interface docs.
         /// </summary>
         public IWebServer WebServer { get; private set; }
-        #endregion
 
-        #region Constructor, Finaliser
         /// <summary>
         /// Finalises the object.
         /// </summary>
@@ -60,9 +55,7 @@ namespace VirtualRadar.WebSite
         {
             Dispose(false);
         }
-        #endregion
 
-        #region Dispose
         public void Dispose()
         {
             Dispose(true);
@@ -83,9 +76,7 @@ namespace VirtualRadar.WebSite
                 }
             }
         }
-        #endregion
 
-        #region AttachToWebSite
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -126,9 +117,7 @@ namespace VirtualRadar.WebSite
             var configuration = configurationStorage.Load();
             _Enabled = configuration.GoogleMapSettings.EnableBundling;
         }
-        #endregion
 
-        #region BundleHtml
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -344,9 +333,7 @@ namespace VirtualRadar.WebSite
 
             return result;
         }
-        #endregion
 
-        #region HandleRequestForBundle
         /// <summary>
         /// Processes the request for the content of a bundle.
         /// </summary>
@@ -406,9 +393,7 @@ namespace VirtualRadar.WebSite
 
             return buffer.ToString();
         }
-        #endregion
 
-        #region Events subscribed
         /// <summary>
         /// Called when the user changes the configuration.
         /// </summary>
@@ -430,6 +415,5 @@ namespace VirtualRadar.WebSite
                 HandleRequestForBundle(args);
             }
         }
-        #endregion
     }
 }

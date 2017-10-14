@@ -40,5 +40,34 @@ namespace VirtualRadar.Interface
 
             return pathFromRoot;
         }
+
+        /// <summary>
+        /// Returns the path to the <see cref="relativePath"/> file using the folder indicated by
+        /// <see cref="fullPath"/> as the starting point.
+        /// </summary>
+        /// <param name="fullPath">Either a folder (ending with a /) or file whose folder will be the starting point to the relative path.</param>
+        /// <param name="relativePath">The relative path to append to the folder extracted from <paramref name="fullPath"/>.</param>
+        /// <returns>
+        /// Either <paramref name="relativePath"/> if it is not a relative path or, if it is, then the folder from <paramref name="fullPath"/>
+        /// with <paramref name="relativePath"/> appended.
+        /// </returns>
+        public static string RelativePathToFull(string fullPath, string relativePath)
+        {
+            fullPath = fullPath ?? "";
+            relativePath = relativePath ?? "";
+
+            var result = relativePath;
+            if(fullPath.Length > 0 && relativePath.Length > 0) {
+                if(fullPath[0] == '/' && relativePath[0] != '/') {
+                    if(fullPath[fullPath.Length - 1] != '/') {
+                        var lastSlash = fullPath.LastIndexOf('/');
+                        fullPath = fullPath.Substring(0, lastSlash + 1);
+                    }
+                    result = String.Format("{0}{1}", fullPath, relativePath);
+                }
+            }
+
+            return result;
+        }
     }
 }

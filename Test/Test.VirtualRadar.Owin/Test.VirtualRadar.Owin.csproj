@@ -85,6 +85,7 @@
     <Compile Include="AssemblyInitialise.cs" />
     <Compile Include="Configuration\AccessConfigurationTests.cs" />
     <Compile Include="Configuration\AuthenticationConfigurationTests.cs" />
+    <Compile Include="Configuration\BundlerConfigurationTests.cs" />
     <Compile Include="Configuration\FileSystemServerConfigurationTests.cs" />
     <Compile Include="Configuration\ImageServerConfigurationTests.cs" />
     <Compile Include="Configuration\HtmlManipulatorConfigurationTests.cs" />

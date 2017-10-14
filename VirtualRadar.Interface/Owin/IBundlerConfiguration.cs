@@ -13,45 +13,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VirtualRadar.Interface.WebSite;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// Manages a host that is not attached to a web server, it just calls OWIN middleware.
+    /// The interface for a singleton object that records the configuration of the OWIN bundler mechanism.
     /// </summary>
-    /// <remarks>
-    /// This class can be used to call OWIN middleware nodes as if they were being called for a live
-    /// HTTP request.
-    /// </remarks>
-    public interface ILoopbackHost
+    [Singleton]
+    public interface IBundlerConfiguration
     {
         /// <summary>
-        /// Gets or sets an action that is called by the loopback host to perform modifications
-        /// to the environment before passing a request through the pipeline.
+        /// Registers a bundle and returns the bundle's fully-pathed filename.
         /// </summary>
-        Action<IDictionary<string, object>> ModifyEnvironmentAction { get; set; }
-
-        /// <summary>
-        /// Configures the pipeline using the standard web site middleware.
-        /// </summary>
-        void ConfigureStandardPipeline();
-
-        /// <summary>
-        /// Configures the pipeline using the web app configuration passed across.
-        /// </summary>
-        /// <param name="webAppConfiguration"></param>
-        void ConfigureCustomPipeline(IWebAppConfiguration webAppConfiguration);
-
-        /// <summary>
-        /// Sends an anonymous GET request from the local loopback:10000 to loopback:10001 through the pipeline.
-        /// </summary>
-        /// <param name="pathAndFile">The full path from root of the request.</param>
-        /// <returns></returns>
+        /// <param name="htmlPath">The page which contains the bundle of JavaScript links.</param>
+        /// <param name="pageBundleIndex">The index number of the bundle (i.e. 0 for the first bundle on the page, 1 for the second and so on).</param>
+        /// <param name="javascriptLinkPaths">The paths for all of the JavaScript links in the bundle.</param>
+        /// <returns>The fully-pathed (from root) link to the bundle.</returns>
         /// <remarks>
-        /// This should correspond closely to the old RequestSimpleContent call on IWebSite. The user agent is
-        /// set to FAKE REQUEST, the user host name is FAKE.HOST.NAME. No cookies are sent.
+        /// If this is repeatedly called for the same <paramref name="htmlPath"/> then the second and subsequent
+        /// calls have no effect.
         /// </remarks>
-        SimpleContent SendSimpleRequest(string pathAndFile);
+        string RegisterJavascriptBundle(string htmlPath, int pageBundleIndex, IEnumerable<string> javascriptLinkPaths);
+
+        /// <summary>
+        /// Returns the content of a bundle for a path previously returned by <see cref="RegisterJavascriptBundle"/>.
+        /// </summary>
+        /// <param name="bundlePath">The path that is being requested.</param>
+        /// <param name="environment">The OWIN environment.</param>
+        /// <returns>
+        /// NULL if no bundle has been registered for the path passed across or the text content of the bundle in UTF-8.
+        /// </returns>
+        string GetJavascriptBundle(string bundlePath, IDictionary<string, object> environment);
     }
 }

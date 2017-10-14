@@ -162,6 +162,7 @@
     <Compile Include="StreamHelperTests.cs" />
     <Compile Include="StringDeduplicatorTests.cs" />
     <Compile Include="TextContentTests.cs" />
+    <Compile Include="UriHelperTests.cs" />
     <Compile Include="View\ValidationResultTests.cs" />
     <Compile Include="WebRequestResultTests.cs" />
     <Compile Include="WebServer\AuthenticationRequiredEventArgsTests.cs" />

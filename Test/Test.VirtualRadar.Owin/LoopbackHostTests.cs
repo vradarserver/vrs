@@ -157,6 +157,20 @@ namespace Test.VirtualRadar.Owin
         }
 
         [TestMethod]
+        public void LoopbackHost_SendSimpleRequest_Calls_ModifyEnvironmentAction_Before_Sending_Request()
+        {
+            RecordEnvironment();
+            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+            _LoopbackHost.ModifyEnvironmentAction += environment => {
+                environment.Add("customKey", "customValue");
+            };
+
+            _LoopbackHost.SendSimpleRequest("/file.txt");
+
+            Assert.AreEqual("customValue", _Environment["customKey"]);
+        }
+
+        [TestMethod]
         public void LoopbackHost_SendSimpleRequest_Forces_Leading_Slash_On_PathAndFile()
         {
             RecordEnvironment();

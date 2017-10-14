@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="Configuration\AccessConfiguration.cs" />
     <Compile Include="Configuration\BaseTextResponseManipulatorConfiguration.cs" />
+    <Compile Include="Configuration\BundlerConfiguration.cs" />
     <Compile Include="Configuration\FileSystemServerConfiguration.cs" />
     <Compile Include="Configuration\HtmlManipulatorConfiguration.cs" />
     <Compile Include="Configuration\ImageServerConfiguration.cs" />

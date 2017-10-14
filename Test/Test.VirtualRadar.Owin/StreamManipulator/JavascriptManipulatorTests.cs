@@ -112,6 +112,28 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
         }
 
         [TestMethod]
+        public void JavascriptManipulator_ManipulateResponseStream_Does_Not_Minify_Javascript_If_Suppress_Key_Present_In_Environment()
+        {
+            SetResponseContent(MimeType.Javascript, "a");
+            _Environment.Environment.Add(EnvironmentKey.SuppressJavascriptMinification, true);
+
+            _Manipulator.ManipulateResponseStream(_Environment.Environment);
+
+            _Minifier.Verify(r => r.MinifyJavaScript("a"), Times.Never());
+        }
+
+        [TestMethod]
+        public void JavascriptManipulator_ManipulateResponseStream_Minifies_Javascript_If_Suppress_Key_Is_False()
+        {
+            SetResponseContent(MimeType.Javascript, "a");
+            _Environment.Environment.Add(EnvironmentKey.SuppressJavascriptMinification, false);
+
+            _Manipulator.ManipulateResponseStream(_Environment.Environment);
+
+            _Minifier.Verify(r => r.MinifyJavaScript("a"), Times.Once());
+        }
+
+        [TestMethod]
         public void JavascriptManipulator_ManipulateResponseStream_Does_Not_Minify_NonJavascript()
         {
             SetResponseContent(MimeType.Html, "a");

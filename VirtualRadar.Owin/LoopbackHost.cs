@@ -45,6 +45,11 @@ namespace VirtualRadar.Owin
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public Action<IDictionary<string, object>> ModifyEnvironmentAction { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public void ConfigureStandardPipeline()
         {
             if(_MiddlewareChain != null) {
@@ -85,6 +90,10 @@ namespace VirtualRadar.Owin
 
             using(var responseStream = new MemoryStream()) {
                 var environment = CreateCompliantOwinEnvironment(pathAndFile, responseStream);
+                if(ModifyEnvironmentAction != null) {
+                    ModifyEnvironmentAction(environment);
+                }
+
                 _MiddlewareChain.Invoke(environment);
 
                 //var context = PipelineContext.GetOrCreate(environment);

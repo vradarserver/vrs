@@ -61,7 +61,8 @@ namespace VirtualRadar.Owin.StreamManipulator
                     manipulator.ManipulateTextResponse(environment, textContent);
                 }
 
-                var newContent = _Minifier.MinifyJavaScript(textContent.Content);
+                var suppressMinification = context.Get<bool>(EnvironmentKey.SuppressJavascriptMinification);
+                var newContent = !suppressMinification ? _Minifier.MinifyJavaScript(textContent.Content) : textContent.Content;
                 if(newContent.Length < textContent.Content.Length) {
                     textContent.Content = newContent;
                 }

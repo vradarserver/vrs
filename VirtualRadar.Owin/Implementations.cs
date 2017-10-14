@@ -30,6 +30,7 @@ namespace VirtualRadar.Owin
         {
             factory.Register<Interface.Owin.IAccessConfiguration, Configuration.AccessConfiguration>();
             factory.Register<Interface.Owin.IAuthenticationConfiguration, Configuration.AuthenticationConfiguration>();
+            factory.Register<Interface.Owin.IBundlerConfiguration, Configuration.BundlerConfiguration>();
             factory.Register<Interface.Owin.IFileSystemServerConfiguration, Configuration.FileSystemServerConfiguration>();
             factory.Register<Interface.Owin.IHtmlManipulatorConfiguration, Configuration.HtmlManipulatorConfiguration>();
             factory.Register<Interface.Owin.IJavascriptManipulatorConfiguration, Configuration.JavascriptManipulatorConfiguration>();
