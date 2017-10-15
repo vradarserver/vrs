@@ -107,6 +107,7 @@
     <Compile Include="MockOwinPipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StandardPipelineTests.cs" />
+    <Compile Include="StreamManipulator\BundlerHtmlManipulatorTests.cs" />
     <Compile Include="StreamManipulator\HtmlManipulatorTests.cs" />
     <Compile Include="StreamManipulator\JavascriptManipulatorTests.cs" />
     <Compile Include="StreamManipulator\ManipulatorTests.cs" />
