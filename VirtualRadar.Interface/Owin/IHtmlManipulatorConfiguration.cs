@@ -33,6 +33,12 @@ namespace VirtualRadar.Interface.Owin
         void AddTextResponseManipulator(ITextResponseManipulator manipulator);
 
         /// <summary>
+        /// Adds a manipulator of type <typeparamref name="T"/> unless one has already been registered.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        void AddTextResponseManipulator<T>() where T: ITextResponseManipulator;
+
+        /// <summary>
         /// Removes a manipulator that had been previously registered.
         /// </summary>
         /// <param name="manipulator"></param>

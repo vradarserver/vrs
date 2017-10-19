@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
@@ -37,14 +38,34 @@ namespace Test.VirtualRadar.Owin.Configuration
             }
         }
 
+        protected interface IWrappingInterface : ITextResponseManipulator
+        {
+            int SomeUnrelatedValue { get; }
+        }
+
+        protected class WrappingManipulator : TextResponseManipulator, IWrappingInterface
+        {
+            public int SomeUnrelatedValue { get { return 1; } }
+        }
+
         public TestContext TestContext { get; set; }
+        protected IClassFactory _Snapshot;
         protected TextResponseManipulator _Manipulator;
 
         [TestInitialize]
         public void TestInitialise()
         {
+            _Snapshot = Factory.TakeSnapshot();
+            Factory.Singleton.Register<IWrappingInterface, WrappingManipulator>();
+
             _Manipulator = new TextResponseManipulator();
             ExtraConfiguration();
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            Factory.RestoreSnapshot(_Snapshot);
         }
 
         protected abstract void ExtraConfiguration();

@@ -18,6 +18,7 @@ using HtmlAgilityPack;
 using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
+using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Owin.StreamManipulator
 {
@@ -29,6 +30,8 @@ namespace VirtualRadar.Owin.StreamManipulator
         private const string BundleStart = "<!-- [[ JS BUNDLE START ]] -->";
         private const string BundleEnd =   "<!-- [[ BUNDLE END ]] -->";
 
+        private ISharedConfiguration _SharedConfiguration;
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -36,48 +39,106 @@ namespace VirtualRadar.Owin.StreamManipulator
         /// <param name="textContent"></param>
         public void ManipulateTextResponse(IDictionary<string, object> environment, TextContent textContent)
         {
-            var context = PipelineContext.GetOrCreate(environment);
-            ReplaceScriptLinksWithLinkToBundle(context, textContent);
+            var configuration = _SharedConfiguration;
+            if(configuration == null) {
+                configuration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+                _SharedConfiguration = configuration;
+            }
+
+            if(configuration.Get().GoogleMapSettings.EnableBundling) {
+                var context = PipelineContext.GetOrCreate(environment);
+                var htmlDocument = new HtmlDocument();
+                htmlDocument.LoadHtml(textContent.Content);
+                var parserErrors = new List<string>();
+
+                if(ReplaceScriptLinksWithLinkToBundle(context, htmlDocument, parserErrors)) {
+                    if(parserErrors.Count != 0) {
+                        htmlDocument.LoadHtml(textContent.Content);
+
+                        var node = htmlDocument.DocumentNode.AppendChild(htmlDocument.CreateComment("\r\n<!-- BUNDLE PARSER ERROR -->\r\n"));
+                        foreach(var parserError in parserErrors) {
+                            node = htmlDocument.DocumentNode.InsertAfter(htmlDocument.CreateComment($"<!-- {parserError} -->\r\n"), node);
+                        }
+                    }
+
+                    var buffer = new StringBuilder();
+                    using(var writer = new StringWriter(buffer)) {
+                        htmlDocument.Save(writer);
+                    }
+                    textContent.Content = buffer.ToString();
+                }
+            }
         }
 
-        private void ReplaceScriptLinksWithLinkToBundle(PipelineContext context, TextContent textContent)
+        private bool ReplaceScriptLinksWithLinkToBundle(PipelineContext context, HtmlDocument htmlDocument, List<string> parserErrors)
         {
-            var document = new HtmlDocument();
-            document.LoadHtml(textContent.Content);
+            var htmlChanged = false;
 
-            var bundleStart = document.DocumentNode.Descendants().Where(r => IsBundleStartNode(r)).FirstOrDefault();
+            var bundleIndex = 0;
+            var finished = false;
+            while(!finished) {
+                var bundleStart = htmlDocument.DocumentNode.Descendants().Where(r => IsBundleStartNode(r)).FirstOrDefault();
+                finished = bundleStart == null;
 
-            var pathsAndFiles = new List<string>();
-            var removeNodes = new List<HtmlNode> {
-                bundleStart
-            };
-            var seenEnd = false;
-            for(var node = bundleStart.NextSibling;!seenEnd && node != null;node = node.NextSibling) {
-                seenEnd = IsBundleEndNode(node);
-                if(seenEnd) removeNodes.Add(node);
-                else {
-                    if(IsScriptNode(node)) {
-                        var pathAndFile = ExtractScriptPathAndFile(node);
-                        pathsAndFiles.Add(pathAndFile);
-                        removeNodes.Add(node);
+                if(!finished) {
+                    var pathsAndFiles = new List<string>();
+                    var removeNodes = new List<HtmlNode> {
+                        bundleStart
+                    };
+                    var seenEnd = false;
+                    for(var node = bundleStart.NextSibling;!seenEnd && node != null;node = node.NextSibling) {
+                        seenEnd = IsBundleEndNode(node);
+                        if(seenEnd) {
+                            removeNodes.Add(node);
+                        } else {
+                            if(node.NodeType == HtmlNodeType.Comment) {
+                                removeNodes.Add(node);
+                            } else if(node.NodeType == HtmlNodeType.Text && (node.InnerText ?? "").Trim() == "") {
+                                removeNodes.Add(node);
+                            }
+
+                            if(IsBundleStartNode(node)) {
+                                parserErrors.Add($"Bundle start at line {bundleStart.Line} has another bundle start nested within it at line {node.Line}");
+                                seenEnd = finished = true;
+                                break;
+                            } else if(IsScriptNode(node)) {
+                                var pathAndFile = ExtractScriptPathAndFile(node);
+                                pathsAndFiles.Add(pathAndFile);
+                                removeNodes.Add(node);
+                            }
+                        }
+                    }
+
+                    if(!seenEnd) {
+                        parserErrors.Add($"Bundle start at line {bundleStart.Line} has no end");
+                        finished = true;
+                    } else {
+                        var bundleConfig = Factory.Singleton.ResolveSingleton<IBundlerConfiguration>();
+                        var bundlePath = bundleConfig.RegisterJavascriptBundle(context.Request.PathNormalised.Value, bundleIndex++, pathsAndFiles);
+
+                        var bundleNode = HtmlNode.CreateNode($@"<script src=""{bundlePath}"" type=""text/javascript""></script>");
+                        bundleStart.ParentNode.InsertBefore(bundleNode, bundleStart);
+                        foreach(var removeNode in removeNodes) {
+                            removeNode.Remove();
+                        }
+                        htmlChanged = true;
                     }
                 }
             }
 
-            var bundleConfig = Factory.Singleton.ResolveSingleton<IBundlerConfiguration>();
-            var bundlePath = bundleConfig.RegisterJavascriptBundle(context.Request.PathNormalised.Value, 0, pathsAndFiles);
-
-            var bundleNode = HtmlNode.CreateNode($@"<script src=""{bundlePath}"" type=""text/javascript""></script>");
-            bundleStart.ParentNode.InsertBefore(bundleNode, bundleStart);
-            foreach(var removeNode in removeNodes) {
-                removeNode.Remove();
+            if(parserErrors.Count == 0) {
+                foreach(HtmlCommentNode commentNode in htmlDocument.DocumentNode.Descendants("#comment")) {
+                    if(IsBundleEndNode(commentNode)) {
+                        parserErrors.Add($"Bundle end at line {commentNode.Line} has no start");
+                    }
+                }
             }
 
-            var buffer = new StringBuilder();
-            using(var writer = new StringWriter(buffer)) {
-                document.Save(writer);
+            if(!htmlChanged && parserErrors.Count > 0) {
+                htmlChanged = true;
             }
-            textContent.Content = buffer.ToString();
+
+            return htmlChanged;
         }
 
         private bool IsBundleStartNode(HtmlNode node)
@@ -95,6 +156,10 @@ namespace VirtualRadar.Owin.StreamManipulator
         private bool IsScriptNode(HtmlNode node)
         {
             var result = node?.NodeType == HtmlNodeType.Element && node.Name == "script";
+            if(result) {
+                var type = node.GetAttributeValue("type", "");
+                result = type == "" || type.Equals("text/javascript", StringComparison.OrdinalIgnoreCase);
+            }
 
             return result;
         }

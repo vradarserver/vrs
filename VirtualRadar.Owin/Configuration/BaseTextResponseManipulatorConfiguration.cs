@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
 
@@ -48,6 +49,26 @@ namespace VirtualRadar.Owin.Configuration
                     var newList = CollectionHelper.ShallowCopy(_Manipulators);
                     newList.Add(manipulator);
                     _Manipulators = newList;
+                }
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public void AddTextResponseManipulator<T>()
+            where T: ITextResponseManipulator
+        {
+            var manipulators = _Manipulators;
+            if(!manipulators.Any(r => r is T)) {
+                lock(_SyncLock) {
+                    if(!_Manipulators.Any(r => r is T)) {
+                        var newList = CollectionHelper.ShallowCopy(_Manipulators);
+                        var implementation = typeof(T).IsInterface ? (T)Factory.Singleton.Resolve(typeof(T)) : (T)Activator.CreateInstance<T>();
+                        newList.Add(implementation);
+                        _Manipulators = newList;
+                    }
                 }
             }
         }

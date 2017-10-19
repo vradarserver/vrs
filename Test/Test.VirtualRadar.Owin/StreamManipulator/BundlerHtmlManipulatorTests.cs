@@ -10,9 +10,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -101,6 +103,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
                 Encoding = Encoding.UTF8,
                 HadPreamble = false
             };
+            result.IsDirty = false;
 
             _Environment.RequestPath = htmlPath;
 
@@ -109,16 +112,22 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
 
         private string StripHtmlWhitespace(string html)
         {
-            var stripped = (html ?? "").Replace("\t", " ").Replace("\r", " ").Replace("\n", " ");
-            var len = stripped.Length;
-            var newLen = len;
-            do {
-                len = newLen;
-                stripped = stripped.Replace("  ", " ");
-                newLen = stripped.Length;
-            } while(len != newLen);
+            var trimmedLines = String.Join("",
+                html
+                    .Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(r => r.Trim())
+                    .Where(r => r != "")
+            );
 
-            return stripped.Trim();
+            var htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(trimmedLines);
+
+            var buffer = new StringBuilder();
+            using(var writer = new StringWriter(buffer)) {
+                htmlDocument.Save(writer);
+            }
+
+            return buffer.ToString();
         }
 
         private void AssertTextChanged(TextContent textContent, string expectedHtml)
@@ -126,8 +135,19 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             expectedHtml = StripHtmlWhitespace(expectedHtml);
             var actualHtml = StripHtmlWhitespace(textContent.Content);
 
-            Assert.AreEqual(expectedHtml, actualHtml);
+            Assert.AreEqual(expectedHtml, actualHtml, ignoreCase: true);
             Assert.IsTrue(textContent.IsDirty);
+        }
+
+        private void AssertTextUnchanged(TextContent textContent, string expectedHtml)
+        {
+            expectedHtml = StripHtmlWhitespace(expectedHtml);
+            var actualHtml = StripHtmlWhitespace(textContent.Content);
+
+            Assert.AreEqual(expectedHtml, actualHtml, ignoreCase: true);
+            Assert.IsFalse(textContent.IsDirty);
+
+            _BundlerConfiguration.Verify(r => r.RegisterJavascriptBundle(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<IEnumerable<string>>()), Times.Never());
         }
 
         [TestMethod]
@@ -143,7 +163,203 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
 
             _Manipulator.ManipulateTextResponse(_Environment.Environment, textContent);
 
+            Assert.AreEqual(htmlPath, _LastHtmlPath);
+            Assert.AreEqual(0, _LastBundleIndex);
+            Assert.IsTrue(new string[] { "file1.js", "file2.js" }.SequenceEqual(_LastJavascriptLinks));
+
             AssertTextChanged(textContent, $@"<script src=""{FakeHtmlPathIndexLink(htmlPath, 0)}"" type=""text/javascript""></script>");
+        }
+
+        [TestMethod]
+        public void BundlerHtmlManipulator_Replaces_Multiple_Bundles_On_Page()
+        {
+            var htmlPath = "/index.html";
+            var textContent = FakeCall(htmlPath, $@"
+                {BundleStart}
+                <script src=""file1.js"" type=""text/javascript""></script>
+                {BundleEnd}
+                {BundleStart}
+                <script src=""file2.js""></script>
+                {BundleEnd}
+            ");
+
+            _Manipulator.ManipulateTextResponse(_Environment.Environment, textContent);
+
+            Assert.AreEqual(htmlPath, _AllHtmlPaths[0]);
+            Assert.AreEqual(0, _AllBundleIndexes[0]);
+            Assert.IsTrue(new string[] { "file1.js", }.SequenceEqual(_AllJavascriptLinks[0]));
+
+            Assert.AreEqual(htmlPath, _AllHtmlPaths[1]);
+            Assert.AreEqual(1, _AllBundleIndexes[1]);
+            Assert.IsTrue(new string[] { "file2.js", }.SequenceEqual(_AllJavascriptLinks[1]));
+
+            AssertTextChanged(textContent, $@"
+                <script src=""{FakeHtmlPathIndexLink(htmlPath, 0)}"" type=""text/javascript""></script>
+                <script src=""{FakeHtmlPathIndexLink(htmlPath, 1)}"" type=""text/javascript""></script>
+            ");
+        }
+
+        [TestMethod]
+        public void BundlerHtmlManipulator_Returns_HTML_Unchanged_If_It_Does_Not_Contain_Bundle_Commands()
+        {
+            var html = $@"
+                <HTML><HEAD>
+                <SCRIPT SRC=""source-1.js"" TYPE=""text/javascript""></SCRIPT>
+                <SCRIPT SRC=""source-2.js"" TYPE=""text/javascript""></SCRIPT>
+                </HEAD></HTML>
+            ";
+            var textContent = FakeCall("/index.html", html);
+
+            _Manipulator.ManipulateTextResponse(_Environment.Environment, textContent);
+
+            AssertTextUnchanged(textContent, html);
+        }
+
+        [TestMethod]
+        public void BundlerHtmlManipulator_Returns_HTML_Unchanged_If_Bundling_Has_Been_Disabled()
+        {
+            _Configuration.GoogleMapSettings.EnableBundling = false;
+
+            var html = $@"
+                {BundleStart}
+                <script src=""file1.js"" type=""text/javascript""></script>
+                <script src=""file2.js""></script>
+                {BundleEnd}
+            ";
+            var textContent = FakeCall("/index.html", html);
+
+            _Manipulator.ManipulateTextResponse(_Environment.Environment, textContent);
+
+            AssertTextUnchanged(textContent, html);
+        }
+
+        [TestMethod]
+        public void BundlerHtmlManipulator_Removes_Blank_Lines_And_Comments_In_Bundle()
+        {
+            var htmlPath = "/index.html";
+            var textContent = FakeCall(htmlPath, $@"
+                {BundleStart}
+                <!-- comment -->
+
+                <script src=""file1.js"" type=""text/javascript""></script>
+
+                {BundleEnd}"
+            );
+
+            _Manipulator.ManipulateTextResponse(_Environment.Environment, textContent);
+
+            AssertTextChanged(textContent, $@"<script src=""{FakeHtmlPathIndexLink(htmlPath, 0)}"" type=""text/javascript""></script>");
+        }
+
+        [TestMethod]
+        public void BundlerHtmlManipulator_Only_Replaces_Javascript_Tags()
+        {
+            var htmlPath = "/index.html";
+            var textContent = FakeCall(htmlPath, $@"
+                {BundleStart}
+                <!-- comment -->
+                <SCRIPT SRC=""source-1.js"" TYPE=""text/javascript""></SCRIPT>
+                <SCRIPT SRC=""source-2.js"" TYPE=""text/ecma""></SCRIPT>
+                <SCRIPT SRC=""source-3.js""></SCRIPT>
+                <SCRIPT SRC=""source-4.js"" TYPE=""TEXT/JAVASCRIPT""></SCRIPT>
+                <LINK REL=""stylesheet"" HREF=""source-1.css"" TYPE=""text/css"" MEDIA=""screen"" />
+                {BundleEnd}"
+            );
+
+            _Manipulator.ManipulateTextResponse(_Environment.Environment, textContent);
+
+            Assert.IsTrue(new string[] { "source-1.js", "source-3.js", "source-4.js" }.SequenceEqual(_LastJavascriptLinks));
+
+            AssertTextChanged(textContent, $@"
+                <script src=""{FakeHtmlPathIndexLink(htmlPath, 0)}"" type=""text/javascript""></script>
+                <SCRIPT SRC=""source-2.js"" TYPE=""text/ecma""></SCRIPT>
+                <LINK REL=""stylesheet"" HREF=""source-1.css"" TYPE=""text/css"" MEDIA=""screen"" />
+            ");
+        }
+
+        [TestMethod]
+        public void BundlerHtmlManipulator_Stops_If_The_End_Tag_Is_Malformed()
+        {
+            var htmlPath = "/index.html";
+            var textContent = FakeCall(htmlPath, $@"
+                <HTML><HEAD>
+                <!-- [[ JS BUNDLE START ]] -->
+                <SCRIPT SRC=""source-1.js"" TYPE=""text/javascript""></SCRIPT>
+                <SCRIPT SRC=""source-2.js"" TYPE=""text/javascript""></SCRIPT>
+                <!--  [[ BUNDLE END ]] -->
+                </HEAD></HTML>
+            ");
+
+            _Manipulator.ManipulateTextResponse(_Environment.Environment, textContent);
+
+            AssertTextChanged(textContent, $@"
+                <HTML><HEAD>
+                <!-- [[ JS BUNDLE START ]] -->
+                <SCRIPT SRC=""source-1.js"" TYPE=""text/javascript""></SCRIPT>
+                <SCRIPT SRC=""source-2.js"" TYPE=""text/javascript""></SCRIPT>
+                <!--  [[ BUNDLE END ]] -->
+                </HEAD></HTML>
+                <!-- BUNDLE PARSER ERROR -->
+                <!-- Bundle start at line 3 has no end -->
+            ");
+        }
+
+        [TestMethod]
+        public void BundlerHtmlManipulator_Stops_If_End_Tag_Has_No_Start_Tag()
+        {
+            var htmlPath = "/index.html";
+            var textContent = FakeCall(htmlPath, $@"
+                <HTML><HEAD>
+                <!--  [[ JS BUNDLE START ]] -->
+                <SCRIPT SRC=""source-1.js"" TYPE=""text/javascript""></SCRIPT>
+                <SCRIPT SRC=""source-2.js"" TYPE=""text/javascript""></SCRIPT>
+                <!-- [[ BUNDLE END ]] -->
+                </HEAD></HTML>
+            ");
+
+            _Manipulator.ManipulateTextResponse(_Environment.Environment, textContent);
+
+            AssertTextChanged(textContent, $@"
+                <HTML><HEAD>
+                <!--  [[ JS BUNDLE START ]] -->
+                <SCRIPT SRC=""source-1.js"" TYPE=""text/javascript""></SCRIPT>
+                <SCRIPT SRC=""source-2.js"" TYPE=""text/javascript""></SCRIPT>
+                <!-- [[ BUNDLE END ]] -->
+                </HEAD></HTML>
+                <!-- BUNDLE PARSER ERROR -->
+                <!-- Bundle end at line 6 has no start -->
+            ");
+        }
+
+        [TestMethod]
+        public void BundlerHtmlManipulator_Stops_If_Tags_Are_Nested()
+        {
+            var htmlPath = "/index.html";
+            var textContent = FakeCall(htmlPath, $@"
+                <HTML><HEAD>
+                <!-- [[ JS BUNDLE START ]] -->
+                <SCRIPT SRC=""source-1.js"" TYPE=""text/javascript""></SCRIPT>
+                <!-- [[ JS BUNDLE START ]] -->
+                <SCRIPT SRC=""source-2.js"" TYPE=""text/javascript""></SCRIPT>
+                <!-- [[ BUNDLE END ]] -->
+                <!-- [[ BUNDLE END ]] -->
+                </HEAD></HTML>
+            ");
+
+            _Manipulator.ManipulateTextResponse(_Environment.Environment, textContent);
+
+            AssertTextChanged(textContent, $@"
+                <HTML><HEAD>
+                <!-- [[ JS BUNDLE START ]] -->
+                <SCRIPT SRC=""source-1.js"" TYPE=""text/javascript""></SCRIPT>
+                <!-- [[ JS BUNDLE START ]] -->
+                <SCRIPT SRC=""source-2.js"" TYPE=""text/javascript""></SCRIPT>
+                <!-- [[ BUNDLE END ]] -->
+                <!-- [[ BUNDLE END ]] -->
+                </HEAD></HTML>
+                <!-- BUNDLE PARSER ERROR -->
+                <!-- Bundle start at line 3 has another bundle start nested within it at line 5 -->
+            ");
         }
     }
 }

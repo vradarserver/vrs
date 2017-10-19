@@ -57,6 +57,8 @@ namespace VirtualRadar.Owin
 
             webAppConfiguration.AddStreamManipulator(Factory.Singleton.Resolve<IHtmlManipulator>(),       StreamManipulatorPriority.HtmlManipulator);
             webAppConfiguration.AddStreamManipulator(Factory.Singleton.Resolve<IJavascriptManipulator>(), StreamManipulatorPriority.JavascriptManipulator);
+
+            Factory.Singleton.Resolve<IHtmlManipulatorConfiguration>().AddTextResponseManipulator<IBundlerHtmlManipulator>();
         }
 
         private void UseAccessFilter(IAppBuilder app)

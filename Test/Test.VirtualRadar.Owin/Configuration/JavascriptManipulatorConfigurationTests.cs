@@ -59,6 +59,46 @@ namespace Test.VirtualRadar.Owin.Configuration
         }
 
         [TestMethod]
+        public void JavascriptManipulatorConfiguration_AddTextResponseManipulator_Can_Add_Type_Class_Manipulator()
+        {
+            _Config.AddTextResponseManipulator<TextResponseManipulator>();
+
+            var manipulators = _Config.GetTextResponseManipulators().ToArray();
+            Assert.AreEqual(1, manipulators.Length);
+            Assert.IsTrue(manipulators[0] is TextResponseManipulator);
+        }
+
+        [TestMethod]
+        public void JavascriptManipulatorConfiguration_AddTextResponseManipulator_Can_Add_Type_Interface_Manipulator()
+        {
+            _Config.AddTextResponseManipulator<IWrappingInterface>();
+
+            var manipulators = _Config.GetTextResponseManipulators().ToArray();
+            Assert.AreEqual(1, manipulators.Length);
+            Assert.IsTrue(manipulators[0] is WrappingManipulator);
+        }
+
+        [TestMethod]
+        public void JavascriptManipulatorConfiguration_AddTextResponseManipulator_By_Class_Type_Will_Not_Double_Add()
+        {
+            _Config.AddTextResponseManipulator<TextResponseManipulator>();
+            _Config.AddTextResponseManipulator<TextResponseManipulator>();
+
+            var manipulators = _Config.GetTextResponseManipulators().ToArray();
+            Assert.AreEqual(1, manipulators.Length);
+        }
+
+        [TestMethod]
+        public void JavascriptManipulatorConfiguration_AddTextResponseManipulator_By_Interface_Type_Will_Not_Double_Add()
+        {
+            _Config.AddTextResponseManipulator<IWrappingInterface>();
+            _Config.AddTextResponseManipulator<IWrappingInterface>();
+
+            var manipulators = _Config.GetTextResponseManipulators().ToArray();
+            Assert.AreEqual(1, manipulators.Length);
+        }
+
+        [TestMethod]
         public void JavascriptManipulatorConfiguration_RemoveTextResponseManipulator_Removes_Manipulator()
         {
             _Config.AddTextResponseManipulator(_Manipulator);

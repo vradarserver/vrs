@@ -55,19 +55,21 @@ namespace Test.VirtualRadar.Owin
         private IStandardPipeline _StandardPipeline;
 
         private List<MiddlewareDetail> _ExpectedMiddleware;
-        private Mock<IAccessFilter> _MockAccessFilter;
-        private Mock<IBasicAuthenticationFilter> _MockBasicAuthenticationFilter;
-        private Mock<IRedirectionFilter> _MockRedirectionFilter;
-        private Mock<ICorsHandler> _MockCorsHandler;
-        private Mock<IResponseStreamWrapper> _MockResponseStreamWrapper;
-        private Mock<IFileSystemServer> _MockFileSystemServer;
-        private Mock<IImageServer> _MockImageServer;
-        private Mock<IAudioServer> _MockAudioServer;
+        private Mock<IAccessFilter> _AccessFilter;
+        private Mock<IBasicAuthenticationFilter> _BasicAuthenticationFilter;
+        private Mock<IRedirectionFilter> _RedirectionFilter;
+        private Mock<ICorsHandler> _CorsHandler;
+        private Mock<IResponseStreamWrapper> _ResponseStreamWrapper;
+        private Mock<IFileSystemServer> _FileSystemServer;
+        private Mock<IImageServer> _ImageServer;
+        private Mock<IAudioServer> _AudioServer;
         private MiddlewareDetail _LastMiddlewareBeforeWebApiInit;
 
         private List<IStreamManipulator> _ExpectedStreamManipulators;
-        private Mock<IHtmlManipulator> _MockHtmlManipulator;
-        private Mock<IJavascriptManipulator> _MockJavascriptManipulator;
+        private Mock<IHtmlManipulator> _HtmlManipulator;
+        private Mock<IJavascriptManipulator> _JavascriptManipulator;
+
+        private Mock<IHtmlManipulatorConfiguration> _HtmlManipulatorConfiguration;
 
         [TestInitialize]
         public void TestInitialise()
@@ -75,19 +77,20 @@ namespace Test.VirtualRadar.Owin
             _Snapshot = Factory.TakeSnapshot();
 
             _ExpectedMiddleware = new List<MiddlewareDetail>();
-            _MockAccessFilter =                 CreateMockMiddleware<IAccessFilter>(nameof(IAccessFilter.FilterRequest));
-            _MockBasicAuthenticationFilter =    CreateMockMiddleware<IBasicAuthenticationFilter>(nameof(IBasicAuthenticationFilter.FilterRequest));
-            _MockRedirectionFilter =            CreateMockMiddleware<IRedirectionFilter>(nameof(IRedirectionFilter.FilterRequest));
-            _MockCorsHandler =                  CreateMockMiddleware<ICorsHandler>(nameof(ICorsHandler.HandleRequest));
-            _MockResponseStreamWrapper =        CreateMockMiddleware<IResponseStreamWrapper>(nameof(IResponseStreamWrapper.WrapResponseStream));
+            _AccessFilter =                     CreateMockMiddleware<IAccessFilter>(nameof(IAccessFilter.FilterRequest));
+            _BasicAuthenticationFilter =        CreateMockMiddleware<IBasicAuthenticationFilter>(nameof(IBasicAuthenticationFilter.FilterRequest));
+            _RedirectionFilter =                CreateMockMiddleware<IRedirectionFilter>(nameof(IRedirectionFilter.FilterRequest));
+            _CorsHandler =                      CreateMockMiddleware<ICorsHandler>(nameof(ICorsHandler.HandleRequest));
+            _ResponseStreamWrapper =            CreateMockMiddleware<IResponseStreamWrapper>(nameof(IResponseStreamWrapper.WrapResponseStream));
             _LastMiddlewareBeforeWebApiInit =   _ExpectedMiddleware[_ExpectedMiddleware.Count - 1];
-            _MockFileSystemServer =             CreateMockMiddleware<IFileSystemServer>(nameof(IFileSystemServer.HandleRequest));
-            _MockImageServer =                  CreateMockMiddleware<IImageServer>(nameof(IImageServer.HandleRequest));
-            _MockAudioServer =                  CreateMockMiddleware<IAudioServer>(nameof(IAudioServer.HandleRequest));
+            _FileSystemServer =                 CreateMockMiddleware<IFileSystemServer>(nameof(IFileSystemServer.HandleRequest));
+            _ImageServer =                      CreateMockMiddleware<IImageServer>(nameof(IImageServer.HandleRequest));
+            _AudioServer =                      CreateMockMiddleware<IAudioServer>(nameof(IAudioServer.HandleRequest));
 
-            _ExpectedStreamManipulators = new List<IStreamManipulator>();
-            _MockJavascriptManipulator = CreateMockStreamManipulator<IJavascriptManipulator>();
-            _MockHtmlManipulator = CreateMockStreamManipulator<IHtmlManipulator>();
+            _HtmlManipulatorConfiguration = TestUtilities.CreateMockImplementation<IHtmlManipulatorConfiguration>();
+            _ExpectedStreamManipulators =   new List<IStreamManipulator>();
+            _JavascriptManipulator =        CreateMockStreamManipulator<IJavascriptManipulator>();
+            _HtmlManipulator =              CreateMockStreamManipulator<IHtmlManipulator>();
 
             _StandardPipeline = Factory.Singleton.Resolve<IStandardPipeline>();
         }
@@ -123,7 +126,7 @@ namespace Test.VirtualRadar.Owin
         public void StandardPipeline_Adds_Standard_Middleware_With_Correct_Priorities()
         {
             var actualStreamManipulators = new List<IStreamManipulator>();
-            _MockResponseStreamWrapper.Setup(r => r.Initialise(It.IsAny<IEnumerable<IStreamManipulator>>())).Callback((IEnumerable<IStreamManipulator> manipulators) => {
+            _ResponseStreamWrapper.Setup(r => r.Initialise(It.IsAny<IEnumerable<IStreamManipulator>>())).Callback((IEnumerable<IStreamManipulator> manipulators) => {
                 actualStreamManipulators.AddRange(manipulators);
             });
 
@@ -195,6 +198,15 @@ namespace Test.VirtualRadar.Owin
             _StandardPipeline.Register(webAppConfiguration);
 
             Assert.IsTrue(_ExpectedStreamManipulators.SequenceEqual(webAppConfiguration.GetStreamManipulators()));
+        }
+
+        [TestMethod]
+        public void StandardPipeline_Register_Adds_BundlerHtmlManipulator_To_Html_Manipulators()
+        {
+            var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
+            _StandardPipeline.Register(webAppConfiguration);
+
+            _HtmlManipulatorConfiguration.Verify(r => r.AddTextResponseManipulator<IBundlerHtmlManipulator>(), Times.Once());
         }
     }
 }
