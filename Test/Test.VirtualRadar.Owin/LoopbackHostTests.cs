@@ -36,7 +36,8 @@ namespace Test.VirtualRadar.Owin
         private ILoopbackHost _LoopbackHost;
         private Mock<IStandardPipeline> _StandardPipeline;
         private IWebAppConfiguration _WebAppConfiguration;
-        private IDictionary<string, object> _Environment;
+        private IDictionary<string, object> _LoopbackEnvironment;
+        private MockOwinEnvironment _Environment;
 
         [TestInitialize]
         public void TestInitialise()
@@ -45,7 +46,8 @@ namespace Test.VirtualRadar.Owin
 
             _StandardPipeline = TestUtilities.CreateMockImplementation<IStandardPipeline>();
             _WebAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
-            _Environment = null;
+            _LoopbackEnvironment = null;
+            _Environment = new MockOwinEnvironment();
 
             _LoopbackHost = Factory.Singleton.Resolve<ILoopbackHost>();
         }
@@ -68,7 +70,7 @@ namespace Test.VirtualRadar.Owin
         private void RecordEnvironment()
         {
             AddCallback((IDictionary<string, object> environment) => {
-                _Environment = environment;
+                _LoopbackEnvironment = environment;
                 return true;
             });
         }
@@ -132,8 +134,8 @@ namespace Test.VirtualRadar.Owin
             _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
             _LoopbackHost.SendSimpleRequest("/file.txt?a=1&amp;b=2");
 
-            Assert.IsNotNull(_Environment);
-            var env = _Environment;
+            Assert.IsNotNull(_LoopbackEnvironment);
+            var env = _LoopbackEnvironment;
 
             // Mandatory context elements
             Assert.AreEqual("1.0.0", env["owin.version"]);
@@ -149,6 +151,9 @@ namespace Test.VirtualRadar.Owin
             Assert.AreEqual("/VirtualRadar", env["owin.requestpathbase"]);
             Assert.AreEqual("/file.txt", env["owin.requestpath"]);
             Assert.AreEqual("a=1&amp;b=2", env["owin.requestquerystring"]);
+
+            // Other request elements
+            Assert.AreEqual("127.0.0.1", env["server.RemoteIpAddress"]);
 
             // Mandatory response elements
             Assert.IsTrue(env["owin.responsebody"] is Stream);
@@ -167,7 +172,7 @@ namespace Test.VirtualRadar.Owin
 
             _LoopbackHost.SendSimpleRequest("/file.txt");
 
-            Assert.AreEqual("customValue", _Environment["customKey"]);
+            Assert.AreEqual("customValue", _LoopbackEnvironment["customKey"]);
         }
 
         [TestMethod]
@@ -177,7 +182,17 @@ namespace Test.VirtualRadar.Owin
             _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
 
             _LoopbackHost.SendSimpleRequest("file.txt");
-            Assert.AreEqual("/file.txt", _Environment["owin.requestpath"]);
+            Assert.AreEqual("/file.txt", _LoopbackEnvironment["owin.requestpath"]);
+        }
+
+        [TestMethod]
+        public void LoopbackHost_SendSimpleRequest_Flattens_PathAndFile()
+        {
+            RecordEnvironment();
+            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+
+            _LoopbackHost.SendSimpleRequest("/folder/subfolder/../othersub/minor/.././../file.txt");
+            Assert.AreEqual("/folder/file.txt", _LoopbackEnvironment["owin.requestpath"]);
         }
 
         [TestMethod]
@@ -187,7 +202,7 @@ namespace Test.VirtualRadar.Owin
             _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
 
             _LoopbackHost.SendSimpleRequest("");
-            Assert.AreEqual("/", _Environment["owin.requestpath"]);
+            Assert.AreEqual("/", _LoopbackEnvironment["owin.requestpath"]);
         }
 
         [TestMethod]
@@ -205,8 +220,8 @@ namespace Test.VirtualRadar.Owin
             _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
 
             _LoopbackHost.SendSimpleRequest("/file.txt");
-            Assert.AreEqual("/file.txt", _Environment["owin.requestpath"]);
-            Assert.AreEqual("", _Environment["owin.requestquerystring"]);
+            Assert.AreEqual("/file.txt", _LoopbackEnvironment["owin.requestpath"]);
+            Assert.AreEqual("", _LoopbackEnvironment["owin.requestquerystring"]);
         }
 
         [TestMethod]
@@ -251,6 +266,86 @@ namespace Test.VirtualRadar.Owin
             var result = _LoopbackHost.SendSimpleRequest("/test");
 
             Assert.AreEqual(0, result.Content.Length);
+        }
+
+        [TestMethod]
+        public void LoopbackHost_SendSimpleRequest_UserAgent_Defaults_As_Per_Docs()
+        {
+            RecordEnvironment();
+            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+
+            _LoopbackHost.SendSimpleRequest("/");
+
+            var context = PipelineContext.GetOrCreate(_LoopbackEnvironment);
+            Assert.AreEqual("FAKE REQUEST", context.Request.UserAgent);
+        }
+
+        [TestMethod]
+        public void LoopbackHost_SendSimpleRequest_Cookies_Defaulted_As_Per_Docs()
+        {
+            RecordEnvironment();
+            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+
+            _LoopbackHost.SendSimpleRequest("/");
+
+            var context = PipelineContext.GetOrCreate(_LoopbackEnvironment);
+            Assert.AreEqual(0, context.Request.Cookies.Count());
+        }
+
+        [TestMethod]
+        public void LoopbackHost_SendSimpleRequest_Copies_Headers_From_Environment()
+        {
+            RecordEnvironment();
+            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+
+            _Environment.Request.Headers["Authorization"] = "Basic Hello&=1;2";
+            _Environment.Request.Headers["Cookie"] = "abc=123";
+            _Environment.Request.Headers["Custom"] = "foo;bar";
+            _LoopbackHost.SendSimpleRequest("/", _Environment.Environment);
+
+            var context = PipelineContext.GetOrCreate(_LoopbackEnvironment);
+            Assert.AreEqual("Basic Hello&=1;2", context.Request.Headers["Authorization"]);
+            Assert.AreEqual("abc=123", context.Request.Headers["Cookie"]);
+            Assert.AreEqual("foo;bar", context.Request.Headers["Custom"]);
+        }
+
+        [TestMethod]
+        public void LoopbackHost_SendSimpleRequest_Copes_When_Environment_Supplies_Headers_That_Are_Defaulted()
+        {
+            RecordEnvironment();
+            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+
+            _Environment.Request.UserAgent = "My User Agent";
+            _LoopbackHost.SendSimpleRequest("/", _Environment.Environment);
+
+            var context = PipelineContext.GetOrCreate(_LoopbackEnvironment);
+            Assert.AreEqual("My User Agent", context.Request.UserAgent);
+        }
+
+        [TestMethod]
+        public void LoopbackHost_SendSimpleRequest_Copies_Client_IP_Address_From_Environment()
+        {
+            RecordEnvironment();
+            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+
+            _Environment.Request.RemoteIpAddress = "1.2.3.4";
+            _Environment.Request.RemotePort = 54321;
+            _LoopbackHost.SendSimpleRequest("/", _Environment.Environment);
+
+            var context = PipelineContext.GetOrCreate(_LoopbackEnvironment);
+            Assert.AreEqual("1.2.3.4", context.Request.RemoteIpAddress);
+            Assert.AreEqual(54321, context.Request.RemotePort);
+        }
+
+        [TestMethod]
+        public void LoopbackHost_SendSimpleRequest_Sets_IsLoopbackRequest_Environment_Key()
+        {
+            RecordEnvironment();
+            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+
+            _LoopbackHost.SendSimpleRequest("/");
+
+            Assert.IsTrue((bool)_LoopbackEnvironment[EnvironmentKey.IsLoopbackRequest]);
         }
     }
 }

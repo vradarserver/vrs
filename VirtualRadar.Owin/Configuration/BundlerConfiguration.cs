@@ -26,6 +26,15 @@ namespace VirtualRadar.Owin.Configuration
     class BundlerConfiguration : IBundlerConfiguration
     {
         /// <summary>
+        /// Describes the paths to a bundle.
+        /// </summary>
+        class BundlePath
+        {
+            public string RelativeToHtml;
+            public string FromRoot;
+        }
+
+        /// <summary>
         /// The object that protects changes to fields.
         /// </summary>
         private object _SyncLock = new object();
@@ -43,52 +52,75 @@ namespace VirtualRadar.Owin.Configuration
         /// <summary>
         /// See base docs.
         /// </summary>
-        /// <param name="htmlPath"></param>
+        /// <param name="htmlRequestEnvironment"></param>
         /// <param name="pageBundleIndex"></param>
         /// <param name="javascriptLinkPaths"></param>
         /// <returns></returns>
-        public string RegisterJavascriptBundle(string htmlPath, int pageBundleIndex, IEnumerable<string> javascriptLinkPaths)
+        public string RegisterJavascriptBundle(IDictionary<string, object> htmlRequestEnvironment, int pageBundleIndex, IEnumerable<string> javascriptLinkPaths)
         {
-            if(htmlPath == null) {
-                throw new ArgumentNullException(nameof(htmlPath));
+            if(htmlRequestEnvironment == null) {
+                throw new ArgumentNullException(nameof(htmlRequestEnvironment));
             }
+
+            var context = PipelineContext.GetOrCreate(htmlRequestEnvironment);
+            var htmlPath = context.Request.FlattenedPath;
 
             string result = null;
             if(htmlPath.Length > 0 && htmlPath[0] == '/') {
-                var bundlePath = BuildBundlePath(htmlPath, pageBundleIndex);
-
-                var bundles = _Bundles;
-                if(!bundles.ContainsKey(bundlePath)) {
-                    lock(_SyncLock) {
-                        var newBundles = CollectionHelper.ShallowCopy(_Bundles);
-                        newBundles.Add(bundlePath, CreateBundle(htmlPath, javascriptLinkPaths));
-                        _Bundles = newBundles;
+                var bundlePath = BuildPaths(htmlPath, pageBundleIndex);
+                if(bundlePath != null) {
+                    var bundles = _Bundles;
+                    if(!bundles.ContainsKey(bundlePath.FromRoot)) {
+                        lock(_SyncLock) {
+                            var newBundles = CollectionHelper.ShallowCopy(_Bundles);
+                            newBundles.Add(bundlePath.FromRoot, CreateBundle(htmlPath, javascriptLinkPaths, htmlRequestEnvironment));
+                            _Bundles = newBundles;
+                        }
                     }
-                }
 
-                result = bundlePath;
+                    result = bundlePath.RelativeToHtml;
+                }
             }
 
             return result;
         }
 
-        private string BuildBundlePath(string htmlPath, int pageBundleIndex)
+        private BundlePath BuildPaths(string htmlPath, int pageBundleIndex)
         {
-            var result = htmlPath.Substring(1).Replace('/', '-');
-            var extensionIndex = result.LastIndexOf('.');
-            result = result.Substring(0, extensionIndex);
+            BundlePath result = null;
 
-            return $"/{result}-{pageBundleIndex}.js";
+            var fromRoot = new StringBuilder();
+            var extensionIndex = htmlPath.LastIndexOf('.');
+            if(extensionIndex > 0) {
+                fromRoot.Append("/bundles");
+                fromRoot.Append(htmlPath.Substring(0, extensionIndex));
+                fromRoot.AppendFormat("-{0}", pageBundleIndex);
+                fromRoot.Append(".js");
+
+                result = new BundlePath() {
+                    FromRoot = fromRoot.ToString(),
+                };
+
+                var pathToRoot = new StringBuilder();
+                for(var i = 0;i < htmlPath.Count(r => r == '/') - 1;++i) {
+                    pathToRoot.Append("../");
+                }
+                result.RelativeToHtml = $"{pathToRoot}{result.FromRoot.Substring(1)}";
+            }
+
+            return result;
         }
 
-        private string CreateBundle(string htmlPath, IEnumerable<string> javascriptLinkPaths)
+        private string CreateBundle(string htmlPath, IEnumerable<string> javascriptLinkPaths, IDictionary<string, object> htmlRequestEnvironment)
         {
             var result = new StringBuilder();
             CreateLoopbackHost();
 
             foreach(var relativePath in javascriptLinkPaths) {
                 var linkPath = UriHelper.RelativePathToFull(htmlPath, relativePath);
-                var simpleContent = _LoopbackHost.SendSimpleRequest(linkPath);
+                linkPath = UriHelper.FlattenPath(linkPath);
+
+                var simpleContent = _LoopbackHost.SendSimpleRequest(linkPath, htmlRequestEnvironment);
                 var content = simpleContent.HttpStatusCode == HttpStatusCode.OK && simpleContent.Content != null
                     ? Encoding.UTF8.GetString(simpleContent.Content)
                     : $"// Status {(int)simpleContent.HttpStatusCode} on {linkPath}";
@@ -127,14 +159,14 @@ namespace VirtualRadar.Owin.Configuration
         /// <summary>
         /// See base docs.
         /// </summary>
-        /// <param name="bundlePath"></param>
-        /// <param name="environment"></param>
+        /// <param name="bundleRequestEnvironment"></param>
         /// <returns></returns>
-        public string GetJavascriptBundle(string bundlePath, IDictionary<string, object> environment)
+        public string GetJavascriptBundle(IDictionary<string, object> bundleRequestEnvironment)
         {
             var bundles = _Bundles;
-            if(bundles.TryGetValue(bundlePath, out string result)) {
-                var context = PipelineContext.GetOrCreate(environment);
+
+            var context = PipelineContext.GetOrCreate(bundleRequestEnvironment);
+            if(bundles.TryGetValue(context.Request.FlattenedPath, out string result)) {
                 if(context.Get<bool>(EnvironmentKey.SuppressJavascriptBundles)) {
                     result = null;
                 }

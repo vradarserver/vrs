@@ -65,5 +65,10 @@ namespace VirtualRadar.Interface.Owin
         /// An optional bool that, if present and true, prevents bundled Javascript from being returned.
         /// </summary>
         public static readonly string SuppressJavascriptBundles = "vrs.rsp.SuppressJavaScriptBundles";
+
+        /// <summary>
+        /// An optional bool that, if present and true, indicates that the request is coming through the <see cref="ILoopbackHost"/>.
+        /// </summary>
+        public static readonly string IsLoopbackRequest = "vrs.req.IsLoopback";
     }
 }

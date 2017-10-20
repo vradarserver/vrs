@@ -157,6 +157,7 @@
     <Compile Include="Owin\IBasicAuthenticationFilter.cs" />
     <Compile Include="Owin\IBundlerConfiguration.cs" />
     <Compile Include="Owin\IBundlerHtmlManipulator.cs" />
+    <Compile Include="Owin\IBundlerServer.cs" />
     <Compile Include="Owin\ICorsHandler.cs" />
     <Compile Include="Owin\IHtmlManipulator.cs" />
     <Compile Include="Owin\IHtmlManipulatorConfiguration.cs" />
@@ -551,7 +552,6 @@
     <Compile Include="WebSite\FeedJson.cs" />
     <Compile Include="WebSite\HtmlContentInjector.cs" />
     <Compile Include="WebSite\FlightReportJson.cs" />
-    <Compile Include="WebSite\IBundler.cs" />
     <Compile Include="WebSite\IHtmlLocaliser.cs" />
     <Compile Include="WebSite\IMinifier.cs" />
     <Compile Include="WebSite\IWebSite.cs" />

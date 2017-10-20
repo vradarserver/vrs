@@ -51,6 +51,7 @@ namespace VirtualRadar.Owin
             webAppConfiguration.AddCallback(ConfigureHttpConfiguration,     StandardPipelinePriority.WebApiConfiguration);
             webAppConfiguration.AddCallback(UseWebApi,                      StandardPipelinePriority.WebApi);
 
+            webAppConfiguration.AddCallback(UseBundlerServer,               StandardPipelinePriority.BundlerServer);
             webAppConfiguration.AddCallback(UseFileSystemServer,            StandardPipelinePriority.FileSystemServer);
             webAppConfiguration.AddCallback(UseImageServer,                 StandardPipelinePriority.ImageServer);
             webAppConfiguration.AddCallback(UseAudioServer,                 StandardPipelinePriority.AudioServer);
@@ -113,6 +114,13 @@ namespace VirtualRadar.Owin
         {
             var configuration = _WebAppConfiguration.GetHttpConfiguration();
             app.UseWebApi(configuration);
+        }
+
+        private void UseBundlerServer(IAppBuilder app)
+        {
+            var server = Factory.Singleton.Resolve<IBundlerServer>();
+            var middleware = new Func<AppFunc, AppFunc>(server.HandleRequest);
+            app.Use(middleware);
         }
 
         private void UseFileSystemServer(IAppBuilder app)

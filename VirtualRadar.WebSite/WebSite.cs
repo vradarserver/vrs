@@ -190,11 +190,6 @@ namespace VirtualRadar.WebSite
         private IUserManager _UserManager;
 
         /// <summary>
-        /// The object that will bundle JavaScript in HTML files for us.
-        /// </summary>
-        private IBundler _Bundler;
-
-        /// <summary>
         /// The type of proxy that the server is sitting behind.
         /// </summary>
         private ProxyType _ProxyType;
@@ -316,9 +311,6 @@ namespace VirtualRadar.WebSite
                 var redirection = Factory.Singleton.Resolve<IRedirectionConfiguration>().Singleton;
                 redirection.AddRedirection("/", "/desktop.html", RedirectionContext.Any);
                 redirection.AddRedirection("/", "/mobile.html", RedirectionContext.Mobile);
-
-                _Bundler = Factory.Singleton.Resolve<IBundler>();
-                _Bundler.AttachToWebSite(this);
 
                 _Pages.Add(new TextPage(this));
                 _Pages.Add(_ReportRowsJsonPage);
@@ -464,55 +456,6 @@ namespace VirtualRadar.WebSite
             }
 
             return result;
-        }
-        #endregion
-
-        #region BundleHtml, InjectIntoJavaScript, MinifyJavaScript, MinifyCss
-        /// <summary>
-        /// Bundles multiple JavaScript loads in the HTML into a single JavaScript load.
-        /// </summary>
-        /// <param name="requestPathAndFile"></param>
-        /// <param name="textContent"></param>
-        /// <returns></returns>
-        internal string BundleHtml(string requestPathAndFile, TextContent textContent)
-        {
-            var result = _Bundler.BundleHtml(requestPathAndFile, textContent.Content);
-            textContent.Content = result;
-
-            return result;
-        }
-
-//        /// <summary>
-//        /// Injects content into the JavaScript file passed across.
-//        /// </summary>
-//        /// <param name="requestPathAndFile"></param>
-//        /// <param name="textContent"></param>
-//        internal void InjectIntoJavaScript(string requestPathAndFile, TextContent textContent)
-//        {
-//            foreach(var injector in _JavaScriptInjectors) {
-//                injector.InjectIntoContent(requestPathAndFile, textContent);
-//            }
-//        }
-
-        /// <summary>
-        /// Minifies JavaScript on behalf of a page.
-        /// </summary>
-        /// <param name="textContent"></param>
-        /// <returns></returns>
-        internal string MinifyJavaScript(TextContent textContent)
-        {
-            return textContent.Content;
-        }
-
-        /// <summary>
-        /// Minifies CSS on behalf of a page.
-        /// </summary>
-        /// <param name="textContent"></param>
-        /// <returns></returns>
-        internal string MinifyCss(TextContent textContent)
-        {
-            // The minifier is breaking jQueryUI's css, we'll cut it out for now. // return _Minifier.MinifyCss(css);
-            return textContent.Content;
         }
         #endregion
 

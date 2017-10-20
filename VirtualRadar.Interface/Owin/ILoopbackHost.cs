@@ -47,11 +47,13 @@ namespace VirtualRadar.Interface.Owin
         /// Sends an anonymous GET request from the local loopback:10000 to loopback:10001 through the pipeline.
         /// </summary>
         /// <param name="pathAndFile">The full path from root of the request.</param>
+        /// <param name="environment">An optional environment. If passed then all request headers from the environment
+        /// are copied to the loopback request.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This should correspond closely to the old RequestSimpleContent call on IWebSite. The user agent is
-        /// set to FAKE REQUEST, the user host name is FAKE.HOST.NAME. No cookies are sent.
+        /// This should correspond closely to the old RequestSimpleContent call on IWebSite. If no environment
+        /// is passed then the user agent is set to FAKE REQUEST. Cookies are only sent if environment is supplied.
         /// </remarks>
-        SimpleContent SendSimpleRequest(string pathAndFile);
+        SimpleContent SendSimpleRequest(string pathAndFile, IDictionary<string, object> environment = null);
     }
 }

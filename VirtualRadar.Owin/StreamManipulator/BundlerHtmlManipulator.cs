@@ -114,7 +114,7 @@ namespace VirtualRadar.Owin.StreamManipulator
                         finished = true;
                     } else {
                         var bundleConfig = Factory.Singleton.ResolveSingleton<IBundlerConfiguration>();
-                        var bundlePath = bundleConfig.RegisterJavascriptBundle(context.Request.PathNormalised.Value, bundleIndex++, pathsAndFiles);
+                        var bundlePath = bundleConfig.RegisterJavascriptBundle(context.Environment, bundleIndex++, pathsAndFiles);
 
                         var bundleNode = HtmlNode.CreateNode($@"<script src=""{bundlePath}"" type=""text/javascript""></script>");
                         bundleStart.ParentNode.InsertBefore(bundleNode, bundleStart);

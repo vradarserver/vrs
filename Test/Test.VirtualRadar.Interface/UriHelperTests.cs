@@ -60,5 +60,30 @@ namespace Test.VirtualRadar.Interface
             Assert.AreEqual("relative", UriHelper.RelativePathToFull("folder", "relative"));
             Assert.AreEqual("/folder/subfolder/../relative", UriHelper.RelativePathToFull("/folder/subfolder/", "../relative"));
         }
+
+        [TestMethod]
+        public void UriHelper_FlattenPath_Returns_Correct_Values()
+        {
+            Assert.AreEqual("/file.txt",    UriHelper.FlattenPath("/file.txt"));                    // Simple case
+            Assert.AreEqual("/",            UriHelper.FlattenPath(null));                           // NULL returns root
+            Assert.AreEqual("/",            UriHelper.FlattenPath(""));                             // Empty string returns root
+            Assert.AreEqual("/2",           UriHelper.FlattenPath("/1/../2"));                      // Processes directory traveersal parts
+            Assert.AreEqual("/1/2/3.1",     UriHelper.FlattenPath("/1/2/3/4/5/6/../../../../3.1")); // Can traverse multiple levels
+            Assert.AreEqual("/1/2/X/y/z",   UriHelper.FlattenPath("/1/2/3/../a/b/../../X/y/z"));    // Can traverse more than one group
+            Assert.AreEqual("/1/",          UriHelper.FlattenPath("/1/2/.."));                      // Handles case when last part is directory up
+            Assert.AreEqual("/1/",          UriHelper.FlattenPath("/1/2/../"));                     // Handles case when last part is folder
+            Assert.AreEqual("/1",           UriHelper.FlattenPath("/../../../1"));                  // Cannot traverse out of root
+            Assert.AreEqual("/",            UriHelper.FlattenPath("/1/.."));                        // Can traverse to root
+            Assert.AreEqual("/",            UriHelper.FlattenPath("/.."));                          // Cannot traverse out of root from root
+            Assert.AreEqual("/1/2",         UriHelper.FlattenPath("/1/./2"));                       // Removes current directory parts
+            Assert.AreEqual("/1",           UriHelper.FlattenPath("/././1"));                       // Removes run of current directory parts
+            Assert.AreEqual("/1/",          UriHelper.FlattenPath("/1/."));                         // Handles current directory as last part filename
+            Assert.AreEqual("/1/",          UriHelper.FlattenPath("/1/./"));                        // Handles current directory as last part folder
+            Assert.AreEqual("/",            UriHelper.FlattenPath("/."));                           // Handles current directory part in root
+            Assert.AreEqual("/1/2",         UriHelper.FlattenPath("/1//2"));                        // Removes empty path parts
+            Assert.AreEqual("/1/",          UriHelper.FlattenPath("/1//"));                         // Handles trailing empty path parts
+            Assert.AreEqual("/",            UriHelper.FlattenPath("//"));                           // Removes empty path parts from root
+            Assert.AreEqual("/1/",          UriHelper.FlattenPath("/1/"));                          // Leaves trailing slash intact
+        }
     }
 }

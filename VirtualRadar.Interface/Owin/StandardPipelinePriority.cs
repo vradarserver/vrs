@@ -59,9 +59,14 @@ namespace VirtualRadar.Interface.Owin
          **********************************************************************************************/
 
         /// <summary>
+        /// The normal priority for JavaScript bundle requests.
+        /// </summary>
+        public static readonly int BundlerServer = WebApi + 100;
+
+        /// <summary>
         /// The normal priority for file system requests.
         /// </summary>
-        public static readonly int FileSystemServer = WebApi + 100;
+        public static readonly int FileSystemServer = BundlerServer + 100;
 
         /// <summary>
         /// The normal priority for image requests.

@@ -45,7 +45,7 @@ namespace VirtualRadar.Interface.Owin
         public string FlattenedPath
         {
             get {
-                return FlattenPath(PathNormalised.Value ?? "");
+                return UriHelper.FlattenPath(PathNormalised.Value ?? "");
             }
         }
 
@@ -328,53 +328,6 @@ namespace VirtualRadar.Interface.Owin
                     Set<string>(EnvironmentKey.ProxyIpAddress, RemoteIpAddress);
                 }
             }
-        }
-
-        /// <summary>
-        /// Accepts a request path and returns the same path after processing directory traversal parts.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private string FlattenPath(string value)
-        {
-            var result = new StringBuilder();
-
-            var pathParts = (value ?? "").Split(new char[] { '/' });
-            for(var i = 0;i < pathParts.Length;++i) {
-                var pathPart = pathParts[i];
-                switch(pathPart) {
-                    case ".":
-                        TerminatePathWithSlash(result);
-                        break;
-                    case "..":
-                        var lastFolderIdx = FindLastFolderIndex(result);
-                        if(lastFolderIdx != -1) {
-                            ++lastFolderIdx;
-                            result.Remove(lastFolderIdx, result.Length - lastFolderIdx);
-                        }
-                        TerminatePathWithSlash(result);
-                        break;
-                    default:
-                        TerminatePathWithSlash(result);
-                        result.Append(pathPart);
-                        break;
-                }
-            }
-
-            return result.ToString();
-        }
-
-        private void TerminatePathWithSlash(StringBuilder buffer)
-        {
-            if(buffer.Length == 0 || buffer[buffer.Length - 1] != '/') {
-                buffer.Append('/');
-            }
-        }
-
-        private int FindLastFolderIndex(StringBuilder buffer)
-        {
-            var startIndex = buffer.Length > 0 && buffer[buffer.Length - 1] == '/' ? buffer.Length - 2 : buffer.Length - 1;
-            return buffer.LastIndexOf('/', startIndex);
         }
     }
 }

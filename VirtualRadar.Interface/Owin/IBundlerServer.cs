@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2017 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,31 +12,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using InterfaceFactory;
-using VirtualRadar.Interface.WebSite;
-using VirtualRadar.Interface;
+using System.Threading.Tasks;
 
-namespace VirtualRadar.WebSite
+namespace VirtualRadar.Interface.Owin
 {
+    using AppFunc = Func<IDictionary<string, object>, Task>;
+
     /// <summary>
-    /// Initialises the class factory with all the standard implementations in this library.
+    /// Serves JavaScript bundles.
     /// </summary>
-    public static class Implementations
+    public interface IBundlerServer
     {
         /// <summary>
-        /// Initialises the class factory with all the standard implementations in this library.
+        /// Handles the request.
         /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
-        {
-            factory.Register<IAircraftListJsonBuilder, AircraftListJsonBuilder>();
-            factory.Register<IHtmlLocaliser, HtmlLocaliser>();
-            factory.Register<IMinifier, Minifier>();
-            factory.Register<IWebAdminViewManager, WebAdminViewManagerStub>();
-            factory.Register<IWebSite, WebSite>();
-            factory.Register<IWebSiteProvider, WebSiteProvider>();
-            factory.Register<IWebSiteExtender, WebSiteExtender>();
-            factory.Register<IWebSiteGraphics, WebSiteGraphics>();
-        }
+        /// <param name="next"></param>
+        /// <returns></returns>
+        AppFunc HandleRequest(AppFunc next);
     }
 }

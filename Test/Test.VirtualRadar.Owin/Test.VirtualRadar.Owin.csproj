@@ -101,6 +101,7 @@
     <Compile Include="Middleware\AccessFilterTests.cs" />
     <Compile Include="Middleware\AudioServerTests.cs" />
     <Compile Include="Middleware\BasicAuthenticationFilterTests.cs" />
+    <Compile Include="Middleware\BundlerServerTests.cs" />
     <Compile Include="Middleware\CorsHandlerTests.cs" />
     <Compile Include="Middleware\FileSystemServerTests.cs" />
     <Compile Include="Middleware\ImageServerTests.cs" />

@@ -40,6 +40,7 @@ namespace VirtualRadar.Owin
 
             factory.Register<Interface.Owin.IAccessFilter, Middleware.AccessFilter>();
             factory.Register<Interface.Owin.IAudioServer, Middleware.AudioServer>();
+            factory.Register<Interface.Owin.IBundlerServer, Middleware.BundlerServer>();
             factory.Register<Interface.Owin.IBasicAuthenticationFilter, Middleware.BasicAuthenticationFilter>();
             factory.Register<Interface.Owin.ICorsHandler, Middleware.CorsHandler>();
             factory.Register<Interface.Owin.IFileSystemServer, Middleware.FileSystemServer>();

@@ -60,6 +60,7 @@ namespace Test.VirtualRadar.Owin
         private Mock<IRedirectionFilter> _RedirectionFilter;
         private Mock<ICorsHandler> _CorsHandler;
         private Mock<IResponseStreamWrapper> _ResponseStreamWrapper;
+        private Mock<IBundlerServer> _BundlerServer;
         private Mock<IFileSystemServer> _FileSystemServer;
         private Mock<IImageServer> _ImageServer;
         private Mock<IAudioServer> _AudioServer;
@@ -83,6 +84,7 @@ namespace Test.VirtualRadar.Owin
             _CorsHandler =                      CreateMockMiddleware<ICorsHandler>(nameof(ICorsHandler.HandleRequest));
             _ResponseStreamWrapper =            CreateMockMiddleware<IResponseStreamWrapper>(nameof(IResponseStreamWrapper.WrapResponseStream));
             _LastMiddlewareBeforeWebApiInit =   _ExpectedMiddleware[_ExpectedMiddleware.Count - 1];
+            _BundlerServer =                    CreateMockMiddleware<IBundlerServer>(nameof(IBundlerServer.HandleRequest));
             _FileSystemServer =                 CreateMockMiddleware<IFileSystemServer>(nameof(IFileSystemServer.HandleRequest));
             _ImageServer =                      CreateMockMiddleware<IImageServer>(nameof(IImageServer.HandleRequest));
             _AudioServer =                      CreateMockMiddleware<IAudioServer>(nameof(IAudioServer.HandleRequest));

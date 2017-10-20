@@ -26,24 +26,30 @@ namespace VirtualRadar.Interface.Owin
         /// <summary>
         /// Registers a bundle and returns the bundle's fully-pathed filename.
         /// </summary>
-        /// <param name="htmlPath">The page which contains the bundle of JavaScript links.</param>
-        /// <param name="pageBundleIndex">The index number of the bundle (i.e. 0 for the first bundle on the page, 1 for the second and so on).</param>
+        /// <param name="htmlRequestEnvironment">
+        /// The OWIN environment for the request of the HTML page that contains the bundle of JavaScript links.
+        /// At a minimum the path must be specified, ideally the headers too.
+        /// </param>
+        /// <param name="pageBundleIndex">
+        /// The index number of the bundle (i.e. 0 for the first bundle on the page, 1 for the second and so on).
+        /// </param>
         /// <param name="javascriptLinkPaths">The paths for all of the JavaScript links in the bundle.</param>
-        /// <returns>The fully-pathed (from root) link to the bundle.</returns>
+        /// <returns>The link to the bundle pathed relative to the HTML page.</returns>
         /// <remarks>
-        /// If this is repeatedly called for the same <paramref name="htmlPath"/> then the second and subsequent
-        /// calls have no effect.
+        /// If this is repeatedly called for the same <paramref name="htmlRequestEnvironment"/> path then the
+        /// second and subsequent calls have no effect.
         /// </remarks>
-        string RegisterJavascriptBundle(string htmlPath, int pageBundleIndex, IEnumerable<string> javascriptLinkPaths);
+        string RegisterJavascriptBundle(IDictionary<string, object> htmlRequestEnvironment, int pageBundleIndex, IEnumerable<string> javascriptLinkPaths);
 
         /// <summary>
-        /// Returns the content of a bundle for a path previously returned by <see cref="RegisterJavascriptBundle"/>.
+        /// Returns the content of a bundle for an absolute path of a relative path previously returned by
+        /// <see cref="RegisterJavascriptBundle"/>.
         /// </summary>
-        /// <param name="bundlePath">The path that is being requested.</param>
-        /// <param name="environment">The OWIN environment.</param>
+        /// <param name="environment">The OWIN environment for the request for the bundle.</param>
         /// <returns>
-        /// NULL if no bundle has been registered for the path passed across or the text content of the bundle in UTF-8.
+        /// Either null if no bundle has been registered for the path passed across, otherwise the text content
+        /// of the bundle in UTF-8.
         /// </returns>
-        string GetJavascriptBundle(string bundlePath, IDictionary<string, object> environment);
+        string GetJavascriptBundle(IDictionary<string, object> bundleRequestEnvironment);
     }
 }

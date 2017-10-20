@@ -77,7 +77,6 @@ namespace Test.VirtualRadar.WebSite
         private Mock<IAutoConfigPictureFolderCache> _AutoConfigPictureFolderCache;
         private Mock<IDirectoryCache> _DirectoryCache;
         private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
-        private Mock<IBundler> _Bundler;
         private Mock<IMinifier> _Minifier;
         private string _ChecksumsFileName;
         private string _WebRoot;
@@ -118,8 +117,6 @@ namespace Test.VirtualRadar.WebSite
 
             _Clock = new ClockMock();
 
-            _Bundler = TestUtilities.CreateMockImplementation<IBundler>();
-            _Bundler.Setup(r => r.BundleHtml(It.IsAny<string>(), It.IsAny<string>())).Returns((string requestPath, string html) => html);
             _WebServer = new Mock<IWebServer>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
 
             _Minifier = TestUtilities.CreateMockImplementation<IMinifier>();
@@ -495,13 +492,6 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
-        public void WebSite_AttachSiteToServer_Initialises_Bundler()
-        {
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            _Bundler.Verify(r => r.AttachToWebSite(_WebSite), Times.Once());
-        }
-
-        [TestMethod]
         public void WebSite_AttachSiteToServer_Sets_Correct_Authentication_On_Server()
         {
             _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Anonymous;
@@ -632,8 +622,6 @@ namespace Test.VirtualRadar.WebSite
 
                 _WebServer.Raise(r => r.RequestReceived += null, args);
             }
-
-            _Bundler.Verify(r => r.AttachToWebSite(_WebSite), Times.Once());
         }
 
         [TestMethod]
@@ -650,53 +638,6 @@ namespace Test.VirtualRadar.WebSite
             _WebServer.Raise(r => r.RequestReceived += null, args);
 
             _Response.Verify(r => r.EnableCompression(_Request.Object), Times.Once());
-        }
-
-        [TestMethod]
-        public void WebSite_AttachSiteToServer_Passes_Html_Through_Bundler()
-        {
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
-            if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
-            var checksum = checksums.First(r =>
-                Path.GetExtension(r.FileName) == ".html" &&
-                File.ReadAllText(r.GetFullPathFromRoot(_WebRoot)).Contains("<!-- [[ JS BUNDLE START ]] -->")
-            );
-            var pathAndFile = checksum.FileName.Replace("\\", "/");
-            var htmlContent = File.ReadAllText(checksum.GetFullPathFromRoot(_WebRoot));
-            var newContent = "New Content";
-            _Bundler.Setup(r => r.BundleHtml(pathAndFile, htmlContent)).Returns("New Content");
-            var expectedBytes = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(newContent)).ToArray();
-            newContent = Encoding.UTF8.GetString(expectedBytes);
-
-            var args = RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false);
-            _WebServer.Raise(r => r.RequestReceived += null, args);
-            var servedContent = Encoding.UTF8.GetString(_OutputStream.ToArray());
-
-            _Bundler.Verify(r => r.BundleHtml(pathAndFile, htmlContent), Times.Once());
-            Assert.AreEqual(true, args.Handled);
-            Assert.AreEqual(newContent, servedContent);
-            Assert.AreEqual(expectedBytes.Length, args.Response.ContentLength);
-            Assert.AreEqual(ContentClassification.Html, args.Classification);
-            Assert.AreEqual("text/html", args.Response.MimeType);
-            Assert.AreEqual(HttpStatusCode.OK, args.Response.StatusCode);
-        }
-
-        [TestMethod]
-        public void WebSite_AttachSiteToServer_Only_Passes_Html_Through_Bundler()
-        {
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
-            if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
-            var checksum = checksums.First(r => Path.GetExtension(r.FileName) == ".js");
-            var pathAndFile = checksum.FileName.Replace("\\", "/");
-
-            var args = RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false);
-            _WebServer.Raise(r => r.RequestReceived += null, args);
-
-            _Bundler.Verify(r => r.BundleHtml(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
         }
 
         [TestMethod]

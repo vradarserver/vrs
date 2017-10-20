@@ -260,5 +260,15 @@ namespace Test.VirtualRadar.Owin
                 Environment.Add(key, value);
             }
         }
+
+        /// <summary>
+        /// Adds a cookie to the request.
+        /// </summary>
+        /// <param name="cookie"></param>
+        /// <param name="value"></param>
+        public void AddCookie(string cookie, string value)
+        {
+            Request.Headers.Append("Cookie", $"{HttpUtility.UrlEncode(cookie)}={HttpUtility.UrlEncode(value)}");
+        }
     }
 }

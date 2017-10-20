@@ -100,7 +100,6 @@
     <Compile Include="ApiControllers\FeedsControllerTests.cs" />
     <Compile Include="ApiControllers\SettingsControllerTests.cs" />
     <Compile Include="AssemblyInitialise.cs" />
-    <Compile Include="BundlerTests.cs" />
     <Compile Include="MinifierTests.cs" />
     <Compile Include="MockOwinMiddleware\MockAccessFilter.cs" />
     <Compile Include="MockOwinMiddleware\MockBasicAuthenticationFilter.cs" />

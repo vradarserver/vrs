@@ -66,10 +66,11 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             _LastJavascriptLinks = new List<string>();
             _AllJavascriptLinks = new List<List<string>>();
 
-            _BundlerConfiguration.Setup(r => r.RegisterJavascriptBundle(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<IEnumerable<string>>()))
-                .Returns((string htmlPath, int bundleIndex, IEnumerable<string> javascriptLinks) => {
-                    _LastHtmlPath = htmlPath;
-                    _AllHtmlPaths.Add(htmlPath);
+            _BundlerConfiguration.Setup(r => r.RegisterJavascriptBundle(It.IsAny<IDictionary<string, object>>(), It.IsAny<int>(), It.IsAny<IEnumerable<string>>()))
+                .Returns((IDictionary<string, object> htmlEnvironment, int bundleIndex, IEnumerable<string> javascriptLinks) => {
+                    var context = PipelineContext.GetOrCreate(htmlEnvironment);
+                    _LastHtmlPath = context.Request.Path.Value;
+                    _AllHtmlPaths.Add(_LastHtmlPath);
 
                     _LastBundleIndex = bundleIndex;
                     _AllBundleIndexes.Add(bundleIndex);
@@ -78,7 +79,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
                     _LastJavascriptLinks.AddRange(javascriptLinks);
                     _AllJavascriptLinks.Add(new List<string>(javascriptLinks));
 
-                    return FakeHtmlPathIndexLink(htmlPath, bundleIndex);
+                    return FakeHtmlPathIndexLink(_LastHtmlPath, bundleIndex);
                 }
             );
 
@@ -147,7 +148,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             Assert.AreEqual(expectedHtml, actualHtml, ignoreCase: true);
             Assert.IsFalse(textContent.IsDirty);
 
-            _BundlerConfiguration.Verify(r => r.RegisterJavascriptBundle(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<IEnumerable<string>>()), Times.Never());
+            _BundlerConfiguration.Verify(r => r.RegisterJavascriptBundle(It.IsAny<IDictionary<string, object>>(), It.IsAny<int>(), It.IsAny<IEnumerable<string>>()), Times.Never());
         }
 
         [TestMethod]
