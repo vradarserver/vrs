@@ -47,7 +47,7 @@ namespace Test.VirtualRadar.Owin.Configuration
 
             _LoopbackHost = TestUtilities.CreateMockImplementation<ILoopbackHost>();
             _LoopbackContent = new Dictionary<string, string>();
-            _LoopbackHost.Setup(r => r.SendSimpleRequest(It.IsAny<string>(), _HtmlEnv.Environment)).Returns((string path, IDictionary<string, object> env) => {
+            _LoopbackHost.Setup(r => r.SendSimpleRequest(It.IsAny<string>(), _BndlEnv.Environment)).Returns((string path, IDictionary<string, object> env) => {
                 var result = new SimpleContent();
                 if(!_LoopbackContent.TryGetValue(path, out string content)) {
                     result.HttpStatusCode = HttpStatusCode.NotFound;
@@ -84,10 +84,10 @@ namespace Test.VirtualRadar.Owin.Configuration
             _HtmlEnv.RequestPath = "/index.html";
             var path = _Config.RegisterJavascriptBundle(_HtmlEnv.Environment, 0, new List<string>() { "/bundled.js" });
 
-            _BndlEnv.RequestPath = "/bundles/index-0.js";
+            _BndlEnv.RequestPath = "/index-0-bundle.js";
             var bundled = _Config.GetJavascriptBundle(_BndlEnv.Environment);
 
-            Assert.AreEqual("bundles/index-0.js", path);
+            Assert.AreEqual("index-0-bundle.js", path);
             Assert.AreEqual("/* /bundled.js */\r\nabc\r\n", bundled);
         }
 
@@ -99,10 +99,10 @@ namespace Test.VirtualRadar.Owin.Configuration
             _HtmlEnv.RequestPath = "/index.html";
             var path = _Config.RegisterJavascriptBundle(_HtmlEnv.Environment, 0, new List<string>() { "/first.js", "/second.js" });
 
-            _BndlEnv.RequestPath = "/bundles/index-0.js";
+            _BndlEnv.RequestPath = "/index-0-bundle.js";
             var bundled = _Config.GetJavascriptBundle(_BndlEnv.Environment);
 
-            Assert.AreEqual("bundles/index-0.js", path);
+            Assert.AreEqual("index-0-bundle.js", path);
             Assert.AreEqual("/* /first.js */\r\nabc\r\n;\r\n/* /second.js */\r\nxyz\r\n", bundled);
         }
 
@@ -113,10 +113,10 @@ namespace Test.VirtualRadar.Owin.Configuration
             _HtmlEnv.RequestPath = "/index.html";
             var path = _Config.RegisterJavascriptBundle(_HtmlEnv.Environment, 0, new List<string>() { "/present.js", "/missing.js" });
 
-            _BndlEnv.RequestPath = "/bundles/index-0.js";
+            _BndlEnv.RequestPath = "/index-0-bundle.js";
             var bundled = _Config.GetJavascriptBundle(_BndlEnv.Environment);
 
-            Assert.AreEqual("bundles/index-0.js", path);
+            Assert.AreEqual("index-0-bundle.js", path);
             Assert.AreEqual("/* /present.js */\r\nabc\r\n;\r\n/* /missing.js */\r\n// Status 404 on /missing.js\r\n", bundled);
         }
 
@@ -127,10 +127,10 @@ namespace Test.VirtualRadar.Owin.Configuration
             _HtmlEnv.RequestPath = "/folder/file.html";
             var path = _Config.RegisterJavascriptBundle(_HtmlEnv.Environment, 0, new List<string>() { "source.js" });
 
-            _BndlEnv.RequestPath = "/bundles/folder/file-0.js";
+            _BndlEnv.RequestPath = "/folder/file-0-bundle.js";
             var bundled = _Config.GetJavascriptBundle(_BndlEnv.Environment);
 
-            Assert.AreEqual("../bundles/folder/file-0.js", path);
+            Assert.AreEqual("file-0-bundle.js", path);
             Assert.AreEqual("/* /folder/source.js */\r\nabc\r\n", bundled);
         }
 
@@ -141,8 +141,8 @@ namespace Test.VirtualRadar.Owin.Configuration
             var path1 = _Config.RegisterJavascriptBundle(_HtmlEnv.Environment, 0, new List<string>() { "1", "2" });
             var path2 = _Config.RegisterJavascriptBundle(_HtmlEnv.Environment, 1, new List<string>() { "3", "4" });
 
-            Assert.AreEqual("bundles/index-0.js", path1);
-            Assert.AreEqual("bundles/index-1.js", path2);
+            Assert.AreEqual("index-0-bundle.js", path1);
+            Assert.AreEqual("index-1-bundle.js", path2);
         }
 
         [TestMethod]
@@ -178,11 +178,11 @@ namespace Test.VirtualRadar.Owin.Configuration
             var path1 = _Config.RegisterJavascriptBundle(_HtmlEnv.Environment, 0, new List<string>() { "1" });
             var path2 = _Config.RegisterJavascriptBundle(_HtmlEnv.Environment, 0, new List<string>() { "2" });
 
-            _BndlEnv.RequestPath = "/bundles/index-0.js";
+            _BndlEnv.RequestPath = "/index-0-bundle.js";
             var bundled = _Config.GetJavascriptBundle(_BndlEnv.Environment);
 
             Assert.AreEqual(path1, path2);
-            Assert.AreEqual("bundles/index-0.js", path1);
+            Assert.AreEqual("index-0-bundle.js", path1);
             Assert.AreEqual("/* /1 */\r\na\r\n", bundled);
         }
 
@@ -194,11 +194,12 @@ namespace Test.VirtualRadar.Owin.Configuration
             _HtmlEnv.RequestPath = "/index.html";
             _Config.RegisterJavascriptBundle(_HtmlEnv.Environment, 0, new List<string>() { "1" });
 
-            _BndlEnv.RequestPath = "/bundles/index-0.js".ToUpper();
+            _BndlEnv.RequestPath = "/index-0-bundle.js".ToUpper();
             var bundled1 = _Config.GetJavascriptBundle(_BndlEnv.Environment);
-            _BndlEnv.RequestPath = "/bundles/index-0.js".ToLower();
+            _BndlEnv.RequestPath = "/index-0-bundle.js".ToLower();
             var bundled2 = _Config.GetJavascriptBundle(_BndlEnv.Environment);
 
+            Assert.IsNotNull(bundled1);
             Assert.AreEqual(bundled1, bundled2);
         }
 
@@ -216,7 +217,7 @@ namespace Test.VirtualRadar.Owin.Configuration
             _HtmlEnv.RequestPath = "/index.html";
             _Config.RegisterJavascriptBundle(_HtmlEnv.Environment, 0, new List<string>() { "1" });
 
-            _BndlEnv.RequestPath = "/bundles/index-0.js";
+            _BndlEnv.RequestPath = "/index-0-bundle.js";
             _BndlEnv.Environment.Add(EnvironmentKey.SuppressJavascriptBundles, true);
 
             Assert.IsNull(_Config.GetJavascriptBundle(_BndlEnv.Environment));
@@ -229,7 +230,7 @@ namespace Test.VirtualRadar.Owin.Configuration
             _HtmlEnv.RequestPath = "/index.html";
             _Config.RegisterJavascriptBundle(_HtmlEnv.Environment, 0, new List<string>() { "1" });
 
-            _BndlEnv.RequestPath = "/bundles/index-0.js";
+            _BndlEnv.RequestPath = "/index-0-bundle.js";
             _BndlEnv.Environment.Add(EnvironmentKey.SuppressJavascriptBundles, false);
 
             Assert.IsNotNull(_Config.GetJavascriptBundle(_BndlEnv.Environment));
@@ -238,15 +239,19 @@ namespace Test.VirtualRadar.Owin.Configuration
         [TestMethod]
         public void BundlerConfiguration_Suppresses_Recursive_Bundling()
         {
-            _LoopbackHost.Setup(r => r.SendSimpleRequest(It.IsAny<string>(), It.IsAny<IDictionary<string, object>>())).Returns((string r, IDictionary<string, object> x) => {
-                _LoopbackHost.Object.ModifyEnvironmentAction(_HtmlEnv.Environment);
-                Assert.AreEqual(true, (bool)_HtmlEnv.Environment[EnvironmentKey.SuppressJavascriptBundles]);
+            _LoopbackHost.Setup(r => r.SendSimpleRequest(It.IsAny<string>(), It.IsAny<IDictionary<string, object>>())).Returns((string r, IDictionary<string, object> env) => {
+                Assert.AreSame(_BndlEnv.Environment, env);
+                _LoopbackHost.Object.ModifyEnvironmentAction(_BndlEnv.Environment);
+                Assert.AreEqual(true, (bool)_BndlEnv.Environment[EnvironmentKey.SuppressJavascriptBundles]);
 
                 return new SimpleContent() { Content = Encoding.UTF8.GetBytes("a"), HttpStatusCode = HttpStatusCode.OK, };
             });
 
             _HtmlEnv.RequestPath = "/index.html";
             _Config.RegisterJavascriptBundle(_HtmlEnv.Environment, 0, new List<string>() { "1" });
+
+            _BndlEnv.RequestPath = "/index-0-bundle.js";
+            _Config.GetJavascriptBundle(_BndlEnv.Environment);
         }
 
         [TestMethod]
@@ -256,7 +261,7 @@ namespace Test.VirtualRadar.Owin.Configuration
 
             _HtmlEnv.RequestPath = "/Folder/SubFolder/index.html";
             _Config.RegisterJavascriptBundle(_HtmlEnv.Environment, 0, new List<string>() { "../../script/x.js" });
-            _BndlEnv.RequestPath = "/bundles/Folder/SubFolder/index-0.js";
+            _BndlEnv.RequestPath = "/Folder/SubFolder/index-0-bundle.js";
             var bundle = _Config.GetJavascriptBundle(_BndlEnv.Environment);
 
             Assert.AreEqual("/* /script/x.js */\r\nHello\r\n", bundle);
@@ -265,14 +270,18 @@ namespace Test.VirtualRadar.Owin.Configuration
         [TestMethod]
         public void BundlerConfiguration_Loopback_Fetches_Do_Not_Suppress_Minification()
         {
-            _LoopbackHost.Setup(r => r.SendSimpleRequest(It.IsAny<string>(), It.IsAny<IDictionary<string, object>>())).Returns((string r, IDictionary<string, object> x) => {
-                _LoopbackHost.Object.ModifyEnvironmentAction(_HtmlEnv.Environment);
-                Assert.IsFalse(_HtmlEnv.Environment.ContainsKey(EnvironmentKey.SuppressJavascriptMinification));
+            _LoopbackHost.Setup(r => r.SendSimpleRequest(It.IsAny<string>(), It.IsAny<IDictionary<string, object>>())).Returns((string r, IDictionary<string, object> env) => {
+                Assert.AreSame(_BndlEnv.Environment, env);
+                _LoopbackHost.Object.ModifyEnvironmentAction(_BndlEnv.Environment);
+                Assert.IsFalse(_BndlEnv.Environment.ContainsKey(EnvironmentKey.SuppressJavascriptMinification));
 
                 return new SimpleContent() { Content = Encoding.UTF8.GetBytes("a"), HttpStatusCode = HttpStatusCode.OK, };
             });
             _HtmlEnv.RequestPath = "/index.html";
             _Config.RegisterJavascriptBundle(_HtmlEnv.Environment, 0, new List<string>() { "1" });
+
+            _BndlEnv.RequestPath = "/index-0-bundle.js";
+            _Config.GetJavascriptBundle(_BndlEnv.Environment);
         }
     }
 }

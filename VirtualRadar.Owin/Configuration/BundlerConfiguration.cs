@@ -40,9 +40,9 @@ namespace VirtualRadar.Owin.Configuration
         private object _SyncLock = new object();
 
         /// <summary>
-        /// The map of bundle paths to bundles.
+        /// The map of bundle paths to fully-pathed JavaScript addresses.
         /// </summary>
-        private Dictionary<string, string> _Bundles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private Dictionary<string, IEnumerable<string>> _Bundles = new Dictionary<string, IEnumerable<string>>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// The loopback host.
@@ -73,7 +73,10 @@ namespace VirtualRadar.Owin.Configuration
                     if(!bundles.ContainsKey(bundlePath.FromRoot)) {
                         lock(_SyncLock) {
                             var newBundles = CollectionHelper.ShallowCopy(_Bundles);
-                            newBundles.Add(bundlePath.FromRoot, CreateBundle(htmlPath, javascriptLinkPaths, htmlRequestEnvironment));
+                            newBundles.Add(bundlePath.FromRoot, javascriptLinkPaths.Select(relativePath => {
+                                var linkPath = UriHelper.RelativePathToFull(htmlPath, relativePath);
+                                return UriHelper.FlattenPath(linkPath);
+                            }));
                             _Bundles = newBundles;
                         }
                     }
@@ -85,6 +88,27 @@ namespace VirtualRadar.Owin.Configuration
             return result;
         }
 
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="bundleRequestEnvironment"></param>
+        /// <returns></returns>
+        public string GetJavascriptBundle(IDictionary<string, object> bundleRequestEnvironment)
+        {
+            var bundles = _Bundles;
+
+            var context = PipelineContext.GetOrCreate(bundleRequestEnvironment);
+            if(bundles.TryGetValue(context.Request.FlattenedPath, out IEnumerable<string> javascriptLinkPaths)) {
+                if(context.Get<bool>(EnvironmentKey.SuppressJavascriptBundles)) {
+                    javascriptLinkPaths = null;
+                }
+            }
+
+            var result = javascriptLinkPaths == null ? null : CreateBundle(javascriptLinkPaths, bundleRequestEnvironment);
+
+            return result;
+        }
+
         private BundlePath BuildPaths(string htmlPath, int pageBundleIndex)
         {
             BundlePath result = null;
@@ -92,35 +116,32 @@ namespace VirtualRadar.Owin.Configuration
             var fromRoot = new StringBuilder();
             var extensionIndex = htmlPath.LastIndexOf('.');
             if(extensionIndex > 0) {
-                fromRoot.Append("/bundles");
                 fromRoot.Append(htmlPath.Substring(0, extensionIndex));
-                fromRoot.AppendFormat("-{0}", pageBundleIndex);
+                fromRoot.AppendFormat("-{0}-bundle", pageBundleIndex);
                 fromRoot.Append(".js");
 
                 result = new BundlePath() {
                     FromRoot = fromRoot.ToString(),
                 };
 
-                var pathToRoot = new StringBuilder();
-                for(var i = 0;i < htmlPath.Count(r => r == '/') - 1;++i) {
-                    pathToRoot.Append("../");
+                var lastFolderIndex = result.FromRoot.LastIndexOf('/');
+                if(lastFolderIndex == -1) {
+                    result = null;
+                } else {
+                    result.RelativeToHtml = result.FromRoot.Substring(lastFolderIndex + 1);
                 }
-                result.RelativeToHtml = $"{pathToRoot}{result.FromRoot.Substring(1)}";
             }
 
             return result;
         }
 
-        private string CreateBundle(string htmlPath, IEnumerable<string> javascriptLinkPaths, IDictionary<string, object> htmlRequestEnvironment)
+        private string CreateBundle(IEnumerable<string> javascriptFullyPathedLinks, IDictionary<string, object> requestEnvironment)
         {
             var result = new StringBuilder();
             CreateLoopbackHost();
 
-            foreach(var relativePath in javascriptLinkPaths) {
-                var linkPath = UriHelper.RelativePathToFull(htmlPath, relativePath);
-                linkPath = UriHelper.FlattenPath(linkPath);
-
-                var simpleContent = _LoopbackHost.SendSimpleRequest(linkPath, htmlRequestEnvironment);
+            foreach(var linkPath in javascriptFullyPathedLinks) {
+                var simpleContent = _LoopbackHost.SendSimpleRequest(linkPath, requestEnvironment);
                 var content = simpleContent.HttpStatusCode == HttpStatusCode.OK && simpleContent.Content != null
                     ? Encoding.UTF8.GetString(simpleContent.Content)
                     : $"// Status {(int)simpleContent.HttpStatusCode} on {linkPath}";
@@ -154,25 +175,6 @@ namespace VirtualRadar.Owin.Configuration
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <param name="bundleRequestEnvironment"></param>
-        /// <returns></returns>
-        public string GetJavascriptBundle(IDictionary<string, object> bundleRequestEnvironment)
-        {
-            var bundles = _Bundles;
-
-            var context = PipelineContext.GetOrCreate(bundleRequestEnvironment);
-            if(bundles.TryGetValue(context.Request.FlattenedPath, out string result)) {
-                if(context.Get<bool>(EnvironmentKey.SuppressJavascriptBundles)) {
-                    result = null;
-                }
-            }
-
-            return result;
         }
     }
 }
