@@ -572,4 +572,8 @@ namespace VRS
     // Turkish
     VRS.globalisation.addCultureInfo('tr',    { language: 'tr', groupLanguage: 'tr', englishName: 'Turkish',          nativeName: 'Türkçe',           countryFlag: 'tr', topLevel: true });
     VRS.globalisation.addCultureInfo('tr-TR', { language: 'tr', groupLanguage: 'tr', englishName: 'Turkish (Turkey)', nativeName: 'Türkçe (Türkiye)', countryFlag: 'tr' });
+
+    // Dutch
+    VRS.globalisation.addCultureInfo('nl',    { language: 'nl', groupLanguage: 'nl', englishName: 'Dutch',               nativeName: 'Nederlands',             countryFlag: 'nl', topLevel: true });
+    VRS.globalisation.addCultureInfo('nl-NL', { language: 'nl', groupLanguage: 'nl', englishName: 'Dutch (Netherlands)', nativeName: 'Nederlands (Nederland)', countryFlag: 'nl' });
 }

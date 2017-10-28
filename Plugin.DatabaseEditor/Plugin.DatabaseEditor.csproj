@@ -12,7 +12,7 @@
     <AssemblyName>VirtualRadar.Plugin.DatabaseEditor</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TypeScriptToolsVersion>1.8</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>2.1</TypeScriptToolsVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -202,6 +202,7 @@
     <None Include="_PostBuildCopyLanguage.bat" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DatabaseEditorStrings.nl-NL.resx" />
     <EmbeddedResource Include="DatabaseEditorStrings.tr-TR.resx" />
     <EmbeddedResource Include="DatabaseEditorStrings.zh-CN.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

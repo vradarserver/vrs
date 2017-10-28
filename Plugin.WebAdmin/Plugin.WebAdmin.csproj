@@ -13,6 +13,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <TypeScriptToolsVersion>2.1</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -280,6 +281,7 @@
   <ItemGroup>
     <EmbeddedResource Include="WebAdminStrings.de-DE.resx" />
     <EmbeddedResource Include="WebAdminStrings.fr-FR.resx" />
+    <EmbeddedResource Include="WebAdminStrings.nl-NL.resx" />
     <EmbeddedResource Include="WebAdminStrings.pt-BR.resx" />
     <EmbeddedResource Include="WebAdminStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

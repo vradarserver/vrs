@@ -143,6 +143,7 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>FeedFilterStrings.fr-FR.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="FeedFilterStrings.nl-NL.resx" />
     <EmbeddedResource Include="FeedFilterStrings.pt-BR.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>FeedFilterStrings.pt-BR.Designer.cs</LastGenOutput>

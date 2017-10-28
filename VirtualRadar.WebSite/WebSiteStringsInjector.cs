@@ -47,6 +47,7 @@ namespace VirtualRadar.WebSite
                     case "en":      InjectResxProperties(content, "en-GB"); break;
                     case "de":      InjectResxProperties(content, "de-DE"); break;
                     case "fr":      InjectResxProperties(content, "fr-FR"); break;
+                    case "nl":      InjectResxProperties(content, "nl-NL"); break;
                     case "pt-br":   InjectResxProperties(content, "pt-BR"); break;
                     case "ru":      InjectResxProperties(content, "ru-RU"); break;
                     case "tr":      InjectResxProperties(content, "tr-TR"); break;

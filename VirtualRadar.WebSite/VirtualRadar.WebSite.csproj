@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <ReleaseVersion>2.0.2</ReleaseVersion>
     <TargetFrameworkProfile />
+    <TypeScriptToolsVersion>2.1</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -229,6 +230,7 @@
     <Content Include="Site\Web\images\regions\fi.bmp" />
     <Content Include="Site\Web\images\regions\de.bmp" />
     <Content Include="Site\Web\images\regions\hr.bmp" />
+    <Content Include="Site\Web\images\regions\nl.bmp" />
     <Content Include="Site\Web\images\regions\no.bmp" />
     <Content Include="Site\Web\images\regions\se.bmp" />
     <Content Include="Site\Web\images\regions\sr.bmp" />
@@ -238,9 +240,12 @@
     <Content Include="Site\Web\robots.txt" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.de-DE.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.de.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.nl-NL.js" />
+    <Content Include="Site\Web\script\i18n\globalize\globalize.culture.nl.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.tr.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.tr-TR.js" />
     <Content Include="Site\Web\script\i18n\strings.de.js" />
+    <Content Include="Site\Web\script\i18n\strings.nl.js" />
     <Content Include="Site\Web\script\i18n\strings.tr.js" />
     <Content Include="Site\Web\script\i18n\strings.pt-br.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fi-FI.js" />
@@ -848,6 +853,7 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WebSiteStrings.fr-FR.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="WebSiteStrings.nl-NL.resx" />
     <EmbeddedResource Include="WebSiteStrings.pt-BR.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WebSiteStrings.pt-BR.Designer.cs</LastGenOutput>
