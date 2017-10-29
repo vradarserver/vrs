@@ -98,6 +98,13 @@
     <Compile Include="ApiControllers\ControllerTests.cs" />
     <Compile Include="ApiControllers\DirectoryEntryControllerTests.cs" />
     <Compile Include="ApiControllers\FeedsControllerTests.cs" />
+    <Compile Include="TestHelpers\BoolFilter.cs" />
+    <Compile Include="TestHelpers\DateFilter.cs" />
+    <Compile Include="TestHelpers\Filter.cs" />
+    <Compile Include="TestHelpers\FilterCondition.cs" />
+    <Compile Include="TestHelpers\NumericFilter.cs" />
+    <Compile Include="TestHelpers\ReportJsonClass.cs" />
+    <Compile Include="TestHelpers\ReportRowsAddress.cs" />
     <Compile Include="ApiControllers\ReportsControllerTests.cs" />
     <Compile Include="ApiControllers\SettingsControllerTests.cs" />
     <Compile Include="AssemblyInitialise.cs" />
@@ -106,6 +113,7 @@
     <Compile Include="MockOwinMiddleware\MockBasicAuthenticationFilter.cs" />
     <Compile Include="MockOwinMiddleware\MockFilter.cs" />
     <Compile Include="MockOwinMiddleware\MockRedirectionFilter.cs" />
+    <Compile Include="TestHelpers\StringFilter.cs" />
     <Compile Include="WebSiteExtenderTests.cs" />
     <Compile Include="WebSiteStringsManipulatorTests.cs" />
     <Compile Include="WebSiteTests_Image.cs" />

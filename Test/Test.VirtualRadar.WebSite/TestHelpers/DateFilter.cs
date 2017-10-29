@@ -11,29 +11,34 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
-using VirtualRadar.Interface.Owin;
-using VirtualRadar.Interface.WebSite;
 
-namespace VirtualRadar.WebSite.ApiControllers
+namespace Test.VirtualRadar.WebSite.TestHelpers
 {
     /// <summary>
-    /// Serves results of report requests.
+    /// Copy of the old V2 date filter test helper.
     /// </summary>
-    public class ReportsController : PipelineApiController
+    class DateFilter : Filter
     {
-        [HttpGet]
-        [Route("ReportRows.json")]                      // V2 route
-        public FlightReportJson ReportRowsV2()
+        public DateTime? Lower { get; set; }
+        public DateTime? Upper { get; set; }
+
+        public DateFilter(DateTime? lower, DateTime? upper, bool reversed) : base(reversed)
         {
-            return new FlightReportJson() {
-                CountRows =         0,
-                GroupBy =           "",
-                ProcessingTime =    "0.000",
-            };
+            Lower = lower;
+            Upper = upper;
+        }
+
+        public override void AddQueryValues(string filterName, Dictionary<string, string> queryValues)
+        {
+            if(Lower != null) queryValues.Add(FilterName(filterName, 'L'), Lower.Value.ToString("yyyy-MM-dd"));
+            if(Upper != null) queryValues.Add(FilterName(filterName, 'U'), Upper.Value.ToString("yyyy-MM-dd"));
+        }
+
+        public override Type GetPropertyType()
+        {
+            return typeof(DateTime?);
         }
     }
 }

@@ -11,29 +11,34 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
-using VirtualRadar.Interface.Owin;
-using VirtualRadar.Interface.WebSite;
 
-namespace VirtualRadar.WebSite.ApiControllers
+namespace Test.VirtualRadar.WebSite.TestHelpers
 {
     /// <summary>
-    /// Serves results of report requests.
+    /// Copy of the old V2 report JSON test helper class.
     /// </summary>
-    public class ReportsController : PipelineApiController
+    abstract class Filter
     {
-        [HttpGet]
-        [Route("ReportRows.json")]                      // V2 route
-        public FlightReportJson ReportRowsV2()
+        public bool Reversed { get; set; }
+
+        public Filter(bool reversed)
         {
-            return new FlightReportJson() {
-                CountRows =         0,
-                GroupBy =           "",
-                ProcessingTime =    "0.000",
-            };
+            Reversed = reversed;
         }
+
+        protected string FilterName(string filterName, char suffix = '\0')
+        {
+            var result = filterName;
+            if(suffix != '\0') result = result + suffix;
+            if(Reversed) result += 'N';
+
+            return result;
+        }
+
+        public abstract void AddQueryValues(string filterName, Dictionary<string, string> queryValues);
+
+        public abstract Type GetPropertyType();
     }
 }

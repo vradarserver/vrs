@@ -11,29 +11,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
-using VirtualRadar.Interface.Owin;
-using VirtualRadar.Interface.WebSite;
 
-namespace VirtualRadar.WebSite.ApiControllers
+namespace Test.VirtualRadar.WebSite.TestHelpers
 {
     /// <summary>
-    /// Serves results of report requests.
+    /// Copy of an enumeration of different report JSON result classes as used by the V2 report JSON tests.
     /// </summary>
-    public class ReportsController : PipelineApiController
+    enum ReportJsonClass
     {
-        [HttpGet]
-        [Route("ReportRows.json")]                      // V2 route
-        public FlightReportJson ReportRowsV2()
-        {
-            return new FlightReportJson() {
-                CountRows =         0,
-                GroupBy =           "",
-                ProcessingTime =    "0.000",
-            };
-        }
+        /// <summary>
+        /// The report rows describe the many flights that were undertaken by a single aircraft.
+        /// </summary>
+        Aircraft,
+
+        /// <summary>
+        /// The report rows describes many flights undertaken by many aircraft.
+        /// </summary>
+        Flight,
     }
 }

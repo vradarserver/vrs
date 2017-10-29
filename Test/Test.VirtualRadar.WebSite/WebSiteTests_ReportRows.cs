@@ -232,7 +232,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_ReportRows_DateReport_Generates_Correct_JSON_When_No_Rows_Match()
         {
-            Do_ReportRows_Report_Generates_Correct_JSON_When_No_Rows_Match("date", ReportJsonClass.Flight);
+              Do_ReportRows_Report_Generates_Correct_JSON_When_No_Rows_Match("date", ReportJsonClass.Flight);
         }
 
         [TestMethod]

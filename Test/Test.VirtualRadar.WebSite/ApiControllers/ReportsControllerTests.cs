@@ -13,17 +13,87 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
+using Test.VirtualRadar.WebSite.TestHelpers;
+using VirtualRadar.Interface.WebSite;
 
 namespace Test.VirtualRadar.WebSite.ApiControllers
 {
     [TestClass]
     public class ReportsControllerTests : ControllerTests
     {
+        private ReportRowsAddress _ReportRowsAddress;
+
+        protected override void ExtraInitialise()
+        {
+            _ReportRowsAddress = new ReportRowsAddress();
+        }
+
+        /// <summary>
+        /// Returns the type of the top-level JSON class associated with the report type passed across.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private Type ReportJsonType(ReportJsonClass type)
+        {
+            switch(type) {
+                case ReportJsonClass.Aircraft:  return typeof(AircraftReportJson);
+                case ReportJsonClass.Flight:    return typeof(FlightReportJson);
+                default:                        throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Requests a JSON file. The output is parsed into a JSON file of the type specified.
+        /// </summary>
+        /// <param name="jsonType"></param>
+        /// <param name="pathAndFile"></param>
+        /// <param name="isInternetClient"></param>
+        /// <param name="jsonPCallback"></param>
+        /// <returns></returns>
+        private object SendJsonRequest(Type jsonType, string pathAndFile, bool isInternetClient = false, string jsonPCallback = null)
+        {
+            if(isInternetClient) {
+                _RemoteIpAddress = "1.2.3.4";
+            }
+
+            var response = _Server.HttpClient.GetAsync(pathAndFile).Result;
+            var content = response.Content.ReadAsStringAsync().Result;
+
+            return JsonConvert.DeserializeObject(content, jsonType);
+        }
+
+        #region Date report tests
         [TestMethod]
         public void ReportRows_DateReport_Generates_Correct_JSON_When_No_Rows_Match()
         {
             Do_ReportRows_Report_Generates_Correct_JSON_When_No_Rows_Match("date", ReportJsonClass.Flight);
         }
+        #endregion
+
+        #region Tests shared between different report types
+        private void Do_ReportRows_Report_Generates_Correct_JSON_When_No_Rows_Match(string report, ReportJsonClass reportClass)
+        {
+            _ReportRowsAddress.Report = report;
+
+            dynamic json = SendJsonRequest(ReportJsonType(reportClass), _ReportRowsAddress.Address);
+
+            Assert.AreEqual(0, json.Airports.Count);
+            Assert.AreEqual(0, json.CountRows);
+            Assert.AreEqual(null, json.ErrorText);
+            Assert.AreEqual(0, json.Flights.Count);
+            Assert.AreEqual("", json.GroupBy);
+            Assert.AreEqual(0.ToString("0.000"), json.ProcessingTime);
+            Assert.AreEqual(0, json.Routes.Count);
+
+            switch(reportClass) {
+                case ReportJsonClass.Aircraft:  Assert.AreEqual(true, json.Aircraft.IsUnknown); break;
+                case ReportJsonClass.Flight:    Assert.AreEqual(0, json.Aircraft.Count); break;
+                default:                        throw new NotImplementedException();
+            }
+        }
+        #endregion
     }
 }

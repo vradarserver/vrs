@@ -11,29 +11,43 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
-using VirtualRadar.Interface.Owin;
-using VirtualRadar.Interface.WebSite;
 
-namespace VirtualRadar.WebSite.ApiControllers
+namespace Test.VirtualRadar.WebSite.TestHelpers
 {
     /// <summary>
-    /// Serves results of report requests.
+    /// Copy of the old V2 report JSON filter.
     /// </summary>
-    public class ReportsController : PipelineApiController
+    class StringFilter : Filter
     {
-        [HttpGet]
-        [Route("ReportRows.json")]                      // V2 route
-        public FlightReportJson ReportRowsV2()
+        public string Value { get; set; }
+        public FilterCondition Condition { get; set; }
+
+        public StringFilter(string value, FilterCondition condition, bool reversed) : base(reversed)
         {
-            return new FlightReportJson() {
-                CountRows =         0,
-                GroupBy =           "",
-                ProcessingTime =    "0.000",
-            };
+            Value = value;
+            Condition = condition;
+        }
+
+        public override void AddQueryValues(string filterName, Dictionary<string, string> queryValues)
+        {
+            char conditionCharacter;
+            switch(Condition) {
+                case FilterCondition.Between:       throw new InvalidOperationException("String filters cannot have the 'Between' condition");
+                case FilterCondition.Contains:      conditionCharacter = 'C'; break;
+                case FilterCondition.EndsWith:      conditionCharacter = 'E'; break;
+                case FilterCondition.Equals:        conditionCharacter = 'Q'; break;
+                case FilterCondition.StartsWith:    conditionCharacter = 'S'; break;
+                default:                            throw new NotImplementedException();
+            }
+
+            queryValues.Add(FilterName(filterName, conditionCharacter), Value);
+        }
+
+        public override Type GetPropertyType()
+        {
+            return typeof(string);
         }
     }
 }

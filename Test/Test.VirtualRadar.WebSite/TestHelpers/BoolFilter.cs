@@ -10,30 +10,33 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
-using VirtualRadar.Interface.Owin;
-using VirtualRadar.Interface.WebSite;
 
-namespace VirtualRadar.WebSite.ApiControllers
+namespace Test.VirtualRadar.WebSite.TestHelpers
 {
     /// <summary>
-    /// Serves results of report requests.
+    /// Copy of the old V2 report JSON test filter.
     /// </summary>
-    public class ReportsController : PipelineApiController
+    class BoolFilter<T> : Filter
     {
-        [HttpGet]
-        [Route("ReportRows.json")]                      // V2 route
-        public FlightReportJson ReportRowsV2()
+        public T Value { get; set; }
+
+        public BoolFilter(T value, bool reversed) : base(reversed)
         {
-            return new FlightReportJson() {
-                CountRows =         0,
-                GroupBy =           "",
-                ProcessingTime =    "0.000",
-            };
+            Value = value;
+        }
+
+        public override void AddQueryValues(string filterName, Dictionary<string, string> queryValues)
+        {
+            queryValues.Add(FilterName(filterName, 'Q'), Convert.ToInt32(Value, CultureInfo.InvariantCulture).ToString());
+        }
+
+        public override Type GetPropertyType()
+        {
+            return typeof(T);
         }
     }
 }
