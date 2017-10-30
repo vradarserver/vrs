@@ -11,11 +11,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using InterfaceFactory;
+using Newtonsoft.Json;
 using VirtualRadar.Interface.Owin;
+using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.WebSite.ApiControllers
@@ -25,15 +31,45 @@ namespace VirtualRadar.WebSite.ApiControllers
     /// </summary>
     public class ReportsController : PipelineApiController
     {
+        private ISharedConfiguration _SharedConfiguration;
+
+        private ISharedConfiguration InitialiseSharedConfiguration()
+        {
+            var result = _SharedConfiguration;
+            if(result == null) {
+                result = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+                _SharedConfiguration = result;
+            }
+
+            return result;
+        }
+
         [HttpGet]
         [Route("ReportRows.json")]                      // V2 route
-        public FlightReportJson ReportRowsV2()
+        public HttpResponseMessage ReportRowsV2()
         {
-            return new FlightReportJson() {
-                CountRows =         0,
-                GroupBy =           "",
-                ProcessingTime =    "0.000",
-            };
+            HttpResponseMessage result = null;
+
+            if(PipelineRequest.IsLocalOrLan || InitialiseSharedConfiguration().Get().InternetClientSettings.CanRunReports) {
+                var jsonObj = new FlightReportJson() {
+                    CountRows =         0,
+                    GroupBy =           "",
+                    ProcessingTime =    "0.000",
+                };
+
+                var json = JsonConvert.SerializeObject(jsonObj);
+                result = new HttpResponseMessage(HttpStatusCode.OK) {
+                    Content = new StringContent(json, Encoding.UTF8, MimeType.Json),
+                };
+                result.Headers.CacheControl = new CacheControlHeaderValue() {
+                    MaxAge = TimeSpan.Zero,
+                    NoCache = true,
+                    NoStore = true,
+                    MustRevalidate = true,
+                };
+            }
+
+            return result ?? new HttpResponseMessage(HttpStatusCode.Forbidden);
         }
     }
 }

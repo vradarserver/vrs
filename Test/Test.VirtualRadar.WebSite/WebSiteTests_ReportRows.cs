@@ -229,23 +229,23 @@ namespace Test.VirtualRadar.WebSite
         #endregion
 
         #region Date report
-        [TestMethod]
-        public void WebSite_ReportRows_DateReport_Generates_Correct_JSON_When_No_Rows_Match()
-        {
-              Do_ReportRows_Report_Generates_Correct_JSON_When_No_Rows_Match("date", ReportJsonClass.Flight);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_DateReport_Generates_Correct_JSON_When_No_Rows_Match()
+//        {
+//              Do_ReportRows_Report_Generates_Correct_JSON_When_No_Rows_Match("date", ReportJsonClass.Flight);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_DateReport_Adds_Correct_Cache_Control_Header()
-        {
-            Do_ReportRows_Report_Adds_Correct_Cache_Control_Header("date", ReportJsonClass.Flight);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_DateReport_Adds_Correct_Cache_Control_Header()
+//        {
+//            Do_ReportRows_Report_Adds_Correct_Cache_Control_Header("date", ReportJsonClass.Flight);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_DateReport_Only_Returns_Json_If_Reports_Are_Permitted()
-        {
-            Do_ReportRows_Report_Only_Returns_Json_If_Reports_Are_Permitted("date", ReportJsonClass.Flight);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_DateReport_Only_Returns_Json_If_Reports_Are_Permitted()
+//        {
+//            Do_ReportRows_Report_Only_Returns_Json_If_Reports_Are_Permitted("date", ReportJsonClass.Flight);
+//        }
 
         [TestMethod]
         public void WebSite_ReportRows_DateReport_Returns_Count_Of_Rows_Matching_Criteria()
