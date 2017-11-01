@@ -247,157 +247,157 @@ namespace Test.VirtualRadar.WebSite
 //            Do_ReportRows_Report_Only_Returns_Json_If_Reports_Are_Permitted("date", ReportJsonClass.Flight);
 //        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_DateReport_Returns_Count_Of_Rows_Matching_Criteria()
-        {
-            Do_WebSite_ReportRows_Report_Returns_Count_Of_Rows_Matching_Criteria("date", ReportJsonClass.Flight);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_DateReport_Returns_Count_Of_Rows_Matching_Criteria()
+//        {
+//            Do_WebSite_ReportRows_Report_Returns_Count_Of_Rows_Matching_Criteria("date", ReportJsonClass.Flight);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_DateReport_Returns_Details_Of_Exceptions_Raised_During_Report_Generation()
-        {
-            Do_WebSite_ReportRows_Report_Returns_Details_Of_Exceptions_Raised_During_Report_Generation("date", ReportJsonClass.Flight);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_DateReport_Returns_Details_Of_Exceptions_Raised_During_Report_Generation()
+//        {
+//            Do_WebSite_ReportRows_Report_Returns_Details_Of_Exceptions_Raised_During_Report_Generation("date", ReportJsonClass.Flight);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_DateReport_Logs_Exceptions_Raised_During_Report_Generation()
-        {
-            Do_WebSite_ReportRows_Report_Logs_Exceptions_Raised_During_Report_Generation("date", ReportJsonClass.Flight);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_DateReport_Logs_Exceptions_Raised_During_Report_Generation()
+//        {
+//            Do_WebSite_ReportRows_Report_Logs_Exceptions_Raised_During_Report_Generation("date", ReportJsonClass.Flight);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_DateReport_Returns_Processing_Time()
-        {
-            Do_WebSite_ReportRows_Report_Returns_Processing_Time("date", ReportJsonClass.Flight);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_DateReport_Returns_Processing_Time()
+//        {
+//            Do_WebSite_ReportRows_Report_Returns_Processing_Time("date", ReportJsonClass.Flight);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_DateReport_Returns_Images_Available_Flags()
-        {
-            Do_WebSite_ReportRows_Report_Returns_Images_Available_Flags("date", ReportJsonClass.Flight);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_DateReport_Returns_Images_Available_Flags()
+//        {
+//            Do_WebSite_ReportRows_Report_Returns_Images_Available_Flags("date", ReportJsonClass.Flight);
+//        }
 
-        [TestMethod]
-        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "FlightsReportDateLimits$")]
-        public void WebSite_ReportRows_DateReport_Returns_Date_Ranges_Used()
-        {
-            _Configuration.InternetClientSettings.CanRunReports = true;
-            _ReportRowsAddress.Report = "date";
+//        [TestMethod]
+//        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+//                    "FlightsReportDateLimits$")]
+//        public void WebSite_ReportRows_DateReport_Returns_Date_Ranges_Used()
+//        {
+//            _Configuration.InternetClientSettings.CanRunReports = true;
+//            _ReportRowsAddress.Report = "date";
+//
+//            var worksheet = new ExcelWorksheetData(TestContext);
+//            // if(!worksheet.NBool("Isolate").GetValueOrDefault()) return;
+//            var callsign = worksheet.String("Callsign");
+//            var registration = worksheet.String("Registration");
+//            var icao24 = worksheet.String("Icao24");
+//
+//            _ReportRowsAddress.Report = "date";
+//            _ReportRowsAddress.Date = new DateFilter(worksheet.NDateTime("RequestStart"), worksheet.NDateTime("RequestEnd"), false);
+//            _ReportRowsAddress.Callsign = callsign != null ? new StringFilter(worksheet.String("Callsign"), FilterCondition.Equals, false) : null;
+//            _ReportRowsAddress.Registration = registration != null ? new StringFilter(worksheet.String("Registration"), FilterCondition.Equals, false) : null;
+//            _ReportRowsAddress.Icao24 = icao24 != null ? new StringFilter(worksheet.String("Icao24"), FilterCondition.Equals, false) : null;
+//
+//            _Provider.Setup(p => p.UtcNow).Returns(worksheet.DateTime("Today"));
+//
+//            var json = SendJsonRequest<FlightReportJson>(_ReportRowsAddress.Address, worksheet.Bool("IsInternetClient"));
+//
+//            var actualStart = worksheet.NDateTime("ActualStart");
+//            var actualEnd = worksheet.NDateTime("ActualEnd");
+//            Assert.AreEqual(actualStart.GetValueOrDefault().Year == 1 ? null : actualStart.Value.Date.ToString("yyyy-MM-dd"), json.FromDate);
+//            Assert.AreEqual(actualEnd.GetValueOrDefault().Year == 1 ? null : actualEnd.Value.Date.ToString("yyyy-MM-dd"), json.ToDate);
+//        }
 
-            var worksheet = new ExcelWorksheetData(TestContext);
-            // if(!worksheet.NBool("Isolate").GetValueOrDefault()) return;
-            var callsign = worksheet.String("Callsign");
-            var registration = worksheet.String("Registration");
-            var icao24 = worksheet.String("Icao24");
+//        [TestMethod]
+//        public void WebSite_ReportRows_DateReport_Passes_Same_Criteria_To_CountRows_And_FetchRows()
+//        {
+//            _ReportRowsAddress.Report = "date";
+//
+//            SearchBaseStationCriteria searchCriteria = null;
+//            _BaseStationDatabase.Setup(db => db.GetCountOfFlights(It.IsAny<SearchBaseStationCriteria>())).Returns((SearchBaseStationCriteria c) => { searchCriteria = c; return 1; });
+//
+//            SendJsonRequest<FlightReportJson>(_ReportRowsAddress.Address);
+//
+//            _BaseStationDatabase.Verify(db => db.GetFlights(It.IsAny<SearchBaseStationCriteria>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once());
+//            _BaseStationDatabase.Verify(db => db.GetFlights(searchCriteria, -1, -1, null, It.IsAny<bool>(), null, It.IsAny<bool>()), Times.Once());
+//        }
 
-            _ReportRowsAddress.Report = "date";
-            _ReportRowsAddress.Date = new DateFilter(worksheet.NDateTime("RequestStart"), worksheet.NDateTime("RequestEnd"), false);
-            _ReportRowsAddress.Callsign = callsign != null ? new StringFilter(worksheet.String("Callsign"), FilterCondition.Equals, false) : null;
-            _ReportRowsAddress.Registration = registration != null ? new StringFilter(worksheet.String("Registration"), FilterCondition.Equals, false) : null;
-            _ReportRowsAddress.Icao24 = icao24 != null ? new StringFilter(worksheet.String("Icao24"), FilterCondition.Equals, false) : null;
+//        [TestMethod]
+//        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+//                    "FlightsReportDateLimits$")]
+//        public void WebSite_ReportRows_DateReport_Sets_Correct_Limits_On_Date_Ranges()
+//        {
+//            _Configuration.InternetClientSettings.CanRunReports = true;
+//            var worksheet = new ExcelWorksheetData(TestContext);
+//            // if(!worksheet.NBool("Isolate").GetValueOrDefault()) return;
+//            var callsign = worksheet.String("Callsign");
+//            var registration = worksheet.String("Registration");
+//            var icao24 = worksheet.String("Icao24");
+//
+//            _ReportRowsAddress.Report = "date";
+//            _ReportRowsAddress.Date = new DateFilter(worksheet.NDateTime("RequestStart"), worksheet.NDateTime("RequestEnd"), false);
+//            _ReportRowsAddress.Callsign = callsign != null ? new StringFilter(worksheet.String("Callsign"), FilterCondition.Equals, false) : null;
+//            _ReportRowsAddress.Registration = registration != null ? new StringFilter(worksheet.String("Registration"), FilterCondition.Equals, false) : null;
+//            _ReportRowsAddress.Icao24 = icao24 != null ? new StringFilter(worksheet.String("Icao24"), FilterCondition.Equals, false) : null;
+//
+//            _Provider.Setup(p => p.UtcNow).Returns(worksheet.DateTime("Today"));
+//
+//            SearchBaseStationCriteria searchCriteria = null;
+//            _BaseStationDatabase.Setup(db => db.GetCountOfFlights(It.IsAny<SearchBaseStationCriteria>())).Returns((SearchBaseStationCriteria c) => { searchCriteria = c; return 1; });
+//
+//            var json = SendJsonRequest<FlightReportJson>(_ReportRowsAddress.Address, worksheet.Bool("IsInternetClient"));
+//
+//            var actualStart = worksheet.NDateTime("ActualStart");
+//            var actualEnd = worksheet.NDateTime("ActualEnd");
+//
+//            if(actualStart == null) Assert.IsTrue(searchCriteria.Date == null || searchCriteria.Date.LowerValue == null);
+//            else                    Assert.AreEqual(actualStart.Value, searchCriteria.Date.LowerValue);
+//
+//            if(actualEnd == null)   Assert.IsTrue(searchCriteria.Date == null || searchCriteria.Date.UpperValue == null);
+//            else                    Assert.AreEqual(actualEnd.Value, searchCriteria.Date.UpperValue);
+//        }
 
-            _Provider.Setup(p => p.UtcNow).Returns(worksheet.DateTime("Today"));
+//        [TestMethod]
+//        public void WebSite_ReportRows_DateReport_Passes_Range_And_Sort_Criteria_To_FetchRows()
+//        {
+//            _ReportRowsAddress.Report = "date";
+//
+//            _ReportRowsAddress.FromRow = 10;
+//            _ReportRowsAddress.ToRow = 11;
+//            _ReportRowsAddress.SortField1 = "Ff1";
+//            _ReportRowsAddress.SortField2 = "Ff2";
+//            _ReportRowsAddress.SortAscending1 = true;
+//            _ReportRowsAddress.SortAscending2 = false;
+//            SendJsonRequest<FlightReportJson>(_ReportRowsAddress.Address);
+//
+//            _BaseStationDatabase.Verify(db => db.GetFlights(It.IsAny<SearchBaseStationCriteria>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once());
+//            _BaseStationDatabase.Verify(db => db.GetFlights(It.IsAny<SearchBaseStationCriteria>(), 10, 11, "Ff1", true, "Ff2", false), Times.Once());
+//
+//            _ReportRowsAddress.SortAscending1 = false;
+//            _ReportRowsAddress.SortAscending2 = true;
+//            SendJsonRequest<FlightReportJson>(_ReportRowsAddress.Address);
+//
+//            _BaseStationDatabase.Verify(db => db.GetFlights(It.IsAny<SearchBaseStationCriteria>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Exactly(2));
+//            _BaseStationDatabase.Verify(db => db.GetFlights(It.IsAny<SearchBaseStationCriteria>(), 10, 11, "Ff1", false, "Ff2", true), Times.Once());
+//        }
 
-            var json = SendJsonRequest<FlightReportJson>(_ReportRowsAddress.Address, worksheet.Bool("IsInternetClient"));
-
-            var actualStart = worksheet.NDateTime("ActualStart");
-            var actualEnd = worksheet.NDateTime("ActualEnd");
-            Assert.AreEqual(actualStart.GetValueOrDefault().Year == 1 ? null : actualStart.Value.Date.ToString("yyyy-MM-dd"), json.FromDate);
-            Assert.AreEqual(actualEnd.GetValueOrDefault().Year == 1 ? null : actualEnd.Value.Date.ToString("yyyy-MM-dd"), json.ToDate);
-        }
-
-        [TestMethod]
-        public void WebSite_ReportRows_DateReport_Passes_Same_Criteria_To_CountRows_And_FetchRows()
-        {
-            _ReportRowsAddress.Report = "date";
-
-            SearchBaseStationCriteria searchCriteria = null;
-            _BaseStationDatabase.Setup(db => db.GetCountOfFlights(It.IsAny<SearchBaseStationCriteria>())).Returns((SearchBaseStationCriteria c) => { searchCriteria = c; return 1; });
-
-            SendJsonRequest<FlightReportJson>(_ReportRowsAddress.Address);
-
-            _BaseStationDatabase.Verify(db => db.GetFlights(It.IsAny<SearchBaseStationCriteria>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once());
-            _BaseStationDatabase.Verify(db => db.GetFlights(searchCriteria, -1, -1, null, It.IsAny<bool>(), null, It.IsAny<bool>()), Times.Once());
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "FlightsReportDateLimits$")]
-        public void WebSite_ReportRows_DateReport_Sets_Correct_Limits_On_Date_Ranges()
-        {
-            _Configuration.InternetClientSettings.CanRunReports = true;
-            var worksheet = new ExcelWorksheetData(TestContext);
-            // if(!worksheet.NBool("Isolate").GetValueOrDefault()) return;
-            var callsign = worksheet.String("Callsign");
-            var registration = worksheet.String("Registration");
-            var icao24 = worksheet.String("Icao24");
-
-            _ReportRowsAddress.Report = "date";
-            _ReportRowsAddress.Date = new DateFilter(worksheet.NDateTime("RequestStart"), worksheet.NDateTime("RequestEnd"), false);
-            _ReportRowsAddress.Callsign = callsign != null ? new StringFilter(worksheet.String("Callsign"), FilterCondition.Equals, false) : null;
-            _ReportRowsAddress.Registration = registration != null ? new StringFilter(worksheet.String("Registration"), FilterCondition.Equals, false) : null;
-            _ReportRowsAddress.Icao24 = icao24 != null ? new StringFilter(worksheet.String("Icao24"), FilterCondition.Equals, false) : null;
-
-            _Provider.Setup(p => p.UtcNow).Returns(worksheet.DateTime("Today"));
-
-            SearchBaseStationCriteria searchCriteria = null;
-            _BaseStationDatabase.Setup(db => db.GetCountOfFlights(It.IsAny<SearchBaseStationCriteria>())).Returns((SearchBaseStationCriteria c) => { searchCriteria = c; return 1; });
-
-            var json = SendJsonRequest<FlightReportJson>(_ReportRowsAddress.Address, worksheet.Bool("IsInternetClient"));
-
-            var actualStart = worksheet.NDateTime("ActualStart");
-            var actualEnd = worksheet.NDateTime("ActualEnd");
-
-            if(actualStart == null) Assert.IsTrue(searchCriteria.Date == null || searchCriteria.Date.LowerValue == null);
-            else                    Assert.AreEqual(actualStart.Value, searchCriteria.Date.LowerValue);
-
-            if(actualEnd == null)   Assert.IsTrue(searchCriteria.Date == null || searchCriteria.Date.UpperValue == null);
-            else                    Assert.AreEqual(actualEnd.Value, searchCriteria.Date.UpperValue);
-        }
-
-        [TestMethod]
-        public void WebSite_ReportRows_DateReport_Passes_Range_And_Sort_Criteria_To_FetchRows()
-        {
-            _ReportRowsAddress.Report = "date";
-
-            _ReportRowsAddress.FromRow = 10;
-            _ReportRowsAddress.ToRow = 11;
-            _ReportRowsAddress.SortField1 = "Ff1";
-            _ReportRowsAddress.SortField2 = "Ff2";
-            _ReportRowsAddress.SortAscending1 = true;
-            _ReportRowsAddress.SortAscending2 = false;
-            SendJsonRequest<FlightReportJson>(_ReportRowsAddress.Address);
-
-            _BaseStationDatabase.Verify(db => db.GetFlights(It.IsAny<SearchBaseStationCriteria>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once());
-            _BaseStationDatabase.Verify(db => db.GetFlights(It.IsAny<SearchBaseStationCriteria>(), 10, 11, "Ff1", true, "Ff2", false), Times.Once());
-
-            _ReportRowsAddress.SortAscending1 = false;
-            _ReportRowsAddress.SortAscending2 = true;
-            SendJsonRequest<FlightReportJson>(_ReportRowsAddress.Address);
-
-            _BaseStationDatabase.Verify(db => db.GetFlights(It.IsAny<SearchBaseStationCriteria>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Exactly(2));
-            _BaseStationDatabase.Verify(db => db.GetFlights(It.IsAny<SearchBaseStationCriteria>(), 10, 11, "Ff1", false, "Ff2", true), Times.Once());
-        }
-
-        [TestMethod]
-        public void WebSite_ReportRows_DateReport_Passes_UseAlternativeCallsigns_Criteria_To_FetchRows()
-        {
-            _ReportRowsAddress.Report = "date";
-
-            SearchBaseStationCriteria criteria = null;
-            _BaseStationDatabase.Setup(r => r.GetFlights(It.IsAny<SearchBaseStationCriteria>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<bool>())).Callback((SearchBaseStationCriteria sbsc, int x1, int x2, string x3, bool x4, string x5, bool x6) => {
-                criteria = sbsc;
-            });
-
-            _ReportRowsAddress.UseAlternativeCallsigns = true;
-            SendJsonRequest<FlightReportJson>(_ReportRowsAddress.Address);
-            Assert.IsTrue(criteria.UseAlternateCallsigns);
-
-            _ReportRowsAddress.UseAlternativeCallsigns = false;
-            SendJsonRequest<FlightReportJson>(_ReportRowsAddress.Address);
-            Assert.IsFalse(criteria.UseAlternateCallsigns);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_DateReport_Passes_UseAlternativeCallsigns_Criteria_To_FetchRows()
+//        {
+//            _ReportRowsAddress.Report = "date";
+//
+//            SearchBaseStationCriteria criteria = null;
+//            _BaseStationDatabase.Setup(r => r.GetFlights(It.IsAny<SearchBaseStationCriteria>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<bool>())).Callback((SearchBaseStationCriteria sbsc, int x1, int x2, string x3, bool x4, string x5, bool x6) => {
+//                criteria = sbsc;
+//            });
+//
+//            _ReportRowsAddress.UseAlternativeCallsigns = true;
+//            SendJsonRequest<FlightReportJson>(_ReportRowsAddress.Address);
+//            Assert.IsTrue(criteria.UseAlternateCallsigns);
+//
+//            _ReportRowsAddress.UseAlternativeCallsigns = false;
+//            SendJsonRequest<FlightReportJson>(_ReportRowsAddress.Address);
+//            Assert.IsFalse(criteria.UseAlternateCallsigns);
+//        }
 
         [TestMethod]
         public void WebSite_ReportRows_DateReport_Informs_Caller_Of_Primary_Sort_Column_Used()

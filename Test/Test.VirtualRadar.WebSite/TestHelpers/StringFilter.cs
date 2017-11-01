@@ -30,6 +30,11 @@ namespace Test.VirtualRadar.WebSite.TestHelpers
             Condition = condition;
         }
 
+        public static StringFilter CreateIfNotNull(string value, FilterCondition condition = FilterCondition.Equals, bool reversed = false)
+        {
+            return value == null ? null : new StringFilter(value, condition, reversed);
+        }
+
         public override void AddQueryValues(string filterName, Dictionary<string, string> queryValues)
         {
             char conditionCharacter;

@@ -232,6 +232,14 @@ namespace Test.Framework
         /// </summary>
         public MockFileSystemProvider()
         {
+            Reset();
+        }
+
+        /// <summary>
+        /// Resets the mock file system.
+        /// </summary>
+        public void Reset()
+        {
             _Root = new MockFolder(this, null, "");
         }
 

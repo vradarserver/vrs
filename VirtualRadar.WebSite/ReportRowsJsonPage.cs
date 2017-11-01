@@ -28,68 +28,6 @@ namespace VirtualRadar.WebSite
     /// </summary>
     class ReportRowsJsonPage : Page
     {
-        #region Private class - Parameters
-        /// <summary>
-        /// A private class that holds the parameters passed to us by the Javascript via query strings etc.
-        /// on the URL.
-        /// </summary>
-        class Parameters : SearchBaseStationCriteria
-        {
-            /// <summary>
-            /// Gets or sets the type of report that is requesting data rows.
-            /// </summary>
-            public string ReportType { get; set; }
-
-            /// <summary>
-            /// Gets or sets the first row in the set to return or -1 for the first row.
-            /// </summary>
-            public int FromRow { get; set; }
-
-            /// <summary>
-            /// Gets or sets the last row in the set to return or -1 for the last row.
-            /// </summary>
-            public int ToRow { get; set; }
-
-            /// <summary>
-            /// Gets or sets the first field to sort on or null for no sorting.
-            /// </summary>
-            public string SortField1 { get; set; }
-
-            /// <summary>
-            /// Gets or sets a value indicating that the first field should be sorted in ascending order.
-            /// </summary>
-            public bool SortAscending1 { get; set; }
-
-            /// <summary>
-            /// Gets or sets the second field to sort on or null for no sorting.
-            /// </summary>
-            public string SortField2 { get; set; }
-
-            /// <summary>
-            /// Gets or sets a value indicating that the second field should be sorted in ascending order.
-            /// </summary>
-            public bool SortAscending2 { get; set; }
-
-            /// <summary>
-            /// Gets or sets a value indicating that the report only include military aircraft. This is not information
-            /// that is stored in the database so it can increase the time required to gather the requested rows.
-            /// </summary>
-            public FilterBool IsMilitary { get; set; }
-
-            /// <summary>
-            /// Gets or sets the wake turbulence category that the report is interested in. This is not information
-            /// that is stored in the database so it can increase the time required to gather the requested rows.
-            /// </summary>
-            public FilterEnum<WakeTurbulenceCategory> WakeTurbulenceCategory { get; set; }
-
-            /// <summary>
-            /// Gets or sets the species of aircraft that the report is interested in. This is not information
-            /// that is stored in the database so it can increase the time required to gather the requested rows.
-            /// </summary>
-            public FilterEnum<Species> Species { get; set; }
-        }
-        #endregion
-
         #region Fields
         /// <summary>
         /// The object that can manage aircraft pictures for us.
@@ -253,9 +191,9 @@ namespace VirtualRadar.WebSite
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-        private Parameters ExtractParameters(RequestReceivedEventArgs args)
+        private ReportParameters ExtractParameters(RequestReceivedEventArgs args)
         {
-            var result = new Parameters() {
+            var result = new ReportParameters() {
                 ReportType = QueryString(args, "rep", true),
                 FromRow = QueryInt(args, "fromrow", -1),
                 ToRow = QueryInt(args, "torow", -1),
@@ -293,7 +231,7 @@ namespace VirtualRadar.WebSite
         /// <param name="args"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        private FlightReportJson CreateManyAircraftReport(RequestReceivedEventArgs args, Parameters parameters)
+        private FlightReportJson CreateManyAircraftReport(RequestReceivedEventArgs args, ReportParameters parameters)
         {
             FlightReportJson json = new FlightReportJson();
 
@@ -340,7 +278,7 @@ namespace VirtualRadar.WebSite
             return json;
         }
 
-        private void TranscribeDatabaseRecordsToJson(List<BaseStationFlight> dbFlights, List<ReportFlightJson> jsonFlights, List<ReportAircraftJson> jsonAircraft, List<ReportAirportJson> jsonAirports, List<ReportRouteJson> jsonRoutes, RequestReceivedEventArgs args, Parameters parameters)
+        private void TranscribeDatabaseRecordsToJson(List<BaseStationFlight> dbFlights, List<ReportFlightJson> jsonFlights, List<ReportAircraftJson> jsonAircraft, List<ReportAirportJson> jsonAirports, List<ReportRouteJson> jsonRoutes, RequestReceivedEventArgs args, ReportParameters parameters)
         {
             var aircraftIdMap = new Dictionary<int, int>();
             var airportMap = new Dictionary<string, int>();
@@ -401,7 +339,7 @@ namespace VirtualRadar.WebSite
         /// <param name="parameters"></param>
         /// <param name="findByIcao"></param>
         /// <returns></returns>
-        private AircraftReportJson CreateSingleAircraftReport(RequestReceivedEventArgs args, Parameters parameters, bool findByIcao)
+        private AircraftReportJson CreateSingleAircraftReport(RequestReceivedEventArgs args, ReportParameters parameters, bool findByIcao)
         {
             AircraftReportJson json = new AircraftReportJson() {
                 CountRows = 0,
