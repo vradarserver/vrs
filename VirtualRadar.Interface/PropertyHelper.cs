@@ -72,5 +72,15 @@ namespace VirtualRadar.Interface
         {
             return ExtractName((Expression)selectorExpression);
         }
+
+        /// <summary>
+        /// Returns the default value for the type passed across.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static object DefaultValue(Type type)
+        {
+            return type?.IsValueType ?? false ? Activator.CreateInstance(type) : null;
+        }
     }
 }

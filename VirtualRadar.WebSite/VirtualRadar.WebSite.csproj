@@ -84,6 +84,7 @@
     <Compile Include="ApiControllers\DirectoryEntryController.cs" />
     <Compile Include="ApiControllers\FeedsController.cs" />
     <Compile Include="ApiControllers\ReportsController.cs" />
+    <Compile Include="ApiControllers\ReportsControllerSharedState.cs" />
     <Compile Include="ApiControllers\SettingsController.cs" />
     <Compile Include="FontCache.cs" />
     <Compile Include="HtmlLocaliser.cs" />

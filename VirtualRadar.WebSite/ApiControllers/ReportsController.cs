@@ -24,8 +24,10 @@ using VirtualRadar.Interface;
 using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.StandingData;
 using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
+using SharedState = VirtualRadar.WebSite.ApiControllers.ReportsControllerSharedState;
 
 namespace VirtualRadar.WebSite.ApiControllers
 {
@@ -34,26 +36,13 @@ namespace VirtualRadar.WebSite.ApiControllers
     /// </summary>
     public class ReportsController : PipelineApiController
     {
-        private ISharedConfiguration _SharedConfiguration;
-
-        private ISharedConfiguration InitialiseSharedConfiguration()
-        {
-            var result = _SharedConfiguration;
-            if(result == null) {
-                result = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
-                _SharedConfiguration = result;
-            }
-
-            return result;
-        }
-
         [HttpGet]
         [Route("ReportRows.json")]                      // V2 route
         public HttpResponseMessage ReportRowsV2()
         {
             HttpResponseMessage result = null;
 
-            var config = InitialiseSharedConfiguration().Get();
+            var config = SharedState.SharedConfiguration.Get();
             if(PipelineRequest.IsLocalOrLan || config.InternetClientSettings.CanRunReports) {
                 var clock = Factory.Singleton.Resolve<IClock>();
                 var startTime = clock.UtcNow;
@@ -65,21 +54,55 @@ namespace VirtualRadar.WebSite.ApiControllers
                 }
 
                 var jsonObj = new FlightReportJson() {
-                    GroupBy = "",
+                    GroupBy = parameters.SortField1 ?? parameters.SortField2 ?? "",
                 };
 
                 try {
-                    var baseStation = Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>().Singleton.Database;
-                    jsonObj.CountRows = baseStation.GetCountOfFlights(parameters);
-                    baseStation.GetFlights(
+                    var hasNonDatabaseCriteria = parameters.IsMilitary != null || parameters.WakeTurbulenceCategory != null || parameters.Species != null;
+
+                    if(!hasNonDatabaseCriteria) {
+                        jsonObj.CountRows = SharedState.BaseStationDatabase.GetCountOfFlights(parameters);
+                    }
+
+                    var dbFlights = SharedState.BaseStationDatabase.GetFlights(
                         parameters,
-                        parameters.FromRow,
-                        parameters.ToRow,
+                        hasNonDatabaseCriteria ? -1 : parameters.FromRow,
+                        hasNonDatabaseCriteria ? -1 : parameters.ToRow,
                         parameters.SortField1,
                         parameters.SortAscending1,
                         parameters.SortField2,
                         parameters.SortAscending2
                     );
+
+                    if(hasNonDatabaseCriteria) {
+                        dbFlights = dbFlights.Where(f => {
+                            var matches = f.Aircraft != null;
+                            if(matches) {
+                                if(parameters.IsMilitary != null) {
+                                    var codeBlock = SharedState.StandingDataManager.FindCodeBlock(f.Aircraft.ModeS);
+                                    matches = matches && codeBlock != null && parameters.IsMilitary.Passes(codeBlock.IsMilitary);
+                                }
+                                if(parameters.Species != null || parameters.WakeTurbulenceCategory != null) {
+                                    var aircraftType = SharedState.StandingDataManager.FindAircraftType(f.Aircraft.ICAOTypeCode);
+                                    if(parameters.Species != null) {
+                                        matches = matches && aircraftType != null && parameters.Species.Passes(aircraftType.Species);
+                                    }
+                                    if(parameters.WakeTurbulenceCategory != null) {
+                                        matches = matches && aircraftType != null && parameters.WakeTurbulenceCategory.Passes(aircraftType.WakeTurbulenceCategory);
+                                    }
+                                }
+                            }
+                            return matches;
+                        }).ToList();
+
+                        jsonObj.CountRows = dbFlights.Count;
+
+                        var limit = parameters.ToRow == -1 || parameters.ToRow < parameters.FromRow ? int.MaxValue : (parameters.ToRow - Math.Max(0, parameters.FromRow)) + 1;
+                        var offset = parameters.FromRow < 0 ? 0 : parameters.FromRow;
+                        dbFlights = dbFlights.Skip(offset).Take(limit).ToList();
+                    }
+
+                    TranscribeDatabaseRecordsToJson(dbFlights, jsonObj.Flights, jsonObj.Aircraft, jsonObj.Airports, jsonObj.Routes, parameters, config);
                 } catch(Exception ex) {
                     var log = Factory.Singleton.Resolve<ILog>().Singleton;
                     log.WriteLine($"An exception was encountered during the processing of a report: {ex}");
@@ -108,6 +131,199 @@ namespace VirtualRadar.WebSite.ApiControllers
             return result ?? new HttpResponseMessage(HttpStatusCode.Forbidden);
         }
 
+        private void TranscribeDatabaseRecordsToJson(List<BaseStationFlight> dbFlights, List<ReportFlightJson> jsonFlights, List<ReportAircraftJson> jsonAircraft, List<ReportAirportJson> jsonAirports, List<ReportRouteJson> jsonRoutes, ReportParameters parameters, Configuration config)
+        {
+            var aircraftIdMap = new Dictionary<int, int>();
+            var airportMap = new Dictionary<string, int>();
+            var routeMap = new Dictionary<string, int>();
+
+            var rowNumber = parameters.FromRow < 1 ? 1 : parameters.FromRow + 1;
+            foreach(var dbFlight in dbFlights) {
+                var jsonFlight = AddReportFlightJson(dbFlight, jsonFlights, ref rowNumber);
+
+                if(jsonAircraft != null) {
+                    var dbAircraft = dbFlight.Aircraft;
+                    if(dbAircraft == null) {
+                        jsonFlight.AircraftIndex = jsonAircraft.Count;
+                        jsonAircraft.Add(new ReportAircraftJson() { IsUnknown = true });
+                    } else {
+                        if(!aircraftIdMap.TryGetValue(dbAircraft.AircraftID, out int aircraftIndex)) {
+                            aircraftIndex = jsonAircraft.Count;
+                            aircraftIdMap.Add(dbAircraft.AircraftID, aircraftIndex);
+                            jsonAircraft.Add(CreateReportAircraftJson(dbAircraft, config));
+                        }
+                        jsonFlight.AircraftIndex = aircraftIndex;
+                    }
+                }
+
+                var routeIndex = -1;
+                if(!String.IsNullOrEmpty(dbFlight.Callsign) && !routeMap.TryGetValue(dbFlight.Callsign, out routeIndex)) {
+                    var operatorCode = dbFlight.Aircraft?.OperatorFlagCode;
+                    foreach(var routeCallsign in SharedState.CallsignParser.GetAllRouteCallsigns(dbFlight.Callsign, operatorCode)) {
+                        var sdmRoute = SharedState.StandingDataManager.FindRoute(routeCallsign);
+                        if(sdmRoute == null) routeIndex = -1;
+                        else {
+                            var jsonRoute = new ReportRouteJson() {
+                                FromIndex = BuildAirportJson(sdmRoute.From, airportMap, jsonAirports, config.GoogleMapSettings.PreferIataAirportCodes),
+                                ToIndex = BuildAirportJson(sdmRoute.To, airportMap, jsonAirports, config.GoogleMapSettings.PreferIataAirportCodes),
+                            };
+                            foreach(var stopover in sdmRoute.Stopovers) {
+                                int index = BuildAirportJson(stopover, airportMap, jsonAirports, config.GoogleMapSettings.PreferIataAirportCodes);
+                                if(index != -1) jsonRoute.StopoversIndex.Add(index);
+                            }
+
+                            routeIndex = jsonRoutes.Count;
+                            jsonRoutes.Add(jsonRoute);
+                            routeMap.Add(dbFlight.Callsign, routeIndex);
+
+                            break;
+                        }
+                    }
+                }
+                jsonFlight.RouteIndex = routeIndex;
+            }
+        }
+
+        /// <summary>
+        /// Creates a JSON representation of the database flight and adds it to an existing list of flights.
+        /// </summary>
+        /// <param name="flight"></param>
+        /// <param name="flightList"></param>
+        /// <param name="rowNumber"></param>
+        /// <returns></returns>
+        private ReportFlightJson AddReportFlightJson(BaseStationFlight flight, List<ReportFlightJson> flightList, ref int rowNumber)
+        {
+            var result = new ReportFlightJson() {
+                RowNumber =             rowNumber++,
+                Callsign =              flight.Callsign,
+                StartTime =             flight.StartTime,
+                EndTime =               flight.EndTime.GetValueOrDefault(),
+                FirstAltitude =         flight.FirstAltitude.GetValueOrDefault(),
+                FirstGroundSpeed =      (int)flight.FirstGroundSpeed.GetValueOrDefault(),
+                FirstIsOnGround =       flight.FirstIsOnGround,
+                FirstLatitude =         flight.FirstLat.GetValueOrDefault(),
+                FirstLongitude =        flight.FirstLon.GetValueOrDefault(),
+                FirstSquawk =           flight.FirstSquawk.GetValueOrDefault(),
+                FirstTrack =            flight.FirstTrack.GetValueOrDefault(),
+                FirstVerticalRate =     flight.FirstVerticalRate.GetValueOrDefault(),
+                HadAlert =              flight.HadAlert,
+                HadEmergency =          flight.HadEmergency,
+                HadSpi =                flight.HadSpi,
+                LastAltitude =          flight.LastAltitude.GetValueOrDefault(),
+                LastGroundSpeed =       (int)flight.LastGroundSpeed.GetValueOrDefault(),
+                LastIsOnGround =        flight.LastIsOnGround,
+                LastLatitude =          flight.LastLat.GetValueOrDefault(),
+                LastLongitude =         flight.LastLon.GetValueOrDefault(),
+                LastSquawk =            flight.LastSquawk.GetValueOrDefault(),
+                LastTrack =             flight.LastTrack.GetValueOrDefault(),
+                LastVerticalRate =      flight.LastVerticalRate.GetValueOrDefault(),
+                NumADSBMsgRec =         flight.NumADSBMsgRec.GetValueOrDefault(),
+                NumModeSMsgRec =        flight.NumModeSMsgRec.GetValueOrDefault(),
+                NumPosMsgRec =          flight.NumPosMsgRec.GetValueOrDefault(),
+            };
+            flightList.Add(result);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Creates the JSON representation of an aircraft.
+        /// </summary>
+        /// <param name="aircraft"></param>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        private ReportAircraftJson CreateReportAircraftJson(BaseStationAircraft aircraft, Configuration config)
+        {
+            var result = new ReportAircraftJson() {
+                AircraftClass =     aircraft.AircraftClass,
+                AircraftId =        aircraft.AircraftID,
+                CofACategory =      aircraft.CofACategory,
+                CofAExpiry =        aircraft.CofAExpiry,
+                Country =           aircraft.Country,
+                CurrentRegDate =    aircraft.CurrentRegDate,
+                DeRegDate =         aircraft.DeRegDate,
+                FirstRegDate =      aircraft.FirstRegDate,
+                GenericName =       aircraft.GenericName,
+                IcaoTypeCode =      aircraft.ICAOTypeCode,
+                InfoUrl =           aircraft.InfoUrl,
+                Interested =        aircraft.Interested,
+                Manufacturer =      aircraft.Manufacturer,
+                Icao =              aircraft.ModeS,
+                ModeSCountry =      aircraft.ModeSCountry,
+                MTOW =              aircraft.MTOW,
+                OperatorFlagCode =  aircraft.OperatorFlagCode,
+                OwnershipStatus =   aircraft.OwnershipStatus,
+                PictureUrl1 =       aircraft.PictureUrl1,
+                PictureUrl2 =       aircraft.PictureUrl2,
+                PictureUrl3 =       aircraft.PictureUrl3,
+                PopularName =       aircraft.PopularName,
+                PreviousId =        aircraft.PreviousID,
+                Registration =      aircraft.Registration,
+                RegisteredOwners =  aircraft.RegisteredOwners,
+                SerialNumber =      aircraft.SerialNo,
+                Status =            aircraft.Status,
+                TotalHours =        aircraft.TotalHours,
+                Type =              aircraft.Type,
+                Notes =             aircraft.UserNotes,
+                YearBuilt =         aircraft.YearBuilt,
+            };
+
+            if(PipelineRequest.IsLocalOrLan || config.InternetClientSettings.CanShowPictures) {
+                try {
+                    var pictureDetails = SharedState.AircraftPictureManager.FindPicture(SharedState.PictureFolderCache, aircraft.ModeS, aircraft.Registration);
+                    if(pictureDetails != null) {
+                        result.HasPicture =     true;
+                        result.PictureWidth =   pictureDetails.Width;
+                        result.PictureHeight =  pictureDetails.Height;
+                    }
+                } catch(Exception ex) {
+                    try {
+                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        log.WriteLine($"Caught exception when fetching picture for {aircraft.ModeS}/{aircraft.Registration} for a report: {ex.ToString()}");
+                    } catch {
+                    }
+                }
+            }
+
+            var aircraftType = String.IsNullOrEmpty(aircraft.ICAOTypeCode) ? null : SharedState.StandingDataManager.FindAircraftType(aircraft.ICAOTypeCode);
+            if(aircraftType != null) {
+                result.WakeTurbulenceCategory = (int)aircraftType.WakeTurbulenceCategory;
+                result.Engines =                aircraftType.Engines;
+                result.EngineType =             (int)aircraftType.EngineType;
+                result.EnginePlacement =        (int)aircraftType.EnginePlacement;
+                result.Species =                (int)aircraftType.Species;
+            }
+
+            var codeBlock = String.IsNullOrEmpty(aircraft.ModeS) ? null : SharedState.StandingDataManager.FindCodeBlock(aircraft.ModeS);
+            if(codeBlock != null) {
+                result.Military = codeBlock.IsMilitary;
+            }
+
+            return result;
+        }
+
+        private int BuildAirportJson(Airport sdmAirport, Dictionary<string, int> airportMap, List<ReportAirportJson> jsonList, bool preferIataCodes)
+        {
+            var result = -1;
+
+            if(sdmAirport != null) {
+                var code = preferIataCodes ? String.IsNullOrEmpty(sdmAirport.IataCode) ? sdmAirport.IcaoCode : sdmAirport.IataCode
+                                           : String.IsNullOrEmpty(sdmAirport.IcaoCode) ? sdmAirport.IataCode : sdmAirport.IcaoCode;
+                if(!String.IsNullOrEmpty(code)) {
+                    if(!airportMap.TryGetValue(code, out result)) {
+                        result = jsonList.Count;
+                        jsonList.Add(new ReportAirportJson() {
+                            Code = code,
+                            Name = Describe.Airport(sdmAirport, preferIataCodes, showCode: false, showName: true, showCountry: true)
+                        });
+                        airportMap.Add(code, result);
+                    }
+                }
+            }
+
+            return result;
+        }
+
         private ReportParameters ExtractV2Parameters()
         {
             var result = new ReportParameters() {
@@ -124,10 +340,13 @@ namespace VirtualRadar.WebSite.ApiControllers
                 var name = (kvp.Key ?? "").ToUpper();
                 var value = kvp.Value == null || kvp.Value.Length < 1 ? "" : kvp.Value[0] ?? "";
 
-                if(name.StartsWith("CALL-"))        result.Callsign =       DecodeStringFilter(name, value);
-                else if(name.StartsWith("DATE-"))   result.Date =           DecodeDateRangeFilter(result.Date, name, value);
-                else if(name.StartsWith("ICAO-"))   result.Icao =           DecodeStringFilter(name, value);
-                else if(name.StartsWith("REG-"))    result.Registration =   DecodeStringFilter(name, value);
+                if(name.StartsWith("CALL-"))        result.Callsign =               DecodeStringFilter(name, value);
+                else if(name.StartsWith("DATE-"))   result.Date =                   DecodeDateRangeFilter(result.Date, name, value);
+                else if(name.StartsWith("ICAO-"))   result.Icao =                   DecodeStringFilter(name, value);
+                else if(name.StartsWith("REG-"))    result.Registration =           DecodeStringFilter(name, value);
+                else if(name.StartsWith("MIL-"))    result.IsMilitary =             DecodeBoolFilter(name, value);
+                else if(name.StartsWith("WTC-"))    result.WakeTurbulenceCategory = DecodeEnumFilter<WakeTurbulenceCategory>(name, value);
+                else if(name.StartsWith("SPC-"))    result.Species =                DecodeEnumFilter<Species>(name, value);
             }
             if(result.Date != null) {
                 result.Date.NormaliseRange();
@@ -203,12 +422,59 @@ namespace VirtualRadar.WebSite.ApiControllers
             return filterRange;
         }
 
+        private FilterBool DecodeBoolFilter(string name, string value)
+        {
+            FilterBool result = null;
+
+            if(!String.IsNullOrEmpty(value)) {
+                result = new FilterBool() {
+                    Value = value != "0" && !value.Equals("false", StringComparison.OrdinalIgnoreCase)
+                };
+                DecodeFilter(result, name);
+            }
+
+            return result;
+        }
+
+        private FilterEnum<T> DecodeEnumFilter<T>(string name, string value)
+            where T: struct, IComparable
+        {
+            var result = new FilterEnum<T>();
+            DecodeFilter(result, name);
+
+            var decoded = false;
+            if(!String.IsNullOrEmpty(value)) {
+                var number = QueryNInt(value);
+                if(number != null && Enum.IsDefined(typeof(T), number)) {
+                    result.Value = (T)((object)number.Value);
+                    decoded = true;
+                }
+            }
+            if(!decoded) {
+                result = null;
+            }
+
+            return result;
+        }
+
         private DateTime? QueryNDateTime(string text)
         {
             DateTime? result = null;
             if(!String.IsNullOrEmpty(text)) {
-                if(DateTime.TryParseExact(text, "yyyy-M-d", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date)) {
+                if(DateTime.TryParseExact(text, "yyyy-M-d", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date)) {
                     result = date;
+                }
+            }
+
+            return result;
+        }
+
+        protected int? QueryNInt(string text)
+        {
+            int? result = null;
+            if(!String.IsNullOrEmpty(text)) {
+                if(int.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out int value)) {
+                    result = value;
                 }
             }
 

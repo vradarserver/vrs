@@ -479,6 +479,7 @@ namespace VirtualRadar.WebSite
             lock(_HtmlContentInjectorsLock) _HtmlContentInjectors.Remove(contentInjector);
         }
 
+        /*
         /// <summary>
         /// Injects content into HTML files.
         /// </summary>
@@ -535,6 +536,7 @@ namespace VirtualRadar.WebSite
             textContent.Content = result;
             return result;
         }
+        */
         #endregion
 
         #region Events consumed

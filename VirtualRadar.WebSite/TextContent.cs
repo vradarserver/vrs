@@ -15,6 +15,7 @@ using System.Text;
 
 namespace VirtualRadar.WebSite
 {
+/*
     /// <summary>
     /// A class that carries the content of a text file and its encoding.
     /// </summary>
@@ -49,4 +50,5 @@ namespace VirtualRadar.WebSite
             return result.ToArray();
         }
     }
+*/
 }
