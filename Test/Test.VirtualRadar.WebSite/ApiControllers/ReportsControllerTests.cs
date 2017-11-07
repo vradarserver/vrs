@@ -89,11 +89,6 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             Factory.Singleton.RegisterInstance<VRSInterface.IFileSystemProvider>(_FileSystemProvider);
         }
 
-        /// <summary>
-        /// Returns the type of the top-level JSON class associated with the report type passed across.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
         private Type ReportJsonType(ReportJsonClass type)
         {
             switch(type) {
@@ -146,13 +141,6 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             }
         }
 
-        /// <summary>
-        /// Requests a JSON file. The output is parsed into a JSON file of the type specified.
-        /// </summary>
-        /// <param name="jsonType"></param>
-        /// <param name="pathAndFile"></param>
-        /// <param name="isInternetClient"></param>
-        /// <returns></returns>
         private object SendJsonRequest(Type jsonType, string pathAndFile, bool isInternetClient = false, Action<HttpResponseMessage> httpResponseAction = null)
         {
             _RemoteIpAddress = isInternetClient ? "1.2.3.4" : "127.0.0.1";
@@ -792,6 +780,14 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             dynamic json = SendJsonRequest(ReportJsonType(ReportJsonClass.Flight), _ReportRowsAddress.Address);
 
             _CallsignParser.Verify(r => r.GetAllRouteCallsigns("A", null), Times.Once());
+        }
+        #endregion
+
+        #region ICAO report tests
+        [TestMethod]
+        public void ReportRows_IcaoReport_Generates_Correct_JSON_When_No_Rows_Match()
+        {
+            Do_ReportRows_Report_Generates_Correct_JSON_When_No_Rows_Match("icao", ReportJsonClass.Aircraft);
         }
         #endregion
 

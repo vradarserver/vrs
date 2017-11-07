@@ -44,77 +44,38 @@ namespace VirtualRadar.WebSite.ApiControllers
 
             var config = SharedState.SharedConfiguration.Get();
             if(PipelineRequest.IsLocalOrLan || config.InternetClientSettings.CanRunReports) {
-                var clock = Factory.Singleton.Resolve<IClock>();
-                var startTime = clock.UtcNow;
-
-                var parameters = ExtractV2Parameters();
-                LimitDatesWhenNoStrongCriteriaPresent(clock, parameters, PipelineRequest.IsInternet);
-                if(parameters?.Date?.UpperValue?.Year < 9999) {
-                    parameters.Date.UpperValue = parameters.Date.UpperValue.Value.AddDays(1).AddMilliseconds(-1);
-                }
-
-                var jsonObj = new FlightReportJson() {
-                    GroupBy = parameters.SortField1 ?? parameters.SortField2 ?? "",
-                };
+                ReportRowsJson jsonObj = null;
+                var expectedJsonType = ExpectedJsonType();
+                var startTime = SharedState.Clock.UtcNow;
 
                 try {
-                    var hasNonDatabaseCriteria = parameters.IsMilitary != null || parameters.WakeTurbulenceCategory != null || parameters.Species != null;
-
-                    if(!hasNonDatabaseCriteria) {
-                        jsonObj.CountRows = SharedState.BaseStationDatabase.GetCountOfFlights(parameters);
+                    var parameters = ExtractV2Parameters();
+                    LimitDatesWhenNoStrongCriteriaPresent(parameters, PipelineRequest.IsInternet);
+                    if(parameters?.Date?.UpperValue?.Year < 9999) {
+                        parameters.Date.UpperValue = parameters.Date.UpperValue.Value.AddDays(1).AddMilliseconds(-1);
                     }
 
-                    var dbFlights = SharedState.BaseStationDatabase.GetFlights(
-                        parameters,
-                        hasNonDatabaseCriteria ? -1 : parameters.FromRow,
-                        hasNonDatabaseCriteria ? -1 : parameters.ToRow,
-                        parameters.SortField1,
-                        parameters.SortAscending1,
-                        parameters.SortField2,
-                        parameters.SortAscending2
-                    );
-
-                    if(hasNonDatabaseCriteria) {
-                        dbFlights = dbFlights.Where(f => {
-                            var matches = f.Aircraft != null;
-                            if(matches) {
-                                if(parameters.IsMilitary != null) {
-                                    var codeBlock = SharedState.StandingDataManager.FindCodeBlock(f.Aircraft.ModeS);
-                                    matches = matches && codeBlock != null && parameters.IsMilitary.Passes(codeBlock.IsMilitary);
-                                }
-                                if(parameters.Species != null || parameters.WakeTurbulenceCategory != null) {
-                                    var aircraftType = SharedState.StandingDataManager.FindAircraftType(f.Aircraft.ICAOTypeCode);
-                                    if(parameters.Species != null) {
-                                        matches = matches && aircraftType != null && parameters.Species.Passes(aircraftType.Species);
-                                    }
-                                    if(parameters.WakeTurbulenceCategory != null) {
-                                        matches = matches && aircraftType != null && parameters.WakeTurbulenceCategory.Passes(aircraftType.WakeTurbulenceCategory);
-                                    }
-                                }
-                            }
-                            return matches;
-                        }).ToList();
-
-                        jsonObj.CountRows = dbFlights.Count;
-
-                        var limit = parameters.ToRow == -1 || parameters.ToRow < parameters.FromRow ? int.MaxValue : (parameters.ToRow - Math.Max(0, parameters.FromRow)) + 1;
-                        var offset = parameters.FromRow < 0 ? 0 : parameters.FromRow;
-                        dbFlights = dbFlights.Skip(offset).Take(limit).ToList();
+                    switch(parameters.ReportType) {
+                        case "DATE":    jsonObj = CreateManyAircraftReport(parameters, config); break;
+                        //case "ICAO":    jsonObj = CreateSingleAircraftReport(args, parameters, true); break;
+                        //case "REG":     jsonObj = CreateSingleAircraftReport(args, parameters, false); break;
+                        default:        throw new NotImplementedException();
                     }
 
-                    TranscribeDatabaseRecordsToJson(dbFlights, jsonObj.Flights, jsonObj.Aircraft, jsonObj.Airports, jsonObj.Routes, parameters, config);
+                    if(jsonObj != null) {
+                        jsonObj.GroupBy = parameters.SortField1 ?? parameters.SortField2 ?? "";
+                    };
                 } catch(Exception ex) {
                     var log = Factory.Singleton.Resolve<ILog>().Singleton;
                     log.WriteLine($"An exception was encountered during the processing of a report: {ex}");
+                    jsonObj = EnsureJsonObjExists(jsonObj, expectedJsonType);
                     jsonObj.ErrorText = $"An exception was encounted during the processing of the report, see log for full details: {ex.Message}";
                 }
 
-                var fileSystemProvider = Factory.Singleton.Resolve<IFileSystemProvider>();
-                jsonObj.ProcessingTime = String.Format("{0:N3}", (clock.UtcNow - startTime).TotalSeconds);
-                jsonObj.OperatorFlagsAvailable = ImagesFolderAvailable(fileSystemProvider, config.BaseStationSettings.OperatorFlagsFolder);
-                jsonObj.SilhouettesAvailable = ImagesFolderAvailable(fileSystemProvider, config.BaseStationSettings.SilhouettesFolder);
-                jsonObj.FromDate = FormatReportDate(parameters.Date?.LowerValue);
-                jsonObj.ToDate = FormatReportDate(parameters.Date?.UpperValue);
+                jsonObj = EnsureJsonObjExists(jsonObj, expectedJsonType);
+                jsonObj.ProcessingTime = String.Format("{0:N3}", (SharedState.Clock.UtcNow - startTime).TotalSeconds);
+                jsonObj.OperatorFlagsAvailable = ImagesFolderAvailable(SharedState.FileSystem, config.BaseStationSettings.OperatorFlagsFolder);
+                jsonObj.SilhouettesAvailable = ImagesFolderAvailable(SharedState.FileSystem, config.BaseStationSettings.SilhouettesFolder);
 
                 var jsonText = JsonConvert.SerializeObject(jsonObj);
                 result = new HttpResponseMessage(HttpStatusCode.OK) {
@@ -129,6 +90,93 @@ namespace VirtualRadar.WebSite.ApiControllers
             }
 
             return result ?? new HttpResponseMessage(HttpStatusCode.Forbidden);
+        }
+
+        /// <summary>
+        /// Returns the type of JSON that the report implies should be returned. The function tries
+        /// not to throw any exceptions.
+        /// </summary>
+        /// <returns></returns>
+        private Type ExpectedJsonType()
+        {
+            var result = typeof(AircraftReportJson);
+
+            var reportType = PipelineRequest.Query["rep"];
+            switch((reportType ?? "").ToUpper()) {
+                case "DATE":    result = typeof(FlightReportJson); break;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Creates and returns a new instance corresponding to the type passed across if the instance passed in is null.
+        /// </summary>
+        /// <param name="jsonObj"></param>
+        /// <param name="expectedJsonType"></param>
+        /// <returns></returns>
+        private ReportRowsJson EnsureJsonObjExists(ReportRowsJson jsonObj, Type expectedJsonType)
+        {
+            return jsonObj ?? (ReportRowsJson)Activator.CreateInstance(expectedJsonType);
+        }
+
+        /// <summary>
+        /// Builds up rows for a report that wants information on flights for many aircraft simultaneously.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        private FlightReportJson CreateManyAircraftReport(ReportParameters parameters, Configuration config)
+        {
+            var result = new FlightReportJson() {
+                FromDate = FormatReportDate(parameters.Date?.LowerValue),
+                ToDate = FormatReportDate(parameters.Date?.UpperValue),
+            };
+
+            var hasNonDatabaseCriteria = parameters.IsMilitary != null || parameters.WakeTurbulenceCategory != null || parameters.Species != null;
+            var dbFlights = SharedState.BaseStationDatabase.GetFlights(
+                parameters,
+                hasNonDatabaseCriteria ? -1 : parameters.FromRow,
+                hasNonDatabaseCriteria ? -1 : parameters.ToRow,
+                parameters.SortField1,
+                parameters.SortAscending1,
+                parameters.SortField2,
+                parameters.SortAscending2
+            );
+
+            if(!hasNonDatabaseCriteria) {
+                result.CountRows = SharedState.BaseStationDatabase.GetCountOfFlights(parameters);
+            } else {
+                dbFlights = dbFlights.Where(f => {
+                    var matches = f.Aircraft != null;
+                    if(matches) {
+                        if(parameters.IsMilitary != null) {
+                            var codeBlock = SharedState.StandingDataManager.FindCodeBlock(f.Aircraft.ModeS);
+                            matches = matches && codeBlock != null && parameters.IsMilitary.Passes(codeBlock.IsMilitary);
+                        }
+                        if(parameters.Species != null || parameters.WakeTurbulenceCategory != null) {
+                            var aircraftType = SharedState.StandingDataManager.FindAircraftType(f.Aircraft.ICAOTypeCode);
+                            if(parameters.Species != null) {
+                                matches = matches && aircraftType != null && parameters.Species.Passes(aircraftType.Species);
+                            }
+                            if(parameters.WakeTurbulenceCategory != null) {
+                                matches = matches && aircraftType != null && parameters.WakeTurbulenceCategory.Passes(aircraftType.WakeTurbulenceCategory);
+                            }
+                        }
+                    }
+                    return matches;
+                }).ToList();
+
+                result.CountRows = dbFlights.Count;
+
+                var limit = parameters.ToRow == -1 || parameters.ToRow < parameters.FromRow ? int.MaxValue : (parameters.ToRow - Math.Max(0, parameters.FromRow)) + 1;
+                var offset = parameters.FromRow < 0 ? 0 : parameters.FromRow;
+                dbFlights = dbFlights.Skip(offset).Take(limit).ToList();
+            }
+
+            TranscribeDatabaseRecordsToJson(dbFlights, result.Flights, result.Aircraft, result.Airports, result.Routes, parameters, config);
+
+            return result;
         }
 
         private void TranscribeDatabaseRecordsToJson(List<BaseStationFlight> dbFlights, List<ReportFlightJson> jsonFlights, List<ReportAircraftJson> jsonAircraft, List<ReportAirportJson> jsonAirports, List<ReportRouteJson> jsonRoutes, ReportParameters parameters, Configuration config)
@@ -327,6 +375,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         private ReportParameters ExtractV2Parameters()
         {
             var result = new ReportParameters() {
+                ReportType = QueryString("rep", toUpperCase: true),
                 FromRow = QueryInt("fromrow", -1),
                 ToRow = QueryInt("torow", -1),
                 SortField1 = QueryString("sort1"),
@@ -481,7 +530,7 @@ namespace VirtualRadar.WebSite.ApiControllers
             return result;
         }
 
-        private void LimitDatesWhenNoStrongCriteriaPresent(IClock clock, SearchBaseStationCriteria criteria, bool isInternetRequest)
+        private void LimitDatesWhenNoStrongCriteriaPresent(SearchBaseStationCriteria criteria, bool isInternetRequest)
         {
             if(criteria.Callsign == null && criteria.Registration == null && criteria.Icao == null) {
                 if(criteria.Date == null) {
@@ -489,7 +538,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 }
 
                 const int defaultDayCount = 7;
-                var now = clock.UtcNow;
+                var now = SharedState.Clock.UtcNow;
 
                 var fromIsMissing = criteria.Date.LowerValue == null;
                 var toIsMissing = criteria.Date.UpperValue == null;

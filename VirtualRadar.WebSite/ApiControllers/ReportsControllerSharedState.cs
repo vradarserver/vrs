@@ -137,6 +137,42 @@ namespace VirtualRadar.WebSite.ApiControllers
             }
         }
 
+        private static IClock _Clock;
+        /// <summary>
+        /// Gets the clock used by all <see cref="ReportController"/>s.
+        /// </summary>
+        public static IClock Clock
+        {
+            get {
+                if(_Clock == null) {
+                    lock(_SyncLock) {
+                        if(_Clock == null) {
+                            _Clock = Factory.Singleton.Resolve<IClock>();
+                        }
+                    }
+                }
+                return _Clock;
+            }
+        }
+
+        private static IFileSystemProvider _FileSystemProvider;
+        /// <summary>
+        /// Gets the file system used by all <see cref="ReportController"/>s.
+        /// </summary>
+        public static IFileSystemProvider FileSystem
+        {
+            get {
+                if(_FileSystemProvider == null) {
+                    lock(_SyncLock) {
+                        if(_FileSystemProvider == null) {
+                            _FileSystemProvider = Factory.Singleton.Resolve<IFileSystemProvider>();
+                        }
+                    }
+                }
+                return _FileSystemProvider;
+            }
+        }
+
         /// <summary>
         /// Test-only method to reset state back to default.
         /// </summary>
