@@ -57,8 +57,8 @@ namespace VirtualRadar.WebSite.ApiControllers
 
                     switch(parameters.ReportType) {
                         case "DATE":    jsonObj = CreateManyAircraftReport(parameters, config); break;
-                        //case "ICAO":    jsonObj = CreateSingleAircraftReport(args, parameters, true); break;
-                        //case "REG":     jsonObj = CreateSingleAircraftReport(args, parameters, false); break;
+                        case "ICAO":    jsonObj = CreateSingleAircraftReport(parameters, config, findByIcao: true); break;
+                        case "REG":     jsonObj = CreateSingleAircraftReport(parameters, config, findByIcao: false); break;
                         default:        throw new NotImplementedException();
                     }
 
@@ -175,6 +175,52 @@ namespace VirtualRadar.WebSite.ApiControllers
             }
 
             TranscribeDatabaseRecordsToJson(dbFlights, result.Flights, result.Aircraft, result.Airports, result.Routes, parameters, config);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Creates the JSON for a report that describes a single aircraft and the flights it has undertaken.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <param name="config"></param>
+        /// <param name="findByIcao"></param>
+        /// <returns></returns>
+        private AircraftReportJson CreateSingleAircraftReport(ReportParameters parameters, Configuration config, bool findByIcao)
+        {
+            var result = new AircraftReportJson() {
+                CountRows = 0,
+                GroupBy = "",
+            };
+
+            var aircraftIdentifier = findByIcao ? parameters.Icao : parameters.Registration;
+            if(aircraftIdentifier != null && !String.IsNullOrEmpty(aircraftIdentifier.Value) && aircraftIdentifier.Condition == FilterCondition.Equals) {
+                var aircraft = findByIcao ? SharedState.BaseStationDatabase.GetAircraftByCode(aircraftIdentifier.Value)
+                                          : SharedState.BaseStationDatabase.GetAircraftByRegistration(aircraftIdentifier.Value);
+                if(aircraft != null) {
+                    // Remove all criteria that is used to identify an aircraft
+                    parameters.Icao = null;
+                    parameters.Registration = null;
+                    parameters.Operator = null;
+                    parameters.Country = null;
+
+                    result.Aircraft = CreateReportAircraftJson(aircraft, config);
+
+                    result.CountRows = SharedState.BaseStationDatabase.GetCountOfFlightsForAircraft(aircraft, parameters);
+                    var dbFlights = SharedState.BaseStationDatabase.GetFlightsForAircraft(aircraft, parameters,
+                        parameters.FromRow, parameters.ToRow,
+                        parameters.SortField1, parameters.SortAscending1,
+                        parameters.SortField2, parameters.SortAscending2);
+
+                    TranscribeDatabaseRecordsToJson(dbFlights, result.Flights, null, result.Airports, result.Routes, parameters, config);
+                }
+            }
+
+            if(result.Aircraft == null) {
+                result.Aircraft = new ReportAircraftJson() {
+                    IsUnknown = true,
+                };
+            }
 
             return result;
         }

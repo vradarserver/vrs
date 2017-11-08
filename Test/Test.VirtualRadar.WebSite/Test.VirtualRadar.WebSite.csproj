@@ -113,6 +113,7 @@
     <Compile Include="MockOwinMiddleware\MockBasicAuthenticationFilter.cs" />
     <Compile Include="MockOwinMiddleware\MockFilter.cs" />
     <Compile Include="MockOwinMiddleware\MockRedirectionFilter.cs" />
+    <Compile Include="TestHelpers\SingleAircraftReport.cs" />
     <Compile Include="TestHelpers\StringFilter.cs" />
     <Compile Include="WebSiteExtenderTests.cs" />
     <Compile Include="WebSiteStringsManipulatorTests.cs" />

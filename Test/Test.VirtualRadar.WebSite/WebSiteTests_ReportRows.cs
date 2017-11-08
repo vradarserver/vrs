@@ -859,371 +859,371 @@ namespace Test.VirtualRadar.WebSite
         #endregion
 
         #region ICAO report
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Generates_Correct_JSON_When_No_Rows_Match()
-        {
-            Do_ReportRows_Report_Generates_Correct_JSON_When_No_Rows_Match("icao", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Generates_Correct_JSON_When_No_Rows_Match()
+//        {
+//            Do_ReportRows_Report_Generates_Correct_JSON_When_No_Rows_Match("icao", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Adds_Correct_Cache_Control_Header()
-        {
-            Do_ReportRows_Report_Adds_Correct_Cache_Control_Header("icao", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Adds_Correct_Cache_Control_Header()
+//        {
+//            Do_ReportRows_Report_Adds_Correct_Cache_Control_Header("icao", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Only_Returns_Json_If_Reports_Are_Permitted()
-        {
-            Do_ReportRows_Report_Only_Returns_Json_If_Reports_Are_Permitted("icao", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Only_Returns_Json_If_Reports_Are_Permitted()
+//        {
+//            Do_ReportRows_Report_Only_Returns_Json_If_Reports_Are_Permitted("icao", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Searches_For_Single_Aircraft()
-        {
-            _ReportRowsAddress.Report = "icao";
-            _ReportRowsAddress.Icao24 = new StringFilter("ABC", FilterCondition.Equals, false);
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Searches_For_Single_Aircraft()
+//        {
+//            _ReportRowsAddress.Report = "icao";
+//            _ReportRowsAddress.Icao24 = new StringFilter("ABC", FilterCondition.Equals, false);
+//
+//            var json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
+//
+//            _BaseStationDatabase.Verify(db => db.GetAircraftByCode("ABC"), Times.Once());
+//            _BaseStationDatabase.Verify(db => db.GetAircraftByCode(It.IsAny<string>()), Times.Once());
+//            _BaseStationDatabase.Verify(db => db.GetAircraftByRegistration(It.IsAny<string>()), Times.Never());
+//        }
 
-            var json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Passes_Single_Aircraft_To_Get_Count_Of_Rows()
+//        {
+//            Do_WebSite_ReportRows_SingleAircraftReport_Passes_Single_Aircraft_To_Get_Count_Of_Rows(SingleAircraftReport.Icao);
+//        }
 
-            _BaseStationDatabase.Verify(db => db.GetAircraftByCode("ABC"), Times.Once());
-            _BaseStationDatabase.Verify(db => db.GetAircraftByCode(It.IsAny<string>()), Times.Once());
-            _BaseStationDatabase.Verify(db => db.GetAircraftByRegistration(It.IsAny<string>()), Times.Never());
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Deals_With_Missing_Aircraft_Criteria_Correctly()
+//        {
+//            _ReportRowsAddress.Report = "icao";
+//
+//            var json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
+//
+//            _BaseStationDatabase.Verify(db => db.GetAircraftByCode(It.IsAny<string>()), Times.Never());
+//
+//            Assert.AreEqual(0, json.CountRows);
+//            Assert.AreEqual(0, json.Flights.Count);
+//            Assert.AreEqual(0, json.Airports.Count);
+//            Assert.AreEqual(0, json.Routes.Count);
+//            Assert.IsTrue(json.Aircraft.IsUnknown);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Passes_Single_Aircraft_To_Get_Count_Of_Rows()
-        {
-            Do_WebSite_ReportRows_SingleAircraftReport_Passes_Single_Aircraft_To_Get_Count_Of_Rows(SingleAircraftReport.Icao);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Copes_When_Aircraft_Cannot_Be_Found()
+//        {
+//            _ReportRowsAddress.Report = "icao";
+//            _ReportRowsAddress.Icao24 = new StringFilter("ABC", FilterCondition.Equals, false);
+//
+//            _BaseStationDatabase.Setup(db => db.GetAircraftByCode("ABC")).Returns((BaseStationAircraft)null);
+//
+//            var json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
+//
+//            _BaseStationDatabase.Verify(db => db.GetCountOfFlightsForAircraft(It.IsAny<BaseStationAircraft>(), It.IsAny<SearchBaseStationCriteria>()), Times.Never());
+//            _BaseStationDatabase.Verify(db => db.GetCountOfFlights(It.IsAny<SearchBaseStationCriteria>()), Times.Never());
+//
+//            Assert.AreEqual(0, json.CountRows);
+//            Assert.AreEqual(0, json.Flights.Count);
+//            Assert.AreEqual(0, json.Airports.Count);
+//            Assert.AreEqual(0, json.Routes.Count);
+//            Assert.IsTrue(json.Aircraft.IsUnknown);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Deals_With_Missing_Aircraft_Criteria_Correctly()
-        {
-            _ReportRowsAddress.Report = "icao";
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Returns_Count_Of_Rows_Matching_Criteria()
+//        {
+//            Do_WebSite_ReportRows_Report_Returns_Count_Of_Rows_Matching_Criteria("icao", ReportJsonClass.Aircraft);
+//        }
 
-            var json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Returns_Details_Of_Exceptions_Raised_During_Report_Generation()
+//        {
+//            Do_WebSite_ReportRows_Report_Returns_Details_Of_Exceptions_Raised_During_Report_Generation("icao", ReportJsonClass.Aircraft);
+//        }
 
-            _BaseStationDatabase.Verify(db => db.GetAircraftByCode(It.IsAny<string>()), Times.Never());
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Logs_Exceptions_Raised_During_Report_Generation()
+//        {
+//            Do_WebSite_ReportRows_Report_Logs_Exceptions_Raised_During_Report_Generation("icao", ReportJsonClass.Aircraft);
+//        }
 
-            Assert.AreEqual(0, json.CountRows);
-            Assert.AreEqual(0, json.Flights.Count);
-            Assert.AreEqual(0, json.Airports.Count);
-            Assert.AreEqual(0, json.Routes.Count);
-            Assert.IsTrue(json.Aircraft.IsUnknown);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Returns_Processing_Time()
+//        {
+//            Do_WebSite_ReportRows_Report_Returns_Processing_Time("icao", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Copes_When_Aircraft_Cannot_Be_Found()
-        {
-            _ReportRowsAddress.Report = "icao";
-            _ReportRowsAddress.Icao24 = new StringFilter("ABC", FilterCondition.Equals, false);
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Returns_Images_Available_Flags()
+//        {
+//            Do_WebSite_ReportRows_Report_Returns_Images_Available_Flags("icao", ReportJsonClass.Aircraft);
+//        }
 
-            _BaseStationDatabase.Setup(db => db.GetAircraftByCode("ABC")).Returns((BaseStationAircraft)null);
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Passes_Same_Criteria_To_CountRows_And_FetchRows()
+//        {
+//            Do_WebSite_ReportRows_SingleAircraftReport_Passes_Same_Criteria_To_CountRows_And_FetchRows(SingleAircraftReport.Icao);
+//        }
 
-            var json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Passes_Range_And_Sort_Criteria_To_FetchRows()
+//        {
+//            Do_WebSite_ReportRows_SingleAircraftReport_Passes_Range_And_Sort_Criteria_To_FetchRows(SingleAircraftReport.Icao);
+//        }
 
-            _BaseStationDatabase.Verify(db => db.GetCountOfFlightsForAircraft(It.IsAny<BaseStationAircraft>(), It.IsAny<SearchBaseStationCriteria>()), Times.Never());
-            _BaseStationDatabase.Verify(db => db.GetCountOfFlights(It.IsAny<SearchBaseStationCriteria>()), Times.Never());
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Informs_Caller_Of_Primary_Sort_Column_Used()
+//        {
+//            Do_WebSite_ReportRows_Report_Informs_Caller_Of_Primary_Sort_Column_Used("icao", ReportJsonClass.Aircraft);
+//        }
 
-            Assert.AreEqual(0, json.CountRows);
-            Assert.AreEqual(0, json.Flights.Count);
-            Assert.AreEqual(0, json.Airports.Count);
-            Assert.AreEqual(0, json.Routes.Count);
-            Assert.IsTrue(json.Aircraft.IsUnknown);
-        }
+//        [TestMethod]
+//        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+//                    "ReportFlightJson$")]
+//        public void WebSite_ReportRows_IcaoReport_Transcribes_Flights_From_Database_To_Json()
+//        {
+//            Do_WebSite_ReportRows_Report_Transcribes_Flights_From_Database_To_Json("icao", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Returns_Count_Of_Rows_Matching_Criteria()
-        {
-            Do_WebSite_ReportRows_Report_Returns_Count_Of_Rows_Matching_Criteria("icao", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Sets_Flight_Row_Numbers_Correctly()
+//        {
+//            Do_WebSite_ReportRows_Report_Sets_Flight_Row_Numbers_Correctly("icao", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Returns_Details_Of_Exceptions_Raised_During_Report_Generation()
-        {
-            Do_WebSite_ReportRows_Report_Returns_Details_Of_Exceptions_Raised_During_Report_Generation("icao", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+//                    "ReportAircraftJson$")]
+//        public void WebSite_ReportRows_IcaoReport_Returns_Aircraft_From_FetchRows()
+//        {
+//            Do_WebSite_ReportRows_Report_Returns_Aircraft_From_FetchRows("icao", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Logs_Exceptions_Raised_During_Report_Generation()
-        {
-            Do_WebSite_ReportRows_Report_Logs_Exceptions_Raised_During_Report_Generation("icao", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Fills_Aircraft_HasPicture_Correctly()
+//        {
+//            _ReportRowsAddress.Report = "icao";
+//            _ReportRowsAddress.Icao24 = new StringFilter("not null", FilterCondition.Equals, false);
+//
+//            _BaseStationDatabase.Setup(db => db.GetAircraftByCode(It.IsAny<string>())).Returns(_DatabaseAircraft);
+//            _AircraftPictureManager.Setup(m => m.FindPicture(_DirectoryCache.Object, null, "A")).Returns((PictureDetail)null);
+//            _AircraftPictureManager.Setup(m => m.FindPicture(_DirectoryCache.Object, null, "B")).Returns(new PictureDetail() { FileName = "B picture filename" });
+//
+//            _DatabaseAircraft.Registration = "A";
+//            var json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
+//            Assert.IsFalse(json.Aircraft.HasPicture);
+//
+//            _DatabaseAircraft.Registration = "B";
+//            json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
+//            Assert.IsTrue(json.Aircraft.HasPicture);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Returns_Processing_Time()
-        {
-            Do_WebSite_ReportRows_Report_Returns_Processing_Time("icao", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Ignores_Aircraft_Pictures_For_Internet_Clients_If_Configuration_Specifies()
+//        {
+//            Do_WebSite_ReportRows_Report_Ignores_Aircraft_Pictures_For_Internet_Clients_If_Configuration_Specifies("icao", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Returns_Images_Available_Flags()
-        {
-            Do_WebSite_ReportRows_Report_Returns_Images_Available_Flags("icao", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Adjusts_HasPicture_To_Suit_Configuration_Changes()
+//        {
+//            Do_WebSite_ReportRows_Report_Adjusts_HasPicture_To_Suit_Configuration_Changes("icao", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Passes_Same_Criteria_To_CountRows_And_FetchRows()
-        {
-            Do_WebSite_ReportRows_SingleAircraftReport_Passes_Same_Criteria_To_CountRows_And_FetchRows(SingleAircraftReport.Icao);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Looks_Up_ISO8643_Data_For_Aircraft()
+//        {
+//            Do_WebSite_ReportRows_SingleAircraftReport_Looks_Up_ISO8643_Data_For_Aircraft(SingleAircraftReport.Icao);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Passes_Range_And_Sort_Criteria_To_FetchRows()
-        {
-            Do_WebSite_ReportRows_SingleAircraftReport_Passes_Range_And_Sort_Criteria_To_FetchRows(SingleAircraftReport.Icao);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Looks_Up_ICAO_Code_Block_For_Aircraft()
+//        {
+//            Do_WebSite_ReportRows_SingleAircraftReport_Looks_Up_ICAO_Code_Block_For_Aircraft(SingleAircraftReport.Icao);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Informs_Caller_Of_Primary_Sort_Column_Used()
-        {
-            Do_WebSite_ReportRows_Report_Informs_Caller_Of_Primary_Sort_Column_Used("icao", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Uses_ModeSCountry_From_Database()
+//        {
+//            Do_WebSite_ReportRows_Report_Uses_ModeSCountry_From_Database("icao", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "ReportFlightJson$")]
-        public void WebSite_ReportRows_IcaoReport_Transcribes_Flights_From_Database_To_Json()
-        {
-            Do_WebSite_ReportRows_Report_Transcribes_Flights_From_Database_To_Json("icao", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Fills_Routes_And_Aircraft_Tables()
+//        {
+//            Do_WebSite_ReportRows_Report_Fills_Routes_And_Aircraft_Tables("icao", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Sets_Flight_Row_Numbers_Correctly()
-        {
-            Do_WebSite_ReportRows_Report_Sets_Flight_Row_Numbers_Correctly("icao", ReportJsonClass.Aircraft);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "ReportAircraftJson$")]
-        public void WebSite_ReportRows_IcaoReport_Returns_Aircraft_From_FetchRows()
-        {
-            Do_WebSite_ReportRows_Report_Returns_Aircraft_From_FetchRows("icao", ReportJsonClass.Aircraft);
-        }
-
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Fills_Aircraft_HasPicture_Correctly()
-        {
-            _ReportRowsAddress.Report = "icao";
-            _ReportRowsAddress.Icao24 = new StringFilter("not null", FilterCondition.Equals, false);
-
-            _BaseStationDatabase.Setup(db => db.GetAircraftByCode(It.IsAny<string>())).Returns(_DatabaseAircraft);
-            _AircraftPictureManager.Setup(m => m.FindPicture(_DirectoryCache.Object, null, "A")).Returns((PictureDetail)null);
-            _AircraftPictureManager.Setup(m => m.FindPicture(_DirectoryCache.Object, null, "B")).Returns(new PictureDetail() { FileName = "B picture filename" });
-
-            _DatabaseAircraft.Registration = "A";
-            var json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
-            Assert.IsFalse(json.Aircraft.HasPicture);
-
-            _DatabaseAircraft.Registration = "B";
-            json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
-            Assert.IsTrue(json.Aircraft.HasPicture);
-        }
-
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Ignores_Aircraft_Pictures_For_Internet_Clients_If_Configuration_Specifies()
-        {
-            Do_WebSite_ReportRows_Report_Ignores_Aircraft_Pictures_For_Internet_Clients_If_Configuration_Specifies("icao", ReportJsonClass.Aircraft);
-        }
-
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Adjusts_HasPicture_To_Suit_Configuration_Changes()
-        {
-            Do_WebSite_ReportRows_Report_Adjusts_HasPicture_To_Suit_Configuration_Changes("icao", ReportJsonClass.Aircraft);
-        }
-
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Looks_Up_ISO8643_Data_For_Aircraft()
-        {
-            Do_WebSite_ReportRows_SingleAircraftReport_Looks_Up_ISO8643_Data_For_Aircraft(SingleAircraftReport.Icao);
-        }
-
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Looks_Up_ICAO_Code_Block_For_Aircraft()
-        {
-            Do_WebSite_ReportRows_SingleAircraftReport_Looks_Up_ICAO_Code_Block_For_Aircraft(SingleAircraftReport.Icao);
-        }
-
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Uses_ModeSCountry_From_Database()
-        {
-            Do_WebSite_ReportRows_Report_Uses_ModeSCountry_From_Database("icao", ReportJsonClass.Aircraft);
-        }
-
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Fills_Routes_And_Aircraft_Tables()
-        {
-            Do_WebSite_ReportRows_Report_Fills_Routes_And_Aircraft_Tables("icao", ReportJsonClass.Aircraft);
-        }
-
-        [TestMethod]
-        public void WebSite_ReportRows_IcaoReport_Writes_Correct_Route_Index_When_There_Is_No_Route()
-        {
-            Do_WebSite_ReportRows_Report_Writes_Correct_Route_Index_When_There_Is_No_Route("icao", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_IcaoReport_Writes_Correct_Route_Index_When_There_Is_No_Route()
+//        {
+//            Do_WebSite_ReportRows_Report_Writes_Correct_Route_Index_When_There_Is_No_Route("icao", ReportJsonClass.Aircraft);
+//        }
         #endregion
 
         #region Registration report
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Generates_Correct_JSON_When_No_Rows_Match()
-        {
-            Do_ReportRows_Report_Generates_Correct_JSON_When_No_Rows_Match("reg", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Generates_Correct_JSON_When_No_Rows_Match()
+//        {
+//            Do_ReportRows_Report_Generates_Correct_JSON_When_No_Rows_Match("reg", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Adds_Correct_Cache_Control_Header()
-        {
-            Do_ReportRows_Report_Adds_Correct_Cache_Control_Header("reg", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Adds_Correct_Cache_Control_Header()
+//        {
+//            Do_ReportRows_Report_Adds_Correct_Cache_Control_Header("reg", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Only_Returns_Json_If_Reports_Are_Permitted()
-        {
-            Do_ReportRows_Report_Only_Returns_Json_If_Reports_Are_Permitted("reg", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Only_Returns_Json_If_Reports_Are_Permitted()
+//        {
+//            Do_ReportRows_Report_Only_Returns_Json_If_Reports_Are_Permitted("reg", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Searches_For_Single_Aircraft()
-        {
-            _ReportRowsAddress.Report = "reg";
-            _ReportRowsAddress.Registration = new StringFilter("ABC", FilterCondition.Equals, false);
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Searches_For_Single_Aircraft()
+//        {
+//            _ReportRowsAddress.Report = "reg";
+//            _ReportRowsAddress.Registration = new StringFilter("ABC", FilterCondition.Equals, false);
+//
+//            var json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
+//
+//            _BaseStationDatabase.Verify(db => db.GetAircraftByCode(It.IsAny<string>()), Times.Never());
+//            _BaseStationDatabase.Verify(db => db.GetAircraftByRegistration("ABC"), Times.Once());
+//            _BaseStationDatabase.Verify(db => db.GetAircraftByRegistration(It.IsAny<string>()), Times.Once());
+//        }
 
-            var json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Passes_Single_Aircraft_To_Get_Count_Of_Rows()
+//        {
+//            Do_WebSite_ReportRows_SingleAircraftReport_Passes_Single_Aircraft_To_Get_Count_Of_Rows(SingleAircraftReport.Registration);
+//        }
 
-            _BaseStationDatabase.Verify(db => db.GetAircraftByCode(It.IsAny<string>()), Times.Never());
-            _BaseStationDatabase.Verify(db => db.GetAircraftByRegistration("ABC"), Times.Once());
-            _BaseStationDatabase.Verify(db => db.GetAircraftByRegistration(It.IsAny<string>()), Times.Once());
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Deals_With_Missing_Aircraft_Criteria_Correctly()
+//        {
+//            _ReportRowsAddress.Report = "reg";
+//
+//            var json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
+//
+//            _BaseStationDatabase.Verify(db => db.GetAircraftByRegistration(It.IsAny<string>()), Times.Never());
+//
+//            Assert.AreEqual(0, json.CountRows);
+//            Assert.AreEqual(0, json.Flights.Count);
+//            Assert.AreEqual(0, json.Airports.Count);
+//            Assert.AreEqual(0, json.Routes.Count);
+//            Assert.IsTrue(json.Aircraft.IsUnknown);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Passes_Single_Aircraft_To_Get_Count_Of_Rows()
-        {
-            Do_WebSite_ReportRows_SingleAircraftReport_Passes_Single_Aircraft_To_Get_Count_Of_Rows(SingleAircraftReport.Registration);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Copes_When_Aircraft_Cannot_Be_Found()
+//        {
+//            _ReportRowsAddress.Report = "reg";
+//            _ReportRowsAddress.Registration = new StringFilter("ABC", FilterCondition.Equals, false);
+//
+//            _BaseStationDatabase.Setup(db => db.GetAircraftByRegistration("ABC")).Returns((BaseStationAircraft)null);
+//
+//            var json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
+//
+//            _BaseStationDatabase.Verify(db => db.GetCountOfFlightsForAircraft(It.IsAny<BaseStationAircraft>(), It.IsAny<SearchBaseStationCriteria>()), Times.Never());
+//            _BaseStationDatabase.Verify(db => db.GetCountOfFlights(It.IsAny<SearchBaseStationCriteria>()), Times.Never());
+//
+//            Assert.AreEqual(0, json.CountRows);
+//            Assert.AreEqual(0, json.Flights.Count);
+//            Assert.AreEqual(0, json.Airports.Count);
+//            Assert.AreEqual(0, json.Routes.Count);
+//            Assert.IsTrue(json.Aircraft.IsUnknown);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Deals_With_Missing_Aircraft_Criteria_Correctly()
-        {
-            _ReportRowsAddress.Report = "reg";
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Returns_Count_Of_Rows_Matching_Criteria()
+//        {
+//            Do_WebSite_ReportRows_Report_Returns_Count_Of_Rows_Matching_Criteria("reg", ReportJsonClass.Aircraft);
+//        }
 
-            var json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Returns_Details_Of_Exceptions_Raised_During_Report_Generation()
+//        {
+//            Do_WebSite_ReportRows_Report_Returns_Details_Of_Exceptions_Raised_During_Report_Generation("reg", ReportJsonClass.Aircraft);
+//        }
 
-            _BaseStationDatabase.Verify(db => db.GetAircraftByRegistration(It.IsAny<string>()), Times.Never());
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Logs_Exceptions_Raised_During_Report_Generation()
+//        {
+//            Do_WebSite_ReportRows_Report_Logs_Exceptions_Raised_During_Report_Generation("reg", ReportJsonClass.Aircraft);
+//        }
 
-            Assert.AreEqual(0, json.CountRows);
-            Assert.AreEqual(0, json.Flights.Count);
-            Assert.AreEqual(0, json.Airports.Count);
-            Assert.AreEqual(0, json.Routes.Count);
-            Assert.IsTrue(json.Aircraft.IsUnknown);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Returns_Processing_Time()
+//        {
+//            Do_WebSite_ReportRows_Report_Returns_Processing_Time("reg", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Copes_When_Aircraft_Cannot_Be_Found()
-        {
-            _ReportRowsAddress.Report = "reg";
-            _ReportRowsAddress.Registration = new StringFilter("ABC", FilterCondition.Equals, false);
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Returns_Images_Available_Flags()
+//        {
+//            Do_WebSite_ReportRows_Report_Returns_Images_Available_Flags("reg", ReportJsonClass.Aircraft);
+//        }
 
-            _BaseStationDatabase.Setup(db => db.GetAircraftByRegistration("ABC")).Returns((BaseStationAircraft)null);
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Passes_Same_Criteria_To_CountRows_And_FetchRows()
+//        {
+//            Do_WebSite_ReportRows_SingleAircraftReport_Passes_Same_Criteria_To_CountRows_And_FetchRows(SingleAircraftReport.Registration);
+//        }
 
-            var json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Passes_Range_And_Sort_Criteria_To_FetchRows()
+//        {
+//            Do_WebSite_ReportRows_SingleAircraftReport_Passes_Range_And_Sort_Criteria_To_FetchRows(SingleAircraftReport.Registration);
+//        }
 
-            _BaseStationDatabase.Verify(db => db.GetCountOfFlightsForAircraft(It.IsAny<BaseStationAircraft>(), It.IsAny<SearchBaseStationCriteria>()), Times.Never());
-            _BaseStationDatabase.Verify(db => db.GetCountOfFlights(It.IsAny<SearchBaseStationCriteria>()), Times.Never());
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Informs_Caller_Of_Primary_Sort_Column_Used()
+//        {
+//            Do_WebSite_ReportRows_Report_Informs_Caller_Of_Primary_Sort_Column_Used("reg", ReportJsonClass.Aircraft);
+//        }
 
-            Assert.AreEqual(0, json.CountRows);
-            Assert.AreEqual(0, json.Flights.Count);
-            Assert.AreEqual(0, json.Airports.Count);
-            Assert.AreEqual(0, json.Routes.Count);
-            Assert.IsTrue(json.Aircraft.IsUnknown);
-        }
+//        [TestMethod]
+//        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+//                    "ReportFlightJson$")]
+//        public void WebSite_ReportRows_RegistrationReport_Transcribes_Flights_From_Database_To_Json()
+//        {
+//            Do_WebSite_ReportRows_Report_Transcribes_Flights_From_Database_To_Json("reg", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Returns_Count_Of_Rows_Matching_Criteria()
-        {
-            Do_WebSite_ReportRows_Report_Returns_Count_Of_Rows_Matching_Criteria("reg", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Sets_Flight_Row_Numbers_Correctly()
+//        {
+//            Do_WebSite_ReportRows_Report_Sets_Flight_Row_Numbers_Correctly("reg", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Returns_Details_Of_Exceptions_Raised_During_Report_Generation()
-        {
-            Do_WebSite_ReportRows_Report_Returns_Details_Of_Exceptions_Raised_During_Report_Generation("reg", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+//                    "ReportAircraftJson$")]
+//        public void WebSite_ReportRows_RegistrationReport_Returns_Aircraft_From_FetchRows()
+//        {
+//            Do_WebSite_ReportRows_Report_Returns_Aircraft_From_FetchRows("reg", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Logs_Exceptions_Raised_During_Report_Generation()
-        {
-            Do_WebSite_ReportRows_Report_Logs_Exceptions_Raised_During_Report_Generation("reg", ReportJsonClass.Aircraft);
-        }
-
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Returns_Processing_Time()
-        {
-            Do_WebSite_ReportRows_Report_Returns_Processing_Time("reg", ReportJsonClass.Aircraft);
-        }
-
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Returns_Images_Available_Flags()
-        {
-            Do_WebSite_ReportRows_Report_Returns_Images_Available_Flags("reg", ReportJsonClass.Aircraft);
-        }
-
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Passes_Same_Criteria_To_CountRows_And_FetchRows()
-        {
-            Do_WebSite_ReportRows_SingleAircraftReport_Passes_Same_Criteria_To_CountRows_And_FetchRows(SingleAircraftReport.Registration);
-        }
-
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Passes_Range_And_Sort_Criteria_To_FetchRows()
-        {
-            Do_WebSite_ReportRows_SingleAircraftReport_Passes_Range_And_Sort_Criteria_To_FetchRows(SingleAircraftReport.Registration);
-        }
-
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Informs_Caller_Of_Primary_Sort_Column_Used()
-        {
-            Do_WebSite_ReportRows_Report_Informs_Caller_Of_Primary_Sort_Column_Used("reg", ReportJsonClass.Aircraft);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "ReportFlightJson$")]
-        public void WebSite_ReportRows_RegistrationReport_Transcribes_Flights_From_Database_To_Json()
-        {
-            Do_WebSite_ReportRows_Report_Transcribes_Flights_From_Database_To_Json("reg", ReportJsonClass.Aircraft);
-        }
-
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Sets_Flight_Row_Numbers_Correctly()
-        {
-            Do_WebSite_ReportRows_Report_Sets_Flight_Row_Numbers_Correctly("reg", ReportJsonClass.Aircraft);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "ReportAircraftJson$")]
-        public void WebSite_ReportRows_RegistrationReport_Returns_Aircraft_From_FetchRows()
-        {
-            Do_WebSite_ReportRows_Report_Returns_Aircraft_From_FetchRows("reg", ReportJsonClass.Aircraft);
-        }
-
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Fills_Aircraft_HasPicture_Correctly()
-        {
-            _ReportRowsAddress.Report = "reg";
-
-            _AircraftPictureManager.Setup(m => m.FindPicture(_DirectoryCache.Object, null, "A")).Returns((PictureDetail)null);
-            _AircraftPictureManager.Setup(m => m.FindPicture(_DirectoryCache.Object, null, "B")).Returns(new PictureDetail() { FileName = "B picture filename" });
-
-            ConfigureDatabaseForSingleAircraftReport(SingleAircraftReport.Registration, "A");
-            var json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
-            Assert.IsFalse(json.Aircraft.HasPicture);
-
-            ConfigureDatabaseForSingleAircraftReport(SingleAircraftReport.Registration, "B");
-            json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
-            Assert.IsTrue(json.Aircraft.HasPicture);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Fills_Aircraft_HasPicture_Correctly()
+//        {
+//            _ReportRowsAddress.Report = "reg";
+//
+//            _AircraftPictureManager.Setup(m => m.FindPicture(_DirectoryCache.Object, null, "A")).Returns((PictureDetail)null);
+//            _AircraftPictureManager.Setup(m => m.FindPicture(_DirectoryCache.Object, null, "B")).Returns(new PictureDetail() { FileName = "B picture filename" });
+//
+//            ConfigureDatabaseForSingleAircraftReport(SingleAircraftReport.Registration, "A");
+//            var json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
+//            Assert.IsFalse(json.Aircraft.HasPicture);
+//
+//            ConfigureDatabaseForSingleAircraftReport(SingleAircraftReport.Registration, "B");
+//            json = SendJsonRequest<AircraftReportJson>(_ReportRowsAddress.Address);
+//            Assert.IsTrue(json.Aircraft.HasPicture);
+//        }
 
         [TestMethod]
         public void WebSite_ReportRows_RegistrationReport_Ignores_Aircraft_Pictures_For_Internet_Clients_If_Configuration_Specifies()
