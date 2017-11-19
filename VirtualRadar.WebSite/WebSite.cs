@@ -209,11 +209,6 @@ namespace VirtualRadar.WebSite
         /// A list of objects that can supply content for us.
         /// </summary>
         private List<Page> _Pages = new List<Page>();
-
-        /// <summary>
-        /// The page that handles requests for report rows.
-        /// </summary>
-        private ReportRowsJsonPage _ReportRowsJsonPage;
         #endregion
 
         #region Properties
@@ -234,20 +229,12 @@ namespace VirtualRadar.WebSite
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IBaseStationDatabase BaseStationDatabase
-        {
-            get { return _ReportRowsJsonPage.BaseStationDatabase; }
-            set { _ReportRowsJsonPage.BaseStationDatabase = value; }
-        }
+        public IBaseStationDatabase BaseStationDatabase { get; set; }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IStandingDataManager StandingDataManager
-        {
-            get { return _ReportRowsJsonPage.StandingDataManager; }
-            set { _ReportRowsJsonPage.StandingDataManager = value; }
-        }
+        public IStandingDataManager StandingDataManager { get; set; }
 
         /// <summary>
         /// See interface docs.
@@ -278,8 +265,6 @@ namespace VirtualRadar.WebSite
         public WebSite()
         {
             Provider = Factory.Singleton.Resolve<IWebSiteProvider>();
-
-            _ReportRowsJsonPage = new ReportRowsJsonPage(this);
         }
         #endregion
 
@@ -313,7 +298,6 @@ namespace VirtualRadar.WebSite
                 redirection.AddRedirection("/", "/mobile.html", RedirectionContext.Mobile);
 
                 _Pages.Add(new TextPage(this));
-                _Pages.Add(_ReportRowsJsonPage);
 
                 var fileSystemConfiguration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
                 fileSystemConfiguration.TextLoadedFromFile += FileSystemConfiguration_TextLoadedFromFile;

@@ -1225,47 +1225,47 @@ namespace Test.VirtualRadar.WebSite
 //            Assert.IsTrue(json.Aircraft.HasPicture);
 //        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Ignores_Aircraft_Pictures_For_Internet_Clients_If_Configuration_Specifies()
-        {
-            Do_WebSite_ReportRows_Report_Ignores_Aircraft_Pictures_For_Internet_Clients_If_Configuration_Specifies("reg", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Ignores_Aircraft_Pictures_For_Internet_Clients_If_Configuration_Specifies()
+//        {
+//            Do_WebSite_ReportRows_Report_Ignores_Aircraft_Pictures_For_Internet_Clients_If_Configuration_Specifies("reg", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Adjusts_HasPicture_To_Suit_Configuration_Changes()
-        {
-            Do_WebSite_ReportRows_Report_Adjusts_HasPicture_To_Suit_Configuration_Changes("reg", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Adjusts_HasPicture_To_Suit_Configuration_Changes()
+//        {
+//            Do_WebSite_ReportRows_Report_Adjusts_HasPicture_To_Suit_Configuration_Changes("reg", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Looks_Up_ISO8643_Data_For_Aircraft()
-        {
-            Do_WebSite_ReportRows_SingleAircraftReport_Looks_Up_ISO8643_Data_For_Aircraft(SingleAircraftReport.Registration);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Looks_Up_ISO8643_Data_For_Aircraft()
+//        {
+//            Do_WebSite_ReportRows_SingleAircraftReport_Looks_Up_ISO8643_Data_For_Aircraft(SingleAircraftReport.Registration);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Looks_Up_ICAO_Code_Block_For_Aircraft()
-        {
-            Do_WebSite_ReportRows_SingleAircraftReport_Looks_Up_ICAO_Code_Block_For_Aircraft(SingleAircraftReport.Registration);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Looks_Up_ICAO_Code_Block_For_Aircraft()
+//        {
+//            Do_WebSite_ReportRows_SingleAircraftReport_Looks_Up_ICAO_Code_Block_For_Aircraft(SingleAircraftReport.Registration);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Uses_ModeSCountry_From_Database()
-        {
-            Do_WebSite_ReportRows_Report_Uses_ModeSCountry_From_Database("reg", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Uses_ModeSCountry_From_Database()
+//        {
+//            Do_WebSite_ReportRows_Report_Uses_ModeSCountry_From_Database("reg", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Fills_Routes_And_Aircraft_Tables()
-        {
-            Do_WebSite_ReportRows_Report_Fills_Routes_And_Aircraft_Tables("reg", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Fills_Routes_And_Aircraft_Tables()
+//        {
+//            Do_WebSite_ReportRows_Report_Fills_Routes_And_Aircraft_Tables("reg", ReportJsonClass.Aircraft);
+//        }
 
-        [TestMethod]
-        public void WebSite_ReportRows_RegistrationReport_Writes_Correct_Route_Index_When_There_Is_No_Route()
-        {
-            Do_WebSite_ReportRows_Report_Writes_Correct_Route_Index_When_There_Is_No_Route("reg", ReportJsonClass.Aircraft);
-        }
+//        [TestMethod]
+//        public void WebSite_ReportRows_RegistrationReport_Writes_Correct_Route_Index_When_There_Is_No_Route()
+//        {
+//            Do_WebSite_ReportRows_Report_Writes_Correct_Route_Index_When_There_Is_No_Route("reg", ReportJsonClass.Aircraft);
+//        }
         #endregion
 
         #region Tests common to all report types

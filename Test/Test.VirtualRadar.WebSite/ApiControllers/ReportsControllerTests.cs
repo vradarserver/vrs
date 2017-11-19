@@ -26,6 +26,7 @@ using VirtualRadar.Interface.WebSite;
 using VirtualRadar.Interface.StandingData;
 using VirtualRadar.WebSite.ApiControllers;
 using System.Globalization;
+using System.Web;
 
 namespace Test.VirtualRadar.WebSite.ApiControllers
 {
@@ -1220,7 +1221,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
         #endregion
 
-        #region Tests shared between different report types
+        #region Test workers shared between different report types
         private void Do_ReportRows_Report_Generates_Correct_JSON_When_No_Rows_Match(string report, ReportJsonClass reportClass)
         {
             _ReportRowsAddress.Report = report;
@@ -1761,16 +1762,9 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             Assert.AreEqual(-1, json.Flights[0].RouteIndex);
             Assert.AreEqual(-1, json.Flights[1].RouteIndex);
         }
-
-        [TestMethod]
-        public void Placeholder()
-        {
-            //TODO the port doesn't decode all parameters yet no test is failing - need a test for the decoding of parameters
-            Assert.Fail("write a test");
-        }
         #endregion
 
-        #region Tests shared between single-aircraft reports
+        #region Test workers shared between single-aircraft reports
         private void Do_ReportRows_SingleAircraftReport_Passes_Single_Aircraft_To_Get_Count_Of_Rows(SingleAircraftReport reportType)
         {
             _ReportRowsAddress.Report = SingleAircraftReportType(reportType);

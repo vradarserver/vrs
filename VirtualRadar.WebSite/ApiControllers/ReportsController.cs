@@ -436,12 +436,18 @@ namespace VirtualRadar.WebSite.ApiControllers
                 var value = kvp.Value == null || kvp.Value.Length < 1 ? "" : kvp.Value[0] ?? "";
 
                 if(name.StartsWith("CALL-"))        result.Callsign =               DecodeStringFilter(name, value);
+                else if(name.StartsWith("COU-"))    result.Country =                DecodeStringFilter(name, value);
                 else if(name.StartsWith("DATE-"))   result.Date =                   DecodeDateRangeFilter(result.Date, name, value);
+                else if(name.StartsWith("EMG-"))    result.IsEmergency =            DecodeBoolFilter(name, value);
+                else if(name.StartsWith("FALT-"))   result.FirstAltitude =          DecodeIntRangeFilter(result.FirstAltitude, name, value);
                 else if(name.StartsWith("ICAO-"))   result.Icao =                   DecodeStringFilter(name, value);
-                else if(name.StartsWith("REG-"))    result.Registration =           DecodeStringFilter(name, value);
+                else if(name.StartsWith("LALT-"))   result.LastAltitude =           DecodeIntRangeFilter(result.LastAltitude, name, value);
                 else if(name.StartsWith("MIL-"))    result.IsMilitary =             DecodeBoolFilter(name, value);
-                else if(name.StartsWith("WTC-"))    result.WakeTurbulenceCategory = DecodeEnumFilter<WakeTurbulenceCategory>(name, value);
+                else if(name.StartsWith("OP-"))     result.Operator =               DecodeStringFilter(name, value);
+                else if(name.StartsWith("REG-"))    result.Registration =           DecodeStringFilter(name, value);
                 else if(name.StartsWith("SPC-"))    result.Species =                DecodeEnumFilter<Species>(name, value);
+                else if(name.StartsWith("TYP-"))    result.Type =                   DecodeStringFilter(name, value);
+                else if(name.StartsWith("WTC-"))    result.WakeTurbulenceCategory = DecodeEnumFilter<WakeTurbulenceCategory>(name, value);
             }
             if(result.Date != null) {
                 result.Date.NormaliseRange();
@@ -511,6 +517,19 @@ namespace VirtualRadar.WebSite.ApiControllers
             switch(conditionChar) {
                 case 'L':   filterRange.LowerValue = QueryNDateTime(value); break;
                 case 'U':   filterRange.UpperValue = QueryNDateTime(value); break;
+                default:    filterRange.Condition = FilterCondition.Missing; break;
+            }
+
+            return filterRange;
+        }
+
+        protected FilterRange<int> DecodeIntRangeFilter(FilterRange<int> filterRange, string name, string value)
+        {
+            if(filterRange == null) filterRange = new FilterRange<int>();
+            var conditionChar = DecodeFilter(filterRange, name);
+            switch(conditionChar) {
+                case 'L':   filterRange.LowerValue = QueryNInt(value); break;
+                case 'U':   filterRange.UpperValue = QueryNInt(value); break;
                 default:    filterRange.Condition = FilterCondition.Missing; break;
             }
 

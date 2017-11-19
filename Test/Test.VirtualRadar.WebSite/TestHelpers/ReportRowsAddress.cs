@@ -56,7 +56,7 @@ namespace Test.VirtualRadar.WebSite.TestHelpers
         {
             get
             {
-                Dictionary<string, string> queryValues = new Dictionary<string,string>();
+                var queryValues = new Dictionary<string,string>();
 
                 AddQueryString(queryValues, "rep", Report);
                 AddQueryString(queryValues, "fromRow", FromRow);
@@ -81,7 +81,7 @@ namespace Test.VirtualRadar.WebSite.TestHelpers
                 if(FirstAltitude != null)           FirstAltitude.AddQueryValues("falt-", queryValues);
                 if(LastAltitude != null)            LastAltitude.AddQueryValues("lalt-", queryValues);
 
-                StringBuilder queryString = new StringBuilder();
+                var queryString = new StringBuilder();
                 foreach(var kvp in queryValues) {
                     queryString.AppendFormat("{0}{1}={2}", queryString.Length == 0 ? "?" : "&", kvp.Key, HttpUtility.UrlEncode(kvp.Value));
                 }
