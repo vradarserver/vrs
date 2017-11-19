@@ -28,20 +28,7 @@ namespace Test.VirtualRadar.Owin.Configuration
         [TestInitialize]
         public void TestInitialise()
         {
-            _Configuration = Factory.Singleton.Resolve<IAuthenticationConfiguration>();
-        }
-
-        [TestMethod]
-        public void AuthenticationConfiguration_Singleton_Is_Not_Null()
-        {
-            Assert.IsNotNull(_Configuration.Singleton);
-        }
-
-        [TestMethod]
-        public void AuthenticationConfiguration_Singleton_Is_Same_Instance_Across_All_Instances()
-        {
-            var other = Factory.Singleton.Resolve<IAuthenticationConfiguration>();
-            Assert.AreSame(_Configuration.Singleton, other.Singleton);
+            _Configuration = Factory.Singleton.ResolveNewInstance<IAuthenticationConfiguration>();
         }
 
         [TestMethod]

@@ -294,7 +294,7 @@ namespace VirtualRadar.WebServer.HttpListener
         public OwinWebServer()
         {
             _WebAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
-            _AuthenticationConfiguration = Factory.Singleton.Resolve<IAuthenticationConfiguration>().Singleton;
+            _AuthenticationConfiguration = Factory.Singleton.ResolveSingleton<IAuthenticationConfiguration>();
             _AccessConfiguration = Factory.Singleton.Resolve<IAccessConfiguration>().Singleton;
 
             var standardPipeline = Factory.Singleton.Resolve<IStandardPipeline>();

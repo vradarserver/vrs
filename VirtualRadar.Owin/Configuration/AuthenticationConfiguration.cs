@@ -23,20 +23,6 @@ namespace VirtualRadar.Owin.Configuration
     /// </summary>
     class AuthenticationConfiguration : IAuthenticationConfiguration
     {
-        private static AuthenticationConfiguration _Singleton;
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IAuthenticationConfiguration Singleton
-        {
-            get {
-                if(_Singleton == null) {
-                    _Singleton = new AuthenticationConfiguration();
-                }
-                return _Singleton;
-            }
-        }
-
         /// <summary>
         /// The write lock on the administrator paths list.
         /// </summary>

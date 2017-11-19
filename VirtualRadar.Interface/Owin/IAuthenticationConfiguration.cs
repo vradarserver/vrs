@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Owin
 {
@@ -15,7 +16,8 @@ namespace VirtualRadar.Interface.Owin
     /// configuration changes. The configuration exposed here is for things like paths that are only
     /// accessible to admin users, things like that.
     /// </remarks>
-    public interface IAuthenticationConfiguration : ISingleton<IAuthenticationConfiguration>
+    [Singleton]
+    public interface IAuthenticationConfiguration
     {
         /// <summary>
         /// Returns the paths that have been marked as requiring authentication.
