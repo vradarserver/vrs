@@ -921,18 +921,6 @@ namespace Test.VirtualRadar.Library.BaseStation
 
         #region Sanity checking
         [TestMethod]
-        public void BaseStationAircraftList_MessageReceived_Checks_Sanity_Of_Icao()
-        {
-            var now = DateTime.UtcNow;
-            _Clock.UtcNowValue = now;
-            _AircraftList.Start();
-
-            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
-
-            _SanityChecker.Verify(r => r.IsGoodAircraftIcao("4008F6"), Times.Once());
-        }
-
-        [TestMethod]
         public void BaseStationAircraftList_MessageReceived_Checks_Sanity_Of_Altitudes()
         {
             var now = DateTime.UtcNow;
