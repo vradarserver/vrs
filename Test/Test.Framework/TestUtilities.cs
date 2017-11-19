@@ -372,6 +372,18 @@ namespace Test.Framework
         public static Mock<T> CreateMockSingleton<T>()
             where T: class
         {
+            if(typeof(ISingleton<T>).IsAssignableFrom(typeof(T))) {
+                return CreateMockSingletonInterface<T>();
+            } else if(typeof(T).GetCustomAttribute<SingletonAttribute>() != null) {
+                return CreateMockSingletonAttribute<T>();
+            } else {
+                throw new InvalidOperationException($"{nameof(T)} neither implements ISingleton<> or is tagged as a Singleton");
+            }
+        }
+
+        private static Mock<T> CreateMockSingletonInterface<T>()
+            where T: class
+        {
             if(!typeof(ISingleton<T>).IsAssignableFrom(typeof(T))) throw new InvalidOperationException($"{typeof(T).Name} does not implement {typeof(ISingleton<>).Name}");
 
             Mock<T> result = new Mock<T>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
@@ -383,6 +395,15 @@ namespace Test.Framework
             strict.Setup(lambda).Returns(result.Object);
 
             Factory.Singleton.RegisterInstance(typeof(T), strict.Object);
+
+            return result;
+        }
+
+        private static Mock<T> CreateMockSingletonAttribute<T>()
+            where T: class
+        {
+            var result = CreateMockInstance<T>();
+            Factory.Singleton.RegisterInstance<T>(result.Object);
 
             return result;
         }

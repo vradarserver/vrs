@@ -261,7 +261,7 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.SplashScreenOpeningBaseStationDatabase);
 
-            var autoConfigDatabase = Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>().Singleton;
+            var autoConfigDatabase = Factory.Singleton.ResolveSingleton<IAutoConfigBaseStationDatabase>();
             autoConfigDatabase.Initialise();
 
             var baseStationDatabase = autoConfigDatabase.Database;
@@ -343,7 +343,7 @@ namespace VirtualRadar.Library.Presenter
             connectionLogger.Start();
 
             var webSite = Factory.Singleton.Resolve<IWebSite>();
-            webSite.BaseStationDatabase = Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>().Singleton.Database;
+            webSite.BaseStationDatabase = Factory.Singleton.ResolveSingleton<IAutoConfigBaseStationDatabase>().Database;
             webSite.FlightSimulatorAircraftList = Factory.Singleton.ResolveSingleton<IFlightSimulatorAircraftList>();
             webSite.StandingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
 

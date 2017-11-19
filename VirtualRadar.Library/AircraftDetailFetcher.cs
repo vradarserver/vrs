@@ -168,7 +168,7 @@ namespace VirtualRadar.Library
         /// </summary>
         protected override void DoInitialise()
         {
-            _AutoConfigDatabase = Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>().Singleton;
+            _AutoConfigDatabase = Factory.Singleton.ResolveSingleton<IAutoConfigBaseStationDatabase>();
             _AutoConfigDatabase.Database.AircraftUpdated += BaseStationDatabase_AircraftUpdated;
             _AutoConfigDatabase.Database.FileNameChanged += BaseStationDatabase_FileNameChanged;
 

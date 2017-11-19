@@ -198,7 +198,8 @@ namespace InterfaceFactory
         public object ResolveSingleton(Type interfaceType)
         {
             var result = Resolve(interfaceType, out Implementation implementation);
-            if(!implementation.IsSingleton) {
+            var isSingleton = implementation?.IsSingleton ?? interfaceType.GetCustomAttributes(typeof(SingletonAttribute), inherit: true).Length > 0;
+            if(!isSingleton) {
                 throw new ClassFactoryException($"{interfaceType?.FullName} is not a singleton");
             }
 

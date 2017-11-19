@@ -57,7 +57,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 if(_AutoConfigBaseStationDatabase == null) {
                     lock(_SyncLock) {
                         if(_AutoConfigBaseStationDatabase == null) {
-                            _AutoConfigBaseStationDatabase = Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>().Singleton;
+                            _AutoConfigBaseStationDatabase = Factory.Singleton.ResolveSingleton<IAutoConfigBaseStationDatabase>();
                         }
                     }
                 }

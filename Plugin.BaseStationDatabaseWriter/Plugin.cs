@@ -251,7 +251,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 var optionsStorage = new OptionsStorage();
                 _Options = optionsStorage.Load();
 
-                _Database = Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>().Singleton.Database;
+                _Database = Factory.Singleton.ResolveSingleton<IAutoConfigBaseStationDatabase>().Database;
                 _Database.FileNameChanging += BaseStationDatabase_FileNameChanging;
                 _Database.FileNameChanged += BaseStationDatabase_FileNameChanged;
 

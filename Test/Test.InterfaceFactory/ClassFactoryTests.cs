@@ -299,6 +299,16 @@ namespace Test.InterfaceFactory
             _ClassFactory.Register<IX, X>();
             _ClassFactory.ResolveSingleton(typeof(IX));
         }
+
+        [TestMethod]
+        public void ClassFactory_ResolveSingleton_Does_Not_Throw_When_Singleton_Was_Registered_Via_RegisterInstance()
+        {
+            var si = new Si();
+            _ClassFactory.RegisterInstance<ISi>(si);
+
+            var singleton = _ClassFactory.ResolveSingleton<ISi>();
+            Assert.AreSame(si, singleton);
+        }
         #endregion
 
         #region ResolveNewInstance

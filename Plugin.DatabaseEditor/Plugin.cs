@@ -187,7 +187,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
             _HtmlLocaliser.Initialise();
             _HtmlLocaliser.AddResourceStrings(typeof(DatabaseEditorStrings));
 
-            _BaseStationDatabase = Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>().Singleton.Database;
+            _BaseStationDatabase = Factory.Singleton.ResolveSingleton<IAutoConfigBaseStationDatabase>().Database;
             _BaseStationDatabase.WriteSupportEnabled = true;
 
             _WebSiteExtender = Factory.Singleton.Resolve<IWebSiteExtender>();

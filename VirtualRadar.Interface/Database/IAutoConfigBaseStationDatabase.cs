@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Database
 {
@@ -19,7 +20,8 @@ namespace VirtualRadar.Interface.Database
     /// The interface for singleton objects that hold an instance of <see cref="IBaseStationDatabase"/>
     /// and automatically update its configuration when appropriate.
     /// </summary>
-    public interface IAutoConfigBaseStationDatabase : ISingleton<IAutoConfigBaseStationDatabase>, IDisposable
+    [Singleton]
+    public interface IAutoConfigBaseStationDatabase : IDisposable
     {
         /// <summary>
         /// Gets the BaseStation database that this object is updating with configuration changes.

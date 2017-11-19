@@ -153,7 +153,7 @@ namespace VirtualRadar.Library.Presenter
         private void ShutdownBaseStationDatabase()
         {
             _View.ReportProgress(Strings.ShuttingDownBaseStationDatabase);
-            Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>().Singleton.Dispose();
+            Factory.Singleton.ResolveSingleton<IAutoConfigBaseStationDatabase>().Dispose();
         }
 
         private void ShutdownUserManager()
