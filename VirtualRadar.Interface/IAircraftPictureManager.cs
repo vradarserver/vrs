@@ -13,13 +13,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
     /// <summary>
     /// The interface for an object that can deal with finding pictures of aircraft.
     /// </summary>
-    public interface IAircraftPictureManager : ISingleton<IAircraftPictureManager>
+    [Singleton]
+    public interface IAircraftPictureManager
     {
         /// <summary>
         /// Returns the full path and dimensions of the picture for the aircraft with the ICAO24 and registration

@@ -30,12 +30,6 @@ namespace VirtualRadar.Library
         /// </summary>
         private ILog _Log;
 
-        private static readonly IAircraftPictureManager _Singleton = new AircraftPictureManager();
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IAircraftPictureManager Singleton { get { return _Singleton; } }
-
         /// <summary>
         /// See interface docs.
         /// </summary>

@@ -111,7 +111,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 if(_AircraftPictureManager == null) {
                     lock(_SyncLock) {
                         if(_AircraftPictureManager == null) {
-                            _AircraftPictureManager = Factory.Singleton.Resolve<IAircraftPictureManager>().Singleton;
+                            _AircraftPictureManager = Factory.Singleton.ResolveSingleton<IAircraftPictureManager>();
                         }
                     }
                 }

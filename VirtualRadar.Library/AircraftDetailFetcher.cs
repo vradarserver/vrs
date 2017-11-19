@@ -175,7 +175,7 @@ namespace VirtualRadar.Library
             _AircraftOnlineLookupManager = Factory.Singleton.Resolve<IAircraftOnlineLookupManager>().Singleton;
             _AircraftOnlineLookupManager.AircraftFetched += AircraftOnlineLookupManager_AircraftFetched;
 
-            _PictureManager = Factory.Singleton.Resolve<IAircraftPictureManager>().Singleton;
+            _PictureManager = Factory.Singleton.ResolveSingleton<IAircraftPictureManager>();
             var autoConfigurationPictureFolderCache = Factory.Singleton.Resolve<IAutoConfigPictureFolderCache>().Singleton;
             _PictureFolderCache = autoConfigurationPictureFolderCache.DirectoryCache;
             autoConfigurationPictureFolderCache.CacheConfigurationChanged += AutoConfigPictureFolderCache_CacheConfigurationChanged;
