@@ -16,9 +16,14 @@ namespace VirtualRadar.Interface.Owin
          **********************************************************************************************/
 
         /// <summary>
+        /// The normal priority for exception handling.
+        /// </summary>
+        public static readonly int Exception = -1000000;
+
+        /// <summary>
         /// The normal priority for access checking.
         /// </summary>
-        public static readonly int Access = -1000000;
+        public static readonly int Access = Exception + 100;
 
         /// <summary>
         /// The normal priority for authentication.

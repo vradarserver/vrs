@@ -55,6 +55,7 @@ namespace Test.VirtualRadar.Owin
         private IStandardPipeline _StandardPipeline;
 
         private List<MiddlewareDetail> _ExpectedMiddleware;
+        private Mock<IExceptionHandler> _ExceptionHandler;
         private Mock<IAccessFilter> _AccessFilter;
         private Mock<IBasicAuthenticationFilter> _BasicAuthenticationFilter;
         private Mock<IRedirectionFilter> _RedirectionFilter;
@@ -78,6 +79,7 @@ namespace Test.VirtualRadar.Owin
             _Snapshot = Factory.TakeSnapshot();
 
             _ExpectedMiddleware = new List<MiddlewareDetail>();
+            _ExceptionHandler =                 CreateMockMiddleware<IExceptionHandler>(nameof(IExceptionHandler.HandleRequest));
             _AccessFilter =                     CreateMockMiddleware<IAccessFilter>(nameof(IAccessFilter.FilterRequest));
             _BasicAuthenticationFilter =        CreateMockMiddleware<IBasicAuthenticationFilter>(nameof(IBasicAuthenticationFilter.FilterRequest));
             _RedirectionFilter =                CreateMockMiddleware<IRedirectionFilter>(nameof(IRedirectionFilter.FilterRequest));

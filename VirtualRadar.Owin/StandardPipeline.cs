@@ -42,6 +42,7 @@ namespace VirtualRadar.Owin
 
             _WebAppConfiguration = webAppConfiguration;
 
+            webAppConfiguration.AddCallback(UseExceptionHandler,            StandardPipelinePriority.Exception);
             webAppConfiguration.AddCallback(UseAccessFilter,                StandardPipelinePriority.Access);
             webAppConfiguration.AddCallback(UseBasicAuthenticationFilter,   StandardPipelinePriority.Authentication);
             webAppConfiguration.AddCallback(UseRedirectionFilter,           StandardPipelinePriority.Redirection);
@@ -60,6 +61,13 @@ namespace VirtualRadar.Owin
             webAppConfiguration.AddStreamManipulator(Factory.Singleton.Resolve<IJavascriptManipulator>(), StreamManipulatorPriority.JavascriptManipulator);
 
             Factory.Singleton.Resolve<IHtmlManipulatorConfiguration>().AddTextResponseManipulator<IBundlerHtmlManipulator>();
+        }
+
+        private void UseExceptionHandler(IAppBuilder app)
+        {
+            var handler = Factory.Singleton.Resolve<IExceptionHandler>();
+            var middleware = new Func<AppFunc, AppFunc>(handler.HandleRequest);
+            app.Use(middleware);
         }
 
         private void UseAccessFilter(IAppBuilder app)

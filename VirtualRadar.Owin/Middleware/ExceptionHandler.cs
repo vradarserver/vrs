@@ -13,55 +13,48 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
+using VirtualRadar.Interface;
+using VirtualRadar.Interface.Owin;
 
-namespace Test.VirtualRadar.Owin
+namespace VirtualRadar.Owin.Middleware
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
     /// <summary>
-    /// Mocks an OWIN pipeline.
+    /// Default implementation of <see cref="IExceptionHandler"/>.
     /// </summary>
-    class MockOwinPipeline
+    class ExceptionHandler : IExceptionHandler
     {
         /// <summary>
-        /// Gets or sets a flag indicating that the next task in the pipeline was called.
+        /// See interface docs.
         /// </summary>
-        public bool NextMiddlewareCalled { get; set; }
-
-        /// <summary>
-        /// Gets or sets an action that is called when the next middleware is called.
-        /// </summary>
-        public Action<IDictionary<string, object>> NextMiddlewareCallback { get; set; }
-
-        /// <summary>
-        /// Calls the middleware passed across. Sets or clears <see cref="NextMiddlewareCalled"/> if the
-        /// middleware calls the next function in the chain.
-        /// </summary>
-        /// <param name="appFunc"></param>
-        /// <param name="environment"></param>
-        public void CallMiddleware(Func<AppFunc, AppFunc> middlewareEntryPoint, IDictionary<string, object> environment)
+        /// <param name="next"></param>
+        /// <returns></returns>
+        public AppFunc HandleRequest(AppFunc next)
         {
-            NextMiddlewareCalled = false;
+            AppFunc appFunc = async(IDictionary<string, object> environment) => {
+                try {
+                    await next.Invoke(environment);
+                } catch(Exception ex) {
+                    try {
+                        var context = PipelineContext.GetOrCreate(environment);
+                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        log.WriteLine($"Exception caught during handling of request {context.Request.Uri}: {ex}");
+                    } catch {
+                    }
 
-            AppFunc nextMiddleware = (IDictionary<string, object> env) => {
-                NextMiddlewareCalled = true;
-                NextMiddlewareCallback?.Invoke(env);
-                return Task.FromResult(0);
+                    if(environment != null) {
+                        if(environment.ContainsKey("owin.ResponseStatusCode")) {
+                            environment["owin.ResponseStatusCode"] = 500;
+                        } else {
+                            environment.Add("owin.ResponseStatusCode", 500);
+                        }
+                    }
+                }
             };
 
-            AppFunc testMiddleware = middlewareEntryPoint(nextMiddleware);
-            testMiddleware.Invoke(environment);
-        }
-
-        /// <summary>
-        /// Calls the middleware passed across. Sets or clears <see cref="NextMiddlewareCalled"/> if the
-        /// middleware calls the next function in the chain.
-        /// </summary>
-        /// <param name="middlewareEntryPoint"></param>
-        /// <param name="environment"></param>
-        public void CallMiddleware(Func<AppFunc, AppFunc> middlewareEntryPoint, MockOwinEnvironment environment)
-        {
-            CallMiddleware(middlewareEntryPoint, environment.Environment);
+            return appFunc;
         }
     }
 }

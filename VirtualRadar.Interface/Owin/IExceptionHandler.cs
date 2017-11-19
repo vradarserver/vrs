@@ -19,12 +19,12 @@ namespace VirtualRadar.Interface.Owin
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
     /// <summary>
-    /// The interface for the middleware that handles requests for CORS options and adds CORS headers to valid CORS requests.
+    /// The interface for OWIN middleware that records exceptions that are thrown in the pipeline.
     /// </summary>
-    public interface ICorsHandler
+    public interface IExceptionHandler
     {
         /// <summary>
-        /// Handles CORS-related requests.
+        /// Handles all requests that need exception handling.
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>
