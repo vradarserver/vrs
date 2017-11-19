@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar", "VirtualRadar\VirtualRadar.csproj", "{11805B5F-027A-4ED6-9491-DC85A3B2462D}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -51,6 +51,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		LICENSE.txt = LICENSE.txt
 		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
+		README.md = README.md
 		VirtualRadar.vsmdi = VirtualRadar.vsmdi
 		WebEssentials-Settings.json = WebEssentials-Settings.json
 	EndProjectSection
@@ -573,6 +574,9 @@ Global
 		{68C8066D-7844-41C2-993D-3160798164D1} = {1D1FAF73-5B9E-4A66-B928-ED19AA5E3BD8}
 		{FA2466BB-95ED-47CE-B996-6641E228916C} = {1D1FAF73-5B9E-4A66-B928-ED19AA5E3BD8}
 		{123DBE76-0386-4A40-9164-1FA9759403D1} = {3DD098CE-F3C7-4D95-8EDC-969A4F71D740}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0B7509BC-2E0B-4EE1-9683-D79016B9781E}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = VirtualRadar.vsmdi
