@@ -49,5 +49,15 @@ namespace VirtualRadar.Interface
         {
             return ToJavascriptTicks(date.Ticks);
         }
+
+        /// <summary>
+        /// Formats a string so that it can be used in a JavaScript string literal.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string FormatStringLiteral(string text)
+        {
+            return text == null ? "null" : String.Format("'{0}'", text.Replace("'", "\\'"));
+        }
     }
 }

@@ -38,14 +38,6 @@ namespace VirtualRadar.WebServer
             get { return _Request.Cookies; }
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public long ContentLength64
-        {
-            get { return _Request.ContentLength64; }
-        }
-
         private NameValueCollection _FormValues;
         /// <summary>
         /// See interface docs.

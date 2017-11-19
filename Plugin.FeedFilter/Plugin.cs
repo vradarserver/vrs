@@ -21,6 +21,7 @@ using Newtonsoft.Json;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
 using VirtualRadar.Localisation;
@@ -160,6 +161,10 @@ namespace VirtualRadar.Plugin.FeedFilter
             _WebSiteExtender.PageHandlers.Add(String.Format("/{0}/FetchFilterConfiguration.json", ProtectedFolder), FetchFilterConfiguration);
             _WebSiteExtender.PageHandlers.Add(String.Format("/{0}/SaveFilterConfiguration.json", ProtectedFolder), SaveFilterConfiguration);
             _WebSiteExtender.Initialise(parameters);
+
+            var redirection = Factory.Singleton.Resolve<IRedirectionConfiguration>().Singleton;
+            redirection.AddRedirection("/FeedFilter",  "/FeedFilter/index.html", RedirectionContext.Any);
+            redirection.AddRedirection("/FeedFilter/", "/FeedFilter/index.html", RedirectionContext.Any);
 
             parameters.WebSite.HtmlLoadedFromFile += WebSite_HtmlLoadedFromFile;
 

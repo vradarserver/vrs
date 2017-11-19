@@ -36,5 +36,43 @@ namespace VirtualRadar.Interface
         public Filter()
         {
         }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            var result = Object.ReferenceEquals(this, obj);
+            if(!result) {
+                if(obj is Filter other) {
+                    result = Condition == other.Condition &&
+                             ReverseCondition == other.ReverseCondition;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See base docs. Note that filters do not make suitable keys.
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            unchecked {
+                return Condition.GetHashCode() * (ReverseCondition.GetHashCode() + 1);
+            };
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return String.Format("{0}{1}", ReverseCondition ? "Not " : "", Condition);
+        }
     }
 }

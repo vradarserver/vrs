@@ -26,6 +26,7 @@ using VirtualRadar.Localisation;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Plugin.WebAdmin.View;
 using Newtonsoft.Json;
+using VirtualRadar.Interface.Owin;
 
 namespace VirtualRadar.Plugin.WebAdmin
 {
@@ -186,6 +187,10 @@ namespace VirtualRadar.Plugin.WebAdmin
             _WebSiteExtender.PageHandlers.Add(String.Format("/{0}/ViewMap.json", ProtectedFolder), WebSite_HandleViewMapJson);
             _WebSiteExtender.ProtectFolder(ProtectedFolder);
             _WebSiteExtender.Initialise(parameters);
+
+            var redirection = Factory.Singleton.Resolve<IRedirectionConfiguration>().Singleton;
+            redirection.AddRedirection("/WebAdmin",  "/WebAdmin/Index.html", RedirectionContext.Any);
+            redirection.AddRedirection("/WebAdmin/", "/WebAdmin/Index.html", RedirectionContext.Any);
 
             ApplyOptions(_Options);
         }

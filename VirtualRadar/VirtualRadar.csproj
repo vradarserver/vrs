@@ -125,9 +125,17 @@
       <Project>{FD3E36E1-35EA-46F3-A30B-65CEA7D92B7E}</Project>
       <Name>VirtualRadar.Localisation</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Owin\VirtualRadar.Owin.csproj">
+      <Project>{a91617bc-3503-4e70-8c66-f5a9a9ff6ae0}</Project>
+      <Name>VirtualRadar.Owin</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VirtualRadar.Resources\VirtualRadar.Resources.csproj">
       <Project>{B74413AC-8898-45DA-B4BD-82E4F9F58D72}</Project>
       <Name>VirtualRadar.Resources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.WebServer.HttpListener\VirtualRadar.WebServer.HttpListener.csproj">
+      <Project>{09b103a9-e186-403d-9744-da6144fcd88e}</Project>
+      <Name>VirtualRadar.WebServer.HttpListener</Name>
     </ProjectReference>
     <ProjectReference Include="..\VirtualRadar.WebServer\VirtualRadar.WebServer.csproj">
       <Project>{368D365B-D45A-439E-B649-0512C395351F}</Project>

@@ -19,6 +19,7 @@ using InterfaceFactory;
 using Newtonsoft.Json;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Database;
+using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
 using VirtualRadar.Localisation;
@@ -201,6 +202,10 @@ namespace VirtualRadar.Plugin.DatabaseEditor
             _WebSiteExtender.ProtectFolder(ProtectedFolder);
 
             parameters.WebSite.HtmlLoadedFromFile += WebSite_HtmlLoadedFromFile;
+
+            var redirection = Factory.Singleton.Resolve<IRedirectionConfiguration>().Singleton;
+            redirection.AddRedirection("/DatabaseEditor",  "/DatabaseEditor/index.html", RedirectionContext.Any);
+            redirection.AddRedirection("/DatabaseEditor/", "/DatabaseEditor/index.html", RedirectionContext.Any);
 
             ApplyOptions(options);
         }

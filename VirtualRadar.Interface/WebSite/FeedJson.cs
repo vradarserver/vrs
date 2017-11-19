@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using VirtualRadar.Interface.Listener;
 
 namespace VirtualRadar.Interface.WebSite
 {
@@ -39,5 +40,25 @@ namespace VirtualRadar.Interface.WebSite
         /// </summary>
         [DataMember(Name="polarPlot", IsRequired=true)]
         public bool HasPolarPlot { get; set; }
+
+        /// <summary>
+        /// Constructs a <see cref="FeedJson"/> object from a feed interface.
+        /// </summary>
+        /// <param name="feed"></param>
+        /// <returns></returns>
+        public static FeedJson ToModel(IFeed feed)
+        {
+            FeedJson result = null;
+
+            if(feed?.IsVisible == true) {
+                result = new FeedJson() {
+                    UniqueId =      feed.UniqueId,
+                    Name =          feed.Name,
+                    HasPolarPlot =  feed.AircraftList?.PolarPlotter != null,
+                };
+            }
+
+            return result;
+        }
     }
 }

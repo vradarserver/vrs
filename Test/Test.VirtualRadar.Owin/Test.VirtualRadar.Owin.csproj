@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{123DBE76-0386-4A40-9164-1FA9759403D1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Test.VirtualRadar.Owin</RootNamespace>
+    <AssemblyName>Test.VirtualRadar.Owin</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.4.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\..\Dependencies\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.Owin, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Owin.5.2.3\lib\net45\System.Web.Http.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <ItemGroup>
+    <Compile Include="AssemblyInitialise.cs" />
+    <Compile Include="Configuration\AccessConfigurationTests.cs" />
+    <Compile Include="Configuration\AuthenticationConfigurationTests.cs" />
+    <Compile Include="Configuration\BundlerConfigurationTests.cs" />
+    <Compile Include="Configuration\FileSystemServerConfigurationTests.cs" />
+    <Compile Include="Configuration\ImageServerConfigurationTests.cs" />
+    <Compile Include="Configuration\HtmlManipulatorConfigurationTests.cs" />
+    <Compile Include="Configuration\JavascriptManipulatorConfigurationTests.cs" />
+    <Compile Include="Configuration\ManipulatorConfigurationTests.cs" />
+    <Compile Include="Configuration\RedirectionConfigurationTests.cs" />
+    <Compile Include="LoopbackHostTests.cs" />
+    <Compile Include="Middleware\AccessFilterTests.cs" />
+    <Compile Include="Middleware\AudioServerTests.cs" />
+    <Compile Include="Middleware\BasicAuthenticationFilterTests.cs" />
+    <Compile Include="Middleware\BundlerServerTests.cs" />
+    <Compile Include="Middleware\CorsHandlerTests.cs" />
+    <Compile Include="Middleware\ExceptionHandlerTests.cs" />
+    <Compile Include="Middleware\FileSystemServerTests.cs" />
+    <Compile Include="Middleware\ImageServerTests.cs" />
+    <Compile Include="Middleware\RedirectionFilterTests.cs" />
+    <Compile Include="Middleware\ResponseStreamWrapperTests.cs" />
+    <Compile Include="MockConfigureCallback.cs" />
+    <Compile Include="MockOwinEnvironment.cs" />
+    <Compile Include="Configuration\WebAppConfigurationTests.cs" />
+    <Compile Include="MockOwinPipeline.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StandardPipelineTests.cs" />
+    <Compile Include="StreamManipulator\BundlerHtmlManipulatorTests.cs" />
+    <Compile Include="StreamManipulator\HtmlManipulatorTests.cs" />
+    <Compile Include="StreamManipulator\JavascriptManipulatorTests.cs" />
+    <Compile Include="StreamManipulator\ManipulatorTests.cs" />
+    <Compile Include="TestImages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestImages.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\InterfaceFactory\InterfaceFactory.csproj">
+      <Project>{6ad23cd7-fb9f-448e-85ea-cb5aaa4e9fee}</Project>
+      <Name>InterfaceFactory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
+      <Project>{8ef81105-f45d-4edb-996c-de7d5644b1e7}</Project>
+      <Name>VirtualRadar.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VirtualRadar.Library\VirtualRadar.Library.csproj">
+      <Project>{4bc834f4-005b-4ef9-bda4-078c3f1745d3}</Project>
+      <Name>VirtualRadar.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VirtualRadar.Owin\VirtualRadar.Owin.csproj">
+      <Project>{a91617bc-3503-4e70-8c66-f5a9a9ff6ae0}</Project>
+      <Name>VirtualRadar.Owin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VirtualRadar.Resources\VirtualRadar.Resources.csproj">
+      <Project>{B74413AC-8898-45DA-B4BD-82E4F9F58D72}</Project>
+      <Name>VirtualRadar.Resources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VirtualRadar.WebSite\VirtualRadar.WebSite.csproj">
+      <Project>{eacc3459-9586-4977-a664-ae5827699b30}</Project>
+      <Name>VirtualRadar.WebSite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.Framework\Test.Framework.csproj">
+      <Project>{94f0a821-51bb-4381-9413-1a3fad661d82}</Project>
+      <Name>Test.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestImages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TestImages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="TestImages\AltitudeImageTest-01.png" />
+    <Content Include="TestImages\DLH.bmp" />
+    <Content Include="TestImages\OversizedLogo.bmp" />
+    <Content Include="TestImages\Picture-120x140-Resized-60x40.png" />
+    <Content Include="TestImages\Picture-120x140.png" />
+    <Content Include="TestImages\Picture-120x80-Resized-60x40.png" />
+    <Content Include="TestImages\Picture-120x80.png" />
+    <Content Include="TestImages\Picture-140x80-Resized-60x40.png" />
+    <Content Include="TestImages\Picture-140x80.png" />
+    <Content Include="TestImages\Picture-700x400.png" />
+    <Content Include="TestImages\TestSquare.bmp" />
+    <Content Include="TestImages\TestSquare.png" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

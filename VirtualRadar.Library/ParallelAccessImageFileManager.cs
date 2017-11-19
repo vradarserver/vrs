@@ -17,6 +17,7 @@ using System.Drawing;
 using VirtualRadar.Interface.WebSite;
 using InterfaceFactory;
 using System.IO;
+using VirtualRadar.Interface.Owin;
 
 namespace VirtualRadar.Library
 {
@@ -63,11 +64,27 @@ namespace VirtualRadar.Library
         private IClock _Clock;
 
         /// <summary>
-        /// Creates a new object.
+        /// The loopback host that OWIN requests can be sent through.
         /// </summary>
-        public ParallelAccessImageFileManager()
+        private ILoopbackHost _LoopbackHost;
+
+        /// <summary>
+        /// True if the class has been initialised.
+        /// </summary>
+        private bool _Initialised;
+
+        private void Initialise()
         {
-            _Clock = Factory.Singleton.Resolve<IClock>();
+            if(!_Initialised) {
+                lock(_SyncLock) {
+                    if(!_Initialised) {
+                        _Initialised = true;
+                        _Clock = Factory.Singleton.Resolve<IClock>();
+                        _LoopbackHost = Factory.Singleton.Resolve<ILoopbackHost>();
+                        _LoopbackHost.ConfigureStandardPipeline();
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -77,6 +94,8 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         public Image LoadFromFile(string fileName)
         {
+            Initialise();
+
             Bitmap result = null;
             if(!String.IsNullOrEmpty(fileName)) result = (Bitmap)Bitmap.FromFile(fileName);
 
@@ -91,6 +110,7 @@ namespace VirtualRadar.Library
         public Size ImageFileDimensions(string fileName)
         {
             Size result = Size.Empty;
+            Initialise();
 
             var image = LoadFromFile(fileName);
             if(image != null) {
@@ -113,10 +133,27 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         public Image LoadFromWebSite(IWebSite webSite, string webPathAndFileName, bool useImageCache)
         {
+            return LoadFromSiteOrCache(webPathAndFileName, useImageCache, () => FetchFromWebSite(webSite, webPathAndFileName));
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="webPathAndFileName"></param>
+        /// <param name="useImageCache"></param>
+        /// <returns></returns>
+        public Image LoadFromStandardPipeline(string webPathAndFileName, bool useImageCache)
+        {
+            return LoadFromSiteOrCache(webPathAndFileName, useImageCache, () => FetchFromOwinPipeline(webPathAndFileName));
+        }
+
+        private Image LoadFromSiteOrCache(string webPathAndFileName, bool useImageCache, Func<Image> buildImage)
+        {
             Image result = null;
 
+            Initialise();
             if(!useImageCache) {
-                result = FetchFromWebSite(webSite, webPathAndFileName);
+                result = buildImage();
             } else {
                 var normalisedName = NormaliseWebPath(webPathAndFileName);
                 CacheEntry cacheEntry;
@@ -132,7 +169,8 @@ namespace VirtualRadar.Library
                 if(cacheEntry == null || (cacheEntry.Image != null && result == null)) {
                     // This can lead to double-fetches, however I would rather have those than have multiple threads block while images are
                     // being fetched serially.
-                    result = FetchFromWebSite(webSite, webPathAndFileName);
+                    result = buildImage();
+
                     cacheEntry = new CacheEntry() {
                         Image = result == null ? null : new Bitmap(result),
                         LastFetchedUtc = _Clock.UtcNow,
@@ -140,8 +178,7 @@ namespace VirtualRadar.Library
                     };
 
                     lock(_SyncLock) {
-                        CacheEntry oldEntry;
-                        if(!_WebSiteImageCache.TryGetValue(normalisedName, out oldEntry)) {
+                        if(!_WebSiteImageCache.TryGetValue(normalisedName, out CacheEntry oldEntry)) {
                             _WebSiteImageCache.Add(normalisedName, cacheEntry);
                         } else {
                             if(oldEntry.Image != null) {
@@ -165,9 +202,23 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         private Image FetchFromWebSite(IWebSite webSite, string webPathAndFileName)
         {
+            return ExtractFromSimpleContent(webSite.RequestSimpleContent(webPathAndFileName));
+        }
+
+        /// <summary>
+        /// Fetches an image from the standard OWIN pipeline.
+        /// </summary>
+        /// <param name="webPathAndFileName"></param>
+        /// <returns></returns>
+        private Image FetchFromOwinPipeline(string webPathAndFileName)
+        {
+            return ExtractFromSimpleContent(_LoopbackHost.SendSimpleRequest(webPathAndFileName));
+        }
+
+        private Image ExtractFromSimpleContent(SimpleContent simpleContent)
+        {
             Image result = null;
 
-            var simpleContent = webSite.RequestSimpleContent(webPathAndFileName);
             if(simpleContent != null && simpleContent.HttpStatusCode == System.Net.HttpStatusCode.OK) {
                 using(var memoryStream = new MemoryStream(simpleContent.Content)) {
                     using(var image = Image.FromStream(memoryStream)) {

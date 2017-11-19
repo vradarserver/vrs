@@ -30,7 +30,6 @@ namespace VirtualRadar.WebSite
         public static void Register(IClassFactory factory)
         {
             factory.Register<IAircraftListJsonBuilder, AircraftListJsonBuilder>();
-            factory.Register<IBundler, Bundler>();
             factory.Register<IHtmlLocaliser, HtmlLocaliser>();
             factory.Register<IMinifier, Minifier>();
             factory.Register<IWebAdminViewManager, WebAdminViewManagerStub>();

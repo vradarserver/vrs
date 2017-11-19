@@ -22,11 +22,6 @@ namespace VirtualRadar.Interface.WebSite
     public class TextContentEventArgs : EventArgs
     {
         /// <summary>
-        /// Gets the request that generated this content.
-        /// </summary>
-        public IRequest Request { get; private set; }
-
-        /// <summary>
         /// Gets the path and file of the request from root.
         /// </summary>
         /// <remarks>
@@ -47,18 +42,23 @@ namespace VirtualRadar.Interface.WebSite
         public Encoding Encoding { get; set; }
 
         /// <summary>
+        /// Gets or sets the mime type of the content.
+        /// </summary>
+        public string MimeType { get; set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
-        /// <param name="request"></param>
         /// <param name="pathAndFile"></param>
         /// <param name="content"></param>
         /// <param name="encoding"></param>
-        public TextContentEventArgs(IRequest request, string pathAndFile, string content, Encoding encoding)
+        /// <param name="mimeType"></param>
+        public TextContentEventArgs(string pathAndFile, string content, Encoding encoding, string mimeType)
         {
-            Request = request;
             PathAndFile = pathAndFile;
             Content = content;
             Encoding = encoding;
+            MimeType = mimeType;
         }
     }
 }

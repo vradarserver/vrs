@@ -15,6 +15,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VirtualRadar.Interface.WebSite;
 using Test.Framework;
+using VirtualRadar.Interface.Settings;
 
 namespace Test.VirtualRadar.Interface.WebSite
 {
@@ -26,30 +27,74 @@ namespace Test.VirtualRadar.Interface.WebSite
         {
             var json = new ServerReceiverJson();
 
-            TestUtilities.TestProperty(json, r => r.HasPolarPlot, false);
             TestUtilities.TestProperty(json, r => r.Name, null, "Abc");
             TestUtilities.TestProperty(json, r => r.UniqueId, 0, 123);
         }
 
         [TestMethod]
-        public void ServerReceiverJson_Clone_Creates_Copy()
+        public void ServerReceiverJson_ToModel_Receiver_Returns_Model_Based_On_Receiver()
         {
-            var json = new ServerReceiverJson() {
-                Name = "My Name",
-                UniqueId = 123,
-                HasPolarPlot = true,
-            };
+            var receiver = new Receiver() { UniqueId = 7, Name = "Hello" };
 
-            var clone = (ServerReceiverJson)json.Clone();
+            var model = ServerReceiverJson.ToModel(receiver);
 
-            foreach(var property in typeof(ServerReceiverJson).GetProperties()) {
-                switch(property.Name) {
-                    case "Name":            Assert.AreEqual(json.Name, clone.Name); break;
-                    case "UniqueId":        Assert.AreEqual(json.UniqueId, clone.UniqueId); break;
-                    case "HasPolarPlot":    Assert.AreEqual(json.HasPolarPlot, clone.HasPolarPlot); break;
-                    default:                throw new NotImplementedException();
-                }
-            }
+            Assert.AreEqual(7, model.UniqueId);
+            Assert.AreEqual("Hello", model.Name);
+        }
+
+        [TestMethod]
+        public void ServerReceiverJson_ToModel_Receiver_Returns_Null_If_Receiver_Is_Null()
+        {
+            Assert.IsNull(ServerReceiverJson.ToModel((Receiver)null));
+        }
+
+        [TestMethod]
+        public void ServerReceiverJson_ToModel_Receiver_Returns_Null_If_Receiver_Is_MergeOnly()
+        {
+            var receiver = new Receiver() { UniqueId = 7, Name = "Hello", ReceiverUsage = ReceiverUsage.MergeOnly };
+
+            Assert.IsNull(ServerReceiverJson.ToModel(receiver));
+        }
+
+        [TestMethod]
+        public void ServerReceiverJson_ToModel_Receiver_Returns_Null_If_Receiver_Is_HideFromWebSite()
+        {
+            var receiver = new Receiver() { UniqueId = 7, Name = "Hello", ReceiverUsage = ReceiverUsage.HideFromWebSite };
+
+            Assert.IsNull(ServerReceiverJson.ToModel(receiver));
+        }
+
+        [TestMethod]
+        public void ServerReceiverJson_ToModel_MergedFeed_Returns_Model_Based_On_MergedFeed()
+        {
+            var mergedFeed = new MergedFeed() { UniqueId = 7, Name = "Hello" };
+
+            var model = ServerReceiverJson.ToModel(mergedFeed);
+
+            Assert.AreEqual(7, model.UniqueId);
+            Assert.AreEqual("Hello", model.Name);
+        }
+
+        [TestMethod]
+        public void ServerReceiverJson_ToModel_MergedFeed_Returns_Null_If_MergedFeed_Is_Null()
+        {
+            Assert.IsNull(ServerReceiverJson.ToModel((MergedFeed)null));
+        }
+
+        [TestMethod]
+        public void ServerMergedFeedJson_ToModel_MergedFeed_Returns_Null_If_MergedFeed_Is_MergeOnly()
+        {
+            var mergedFeed = new MergedFeed() { UniqueId = 7, Name = "Hello", ReceiverUsage = ReceiverUsage.MergeOnly };
+
+            Assert.IsNull(ServerReceiverJson.ToModel(mergedFeed));
+        }
+
+        [TestMethod]
+        public void ServerMergedFeedJson_ToModel_MergedFeed_Returns_Null_If_MergedFeed_Is_HideFromWebSite()
+        {
+            var mergedFeed = new MergedFeed() { UniqueId = 7, Name = "Hello", ReceiverUsage = ReceiverUsage.HideFromWebSite };
+
+            Assert.IsNull(ServerReceiverJson.ToModel(mergedFeed));
         }
     }
 }

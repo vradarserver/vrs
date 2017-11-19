@@ -1874,4 +1874,8 @@
   <data name="Yes" xml:space="preserve">
     <value>Да</value>
   </data>
+  <data name="LanguageCode" xml:space="preserve">
+    <value>ru-RU</value>
+    <comment>DO NOT TRANSLATE. Used by unit tests.</comment>
+  </data>
 </root>

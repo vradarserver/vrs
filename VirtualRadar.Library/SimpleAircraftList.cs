@@ -20,7 +20,7 @@ namespace VirtualRadar.Library
     /// <summary>
     /// The default implementation of <see cref="ISimpleAircraftList"/>.
     /// </summary>
-    sealed class SimpleAircraftList : ISimpleAircraftList
+    class SimpleAircraftList : ISimpleAircraftList
     {
         #region Fields
         /// <summary>
@@ -84,10 +84,7 @@ namespace VirtualRadar.Library
         /// Raises <see cref="TrackingStateChanged"/>.
         /// </summary>
         /// <param name="args"></param>
-        /// <remarks>
-        /// Note that the class is sealed.
-        /// </remarks>
-        private void OnTrackingStateChanged(EventArgs args)
+        protected virtual void OnTrackingStateChanged(EventArgs args)
         {
             EventHelper.Raise(TrackingStateChanged, this, args);
         }
@@ -128,8 +125,7 @@ namespace VirtualRadar.Library
         /// Disposes of or finalises the object.
         /// </summary>
         /// <param name="disposing"></param>
-        /// <remarks>Note that the object is sealed.</remarks>
-        private void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             ;
         }

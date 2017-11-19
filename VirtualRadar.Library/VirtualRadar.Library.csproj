@@ -47,8 +47,9 @@
     <Reference Include="Mono.Posix">
       <HintPath>..\Dependencies\MonoBuilds\Mono.Posix.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\Dependencies\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -99,7 +100,9 @@
     <Compile Include="DotNetShutdownSignalHandler.cs" />
     <Compile Include="DotNetSpeechSynthesizerWrapper.cs" />
     <Compile Include="ExceptionReporter.cs" />
+    <Compile Include="FileSystemProvider.cs" />
     <Compile Include="FileSystemWatcherWrapper.cs" />
+    <Compile Include="FlightSimulatorAircraftList.cs" />
     <Compile Include="ImageDimensionsFetcher.cs" />
     <Compile Include="Listener\AircraftListJsonMessageBytesExtractor.cs" />
     <Compile Include="Listener\AircraftListJsonMessageConverter.cs" />
@@ -190,6 +193,7 @@
     <Compile Include="Settings\SavedPolarPlotStorage.cs" />
     <Compile Include="Settings\SharedConfiguration.cs" />
     <Compile Include="Settings\SiteSettingsParser.cs" />
+    <Compile Include="Settings\UserCache.cs" />
     <Compile Include="SimpleAircraftList.cs" />
     <Compile Include="Statistics.cs" />
     <Compile Include="Network\TcpConnectionStateService.cs" />
@@ -225,6 +229,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

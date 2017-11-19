@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Interface.WebSite
 {
@@ -20,7 +21,7 @@ namespace VirtualRadar.Interface.WebSite
     /// The JSON object that describes a receiver that the server is listening to.
     /// </summary>
     [DataContract]
-    public class ServerReceiverJson : ICloneable
+    public class ServerReceiverJson
     {
         /// <summary>
         /// Gets or sets the unique ID of the receiver.
@@ -35,21 +36,39 @@ namespace VirtualRadar.Interface.WebSite
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating that there is a polar plot for the receiver.
+        /// Returns a new object from a receiver.
         /// </summary>
-        public bool HasPolarPlot { get; set; }
+        /// <param name="receiver"></param>
+        /// <returns></returns>
+        public static ServerReceiverJson ToModel(Receiver receiver)
+        {
+            ServerReceiverJson result = null;
+
+            if(receiver != null && receiver.ReceiverUsage == ReceiverUsage.Normal) {
+                result = new ServerReceiverJson() {
+                    UniqueId =      receiver.UniqueId,
+                    Name =          receiver.Name,
+                };
+            }
+
+            return result;
+        }
 
         /// <summary>
-        /// See interface docs.
+        /// Returns a new object from a merged feed.
         /// </summary>
+        /// <param name="mergedFeed"></param>
         /// <returns></returns>
-        public virtual object Clone()
+        public static ServerReceiverJson ToModel(MergedFeed mergedFeed)
         {
-            var result = (ServerReceiverJson)Activator.CreateInstance(GetType());
+            ServerReceiverJson result = null;
 
-            result.UniqueId = UniqueId;
-            result.Name = Name;
-            result.HasPolarPlot = true;
+            if(mergedFeed != null && mergedFeed.ReceiverUsage == ReceiverUsage.Normal) {
+                result = new ServerReceiverJson() {
+                    UniqueId =  mergedFeed.UniqueId,
+                    Name =      mergedFeed.Name,
+                };
+            }
 
             return result;
         }

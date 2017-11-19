@@ -40,7 +40,7 @@ namespace VirtualRadar.Interface
         /// <returns></returns>
         public static Dictionary<TKey, TValue> ShallowCopy<TKey, TValue>(Dictionary<TKey, TValue> dictionary)
         {
-            var result = new Dictionary<TKey, TValue>();
+            var result = new Dictionary<TKey, TValue>(dictionary.Comparer);
             foreach(var kvp in dictionary) {
                 result.Add(kvp.Key, kvp.Value);
             }
@@ -56,7 +56,7 @@ namespace VirtualRadar.Interface
         /// <returns></returns>
         public static HashSet<T> ShallowCopy<T>(HashSet<T> hashSet)
         {
-            var result = new HashSet<T>();
+            var result = new HashSet<T>(hashSet.Comparer);
             foreach(var item in hashSet) {
                 result.Add(item);
             }

@@ -20,14 +20,11 @@ namespace VirtualRadar.Interface.WebServer
     /// </summary>
     public static class MimeType
     {
-        #region Fields
         /// <summary>
         /// A map of all extensions to mime types.
         /// </summary>
         private static Dictionary<string, string> _ExtensionToMimeType = new Dictionary<string,string>();
-        #endregion
 
-        #region Properties
         /// <summary>
         /// Gets the MIME type for a .BMP file.
         /// </summary>
@@ -87,9 +84,7 @@ namespace VirtualRadar.Interface.WebServer
         /// Gets the MIME type for a .WAV file.
         /// </summary>
         public static string WaveAudio      { get { return GetForExtension("wav"); } }
-        #endregion
 
-        #region GetForExtension
         /// <summary>
         /// Returns the MIME type for a file extension. The leading full-stop on the extension is optional.
         /// </summary>
@@ -97,22 +92,46 @@ namespace VirtualRadar.Interface.WebServer
         /// <returns></returns>
         public static string GetForExtension(string extension)
         {
-            if(_ExtensionToMimeType.Count == 0) LoadMimeTypes();
+            var extensionMap = _ExtensionToMimeType;
+            if(extensionMap.Count == 0) {
+                extensionMap = LoadMimeTypes();
+            }
+
             string result = null;
             if(!String.IsNullOrEmpty(extension)) {
-                if(extension[0] == '.') extension = extension.Substring(1);
+                if(extension[0] == '.') {
+                    extension = extension.Substring(1);
+                }
                 extension = extension.ToLower();
-                if(!_ExtensionToMimeType.TryGetValue(extension, out result)) result = "application/octet-stream";
+                if(!extensionMap.TryGetValue(extension, out result)) {
+                    result = "application/octet-stream";
+                }
             }
 
             return result;
         }
 
         /// <summary>
+        /// Returns an array of all known file extensions.
+        /// </summary>
+        /// <returns></returns>
+        public static string[] GetKnownExtensions()
+        {
+            var extensionMap = _ExtensionToMimeType;
+            if(extensionMap.Count == 0) {
+                extensionMap = LoadMimeTypes();
+            }
+
+            return extensionMap.Keys.ToArray();
+        }
+
+        /// <summary>
         /// Populates MimeTypes from resources.
         /// </summary>
-        private static void LoadMimeTypes()
+        private static Dictionary<string, string> LoadMimeTypes()
         {
+            var extensionMap = new Dictionary<string, string>();
+
             foreach(var line in WebServerResources.MimeTypes.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)) {
                 if(line.Length > 0 && line[0] != '#') {
                     var chunks = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
@@ -121,16 +140,19 @@ namespace VirtualRadar.Interface.WebServer
                         if(mimeType.Contains('/')) {
                             for(var i = 1;i < chunks.Length;++i) {
                                 var extension = chunks[i].ToLower();
-                                if(!_ExtensionToMimeType.ContainsKey(extension)) _ExtensionToMimeType.Add(extension, mimeType);
+                                if(!extensionMap.ContainsKey(extension)) {
+                                    extensionMap.Add(extension, mimeType);
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-        #endregion
+            _ExtensionToMimeType = extensionMap;
 
-        #region GetContentClassification
+            return extensionMap;
+        }
+
         /// <summary>
         /// Returns the appropriate classification for a mime type.
         /// </summary>
@@ -152,6 +174,5 @@ namespace VirtualRadar.Interface.WebServer
 
             return result;
         }
-        #endregion
     }
 }

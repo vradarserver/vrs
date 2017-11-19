@@ -26,7 +26,9 @@ namespace InterfaceFactory
         /// </summary>
         /// <typeparam name="TI">The interface type.</typeparam>
         /// <typeparam name="TM">The concrete type that implements TI.</typeparam>
-        void Register<TI, TM>();
+        void Register<TI, TM>()
+            where TI: class
+            where TM: class, TI;
 
         /// <summary>
         /// Registers an implementation of an interface. A new instance of the implementation will
@@ -64,6 +66,11 @@ namespace InterfaceFactory
         /// </summary>
         /// <typeparam name="T">The interface that the returned object will implement.</typeparam>
         /// <returns>An object that implements T.</returns>
+        /// <remarks>
+        /// This method will return single instances for interfaces that are tagged with the <see cref="SingletonAttribute"/>.
+        /// However, the preferred method of instantiating singletons is via <see cref="ResolveSingleton"/>, just because
+        /// it makes it more obvious as to what's going on.
+        /// </remarks>
         T Resolve<T>() where T: class;
 
         /// <summary>
@@ -71,7 +78,48 @@ namespace InterfaceFactory
         /// </summary>
         /// <param name="interfaceType">The interface that the returned object will implement.</param>
         /// <returns>An object that implements interfaceType.</returns>
+        /// <remarks>
+        /// This method will return single instances for interfaces that are tagged with the <see cref="SingletonAttribute"/>.
+        /// However, the preferred method of instantiating singletons is via <see cref="ResolveSingleton"/>, just because
+        /// it makes it more obvious as to what's going on.
+        /// </remarks>
         object Resolve(Type interfaceType);
+
+        /// <summary>
+        /// As per <see cref="Resolve{T}()" /> but will only instantiate interfaces that are tagged with <see cref="SingletonAttribute"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        T ResolveSingleton<T>() where T: class;
+
+        /// <summary>
+        /// As per <see cref="Resolve(Type)"/> but will only instantiate interfaces that are tagged with <see cref="SingletonAttribute"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        object ResolveSingleton(Type interfaceType);
+
+        /// <summary>
+        /// Returns a new instance of an object that has been marked as a singleton with the <see cref="SingletonAttribute"/>.
+        /// </summary>
+        /// <typeparam name="T"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Attempts to use this to resolve objects that have not been marked as singletons will trigger an exception.
+        /// Objects created using this method will not be returned by calls to <see cref="Resolve"/>.
+        /// </remarks>
+        T ResolveNewInstance<T>() where T: class;
+
+        /// <summary>
+        /// Returns a new instance of an object that has been marked as a singleton with the <see cref="SingletonAttribute"/>.
+        /// </summary>
+        /// <param name="interfaceType"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Attempts to use this to resolve objects that have not been marked as singletons will trigger an exception.
+        /// Objects created using this method will not be returned by calls to <see cref="Resolve"/>.
+        /// </remarks>
+        object ResolveNewInstance(Type interfaceType);
 
         /// <summary>
         /// Returns a copy of the factory.

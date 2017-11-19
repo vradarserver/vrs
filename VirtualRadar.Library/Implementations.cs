@@ -83,6 +83,7 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.Settings.ISavedPolarPlotStorage, Settings.SavedPolarPlotStorage>();
             factory.Register<VirtualRadar.Interface.Settings.ISharedConfiguration, Settings.SharedConfiguration>();
             factory.Register<VirtualRadar.Interface.Settings.ISiteSettingsParser, Settings.SiteSettingsParser>();
+            factory.Register<VirtualRadar.Interface.Settings.IUserCache, Settings.UserCache>();
             factory.Register<IAccessFilter, AccessFilter>();
             factory.Register<IAircraft, Aircraft>();
             factory.Register<IAircraftComparer, AircraftComparer>();
@@ -108,7 +109,9 @@ namespace VirtualRadar.Library
             factory.Register<IDirectoryCache, DirectoryCache>();
             factory.Register<IExceptionReporter, ExceptionReporter>();
             factory.Register<IExternalIPAddressService, ExternalIPAddressService>();
+            factory.Register<IFileSystemProvider, FileSystemProvider>();
             factory.Register<IFileSystemWatcher, FileSystemWatcherWrapper>();
+            factory.Register<IFlightSimulatorAircraftList, FlightSimulatorAircraftList>();
             factory.Register<IHeartbeatService, HeartbeatService>();
             factory.Register<IImageDimensionsFetcher, ImageDimensionsFetcher>();
             factory.Register<IImageFileManager, ParallelAccessImageFileManager>();

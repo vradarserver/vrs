@@ -25,7 +25,7 @@ namespace Test.VirtualRadar.Interface
         public void FilterBool_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
             var filter = new FilterBool();
-            TestUtilities.TestProperty(filter, r => r.Condition, FilterCondition.Invalid, FilterCondition.Equals);
+            TestUtilities.TestProperty(filter, r => r.Condition, FilterCondition.Missing, FilterCondition.Equals);
             TestUtilities.TestProperty(filter, r => r.ReverseCondition, false);
             TestUtilities.TestProperty(filter, r => r.Value, false);
 
@@ -61,6 +61,32 @@ namespace Test.VirtualRadar.Interface
                     }
                 }
             }
+        }
+
+        [TestMethod]
+        public void FilterBool_Equals_Returns_True_When_All_Properties_Match()
+        {
+            TestUtilities.TestSimpleEquals(typeof(FilterBool), true, GenerateValue);
+        }
+
+        [TestMethod]
+        public void FilterBool_Equals_Returns_True_When_Any_Properties_Do_Not_Match()
+        {
+            TestUtilities.TestSimpleEquals(typeof(FilterBool), false, GenerateValue);
+        }
+
+        [TestMethod]
+        public void FilterBool_GetHashCode_Returns_Correct_Value()
+        {
+            TestUtilities.TestSimpleGetHashCode(typeof(FilterBool), GenerateValue);
+        }
+
+        private object GenerateValue(Type type, bool useValue1)
+        {
+            if(type == typeof(FilterCondition)) {
+                return useValue1 ? FilterCondition.Equals : FilterCondition.Missing;
+            }
+            throw new NotImplementedException($"Need to add support for property type {type.Name}");
         }
     }
 }

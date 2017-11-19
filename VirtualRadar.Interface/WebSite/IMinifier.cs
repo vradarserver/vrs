@@ -18,13 +18,8 @@ namespace VirtualRadar.Interface.WebSite
     /// <summary>
     /// The interface for an object that can minify JavaScript and CSS.
     /// </summary>
-    public interface IMinifier : IDisposable
+    public interface IMinifier
     {
-        /// <summary>
-        /// Initialises the minifier.
-        /// </summary>
-        void Initialise();
-
         /// <summary>
         /// Returns the JavaScript passed across with the content compressed as much as possible.
         /// </summary>

@@ -39,17 +39,39 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dependencies\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.Owin, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Owin.5.2.3\lib\net45\System.Web.Http.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
@@ -109,12 +131,14 @@
     <Compile Include="BackgroundThreadQueueMechanism.cs" />
     <Compile Include="CollectionHelper.cs" />
     <Compile Include="EventHelperException.cs" />
+    <Compile Include="HttpContentHelper.cs" />
     <Compile Include="IAircraftOnlineLookupLog.cs" />
     <Compile Include="IAirPressureDownloader.cs" />
     <Compile Include="IAirPressureManager.cs" />
     <Compile Include="IAirPressureLookup.cs" />
     <Compile Include="IConsole.cs" />
     <Compile Include="IFileSystemWatcher.cs" />
+    <Compile Include="IFlightSimulatorAircraftList.cs" />
     <Compile Include="IShutdownSignalHandler.cs" />
     <Compile Include="IPAddressHelper.cs" />
     <Compile Include="Listener\IPlaneFinderMessageBytesExtractor.cs" />
@@ -125,6 +149,42 @@
     <Compile Include="Network\IRebroadcastFormatManager.cs" />
     <Compile Include="Network\IRebroadcastFormatProvider.cs" />
     <Compile Include="Network\RebroadcastFormatName.cs" />
+    <Compile Include="Owin\EnvironmentKey.cs" />
+    <Compile Include="Owin\IAccessConfiguration.cs" />
+    <Compile Include="Owin\IAccessFilter.cs" />
+    <Compile Include="Owin\IAudioServer.cs" />
+    <Compile Include="Owin\IAuthenticationConfiguration.cs" />
+    <Compile Include="Owin\IBasicAuthenticationFilter.cs" />
+    <Compile Include="Owin\IBundlerConfiguration.cs" />
+    <Compile Include="Owin\IBundlerHtmlManipulator.cs" />
+    <Compile Include="Owin\IBundlerServer.cs" />
+    <Compile Include="Owin\ICorsHandler.cs" />
+    <Compile Include="Owin\IExceptionHandler.cs" />
+    <Compile Include="Owin\IHtmlManipulator.cs" />
+    <Compile Include="Owin\IHtmlManipulatorConfiguration.cs" />
+    <Compile Include="Owin\IJavascriptManipulatorConfiguration.cs" />
+    <Compile Include="Owin\ILoopbackHost.cs" />
+    <Compile Include="Owin\IFileSystemServerConfiguration.cs" />
+    <Compile Include="IFileSystemProvider.cs" />
+    <Compile Include="Owin\IFileSystemServer.cs" />
+    <Compile Include="Owin\IImageServer.cs" />
+    <Compile Include="Owin\IImageServerConfiguration.cs" />
+    <Compile Include="Owin\IJavascriptManipulator.cs" />
+    <Compile Include="Owin\IRedirectionFilter.cs" />
+    <Compile Include="Owin\IRedirectionConfiguration.cs" />
+    <Compile Include="Owin\IResponseStreamWrapper.cs" />
+    <Compile Include="Owin\IStandardPipeline.cs" />
+    <Compile Include="Owin\IStreamManipulator.cs" />
+    <Compile Include="Owin\ITextResponseManipulator.cs" />
+    <Compile Include="Owin\PipelineApiController.cs" />
+    <Compile Include="Owin\PipelineContext.cs" />
+    <Compile Include="Owin\PipelineRequest.cs" />
+    <Compile Include="Owin\PipelineResponse.cs" />
+    <Compile Include="Owin\RedirectionContext.cs" />
+    <Compile Include="Owin\RedirectionRequestContext.cs" />
+    <Compile Include="Owin\Roles.cs" />
+    <Compile Include="Owin\StandardPipelinePriority.cs" />
+    <Compile Include="Owin\StreamManipulatorPriority.cs" />
     <Compile Include="Presenter\IAircraftOnlineLookupLogPresenter.cs" />
     <Compile Include="ProgramLifetime.cs" />
     <Compile Include="QueueRepository.cs" />
@@ -148,15 +208,28 @@
     <Compile Include="IStandaloneAircraftOnlineLookupCache.cs" />
     <Compile Include="Listener\IMergedFeedComponentListener.cs" />
     <Compile Include="Presenter\IBackgroundThreadQueuesPresenter.cs" />
+    <Compile Include="Settings\CachedUser.cs" />
+    <Compile Include="Settings\ISharedConfigurationSubscriber.cs" />
+    <Compile Include="Settings\IUserCache.cs" />
     <Compile Include="Settings\MergedFeedReceiver.cs" />
     <Compile Include="Settings\ReceiverUsage.cs" />
     <Compile Include="StandingData\EnginePlacement.cs" />
+    <Compile Include="StringBuilderExtensions.cs" />
+    <Compile Include="TextContent.cs" />
+    <Compile Include="UriHelper.cs" />
     <Compile Include="View\IAircraftOnlineLookupLogView.cs" />
     <Compile Include="View\IBackgroundThreadQueuesView.cs" />
     <Compile Include="View\ValidationModelField.cs" />
     <Compile Include="View\ValidationModelFieldAttribute.cs" />
     <Compile Include="View\ValidationModelHelper.cs" />
     <Compile Include="View\EnumModel.cs" />
+    <Compile Include="Owin\IWebAppConfigurationCallbackHandle.cs" />
+    <Compile Include="Owin\IWebAppConfiguration.cs" />
+    <Compile Include="WebSite\GetAircraftListFilter.cs" />
+    <Compile Include="WebSite\GetAircraftListFilterField.cs" />
+    <Compile Include="WebSite\GetAircraftListModel.cs" />
+    <Compile Include="WebSite\GetAircraftListSortByModel.cs" />
+    <Compile Include="WebSite\ReportRowsCriteriaModel.cs" />
     <Compile Include="WebSite\WebAdminMethodAttribute.cs" />
     <Compile Include="WebSite\WebAdminModels.cs" />
     <Compile Include="WebSite\WebAdminView.cs" />
@@ -481,7 +554,6 @@
     <Compile Include="WebSite\FeedJson.cs" />
     <Compile Include="WebSite\HtmlContentInjector.cs" />
     <Compile Include="WebSite\FlightReportJson.cs" />
-    <Compile Include="WebSite\IBundler.cs" />
     <Compile Include="WebSite\IHtmlLocaliser.cs" />
     <Compile Include="WebSite\IMinifier.cs" />
     <Compile Include="WebSite\IWebSite.cs" />
@@ -531,8 +603,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Adsb\_VirtualRadarInterfaceAdsb.cd" />
+    <None Include="app.config" />
     <None Include="BaseStation\_VirtualRadarInterfaceBaseStation.cd" />
     <None Include="Database\_VirtualRadarInterfaceDatabase.cd" />
+    <None Include="packages.config" />
     <None Include="SQLite\_VirtualRadarInterfaceSQLite.cd" />
     <None Include="StandingData\_VirtualRadarInterfaceData.cd" />
     <None Include="FlightSimulatorX\_VirtualRadarInterfaceFlightSimulatorX.cd" />

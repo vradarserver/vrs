@@ -25,6 +25,7 @@ using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
 using System.Windows.Forms;
 using System.Collections.Specialized;
+using VirtualRadar.Interface.Owin;
 
 namespace VirtualRadar.WebSite
 {
@@ -50,8 +51,6 @@ namespace VirtualRadar.WebSite
             private static readonly CookieCollection DummyCookies = new CookieCollection();
 
             public CookieCollection Cookies { get { return DummyCookies; } }
-
-            public long ContentLength64 { get { return 0L; } }
 
             public NameValueCollection FormValues { get { return DummyFormValues; } }
 
@@ -181,19 +180,14 @@ namespace VirtualRadar.WebSite
         Dictionary<string, CachedUser> _AdministratorUsers = new Dictionary<string,CachedUser>();
 
         /// <summary>
+        /// The object that will inject web site strings into the site for us.
+        /// </summary>
+        private WebSiteStringsManipulator _WebSiteStringsManipulator = new WebSiteStringsManipulator();
+
+        /// <summary>
         /// A reference to the singleton user manager - saves us having to keep reloading it.
         /// </summary>
         private IUserManager _UserManager;
-
-        /// <summary>
-        /// The object that will bundle JavaScript in HTML files for us.
-        /// </summary>
-        private IBundler _Bundler;
-
-        /// <summary>
-        /// The object that will minify JavaScript and CSS for us.
-        /// </summary>
-        private IMinifier _Minifier;
 
         /// <summary>
         /// The type of proxy that the server is sitting behind.
@@ -210,46 +204,6 @@ namespace VirtualRadar.WebSite
         /// The list of content injectors.
         /// </summary>
         private List<HtmlContentInjector> _HtmlContentInjectors = new List<HtmlContentInjector>();
-
-        /// <summary>
-        /// The list of JavaScript injectors.
-        /// </summary>
-        private List<JavaScriptInjector> _JavaScriptInjectors = new List<JavaScriptInjector>();
-
-        /// <summary>
-        /// A list of objects that can supply content for us.
-        /// </summary>
-        private List<Page> _Pages = new List<Page>();
-
-        /// <summary>
-        /// The page that will deal with requests for aircraft lists.
-        /// </summary>
-        private AircraftListJsonPage _AircraftListJsonPage;
-
-        /// <summary>
-        /// The page that deals with identifying CORS requests, validating them and handling CORS options requests.
-        /// </summary>
-        private CorsPreflightPage _CorsPreflightPage;
-
-        /// <summary>
-        /// The page that deals with serving requests from the file system.
-        /// </summary>
-        private FileSystemPage _FileSystemPage;
-
-        /// <summary>
-        /// The page that will deal with requests for images.
-        /// </summary>
-        private ImagePage _ImagePage;
-
-        /// <summary>
-        /// The page that handles requests from the proximity gadget.
-        /// </summary>
-        private ClosestAircraftJsonPage _ClosestAircraftJsonPage;
-
-        /// <summary>
-        /// The page that handles requests for report rows.
-        /// </summary>
-        private ReportRowsJsonPage _ReportRowsJsonPage;
         #endregion
 
         #region Properties
@@ -261,29 +215,21 @@ namespace VirtualRadar.WebSite
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public ISimpleAircraftList FlightSimulatorAircraftList
+        public IFlightSimulatorAircraftList FlightSimulatorAircraftList
         {
-            get { return _AircraftListJsonPage.FlightSimulatorAircraftList; }
-            set { _AircraftListJsonPage.FlightSimulatorAircraftList = value; }
+            get { return Factory.Singleton.ResolveSingleton<IFlightSimulatorAircraftList>(); }
+            set { ; }
         }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IBaseStationDatabase BaseStationDatabase
-        {
-            get { return _ReportRowsJsonPage.BaseStationDatabase; }
-            set { _ReportRowsJsonPage.BaseStationDatabase = value; }
-        }
+        public IBaseStationDatabase BaseStationDatabase { get; set; }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IStandingDataManager StandingDataManager
-        {
-            get { return _ReportRowsJsonPage.StandingDataManager; }
-            set { _ReportRowsJsonPage.StandingDataManager = value; }
-        }
+        public IStandingDataManager StandingDataManager { get; set; }
 
         /// <summary>
         /// See interface docs.
@@ -314,13 +260,6 @@ namespace VirtualRadar.WebSite
         public WebSite()
         {
             Provider = Factory.Singleton.Resolve<IWebSiteProvider>();
-
-            _AircraftListJsonPage = new AircraftListJsonPage(this);
-            _ClosestAircraftJsonPage = new ClosestAircraftJsonPage(this);
-            _CorsPreflightPage = new CorsPreflightPage(this);
-            _FileSystemPage = new FileSystemPage(this);
-            _ImagePage = new ImagePage(this);
-            _ReportRowsJsonPage = new ReportRowsJsonPage(this);
         }
         #endregion
 
@@ -349,31 +288,15 @@ namespace VirtualRadar.WebSite
 
                 server.AuthenticationRequired += Server_AuthenticationRequired;
 
-                _Bundler = Factory.Singleton.Resolve<IBundler>();
-                _Bundler.AttachToWebSite(this);
+                var redirection = Factory.Singleton.Resolve<IRedirectionConfiguration>().Singleton;
+                redirection.AddRedirection("/", "/desktop.html", RedirectionContext.Any);
+                redirection.AddRedirection("/", "/mobile.html", RedirectionContext.Mobile);
 
-                _Minifier = Factory.Singleton.Resolve<IMinifier>();
-                _Minifier.Initialise();
+                var fileSystemConfiguration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
+                fileSystemConfiguration.TextLoadedFromFile += FileSystemConfiguration_TextLoadedFromFile;
 
-                _Pages.Add(_CorsPreflightPage);
-                _Pages.Add(_FileSystemPage);
-                _Pages.Add(new TextPage(this));
-                _Pages.Add(_AircraftListJsonPage);
-                _Pages.Add(_ImagePage);
-                _Pages.Add(new ServerConfigJsonPage(this));
-                _Pages.Add(new AudioPage(this));
-                _Pages.Add(new FaviconPage(this));
-                _Pages.Add(_ReportRowsJsonPage);
-                _Pages.Add(_ClosestAircraftJsonPage);
-                _Pages.Add(new AirportDataProxyPage(this));
-                _Pages.Add(new PolarPlotJsonPage(this));
-                _Pages.Add(new DirectoryEntryJsonPage(this));
-
-                _JavaScriptInjectors.Add(new WebSiteStringsInjector());
-
-                foreach(var page in _Pages) {
-                    page.Provider = Provider;
-                }
+                var javascriptManipulatorConfig = Factory.Singleton.ResolveSingleton<IJavascriptManipulatorConfiguration>();
+                javascriptManipulatorConfig.AddTextResponseManipulator(_WebSiteStringsManipulator);
 
                 LoadConfiguration();
 
@@ -405,10 +328,6 @@ namespace VirtualRadar.WebSite
 
             _ProxyType = configuration.GoogleMapSettings.ProxyType;
 
-            foreach(var page in _Pages) {
-                page.LoadConfiguration(configuration);
-            }
-
             return result;
         }
 
@@ -432,7 +351,8 @@ namespace VirtualRadar.WebSite
         /// <param name="siteRoot"></param>
         public void AddSiteRoot(SiteRoot siteRoot)
         {
-            _FileSystemPage.AddSiteRoot(siteRoot);
+            var configuration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
+            configuration.AddSiteRoot(siteRoot);
         }
 
         /// <summary>
@@ -441,7 +361,8 @@ namespace VirtualRadar.WebSite
         /// <param name="siteRoot"></param>
         public void RemoveSiteRoot(SiteRoot siteRoot)
         {
-            _FileSystemPage.RemoveSiteRoot(siteRoot);
+            var configuration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
+            configuration.RemoveSiteRoot(siteRoot);
         }
 
         /// <summary>
@@ -452,7 +373,8 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         public bool IsSiteRootActive(SiteRoot siteRoot, bool folderMustMatch)
         {
-            return _FileSystemPage.IsSiteRootActive(siteRoot, folderMustMatch);
+            var configuration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
+            return configuration.IsSiteRootActive(siteRoot, folderMustMatch);
         }
 
         /// <summary>
@@ -461,7 +383,8 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         public List<string> GetSiteRootFolders()
         {
-            return _FileSystemPage.GetSiteRootFolders();
+            var configuration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
+            return configuration.GetSiteRootFolders();
         }
         #endregion
 
@@ -473,47 +396,6 @@ namespace VirtualRadar.WebSite
         public void RequestContent(RequestReceivedEventArgs args)
         {
             if(args == null) throw new ArgumentNullException("args");
-
-            if(args.PathAndFile == "/") RedirectToDefaultPage(args);
-            else {
-                foreach(var page in _Pages) {
-                    page.HandleRequest(WebServer, args);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Redirects the browser to the appropriate default page.
-        /// </summary>
-        /// <param name="args"></param>
-        private void RedirectToDefaultPage(RequestReceivedEventArgs args)
-        {
-            switch(args.Request.Url.Scheme) {
-                case "http":
-                case "https":
-                    var hostName = _ProxyType == ProxyType.Reverse ? args.Request.LocalEndPoint.Address.ToString() : args.Request.UserHostName;
-                    if(_ProxyType == ProxyType.Reverse) {
-                        var isDefaultPort = false;
-                        switch(args.Request.Url.Scheme) {
-                            case "http":        isDefaultPort = args.Request.LocalEndPoint.Port == 80; break;
-                            case "https":       isDefaultPort = args.Request.LocalEndPoint.Port == 443; break;
-                        }
-                        if(!isDefaultPort) hostName = String.Format("{0}:{1}", hostName, args.Request.LocalEndPoint.Port);
-                    }
-
-                    string redirectUrl = String.Format("{0}://{1}{2}{3}{4}{5}",
-                        /* 0 */ args.Request.Url.Scheme,
-                        /* 1 */ hostName,
-                        /* 2 */ args.Request.Url.AbsolutePath,
-                        /* 3 */ args.Request.Url.AbsolutePath.EndsWith("/") ? "" : "/",
-                        /* 4 */ args.IsAndroid || args.IsIPad || args.IsIPhone || args.IsIPod ? "mobile.html" : "desktop.html",
-                        /* 5 */ args.Request.Url.Query ?? "");
-                    args.Handled = true;
-                    args.Response.Redirect(redirectUrl);
-                    break;
-                default:
-                    break;
-            }
         }
 
         /// <summary>
@@ -542,58 +424,6 @@ namespace VirtualRadar.WebSite
         }
         #endregion
 
-        #region BundleHtml, InjectIntoJavaScript, MinifyJavaScript, MinifyCss
-        /// <summary>
-        /// Bundles multiple JavaScript loads in the HTML into a single JavaScript load.
-        /// </summary>
-        /// <param name="requestPathAndFile"></param>
-        /// <param name="textContent"></param>
-        /// <returns></returns>
-        internal string BundleHtml(string requestPathAndFile, TextContent textContent)
-        {
-            var result = _Bundler.BundleHtml(requestPathAndFile, textContent.Content);
-            textContent.Content = result;
-
-            return result;
-        }
-
-        /// <summary>
-        /// Injects content into the JavaScript file passed across.
-        /// </summary>
-        /// <param name="requestPathAndFile"></param>
-        /// <param name="textContent"></param>
-        internal void InjectIntoJavaScript(string requestPathAndFile, TextContent textContent)
-        {
-            foreach(var injector in _JavaScriptInjectors) {
-                injector.InjectIntoContent(requestPathAndFile, textContent);
-            }
-        }
-
-        /// <summary>
-        /// Minifies JavaScript on behalf of a page.
-        /// </summary>
-        /// <param name="textContent"></param>
-        /// <returns></returns>
-        internal string MinifyJavaScript(TextContent textContent)
-        {
-            var result = _Minifier.MinifyJavaScript(textContent.Content);
-            textContent.Content = result;
-
-            return result;
-        }
-
-        /// <summary>
-        /// Minifies CSS on behalf of a page.
-        /// </summary>
-        /// <param name="textContent"></param>
-        /// <returns></returns>
-        internal string MinifyCss(TextContent textContent)
-        {
-            // The minifier is breaking jQueryUI's css, we'll cut it out for now. // return _Minifier.MinifyCss(css);
-            return textContent.Content;
-        }
-        #endregion
-
         #region AddHtmlContentInjector, RemoveHtmlContentInjector
         /// <summary>
         /// See interface docs.
@@ -614,6 +444,7 @@ namespace VirtualRadar.WebSite
             lock(_HtmlContentInjectorsLock) _HtmlContentInjectors.Remove(contentInjector);
         }
 
+        /*
         /// <summary>
         /// Injects content into HTML files.
         /// </summary>
@@ -670,6 +501,7 @@ namespace VirtualRadar.WebSite
             textContent.Content = result;
             return result;
         }
+        */
         #endregion
 
         #region Events consumed
@@ -729,6 +561,18 @@ namespace VirtualRadar.WebSite
         private void Server_RequestReceived(object sender, RequestReceivedEventArgs args)
         {
             RequestContent(args);
+        }
+
+        /// <summary>
+        /// Raised when the OWIN file system server is about to serve a text file.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void FileSystemConfiguration_TextLoadedFromFile(object sender, TextContentEventArgs args)
+        {
+            if(args.MimeType == MimeType.Html) {
+                OnHtmlLoadedFromFile(args);
+            }
         }
         #endregion
     }

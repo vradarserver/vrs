@@ -16,24 +16,39 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VirtualRadar.Interface.WebSite;
 using Test.Framework;
 using System.IO;
+using InterfaceFactory;
+using VirtualRadar.Interface;
 
 namespace Test.VirtualRadar.Interface.WebSite
 {
     [TestClass]
     public class ChecksumFileEntryTests
     {
-        #region Test initialise
         public TestContext TestContext { get; set; }
+
+        private IClassFactory _Snapshot;
         private ChecksumFileEntry _Instance;
+        private MockFileSystemProvider _FileSystem;
+        private Crc64 _ChecksumGenerator;
 
         [TestInitialize]
         public void TestInitialise()
         {
+            _Snapshot = Factory.TakeSnapshot();
+
+            _FileSystem = new MockFileSystemProvider();
+            Factory.Singleton.RegisterInstance<IFileSystemProvider>(_FileSystem);
+            _ChecksumGenerator = new Crc64();
+
             _Instance = new ChecksumFileEntry();
         }
-        #endregion
 
-        #region Constructors
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            Factory.RestoreSnapshot(_Snapshot);
+        }
+
         [TestMethod]
         public void ChecksumFileEntry_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
@@ -41,9 +56,7 @@ namespace Test.VirtualRadar.Interface.WebSite
             TestUtilities.TestProperty(_Instance, r => r.FileName, null, "xyz");
             TestUtilities.TestProperty(_Instance, r => r.FileSize, 0L, 100L);
         }
-        #endregion
 
-        #region GenerateChecksum
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ChecksumFileEntry_GenerateChecksum_Throws_If_FileName_Is_Null()
@@ -52,27 +65,19 @@ namespace Test.VirtualRadar.Interface.WebSite
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void ChecksumFileEntry_GenerateChecksum_Throws_If_File_Is_Missing()
-        {
-            ChecksumFileEntry.GenerateChecksum("c:\\hoobawhatevertibbergibberoo");
-        }
-
-        [TestMethod]
         public void ChecksumFileEntry_GenerateChecksum_Generates_Correct_Checksum_For_Known_Content()
         {
-            var fileName = Path.Combine(TestContext.TestDeploymentDir, "Dummy-Whatever-DeleteMe.txt");
-            File.WriteAllText(fileName, "Don't change this");
-            try {
-                var checksum = ChecksumFileEntry.GenerateChecksum(fileName);
-                Assert.AreEqual("4A71A99D584C95CD", checksum);
-            } finally {
-                File.Delete(fileName);
-            }
-        }
-        #endregion
+            var fileName = @"c:\web\file.txt";
+            var content = "Don't change this";
+            var bytes = Encoding.UTF8.GetBytes(content);
+            var expectedChecksum = _ChecksumGenerator.ComputeChecksumString(bytes, 0, bytes.Length);
 
-        #region GetFileSize
+            _FileSystem.AddFile(fileName, bytes);
+
+            var checksum = ChecksumFileEntry.GenerateChecksum(fileName);
+            Assert.AreEqual(expectedChecksum, checksum);
+        }
+
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ChecksumFileEntry_GetFileSize_Throws_If_FileName_Is_Null()
@@ -81,32 +86,23 @@ namespace Test.VirtualRadar.Interface.WebSite
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void ChecksumFileEntry_GetFileSize_Throws_If_File_Is_Missing()
-        {
-            ChecksumFileEntry.GetFileSize("c:\\hoobawhatevertibbergibberoo");
-        }
-
-        [TestMethod]
         public void ChecksumFileEntry_GetFileSize_Returns_Correct_Length_For_File()
         {
-            var fileName = Path.Combine(TestContext.TestDeploymentDir, "Dummy-Whatever-DeleteMe.txt");
-            File.WriteAllText(fileName, "Don't change this");
-            try {
-                var length = ChecksumFileEntry.GetFileSize(fileName);
-                Assert.AreEqual(17, length);
-            } finally {
-                File.Delete(fileName);
-            }
-        }
-        #endregion
+            var fileName = @"c:\web\file.txt";
+            var content = "Don't change this";
+            var bytes = Encoding.UTF8.GetBytes(content);
+            _FileSystem.AddFile(fileName, bytes);
 
-        #region GetFileNameFromFullPath
+            var length = ChecksumFileEntry.GetFileSize(fileName);
+
+            Assert.AreEqual(bytes.Length, length);
+        }
+
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ChecksumFileEntry_GetFileNameFromFullPath_Throws_If_RootFolder_Is_Null()
         {
-            ChecksumFileEntry.GetFileNameFromFullPath(null, "c:\\whatever");
+            ChecksumFileEntry.GetFileNameFromFullPath(null, @"c:\whatever");
         }
 
         [TestMethod]
@@ -136,9 +132,7 @@ namespace Test.VirtualRadar.Interface.WebSite
             var entry = ChecksumFileEntry.GetFileNameFromFullPath(@"\root", @"/root/file");
             Assert.AreEqual(@"\file", entry);
         }
-        #endregion
 
-        #region GetFullPathFromRoot
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ChecksumFileEntry_GetFullPathFromRoot_Throws_If_Root_Folder_Is_Null()
@@ -159,6 +153,5 @@ namespace Test.VirtualRadar.Interface.WebSite
             _Instance.FileName = @"\Hello.txt";
             Assert.AreEqual(@"c:\tmp\Hello.txt", _Instance.GetFullPathFromRoot(@"c:\tmp"));
         }
-        #endregion
     }
 }

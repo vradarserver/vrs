@@ -25,11 +25,16 @@ namespace Test.InterfaceFactory
 
         interface IY { int Bar { get; set; } }
 
+        [Singleton]
+        interface ISi { int Goo { get; set; } }
+
         class X : IX { public int Foo { get; set; } }
 
         class XX : IX { public int Foo { get; set; } }
 
         class Y : IY { public int Bar { get; set; } }
+
+        class Si : ISi { public int Goo { get; set; } }
         #endregion
 
         #region Fields, Properties, TestInitialise & TestCleanup
@@ -92,13 +97,6 @@ namespace Test.InterfaceFactory
         public void ClassFactory_RegisterGeneric_Throws_If_ImplementationType_Is_An_Interface_Type()
         {
             _ClassFactory.Register<IX, IX>();
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ClassFactoryException))]
-        public void ClassFactory_RegisterGeneric_Throws_If_ImplementationType_Does_Not_Implement_InterfaceType()
-        {
-            _ClassFactory.Register<IX, Y>();
         }
         #endregion
 
@@ -233,7 +231,7 @@ namespace Test.InterfaceFactory
         }
 
         [TestMethod]
-        public void ClassFactory_Resolve_Returns_Singleton_In_Preference_To_New_Instance()
+        public void ClassFactory_Resolve_Returns_Registered_Instance_In_Preference_To_New_Instance()
         {
             _ClassFactory.Register<IX, X>();
             XX singleton = new XX();
@@ -242,13 +240,100 @@ namespace Test.InterfaceFactory
         }
 
         [TestMethod]
-        public void ClassFactory_Resolve_Returns_Last_Registered_Singleton()
+        public void ClassFactory_Resolve_Returns_Last_Registered_Instance()
         {
             X x1 = new X();
             X x2 = new X();
             _ClassFactory.RegisterInstance<IX>(x1);
             _ClassFactory.RegisterInstance<IX>(x2);
             Assert.AreSame(x2, _ClassFactory.Resolve<IX>());
+        }
+
+        [TestMethod]
+        public void ClassFactory_Resolve_Returns_Singletons_For_Instances_Marked_As_Such()
+        {
+            _ClassFactory.Register<ISi, Si>();
+
+            var instance1 = _ClassFactory.Resolve<ISi>();
+            var instance2 = _ClassFactory.Resolve<ISi>();
+
+            Assert.AreSame(instance1, instance2);
+        }
+        #endregion
+
+        #region ResolveSingleton
+        [TestMethod]
+        public void ClassFactory_ResolveSingleton_Resolves_Singletons()
+        {
+            _ClassFactory.Register<ISi, Si>();
+
+            var instance1 = _ClassFactory.ResolveSingleton<ISi>();
+            var instance2 = _ClassFactory.ResolveSingleton<ISi>();
+
+            Assert.AreSame(instance1, instance2);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ClassFactoryException))]
+        public void ClassFactory_ResolveSingleton_Does_Not_Resolve_Non_Singletons()
+        {
+            _ClassFactory.Register<IX, X>();
+            _ClassFactory.ResolveSingleton<IX>();
+        }
+
+        [TestMethod]
+        public void ClassFactory_ResolveSingleton_NonGeneric_Resolves_Singletons()
+        {
+            _ClassFactory.Register<ISi, Si>();
+
+            var instance1 = (ISi)_ClassFactory.ResolveSingleton(typeof(ISi));
+            var instance2 = (ISi)_ClassFactory.ResolveSingleton(typeof(ISi));
+
+            Assert.AreSame(instance1, instance2);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ClassFactoryException))]
+        public void ClassFactory_ResolveSingleton_NonGeneric_Does_Not_Resolve_Non_Singletons()
+        {
+            _ClassFactory.Register<IX, X>();
+            _ClassFactory.ResolveSingleton(typeof(IX));
+        }
+        #endregion
+
+        #region ResolveNewInstance
+        [TestMethod]
+        public void ClassFactory_ResolveNewInstance_Returns_New_Instances_Of_Singletons()
+        {
+            _ClassFactory.Register<ISi, Si>();
+
+            var instance1 = _ClassFactory.ResolveNewInstance(typeof(ISi));
+            var instance2 = _ClassFactory.ResolveNewInstance(typeof(ISi));
+
+            Assert.AreNotSame(instance1, instance2);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ClassFactoryException))]
+        public void ClassFactory_ResolveNewInstance_Throws_If_Interface_Is_Not_Singleton()
+        {
+            _ClassFactory.Register<IX, X>();
+            _ClassFactory.ResolveNewInstance(typeof(IX));
+        }
+
+        [TestMethod]
+        public void ClassFactory_ResolveNewInstance_Does_Not_Affect_Resolve()
+        {
+            _ClassFactory.Register<ISi, Si>();
+
+            var instance1 = _ClassFactory.Resolve<ISi>();
+            var instance2 = _ClassFactory.ResolveNewInstance<ISi>();
+            var instance3 = _ClassFactory.Resolve<ISi>();
+
+            Assert.AreNotSame(instance1, instance2);
+            Assert.AreNotSame(instance2, instance3);
+            Assert.AreSame(instance1, instance3);
+
         }
         #endregion
 

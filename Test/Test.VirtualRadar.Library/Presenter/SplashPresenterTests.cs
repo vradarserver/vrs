@@ -54,7 +54,7 @@ namespace Test.VirtualRadar.Library.Presenter
         private Mock<IWebServer> _WebServer;
         private Mock<IAutoConfigWebServer> _AutoConfigWebServer;
         private Mock<IWebSite> _WebSite;
-        private Mock<ISimpleAircraftList> _FlightSimulatorXAircraftList;
+        private Mock<IFlightSimulatorAircraftList> _FlightSimulatorXAircraftList;
         private Mock<IUniversalPlugAndPlayManager> _UniversalPlugAndPlayManager;
         private Mock<IConnectionLogger> _ConnectionLogger;
         private Mock<ILogDatabase> _LogDatabase;
@@ -93,7 +93,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _WebServer = new Mock<IWebServer>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _AutoConfigWebServer.Setup(s => s.WebServer).Returns(_WebServer.Object);
             _WebSite = TestUtilities.CreateMockImplementation<IWebSite>();
-            _FlightSimulatorXAircraftList = TestUtilities.CreateMockImplementation<ISimpleAircraftList>();
+            _FlightSimulatorXAircraftList = TestUtilities.CreateMockImplementation<IFlightSimulatorAircraftList>();
             _UniversalPlugAndPlayManager = TestUtilities.CreateMockImplementation<IUniversalPlugAndPlayManager>();
             _ConnectionLogger = TestUtilities.CreateMockSingleton<IConnectionLogger>();
             _LogDatabase = TestUtilities.CreateMockSingleton<ILogDatabase>();

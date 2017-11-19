@@ -25,7 +25,7 @@ namespace Test.VirtualRadar.Interface
         public void FilterString_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
             var filter = new FilterString();
-            TestUtilities.TestProperty(filter, r => r.Condition, FilterCondition.Invalid, FilterCondition.Equals);
+            TestUtilities.TestProperty(filter, r => r.Condition, FilterCondition.Missing, FilterCondition.Equals);
             TestUtilities.TestProperty(filter, r => r.ReverseCondition, false);
             TestUtilities.TestProperty(filter, r => r.Value, null, "Abc");
 
@@ -69,7 +69,7 @@ namespace Test.VirtualRadar.Interface
                             var result = filter.Passes(testValue);
 
                             var expectedResult = true;
-                            if(condition != FilterCondition.Between && condition != FilterCondition.Invalid) {
+                            if(condition != FilterCondition.Between && condition != FilterCondition.Missing) {
                                 if(String.IsNullOrEmpty(value)) {
                                     if(condition != FilterCondition.Equals) expectedResult = true;
                                     else {
@@ -124,7 +124,7 @@ namespace Test.VirtualRadar.Interface
                             var result = filter.Passes(testValue);
 
                             var expectedResult = true;
-                            if(condition != FilterCondition.Between && condition != FilterCondition.Invalid) {
+                            if(condition != FilterCondition.Between && condition != FilterCondition.Missing) {
                                 if(String.IsNullOrEmpty(value)) {
                                     if(condition != FilterCondition.Equals) expectedResult = true;
                                     else {
@@ -150,6 +150,32 @@ namespace Test.VirtualRadar.Interface
                     }
                 }
             }
+        }
+
+        [TestMethod]
+        public void FilterString_Equals_Returns_True_When_All_Properties_Match()
+        {
+            TestUtilities.TestSimpleEquals(typeof(FilterString), true, GenerateValue);
+        }
+
+        [TestMethod]
+        public void FilterString_Equals_Returns_True_When_Any_Properties_Do_Not_Match()
+        {
+            TestUtilities.TestSimpleEquals(typeof(FilterString), false, GenerateValue);
+        }
+
+        [TestMethod]
+        public void FilterString_GetHashCode_Returns_Correct_Value()
+        {
+            TestUtilities.TestSimpleGetHashCode(typeof(FilterString), GenerateValue);
+        }
+
+        private object GenerateValue(Type type, bool useValue1)
+        {
+            if(type == typeof(FilterCondition)) {
+                return useValue1 ? FilterCondition.Contains : FilterCondition.Equals;
+            }
+            throw new NotImplementedException($"Need to add support for property type {type.Name}");
         }
     }
 }

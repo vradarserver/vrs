@@ -27,6 +27,7 @@ namespace InterfaceFactory
         {
             public Type Type;
             public Func<object> Callback;
+            public bool IsSingleton;
 
             public object CreateInstance()
             {
@@ -42,12 +43,18 @@ namespace InterfaceFactory
         /// <summary>
         /// A map of interface types to implementation types.
         /// </summary>
-        private Dictionary<Type, Implementation> _ImplementationMap = new Dictionary<Type,Implementation>();
+        private Dictionary<Type, Implementation> _ImplementationMap = new Dictionary<Type, Implementation>();
 
         /// <summary>
-        /// A map of registered singleton objects.
+        /// A map of registered singleton objects. Always take a reference to this when reading, never write to the
+        /// dictionary... rather, overwrite the map instead within a <see cref="_SyncLock"/>.
         /// </summary>
         private Dictionary<Type, object> _SingletonMap = new Dictionary<Type,object>();
+
+        /// <summary>
+        /// Locks writes to _SingletonMap.
+        /// </summary>
+        private object _SyncLock = new object();
 
         /// <summary>
         /// Records an implementation of an interface
@@ -55,6 +62,8 @@ namespace InterfaceFactory
         /// <typeparam name="TI">Interface type</typeparam>
         /// <typeparam name="TM">Implementation type</typeparam>
         public void Register<TI, TM>()
+            where TI: class
+            where TM: class, TI
         {
             Register(typeof(TI), typeof(TM));
         }
@@ -78,6 +87,8 @@ namespace InterfaceFactory
 
         private void AddImplementation(Type interfaceType, Implementation implementation)
         {
+            implementation.IsSingleton = interfaceType.GetCustomAttributes(true).OfType<SingletonAttribute>().Any();
+
             if(_ImplementationMap.ContainsKey(interfaceType)) {
                 _ImplementationMap[interfaceType] = implementation;
             } else {
@@ -119,11 +130,32 @@ namespace InterfaceFactory
             if(instance == null) throw new ArgumentNullException("instance");
             if(!interfaceType.IsAssignableFrom(instance.GetType())) throw new ClassFactoryException($"Instances of {instance.GetType().Name} do not implement {interfaceType.Name}");
 
-            if(_SingletonMap.ContainsKey(interfaceType)) {
-                _SingletonMap[interfaceType] = instance;
-            } else {
-                _SingletonMap.Add(interfaceType, instance);
+            lock(_SyncLock) {
+                var newMap = CopySingletonMapWithinLock();
+                if(newMap.ContainsKey(interfaceType)) {
+                    newMap[interfaceType] = instance;
+                } else {
+                    newMap.Add(interfaceType, instance);
+                }
+
+                _SingletonMap = newMap;
             }
+        }
+
+        /// <summary>
+        /// Creates a shallow copy of <see cref="_SingletonMap"/>. Must be called within a lock on <see cref="_SyncLock"/>.
+        /// Do not call class constructors while holding the lock.
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<Type, object> CopySingletonMapWithinLock()
+        {
+            var result = new Dictionary<Type, object>();
+
+            foreach(var kvp in _SingletonMap) {
+                result.Add(kvp.Key, kvp.Value);
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -132,9 +164,20 @@ namespace InterfaceFactory
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public T Resolve<T>()
-            where T: class
+            where T : class
         {
             return (T)Resolve(typeof(T));
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T ResolveSingleton<T>()
+            where T: class
+        {
+            return (T)ResolveSingleton(typeof(T));
         }
 
         /// <summary>
@@ -144,16 +187,60 @@ namespace InterfaceFactory
         /// <returns></returns>
         public object Resolve(Type interfaceType)
         {
-            if(interfaceType == null) throw new ArgumentNullException("interfaceType");
-            if(!interfaceType.IsInterface) throw new ClassFactoryException(String.Format("{0} is not an interface", interfaceType.Name));
-            if(!_ImplementationMap.ContainsKey(interfaceType) && !_SingletonMap.ContainsKey(interfaceType)) throw new ClassFactoryException($"{interfaceType.Name} has not had an implementation registered for it");
+            return Resolve(interfaceType, out Implementation unused);
+        }
 
-            object result;
-            if(!_SingletonMap.TryGetValue(interfaceType, out result)) {
-                result = _ImplementationMap[interfaceType].CreateInstance(); 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="interfaceType"></param>
+        /// <returns></returns>
+        public object ResolveSingleton(Type interfaceType)
+        {
+            var result = Resolve(interfaceType, out Implementation implementation);
+            if(!implementation.IsSingleton) {
+                throw new ClassFactoryException($"{interfaceType?.FullName} is not a singleton");
             }
 
             return result;
+        }
+
+        private object Resolve(Type interfaceType, out Implementation implementation)
+        {
+            var singletonMap = _SingletonMap;
+
+            if(interfaceType == null) {
+                throw new ArgumentNullException("interfaceType");
+            }
+            if(!interfaceType.IsInterface) {
+                throw new ClassFactoryException(String.Format("{0} is not an interface", interfaceType.Name));
+            }
+            if(!_ImplementationMap.TryGetValue(interfaceType, out implementation) && !singletonMap.ContainsKey(interfaceType)) {
+                throw new ClassFactoryException($"{interfaceType.Name} has not had an implementation registered for it");
+            }
+
+            if(!FetchSingleton(interfaceType, out object result)) {
+                result = implementation.CreateInstance();
+
+                if(implementation.IsSingleton) {
+                    lock(_SyncLock) {
+                        var newObject = result;
+                        if(!FetchSingleton(interfaceType, out result)) {
+                            result = newObject;
+                            RegisterInstance(interfaceType, newObject);
+                            singletonMap = null;
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private bool FetchSingleton(Type interfaceType, out object result)
+        {
+            var singletonMap = _SingletonMap;
+            return singletonMap.TryGetValue(interfaceType, out result);
         }
 
         /// <summary>
@@ -163,17 +250,53 @@ namespace InterfaceFactory
         /// <returns></returns>
         public IClassFactory CreateChildFactory()
         {
-            ClassFactory result = new ClassFactory();
+            var result = new ClassFactory();
 
-            foreach(KeyValuePair<Type, Implementation> valuePair in _ImplementationMap) {
+            foreach(var valuePair in _ImplementationMap) {
                 result._ImplementationMap.Add(valuePair.Key, valuePair.Value);
             }
 
-            foreach(KeyValuePair<Type, object> valuePair in _SingletonMap) {
+            var singletonMap = _SingletonMap;
+            foreach(var valuePair in singletonMap) {
                 result._SingletonMap.Add(valuePair.Key, valuePair.Value);
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T ResolveNewInstance<T>()
+            where T: class
+        {
+            return (T)ResolveNewInstance(typeof(T));
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="interfaceType"></param>
+        /// <returns></returns>
+        public object ResolveNewInstance(Type interfaceType)
+        {
+            if(interfaceType == null) {
+                throw new ArgumentNullException("interfaceType");
+            }
+            if(!interfaceType.IsInterface) {
+                throw new ClassFactoryException(String.Format("{0} is not an interface", interfaceType.Name));
+            }
+
+            if(!_ImplementationMap.TryGetValue(interfaceType, out Implementation implementation)) {
+                throw new ClassFactoryException($"{interfaceType.Name} has not had an implementation registered for it");
+            }
+            if(!implementation.IsSingleton) {
+                throw new ClassFactoryException($"{interfaceType.Name} has not been tagged with the Singleton attribute");
+            }
+
+            return implementation.CreateInstance();
         }
     }
 }

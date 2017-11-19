@@ -1892,4 +1892,8 @@
   <data name="Yes" xml:space="preserve">
     <value>是</value>
   </data>
+  <data name="LanguageCode" xml:space="preserve">
+    <value>zh-CN</value>
+    <comment>DO NOT TRANSLATE. Used by unit tests.</comment>
+  </data>
 </root>

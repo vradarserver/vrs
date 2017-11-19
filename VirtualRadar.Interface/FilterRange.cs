@@ -86,5 +86,49 @@ namespace VirtualRadar.Interface
 
             return result;
         }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            var result = base.Equals(obj);
+            if(result) {
+                result = false;
+                if(obj is FilterRange<T> other) {
+                    result = Object.Equals(LowerValue, other.LowerValue) &&
+                             Object.Equals(UpperValue, other.UpperValue);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See base docs. Do not use these objects as keys!
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            unchecked {
+                return (base.GetHashCode() << 16) | (LowerValue.GetHashCode() << 8) | UpperValue.GetHashCode();
+            }
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return String.Format("{0} {1} and {2}{3}",
+                base.ToString(),
+                LowerValue,
+                UpperValue,
+                IsValid ? "" : " (invalid)"
+            );
+        }
     }
 }

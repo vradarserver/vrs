@@ -24,7 +24,6 @@ namespace VirtualRadar.Library.Settings
     /// </summary>
     class SharedConfiguration : ISharedConfiguration
     {
-        #region Fields
         /// <summary>
         /// The lock that stops two threads from simultaenously loading configurations.
         /// </summary>
@@ -36,6 +35,11 @@ namespace VirtualRadar.Library.Settings
         private Configuration _Configuration;
 
         /// <summary>
+        /// The date and time (at UTC) when the configuration was loaded.
+        /// </summary>
+        private DateTime _ConfigurationLoadedUtc;
+
+        /// <summary>
         /// The object that loads the configuration.
         /// </summary>
         private IConfigurationStorage _ConfigurationStorage;
@@ -44,9 +48,12 @@ namespace VirtualRadar.Library.Settings
         /// The object that listens to the configuration for illegal modifications.
         /// </summary>
         private IConfigurationListener _ConfigurationListener;
-        #endregion
 
-        #region Properties
+        /// <summary>
+        /// A list of weak references to subscribers of configuration changed events.
+        /// </summary>
+        private List<WeakReference<ISharedConfigurationSubscriber>> _Subscribers;
+
         private static ISharedConfiguration _Singleton = new SharedConfiguration();
         /// <summary>
         /// See interface docs.
@@ -55,9 +62,7 @@ namespace VirtualRadar.Library.Settings
         {
             get { return _Singleton; }
         }
-        #endregion
 
-        #region Events exposed
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -75,11 +80,9 @@ namespace VirtualRadar.Library.Settings
                 log.WriteLine("Caught exception in shared ConfigurationChanged handler: {0}", ex.ToString());
             });
         }
-        #endregion
 
-        #region Get, LoadConfiguration
         /// <summary>
-        /// Gets the current configuration.
+        /// See interface docs.
         /// </summary>
         /// <returns></returns>
         public Configuration Get()
@@ -91,6 +94,19 @@ namespace VirtualRadar.Library.Settings
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public DateTime GetConfigurationChangedUtc()
+        {
+            if(_ConfigurationLoadedUtc == default(DateTime)) {
+                LoadConfiguration(forceLoad: false);
+            }
+
+            return _ConfigurationLoadedUtc;
         }
 
         /// <summary>
@@ -107,20 +123,83 @@ namespace VirtualRadar.Library.Settings
 
                         _ConfigurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
                         _ConfigurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
+
+                        _Subscribers = new List<WeakReference<ISharedConfigurationSubscriber>>();
+
+                        var heartbeat = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
+                        heartbeat.SlowTick += HeartBeat_SlowTick;
                     }
 
-                    if(_Configuration != null) _ConfigurationListener.Release();
+                    if(_Configuration != null) {
+                        _ConfigurationListener.Release();
+                    }
 
                     var configuration = _ConfigurationStorage.Load();
+                    _ConfigurationLoadedUtc = DateTime.UtcNow;
                     _ConfigurationListener.Initialise(configuration);
 
                     _Configuration = configuration;
                 }
             }
         }
-        #endregion
 
-        #region Event handlers
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="subscriber"></param>
+        public void AddWeakSubscription(ISharedConfigurationSubscriber subscriber)
+        {
+            if(_Subscribers == null) {
+                LoadConfiguration(forceLoad: false);
+            }
+
+            lock(_SyncLock) {
+                var subscribers = CollectionHelper.ShallowCopy(_Subscribers);
+                subscribers.Add(new WeakReference<ISharedConfigurationSubscriber>(subscriber));
+                _Subscribers = subscribers;
+            }
+        }
+
+        /// <summary>
+        /// Calls subscribers to tell them about the configuration change.
+        /// </summary>
+        private void CallSubscribers()
+        {
+            var weakReferences = _Subscribers;
+
+            foreach(var weakReference in weakReferences) {
+                ISharedConfigurationSubscriber subscriber;
+                if(weakReference.TryGetTarget(out subscriber)) {
+                    try {
+                        subscriber.SharedConfigurationChanged(this);
+                    } catch(Exception ex) {
+                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        log.WriteLine("Caught exception while calling ISharedConfiguration subscriber: {0}", ex);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Removes weak references that no longer point at active objects.
+        /// </summary>
+        private void RemoveDeadSubscribers()
+        {
+            lock(_SyncLock) {
+                var removeList = new List<WeakReference<ISharedConfigurationSubscriber>>();
+                foreach(var weakReference in _Subscribers) {
+                    ISharedConfigurationSubscriber subscriber;
+                    if(!weakReference.TryGetTarget(out subscriber)) {
+                        removeList.Add(weakReference);
+                    }
+                }
+
+                foreach(var removeEntry in removeList) {
+                    _Subscribers.Remove(removeEntry);
+                }
+            }
+        }
+
         /// <summary>
         /// Called when the configuration changes.
         /// </summary>
@@ -130,6 +209,7 @@ namespace VirtualRadar.Library.Settings
         {
             LoadConfiguration(forceLoad: true);
             OnConfigurationChanged(EventArgs.Empty);
+            CallSubscribers();
         }
 
         /// <summary>
@@ -144,6 +224,15 @@ namespace VirtualRadar.Library.Settings
                 e.PropertyName
             ));
         }
-        #endregion
+
+        /// <summary>
+        /// Called every few seconds by the heartbeat timer.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HeartBeat_SlowTick(object sender, EventArgs e)
+        {
+            RemoveDeadSubscribers();
+        }
     }
 }

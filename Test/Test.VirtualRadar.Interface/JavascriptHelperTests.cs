@@ -42,5 +42,23 @@ namespace Test.VirtualRadar.Interface
 
             Assert.AreEqual(worksheet.Long("JavascriptTicks"), JavascriptHelper.ToJavascriptTicks(worksheet.DateTime("Date")));
         }
+
+        [TestMethod]
+        public void JavascriptHelper_FormatStringLiteral_Returns_String_Surrounded_By_Single_Quotes()
+        {
+            Assert.AreEqual(@"'1'", JavascriptHelper.FormatStringLiteral("1"));
+        }
+
+        [TestMethod]
+        public void JavascriptHelper_FormatStringLiteral_Escapes_Single_Quotes_In_String()
+        {
+            Assert.AreEqual(@"'p\'s and q\'s'", JavascriptHelper.FormatStringLiteral("p's and q's"));
+        }
+
+        [TestMethod]
+        public void JavascriptHelper_FormatStringLiteral_Returns_Word_Null_If_Passed_Null()
+        {
+            Assert.AreEqual(@"null", JavascriptHelper.FormatStringLiteral(null));
+        }
     }
 }

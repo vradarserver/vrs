@@ -2345,4 +2345,8 @@
     <value>Yes</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
+  <data name="LanguageCode" xml:space="preserve">
+    <value>tr-TR</value>
+    <comment>DO NOT TRANSLATE. Used by unit tests.</comment>
+  </data>
 </root>

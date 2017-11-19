@@ -16,12 +16,41 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VirtualRadar.Interface.WebSite;
 using Test.Framework;
 using VirtualRadar.Interface;
+using InterfaceFactory;
+using Moq;
+using VirtualRadar.Interface.Settings;
 
 namespace Test.VirtualRadar.Interface.WebSite
 {
     [TestClass]
     public class ServerConfigJsonTests
     {
+        public TestContext TestContext { get; set; }
+
+        private IClassFactory _Snapshot;
+        private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
+        private Mock<IApplicationInformation> _ApplicationInformation;
+        private Mock<ISharedConfiguration> _SharedConfiguration;
+        private Configuration _Configuration;
+
+        [TestInitialize]
+        public void TestInitialise()
+        {
+            _Snapshot = Factory.TakeSnapshot();
+
+            _RuntimeEnvironment = TestUtilities.CreateMockSingleton<IRuntimeEnvironment>();
+            _ApplicationInformation = TestUtilities.CreateMockImplementation<IApplicationInformation>();
+            _SharedConfiguration = TestUtilities.CreateMockSingleton<ISharedConfiguration>();
+            _Configuration = new Configuration();
+            _SharedConfiguration.Setup(r => r.Get()).Returns(_Configuration);
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            Factory.RestoreSnapshot(_Snapshot);
+        }
+
         [TestMethod]
         public void ServerConfigJson_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
@@ -56,60 +85,166 @@ namespace Test.VirtualRadar.Interface.WebSite
         }
 
         [TestMethod]
-        public void ServerConfigJson_Clone_Creates_Copy()
+        public void ServerConfigJson_ToModel_Sets_IsMono_When_Running_Under_Mono()
         {
-            foreach(var property in typeof(ServerConfigJson).GetProperties()) {
-                for(var pass = 0;pass < 2;++pass) {
-                    var json = new ServerConfigJson();
+            _RuntimeEnvironment.Setup(r => r.IsMono).Returns(true);
 
-                    object expected = null;
-                    switch(property.Name) {
-                        case nameof(ServerConfigJson.GoogleMapsApiKey):                         expected = json.GoogleMapsApiKey = pass == 0 ? "A" : "B"; break;
-                        case nameof(ServerConfigJson.InitialDistanceUnit):                      expected = json.InitialDistanceUnit = pass == 0 ? "A": "B"; break;
-                        case nameof(ServerConfigJson.InitialHeightUnit):                        expected = json.InitialHeightUnit = pass == 0 ? "A" : "B"; break;
-                        case nameof(ServerConfigJson.InitialLatitude):                          expected = json.InitialLatitude = pass == 0 ? 1.234 : 5.678; break;
-                        case nameof(ServerConfigJson.InitialLongitude):                         expected = json.InitialLongitude = pass == 0 ? 1.234 : 5.678; break;
-                        case nameof(ServerConfigJson.InitialMapType):                           expected = json.InitialMapType = pass == 0 ? "A" : "B"; break;
-                        case nameof(ServerConfigJson.InitialSettings):                          expected = json.InitialSettings = pass == 0 ? "A" : "B"; break;
-                        case nameof(ServerConfigJson.InitialSpeedUnit):                         expected = json.InitialSpeedUnit = pass == 0 ? "A" : "B"; break;
-                        case nameof(ServerConfigJson.InitialZoom):                              expected = json.InitialZoom = pass == 0 ? 1 : 2; break;
-                        case nameof(ServerConfigJson.InternetClientCanRunReports):              expected = json.InternetClientCanRunReports = pass == 0; break;
-                        case nameof(ServerConfigJson.InternetClientCanShowPinText):             expected = json.InternetClientCanShowPinText = pass == 0; break;
-                        case nameof(ServerConfigJson.InternetClientsCanPlayAudio):              expected = json.InternetClientsCanPlayAudio = pass == 0; break;
-                        case nameof(ServerConfigJson.InternetClientsCanSeeAircraftPictures):    expected = json.InternetClientsCanSeeAircraftPictures = pass == 0; break;
-                        case nameof(ServerConfigJson.InternetClientsCanSeePolarPlots):          expected = json.InternetClientsCanSeePolarPlots = pass == 0; break;
-                        case nameof(ServerConfigJson.InternetClientsCanSubmitRoutes):           expected = json.InternetClientsCanSubmitRoutes = pass == 0; break;
-                        case nameof(ServerConfigJson.InternetClientTimeoutMinutes):             expected = json.InternetClientTimeoutMinutes = pass == 0 ? 1 : 2; break;
-                        case nameof(ServerConfigJson.IsAudioEnabled):                           expected = json.IsAudioEnabled = pass == 0; break;
-                        case nameof(ServerConfigJson.IsLocalAddress):                           expected = json.IsLocalAddress = pass == 0; break;
-                        case nameof(ServerConfigJson.IsMono):                                   expected = json.IsMono = pass == 0; break;
-                        case nameof(ServerConfigJson.MinimumRefreshSeconds):                    expected = json.MinimumRefreshSeconds = pass == 0 ? 1 : 2; break;
-                        case nameof(ServerConfigJson.RefreshSeconds):                           expected = json.RefreshSeconds = pass == 0 ? 1 : 2; break;
-                        case nameof(ServerConfigJson.UseMarkerLabels):                          expected = json.UseMarkerLabels = pass == 0; break;
-                        case nameof(ServerConfigJson.UseSvgGraphics):                           expected = json.UseSvgGraphics = pass == 0; break;
-                        case nameof(ServerConfigJson.VrsVersion):                               expected = json.VrsVersion = pass == 0 ? "A" : "B"; break;
-                        case nameof(ServerConfigJson.Receivers):
-                            json.Receivers.Add(new ServerReceiverJson() {
-                                UniqueId = pass == 0 ? 1 : 2,
-                                Name = pass == 0 ? "First" : "Second",
-                            });
-                            break;
-                        default:
-                            throw new NotImplementedException(property.Name);
-                    }
+            var model = ServerConfigJson.ToModel(isLocalAddress: true);
 
-                    var actual = (ServerConfigJson)json.Clone();
+            Assert.IsTrue(model.IsMono);
+        }
 
-                    if(property.Name != nameof(ServerConfigJson.Receivers)) {
-                        var actualValue = property.GetValue(actual, null);
-                        Assert.AreEqual(expected, actualValue, "for property {0}", property.Name);
-                    } else {
-                        Assert.AreEqual(json.Receivers.Count, actual.Receivers.Count);
-                        Assert.AreNotSame(json.Receivers[0], actual.Receivers[0]);
-                        Assert.AreEqual(json.Receivers[0].UniqueId, actual.Receivers[0].UniqueId);
-                        Assert.AreEqual(json.Receivers[0].Name, actual.Receivers[0].Name);
-                    }
+        [TestMethod]
+        public void ServerConfigJson_ToModel_Clears_IsMono_When_Running_Under_DotNet()
+        {
+            _RuntimeEnvironment.Setup(r => r.IsMono).Returns(false);
+
+            var model = ServerConfigJson.ToModel(isLocalAddress: true);
+
+            Assert.IsFalse(model.IsMono);
+        }
+
+
+        [TestMethod]
+        public void ServerConfigJson_ToModel_Sets_VrsVersion_Correctly()
+        {
+            _ApplicationInformation.Setup(r => r.ShortVersion).Returns("1.2.3");
+
+            var model = ServerConfigJson.ToModel(isLocalAddress: true);
+
+            Assert.AreEqual("1.2.3", model.VrsVersion);
+        }
+
+        [TestMethod]
+        public void ServerConfigJson_ToModel_Copies_Visible_Receiver_Details()
+        {
+            _Configuration.Receivers.Add(new Receiver() { UniqueId = 1, Name = "R1", ReceiverUsage = ReceiverUsage.MergeOnly });
+            _Configuration.Receivers.Add(new Receiver() { UniqueId = 2, Name = "R2", ReceiverUsage = ReceiverUsage.HideFromWebSite, });
+            _Configuration.Receivers.Add(new Receiver() { UniqueId = 3, Name = "R3", ReceiverUsage = ReceiverUsage.Normal, });
+            _Configuration.MergedFeeds.Add(new MergedFeed() { UniqueId = 10, Name = "M1", ReceiverUsage = ReceiverUsage.MergeOnly });
+            _Configuration.MergedFeeds.Add(new MergedFeed() { UniqueId = 11, Name = "M2", ReceiverUsage = ReceiverUsage.HideFromWebSite });
+            _Configuration.MergedFeeds.Add(new MergedFeed() { UniqueId = 12, Name = "M3", ReceiverUsage = ReceiverUsage.Normal });
+
+            var model = ServerConfigJson.ToModel(isLocalAddress: true);
+
+            Assert.AreEqual(2, model.Receivers.Count);
+            Assert.IsTrue(model.Receivers.Any(r => r.UniqueId == 3 && r.Name == "R3"));
+            Assert.IsTrue(model.Receivers.Any(r => r.UniqueId == 12 && r.Name == "M3"));
+        }
+
+        [TestMethod]
+        public void ServerConfigJson_ToModel_Sets_GoogleMapsApiKey_For_Internet_Clients_When_Key_Present()
+        {
+            _Configuration.GoogleMapSettings.GoogleMapsApiKey = "API Key";
+            _Configuration.GoogleMapSettings.UseGoogleMapsAPIKeyWithLocalRequests = false;
+
+            var model = ServerConfigJson.ToModel(isLocalAddress: false);
+
+            Assert.AreEqual("API Key", model.GoogleMapsApiKey);
+        }
+
+        [TestMethod]
+        public void ServerConfigJson_ToModel_Sets_Null_GoogleMapsApiKey_For_Internet_Clients_When_Key_Missing()
+        {
+            _Configuration.GoogleMapSettings.GoogleMapsApiKey = "";
+            _Configuration.GoogleMapSettings.UseGoogleMapsAPIKeyWithLocalRequests = false;
+
+            var model = ServerConfigJson.ToModel(isLocalAddress: false);
+
+            Assert.IsNull(model.GoogleMapsApiKey);
+        }
+
+        [TestMethod]
+        public void ServerConfigJson_ToModel_Sets_Null_GoogleMapsApiKey_For_Local_Clients_When_Key_Present()
+        {
+            _Configuration.GoogleMapSettings.GoogleMapsApiKey = "API Key";
+            _Configuration.GoogleMapSettings.UseGoogleMapsAPIKeyWithLocalRequests = false;
+
+            var model = ServerConfigJson.ToModel(isLocalAddress: true);
+
+            Assert.IsNull(model.GoogleMapsApiKey);
+        }
+
+        [TestMethod]
+        public void ServerConfigJson_ToModel_Sets_GoogleMapsApiKey_To_Local_Clients_When_Key_Present_And_Switch_Set()
+        {
+            _Configuration.GoogleMapSettings.GoogleMapsApiKey = "API Key";
+            _Configuration.GoogleMapSettings.UseGoogleMapsAPIKeyWithLocalRequests = true;
+
+            var model = ServerConfigJson.ToModel(isLocalAddress: true);
+
+            Assert.AreEqual("API Key", model.GoogleMapsApiKey);
+        }
+
+        [TestMethod]
+        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "SubstituteConfiguration$")]
+        public void ServerConfigJson_ToModel_Fills_Model_Correctly()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+
+            var isLocalAddress = true;
+            using(var cultureSwitcher = new CultureSwitcher(worksheet.String("Culture"))) {
+                var configProperty = worksheet.String("ConfigProperty");
+                var isMono = worksheet.Bool("IsMono");
+                _RuntimeEnvironment.Setup(r => r.IsMono).Returns(isMono);
+
+                switch(configProperty) {
+                    case "VrsVersion":              _ApplicationInformation.Setup(r => r.ShortVersion).Returns(worksheet.String("Value")); break;
+                    case "IsLocalAddress":          isLocalAddress = worksheet.Bool("Value"); break;
+                    case "IsMono":                  break;
+                    case "InitialMapLatitude":      _Configuration.GoogleMapSettings.InitialMapLatitude = worksheet.Double("Value"); break;
+                    case "InitialMapLongitude":     _Configuration.GoogleMapSettings.InitialMapLongitude = worksheet.Double("Value"); break;
+                    case "InitialMapType":          _Configuration.GoogleMapSettings.InitialMapType = worksheet.EString("Value"); break;
+                    case "InitialMapZoom":          _Configuration.GoogleMapSettings.InitialMapZoom = worksheet.Int("Value"); break;
+                    case "InitialRefreshSeconds":   _Configuration.GoogleMapSettings.InitialRefreshSeconds = worksheet.Int("Value"); break;
+                    case "InitialSettings":         _Configuration.GoogleMapSettings.InitialSettings = worksheet.EString("Value"); break;
+                    case "MinimumRefreshSeconds":   _Configuration.GoogleMapSettings.MinimumRefreshSeconds = worksheet.Int("Value"); break;
+                    case "InitialDistanceUnit":     _Configuration.GoogleMapSettings.InitialDistanceUnit = worksheet.ParseEnum<DistanceUnit>("Value"); break;
+                    case "InitialHeightUnit":       _Configuration.GoogleMapSettings.InitialHeightUnit = worksheet.ParseEnum<HeightUnit>("Value"); break;
+                    case "InitialSpeedUnit":        _Configuration.GoogleMapSettings.InitialSpeedUnit = worksheet.ParseEnum<SpeedUnit>("Value"); break;
+                    case "CanRunReports":           _Configuration.InternetClientSettings.CanRunReports = worksheet.Bool("Value"); break;
+                    case "CanShowPinText":          _Configuration.InternetClientSettings.CanShowPinText = worksheet.Bool("Value"); break;
+                    case "TimeoutMinutes":          _Configuration.InternetClientSettings.TimeoutMinutes = worksheet.Int("Value"); break;
+                    case "CanPlayAudio":            _Configuration.InternetClientSettings.CanPlayAudio = worksheet.Bool("Value"); break;
+                    case "CanSubmitRoutes":         _Configuration.InternetClientSettings.CanSubmitRoutes = worksheet.Bool("Value"); break;
+                    case "CanShowPictures":         _Configuration.InternetClientSettings.CanShowPictures = worksheet.Bool("Value"); break;
+                    case "AudioEnabled":            _Configuration.AudioSettings.Enabled = worksheet.Bool("Value"); break;
+                    case "CanShowPolarPlots":       _Configuration.InternetClientSettings.CanShowPolarPlots = worksheet.Bool("Value"); break;
+                    case "UseMarkerLabels":         _Configuration.MonoSettings.UseMarkerLabels = worksheet.Bool("Value"); break;
+                    case "UseSvgGraphics":          _Configuration.GoogleMapSettings.UseSvgGraphics = worksheet.Bool("Value"); break;
+                    default:                        throw new NotImplementedException();
                 }
+            }
+
+            var model = ServerConfigJson.ToModel(isLocalAddress);
+
+            var propertyName = worksheet.String("ConfigProperty");
+            switch(propertyName) {
+                case "VrsVersion":                  Assert.AreEqual(worksheet.EString("JsonValue"), model.VrsVersion); break;
+                case "IsLocalAddress":              Assert.AreEqual(worksheet.Bool("JsonValue"), model.IsLocalAddress); break;
+                case "IsMono":                      Assert.AreEqual(worksheet.Bool("JsonValue"), model.IsMono); break;
+                case "InitialMapLatitude":          Assert.AreEqual(worksheet.Double("JsonValue"), model.InitialLatitude); break;
+                case "InitialMapLongitude":         Assert.AreEqual(worksheet.Double("JsonValue"), model.InitialLongitude); break;
+                case "InitialMapType":              Assert.AreEqual(worksheet.EString("JsonValue"), model.InitialMapType); break;
+                case "InitialMapZoom":              Assert.AreEqual(worksheet.Int("JsonValue"), model.InitialZoom); break;
+                case "InitialRefreshSeconds":       Assert.AreEqual(worksheet.Int("JsonValue"), model.RefreshSeconds); break;
+                case "InitialSettings":             Assert.AreEqual(worksheet.EString("JsonValue"), model.InitialSettings); break;
+                case "MinimumRefreshSeconds":       Assert.AreEqual(worksheet.Int("JsonValue"), model.MinimumRefreshSeconds); break;
+                case "InitialDistanceUnit":         Assert.AreEqual(worksheet.String("JsonValue"), model.InitialDistanceUnit); break;
+                case "InitialHeightUnit":           Assert.AreEqual(worksheet.String("JsonValue"), model.InitialHeightUnit); break;
+                case "InitialSpeedUnit":            Assert.AreEqual(worksheet.String("JsonValue"), model.InitialSpeedUnit); break;
+                case "CanRunReports":               Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientCanRunReports); break;
+                case "CanShowPinText":              Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientCanShowPinText); break;
+                case "TimeoutMinutes":              Assert.AreEqual(worksheet.Int("JsonValue"), model.InternetClientTimeoutMinutes); break;
+                case "CanPlayAudio":                Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientsCanPlayAudio); break;
+                case "CanSubmitRoutes":             Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientsCanSubmitRoutes); break;
+                case "CanShowPictures":             Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientsCanSeeAircraftPictures); break;
+                case "AudioEnabled":                Assert.AreEqual(worksheet.Bool("JsonValue"), model.IsAudioEnabled); break;
+                case "CanShowPolarPlots":           Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientsCanSeePolarPlots); break;
+                case "UseMarkerLabels":             Assert.AreEqual(worksheet.Bool("JsonValue"), model.UseMarkerLabels); break;
+                case "UseSvgGraphics":              Assert.AreEqual(worksheet.Bool("JsonValue"), model.UseSvgGraphics); break;
+                default:                            throw new NotImplementedException();
             }
         }
     }
