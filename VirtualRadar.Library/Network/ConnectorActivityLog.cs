@@ -47,14 +47,6 @@ namespace VirtualRadar.Library.Network
         private bool _InitialisedSnapshotLogger;
         #endregion
 
-        #region Properties
-        private static readonly IConnectorActivityLog _Singleton = new ConnectorActivityLog();
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IConnectorActivityLog Singleton { get { return _Singleton; } }
-        #endregion
-
         #region Events
         /// <summary>
         /// See interface docs.

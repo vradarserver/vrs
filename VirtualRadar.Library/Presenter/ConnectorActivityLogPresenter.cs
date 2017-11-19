@@ -45,7 +45,7 @@ namespace VirtualRadar.Library.Presenter
         /// </summary>
         private void Populate()
         {
-            var events = _View.Connector != null ? _View.Connector.GetActivityHistory() : Factory.Singleton.Resolve<IConnectorActivityLog>().Singleton.GetActivityHistory();
+            var events = _View.Connector != null ? _View.Connector.GetActivityHistory() : Factory.Singleton.ResolveSingleton<IConnectorActivityLog>().GetActivityHistory();
             _View.Populate(events);
         }
 
