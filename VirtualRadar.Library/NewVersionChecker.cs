@@ -66,12 +66,6 @@ namespace VirtualRadar.Library
         /// </summary>
         public string DownloadUrl { get { return "http://www.virtualradarserver.co.uk"; } }
 
-        private static readonly INewVersionChecker _Singleton = new NewVersionChecker();
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public INewVersionChecker Singleton { get { return _Singleton; } }
-
         /// <summary>
         /// See interface docs.
         /// </summary>

@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
@@ -19,7 +20,8 @@ namespace VirtualRadar.Interface
     /// The interface for objects that can check with the VirtualRadarServer website to see whether a new
     /// version is available for download.
     /// </summary>
-    public interface INewVersionChecker : ISingleton<INewVersionChecker>
+    [Singleton]
+    public interface INewVersionChecker
     {
         /// <summary>
         /// Gets or sets the provider that abstracts away the environment for testing purposes.
