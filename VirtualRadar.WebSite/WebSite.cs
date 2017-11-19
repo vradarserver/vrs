@@ -204,11 +204,6 @@ namespace VirtualRadar.WebSite
         /// The list of content injectors.
         /// </summary>
         private List<HtmlContentInjector> _HtmlContentInjectors = new List<HtmlContentInjector>();
-
-        /// <summary>
-        /// A list of objects that can supply content for us.
-        /// </summary>
-        private List<Page> _Pages = new List<Page>();
         #endregion
 
         #region Properties
@@ -297,17 +292,11 @@ namespace VirtualRadar.WebSite
                 redirection.AddRedirection("/", "/desktop.html", RedirectionContext.Any);
                 redirection.AddRedirection("/", "/mobile.html", RedirectionContext.Mobile);
 
-                _Pages.Add(new TextPage(this));
-
                 var fileSystemConfiguration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
                 fileSystemConfiguration.TextLoadedFromFile += FileSystemConfiguration_TextLoadedFromFile;
 
                 var javascriptManipulatorConfig = Factory.Singleton.ResolveSingleton<IJavascriptManipulatorConfiguration>();
                 javascriptManipulatorConfig.AddTextResponseManipulator(_WebSiteStringsManipulator);
-
-                foreach(var page in _Pages) {
-                    page.Provider = Provider;
-                }
 
                 LoadConfiguration();
 
@@ -338,10 +327,6 @@ namespace VirtualRadar.WebSite
             }
 
             _ProxyType = configuration.GoogleMapSettings.ProxyType;
-
-            foreach(var page in _Pages) {
-                page.LoadConfiguration(configuration);
-            }
 
             return result;
         }
@@ -411,10 +396,6 @@ namespace VirtualRadar.WebSite
         public void RequestContent(RequestReceivedEventArgs args)
         {
             if(args == null) throw new ArgumentNullException("args");
-
-            foreach(var page in _Pages) {
-                page.HandleRequest(WebServer, args);
-            }
         }
 
         /// <summary>
