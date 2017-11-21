@@ -400,7 +400,7 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.SplashScreenStartingOnlineLookupManager);
 
-            var manager = Factory.Singleton.Resolve<IAircraftOnlineLookupManager>().Singleton;
+            var manager = Factory.Singleton.ResolveSingleton<IAircraftOnlineLookupManager>();
             var standaloneCache = Factory.Singleton.Resolve<IStandaloneAircraftOnlineLookupCache>();
 
             manager.RegisterCache(standaloneCache, 0, true);
