@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
@@ -22,7 +23,8 @@ namespace VirtualRadar.Interface
     /// <remarks>
     /// Implementations must be thread-safe.
     /// </remarks>
-    public interface IAirPressureLookup : ISingleton<IAirPressureLookup>
+    [Singleton]
+    public interface IAirPressureLookup
     {
         /// <summary>
         /// Gets the last fetch time passed to <see cref="LoadAirPressures"/>.

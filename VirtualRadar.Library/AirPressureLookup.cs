@@ -47,20 +47,6 @@ namespace VirtualRadar.Library
         /// </summary>
         public int CountAirPressuresLoaded { get; private set; }
 
-        private static IAirPressureLookup _Singleton;
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IAirPressureLookup Singleton
-        {
-            get {
-                if(_Singleton == null) {
-                    _Singleton = new AirPressureLookup();
-                }
-                return _Singleton;
-            }
-        }
-
         /// <summary>
         /// See interface docs.
         /// </summary>
