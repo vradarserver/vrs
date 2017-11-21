@@ -136,7 +136,7 @@ namespace VirtualRadar.Library.Presenter
         {
             _Clock = Factory.Singleton.Resolve<IClock>();
             _LastAutoSavePolarPlots = _Clock.UtcNow;
-            _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+            _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
         }
         #endregion
 

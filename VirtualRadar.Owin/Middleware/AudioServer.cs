@@ -39,7 +39,7 @@ namespace VirtualRadar.Owin.Middleware
         /// </summary>
         public AudioServer()
         {
-            _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+            _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
         }
 
         /// <summary>

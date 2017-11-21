@@ -20,7 +20,8 @@ namespace VirtualRadar.Interface.Settings
     /// <summary>
     /// Exposes the current configuration.
     /// </summary>
-    public interface ISharedConfiguration : ISingleton<ISharedConfiguration>
+    [Singleton]
+    public interface ISharedConfiguration
     {
         /// <summary>
         /// Raised when the configuration returned by <see cref="Get"/> has changed.

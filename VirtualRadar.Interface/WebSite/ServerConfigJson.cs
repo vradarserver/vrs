@@ -188,7 +188,7 @@ namespace VirtualRadar.Interface.WebSite
         {
             var applicationInformation = Factory.Singleton.Resolve<IApplicationInformation>();
             var runtimeEnvironment = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton;
-            var configuration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton.Get();
+            var configuration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>().Get();
 
             var isMono = runtimeEnvironment.IsMono;
 

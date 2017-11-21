@@ -34,7 +34,7 @@ namespace VirtualRadar.WebSite
         private bool IsEnabled()
         {
             if(_SharedConfiguration == null) {
-                _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+                _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
             }
             return _SharedConfiguration.Get().GoogleMapSettings.EnableMinifying;
         }

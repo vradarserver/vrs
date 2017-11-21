@@ -89,7 +89,7 @@ namespace VirtualRadar.WebSite.ApiControllers
             ProximityGadgetAircraftJson result = null;
 
             var context = PipelineContext;
-            var config = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton.Get();
+            var config = Factory.Singleton.ResolveSingleton<ISharedConfiguration>().Get();
             if(!context.Request.IsInternet || config.InternetClientSettings.AllowInternetProximityGadgets) {
                 var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
                 var feed = feedManager.GetByUniqueId(config.GoogleMapSettings.ClosestAircraftReceiverId, ignoreInvisibleFeeds: true);

@@ -139,7 +139,7 @@ namespace VirtualRadar.Owin.Middleware
         private void RefreshConfiguration()
         {
             if(_SharedConfiguration == null) {
-                _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+                _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
             }
 
             var configurationChangedUtc = _SharedConfiguration.GetConfigurationChangedUtc();

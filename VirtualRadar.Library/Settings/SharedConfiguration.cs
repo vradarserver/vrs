@@ -54,15 +54,6 @@ namespace VirtualRadar.Library.Settings
         /// </summary>
         private List<WeakReference<ISharedConfigurationSubscriber>> _Subscribers;
 
-        private static ISharedConfiguration _Singleton = new SharedConfiguration();
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public ISharedConfiguration Singleton
-        {
-            get { return _Singleton; }
-        }
-
         /// <summary>
         /// See interface docs.
         /// </summary>

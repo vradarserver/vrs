@@ -232,7 +232,7 @@ namespace VirtualRadar.Library
                     if(!_Initialised) {
                         _Initialised = true;
                         QueueRepository.AddQueue(this);
-                        _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+                        _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
                         _Clock = Factory.Singleton.Resolve<IClock>();
                         _IsRunningUnderTestEnvironment = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsTest;
 

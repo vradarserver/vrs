@@ -98,7 +98,7 @@ namespace VirtualRadar.Owin.Middleware
         /// </summary>
         public BasicAuthenticationFilter()
         {
-            _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+            _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
             _AuthenticationConfiguration = Factory.Singleton.ResolveSingleton<IAuthenticationConfiguration>();
             _UserManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
 

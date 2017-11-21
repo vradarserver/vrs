@@ -113,7 +113,7 @@ namespace VirtualRadar.Library
                 Downloader = Factory.Singleton.Resolve<IAirPressureDownloader>();
                 Lookup = Factory.Singleton.Resolve<IAirPressureLookup>();
 
-                _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+                _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
                 Enabled = _SharedConfiguration.Get().BaseStationSettings.DownloadGlobalAirPressureReadings;
                 _SharedConfiguration.ConfigurationChanged += SharedConfiguration_ConfigurationChanged;
 

@@ -58,7 +58,7 @@ namespace VirtualRadar.Library.Settings
         /// </summary>
         public UserCache()
         {
-            _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+            _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
             _SharedConfiguration.AddWeakSubscription(this);
             _UserManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
         }

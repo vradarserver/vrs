@@ -41,7 +41,7 @@ namespace VirtualRadar.Owin.StreamManipulator
         {
             var configuration = _SharedConfiguration;
             if(configuration == null) {
-                configuration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+                configuration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
                 _SharedConfiguration = configuration;
             }
 

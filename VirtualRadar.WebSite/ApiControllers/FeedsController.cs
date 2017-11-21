@@ -69,7 +69,7 @@ namespace VirtualRadar.WebSite.ApiControllers
             var plotter = feed?.AircraftList?.PolarPlotter;
 
             if(plotter != null && PipelineRequest.IsInternet) {
-                var configuration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton.Get();
+                var configuration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>().Get();
                 if(!configuration.InternetClientSettings.CanShowPolarPlots) {
                     plotter = null;
                 }
@@ -94,7 +94,7 @@ namespace VirtualRadar.WebSite.ApiControllers
 
             var result = builder.Build(builderArgs);
 
-            var sharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+            var sharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
             var configLastChanged = JavascriptHelper.ToJavascriptTicks(sharedConfiguration.GetConfigurationChangedUtc());
             if(configLastChanged > builderArgs.ServerTimeTicks) {
                 result.ServerConfigChanged = true;

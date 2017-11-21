@@ -50,7 +50,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         [ResponseType(typeof(DirectoryEntryJson))]
         public IHttpActionResult GetDirectoryEntry(string key = null)
         {
-            var configuration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton.Get();
+            var configuration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>().Get();
             var keyInvalid = String.IsNullOrEmpty(key) || !String.Equals(key, configuration.GoogleMapSettings.DirectoryEntryKey, StringComparison.OrdinalIgnoreCase);
 
             return keyInvalid ? (IHttpActionResult)NotFound() : Content(HttpStatusCode.OK, BuildDirectoryEntry());

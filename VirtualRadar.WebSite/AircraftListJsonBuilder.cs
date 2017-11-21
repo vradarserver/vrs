@@ -140,7 +140,7 @@ namespace VirtualRadar.WebSite
             if(provider == null) throw new ArgumentNullException("provider");
             Provider = provider;
 
-            _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+            _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
             _FeedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
             _EmptyAircraftList = Factory.Singleton.Resolve<ISimpleAircraftList>();
         }
