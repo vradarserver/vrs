@@ -254,7 +254,7 @@ namespace VirtualRadar.Library.Presenter
         private void LoadPictureFolderCache()
         {
             _View.ReportProgress(Strings.SplashScreenStartingPictureFolderCache);
-            Factory.Singleton.Resolve<IAutoConfigPictureFolderCache>().Singleton.Initialise();
+            Factory.Singleton.ResolveSingleton<IAutoConfigPictureFolderCache>().Initialise();
         }
 
         private void TestBaseStationDatabaseConnection()

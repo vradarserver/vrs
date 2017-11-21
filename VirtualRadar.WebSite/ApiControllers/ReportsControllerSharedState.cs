@@ -129,7 +129,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 if(_PictureFolderCache == null) {
                     lock(_SyncLock) {
                         if(_PictureFolderCache == null) {
-                            _PictureFolderCache = Factory.Singleton.Resolve<IAutoConfigPictureFolderCache>().Singleton;
+                            _PictureFolderCache = Factory.Singleton.ResolveSingleton<IAutoConfigPictureFolderCache>();
                         }
                     }
                 }

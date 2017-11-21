@@ -155,7 +155,7 @@ namespace VirtualRadar.Library
                     _AutoConfigDatabase.Database.AircraftUpdated -= BaseStationDatabase_AircraftUpdated;
                     _AutoConfigDatabase.Database.FileNameChanged -= BaseStationDatabase_FileNameChanged;
                 }
-                if(_PictureFolderCache != null) Factory.Singleton.Resolve<IAutoConfigPictureFolderCache>().Singleton.CacheConfigurationChanged -= AutoConfigPictureFolderCache_CacheConfigurationChanged;
+                if(_PictureFolderCache != null) Factory.Singleton.ResolveSingleton<IAutoConfigPictureFolderCache>().CacheConfigurationChanged -= AutoConfigPictureFolderCache_CacheConfigurationChanged;
                 if(_StandingDataManager != null) _StandingDataManager.LoadCompleted -= StandingDataManager_LoadCompleted;
             }
             base.Dispose(disposing);
@@ -176,7 +176,7 @@ namespace VirtualRadar.Library
             _AircraftOnlineLookupManager.AircraftFetched += AircraftOnlineLookupManager_AircraftFetched;
 
             _PictureManager = Factory.Singleton.ResolveSingleton<IAircraftPictureManager>();
-            var autoConfigurationPictureFolderCache = Factory.Singleton.Resolve<IAutoConfigPictureFolderCache>().Singleton;
+            var autoConfigurationPictureFolderCache = Factory.Singleton.ResolveSingleton<IAutoConfigPictureFolderCache>();
             _PictureFolderCache = autoConfigurationPictureFolderCache.DirectoryCache;
             autoConfigurationPictureFolderCache.CacheConfigurationChanged += AutoConfigPictureFolderCache_CacheConfigurationChanged;
 

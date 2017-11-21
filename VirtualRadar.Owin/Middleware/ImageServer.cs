@@ -161,7 +161,7 @@ namespace VirtualRadar.Owin.Middleware
             _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
             _Graphics = Factory.Singleton.Resolve<IWebSiteGraphics>().Singleton;
             _AircraftPictureManager = Factory.Singleton.ResolveSingleton<IAircraftPictureManager>();
-            _AutoConfigPictureFolderCache = Factory.Singleton.Resolve<IAutoConfigPictureFolderCache>().Singleton;
+            _AutoConfigPictureFolderCache = Factory.Singleton.ResolveSingleton<IAutoConfigPictureFolderCache>();
         }
 
         /// <summary>

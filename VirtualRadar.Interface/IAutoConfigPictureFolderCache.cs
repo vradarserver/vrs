@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
@@ -19,7 +20,8 @@ namespace VirtualRadar.Interface
     /// The interface for a singleton object that can automatically apply the picture folder name from the
     /// configuration to an <see cref="IDirectoryCache"/>.
     /// </summary>
-    public interface IAutoConfigPictureFolderCache : ISingleton<IAutoConfigPictureFolderCache>
+    [Singleton]
+    public interface IAutoConfigPictureFolderCache
     {
         /// <summary>
         /// Gets the directory cache that is keeping track of files in the picture folder.

@@ -24,15 +24,6 @@ namespace VirtualRadar.Library
     /// </summary>
     sealed class AutoConfigPictureFolderCache : IAutoConfigPictureFolderCache
     {
-        private readonly static IAutoConfigPictureFolderCache _Singleton = new AutoConfigPictureFolderCache();
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IAutoConfigPictureFolderCache Singleton
-        {
-            get { return _Singleton; }
-        }
-
         /// <summary>
         /// See interface docs.
         /// </summary>
