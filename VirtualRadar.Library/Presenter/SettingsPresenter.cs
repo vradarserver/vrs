@@ -314,7 +314,7 @@ namespace VirtualRadar.Library.Presenter
         {
             try {
                 try {
-                    var lookup = Factory.Singleton.Resolve<IAircraftOnlineLookup>().Singleton;
+                    var lookup = Factory.Singleton.ResolveSingleton<IAircraftOnlineLookup>();
                     lookup.InitialiseProvider();
                     if(lookup.Provider != null) {
                         _View.ShowAircraftDataLookupSettings(

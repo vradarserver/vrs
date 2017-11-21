@@ -102,12 +102,6 @@ namespace VirtualRadar.Library
         /// </summary>
         private bool _IsRunningUnderTestEnvironment;
 
-        private static IAircraftOnlineLookup _Singleton = new AircraftOnlineLookup();
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IAircraftOnlineLookup Singleton { get { return _Singleton; } }
-
         /// <summary>
         /// See interface docs.
         /// </summary>

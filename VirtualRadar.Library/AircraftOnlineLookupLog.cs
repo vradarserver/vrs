@@ -82,7 +82,7 @@ namespace VirtualRadar.Library
         {
             if(disposing) {
                 if(_Initialised) {
-                    Factory.Singleton.Resolve<IAircraftOnlineLookup>().Singleton.AircraftFetched -= AircraftOnlineLookup_AircraftFetched;
+                    Factory.Singleton.ResolveSingleton<IAircraftOnlineLookup>().AircraftFetched -= AircraftOnlineLookup_AircraftFetched;
                     _LogEntries.Clear();
                     _Initialised = false;
                 }
@@ -95,7 +95,7 @@ namespace VirtualRadar.Library
         public void Initialise()
         {
             if(!_Initialised) {
-                Factory.Singleton.Resolve<IAircraftOnlineLookup>().Singleton.AircraftFetched += AircraftOnlineLookup_AircraftFetched;
+                Factory.Singleton.ResolveSingleton<IAircraftOnlineLookup>().AircraftFetched += AircraftOnlineLookup_AircraftFetched;
                 _Initialised = true;
             }
         }
