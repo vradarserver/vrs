@@ -77,7 +77,7 @@ namespace VirtualRadar
             if(_ServiceThread != null) {
                 IConsole console = null;
                 try {
-                    console = Factory.Singleton.Resolve<IConsole>().Singleton;
+                    console = Factory.Singleton.ResolveSingleton<IConsole>();
                 } catch {
                     console = null;
                 }

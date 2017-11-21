@@ -19,17 +19,6 @@ namespace VirtualRadar.Library
 {
     class ConsoleWrapper : IConsole
     {
-        private static ConsoleWrapper _Singleton;
-        public IConsole Singleton
-        {
-            get {
-                if(_Singleton == null) {
-                    _Singleton = new ConsoleWrapper();
-                }
-                return _Singleton;
-            }
-        }
-
         public ConsoleColor ForegroundColor
         {
             get { return Console.ForegroundColor; }

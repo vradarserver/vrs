@@ -13,13 +13,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
     /// <summary>
     /// Wraps the console.
     /// </summary>
-    public interface IConsole : ISingleton<IConsole>
+    [Singleton]
+    public interface IConsole
     {
         /// <summary>
         /// Gets the current foreground colour.

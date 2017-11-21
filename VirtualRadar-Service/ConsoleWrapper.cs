@@ -25,33 +25,25 @@ namespace VirtualRadar
         private const string LogFileName = "ServiceMessages.txt";
         private static string LogFullPath;
 
-        private static ConsoleWrapper _Singleton;
-        public IConsole Singleton
-        {
-            get {
-                if(_Singleton == null) {
-                    _Singleton = new ConsoleWrapper();
-
-                    var folder = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Folder;
-                    LogFullPath = Path.Combine(folder, LogFileName);
-
-                    if(!Directory.Exists(folder)) {
-                        Directory.CreateDirectory(folder);
-                    }
-
-                    File.WriteAllLines(LogFullPath, new string[] {
-                        String.Format("Service started at {0:yyyy-MM-dd HH:mm:ss.fff} (UTC)", DateTime.UtcNow),
-                    });
-                }
-                return _Singleton;
-            }
-        }
-
         public ConsoleColor ForegroundColor { get; set; } = ConsoleColor.Gray;
 
         public bool KeyAvailable
         {
             get { return false; }
+        }
+
+        static ConsoleWrapper()
+        {
+            var folder = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Folder;
+            LogFullPath = Path.Combine(folder, LogFileName);
+
+            if(!Directory.Exists(folder)) {
+                Directory.CreateDirectory(folder);
+            }
+
+            File.WriteAllLines(LogFullPath, new string[] {
+                String.Format("Service started at {0:yyyy-MM-dd HH:mm:ss.fff} (UTC)", DateTime.UtcNow),
+            });
         }
 
         public void Beep()
