@@ -34,20 +34,6 @@ namespace VirtualRadar.Library.Listener
         /// </summary>
         private object _SyncLock;
 
-        private static IReceiverFormatManager _Singleton;
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IReceiverFormatManager Singleton
-        {
-            get {
-                if(_Singleton == null) {
-                    _Singleton = new ReceiverFormatManager();
-                }
-                return _Singleton;
-            }
-        }
-
         /// <summary>
         /// See interface docs.
         /// </summary>

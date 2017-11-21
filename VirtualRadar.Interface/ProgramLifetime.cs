@@ -188,7 +188,7 @@ namespace VirtualRadar.Interface
         /// </summary>
         public static void InitialiseManagers()
         {
-            var receiverFormatManager = Factory.Singleton.Resolve<IReceiverFormatManager>().Singleton;
+            var receiverFormatManager = Factory.Singleton.ResolveSingleton<IReceiverFormatManager>();
             receiverFormatManager.Initialise();
 
             var rebroadcastFormatManager = Factory.Singleton.Resolve<IRebroadcastFormatManager>().Singleton;

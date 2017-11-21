@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Listener
 {
@@ -22,7 +23,8 @@ namespace VirtualRadar.Interface.Listener
     /// Plugins cannot provide their own implementation of this interface, the singleton is established
     /// before RegisterImplementations is called.
     /// </remarks>
-    public interface IReceiverFormatManager : ISingleton<IReceiverFormatManager>
+    [Singleton]
+    public interface IReceiverFormatManager
     {
         /// <summary>
         /// Initialises the format manager.

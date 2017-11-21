@@ -145,7 +145,7 @@ namespace VirtualRadar.Library.Listener
             if(configuration == null) throw new ArgumentNullException("configuration");
             if(!receiver.Enabled) throw new InvalidOperationException($"The {receiver.Name} receiver has not been enabled");
             var receiverLocation = configuration.ReceiverLocation(receiver.ReceiverLocationId);
-            _ReceiverFormatManager = Factory.Singleton.Resolve<IReceiverFormatManager>().Singleton;
+            _ReceiverFormatManager = Factory.Singleton.ResolveSingleton<IReceiverFormatManager>();
 
             Listener = Factory.Singleton.Resolve<IListener>();
             Listener.ExceptionCaught += Listener_ExceptionCaught;
