@@ -45,21 +45,6 @@ namespace VirtualRadar.Owin.Configuration
         /// </summary>
         private ISharedConfiguration _SharedConfiguration;
 
-        private static IImageServerConfiguration _Singleton;
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IImageServerConfiguration Singleton
-        {
-            get
-            {
-                if(_Singleton == null) {
-                    _Singleton = new ImageServerConfiguration();
-                }
-                return _Singleton;
-            }
-        }
-
         private CheckedFolder _CheckedOperatorFolder;
         /// <summary>
         /// See interface docs.

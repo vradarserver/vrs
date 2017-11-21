@@ -45,26 +45,13 @@ namespace Test.VirtualRadar.Owin.Configuration
             _Settings = new global::VirtualRadar.Interface.Settings.Configuration();
             _SharedConfiguration.Setup(r => r.Get()).Returns(_Settings);
 
-            _Configuration = Factory.Singleton.Resolve<IImageServerConfiguration>();
+            _Configuration = Factory.Singleton.ResolveNewInstance<IImageServerConfiguration>();
         }
 
         [TestCleanup]
         public void TestCleanup()
         {
             Factory.RestoreSnapshot(_Snapshot);
-        }
-
-        [TestMethod]
-        public void ImageServerConfiguration_Singleton_Is_Not_Null()
-        {
-            Assert.IsNotNull(_Configuration.Singleton);
-        }
-
-        [TestMethod]
-        public void ImageServerConfiguration_Singleton_Is_Same_Instance_Across_All_Instances()
-        {
-            var other = Factory.Singleton.Resolve<IImageServerConfiguration>();
-            Assert.AreSame(_Configuration.Singleton, other.Singleton);
         }
 
         [TestMethod]

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
 using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Interface.Owin
@@ -21,7 +22,8 @@ namespace VirtualRadar.Interface.Owin
     /// The interface for a singleton object that holds configuration information for
     /// <see cref="IImageServer"/> middleware.
     /// </summary>
-    public interface IImageServerConfiguration : ISingleton<IImageServerConfiguration>
+    [Singleton]
+    public interface IImageServerConfiguration
     {
         /// <summary>
         /// Gets the operator flag folder from current configuration or null if the configured folder
