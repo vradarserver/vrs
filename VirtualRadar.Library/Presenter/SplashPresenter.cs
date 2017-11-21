@@ -303,7 +303,7 @@ namespace VirtualRadar.Library.Presenter
                 log.WriteLine("Exception caught during load of standing data: {0}", ex.ToString());
             }
 
-            Factory.Singleton.Resolve<IBackgroundDataDownloader>().Singleton.Start();
+            Factory.Singleton.ResolveSingleton<IBackgroundDataDownloader>().Start();
         }
 
         private void StartAirPressureManager()
