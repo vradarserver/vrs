@@ -67,7 +67,7 @@ namespace Test.VirtualRadar.Database
             _ConfigurationStorage.Setup(r => r.Load()).Returns(_Configuration);
             _ConfigurationStorage.Setup(r => r.Folder).Returns(Path.Combine(TestContext.TestDeploymentDir, "StandingDataTest"));
 
-            _Implementation = Factory.Singleton.Resolve<IStandingDataManager>();
+            _Implementation = Factory.Singleton.ResolveNewInstance<IStandingDataManager>();
 
             _Provider = new Mock<IStandingDataManagerProvider>();
             _Implementation.Provider = _Provider.Object;
@@ -101,7 +101,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void StandingDataManager_Constructor_Initialises_Provider()
         {
-            var implementation = Factory.Singleton.Resolve<IStandingDataManager>();
+            var implementation = Factory.Singleton.ResolveNewInstance<IStandingDataManager>();
             Assert.IsNotNull(implementation.Provider);
             TestUtilities.TestProperty(implementation, "Provider", implementation.Provider, _Provider.Object);
         }
@@ -110,19 +110,6 @@ namespace Test.VirtualRadar.Database
         public void StandingDataManager_Constructor_Exposes_Lock_Object()
         {
             Assert.IsNotNull(_Implementation.Lock);
-        }
-        #endregion
-
-        #region Singleton
-        [TestMethod]
-        public void StandingDataManager_Singleton_Returns_Same_Object_For_All_Instances()
-        {
-            var object1 = Factory.Singleton.Resolve<IStandingDataManager>();
-            var object2 = Factory.Singleton.Resolve<IStandingDataManager>();
-
-            Assert.AreNotSame(object1, object2);
-            Assert.IsNotNull(object1.Singleton);
-            Assert.AreSame(object1.Singleton, object2.Singleton);
         }
         #endregion
 

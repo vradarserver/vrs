@@ -11,13 +11,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.StandingData
 {
     /// <summary>
     /// The interface for objects that manage standing data for the server.
     /// </summary>
-    public interface IStandingDataManager : ISingleton<IStandingDataManager>
+    [Singleton]
+    public interface IStandingDataManager
     {
         /// <summary>
         /// Gets or sets the object that abstracts away the environment to make testing easier.

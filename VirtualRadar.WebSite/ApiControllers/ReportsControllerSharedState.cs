@@ -75,7 +75,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 if(_StandingDataManager == null) {
                     lock(_SyncLock) {
                         if(_StandingDataManager == null) {
-                            _StandingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
+                            _StandingDataManager = Factory.Singleton.ResolveSingleton<IStandingDataManager>();
                         }
                     }
                 }

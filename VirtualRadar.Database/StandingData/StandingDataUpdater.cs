@@ -210,7 +210,7 @@ namespace VirtualRadar.Database.StandingData
                             updateState = true;
                             Provider.DownloadAndDecompressFile(DatabaseUrl, databaseTempName);
 
-                            var standingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
+                            var standingDataManager = Factory.Singleton.ResolveSingleton<IStandingDataManager>();
                             lock(standingDataManager.Lock) {
                                 Provider.MoveFile(databaseTempName, databaseFileName);
                             }

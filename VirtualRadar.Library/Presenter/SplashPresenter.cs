@@ -296,7 +296,7 @@ namespace VirtualRadar.Library.Presenter
             _View.ReportProgress(Strings.SplashScreenLoadingStandingData);
 
             try {
-                var standingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
+                var standingDataManager = Factory.Singleton.ResolveSingleton<IStandingDataManager>();
                 standingDataManager.Load();
             } catch(Exception ex) {
                 var log = Factory.Singleton.ResolveSingleton<ILog>();
@@ -345,7 +345,7 @@ namespace VirtualRadar.Library.Presenter
             var webSite = Factory.Singleton.Resolve<IWebSite>();
             webSite.BaseStationDatabase = Factory.Singleton.ResolveSingleton<IAutoConfigBaseStationDatabase>().Database;
             webSite.FlightSimulatorAircraftList = Factory.Singleton.ResolveSingleton<IFlightSimulatorAircraftList>();
-            webSite.StandingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
+            webSite.StandingDataManager = Factory.Singleton.ResolveSingleton<IStandingDataManager>();
 
             webSite.AttachSiteToServer(webServer);
             try {

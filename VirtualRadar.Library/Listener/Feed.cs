@@ -223,7 +223,7 @@ namespace VirtualRadar.Library.Listener
             AircraftList = Factory.Singleton.Resolve<IBaseStationAircraftList>();
             AircraftList.ExceptionCaught += AircraftList_ExceptionCaught;
             AircraftList.Listener = Listener;
-            AircraftList.StandingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
+            AircraftList.StandingDataManager = Factory.Singleton.ResolveSingleton<IStandingDataManager>();
 
             SetIsVisible(receiverUsage);
 
