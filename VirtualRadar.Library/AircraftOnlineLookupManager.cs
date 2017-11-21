@@ -348,7 +348,7 @@ namespace VirtualRadar.Library
                 OnAircraftFetched(args);
             } catch(ThreadAbortException) {
             } catch(Exception ex) {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Singleton.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception in AircraftOnlineLookupManager during AircraftFetched: {0}", ex);
             }
         }

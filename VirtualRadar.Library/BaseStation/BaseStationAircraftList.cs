@@ -361,7 +361,7 @@ namespace VirtualRadar.Library.BaseStation
                 Factory.Singleton.Resolve<IHeartbeatService>().Singleton.SlowTick += Heartbeat_SlowTick;
                 Factory.Singleton.Resolve<IStandingDataManager>().Singleton.LoadCompleted += StandingDataManager_LoadCompleted;
 
-                _AircraftDetailFetcher = Factory.Singleton.Resolve<IAircraftDetailFetcher>().Singleton;
+                _AircraftDetailFetcher = Factory.Singleton.ResolveSingleton<IAircraftDetailFetcher>();
                 _AircraftDetailFetcher.Fetched += AircraftDetailFetcher_Fetched;
                 _CallsignRouteFetcher = Factory.Singleton.Resolve<ICallsignRouteFetcher>().Singleton;
                 _CallsignRouteFetcher.Fetched += CallsignRouteFetcher_Fetched;

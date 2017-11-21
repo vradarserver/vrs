@@ -53,7 +53,7 @@ namespace Test.VirtualRadar.Library
             _Provider.Setup(p => p.FileExists(It.IsAny<string>())).Returns(true);
             _Provider.Setup(p => p.FolderExists(It.IsAny<string>())).Returns(true);
 
-            _Log = Factory.Singleton.Resolve<ILog>();
+            _Log = Factory.Singleton.ResolveNewInstance<ILog>();
             _Log.Provider = _Provider.Object;
         }
 
@@ -65,17 +65,6 @@ namespace Test.VirtualRadar.Library
         #endregion
 
         #region Constructors and properties
-        [TestMethod]
-        public void Log_Singleton_Returns_Constant_Instance()
-        {
-            var log1 = Factory.Singleton.Resolve<ILog>();
-            var log2 = Factory.Singleton.Resolve<ILog>();
-
-            Assert.AreNotSame(log1, log2);
-            Assert.IsNotNull(log1.Singleton);
-            Assert.AreSame(log1.Singleton, log2.Singleton);
-        }
-
         [TestMethod]
         public void Log_FileName_Contains_Correct_String()
         {

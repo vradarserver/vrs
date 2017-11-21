@@ -58,7 +58,7 @@ namespace VirtualRadar.Library.Presenter
         {
             ILog log;
             try {
-                log = Factory.Singleton.Resolve<ILog>().Singleton;
+                log = Factory.Singleton.ResolveSingleton<ILog>();
             } catch {
                 log = null;
             }
@@ -127,7 +127,7 @@ namespace VirtualRadar.Library.Presenter
                     plugin.Shutdown();
                 } catch(Exception ex) {
                     Debug.WriteLine(String.Format("ShutdownPresenter.ShutdownPlugins caught exception: {0}", ex.ToString()));
-                    Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Plugin {0} threw an exception during shutdown: {1}", plugin.Name, ex.ToString());
+                    Factory.Singleton.ResolveSingleton<ILog>().WriteLine("Plugin {0} threw an exception during shutdown: {1}", plugin.Name, ex.ToString());
                 }
             }
         }

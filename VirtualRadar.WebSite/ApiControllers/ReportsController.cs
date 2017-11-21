@@ -66,7 +66,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                         jsonObj.GroupBy = parameters.SortField1 ?? parameters.SortField2 ?? "";
                     };
                 } catch(Exception ex) {
-                    var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                    var log = Factory.Singleton.ResolveSingleton<ILog>();
                     log.WriteLine($"An exception was encountered during the processing of a report: {ex}");
                     jsonObj = EnsureJsonObjExists(jsonObj, expectedJsonType);
                     jsonObj.ErrorText = $"An exception was encounted during the processing of the report, see log for full details: {ex.Message}";
@@ -372,7 +372,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                     }
                 } catch(Exception ex) {
                     try {
-                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        var log = Factory.Singleton.ResolveSingleton<ILog>();
                         log.WriteLine($"Caught exception when fetching picture for {aircraft.ModeS}/{aircraft.Registration} for a report: {ex.ToString()}");
                     } catch {
                     }

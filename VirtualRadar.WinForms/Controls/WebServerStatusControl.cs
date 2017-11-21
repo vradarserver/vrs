@@ -360,7 +360,7 @@ namespace VirtualRadar.WinForms.Controls
                     Process.Start(Address);
                 } catch(Exception ex) {
                     try {
-                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        var log = Factory.Singleton.ResolveSingleton<ILog>();
                         log.WriteLine("Caught exception when trying to start the default browser: {0}", ex.ToString());
                     } catch {
                     }

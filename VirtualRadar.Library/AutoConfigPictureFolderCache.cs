@@ -79,7 +79,7 @@ namespace VirtualRadar.Library
                     var refreshTriggered = DirectoryCache.SetConfiguration(config.BaseStationSettings.PicturesFolder, config.BaseStationSettings.SearchPictureSubFolders);
                     if(refreshTriggered) OnCacheConfigurationChanged(EventArgs.Empty);
                 } catch(Exception ex) {
-                    var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                    var log = Factory.Singleton.ResolveSingleton<ILog>();
                     log.WriteLine("Caught exception while trying to set the directory cache properties: {0}", ex.ToString());
                 }
             })) {

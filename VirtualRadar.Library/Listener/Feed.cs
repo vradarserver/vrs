@@ -322,7 +322,7 @@ namespace VirtualRadar.Library.Listener
                 var storage = Factory.Singleton.Resolve<ISavedPolarPlotStorage>().Singleton;
                 storage.Save(this);
             } catch(Exception ex) {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Singleton.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception while saving polar plot from feed initialisation: {0}", ex.ToString());
             }
         }
@@ -340,7 +340,7 @@ namespace VirtualRadar.Library.Listener
                     AircraftList.PolarPlotter.LoadFrom(savedPolarPlot);
                 }
             } catch(Exception ex) {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Singleton.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception while loading polar plot from feed initialisation: {0}", ex.ToString());
             }
         }

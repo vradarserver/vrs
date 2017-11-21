@@ -281,7 +281,7 @@ namespace VirtualRadar.Plugin.CustomContent
 
                     LastLoadCustomImagesUtc = DateTime.UtcNow;
                 } catch(Exception ex) {
-                    var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                    var log = Factory.Singleton.ResolveSingleton<ILog>();
                     log.WriteLine("Caught unhandled exception while loading resource images in CustomContent plugin: {0}", ex);
                 }
             } catch {
@@ -328,7 +328,7 @@ namespace VirtualRadar.Plugin.CustomContent
                         }
                     }
                 } catch(Exception ex) {
-                    var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                    var log = Factory.Singleton.ResolveSingleton<ILog>();
                     log.WriteLine("Caught exception while loading {0} in custom content resource image manager: {1}", fileName, ex);
                 }
             }
@@ -426,7 +426,7 @@ namespace VirtualRadar.Plugin.CustomContent
                             _UnusedImages.Remove(unusedImage);
                         }
                     } catch(Exception ex) {
-                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        var log = Factory.Singleton.ResolveSingleton<ILog>();
                         log.WriteLine("Caught exception while disposing of unused images in custom resource image manager: {0}", ex);
                     }
                 }

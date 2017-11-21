@@ -97,7 +97,7 @@ namespace VirtualRadar.Library.Settings
         private void OnConfigurationChanged(EventArgs args)
         {
             EventHelper.Raise(ConfigurationChanged, this, args, ex => {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Singleton.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception in ConfigurationChanged event handler: {0}", ex.ToString());
             });
         }

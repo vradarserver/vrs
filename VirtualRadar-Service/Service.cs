@@ -139,7 +139,7 @@ namespace VirtualRadar
                 ;
             } catch(Exception ex) {
                 try {
-                    var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                    var log = Factory.Singleton.ResolveSingleton<ILog>();
                     log.WriteLine("Caught exception in ServiceThread: {0}", ex);
                 } catch {
                     ;

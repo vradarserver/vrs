@@ -80,7 +80,7 @@ namespace VirtualRadar.Database.StandingData
                         updater.Update();
                     } catch(Exception ex) {
                         Debug.WriteLine(String.Format("BackgroundDataDownloader.Heartbeat_SlowTick caught exception: {0}", ex.ToString()));
-                        Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Exception caught during data download: {0}", ex.ToString());
+                        Factory.Singleton.ResolveSingleton<ILog>().WriteLine("Exception caught during data download: {0}", ex.ToString());
                     }
                 }
             }

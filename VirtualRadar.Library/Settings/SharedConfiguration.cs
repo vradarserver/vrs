@@ -76,7 +76,7 @@ namespace VirtualRadar.Library.Settings
         protected virtual void OnConfigurationChanged(EventArgs args)
         {
             EventHelper.Raise(ConfigurationChanged, this, args, ex => {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Singleton.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception in shared ConfigurationChanged handler: {0}", ex.ToString());
             });
         }
@@ -173,7 +173,7 @@ namespace VirtualRadar.Library.Settings
                     try {
                         subscriber.SharedConfigurationChanged(this);
                     } catch(Exception ex) {
-                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        var log = Factory.Singleton.ResolveSingleton<ILog>();
                         log.WriteLine("Caught exception while calling ISharedConfiguration subscriber: {0}", ex);
                     }
                 }

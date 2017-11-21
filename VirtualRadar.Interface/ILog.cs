@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
@@ -28,7 +29,8 @@ namespace VirtualRadar.Interface
     /// log.WriteLine("This will be written to the program log");
     /// </code>
     /// </example>
-    public interface ILog : ISingleton<ILog>
+    [Singleton]
+    public interface ILog
     {
         /// <summary>
         /// Gets or sets the provider that abstracts away the environment for the tests.

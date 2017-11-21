@@ -263,7 +263,7 @@ namespace VirtualRadar.WebSite
                             Trimming = StringTrimming.EllipsisCharacter,
                         });
                     } catch(Exception ex) {
-                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        var log = Factory.Singleton.ResolveSingleton<ILog>();
                         log.WriteLine("Swallowed exception while generating {0} splash: {1}", isIPad ? "iPad" : "iPhone", ex.Message);
                     }
                 }

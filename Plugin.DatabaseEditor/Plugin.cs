@@ -360,7 +360,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// <returns></returns>
         private string LogException(Exception ex, string logMessage)
         {
-            var log = Factory.Singleton.Resolve<ILog>().Singleton;
+            var log = Factory.Singleton.ResolveSingleton<ILog>();
             log.WriteLine(logMessage);
 
             return ex.Message;

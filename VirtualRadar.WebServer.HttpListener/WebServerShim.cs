@@ -110,7 +110,7 @@ namespace VirtualRadar.WebServer.HttpListener
                 // The HttpListener version doesn't log these as there can be lot of them, but given that
                 // this stuff is all brand new I think I'd like to see what exceptions are being thrown
                 // during processing.
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Singleton.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception in general request handling event handlers: {0}", ex);
 
                 Debug.WriteLine($"WebServer.GetContextHandler caught exception {ex}");
@@ -122,7 +122,7 @@ namespace VirtualRadar.WebServer.HttpListener
                     WebServer.OnRequestFinished(new EventArgs<long>(requestReceivedEventArgsId));
                 }
             } catch(Exception ex) {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Singleton.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception in RequestFinished event handler: {0}", ex);
             }
         }
