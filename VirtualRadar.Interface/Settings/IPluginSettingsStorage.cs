@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Settings
 {
@@ -22,7 +23,8 @@ namespace VirtualRadar.Interface.Settings
     /// The plugin settings are always stored in the configuration folder (see <see cref="IConfigurationStorage.Folder"/>).
     /// </remarks>
     /// <seealso cref="PluginSettings"/>
-    public interface IPluginSettingsStorage : ISingleton<IPluginSettingsStorage>
+    [Singleton]
+    public interface IPluginSettingsStorage
     {
         /// <summary>
         /// Gets or sets the object that abstracts away the environment for testing.

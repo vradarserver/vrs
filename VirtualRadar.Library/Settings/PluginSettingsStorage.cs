@@ -51,12 +51,6 @@ namespace VirtualRadar.Library.Settings
         /// </summary>
         public IPluginSettingsStorageProvider Provider { get; set; }
 
-        private static readonly IPluginSettingsStorage _Singleton = new PluginSettingsStorage();
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IPluginSettingsStorage Singleton { get { return _Singleton; } }
-
         /// <summary>
         /// Gets the full path to the configuration file.
         /// </summary>

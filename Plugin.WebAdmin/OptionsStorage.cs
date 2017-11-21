@@ -32,7 +32,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <returns></returns>
         public static Options Load()
         {
-            var pluginStorage = Factory.Singleton.Resolve<IPluginSettingsStorage>().Singleton;
+            var pluginStorage = Factory.Singleton.ResolveSingleton<IPluginSettingsStorage>();
             var pluginSettings = pluginStorage.Load();
 
             var jsonOptions = pluginSettings.ReadString(Plugin.Singleton, Key);
@@ -59,7 +59,7 @@ namespace VirtualRadar.Plugin.WebAdmin
             }
             ++options.DataVersion;
 
-            var storage = Factory.Singleton.Resolve<IPluginSettingsStorage>().Singleton;
+            var storage = Factory.Singleton.ResolveSingleton<IPluginSettingsStorage>();
 
             var pluginSettings = storage.Load();
             pluginSettings.Write(Plugin.Singleton, Key, JsonConvert.SerializeObject(options));
