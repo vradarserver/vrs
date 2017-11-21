@@ -236,7 +236,7 @@ namespace VirtualRadar.Interface
             Mutex result = null;
             mutexAcquired = false;
 
-            var runtimeEnvironment = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton;
+            var runtimeEnvironment = Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>();
             if(runtimeEnvironment.IsMono) {
                 result = new Mutex(false, _SingleInstanceMutexName);
             } else {

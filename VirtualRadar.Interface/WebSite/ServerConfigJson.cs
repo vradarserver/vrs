@@ -187,7 +187,7 @@ namespace VirtualRadar.Interface.WebSite
         public static ServerConfigJson ToModel(bool isLocalAddress)
         {
             var applicationInformation = Factory.Singleton.Resolve<IApplicationInformation>();
-            var runtimeEnvironment = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton;
+            var runtimeEnvironment = Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>();
             var configuration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>().Get();
 
             var isMono = runtimeEnvironment.IsMono;

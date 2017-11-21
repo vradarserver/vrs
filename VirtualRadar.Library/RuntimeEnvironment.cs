@@ -24,12 +24,6 @@ namespace VirtualRadar.Library
     /// </summary>
     class RuntimeEnvironment : IRuntimeEnvironment
     {
-        private static readonly IRuntimeEnvironment _Singleton = new RuntimeEnvironment();
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IRuntimeEnvironment Singleton { get { return _Singleton; } }
-
         /// <summary>
         /// See interface docs.
         /// </summary>

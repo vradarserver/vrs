@@ -65,7 +65,7 @@ namespace VirtualRadar.WebSite
         /// </summary>
         public WebSiteGraphics()
         {
-            _IsMono = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
+            _IsMono = Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>().IsMono;
         }
         #endregion
 

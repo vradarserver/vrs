@@ -539,7 +539,7 @@ namespace VirtualRadar.WinForms
                 _Presenter.Initialise(this);
                 _Presenter.UPnpManager = _UPnpManager;
 
-                var runtimeEnvironment = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton;
+                var runtimeEnvironment = Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>();
                 if(runtimeEnvironment.Is64BitProcess) {
                     Text = String.Format("{0} ({1})", Text, Strings.Title64Bit);
                 }

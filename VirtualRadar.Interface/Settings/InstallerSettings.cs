@@ -30,7 +30,7 @@ namespace VirtualRadar.Interface.Settings
         /// </summary>
         public InstallerSettings()
         {
-            bool isMono = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
+            bool isMono = Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>().IsMono;
             WebServerPort = isMono ? 8080 : 80;
         }
     }

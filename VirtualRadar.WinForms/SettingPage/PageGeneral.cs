@@ -66,7 +66,7 @@ namespace VirtualRadar.WinForms.SettingPage
             {
                 base.AssociateChildPages();
 
-                var isMono = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
+                var isMono = Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>().IsMono;
                 if(isMono) {
                     ChildPages.Add(new PageMono.Summary());
                 }

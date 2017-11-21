@@ -444,7 +444,7 @@ namespace VirtualRadar.WinForms.Controls
                 comboBoxSite.Items.Add(Strings.SettingsPage);
                 comboBoxSite.SelectedIndex = 0;
 
-                if(Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono) {
+                if(Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>().IsMono) {
                     linkLabelAddress.TextAlign = ContentAlignment.TopLeft;
                 }
             }

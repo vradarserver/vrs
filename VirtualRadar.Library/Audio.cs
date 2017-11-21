@@ -34,7 +34,7 @@ namespace VirtualRadar.Library
         /// </summary>
         public bool IsSupported
         {
-            get { return !Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono; }
+            get { return !Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>().IsMono; }
         }
 
         /// <summary>

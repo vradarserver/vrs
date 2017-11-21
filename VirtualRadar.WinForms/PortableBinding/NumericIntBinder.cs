@@ -63,7 +63,7 @@ namespace VirtualRadar.WinForms.PortableBinding
         /// </summary>
         protected override void DoInitialiseControl()
         {
-            var isMono = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
+            var isMono = Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>().IsMono;
             if(isMono) {
                 Control.TextAlign = HorizontalAlignment.Left;
             }

@@ -13,13 +13,15 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
     /// <summary>
     /// The interface for singleton objects that can tell the program about the environment it's running under.
     /// </summary>
-    public interface IRuntimeEnvironment : ISingleton<IRuntimeEnvironment>
+    [Singleton]
+    public interface IRuntimeEnvironment
     {
         /// <summary>
         /// Gets a value indicating that the program is running under Mono.

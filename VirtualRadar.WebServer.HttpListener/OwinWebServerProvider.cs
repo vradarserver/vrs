@@ -78,7 +78,7 @@ namespace VirtualRadar.WebServer.HttpListener
         public IPAddress[] GetHostAddresses()
         {
             if(_LocalIpAddresses == null) {
-                if(!Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono) {
+                if(!Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>().IsMono) {
                     _LocalIpAddresses = Dns.GetHostAddresses("");
                 } else {
                     // Ugh...
