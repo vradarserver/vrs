@@ -14,13 +14,15 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
     /// <summary>
     /// The interface for objects that handle signals.
     /// </summary>
-    public interface IShutdownSignalHandler : ISingleton<IShutdownSignalHandler>
+    [Singleton]
+    public interface IShutdownSignalHandler
     {
         /// <summary>
         /// Ensures that the main view's CloseView method is called when a shutdown signal is raised by the OS.

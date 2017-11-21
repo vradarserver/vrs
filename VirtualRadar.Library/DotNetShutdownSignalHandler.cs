@@ -28,17 +28,6 @@ namespace VirtualRadar.Library
     {
         private bool _ConsoleCancelKeyPressHooked;
 
-        private static DotNetShutdownSignalHandler _Singleton;
-        public IShutdownSignalHandler Singleton
-        {
-            get {
-                if(_Singleton == null) {
-                    _Singleton = new DotNetShutdownSignalHandler();
-                }
-                return _Singleton;
-            }
-        }
-
         public void CloseMainViewOnShutdownSignal()
         {
             if(!_ConsoleCancelKeyPressHooked) {

@@ -286,7 +286,7 @@ namespace VirtualRadar.Interface
                     flightSimulatorXAircraftList = splashScreen.FlightSimulatorXAircraftList;
                 }
 
-                var shutdownSignalHandler = Factory.Singleton.Resolve<IShutdownSignalHandler>().Singleton;
+                var shutdownSignalHandler = Factory.Singleton.ResolveSingleton<IShutdownSignalHandler>();
                 try {
                     if(loadSucceded) {
                         var pluginManager = Factory.Singleton.ResolveSingleton<IPluginManager>();

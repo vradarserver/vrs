@@ -32,17 +32,6 @@ namespace VirtualRadar.Library
         private bool _ConsoleCancelKeyPressHooked;
         private Thread _ShutdownSignalHandlerThread;
 
-        private static MonoShutdownSignalHandler _Singleton;
-        public IShutdownSignalHandler Singleton
-        {
-            get {
-                if(_Singleton == null) {
-                    _Singleton = new MonoShutdownSignalHandler();
-                }
-                return _Singleton;
-            }
-        }
-
         public void CloseMainViewOnShutdownSignal()
         {
             StartShutdownSignalHandlerThread();
