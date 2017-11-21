@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 using VirtualRadar.Interface.Database;
 
 namespace VirtualRadar.Interface.Listener
@@ -19,7 +20,8 @@ namespace VirtualRadar.Interface.Listener
     /// <summary>
     /// The interface for objects that can collect together a <see cref="IFeed"/> for each receiver and merged feed configured in settings.
     /// </summary>
-    public interface IFeedManager : ISingleton<IFeedManager>, IBackgroundThreadExceptionCatcher, IDisposable
+    [Singleton]
+    public interface IFeedManager : IBackgroundThreadExceptionCatcher, IDisposable
     {
         /// <summary>
         /// Gets a collection of active and enabled feeds.

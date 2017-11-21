@@ -114,7 +114,7 @@ namespace VirtualRadar.Library.Presenter
         private void ShutdownListeners()
         {
             _View.ReportProgress(Strings.ShuttingDownBaseStationListener);
-            Factory.Singleton.Resolve<IFeedManager>().Singleton.Dispose();
+            Factory.Singleton.ResolveSingleton<IFeedManager>().Dispose();
         }
 
         private void ShutdownPlugins()

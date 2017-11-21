@@ -91,7 +91,7 @@ namespace VirtualRadar.WebSite.ApiControllers
             var context = PipelineContext;
             var config = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton.Get();
             if(!context.Request.IsInternet || config.InternetClientSettings.AllowInternetProximityGadgets) {
-                var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+                var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
                 var feed = feedManager.GetByUniqueId(config.GoogleMapSettings.ClosestAircraftReceiverId, ignoreInvisibleFeeds: true);
 
                 if(feed?.AircraftList != null) {

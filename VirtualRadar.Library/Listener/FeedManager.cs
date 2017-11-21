@@ -38,12 +38,6 @@ namespace VirtualRadar.Library.Listener
         #endregion
 
         #region Properties
-        private static readonly IFeedManager _Singleton = new FeedManager();
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IFeedManager Singleton { get { return _Singleton; } }
-
         private IFeed[] _Feeds;
         /// <summary>
         /// See interface docs.

@@ -258,7 +258,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 _StandingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
                 _StandingDataManager.LoadCompleted += StandingDataManager_LoadCompleted;
 
-                var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+                var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
                 feedManager.FeedsChanged += FeedManager_FeedsChanged;
 
                 _OnlineLookupCache = Provider.CreateOnlineLookupCache();
@@ -363,7 +363,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         private void HookFeed()
         {
             lock(_SyncLock) {
-                var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+                var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
                 var feed = feedManager.GetByUniqueId(_Options.ReceiverId, ignoreInvisibleFeeds: false);
                 if(feed != _Feed) {
                     if(feed != null) {
@@ -382,7 +382,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         private void UnhookFeed()
         {
             lock(_SyncLock) {
-                var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+                var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
                 var feed = feedManager.GetByUniqueId(_Options.ReceiverId, ignoreInvisibleFeeds: false);
                 if(feed != _Feed) {
                     if(_Feed != null && _Feed.Listener != null) {
@@ -402,7 +402,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// </summary>
         private void StartSession()
         {
-            var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+            var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
 
             lock(_SyncLock) {
                 if(_Session == null) {

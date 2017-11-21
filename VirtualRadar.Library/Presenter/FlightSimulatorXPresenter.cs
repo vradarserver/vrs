@@ -137,7 +137,7 @@ namespace VirtualRadar.Library.Presenter
             _Clock = Factory.Singleton.Resolve<IClock>();
 
             Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
-            Factory.Singleton.Resolve<IFeedManager>().Singleton.FeedsChanged += FeedManager_FeedsChanged;
+            Factory.Singleton.ResolveSingleton<IFeedManager>().FeedsChanged += FeedManager_FeedsChanged;
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace VirtualRadar.Library.Presenter
         {
             if(disposing) {
                 Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.ConfigurationChanged -= ConfigurationStorage_ConfigurationChanged;
-                Factory.Singleton.Resolve<IFeedManager>().Singleton.FeedsChanged -= FeedManager_FeedsChanged;
+                Factory.Singleton.ResolveSingleton<IFeedManager>().FeedsChanged -= FeedManager_FeedsChanged;
                 _Feed = null;
             }
         }
@@ -226,7 +226,7 @@ namespace VirtualRadar.Library.Presenter
             var configuration = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Load();
             _ShortTrailLengthSeconds = configuration.GoogleMapSettings.ShortTrailLengthSeconds;
 
-            var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+            var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
             _Feed = feedManager.GetByUniqueId(configuration.GoogleMapSettings.FlightSimulatorXReceiverId, ignoreInvisibleFeeds: false);
         }
         #endregion

@@ -62,7 +62,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         /// <returns></returns>
         private DirectoryEntryJson BuildDirectoryEntry()
         {
-            var feeds = Factory.Singleton.Resolve<IFeedManager>().Singleton.VisibleFeeds.Where(r => r.AircraftList != null).ToArray();
+            var feeds = Factory.Singleton.ResolveSingleton<IFeedManager>().VisibleFeeds.Where(r => r.AircraftList != null).ToArray();
             var maxAircraft = feeds.Select(r => {
                 long unused1, unused2;
                 var aircraftList = r?.AircraftList.TakeSnapshot(out unused1, out unused2);

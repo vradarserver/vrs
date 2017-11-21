@@ -38,7 +38,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         [HttpGet, Route("api/3.00/feeds")]
         public FeedJson[] GetFeeds()
         {
-            var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+            var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
             return feedManager.VisibleFeeds.Select(r => FeedJson.ToModel(r)).Where(r => r != null).ToArray();
         }
 
@@ -50,7 +50,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         [HttpGet, Route("api/3.00/feeds/{id}")]
         public FeedJson GetFeed(int id)
         {
-            var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+            var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
             return FeedJson.ToModel(feedManager.GetByUniqueId(id, ignoreInvisibleFeeds: true));
         }
 
@@ -64,7 +64,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         [Route("PolarPlot.json")]                       // pre-version 3 route
         public PolarPlotsJson GetPolarPlot(int feedId = -1)
         {
-            var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+            var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
             var feed = feedManager.GetByUniqueId(feedId, ignoreInvisibleFeeds: true);
             var plotter = feed?.AircraftList?.PolarPlotter;
 

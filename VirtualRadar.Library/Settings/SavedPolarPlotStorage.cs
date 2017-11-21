@@ -46,7 +46,7 @@ namespace VirtualRadar.Library.Settings
         /// </summary>
         public void Save()
         {
-            var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+            var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
             var feeds = feedManager.Feeds.ToArray();
 
             foreach(var feed in feeds) {

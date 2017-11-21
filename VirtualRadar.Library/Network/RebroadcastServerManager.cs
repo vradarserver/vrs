@@ -168,7 +168,7 @@ namespace VirtualRadar.Library.Network
                 }
 
                 if(_HookedFeedsChanged) {
-                    Factory.Singleton.Resolve<IFeedManager>().Singleton.FeedsChanged -= FeedManager_FeedsChanged;
+                    Factory.Singleton.ResolveSingleton<IFeedManager>().FeedsChanged -= FeedManager_FeedsChanged;
                     _HookedFeedsChanged = false;
                 }
 
@@ -192,7 +192,7 @@ namespace VirtualRadar.Library.Network
             configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
             _HookedConfigurationChanged = true;
 
-            var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+            var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
             feedManager.FeedsChanged += FeedManager_FeedsChanged;
             _HookedFeedsChanged = true;
         }
@@ -205,7 +205,7 @@ namespace VirtualRadar.Library.Network
             var result = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
             var configuration = result.Load();
 
-            var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+            var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
 
             var unusedServers = new List<IRebroadcastServer>(RebroadcastServers);
             var newServers = new List<RebroadcastSettings>();
