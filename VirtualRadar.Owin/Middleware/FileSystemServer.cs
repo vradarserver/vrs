@@ -62,7 +62,7 @@ namespace VirtualRadar.Owin.Middleware
         /// </summary>
         public FileSystemServer()
         {
-            _Configuration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
+            _Configuration = Factory.Singleton.ResolveSingleton<IFileSystemServerConfiguration>();
         }
 
         /// <summary>

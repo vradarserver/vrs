@@ -292,7 +292,7 @@ namespace VirtualRadar.WebSite
                 redirection.AddRedirection("/", "/desktop.html", RedirectionContext.Any);
                 redirection.AddRedirection("/", "/mobile.html", RedirectionContext.Mobile);
 
-                var fileSystemConfiguration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
+                var fileSystemConfiguration = Factory.Singleton.ResolveSingleton<IFileSystemServerConfiguration>();
                 fileSystemConfiguration.TextLoadedFromFile += FileSystemConfiguration_TextLoadedFromFile;
 
                 var javascriptManipulatorConfig = Factory.Singleton.ResolveSingleton<IJavascriptManipulatorConfiguration>();
@@ -351,7 +351,7 @@ namespace VirtualRadar.WebSite
         /// <param name="siteRoot"></param>
         public void AddSiteRoot(SiteRoot siteRoot)
         {
-            var configuration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
+            var configuration = Factory.Singleton.ResolveSingleton<IFileSystemServerConfiguration>();
             configuration.AddSiteRoot(siteRoot);
         }
 
@@ -361,7 +361,7 @@ namespace VirtualRadar.WebSite
         /// <param name="siteRoot"></param>
         public void RemoveSiteRoot(SiteRoot siteRoot)
         {
-            var configuration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
+            var configuration = Factory.Singleton.ResolveSingleton<IFileSystemServerConfiguration>();
             configuration.RemoveSiteRoot(siteRoot);
         }
 
@@ -373,7 +373,7 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         public bool IsSiteRootActive(SiteRoot siteRoot, bool folderMustMatch)
         {
-            var configuration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
+            var configuration = Factory.Singleton.ResolveSingleton<IFileSystemServerConfiguration>();
             return configuration.IsSiteRootActive(siteRoot, folderMustMatch);
         }
 
@@ -383,7 +383,7 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         public List<string> GetSiteRootFolders()
         {
-            var configuration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>().Singleton;
+            var configuration = Factory.Singleton.ResolveSingleton<IFileSystemServerConfiguration>();
             return configuration.GetSiteRootFolders();
         }
         #endregion

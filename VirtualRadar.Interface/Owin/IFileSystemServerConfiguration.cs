@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
 using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Interface.Owin
@@ -21,7 +22,8 @@ namespace VirtualRadar.Interface.Owin
     /// The interface for the singleton object that can be used to configure and modify
     /// the behaviour of the <see cref="IFileSystemServer"/> middleware.
     /// </summary>
-    public interface IFileSystemServerConfiguration : ISingleton<IFileSystemServerConfiguration>
+    [Singleton]
+    public interface IFileSystemServerConfiguration
     {
         /// <summary>
         /// Raised when certain text files are loaded by file system middleware from a disk-bound file. Listeners

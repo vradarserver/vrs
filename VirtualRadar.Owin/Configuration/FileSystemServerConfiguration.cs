@@ -159,21 +159,6 @@ namespace VirtualRadar.Owin.Configuration
         /// </summary>
         private List<Root> _Roots = new List<Root>();
 
-        private static IFileSystemServerConfiguration _Singleton;
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IFileSystemServerConfiguration Singleton
-        {
-            get
-            {
-                if(_Singleton == null) {
-                    _Singleton = new FileSystemServerConfiguration();
-                }
-                return _Singleton;
-            }
-        }
-
         /// <summary>
         /// See interface docs.
         /// </summary>

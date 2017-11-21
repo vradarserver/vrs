@@ -42,26 +42,13 @@ namespace Test.VirtualRadar.Owin.Configuration
             _FileSystemProvider = new MockFileSystemProvider();
             Factory.Singleton.RegisterInstance<IFileSystemProvider>(_FileSystemProvider);
 
-            _Configuration = Factory.Singleton.Resolve<IFileSystemServerConfiguration>();
+            _Configuration = Factory.Singleton.ResolveNewInstance<IFileSystemServerConfiguration>();
         }
 
         [TestCleanup]
         public void TestCleanup()
         {
             Factory.RestoreSnapshot(_Snapshot);
-        }
-
-        [TestMethod]
-        public void FileSystemConfiguration_Singleton_Is_Not_Null()
-        {
-            Assert.IsNotNull(_Configuration.Singleton);
-        }
-
-        [TestMethod]
-        public void FileSystemConfiguration_Singleton_Is_Same_Instance_Across_All_Instances()
-        {
-            var other = Factory.Singleton.Resolve<IFileSystemServerConfiguration>();
-            Assert.AreSame(_Configuration.Singleton, other.Singleton);
         }
 
         [TestMethod]
