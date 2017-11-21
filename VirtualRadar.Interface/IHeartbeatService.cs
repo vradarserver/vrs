@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
@@ -41,7 +42,8 @@ namespace VirtualRadar.Interface
     /// other objects that use the service. However if timely background processing is an issue for a
     /// plugin then perhaps the heartbeat service is not the best way of implementing it.
     /// </para></remarks>
-    public interface IHeartbeatService : ISingleton<IHeartbeatService>, IDisposable
+    [Singleton]
+    public interface IHeartbeatService : IDisposable
     {
         /// <summary>
         /// Raised once every ten seconds or so.

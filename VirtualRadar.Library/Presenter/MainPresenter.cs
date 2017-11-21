@@ -152,7 +152,7 @@ namespace VirtualRadar.Library.Presenter
             View.LogFileName = Factory.Singleton.ResolveSingleton<ILog>().FileName;
             View.InvalidPluginCount = Factory.Singleton.Resolve<IPluginManager>().Singleton.IgnoredPlugins.Count;
 
-            var heartbeatService = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
+            var heartbeatService = Factory.Singleton.ResolveSingleton<IHeartbeatService>();
             heartbeatService.SlowTick += HeartbeatService_SlowTick;
             heartbeatService.FastTick += HeartbeatService_FastTick;
 

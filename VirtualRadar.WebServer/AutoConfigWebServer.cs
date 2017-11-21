@@ -100,7 +100,7 @@ namespace VirtualRadar.WebServer
             LoadConfiguration();
             LoadExternalIPAddress();
 
-            var heartbeat = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
+            var heartbeat = Factory.Singleton.ResolveSingleton<IHeartbeatService>();
             heartbeat.SlowTick += Heartbeat_SlowTick;
             heartbeat.SlowTickNow();
         }

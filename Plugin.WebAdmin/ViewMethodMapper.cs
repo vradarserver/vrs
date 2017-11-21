@@ -193,7 +193,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// </summary>
         public ViewMethodMapper()
         {
-            Factory.Singleton.Resolve<IHeartbeatService>().Singleton.SlowTick += Heartbeat_SlowTick;
+            Factory.Singleton.ResolveSingleton<IHeartbeatService>().SlowTick += Heartbeat_SlowTick;
         }
 
         /// <summary>

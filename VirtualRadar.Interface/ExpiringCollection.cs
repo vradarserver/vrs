@@ -201,7 +201,7 @@ namespace VirtualRadar.Interface
             MillisecondsBetweenChecks = millisecondsBetweenChecks;
 
             _Clock = Factory.Singleton.Resolve<IClock>();
-            _HeartbeatService = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
+            _HeartbeatService = Factory.Singleton.ResolveSingleton<IHeartbeatService>();
         }
 
         /// <summary>

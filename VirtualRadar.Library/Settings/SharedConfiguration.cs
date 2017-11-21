@@ -117,7 +117,7 @@ namespace VirtualRadar.Library.Settings
 
                         _Subscribers = new List<WeakReference<ISharedConfigurationSubscriber>>();
 
-                        var heartbeat = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
+                        var heartbeat = Factory.Singleton.ResolveSingleton<IHeartbeatService>();
                         heartbeat.SlowTick += HeartBeat_SlowTick;
                     }
 

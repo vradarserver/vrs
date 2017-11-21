@@ -348,7 +348,7 @@ namespace VirtualRadar.Library
                 _Disposed = true;
                 if(_HookedHeartbeat) {
                     _HookedHeartbeat = false;
-                    Factory.Singleton.Resolve<IHeartbeatService>().Singleton.SlowTick -= HeartbeatService_SlowTick;
+                    Factory.Singleton.ResolveSingleton<IHeartbeatService>().SlowTick -= HeartbeatService_SlowTick;
                 }
             }
         }
@@ -447,7 +447,7 @@ namespace VirtualRadar.Library
             lock(_SyncLock) {
                 if(!_HookedHeartbeat) {
                     _HookedHeartbeat = true;
-                    Factory.Singleton.Resolve<IHeartbeatService>().Singleton.SlowTick += HeartbeatService_SlowTick;
+                    Factory.Singleton.ResolveSingleton<IHeartbeatService>().SlowTick += HeartbeatService_SlowTick;
                 }
             }
 

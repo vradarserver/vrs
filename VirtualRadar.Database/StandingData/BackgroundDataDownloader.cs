@@ -56,7 +56,7 @@ namespace VirtualRadar.Database.StandingData
         /// </summary>
         public void Start()
         {
-            Factory.Singleton.Resolve<IHeartbeatService>().Singleton.SlowTick += Heartbeat_SlowTick;
+            Factory.Singleton.ResolveSingleton<IHeartbeatService>().SlowTick += Heartbeat_SlowTick;
         }
 
         /// <summary>

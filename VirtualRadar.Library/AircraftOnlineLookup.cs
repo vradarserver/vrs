@@ -245,7 +245,7 @@ namespace VirtualRadar.Library
                         }
                         _SecondsToNextLookup = Provider.MinSecondsBetweenRequests;
 
-                        var heartbeatService = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
+                        var heartbeatService = Factory.Singleton.ResolveSingleton<IHeartbeatService>();
                         heartbeatService.FastTick += Heartbeat_FastTick;
                     }
                 }
