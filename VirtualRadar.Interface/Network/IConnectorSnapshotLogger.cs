@@ -12,13 +12,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Network
 {
     /// <summary>
     /// The interface that objects that log snapshots of all of the connections must implement.
     /// </summary>
-    public interface IConnectorSnapshotLogger : ISingleton<IConnectorSnapshotLogger>
+    [Singleton]
+    public interface IConnectorSnapshotLogger
     {
         /// <summary>
         /// Gets the full path to the snapshot log.
