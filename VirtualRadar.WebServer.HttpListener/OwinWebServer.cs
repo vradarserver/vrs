@@ -295,7 +295,7 @@ namespace VirtualRadar.WebServer.HttpListener
         {
             _WebAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
             _AuthenticationConfiguration = Factory.Singleton.ResolveSingleton<IAuthenticationConfiguration>();
-            _AccessConfiguration = Factory.Singleton.Resolve<IAccessConfiguration>().Singleton;
+            _AccessConfiguration = Factory.Singleton.ResolveSingleton<IAccessConfiguration>();
 
             var standardPipeline = Factory.Singleton.Resolve<IStandardPipeline>();
             standardPipeline.Register(_WebAppConfiguration);

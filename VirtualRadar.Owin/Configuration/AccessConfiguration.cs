@@ -70,20 +70,6 @@ namespace VirtualRadar.Owin.Configuration
             }
         }
 
-        private static AccessConfiguration _Singleton;
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IAccessConfiguration Singleton
-        {
-            get {
-                if(_Singleton == null) {
-                    _Singleton = new AccessConfiguration();
-                }
-                return _Singleton;
-            }
-        }
-
         /// <summary>
         /// The object that ensures that writes to the fields are thread safe.
         /// </summary>

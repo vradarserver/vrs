@@ -31,7 +31,7 @@ namespace Test.VirtualRadar.Owin.Configuration
         [TestInitialize]
         public void TestInitialise()
         {
-            _Configuration = Factory.Singleton.Resolve<IAccessConfiguration>();
+            _Configuration = Factory.Singleton.ResolveNewInstance<IAccessConfiguration>();
         }
 
         [TestMethod]

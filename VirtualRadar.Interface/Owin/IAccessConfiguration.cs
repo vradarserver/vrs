@@ -14,6 +14,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
 using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Interface.Owin
@@ -22,7 +23,8 @@ namespace VirtualRadar.Interface.Owin
     /// The interface for a singleton object that supplies configuration details to the middleware
     /// that allows or disallows access based on the IP address of the requestor.
     /// </summary>
-    public interface IAccessConfiguration : ISingleton<IAccessConfiguration>
+    [Singleton]
+    public interface IAccessConfiguration
     {
         /// <summary>
         /// Returns a map of restricted paths to the <see cref="Access"/> describing which IPAddresses can access the path.
