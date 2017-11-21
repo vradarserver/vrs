@@ -39,12 +39,6 @@ namespace VirtualRadar.Library
         /// </summary>
         public IExternalIPAddressServiceProvider Provider { get; set; }
 
-        private static readonly IExternalIPAddressService _Singleton = new ExternalIPAddressService();
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IExternalIPAddressService Singleton { get { return _Singleton; } }
-
         /// <summary>
         /// See interface docs.
         /// </summary>

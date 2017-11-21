@@ -33,7 +33,7 @@ namespace Test.VirtualRadar.Library
         [TestInitialize]
         public void TestInitialise()
         {
-            _Service = Factory.Singleton.Resolve<IExternalIPAddressService>();
+            _Service = Factory.Singleton.ResolveNewInstance<IExternalIPAddressService>();
             _Provider = new Mock<IExternalIPAddressServiceProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Service.Provider = _Provider.Object;
             _AddressUpdated = new EventRecorder<EventArgs<string>>();
@@ -42,21 +42,10 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void ExternalIPAddressService_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            _Service = Factory.Singleton.Resolve<IExternalIPAddressService>();
+            _Service = Factory.Singleton.ResolveNewInstance<IExternalIPAddressService>();
             Assert.IsNotNull(_Service.Provider);
             TestUtilities.TestProperty(_Service, "Provider", _Service.Provider, _Provider.Object);
             Assert.IsNull(_Service.Address);
-        }
-
-        [TestMethod]
-        public void ExternalIPAddressService_Singleton_Returns_Same_Instance()
-        {
-            var service1 = Factory.Singleton.Resolve<IExternalIPAddressService>();
-            var service2 = Factory.Singleton.Resolve<IExternalIPAddressService>();
-
-            Assert.IsNotNull(service1.Singleton);
-            Assert.AreNotSame(service1, service2);
-            Assert.AreSame(service1.Singleton, service2.Singleton);
         }
 
         [TestMethod]
