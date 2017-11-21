@@ -372,6 +372,7 @@ namespace Test.Framework
         public static Mock<T> CreateMockSingleton<T>()
             where T: class
         {
+            #pragma warning disable 0618
             if(typeof(ISingleton<T>).IsAssignableFrom(typeof(T))) {
                 return CreateMockSingletonInterface<T>();
             } else if(typeof(T).GetCustomAttribute<SingletonAttribute>() != null) {
@@ -379,14 +380,18 @@ namespace Test.Framework
             } else {
                 throw new InvalidOperationException($"{nameof(T)} neither implements ISingleton<> or is tagged as a Singleton");
             }
+            #pragma warning restore
         }
 
         private static Mock<T> CreateMockSingletonInterface<T>()
             where T: class
         {
-            if(!typeof(ISingleton<T>).IsAssignableFrom(typeof(T))) throw new InvalidOperationException($"{typeof(T).Name} does not implement {typeof(ISingleton<>).Name}");
+            #pragma warning disable 0618
+            if(!typeof(ISingleton<T>).IsAssignableFrom(typeof(T))) {
+                throw new InvalidOperationException($"{typeof(T).Name} does not implement {typeof(ISingleton<>).Name}");
+            }
 
-            Mock<T> result = new Mock<T>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+            var result = new Mock<T>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             var strict = new Mock<T>(MockBehavior.Strict);
 
             var parameter = Expression.Parameter(typeof(ISingleton<T>));
@@ -395,6 +400,7 @@ namespace Test.Framework
             strict.Setup(lambda).Returns(result.Object);
 
             Factory.Singleton.RegisterInstance(typeof(T), strict.Object);
+            #pragma warning restore
 
             return result;
         }
@@ -416,10 +422,14 @@ namespace Test.Framework
         public static Mock<T> CreateMockImplementation<T>()
             where T: class
         {
-            if(typeof(ISingleton<T>).IsAssignableFrom(typeof(T))) throw new InvalidOperationException($"{typeof(T).Name} implements {typeof(ISingleton<>).Name}, use CreateMockSingleton instead");
+            #pragma warning disable 0618
+            if(typeof(ISingleton<T>).IsAssignableFrom(typeof(T))) {
+                throw new InvalidOperationException($"{typeof(T).Name} implements {typeof(ISingleton<>).Name}, use CreateMockSingleton instead");
+            }
 
-            Mock<T> result = CreateMockInstance<T>();
+            var result = CreateMockInstance<T>();
             Factory.Singleton.RegisterInstance(typeof(T), result.Object);
+            #pragma warning restore
 
             return result;
         }

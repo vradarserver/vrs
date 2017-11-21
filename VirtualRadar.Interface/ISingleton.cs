@@ -23,6 +23,7 @@ namespace VirtualRadar.Interface
     /// <remarks><para>
     /// This is obsolete - it was used to mark interfaces that were to be treated as singletons
     /// but it's been replaced by the <see cref="SingletonAttribute"/>.
+    [Obsolete("Use SingletonAttribute instead")]
     public interface ISingleton<T>
     {
         /// <summary>
