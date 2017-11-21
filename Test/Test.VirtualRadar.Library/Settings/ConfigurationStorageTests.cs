@@ -54,7 +54,7 @@ namespace Test.VirtualRadar.Library.Settings
 
             _Provider = new TestProvider();
             _Provider.Folder = TestContext.TestDeploymentDir;
-            _Implementation = Factory.Singleton.Resolve<IConfigurationStorage>();
+            _Implementation = Factory.Singleton.ResolveNewInstance<IConfigurationStorage>();
             _Implementation.Provider = _Provider;
 
             _ConfigurationChangedEvent = new EventRecorder<EventArgs>();
@@ -80,22 +80,11 @@ namespace Test.VirtualRadar.Library.Settings
         [TestMethod]
         public void ConfigurationStorage_Initialises_To_Known_State_And_Properties_Work()
         {
-            _Implementation = Factory.Singleton.Resolve<IConfigurationStorage>();
+            _Implementation = Factory.Singleton.ResolveNewInstance<IConfigurationStorage>();
             Assert.IsNotNull(_Implementation.Provider);
             Assert.AreNotSame(_Provider, _Implementation.Provider);
             _Implementation.Provider = _Provider;
             Assert.AreSame(_Provider, _Implementation.Provider);
-        }
-
-        [TestMethod]
-        public void ConfigurationStorage_Singleton_Returns_Same_Object_Across_All_Instances()
-        {
-            var obj1 = Factory.Singleton.Resolve<IConfigurationStorage>();
-            var obj2 = Factory.Singleton.Resolve<IConfigurationStorage>();
-
-            Assert.AreNotSame(obj1, obj2);
-            Assert.IsNotNull(obj1.Singleton);
-            Assert.AreSame(obj1.Singleton, obj2.Singleton);
         }
 
         [TestMethod]

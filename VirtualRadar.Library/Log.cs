@@ -107,7 +107,7 @@ namespace VirtualRadar.Library
         private void Initialise()
         {
             if(_Folder == null) {
-                _Folder = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Folder;
+                _Folder = Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Folder;
                 FileName = Path.Combine(_Folder, "VirtualRadarLog.txt");
             }
         }

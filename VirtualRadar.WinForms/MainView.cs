@@ -553,7 +553,7 @@ namespace VirtualRadar.WinForms
         protected override void OnResize(EventArgs e)
         {
             if(WindowState == FormWindowState.Minimized) {
-                var configuration = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Load();
+                var configuration = Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Load();
                 if(configuration.BaseStationSettings.MinimiseToSystemTray) MinimiseToNotificationTray();
             } else if(WindowState == FormWindowState.Normal) {
                 if(notifyIcon.Visible) notifyIcon.Visible = false;

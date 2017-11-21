@@ -264,7 +264,7 @@ namespace VirtualRadar.Library.Presenter
             _View.UseRecommendedRawDecodingSettingsClicked += View_UseRecommendedRawDecodingSettingsClicked;
             _View.OpenUrlClicked += View_OpenUrlClicked;
 
-            var configStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+            var configStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
             var config = configStorage.Load();
 
             _ReceiverFormatManager = Factory.Singleton.ResolveSingleton<IReceiverFormatManager>();
@@ -1569,7 +1569,7 @@ namespace VirtualRadar.Library.Presenter
             if(!validationResults.HasErrors) {
                 SaveUsers();
 
-                var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                var configurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
                 configurationStorage.Save(_View.Configuration);
             }
         }

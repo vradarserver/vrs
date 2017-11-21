@@ -94,7 +94,7 @@ namespace VirtualRadar.WebServer
             WebServer = Factory.Singleton.Resolve<IWebServer>();
             WebServer.Port = Factory.Singleton.Resolve<IInstallerSettingsStorage>().Load().WebServerPort;
 
-            Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
+            Factory.Singleton.ResolveSingleton<IConfigurationStorage>().ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
             Factory.Singleton.ResolveSingleton<IExternalIPAddressService>().AddressUpdated += ExternalIPAddressService_AddressUpdated;
 
             LoadConfiguration();
@@ -112,7 +112,7 @@ namespace VirtualRadar.WebServer
         /// </summary>
         private void LoadConfiguration()
         {
-            var configuration = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Load();
+            var configuration = Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Load();
 
             WebServer.ExternalPort = configuration.WebServerSettings.UPnpPort;
             WebServer.Provider.EnableCompression = configuration.GoogleMapSettings.EnableCompression;

@@ -101,7 +101,7 @@ namespace VirtualRadar.Library.Settings
         /// <returns></returns>
         private string GetFolder()
         {
-            var result = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Folder;
+            var result = Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Folder;
             result = Path.Combine(result, SavedPlotsFolder);
 
             return result;

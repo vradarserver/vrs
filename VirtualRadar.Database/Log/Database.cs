@@ -147,7 +147,7 @@ namespace VirtualRadar.Database.Log
         private void CreateConnection()
         {
             if(_Connection == null) {
-                IConfigurationStorage configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                IConfigurationStorage configurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
 
                 var builder = Factory.Singleton.Resolve<ISQLiteConnectionStringBuilder>().Initialise();
                 builder.DataSource = Path.Combine(configurationStorage.Folder, "ConnectionLog.sqb");

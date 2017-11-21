@@ -157,7 +157,7 @@ namespace VirtualRadar.Library.Network
         {
             if(disposing) {
                 if(_HookedConfigurationChanged) {
-                    Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.ConfigurationChanged -= ConfigurationStorage_ConfigurationChanged;
+                    Factory.Singleton.ResolveSingleton<IConfigurationStorage>().ConfigurationChanged -= ConfigurationStorage_ConfigurationChanged;
                     _HookedConfigurationChanged = false;
                 }
 
@@ -196,7 +196,7 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         private IConfigurationStorage LoadConfiguration()
         {
-            var result = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+            var result = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
             var configuration = result.Load();
 
             var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();

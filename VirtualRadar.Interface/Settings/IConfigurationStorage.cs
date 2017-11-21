@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Settings
 {
@@ -44,7 +45,8 @@ namespace VirtualRadar.Interface.Settings
     /// }
     /// </code>
     /// </example>
-    public interface IConfigurationStorage : ISingleton<IConfigurationStorage>
+    [Singleton]
+    public interface IConfigurationStorage
     {
         /// <summary>
         /// Gets or sets a value that abstracts away the environment for testing purposes.

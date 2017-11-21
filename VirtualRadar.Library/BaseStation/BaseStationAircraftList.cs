@@ -353,7 +353,7 @@ namespace VirtualRadar.Library.BaseStation
 
                 LoadConfiguration();
 
-                var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                var configurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
                 configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
 
                 _SanityChecker = Factory.Singleton.Resolve<IAircraftSanityChecker>();
@@ -422,7 +422,7 @@ namespace VirtualRadar.Library.BaseStation
         /// </summary>
         private void LoadConfiguration()
         {
-            var configuration = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Load();
+            var configuration = Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Load();
 
             lock(_ConfigurationLock) {
                 _ShortTrailLengthSeconds = configuration.GoogleMapSettings.ShortTrailLengthSeconds;

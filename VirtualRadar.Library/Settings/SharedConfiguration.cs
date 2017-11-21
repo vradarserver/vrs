@@ -112,7 +112,7 @@ namespace VirtualRadar.Library.Settings
                         _ConfigurationListener = Factory.Singleton.Resolve<IConfigurationListener>();
                         _ConfigurationListener.PropertyChanged += ConfigurationListener_PropertyChanged;
 
-                        _ConfigurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                        _ConfigurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
                         _ConfigurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
 
                         _Subscribers = new List<WeakReference<ISharedConfigurationSubscriber>>();

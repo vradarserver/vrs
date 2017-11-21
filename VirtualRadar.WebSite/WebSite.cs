@@ -276,7 +276,7 @@ namespace VirtualRadar.WebSite
 
                 _UserManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
 
-                var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                var configurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
                 configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
 
                 WebServer = server;
@@ -310,7 +310,7 @@ namespace VirtualRadar.WebSite
         /// <returns>True if the server should be restarted because of changes to the configuration.</returns>
         private bool LoadConfiguration()
         {
-            var configuration = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Load();
+            var configuration = Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Load();
 
             bool result = false;
             lock(_AuthenticationSyncLock) {

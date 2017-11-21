@@ -163,7 +163,7 @@ namespace VirtualRadar.WebServer
         {
             Provider = new DefaultProvider();
 
-            var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+            var configurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
             configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
         }
 
@@ -206,7 +206,7 @@ namespace VirtualRadar.WebServer
         /// <returns></returns>
         private Configuration LoadConfiguration(bool canRaiseStateChanged)
         {
-            var result = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Load();
+            var result = Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Load();
             _ExternalPort = result.WebServerSettings.UPnpPort;
 
             if(IsEnabled != result.WebServerSettings.EnableUPnp) {

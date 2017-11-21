@@ -101,7 +101,7 @@ namespace VirtualRadar.Database.Users
         private void OpenConnection()
         {
             if(_Connection == null) {
-                var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                var configurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
 
                 var builder = Factory.Singleton.Resolve<ISQLiteConnectionStringBuilder>().Initialise();
                 builder.DataSource = Path.Combine(configurationStorage.Folder, "Users.sqb");

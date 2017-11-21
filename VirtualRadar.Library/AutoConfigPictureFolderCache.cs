@@ -53,7 +53,7 @@ namespace VirtualRadar.Library
 
                 LoadConfiguration();
 
-                var configStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                var configStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
                 configStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
             }
         }
@@ -63,7 +63,7 @@ namespace VirtualRadar.Library
         /// </summary>
         private void LoadConfiguration()
         {
-            var configStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+            var configStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
             var config = configStorage.Load();
 
             // On testing over a slow VPN link it was found that this would cause the options screen to appear to hang -

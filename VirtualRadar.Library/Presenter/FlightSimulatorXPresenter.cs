@@ -136,7 +136,7 @@ namespace VirtualRadar.Library.Presenter
             _FlightSimulatorX = Factory.Singleton.Resolve<IFlightSimulatorX>();
             _Clock = Factory.Singleton.Resolve<IClock>();
 
-            Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
+            Factory.Singleton.ResolveSingleton<IConfigurationStorage>().ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
             Factory.Singleton.ResolveSingleton<IFeedManager>().FeedsChanged += FeedManager_FeedsChanged;
         }
 
@@ -166,7 +166,7 @@ namespace VirtualRadar.Library.Presenter
         protected virtual void Dispose(bool disposing)
         {
             if(disposing) {
-                Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.ConfigurationChanged -= ConfigurationStorage_ConfigurationChanged;
+                Factory.Singleton.ResolveSingleton<IConfigurationStorage>().ConfigurationChanged -= ConfigurationStorage_ConfigurationChanged;
                 Factory.Singleton.ResolveSingleton<IFeedManager>().FeedsChanged -= FeedManager_FeedsChanged;
                 _Feed = null;
             }
@@ -223,7 +223,7 @@ namespace VirtualRadar.Library.Presenter
         /// </summary>
         private void LoadConfiguration()
         {
-            var configuration = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Load();
+            var configuration = Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Load();
             _ShortTrailLengthSeconds = configuration.GoogleMapSettings.ShortTrailLengthSeconds;
 
             var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();

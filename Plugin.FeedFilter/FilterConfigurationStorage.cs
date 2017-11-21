@@ -35,7 +35,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// </summary>
         private static string Folder
         {
-            get { return Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Folder; }
+            get { return Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Folder; }
         }
 
         /// <summary>
