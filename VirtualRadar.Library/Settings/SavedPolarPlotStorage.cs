@@ -30,12 +30,6 @@ namespace VirtualRadar.Library.Settings
         /// </summary>
         private object _SyncLock = new object();
 
-        private static ISavedPolarPlotStorage _Singleton = new SavedPolarPlotStorage();
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public ISavedPolarPlotStorage Singleton { get { return _Singleton; } }
-
         /// <summary>
         /// The sub-folder under the configuration folder where polar plots are saved and loaded.
         /// </summary>

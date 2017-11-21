@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 using VirtualRadar.Interface.Listener;
 
 namespace VirtualRadar.Interface.Settings
@@ -19,7 +20,8 @@ namespace VirtualRadar.Interface.Settings
     /// <summary>
     /// Manages the loading and saving of polar plots.
     /// </summary>
-    public interface ISavedPolarPlotStorage : ISingleton<ISavedPolarPlotStorage>
+    [Singleton]
+    public interface ISavedPolarPlotStorage
     {
         /// <summary>
         /// Uses the FeedManager to retrieve all feeds and saves polar plots for those that have them.
