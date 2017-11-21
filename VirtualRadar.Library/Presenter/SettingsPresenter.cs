@@ -269,7 +269,7 @@ namespace VirtualRadar.Library.Presenter
 
             _ReceiverFormatManager = Factory.Singleton.ResolveSingleton<IReceiverFormatManager>();
             _RebroadcastFormatManager = Factory.Singleton.ResolveSingleton<IRebroadcastFormatManager>();
-            _UserManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+            _UserManager = Factory.Singleton.ResolveSingleton<IUserManager>();
             _View.UserManager = _UserManager.Name;
 
             var highestReceiver = config.Receivers.OrderBy(r => r.UniqueId).LastOrDefault();

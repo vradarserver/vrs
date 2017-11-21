@@ -273,7 +273,7 @@ namespace VirtualRadar.Library.Settings
 
             var settings = configuration == null ? null : configuration.WebServerSettings;
             if(settings != null && !settings.ConvertedUser && !String.IsNullOrEmpty(settings.BasicAuthenticationUser)) {
-                var userManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+                var userManager = Factory.Singleton.ResolveSingleton<IUserManager>();
                 var user = userManager.GetUserByLoginName(settings.BasicAuthenticationUser);
                 if(user == null && userManager.CanCreateUsersWithHash) {
                     user = Factory.Singleton.Resolve<IUser>();

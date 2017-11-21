@@ -39,19 +39,6 @@ namespace VirtualRadar.Database.Users
         #endregion
 
         #region Properties
-        private static IUserManager _Singleton;
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IUserManager Singleton
-        {
-            get
-            {
-                if(_Singleton == null) _Singleton = new UserManager();
-                return _Singleton;
-            }
-        }
-
         /// <summary>
         /// See interface docs.
         /// </summary>

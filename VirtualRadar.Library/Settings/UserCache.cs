@@ -60,7 +60,7 @@ namespace VirtualRadar.Library.Settings
         {
             _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
             _SharedConfiguration.AddWeakSubscription(this);
-            _UserManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+            _UserManager = Factory.Singleton.ResolveSingleton<IUserManager>();
         }
 
         /// <summary>

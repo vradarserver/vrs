@@ -100,7 +100,7 @@ namespace VirtualRadar.Owin.Middleware
         {
             _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
             _AuthenticationConfiguration = Factory.Singleton.ResolveSingleton<IAuthenticationConfiguration>();
-            _UserManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+            _UserManager = Factory.Singleton.ResolveSingleton<IUserManager>();
 
             _UserCache = Factory.Singleton.Resolve<IUserCache>();
             _UserCache.LoadAllUsers = false;

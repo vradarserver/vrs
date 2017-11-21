@@ -166,7 +166,7 @@ namespace VirtualRadar.Library.Presenter
 
         private void CreateAdminUser(IConfigurationStorage configurationStorage, string createAdminName, string password)
         {
-            var userManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+            var userManager = Factory.Singleton.ResolveSingleton<IUserManager>();
 
             if(String.IsNullOrEmpty(password)) {
                 _View.ReportProblem(Strings.PasswordMissingOnCommandLine, Strings.PasswordMissingTitle, true);
@@ -247,7 +247,7 @@ namespace VirtualRadar.Library.Presenter
         private void InitialiseUserManager()
         {
             _View.ReportProgress(Strings.SplashScreenInitialisingUserManager);
-            var userManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+            var userManager = Factory.Singleton.ResolveSingleton<IUserManager>();
             userManager.Initialise();
         }
 
