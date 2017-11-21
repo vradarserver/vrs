@@ -58,20 +58,6 @@ namespace VirtualRadar.Owin.Configuration
             }
         }
 
-        private static RedirectionConfiguration _Singleton;
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IRedirectionConfiguration Singleton
-        {
-            get {
-                if(_Singleton == null) {
-                    _Singleton = new RedirectionConfiguration();
-                }
-                return _Singleton;
-            }
-        }
-
         /// <summary>
         /// Protects fields from multi-threaded writes.
         /// </summary>

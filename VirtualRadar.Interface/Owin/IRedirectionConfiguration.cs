@@ -13,13 +13,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
     /// The interface for a singleton object that holds the configuration for the redirection middleware.
     /// </summary>
-    public interface IRedirectionConfiguration : ISingleton<IRedirectionConfiguration>
+    [Singleton]
+    public interface IRedirectionConfiguration
     {
         /// <summary>
         /// Registers a redirection from one path to another.

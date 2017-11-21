@@ -31,21 +31,8 @@ namespace Test.VirtualRadar.Owin.Configuration
         [TestInitialize]
         public void TestInitialise()
         {
-            _Configuration = Factory.Singleton.Resolve<IRedirectionConfiguration>();
+            _Configuration = Factory.Singleton.ResolveNewInstance<IRedirectionConfiguration>();
             _Context = new RedirectionRequestContext();
-        }
-
-        [TestMethod]
-        public void RedirectionConfiguration_Singleton_Is_Not_Null()
-        {
-            Assert.IsNotNull(_Configuration.Singleton);
-        }
-
-        [TestMethod]
-        public void RedirectionConfiguration_Singleton_Is_Same_Instance_Across_All_Instances()
-        {
-            var other = Factory.Singleton.Resolve<IRedirectionConfiguration>();
-            Assert.AreSame(_Configuration.Singleton, other.Singleton);
         }
 
         [TestMethod]
@@ -173,7 +160,7 @@ namespace Test.VirtualRadar.Owin.Configuration
             Assert.AreEqual("/mob.html", _Configuration.RedirectToPathFromRoot("/", new RedirectionRequestContext() { IsMobile = true }));
             Assert.AreEqual("/not.html", _Configuration.RedirectToPathFromRoot("/", new RedirectionRequestContext() { IsMobile = false }));
 
-            _Configuration = Factory.Singleton.Resolve<IRedirectionConfiguration>();
+            _Configuration = Factory.Singleton.ResolveNewInstance<IRedirectionConfiguration>();
             _Configuration.AddRedirection("/", "/not.html", RedirectionContext.Any);
             _Configuration.AddRedirection("/", "/mob.html", RedirectionContext.Mobile);
 

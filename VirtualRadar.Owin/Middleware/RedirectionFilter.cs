@@ -33,7 +33,7 @@ namespace VirtualRadar.Owin.Middleware
         /// </summary>
         public RedirectionFilter()
         {
-            _RedirectionConfiguration = Factory.Singleton.Resolve<IRedirectionConfiguration>().Singleton;
+            _RedirectionConfiguration = Factory.Singleton.ResolveSingleton<IRedirectionConfiguration>();
         }
 
         /// <summary>

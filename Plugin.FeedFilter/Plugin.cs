@@ -162,7 +162,7 @@ namespace VirtualRadar.Plugin.FeedFilter
             _WebSiteExtender.PageHandlers.Add(String.Format("/{0}/SaveFilterConfiguration.json", ProtectedFolder), SaveFilterConfiguration);
             _WebSiteExtender.Initialise(parameters);
 
-            var redirection = Factory.Singleton.Resolve<IRedirectionConfiguration>().Singleton;
+            var redirection = Factory.Singleton.ResolveSingleton<IRedirectionConfiguration>();
             redirection.AddRedirection("/FeedFilter",  "/FeedFilter/index.html", RedirectionContext.Any);
             redirection.AddRedirection("/FeedFilter/", "/FeedFilter/index.html", RedirectionContext.Any);
 

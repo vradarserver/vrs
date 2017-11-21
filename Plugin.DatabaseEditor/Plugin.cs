@@ -203,7 +203,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
 
             parameters.WebSite.HtmlLoadedFromFile += WebSite_HtmlLoadedFromFile;
 
-            var redirection = Factory.Singleton.Resolve<IRedirectionConfiguration>().Singleton;
+            var redirection = Factory.Singleton.ResolveSingleton<IRedirectionConfiguration>();
             redirection.AddRedirection("/DatabaseEditor",  "/DatabaseEditor/index.html", RedirectionContext.Any);
             redirection.AddRedirection("/DatabaseEditor/", "/DatabaseEditor/index.html", RedirectionContext.Any);
 

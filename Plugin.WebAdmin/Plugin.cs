@@ -188,7 +188,7 @@ namespace VirtualRadar.Plugin.WebAdmin
             _WebSiteExtender.ProtectFolder(ProtectedFolder);
             _WebSiteExtender.Initialise(parameters);
 
-            var redirection = Factory.Singleton.Resolve<IRedirectionConfiguration>().Singleton;
+            var redirection = Factory.Singleton.ResolveSingleton<IRedirectionConfiguration>();
             redirection.AddRedirection("/WebAdmin",  "/WebAdmin/Index.html", RedirectionContext.Any);
             redirection.AddRedirection("/WebAdmin/", "/WebAdmin/Index.html", RedirectionContext.Any);
 

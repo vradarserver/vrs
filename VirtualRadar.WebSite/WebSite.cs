@@ -288,7 +288,7 @@ namespace VirtualRadar.WebSite
 
                 server.AuthenticationRequired += Server_AuthenticationRequired;
 
-                var redirection = Factory.Singleton.Resolve<IRedirectionConfiguration>().Singleton;
+                var redirection = Factory.Singleton.ResolveSingleton<IRedirectionConfiguration>();
                 redirection.AddRedirection("/", "/desktop.html", RedirectionContext.Any);
                 redirection.AddRedirection("/", "/mobile.html", RedirectionContext.Mobile);
 
