@@ -34,20 +34,6 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         private object _SyncLock;
 
-        private static IRebroadcastFormatManager _Singleton;
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IRebroadcastFormatManager Singleton
-        {
-            get {
-                if(_Singleton == null) {
-                    _Singleton = new RebroadcastFormatManager();
-                }
-                return _Singleton;
-            }
-        }
-
         /// <summary>
         /// See interface docs.
         /// </summary>

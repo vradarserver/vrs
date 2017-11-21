@@ -231,7 +231,7 @@ namespace VirtualRadar.Library.Presenter
                 }
             }
 
-            var rebroadcastFormatManager = Factory.Singleton.Resolve<IRebroadcastFormatManager>().Singleton;
+            var rebroadcastFormatManager = Factory.Singleton.ResolveSingleton<IRebroadcastFormatManager>();
             foreach(var server in configuration.RebroadcastSettings.Where(r => r.Enabled)) {
                 if(rebroadcastFormatManager.GetProvider(server.Format) == null) {
                     server.Enabled = false;
