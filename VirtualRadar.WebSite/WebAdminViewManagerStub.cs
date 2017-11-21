@@ -24,11 +24,6 @@ namespace VirtualRadar.WebSite
     /// </summary>
     class WebAdminViewManagerStub : IWebAdminViewManager
     {
-        public IWebAdminViewManager Singleton
-        {
-            get { return this; }
-        }
-
         public bool WebAdminPluginInstalled
         {
             get { return false; }

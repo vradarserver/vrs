@@ -140,12 +140,12 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <param name="classFactory"></param>
         public void RegisterImplementations(IClassFactory classFactory)
         {
-            _WebAdminViewManager = (WebAdminViewManager)(new WebAdminViewManager().Singleton);
+            _WebAdminViewManager = new WebAdminViewManager();
             _WebAdminViewManager.Initialise(ProtectedFolder);
             _WebAdminViewManager.RegisterTemplateFileName("@access-editor.html@", Path.GetFullPath(Path.Combine(PluginFolder, "Web/WebAdmin/templates/template-access-editor-block.html")));
             _WebAdminViewManager.RegisterTemplateFileName("@head.html@", Path.GetFullPath(Path.Combine(PluginFolder, "Web/WebAdmin/templates/template-header-block.html")));
 
-            classFactory.Register<IWebAdminViewManager, WebAdminViewManager>();
+            classFactory.RegisterInstance<IWebAdminViewManager>(_WebAdminViewManager);
         }
 
         /// <summary>

@@ -292,7 +292,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// </summary>
         public void GuiThreadStartup()
         {
-            var webAdminViewManager = Factory.Singleton.Resolve<IWebAdminViewManager>().Singleton;
+            var webAdminViewManager = Factory.Singleton.ResolveSingleton<IWebAdminViewManager>();
             webAdminViewManager.RegisterTranslations(typeof(PluginStrings), "DatabaseWriterPlugin");
             webAdminViewManager.AddWebAdminView(new WebAdminView("/WebAdmin/", "DatabaseWriterPluginOptions.html", PluginStrings.WebAdminMenuName, () => new WebAdmin.OptionsView(), typeof(PluginStrings)) {
                 Plugin = this,

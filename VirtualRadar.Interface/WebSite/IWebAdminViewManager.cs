@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 using VirtualRadar.Interface.View;
 
 namespace VirtualRadar.Interface.WebSite
@@ -19,7 +20,8 @@ namespace VirtualRadar.Interface.WebSite
     /// <summary>
     /// The interface that objects which handle collections of <see cref="WebAdminView"/>s must implement.
     /// </summary>
-    public interface IWebAdminViewManager : ISingleton<IWebAdminViewManager>
+    [Singleton]
+    public interface IWebAdminViewManager
     {
         /// <summary>
         /// Returns true if the web admin plugin has been installed.
