@@ -13,13 +13,15 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.WebSite
 {
     /// <summary>
     /// The interface for objects that handle graphics manipulation for the web site.
     /// </summary>
-    public interface IWebSiteGraphics : ISingleton<IWebSiteGraphics>
+    [Singleton]
+    public interface IWebSiteGraphics
     {
         /// <summary>
         /// Rotates the image passed across by a number of degrees, running clockwise with 0 being north.

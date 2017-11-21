@@ -45,20 +45,6 @@ namespace VirtualRadar.WebSite
         private object _SyncLock = new object();
         #endregion
 
-        #region Properties
-        private static WebSiteGraphics _Singleton;
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IWebSiteGraphics Singleton
-        {
-            get {
-                if(_Singleton == null) _Singleton = new WebSiteGraphics();
-                return _Singleton;
-            }
-        }
-        #endregion
-
         #region Ctors
         /// <summary>
         /// Creates a new object.
