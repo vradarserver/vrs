@@ -148,7 +148,7 @@ namespace Test.VirtualRadar.Library
         {
             _ClassFactorySnapshot = Factory.TakeSnapshot();
 
-            _PluginManager = Factory.Singleton.Resolve<IPluginManager>();
+            _PluginManager = Factory.Singleton.ResolveNewInstance<IPluginManager>();
 
             _Provider = new Mock<IPluginManagerProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Provider.Setup(p => p.ApplicationStartupPath).Returns("x");
@@ -188,23 +188,12 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void PluginManager_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            var manager = Factory.Singleton.Resolve<IPluginManager>();
+            var manager = Factory.Singleton.ResolveNewInstance<IPluginManager>();
             Assert.IsNotNull(manager.Provider);
             TestUtilities.TestProperty(manager, "Provider", manager.Provider, _Provider.Object);
 
             Assert.AreEqual(0, _PluginManager.LoadedPlugins.Count);
             Assert.AreEqual(0, _PluginManager.IgnoredPlugins.Count);
-        }
-
-        [TestMethod]
-        public void PluginManager_Singleton_Returns_Same_Reference_For_All_Instances()
-        {
-            var instance1 = Factory.Singleton.Resolve<IPluginManager>();
-            var instance2 = Factory.Singleton.Resolve<IPluginManager>();
-
-            Assert.AreNotSame(instance1, instance2);
-            Assert.IsNotNull(instance1.Singleton);
-            Assert.AreSame(instance1.Singleton, instance2.Singleton);
         }
 
         [TestMethod]

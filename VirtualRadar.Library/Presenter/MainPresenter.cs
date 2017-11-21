@@ -150,7 +150,7 @@ namespace VirtualRadar.Library.Presenter
             if(view == null) throw new ArgumentNullException("view");
             View = view;
             View.LogFileName = Factory.Singleton.ResolveSingleton<ILog>().FileName;
-            View.InvalidPluginCount = Factory.Singleton.Resolve<IPluginManager>().Singleton.IgnoredPlugins.Count;
+            View.InvalidPluginCount = Factory.Singleton.ResolveSingleton<IPluginManager>().IgnoredPlugins.Count;
 
             var heartbeatService = Factory.Singleton.ResolveSingleton<IHeartbeatService>();
             heartbeatService.SlowTick += HeartbeatService_SlowTick;

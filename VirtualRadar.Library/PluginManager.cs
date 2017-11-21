@@ -90,12 +90,6 @@ namespace VirtualRadar.Library
         /// See interface docs.
         /// </summary>
         public IDictionary<string, string> IgnoredPlugins { get; private set; }
-
-        private static readonly IPluginManager _Singleton = new PluginManager();
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IPluginManager Singleton { get { return _Singleton; } }
         #endregion
 
         #region Constructor

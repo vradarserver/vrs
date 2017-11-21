@@ -12,13 +12,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
     /// <summary>
     /// The interface for the object that manages plugins on behalf of the program.
     /// </summary>
-    public interface IPluginManager : ISingleton<IPluginManager>
+    [Singleton]
+    public interface IPluginManager
     {
         /// <summary>
         /// Gets or sets the object that abstracts away the environment for testing.

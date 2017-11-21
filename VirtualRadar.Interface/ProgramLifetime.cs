@@ -200,7 +200,7 @@ namespace VirtualRadar.Interface
         /// </summary>
         public static void LoadPlugins()
         {
-            var pluginManager = Factory.Singleton.Resolve<IPluginManager>().Singleton;
+            var pluginManager = Factory.Singleton.ResolveSingleton<IPluginManager>();
             pluginManager.LoadPlugins();
         }
 
@@ -289,7 +289,7 @@ namespace VirtualRadar.Interface
                 var shutdownSignalHandler = Factory.Singleton.Resolve<IShutdownSignalHandler>().Singleton;
                 try {
                     if(loadSucceded) {
-                        var pluginManager = Factory.Singleton.Resolve<IPluginManager>().Singleton;
+                        var pluginManager = Factory.Singleton.ResolveSingleton<IPluginManager>();
                         foreach(var plugin in pluginManager.LoadedPlugins) {
                             try {
                                 plugin.GuiThreadStartup();
