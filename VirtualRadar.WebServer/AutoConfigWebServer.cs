@@ -43,12 +43,6 @@ namespace VirtualRadar.WebServer
         #endregion
 
         #region Properties
-        private static readonly IAutoConfigWebServer _Singleton = new AutoConfigWebServer();
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IAutoConfigWebServer Singleton { get { return _Singleton; } }
-
         /// <summary>
         /// See interface docs.
         /// </summary>

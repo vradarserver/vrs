@@ -94,7 +94,7 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             base.InitialiseControls();
 
-            var webServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+            var webServer = Factory.Singleton.ResolveSingleton<IAutoConfigWebServer>().WebServer;
             linkLabelDesktopSite.Text = FormatAddress(webServer.LocalAddress, "desktop.html");
             linkLabelMobileSite.Text = FormatAddress(webServer.LocalAddress, "mobile.html");
             linkLabelSettingsPage.Text = FormatAddress(webServer.LocalAddress, "settings.html");

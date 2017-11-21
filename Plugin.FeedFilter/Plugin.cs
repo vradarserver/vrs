@@ -192,7 +192,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         public void ShowWinFormsOptionsUI()
         {
             using(var dialog = new WinForms.OptionsView()) {
-                var webServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+                var webServer = Factory.Singleton.ResolveSingleton<IAutoConfigWebServer>().WebServer;
 
                 dialog.Options = OptionsStorage.Load(this);
                 dialog.FilterSettingsUrl = String.Format("{0}/FeedFilter/index.html", webServer.LocalAddress);

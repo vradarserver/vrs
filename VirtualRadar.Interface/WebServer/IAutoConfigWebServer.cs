@@ -18,7 +18,7 @@ namespace VirtualRadar.Interface.WebServer
     /// <summary>
     /// The interface for a singleton object that automatically applies configuration settings to an <see cref="IWebServer"/>.
     /// </summary>
-    public interface IAutoConfigWebServer : ISingleton<IAutoConfigWebServer>, IDisposable
+    public interface IAutoConfigWebServer : IDisposable
     {
         /// <summary>
         /// Gets the web server that this object is applying configuration settings to.

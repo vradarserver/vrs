@@ -604,7 +604,7 @@ namespace VirtualRadar.WinForms
         {
             if(_FlightSimulatorXView != null) _FlightSimulatorXView.Activate();
             else {
-                var webServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+                var webServer = Factory.Singleton.ResolveSingleton<IAutoConfigWebServer>().WebServer;
                 _FlightSimulatorXView = new FlightSimulatorXView();
                 _FlightSimulatorXView.CloseClicked += FlightSimulatorXView_CloseClicked;
                 _FlightSimulatorXView.Initialise(null, _FlightSimulatorXAircraftList, webServer);
