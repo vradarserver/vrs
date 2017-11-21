@@ -81,7 +81,7 @@ namespace Test.VirtualRadar.Library.Network
             };
             _Configuration.RebroadcastSettings.Add(_RebroadcastSettings);
 
-            _Manager = Factory.Singleton.Resolve<IRebroadcastServerManager>();
+            _Manager = Factory.Singleton.ResolveNewInstance<IRebroadcastServerManager>();
         }
 
         [TestCleanup]
@@ -96,20 +96,10 @@ namespace Test.VirtualRadar.Library.Network
         [TestMethod]
         public void RebroadcastServerManager_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            var manager = Factory.Singleton.Resolve<IRebroadcastServerManager>();
+            var manager = Factory.Singleton.ResolveNewInstance<IRebroadcastServerManager>();
 
             Assert.AreEqual(0, manager.RebroadcastServers.Count);
             TestUtilities.TestProperty(manager, r => r.Online, false);
-        }
-
-        [TestMethod]
-        public void RebroadcastServerManager_Singleton_Returns_Same_Reference_For_All_Instances()
-        {
-            var instance1 = Factory.Singleton.Resolve<IRebroadcastServerManager>();
-            var instance2 = Factory.Singleton.Resolve<IRebroadcastServerManager>();
-
-            Assert.IsNotNull(instance1.Singleton);
-            Assert.AreSame(instance1.Singleton, instance2.Singleton);
         }
         #endregion
 

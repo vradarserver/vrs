@@ -174,7 +174,7 @@ namespace VirtualRadar.Library.Presenter
             View.WebServerNetworkAddress = _WebServer.NetworkAddress;
             View.WebServerExternalAddress = _WebServer.ExternalAddress;
 
-            _RebroadcastServerManager = Factory.Singleton.Resolve<IRebroadcastServerManager>().Singleton;
+            _RebroadcastServerManager = Factory.Singleton.ResolveSingleton<IRebroadcastServerManager>();
             DoDisplayRebroadcastServerConnections();
 
             _SharedConfiguration.ConfigurationChanged += SharedConfiguration_ConfigurationChanged;

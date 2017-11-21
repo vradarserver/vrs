@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Network;
 
@@ -20,7 +21,8 @@ namespace VirtualRadar.Interface.Network
     /// <summary>
     /// The interface for a singleton object that can configure and control a collection of <see cref="IRebroadcastServer"/>s.
     /// </summary>
-    public interface IRebroadcastServerManager : ISingleton<IRebroadcastServerManager>, IBackgroundThreadExceptionCatcher, IDisposable
+    [Singleton]
+    public interface IRebroadcastServerManager : IBackgroundThreadExceptionCatcher, IDisposable
     {
         /// <summary>
         /// Gets the collection of rebroadcast servers that are being controlled by the manager.

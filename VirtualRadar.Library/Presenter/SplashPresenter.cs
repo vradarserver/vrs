@@ -374,7 +374,7 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.SplashScreenStartingRebroadcastServers);
 
-            var manager = Factory.Singleton.Resolve<IRebroadcastServerManager>().Singleton;
+            var manager = Factory.Singleton.ResolveSingleton<IRebroadcastServerManager>();
             if(BackgroundThreadExceptionHandler != null) manager.ExceptionCaught += BackgroundThreadExceptionHandler;
             manager.Initialise();
             manager.Online = true;

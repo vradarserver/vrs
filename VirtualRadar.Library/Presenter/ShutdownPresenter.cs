@@ -102,7 +102,7 @@ namespace VirtualRadar.Library.Presenter
         private void ShutdownRebroadcastServers()
         {
             _View.ReportProgress(Strings.ShuttingDownRebroadcastServer);
-            Factory.Singleton.Resolve<IRebroadcastServerManager>().Singleton.Dispose();
+            Factory.Singleton.ResolveSingleton<IRebroadcastServerManager>().Dispose();
         }
 
         private void SavePolarPlots()
