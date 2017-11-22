@@ -89,8 +89,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Strings.nl-NL.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Strings.nl-NL.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
