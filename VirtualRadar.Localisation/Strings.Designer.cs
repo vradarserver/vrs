@@ -19,7 +19,7 @@ namespace VirtualRadar.Localisation {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Strings {
@@ -4284,11 +4284,29 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Yes to allow the use of SVG graphics on the web site, no to disable SVG graphics. SVG graphics reduce the load on the web server and look better on high resolution screens..
+        ///   Looks up a localized string similar to Yes to allow the use of SVG graphics on desktop pages, no to disable SVG graphics on desktop pages. SVG graphics reduce the load on the web server and look better on high resolution screens but can increase CPU load on low power devices..
         /// </summary>
-        public static string OptionsDescribeUseSvgGraphics {
+        public static string OptionsDescribeUseSvgGraphicsOnDesktop {
             get {
-                return ResourceManager.GetString("OptionsDescribeUseSvgGraphics", resourceCulture);
+                return ResourceManager.GetString("OptionsDescribeUseSvgGraphicsOnDesktop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes to allow the use of SVG graphics on mobile pages, no to disable SVG graphics on mobile pages. SVG graphics reduce the load on the web server and look better on high resolution screens but can increase CPU load on low power devices..
+        /// </summary>
+        public static string OptionsDescribeUseSvgGraphicsOnMobile {
+            get {
+                return ResourceManager.GetString("OptionsDescribeUseSvgGraphicsOnMobile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes to allow the use of SVG graphics on report pages, no to disable SVG graphics on report pages. SVG graphics reduce the load on the web server and look better on high resolution screens but can increase CPU load on low power devices..
+        /// </summary>
+        public static string OptionsDescribeUseSvgGraphicsOnReports {
+            get {
+                return ResourceManager.GetString("OptionsDescribeUseSvgGraphicsOnReports", resourceCulture);
             }
         }
         
@@ -7175,11 +7193,29 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use SVG graphics.
+        ///   Looks up a localized string similar to Use SVG graphics on desktop.
         /// </summary>
-        public static string UseSvgGraphics {
+        public static string UseSvgGraphicsOnDesktop {
             get {
-                return ResourceManager.GetString("UseSvgGraphics", resourceCulture);
+                return ResourceManager.GetString("UseSvgGraphicsOnDesktop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use SVG graphics on mobile.
+        /// </summary>
+        public static string UseSvgGraphicsOnMobile {
+            get {
+                return ResourceManager.GetString("UseSvgGraphicsOnMobile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use SVG graphics on reports.
+        /// </summary>
+        public static string UseSvgGraphicsOnReports {
+            get {
+                return ResourceManager.GetString("UseSvgGraphicsOnReports", resourceCulture);
             }
         }
         

@@ -275,14 +275,34 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _UseGoogleMapsAPIKeyWithLocalRequests, value, nameof(UseGoogleMapsAPIKeyWithLocalRequests)); }
         }
 
-        private bool _UseSvgGraphics;
+        private bool _UseSvgGraphicsOnDesktop;
         /// <summary>
-        /// Gets or sets a value indicating that the website should use SVG map markers etc.
+        /// Gets or sets a value indicating that we want to use SVG graphics on desktop pages.
         /// </summary>
-        public bool UseSvgGraphics
+        public bool UseSvgGraphicsOnDesktop
         {
-            get { return _UseSvgGraphics; }
-            set { SetField(ref _UseSvgGraphics, value, nameof(UseSvgGraphics)); }
+            get { return _UseSvgGraphicsOnDesktop; }
+            set { SetField(ref _UseSvgGraphicsOnDesktop, value, nameof(UseSvgGraphicsOnDesktop)); }
+        }
+
+        private bool _UseSvgGraphicsOnMobile;
+        /// <summary>
+        /// Gets or sets a value indicating that we want to use SVG graphics on mobile pages.
+        /// </summary>
+        public bool UseSvgGraphicsOnMobile
+        {
+            get { return _UseSvgGraphicsOnMobile; }
+            set { SetField(ref _UseSvgGraphicsOnMobile, value, nameof(UseSvgGraphicsOnMobile)); }
+        }
+
+        private bool _UseSvgGraphicsOnReports;
+        /// <summary>
+        /// Gets or sets a value indicating that we want to use SVG graphics on report pages.
+        /// </summary>
+        public bool UseSvgGraphicsOnReports
+        {
+            get { return _UseSvgGraphicsOnReports; }
+            set { SetField(ref _UseSvgGraphicsOnReports, value, nameof(UseSvgGraphicsOnReports)); }
         }
 
         /// <summary>
@@ -338,7 +358,9 @@ namespace VirtualRadar.Interface.Settings
             EnableBundling = true;
             EnableMinifying = true;
             EnableCompression = true;
-            UseSvgGraphics = true;
+            UseSvgGraphicsOnDesktop = true;
+            UseSvgGraphicsOnMobile = true;
+            UseSvgGraphicsOnReports = true;
         }
     }
 }

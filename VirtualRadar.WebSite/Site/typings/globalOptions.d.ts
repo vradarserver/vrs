@@ -4,7 +4,7 @@
     {
         isFlightSim?: boolean;                          /* Undocumented */
         isMobile?: boolean;                             /* Undocumented */
-
+        isReport?: boolean;                             /* Undocumented */
 
 
         // Aircraft details

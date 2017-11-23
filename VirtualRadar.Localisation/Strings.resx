@@ -2720,11 +2720,28 @@ Show this message.</value>
   <data name="Help" xml:space="preserve">
     <value>Help</value>
   </data>
-  <data name="OptionsDescribeUseSvgGraphics" xml:space="preserve">
-    <value>Yes to allow the use of SVG graphics on the web site, no to disable SVG graphics. SVG graphics reduce the load on the web server and look better on high resolution screens.</value>
+  <data name="OptionsDescribeUseSvgGraphicsOnDesktop" xml:space="preserve">
+    <value>Yes to allow the use of SVG graphics on desktop pages, no to disable SVG graphics on desktop pages. SVG graphics reduce the load on the web server and look better on high resolution screens but can increase CPU load on low power devices.</value>
+    <comment>SVG is a graphics file format</comment>
   </data>
-  <data name="UseSvgGraphics" xml:space="preserve">
-    <value>Use SVG graphics</value>
+  <data name="OptionsDescribeUseSvgGraphicsOnMobile" xml:space="preserve">
+    <value>Yes to allow the use of SVG graphics on mobile pages, no to disable SVG graphics on mobile pages. SVG graphics reduce the load on the web server and look better on high resolution screens but can increase CPU load on low power devices.</value>
+    <comment>SVG is a graphics file format</comment>
+  </data>
+  <data name="OptionsDescribeUseSvgGraphicsOnReports" xml:space="preserve">
+    <value>Yes to allow the use of SVG graphics on report pages, no to disable SVG graphics on report pages. SVG graphics reduce the load on the web server and look better on high resolution screens but can increase CPU load on low power devices.</value>
+    <comment>SVG is a graphics file format</comment>
+  </data>
+  <data name="UseSvgGraphicsOnDesktop" xml:space="preserve">
+    <value>Use SVG graphics on desktop</value>
+    <comment>SVG is a graphics file format</comment>
+  </data>
+  <data name="UseSvgGraphicsOnMobile" xml:space="preserve">
+    <value>Use SVG graphics on mobile</value>
+    <comment>SVG is a graphics file format</comment>
+  </data>
+  <data name="UseSvgGraphicsOnReports" xml:space="preserve">
+    <value>Use SVG graphics on reports</value>
     <comment>SVG is a graphics file format</comment>
   </data>
 </root>

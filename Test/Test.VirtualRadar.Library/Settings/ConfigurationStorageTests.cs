@@ -243,7 +243,9 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual("ABC.COM", readBack.GoogleMapSettings.AllowCorsDomains);
                         Assert.AreEqual("API Key", readBack.GoogleMapSettings.GoogleMapsApiKey);
                         Assert.AreEqual(true, readBack.GoogleMapSettings.UseGoogleMapsAPIKeyWithLocalRequests);
-                        Assert.AreEqual(false, readBack.GoogleMapSettings.UseSvgGraphics);
+                        Assert.AreEqual(false, readBack.GoogleMapSettings.UseSvgGraphicsOnDesktop);
+                        Assert.AreEqual(false, readBack.GoogleMapSettings.UseSvgGraphicsOnMobile);
+                        Assert.AreEqual(false, readBack.GoogleMapSettings.UseSvgGraphicsOnReports);
                         break;
                     case nameof(Configuration.VersionCheckSettings):
                         Assert.AreEqual(false, readBack.VersionCheckSettings.CheckAutomatically);
@@ -561,7 +563,9 @@ namespace Test.VirtualRadar.Library.Settings
                 AllowCorsDomains = "ABC.COM",
                 GoogleMapsApiKey = "API Key",
                 UseGoogleMapsAPIKeyWithLocalRequests = true,
-                UseSvgGraphics = false,
+                UseSvgGraphicsOnDesktop = false,
+                UseSvgGraphicsOnMobile = false,
+                UseSvgGraphicsOnReports = false,
             };
         }
 

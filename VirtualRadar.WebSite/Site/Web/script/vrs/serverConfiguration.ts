@@ -34,7 +34,9 @@ namespace VRS
         VrsVersion:                             string;
         IsMono:                                 boolean;
         UseMarkerLabels:                        boolean;
-        UseSvgGraphics:                         boolean;
+        UseSvgGraphicsOnDesktop:                boolean;
+        UseSvgGraphicsOnMobile:                 boolean;
+        UseSvgGraphicsOnReports:                boolean;
         Receivers:                              IServerConfigReceiver[];
         IsLocalAddress:                         boolean;
         IsAudioEnabled:                         boolean;

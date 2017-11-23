@@ -259,7 +259,9 @@ namespace Test.VirtualRadar.Library.Settings
                     { r => r.ProxyType,                             r => r.ProxyType = ProxyType.Forward },
                     { r => r.ShortTrailLengthSeconds,               r => r.ShortTrailLengthSeconds += 1 },
                     { r => r.UseGoogleMapsAPIKeyWithLocalRequests,  r => r.UseGoogleMapsAPIKeyWithLocalRequests = !r.UseGoogleMapsAPIKeyWithLocalRequests },
-                    { r => r.UseSvgGraphics,                        r => r.UseSvgGraphics = !r.UseSvgGraphics },
+                    { r => r.UseSvgGraphicsOnDesktop,               r => r.UseSvgGraphicsOnDesktop = !r.UseSvgGraphicsOnDesktop },
+                    { r => r.UseSvgGraphicsOnMobile,                r => r.UseSvgGraphicsOnMobile = !r.UseSvgGraphicsOnMobile },
+                    { r => r.UseSvgGraphicsOnReports,               r => r.UseSvgGraphicsOnReports = !r.UseSvgGraphicsOnReports },
                     { r => r.WebSiteReceiverId,                     r => r.WebSiteReceiverId += 1 },
                 });
 

@@ -80,7 +80,9 @@ namespace Test.VirtualRadar.Interface.WebSite
             TestUtilities.TestProperty(json, r => r.MinimumRefreshSeconds, 0, 123);
             TestUtilities.TestProperty(json, r => r.RefreshSeconds, 0, 123);
             TestUtilities.TestProperty(json, r => r.UseMarkerLabels, false);
-            TestUtilities.TestProperty(json, r => r.UseSvgGraphics, false);
+            TestUtilities.TestProperty(json, r => r.UseSvgGraphicsOnDesktop, false);
+            TestUtilities.TestProperty(json, r => r.UseSvgGraphicsOnMobile, false);
+            TestUtilities.TestProperty(json, r => r.UseSvgGraphicsOnReports, false);
             TestUtilities.TestProperty(json, r => r.VrsVersion, null, "Abc");
         }
 
@@ -212,7 +214,9 @@ namespace Test.VirtualRadar.Interface.WebSite
                     case "AudioEnabled":            _Configuration.AudioSettings.Enabled = worksheet.Bool("Value"); break;
                     case "CanShowPolarPlots":       _Configuration.InternetClientSettings.CanShowPolarPlots = worksheet.Bool("Value"); break;
                     case "UseMarkerLabels":         _Configuration.MonoSettings.UseMarkerLabels = worksheet.Bool("Value"); break;
-                    case "UseSvgGraphics":          _Configuration.GoogleMapSettings.UseSvgGraphics = worksheet.Bool("Value"); break;
+                    case "UseSvgGraphicsOnDesktop": _Configuration.GoogleMapSettings.UseSvgGraphicsOnDesktop = worksheet.Bool("Value"); break;
+                    case "UseSvgGraphicsOnMobile":  _Configuration.GoogleMapSettings.UseSvgGraphicsOnMobile = worksheet.Bool("Value"); break;
+                    case "UseSvgGraphicsOnReports": _Configuration.GoogleMapSettings.UseSvgGraphicsOnReports = worksheet.Bool("Value"); break;
                     default:                        throw new NotImplementedException();
                 }
             }
@@ -243,7 +247,9 @@ namespace Test.VirtualRadar.Interface.WebSite
                 case "AudioEnabled":                Assert.AreEqual(worksheet.Bool("JsonValue"), model.IsAudioEnabled); break;
                 case "CanShowPolarPlots":           Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientsCanSeePolarPlots); break;
                 case "UseMarkerLabels":             Assert.AreEqual(worksheet.Bool("JsonValue"), model.UseMarkerLabels); break;
-                case "UseSvgGraphics":              Assert.AreEqual(worksheet.Bool("JsonValue"), model.UseSvgGraphics); break;
+                case "UseSvgGraphicsOnDesktop":     Assert.AreEqual(worksheet.Bool("JsonValue"), model.UseSvgGraphicsOnDesktop); break;
+                case "UseSvgGraphicsOnMobile":      Assert.AreEqual(worksheet.Bool("JsonValue"), model.UseSvgGraphicsOnMobile); break;
+                case "UseSvgGraphicsOnReports":     Assert.AreEqual(worksheet.Bool("JsonValue"), model.UseSvgGraphicsOnReports); break;
                 default:                            throw new NotImplementedException();
             }
         }

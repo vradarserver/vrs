@@ -174,10 +174,22 @@ namespace VirtualRadar.Interface.WebSite
         public string GoogleMapsApiKey { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating that SVG graphics should be used wherever possible.
+        /// Gets or sets a value indicating that SVG graphics should be used on desktop pages.
         /// </summary>
         [DataMember]
-        public bool UseSvgGraphics { get; set; }
+        public bool UseSvgGraphicsOnDesktop { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating that SVG graphics should be used on mobile pages.
+        /// </summary>
+        [DataMember]
+        public bool UseSvgGraphicsOnMobile { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating that SVG graphics should be used on report pages.
+        /// </summary>
+        [DataMember]
+        public bool UseSvgGraphicsOnReports { get; set; }
 
         /// <summary>
         /// Returns a new model.
@@ -212,7 +224,9 @@ namespace VirtualRadar.Interface.WebSite
                 IsLocalAddress =                        isLocalAddress,
                 IsMono =                                isMono,
                 UseMarkerLabels =                       isMono ? configuration.MonoSettings.UseMarkerLabels : false,
-                UseSvgGraphics =                        configuration.GoogleMapSettings.UseSvgGraphics,
+                UseSvgGraphicsOnDesktop =               configuration.GoogleMapSettings.UseSvgGraphicsOnDesktop,
+                UseSvgGraphicsOnMobile =                configuration.GoogleMapSettings.UseSvgGraphicsOnMobile,
+                UseSvgGraphicsOnReports =               configuration.GoogleMapSettings.UseSvgGraphicsOnReports,
                 MinimumRefreshSeconds =                 configuration.GoogleMapSettings.MinimumRefreshSeconds,
                 RefreshSeconds =                        configuration.GoogleMapSettings.InitialRefreshSeconds,
                 VrsVersion =                            applicationInformation.ShortVersion,

@@ -40,6 +40,7 @@
             this.checkBoxEnableCompression = new System.Windows.Forms.CheckBox();
             this.comboBoxProxyType = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.checkBoxUseSvgGraphicsOnDesktop = new System.Windows.Forms.CheckBox();
             this.label10 = new System.Windows.Forms.Label();
             this.textBoxAllowCorsDomains = new System.Windows.Forms.TextBox();
             this.checkBoxEnableCorsSupport = new System.Windows.Forms.CheckBox();
@@ -56,7 +57,8 @@
             this.textBoxGoogleMapsAPIKey = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.checkBoxUseGoogleMapsKeyWithLocalRequests = new System.Windows.Forms.CheckBox();
-            this.checkBoxUseSvgGraphics = new System.Windows.Forms.CheckBox();
+            this.checkBoxUseSvgGraphicsOnMobile = new System.Windows.Forms.CheckBox();
+            this.checkBoxUseSvgGraphicsOnReports = new System.Windows.Forms.CheckBox();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericMinimumRefresh)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericInitialRefresh)).BeginInit();
@@ -79,7 +81,7 @@
             this.checkBoxPreferIataAirportCodes.Location = new System.Drawing.Point(200, 152);
             this.checkBoxPreferIataAirportCodes.Name = "checkBoxPreferIataAirportCodes";
             this.checkBoxPreferIataAirportCodes.Size = new System.Drawing.Size(144, 17);
-            this.checkBoxPreferIataAirportCodes.TabIndex = 10;
+            this.checkBoxPreferIataAirportCodes.TabIndex = 12;
             this.checkBoxPreferIataAirportCodes.Text = "::PreferIataAirportCodes::";
             this.checkBoxPreferIataAirportCodes.UseVisualStyleBackColor = true;
             // 
@@ -89,7 +91,7 @@
             this.label3.Location = new System.Drawing.Point(6, 126);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(101, 13);
-            this.label3.TabIndex = 8;
+            this.label3.TabIndex = 10;
             this.label3.Text = "::InitialSpeedUnits:::";
             // 
             // comboBoxInitialSpeedUnits
@@ -99,7 +101,7 @@
             this.comboBoxInitialSpeedUnits.Location = new System.Drawing.Point(200, 125);
             this.comboBoxInitialSpeedUnits.Name = "comboBoxInitialSpeedUnits";
             this.comboBoxInitialSpeedUnits.Size = new System.Drawing.Size(150, 21);
-            this.comboBoxInitialSpeedUnits.TabIndex = 9;
+            this.comboBoxInitialSpeedUnits.TabIndex = 11;
             // 
             // label2
             // 
@@ -107,7 +109,7 @@
             this.label2.Location = new System.Drawing.Point(6, 99);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(101, 13);
-            this.label2.TabIndex = 6;
+            this.label2.TabIndex = 8;
             this.label2.Text = "::InitialHeightUnits:::";
             // 
             // comboBoxInitialHeightUnits
@@ -117,7 +119,7 @@
             this.comboBoxInitialHeightUnits.Location = new System.Drawing.Point(200, 98);
             this.comboBoxInitialHeightUnits.Name = "comboBoxInitialHeightUnits";
             this.comboBoxInitialHeightUnits.Size = new System.Drawing.Size(150, 21);
-            this.comboBoxInitialHeightUnits.TabIndex = 7;
+            this.comboBoxInitialHeightUnits.TabIndex = 9;
             // 
             // label9
             // 
@@ -125,7 +127,7 @@
             this.label9.Location = new System.Drawing.Point(6, 72);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(112, 13);
-            this.label9.TabIndex = 4;
+            this.label9.TabIndex = 6;
             this.label9.Text = "::InitialDistanceUnits:::";
             // 
             // comboBoxInitialDistanceUnits
@@ -135,7 +137,7 @@
             this.comboBoxInitialDistanceUnits.Location = new System.Drawing.Point(200, 71);
             this.comboBoxInitialDistanceUnits.Name = "comboBoxInitialDistanceUnits";
             this.comboBoxInitialDistanceUnits.Size = new System.Drawing.Size(150, 21);
-            this.comboBoxInitialDistanceUnits.TabIndex = 5;
+            this.comboBoxInitialDistanceUnits.TabIndex = 7;
             // 
             // label4
             // 
@@ -169,7 +171,9 @@
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.checkBoxUseSvgGraphics);
+            this.groupBox2.Controls.Add(this.checkBoxUseSvgGraphicsOnReports);
+            this.groupBox2.Controls.Add(this.checkBoxUseSvgGraphicsOnMobile);
+            this.groupBox2.Controls.Add(this.checkBoxUseSvgGraphicsOnDesktop);
             this.groupBox2.Controls.Add(this.label10);
             this.groupBox2.Controls.Add(this.textBoxAllowCorsDomains);
             this.groupBox2.Controls.Add(this.checkBoxEnableCorsSupport);
@@ -180,37 +184,47 @@
             this.groupBox2.Controls.Add(this.checkBoxEnableBundling);
             this.groupBox2.Location = new System.Drawing.Point(0, 183);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(636, 190);
-            this.groupBox2.TabIndex = 1;
+            this.groupBox2.Size = new System.Drawing.Size(636, 235);
+            this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "::OptionsWebSiteCustomisationCategory::";
+            // 
+            // checkBoxUseSvgGraphicsOnDesktop
+            // 
+            this.checkBoxUseSvgGraphicsOnDesktop.AutoSize = true;
+            this.checkBoxUseSvgGraphicsOnDesktop.Location = new System.Drawing.Point(200, 115);
+            this.checkBoxUseSvgGraphicsOnDesktop.Name = "checkBoxUseSvgGraphicsOnDesktop";
+            this.checkBoxUseSvgGraphicsOnDesktop.Size = new System.Drawing.Size(172, 17);
+            this.checkBoxUseSvgGraphicsOnDesktop.TabIndex = 5;
+            this.checkBoxUseSvgGraphicsOnDesktop.Text = "::UseSvgGraphicsOnDesktop::";
+            this.checkBoxUseSvgGraphicsOnDesktop.UseVisualStyleBackColor = true;
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(6, 164);
+            this.label10.Location = new System.Drawing.Point(6, 210);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(121, 13);
-            this.label10.TabIndex = 7;
+            this.label10.TabIndex = 9;
             this.label10.Text = "::AllowedCorsDomains:::";
             // 
             // textBoxAllowCorsDomains
             // 
             this.textBoxAllowCorsDomains.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxAllowCorsDomains.Location = new System.Drawing.Point(200, 161);
+            this.textBoxAllowCorsDomains.Location = new System.Drawing.Point(200, 207);
             this.textBoxAllowCorsDomains.MaxLength = 60;
             this.textBoxAllowCorsDomains.Name = "textBoxAllowCorsDomains";
             this.textBoxAllowCorsDomains.Size = new System.Drawing.Size(436, 20);
-            this.textBoxAllowCorsDomains.TabIndex = 8;
+            this.textBoxAllowCorsDomains.TabIndex = 10;
             // 
             // checkBoxEnableCorsSupport
             // 
             this.checkBoxEnableCorsSupport.AutoSize = true;
-            this.checkBoxEnableCorsSupport.Location = new System.Drawing.Point(200, 138);
+            this.checkBoxEnableCorsSupport.Location = new System.Drawing.Point(200, 184);
             this.checkBoxEnableCorsSupport.Name = "checkBoxEnableCorsSupport";
             this.checkBoxEnableCorsSupport.Size = new System.Drawing.Size(129, 17);
-            this.checkBoxEnableCorsSupport.TabIndex = 6;
+            this.checkBoxEnableCorsSupport.TabIndex = 8;
             this.checkBoxEnableCorsSupport.Text = "::EnableCorsSupport::";
             this.checkBoxEnableCorsSupport.UseVisualStyleBackColor = true;
             // 
@@ -230,7 +244,7 @@
             this.label1.Location = new System.Drawing.Point(6, 45);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(100, 13);
-            this.label1.TabIndex = 2;
+            this.label1.TabIndex = 3;
             this.label1.Text = "::MinimumRefresh:::";
             // 
             // numericMinimumRefresh
@@ -243,7 +257,7 @@
             0});
             this.numericMinimumRefresh.Name = "numericMinimumRefresh";
             this.numericMinimumRefresh.Size = new System.Drawing.Size(77, 20);
-            this.numericMinimumRefresh.TabIndex = 3;
+            this.numericMinimumRefresh.TabIndex = 4;
             this.numericMinimumRefresh.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label6
@@ -288,7 +302,7 @@
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(636, 177);
-            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "::OptionsWebSiteSettingsCategory::";
             // 
@@ -298,7 +312,7 @@
             this.label7.Location = new System.Drawing.Point(283, 47);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(68, 13);
-            this.label7.TabIndex = 12;
+            this.label7.TabIndex = 5;
             this.label7.Text = "::PSeconds::";
             // 
             // label5
@@ -307,42 +321,42 @@
             this.label5.Location = new System.Drawing.Point(283, 21);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(68, 13);
-            this.label5.TabIndex = 11;
+            this.label5.TabIndex = 2;
             this.label5.Text = "::PSeconds::";
             // 
             // textBoxDirectoryEntryKey
             // 
             this.textBoxDirectoryEntryKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxDirectoryEntryKey.Location = new System.Drawing.Point(200, 379);
+            this.textBoxDirectoryEntryKey.Location = new System.Drawing.Point(200, 424);
             this.textBoxDirectoryEntryKey.MaxLength = 60;
             this.textBoxDirectoryEntryKey.Name = "textBoxDirectoryEntryKey";
             this.textBoxDirectoryEntryKey.Size = new System.Drawing.Size(436, 20);
-            this.textBoxDirectoryEntryKey.TabIndex = 3;
+            this.textBoxDirectoryEntryKey.TabIndex = 4;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(3, 382);
+            this.label8.Location = new System.Drawing.Point(3, 427);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(106, 13);
-            this.label8.TabIndex = 2;
+            this.label8.TabIndex = 3;
             this.label8.Text = "::DirectoryEntryKey:::";
             // 
             // textBoxGoogleMapsAPIKey
             // 
             this.textBoxGoogleMapsAPIKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxGoogleMapsAPIKey.Location = new System.Drawing.Point(200, 405);
+            this.textBoxGoogleMapsAPIKey.Location = new System.Drawing.Point(200, 450);
             this.textBoxGoogleMapsAPIKey.MaxLength = 60;
             this.textBoxGoogleMapsAPIKey.Name = "textBoxGoogleMapsAPIKey";
             this.textBoxGoogleMapsAPIKey.Size = new System.Drawing.Size(436, 20);
-            this.textBoxGoogleMapsAPIKey.TabIndex = 4;
+            this.textBoxGoogleMapsAPIKey.TabIndex = 6;
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(3, 408);
+            this.label11.Location = new System.Drawing.Point(3, 453);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(117, 13);
             this.label11.TabIndex = 5;
@@ -351,22 +365,32 @@
             // checkBoxUseGoogleMapsKeyWithLocalRequests
             // 
             this.checkBoxUseGoogleMapsKeyWithLocalRequests.AutoSize = true;
-            this.checkBoxUseGoogleMapsKeyWithLocalRequests.Location = new System.Drawing.Point(200, 431);
+            this.checkBoxUseGoogleMapsKeyWithLocalRequests.Location = new System.Drawing.Point(200, 476);
             this.checkBoxUseGoogleMapsKeyWithLocalRequests.Name = "checkBoxUseGoogleMapsKeyWithLocalRequests";
             this.checkBoxUseGoogleMapsKeyWithLocalRequests.Size = new System.Drawing.Size(228, 17);
-            this.checkBoxUseGoogleMapsKeyWithLocalRequests.TabIndex = 8;
+            this.checkBoxUseGoogleMapsKeyWithLocalRequests.TabIndex = 0;
             this.checkBoxUseGoogleMapsKeyWithLocalRequests.Text = "::UseGoogleMapsKeyWithLocalRequests::";
             this.checkBoxUseGoogleMapsKeyWithLocalRequests.UseVisualStyleBackColor = true;
             // 
-            // checkBoxUseSvgGraphics
+            // checkBoxUseSvgGraphicsOnMobile
             // 
-            this.checkBoxUseSvgGraphics.AutoSize = true;
-            this.checkBoxUseSvgGraphics.Location = new System.Drawing.Point(200, 115);
-            this.checkBoxUseSvgGraphics.Name = "checkBoxUseSvgGraphics";
-            this.checkBoxUseSvgGraphics.Size = new System.Drawing.Size(118, 17);
-            this.checkBoxUseSvgGraphics.TabIndex = 5;
-            this.checkBoxUseSvgGraphics.Text = "::UseSvgGraphics::";
-            this.checkBoxUseSvgGraphics.UseVisualStyleBackColor = true;
+            this.checkBoxUseSvgGraphicsOnMobile.AutoSize = true;
+            this.checkBoxUseSvgGraphicsOnMobile.Location = new System.Drawing.Point(200, 138);
+            this.checkBoxUseSvgGraphicsOnMobile.Name = "checkBoxUseSvgGraphicsOnMobile";
+            this.checkBoxUseSvgGraphicsOnMobile.Size = new System.Drawing.Size(163, 17);
+            this.checkBoxUseSvgGraphicsOnMobile.TabIndex = 6;
+            this.checkBoxUseSvgGraphicsOnMobile.Text = "::UseSvgGraphicsOnMobile::";
+            this.checkBoxUseSvgGraphicsOnMobile.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxUseSvgGraphicsOnReports
+            // 
+            this.checkBoxUseSvgGraphicsOnReports.AutoSize = true;
+            this.checkBoxUseSvgGraphicsOnReports.Location = new System.Drawing.Point(200, 161);
+            this.checkBoxUseSvgGraphicsOnReports.Name = "checkBoxUseSvgGraphicsOnReports";
+            this.checkBoxUseSvgGraphicsOnReports.Size = new System.Drawing.Size(169, 17);
+            this.checkBoxUseSvgGraphicsOnReports.TabIndex = 7;
+            this.checkBoxUseSvgGraphicsOnReports.Text = "::UseSvgGraphicsOnReports::";
+            this.checkBoxUseSvgGraphicsOnReports.UseVisualStyleBackColor = true;
             // 
             // PageWebSite
             // 
@@ -379,7 +403,7 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "PageWebSite";
-            this.Size = new System.Drawing.Size(636, 453);
+            this.Size = new System.Drawing.Size(636, 497);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericMinimumRefresh)).EndInit();
@@ -421,6 +445,8 @@
         private System.Windows.Forms.TextBox textBoxGoogleMapsAPIKey;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckBox checkBoxUseGoogleMapsKeyWithLocalRequests;
-        private System.Windows.Forms.CheckBox checkBoxUseSvgGraphics;
+        private System.Windows.Forms.CheckBox checkBoxUseSvgGraphicsOnDesktop;
+        private System.Windows.Forms.CheckBox checkBoxUseSvgGraphicsOnReports;
+        private System.Windows.Forms.CheckBox checkBoxUseSvgGraphicsOnMobile;
     }
 }

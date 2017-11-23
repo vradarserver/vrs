@@ -62,7 +62,9 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.AllowCorsDomains, null, "a.b.com");
             TestUtilities.TestProperty(settings, r => r.GoogleMapsApiKey, null, "Key");
             TestUtilities.TestProperty(settings, r => r.UseGoogleMapsAPIKeyWithLocalRequests, false);
-            TestUtilities.TestProperty(settings, r => r.UseSvgGraphics, true);
+            TestUtilities.TestProperty(settings, r => r.UseSvgGraphicsOnDesktop, true);
+            TestUtilities.TestProperty(settings, r => r.UseSvgGraphicsOnMobile, true);
+            TestUtilities.TestProperty(settings, r => r.UseSvgGraphicsOnReports, true);
         }
     }
 }

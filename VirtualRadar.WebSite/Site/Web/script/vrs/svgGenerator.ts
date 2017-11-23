@@ -72,7 +72,15 @@ namespace VRS
          */
         public static useSvgGraphics() : boolean
         {
-            return Modernizr.svg && (VRS.serverConfig ? VRS.serverConfig.get().UseSvgGraphics : false);
+            var result = Modernizr.svg;
+            if(result) {
+                var config = VRS.serverConfig.get();
+                var pageSetting = VRS.globalOptions.isMobile ? config.UseSvgGraphicsOnMobile : config.UseSvgGraphicsOnDesktop;
+                var reportSetting = VRS.globalOptions.isReport ? config.UseSvgGraphicsOnReports : false;
+                result = pageSetting || reportSetting;
+            }
+
+            return result;
         }
 
         /**

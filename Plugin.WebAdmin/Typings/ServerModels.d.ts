@@ -224,7 +224,9 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         AllowCorsDomainsValidation: VirtualRadar.Interface.View.IValidationModelField;
         GoogleMapsApiKey: string;
         UseGoogleMapsAPIKeyWithLocalRequests: boolean;
-        UseSvgGraphics: boolean;
+        UseSvgGraphicsOnDesktop: boolean;
+        UseSvgGraphicsOnMobile: boolean;
+        UseSvgGraphicsOnReports: boolean;
     }
     interface IInternetClientSettingsModel {
         CanRunReports: boolean;
@@ -706,7 +708,9 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         AllowCorsDomainsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         GoogleMapsApiKey: KnockoutObservable<string>;
         UseGoogleMapsAPIKeyWithLocalRequests: KnockoutObservable<boolean>;
-        UseSvgGraphics: KnockoutObservable<boolean>;
+        UseSvgGraphicsOnDesktop: KnockoutObservable<boolean>;
+        UseSvgGraphicsOnMobile: KnockoutObservable<boolean>;
+        UseSvgGraphicsOnReports: KnockoutObservable<boolean>;
     }
     interface IInternetClientSettingsModel_KO {
         CanRunReports: KnockoutObservable<boolean>;

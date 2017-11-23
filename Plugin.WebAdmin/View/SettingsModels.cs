@@ -526,7 +526,11 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public bool UseGoogleMapsAPIKeyWithLocalRequests { get; set; }
 
-        public bool UseSvgGraphics { get; set; }
+        public bool UseSvgGraphicsOnDesktop { get; set; }
+
+        public bool UseSvgGraphicsOnMobile { get; set; }
+
+        public bool UseSvgGraphicsOnReports { get; set; }
 
         public GoogleMapSettingsModel()
         {
@@ -563,7 +567,9 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             AllowCorsDomains =                      settings.AllowCorsDomains;
             GoogleMapsApiKey =                      settings.GoogleMapsApiKey;
             UseGoogleMapsAPIKeyWithLocalRequests =  settings.UseGoogleMapsAPIKeyWithLocalRequests;
-            UseSvgGraphics =                        settings.UseSvgGraphics;
+            UseSvgGraphicsOnDesktop =               settings.UseSvgGraphicsOnDesktop;
+            UseSvgGraphicsOnMobile =                settings.UseSvgGraphicsOnMobile;
+            UseSvgGraphicsOnReports =               settings.UseSvgGraphicsOnReports;
         }
 
         public GoogleMapSettings CopyToSettings(GoogleMapSettings settings)
@@ -592,7 +598,9 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             settings.AllowCorsDomains =                     AllowCorsDomains;
             settings.GoogleMapsApiKey =                     GoogleMapsApiKey;
             settings.UseGoogleMapsAPIKeyWithLocalRequests = UseGoogleMapsAPIKeyWithLocalRequests;
-            settings.UseSvgGraphics =                       UseSvgGraphics;
+            settings.UseSvgGraphicsOnDesktop =              UseSvgGraphicsOnDesktop;
+            settings.UseSvgGraphicsOnMobile =               UseSvgGraphicsOnMobile;
+            settings.UseSvgGraphicsOnReports =              UseSvgGraphicsOnReports;
 
             return settings;
         }
