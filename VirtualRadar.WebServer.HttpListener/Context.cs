@@ -58,14 +58,6 @@ namespace VirtualRadar.WebServer.HttpListener
         }
 
         /// <summary>
-        /// Exposes the response's internal StopProcessing flag.
-        /// </summary>
-        internal bool StopProcessing
-        {
-            get { return _Response?.StopProcessing ?? false; }
-        }
-
-        /// <summary>
         /// See interface docs.
         /// </summary>
         public string BasicUserName

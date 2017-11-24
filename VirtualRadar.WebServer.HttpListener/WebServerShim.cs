@@ -70,9 +70,9 @@ namespace VirtualRadar.WebServer.HttpListener
             AppFunc appFunc = async(IDictionary<string, object> environment) => {
                 var context = new Context(environment);
 
-                HandleRequest(context);
+                var handled = HandleRequest(context);
 
-                if(!context.StopProcessing) {
+                if(!handled) {
                     await next.Invoke(environment);
                 }
             };
@@ -84,8 +84,11 @@ namespace VirtualRadar.WebServer.HttpListener
         /// Raises events on the web server object to expose a web request to the rest of the system.
         /// </summary>
         /// <param name="context"></param>
-        private void HandleRequest(Context context)
+        /// <returns>True if the request was handled by the event handlers attached to the shim.</returns>
+        private bool HandleRequest(Context context)
         {
+            var result = false;
+
             var requestArgs = new RequestReceivedEventArgs(context.Request, context.Response, WebServer.Root);
             var requestReceivedEventArgsId = requestArgs.UniqueId;
 
@@ -98,6 +101,8 @@ namespace VirtualRadar.WebServer.HttpListener
 
                 if(!requestArgs.Handled) {
                     context.Response.StatusCode = HttpStatusCode.NotFound;
+                } else {
+                    result = true;
                 }
 
                 var fullClientAddress = String.Format("{0}:{1}", requestArgs.ClientAddress, context.Request.RemoteEndPoint.Port);
@@ -125,6 +130,8 @@ namespace VirtualRadar.WebServer.HttpListener
                 var log = Factory.Singleton.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception in RequestFinished event handler: {0}", ex);
             }
+
+            return result;
         }
     }
 }
