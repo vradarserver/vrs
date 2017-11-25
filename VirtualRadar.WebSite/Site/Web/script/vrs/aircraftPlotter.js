@@ -1157,7 +1157,7 @@ var VRS;
                         tooltip: this.getTooltip(details),
                         zIndex: isSelectedAircraft ? 101 : 100
                     };
-                    if (this._SuppressTextOnImages) {
+                    if (this._SuppressTextOnImages && !details.isSvg) {
                         markerOptions.useMarkerWithLabel = true;
                         markerOptions.mwlLabelInBackground = true;
                         markerOptions.mwlLabelClass = 'markerLabel';
@@ -1233,7 +1233,7 @@ var VRS;
                     }
                 }
             }
-            if (!result && !this._SuppressTextOnImages && (!details.mapMarker || !details.mapMarker.isMarkerWithLabel)) {
+            if (!result && (!this._SuppressTextOnImages || details.isSvg) && (!details.mapMarker || !details.mapMarker.isMarkerWithLabel)) {
                 if (this.allowPinTexts()) {
                     result = this.havePinTextDependenciesChanged(aircraft);
                 }
