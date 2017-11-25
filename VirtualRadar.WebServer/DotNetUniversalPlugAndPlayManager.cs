@@ -277,18 +277,22 @@ namespace VirtualRadar.WebServer
         /// Adds or removes the port forwarding mapping from the Internet to the web server.
         /// </summary>
         /// <param name="setMappingPresent"></param>
-        private void DoMapping(bool setMappingPresent)
+        /// <param name="overrideIsEnabled"></param>
+        /// <param name="overrideExternalPort"></param>
+        private void DoMapping(bool setMappingPresent, bool? overrideIsEnabled = null, int? overrideExternalPort = null)
         {
             if(!_Initialised) throw new InvalidOperationException("You must initialise the UPnP manager before use");
 
             var isMappingPresent = PortForwardingPresent;
+            var isEnabled = overrideIsEnabled ?? IsEnabled;
+            var externalPort = overrideExternalPort ?? _ExternalPort;
 
             if(IsRouterPresent) {
                 try {
-                    isMappingPresent = DoesDirectMappingExist();
-                    if(IsEnabled && isMappingPresent != setMappingPresent) {
-                        if(setMappingPresent)   Provider.AddMapping(_ExternalPort, "TCP", WebServer.Port, WebServer.NetworkIPAddress, true, Description);
-                        else                    Provider.RemoveMapping(_ExternalPort, "TCP");
+                    isMappingPresent = DoesDirectMappingExist(externalPort);
+                    if(isEnabled && isMappingPresent != setMappingPresent) {
+                        if(setMappingPresent)   Provider.AddMapping(externalPort, "TCP", WebServer.Port, WebServer.NetworkIPAddress, true, Description);
+                        else                    Provider.RemoveMapping(externalPort, "TCP");
                         isMappingPresent = setMappingPresent;
                     }
                 } catch(Exception ex) {
@@ -308,9 +312,9 @@ namespace VirtualRadar.WebServer
         /// configured external port.
         /// </summary>
         /// <returns></returns>
-        private bool DoesDirectMappingExist()
+        private bool DoesDirectMappingExist(int externalPort)
         {
-            return Provider.GetPortMappings().Where(m => m.ExternalPort == _ExternalPort &&
+            return Provider.GetPortMappings().Where(m => m.ExternalPort == externalPort &&
                                                          m.InternalClient == WebServer.NetworkIPAddress &&
                                                          m.InternalPort == WebServer.Port &&
                                                          m.Protocol == "TCP").Any();
@@ -325,16 +329,25 @@ namespace VirtualRadar.WebServer
         /// <param name="args"></param>
         private void ConfigurationStorage_ConfigurationChanged(object sender, EventArgs args)
         {
-            bool webServerOnline = WebServer != null && WebServer.Online;
-            bool portForwardingPresent = _Initialised && PortForwardingPresent;
-
-            if(webServerOnline) WebServer.Online = false;
-            if(portForwardingPresent) DoMapping(false);
+            var oldExternalPort = _ExternalPort;
+            var oldIsEnabled = IsEnabled;
 
             LoadConfiguration(true);
 
-            if(portForwardingPresent) PutServerOntoInternet();
-            if(webServerOnline) WebServer.Online = true;
+            if(oldExternalPort != _ExternalPort || oldIsEnabled != IsEnabled) {
+                var webServerOnline = WebServer != null && WebServer.Online;
+
+                if(webServerOnline) {
+                    WebServer.Online = false;
+                }
+                if(_Initialised && PortForwardingPresent) {
+                    DoMapping(false, overrideIsEnabled: oldIsEnabled, overrideExternalPort: oldExternalPort);
+                    DoMapping(true);
+                }
+                if(webServerOnline) {
+                    WebServer.Online = true;
+                }
+            }
         }
         #endregion
     }

@@ -590,6 +590,26 @@ namespace Test.VirtualRadar.WebServer
             _Configuration.WebServerSettings.UPnpPort = 9090;
             _ConfigurationStorage.Raise(c => c.ConfigurationChanged += null, EventArgs.Empty);
         }
+
+        [TestMethod]
+        public void UniversalPlugAndPlayManager_Configuration_Change_Does_Not_Cycle_Server_If_Nothing_Has_Changed()
+        {
+            _Configuration.WebServerSettings.EnableUPnp = true;
+            _Configuration.WebServerSettings.UPnpPort = 8080;
+            _WebServer.Setup(s => s.NetworkIPAddress).Returns("192.168.0.10");
+            _WebServer.Setup(s => s.Port).Returns(80);
+
+            _WebServer.Object.Online = true;
+
+            _Manager.Initialise();
+            _Manager.PutServerOntoInternet();
+            AddPortMapping(_Description, 8080, "192.168.0.10", 80, "TCP");
+
+            _ConfigurationStorage.Raise(c => c.ConfigurationChanged += null, EventArgs.Empty);
+
+            _WebServer.VerifySet(s => s.Online = false, Times.Never());
+            _WebServer.VerifySet(s => s.Online = true, Times.Once());  // once by the Online = true above
+        }
         #endregion
 
         #region Trash mappings (those with our description but not pointing to our machine)
