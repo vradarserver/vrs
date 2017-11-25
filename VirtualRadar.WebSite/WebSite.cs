@@ -292,8 +292,9 @@ namespace VirtualRadar.WebSite
                 redirection.AddRedirection("/", "/desktop.html", RedirectionContext.Any);
                 redirection.AddRedirection("/", "/mobile.html", RedirectionContext.Mobile);
 
-                var fileSystemConfiguration = Factory.Singleton.ResolveSingleton<IFileSystemServerConfiguration>();
-                fileSystemConfiguration.TextLoadedFromFile += FileSystemConfiguration_TextLoadedFromFile;
+                var fileServerConfiguration = Factory.Singleton.ResolveSingleton<IFileSystemServerConfiguration>();
+                fileServerConfiguration.TextLoadedFromFile += FileSystemConfiguration_TextLoadedFromFile;
+                AddDefaultSiteRoot(fileServerConfiguration);
 
                 var javascriptManipulatorConfig = Factory.Singleton.ResolveSingleton<IJavascriptManipulatorConfiguration>();
                 javascriptManipulatorConfig.AddTextResponseManipulator(_WebSiteStringsManipulator);
@@ -302,6 +303,23 @@ namespace VirtualRadar.WebSite
 
                 server.RequestReceived += Server_RequestReceived;
             }
+        }
+
+        private void AddDefaultSiteRoot(IFileSystemServerConfiguration fileServerConfiguration)
+        {
+            var runtime = Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>();
+            var defaultSiteRoot = new SiteRoot() {
+                Folder = String.Format("{0}{1}", Path.Combine(runtime.ExecutablePath, "Web"), Path.DirectorySeparatorChar),
+                Priority = 0,
+            };
+
+            var checksumsFileName = Path.Combine(runtime.ExecutablePath, "Checksums.txt");
+            if(!File.Exists(checksumsFileName)) {
+                throw new FileNotFoundException($"Cannot find {checksumsFileName}");
+            }
+            defaultSiteRoot.Checksums.AddRange(ChecksumFile.Load(File.ReadAllText(checksumsFileName), enforceContentChecksum: true));
+
+            fileServerConfiguration.AddSiteRoot(defaultSiteRoot);
         }
 
         /// <summary>
