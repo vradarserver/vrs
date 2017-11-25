@@ -622,7 +622,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// This should not happen in real life, any deferred executions that are still queued after several minutes
         /// have passed would indicate a bug somewhere.
         /// </remarks>
-        private void RemoveOrpanedDeferredExecutions()
+        private void RemoveOrphanedDeferredExecutions()
         {
             var threshold = DateTime.UtcNow.AddMinutes(-CleanUpDeferredExecutionsIntervalMinutes);
             var removeList = _DeferredMethods.Where(r => r.Value.CreatedUtc <= threshold).Select(r => r.Key).ToArray();
@@ -669,7 +669,7 @@ namespace VirtualRadar.Plugin.WebAdmin
                     _LastInactiveViewCheckUtc = DateTime.UtcNow;
                     DisposeOfViewsFoundInLastPass();
                     RemoveInactiveViews();
-                    RemoveOrpanedDeferredExecutions();
+                    RemoveOrphanedDeferredExecutions();
                     RemoveUnclaimedDeferredExecutionResponses();
                 }
             }
