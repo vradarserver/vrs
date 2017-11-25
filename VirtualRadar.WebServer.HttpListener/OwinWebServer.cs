@@ -62,6 +62,11 @@ namespace VirtualRadar.WebServer.HttpListener
         private IAccessConfiguration _AccessConfiguration;
 
         /// <summary>
+        /// True if the heartbeat timer has been hooked.
+        /// </summary>
+        private bool _HookedHeartbeat;
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public AuthenticationSchemes AuthenticationScheme
@@ -160,7 +165,7 @@ namespace VirtualRadar.WebServer.HttpListener
                         result = alternate;
                     }
                 }
-                return result == null ? null : result.ToString();
+                return result?.ToString();
             }
         }
 
@@ -217,7 +222,7 @@ namespace VirtualRadar.WebServer.HttpListener
             get { return _Root; }
             set
             {
-                string root = value ?? "/";
+                var root = value ?? "/";
                 if(root.Length == 0) root = "/";
                 else {
                     if(root[0] != '/') root = String.Format("/{0}", root);
@@ -308,6 +313,7 @@ namespace VirtualRadar.WebServer.HttpListener
 
         public void Dispose()
         {
+            UnhookHeartbeat();
             DeregisterConfigureCallback();
             StopHosting();
         }
@@ -356,6 +362,7 @@ namespace VirtualRadar.WebServer.HttpListener
         private void StartHosting()
         {
             if(_WebApp == null) {
+                HookHeartbeat();
                 RegisterConfigureCallback();
 
                 var startOptions = new StartOptions() {
@@ -385,6 +392,29 @@ namespace VirtualRadar.WebServer.HttpListener
         {
             _OldServerShim = new WebServerShim(this);
             _OldServerShim.Configure(appBuilder);
+        }
+
+        private void HookHeartbeat()
+        {
+            if(!_HookedHeartbeat) {
+                _HookedHeartbeat = true;
+                var heartbeatTimer = Factory.Singleton.ResolveSingleton<IHeartbeatService>();
+                heartbeatTimer.FastTick += HeartbeatService_FastTick;
+            }
+        }
+
+        private void UnhookHeartbeat()
+        {
+            if(_HookedHeartbeat) {
+                _HookedHeartbeat = false;
+                var heartbeatTimer = Factory.Singleton.ResolveSingleton<IHeartbeatService>();
+                heartbeatTimer.FastTick -= HeartbeatService_FastTick;
+            }
+        }
+
+        private void HeartbeatService_FastTick(object sender, EventArgs e)
+        {
+            _OldServerShim.RaiseRequestFinishedEvents();
         }
     }
 }
