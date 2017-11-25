@@ -322,31 +322,32 @@ namespace VirtualRadar.Plugin.WebAdmin
                     ProcessRequestForDeferredResponse(args, responder);
                     result = true;
                 } else {
-                    if(mappedView.ExposedMethods.TryGetValue(normalisedFile, out var exposedMethod)) {
+                    ExposedMethod exposedMethod;
+                    if(mappedView.ExposedMethods.TryGetValue(normalisedFile, out exposedMethod)) {
                         var response = new JsonResponse();
 
                         try {
                             var parameters = MapParameters(exposedMethod, args);
 
-                            //if(!exposedMethod.WebAdminMethod.DeferExecution) {        <-- see comments against WebAdminMethod.DeferExecution, flag is retired until OWIN gives us enough control to support it
+                            if(!exposedMethod.WebAdminMethod.DeferExecution) {
                                 response.Response = exposedMethod.MethodInfo.Invoke(mappedView.View, parameters);
-                            //} else {
-                            //    var deferredMethod = new DeferredMethod(args.UniqueId, mappedView, exposedMethod, parameters);
-                            //    lock(_SyncLock) {
-                            //        var newMethods = CollectionHelper.ShallowCopy(_DeferredMethods);
-                            //        newMethods.Add(deferredMethod.RequestId, deferredMethod);
-                            //        _DeferredMethods = newMethods;
-                            //    }
-                            //
-                            //    response.Response = new DeferredExecutionResult() {
-                            //        JobId = deferredMethod.JobId,
-                            //    };
-                            //}
+                            } else {
+                                var deferredMethod = new DeferredMethod(args.UniqueId, mappedView, exposedMethod, parameters);
+                                lock(_SyncLock) {
+                                    var newMethods = CollectionHelper.ShallowCopy(_DeferredMethods);
+                                    newMethods.Add(deferredMethod.RequestId, deferredMethod);
+                                    _DeferredMethods = newMethods;
+                                }
+
+                                response.Response = new DeferredExecutionResult() {
+                                    JobId = deferredMethod.JobId,
+                                };
+                            }
                         } catch(Exception ex) {
                             try {
                                 var log = Factory.Singleton.ResolveSingleton<ILog>();
                                 log.WriteLine("Caught exception during processing of request for {0}: {1}", args.Request.RawUrl, ex);
-                            } catch { }
+                            } catch {}
                             response.Exception = ex.Message;
                             response.Response = null;
                         }
@@ -370,7 +371,8 @@ namespace VirtualRadar.Plugin.WebAdmin
         {
             var deferredMethods = _DeferredMethods;
             if(deferredMethods.Count > 0) {
-                if(deferredMethods.TryGetValue(requestUniqueId, out var deferredMethod)) {
+                DeferredMethod deferredMethod;
+                if(deferredMethods.TryGetValue(requestUniqueId, out deferredMethod)) {
                     lock(_SyncLock) {
                         if(_DeferredMethods.ContainsKey(requestUniqueId)) {
                             var newMap = CollectionHelper.ShallowCopy(_DeferredMethods);
@@ -390,7 +392,7 @@ namespace VirtualRadar.Plugin.WebAdmin
                                 deferredMethod.ExposedMethod.MethodInfo.Name,
                                 ex
                             );
-                        } catch { }
+                        } catch {}
                         response.Exception = ex.Message;
                         response.Response = null;
                     }
@@ -418,7 +420,8 @@ namespace VirtualRadar.Plugin.WebAdmin
                 string jsonText;
 
                 var deferredResponses = _DeferredResponses;
-                if(deferredResponses.TryGetValue(jobId, out DeferredMethodResponse response)) {
+                DeferredMethodResponse response;
+                if(deferredResponses.TryGetValue(jobId, out response)) {
                     jsonText = response.JsonResponseText;
                 } else {
                     var jsonResponse = new JsonResponse();
@@ -439,7 +442,8 @@ namespace VirtualRadar.Plugin.WebAdmin
 
             var normalisedPath = NormaliseString(args.Path);
 
-            if(!sharedViewInstances.TryGetValue(normalisedPath, out MappedView result)) {
+            MappedView result = null;
+            if(!sharedViewInstances.TryGetValue(normalisedPath, out result)) {
                 Dictionary<string, MappedView> viewInstances;
                 if(multiViewInstances.TryGetValue(normalisedPath, out viewInstances)) {
                     var viewId = args.QueryString[ViewIdParameterName] ?? args.Request.FormValues[ViewIdParameterName];

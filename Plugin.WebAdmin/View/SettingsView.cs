@@ -140,7 +140,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             return _ViewModel;
         }
 
-        [WebAdminMethod(/*DeferExecution=true,*/ User="user")]
+        [WebAdminMethod(DeferExecution=true, User="user")]
         public ViewModel RaiseSaveClicked(ConfigurationModel configurationModel, string user)
         {
             return ApplyConfigurationAroundAction(configurationModel, user, () => {
