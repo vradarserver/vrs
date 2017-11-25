@@ -43,7 +43,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor.WebAdmin
             return viewModel;
         }
 
-        [WebAdminMethod(DeferExecution = true)]
+        [WebAdminMethod(/*DeferExecution = true*/)]
         public SaveOutcomeModel Save(ViewModel viewModel)
         {
             var outcome = "";

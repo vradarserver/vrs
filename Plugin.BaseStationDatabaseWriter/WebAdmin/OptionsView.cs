@@ -167,7 +167,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter.WebAdmin
             return _ViewModel;
         }
 
-        [WebAdminMethod(DeferExecution=true)]
+        [WebAdminMethod(/*DeferExecution=true*/)]
         public SaveOutcomeModel Save(ViewModel viewModel)
         {
             var outcome = "";

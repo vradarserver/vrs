@@ -194,7 +194,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             }
         }
 
-        [WebAdminMethod(DeferExecution=true)]
+        [WebAdminMethod(/*DeferExecution=true*/)]
         public void RaiseToggleUPnpStatus()
         {
             EventHelper.Raise(ToggleUPnpStatus, this, EventArgs.Empty);

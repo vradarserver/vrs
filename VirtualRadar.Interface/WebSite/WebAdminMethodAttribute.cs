@@ -25,7 +25,16 @@ namespace VirtualRadar.Interface.WebSite
         /// <summary>
         /// Gets or sets a value indicating that the method should be deferred.
         /// </summary>
-        /// <remarks><para>
+        /// <remarks>
+        /// <para>
+        /// THIS PROPERTY IS NOW OBSOLETE. You cannot defer execution. The documentation and supporting code has been
+        /// kept in case it ever makes a comeback, but for now you're just stuck with having to deal with the 503
+        /// ServiceUnavailable that you'll get if the server gets restarted during your request.
+        /// </para>
+        /// <para>
+        /// Old documentation:
+        /// </para>
+        /// <para>
         /// Some methods may want to do something that can cause the web server to close all connections and restart
         /// (this applies in particular to anything to do with UPnP). This can cause havoc with the WebAdmin site as
         /// it will close the connection while the browser is waiting for a reply, which at the very least will cause
@@ -37,6 +46,8 @@ namespace VirtualRadar.Interface.WebSite
         /// ajax() method in ViewId do not need to do anything, the ajax() method will handle the job polling for them.
         /// </para>
         /// </remarks>
+        [Obsolete("OWIN does not expose an event when the request has been sent, so DeferExecution is no longer possible. " +
+                  "Internally all DeferExecution methods are now executed normally.")]
         public bool DeferExecution { get; set; }
 
         /// <summary>
