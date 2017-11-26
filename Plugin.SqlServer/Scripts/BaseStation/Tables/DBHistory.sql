@@ -10,3 +10,15 @@ BEGIN
     );
 END;
 GO
+
+IF NOT EXISTS (SELECT 1 FROM [BaseStation].[DBHistory])
+BEGIN
+    INSERT INTO [BaseStation].[DBHistory] (
+        [TimeStamp]
+       ,[Description]
+    ) VALUES (
+        GETUTCDATE()
+       ,'Schema created by ' + SUSER_NAME()
+    );
+END;
+GO

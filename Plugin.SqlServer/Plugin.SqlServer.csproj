@@ -49,6 +49,12 @@
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginLocalise.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripts\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SqlServerHelper.cs" />
     <Compile Include="SqlServerStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -66,6 +72,10 @@
       <Project>{6ad23cd7-fb9f-448e-85ea-cb5aaa4e9fee}</Project>
       <Name>InterfaceFactory</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Database\VirtualRadar.Database.csproj">
+      <Project>{049a9a56-990e-4f99-99f7-cc09767508d9}</Project>
+      <Name>VirtualRadar.Database</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
       <Project>{8ef81105-f45d-4edb-996c-de7d5644b1e7}</Project>
       <Name>VirtualRadar.Interface</Name>
@@ -80,6 +90,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="SqlServerStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>SqlServerStrings.Designer.cs</LastGenOutput>

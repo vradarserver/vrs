@@ -22,11 +22,16 @@ namespace VirtualRadar.Plugin.SqlServer
     public class Plugin : IPlugin
     {
         /// <summary>
+        /// The instance of the plugin that VRS has created and is using.
+        /// </summary>
+        public static Plugin Singleton { get; private set; }
+
+        /// <summary>
         /// The options used when the plugin was first started. Note that these do not change
         /// over the lifetime of the program - options are only loaded when the plugin first
         /// starts.
         /// </summary>
-        private Options _Options;
+        public Options Options { get; private set; }
 
         /// <summary>
         /// See interface docs.
@@ -53,7 +58,7 @@ namespace VirtualRadar.Plugin.SqlServer
         /// </summary>
         public string Status
         {
-            get => _Options?.Enabled ?? false ? SqlServerStrings.Enabled : SqlServerStrings.Disabled;
+            get => Options?.Enabled ?? false ? SqlServerStrings.Enabled : SqlServerStrings.Disabled;
             set {;}
         }
 
@@ -62,7 +67,7 @@ namespace VirtualRadar.Plugin.SqlServer
         /// </summary>
         public string StatusDescription
         {
-            get => _Options?.Enabled ?? false ? SqlServerStrings.Enabled : SqlServerStrings.Disabled;
+            get => Options?.Enabled ?? false ? SqlServerStrings.Enabled : SqlServerStrings.Disabled;
             set {;}
         }
 
@@ -98,8 +103,9 @@ namespace VirtualRadar.Plugin.SqlServer
         /// <param name="classFactory"></param>
         public void RegisterImplementations(IClassFactory classFactory)
         {
-            _Options = OptionsStorage.Load(this);
-            if(_Options.Enabled) {
+            Singleton = this;
+            Options = OptionsStorage.Load(this);
+            if(Options.Enabled) {
             }
         }
 

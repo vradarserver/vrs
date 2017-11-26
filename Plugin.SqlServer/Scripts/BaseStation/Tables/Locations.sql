@@ -12,3 +12,19 @@ BEGIN
     );
 END;
 GO
+
+IF NOT EXISTS (SELECT 1 FROM [BaseStation].[Locations])
+BEGIN
+    INSERT INTO [BaseStation].[Locations] (
+        [LocationName]
+       ,[Latitude]
+       ,[Longitude]
+       ,[Altitude]
+    ) VALUES (
+        'Home'
+       ,51.4
+       ,-0.6
+       ,25.0
+    );
+END;
+GO

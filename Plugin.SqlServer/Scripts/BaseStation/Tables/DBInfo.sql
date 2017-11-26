@@ -9,3 +9,15 @@ BEGIN
     );
 END;
 GO
+
+IF NOT EXISTS (SELECT 1 FROM [BaseStation].[DBInfo])
+BEGIN
+    INSERT INTO [BaseStation].[DBInfo] (
+        [OriginalVersion]
+       ,[CurrentVersion]
+    ) VALUES (
+        2
+       ,2
+    );
+END;
+GO
