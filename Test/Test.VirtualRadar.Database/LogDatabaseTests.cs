@@ -176,12 +176,12 @@ namespace Test.VirtualRadar.Database
             Assert.AreEqual(0L, session.AudioBytesSent);
             Assert.AreEqual(0L, session.CountRequests);
             Assert.AreEqual(new TimeSpan(0), session.Duration);
-            Assert.AreEqual(now, session.EndTime);
+            Assert.AreEqual(now.Ticks, session.EndTime.Ticks, 10000000);
             Assert.AreEqual(0L, session.HtmlBytesSent);
             Assert.AreEqual(0L, session.ImageBytesSent);
             Assert.AreEqual(0L, session.JsonBytesSent);
             Assert.AreEqual(0L, session.OtherBytesSent);
-            Assert.AreEqual(now, session.StartTime);
+            Assert.AreEqual(now.Ticks, session.StartTime.Ticks, 10000000);
         }
 
         [TestMethod]
@@ -244,12 +244,12 @@ namespace Test.VirtualRadar.Database
             Assert.AreEqual(fetchedSession.AudioBytesSent, session.AudioBytesSent);
             Assert.AreEqual(fetchedSession.CountRequests, session.CountRequests);
             Assert.AreEqual(fetchedSession.Duration, session.Duration);
-            Assert.AreEqual(fetchedSession.EndTime, session.EndTime);
+            Assert.AreEqual(fetchedSession.EndTime.Ticks, session.EndTime.Ticks, 10000000);
             Assert.AreEqual(fetchedSession.HtmlBytesSent, session.HtmlBytesSent);
             Assert.AreEqual(fetchedSession.ImageBytesSent, session.ImageBytesSent);
             Assert.AreEqual(fetchedSession.JsonBytesSent, session.JsonBytesSent);
             Assert.AreEqual(fetchedSession.OtherBytesSent, session.OtherBytesSent);
-            Assert.AreEqual(fetchedSession.StartTime, session.StartTime);
+            Assert.AreEqual(fetchedSession.StartTime.Ticks, session.StartTime.Ticks, 10000000);
             Assert.AreEqual(fetchedSession.UserName, session.UserName);
         }
         #endregion
@@ -637,10 +637,10 @@ namespace Test.VirtualRadar.Database
         public void LogDatabase_FetchSessions_Uses_Inclusive_Date_Ranges()
         {
             var before = new DateTime(2001, 2, 3, 10, 9, 8);
-            var start = before.AddSeconds(1);
-            var between = start.AddSeconds(1);
-            var end = between.AddSeconds(1);
-            var after = end.AddSeconds(1);
+            var start = before.AddSeconds(5);
+            var between = start.AddSeconds(5);
+            var end = between.AddSeconds(5);
+            var after = end.AddSeconds(5);
 
             _Provider.Setup(m => m.UtcNow).Returns(before);
             _LogDatabase.EstablishSession("1.1.1.1", null);
@@ -657,9 +657,9 @@ namespace Test.VirtualRadar.Database
             _LogDatabase.FetchSessions(null, sessions, start.ToLocalTime(), end.ToLocalTime());
 
             Assert.AreEqual(3, sessions.Count);
-            Assert.IsTrue(sessions.Where(s => s.StartTime.Second == start.Second).Any());
-            Assert.IsTrue(sessions.Where(s => s.StartTime.Second == between.Second).Any());
-            Assert.IsTrue(sessions.Where(s => s.StartTime.Second == end.Second).Any());
+            Assert.IsTrue(sessions.Where(s => s.StartTime.Second - start.Second <= 1).Any());
+            Assert.IsTrue(sessions.Where(s => s.StartTime.Second - between.Second <= 1).Any());
+            Assert.IsTrue(sessions.Where(s => s.StartTime.Second - end.Second <= 1).Any());
         }
 
         [TestMethod]
@@ -700,9 +700,10 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void LogDatabase_Transactions_Can_Commit_Operations_To_Database()
         {
-            _LogDatabase.StartTransaction();
-            _LogDatabase.EstablishSession("88.77.66.55", null);
-            _LogDatabase.EndTransaction();
+            _LogDatabase.PerformInTransaction(() => {
+                _LogDatabase.EstablishSession("88.77.66.55", null);
+                return true;
+            });
 
             var clients = new List<LogClient>();
             var sessionsMap = new Dictionary<long, IList<LogSession>>();
@@ -718,9 +719,10 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void LogDatabase_Transactions_Can_Rollback_Inserts()
         {
-            _LogDatabase.StartTransaction();
-            _LogDatabase.EstablishSession("88.77.66.55", null);
-            _LogDatabase.RollbackTransaction();
+            _LogDatabase.PerformInTransaction(() => {
+                _LogDatabase.EstablishSession("88.77.66.55", null);
+                return false;
+            });
 
             var clients = new List<LogClient>();
             var sessionsMap = new Dictionary<long, IList<LogSession>>();
@@ -731,45 +733,23 @@ namespace Test.VirtualRadar.Database
         }
 
         [TestMethod]
-        public void LogDatabase_Transactions_Can_Be_Nested()
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void LogDatabase_Transactions_Cannot_Be_Nested()
         {
-            _LogDatabase.StartTransaction();
-            _LogDatabase.EstablishSession("88.77.66.55", null);
+            _LogDatabase.PerformInTransaction(() => {
+                _LogDatabase.EstablishSession("88.77.66.55", null);
 
-            _LogDatabase.StartTransaction();
-            var clients = new List<LogClient>();
-            var sessionsMap = new Dictionary<long, IList<LogSession>>();
-            _LogDatabase.FetchAll(clients, sessionsMap);
-            clients[0].ReverseDns = "hello";
-            _LogDatabase.UpdateClient(clients[0]);
-            _LogDatabase.EndTransaction();
+                _LogDatabase.PerformInTransaction(() => {
+                    var clients = new List<LogClient>();
+                    var sessionsMap = new Dictionary<long, IList<LogSession>>();
+                    _LogDatabase.FetchAll(clients, sessionsMap);
+                    clients[0].ReverseDns = "hello";
+                    _LogDatabase.UpdateClient(clients[0]);
+                    return true;
+                });
 
-            _LogDatabase.EndTransaction();
-
-            _LogDatabase.FetchAll(clients, sessionsMap);
-            Assert.AreEqual(1, clients.Count);
-            Assert.AreEqual("hello", clients[0].ReverseDns);
-        }
-
-        [TestMethod]
-        public void LogDatabase_Transactions_Can_Rollback_Outer_Level_When_Inner_Level_Rollsback()
-        {
-            _LogDatabase.StartTransaction();
-            _LogDatabase.EstablishSession("88.77.66.55", null);
-
-            _LogDatabase.StartTransaction();
-            var clients = new List<LogClient>();
-            var sessionsMap = new Dictionary<long, IList<LogSession>>();
-            _LogDatabase.FetchAll(clients, sessionsMap);
-            clients[0].ReverseDns = "hello";
-            _LogDatabase.UpdateClient(clients[0]);
-            _LogDatabase.RollbackTransaction();
-
-            _LogDatabase.EndTransaction();
-
-            _LogDatabase.FetchAll(clients, sessionsMap);
-            Assert.AreEqual(0, clients.Count);
-            Assert.AreEqual(0, sessionsMap.Count);
+                return true;
+            });
         }
         #endregion
     }

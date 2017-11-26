@@ -20,69 +20,43 @@ namespace VirtualRadar.Database
     /// <summary>
     /// A helper class for database objects that implement <see cref="ITransactionable"/>.
     /// </summary>
-    class TransactionHelper
+    public class TransactionHelper
     {
         /// <summary>
-        /// Gets or sets the current transaction, or null if no transaction is in force.
+        /// See <see cref="ITransactionable.PerformInTransaction(Func{bool})"/>.
         /// </summary>
-        public IDbTransaction Transaction { get; set; }
-
-        /// <summary>
-        /// Gets or sets the number of times a transaction has been started but not finished.
-        /// </summary>
-        public int TransactionNestingLevel { get; set; }
-
-        /// <summary>
-        /// Starts a new transaction unless it's a nested call, in which case the nesting level is just incremented.
-        /// </summary>
-        public void StartTransaction(IDbConnection connection)
+        /// <param name="connection"></param>
+        /// <param name="inTransaction"></param>
+        /// <param name="allowNestedTransaction"></param>
+        /// <param name="recordTransaction"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public bool PerformInTransaction(IDbConnection connection, bool inTransaction, bool allowNestedTransaction, Action<IDbTransaction> recordTransaction, Func<bool> action)
         {
-            if(TransactionNestingLevel++ == 0) Transaction = connection.BeginTransaction();
-        }
+            if(inTransaction && !allowNestedTransaction) {
+                throw new InvalidOperationException("An attempt was made to start a nested transaction");
+            }
 
-        /// <summary>
-        /// Commits the transaction unless it's a nested commit, in which case the nesting level is decremented.
-        /// </summary>
-        public void EndTransaction()
-        {
-            if(TransactionNestingLevel > 0) {
-                if(--TransactionNestingLevel == 0) {
-                    try {
-                        Transaction.Commit();
-                        Transaction.Dispose();
-                    } finally {
-                        Transaction = null;
+            using(var transaction = connection.BeginTransaction()) {
+                try {
+                    recordTransaction?.Invoke(transaction);
+
+                    var result = action();
+                    if(result) {
+                        transaction.Commit();
+                    } else {
+                        transaction.Rollback();
                     }
-                }
-            }
-        }
 
-        /// <summary>
-        /// Rolls the transaction back. If its a nested rollback then it is still applied.
-        /// </summary>
-        public void RollbackTransaction()
-        {
-            if(TransactionNestingLevel > 0) {
-                try {
-                    TransactionNestingLevel = 0;
-                    Transaction.Rollback();
-                    Transaction.Dispose();
+                    return result;
+                } catch {
+                    transaction.Rollback();
+                    throw;
                 } finally {
-                    Transaction = null;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Abandons the transaction.
-        /// </summary>
-        public void Abandon()
-        {
-            if(Transaction != null) {
-                try {
-                    RollbackTransaction();
-                } finally {
-                    Transaction = null;
+                    try {
+                        recordTransaction?.Invoke(null);
+                    } catch {
+                    }
                 }
             }
         }

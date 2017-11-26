@@ -65,6 +65,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         private Mock<IAircraftOnlineLookupManager> _AircraftOnlineLookupManager;
         private OptionsPresenter _Presenter;
         private Action _ShowViewAction;
+        private int _NestedTransactionCount;
 
         [TestInitialize]
         public void TestInitialise()
@@ -87,6 +88,15 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _BaseStationDatabase.Object.FileName = "fn";
             _AutoConfigBaseStationDatabase = TestUtilities.CreateMockSingleton<IAutoConfigBaseStationDatabase>();
             _AutoConfigBaseStationDatabase.Setup(a => a.Database).Returns(_BaseStationDatabase.Object);
+
+            _NestedTransactionCount = 0;
+            _BaseStationDatabase.Setup(r => r.PerformInTransaction(It.IsAny<Func<bool>>())).Callback((Func<bool> r) => {
+                if(++_NestedTransactionCount > 1) {
+                    throw new InvalidOperationException("Nested transactions are not allowed");
+                }
+                r();
+                --_NestedTransactionCount;
+            });
 
             _BaseStationDatabase.Setup(r => r.InsertAircraft(It.IsAny<BaseStationAircraft>())).Callback((BaseStationAircraft r) => r.AircraftID = 100);
             _BaseStationDatabase.Setup(r => r.InsertFlight(It.IsAny<BaseStationFlight>())).Callback((BaseStationFlight r) => r.FlightID = 200);
@@ -1675,17 +1685,11 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
             _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("C", It.IsAny<Func<string, BaseStationAircraft>>()))
                                 .Callback(() => {
-                                    _BaseStationDatabase.Verify(d => d.StartTransaction(), Times.AtLeastOnce());
+                                    _BaseStationDatabase.Verify(d => d.PerformInTransaction(It.IsAny<Func<bool>>()), Times.AtLeastOnce());
                                 })
                                 .Returns(new BaseStationAircraft());
 
-            var countStartTransactions = 0;
-            var countEndTransactions = 0;
-            _BaseStationDatabase.Setup(d => d.StartTransaction()).Callback(() => {
-                ++countStartTransactions;
-            });
-            _BaseStationDatabase.Setup(d => d.EndTransaction()).Callback(() => {
-                ++countEndTransactions;
+            _BaseStationDatabase.Setup(d => d.PerformInTransaction(It.IsAny<Func<bool>>())).Callback(() => {
                 _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Once());
             });
             _BaseStationDatabase.Setup(d => d.InsertFlight(It.IsAny<BaseStationFlight>())).Callback(() => {
@@ -1697,8 +1701,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(new BaseStationMessage() { Icao24 = "C", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir }));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
-            _BaseStationDatabase.Verify(d => d.EndTransaction(), Times.AtLeastOnce());
-            Assert.AreEqual(countStartTransactions, countEndTransactions);
+            _BaseStationDatabase.Verify(d => d.PerformInTransaction(It.IsAny<Func<bool>>()), Times.AtLeastOnce());
         }
 
         [TestMethod]
@@ -1882,32 +1885,11 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         }
 
         [TestMethod]
-        public void Plugin_Reports_Exceptions_During_Database_StartTransaction()
+        public void Plugin_Reports_Exceptions_During_Database_Transaction()
         {
             var exception = new InvalidOperationException();
             SetEnabledOption(true);
-            _BaseStationDatabase.Setup(d => d.StartTransaction()).Callback(() => { throw exception; });
-
-            _Plugin.Startup(_StartupParameters);
-
-            _Plugin.StatusChanged += _StatusChangedEvent.Handler;
-
-            var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
-            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
-            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
-
-            Assert.IsTrue(_StatusChangedEvent.CallCount > 0);
-            Assert.AreSame(_Plugin, _StatusChangedEvent.Sender);
-            _Log.Verify(g => g.WriteLine(It.IsAny<string>(), exception.ToString()), Times.Once());
-            Assert.AreEqual(String.Format("Exception caught: {0}", exception.Message), _Plugin.StatusDescription);
-        }
-
-        [TestMethod]
-        public void Plugin_Reports_Exceptions_During_Database_EndTransaction()
-        {
-            var exception = new InvalidOperationException();
-            SetEnabledOption(true);
-            _BaseStationDatabase.Setup(d => d.EndTransaction()).Callback(() => { throw exception; });
+            _BaseStationDatabase.Setup(d => d.PerformInTransaction(It.IsAny<Func<bool>>())).Callback(() => { throw exception; });
 
             _Plugin.Startup(_StartupParameters);
 

@@ -38,11 +38,6 @@ namespace VirtualRadar.Database.Users
         private IDbConnection _Connection;
 
         /// <summary>
-        /// The object that can help with nested transactions.
-        /// </summary>
-        private TransactionHelper _TransactionHelper;
-
-        /// <summary>
         /// The object controlling access to the user table.
         /// </summary>
         private UserTable _UserTable;
@@ -82,9 +77,6 @@ namespace VirtualRadar.Database.Users
         protected virtual void Dispose(bool disposing)
         {
             if(disposing) {
-                if(_TransactionHelper != null) _TransactionHelper.Abandon();
-                _TransactionHelper = null;
-
                 if(_Connection != null) _Connection.Dispose();
                 _Connection = null;
 
@@ -112,8 +104,6 @@ namespace VirtualRadar.Database.Users
                 _Connection = Factory.Singleton.Resolve<ISQLiteConnectionProvider>().Create(builder.ConnectionString);
                 _Connection.Open();
 
-                _TransactionHelper = new TransactionHelper();
-
                 _UserTable = new UserTable();
                 _UserTable.CreateTable(_Connection);
             }
@@ -129,7 +119,7 @@ namespace VirtualRadar.Database.Users
         {
             lock(_SyncLock) {
                 OpenConnection();
-                _UserTable.Insert(_Connection, _TransactionHelper.Transaction, Log, user);
+                _UserTable.Insert(_Connection, null, Log, user);
             }
         }
 
@@ -141,7 +131,7 @@ namespace VirtualRadar.Database.Users
         {
             lock(_SyncLock) {
                 OpenConnection();
-                _UserTable.Update(_Connection, _TransactionHelper.Transaction, Log, user);
+                _UserTable.Update(_Connection, null, Log, user);
             }
         }
 
@@ -153,7 +143,7 @@ namespace VirtualRadar.Database.Users
         {
             lock(_SyncLock) {
                 OpenConnection();
-                _UserTable.Delete(_Connection, _TransactionHelper.Transaction, Log, user);
+                _UserTable.Delete(_Connection, null, Log, user);
             }
         }
 
@@ -166,7 +156,7 @@ namespace VirtualRadar.Database.Users
         {
             lock(_SyncLock) {
                 OpenConnection();
-                return _UserTable.GetByLoginName(_Connection, _TransactionHelper.Transaction, Log, loginName);
+                return _UserTable.GetByLoginName(_Connection, null, Log, loginName);
             }
         }
 
@@ -178,7 +168,7 @@ namespace VirtualRadar.Database.Users
         {
             lock(_SyncLock) {
                 OpenConnection();
-                return _UserTable.GetAll(_Connection, _TransactionHelper.Transaction, Log);
+                return _UserTable.GetAll(_Connection, null, Log);
             }
         }
 
@@ -191,7 +181,7 @@ namespace VirtualRadar.Database.Users
         {
             lock(_SyncLock) {
                 OpenConnection();
-                return _UserTable.GetManyById(_Connection, _TransactionHelper.Transaction, Log, uniqueIdentifiers);
+                return _UserTable.GetManyById(_Connection, null, Log, uniqueIdentifiers);
             }
         }
         #endregion

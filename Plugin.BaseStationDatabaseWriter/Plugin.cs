@@ -594,15 +594,8 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 newFlights = _FlightMap.Where(r => r.Value.Aircraft.AircraftID == 0 && r.Value.Flight.FlightID == 0).Select(r => r.Value).ToArray();
             }
 
-            _Database.StartTransaction();
-            try {
-                foreach(var flight in newFlights) {
-                    WriteFlightRecords(flight);
-                }
-                _Database.EndTransaction();
-            } catch {
-                _Database.RollbackTransaction();
-                throw;
+            foreach(var flight in newFlights) {
+                WriteFlightRecords(flight);
             }
         }
 
@@ -613,22 +606,18 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         private void WriteFlightRecords(FlightRecords flightRecords)
         {
             if(flightRecords.Aircraft.AircraftID == 0 && flightRecords.Flight.FlightID == 0) {
-                _Database.StartTransaction();
-                try {
+                _Database.PerformInTransaction(() => {
                     var aircraft = FetchOrCreateAircraft(flightRecords.Aircraft.FirstCreated, flightRecords.Aircraft.ModeS);
                     if(aircraft != null) {
                         var flight = CreateFlight(flightRecords.Flight.StartTime, aircraft.AircraftID, flightRecords.Flight.Callsign);
-                        _Database.EndTransaction();
-
                         lock(_SyncLock) {
                             flightRecords.Aircraft = aircraft;
                             flightRecords.Flight = ApplyFlightDetails(flightRecords.Flight, flight);
                         }
                     }
-                } catch {
-                    _Database.RollbackTransaction();
-                    throw;
-                }
+
+                    return true;
+                });
             }
         }
 
@@ -841,21 +830,11 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 flushEntries = (flushAll ? _FlightMap : _FlightMap.Where(kvp => kvp.Value.EndTimeUtc.AddMinutes(25) <= utcNow)).ToArray();
             }
 
-            _Database.StartTransaction();
-            try {
-                foreach(var kvp in flushEntries) {
-                    _Database.UpdateFlight(kvp.Value.Flight);
-                }
-                _Database.EndTransaction();
-
+            foreach(var kvp in flushEntries) {
+                _Database.UpdateFlight(kvp.Value.Flight);
                 lock(_SyncLock) {
-                    foreach(var kvp in flushEntries) {
-                        _FlightMap.Remove(kvp.Key);
-                    }
+                    _FlightMap.Remove(kvp.Key);
                 }
-            } catch {
-                _Database.RollbackTransaction();
-                throw;
             }
         }
         #endregion

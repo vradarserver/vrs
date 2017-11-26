@@ -180,15 +180,15 @@ namespace VirtualRadar.Library
             lock(_SyncLock) {
                 if(_Sessions.Count > 0) {
                     try {
-                        LogDatabase.StartTransaction();
-                        foreach(var session in _Sessions.Values) {
-                            LogDatabase.UpdateSession(session);
-                        }
-                        LogDatabase.EndTransaction();
+                        LogDatabase.PerformInTransaction(() => {
+                            foreach(var session in _Sessions.Values) {
+                                LogDatabase.UpdateSession(session);
+                            }
+                            return true;
+                        });
                     } catch(Exception ex) {
                         Debug.WriteLine(String.Format("ConnectionLogger.FlushSessionsToDatabase caught exception: {0}", ex.ToString()));
                         caughtException = ex;
-                        LogDatabase.RollbackTransaction();
                     }
                 }
             }

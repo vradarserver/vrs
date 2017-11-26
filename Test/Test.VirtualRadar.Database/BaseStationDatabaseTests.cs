@@ -4806,9 +4806,10 @@ namespace Test.VirtualRadar.Database
         public void BaseStationDatabase_Transactions_Can_Commit_Operations_To_Database()
         {
             _Database.WriteSupportEnabled = true;
-            _Database.StartTransaction();
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "Z" });
-            _Database.EndTransaction();
+            _Database.PerformInTransaction(() => {
+                _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "Z" });
+                return true;
+            });
 
             var aircraft = _Database.GetAircraftByCode("Z");
             Assert.AreEqual("Z", aircraft.ModeS);
@@ -4819,47 +4820,31 @@ namespace Test.VirtualRadar.Database
         public void BaseStationDatabase_Transactions_Can_Rollback_Inserts()
         {
             _Database.WriteSupportEnabled = true;
-            _Database.StartTransaction();
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "Z" });
-            _Database.RollbackTransaction();
+            _Database.PerformInTransaction(() => {
+                _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "Z" });
+                return false;
+            });
 
             Assert.AreEqual(null, _Database.GetAircraftByCode("Z"));
         }
 
         [TestMethod]
-        public void BaseStationDatabase_Transactions_Can_Be_Nested()
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void BaseStationDatabase_Transactions_Cannot_Be_Nested()
         {
             _Database.WriteSupportEnabled = true;
-            _Database.StartTransaction();
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "Z" });
+            _Database.PerformInTransaction(() => {
+                _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "Z" });
 
-            _Database.StartTransaction();
-            var aircraft = _Database.GetAircraftByCode("Z");
-            aircraft.Registration = "P";
-            _Database.UpdateAircraft(aircraft);
-            _Database.EndTransaction();
+                _Database.PerformInTransaction(() => {
+                    var aircraft = _Database.GetAircraftByCode("Z");
+                    aircraft.Registration = "P";
+                    _Database.UpdateAircraft(aircraft);
+                    return true;
+                });
 
-            _Database.EndTransaction();
-
-            Assert.AreEqual("P", _Database.GetAircraftByCode("Z").Registration);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_Transactions_Can_Rollback_Outer_Level_When_Inner_Level_Rollsback()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.StartTransaction();
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "Z" });
-
-            _Database.StartTransaction();
-            var aircraft = _Database.GetAircraftByCode("Z");
-            aircraft.Registration = "P";
-            _Database.UpdateAircraft(aircraft);
-            _Database.RollbackTransaction();
-
-            _Database.EndTransaction();
-
-            Assert.AreEqual(null, _Database.GetAircraftByCode("Z"));
+                return true;
+            });
         }
         #endregion
     }

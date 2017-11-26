@@ -52,6 +52,11 @@ namespace VirtualRadar.Database.Log
         private IDbConnection _Connection;
 
         /// <summary>
+        /// The transaction currently in force.
+        /// </summary>
+        private IDbTransaction _Transaction;
+
+        /// <summary>
         /// The object that manages nested transactions for us.
         /// </summary>
         private TransactionHelper _TransactionHelper = new TransactionHelper();
@@ -99,8 +104,9 @@ namespace VirtualRadar.Database.Log
         private void Dispose(bool disposing)
         {
             if(disposing) {
-                _TransactionHelper.Abandon();
-                if(_Connection != null) _Connection.Dispose();
+                if(_Connection != null) {
+                    _Connection.Dispose();
+                }
                 _Connection = null;
             }
         }
@@ -110,33 +116,18 @@ namespace VirtualRadar.Database.Log
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public void StartTransaction()
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public bool PerformInTransaction(Func<bool> action)
         {
+            var result = false;
+
             lock(_SyncLock) {
                 CreateConnection();
-                _TransactionHelper.StartTransaction(_Connection);
+                result = _TransactionHelper.PerformInTransaction(_Connection, _Transaction != null, false, r => _Transaction = r, action);
             }
-        }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public void EndTransaction()
-        {
-            lock(_SyncLock) {
-                CreateConnection();
-                _TransactionHelper.EndTransaction();
-            }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public void RollbackTransaction()
-        {
-            lock(_SyncLock) {
-                _TransactionHelper.RollbackTransaction();
-            }
+            return result;
         }
         #endregion
 
@@ -171,21 +162,21 @@ namespace VirtualRadar.Database.Log
         #region Client Operations
         private LogClient[] Client_GetAll()
         {
-            return _Connection.Query<LogClient>("SELECT * FROM [Client]", transaction: _TransactionHelper.Transaction).ToArray();
+            return _Connection.Query<LogClient>("SELECT * FROM [Client]", transaction: _Transaction).ToArray();
         }
 
         private LogClient Client_GetById(long id)
         {
             return _Connection.Query<LogClient>("SELECT * FROM [Client] WHERE [Id] = @id", new {
                 id = id,
-            }, transaction: _TransactionHelper.Transaction).FirstOrDefault();
+            }, transaction: _Transaction).FirstOrDefault();
         }
 
         private LogClient Client_GetByIpAddress(string ipAddress)
         {
             return _Connection.Query<LogClient>("SELECT * FROM [Client] WHERE [IpAddress] = @ipAddress", new {
                 @ipAddress = ipAddress,
-            }, transaction: _TransactionHelper.Transaction).FirstOrDefault();
+            }, transaction: _Transaction).FirstOrDefault();
         }
 
         private void Client_Insert(LogClient client)
@@ -194,7 +185,7 @@ namespace VirtualRadar.Database.Log
                 @ipAddress =        client.IpAddress,
                 @reverseDns =       client.ReverseDns,
                 @reverseDnsDate =   client.ReverseDnsDate,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
 
         private void Client_Update(LogClient client)
@@ -204,14 +195,14 @@ namespace VirtualRadar.Database.Log
                 @reverseDns         = client.ReverseDns,
                 @reverseDnsDate     = client.ReverseDnsDate,
                 @id                 = client.Id,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
         #endregion
 
         #region Session Operations
         private LogSession[] Session_GetAll()
         {
-            return _Connection.Query<LogSession>("SELECT * FROM [Session]", transaction: _TransactionHelper.Transaction).ToArray();
+            return _Connection.Query<LogSession>("SELECT * FROM [Session]", transaction: _Transaction).ToArray();
         }
 
         private LogSession[] Session_GetByDateRange(DateTime startDate, DateTime endDate)
@@ -222,7 +213,7 @@ namespace VirtualRadar.Database.Log
             return _Connection.Query<LogSession>(Commands.Session_GetByDateRange, new {
                 @startDate =    startDate,
                 @endDate =      endDate,
-            }, transaction: _TransactionHelper.Transaction).ToArray();
+            }, transaction: _Transaction).ToArray();
         }
 
         private void Session_Insert(LogSession session)
@@ -238,7 +229,7 @@ namespace VirtualRadar.Database.Log
                 @jsonBytesSent      = session.JsonBytesSent,
                 @imageBytesSent     = session.ImageBytesSent,
                 @audioBytesSent     = session.AudioBytesSent,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
 
         private void Session_Update(LogSession session)
@@ -255,7 +246,7 @@ namespace VirtualRadar.Database.Log
                 @imageBytesSent     = session.ImageBytesSent,
                 @audioBytesSent     = session.AudioBytesSent,
                 @id                 = session.Id,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
         #endregion
 

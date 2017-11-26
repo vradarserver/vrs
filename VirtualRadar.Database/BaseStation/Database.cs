@@ -51,6 +51,11 @@ namespace VirtualRadar.Database.BaseStation
         private IDbConnection _Connection;
 
         /// <summary>
+        /// The transaction currently in force, if any.
+        /// </summary>
+        private IDbTransaction _Transaction;
+
+        /// <summary>
         /// The configuration loader whose events we have hooked.
         /// </summary>
         private IConfigurationStorage _ConfigurationStorage;
@@ -237,7 +242,6 @@ namespace VirtualRadar.Database.BaseStation
                 lock(_ConnectionLock) {
                     _Disposed = true;
 
-                    _TransactionHelper.Abandon();
                     CloseConnection();
 
                     if(_ConfigurationStorage != null) {
@@ -374,20 +378,15 @@ namespace VirtualRadar.Database.BaseStation
                     OpenConnection(fileName, true);
                     try {
                         if(_Connection != null) {
-                            var transaction = _Connection.BeginTransaction();
-                            try {
-                                _Connection.Execute(Commands.UpdateSchema, transaction: _TransactionHelper.Transaction);
+                            _TransactionHelper.PerformInTransaction(_Connection, _Transaction != null, false, r => _Transaction = r, () => {
+                                _Connection.Execute(Commands.UpdateSchema, transaction: _Transaction);
 
                                 DBHistory_Insert(new BaseStationDBHistory() { Description = "Database autocreated by Virtual Radar Server", TimeStamp = SQLiteDateHelper.Truncate(Provider.UtcNow) });
                                 DBInfo_Insert(new BaseStationDBInfo() { OriginalVersion = 2, CurrentVersion = 2 });
                                 Locations_Insert(new BaseStationLocation() { LocationName = "Home", Latitude = configuration.GoogleMapSettings.InitialMapLatitude, Longitude = configuration.GoogleMapSettings.InitialMapLongitude });
 
-                                transaction.Commit();
-                            } catch(Exception ex) {
-                                Debug.WriteLine(String.Format("Database.CreateDatabaseIfMissing caught exception {0}", ex.ToString()));
-                                transaction.Rollback();
-                                throw;
-                            }
+                                return true;
+                            });
                         }
                     } finally {
                         CloseConnection();
@@ -487,44 +486,24 @@ namespace VirtualRadar.Database.BaseStation
         }
         #endregion
 
-        #region StartTransaction, EndTransaction, RollbackTransaction
+        #region PerformInTransaction
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public void StartTransaction()
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public bool PerformInTransaction(Func<bool> action)
         {
-            lock(_ConnectionLock) {
-                OpenConnection();
-                if(_Connection != null) {
-                    _TransactionHelper.StartTransaction(_Connection);
-                }
-            }
-        }
+            var result = false;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public void EndTransaction()
-        {
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
-                    _TransactionHelper.EndTransaction();
+                    result = _TransactionHelper.PerformInTransaction(_Connection, _Transaction != null, false, r => _Transaction = r, action);
                 }
             }
-        }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public void RollbackTransaction()
-        {
-            lock(_ConnectionLock) {
-                OpenConnection();
-                if(_Connection != null) {
-                    _TransactionHelper.RollbackTransaction();
-                }
-            }
+            return result;
         }
         #endregion
 
@@ -768,18 +747,13 @@ namespace VirtualRadar.Database.BaseStation
                     Func<string, string> normaliseIcao = (icao) => { return icao.ToUpper(); };
                     var allAircraft = Aircraft_GetByIcaos(icaos).ToDictionary(r => normaliseIcao(r.ModeS), r => r);
 
-                    _TransactionHelper.StartTransaction(_Connection);
-                    try {
+                    _TransactionHelper.PerformInTransaction(_Connection, _Transaction != null, false, r => _Transaction = r, () => {
                         foreach(var icao in icaos) {
-                            BaseStationAircraft aircraft;
-                            allAircraft.TryGetValue(normaliseIcao(icao), out aircraft);
+                            allAircraft.TryGetValue(normaliseIcao(icao), out var aircraft);
                             RecordEmptyAircraft(aircraft, icao, localNow);
                         }
-                        _TransactionHelper.EndTransaction();
-                    } catch {
-                        _TransactionHelper.RollbackTransaction();
-                        throw;
-                    }
+                        return true;
+                    });
                 }
             }
         }
@@ -858,23 +832,18 @@ namespace VirtualRadar.Database.BaseStation
                     Func<string, string> normaliseIcao = (icao) => { return icao.ToUpper(); };
                     var allAircraft = Aircraft_GetByIcaos(icaos).ToDictionary(r => normaliseIcao(r.ModeS), r => r);
 
-                    _TransactionHelper.StartTransaction(_Connection);
-                    try {
+                    _TransactionHelper.PerformInTransaction(_Connection, _Transaction != null, false, r => _Transaction = r, () => {
                         foreach(var icao in icaos) {
-                            bool thisUpdated = false;
-                            BaseStationAircraft aircraft;
-                            allAircraft.TryGetValue(normaliseIcao(icao), out aircraft);
+                            var thisUpdated = false;
+                            allAircraft.TryGetValue(normaliseIcao(icao), out var aircraft);
                             aircraft = UpsertAircraftByCode(aircraft, icao, fillAircraft, ref thisUpdated);
                             if(aircraft != null) {
                                 result.Add(aircraft);
                                 updated.Add(thisUpdated);
                             }
                         }
-                        _TransactionHelper.EndTransaction();
-                    } catch {
-                        _TransactionHelper.RollbackTransaction();
-                        throw;
-                    }
+                        return true;
+                    });
                 }
             }
 
@@ -939,19 +908,19 @@ namespace VirtualRadar.Database.BaseStation
         {
             _Connection.Execute("DELETE FROM [Aircraft] WHERE [AircraftID] = @aircraftID", new {
                 @aircraftID = aircraft.AircraftID,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
 
         BaseStationAircraft[] Aircraft_GetAll()
         {
-            return _Connection.Query<BaseStationAircraft>("SELECT * FROM [Aircraft]", transaction: _TransactionHelper.Transaction).ToArray();
+            return _Connection.Query<BaseStationAircraft>("SELECT * FROM [Aircraft]", transaction: _Transaction).ToArray();
         }
 
         BaseStationAircraft Aircraft_GetByIcao(string icao)
         {
             return _Connection.Query<BaseStationAircraft>("SELECT * FROM [Aircraft] WHERE [ModeS] = @icao", new {
                 @icao = icao,
-            }, transaction: _TransactionHelper.Transaction).FirstOrDefault();
+            }, transaction: _Transaction).FirstOrDefault();
         }
 
         BaseStationAircraft[] Aircraft_GetByIcaos(IEnumerable<string> icaos)
@@ -964,7 +933,7 @@ namespace VirtualRadar.Database.BaseStation
                 var batchIcaos = icaosArray.Skip(i).Take(batchSize).ToArray();
                 var batchResults = _Connection.Query<BaseStationAircraft>("SELECT * FROM [Aircraft] WHERE [ModeS] IN @icaos", new {
                     @icaos = batchIcaos,
-                }, transaction: _TransactionHelper.Transaction).ToArray();
+                }, transaction: _Transaction).ToArray();
                 result.AddRange(batchResults);
             }
 
@@ -975,14 +944,14 @@ namespace VirtualRadar.Database.BaseStation
         {
             return _Connection.Query<BaseStationAircraft>("SELECT * FROM [Aircraft] WHERE [AircraftID] = @aircraftId", new {
                 @aircraftId = aircraftId,
-            }, transaction: _TransactionHelper.Transaction).FirstOrDefault();
+            }, transaction: _Transaction).FirstOrDefault();
         }
 
         BaseStationAircraft Aircraft_GetByRegistration(string registration)
         {
             return _Connection.Query<BaseStationAircraft>("SELECT * FROM [Aircraft] WHERE [Registration] = @registration", new {
                 @registration = registration,
-            }, transaction: _TransactionHelper.Transaction).FirstOrDefault();
+            }, transaction: _Transaction).FirstOrDefault();
         }
 
         void Aircraft_Insert(BaseStationAircraft aircraft)
@@ -1026,7 +995,7 @@ namespace VirtualRadar.Database.BaseStation
                 @userString1        = aircraft.UserString1,
                 @userTag            = aircraft.UserTag,
                 @yearBuilt          = aircraft.YearBuilt,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
 
         void Aircraft_Update(BaseStationAircraft aircraft)
@@ -1071,7 +1040,7 @@ namespace VirtualRadar.Database.BaseStation
                 @userTag            = aircraft.UserTag,
                 @yearBuilt          = aircraft.YearBuilt,
                 @aircraftID         = aircraft.AircraftID,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
 
         void Aircraft_UpdateModeSCountry(int aircraftId, string modeSCountry)
@@ -1079,14 +1048,14 @@ namespace VirtualRadar.Database.BaseStation
             _Connection.Execute("UPDATE [Aircraft] SET [ModeSCountry] = @modeSCountry WHERE [AircraftID] = @aircraftID", new {
                 @aircraftID =   aircraftId,
                 @modeSCountry = modeSCountry,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
 
         BaseStationAircraftAndFlightsCount[] AircraftAndFlightsCount_GetByIcaos(IEnumerable<string> icaos)
         {
             return _Connection.Query<BaseStationAircraftAndFlightsCount>(Commands.Aircraft_GetAircraftAndFlightsCountByIcao, new {
                 @icaos = icaos,
-            }, transaction: _TransactionHelper.Transaction).ToArray();
+            }, transaction: _Transaction).ToArray();
         }
         #endregion
 
@@ -1264,14 +1233,14 @@ namespace VirtualRadar.Database.BaseStation
         {
             _Connection.Execute("DELETE FROM [Flights] WHERE [FlightID] = @flightID", new {
                 @flightID = flight.FlightID,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
 
         private BaseStationFlight Flights_GetById(int flightId)
         {
             return _Connection.Query<BaseStationFlight>("SELECT * FROM [Flights] WHERE [FlightID] = @flightID", new {
                 @flightID = flightId,
-            }, transaction: _TransactionHelper.Transaction).FirstOrDefault();
+            }, transaction: _Transaction).FirstOrDefault();
         }
 
         private void Flights_Insert(BaseStationFlight flight)
@@ -1312,7 +1281,7 @@ namespace VirtualRadar.Database.BaseStation
                 @hadAlert               = flight.HadAlert,
                 @hadEmergency           = flight.HadEmergency,
                 @hadSPI                 = flight.HadSpi,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
 
         private void Flights_Update(BaseStationFlight flight)
@@ -1354,7 +1323,7 @@ namespace VirtualRadar.Database.BaseStation
                 @hadEmergency           = flight.HadEmergency,
                 @hadSPI                 = flight.HadSpi,
                 @flightID               = flight.FlightID,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
 
         private int Flights_GetCountByCriteria(BaseStationAircraft aircraft, SearchBaseStationCriteria criteria)
@@ -1364,7 +1333,7 @@ namespace VirtualRadar.Database.BaseStation
             var criteriaAndProperties = GetFlightsCriteria(aircraft, criteria);
             if(criteriaAndProperties.SqlChunk.Length > 0) commandText.AppendFormat(" WHERE {0}", criteriaAndProperties.SqlChunk);
 
-            return (int)_Connection.ExecuteScalar<long>(commandText.ToString(), criteriaAndProperties.Parameters, transaction: _TransactionHelper.Transaction);
+            return (int)_Connection.ExecuteScalar<long>(commandText.ToString(), criteriaAndProperties.Parameters, transaction: _Transaction);
         }
 
         private List<BaseStationFlight> Flights_GetByCriteria(BaseStationAircraft aircraft, SearchBaseStationCriteria criteria, int fromRow, int toRow, string sort1, bool sort1Ascending, string sort2, bool sort2Ascending)
@@ -1391,7 +1360,7 @@ namespace VirtualRadar.Database.BaseStation
             criteriaAndProperties.Parameters.Add("offset", offset);
 
             if(aircraft != null) {
-                result = _Connection.Query<BaseStationFlight>(commandText.ToString(), criteriaAndProperties.Parameters, transaction: _TransactionHelper.Transaction).ToList();
+                result = _Connection.Query<BaseStationFlight>(commandText.ToString(), criteriaAndProperties.Parameters, transaction: _Transaction).ToList();
                 foreach(var flight in result) {
                     flight.Aircraft = aircraft;
                 }
@@ -1413,7 +1382,7 @@ namespace VirtualRadar.Database.BaseStation
                     commandText.ToString(),
                     (f, a) => { f.Aircraft = getAircraftInstance(a); return f; },
                     criteriaAndProperties.Parameters,
-                    transaction: _TransactionHelper.Transaction, splitOn: "AircraftID"
+                    transaction: _Transaction, splitOn: "AircraftID"
                 ).ToList();
             }
 
@@ -1591,7 +1560,7 @@ namespace VirtualRadar.Database.BaseStation
 
         private List<BaseStationDBHistory> DBHistory_GetAll()
         {
-            return _Connection.Query<BaseStationDBHistory>("SELECT * FROM [DBHistory]", transaction: _TransactionHelper.Transaction).ToList();
+            return _Connection.Query<BaseStationDBHistory>("SELECT * FROM [DBHistory]", transaction: _Transaction).ToList();
         }
 
         private void DBHistory_Insert(BaseStationDBHistory record)
@@ -1599,7 +1568,7 @@ namespace VirtualRadar.Database.BaseStation
             record.DBHistoryID = (int)_Connection.ExecuteScalar<long>(Commands.DBHistory_Insert, new {
                 @timeStamp      = record.TimeStamp,
                 @description    = record.Description,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
         #endregion
 
@@ -1622,7 +1591,7 @@ namespace VirtualRadar.Database.BaseStation
 
         private BaseStationDBInfo[] DBInfo_GetAll()
         {
-            return _Connection.Query<BaseStationDBInfo>("SELECT * FROM [DBInfo]", transaction: _TransactionHelper.Transaction).ToArray();
+            return _Connection.Query<BaseStationDBInfo>("SELECT * FROM [DBInfo]", transaction: _Transaction).ToArray();
         }
 
         private void DBInfo_Insert(BaseStationDBInfo record)
@@ -1630,7 +1599,7 @@ namespace VirtualRadar.Database.BaseStation
             _Connection.Execute(Commands.DBInfo_Insert, new {
                 @originalVersion    = record.OriginalVersion,
                 @currentVersion     = record.CurrentVersion,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
         #endregion
 
@@ -1708,12 +1677,12 @@ namespace VirtualRadar.Database.BaseStation
         {
             _Connection.Execute("DELETE FROM [SystemEvents] WHERE [SystemEventsID] = @systemEventsID", new {
                 @systemEventsID = systemEvent.SystemEventsID,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
 
         private List<BaseStationSystemEvents> SystemEvents_GetAll()
         {
-            return _Connection.Query<BaseStationSystemEvents>("SELECT * FROM [SystemEvents]", transaction: _TransactionHelper.Transaction).ToList();
+            return _Connection.Query<BaseStationSystemEvents>("SELECT * FROM [SystemEvents]", transaction: _Transaction).ToList();
         }
 
         private void SystemEvents_Insert(BaseStationSystemEvents systemEvent)
@@ -1722,7 +1691,7 @@ namespace VirtualRadar.Database.BaseStation
                 @timeStamp  = systemEvent.TimeStamp,
                 @app        = systemEvent.App,
                 @msg        = systemEvent.Msg,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
 
         private void SystemEvents_Update(BaseStationSystemEvents systemEvent)
@@ -1732,7 +1701,7 @@ namespace VirtualRadar.Database.BaseStation
                 @app            = systemEvent.App,
                 @msg            = systemEvent.Msg,
                 @systemEventsID = systemEvent.SystemEventsID,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
         #endregion
 
@@ -1806,12 +1775,12 @@ namespace VirtualRadar.Database.BaseStation
         {
             _Connection.Execute("DELETE FROM [Locations] WHERE [LocationID] = @locationID", new {
                 locationID = location.LocationID,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
 
         private BaseStationLocation[] Locations_GetAll()
         {
-            return _Connection.Query<BaseStationLocation>("SELECT * FROM [Locations]", transaction: _TransactionHelper.Transaction).ToArray();
+            return _Connection.Query<BaseStationLocation>("SELECT * FROM [Locations]", transaction: _Transaction).ToArray();
         }
 
         private void Locations_Insert(BaseStationLocation location)
@@ -1821,7 +1790,7 @@ namespace VirtualRadar.Database.BaseStation
                 @latitude       = location.Latitude,
                 @longitude      = location.Longitude,
                 @altitude       = location.Altitude,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
 
         private void Locations_Update(BaseStationLocation location)
@@ -1832,7 +1801,7 @@ namespace VirtualRadar.Database.BaseStation
                 @longitude      = location.Longitude,
                 @altitude       = location.Altitude,
                 @locationID     = location.LocationID,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
         #endregion
 
@@ -1912,12 +1881,12 @@ namespace VirtualRadar.Database.BaseStation
         {
             _Connection.Execute("DELETE FROM [Sessions] WHERE [SessionID] = @sessionID", new {
                 @sessionID = session.SessionID,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
 
         private List<BaseStationSession> Sessions_GetAll()
         {
-            return _Connection.Query<BaseStationSession>("SELECT * FROM [Sessions]", transaction: _TransactionHelper.Transaction).ToList();
+            return _Connection.Query<BaseStationSession>("SELECT * FROM [Sessions]", transaction: _Transaction).ToList();
         }
 
         private void Sessions_Insert(BaseStationSession session)
@@ -1926,7 +1895,7 @@ namespace VirtualRadar.Database.BaseStation
                 @locationID = session.LocationID,
                 @startTime  = session.StartTime,
                 @endTime    = session.EndTime,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
 
         private void Sessions_Update(BaseStationSession session)
@@ -1936,7 +1905,7 @@ namespace VirtualRadar.Database.BaseStation
                 @startTime  = session.StartTime,
                 @endTime    = session.EndTime,
                 @sessionID  = session.SessionID,
-            }, transaction: _TransactionHelper.Transaction);
+            }, transaction: _Transaction);
         }
         #endregion
 

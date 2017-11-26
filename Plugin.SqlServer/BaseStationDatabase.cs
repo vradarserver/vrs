@@ -124,11 +124,6 @@ namespace VirtualRadar.Plugin.SqlServer
             throw new NotImplementedException();
         }
 
-        public void EndTransaction()
-        {
-            throw new NotImplementedException();
-        }
-
         public BaseStationAircraft GetAircraftByCode(string icao24)
         {
             throw new NotImplementedException();
@@ -249,16 +244,6 @@ namespace VirtualRadar.Plugin.SqlServer
             throw new NotImplementedException();
         }
 
-        public void RollbackTransaction()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void StartTransaction()
-        {
-            throw new NotImplementedException();
-        }
-
         public bool TestConnection()
         {
             throw new NotImplementedException();
@@ -300,6 +285,11 @@ namespace VirtualRadar.Plugin.SqlServer
         }
 
         public BaseStationAircraft[] UpsertManyAircraftByCodes(IEnumerable<string> icaos, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool PerformInTransaction(Func<bool> action)
         {
             throw new NotImplementedException();
         }

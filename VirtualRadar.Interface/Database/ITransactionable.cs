@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -21,18 +22,15 @@ namespace VirtualRadar.Interface.Database
     public interface ITransactionable
     {
         /// <summary>
-        /// Begins a new transaction. Nesting transactions is allowed.
+        /// Perform an action within a transaction. If the action returns true then the transaction is
+        /// committed, if an exception is thrown or it returns false then it is rolled back.
         /// </summary>
-        void StartTransaction();
-
-        /// <summary>
-        /// Ends a transaction. Ending a nested transaction has no effect.
-        /// </summary>
-        void EndTransaction();
-
-        /// <summary>
-        /// Rolls back a transaction. Rolling back a nested transaction rolls back all transactions.
-        /// </summary>
-        void RollbackTransaction();
+        /// <param name="action"></param>
+        /// <returns>
+        /// True if the transaction was committed, false if it was rolled back. Note that any exception
+        /// that causes a rollback will be rethrown so this is actually mirroring the return value from
+        /// the action.
+        /// </returns>
+        bool PerformInTransaction(Func<bool> action);
     }
 }

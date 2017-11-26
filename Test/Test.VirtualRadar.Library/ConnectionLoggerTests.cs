@@ -40,6 +40,7 @@ namespace Test.VirtualRadar.Library
         private Mock<IHeartbeatService> _HeartbeatService;
         private Mock<LogSession> _LogSession;
         private EventRecorder<EventArgs<Exception>> _ExceptionCaughtEvent;
+        private int _NestedTransactionCount;
 
         [TestInitialize]
         public void TestInitialise()
@@ -54,6 +55,15 @@ namespace Test.VirtualRadar.Library
 
             _Clock = new ClockMock();
             Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+
+            _NestedTransactionCount = 0;
+            _LogDatabase.Setup(r => r.PerformInTransaction(It.IsAny<Func<bool>>())).Callback((Func<bool> r) => {
+                if(++_NestedTransactionCount > 1) {
+                    throw new InvalidOperationException("Nested transactions are not allowed");
+                }
+                r();
+                --_NestedTransactionCount;
+            });
 
             _ConnectionLogger = Factory.Singleton.ResolveNewInstance<IConnectionLogger>();
             _ConnectionLogger.WebServer = _WebServer.Object;
@@ -272,9 +282,8 @@ namespace Test.VirtualRadar.Library
             RaiseResponseEvent("1.2.3.4", null, 100L, ContentClassification.Html, now);
             RaiseHeartbeatEvent(now);
 
-            _LogDatabase.Verify(d => d.StartTransaction(), Times.Once());
+            _LogDatabase.Verify(d => d.PerformInTransaction(It.IsAny<Func<bool>>()), Times.Once());
             _LogDatabase.Verify(d => d.UpdateSession(_LogSession.Object), Times.Once());
-            _LogDatabase.Verify(d => d.EndTransaction(), Times.Once());
         }
 
         [TestMethod]
@@ -284,36 +293,14 @@ namespace Test.VirtualRadar.Library
             _ConnectionLogger.Start();
             _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Returns(_LogSession.Object);
             _LogDatabase.Setup(d => d.UpdateSession(It.IsAny<LogSession>())).Callback(() => {
-                _LogDatabase.Verify(d => d.StartTransaction(), Times.Once());
-            });
-            _LogDatabase.Setup(d => d.EndTransaction()).Callback(() => {
-                _LogDatabase.Verify(d => d.UpdateSession(It.IsAny<LogSession>()), Times.Once());
+                _LogDatabase.Verify(d => d.PerformInTransaction(It.IsAny<Func<bool>>()), Times.Once());
             });
 
             RaiseResponseEvent("1.2.3.4", null, 100L, ContentClassification.Html, now);
             RaiseHeartbeatEvent(now);
 
-            _LogDatabase.Verify(d => d.StartTransaction(), Times.Once());
+            _LogDatabase.Verify(d => d.PerformInTransaction(It.IsAny<Func<bool>>()), Times.Once());
             _LogDatabase.Verify(d => d.UpdateSession(_LogSession.Object), Times.Once());
-            _LogDatabase.Verify(d => d.EndTransaction(), Times.Once());
-            _LogDatabase.Verify(d => d.RollbackTransaction(), Times.Never());
-        }
-
-        [TestMethod]
-        public void ConnectionLogger_Start_Rolls_Back_Session_If_Exception_Raised()
-        {
-            var now = SetUtcNow(DateTime.Now);
-            _ConnectionLogger.Start();
-            _LogDatabase.Setup(d => d.EstablishSession("1.2.3.4", null)).Returns(_LogSession.Object);
-            _LogDatabase.Setup(d => d.UpdateSession(It.IsAny<LogSession>())).Callback(() => { throw new InvalidOperationException(); });
-
-            RaiseResponseEvent("1.2.3.4", null, 100L, ContentClassification.Html, now);
-            RaiseHeartbeatEvent(now);
-
-            _LogDatabase.Verify(d => d.StartTransaction(), Times.Once());
-            _LogDatabase.Verify(d => d.UpdateSession(_LogSession.Object), Times.Once());
-            _LogDatabase.Verify(d => d.EndTransaction(), Times.Never());
-            _LogDatabase.Verify(d => d.RollbackTransaction(), Times.Once());
         }
 
         [TestMethod]
@@ -332,10 +319,9 @@ namespace Test.VirtualRadar.Library
 
             now = RaiseHeartbeatEvent(now.AddMinutes(MinimumCacheMinutes));
 
-            _LogDatabase.Verify(d => d.StartTransaction(), Times.Once());
+            _LogDatabase.Verify(d => d.PerformInTransaction(It.IsAny<Func<bool>>()), Times.Once());
             _LogDatabase.Verify(d => d.UpdateSession(session1.Object), Times.Once());
             _LogDatabase.Verify(d => d.UpdateSession(session2.Object), Times.Once());
-            _LogDatabase.Verify(d => d.EndTransaction(), Times.Once());
         }
 
         [TestMethod]
@@ -346,9 +332,8 @@ namespace Test.VirtualRadar.Library
 
             now = RaiseHeartbeatEvent(now.AddMinutes(30));
 
-            _LogDatabase.Verify(d => d.StartTransaction(), Times.Never());
+            _LogDatabase.Verify(d => d.PerformInTransaction(It.IsAny<Func<bool>>()), Times.Never());
             _LogDatabase.Verify(d => d.UpdateSession(It.IsAny<LogSession>()), Times.Never());
-            _LogDatabase.Verify(d => d.EndTransaction(), Times.Never());
         }
 
         [TestMethod]
@@ -363,9 +348,8 @@ namespace Test.VirtualRadar.Library
             now = RaiseResponseEvent("1.2.3.4", null, 100L, ContentClassification.Html, now.AddMinutes(MinimumCacheMinutes));
             RaiseHeartbeatEvent(now);
 
-            _LogDatabase.Verify(d => d.StartTransaction(), Times.Exactly(2));
+            _LogDatabase.Verify(d => d.PerformInTransaction(It.IsAny<Func<bool>>()), Times.Exactly(2));
             _LogDatabase.Verify(d => d.UpdateSession(_LogSession.Object), Times.Exactly(2));
-            _LogDatabase.Verify(d => d.EndTransaction(), Times.Exactly(2));
         }
 
         [TestMethod]
@@ -380,9 +364,8 @@ namespace Test.VirtualRadar.Library
             now = RaiseResponseEvent("1.2.3.4", null, 100L, ContentClassification.Html, now.AddMinutes(MinimumCacheMinutes).AddSeconds(-1));
             RaiseHeartbeatEvent(now);
 
-            _LogDatabase.Verify(d => d.StartTransaction(), Times.Once());
+            _LogDatabase.Verify(d => d.PerformInTransaction(It.IsAny<Func<bool>>()), Times.Once());
             _LogDatabase.Verify(d => d.UpdateSession(_LogSession.Object), Times.Once());
-            _LogDatabase.Verify(d => d.EndTransaction(), Times.Once());
         }
 
         [TestMethod]
@@ -524,9 +507,8 @@ namespace Test.VirtualRadar.Library
             RaiseResponseEvent("1.2.3.4", null, 1, ContentClassification.Html, DateTime.Now);
 
             _ConnectionLogger.Dispose();
-            _LogDatabase.Verify(d => d.StartTransaction(), Times.Once());
+            _LogDatabase.Verify(d => d.PerformInTransaction(It.IsAny<Func<bool>>()), Times.Once());
             _LogDatabase.Verify(d => d.UpdateSession(_LogSession.Object), Times.Once());
-            _LogDatabase.Verify(d => d.EndTransaction(), Times.Once());
         }
 
         [TestMethod]
@@ -541,9 +523,8 @@ namespace Test.VirtualRadar.Library
             RaiseResponseEvent("1.2.3.4", null, 2, ContentClassification.Html, now.AddSeconds(1));
 
             _ConnectionLogger.Dispose();
-            _LogDatabase.Verify(d => d.StartTransaction(), Times.Exactly(2));
+            _LogDatabase.Verify(d => d.PerformInTransaction(It.IsAny<Func<bool>>()), Times.Exactly(2));
             _LogDatabase.Verify(d => d.UpdateSession(_LogSession.Object), Times.Exactly(2));
-            _LogDatabase.Verify(d => d.EndTransaction(), Times.Exactly(2));
         }
         #endregion
     }
