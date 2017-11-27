@@ -10,12 +10,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using InterfaceFactory;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Database;
 
 namespace VirtualRadar.Plugin.SqlServer
 {
@@ -106,7 +108,33 @@ namespace VirtualRadar.Plugin.SqlServer
             Singleton = this;
             Options = OptionsStorage.Load(this);
             if(Options.Enabled) {
+                BaseStationDatabase.ConnectionStringIsGood = TestConnectionString(Options.ConnectionString);
+                classFactory.Register<IBaseStationDatabase, BaseStationDatabase>();
             }
+        }
+
+        private bool TestConnectionString(string connectionString)
+        {
+            var result = false;
+
+            if(!String.IsNullOrEmpty(connectionString)) {
+                try {
+                    using(var connection = new SqlConnection(connectionString)) {
+                        connection.Open();
+                    }
+                    result = true;
+                } catch(Exception ex) {
+                    result = false;
+
+                    try {
+                        var log = Factory.Singleton.ResolveSingleton<ILog>();
+                        log.WriteLine($"Could not establish a connection to SQL Server using \"{connectionString}\": {ex}");
+                    } catch {
+                    }
+                }
+            }
+
+            return result;
         }
 
         /// <summary>

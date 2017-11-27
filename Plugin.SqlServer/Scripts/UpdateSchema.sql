@@ -121,6 +121,18 @@ BEGIN
 END;
 GO
 
+IF NOT EXISTS (SELECT 1 FROM [BaseStation].[DBHistory])
+BEGIN
+    INSERT INTO [BaseStation].[DBHistory] (
+        [TimeStamp]
+       ,[Description]
+    ) VALUES (
+        GETUTCDATE()
+       ,'Schema created by ' + SUSER_NAME()
+    );
+END;
+GO
+
 
 
 
@@ -138,6 +150,18 @@ BEGIN
        ,[CurrentVersion]    SMALLINT NOT NULL
 
        ,CONSTRAINT [PK_DBInfo] PRIMARY KEY ([OriginalVersion], [CurrentVersion])
+    );
+END;
+GO
+
+IF NOT EXISTS (SELECT 1 FROM [BaseStation].[DBInfo])
+BEGIN
+    INSERT INTO [BaseStation].[DBInfo] (
+        [OriginalVersion]
+       ,[CurrentVersion]
+    ) VALUES (
+        2
+       ,2
     );
 END;
 GO
@@ -162,6 +186,22 @@ BEGIN
        ,[Altitude]      REAL NOT NULL
 
        ,CONSTRAINT [PK_Locations] PRIMARY KEY ([LocationID])
+    );
+END;
+GO
+
+IF NOT EXISTS (SELECT 1 FROM [BaseStation].[Locations])
+BEGIN
+    INSERT INTO [BaseStation].[Locations] (
+        [LocationName]
+       ,[Latitude]
+       ,[Longitude]
+       ,[Altitude]
+    ) VALUES (
+        'Home'
+       ,51.4
+       ,-0.6
+       ,25.0
     );
 END;
 GO
@@ -278,6 +318,58 @@ BEGIN
 
     CREATE INDEX [IX_SystemEvents_App]          ON [BaseStation].[SystemEvents] ([App]);
     CREATE INDEX [IX_SystemEvents_TimeStamp]    ON [BaseStation].[SystemEvents] ([TimeStamp]);
+END;
+GO
+
+
+
+
+-------------------------------------------------------------------------------
+-- BaseStation/Procs/Aircraft_Delete.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/Aircraft_Delete.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'Aircraft_Delete')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[Aircraft_Delete] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[Aircraft_Delete]
+    @AircraftID BIGINT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DELETE FROM [BaseStation].[Aircraft]
+    WHERE  [AircraftID] = @AircraftID;
+END;
+GO
+
+
+
+
+-------------------------------------------------------------------------------
+-- BaseStation/Procs/Flights_Delete.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/Flights_Delete.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'Flights_Delete')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[Flights_Delete] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[Flights_Delete]
+    @FlightID BIGINT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DELETE FROM [BaseStation].[Flights]
+    WHERE  [FlightID] = @FlightID;
 END;
 GO
 

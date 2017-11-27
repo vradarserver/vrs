@@ -31,6 +31,10 @@ namespace VirtualRadar.Interface.Database
         /// that causes a rollback will be rethrown so this is actually mirroring the return value from
         /// the action.
         /// </returns>
+        /// <remarks>
+        /// Implementations do not have to ensure that transactions started here are valid across all
+        /// threads. Do not perform database work on a background thread in <paramref name="action"/>.
+        /// </remarks>
         bool PerformInTransaction(Func<bool> action);
     }
 }

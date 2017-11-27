@@ -52,4 +52,6 @@ GO
     AddScript("BaseStation", "Tables", "Sessions.sql");
     AddScript("BaseStation", "Tables", "Flights.sql");
     AddScript("BaseStation", "Tables", "SystemEvents.sql");
+    AddScript("BaseStation", "Procs",  "Aircraft_Delete.sql");
+    AddScript("BaseStation", "Procs",  "Flights_Delete.sql");
 #>

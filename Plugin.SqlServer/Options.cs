@@ -33,6 +33,17 @@ namespace VirtualRadar.Plugin.SqlServer
             set { SetField(ref _Enabled, value, nameof(Enabled)); }
         }
 
+        private bool _CanUpdateSchema;
+        /// <summary>
+        /// Gets or sets a value indicating that the connection to the database has sufficient
+        /// permissions to maintain the schema.
+        /// </summary>
+        public bool CanUpdateSchema
+        {
+            get { return _CanUpdateSchema; }
+            set { SetField(ref _CanUpdateSchema, value, nameof(CanUpdateSchema)); }
+        }
+
         private string _ConnectionString;
         /// <summary>
         /// Gets or sets the connection string to the SQL Server instance and database to use for VRS.

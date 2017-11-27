@@ -120,6 +120,9 @@
   <data name="CannotConnectToDatabase" xml:space="preserve">
     <value>Cannot connect to database: {0}</value>
   </data>
+  <data name="CanUpdateSchema" xml:space="preserve">
+    <value>Let plugin update schema</value>
+  </data>
   <data name="ConnectionString" xml:space="preserve">
     <value>Connection string</value>
   </data>

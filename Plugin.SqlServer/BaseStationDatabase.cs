@@ -10,9 +10,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dapper;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Database;
 
@@ -23,6 +26,21 @@ namespace VirtualRadar.Plugin.SqlServer
     /// </summary>
     class BaseStationDatabase : IBaseStationDatabase
     {
+        /// <summary>
+        /// True if the connection string appears to be a good one.
+        /// </summary>
+        public static bool ConnectionStringIsGood { get; set; }
+
+        /// <summary>
+        /// The connection and transaction to use while a transaction is in force on the current thread.
+        /// </summary>
+        /// <remarks>
+        /// Note that multiple instances of the class on the same thread all share the same connection.
+        /// If one instance calls into another instance during a transaction then things will get messy!
+        /// </remarks>
+        [ThreadStatic]
+        private static ConnectionWrapper _TransactionConnection;
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -46,15 +64,27 @@ namespace VirtualRadar.Plugin.SqlServer
             set {;}
         }
 
-        public bool IsConnected => throw new NotImplementedException();
-
         /// <summary>
         /// See interface docs.
+        /// </summary>
+        public bool IsConnected
+        {
+            get {
+                var result = false;
+                PerformWithinConnection(connection => result = true);
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// See interface docs. Meaningless in SQL Server, there are no read-only connections. It's controlled
+        /// by grants at the database level.
         /// </summary>
         public bool WriteSupportEnabled { get; set; }
 
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Actual max parameters is 2100, we are lowballing a bit. Nowadays code should be
+        /// using Dapper rather than constructing parameter lists.
         /// </summary>
         public int MaxParameters => 2000;
 
@@ -85,23 +115,97 @@ namespace VirtualRadar.Plugin.SqlServer
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public void Dispose()
+        {
+            ;
+        }
+
+        /// <summary>
+        /// Returns a wrapper around the connection and transaction to use.
+        /// </summary>
+        /// <returns></returns>
+        private ConnectionWrapper CreateOpenConnection()
+        {
+            return _TransactionConnection ?? new ConnectionWrapper(CreateOpenDatabaseConnection(), null);
+        }
+
+        /// <summary>
+        /// Performs some action but only if the connection configuration appears to be good.
+        /// </summary>
+        /// <param name="action"></param>
+        private void PerformWithinConnection(Action<ConnectionWrapper> action)
+        {
+            using(var connection = CreateOpenConnection()) {
+                if(connection.HasConnection) {
+                    action(connection);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns an open connection or null if the configuration is bad.
+        /// </summary>
+        /// <returns></returns>
+        private IDbConnection CreateOpenDatabaseConnection()
+        {
+            var result = ConnectionStringIsGood ? new SqlConnection(Plugin.Singleton.Options.ConnectionString) : null;
+            result?.Open();
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="ex"></param>
         /// <returns></returns>
         public bool AttemptAutoFix(Exception ex) => false;
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="fileName"></param>
         public void CreateDatabaseIfMissing(string fileName)
         {
-            throw new NotImplementedException();
+            if(Plugin.Singleton.Options.CanUpdateSchema) {
+                PerformWithinConnection(connection => {
+                    SqlServerHelper.RunScript(connection.Connection, Scripts.Resources.UpdateSchema_sql);
+                });
+            }
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="aircraft"></param>
         public void DeleteAircraft(BaseStationAircraft aircraft)
         {
-            throw new NotImplementedException();
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot delete aircraft when write support is disabled");
+            }
+
+            PerformWithinConnection(connection => {
+                connection.Connection.Execute("[BaseStation].[Aircraft_Delete]", new {
+                    @AircraftID = aircraft?.AircraftID,
+                }, transaction: connection.Transaction, commandType: CommandType.StoredProcedure);
+            });
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="flight"></param>
         public void DeleteFlight(BaseStationFlight flight)
         {
-            throw new NotImplementedException();
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot delete flights when write support is disabled");
+            }
+
+            PerformWithinConnection(connection => {
+                connection.Connection.Execute("[BaseStation].[Flights_Delete]", new {
+                    @FlightID = flight?.FlightID,
+                }, transaction: connection.Transaction, commandType: CommandType.StoredProcedure);
+            });
         }
 
         public void DeleteLocation(BaseStationLocation location)
@@ -115,11 +219,6 @@ namespace VirtualRadar.Plugin.SqlServer
         }
 
         public void DeleteSystemEvent(BaseStationSystemEvents systemEvent)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Dispose()
         {
             throw new NotImplementedException();
         }
