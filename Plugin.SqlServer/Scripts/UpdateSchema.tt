@@ -53,5 +53,15 @@ GO
     AddScript("BaseStation", "Tables", "Flights.sql");
     AddScript("BaseStation", "Tables", "SystemEvents.sql");
     AddScript("BaseStation", "Procs",  "Aircraft_Delete.sql");
+    AddScript("BaseStation", "Procs",  "Aircraft_GetAll.sql");
+    AddScript("BaseStation", "Procs",  "Aircraft_GetByID.sql");
+    AddScript("BaseStation", "Procs",  "Aircraft_GetByModeS.sql");
+    AddScript("BaseStation", "Procs",  "Aircraft_GetByRegistration.sql");
+    AddScript("BaseStation", "Procs",  "DBHistory_GetAll.sql");
+    AddScript("BaseStation", "Procs",  "DBInfo_GetAll.sql");
     AddScript("BaseStation", "Procs",  "Flights_Delete.sql");
+    AddScript("BaseStation", "Procs",  "Flights_GetByID.sql");
+    AddScript("BaseStation", "Procs",  "Locations_Delete.sql");
+    AddScript("BaseStation", "Procs",  "Sessions_Delete.sql");
+    AddScript("BaseStation", "Procs",  "SystemEvents_Delete.sql");
 #>

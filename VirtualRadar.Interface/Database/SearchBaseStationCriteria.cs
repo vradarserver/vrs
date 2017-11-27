@@ -79,5 +79,15 @@ namespace VirtualRadar.Interface.Database
         /// Gets or sets the last altitude range to search for.
         /// </summary>
         public FilterRange<int> LastAltitude { get; set; }
+
+        /// <summary>
+        /// Returns true if the criteria attempts to restrict the search to a single aircraft.
+        /// </summary>
+        /// <returns></returns>
+        public bool FilterByAircraftFirst()
+        {
+            return (Icao != null         && !String.IsNullOrEmpty(Icao.Value)) ||
+                   (Registration != null && !String.IsNullOrEmpty(Registration.Value));
+        }
     }
 }

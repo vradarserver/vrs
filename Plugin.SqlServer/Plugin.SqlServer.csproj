@@ -109,8 +109,18 @@
     <None Include="_PostBuildCopyLanguage.bat" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Scripts\BaseStation\Procs\Aircraft_GetAll.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Aircraft_GetByID.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Aircraft_GetByRegistration.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Aircraft_GetByModeS.sql" />
+    <Content Include="Scripts\BaseStation\Procs\DBHistory_GetAll.sql" />
+    <Content Include="Scripts\BaseStation\Procs\DBInfo_GetAll.sql" />
     <Content Include="Scripts\BaseStation\Procs\Flights_Delete.sql" />
     <Content Include="Scripts\BaseStation\Procs\Aircraft_Delete.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Flights_GetByID.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Locations_Delete.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Sessions_Delete.sql" />
+    <Content Include="Scripts\BaseStation\Procs\SystemEvents_Delete.sql" />
     <Content Include="Scripts\BaseStation\Schema\BaseStation.sql" />
     <Content Include="Scripts\BaseStation\Tables\Flights.sql" />
     <Content Include="Scripts\BaseStation\Tables\SystemEvents.sql" />

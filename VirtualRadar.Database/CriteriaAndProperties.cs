@@ -19,7 +19,7 @@ namespace VirtualRadar.Database
     /// <summary>
     /// Holds a SQL gobbit for a set of criteria and a set of properties required by the SQL.
     /// </summary>
-    class CriteriaAndProperties
+    public class CriteriaAndProperties
     {
         /// <summary>
         /// Gets or sets the SQL required to fetch by some given criteria.

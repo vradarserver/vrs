@@ -56,6 +56,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Commands.resx</DependentUpon>
     </Compile>
+    <Compile Include="BaseStation\DynamicSql.cs" />
     <Compile Include="CriteriaAndProperties.cs" />
     <Compile Include="BaseStation\Database.cs" />
     <Compile Include="DynamicSqlBuilder.cs" />

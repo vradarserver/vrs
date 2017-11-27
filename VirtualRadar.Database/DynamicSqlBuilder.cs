@@ -20,7 +20,7 @@ namespace VirtualRadar.Database
     /// <summary>
     /// A class that can help when building dynamic SQL statements.
     /// </summary>
-    static class DynamicSqlBuilder
+    public static class DynamicSqlBuilder
     {
         /// <summary>
         /// Adds a where clause to the statement passed across.

@@ -6,52 +6,52 @@ BEGIN
        ,[FirstCreated]      DATETIME NOT NULL
        ,[LastModified]      DATETIME NOT NULL
        ,[ModeS]             VARCHAR(6) NOT NULL
-       ,[ModeSCountry]      VARCHAR(24)
-       ,[Country]           VARCHAR(24)
-       ,[Registration]      VARCHAR(20)
-       ,[CurrentRegDate]    VARCHAR(10)
-       ,[PreviousID]        VARCHAR(10)
-       ,[FirstRegDate]      VARCHAR(10)
-       ,[Status]            VARCHAR(10)
-       ,[DeRegDate]         VARCHAR(10)
-       ,[Manufacturer]      VARCHAR(60)
-       ,[ICAOTypeCode]      VARCHAR(10)
-       ,[Type]              VARCHAR(40)
-       ,[SerialNo]          VARCHAR(30)
-       ,[PopularName]       VARCHAR(20)
-       ,[GenericName]       VARCHAR(20)
-       ,[AircraftClass]     VARCHAR(20)
-       ,[Engines]           VARCHAR(40)
-       ,[OwnershipStatus]   VARCHAR(10)
-       ,[RegisteredOwners]  VARCHAR(100)
-       ,[MTOW]              VARCHAR(10)
-       ,[TotalHours]        VARCHAR(20)
-       ,[YearBuilt]         VARCHAR(4)
-       ,[CofACategory]      VARCHAR(30)
-       ,[CofAExpiry]        VARCHAR(10)
-       ,[UserNotes]         VARCHAR(300)
+       ,[ModeSCountry]      NVARCHAR(24)
+       ,[Country]           NVARCHAR(24)
+       ,[Registration]      NVARCHAR(20)
+       ,[CurrentRegDate]    NVARCHAR(10)
+       ,[PreviousID]        NVARCHAR(10)
+       ,[FirstRegDate]      NVARCHAR(10)
+       ,[Status]            NVARCHAR(10)
+       ,[DeRegDate]         NVARCHAR(10)
+       ,[Manufacturer]      NVARCHAR(60)
+       ,[ICAOTypeCode]      NVARCHAR(10)
+       ,[Type]              NVARCHAR(40)
+       ,[SerialNo]          NVARCHAR(30)
+       ,[PopularName]       NVARCHAR(20)
+       ,[GenericName]       NVARCHAR(20)
+       ,[AircraftClass]     NVARCHAR(20)
+       ,[Engines]           NVARCHAR(40)
+       ,[OwnershipStatus]   NVARCHAR(10)
+       ,[RegisteredOwners]  NVARCHAR(100)
+       ,[MTOW]              NVARCHAR(10)
+       ,[TotalHours]        NVARCHAR(20)
+       ,[YearBuilt]         NVARCHAR(4)
+       ,[CofACategory]      NVARCHAR(30)
+       ,[CofAExpiry]        NVARCHAR(10)
+       ,[UserNotes]         NVARCHAR(300)
        ,[Interested]        BIT NOT NULL CONSTRAINT [DF_Aircraft_Interested] DEFAULT 0
-       ,[UserTag]           VARCHAR(5)
-       ,[InfoURL]           VARCHAR(150)
-       ,[PictureURL1]       VARCHAR(150)
-       ,[PictureURL2]       VARCHAR(150)
-       ,[PictureURL3]       VARCHAR(150)
+       ,[UserTag]           NVARCHAR(5)
+       ,[InfoURL]           NVARCHAR(150)
+       ,[PictureURL1]       NVARCHAR(150)
+       ,[PictureURL2]       NVARCHAR(150)
+       ,[PictureURL3]       NVARCHAR(150)
        ,[UserBool1]         BIT NOT NULL CONSTRAINT [DF_Aircraft_UserBool1] DEFAULT 0
        ,[UserBool2]         BIT NOT NULL CONSTRAINT [DF_Aircraft_UserBool2] DEFAULT 0
        ,[UserBool3]         BIT NOT NULL CONSTRAINT [DF_Aircraft_UserBool3] DEFAULT 0
        ,[UserBool4]         BIT NOT NULL CONSTRAINT [DF_Aircraft_UserBool4] DEFAULT 0
        ,[UserBool5]         BIT NOT NULL CONSTRAINT [DF_Aircraft_UserBool5] DEFAULT 0
-       ,[UserString1]       VARCHAR(20)
-       ,[UserString2]       VARCHAR(20)
-       ,[UserString3]       VARCHAR(20)
-       ,[UserString4]       VARCHAR(20)
-       ,[UserString5]       VARCHAR(20)
+       ,[UserString1]       NVARCHAR(20)
+       ,[UserString2]       NVARCHAR(20)
+       ,[UserString3]       NVARCHAR(20)
+       ,[UserString4]       NVARCHAR(20)
+       ,[UserString5]       NVARCHAR(20)
        ,[UserInt1]          BIGINT CONSTRAINT [DF_Aircraft_UserInt1] DEFAULT 0
        ,[UserInt2]          BIGINT CONSTRAINT [DF_Aircraft_UserInt2] DEFAULT 0
        ,[UserInt3]          BIGINT CONSTRAINT [DF_Aircraft_UserInt3] DEFAULT 0
        ,[UserInt4]          BIGINT CONSTRAINT [DF_Aircraft_UserInt4] DEFAULT 0
        ,[UserInt5]          BIGINT CONSTRAINT [DF_Aircraft_UserInt5] DEFAULT 0
-       ,[OperatorFlagCode]  VARCHAR(20)
+       ,[OperatorFlagCode]  NVARCHAR(20)
 
        ,CONSTRAINT [PK_Aircraft] PRIMARY KEY ([AircraftID])
     );

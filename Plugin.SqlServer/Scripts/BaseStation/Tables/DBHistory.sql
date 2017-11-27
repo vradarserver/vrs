@@ -4,7 +4,7 @@ BEGIN
     (
         [DBHistoryID]   BIGINT IDENTITY
        ,[TimeStamp]     DATETIME NOT NULL
-       ,[Description]   VARCHAR(100) NOT NULL
+       ,[Description]   NVARCHAR(100) NOT NULL
 
        ,CONSTRAINT [PK_DBHistory] PRIMARY KEY ([DBHistoryID])
     );
@@ -19,6 +19,15 @@ BEGIN
     ) VALUES (
         GETUTCDATE()
        ,'Schema created by ' + SUSER_NAME()
+    );
+
+    -- This one is required by BaseStationDBHistory.IsCreationOfDatabaseByVirtualRadarServer
+    INSERT INTO [BaseStation].[DBHistory] (
+        [TimeStamp]
+       ,[Description]
+    ) VALUES (
+        GETUTCDATE()
+       ,'Database autocreated by Virtual Radar Server'
     );
 END;
 GO

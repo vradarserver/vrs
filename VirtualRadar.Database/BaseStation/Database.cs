@@ -27,7 +27,7 @@ namespace VirtualRadar.Database.BaseStation
     /// <summary>
     /// Default implementation of <see cref="IBaseStationDatabase"/>.
     /// </summary>
-    sealed class Database : IBaseStationDatabase
+    public sealed class Database : IBaseStationDatabase
     {
         #region Private class - DefaultProvider
         /// <summary>
@@ -70,11 +70,6 @@ namespace VirtualRadar.Database.BaseStation
         /// and the connection is open.
         /// </summary>
         private TextWriter _DatabaseLog;
-
-        /// <summary>
-        /// The object that can parse callsigns out into alternates for us.
-        /// </summary>
-        private ICallsignParser _CallsignParser;
 
         /// <summary>
         /// True if the object has been disposed.
@@ -1330,7 +1325,7 @@ namespace VirtualRadar.Database.BaseStation
         {
             StringBuilder commandText = new StringBuilder();
             commandText.Append(CreateSearchBaseStationCriteriaSql(aircraft, criteria, justCount: true));
-            var criteriaAndProperties = GetFlightsCriteria(aircraft, criteria);
+            var criteriaAndProperties = DynamicSql.GetFlightsCriteria(aircraft, criteria);
             if(criteriaAndProperties.SqlChunk.Length > 0) commandText.AppendFormat(" WHERE {0}", criteriaAndProperties.SqlChunk);
 
             return (int)_Connection.ExecuteScalar<long>(commandText.ToString(), criteriaAndProperties.Parameters, transaction: _Transaction);
@@ -1340,12 +1335,12 @@ namespace VirtualRadar.Database.BaseStation
         {
             List<BaseStationFlight> result = null;
 
-            sort1 = CriteriaSortFieldToColumnName(sort1);
-            sort2 = CriteriaSortFieldToColumnName(sort2);
+            sort1 = DynamicSql.CriteriaSortFieldToColumnName(sort1);
+            sort2 = DynamicSql.CriteriaSortFieldToColumnName(sort2);
 
             StringBuilder commandText = new StringBuilder();
             commandText.Append(CreateSearchBaseStationCriteriaSql(aircraft, criteria, justCount: false));
-            var criteriaAndProperties = GetFlightsCriteria(aircraft, criteria);
+            var criteriaAndProperties = DynamicSql.GetFlightsCriteria(aircraft, criteria);
             if(criteriaAndProperties.SqlChunk.Length > 0) commandText.AppendFormat(" WHERE {0}", criteriaAndProperties.SqlChunk);
             if(sort1 != null || sort2 != null) {
                 commandText.Append(" ORDER BY ");
@@ -1429,114 +1424,13 @@ namespace VirtualRadar.Database.BaseStation
                         justCount ? "" : ", ",
                         justCount ? "" : "[Aircraft].*");
 
-                if(FilterByAircraftFirst(criteria)) result.Append("[Aircraft] LEFT JOIN [Flights]");
-                else                                result.Append("[Flights] LEFT JOIN [Aircraft]");
+                if(criteria.FilterByAircraftFirst()) result.Append("[Aircraft] LEFT JOIN [Flights]");
+                else                                 result.Append("[Flights] LEFT JOIN [Aircraft]");
 
                 result.Append(" ON ([Aircraft].[AircraftID] = [Flights].[AircraftID])");
             }
 
             return result.ToString();
-        }
-
-        /// <summary>
-        /// Returns true if the criteria attempts to restrict the search to a single aircraft.
-        /// </summary>
-        /// <param name="criteria"></param>
-        /// <returns></returns>
-        private bool FilterByAircraftFirst(SearchBaseStationCriteria criteria)
-        {
-            return (criteria.Icao != null         && !String.IsNullOrEmpty(criteria.Icao.Value)) ||
-                   (criteria.Registration != null && !String.IsNullOrEmpty(criteria.Registration.Value));
-        }
-
-        /// <summary>
-        /// Returns the WHERE portion of an SQL statement contains the fields describing the criteria passed across.
-        /// </summary>
-        /// <param name="aircraft"></param>
-        /// <param name="criteria"></param>
-        /// <returns></returns>
-        private CriteriaAndProperties GetFlightsCriteria(BaseStationAircraft aircraft, SearchBaseStationCriteria criteria)
-        {
-            var result = new CriteriaAndProperties();
-            StringBuilder command = new StringBuilder();
-
-            if(aircraft != null) {
-                DynamicSqlBuilder.AddWhereClause(command, "[Flights].[AircraftID]", " = @aircraftID");
-                result.Parameters.Add("aircraftID", aircraft.AircraftID);
-            }
-
-            if(criteria.UseAlternateCallsigns && criteria.Callsign != null && criteria.Callsign.Condition == FilterCondition.Equals && !String.IsNullOrEmpty(criteria.Callsign.Value)) {
-                GetAlternateCallsignCriteria(command, result.Parameters, criteria.Callsign, "[Flights].[Callsign]");
-            } else {
-                DynamicSqlBuilder.AddCriteria(command, criteria.Callsign, result.Parameters, "[Flights].[Callsign]", "callsign");
-            }
-
-            DynamicSqlBuilder.AddCriteria(command, criteria.Date,           result.Parameters, "[Flights].[StartTime]",         "fromStartTime", "toStartTime");
-            DynamicSqlBuilder.AddCriteria(command, criteria.Operator,       result.Parameters, "[Aircraft].[RegisteredOwners]", "registeredOwners");
-            DynamicSqlBuilder.AddCriteria(command, criteria.Registration,   result.Parameters, "[Aircraft].[Registration]",     "registration");
-            DynamicSqlBuilder.AddCriteria(command, criteria.Icao,           result.Parameters, "[Aircraft].[ModeS]",            "icao");
-            DynamicSqlBuilder.AddCriteria(command, criteria.Country,        result.Parameters, "[Aircraft].[ModeSCountry]",     "modeSCountry");
-            DynamicSqlBuilder.AddCriteria(command, criteria.IsEmergency,                       "[Flights].[HadEmergency]");
-            DynamicSqlBuilder.AddCriteria(command, criteria.Type,           result.Parameters, "[Aircraft].[ICAOTypeCode]",     "modelIcao");
-            DynamicSqlBuilder.AddCriteria(command, criteria.FirstAltitude,  result.Parameters, "[Flights].[FirstAltitude]",     "fromFirstAltitude", "toFirstAltitude");
-            DynamicSqlBuilder.AddCriteria(command, criteria.LastAltitude,   result.Parameters, "[Flights].[LastAltitude]",      "fromLastAltitude", "toLastAltitude");
-
-            result.SqlChunk = command.ToString();
-            return result;
-        }
-
-        /// <summary>
-        /// Builds up the criteria and properties for all alternate callsigns.
-        /// </summary>
-        /// <param name="command"></param>
-        /// <param name="parameters"></param>
-        /// <param name="criteria"></param>
-        /// <param name="callsignField"></param>
-        private void GetAlternateCallsignCriteria(StringBuilder command, DynamicParameters parameters, FilterString criteria, string callsignField)
-        {
-            if(criteria != null && !String.IsNullOrEmpty(criteria.Value)) {
-                if(_CallsignParser == null) _CallsignParser = Factory.Singleton.Resolve<ICallsignParser>();
-                var alternates = _CallsignParser.GetAllAlternateCallsigns(criteria.Value);
-                for(var i = 0;i < alternates.Count;++i) {
-                    var isFirst = i == 0;
-                    var isLast = i + 1 == alternates.Count;
-                    var callsign = alternates[i];
-                    var parameterName = String.Format("callsign{0}", i + 1);
-                    DynamicSqlBuilder.AddWhereClause(command, callsignField,
-                        String.Format(" {0} @{1}", !criteria.ReverseCondition ? "=" : "<>", parameterName),
-                        useOR: !isFirst && !criteria.ReverseCondition,
-                        openParenthesis: isFirst,
-                        closeParenthesis: isLast);
-                    parameters.Add(parameterName, callsign);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Translates from the sort field to an SQL field name.
-        /// </summary>
-        /// <param name="sortField"></param>
-        /// <returns></returns>
-        private string CriteriaSortFieldToColumnName(string sortField)
-        {
-            string result = null;
-            if(sortField != null) {
-                switch(sortField.ToUpperInvariant()) {
-                    case "CALLSIGN":        result = "[Flights].[Callsign]"; break;
-                    case "DATE":            result = "[Flights].[StartTime]"; break;
-                    case "FIRSTALTITUDE":   result = "[Flights].[FirstAltitude]"; break;
-                    case "LASTALTITUDE":    result = "[Flights].[LastAltitude]"; break;
-
-                    case "COUNTRY":         result = "[Aircraft].[ModeSCountry]"; break;
-                    case "MODEL":           result = "[Aircraft].[Type]"; break;
-                    case "TYPE":            result = "[Aircraft].[ICAOTypeCode]"; break;
-                    case "OPERATOR":        result = "[Aircraft].[RegisteredOwners]"; break;
-                    case "REG":             result = "[Aircraft].[Registration]"; break;
-                    case "ICAO":            result = "[Aircraft].[ModeS]"; break;
-                }
-            }
-
-            return result;
         }
         #endregion
 
