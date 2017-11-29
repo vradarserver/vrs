@@ -2,6 +2,45 @@
 GO
 
 -------------------------------------------------------------------------------
+-- VRS/Schema/VRS.sql
+-------------------------------------------------------------------------------
+PRINT 'VRS/Schema/VRS.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'VRS')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE SCHEMA [VRS]';
+END;
+GO
+
+
+
+
+-------------------------------------------------------------------------------
+-- VRS/Types/Icao24.sql
+-------------------------------------------------------------------------------
+PRINT 'VRS/Types/Icao24.sql';
+GO
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM   [sys].[table_types] AS [tt]
+    JOIN   [sys].[schemas]     AS [s]  ON [tt].[schema_id] = [s].[schema_id]
+    WHERE  [s].[name] = 'VRS'
+    AND    [tt].[name] = 'Icao24'
+)
+BEGIN
+    CREATE TYPE [VRS].[Icao24] AS TABLE
+    (
+        [ModeS] VARCHAR(6) NOT NULL PRIMARY KEY
+    );
+END;
+GO
+
+
+
+
+-------------------------------------------------------------------------------
 -- BaseStation/Schema/BaseStation.sql
 -------------------------------------------------------------------------------
 PRINT 'BaseStation/Schema/BaseStation.sql';
@@ -386,6 +425,33 @@ GO
 
 
 -------------------------------------------------------------------------------
+-- BaseStation/Procs/Aircraft_GetByCodes.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/Aircraft_GetByCodes.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'Aircraft_GetByCodes')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[Aircraft_GetByCodes] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[Aircraft_GetByCodes]
+    @Codes AS [VRS].[Icao24] READONLY
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT    [aircraft].*
+    FROM      @Codes                   AS [code]
+    JOIN      [BaseStation].[Aircraft] AS [aircraft] ON [code].[ModeS] = [aircraft].[ModeS];
+END;
+GO
+
+
+
+
+-------------------------------------------------------------------------------
 -- BaseStation/Procs/Aircraft_GetByID.sql
 -------------------------------------------------------------------------------
 PRINT 'BaseStation/Procs/Aircraft_GetByID.sql';
@@ -461,6 +527,424 @@ BEGIN
     SELECT *
     FROM   [BaseStation].[Aircraft]
     WHERE  [Registration] = @Registration;
+END;
+GO
+
+
+
+
+-------------------------------------------------------------------------------
+-- BaseStation/Procs/Aircraft_Insert.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/Aircraft_Insert.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'Aircraft_Insert')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[Aircraft_Insert] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[Aircraft_Insert]
+    @FirstCreated     DATETIME
+   ,@LastModified     DATETIME
+   ,@ModeS            VARCHAR(6)
+   ,@ModeSCountry     NVARCHAR(24) = NULL
+   ,@Country          NVARCHAR(24) = NULL
+   ,@Registration     NVARCHAR(20) = NULL
+   ,@CurrentRegDate   NVARCHAR(10) = NULL
+   ,@PreviousID       NVARCHAR(10) = NULL
+   ,@FirstRegDate     NVARCHAR(10) = NULL
+   ,@Status           NVARCHAR(10) = NULL
+   ,@DeRegDate        NVARCHAR(10) = NULL
+   ,@Manufacturer     NVARCHAR(60) = NULL
+   ,@ICAOTypeCode     NVARCHAR(10) = NULL
+   ,@Type             NVARCHAR(40) = NULL
+   ,@SerialNo         NVARCHAR(30) = NULL
+   ,@PopularName      NVARCHAR(20) = NULL
+   ,@GenericName      NVARCHAR(20) = NULL
+   ,@AircraftClass    NVARCHAR(20) = NULL
+   ,@Engines          NVARCHAR(40) = NULL
+   ,@OwnershipStatus  NVARCHAR(10) = NULL
+   ,@RegisteredOwners NVARCHAR(100) = NULL
+   ,@MTOW             NVARCHAR(10) = NULL
+   ,@TotalHours       NVARCHAR(20) = NULL
+   ,@YearBuilt        NVARCHAR(4) = NULL
+   ,@CofACategory     NVARCHAR(30) = NULL
+   ,@CofAExpiry       NVARCHAR(10) = NULL
+   ,@UserNotes        NVARCHAR(300) = NULL
+   ,@Interested       BIT = 0
+   ,@UserTag          NVARCHAR(5) = NULL
+   ,@InfoURL          NVARCHAR(150) = NULL
+   ,@PictureURL1      NVARCHAR(150) = NULL
+   ,@PictureURL2      NVARCHAR(150) = NULL
+   ,@PictureURL3      NVARCHAR(150) = NULL
+   ,@UserBool1        BIT = 0
+   ,@UserBool2        BIT = 0
+   ,@UserBool3        BIT = 0
+   ,@UserBool4        BIT = 0
+   ,@UserBool5        BIT = 0
+   ,@UserString1      NVARCHAR(20) = NULL
+   ,@UserString2      NVARCHAR(20) = NULL
+   ,@UserString3      NVARCHAR(20) = NULL
+   ,@UserString4      NVARCHAR(20) = NULL
+   ,@UserString5      NVARCHAR(20) = NULL
+   ,@UserInt1         BIGINT = 0
+   ,@UserInt2         BIGINT = 0
+   ,@UserInt3         BIGINT = 0
+   ,@UserInt4         BIGINT = 0
+   ,@UserInt5         BIGINT = 0
+   ,@OperatorFlagCode NVARCHAR(20) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO [BaseStation].[Aircraft] (
+         [FirstCreated]
+        ,[LastModified]
+        ,[ModeS]
+        ,[ModeSCountry]
+        ,[Country]
+        ,[Registration]
+        ,[CurrentRegDate]
+        ,[PreviousID]
+        ,[FirstRegDate]
+        ,[Status]
+        ,[DeRegDate]
+        ,[Manufacturer]
+        ,[ICAOTypeCode]
+        ,[Type]
+        ,[SerialNo]
+        ,[PopularName]
+        ,[GenericName]
+        ,[AircraftClass]
+        ,[Engines]
+        ,[OwnershipStatus]
+        ,[RegisteredOwners]
+        ,[MTOW]
+        ,[TotalHours]
+        ,[YearBuilt]
+        ,[CofACategory]
+        ,[CofAExpiry]
+        ,[UserNotes]
+        ,[Interested]
+        ,[UserTag]
+        ,[InfoURL]
+        ,[PictureURL1]
+        ,[PictureURL2]
+        ,[PictureURL3]
+        ,[UserBool1]
+        ,[UserBool2]
+        ,[UserBool3]
+        ,[UserBool4]
+        ,[UserBool5]
+        ,[UserString1]
+        ,[UserString2]
+        ,[UserString3]
+        ,[UserString4]
+        ,[UserString5]
+        ,[UserInt1]
+        ,[UserInt2]
+        ,[UserInt3]
+        ,[UserInt4]
+        ,[UserInt5]
+        ,[OperatorFlagCode]
+    ) VALUES (
+         @FirstCreated
+        ,@LastModified
+        ,@ModeS
+        ,@ModeSCountry
+        ,@Country
+        ,@Registration
+        ,@CurrentRegDate
+        ,@PreviousID
+        ,@FirstRegDate
+        ,@Status
+        ,@DeRegDate
+        ,@Manufacturer
+        ,@ICAOTypeCode
+        ,@Type
+        ,@SerialNo
+        ,@PopularName
+        ,@GenericName
+        ,@AircraftClass
+        ,@Engines
+        ,@OwnershipStatus
+        ,@RegisteredOwners
+        ,@MTOW
+        ,@TotalHours
+        ,@YearBuilt
+        ,@CofACategory
+        ,@CofAExpiry
+        ,@UserNotes
+        ,@Interested
+        ,@UserTag
+        ,@InfoURL
+        ,@PictureURL1
+        ,@PictureURL2
+        ,@PictureURL3
+        ,@UserBool1
+        ,@UserBool2
+        ,@UserBool3
+        ,@UserBool4
+        ,@UserBool5
+        ,@UserString1
+        ,@UserString2
+        ,@UserString3
+        ,@UserString4
+        ,@UserString5
+        ,@UserInt1
+        ,@UserInt2
+        ,@UserInt3
+        ,@UserInt4
+        ,@UserInt5
+        ,@OperatorFlagCode
+    );
+
+    SELECT SCOPE_IDENTITY() AS [AircraftID];
+END;
+GO
+
+
+
+
+-------------------------------------------------------------------------------
+-- BaseStation/Procs/Aircraft_MarkManyMissing.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/Aircraft_MarkManyMissing.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'Aircraft_MarkManyMissing')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[Aircraft_MarkManyMissing] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[Aircraft_MarkManyMissing]
+    @Codes    AS [VRS].[Icao24] READONLY
+   ,@LocalNow AS DATETIME
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @missingMarker AS NVARCHAR(20) = 'Missing';
+
+    -- Update existing aircraft but only if they have no details
+    UPDATE [aircraft]
+    SET    [LastModified] = @LocalNow
+          ,[UserString1] = @missingMarker
+    FROM   [BaseStation].[Aircraft] AS [aircraft]
+    JOIN   @Codes                   AS [code]     ON [aircraft].[ModeS] = [code].[ModeS]
+    WHERE  ISNULL([aircraft].[Registration], '') = ''
+    AND    ISNULL([aircraft].[Manufacturer], '') = ''
+    AND    ISNULL([aircraft].[Type], '') = ''
+    AND    ISNULL([aircraft].[RegisteredOwners], '') = '';
+
+    -- Insert stubs for aircraft that don't exist
+    INSERT INTO [BaseStation].[Aircraft] (
+        [ModeS]
+       ,[FirstCreated]
+       ,[LastModified]
+       ,[UserString1]
+    )
+    SELECT    [code].[ModeS]
+             ,@LocalNow
+             ,@LocalNow
+             ,@missingMarker
+    FROM      @Codes                   AS [code]
+    LEFT JOIN [BaseStation].[Aircraft] AS [aircraft] ON [code].[ModeS] = [aircraft].[ModeS]
+    WHERE     [aircraft].[AircraftID] IS NULL;
+END;
+GO
+
+
+
+
+-------------------------------------------------------------------------------
+-- BaseStation/Procs/Aircraft_Update.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/Aircraft_Update.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'Aircraft_Update')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[Aircraft_Update] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[Aircraft_Update]
+    @AircraftID       BIGINT
+   ,@FirstCreated     DATETIME = NULL
+   ,@LastModified     DATETIME
+   ,@ModeS            VARCHAR(6)
+   ,@ModeSCountry     NVARCHAR(24)
+   ,@Country          NVARCHAR(24)
+   ,@Registration     NVARCHAR(20)
+   ,@CurrentRegDate   NVARCHAR(10)
+   ,@PreviousID       NVARCHAR(10)
+   ,@FirstRegDate     NVARCHAR(10)
+   ,@Status           NVARCHAR(10)
+   ,@DeRegDate        NVARCHAR(10)
+   ,@Manufacturer     NVARCHAR(60)
+   ,@ICAOTypeCode     NVARCHAR(10)
+   ,@Type             NVARCHAR(40)
+   ,@SerialNo         NVARCHAR(30)
+   ,@PopularName      NVARCHAR(20)
+   ,@GenericName      NVARCHAR(20)
+   ,@AircraftClass    NVARCHAR(20)
+   ,@Engines          NVARCHAR(40)
+   ,@OwnershipStatus  NVARCHAR(10)
+   ,@RegisteredOwners NVARCHAR(100)
+   ,@MTOW             NVARCHAR(10)
+   ,@TotalHours       NVARCHAR(20)
+   ,@YearBuilt        NVARCHAR(4)
+   ,@CofACategory     NVARCHAR(30)
+   ,@CofAExpiry       NVARCHAR(10)
+   ,@UserNotes        NVARCHAR(300)
+   ,@Interested       BIT
+   ,@UserTag          NVARCHAR(5)
+   ,@InfoURL          NVARCHAR(150)
+   ,@PictureURL1      NVARCHAR(150)
+   ,@PictureURL2      NVARCHAR(150)
+   ,@PictureURL3      NVARCHAR(150)
+   ,@UserBool1        BIT
+   ,@UserBool2        BIT
+   ,@UserBool3        BIT
+   ,@UserBool4        BIT
+   ,@UserBool5        BIT
+   ,@UserString1      NVARCHAR(20)
+   ,@UserString2      NVARCHAR(20)
+   ,@UserString3      NVARCHAR(20)
+   ,@UserString4      NVARCHAR(20)
+   ,@UserString5      NVARCHAR(20)
+   ,@UserInt1         BIGINT
+   ,@UserInt2         BIGINT
+   ,@UserInt3         BIGINT
+   ,@UserInt4         BIGINT
+   ,@UserInt5         BIGINT
+   ,@OperatorFlagCode NVARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE [BaseStation].[Aircraft]
+    SET    [FirstCreated]        = ISNULL(@FirstCreated, [FirstCreated])
+          ,[LastModified]        = @LastModified
+          ,[ModeS]               = @ModeS
+          ,[ModeSCountry]        = @ModeSCountry
+          ,[Country]             = @Country
+          ,[Registration]        = @Registration
+          ,[CurrentRegDate]      = @CurrentRegDate
+          ,[PreviousID]          = @PreviousID
+          ,[FirstRegDate]        = @FirstRegDate
+          ,[Status]              = @Status
+          ,[DeRegDate]           = @DeRegDate
+          ,[Manufacturer]        = @Manufacturer
+          ,[ICAOTypeCode]        = @ICAOTypeCode
+          ,[Type]                = @Type
+          ,[SerialNo]            = @SerialNo
+          ,[PopularName]         = @PopularName
+          ,[GenericName]         = @GenericName
+          ,[AircraftClass]       = @AircraftClass
+          ,[Engines]             = @Engines
+          ,[OwnershipStatus]     = @OwnershipStatus
+          ,[RegisteredOwners]    = @RegisteredOwners
+          ,[MTOW]                = @MTOW
+          ,[TotalHours]          = @TotalHours
+          ,[YearBuilt]           = @YearBuilt
+          ,[CofACategory]        = @CofACategory
+          ,[CofAExpiry]          = @CofAExpiry
+          ,[UserNotes]           = @UserNotes
+          ,[Interested]          = @Interested
+          ,[UserTag]             = @UserTag
+          ,[InfoURL]             = @InfoURL
+          ,[PictureURL1]         = @PictureURL1
+          ,[PictureURL2]         = @PictureURL2
+          ,[PictureURL3]         = @PictureURL3
+          ,[UserBool1]           = @UserBool1
+          ,[UserBool2]           = @UserBool2
+          ,[UserBool3]           = @UserBool3
+          ,[UserBool4]           = @UserBool4
+          ,[UserBool5]           = @UserBool5
+          ,[UserString1]         = @UserString1
+          ,[UserString2]         = @UserString2
+          ,[UserString3]         = @UserString3
+          ,[UserString4]         = @UserString4
+          ,[UserString5]         = @UserString5
+          ,[UserInt1]            = @UserInt1
+          ,[UserInt2]            = @UserInt2
+          ,[UserInt3]            = @UserInt3
+          ,[UserInt4]            = @UserInt4
+          ,[UserInt5]            = @UserInt5
+          ,[OperatorFlagCode]    = @OperatorFlagCode
+    WHERE [AircraftID] = @AircraftID;
+END;
+GO
+
+
+
+
+-------------------------------------------------------------------------------
+-- BaseStation/Procs/Aircraft_UpdateModeSCountry.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/Aircraft_UpdateModeSCountry.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'Aircraft_UpdateModeSCountry')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[Aircraft_UpdateModeSCountry] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[Aircraft_UpdateModeSCountry]
+    @AircraftID   BIGINT
+   ,@LastModified DATETIME
+   ,@ModeSCountry NVARCHAR(24)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE [BaseStation].[Aircraft]
+    SET    [LastModified] = @LastModified
+          ,[ModeSCountry] = @ModeSCountry
+    WHERE [AircraftID] = @AircraftID;
+END;
+GO
+
+
+
+
+-------------------------------------------------------------------------------
+-- BaseStation/Procs/AircraftAndFlightsCount_GetByCodes.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/AircraftAndFlightsCount_GetByCodes.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'AircraftAndFlightsCount_GetByCodes')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[AircraftAndFlightsCount_GetByCodes] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[AircraftAndFlightsCount_GetByCodes]
+    @Codes AS [VRS].[Icao24] READONLY
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    WITH [FlightCounts] AS (
+        SELECT   [aircraft].[AircraftID]
+                ,COUNT(*) AS [FlightsCount]
+        FROM     @Codes                   AS [code]
+        JOIN     [BaseStation].[Aircraft] AS [aircraft] ON [code].[ModeS] = [aircraft].[ModeS]
+        JOIN     [BaseStation].[Flights]  AS [flight]   ON [aircraft].[AircraftID] = [flight].[AircraftID]
+        GROUP BY [aircraft].[AircraftID]
+    )
+    SELECT    [aircraft].*
+             ,ISNULL([flightCount].[FlightsCount], 0) AS [FlightsCount]
+    FROM      @Codes                   AS [code]
+    JOIN      [BaseStation].[Aircraft] AS [aircraft]    ON [code].[ModeS] = [aircraft].[ModeS]
+    LEFT JOIN [FlightCounts]           AS [flightCount] ON [aircraft].[AircraftID] = [flightCount].[AircraftID];
 END;
 GO
 
@@ -574,6 +1058,240 @@ GO
 
 
 -------------------------------------------------------------------------------
+-- BaseStation/Procs/Flights_Insert.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/Flights_Insert.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'Flights_Insert')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[Flights_Insert] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[Flights_Insert]
+    @SessionID           BIGINT
+   ,@AircraftID          BIGINT
+   ,@StartTime           DATETIME
+   ,@EndTime             DATETIME = NULL
+   ,@Callsign            NVARCHAR(20) = NULL
+   ,@NumPosMsgRec        INT = NULL
+   ,@NumADSBMsgRec       INT = NULL
+   ,@NumModeSMsgRec      INT = NULL
+   ,@NumIDMsgRec         INT = NULL
+   ,@NumSurPosMsgRec     INT = NULL
+   ,@NumAirPosMsgRec     INT = NULL
+   ,@NumAirVelMsgRec     INT = NULL
+   ,@NumSurAltMsgRec     INT = NULL
+   ,@NumSurIDMsgRec      INT = NULL
+   ,@NumAirToAirMsgRec   INT = NULL
+   ,@NumAirCallRepMsgRec INT = NULL
+   ,@FirstIsOnGround     BIT = 0
+   ,@LastIsOnGround      BIT = 0
+   ,@FirstLat            REAL = NULL
+   ,@LastLat             REAL = NULL
+   ,@FirstLon            REAL = NULL
+   ,@LastLon             REAL = NULL
+   ,@FirstGroundSpeed    REAL = NULL
+   ,@LastGroundSpeed     REAL = NULL
+   ,@FirstAltitude       INT = NULL
+   ,@LastAltitude        INT = NULL
+   ,@FirstVerticalRate   INT = NULL
+   ,@LastVerticalRate    INT = NULL
+   ,@FirstTrack          REAL = NULL
+   ,@LastTrack           REAL = NULL
+   ,@FirstSquawk         INT = NULL
+   ,@LastSquawk          INT = NULL
+   ,@HadAlert            BIT = 0
+   ,@HadEmergency        BIT = 0
+   ,@HadSPI              BIT = 0
+   ,@UserNotes           NVARCHAR(300) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO [BaseStation].[Flights] (
+         [SessionID]
+        ,[AircraftID]
+        ,[StartTime]
+        ,[EndTime]
+        ,[Callsign]
+        ,[NumPosMsgRec]
+        ,[NumADSBMsgRec]
+        ,[NumModeSMsgRec]
+        ,[NumIDMsgRec]
+        ,[NumSurPosMsgRec]
+        ,[NumAirPosMsgRec]
+        ,[NumAirVelMsgRec]
+        ,[NumSurAltMsgRec]
+        ,[NumSurIDMsgRec]
+        ,[NumAirToAirMsgRec]
+        ,[NumAirCallRepMsgRec]
+        ,[FirstIsOnGround]
+        ,[LastIsOnGround]
+        ,[FirstLat]
+        ,[LastLat]
+        ,[FirstLon]
+        ,[LastLon]
+        ,[FirstGroundSpeed]
+        ,[LastGroundSpeed]
+        ,[FirstAltitude]
+        ,[LastAltitude]
+        ,[FirstVerticalRate]
+        ,[LastVerticalRate]
+        ,[FirstTrack]
+        ,[LastTrack]
+        ,[FirstSquawk]
+        ,[LastSquawk]
+        ,[HadAlert]
+        ,[HadEmergency]
+        ,[HadSPI]
+        ,[UserNotes]
+    ) VALUES (
+         @SessionID
+        ,@AircraftID
+        ,@StartTime
+        ,@EndTime
+        ,@Callsign
+        ,@NumPosMsgRec
+        ,@NumADSBMsgRec
+        ,@NumModeSMsgRec
+        ,@NumIDMsgRec
+        ,@NumSurPosMsgRec
+        ,@NumAirPosMsgRec
+        ,@NumAirVelMsgRec
+        ,@NumSurAltMsgRec
+        ,@NumSurIDMsgRec
+        ,@NumAirToAirMsgRec
+        ,@NumAirCallRepMsgRec
+        ,@FirstIsOnGround
+        ,@LastIsOnGround
+        ,@FirstLat
+        ,@LastLat
+        ,@FirstLon
+        ,@LastLon
+        ,@FirstGroundSpeed
+        ,@LastGroundSpeed
+        ,@FirstAltitude
+        ,@LastAltitude
+        ,@FirstVerticalRate
+        ,@LastVerticalRate
+        ,@FirstTrack
+        ,@LastTrack
+        ,@FirstSquawk
+        ,@LastSquawk
+        ,@HadAlert
+        ,@HadEmergency
+        ,@HadSPI
+        ,@UserNotes
+    );
+
+    SELECT SCOPE_IDENTITY() AS [FlightID];
+END;
+GO
+
+
+
+
+-------------------------------------------------------------------------------
+-- BaseStation/Procs/Flights_Update.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/Flights_Update.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'Flights_Update')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[Flights_Update] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[Flights_Update]
+    @FlightID            BIGINT
+   ,@SessionID           BIGINT
+   ,@AircraftID          BIGINT
+   ,@StartTime           DATETIME = NULL
+   ,@EndTime             DATETIME
+   ,@Callsign            NVARCHAR(20)
+   ,@NumPosMsgRec        INT
+   ,@NumADSBMsgRec       INT
+   ,@NumModeSMsgRec      INT
+   ,@NumIDMsgRec         INT
+   ,@NumSurPosMsgRec     INT
+   ,@NumAirPosMsgRec     INT
+   ,@NumAirVelMsgRec     INT
+   ,@NumSurAltMsgRec     INT
+   ,@NumSurIDMsgRec      INT
+   ,@NumAirToAirMsgRec   INT
+   ,@NumAirCallRepMsgRec INT
+   ,@FirstIsOnGround     BIT
+   ,@LastIsOnGround      BIT
+   ,@FirstLat            REAL
+   ,@LastLat             REAL
+   ,@FirstLon            REAL
+   ,@LastLon             REAL
+   ,@FirstGroundSpeed    REAL
+   ,@LastGroundSpeed     REAL
+   ,@FirstAltitude       INT
+   ,@LastAltitude        INT
+   ,@FirstVerticalRate   INT
+   ,@LastVerticalRate    INT
+   ,@FirstTrack          REAL
+   ,@LastTrack           REAL
+   ,@FirstSquawk         INT
+   ,@LastSquawk          INT
+   ,@HadAlert            BIT
+   ,@HadEmergency        BIT
+   ,@HadSPI              BIT
+   ,@UserNotes           NVARCHAR(300)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE [BaseStation].[Flights]
+    SET    [SessionID]              = @SessionID
+          ,[AircraftID]             = @AircraftID
+          ,[StartTime]              = ISNULL(@StartTime, [StartTime])
+          ,[EndTime]                = @EndTime
+          ,[Callsign]               = @Callsign
+          ,[NumPosMsgRec]           = @NumPosMsgRec
+          ,[NumADSBMsgRec]          = @NumADSBMsgRec
+          ,[NumModeSMsgRec]         = @NumModeSMsgRec
+          ,[NumIDMsgRec]            = @NumIDMsgRec
+          ,[NumSurPosMsgRec]        = @NumSurPosMsgRec
+          ,[NumAirPosMsgRec]        = @NumAirPosMsgRec
+          ,[NumAirVelMsgRec]        = @NumAirVelMsgRec
+          ,[NumSurAltMsgRec]        = @NumSurAltMsgRec
+          ,[NumSurIDMsgRec]         = @NumSurIDMsgRec
+          ,[NumAirToAirMsgRec]      = @NumAirToAirMsgRec
+          ,[NumAirCallRepMsgRec]    = @NumAirCallRepMsgRec
+          ,[FirstIsOnGround]        = @FirstIsOnGround
+          ,[LastIsOnGround]         = @LastIsOnGround
+          ,[FirstLat]               = @FirstLat
+          ,[LastLat]                = @LastLat
+          ,[FirstLon]               = @FirstLon
+          ,[LastLon]                = @LastLon
+          ,[FirstGroundSpeed]       = @FirstGroundSpeed
+          ,[LastGroundSpeed]        = @LastGroundSpeed
+          ,[FirstAltitude]          = @FirstAltitude
+          ,[LastAltitude]           = @LastAltitude
+          ,[FirstVerticalRate]      = @FirstVerticalRate
+          ,[LastVerticalRate]       = @LastVerticalRate
+          ,[FirstTrack]             = @FirstTrack
+          ,[LastTrack]              = @LastTrack
+          ,[FirstSquawk]            = @FirstSquawk
+          ,[LastSquawk]             = @LastSquawk
+          ,[HadAlert]               = @HadAlert
+          ,[HadEmergency]           = @HadEmergency
+          ,[HadSPI]                 = @HadSPI
+          ,[UserNotes]              = @UserNotes
+    WHERE [FlightID] = @FlightID;
+END;
+GO
+
+
+
+
+-------------------------------------------------------------------------------
 -- BaseStation/Procs/Locations_Delete.sql
 -------------------------------------------------------------------------------
 PRINT 'BaseStation/Procs/Locations_Delete.sql';
@@ -593,6 +1311,106 @@ BEGIN
 
     DELETE FROM [BaseStation].[Locations]
     WHERE  [LocationID] = @LocationID;
+END;
+GO
+
+
+
+
+-------------------------------------------------------------------------------
+-- BaseStation/Procs/Locations_GetAll.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/Locations_GetAll.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'Locations_GetAll')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[Locations_GetAll] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[Locations_GetAll]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT *
+    FROM   [BaseStation].[Locations];
+END;
+GO
+
+
+
+
+
+-------------------------------------------------------------------------------
+-- BaseStation/Procs/Locations_Insert.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/Locations_Insert.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'Locations_Insert')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[Locations_Insert] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[Locations_Insert]
+    @LocationName NVARCHAR(20)
+   ,@Latitude     REAL
+   ,@Longitude    REAL
+   ,@Altitude     REAL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO [BaseStation].[Locations] (
+         [LocationName]
+        ,[Latitude]
+        ,[Longitude]
+        ,[Altitude]
+    ) VALUES (
+         @LocationName
+        ,@Latitude
+        ,@Longitude
+        ,@Altitude
+    );
+
+    SELECT SCOPE_IDENTITY() AS [LocationID];
+END;
+GO
+
+
+
+
+-------------------------------------------------------------------------------
+-- BaseStation/Procs/Locations_Update.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/Locations_Update.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'Locations_Update')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[Locations_Update] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[Locations_Update]
+    @LocationID   BIGINT
+   ,@LocationName NVARCHAR(20)
+   ,@Latitude     REAL
+   ,@Longitude    REAL
+   ,@Altitude     REAL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE [BaseStation].[Locations]
+    SET    [LocationName]    = @LocationName
+          ,[Latitude]        = @Latitude
+          ,[Longitude]       = @Longitude
+          ,[Altitude]        = @Altitude
+    WHERE [LocationID] = @LocationID;
 END;
 GO
 
@@ -626,6 +1444,101 @@ GO
 
 
 -------------------------------------------------------------------------------
+-- BaseStation/Procs/Sessions_GetAll.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/Sessions_GetAll.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'Sessions_GetAll')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[Sessions_GetAll] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[Sessions_GetAll]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT *
+    FROM   [BaseStation].[Sessions];
+END;
+GO
+
+
+
+
+
+-------------------------------------------------------------------------------
+-- BaseStation/Procs/Sessions_Insert.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/Sessions_Insert.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'Sessions_Insert')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[Sessions_Insert] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[Sessions_Insert]
+    @LocationID BIGINT
+   ,@StartTime  DATETIME
+   ,@EndTime    DATETIME = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO [BaseStation].[Sessions] (
+         [LocationID]
+        ,[StartTime]
+        ,[EndTime]
+    ) VALUES (
+         @LocationID
+        ,@StartTime
+        ,@EndTime
+    );
+
+    SELECT SCOPE_IDENTITY() AS [SessionID];
+END;
+GO
+
+
+
+
+-------------------------------------------------------------------------------
+-- BaseStation/Procs/Sessions_Update.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/Sessions_Update.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'Sessions_Update')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[Sessions_Update] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[Sessions_Update]
+    @SessionID  BIGINT
+   ,@LocationID BIGINT
+   ,@StartTime  DATETIME = NULL
+   ,@EndTime    DATETIME
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE [BaseStation].[Sessions]
+    SET    [LocationID]    = @LocationID
+          ,[StartTime]     = ISNULL(@StartTime, [StartTime])
+          ,[EndTime]       = @EndTime
+    WHERE [SessionID] = @SessionID;
+END;
+GO
+
+
+
+
+-------------------------------------------------------------------------------
 -- BaseStation/Procs/SystemEvents_Delete.sql
 -------------------------------------------------------------------------------
 PRINT 'BaseStation/Procs/SystemEvents_Delete.sql';
@@ -645,6 +1558,101 @@ BEGIN
 
     DELETE FROM [BaseStation].[SystemEvents]
     WHERE  [SystemEventsID] = @SystemEventsID;
+END;
+GO
+
+
+
+
+-------------------------------------------------------------------------------
+-- BaseStation/Procs/SystemEvents_GetAll.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/SystemEvents_GetAll.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'SystemEvents_GetAll')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[SystemEvents_GetAll] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[SystemEvents_GetAll]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT *
+    FROM   [BaseStation].[SystemEvents];
+END;
+GO
+
+
+
+
+
+-------------------------------------------------------------------------------
+-- BaseStation/Procs/SystemEvents_Insert.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/SystemEvents_Insert.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'SystemEvents_Insert')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[SystemEvents_Insert] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[SystemEvents_Insert]
+    @TimeStamp DATETIME
+   ,@App       NVARCHAR(15)
+   ,@Msg       NVARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO [BaseStation].[SystemEvents] (
+         [TimeStamp]
+        ,[App]
+        ,[Msg]
+    ) VALUES (
+         @TimeStamp
+        ,@App
+        ,@Msg
+    );
+
+    SELECT SCOPE_IDENTITY() AS [SystemEventsID];
+END;
+GO
+
+
+
+
+-------------------------------------------------------------------------------
+-- BaseStation/Procs/SystemEvents_Update.sql
+-------------------------------------------------------------------------------
+PRINT 'BaseStation/Procs/SystemEvents_Update.sql';
+GO
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'BaseStation' AND ROUTINE_NAME = 'SystemEvents_Update')
+BEGIN
+    EXECUTE sys.sp_executesql N'CREATE PROCEDURE [BaseStation].[SystemEvents_Update] AS BEGIN SET NOCOUNT ON; END;';
+END;
+GO
+
+ALTER PROCEDURE [BaseStation].[SystemEvents_Update]
+    @SystemEventsID BIGINT
+   ,@TimeStamp      DATETIME
+   ,@App            NVARCHAR(15)
+   ,@Msg            NVARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE [BaseStation].[SystemEvents]
+    SET    [TimeStamp]         = @TimeStamp
+          ,[App]               = @App
+          ,[Msg]               = @Msg
+    WHERE [SystemEventsID] = @SystemEventsID;
 END;
 GO
 

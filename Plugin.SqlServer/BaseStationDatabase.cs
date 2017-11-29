@@ -20,6 +20,7 @@ using VirtualRadar.Database;
 using VirtualRadar.Database.BaseStation;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Database;
+using VirtualRadar.Plugin.SqlServer.Models;
 
 namespace VirtualRadar.Plugin.SqlServer
 {
@@ -78,7 +79,7 @@ namespace VirtualRadar.Plugin.SqlServer
         {
             get {
                 var result = false;
-                PerformWithinConnection(connection => result = true);
+                PerformInConnection(connection => result = true);
                 return result;
             }
         }
@@ -140,7 +141,7 @@ namespace VirtualRadar.Plugin.SqlServer
         /// Performs some action but only if the connection configuration appears to be good.
         /// </summary>
         /// <param name="action"></param>
-        private void PerformWithinConnection(Action<ConnectionWrapper> action)
+        private void PerformInConnection(Action<ConnectionWrapper> action)
         {
             using(var wrapper = CreateOpenConnection()) {
                 if(wrapper.HasConnection) {
@@ -175,7 +176,7 @@ namespace VirtualRadar.Plugin.SqlServer
         public void CreateDatabaseIfMissing(string fileName)
         {
             if(Plugin.Singleton.Options.CanUpdateSchema) {
-                PerformWithinConnection(wrapper => {
+                PerformInConnection(wrapper => {
                     SqlServerHelper.RunScript(wrapper.Connection, Scripts.Resources.UpdateSchema_sql);
                 });
             }
@@ -191,7 +192,7 @@ namespace VirtualRadar.Plugin.SqlServer
                 throw new InvalidOperationException("You cannot delete aircraft when write support is disabled");
             }
 
-            PerformWithinConnection(wrapper => {
+            PerformInConnection(wrapper => {
                 wrapper.Connection.Execute("[BaseStation].[Aircraft_Delete]", new {
                     @AircraftID = aircraft?.AircraftID,
                 }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure);
@@ -208,7 +209,7 @@ namespace VirtualRadar.Plugin.SqlServer
                 throw new InvalidOperationException("You cannot delete flights when write support is disabled");
             }
 
-            PerformWithinConnection(wrapper => {
+            PerformInConnection(wrapper => {
                 wrapper.Connection.Execute("[BaseStation].[Flights_Delete]", new {
                     @FlightID = flight?.FlightID,
                 }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure);
@@ -225,7 +226,7 @@ namespace VirtualRadar.Plugin.SqlServer
                 throw new InvalidOperationException("You cannot delete locations when write support is disabled");
             }
 
-            PerformWithinConnection(wrapper => {
+            PerformInConnection(wrapper => {
                 wrapper.Connection.Execute("[BaseStation].[Locations_Delete]", new {
                     @LocationID = location?.LocationID,
                 }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure);
@@ -242,7 +243,7 @@ namespace VirtualRadar.Plugin.SqlServer
                 throw new InvalidOperationException("You cannot delete sessions when write support is disabled");
             }
 
-            PerformWithinConnection(wrapper => {
+            PerformInConnection(wrapper => {
                 wrapper.Connection.Execute("[BaseStation].[Sessions_Delete]", new {
                     @SessionID = session?.SessionID,
                 }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure);
@@ -259,7 +260,7 @@ namespace VirtualRadar.Plugin.SqlServer
                 throw new InvalidOperationException("You cannot delete system events when write support is disabled");
             }
 
-            PerformWithinConnection(wrapper => {
+            PerformInConnection(wrapper => {
                 wrapper.Connection.Execute("[BaseStation].[SystemEvents_Delete]", new {
                     @SystemEventsID = systemEvent?.SystemEventsID,
                 }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure);
@@ -275,7 +276,7 @@ namespace VirtualRadar.Plugin.SqlServer
         {
             BaseStationAircraft result = null;
 
-            PerformWithinConnection(wrapper => {
+            PerformInConnection(wrapper => {
                 result = wrapper.Connection.Query<BaseStationAircraft>("[BaseStation].[Aircraft_GetByModeS]", new {
                     @ModeS = icao24,
                 }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure)
@@ -294,7 +295,7 @@ namespace VirtualRadar.Plugin.SqlServer
         {
             BaseStationAircraft result = null;
 
-            PerformWithinConnection(wrapper => {
+            PerformInConnection(wrapper => {
                 result = wrapper.Connection.Query<BaseStationAircraft>("[BaseStation].[Aircraft_GetByID]", new {
                     @AircraftID = id,
                 }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure)
@@ -313,7 +314,7 @@ namespace VirtualRadar.Plugin.SqlServer
         {
             BaseStationAircraft result = null;
 
-            PerformWithinConnection(wrapper => {
+            PerformInConnection(wrapper => {
                 result = wrapper.Connection.Query<BaseStationAircraft>("[BaseStation].[Aircraft_GetByRegistration]", new {
                     @Registration = registration,
                 }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure)
@@ -331,7 +332,7 @@ namespace VirtualRadar.Plugin.SqlServer
         {
             var result = new List<BaseStationAircraft>();
 
-            PerformWithinConnection(wrapper => {
+            PerformInConnection(wrapper => {
                 result.AddRange(wrapper.Connection.Query<BaseStationAircraft>("[BaseStation].[Aircraft_GetAll]",
                     transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure
                 ));
@@ -353,7 +354,7 @@ namespace VirtualRadar.Plugin.SqlServer
             NormaliseCriteria(criteria);
 
             var result = 0;
-            PerformWithinConnection(wrapper => {
+            PerformInConnection(wrapper => {
                 result = Flights_GetCountByCriteria(wrapper, null, criteria);
             });
 
@@ -427,7 +428,7 @@ namespace VirtualRadar.Plugin.SqlServer
 
             var result = 0;
             if(aircraft != null) {
-                PerformWithinConnection(wrapper => {
+                PerformInConnection(wrapper => {
                     result = Flights_GetCountByCriteria(wrapper, aircraft, criteria);
                 });
             }
@@ -443,7 +444,7 @@ namespace VirtualRadar.Plugin.SqlServer
         {
             var result = new List<BaseStationDBHistory>();
 
-            PerformWithinConnection(wrapper => {
+            PerformInConnection(wrapper => {
                 result.AddRange(wrapper.Connection.Query<BaseStationDBHistory>("[BaseStation].[DBHistory_GetAll]",
                     transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure
                 ));
@@ -460,7 +461,7 @@ namespace VirtualRadar.Plugin.SqlServer
         {
             BaseStationDBInfo result = null;
 
-            PerformWithinConnection(wrapper => {
+            PerformInConnection(wrapper => {
                 result = wrapper.Connection.Query<BaseStationDBInfo>("[BaseStation].[DBInfo_GetAll]",
                     transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure
                 )
@@ -480,7 +481,7 @@ namespace VirtualRadar.Plugin.SqlServer
         {
             BaseStationFlight result = null;
 
-            PerformWithinConnection(wrapper => {
+            PerformInConnection(wrapper => {
                 result = wrapper.Connection.Query<BaseStationFlight>("[BaseStation].[Flights_GetByID]", new {
                     @FlightID = id,
                 }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure)
@@ -510,7 +511,7 @@ namespace VirtualRadar.Plugin.SqlServer
 
             var result = new List<BaseStationFlight>();
 
-            PerformWithinConnection(wrapper => {
+            PerformInConnection(wrapper => {
                 result.AddRange(Flights_GetByCriteria(
                     wrapper, null, criteria, fromRow, toRow,
                     sortField1, sortField1Ascending, sortField2, sortField2Ascending
@@ -609,7 +610,7 @@ namespace VirtualRadar.Plugin.SqlServer
             var result = new List<BaseStationFlight>();
 
             if(aircraft != null) {
-                PerformWithinConnection(wrapper => {
+                PerformInConnection(wrapper => {
                     result.AddRange(Flights_GetByCriteria(wrapper, aircraft, criteria, fromRow, toRow, sort1, sort1Ascending, sort2, sort2Ascending));
                 });
             }
@@ -617,114 +618,450 @@ namespace VirtualRadar.Plugin.SqlServer
             return result;
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
         public IList<BaseStationLocation> GetLocations()
         {
-            throw new NotImplementedException();
+            var result = new List<BaseStationLocation>();
+
+            PerformInConnection(wrapper => {
+                result.AddRange(wrapper.Connection.Query<BaseStationLocation>("[BaseStation].[Locations_GetAll]",
+                    transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure
+                ));
+            });
+
+            return result;
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icao24s"></param>
+        /// <returns></returns>
         public Dictionary<string, BaseStationAircraftAndFlightsCount> GetManyAircraftAndFlightsCountByCode(IEnumerable<string> icao24s)
         {
-            throw new NotImplementedException();
+            Dictionary<string, BaseStationAircraftAndFlightsCount> result = null;
+
+            PerformInConnection(wrapper => {
+                using(var dataTable = BuildIcao24Udtt(icao24s)) {
+                    result = wrapper.Connection.Query<BaseStationAircraftAndFlightsCount>("[BaseStation].[AircraftAndFlightsCount_GetByCodes]", new {
+                        Codes = dataTable,
+                    }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure)
+                    .ToDictionary(r => r.ModeS, r => r);
+                }
+            });
+
+            return result ?? new Dictionary<string, BaseStationAircraftAndFlightsCount>();
         }
 
+        private DataTable BuildIcao24Udtt(IEnumerable<string> icao24s)
+        {
+            return SqlServerHelper.GenerateDataTable(
+                icao24s.Select(r => (r ?? "").ToUpper().Trim()).Where(r => r != "").Distinct().ToArray(),
+                new string[] { nameof(Icao24.ModeS) },
+                new Type[] { typeof(string) },
+                (r,i) => r
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icao24s"></param>
+        /// <returns></returns>
         public Dictionary<string, BaseStationAircraft> GetManyAircraftByCode(IEnumerable<string> icao24s)
         {
-            throw new NotImplementedException();
+            Dictionary<string, BaseStationAircraft> result = null;
+
+            PerformInConnection(wrapper => {
+                using(var dataTable = BuildIcao24Udtt(icao24s)) {
+                    result = wrapper.Connection.Query<BaseStationAircraft>("[BaseStation].[Aircraft_GetByCodes]", new {
+                        Codes = dataTable,
+                    }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure)
+                    .ToDictionary(r => r.ModeS, r => r);
+                }
+            });
+
+            return result ?? new Dictionary<string, BaseStationAircraft>();
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icao24"></param>
+        /// <param name="createNewAircraftFunc"></param>
+        /// <returns></returns>
         public BaseStationAircraft GetOrInsertAircraftByCode(string icao24, Func<string, BaseStationAircraft> createNewAircraftFunc)
         {
-            throw new NotImplementedException();
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot insert aircraft when write support is disabled");
+            }
+
+            var result = GetAircraftByCode(icao24);
+            if(result == null) {
+                result = createNewAircraftFunc(icao24);
+                InsertAircraft(result);
+            }
+
+            return result;
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
         public IList<BaseStationSession> GetSessions()
         {
-            throw new NotImplementedException();
+            var result = new List<BaseStationSession>();
+
+            PerformInConnection(wrapper => {
+                result.AddRange(wrapper.Connection.Query<BaseStationSession>("[BaseStation].[Sessions_GetAll]",
+                    transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure
+                ));
+            });
+
+            return result;
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
         public IList<BaseStationSystemEvents> GetSystemEvents()
         {
-            throw new NotImplementedException();
+            var result = new List<BaseStationSystemEvents>();
+
+            PerformInConnection(wrapper => {
+                result.AddRange(wrapper.Connection.Query<BaseStationSystemEvents>("[BaseStation].[SystemEvents_GetAll]",
+                    transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure
+                ));
+            });
+
+            return result;
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="aircraft"></param>
         public void InsertAircraft(BaseStationAircraft aircraft)
         {
-            throw new NotImplementedException();
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot insert aircraft when write support is disabled");
+            }
+
+            PerformInConnection(wrapper => {
+                aircraft.AircraftID = wrapper.Connection.ExecuteScalar<int>(
+                    "[BaseStation].[Aircraft_Insert]",
+                    ParameterBuilder.FromAircraft(aircraft, includeAircraftID: false),
+                    transaction: wrapper.Transaction,
+                    commandType: CommandType.StoredProcedure
+                );
+            });
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="flight"></param>
         public void InsertFlight(BaseStationFlight flight)
         {
-            throw new NotImplementedException();
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot insert flights when write support is disabled");
+            }
+
+            PerformInConnection(wrapper => {
+                flight.FlightID = wrapper.Connection.ExecuteScalar<int>(
+                    "[BaseStation].[Flights_Insert]",
+                    ParameterBuilder.FromFlight(flight, includeFlightID: false),
+                    transaction: wrapper.Transaction,
+                    commandType: CommandType.StoredProcedure
+                );
+            });
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="location"></param>
         public void InsertLocation(BaseStationLocation location)
         {
-            throw new NotImplementedException();
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot insert locations when write support is disabled");
+            }
+
+            PerformInConnection(wrapper => {
+                location.LocationID = wrapper.Connection.ExecuteScalar<int>(
+                    "[BaseStation].[Locations_Insert]",
+                    ParameterBuilder.FromLocation(location, includeLocationID: false),
+                    transaction: wrapper.Transaction,
+                    commandType: CommandType.StoredProcedure
+                );
+            });
         }
 
+        /// <summary>
+        /// See interface docs,.
+        /// </summary>
+        /// <param name="session"></param>
         public void InsertSession(BaseStationSession session)
         {
-            throw new NotImplementedException();
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot insert sessions when write support is disabled");
+            }
+
+            PerformInConnection(wrapper => {
+                session.SessionID = wrapper.Connection.ExecuteScalar<int>(
+                    "[BaseStation].[Sessions_Insert]",
+                    ParameterBuilder.FromSession(session, includeSessionID: false),
+                    transaction: wrapper.Transaction,
+                    commandType: CommandType.StoredProcedure
+                );
+            });
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="systemEvent"></param>
         public void InsertSystemEvent(BaseStationSystemEvents systemEvent)
         {
-            throw new NotImplementedException();
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot insert system events when write support is disabled");
+            }
+
+            PerformInConnection(wrapper => {
+                systemEvent.SystemEventsID = wrapper.Connection.ExecuteScalar<int>(
+                    "[BaseStation].[SystemEvents_Insert]",
+                    ParameterBuilder.FromSystemEvent(systemEvent, includeSystemEventID: false),
+                    transaction: wrapper.Transaction,
+                    commandType: CommandType.StoredProcedure
+                );
+            });
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icaos"></param>
         public void RecordManyMissingAircraft(IEnumerable<string> icaos)
         {
-            throw new NotImplementedException();
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot mark missing aircraft when write support is disabled");
+            }
+
+            PerformInConnection(wrapper => {
+                using(var dataTable = BuildIcao24Udtt(icaos)) {
+                    wrapper.Connection.ExecuteScalar<int>("[BaseStation].[Aircraft_MarkManyMissing]", new {
+                        @Codes = dataTable,
+                        @LocalNow = DateTime.Now,
+                    }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure);
+                }
+            });
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icao"></param>
         public void RecordMissingAircraft(string icao)
         {
-            throw new NotImplementedException();
+            RecordManyMissingAircraft(new string[] { icao });
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
         public bool TestConnection()
         {
-            throw new NotImplementedException();
+            return IsConnected;
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="aircraft"></param>
         public void UpdateAircraft(BaseStationAircraft aircraft)
         {
-            throw new NotImplementedException();
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot update aircraft when write support is disabled");
+            }
+
+            PerformInConnection(wrapper => {
+                wrapper.Connection.ExecuteScalar<int>(
+                    "[BaseStation].[Aircraft_Update]",
+                    ParameterBuilder.FromAircraft(aircraft),
+                    transaction: wrapper.Transaction,
+                    commandType: CommandType.StoredProcedure
+                );
+
+                OnAircraftUpdated(new EventArgs<BaseStationAircraft>(aircraft));
+            });
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="aircraftId"></param>
+        /// <param name="modeSCountry"></param>
         public void UpdateAircraftModeSCountry(int aircraftId, string modeSCountry)
         {
-            throw new NotImplementedException();
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot update aircraft when write support is disabled");
+            }
+
+            PerformInConnection(wrapper => {
+                wrapper.Connection.ExecuteScalar<int>("[BaseStation].[Aircraft_UpdateModeSCountry]", new {
+                    @AircraftID =   aircraftId,
+                    @ModeSCountry = modeSCountry,
+                    @LastModified = DateTime.Now,
+                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure);
+            });
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="flight"></param>
         public void UpdateFlight(BaseStationFlight flight)
         {
-            throw new NotImplementedException();
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot update flights when write support is disabled");
+            }
+
+            PerformInConnection(wrapper => {
+                wrapper.Connection.ExecuteScalar<int>(
+                    "[BaseStation].[Flights_Update]",
+                    ParameterBuilder.FromFlight(flight),
+                    transaction: wrapper.Transaction,
+                    commandType: CommandType.StoredProcedure
+                );
+            });
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="location"></param>
         public void UpdateLocation(BaseStationLocation location)
         {
-            throw new NotImplementedException();
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot update locations when write support is disabled");
+            }
+
+            PerformInConnection(wrapper => {
+                wrapper.Connection.ExecuteScalar<int>(
+                    "[BaseStation].[Locations_Update]",
+                    ParameterBuilder.FromLocation(location),
+                    transaction: wrapper.Transaction,
+                    commandType: CommandType.StoredProcedure
+                );
+            });
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="session"></param>
         public void UpdateSession(BaseStationSession session)
         {
-            throw new NotImplementedException();
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot update sessions when write support is disabled");
+            }
+
+            PerformInConnection(wrapper => {
+                wrapper.Connection.ExecuteScalar<int>(
+                    "[BaseStation].[Sessions_Update]",
+                    ParameterBuilder.FromSession(session),
+                    transaction: wrapper.Transaction,
+                    commandType: CommandType.StoredProcedure
+                );
+            });
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="systemEvent"></param>
         public void UpdateSystemEvent(BaseStationSystemEvents systemEvent)
         {
-            throw new NotImplementedException();
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot update system events when write support is disabled");
+            }
+
+            PerformInConnection(wrapper => {
+                wrapper.Connection.ExecuteScalar<int>(
+                    "[BaseStation].[SystemEvents_Update]",
+                    ParameterBuilder.FromSystemEvent(systemEvent),
+                    transaction: wrapper.Transaction,
+                    commandType: CommandType.StoredProcedure
+                );
+            });
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <param name="fillAircraft"></param>
+        /// <returns></returns>
         public BaseStationAircraft UpsertAircraftByCode(string icao, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft)
         {
-            throw new NotImplementedException();
+            return UpsertManyAircraftByCodes(new string[] { icao }, fillAircraft).FirstOrDefault();
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icaos"></param>
+        /// <param name="fillAircraft"></param>
+        /// <returns></returns>
         public BaseStationAircraft[] UpsertManyAircraftByCodes(IEnumerable<string> icaos, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft)
         {
-            throw new NotImplementedException();
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot upsert aircraft when write support is disabled");
+            }
+
+            var result = new List<BaseStationAircraft>();
+
+            var allAircraft = GetManyAircraftByCode(icaos);
+            var localNow = DateTime.Now;
+
+            foreach(var icao in icaos) {
+                allAircraft.TryGetValue((icao ?? "").ToUpper(), out var aircraft);
+                aircraft = UpsertAircraftByCode(aircraft, icao, fillAircraft, localNow);
+                if(aircraft != null) {
+                    result.Add(aircraft);
+                }
+            }
+
+            return result.ToArray();
+        }
+
+        private BaseStationAircraft UpsertAircraftByCode(BaseStationAircraft aircraft, string icao, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft, DateTime localNow)
+        {
+            var isNewAircraft = aircraft == null;
+            if(isNewAircraft) {
+                aircraft = new BaseStationAircraft() {
+                    ModeS = icao,
+                    FirstCreated = localNow,
+                    LastModified = localNow,
+                };
+            }
+
+            aircraft = fillAircraft(aircraft);
+            if(aircraft != null) {
+                if(isNewAircraft) {
+                    InsertAircraft(aircraft);
+                } else {
+                    UpdateAircraft(aircraft);
+                }
+            }
+
+            return aircraft;
         }
 
         /// <summary>
@@ -736,7 +1073,7 @@ namespace VirtualRadar.Plugin.SqlServer
         {
             var result = false;
 
-            PerformWithinConnection(wrapper => {
+            PerformInConnection(wrapper => {
                 result = _TransactionHelper.PerformInTransaction(
                     wrapper.Connection,
                     wrapper.Transaction != null,

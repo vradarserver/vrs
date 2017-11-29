@@ -59,5 +59,22 @@ namespace VirtualRadar.Plugin.SqlServer
                 }
             }
         }
+
+        public static DataTable GenerateDataTable<T>(IEnumerable<T> rows, string[] columnNames, Type[] columnTypes, Func<T, int, object> getColumnValue)
+        {
+            var result = new DataTable();
+            for(var i = 0;i < columnNames.Length;++i) {
+                result.Columns.Add(columnNames[i], columnTypes[i]);
+            }
+            foreach(var row in rows) {
+                var dataTableRow = result.NewRow();
+                for(var i = 0;i < columnNames.Length;++i) {
+                    dataTableRow[i] = getColumnValue(row, i);
+                }
+            }
+            result.EndLoadData();
+
+            return result;
+        }
     }
 }

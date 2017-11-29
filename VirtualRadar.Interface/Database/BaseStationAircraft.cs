@@ -201,6 +201,76 @@ namespace VirtualRadar.Interface.Database
         public string UserString1 { get; set; }
 
         /// <summary>
+        /// Gets or sets the user string 2 field.
+        /// </summary>
+        public string UserString2 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user string 3 field.
+        /// </summary>
+        public string UserString3 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user string 4 field.
+        /// </summary>
+        public string UserString4 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user string 5 field.
+        /// </summary>
+        public string UserString5 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user bool 1 field.
+        /// </summary>
+        public bool UserBool1 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user bool 2 field.
+        /// </summary>
+        public bool UserBool2 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user bool 3 field.
+        /// </summary>
+        public bool UserBool3 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user bool 4 field.
+        /// </summary>
+        public bool UserBool4 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user bool 5 field.
+        /// </summary>
+        public bool UserBool5 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user int 1 field.
+        /// </summary>
+        public long UserInt1 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user int 2 field.
+        /// </summary>
+        public long UserInt2 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user int 3 field.
+        /// </summary>
+        public long UserInt3 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user int 4 field.
+        /// </summary>
+        public long UserInt4 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user int 5 field.
+        /// </summary>
+        public long UserInt5 { get; set; }
+
+        /// <summary>
         /// See base docs.
         /// </summary>
         /// <param name="obj"></param>
@@ -243,8 +313,22 @@ namespace VirtualRadar.Interface.Database
                          Status == other.Status &&
                          TotalHours == other.TotalHours &&
                          Type == other.Type &&
+                         UserBool1 == other.UserBool1 &&
+                         UserBool2 == other.UserBool2 &&
+                         UserBool3 == other.UserBool3 &&
+                         UserBool4 == other.UserBool4 &&
+                         UserBool5 == other.UserBool5 &&
+                         UserInt1 == other.UserInt1 &&
+                         UserInt2 == other.UserInt2 &&
+                         UserInt3 == other.UserInt3 &&
+                         UserInt4 == other.UserInt4 &&
+                         UserInt5 == other.UserInt5 &&
                          UserNotes == other.UserNotes &&
                          UserString1 == other.UserString1 &&
+                         UserString2 == other.UserString2 &&
+                         UserString3 == other.UserString3 &&
+                         UserString4 == other.UserString4 &&
+                         UserString5 == other.UserString5 &&
                          UserTag == other.UserTag &&
                          YearBuilt == other.YearBuilt;
             }

@@ -33,6 +33,20 @@ INSERT INTO [Aircraft] (
    ,[Type]
    ,[UserNotes]
    ,[UserString1]
+   ,[UserString2]
+   ,[UserString3]
+   ,[UserString4]
+   ,[UserString5]
+   ,[UserBool1]
+   ,[UserBool2]
+   ,[UserBool3]
+   ,[UserBool4]
+   ,[UserBool5]
+   ,[UserInt1]
+   ,[UserInt2]
+   ,[UserInt3]
+   ,[UserInt4]
+   ,[UserInt5]
    ,[UserTag]
    ,[YearBuilt]
 ) VALUES (
@@ -69,6 +83,20 @@ INSERT INTO [Aircraft] (
    ,@type
    ,@userNotes
    ,@userString1
+   ,@userString2
+   ,@userString3
+   ,@userString4
+   ,@userString5
+   ,@userBool1
+   ,@userBool2
+   ,@userBool3
+   ,@userBool4
+   ,@userBool5
+   ,@userInt1
+   ,@userInt2
+   ,@userInt3
+   ,@userInt4
+   ,@userInt5
    ,@userTag
    ,@yearBuilt
 );

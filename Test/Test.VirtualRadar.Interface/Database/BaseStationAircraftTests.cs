@@ -62,6 +62,20 @@ namespace Test.VirtualRadar.Interface.Database
             TestUtilities.TestProperty(baseStationAircraft, r => r.Type, null, "Jjk");
             TestUtilities.TestProperty(baseStationAircraft, r => r.UserNotes, null, "Jjk");
             TestUtilities.TestProperty(baseStationAircraft, r => r.UserString1, null, "Abc");
+            TestUtilities.TestProperty(baseStationAircraft, r => r.UserString2, null, "Abc");
+            TestUtilities.TestProperty(baseStationAircraft, r => r.UserString3, null, "Abc");
+            TestUtilities.TestProperty(baseStationAircraft, r => r.UserString4, null, "Abc");
+            TestUtilities.TestProperty(baseStationAircraft, r => r.UserString5, null, "Abc");
+            TestUtilities.TestProperty(baseStationAircraft, r => r.UserBool1, false);
+            TestUtilities.TestProperty(baseStationAircraft, r => r.UserBool2, false);
+            TestUtilities.TestProperty(baseStationAircraft, r => r.UserBool3, false);
+            TestUtilities.TestProperty(baseStationAircraft, r => r.UserBool4, false);
+            TestUtilities.TestProperty(baseStationAircraft, r => r.UserBool5, false);
+            TestUtilities.TestProperty(baseStationAircraft, r => r.UserInt1, 0L, 1L);
+            TestUtilities.TestProperty(baseStationAircraft, r => r.UserInt2, 0L, 1L);
+            TestUtilities.TestProperty(baseStationAircraft, r => r.UserInt3, 0L, 1L);
+            TestUtilities.TestProperty(baseStationAircraft, r => r.UserInt4, 0L, 1L);
+            TestUtilities.TestProperty(baseStationAircraft, r => r.UserInt5, 0L, 1L);
             TestUtilities.TestProperty(baseStationAircraft, r => r.UserTag, null, "Abc");
             TestUtilities.TestProperty(baseStationAircraft, r => r.YearBuilt, null, "Jjk");
         }

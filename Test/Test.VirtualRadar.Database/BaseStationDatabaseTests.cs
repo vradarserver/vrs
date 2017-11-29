@@ -222,6 +222,20 @@ namespace Test.VirtualRadar.Database
             result.TotalHours = worksheet.EString(ordinal++);
             result.UserNotes = worksheet.EString(ordinal++);
             result.UserString1 = worksheet.EString(ordinal++);
+            result.UserString2 = worksheet.EString(ordinal++);
+            result.UserString3 = worksheet.EString(ordinal++);
+            result.UserString4 = worksheet.EString(ordinal++);
+            result.UserString5 = worksheet.EString(ordinal++);
+            result.UserBool1 = worksheet.Bool(ordinal++);
+            result.UserBool2 = worksheet.Bool(ordinal++);
+            result.UserBool3 = worksheet.Bool(ordinal++);
+            result.UserBool4 = worksheet.Bool(ordinal++);
+            result.UserBool5 = worksheet.Bool(ordinal++);
+            result.UserInt1 = worksheet.Long(ordinal++);
+            result.UserInt2 = worksheet.Long(ordinal++);
+            result.UserInt3 = worksheet.Long(ordinal++);
+            result.UserInt4 = worksheet.Long(ordinal++);
+            result.UserInt5 = worksheet.Long(ordinal++);
             result.UserTag = worksheet.EString(ordinal++);
             result.YearBuilt = worksheet.EString(ordinal++);
 
@@ -4755,6 +4769,20 @@ namespace Test.VirtualRadar.Database
             Assert.AreEqual(expected.TotalHours, actual.TotalHours);
             Assert.AreEqual(expected.UserNotes, actual.UserNotes);
             Assert.AreEqual(expected.UserString1, actual.UserString1);
+            Assert.AreEqual(expected.UserString2, actual.UserString2);
+            Assert.AreEqual(expected.UserString3, actual.UserString3);
+            Assert.AreEqual(expected.UserString4, actual.UserString4);
+            Assert.AreEqual(expected.UserString5, actual.UserString5);
+            Assert.AreEqual(expected.UserBool1, actual.UserBool1);
+            Assert.AreEqual(expected.UserBool2, actual.UserBool2);
+            Assert.AreEqual(expected.UserBool3, actual.UserBool3);
+            Assert.AreEqual(expected.UserBool4, actual.UserBool4);
+            Assert.AreEqual(expected.UserBool5, actual.UserBool5);
+            Assert.AreEqual(expected.UserInt1, actual.UserInt1);
+            Assert.AreEqual(expected.UserInt2, actual.UserInt2);
+            Assert.AreEqual(expected.UserInt3, actual.UserInt3);
+            Assert.AreEqual(expected.UserInt4, actual.UserInt4);
+            Assert.AreEqual(expected.UserInt5, actual.UserInt5);
             Assert.AreEqual(expected.UserTag, actual.UserTag);
             Assert.AreEqual(expected.YearBuilt, actual.YearBuilt);
         }

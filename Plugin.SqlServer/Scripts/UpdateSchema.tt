@@ -44,6 +44,9 @@ GO
 PRINT 'Running schema upgrade on ' + @@SERVERNAME + ' in ' + DB_NAME() + ' AS ' + SUSER_NAME();
 GO
 <#
+    AddScript("VRS",         "Schema", "VRS.sql");
+    AddScript("VRS",         "Types",  "Icao24.sql");
+
     AddScript("BaseStation", "Schema", "BaseStation.sql");
     AddScript("BaseStation", "Tables", "Aircraft.sql");
     AddScript("BaseStation", "Tables", "DBHistory.sql");
@@ -54,14 +57,31 @@ GO
     AddScript("BaseStation", "Tables", "SystemEvents.sql");
     AddScript("BaseStation", "Procs",  "Aircraft_Delete.sql");
     AddScript("BaseStation", "Procs",  "Aircraft_GetAll.sql");
+    AddScript("BaseStation", "Procs",  "Aircraft_GetByCodes.sql");
     AddScript("BaseStation", "Procs",  "Aircraft_GetByID.sql");
     AddScript("BaseStation", "Procs",  "Aircraft_GetByModeS.sql");
     AddScript("BaseStation", "Procs",  "Aircraft_GetByRegistration.sql");
+    AddScript("BaseStation", "Procs",  "Aircraft_Insert.sql");
+    AddScript("BaseStation", "Procs",  "Aircraft_MarkManyMissing.sql");
+    AddScript("BaseStation", "Procs",  "Aircraft_Update.sql");
+    AddScript("BaseStation", "Procs",  "Aircraft_UpdateModeSCountry.sql");
+    AddScript("BaseStation", "Procs",  "AircraftAndFlightsCount_GetByCodes.sql");
     AddScript("BaseStation", "Procs",  "DBHistory_GetAll.sql");
     AddScript("BaseStation", "Procs",  "DBInfo_GetAll.sql");
     AddScript("BaseStation", "Procs",  "Flights_Delete.sql");
     AddScript("BaseStation", "Procs",  "Flights_GetByID.sql");
+    AddScript("BaseStation", "Procs",  "Flights_Insert.sql");
+    AddScript("BaseStation", "Procs",  "Flights_Update.sql");
     AddScript("BaseStation", "Procs",  "Locations_Delete.sql");
+    AddScript("BaseStation", "Procs",  "Locations_GetAll.sql");
+    AddScript("BaseStation", "Procs",  "Locations_Insert.sql");
+    AddScript("BaseStation", "Procs",  "Locations_Update.sql");
     AddScript("BaseStation", "Procs",  "Sessions_Delete.sql");
+    AddScript("BaseStation", "Procs",  "Sessions_GetAll.sql");
+    AddScript("BaseStation", "Procs",  "Sessions_Insert.sql");
+    AddScript("BaseStation", "Procs",  "Sessions_Update.sql");
     AddScript("BaseStation", "Procs",  "SystemEvents_Delete.sql");
+    AddScript("BaseStation", "Procs",  "SystemEvents_GetAll.sql");
+    AddScript("BaseStation", "Procs",  "SystemEvents_Insert.sql");
+    AddScript("BaseStation", "Procs",  "SystemEvents_Update.sql");
 #>

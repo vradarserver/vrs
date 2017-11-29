@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper, Version=1.50.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.50.4\lib\net451\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -45,6 +48,7 @@
     <Compile Include="BaseStationDatabase.cs" />
     <Compile Include="BaseStationDatabaseProvider.cs" />
     <Compile Include="ConnectionWrapper.cs" />
+    <Compile Include="Models\Icao24.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="OptionsStorage.cs" />
     <Compile Include="Plugin.cs" />
@@ -104,23 +108,42 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Scripts\BaseStation\README.md" />
     <None Include="_PostBuild.bat" />
     <None Include="_PostBuildCopyLanguage.bat" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Scripts\BaseStation\Procs\Aircraft_GetByCodes.sql" />
+    <Content Include="Scripts\BaseStation\Procs\AircraftAndFlightsCount_GetByCodes.sql" />
     <Content Include="Scripts\BaseStation\Procs\Aircraft_GetAll.sql" />
     <Content Include="Scripts\BaseStation\Procs\Aircraft_GetByID.sql" />
     <Content Include="Scripts\BaseStation\Procs\Aircraft_GetByRegistration.sql" />
     <Content Include="Scripts\BaseStation\Procs\Aircraft_GetByModeS.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Aircraft_MarkManyMissing.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Aircraft_Insert.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Aircraft_UpdateModeSCountry.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Aircraft_Update.sql" />
     <Content Include="Scripts\BaseStation\Procs\DBHistory_GetAll.sql" />
     <Content Include="Scripts\BaseStation\Procs\DBInfo_GetAll.sql" />
     <Content Include="Scripts\BaseStation\Procs\Flights_Delete.sql" />
     <Content Include="Scripts\BaseStation\Procs\Aircraft_Delete.sql" />
     <Content Include="Scripts\BaseStation\Procs\Flights_GetByID.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Flights_Insert.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Flights_Update.sql" />
     <Content Include="Scripts\BaseStation\Procs\Locations_Delete.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Locations_GetAll.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Locations_Insert.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Locations_Update.sql" />
     <Content Include="Scripts\BaseStation\Procs\Sessions_Delete.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Sessions_GetAll.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Sessions_Insert.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Sessions_Update.sql" />
     <Content Include="Scripts\BaseStation\Procs\SystemEvents_Delete.sql" />
+    <Content Include="Scripts\BaseStation\Procs\SystemEvents_GetAll.sql" />
+    <Content Include="Scripts\BaseStation\Procs\SystemEvents_Insert.sql" />
+    <Content Include="Scripts\BaseStation\Procs\SystemEvents_Update.sql" />
     <Content Include="Scripts\BaseStation\Schema\BaseStation.sql" />
     <Content Include="Scripts\BaseStation\Tables\Flights.sql" />
     <Content Include="Scripts\BaseStation\Tables\SystemEvents.sql" />
@@ -138,6 +161,8 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>UpdateSchema.sql</LastGenOutput>
     </Content>
+    <Content Include="Scripts\VRS\Schema\VRS.sql" />
+    <Content Include="Scripts\VRS\Types\Icao24.sql" />
     <Content Include="VirtualRadar.Plugin.SqlServer.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

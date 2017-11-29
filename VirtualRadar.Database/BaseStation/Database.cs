@@ -954,43 +954,11 @@ namespace VirtualRadar.Database.BaseStation
             aircraft.FirstCreated = SQLiteDateHelper.Truncate(aircraft.FirstCreated);
             aircraft.LastModified = SQLiteDateHelper.Truncate(aircraft.LastModified);
 
-            aircraft.AircraftID = (int)_Connection.ExecuteScalar<long>(Commands.Aircraft_Insert, new {
-                @aircraftClass      = aircraft.AircraftClass,
-                @cofACategory       = aircraft.CofACategory,
-                @cofAExpiry         = aircraft.CofAExpiry,
-                @country            = aircraft.Country,
-                @currentRegDate     = aircraft.CurrentRegDate,
-                @deRegDate          = aircraft.DeRegDate,
-                @engines            = aircraft.Engines,
-                @firstCreated       = aircraft.FirstCreated,
-                @firstRegDate       = aircraft.FirstRegDate,
-                @genericName        = aircraft.GenericName,
-                @iCAOTypeCode       = aircraft.ICAOTypeCode,
-                @infoUrl            = aircraft.InfoUrl,
-                @interested         = aircraft.Interested,
-                @lastModified       = aircraft.LastModified,
-                @manufacturer       = aircraft.Manufacturer,
-                @modeS              = aircraft.ModeS,
-                @modeSCountry       = aircraft.ModeSCountry,
-                @mtow               = aircraft.MTOW,
-                @operatorFlagCode   = aircraft.OperatorFlagCode,
-                @ownershipStatus    = aircraft.OwnershipStatus,
-                @pictureUrl1        = aircraft.PictureUrl1,
-                @pictureUrl2        = aircraft.PictureUrl2,
-                @pictureUrl3        = aircraft.PictureUrl3,
-                @popularName        = aircraft.PopularName,
-                @previousID         = aircraft.PreviousID,
-                @registeredOwners   = aircraft.RegisteredOwners,
-                @registration       = aircraft.Registration,
-                @serialNo           = aircraft.SerialNo,
-                @status             = aircraft.Status,
-                @totalHours         = aircraft.TotalHours,
-                @type               = aircraft.Type,
-                @userNotes          = aircraft.UserNotes,
-                @userString1        = aircraft.UserString1,
-                @userTag            = aircraft.UserTag,
-                @yearBuilt          = aircraft.YearBuilt,
-            }, transaction: _Transaction);
+            aircraft.AircraftID = (int)_Connection.ExecuteScalar<long>(
+                Commands.Aircraft_Insert,
+                ParameterBuilder.FromAircraft(aircraft, includeAircraftID:false),
+                transaction: _Transaction
+            );
         }
 
         void Aircraft_Update(BaseStationAircraft aircraft)
@@ -998,44 +966,11 @@ namespace VirtualRadar.Database.BaseStation
             aircraft.FirstCreated = SQLiteDateHelper.Truncate(aircraft.FirstCreated);
             aircraft.LastModified = SQLiteDateHelper.Truncate(aircraft.LastModified);
 
-            _Connection.Execute(Commands.Aircraft_Update, new {
-                @aircraftClass      = aircraft.AircraftClass,
-                @cofACategory       = aircraft.CofACategory,
-                @cofAExpiry         = aircraft.CofAExpiry,
-                @country            = aircraft.Country,
-                @currentRegDate     = aircraft.CurrentRegDate,
-                @deRegDate          = aircraft.DeRegDate,
-                @engines            = aircraft.Engines,
-                @firstCreated       = aircraft.FirstCreated,
-                @firstRegDate       = aircraft.FirstRegDate,
-                @genericName        = aircraft.GenericName,
-                @iCAOTypeCode       = aircraft.ICAOTypeCode,
-                @infoUrl            = aircraft.InfoUrl,
-                @interested         = aircraft.Interested,
-                @lastModified       = aircraft.LastModified,
-                @manufacturer       = aircraft.Manufacturer,
-                @modeS              = aircraft.ModeS,
-                @modeSCountry       = aircraft.ModeSCountry,
-                @mtow               = aircraft.MTOW,
-                @operatorFlagCode   = aircraft.OperatorFlagCode,
-                @ownershipStatus    = aircraft.OwnershipStatus,
-                @pictureUrl1        = aircraft.PictureUrl1,
-                @pictureUrl2        = aircraft.PictureUrl2,
-                @pictureUrl3        = aircraft.PictureUrl3,
-                @popularName        = aircraft.PopularName,
-                @previousID         = aircraft.PreviousID,
-                @registeredOwners   = aircraft.RegisteredOwners,
-                @registration       = aircraft.Registration,
-                @serialNo           = aircraft.SerialNo,
-                @status             = aircraft.Status,
-                @totalHours         = aircraft.TotalHours,
-                @type               = aircraft.Type,
-                @userNotes          = aircraft.UserNotes,
-                @userString1        = aircraft.UserString1,
-                @userTag            = aircraft.UserTag,
-                @yearBuilt          = aircraft.YearBuilt,
-                @aircraftID         = aircraft.AircraftID,
-            }, transaction: _Transaction);
+            _Connection.Execute(
+                Commands.Aircraft_Update,
+                ParameterBuilder.FromAircraft(aircraft),
+                transaction: _Transaction
+            );
         }
 
         void Aircraft_UpdateModeSCountry(int aircraftId, string modeSCountry)
@@ -1240,85 +1175,20 @@ namespace VirtualRadar.Database.BaseStation
 
         private void Flights_Insert(BaseStationFlight flight)
         {
-            flight.FlightID = (int)_Connection.ExecuteScalar<long>(Commands.Flights_Insert, new {
-                @sessionID              = flight.SessionID,
-                @aircraftID             = flight.AircraftID,
-                @startTime              = flight.StartTime,
-                @endTime                = flight.EndTime,
-                @callsign               = flight.Callsign,
-                @numPosMsgRec           = flight.NumPosMsgRec,
-                @numADSBMsgRec          = flight.NumADSBMsgRec,
-                @numModeSMsgRec         = flight.NumModeSMsgRec,
-                @numIDMsgRec            = flight.NumIDMsgRec,
-                @numSurPosMsgRec        = flight.NumSurPosMsgRec,
-                @numAirPosMsgRec        = flight.NumAirPosMsgRec,
-                @numAirVelMsgRec        = flight.NumAirVelMsgRec,
-                @numSurAltMsgRec        = flight.NumSurAltMsgRec,
-                @numSurIDMsgRec         = flight.NumSurIDMsgRec,
-                @numAirToAirMsgRec      = flight.NumAirToAirMsgRec,
-                @numAirCallRepMsgRec    = flight.NumAirCallRepMsgRec,
-                @firstIsOnGround        = flight.FirstIsOnGround,
-                @lastIsOnGround         = flight.LastIsOnGround,
-                @firstLat               = flight.FirstLat,
-                @lastLat                = flight.LastLat,
-                @firstLon               = flight.FirstLon,
-                @lastLon                = flight.LastLon,
-                @firstGroundSpeed       = flight.FirstGroundSpeed,
-                @lastGroundSpeed        = flight.LastGroundSpeed,
-                @firstAltitude          = flight.FirstAltitude,
-                @lastAltitude           = flight.LastAltitude,
-                @firstVerticalRate      = flight.FirstVerticalRate,
-                @lastVerticalRate       = flight.LastVerticalRate,
-                @firstTrack             = flight.FirstTrack,
-                @lastTrack              = flight.LastTrack,
-                @firstSquawk            = flight.FirstSquawk,
-                @lastSquawk             = flight.LastSquawk,
-                @hadAlert               = flight.HadAlert,
-                @hadEmergency           = flight.HadEmergency,
-                @hadSPI                 = flight.HadSpi,
-            }, transaction: _Transaction);
+            flight.FlightID = (int)_Connection.ExecuteScalar<long>(
+                Commands.Flights_Insert,
+                ParameterBuilder.FromFlight(flight, includeFlightID: false),
+                transaction: _Transaction
+            );
         }
 
         private void Flights_Update(BaseStationFlight flight)
         {
-            _Connection.Execute(Commands.Flights_Update, new {
-                @sessionID              = flight.SessionID,
-                @aircraftID             = flight.AircraftID,
-                @startTime              = flight.StartTime,
-                @endTime                = flight.EndTime,
-                @callsign               = flight.Callsign,
-                @numPosMsgRec           = flight.NumPosMsgRec,
-                @numADSBMsgRec          = flight.NumADSBMsgRec,
-                @numModeSMsgRec         = flight.NumModeSMsgRec,
-                @numIDMsgRec            = flight.NumIDMsgRec,
-                @numSurPosMsgRec        = flight.NumSurPosMsgRec,
-                @numAirPosMsgRec        = flight.NumAirPosMsgRec,
-                @numAirVelMsgRec        = flight.NumAirVelMsgRec,
-                @numSurAltMsgRec        = flight.NumSurAltMsgRec,
-                @numSurIDMsgRec         = flight.NumSurIDMsgRec,
-                @numAirToAirMsgRec      = flight.NumAirToAirMsgRec,
-                @numAirCallRepMsgRec    = flight.NumAirCallRepMsgRec,
-                @firstIsOnGround        = flight.FirstIsOnGround,
-                @lastIsOnGround         = flight.LastIsOnGround,
-                @firstLat               = flight.FirstLat,
-                @lastLat                = flight.LastLat,
-                @firstLon               = flight.FirstLon,
-                @lastLon                = flight.LastLon,
-                @firstGroundSpeed       = flight.FirstGroundSpeed,
-                @lastGroundSpeed        = flight.LastGroundSpeed,
-                @firstAltitude          = flight.FirstAltitude,
-                @lastAltitude           = flight.LastAltitude,
-                @firstVerticalRate      = flight.FirstVerticalRate,
-                @lastVerticalRate       = flight.LastVerticalRate,
-                @firstTrack             = flight.FirstTrack,
-                @lastTrack              = flight.LastTrack,
-                @firstSquawk            = flight.FirstSquawk,
-                @lastSquawk             = flight.LastSquawk,
-                @hadAlert               = flight.HadAlert,
-                @hadEmergency           = flight.HadEmergency,
-                @hadSPI                 = flight.HadSpi,
-                @flightID               = flight.FlightID,
-            }, transaction: _Transaction);
+            _Connection.Execute(
+                Commands.Flights_Update,
+                ParameterBuilder.FromFlight(flight),
+                transaction: _Transaction
+            );
         }
 
         private int Flights_GetCountByCriteria(BaseStationAircraft aircraft, SearchBaseStationCriteria criteria)
@@ -1459,10 +1329,11 @@ namespace VirtualRadar.Database.BaseStation
 
         private void DBHistory_Insert(BaseStationDBHistory record)
         {
-            record.DBHistoryID = (int)_Connection.ExecuteScalar<long>(Commands.DBHistory_Insert, new {
-                @timeStamp      = record.TimeStamp,
-                @description    = record.Description,
-            }, transaction: _Transaction);
+            record.DBHistoryID = (int)_Connection.ExecuteScalar<long>(
+                Commands.DBHistory_Insert,
+                ParameterBuilder.FromDBHistory(record, includeHistoryID: false),
+                transaction: _Transaction
+            );
         }
         #endregion
 
@@ -1490,10 +1361,11 @@ namespace VirtualRadar.Database.BaseStation
 
         private void DBInfo_Insert(BaseStationDBInfo record)
         {
-            _Connection.Execute(Commands.DBInfo_Insert, new {
-                @originalVersion    = record.OriginalVersion,
-                @currentVersion     = record.CurrentVersion,
-            }, transaction: _Transaction);
+            _Connection.Execute(
+                Commands.DBInfo_Insert,
+                ParameterBuilder.FromDBInfo(record),
+                transaction: _Transaction
+            );
         }
         #endregion
 
@@ -1581,21 +1453,20 @@ namespace VirtualRadar.Database.BaseStation
 
         private void SystemEvents_Insert(BaseStationSystemEvents systemEvent)
         {
-            systemEvent.SystemEventsID = (int)_Connection.ExecuteScalar<long>(Commands.SystemEvents_Insert, new {
-                @timeStamp  = systemEvent.TimeStamp,
-                @app        = systemEvent.App,
-                @msg        = systemEvent.Msg,
-            }, transaction: _Transaction);
+            systemEvent.SystemEventsID = (int)_Connection.ExecuteScalar<long>(
+                Commands.SystemEvents_Insert,
+                ParameterBuilder.FromSystemEvent(systemEvent, includeSystemEventID: false),
+                transaction: _Transaction
+            );
         }
 
         private void SystemEvents_Update(BaseStationSystemEvents systemEvent)
         {
-            _Connection.Execute(Commands.SystemEvents_Update, new {
-                @timeStamp      = systemEvent.TimeStamp,
-                @app            = systemEvent.App,
-                @msg            = systemEvent.Msg,
-                @systemEventsID = systemEvent.SystemEventsID,
-            }, transaction: _Transaction);
+            _Connection.Execute(
+                Commands.SystemEvents_Update,
+                ParameterBuilder.FromSystemEvent(systemEvent),
+                transaction: _Transaction
+            );
         }
         #endregion
 
@@ -1679,23 +1550,20 @@ namespace VirtualRadar.Database.BaseStation
 
         private void Locations_Insert(BaseStationLocation location)
         {
-            location.LocationID = (int)_Connection.ExecuteScalar<long>(Commands.Locations_Insert, new {
-                @locationName   = location.LocationName,
-                @latitude       = location.Latitude,
-                @longitude      = location.Longitude,
-                @altitude       = location.Altitude,
-            }, transaction: _Transaction);
+            location.LocationID = (int)_Connection.ExecuteScalar<long>(
+                Commands.Locations_Insert,
+                ParameterBuilder.FromLocation(location, includeLocationID: false),
+                transaction: _Transaction
+            );
         }
 
         private void Locations_Update(BaseStationLocation location)
         {
-            _Connection.Execute(Commands.Locations_Update, new {
-                @locationName   = location.LocationName,
-                @latitude       = location.Latitude,
-                @longitude      = location.Longitude,
-                @altitude       = location.Altitude,
-                @locationID     = location.LocationID,
-            }, transaction: _Transaction);
+            _Connection.Execute(
+                Commands.Locations_Update,
+                ParameterBuilder.FromLocation(location),
+                transaction: _Transaction
+            );
         }
         #endregion
 
@@ -1785,21 +1653,20 @@ namespace VirtualRadar.Database.BaseStation
 
         private void Sessions_Insert(BaseStationSession session)
         {
-            session.SessionID = (int)_Connection.ExecuteScalar<long>(Commands.Sessions_Insert, new {
-                @locationID = session.LocationID,
-                @startTime  = session.StartTime,
-                @endTime    = session.EndTime,
-            }, transaction: _Transaction);
+            session.SessionID = (int)_Connection.ExecuteScalar<long>(
+                Commands.Sessions_Insert,
+                ParameterBuilder.FromSession(session, includeSessionID: false),
+                transaction: _Transaction
+            );
         }
 
         private void Sessions_Update(BaseStationSession session)
         {
-            _Connection.Execute(Commands.Sessions_Update, new {
-                @locationID = session.LocationID,
-                @startTime  = session.StartTime,
-                @endTime    = session.EndTime,
-                @sessionID  = session.SessionID,
-            }, transaction: _Transaction);
+            _Connection.Execute(
+                Commands.Sessions_Update,
+                ParameterBuilder.FromSession(session),
+                transaction: _Transaction
+            );
         }
         #endregion
 
