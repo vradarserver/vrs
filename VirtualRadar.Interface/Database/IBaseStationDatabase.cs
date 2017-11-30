@@ -299,16 +299,15 @@ namespace VirtualRadar.Interface.Database
         void InsertAircraft(BaseStationAircraft aircraft);
 
         /// <summary>
-        /// Fetches an aircraft by its ICAO code. If there is no record for the aircraft then the <paramref name="createNewAircraftFunc"/>
-        /// method is called to build a new record, and that is inserted.
+        /// Fetches an aircraft by its ICAO code. If there is no record for the aircraft then a new bare-bones aircraft record is created.
         /// </summary>
         /// <param name="icao24"></param>
-        /// <param name="createNewAircraftFunc"></param>
         /// <returns></returns>
         /// <remarks>
-        /// A lock is held over both the fetch and the insert, this is an atomic operation.
+        /// A lock is held over both the fetch and the insert, this is an atomic operation. The bare-bones aircraft record has the ModeS,
+        /// create and update times and ModeSCountry fields filled in.
         /// </remarks>
-        BaseStationAircraft GetOrInsertAircraftByCode(string icao24, Func<string, BaseStationAircraft> createNewAircraftFunc);
+        BaseStationAircraft GetOrInsertAircraftByCode(string icao24, out bool created);
 
         /// <summary>
         /// Updates an existing aircraft record.

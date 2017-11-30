@@ -685,19 +685,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// <returns></returns>
         private BaseStationAircraft FetchOrCreateAircraft(DateTime now, string icao24)
         {
-            var codeBlock = _StandingDataManager.FindCodeBlock(icao24);
-            var result = _Database.GetOrInsertAircraftByCode(icao24, (useIcao) => {
-                var aircraft = new BaseStationAircraft() {
-                    AircraftID = 0,
-                    ModeS = useIcao,
-                    FirstCreated = now,
-                    LastModified = now,
-                    ModeSCountry = codeBlock == null || codeBlock.Country == null || codeBlock.Country.StartsWith("Unknown ", StringComparison.InvariantCultureIgnoreCase) ? null : codeBlock.Country,
-                };
-                return aircraft;
-            });
-
-            return result;
+            return _Database.GetOrInsertAircraftByCode(icao24, out var created);
         }
 
         /// <summary>

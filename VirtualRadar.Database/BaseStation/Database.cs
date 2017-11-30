@@ -21,6 +21,7 @@ using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.SQLite;
 using Dapper;
+using VirtualRadar.Interface.StandingData;
 
 namespace VirtualRadar.Database.BaseStation
 {
@@ -80,6 +81,11 @@ namespace VirtualRadar.Database.BaseStation
         /// The object that handles the time for us.
         /// </summary>
         private IClock _Clock;
+
+        /// <summary>
+        /// The object that looks up code blocks for us.
+        /// </summary>
+        private IStandingDataManager _StandingDataManager;
         #endregion
 
         #region Properties
@@ -206,6 +212,7 @@ namespace VirtualRadar.Database.BaseStation
         public Database()
         {
             Provider = new DefaultProvider();
+            _StandingDataManager = Factory.Singleton.ResolveSingleton<IStandingDataManager>();
         }
 
         /// <summary>
@@ -680,20 +687,33 @@ namespace VirtualRadar.Database.BaseStation
         /// See interface docs.
         /// </summary>
         /// <param name="icao24"></param>
+        /// <param name="created"></param>
         /// <param name="createNewAircraftFunc"></param>
         /// <returns></returns>
-        public BaseStationAircraft GetOrInsertAircraftByCode(string icao24, Func<string, BaseStationAircraft> createNewAircraftFunc)
+        public BaseStationAircraft GetOrInsertAircraftByCode(string icao24, out bool created)
         {
-            if(!WriteSupportEnabled) throw new InvalidOperationException("You cannot insert aircraft when write support is disabled");
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot insert aircraft when write support is disabled");
+            }
 
+            created = false;
             BaseStationAircraft result = null;
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Connection != null) {
                     result = Aircraft_GetByIcao(icao24);
                     if(result == null) {
-                        result = createNewAircraftFunc(icao24);
+                        var now = _Clock.LocalNow;
+                        var codeBlock = _StandingDataManager.FindCodeBlock(icao24);
+                        result = new BaseStationAircraft() {
+                            AircraftID = 0,
+                            ModeS = icao24,
+                            FirstCreated = now,
+                            LastModified = now,
+                            ModeSCountry = codeBlock?.ModeSCountry,
+                        };
                         Aircraft_Insert(result);
+                        created = true;
                     }
                 }
             }

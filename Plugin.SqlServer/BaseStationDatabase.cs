@@ -16,10 +16,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
+using InterfaceFactory;
 using VirtualRadar.Database;
 using VirtualRadar.Database.BaseStation;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Database;
+using VirtualRadar.Interface.StandingData;
 using VirtualRadar.Plugin.SqlServer.Models;
 
 namespace VirtualRadar.Plugin.SqlServer
@@ -33,6 +35,11 @@ namespace VirtualRadar.Plugin.SqlServer
         /// The helper object for <see cref="ITransactionable"/> implementations.
         /// </summary>
         private TransactionHelper _TransactionHelper = new TransactionHelper();
+
+        /// <summary>
+        /// The standing data manager that does code block lookups for us.
+        /// </summary>
+        private IStandingDataManager _StandingDataManager;
 
         /// <summary>
         /// True if the connection string appears to be a good one.
@@ -96,15 +103,19 @@ namespace VirtualRadar.Plugin.SqlServer
         /// </summary>
         public int MaxParameters => 2000;
 
+        #pragma warning disable 0067
         /// <summary>
         /// Unused.
         /// </summary>
         public event EventHandler FileNameChanging;
+        #pragma warning restore
 
+        #pragma warning disable 0067
         /// <summary>
         /// Unused.
         /// </summary>
         public event EventHandler FileNameChanged;
+        #pragma warning restore
 
         /// <summary>
         /// See interface docs.
@@ -118,6 +129,14 @@ namespace VirtualRadar.Plugin.SqlServer
         protected virtual void OnAircraftUpdated(EventArgs<BaseStationAircraft> args)
         {
             EventHelper.Raise(AircraftUpdated, this, () => args);
+        }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        public BaseStationDatabase()
+        {
+            _StandingDataManager = Factory.Singleton.ResolveSingleton<IStandingDataManager>();
         }
 
         /// <summary>
@@ -718,19 +737,31 @@ namespace VirtualRadar.Plugin.SqlServer
         /// See interface docs.
         /// </summary>
         /// <param name="icao24"></param>
-        /// <param name="createNewAircraftFunc"></param>
+        /// <param name="created"></param>
         /// <returns></returns>
-        public BaseStationAircraft GetOrInsertAircraftByCode(string icao24, Func<string, BaseStationAircraft> createNewAircraftFunc)
+        public BaseStationAircraft GetOrInsertAircraftByCode(string icao24, out bool created)
         {
             if(!WriteSupportEnabled) {
                 throw new InvalidOperationException("You cannot insert aircraft when write support is disabled");
             }
 
-            var result = GetAircraftByCode(icao24);
-            if(result == null) {
-                result = createNewAircraftFunc(icao24);
-                InsertAircraft(result);
-            }
+            BaseStationAircraft result = null;
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@ModeS", icao24);
+            parameters.Add("@Created", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+            parameters.Add("@LocalNow", DateTime.Now);
+            parameters.Add("@ModeSCountry", _StandingDataManager.FindCodeBlock(icao24)?.ModeSCountry);
+
+            PerformInConnection(wrapper => {
+                result = wrapper.Connection.QuerySingleOrDefault<BaseStationAircraft>(
+                    "[BaseStation].[Aircraft_GetOrCreate]",
+                    parameters,
+                    transaction: wrapper.Transaction,
+                    commandType: CommandType.StoredProcedure
+                );
+            });
+            created = parameters.Get<bool>("@Created");
 
             return result;
         }

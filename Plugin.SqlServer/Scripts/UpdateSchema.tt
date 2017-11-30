@@ -61,6 +61,7 @@ GO
     AddScript("BaseStation", "Procs",  "Aircraft_GetByID.sql");
     AddScript("BaseStation", "Procs",  "Aircraft_GetByModeS.sql");
     AddScript("BaseStation", "Procs",  "Aircraft_GetByRegistration.sql");
+    AddScript("BaseStation", "Procs",  "Aircraft_GetOrCreate.sql");
     AddScript("BaseStation", "Procs",  "Aircraft_Insert.sql");
     AddScript("BaseStation", "Procs",  "Aircraft_MarkManyMissing.sql");
     AddScript("BaseStation", "Procs",  "Aircraft_Update.sql");

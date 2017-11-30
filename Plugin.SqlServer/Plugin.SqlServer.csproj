@@ -119,6 +119,7 @@
     <Content Include="Scripts\BaseStation\Procs\AircraftAndFlightsCount_GetByCodes.sql" />
     <Content Include="Scripts\BaseStation\Procs\Aircraft_GetAll.sql" />
     <Content Include="Scripts\BaseStation\Procs\Aircraft_GetByID.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Aircraft_GetOrCreate.sql" />
     <Content Include="Scripts\BaseStation\Procs\Aircraft_GetByRegistration.sql" />
     <Content Include="Scripts\BaseStation\Procs\Aircraft_GetByModeS.sql" />
     <Content Include="Scripts\BaseStation\Procs\Aircraft_MarkManyMissing.sql" />

@@ -24,6 +24,7 @@ using System.Globalization;
 using InterfaceFactory;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.StandingData;
 
 namespace Test.VirtualRadar.Database
 {
@@ -51,6 +52,8 @@ namespace Test.VirtualRadar.Database
         private Mock<ICallsignParser> _CallsignParser;
         private ClockMock _Clock;
         private MockFileSystemProvider _FileSystem;
+        private Mock<IStandingDataManager> _StandingDataManager;
+        private CodeBlock _Icao24CodeBlock;
 
         [TestInitialize]
         public void TestInitialise()
@@ -78,6 +81,13 @@ namespace Test.VirtualRadar.Database
                 RetryAction(() => File.Delete(_EmptyDatabaseFileName));
             }
             File.Copy(Path.Combine(TestContext.TestDeploymentDir, "BaseStation.sqb"), _EmptyDatabaseFileName, true);
+
+            _Icao24CodeBlock = new CodeBlock() {
+                Country = "United Kingdom",
+                IsMilitary = false,
+            };
+            _StandingDataManager = TestUtilities.CreateMockSingleton<IStandingDataManager>();
+            _StandingDataManager.Setup(r => r.FindCodeBlock(It.IsAny<string>())).Returns(_Icao24CodeBlock);
 
             _Database = Factory.Singleton.Resolve<IBaseStationDatabase>();
             _Database.FileName = _EmptyDatabaseFileName;
@@ -810,6 +820,7 @@ namespace Test.VirtualRadar.Database
         [ExpectedException(typeof(FileNotFoundException))]
         public void BaseStationDatabase_FileIsEmpty_Throws_Exception_If_File_Does_Not_Exist()
         {
+            _FileSystem.AddFolder(@"c:\tmp");
             _Database.FileName = @"c:\tmp\no-file.sqb";
             _Database.FileIsEmpty();
         }
@@ -1226,7 +1237,7 @@ namespace Test.VirtualRadar.Database
         [ExpectedException(typeof(InvalidOperationException))]
         public void BaseStationDatabase_GetOrInsertAircraftByCode_Throws_If_Writes_Disabled()
         {
-            _Database.GetOrInsertAircraftByCode("123456", (icao) => new BaseStationAircraft() { ModeS = icao, });
+            _Database.GetOrInsertAircraftByCode("123456", out var created);
         }
 
         [TestMethod]
@@ -1235,10 +1246,11 @@ namespace Test.VirtualRadar.Database
             _Database.WriteSupportEnabled = true;
             _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456" });
 
-            var result = _Database.GetOrInsertAircraftByCode("123456", (icao) => { throw new NotImplementedException(); });
+            var result = _Database.GetOrInsertAircraftByCode("123456", out var created);
 
             Assert.AreNotEqual(0, result.AircraftID);
             Assert.AreEqual("123456", result.ModeS);
+            Assert.AreEqual(false, created);
         }
 
         [TestMethod]
@@ -1247,7 +1259,7 @@ namespace Test.VirtualRadar.Database
             _Database.WriteSupportEnabled = true;
             RetryAction(() => File.Delete(_EmptyDatabaseFileName));
 
-            _Database.GetOrInsertAircraftByCode("123456", (icao) => new BaseStationAircraft() { ModeS = icao, });
+            _Database.GetOrInsertAircraftByCode("123456", out var created);
             Assert.AreEqual(null, _Database.GetAircraftByCode("123456"));
         }
 
@@ -1257,8 +1269,69 @@ namespace Test.VirtualRadar.Database
             _Database.WriteSupportEnabled = true;
             _Database.FileName = null;
 
-            _Database.GetOrInsertAircraftByCode("123456", (icao) => new BaseStationAircraft() { ModeS = icao, });
+            _Database.GetOrInsertAircraftByCode("123456", out var created);
             Assert.AreEqual(null, _Database.GetAircraftByCode("X"));
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_GetOrInsertAircraftByCode_Correctly_Inserts_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var aircraft = _Database.GetOrInsertAircraftByCode("Abc123", out bool created);
+            Assert.AreNotEqual(0, aircraft.AircraftID);
+
+            var readBack = _Database.GetAircraftById(aircraft.AircraftID);
+            AssertAircraftAreEqual(new BaseStationAircraft() {
+                AircraftID =    aircraft.AircraftID,
+                FirstCreated =  TruncateDate(_Clock.LocalNowValue),
+                LastModified =  TruncateDate(_Clock.LocalNowValue),
+                ModeS =         "Abc123",
+                ModeSCountry =  "United Kingdom",
+            }, readBack);
+            Assert.AreEqual(true, created);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_GetOrInsertAircraftByCode_Looks_Up_ModeSCountry()
+        {
+            _Icao24CodeBlock.Country = "USA";
+
+            _Database.WriteSupportEnabled = true;
+
+            var aircraft = _Database.GetOrInsertAircraftByCode("abc123", out bool created);
+            Assert.AreEqual("USA", aircraft.ModeSCountry);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_GetOrInsertAircraftByCode_Deals_With_Null_CodeBlock()
+        {
+            _StandingDataManager.Setup(r => r.FindCodeBlock("abc123")).Returns((CodeBlock)null);
+
+            _Database.WriteSupportEnabled = true;
+
+            var aircraft = _Database.GetOrInsertAircraftByCode("abc123", out bool created);
+            Assert.IsNull(aircraft.ModeSCountry);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_GetOrInsertAircraftByCode_Deals_With_Null_Country()
+        {
+            _Icao24CodeBlock.Country = null;
+
+            _Database.WriteSupportEnabled = true;
+            var aircraft = _Database.GetOrInsertAircraftByCode("abc123", out bool created);
+            Assert.IsNull(aircraft.ModeSCountry);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_GetOrInsertAircraftByCode_Deals_With_Unknown_Country()
+        {
+            _Icao24CodeBlock.Country = "Unknown Country";
+
+            _Database.WriteSupportEnabled = true;
+            var aircraft = _Database.GetOrInsertAircraftByCode("abc123", out bool created);
+            Assert.IsNull(aircraft.ModeSCountry);
         }
 
         [TestMethod]
@@ -1266,50 +1339,14 @@ namespace Test.VirtualRadar.Database
         {
             _Database.WriteSupportEnabled = true;
 
-            var time1 = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-            var time2 = new DateTime(2009, 8, 7, 6, 5, 4, 321);
+            var time = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+            _Clock.LocalNowValue = time;
 
-            _Database.GetOrInsertAircraftByCode("X", (icao) => new BaseStationAircraft() { ModeS = icao, FirstCreated = time1, LastModified = time2, });
+            _Database.GetOrInsertAircraftByCode("X", out var created);
             var readBack = _Database.GetAircraftByCode("X");
 
-            Assert.AreEqual(TruncateDate(time1), readBack.FirstCreated);
-            Assert.AreEqual(TruncateDate(time2), readBack.LastModified);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetAircraftBy$")]
-        public void BaseStationDatabase_GetOrInsertAircraftByCode_Correctly_Inserts_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            var worksheet = new ExcelWorksheetData(TestContext);
-            var aircraft = LoadAircraftFromSpreadsheet(worksheet);
-
-            _Database.GetOrInsertAircraftByCode(aircraft.ModeS, (icao) => aircraft);
-            Assert.AreNotEqual(0, aircraft.AircraftID);
-
-            var readBack = _Database.GetAircraftById(aircraft.AircraftID);
-            AssertAircraftAreEqual(aircraft, readBack);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetAircraftBy$")]
-        public void BaseStationDatabase_GetOrInsertAircraftByCode_Works_For_Different_Cultures()
-        {
-            foreach(var culture in _Cultures) {
-                using(var switcher = new CultureSwitcher(culture)) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    try {
-                        BaseStationDatabase_GetOrInsertAircraftByCode_Correctly_Inserts_Record();
-                    } catch(Exception ex) {
-                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
-                    }
-                }
-            }
+            Assert.AreEqual(TruncateDate(time), readBack.FirstCreated);
+            Assert.AreEqual(TruncateDate(time), readBack.LastModified);
         }
         #endregion
 

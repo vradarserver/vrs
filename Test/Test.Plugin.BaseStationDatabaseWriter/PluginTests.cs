@@ -66,6 +66,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         private OptionsPresenter _Presenter;
         private Action _ShowViewAction;
         private int _NestedTransactionCount;
+        private BaseStationAircraft _GetOrInsertAircraftResult;
 
         [TestInitialize]
         public void TestInitialise()
@@ -106,6 +107,12 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             _BaseStationDatabase.Setup(r => r.FileExists()).Returns(true);
             _BaseStationDatabase.Setup(r => r.FileIsEmpty()).Returns(false);
+
+            bool created;
+            _GetOrInsertAircraftResult = new BaseStationAircraft() {
+                AircraftID = 1,
+            };
+            _BaseStationDatabase.Setup(r => r.GetOrInsertAircraftByCode(It.IsAny<string>(), out created)).Returns(_GetOrInsertAircraftResult);
 
             _HeartbeatService = TestUtilities.CreateMockInstance<IHeartbeatService>();
             Factory.Singleton.RegisterInstance(typeof(IHeartbeatService), _HeartbeatService.Object);
@@ -1429,164 +1436,14 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             SetEnabledOption(true);
 
-            BaseStationAircraft aircraft = null;
-            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("A", It.IsAny<Func<string, BaseStationAircraft>>()))
-                                .Returns((string icao, Func<string, BaseStationAircraft> callback) => {
-                                    aircraft = callback(icao);
-                                    return aircraft;
-                                });
-
-            var codeBlock = new CodeBlock() { Country = "Elbonia" };
-            _StandingDataManager.Setup(m => m.FindCodeBlock("A")).Returns(codeBlock);
-
             _Plugin.Startup(_StartupParameters);
 
             var message = new BaseStationMessage() { AircraftId = 99, Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
-            _BaseStationDatabase.Verify(d => d.GetOrInsertAircraftByCode(It.IsAny<string>(), It.IsAny<Func<string, BaseStationAircraft>>()), Times.Once());
-            Assert.AreEqual(0, aircraft.AircraftID);
-            Assert.AreEqual("A", aircraft.ModeS);
-            Assert.AreEqual("Elbonia", aircraft.ModeSCountry);
-            Assert.AreEqual(_Provider.Object.LocalNow, aircraft.FirstCreated);
-            Assert.AreEqual(_Provider.Object.LocalNow, aircraft.LastModified);
-            Assert.AreEqual(null, aircraft.AircraftClass);
-            Assert.AreEqual(null, aircraft.CofACategory);
-            Assert.AreEqual(null, aircraft.CofAExpiry);
-            Assert.AreEqual(null, aircraft.Country);
-            Assert.AreEqual(null, aircraft.CurrentRegDate);
-            Assert.AreEqual(null, aircraft.DeRegDate);
-            Assert.AreEqual(null, aircraft.Engines);
-            Assert.AreEqual(null, aircraft.FirstRegDate);
-            Assert.AreEqual(null, aircraft.GenericName);
-            Assert.AreEqual(null, aircraft.ICAOTypeCode);
-            Assert.AreEqual(null, aircraft.InfoUrl);
-            Assert.AreEqual(false, aircraft.Interested);
-            Assert.AreEqual(null, aircraft.Manufacturer);
-            Assert.AreEqual(null, aircraft.MTOW);
-            Assert.AreEqual(null, aircraft.OperatorFlagCode);
-            Assert.AreEqual(null, aircraft.OwnershipStatus);
-            Assert.AreEqual(null, aircraft.PictureUrl1);
-            Assert.AreEqual(null, aircraft.PictureUrl2);
-            Assert.AreEqual(null, aircraft.PictureUrl3);
-            Assert.AreEqual(null, aircraft.PopularName);
-            Assert.AreEqual(null, aircraft.PreviousID);
-            Assert.AreEqual(null, aircraft.RegisteredOwners);
-            Assert.AreEqual(null, aircraft.Registration);
-            Assert.AreEqual(null, aircraft.SerialNo);
-            Assert.AreEqual(null, aircraft.Status);
-            Assert.AreEqual(null, aircraft.TotalHours);
-            Assert.AreEqual(null, aircraft.Type);
-            Assert.AreEqual(null, aircraft.UserNotes);
-            Assert.AreEqual(null, aircraft.YearBuilt);
-        }
-
-        [TestMethod]
-        public void Plugin_Aircraft_ModeSCountry_Filled_Correctly_When_Country_Is_Unknown()
-        {
-            SetEnabledOption(true);
-
-            bool sawInsertOfNull = false;
-            _StandingDataManager.Setup(m => m.FindCodeBlock("A")).Returns((CodeBlock)null);
-            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("A", It.IsAny<Func<string, BaseStationAircraft>>()))
-                                .Returns((string icao, Func<string, BaseStationAircraft> callback) => {
-                                    var result = callback(icao);
-                                    sawInsertOfNull = result.ModeSCountry == null;
-                                    return result;
-                                });
-
-            _Plugin.Startup(_StartupParameters);
-
-            var message = new BaseStationMessage() { Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
-            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
-            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
-
-            Assert.IsTrue(sawInsertOfNull);
-        }
-
-        [TestMethod]
-        public void Plugin_Aircraft_ModeSCountry_Filled_Correctly_When_Country_Name_Starts_With_Unknown_Space()
-        {
-            SetEnabledOption(true);
-
-            bool sawInsertOfNull = false;
-            _StandingDataManager.Setup(m => m.FindCodeBlock("A")).Returns(new CodeBlock() {
-                Country = "Unknown or unassigned country",
-            });
-            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("A", It.IsAny<Func<string, BaseStationAircraft>>()))
-                                .Returns((string icao, Func<string, BaseStationAircraft> callback) => {
-                                    var result = callback(icao);
-                                    sawInsertOfNull = result.ModeSCountry == null;
-                                    return result;
-                                });
-
-            _Plugin.Startup(_StartupParameters);
-
-            var message = new BaseStationMessage() { Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
-            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
-            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
-
-            Assert.IsTrue(sawInsertOfNull);
-        }
-
-        [TestMethod]
-        public void Plugin_Aircraft_Missing_ModeSCountry_Updated_If_StandingData_Reloaded()
-        {
-            SetEnabledOption(true);
-
-            _StandingDataManager.Setup(m => m.FindCodeBlock("A")).Returns((CodeBlock)null);
-            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("A", It.IsAny<Func<string, BaseStationAircraft>>()))
-                                .Returns(new BaseStationAircraft() { AircraftID = 100, ModeS = "A", });
-
-            _Plugin.Startup(_StartupParameters);
-
-            var message = new BaseStationMessage() { Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
-            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
-            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
-
-            _StandingDataManager.Setup(m => m.FindCodeBlock("A")).Returns(new CodeBlock() { Country = "Y" });
-            _StandingDataManager.Raise(r => r.LoadCompleted += null, EventArgs.Empty);
-
-            _BaseStationDatabase.Verify(d => d.UpdateAircraftModeSCountry(100, "Y"), Times.Once());
-        }
-
-        [TestMethod]
-        public void Plugin_Aircraft_Missing_ModeSCountry_Not_Updated_If_CodeBlock_Cannot_Be_Found()
-        {
-            SetEnabledOption(true);
-
-            _StandingDataManager.Setup(m => m.FindCodeBlock("A")).Returns((CodeBlock)null);
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("A")).Returns((BaseStationAircraft)null);
-
-            _Plugin.Startup(_StartupParameters);
-
-            var message = new BaseStationMessage() { Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
-            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
-
-            _StandingDataManager.Setup(m => m.FindCodeBlock("A")).Returns((CodeBlock)null);
-            _StandingDataManager.Raise(r => r.LoadCompleted += null, EventArgs.Empty);
-
-            _BaseStationDatabase.Verify(d => d.UpdateAircraftModeSCountry(It.IsAny<int>(), It.IsAny<string>()), Times.Never());
-        }
-
-        [TestMethod]
-        public void Plugin_Aircraft_Missing_ModeSCountry_Not_Updated_If_CodeBlock_Has_Not_Changed()
-        {
-            SetEnabledOption(true);
-
-            _StandingDataManager.Setup(m => m.FindCodeBlock("A")).Returns(new CodeBlock() { Country = "UK" });
-            _BaseStationDatabase.Setup(d => d.GetAircraftByCode("A")).Returns((BaseStationAircraft)null);
-
-            _Plugin.Startup(_StartupParameters);
-
-            var message = new BaseStationMessage() { Icao24 = "A", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
-            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
-            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
-
-            _StandingDataManager.Raise(r => r.LoadCompleted += null, EventArgs.Empty);
-
-            _BaseStationDatabase.Verify(d => d.UpdateAircraftModeSCountry(It.IsAny<int>(), It.IsAny<string>()), Times.Never());
+            bool created;
+            _BaseStationDatabase.Verify(r => r.GetOrInsertAircraftByCode("A", out created), Times.Once());
         }
 
         [TestMethod]
@@ -1684,7 +1541,9 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         public void Plugin_Aircraft_And_Flight_Records_Inserted_Within_Transaction()
         {
             SetEnabledOption(true);
-            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("C", It.IsAny<Func<string, BaseStationAircraft>>()))
+
+            bool created;
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("C", out created))
                                 .Callback(() => {
                                     _BaseStationDatabase.Verify(d => d.PerformInTransaction(It.IsAny<Func<bool>>()), Times.AtLeastOnce());
                                 })
@@ -1694,7 +1553,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
                 _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Once());
             });
             _BaseStationDatabase.Setup(d => d.InsertFlight(It.IsAny<BaseStationFlight>())).Callback(() => {
-                _BaseStationDatabase.Verify(d => d.GetOrInsertAircraftByCode("C", It.IsAny<Func<string, BaseStationAircraft>>()), Times.Once());
+                _BaseStationDatabase.Verify(d => d.GetOrInsertAircraftByCode("C", out created), Times.Once());
             });
 
             _Plugin.Startup(_StartupParameters);
@@ -1727,9 +1586,10 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             SetEnabledOption(true);
 
+            bool created;
             BaseStationFlight flight = null;
             BaseStationAircraft aircraft = new BaseStationAircraft() { AircraftID = 5832, ModeS = "A" };
-            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("A", It.IsAny<Func<string, BaseStationAircraft>>())).Returns(aircraft);
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("A", out created)).Returns(aircraft);
             _BaseStationDatabase.Setup(d => d.InsertFlight(It.IsAny<BaseStationFlight>())).Callback((BaseStationFlight f) => { flight = f; });
 
             _Plugin.Startup(_StartupParameters);
@@ -1747,8 +1607,9 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             SetEnabledOption(true);
 
+            bool created;
             BaseStationAircraft aircraft = new BaseStationAircraft();
-            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("A", It.IsAny<Func<string, BaseStationAircraft>>())).Returns(aircraft);
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("A", out created)).Returns(aircraft);
 
             _Plugin.Startup(_StartupParameters);
 
@@ -1761,8 +1622,8 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(messageY));
             _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
-            _BaseStationDatabase.Verify(d => d.GetOrInsertAircraftByCode("A", It.IsAny<Func<string, BaseStationAircraft>>()), Times.Once());
-            _BaseStationDatabase.Verify(d => d.GetOrInsertAircraftByCode("B", It.IsAny<Func<string, BaseStationAircraft>>()), Times.Once());
+            _BaseStationDatabase.Verify(d => d.GetOrInsertAircraftByCode("A", out created), Times.Once());
+            _BaseStationDatabase.Verify(d => d.GetOrInsertAircraftByCode("B", out created), Times.Once());
         }
 
         [TestMethod]
@@ -1847,7 +1708,9 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             var exception = new InvalidOperationException();
             SetEnabledOption(true);
-            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("A", It.IsAny<Func<string, BaseStationAircraft>>()))
+
+            bool created;
+            _BaseStationDatabase.Setup(d => d.GetOrInsertAircraftByCode("A", out created))
                                 .Callback(() => {  throw exception; });
 
             _Plugin.Startup(_StartupParameters);

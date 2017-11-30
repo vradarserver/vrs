@@ -31,5 +31,14 @@ namespace VirtualRadar.Interface.StandingData
         /// Gets or sets a flag indicating that this block is used by the nation's military.
         /// </summary>
         public bool IsMilitary { get; set; }
+
+        /// <summary>
+        /// Gets the country as-per <see cref="Country"/> but returns null if the country is
+        /// unknown (as opposed to unassigned).
+        /// </summary>
+        public string ModeSCountry
+        {
+            get { return (Country ?? "").StartsWith("Unknown ", StringComparison.InvariantCultureIgnoreCase) ? null : Country; }
+        }
     }
 }
