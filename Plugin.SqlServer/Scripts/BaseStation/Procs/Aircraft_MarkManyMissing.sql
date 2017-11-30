@@ -13,18 +13,10 @@ BEGIN
 
     DECLARE @missingMarker AS NVARCHAR(20) = 'Missing';
 
-    -- Update existing aircraft but only if they have no details
-    UPDATE [aircraft]
-    SET    [LastModified] = @LocalNow
-          ,[UserString1] = @missingMarker
-    FROM   [BaseStation].[Aircraft] AS [aircraft]
-    JOIN   @Codes                   AS [code]     ON [aircraft].[ModeS] = [code].[ModeS]
-    WHERE  ISNULL([aircraft].[Registration], '') = ''
-    AND    ISNULL([aircraft].[Manufacturer], '') = ''
-    AND    ISNULL([aircraft].[Type], '') = ''
-    AND    ISNULL([aircraft].[RegisteredOwners], '') = '';
-
     -- Insert stubs for aircraft that don't exist
+    -- All aircraft inserted here will later be updated, which is redundant... but at the same
+    -- time if we did the update first we could miss out an aircraft that was inserted between
+    -- the update and the later insert. This should guarantee that no aircraft will be missed.
     INSERT INTO [BaseStation].[Aircraft] (
         [ModeS]
        ,[FirstCreated]
@@ -38,5 +30,16 @@ BEGIN
     FROM      @Codes                   AS [code]
     LEFT JOIN [BaseStation].[Aircraft] AS [aircraft] ON [code].[ModeS] = [aircraft].[ModeS]
     WHERE     [aircraft].[AircraftID] IS NULL;
+
+    -- Update existing aircraft but only if they have no details
+    UPDATE [aircraft]
+    SET    [LastModified] = @LocalNow
+          ,[UserString1] = @missingMarker
+    FROM   [BaseStation].[Aircraft] AS [aircraft]
+    JOIN   @Codes                   AS [code]     ON [aircraft].[ModeS] = [code].[ModeS]
+    WHERE  ISNULL([aircraft].[Registration], '') = ''
+    AND    ISNULL([aircraft].[Manufacturer], '') = ''
+    AND    ISNULL([aircraft].[Type], '') = ''
+    AND    ISNULL([aircraft].[RegisteredOwners], '') = '';
 END;
 GO
