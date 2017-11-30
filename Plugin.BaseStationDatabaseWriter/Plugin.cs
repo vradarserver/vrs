@@ -44,8 +44,6 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
             public DateTime LocalNow                                { get { return DateTime.Now; } }
             public IOptionsView CreateOptionsView()                 { return new WinForms.OptionsView(); }
             public IOnlineLookupCache CreateOnlineLookupCache()     { return new OnlineLookupCache(); }
-            public bool FileExists(string fileName)                 { return File.Exists(fileName); }
-            public long FileSize(string fileName)                   { return new FileInfo(fileName).Length; }
         }
         #endregion
 
@@ -416,10 +414,10 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                     } else if(String.IsNullOrEmpty(_Database.FileName)) {
                         Status = PluginStrings.EnabledNoDatabase;
                         StatusDescription = null;
-                    } else if(!Provider.FileExists(_Database.FileName)) {
+                    } else if(!_Database.FileExists()) {
                         Status = PluginStrings.EnabledNotUpdating;
                         StatusDescription = String.Format(PluginStrings.SomethingDoesNotExist, _Database.FileName);
-                    } else if(Provider.FileSize(_Database.FileName) == 0L) {
+                    } else if(_Database.FileIsEmpty()) {
                         Status = PluginStrings.EnabledNotUpdating;
                         StatusDescription = String.Format(PluginStrings.SomethingIsZeroLength, _Database.FileName);
                     } else if(!_Options.AllowUpdateOfOtherDatabases && !DatabaseCreatedByPlugin()) {

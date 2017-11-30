@@ -88,6 +88,18 @@ namespace VirtualRadar.Interface.Database
         event EventHandler<EventArgs<BaseStationAircraft>> AircraftUpdated;
 
         /// <summary>
+        /// Returns true if the database file exists.
+        /// </summary>
+        /// <returns></returns>
+        bool FileExists();
+
+        /// <summary>
+        /// Returns true if the database file is zero length.
+        /// </summary>
+        /// <returns></returns>
+        bool FileIsEmpty();
+
+        /// <summary>
         /// Returns true if a connection could be made to <see cref="FileName"/>, false if it could not.
         /// If it could be made then the connection is left open.
         /// </summary>

@@ -41,19 +41,5 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// </summary>
         /// <returns></returns>
         IOnlineLookupCache CreateOnlineLookupCache();
-
-        /// <summary>
-        /// Returns true if the file exists.
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        bool FileExists(string fileName);
-
-        /// <summary>
-        /// Returns the length of the file.
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        long FileSize(string fileName);
     }
 }

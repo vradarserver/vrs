@@ -50,6 +50,7 @@ namespace Test.VirtualRadar.Database
         private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
         private Mock<ICallsignParser> _CallsignParser;
         private ClockMock _Clock;
+        private MockFileSystemProvider _FileSystem;
 
         [TestInitialize]
         public void TestInitialise()
@@ -63,6 +64,9 @@ namespace Test.VirtualRadar.Database
             _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
             _Configuration = new Configuration();
             _ConfigurationStorage.Setup(s => s.Load()).Returns(_Configuration);
+
+            _FileSystem = new MockFileSystemProvider();
+            Factory.Singleton.RegisterInstance<IFileSystemProvider>(_FileSystem);
 
             _CreateDatabaseFileName = Path.Combine(TestContext.TestDeploymentDir, "CreatedDatabase.sqb");
             if(File.Exists(_CreateDatabaseFileName)) {
@@ -744,6 +748,70 @@ namespace Test.VirtualRadar.Database
             } finally {
                 fileInfo.IsReadOnly = false;
             }
+        }
+        #endregion
+
+        #region FileExists
+        [TestMethod]
+        public void BaseStationDatabase_FileExists_Returns_True_If_The_FileName_Exists()
+        {
+            _FileSystem.AddFile(@"c:\tmp\file.sqb", new byte[0]);
+            _Database.FileName = @"c:\tmp\file.sqb";
+
+            Assert.IsTrue(_Database.FileExists());
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_FileExists_Returns_False_If_The_FileName_Does_Not_Exist()
+        {
+            _FileSystem.AddFile(@"c:\tmp\file.sqb", new byte[0]);
+            _Database.FileName = @"c:\tmp\not-file.sqb";
+
+            Assert.IsFalse(_Database.FileExists());
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_FileExists_Does_Not_Test_Null_FileName()
+        {
+            _Database.FileName = null;
+            Assert.IsFalse(_Database.FileExists());
+            Assert.AreEqual(0, _FileSystem.FileExists_CallCount);
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_FileExists_Does_Not_Test_Empty_FileName()
+        {
+            _Database.FileName = "";
+            Assert.IsFalse(_Database.FileExists());
+            Assert.AreEqual(0, _FileSystem.FileExists_CallCount);
+        }
+        #endregion
+
+        #region FileIsEmpty
+        [TestMethod]
+        public void BaseStationDatabase_FileIsEmpty_Returns_True_If_The_File_Is_Empty()
+        {
+            _FileSystem.AddFile(@"c:\tmp\file.sqb", new byte[0]);
+            _Database.FileName = @"c:\tmp\file.sqb";
+
+            Assert.IsTrue(_Database.FileIsEmpty());
+        }
+
+        [TestMethod]
+        public void BaseStationDatabase_FileIsEmpty_Returns_False_If_The_FileName_Is_Not_Empty()
+        {
+            _FileSystem.AddFile(@"c:\tmp\file.sqb", new byte[] { 0x01 });
+            _Database.FileName = @"c:\tmp\file.sqb";
+
+            Assert.IsFalse(_Database.FileIsEmpty());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FileNotFoundException))]
+        public void BaseStationDatabase_FileIsEmpty_Throws_Exception_If_File_Does_Not_Exist()
+        {
+            _Database.FileName = @"c:\tmp\no-file.sqb";
+            _Database.FileIsEmpty();
         }
         #endregion
 

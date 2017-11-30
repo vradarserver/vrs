@@ -104,6 +104,9 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _BaseStationDatabase.Setup(d => d.GetLocations()).Returns(new List<BaseStationLocation>() { new BaseStationLocation() { LocationID = 9821 } } );
             SetDBHistory(true);
 
+            _BaseStationDatabase.Setup(r => r.FileExists()).Returns(true);
+            _BaseStationDatabase.Setup(r => r.FileIsEmpty()).Returns(false);
+
             _HeartbeatService = TestUtilities.CreateMockInstance<IHeartbeatService>();
             Factory.Singleton.RegisterInstance(typeof(IHeartbeatService), _HeartbeatService.Object);
 
@@ -123,9 +126,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Presenter = new OptionsPresenter();
             _ShowViewAction = null;
             _Provider = new Mock<PluginNS.IPluginProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-            _Provider.Setup(p => p.FileExists(It.IsAny<string>())).Returns(true);
             _Provider.Setup(p => p.LocalNow).Returns(new DateTime(2001, 2, 3, 4, 5, 6));
-            _Provider.Setup(p => p.FileSize(It.IsAny<string>())).Returns(1000000L);
             _OptionsView = new Mock<PluginNS.IOptionsView>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _OptionsView.Setup(r => r.ShowView())
                 .Callback(() => {
@@ -440,7 +441,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
             _BaseStationDatabase.Object.FileName = @"c:\folder\database.sqb";
-            _Provider.Setup(p => p.FileExists(@"c:\folder\database.sqb")).Returns(false);
+            _BaseStationDatabase.Setup(r => r.FileExists()).Returns(false);
 
             _Plugin.Startup(_StartupParameters);
 
@@ -456,7 +457,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
             SetOnlineCacheEnabled(true);
             _BaseStationDatabase.Object.FileName = @"c:\folder\database.sqb";
-            _Provider.Setup(p => p.FileExists(@"c:\folder\database.sqb")).Returns(false);
+            _BaseStationDatabase.Setup(r => r.FileExists()).Returns(false);
 
             _Plugin.Startup(_StartupParameters);
 
@@ -469,8 +470,8 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
             _Plugin.StatusChanged += _StatusChangedEvent.Handler;
             _BaseStationDatabase.Object.FileName = @"c:\folder\database.sqb";
-            _Provider.Setup(p => p.FileExists(@"c:\folder\database.sqb")).Returns(true);
-            _Provider.Setup(p => p.FileSize(@"c:\folder\database.sqb")).Returns(0L);
+            _BaseStationDatabase.Setup(r => r.FileExists()).Returns(true);
+            _BaseStationDatabase.Setup(r => r.FileIsEmpty()).Returns(true);
 
             _Plugin.Startup(_StartupParameters);
 
@@ -486,8 +487,8 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetEnabledOption(true);
             SetOnlineCacheEnabled(true);
             _BaseStationDatabase.Object.FileName = @"c:\folder\database.sqb";
-            _Provider.Setup(p => p.FileExists(@"c:\folder\database.sqb")).Returns(true);
-            _Provider.Setup(p => p.FileSize(@"c:\folder\database.sqb")).Returns(0L);
+            _BaseStationDatabase.Setup(r => r.FileExists()).Returns(false);
+            _BaseStationDatabase.Setup(r => r.FileIsEmpty()).Returns(true);
 
             _Plugin.Startup(_StartupParameters);
 

@@ -352,6 +352,34 @@ namespace VirtualRadar.Database.BaseStation
         }
         #endregion
 
+        #region FileExists, FileIsEmpty
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public bool FileExists()
+        {
+            var result = !String.IsNullOrEmpty(FileName);
+
+            if(result) {
+                var fileSystem = Factory.Singleton.Resolve<IFileSystemProvider>();
+                result = fileSystem.FileExists(FileName);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public bool FileIsEmpty()
+        {
+            var fileSystem = Factory.Singleton.Resolve<IFileSystemProvider>();
+            return fileSystem.FileSize(FileName) == 0L;
+        }
+        #endregion
+
         #region CreateDatabaseIfMissing
         /// <summary>
         /// See interface docs.

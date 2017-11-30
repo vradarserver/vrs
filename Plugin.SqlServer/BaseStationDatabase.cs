@@ -185,6 +185,33 @@ namespace VirtualRadar.Plugin.SqlServer
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <returns></returns>
+        public bool TestConnection()
+        {
+            return IsConnected;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public bool FileExists()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public bool FileIsEmpty()
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="aircraft"></param>
         public void DeleteAircraft(BaseStationAircraft aircraft)
         {
@@ -869,15 +896,6 @@ namespace VirtualRadar.Plugin.SqlServer
         public void RecordMissingAircraft(string icao)
         {
             RecordManyMissingAircraft(new string[] { icao });
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <returns></returns>
-        public bool TestConnection()
-        {
-            return IsConnected;
         }
 
         /// <summary>
