@@ -35,6 +35,7 @@
             this.buttonTestConnection = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.checkBoxCanUpdateSchema = new System.Windows.Forms.CheckBox();
+            this.buttonUpdateSchema = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // checkBoxEnabled
@@ -54,7 +55,7 @@
             this.buttonCancel.Location = new System.Drawing.Point(621, 114);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 7;
+            this.buttonCancel.TabIndex = 8;
             this.buttonCancel.Text = "::Cancel::";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
@@ -65,7 +66,7 @@
             this.buttonOK.Location = new System.Drawing.Point(540, 114);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
-            this.buttonOK.TabIndex = 6;
+            this.buttonOK.TabIndex = 7;
             this.buttonOK.Text = "::OK::";
             this.buttonOK.UseVisualStyleBackColor = true;
             // 
@@ -120,6 +121,17 @@
             this.checkBoxCanUpdateSchema.Text = "::CanUpdateSchema::";
             this.checkBoxCanUpdateSchema.UseVisualStyleBackColor = true;
             // 
+            // buttonUpdateSchema
+            // 
+            this.buttonUpdateSchema.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonUpdateSchema.Location = new System.Drawing.Point(15, 114);
+            this.buttonUpdateSchema.Name = "buttonUpdateSchema";
+            this.buttonUpdateSchema.Size = new System.Drawing.Size(156, 23);
+            this.buttonUpdateSchema.TabIndex = 6;
+            this.buttonUpdateSchema.Text = "::UpdateSchema::";
+            this.buttonUpdateSchema.UseVisualStyleBackColor = true;
+            this.buttonUpdateSchema.Click += new System.EventHandler(this.ButtonUpdateSchema_Click);
+            // 
             // OptionsView
             // 
             this.AcceptButton = this.buttonOK;
@@ -127,6 +139,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(708, 149);
+            this.Controls.Add(this.buttonUpdateSchema);
             this.Controls.Add(this.checkBoxCanUpdateSchema);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.buttonTestConnection);
@@ -157,5 +170,6 @@
         private System.Windows.Forms.Button buttonTestConnection;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox checkBoxCanUpdateSchema;
+        private System.Windows.Forms.Button buttonUpdateSchema;
     }
 }

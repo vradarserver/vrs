@@ -142,13 +142,23 @@
     <value>SQL Server</value>
     <comment>SQL Server is the name of a Microsoft database product</comment>
   </data>
-  <data name="SeeSqlServerPluginOptions" xml:space="preserve">
-    <value>See SQL Server Plugin Options</value>
+  <data name="FakeDatabaseFileName" xml:space="preserve">
+    <value>SQL Server</value>
+    <comment>SQL Server is the name of a Microsoft database product</comment>
   </data>
   <data name="TestConnection" xml:space="preserve">
     <value>Test Connection</value>
   </data>
   <data name="UnspecifiedError" xml:space="preserve">
     <value>Unspecified error</value>
+  </data>
+  <data name="SchemaUpdated" xml:space="preserve">
+    <value>Schema updated</value>
+  </data>
+  <data name="SchemaUpdatedTitle" xml:space="preserve">
+    <value>Schema Updated</value>
+  </data>
+  <data name="UpdateSchema" xml:space="preserve">
+    <value>Update Schema</value>
   </data>
 </root>

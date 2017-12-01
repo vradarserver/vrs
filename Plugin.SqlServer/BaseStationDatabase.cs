@@ -41,6 +41,34 @@ namespace VirtualRadar.Plugin.SqlServer
         /// </summary>
         private IStandingDataManager _StandingDataManager;
 
+        private string _ConnectionString;
+        /// <summary>
+        /// Gets or sets the connection string to use.
+        /// </summary>
+        public string ConnectionString
+        {
+            get { return _ConnectionString ?? Plugin.Singleton.Options.ConnectionString; }
+            set { _ConnectionString = value; }
+        }
+
+        /// <summary>
+        /// True if the connection string is not the standard one from options.
+        /// </summary>
+        public bool IsCustomConnectionString
+        {
+            get { return _ConnectionString != null; }
+        }
+
+        private bool? _CanUpdateSchema;
+        /// <summary>
+        /// Gets or sets a value indicating whether we area allowed to update the schema.
+        /// </summary>
+        public bool CanUpdateSchema
+        {
+            get { return _CanUpdateSchema ?? Plugin.Singleton.Options.CanUpdateSchema; }
+            set { _CanUpdateSchema = value; }
+        }
+
         /// <summary>
         /// True if the connection string appears to be a good one.
         /// </summary>
@@ -66,7 +94,7 @@ namespace VirtualRadar.Plugin.SqlServer
         /// </summary>
         public string FileName
         {
-            get => SqlServerStrings.SeeSqlServerPluginOptions;
+            get => SqlServerStrings.FakeDatabaseFileName;
             set {;}
         }
 
@@ -75,7 +103,7 @@ namespace VirtualRadar.Plugin.SqlServer
         /// </summary>
         public string LogFileName
         {
-            get => SqlServerStrings.SeeSqlServerPluginOptions;
+            get => SqlServerStrings.FakeDatabaseFileName;
             set {;}
         }
 
@@ -175,7 +203,7 @@ namespace VirtualRadar.Plugin.SqlServer
         /// <returns></returns>
         private IDbConnection CreateOpenDatabaseConnection()
         {
-            var result = ConnectionStringIsGood ? new SqlConnection(Plugin.Singleton.Options.ConnectionString) : null;
+            var result = IsCustomConnectionString || ConnectionStringIsGood ? new SqlConnection(ConnectionString) : null;
             result?.Open();
 
             return result;
@@ -194,7 +222,7 @@ namespace VirtualRadar.Plugin.SqlServer
         /// <param name="fileName"></param>
         public void CreateDatabaseIfMissing(string fileName)
         {
-            if(Plugin.Singleton.Options.CanUpdateSchema) {
+            if(CanUpdateSchema) {
                 PerformInConnection(wrapper => {
                     SqlServerHelper.RunScript(wrapper.Connection, Scripts.Resources.UpdateSchema_sql);
                 });

@@ -97,5 +97,21 @@ namespace VirtualRadar.Plugin.SqlServer.WinForms
                 : String.Format(SqlServerStrings.CannotConnectToDatabase, errorMessage),
             SqlServerStrings.TestConnection);
         }
+
+        /// <summary>
+        /// Updates the schema.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonUpdateSchema_Click(object sender, EventArgs e)
+        {
+            var database = new BaseStationDatabase() {
+                ConnectionString = Options.ConnectionString,
+                CanUpdateSchema =  true,
+            };
+            database.CreateDatabaseIfMissing("");
+
+            MessageBox.Show(SqlServerStrings.SchemaUpdated, SqlServerStrings.SchemaUpdatedTitle);
+        }
     }
 }

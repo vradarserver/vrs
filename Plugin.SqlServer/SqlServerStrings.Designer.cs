@@ -115,6 +115,15 @@ namespace VirtualRadar.Plugin.SqlServer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SQL Server.
+        /// </summary>
+        public static string FakeDatabaseFileName {
+            get {
+                return ResourceManager.GetString("FakeDatabaseFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to WARNING: Changes to these settings will not take effect until the next time you start Virtual Radar Server..
         /// </summary>
         public static string OptionChangesNeedAReboot {
@@ -133,11 +142,20 @@ namespace VirtualRadar.Plugin.SqlServer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to See SQL Server Plugin Options.
+        ///   Looks up a localized string similar to Schema updated.
         /// </summary>
-        public static string SeeSqlServerPluginOptions {
+        public static string SchemaUpdated {
             get {
-                return ResourceManager.GetString("SeeSqlServerPluginOptions", resourceCulture);
+                return ResourceManager.GetString("SchemaUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Schema Updated.
+        /// </summary>
+        public static string SchemaUpdatedTitle {
+            get {
+                return ResourceManager.GetString("SchemaUpdatedTitle", resourceCulture);
             }
         }
         
@@ -156,6 +174,15 @@ namespace VirtualRadar.Plugin.SqlServer {
         public static string UnspecifiedError {
             get {
                 return ResourceManager.GetString("UnspecifiedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Schema.
+        /// </summary>
+        public static string UpdateSchema {
+            get {
+                return ResourceManager.GetString("UpdateSchema", resourceCulture);
             }
         }
     }
