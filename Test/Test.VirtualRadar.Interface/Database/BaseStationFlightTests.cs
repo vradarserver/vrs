@@ -64,6 +64,7 @@ namespace Test.VirtualRadar.Interface.Database
             TestUtilities.TestProperty(baseStationFlight, r => r.NumPosMsgRec, null, int.MaxValue);
             TestUtilities.TestProperty(baseStationFlight, r => r.SessionID, 0, int.MaxValue);
             TestUtilities.TestProperty(baseStationFlight, r => r.StartTime, DateTime.MinValue, DateTime.Now);
+            TestUtilities.TestProperty(baseStationFlight, r => r.UserNotes, null, "Ab");
         }
     }
 }

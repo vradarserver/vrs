@@ -203,5 +203,10 @@ namespace VirtualRadar.Interface.Database
         /// Gets or sets the time that the first message was received from the aircraft (UTC).
         /// </summary>
         public DateTime StartTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets the notes entered by the user against the flight.
+        /// </summary>
+        public string UserNotes { get; set; }
     }
 }

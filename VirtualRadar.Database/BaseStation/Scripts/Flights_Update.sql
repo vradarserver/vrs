@@ -34,4 +34,5 @@
       ,[HadAlert]               = @hadAlert
       ,[HadEmergency]           = @hadEmergency
       ,[HadSPI]                 = @hadSPI
+      ,[UserNotes]              = @userNotes
  WHERE [FlightID] =               @flightID;

@@ -34,6 +34,7 @@
    ,[HadAlert]
    ,[HadEmergency]
    ,[HadSPI]
+   ,[UserNotes]
 ) VALUES (
     @sessionID
    ,@aircraftID
@@ -70,5 +71,6 @@
    ,@hadAlert
    ,@hadEmergency
    ,@hadSPI
+   ,@userNotes
 );
 SELECT [FlightID] FROM [Flights] WHERE _ROWID_ = last_insert_rowid();

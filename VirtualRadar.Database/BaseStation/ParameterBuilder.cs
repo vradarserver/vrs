@@ -137,6 +137,7 @@ namespace VirtualRadar.Database.BaseStation
             result.Add(nameof(flight.NumPosMsgRec),        value: flight.NumPosMsgRec);
             result.Add(nameof(flight.SessionID),           value: flight.SessionID);
             result.Add(nameof(flight.StartTime),           value: flight.StartTime);
+            result.Add(nameof(flight.UserNotes),           value: flight.UserNotes);
 
             return result;
         }

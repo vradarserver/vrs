@@ -380,6 +380,7 @@ namespace Test.VirtualRadar.Database
             result.NumAirCallRepMsgRec = worksheet.Int(ordinal++);
             result.NumPosMsgRec = worksheet.Int(ordinal++);
             result.StartTime = worksheet.DateTime(ordinal++);
+            result.UserNotes = worksheet.EString(ordinal++);
 
             return result;
         }
@@ -4830,6 +4831,7 @@ namespace Test.VirtualRadar.Database
             Assert.AreEqual(expected.NumPosMsgRec, actual.NumPosMsgRec);
             Assert.AreEqual(expected.StartTime, actual.StartTime);
             Assert.AreEqual(expected.SessionID, actual.SessionID);
+            Assert.AreEqual(expected.UserNotes, actual.UserNotes);
         }
         #endregion
 
