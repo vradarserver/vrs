@@ -574,23 +574,26 @@ namespace VirtualRadar.Plugin.SqlServer
             sort1 = DynamicSql.CriteriaSortFieldToColumnName(sort1);
             sort2 = DynamicSql.CriteriaSortFieldToColumnName(sort2);
 
+            if(sort1 == null && sort2 == null) {
+                sort1 = "[Flights].[FlightID]";
+                sort1Ascending = false;
+            }
+
             var commandText = new StringBuilder();
             commandText.Append(CreateSearchBaseStationCriteriaSql(aircraft, criteria, justCount: false));
             var criteriaAndProperties = DynamicSql.GetFlightsCriteria(aircraft, criteria);
             if(criteriaAndProperties.SqlChunk.Length > 0) {
                 commandText.AppendFormat(" WHERE {0}", criteriaAndProperties.SqlChunk);
             }
-            if(sort1 != null || sort2 != null) {
-                commandText.Append(" ORDER BY ");
-                if(sort1 != null) {
-                    commandText.AppendFormat("{0} {1}", sort1, sort1Ascending ? "ASC" : "DESC");
-                }
-                if(sort2 != null) {
-                    commandText.AppendFormat("{0}{1} {2}", sort1 == null ? "" : ", ", sort2, sort2Ascending ? "ASC" : "DESC");
-                }
+            commandText.Append(" ORDER BY ");
+            if(sort1 != null) {
+                commandText.AppendFormat("{0} {1}", sort1, sort1Ascending ? "ASC" : "DESC");
+            }
+            if(sort2 != null) {
+                commandText.AppendFormat("{0}{1} {2}", sort1 == null ? "" : ", ", sort2, sort2Ascending ? "ASC" : "DESC");
             }
 
-            commandText.Append(" LIMIT @limit OFFSET @offset");
+            commandText.Append(" OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY");
             var limit = toRow == -1 || toRow < fromRow ? int.MaxValue : (toRow - Math.Max(0, fromRow)) + 1;
             var offset = fromRow < 0 ? 0 : fromRow;
             criteriaAndProperties.Parameters.Add("limit", limit);
