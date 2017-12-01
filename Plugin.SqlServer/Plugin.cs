@@ -69,7 +69,7 @@ namespace VirtualRadar.Plugin.SqlServer
         /// </summary>
         public string StatusDescription
         {
-            get => Options?.Enabled ?? false ? SqlServerStrings.Enabled : SqlServerStrings.Disabled;
+            get => Options?.Enabled ?? false ? String.Format(SqlServerStrings.EnabledFullDescription, Options.ConnectionString) : SqlServerStrings.Disabled;
             set {;}
         }
 

@@ -41,7 +41,7 @@
             // checkBoxEnabled
             // 
             this.checkBoxEnabled.AutoSize = true;
-            this.checkBoxEnabled.Location = new System.Drawing.Point(212, 12);
+            this.checkBoxEnabled.Location = new System.Drawing.Point(172, 12);
             this.checkBoxEnabled.Name = "checkBoxEnabled";
             this.checkBoxEnabled.Size = new System.Drawing.Size(77, 17);
             this.checkBoxEnabled.TabIndex = 0;
@@ -52,7 +52,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(621, 127);
+            this.buttonCancel.Location = new System.Drawing.Point(624, 127);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 8;
@@ -63,7 +63,7 @@
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOK.Location = new System.Drawing.Point(540, 127);
+            this.buttonOK.Location = new System.Drawing.Point(543, 127);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 7;
@@ -83,15 +83,15 @@
             // 
             this.textBoxConnectionString.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxConnectionString.Location = new System.Drawing.Point(212, 35);
+            this.textBoxConnectionString.Location = new System.Drawing.Point(172, 35);
             this.textBoxConnectionString.Name = "textBoxConnectionString";
-            this.textBoxConnectionString.Size = new System.Drawing.Size(322, 20);
+            this.textBoxConnectionString.Size = new System.Drawing.Size(365, 20);
             this.textBoxConnectionString.TabIndex = 2;
             // 
             // buttonTestConnection
             // 
             this.buttonTestConnection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonTestConnection.Location = new System.Drawing.Point(540, 33);
+            this.buttonTestConnection.Location = new System.Drawing.Point(543, 33);
             this.buttonTestConnection.Name = "buttonTestConnection";
             this.buttonTestConnection.Size = new System.Drawing.Size(156, 23);
             this.buttonTestConnection.TabIndex = 3;
@@ -104,17 +104,17 @@
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.Location = new System.Drawing.Point(212, 84);
+            this.label2.Location = new System.Drawing.Point(172, 84);
             this.label2.Margin = new System.Windows.Forms.Padding(3);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(484, 37);
+            this.label2.Size = new System.Drawing.Size(527, 37);
             this.label2.TabIndex = 5;
             this.label2.Text = "::OptionChangesNeedARestart::";
             // 
             // checkBoxCanUpdateSchema
             // 
             this.checkBoxCanUpdateSchema.AutoSize = true;
-            this.checkBoxCanUpdateSchema.Location = new System.Drawing.Point(212, 61);
+            this.checkBoxCanUpdateSchema.Location = new System.Drawing.Point(172, 61);
             this.checkBoxCanUpdateSchema.Name = "checkBoxCanUpdateSchema";
             this.checkBoxCanUpdateSchema.Size = new System.Drawing.Size(131, 17);
             this.checkBoxCanUpdateSchema.TabIndex = 4;
@@ -138,7 +138,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(708, 162);
+            this.ClientSize = new System.Drawing.Size(711, 162);
             this.Controls.Add(this.buttonUpdateSchema);
             this.Controls.Add(this.checkBoxCanUpdateSchema);
             this.Controls.Add(this.label2);

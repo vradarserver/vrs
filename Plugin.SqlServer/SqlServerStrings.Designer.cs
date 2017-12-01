@@ -115,6 +115,15 @@ namespace VirtualRadar.Plugin.SqlServer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enabled, using {0}.
+        /// </summary>
+        public static string EnabledFullDescription {
+            get {
+                return ResourceManager.GetString("EnabledFullDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SQL Server.
         /// </summary>
         public static string FakeDatabaseFileName {
