@@ -126,9 +126,9 @@ namespace VirtualRadar.Plugin.SqlServer {
         /// <summary>
         ///   Looks up a localized string similar to WARNING: Changes to these settings will not take effect until the next time you start Virtual Radar Server..
         /// </summary>
-        public static string OptionChangesNeedAReboot {
+        public static string OptionChangesNeedARestart {
             get {
-                return ResourceManager.GetString("OptionChangesNeedAReboot", resourceCulture);
+                return ResourceManager.GetString("OptionChangesNeedARestart", resourceCulture);
             }
         }
         

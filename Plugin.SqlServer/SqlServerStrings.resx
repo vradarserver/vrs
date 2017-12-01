@@ -135,7 +135,7 @@
   <data name="Enabled" xml:space="preserve">
     <value>Enabled</value>
   </data>
-  <data name="OptionChangesNeedAReboot" xml:space="preserve">
+  <data name="OptionChangesNeedARestart" xml:space="preserve">
     <value>WARNING: Changes to these settings will not take effect until the next time you start Virtual Radar Server.</value>
   </data>
   <data name="PluginName" xml:space="preserve">

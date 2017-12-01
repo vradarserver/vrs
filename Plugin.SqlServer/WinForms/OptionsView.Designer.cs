@@ -52,7 +52,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(621, 114);
+            this.buttonCancel.Location = new System.Drawing.Point(621, 127);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 8;
@@ -63,7 +63,7 @@
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOK.Location = new System.Drawing.Point(540, 114);
+            this.buttonOK.Location = new System.Drawing.Point(540, 127);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 7;
@@ -107,9 +107,9 @@
             this.label2.Location = new System.Drawing.Point(212, 84);
             this.label2.Margin = new System.Windows.Forms.Padding(3);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(484, 24);
+            this.label2.Size = new System.Drawing.Size(484, 37);
             this.label2.TabIndex = 5;
-            this.label2.Text = "::OptionChangesNeedAReboot::";
+            this.label2.Text = "::OptionChangesNeedARestart::";
             // 
             // checkBoxCanUpdateSchema
             // 
@@ -124,7 +124,7 @@
             // buttonUpdateSchema
             // 
             this.buttonUpdateSchema.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonUpdateSchema.Location = new System.Drawing.Point(15, 114);
+            this.buttonUpdateSchema.Location = new System.Drawing.Point(15, 127);
             this.buttonUpdateSchema.Name = "buttonUpdateSchema";
             this.buttonUpdateSchema.Size = new System.Drawing.Size(156, 23);
             this.buttonUpdateSchema.TabIndex = 6;
@@ -138,7 +138,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(708, 149);
+            this.ClientSize = new System.Drawing.Size(708, 162);
             this.Controls.Add(this.buttonUpdateSchema);
             this.Controls.Add(this.checkBoxCanUpdateSchema);
             this.Controls.Add(this.label2);
