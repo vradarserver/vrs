@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,31 +26,78 @@ namespace VirtualRadar.Plugin.SqlServer
     public static class SqlServerHelper
     {
         /// <summary>
+        /// Protects against multi-threaded access to the fields.
+        /// </summary>
+        private static object _SyncLock = new object();
+
+        /// <summary>
+        /// A map of connection references to script output lines.
+        /// </summary>
+        private static Dictionary<SqlConnection, List<string>> _ConnectionPrintLinesMap = new Dictionary<SqlConnection, List<string>>();
+
+        /// <summary>
         /// Runs the script passed across on the connection passed across.
         /// </summary>
         /// <param name="connection"></param>
         /// <param name="script"></param>
-        public static void RunScript(IDbConnection connection, string script)
+        /// <returns>Print output from script</returns>
+        public static string[] RunScript(IDbConnection connection, string script)
         {
-            var lines = new List<string>();
-            using(var reader = new StringReader(script)) {
-                string line;
-                while((line = reader.ReadLine()) != null) {
-                    if(line.Trim().ToUpper() != "GO") {
-                        lines.Add(line);
-                    } else {
-                        RunScriptChunk(connection, lines);
-                        lines.Clear();
+            var printLines = new List<string>();
+
+            var sqlConnection = connection as SqlConnection;
+            if(sqlConnection != null) {
+                lock(_SyncLock) {
+                    _ConnectionPrintLinesMap.Add(sqlConnection, printLines);
+                }
+                sqlConnection.InfoMessage += SqlConnection_InfoMessage;
+            }
+
+            try {
+                var scriptLines = new List<string>();
+                using(var reader = new StringReader(script)) {
+                    string line;
+                    while((line = reader.ReadLine()) != null) {
+                        if(line.Trim().ToUpper() != "GO") {
+                            scriptLines.Add(line);
+                        } else {
+                            RunScriptChunk(connection, scriptLines);
+                            scriptLines.Clear();
+                        }
+                    }
+                }
+                RunScriptChunk(connection, scriptLines);
+            } finally {
+                if(sqlConnection != null) {
+                    sqlConnection.InfoMessage -= SqlConnection_InfoMessage;
+                    lock(_SyncLock) {
+                        _ConnectionPrintLinesMap.Remove(sqlConnection);
                     }
                 }
             }
 
-            RunScriptChunk(connection, lines);
+            return printLines.ToArray();
         }
 
-        private static void RunScriptChunk(IDbConnection connection, IEnumerable<string> lines)
+        private static void SqlConnection_InfoMessage(object sender, SqlInfoMessageEventArgs e)
         {
-            var sql = String.Join(Environment.NewLine, lines);
+            if(sender is SqlConnection sqlConnection) {
+                lock(_SyncLock) {
+                    if(_ConnectionPrintLinesMap.TryGetValue(sqlConnection, out var printLines)) {
+                        using(var reader = new StringReader(e.Message ?? "")) {
+                            string line;
+                            while((line = reader.ReadLine()) != null) {
+                                printLines.Add(line);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void RunScriptChunk(IDbConnection connection, IEnumerable<string> scriptLines)
+        {
+            var sql = String.Join(Environment.NewLine, scriptLines);
             if(!String.IsNullOrEmpty(sql)) {
                 using(var command = connection.CreateCommand()) {
                     command.Connection = connection;

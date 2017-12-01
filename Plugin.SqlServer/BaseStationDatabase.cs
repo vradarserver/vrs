@@ -222,11 +222,24 @@ namespace VirtualRadar.Plugin.SqlServer
         /// <param name="fileName"></param>
         public void CreateDatabaseIfMissing(string fileName)
         {
+            UpdateSchema();
+        }
+
+        /// <summary>
+        /// Updates the schema and returns the output of the update script.
+        /// </summary>
+        /// <returns></returns>
+        public string[] UpdateSchema()
+        {
+            string[] result = null;
+
             if(CanUpdateSchema) {
                 PerformInConnection(wrapper => {
-                    SqlServerHelper.RunScript(wrapper.Connection, Scripts.Resources.UpdateSchema_sql);
+                    result = SqlServerHelper.RunScript(wrapper.Connection, Scripts.Resources.UpdateSchema_sql);
                 });
             }
+
+            return result ?? new string[0];
         }
 
         /// <summary>

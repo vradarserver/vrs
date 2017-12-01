@@ -1,4 +1,5 @@
-﻿PRINT 'Running schema upgrade on ' + @@SERVERNAME + ' in ' + DB_NAME() + ' AS ' + SUSER_NAME();
+﻿PRINT 'Running schema upgrade on ' + @@SERVERNAME + ' in ' + DB_NAME() + ' as user ' + SUSER_NAME();
+PRINT '';
 GO
 
 -------------------------------------------------------------------------------

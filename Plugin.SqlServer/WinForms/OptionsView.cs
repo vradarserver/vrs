@@ -109,9 +109,9 @@ namespace VirtualRadar.Plugin.SqlServer.WinForms
                 ConnectionString = Options.ConnectionString,
                 CanUpdateSchema =  true,
             };
-            database.CreateDatabaseIfMissing("");
+            var scriptOutput = database.UpdateSchema();
 
-            MessageBox.Show(SqlServerStrings.SchemaUpdated, SqlServerStrings.SchemaUpdatedTitle);
+            MessageBox.Show(String.Join(Environment.NewLine, scriptOutput), SqlServerStrings.SchemaUpdatedTitle);
         }
     }
 }
