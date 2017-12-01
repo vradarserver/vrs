@@ -130,6 +130,8 @@
     <Compile Include="BackgroundThreadQueue.cs" />
     <Compile Include="BackgroundThreadQueueMechanism.cs" />
     <Compile Include="CollectionHelper.cs" />
+    <Compile Include="Database\BaseStationAircraftUpsertLookup.cs" />
+    <Compile Include="Database\OrdinalAttribute.cs" />
     <Compile Include="EventHelperException.cs" />
     <Compile Include="HttpContentHelper.cs" />
     <Compile Include="IAircraftOnlineLookupLog.cs" />

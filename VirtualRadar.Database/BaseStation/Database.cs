@@ -828,10 +828,8 @@ namespace VirtualRadar.Database.BaseStation
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="icao"></param>
-        /// <param name="fillAircraft"></param>
         /// <returns></returns>
-        public BaseStationAircraft UpsertAircraftByCode(string icao, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft)
+        public BaseStationAircraft UpsertAircraft(BaseStationAircraftUpsertLookup aircraft)
         {
             if(!WriteSupportEnabled) throw new InvalidOperationException("You cannot upsert aircraft when write support is disabled");
 
@@ -843,8 +841,8 @@ namespace VirtualRadar.Database.BaseStation
                 if(_Connection != null) {
                     var localNow = _Clock.LocalNow;
 
-                    result = Aircraft_GetByIcao(icao);
-                    result = UpsertAircraftByCode(result, icao, fillAircraft, ref updated);
+                    result = Aircraft_GetByIcao(aircraft.ModeS);
+                    result = UpsertAircraft(result, aircraft, FillFromUpsertLookup, ref updated);
                 }
             }
 
@@ -858,10 +856,9 @@ namespace VirtualRadar.Database.BaseStation
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="icaos"></param>
-        /// <param name="fillAircraft"></param>
+        /// <param name="allUpsertAircraft"></param>
         /// <returns></returns>
-        public BaseStationAircraft[] UpsertManyAircraftByCodes(IEnumerable<string> icaos, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft)
+        public BaseStationAircraft[] UpsertManyAircraft(IEnumerable<BaseStationAircraftUpsertLookup> allUpsertAircraft)
         {
             if(!WriteSupportEnabled) throw new InvalidOperationException("You cannot upsert aircraft when write support is disabled");
 
@@ -872,6 +869,7 @@ namespace VirtualRadar.Database.BaseStation
                 OpenConnection();
                 if(_Connection != null) {
                     var localNow = _Clock.LocalNow;
+                    var icaos = allUpsertAircraft.Select(r => r.ModeS);
                     Func<string, string> normaliseIcao = (icao) => { return icao.ToUpper(); };
                     var allAircraft = Aircraft_GetByIcaos(icaos).ToDictionary(r => normaliseIcao(r.ModeS), r => r);
 
@@ -879,7 +877,8 @@ namespace VirtualRadar.Database.BaseStation
                         foreach(var icao in icaos) {
                             var thisUpdated = false;
                             allAircraft.TryGetValue(normaliseIcao(icao), out var aircraft);
-                            aircraft = UpsertAircraftByCode(aircraft, icao, fillAircraft, ref thisUpdated);
+                            var upsertAircraft = allUpsertAircraft.First(r => r.ModeS == icao);
+                            aircraft = UpsertAircraft(aircraft, upsertAircraft, FillFromUpsertLookup, ref thisUpdated);
                             if(aircraft != null) {
                                 result.Add(aircraft);
                                 updated.Add(thisUpdated);
@@ -897,34 +896,49 @@ namespace VirtualRadar.Database.BaseStation
             return result.ToArray();
         }
 
+        private BaseStationAircraft FillFromUpsertLookup(BaseStationAircraft aircraft, BaseStationAircraftUpsertLookup upsertAircraft)
+        {
+            if(aircraft == null) {
+                aircraft = new BaseStationAircraft() {
+                    ModeS =         upsertAircraft.ModeS,
+                    FirstCreated =  upsertAircraft.LastModified,
+                };
+            }
+            aircraft.LastModified =     upsertAircraft.LastModified;
+            aircraft.Registration =     upsertAircraft.Registration;
+            aircraft.Country =          upsertAircraft.Country;
+            aircraft.ModeSCountry =     upsertAircraft.ModeSCountry;
+            aircraft.Manufacturer =     upsertAircraft.Manufacturer;
+            aircraft.Type =             upsertAircraft.Type;
+            aircraft.ICAOTypeCode =     upsertAircraft.ICAOTypeCode;
+            aircraft.RegisteredOwners = upsertAircraft.RegisteredOwners;
+            aircraft.OperatorFlagCode = upsertAircraft.OperatorFlagCode;
+            aircraft.SerialNo =         upsertAircraft.SerialNo;
+            aircraft.YearBuilt =        upsertAircraft.YearBuilt;
+            aircraft.UserString1 =      aircraft.UserString1 == "Missing" ? null : aircraft.UserString1;
+
+            return aircraft;
+        }
+
         /// <summary>
         /// Does the work for the UpsertAircraftByCode methods.
         /// </summary>
         /// <param name="aircraft"></param>
-        /// <param name="icao"></param>
+        /// <param name="upsertAircraft"></param>
         /// <param name="fillAircraft"></param>
         /// <param name="updated"></param>
         /// <returns></returns>
-        private BaseStationAircraft UpsertAircraftByCode(BaseStationAircraft aircraft, string icao, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft, ref bool updated)
+        private BaseStationAircraft UpsertAircraft<T>(BaseStationAircraft aircraft, T upsertAircraft, Func<BaseStationAircraft, T, BaseStationAircraft> fillAircraft, ref bool updated)
         {
-            updated = false;
-
             var isNewAircraft = aircraft == null;
-            if(isNewAircraft) {
-                aircraft = new BaseStationAircraft() {
-                    ModeS = icao,
-                    FirstCreated = _Clock.LocalNow,
-                    LastModified = _Clock.LocalNow,
-                };
-            }
+            updated = !isNewAircraft;
 
-            aircraft = fillAircraft(aircraft);
+            aircraft = fillAircraft(aircraft, upsertAircraft);
             if(aircraft != null) {
                 if(isNewAircraft) {
                     Aircraft_Insert(aircraft);
                 } else {
                     Aircraft_Update(aircraft);
-                    updated = true;
                 }
             }
 

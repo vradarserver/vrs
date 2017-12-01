@@ -12,34 +12,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace VirtualRadar.Plugin.SqlServer.Models
+namespace VirtualRadar.Interface.Database
 {
     /// <summary>
-    /// Represents the ICAO24 UDTT.
+    /// Holds the ordinal number for database columns where ordinal number is important,
+    /// e.g. UDTT declarations.
     /// </summary>
-    class Icao24
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
+    public class OrdinalAttribute : Attribute
     {
         /// <summary>
-        /// Gets or sets the ICAO24 code.
+        /// Gets the ordinal number from 0.
         /// </summary>
-        public string ModeS { get; set; }
+        public int Number { get; private set; }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public Icao24() : this(null)
+        /// <param name="number"></param>
+        public OrdinalAttribute(int number)
         {
-        }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        /// <param name="modeS"></param>
-        public Icao24(string modeS)
-        {
-            ModeS = modeS;
+            Number = number;
         }
     }
 }

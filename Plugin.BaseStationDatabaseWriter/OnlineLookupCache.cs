@@ -201,9 +201,8 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             var database = Database;
             if(database != null && Enabled) {
-                database.UpsertAircraftByCode(lookupDetail.Icao, (baseStationAircraft) => {
-                    return PopulateBaseStationAircraftRecord(lookupDetail, baseStationAircraft, DateTime.Now);
-                });
+                var upsertDetails = BuildUpsertDetails(lookupDetail, DateTime.Now);
+                database.UpsertAircraft(upsertDetails);
             }
         }
 
@@ -226,10 +225,8 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 }
 
                 var now = DateTime.Now;
-                database.UpsertManyAircraftByCodes(map.Keys, (baseStationAircraft) => {
-                    var lookupDetail = map[normaliseIcao(baseStationAircraft.ModeS)];
-                    return PopulateBaseStationAircraftRecord(lookupDetail, baseStationAircraft, now);
-                });
+                var upsertDetails = map.Select(r => BuildUpsertDetails(r.Value, now));
+                database.UpsertManyAircraft(upsertDetails);
             }
         }
 
@@ -237,30 +234,29 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// Populates a BaseStationAircraft record with values from the lookup detail.
         /// </summary>
         /// <param name="lookupDetail"></param>
-        /// <param name="baseStationAircraft"></param>
         /// <param name="localNow"></param>
         /// <returns></returns>
-        private BaseStationAircraft PopulateBaseStationAircraftRecord(AircraftOnlineLookupDetail lookupDetail, BaseStationAircraft baseStationAircraft, DateTime localNow)
+        private BaseStationAircraftUpsertLookup BuildUpsertDetails(AircraftOnlineLookupDetail lookupDetail, DateTime localNow)
         {
             var codeBlock = _StandingDataManager.FindCodeBlock(lookupDetail.Icao);
-            if(codeBlock != null && codeBlock.Country != null && codeBlock.Country.StartsWith("Unknown ")) {
+            if(codeBlock?.Country != null && codeBlock.Country.StartsWith("Unknown ")) {
                 codeBlock = null;
             }
 
-            baseStationAircraft.Registration =      lookupDetail.Registration;
-            baseStationAircraft.Country =           lookupDetail.Country;               // If it's coming from SDM then this is also the Mode-S country, but we might not be saving SDM aircraft records...
-            baseStationAircraft.ModeSCountry =      codeBlock == null ? null : codeBlock.Country;
-            baseStationAircraft.Manufacturer =      lookupDetail.Manufacturer;
-            baseStationAircraft.Type =              lookupDetail.Model;
-            baseStationAircraft.ICAOTypeCode =      lookupDetail.ModelIcao;
-            baseStationAircraft.RegisteredOwners =  lookupDetail.Operator;
-            baseStationAircraft.OperatorFlagCode =  lookupDetail.OperatorIcao;
-            baseStationAircraft.SerialNo =          lookupDetail.Serial;
-            baseStationAircraft.YearBuilt =         lookupDetail.YearBuilt == null ? null : lookupDetail.YearBuilt.Value.ToString();
-            baseStationAircraft.UserString1 =       baseStationAircraft.UserString1 == "Missing" ? null : baseStationAircraft.UserString1;
-            baseStationAircraft.LastModified =      localNow;                           // BaseStation needs local dates, not UTC
-
-            return baseStationAircraft;
+            return new BaseStationAircraftUpsertLookup() {
+                ModeS =             lookupDetail.Icao,
+                Registration =      lookupDetail.Registration,
+                Country =           lookupDetail.Country,               // If it's coming from SDM then this is also the Mode-S country, but we might not be saving SDM aircraft records...
+                ModeSCountry =      codeBlock?.Country,
+                Manufacturer =      lookupDetail.Manufacturer,
+                Type =              lookupDetail.Model,
+                ICAOTypeCode =      lookupDetail.ModelIcao,
+                RegisteredOwners =  lookupDetail.Operator,
+                OperatorFlagCode =  lookupDetail.OperatorIcao,
+                SerialNo =          lookupDetail.Serial,
+                YearBuilt =         lookupDetail.YearBuilt?.ToString(),
+                LastModified =      localNow,                           // BaseStation needs local dates, not UTC
+            };
         }
     }
 }

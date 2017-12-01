@@ -26,19 +26,6 @@ namespace VirtualRadar.Database.BaseStation
     public static class DynamicSql
     {
         /// <summary>
-        /// The object that can parse callsigns out into alternates for us.
-        /// </summary>
-        private static ICallsignParser _CallsignParser;
-
-        /// <summary>
-        /// Run static initialisers.
-        /// </summary>
-        static DynamicSql()
-        {
-            _CallsignParser = Factory.Singleton.Resolve<ICallsignParser>();
-        }
-
-        /// <summary>
         /// Returns the WHERE portion of an SQL statement contains the fields describing the criteria passed across.
         /// </summary>
         /// <param name="aircraft"></param>
@@ -111,7 +98,8 @@ namespace VirtualRadar.Database.BaseStation
         private static void GetAlternateCallsignCriteria(StringBuilder command, DynamicParameters parameters, FilterString criteria, string callsignField)
         {
             if(criteria != null && !String.IsNullOrEmpty(criteria.Value)) {
-                var alternates = _CallsignParser.GetAllAlternateCallsigns(criteria.Value);
+                var callsignParser = Factory.Singleton.Resolve<ICallsignParser>();
+                var alternates = callsignParser.GetAllAlternateCallsigns(criteria.Value);
                 for(var i = 0;i < alternates.Count;++i) {
                     var isFirst = i == 0;
                     var isLast = i + 1 == alternates.Count;

@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VirtualRadar.Plugin.SqlServer.Models;
 
 namespace VirtualRadar.Plugin.SqlServer
 {
@@ -60,19 +61,41 @@ namespace VirtualRadar.Plugin.SqlServer
             }
         }
 
-        public static DataTable GenerateDataTable<T>(IEnumerable<T> rows, string[] columnNames, Type[] columnTypes, Func<T, int, object> getColumnValue)
+        /// <summary>
+        /// Generates a UDTT data table parameter.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="orderedProperties"></param>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        public static DataTable UdttParameter<T>(IEnumerable<UdttProperty<T>> orderedProperties, IEnumerable<T> collection)
         {
-            var result = new DataTable();
-            for(var i = 0;i < columnNames.Length;++i) {
-                result.Columns.Add(columnNames[i], columnTypes[i]);
-            }
-            foreach(var row in rows) {
-                var dataTableRow = result.NewRow();
-                for(var i = 0;i < columnNames.Length;++i) {
-                    dataTableRow[i] = getColumnValue(row, i);
+            return CreateDataTableForUdtt<T>(
+                collection,
+                orderedProperties.Select(r => r.Property.Name).ToArray(),
+                obj => orderedProperties.Select(r => r.GetFunc(obj)).ToArray(),
+                typeof(T).Name
+            );
+        }
+
+        private static DataTable CreateDataTableForUdtt<T>(IEnumerable<T> collection, IEnumerable<string> columnNames, Func<T, object[]> getValues, string tableName = null)
+        {
+            var result = new DataTable(tableName ?? typeof(T).Name);
+
+            foreach(var columnName in columnNames) {
+                var column = result.Columns.Add(columnName);
+                var dataType = typeof(T).GetProperty(columnName).PropertyType;
+                if(dataType.IsGenericType && dataType.GetGenericTypeDefinition() == typeof(Nullable<>)) {
+                    column.DataType = dataType.GetGenericArguments()[0];
+                    column.AllowDBNull = true;
+                } else if(!dataType.IsEnum) {
+                    column.DataType = dataType;
                 }
             }
-            result.EndLoadData();
+
+            foreach(var element in collection) {
+                var row = result.Rows.Add(getValues(element));
+            }
 
             return result;
         }

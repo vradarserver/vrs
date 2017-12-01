@@ -341,27 +341,18 @@ namespace VirtualRadar.Interface.Database
         void RecordManyMissingAircraft(IEnumerable<string> icaos);
 
         /// <summary>
-        /// Creates or updates an aircraft record.
+        /// Creates or updates an aircraft record, populating the details retrieved by online lookups.
         /// </summary>
-        /// <param name="icao">The ICAO of the aircraft to create or update.</param>
-        /// <param name="fillAircraft">
-        /// A callback that is passed the existing aircraft record or, if there is no record for the record, a partially-filled
-        /// record. The callback can either return the record (optionally modified) or return null. If it returns null then the
-        /// record is not inserted / changed, otherwise the record returned is written back to the database.
-        /// </param>
+        /// <param name="aircraft"></param>
         /// <returns></returns>
-        /// <remarks>
-        /// The callback is called from within a lock, be careful not to do anything that will cause a deadlock.
-        /// </remarks>
-        BaseStationAircraft UpsertAircraftByCode(string icao, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft);
+        BaseStationAircraft UpsertAircraft(BaseStationAircraftUpsertLookup aircraft);
 
         /// <summary>
-        /// Does the same as <see cref="UpsertAircraftByCode"/> but for many ICAOs.
+        /// Does the same as <see cref="UpsertAircraft"/> but for many aircraft.
         /// </summary>
-        /// <param name="icaos"></param>
-        /// <param name="fillAircraft"></param>
+        /// <param name="aircraft"></param>
         /// <returns></returns>
-        BaseStationAircraft[] UpsertManyAircraftByCodes(IEnumerable<string> icaos, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft);
+        BaseStationAircraft[] UpsertManyAircraft(IEnumerable<BaseStationAircraftUpsertLookup> aircraft);
 
         /// <summary>
         /// Deletes an existing aircraft record.

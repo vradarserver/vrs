@@ -704,11 +704,9 @@ namespace VirtualRadar.Plugin.SqlServer
 
         private DataTable BuildIcao24Udtt(IEnumerable<string> icao24s)
         {
-            return SqlServerHelper.GenerateDataTable(
-                icao24s.Select(r => (r ?? "").ToUpper().Trim()).Where(r => r != "").Distinct().ToArray(),
-                new string[] { nameof(Icao24.ModeS) },
-                new Type[] { typeof(string) },
-                (r,i) => r
+            return SqlServerHelper.UdttParameter<Icao24Udtt>(
+                Icao24Udtt.UdttProperties,
+                icao24s.Select(r => (r ?? "").ToUpper().Trim()).Where(r => r != "").Distinct().Select(r => new Icao24Udtt(r))
             );
         }
 
@@ -1054,63 +1052,55 @@ namespace VirtualRadar.Plugin.SqlServer
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="icao"></param>
-        /// <param name="fillAircraft"></param>
+        /// <param name="upsertLookup"></param>
         /// <returns></returns>
-        public BaseStationAircraft UpsertAircraftByCode(string icao, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft)
+        public BaseStationAircraft UpsertAircraft(BaseStationAircraftUpsertLookup upsertLookup)
         {
-            return UpsertManyAircraftByCodes(new string[] { icao }, fillAircraft).FirstOrDefault();
+            return UpsertManyAircraft(new BaseStationAircraftUpsertLookup[] { upsertLookup }).FirstOrDefault();
         }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="icaos"></param>
-        /// <param name="fillAircraft"></param>
+        /// <param name="upsertLookups"></param>
         /// <returns></returns>
-        public BaseStationAircraft[] UpsertManyAircraftByCodes(IEnumerable<string> icaos, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft)
+        public BaseStationAircraft[] UpsertManyAircraft(IEnumerable<BaseStationAircraftUpsertLookup> upsertLookups)
         {
             if(!WriteSupportEnabled) {
                 throw new InvalidOperationException("You cannot upsert aircraft when write support is disabled");
             }
 
-            var result = new List<BaseStationAircraft>();
+            BaseStationAircraft[] result = null;
+            AircraftActionResult[] actions = null;
+            using(var dataTable = GenerateBaseStationAircraftUpsertLookupDataTable(upsertLookups)) {
+                PerformInConnection(wrapper => {
+                    var resultSets = wrapper.Connection.QueryMultiple(
+                        "[BaseStation].[Aircraft_UpsertLookups]", new {
+                            @Lookups = dataTable
+                        }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure
+                    );
 
-            var allAircraft = GetManyAircraftByCode(icaos);
-            var localNow = DateTime.Now;
+                    result = resultSets.Read<BaseStationAircraft>(buffered: false).ToArray();
+                    actions = resultSets.Read<AircraftActionResult>(buffered: false).ToArray();
+                });
+            }
 
-            foreach(var icao in icaos) {
-                allAircraft.TryGetValue((icao ?? "").ToUpper(), out var aircraft);
-                aircraft = UpsertAircraftByCode(aircraft, icao, fillAircraft, localNow);
-                if(aircraft != null) {
-                    result.Add(aircraft);
+            if(actions != null) {
+                foreach(var action in actions.Where(r => r.IsUpdated)) {
+                    var aircraft = result.FirstOrDefault(r => r.AircraftID == action.AircraftID);
+                    if(aircraft != null) {
+                        OnAircraftUpdated(new EventArgs<BaseStationAircraft>(aircraft));
+                    }
                 }
             }
 
-            return result.ToArray();
+            return result ?? new BaseStationAircraft[0];
         }
 
-        private BaseStationAircraft UpsertAircraftByCode(BaseStationAircraft aircraft, string icao, Func<BaseStationAircraft, BaseStationAircraft> fillAircraft, DateTime localNow)
+        private DataTable GenerateBaseStationAircraftUpsertLookupDataTable(IEnumerable<BaseStationAircraftUpsertLookup> upsertLookups)
         {
-            var isNewAircraft = aircraft == null;
-            if(isNewAircraft) {
-                aircraft = new BaseStationAircraft() {
-                    ModeS = icao,
-                    FirstCreated = localNow,
-                    LastModified = localNow,
-                };
-            }
-
-            aircraft = fillAircraft(aircraft);
-            if(aircraft != null) {
-                if(isNewAircraft) {
-                    InsertAircraft(aircraft);
-                } else {
-                    UpdateAircraft(aircraft);
-                }
-            }
-
-            return aircraft;
+            var udttModels = upsertLookups.Select(r => new BaseStationAircraftUpsertLookupUdtt(r));
+            return SqlServerHelper.UdttParameter(BaseStationAircraftUpsertLookupUdtt.UdttProperties, udttModels);
         }
 
         /// <summary>

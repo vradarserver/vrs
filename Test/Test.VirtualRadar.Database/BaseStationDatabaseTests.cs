@@ -995,6 +995,9 @@ namespace Test.VirtualRadar.Database
             AddFlight(flight2);
 
             var icaos = new string[_Database.MaxParameters + 1];
+            for(var i = 0;i < icaos.Length;++i) {
+                icaos[i] = "";
+            }
             icaos[0] = "ABC123";
             icaos[icaos.Length - 1] = "XYZ789";
 
@@ -1661,174 +1664,108 @@ namespace Test.VirtualRadar.Database
         }
         #endregion
 
-        #region UpsertAircraftByCode
+        #region UpsertAircraft
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_UpsertAircraftByCode_Throws_Exception_If_Writes_Not_Enabled()
+        public void BaseStationDatabase_UpsertAircraft_Throws_Exception_If_Writes_Not_Enabled()
         {
-            _Database.UpsertAircraftByCode("123456", r => r);
+            _Database.UpsertAircraft(new BaseStationAircraftUpsertLookup() { ModeS = "123456", });
         }
 
         [TestMethod]
-        public void BaseStationDatabase_UpsertAircraftByCode_Calls_Callback_For_New_Aircraft()
+        public void BaseStationDatabase_UpsertAircraft_Inserts_New_Aircraft()
         {
             _Database.WriteSupportEnabled = true;
 
-            var callbackCalled = false;
-            _Database.UpsertAircraftByCode("123456", (aircraft) => {
-                callbackCalled = true;
-                Assert.IsNotNull(aircraft);
-                Assert.AreEqual("123456", aircraft.ModeS);
-                Assert.IsNull(aircraft.Registration);
-                Assert.AreEqual(_Clock.LocalNowValue, aircraft.FirstCreated);
-                Assert.AreEqual(_Clock.LocalNowValue, aircraft.LastModified);
-                return aircraft;
-            });
-
-            Assert.IsTrue(callbackCalled);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertAircraftByCode_Inserts_New_Aircraft()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            _Database.UpsertAircraftByCode("123456", r => r);
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.IsNotNull(aircraft);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertAircraftByCode_Inserts_Whatever_The_Callback_Returns()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            _Database.UpsertAircraftByCode("123456", r => new BaseStationAircraft() {
-                ModeS = "ABC",
-            });
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.IsNull(aircraft);
-
-            aircraft = _Database.GetAircraftByCode("ABC");
-            Assert.IsNotNull(aircraft);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertAircraftByCode_Does_Not_Insert_Aircraft_When_Callback_Returns_Null()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            _Database.UpsertAircraftByCode("123456", r => null);
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.IsNull(aircraft);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertAircraftByCode_Calls_Callback_For_Existing_Aircraft()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() {
-                ModeS = "123456",
-                Registration = "ABC",
-                FirstCreated = _Clock.LocalNowValue,
-                LastModified = _Clock.LocalNowValue,
-            });
-
-            var originalTime = _Clock.LocalNowValue;
-            _Clock.AddMilliseconds(60000);
-
-            var callbackCalled = false;
-            _Database.UpsertAircraftByCode("123456", (aircraft) => {
-                callbackCalled = true;
-                Assert.IsNotNull(aircraft);
-                Assert.AreEqual("123456", aircraft.ModeS);
-                Assert.AreEqual("ABC", aircraft.Registration);
-                Assert.AreEqual(TruncateDate(originalTime), aircraft.FirstCreated);
-                Assert.AreEqual(TruncateDate(originalTime), aircraft.LastModified);
-                return aircraft;
-            });
-
-            Assert.IsTrue(callbackCalled);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertAircraftByCode_Updates_Existing_Aircraft()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() {
-                ModeS = "123456",
-                Registration = "ABC",
-                FirstCreated = _Clock.LocalNowValue,
-                LastModified = _Clock.LocalNowValue,
-            });
-
-            _Database.UpsertAircraftByCode("123456", r => {
-                r.Registration = "XYZ";
-                return r;
+            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+            _Database.UpsertAircraft(new BaseStationAircraftUpsertLookup() {
+                ModeS =             "123456",
+                Country =           "UK",
+                ICAOTypeCode =      "A380",
+                LastModified =      now,
+                Manufacturer =      "Airbus",
+                ModeSCountry =      "France",
+                OperatorFlagCode =  "TWA",
+                RegisteredOwners =  "Transworld",
+                Registration =      "G-ABCD",
+                SerialNo =          "9182",
+                Type =              "Big Plane",
+                YearBuilt =         "1992",
             });
 
             var aircraft = _Database.GetAircraftByCode("123456");
             Assert.IsNotNull(aircraft);
-            Assert.AreEqual("XYZ", aircraft.Registration);
+
+            Assert.AreEqual("123456",           aircraft.ModeS);
+            Assert.AreEqual("UK",               aircraft.Country);
+            Assert.AreEqual("A380",             aircraft.ICAOTypeCode);
+            Assert.AreEqual(TruncateDate(now),  aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(now),  aircraft.LastModified);
+            Assert.AreEqual("Airbus",           aircraft.Manufacturer);
+            Assert.AreEqual("France",           aircraft.ModeSCountry);
+            Assert.AreEqual("TWA",              aircraft.OperatorFlagCode);
+            Assert.AreEqual("Transworld",       aircraft.RegisteredOwners);
+            Assert.AreEqual("G-ABCD",           aircraft.Registration);
+            Assert.AreEqual("9182",             aircraft.SerialNo);
+            Assert.AreEqual("Big Plane",        aircraft.Type);
+            Assert.AreEqual("1992",             aircraft.YearBuilt);
         }
 
         [TestMethod]
-        public void BaseStationDatabase_UpsertAircraftByCode_Updates_Existing_Aircraft_With_Whatever_Callback_Returns()
+        public void BaseStationDatabase_UpsertAircraft_Updates_Existing_Aircraft()
         {
+            var createdDate = new DateTime(1999, 8, 7, 6, 5, 4, 321);
+            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+
             _Database.WriteSupportEnabled = true;
             _Database.InsertAircraft(new BaseStationAircraft() {
-                ModeS = "123456",
-                Registration = "ABC",
-                FirstCreated = _Clock.LocalNowValue,
-                LastModified = _Clock.LocalNowValue,
+                ModeS =         "123456",
+                Registration =  "N12345",
+                FirstCreated =  createdDate,
+                LastModified =  createdDate,
             });
 
-            _Database.UpsertAircraftByCode("123456", r => {
-                r.ModeS = "ABC";
-                return r;
+            _Database.UpsertAircraft(new BaseStationAircraftUpsertLookup() {
+                ModeS =             "123456",
+                Country =           "Germany",
+                ICAOTypeCode =      "B747",
+                LastModified =      now,
+                Manufacturer =      "Boeing",
+                ModeSCountry =      "USA",
+                OperatorFlagCode =  "BAW",
+                RegisteredOwners =  "British Airways",
+                Registration =      "D-WXYZ",
+                SerialNo =          "00119",
+                Type =              "Big Jobs",
+                YearBuilt =         "1979",
             });
 
             var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.IsNull(aircraft);
-
-            aircraft = _Database.GetAircraftByCode("ABC");
             Assert.IsNotNull(aircraft);
+
+            Assert.AreEqual("123456",                   aircraft.ModeS);
+            Assert.AreEqual("Germany",                  aircraft.Country);
+            Assert.AreEqual("B747",                     aircraft.ICAOTypeCode);
+            Assert.AreEqual(TruncateDate(createdDate),  aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(now),          aircraft.LastModified);
+            Assert.AreEqual("Boeing",                   aircraft.Manufacturer);
+            Assert.AreEqual("USA",                      aircraft.ModeSCountry);
+            Assert.AreEqual("BAW",                      aircraft.OperatorFlagCode);
+            Assert.AreEqual("British Airways",          aircraft.RegisteredOwners);
+            Assert.AreEqual("D-WXYZ",                   aircraft.Registration);
+            Assert.AreEqual("00119",                    aircraft.SerialNo);
+            Assert.AreEqual("Big Jobs",                 aircraft.Type);
+            Assert.AreEqual("1979",                     aircraft.YearBuilt);
         }
 
         [TestMethod]
-        public void BaseStationDatabase_UpsertAircraftByCode_Does_Not_Update_If_Callback_Returns_Null()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() {
-                ModeS = "123456",
-                Registration = "ABC",
-                FirstCreated = _Clock.LocalNowValue,
-                LastModified = _Clock.LocalNowValue,
-            });
-
-            _Database.UpsertAircraftByCode("123456", r => {
-                r.Registration = "XYZ";
-                return null;
-            });
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.AreEqual("ABC", aircraft.Registration);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertAircraftByCode_Raises_AircraftUpdated_On_Update()
+        public void BaseStationDatabase_UpsertAircraft_Raises_AircraftUpdated_On_Update()
         {
             _Database.WriteSupportEnabled = true;
             _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456", Registration = "ABC" });
             _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
 
-            _Database.UpsertAircraftByCode("123456", r => {
-                r.Registration = "XYZ";
-                return r;
-            });
+            _Database.UpsertAircraft(new BaseStationAircraftUpsertLookup() { ModeS = "123456", Registration = "XYZ", });
 
             Assert.AreEqual(1, _AircraftUpdatedEvent.CallCount);
             Assert.AreEqual("123456", _AircraftUpdatedEvent.Args.Value.ModeS);
@@ -1836,191 +1773,157 @@ namespace Test.VirtualRadar.Database
         }
 
         [TestMethod]
-        public void BaseStationDatabase_UpsertAircraftByCode_Does_Not_Raise_AircraftUpdated_On_Insert()
+        public void BaseStationDatabase_UpsertAircraft_Does_Not_Raise_AircraftUpdated_On_Insert()
         {
             _Database.WriteSupportEnabled = true;
             _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
 
-            _Database.UpsertAircraftByCode("123456", r => {
-                r.Registration = "XYZ";
-                return r;
-            });
+            _Database.UpsertAircraft(new BaseStationAircraftUpsertLookup() { ModeS = "123456", Registration = "XYZ", });
 
             Assert.AreEqual(0, _AircraftUpdatedEvent.CallCount);
         }
         #endregion
 
-        #region UpsertManyAircraftByCodes
+        #region UpsertManyAircraft
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_UpsertManyAircraftByCodes_Throws_Exception_If_Writes_Not_Enabled()
+        public void BaseStationDatabase_UpsertManyAircraft_Throws_Exception_If_Writes_Not_Enabled()
         {
-            _Database.UpsertManyAircraftByCodes(new string[] { "A" }, r => r);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertManyAircraftByCodes_Calls_Callback_For_New_Aircraft()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            var callbackCount = 0;
-            _Database.UpsertManyAircraftByCodes(new string[] { "A", "B" }, (aircraft) => {
-                ++callbackCount;
-                Assert.IsNotNull(aircraft);
-                Assert.IsTrue(aircraft.ModeS == "A" || aircraft.ModeS == "B");
-                Assert.IsNull(aircraft.Registration);
-                Assert.AreEqual(_Clock.LocalNowValue, aircraft.FirstCreated);
-                Assert.AreEqual(_Clock.LocalNowValue, aircraft.LastModified);
-                return aircraft;
+            _Database.UpsertManyAircraft(new BaseStationAircraftUpsertLookup[] {
+                new BaseStationAircraftUpsertLookup() { ModeS = "A" },
             });
-
-            Assert.AreEqual(2, callbackCount);
         }
 
         [TestMethod]
-        public void BaseStationDatabase_UpsertManyAircraftByCodes_Inserts_New_Aircraft()
+        public void BaseStationDatabase_UpsertManyAircraft_Inserts_New_Aircraft()
         {
             _Database.WriteSupportEnabled = true;
 
-            _Database.UpsertManyAircraftByCodes(new string[] { "A", "B" }, r => r);
-
-            var aircraft = _Database.GetAircraftByCode("A");
-            Assert.IsNotNull(aircraft);
-
-            aircraft = _Database.GetAircraftByCode("B");
-            Assert.IsNotNull(aircraft);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertManyAircraftByCodes_Inserts_Whatever_The_Callback_Returns()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            _Database.UpsertManyAircraftByCodes(new string[] { "123456" }, r => new BaseStationAircraft() {
-                ModeS = "ABC",
+            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+            _Database.UpsertManyAircraft(new BaseStationAircraftUpsertLookup[] {
+                new BaseStationAircraftUpsertLookup() {
+                    ModeS =             "123456",
+                    Country =           "UK",
+                    ICAOTypeCode =      "A380",
+                    LastModified =      now,
+                    Manufacturer =      "Airbus",
+                    ModeSCountry =      "France",
+                    OperatorFlagCode =  "TWA",
+                    RegisteredOwners =  "Transworld",
+                    Registration =      "G-ABCD",
+                    SerialNo =          "9182",
+                    Type =              "Big Plane",
+                    YearBuilt =         "1992",
+                },
+                new BaseStationAircraftUpsertLookup() {
+                    ModeS =             "789ABC",
+                    Country =           "Germany",
+                    ICAOTypeCode =      "B747",
+                    LastModified =      now,
+                    Manufacturer =      "Boeing",
+                    ModeSCountry =      "USA",
+                    OperatorFlagCode =  "BAW",
+                    RegisteredOwners =  "British Airways",
+                    Registration =      "D-WXYZ",
+                    SerialNo =          "00119",
+                    Type =              "Big Jobs",
+                    YearBuilt =         "1979",
+                },
             });
 
             var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.IsNull(aircraft);
-
-            aircraft = _Database.GetAircraftByCode("ABC");
             Assert.IsNotNull(aircraft);
+            Assert.AreEqual("123456",           aircraft.ModeS);
+            Assert.AreEqual("UK",               aircraft.Country);
+            Assert.AreEqual("A380",             aircraft.ICAOTypeCode);
+            Assert.AreEqual(TruncateDate(now),  aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(now),  aircraft.LastModified);
+            Assert.AreEqual("Airbus",           aircraft.Manufacturer);
+            Assert.AreEqual("France",           aircraft.ModeSCountry);
+            Assert.AreEqual("TWA",              aircraft.OperatorFlagCode);
+            Assert.AreEqual("Transworld",       aircraft.RegisteredOwners);
+            Assert.AreEqual("G-ABCD",           aircraft.Registration);
+            Assert.AreEqual("9182",             aircraft.SerialNo);
+            Assert.AreEqual("Big Plane",        aircraft.Type);
+            Assert.AreEqual("1992",             aircraft.YearBuilt);
+
+            aircraft = _Database.GetAircraftByCode("789ABC");
+            Assert.IsNotNull(aircraft);
+            Assert.AreEqual("789ABC",           aircraft.ModeS);
+            Assert.AreEqual("Germany",          aircraft.Country);
+            Assert.AreEqual("B747",             aircraft.ICAOTypeCode);
+            Assert.AreEqual(TruncateDate(now),  aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(now),  aircraft.LastModified);
+            Assert.AreEqual("Boeing",           aircraft.Manufacturer);
+            Assert.AreEqual("USA",              aircraft.ModeSCountry);
+            Assert.AreEqual("BAW",              aircraft.OperatorFlagCode);
+            Assert.AreEqual("British Airways",  aircraft.RegisteredOwners);
+            Assert.AreEqual("D-WXYZ",           aircraft.Registration);
+            Assert.AreEqual("00119",            aircraft.SerialNo);
+            Assert.AreEqual("Big Jobs",         aircraft.Type);
+            Assert.AreEqual("1979",             aircraft.YearBuilt);
         }
 
         [TestMethod]
-        public void BaseStationDatabase_UpsertManyAircraftByCodes_Does_Not_Insert_Aircraft_When_Callback_Returns_Null()
+        public void BaseStationDatabase_UpsertManyAircraft_Updates_Existing_Aircraft()
         {
-            _Database.WriteSupportEnabled = true;
+            var createdDate = new DateTime(1999, 8, 7, 6, 5, 4, 321);
+            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
 
-            _Database.UpsertManyAircraftByCodes(new string[] { "123456" }, r => null);
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.IsNull(aircraft);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertManyAircraftByCodes_Calls_Callback_For_Existing_Aircraft()
-        {
             _Database.WriteSupportEnabled = true;
             _Database.InsertAircraft(new BaseStationAircraft() {
-                ModeS = "123456",
-                Registration = "ABC",
-                FirstCreated = _Clock.LocalNowValue,
-                LastModified = _Clock.LocalNowValue,
+                ModeS =         "123456",
+                Registration =  "N12345",
+                FirstCreated =  createdDate,
+                LastModified =  createdDate,
             });
 
-            var originalTime = _Clock.LocalNowValue;
-            _Clock.AddMilliseconds(60000);
-
-            var callbackCalled = false;
-            _Database.UpsertManyAircraftByCodes(new string[] { "123456" }, (aircraft) => {
-                callbackCalled = true;
-                Assert.IsNotNull(aircraft);
-                Assert.AreEqual("123456", aircraft.ModeS);
-                Assert.AreEqual("ABC", aircraft.Registration);
-                Assert.AreEqual(TruncateDate(originalTime), aircraft.FirstCreated);
-                Assert.AreEqual(TruncateDate(originalTime), aircraft.LastModified);
-                return aircraft;
-            });
-
-            Assert.IsTrue(callbackCalled);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertManyAircraftByCodes_Updates_Existing_Aircraft()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() {
-                ModeS = "123456",
-                Registration = "ABC",
-                FirstCreated = _Clock.LocalNowValue,
-                LastModified = _Clock.LocalNowValue,
-            });
-
-            _Database.UpsertManyAircraftByCodes(new string[] { "123456" }, r => {
-                r.Registration = "XYZ";
-                return r;
+            _Database.UpsertManyAircraft(new BaseStationAircraftUpsertLookup[] {
+                new BaseStationAircraftUpsertLookup() {
+                    ModeS =             "123456",
+                    Country =           "Germany",
+                    ICAOTypeCode =      "B747",
+                    LastModified =      now,
+                    Manufacturer =      "Boeing",
+                    ModeSCountry =      "USA",
+                    OperatorFlagCode =  "BAW",
+                    RegisteredOwners =  "British Airways",
+                    Registration =      "D-WXYZ",
+                    SerialNo =          "00119",
+                    Type =              "Big Jobs",
+                    YearBuilt =         "1979",
+                },
             });
 
             var aircraft = _Database.GetAircraftByCode("123456");
             Assert.IsNotNull(aircraft);
-            Assert.AreEqual("XYZ", aircraft.Registration);
+
+            Assert.AreEqual("123456",                   aircraft.ModeS);
+            Assert.AreEqual("Germany",                  aircraft.Country);
+            Assert.AreEqual("B747",                     aircraft.ICAOTypeCode);
+            Assert.AreEqual(TruncateDate(createdDate),  aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(now),          aircraft.LastModified);
+            Assert.AreEqual("Boeing",                   aircraft.Manufacturer);
+            Assert.AreEqual("USA",                      aircraft.ModeSCountry);
+            Assert.AreEqual("BAW",                      aircraft.OperatorFlagCode);
+            Assert.AreEqual("British Airways",          aircraft.RegisteredOwners);
+            Assert.AreEqual("D-WXYZ",                   aircraft.Registration);
+            Assert.AreEqual("00119",                    aircraft.SerialNo);
+            Assert.AreEqual("Big Jobs",                 aircraft.Type);
+            Assert.AreEqual("1979",                     aircraft.YearBuilt);
         }
 
         [TestMethod]
-        public void BaseStationDatabase_UpsertManyAircraftByCodes_Updates_Existing_Aircraft_With_Whatever_Callback_Returns()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() {
-                ModeS = "123456",
-                Registration = "ABC",
-                FirstCreated = _Clock.LocalNowValue,
-                LastModified = _Clock.LocalNowValue,
-            });
-
-            _Database.UpsertManyAircraftByCodes(new string[] { "123456" }, r => {
-                r.ModeS = "ABC";
-                return r;
-            });
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.IsNull(aircraft);
-
-            aircraft = _Database.GetAircraftByCode("ABC");
-            Assert.IsNotNull(aircraft);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertManyAircraftByCodes_Does_Not_Update_If_Callback_Returns_Null()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() {
-                ModeS = "123456",
-                Registration = "ABC",
-                FirstCreated = _Clock.LocalNowValue,
-                LastModified = _Clock.LocalNowValue,
-            });
-
-            _Database.UpsertManyAircraftByCodes(new string[] { "123456" }, r => {
-                r.Registration = "XYZ";
-                return null;
-            });
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.AreEqual("ABC", aircraft.Registration);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertManyAircraftByCodes_Raises_AircraftUpdated_On_Update()
+        public void BaseStationDatabase_UpsertManyAircraft_Raises_AircraftUpdated_On_Update()
         {
             _Database.WriteSupportEnabled = true;
             _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "AAAAAA", Registration = "---" });
             _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "BBBBBB", Registration = "===" });
             _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
 
-            _Database.UpsertManyAircraftByCodes(new string[] { "AAAAAA", "BBBBBB", }, r => {
-                r.Registration = r.ModeS == "AAAAAA" ? "111" : "222";
-                return r;
+            _Database.UpsertManyAircraft(new BaseStationAircraftUpsertLookup[] {
+                new BaseStationAircraftUpsertLookup() { ModeS = "AAAAAA", Registration = "111" },
+                new BaseStationAircraftUpsertLookup() { ModeS = "BBBBBB", Registration = "222" },
             });
 
             Assert.AreEqual(2, _AircraftUpdatedEvent.CallCount);
@@ -2029,19 +1932,15 @@ namespace Test.VirtualRadar.Database
         }
 
         [TestMethod]
-        public void BaseStationDatabase_UpsertManyAircraftByCodes_Does_Not_Raise_AircraftUpdated_On_Insert()
+        public void BaseStationDatabase_UpsertManyAircraft_Does_Not_Raise_AircraftUpdated_On_Insert()
         {
             _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "AAAAAA", Registration = "---" });
-            _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
-
-            _Database.UpsertManyAircraftByCodes(new string[] { "AAAAAA", "BBBBBB", }, r => {
-                r.Registration = r.ModeS == "AAAAAA" ? "111" : "222";
-                return r;
+            _Database.UpsertManyAircraft(new BaseStationAircraftUpsertLookup[] {
+                new BaseStationAircraftUpsertLookup() { ModeS = "AAAAAA", Registration = "111" },
+                new BaseStationAircraftUpsertLookup() { ModeS = "BBBBBB", Registration = "222" },
             });
 
-            Assert.AreEqual(1, _AircraftUpdatedEvent.CallCount);
-            Assert.AreEqual("111", _AircraftUpdatedEvent.AllArgs.Single(r => r.Value.ModeS == "AAAAAA").Value.Registration);
+            Assert.AreEqual(0, _AircraftUpdatedEvent.CallCount);
         }
         #endregion
 
@@ -2384,6 +2283,7 @@ namespace Test.VirtualRadar.Database
         public void BaseStationDatabase_GetFlights_Can_Search_For_All_Variations_Of_A_Callsign()
         {
             var worksheet = new ExcelWorksheetData(TestContext);
+            var comments = worksheet.String("Comments");
 
             // Setup flights in database
             for(var i = 1;i <= 3;++i) {
@@ -2419,7 +2319,6 @@ namespace Test.VirtualRadar.Database
             var flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
 
             // Assert that we got what we expected
-            var comments = worksheet.String("Comments");
             Assert.AreEqual(worksheet.Int("Count"), flights.Count, comments);
             for(var i = 1;i <= 3;++i) {
                 var expectCallsign = worksheet.EString(String.Format("Expect{0}", i));

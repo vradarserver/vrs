@@ -2,7 +2,7 @@
     SELECT 1
     FROM   [sys].[table_types] AS [tt]
     JOIN   [sys].[schemas]     AS [s]  ON [tt].[schema_id] = [s].[schema_id]
-    WHERE  [s].[name] = 'VRS'
+    WHERE  [s].[name] =  'VRS'
     AND    [tt].[name] = 'Icao24'
 )
 BEGIN
