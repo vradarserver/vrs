@@ -11,10 +11,10 @@ BEGIN
         [ModeS]             VARCHAR(6) NOT NULL PRIMARY KEY
        ,[LastModified]      DATETIME NOT NULL
        ,[Registration]      NVARCHAR(20)
-       ,[Country]           NVARCHAR(24)
-       ,[ModeSCountry]      NVARCHAR(24)
-       ,[Manufacturer]      NVARCHAR(60)
-       ,[Type]              NVARCHAR(40)
+       ,[Country]           NVARCHAR(80)
+       ,[ModeSCountry]      NVARCHAR(80)
+       ,[Manufacturer]      NVARCHAR(80)
+       ,[Type]              NVARCHAR(80)
        ,[ICAOTypeCode]      NVARCHAR(10)
        ,[RegisteredOwners]  NVARCHAR(100)
        ,[OperatorFlagCode]  NVARCHAR(20)

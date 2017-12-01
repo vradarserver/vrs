@@ -7,7 +7,7 @@ GO
 ALTER PROCEDURE [BaseStation].[Aircraft_UpdateModeSCountry]
     @AircraftID   BIGINT
    ,@LastModified DATETIME
-   ,@ModeSCountry NVARCHAR(24)
+   ,@ModeSCountry NVARCHAR(80)
 AS
 BEGIN
     SET NOCOUNT ON;
