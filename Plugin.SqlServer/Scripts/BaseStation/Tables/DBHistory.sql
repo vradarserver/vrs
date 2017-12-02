@@ -2,7 +2,7 @@
 BEGIN
     CREATE TABLE [BaseStation].[DBHistory]
     (
-        [DBHistoryID]   BIGINT IDENTITY
+        [DBHistoryID]   INTEGER IDENTITY
        ,[TimeStamp]     DATETIME NOT NULL
        ,[Description]   NVARCHAR(100) NOT NULL
 

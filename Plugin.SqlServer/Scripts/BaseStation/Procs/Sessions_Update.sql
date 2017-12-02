@@ -5,8 +5,8 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Sessions_Update]
-    @SessionID  BIGINT
-   ,@LocationID BIGINT
+    @SessionID  INTEGER
+   ,@LocationID INTEGER
    ,@StartTime  DATETIME = NULL
    ,@EndTime    DATETIME
 AS

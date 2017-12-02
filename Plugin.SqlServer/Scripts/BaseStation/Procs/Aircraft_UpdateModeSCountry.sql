@@ -5,7 +5,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_UpdateModeSCountry]
-    @AircraftID   BIGINT
+    @AircraftID   INTEGER
    ,@LastModified DATETIME
    ,@ModeSCountry NVARCHAR(80)
 AS

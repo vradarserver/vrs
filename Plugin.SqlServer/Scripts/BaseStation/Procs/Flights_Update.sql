@@ -5,9 +5,9 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Flights_Update]
-    @FlightID            BIGINT
-   ,@SessionID           BIGINT
-   ,@AircraftID          BIGINT
+    @FlightID            INT
+   ,@SessionID           INT
+   ,@AircraftID          INT
    ,@StartTime           DATETIME = NULL
    ,@EndTime             DATETIME
    ,@Callsign            NVARCHAR(20)

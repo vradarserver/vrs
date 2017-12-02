@@ -2,7 +2,7 @@
 BEGIN
     CREATE TABLE [BaseStation].[Aircraft]
     (
-        [AircraftID]        BIGINT IDENTITY
+        [AircraftID]        INTEGER IDENTITY
        ,[FirstCreated]      DATETIME NOT NULL
        ,[LastModified]      DATETIME NOT NULL
        ,[ModeS]             VARCHAR(6) NOT NULL

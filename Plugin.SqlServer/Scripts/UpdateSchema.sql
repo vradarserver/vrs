@@ -72,7 +72,7 @@ IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Bas
 BEGIN
     CREATE TABLE [BaseStation].[Aircraft]
     (
-        [AircraftID]        BIGINT IDENTITY
+        [AircraftID]        INTEGER IDENTITY
        ,[FirstCreated]      DATETIME NOT NULL
        ,[LastModified]      DATETIME NOT NULL
        ,[ModeS]             VARCHAR(6) NOT NULL
@@ -158,7 +158,7 @@ IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Bas
 BEGIN
     CREATE TABLE [BaseStation].[DBHistory]
     (
-        [DBHistoryID]   BIGINT IDENTITY
+        [DBHistoryID]   INTEGER IDENTITY
        ,[TimeStamp]     DATETIME NOT NULL
        ,[Description]   NVARCHAR(100) NOT NULL
 
@@ -234,7 +234,7 @@ IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Bas
 BEGIN
     CREATE TABLE [BaseStation].[Locations]
     (
-        [LocationID]    BIGINT IDENTITY
+        [LocationID]    INTEGER IDENTITY
        ,[LocationName]  NVARCHAR(80) NOT NULL
        ,[Latitude]      REAL NOT NULL
        ,[Longitude]     REAL NOT NULL
@@ -274,8 +274,8 @@ IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Bas
 BEGIN
     CREATE TABLE [BaseStation].[Sessions]
     (
-        [SessionID]     BIGINT IDENTITY
-       ,[LocationID]    BIGINT NOT NULL CONSTRAINT [FK_Sessions_Location] FOREIGN KEY REFERENCES [BaseStation].[Locations] ([LocationID])
+        [SessionID]     INTEGER IDENTITY
+       ,[LocationID]    INTEGER NOT NULL CONSTRAINT [FK_Sessions_Location] FOREIGN KEY REFERENCES [BaseStation].[Locations] ([LocationID])
        ,[StartTime]     DATETIME NOT NULL
        ,[EndTime]       DATETIME NULL
 
@@ -301,9 +301,9 @@ IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Bas
 BEGIN
     CREATE TABLE [BaseStation].[Flights]
     (
-        [FlightID]              BIGINT IDENTITY
-       ,[SessionID]             BIGINT NOT NULL CONSTRAINT [FK_Flights_Session]  FOREIGN KEY REFERENCES [BaseStation].[Sessions] ([SessionID]) ON DELETE CASCADE
-       ,[AircraftID]            BIGINT NOT NULL CONSTRAINT [FK_Flights_Aircraft] FOREIGN KEY REFERENCES [BaseStation].[Aircraft] ([AircraftID]) ON DELETE CASCADE
+        [FlightID]              INTEGER IDENTITY
+       ,[SessionID]             INTEGER NOT NULL CONSTRAINT [FK_Flights_Session]  FOREIGN KEY REFERENCES [BaseStation].[Sessions] ([SessionID]) ON DELETE CASCADE
+       ,[AircraftID]            INTEGER NOT NULL CONSTRAINT [FK_Flights_Aircraft] FOREIGN KEY REFERENCES [BaseStation].[Aircraft] ([AircraftID]) ON DELETE CASCADE
        ,[StartTime]             DATETIME NOT NULL
        ,[EndTime]               DATETIME
        ,[Callsign]              NVARCHAR(20)
@@ -363,7 +363,7 @@ IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Bas
 BEGIN
     CREATE TABLE [BaseStation].[SystemEvents]
     (
-        [SystemEventsID]    BIGINT IDENTITY
+        [SystemEventsID]    INTEGER IDENTITY
        ,[TimeStamp]         DATETIME NOT NULL
        ,[App]               NVARCHAR(15) NOT NULL
        ,[Msg]               NVARCHAR(100) NOT NULL
@@ -427,7 +427,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_Delete]
-    @AircraftID BIGINT
+    @AircraftID INTEGER
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -506,7 +506,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_GetByID]
-    @AircraftID BIGINT
+    @AircraftID INTEGER
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -867,7 +867,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_Update]
-    @AircraftID       BIGINT
+    @AircraftID       INTEGER
    ,@FirstCreated     DATETIME = NULL
    ,@LastModified     DATETIME
    ,@ModeS            VARCHAR(6)
@@ -991,7 +991,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_UpdateModeSCountry]
-    @AircraftID   BIGINT
+    @AircraftID   INTEGER
    ,@LastModified DATETIME
    ,@ModeSCountry NVARCHAR(80)
 AS
@@ -1027,7 +1027,7 @@ BEGIN
     SET NOCOUNT ON;
 
     DECLARE @action AS TABLE (
-        [AircraftID] BIGINT PRIMARY KEY
+        [AircraftID] INTEGER PRIMARY KEY
        ,[Action]     VARCHAR(7)             -- 'Created' or 'Updated'
     );
 
@@ -1211,7 +1211,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Flights_Delete]
-    @FlightID BIGINT
+    @FlightID INTEGER
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -1237,7 +1237,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Flights_GetByID]
-    @FlightID BIGINT
+    @FlightID INTEGER
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -1265,8 +1265,8 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Flights_Insert]
-    @SessionID           BIGINT
-   ,@AircraftID          BIGINT
+    @SessionID           INTEGER
+   ,@AircraftID          INTEGER
    ,@StartTime           DATETIME
    ,@EndTime             DATETIME = NULL
    ,@Callsign            NVARCHAR(20) = NULL
@@ -1401,9 +1401,9 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Flights_Update]
-    @FlightID            BIGINT
-   ,@SessionID           BIGINT
-   ,@AircraftID          BIGINT
+    @FlightID            INT
+   ,@SessionID           INT
+   ,@AircraftID          INT
    ,@StartTime           DATETIME = NULL
    ,@EndTime             DATETIME
    ,@Callsign            NVARCHAR(20)
@@ -1499,7 +1499,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Locations_Delete]
-    @LocationID BIGINT
+    @LocationID INTEGER
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -1591,7 +1591,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Locations_Update]
-    @LocationID   BIGINT
+    @LocationID   INTEGER
    ,@LocationName NVARCHAR(80)
    ,@Latitude     REAL
    ,@Longitude    REAL
@@ -1625,7 +1625,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Sessions_Delete]
-    @SessionID BIGINT
+    @SessionID INTEGER
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -1677,7 +1677,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Sessions_Insert]
-    @LocationID BIGINT
+    @LocationID INTEGER
    ,@StartTime  DATETIME
    ,@EndTime    DATETIME = NULL
 AS
@@ -1714,8 +1714,8 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Sessions_Update]
-    @SessionID  BIGINT
-   ,@LocationID BIGINT
+    @SessionID  INTEGER
+   ,@LocationID INTEGER
    ,@StartTime  DATETIME = NULL
    ,@EndTime    DATETIME
 AS
@@ -1746,7 +1746,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[SystemEvents_Delete]
-    @SystemEventsID BIGINT
+    @SystemEventsID INTEGER
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -1835,7 +1835,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[SystemEvents_Update]
-    @SystemEventsID BIGINT
+    @SystemEventsID INTEGER
    ,@TimeStamp      DATETIME
    ,@App            NVARCHAR(15)
    ,@Msg            NVARCHAR(100)

@@ -2,9 +2,9 @@
 BEGIN
     CREATE TABLE [BaseStation].[Flights]
     (
-        [FlightID]              BIGINT IDENTITY
-       ,[SessionID]             BIGINT NOT NULL CONSTRAINT [FK_Flights_Session]  FOREIGN KEY REFERENCES [BaseStation].[Sessions] ([SessionID]) ON DELETE CASCADE
-       ,[AircraftID]            BIGINT NOT NULL CONSTRAINT [FK_Flights_Aircraft] FOREIGN KEY REFERENCES [BaseStation].[Aircraft] ([AircraftID]) ON DELETE CASCADE
+        [FlightID]              INTEGER IDENTITY
+       ,[SessionID]             INTEGER NOT NULL CONSTRAINT [FK_Flights_Session]  FOREIGN KEY REFERENCES [BaseStation].[Sessions] ([SessionID]) ON DELETE CASCADE
+       ,[AircraftID]            INTEGER NOT NULL CONSTRAINT [FK_Flights_Aircraft] FOREIGN KEY REFERENCES [BaseStation].[Aircraft] ([AircraftID]) ON DELETE CASCADE
        ,[StartTime]             DATETIME NOT NULL
        ,[EndTime]               DATETIME
        ,[Callsign]              NVARCHAR(20)

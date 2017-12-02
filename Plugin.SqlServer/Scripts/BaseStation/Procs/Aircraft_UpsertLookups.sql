@@ -11,7 +11,7 @@ BEGIN
     SET NOCOUNT ON;
 
     DECLARE @action AS TABLE (
-        [AircraftID] BIGINT PRIMARY KEY
+        [AircraftID] INTEGER PRIMARY KEY
        ,[Action]     VARCHAR(7)             -- 'Created' or 'Updated'
     );
 

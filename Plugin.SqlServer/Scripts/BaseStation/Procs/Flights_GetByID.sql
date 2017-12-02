@@ -5,7 +5,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Flights_GetByID]
-    @FlightID BIGINT
+    @FlightID INTEGER
 AS
 BEGIN
     SET NOCOUNT ON;

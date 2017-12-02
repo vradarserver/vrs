@@ -2,8 +2,8 @@
 BEGIN
     CREATE TABLE [BaseStation].[Sessions]
     (
-        [SessionID]     BIGINT IDENTITY
-       ,[LocationID]    BIGINT NOT NULL CONSTRAINT [FK_Sessions_Location] FOREIGN KEY REFERENCES [BaseStation].[Locations] ([LocationID])
+        [SessionID]     INTEGER IDENTITY
+       ,[LocationID]    INTEGER NOT NULL CONSTRAINT [FK_Sessions_Location] FOREIGN KEY REFERENCES [BaseStation].[Locations] ([LocationID])
        ,[StartTime]     DATETIME NOT NULL
        ,[EndTime]       DATETIME NULL
 

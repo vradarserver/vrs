@@ -5,7 +5,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Sessions_Delete]
-    @SessionID BIGINT
+    @SessionID INTEGER
 AS
 BEGIN
     SET NOCOUNT ON;
