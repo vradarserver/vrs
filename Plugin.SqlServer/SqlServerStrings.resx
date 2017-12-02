@@ -136,7 +136,7 @@
     <value>Enabled</value>
   </data>
   <data name="OptionChangesNeedARestart" xml:space="preserve">
-    <value>WARNING: Changes to these settings will not take effect until the next time you start Virtual Radar Server.</value>
+    <value>Changes to these settings will not take effect until the next time you start Virtual Radar Server</value>
   </data>
   <data name="PluginName" xml:space="preserve">
     <value>SQL Server</value>
@@ -164,5 +164,9 @@
   <data name="EnabledFullDescription" xml:space="preserve">
     <value>Enabled, using {0}</value>
     <comment>where {0} will be the connection string</comment>
+  </data>
+  <data name="OpenUpdateSchemaFile" xml:space="preserve">
+    <value>Open UpdateSchema.sql</value>
+    <comment>UpdateSchema.sql is a file name</comment>
   </data>
 </root>

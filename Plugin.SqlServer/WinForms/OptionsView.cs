@@ -15,6 +15,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -112,6 +113,17 @@ namespace VirtualRadar.Plugin.SqlServer.WinForms
             var scriptOutput = database.UpdateSchema();
 
             MessageBox.Show(String.Join(Environment.NewLine, scriptOutput), SqlServerStrings.SchemaUpdatedTitle);
+        }
+
+        /// <summary>
+        /// Opens the UpdateSchema.sql file in SSMS.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LinkLabelOpenUpdateSchemaSql_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var fullPath = Path.Combine(Plugin.Singleton.PluginFolder, "UpdateSchema.sql");
+            Process.Start(fullPath);
         }
     }
 }

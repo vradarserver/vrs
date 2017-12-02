@@ -133,7 +133,16 @@ namespace VirtualRadar.Plugin.SqlServer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to WARNING: Changes to these settings will not take effect until the next time you start Virtual Radar Server..
+        ///   Looks up a localized string similar to Open UpdateSchema.sql.
+        /// </summary>
+        public static string OpenUpdateSchemaFile {
+            get {
+                return ResourceManager.GetString("OpenUpdateSchemaFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changes to these settings will not take effect until the next time you start Virtual Radar Server.
         /// </summary>
         public static string OptionChangesNeedARestart {
             get {

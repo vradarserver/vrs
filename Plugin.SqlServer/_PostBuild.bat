@@ -19,6 +19,7 @@ rem Ensure that the XML manifest file is set to always copy to the output direct
 
     set SOURCEDLL=%TARGETDIR%%ASSEMBLY%.dll
     set SOURCEXML=%TARGETDIR%%ASSEMBLY%.xml
+    set SOURCESQL=%TARGETDIR%Scripts\UpdateSchema.sql
     set SOURCEWEB=%TARGETDIR%..\..\Web
     set PLUGINS=%SLNDIR%VirtualRadar\bin\x86\%CONFDIR%\Plugins
     set DEST=%PLUGINS%\%PLUGINDIR%
@@ -34,6 +35,7 @@ rem Ensure that the XML manifest file is set to always copy to the output direct
 :CPPLUGIN
     copy "%SOURCEDLL%" "%DEST%"
     copy "%SOURCEXML%" "%DEST%"
+    copy "%SOURCESQL%" "%DEST%"
 
     rem Delete and then copy the WEB folder into the plugin folder.
     rem If your plugin has no web content then comment out or remove this block

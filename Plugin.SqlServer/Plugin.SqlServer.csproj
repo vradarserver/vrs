@@ -162,6 +162,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>UpdateSchema.tt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Scripts\UpdateSchema.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

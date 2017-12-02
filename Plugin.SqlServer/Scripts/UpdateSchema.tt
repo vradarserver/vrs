@@ -41,6 +41,12 @@ GO
 <#
     }
 #>
+DECLARE @dbName AS NVARCHAR(128) = DB_NAME();
+IF @dbName IN ('master', 'model', 'msdb', 'tempdb') BEGIN
+    RAISERROR(N'You cannot apply the VRS schema to %s. Update your connection string to refer to a valid database and try again', 20, -1, @dbName) WITH LOG;
+END;
+GO
+
 PRINT 'Running schema upgrade on ' + @@SERVERNAME + ' in ' + DB_NAME() + ' as user ' + SUSER_NAME();
 PRINT '';
 GO
