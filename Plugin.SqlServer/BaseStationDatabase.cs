@@ -65,7 +65,7 @@ namespace VirtualRadar.Plugin.SqlServer
         /// </summary>
         public bool CanUpdateSchema
         {
-            get { return _CanUpdateSchema ?? Plugin.Singleton.Options.CanUpdateSchema; }
+            get { return _CanUpdateSchema ?? false; }
             set { _CanUpdateSchema = value; }
         }
 

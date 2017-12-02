@@ -70,15 +70,6 @@ namespace VirtualRadar.Plugin.SqlServer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Let plugin update schema.
-        /// </summary>
-        public static string CanUpdateSchema {
-            get {
-                return ResourceManager.GetString("CanUpdateSchema", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Connection string.
         /// </summary>
         public static string ConnectionString {

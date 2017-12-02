@@ -63,7 +63,6 @@ namespace VirtualRadar.Plugin.SqlServer.WinForms
         private void ApplyBindings()
         {
             AddControlBinder(new CheckBoxBoolBinder<Options>(Options,   checkBoxEnabled,            r => r.Enabled,             (r,v) => r.Enabled = v));
-            AddControlBinder(new CheckBoxBoolBinder<Options>(Options,   checkBoxCanUpdateSchema,    r => r.CanUpdateSchema,     (r,v) => r.CanUpdateSchema = v));
             AddControlBinder(new TextBoxStringBinder<Options>(Options,  textBoxConnectionString,    r => r.ConnectionString,    (r,v) => r.ConnectionString = v));
         }
 
