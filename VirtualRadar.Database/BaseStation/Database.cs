@@ -894,7 +894,7 @@ namespace VirtualRadar.Database.BaseStation
             return result.ToArray();
         }
 
-        public BaseStationAircraft[] UpsertManyAircraft(IEnumerable<BaseStationAircraft> allUpsertAircraft)
+        public BaseStationAircraft[] UpsertManyAircraft(IEnumerable<BaseStationAircraftUpsert> allUpsertAircraft)
         {
             if(!WriteSupportEnabled) {
                 throw new InvalidOperationException("You cannot upsert aircraft when write support is disabled");
@@ -915,7 +915,7 @@ namespace VirtualRadar.Database.BaseStation
                             var thisUpdated = false;
                             allAircraft.TryGetValue(ParameterBuilder.NormaliseAircraftIcao(icao), out var aircraft);
                             var upsertAircraft = allUpsertAircraft.First(r => r.ModeS == icao);
-                            aircraft = UpsertAircraft(aircraft, upsertAircraft, FillFromBaseStationAircraft, ref thisUpdated);
+                            aircraft = UpsertAircraft(aircraft, upsertAircraft, FillFromBaseStationAircraftUpsert, ref thisUpdated);
                             if(aircraft != null) {
                                 result.Add(aircraft);
                                 updated.Add(thisUpdated);
@@ -959,59 +959,12 @@ namespace VirtualRadar.Database.BaseStation
             return destination;
         }
 
-        private BaseStationAircraft FillFromBaseStationAircraft(BaseStationAircraft destination, BaseStationAircraft source)
+        private BaseStationAircraft FillFromBaseStationAircraftUpsert(BaseStationAircraft destination, BaseStationAircraftUpsert source)
         {
             if(destination == null) {
                 destination = new BaseStationAircraft();
             }
-            destination.AircraftClass =     source.AircraftClass;
-            destination.CofACategory =      source.CofACategory;
-            destination.CofAExpiry =        source.CofAExpiry;
-            destination.Country =           source.Country;
-            destination.CurrentRegDate =    source.CurrentRegDate;
-            destination.DeRegDate =         source.DeRegDate;
-            destination.Engines =           source.Engines;
-            destination.FirstRegDate =      source.FirstRegDate;
-            destination.GenericName =       source.GenericName;
-            destination.ICAOTypeCode =      source.ICAOTypeCode;
-            destination.InfoUrl =           source.InfoUrl;
-            destination.Interested =        source.Interested;
-            destination.LastModified =      source.LastModified;
-            destination.Manufacturer =      source.Manufacturer;
-            destination.ModeS =             source.ModeS;
-            destination.ModeSCountry =      source.ModeSCountry;
-            destination.MTOW =              source.MTOW;
-            destination.OperatorFlagCode =  source.OperatorFlagCode;
-            destination.OwnershipStatus =   source.OwnershipStatus;
-            destination.PictureUrl1 =       source.PictureUrl1;
-            destination.PictureUrl2 =       source.PictureUrl2;
-            destination.PictureUrl3 =       source.PictureUrl3;
-            destination.PopularName =       source.PopularName;
-            destination.PreviousID =        source.PreviousID;
-            destination.Registration =      source.Registration;
-            destination.RegisteredOwners =  source.RegisteredOwners;
-            destination.SerialNo =          source.SerialNo;
-            destination.Status =            source.Status;
-            destination.TotalHours =        source.TotalHours;
-            destination.Type =              source.Type;
-            destination.UserNotes =         source.UserNotes;
-            destination.UserTag =           source.UserTag;
-            destination.YearBuilt =         source.YearBuilt;
-            destination.UserString1 =       source.UserString1;
-            destination.UserString2 =       source.UserString2;
-            destination.UserString3 =       source.UserString3;
-            destination.UserString4 =       source.UserString4;
-            destination.UserString5 =       source.UserString5;
-            destination.UserBool1 =         source.UserBool1;
-            destination.UserBool2 =         source.UserBool2;
-            destination.UserBool3 =         source.UserBool3;
-            destination.UserBool4 =         source.UserBool4;
-            destination.UserBool5 =         source.UserBool5;
-            destination.UserInt1 =          source.UserInt1;
-            destination.UserInt2 =          source.UserInt2;
-            destination.UserInt3 =          source.UserInt3;
-            destination.UserInt4 =          source.UserInt4;
-            destination.UserInt5 =          source.UserInt5;
+            source.ApplyTo(destination);
 
             return destination;
         }

@@ -359,7 +359,7 @@ namespace VirtualRadar.Interface.Database
         /// </summary>
         /// <param name="aircraft"></param>
         /// <returns></returns>
-        BaseStationAircraft[] UpsertManyAircraft(IEnumerable<BaseStationAircraft> aircraft);
+        BaseStationAircraft[] UpsertManyAircraft(IEnumerable<BaseStationAircraftUpsert> aircraft);
 
         /// <summary>
         /// Deletes an existing aircraft record.

@@ -256,6 +256,10 @@ namespace VirtualRadar.Interface.Database
             UserNotes =             flight.UserNotes;
         }
 
+        /// <summary>
+        /// Copies the object's values to a flight object.
+        /// </summary>
+        /// <param name="flight"></param>
         public void ApplyTo(BaseStationFlight flight)
         {
             flight.Aircraft =               Aircraft;
@@ -297,6 +301,10 @@ namespace VirtualRadar.Interface.Database
             flight.UserNotes =              UserNotes;
         }
 
+        /// <summary>
+        /// Returns a new flight populated with the object's values.
+        /// </summary>
+        /// <returns></returns>
         public BaseStationFlight ToBaseStationFlight()
         {
             return new BaseStationFlight() {

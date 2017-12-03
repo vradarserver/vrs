@@ -1799,8 +1799,8 @@ namespace Test.VirtualRadar.Database
         [ExpectedException(typeof(InvalidOperationException))]
         public void BaseStationDatabase_UpsertManyAircraft_FullVersion_Throws_Exception_If_Writes_Not_Enabled()
         {
-            _Database.UpsertManyAircraft(new BaseStationAircraft[] {
-                new BaseStationAircraft() { ModeS = "A" },
+            _Database.UpsertManyAircraft(new BaseStationAircraftUpsert[] {
+                new BaseStationAircraftUpsert() { ModeS = "A" },
             });
         }
 
@@ -1880,15 +1880,15 @@ namespace Test.VirtualRadar.Database
             _Database.WriteSupportEnabled = true;
 
             var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-            _Database.UpsertManyAircraft(new BaseStationAircraft[] {
-                new BaseStationAircraft() {
+            _Database.UpsertManyAircraft(new BaseStationAircraftUpsert[] {
+                new BaseStationAircraftUpsert() {
                     ModeS =             "123456",
                     Country =           "UK",
                     FirstCreated =      now,
                     YearBuilt =         "1992",
                     UserString4 =       "Esoteric"
                 },
-                new BaseStationAircraft() {
+                new BaseStationAircraftUpsert() {
                     ModeS =             "789ABC",
                     LastModified =      now,
                     Manufacturer =      "Boeing",
@@ -1975,7 +1975,7 @@ namespace Test.VirtualRadar.Database
                 LastModified =  createdDate,
             });
 
-            _Database.UpsertManyAircraft(new BaseStationAircraft[] {
+            _Database.UpsertManyAircraft(new BaseStationAircraftUpsert[] {
                 new BaseStationAircraft() {
                     ModeS =             "123456",
                     Country =           "Germany",
@@ -2039,9 +2039,9 @@ namespace Test.VirtualRadar.Database
             _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "BBBBBB", Registration = "===" });
             _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
 
-            _Database.UpsertManyAircraft(new BaseStationAircraft[] {
-                new BaseStationAircraft() { ModeS = "AAAAAA", Registration = "111" },
-                new BaseStationAircraft() { ModeS = "BBBBBB", Registration = "222" },
+            _Database.UpsertManyAircraft(new BaseStationAircraftUpsert[] {
+                new BaseStationAircraftUpsert() { ModeS = "AAAAAA", Registration = "111" },
+                new BaseStationAircraftUpsert() { ModeS = "BBBBBB", Registration = "222" },
             });
 
             Assert.AreEqual(2, _AircraftUpdatedEvent.CallCount);
