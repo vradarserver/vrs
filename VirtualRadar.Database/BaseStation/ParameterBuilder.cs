@@ -236,5 +236,15 @@ namespace VirtualRadar.Database.BaseStation
 
             return result;
         }
+
+        /// <summary>
+        /// Normalises a Mode-S ICAO24.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <returns></returns>
+        public static string NormaliseAircraftIcao(string icao)
+        {
+            return (icao ?? "").ToUpper();
+        }
     }
 }

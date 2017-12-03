@@ -5,7 +5,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[SystemEvents_Update]
-    @SystemEventsID INTEGER
+    @SystemEventsID INT
    ,@TimeStamp      DATETIME
    ,@App            NVARCHAR(15)
    ,@Msg            NVARCHAR(100)

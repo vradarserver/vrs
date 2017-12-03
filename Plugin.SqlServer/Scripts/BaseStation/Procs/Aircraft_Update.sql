@@ -5,7 +5,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_Update]
-    @AircraftID       INTEGER
+    @AircraftID       INT
    ,@FirstCreated     DATETIME = NULL
    ,@LastModified     DATETIME
    ,@ModeS            VARCHAR(6)

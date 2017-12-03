@@ -355,6 +355,13 @@ namespace VirtualRadar.Interface.Database
         BaseStationAircraft[] UpsertManyAircraft(IEnumerable<BaseStationAircraftUpsertLookup> aircraft);
 
         /// <summary>
+        /// Creates or updates full-size aircraft records.
+        /// </summary>
+        /// <param name="aircraft"></param>
+        /// <returns></returns>
+        BaseStationAircraft[] UpsertManyAircraft(IEnumerable<BaseStationAircraft> aircraft);
+
+        /// <summary>
         /// Deletes an existing aircraft record.
         /// </summary>
         /// <param name="aircraft"></param>

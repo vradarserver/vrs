@@ -787,12 +787,11 @@ namespace VirtualRadar.Database.BaseStation
                 OpenConnection();
                 if(_Connection != null) {
                     var localNow = _Clock.LocalNow;
-                    Func<string, string> normaliseIcao = (icao) => { return icao.ToUpper(); };
-                    var allAircraft = Aircraft_GetByIcaos(icaos).ToDictionary(r => normaliseIcao(r.ModeS), r => r);
+                    var allAircraft = Aircraft_GetByIcaos(icaos).ToDictionary(r => ParameterBuilder.NormaliseAircraftIcao(r.ModeS), r => r);
 
                     _TransactionHelper.PerformInTransaction(_Connection, _Transaction != null, false, r => _Transaction = r, () => {
                         foreach(var icao in icaos) {
-                            allAircraft.TryGetValue(normaliseIcao(icao), out var aircraft);
+                            allAircraft.TryGetValue(ParameterBuilder.NormaliseAircraftIcao(icao), out var aircraft);
                             RecordEmptyAircraft(aircraft, icao, localNow);
                         }
                         return true;
@@ -870,13 +869,12 @@ namespace VirtualRadar.Database.BaseStation
                 if(_Connection != null) {
                     var localNow = _Clock.LocalNow;
                     var icaos = allUpsertAircraft.Select(r => r.ModeS);
-                    Func<string, string> normaliseIcao = (icao) => { return icao.ToUpper(); };
-                    var allAircraft = Aircraft_GetByIcaos(icaos).ToDictionary(r => normaliseIcao(r.ModeS), r => r);
+                    var allAircraft = Aircraft_GetByIcaos(icaos).ToDictionary(r => ParameterBuilder.NormaliseAircraftIcao(r.ModeS), r => r);
 
                     _TransactionHelper.PerformInTransaction(_Connection, _Transaction != null, false, r => _Transaction = r, () => {
                         foreach(var icao in icaos) {
                             var thisUpdated = false;
-                            allAircraft.TryGetValue(normaliseIcao(icao), out var aircraft);
+                            allAircraft.TryGetValue(ParameterBuilder.NormaliseAircraftIcao(icao), out var aircraft);
                             var upsertAircraft = allUpsertAircraft.First(r => r.ModeS == icao);
                             aircraft = UpsertAircraft(aircraft, upsertAircraft, FillFromUpsertLookup, ref thisUpdated);
                             if(aircraft != null) {
@@ -896,28 +894,126 @@ namespace VirtualRadar.Database.BaseStation
             return result.ToArray();
         }
 
-        private BaseStationAircraft FillFromUpsertLookup(BaseStationAircraft aircraft, BaseStationAircraftUpsertLookup upsertAircraft)
+        public BaseStationAircraft[] UpsertManyAircraft(IEnumerable<BaseStationAircraft> allUpsertAircraft)
         {
-            if(aircraft == null) {
-                aircraft = new BaseStationAircraft() {
-                    ModeS =         upsertAircraft.ModeS,
-                    FirstCreated =  upsertAircraft.LastModified,
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot upsert aircraft when write support is disabled");
+            }
+
+            var result = new List<BaseStationAircraft>();
+            var updated = new List<bool>();
+
+            lock(_ConnectionLock) {
+                OpenConnection();
+                if(_Connection != null) {
+                    var localNow = _Clock.LocalNow;
+                    var icaos = allUpsertAircraft.Select(r => r.ModeS);
+                    var allAircraft = Aircraft_GetByIcaos(icaos).ToDictionary(r => ParameterBuilder.NormaliseAircraftIcao(r.ModeS), r => r);
+
+                    _TransactionHelper.PerformInTransaction(_Connection, _Transaction != null, false, r => _Transaction = r, () => {
+                        foreach(var icao in icaos) {
+                            var thisUpdated = false;
+                            allAircraft.TryGetValue(ParameterBuilder.NormaliseAircraftIcao(icao), out var aircraft);
+                            var upsertAircraft = allUpsertAircraft.First(r => r.ModeS == icao);
+                            aircraft = UpsertAircraft(aircraft, upsertAircraft, FillFromBaseStationAircraft, ref thisUpdated);
+                            if(aircraft != null) {
+                                result.Add(aircraft);
+                                updated.Add(thisUpdated);
+                            }
+                        }
+                        return true;
+                    });
+                }
+            }
+
+            for(var i = 0;i < result.Count;++i) {
+                if(updated[i]) {
+                    OnAircraftUpdated(new EventArgs<BaseStationAircraft>(result[i]));
+                }
+            }
+
+            return result.ToArray();
+        }
+
+        private BaseStationAircraft FillFromUpsertLookup(BaseStationAircraft destination, BaseStationAircraftUpsertLookup source)
+        {
+            if(destination == null) {
+                destination = new BaseStationAircraft() {
+                    ModeS =         source.ModeS,
+                    FirstCreated =  source.LastModified,
                 };
             }
-            aircraft.LastModified =     upsertAircraft.LastModified;
-            aircraft.Registration =     upsertAircraft.Registration;
-            aircraft.Country =          upsertAircraft.Country;
-            aircraft.ModeSCountry =     upsertAircraft.ModeSCountry;
-            aircraft.Manufacturer =     upsertAircraft.Manufacturer;
-            aircraft.Type =             upsertAircraft.Type;
-            aircraft.ICAOTypeCode =     upsertAircraft.ICAOTypeCode;
-            aircraft.RegisteredOwners = upsertAircraft.RegisteredOwners;
-            aircraft.OperatorFlagCode = upsertAircraft.OperatorFlagCode;
-            aircraft.SerialNo =         upsertAircraft.SerialNo;
-            aircraft.YearBuilt =        upsertAircraft.YearBuilt;
-            aircraft.UserString1 =      aircraft.UserString1 == "Missing" ? null : aircraft.UserString1;
+            destination.LastModified =     source.LastModified;
+            destination.Registration =     source.Registration;
+            destination.Country =          source.Country;
+            destination.ModeSCountry =     source.ModeSCountry;
+            destination.Manufacturer =     source.Manufacturer;
+            destination.Type =             source.Type;
+            destination.ICAOTypeCode =     source.ICAOTypeCode;
+            destination.RegisteredOwners = source.RegisteredOwners;
+            destination.OperatorFlagCode = source.OperatorFlagCode;
+            destination.SerialNo =         source.SerialNo;
+            destination.YearBuilt =        source.YearBuilt;
+            destination.UserString1 =      destination.UserString1 == "Missing" ? null : destination.UserString1;
 
-            return aircraft;
+            return destination;
+        }
+
+        private BaseStationAircraft FillFromBaseStationAircraft(BaseStationAircraft destination, BaseStationAircraft source)
+        {
+            if(destination == null) {
+                destination = new BaseStationAircraft();
+            }
+            destination.AircraftClass =     source.AircraftClass;
+            destination.CofACategory =      source.CofACategory;
+            destination.CofAExpiry =        source.CofAExpiry;
+            destination.Country =           source.Country;
+            destination.CurrentRegDate =    source.CurrentRegDate;
+            destination.DeRegDate =         source.DeRegDate;
+            destination.Engines =           source.Engines;
+            destination.FirstRegDate =      source.FirstRegDate;
+            destination.GenericName =       source.GenericName;
+            destination.ICAOTypeCode =      source.ICAOTypeCode;
+            destination.InfoUrl =           source.InfoUrl;
+            destination.Interested =        source.Interested;
+            destination.LastModified =      source.LastModified;
+            destination.Manufacturer =      source.Manufacturer;
+            destination.ModeS =             source.ModeS;
+            destination.ModeSCountry =      source.ModeSCountry;
+            destination.MTOW =              source.MTOW;
+            destination.OperatorFlagCode =  source.OperatorFlagCode;
+            destination.OwnershipStatus =   source.OwnershipStatus;
+            destination.PictureUrl1 =       source.PictureUrl1;
+            destination.PictureUrl2 =       source.PictureUrl2;
+            destination.PictureUrl3 =       source.PictureUrl3;
+            destination.PopularName =       source.PopularName;
+            destination.PreviousID =        source.PreviousID;
+            destination.Registration =      source.Registration;
+            destination.RegisteredOwners =  source.RegisteredOwners;
+            destination.SerialNo =          source.SerialNo;
+            destination.Status =            source.Status;
+            destination.TotalHours =        source.TotalHours;
+            destination.Type =              source.Type;
+            destination.UserNotes =         source.UserNotes;
+            destination.UserTag =           source.UserTag;
+            destination.YearBuilt =         source.YearBuilt;
+            destination.UserString1 =       source.UserString1;
+            destination.UserString2 =       source.UserString2;
+            destination.UserString3 =       source.UserString3;
+            destination.UserString4 =       source.UserString4;
+            destination.UserString5 =       source.UserString5;
+            destination.UserBool1 =         source.UserBool1;
+            destination.UserBool2 =         source.UserBool2;
+            destination.UserBool3 =         source.UserBool3;
+            destination.UserBool4 =         source.UserBool4;
+            destination.UserBool5 =         source.UserBool5;
+            destination.UserInt1 =          source.UserInt1;
+            destination.UserInt2 =          source.UserInt2;
+            destination.UserInt3 =          source.UserInt3;
+            destination.UserInt4 =          source.UserInt4;
+            destination.UserInt5 =          source.UserInt5;
+
+            return destination;
         }
 
         /// <summary>

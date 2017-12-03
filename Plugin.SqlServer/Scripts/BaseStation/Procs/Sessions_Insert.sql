@@ -5,7 +5,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Sessions_Insert]
-    @LocationID INTEGER
+    @LocationID INT
    ,@StartTime  DATETIME
    ,@EndTime    DATETIME = NULL
 AS

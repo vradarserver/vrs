@@ -5,7 +5,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[SystemEvents_Delete]
-    @SystemEventsID INTEGER
+    @SystemEventsID INT
 AS
 BEGIN
     SET NOCOUNT ON;

@@ -1150,6 +1150,50 @@ namespace VirtualRadar.Plugin.SqlServer
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="upsertAircraft"></param>
+        /// <returns></returns>
+        public BaseStationAircraft[] UpsertManyAircraft(IEnumerable<BaseStationAircraft> upsertAircraft)
+        {
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot upsert aircraft when write support is disabled");
+            }
+
+            BaseStationAircraft[] result = null;
+            AircraftActionResult[] actions = null;
+            using(var dataTable = GenerateBaseStationAircraftUpsertDataTable(upsertAircraft)) {
+                PerformInConnection(wrapper => {
+                    var resultSets = wrapper.Connection.QueryMultiple(
+                        "[BaseStation].[Aircraft_Upsert]", new {
+                            @BulkAircraft = dataTable
+                        }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure
+                    );
+
+                    result = resultSets.Read<BaseStationAircraft>(buffered: false).ToArray();
+                    actions = resultSets.Read<AircraftActionResult>(buffered: false).ToArray();
+                });
+            }
+
+            if(actions != null) {
+                foreach(var action in actions.Where(r => r.IsUpdated)) {
+                    var aircraft = result.FirstOrDefault(r => r.AircraftID == action.AircraftID);
+                    if(aircraft != null) {
+                        OnAircraftUpdated(new EventArgs<BaseStationAircraft>(aircraft));
+                    }
+                }
+            }
+
+            return result ?? new BaseStationAircraft[0];
+        }
+
+        private DataTable GenerateBaseStationAircraftUpsertDataTable(IEnumerable<BaseStationAircraft> upsertAircraft)
+        {
+            var udttModels = upsertAircraft.Select(r => new BaseStationAircraftUpsertUdtt(r));
+            return SqlServerHelper.UdttParameter(BaseStationAircraftUpsertUdtt.UdttProperties, udttModels);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>
         public bool PerformInTransaction(Func<bool> action)

@@ -49,6 +49,7 @@
     <Compile Include="BaseStationDatabaseProvider.cs" />
     <Compile Include="ConnectionWrapper.cs" />
     <Compile Include="Models\AircraftActionResult.cs" />
+    <Compile Include="Models\BaseStationAircraftUpsertUdtt.cs" />
     <Compile Include="Models\BaseStationAircraftUpsertLookupUdtt.cs" />
     <Compile Include="Models\Icao24Udtt.cs" />
     <Compile Include="Models\UdttProperty.cs" />
@@ -122,6 +123,7 @@
     <Content Include="Scripts\BaseStation\Procs\AircraftAndFlightsCount_GetByCodes.sql" />
     <Content Include="Scripts\BaseStation\Procs\Aircraft_GetAll.sql" />
     <Content Include="Scripts\BaseStation\Procs\Aircraft_GetByID.sql" />
+    <Content Include="Scripts\BaseStation\Procs\Aircraft_Upsert.sql" />
     <Content Include="Scripts\BaseStation\Procs\Aircraft_UpsertLookups.sql" />
     <Content Include="Scripts\BaseStation\Procs\Aircraft_GetOrCreate.sql" />
     <Content Include="Scripts\BaseStation\Procs\Aircraft_GetByRegistration.sql" />
@@ -157,6 +159,7 @@
     <Content Include="Scripts\BaseStation\Tables\DBInfo.sql" />
     <Content Include="Scripts\BaseStation\Tables\DBHistory.sql" />
     <Content Include="Scripts\BaseStation\Tables\Aircraft.sql" />
+    <Content Include="Scripts\BaseStation\Types\BaseStationAircraftUpsert.sql" />
     <Content Include="Scripts\BaseStation\Types\BaseStationAircraftUpsertLookup.sql" />
     <Content Include="Scripts\UpdateSchema.sql">
       <AutoGen>True</AutoGen>
@@ -177,6 +180,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>"$(ProjectDir)\_PostBuild.bat" "$(SolutionDir)" "$(ConfigurationName)" "$(TargetDir)" $(TargetName) "SqlServer"</PostBuildEvent>

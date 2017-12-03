@@ -5,7 +5,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_GetByID]
-    @AircraftID INTEGER
+    @AircraftID INT
 AS
 BEGIN
     SET NOCOUNT ON;

@@ -5,7 +5,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Locations_Delete]
-    @LocationID INTEGER
+    @LocationID INT
 AS
 BEGIN
     SET NOCOUNT ON;

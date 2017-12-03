@@ -5,8 +5,8 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Flights_Insert]
-    @SessionID           INTEGER
-   ,@AircraftID          INTEGER
+    @SessionID           INT
+   ,@AircraftID          INT
    ,@StartTime           DATETIME
    ,@EndTime             DATETIME = NULL
    ,@Callsign            NVARCHAR(20) = NULL

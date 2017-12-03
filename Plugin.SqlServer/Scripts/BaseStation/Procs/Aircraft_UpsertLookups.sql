@@ -69,16 +69,16 @@ BEGIN
     FROM   @Lookups                 AS [lookup]
     JOIN   [BaseStation].[Aircraft] AS [aircraft] ON [lookup].[ModeS] = [aircraft].[ModeS]
     WHERE  [aircraft].[LastModified] <> [lookup].[LastModified]
-    OR     ISNULL([aircraft].[Registration], '') <>     ISNULL([lookup].[Registration], '')
-    OR     ISNULL([aircraft].[Country], '') <>          ISNULL([lookup].[Country], '')
-    OR     ISNULL([aircraft].[ModeSCountry], '') <>     ISNULL([lookup].[ModeSCountry], '')
-    OR     ISNULL([aircraft].[Manufacturer], '') <>     ISNULL([lookup].[Manufacturer], '')
-    OR     ISNULL([aircraft].[Type], '') <>             ISNULL([lookup].[Type], '')
-    OR     ISNULL([aircraft].[ICAOTypeCode], '') <>     ISNULL([lookup].[ICAOTypeCode], '')
-    OR     ISNULL([aircraft].[RegisteredOwners], '') <> ISNULL([lookup].[RegisteredOwners], '')
-    OR     ISNULL([aircraft].[OperatorFlagCode], '') <> ISNULL([lookup].[OperatorFlagCode], '')
-    OR     ISNULL([aircraft].[SerialNo], '') <>         ISNULL([lookup].[SerialNo], '')
-    OR     ISNULL([aircraft].[YearBuilt], '') <>        ISNULL([lookup].[YearBuilt], '')
+    OR     ISNULL(NULLIF([aircraft].[Registration],     [lookup].[Registration]),       NULLIF([lookup].[Registration],     [aircraft].[Registration])) IS NOT NULL
+    OR     ISNULL(NULLIF([aircraft].[Country],          [lookup].[Country]),            NULLIF([lookup].[Country],          [aircraft].[Country])) IS NOT NULL
+    OR     ISNULL(NULLIF([aircraft].[ModeSCountry],     [lookup].[ModeSCountry]),       NULLIF([lookup].[ModeSCountry],     [aircraft].[ModeSCountry])) IS NOT NULL
+    OR     ISNULL(NULLIF([aircraft].[Manufacturer],     [lookup].[Manufacturer]),       NULLIF([lookup].[Manufacturer],     [aircraft].[Manufacturer])) IS NOT NULL
+    OR     ISNULL(NULLIF([aircraft].[Type],             [lookup].[Type]),               NULLIF([lookup].[Type],             [aircraft].[Type])) IS NOT NULL
+    OR     ISNULL(NULLIF([aircraft].[ICAOTypeCode],     [lookup].[ICAOTypeCode]),       NULLIF([lookup].[ICAOTypeCode],     [aircraft].[ICAOTypeCode])) IS NOT NULL
+    OR     ISNULL(NULLIF([aircraft].[RegisteredOwners], [lookup].[RegisteredOwners]),   NULLIF([lookup].[RegisteredOwners], [aircraft].[RegisteredOwners])) IS NOT NULL
+    OR     ISNULL(NULLIF([aircraft].[OperatorFlagCode], [lookup].[OperatorFlagCode]),   NULLIF([lookup].[OperatorFlagCode], [aircraft].[OperatorFlagCode])) IS NOT NULL
+    OR     ISNULL(NULLIF([aircraft].[SerialNo],         [lookup].[SerialNo]),           NULLIF([lookup].[SerialNo],         [aircraft].[SerialNo])) IS NOT NULL
+    OR     ISNULL(NULLIF([aircraft].[YearBuilt],        [lookup].[YearBuilt]),          NULLIF([lookup].[YearBuilt],        [aircraft].[YearBuilt])) IS NOT NULL
     OR     [aircraft].[UserString1] = 'Missing';
 
     SELECT [aircraft].*
