@@ -1331,6 +1331,13 @@ namespace VirtualRadar.Database.BaseStation
             }, transaction: _Transaction).FirstOrDefault();
         }
 
+        private BaseStationFlight[] Flights_GetAllForAircraft(int aircraftID)
+        {
+            return _Connection.Query<BaseStationFlight>("SELECT * FROM [Flights] WHERE [AircraftID] = @aircraftID", new {
+                aircraftID = aircraftID,
+            }, transaction: _Transaction).ToArray();
+        }
+
         private void Flights_Insert(BaseStationFlight flight)
         {
             flight.FlightID = (int)_Connection.ExecuteScalar<long>(
@@ -1407,6 +1414,80 @@ namespace VirtualRadar.Database.BaseStation
                     criteriaAndProperties.Parameters,
                     transaction: _Transaction, splitOn: "AircraftID"
                 ).ToList();
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="upsertFlights"></param>
+        /// <returns></returns>
+        public BaseStationFlight[] UpsertManyFlights(IEnumerable<BaseStationFlightUpsert> upsertFlights)
+        {
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot delete flights when writes are disabled");
+            }
+
+            var upserted = new List<BaseStationFlight>();
+            lock(_ConnectionLock) {
+                OpenConnection();
+                if(_Connection != null) {
+                    BaseStationAircraft aircraft = null;
+                    BaseStationSession  session = null;
+                    var aircraftFlights = new LinkedList<BaseStationFlight>();
+
+                    foreach(var upsertFlight in upsertFlights.OrderBy(r => r.AircraftID)) {
+                        if(aircraft?.AircraftID != upsertFlight.AircraftID) {
+                            aircraft = Aircraft_GetById(upsertFlight.AircraftID);
+
+                            aircraftFlights.Clear();
+                            if(aircraft != null) {
+                                foreach(var flight in Flights_GetAllForAircraft(aircraft.AircraftID).OrderBy(r => r.StartTime)) {
+                                    aircraftFlights.AddFirst(flight);
+                                }
+                            }
+                        }
+                        if(session?.SessionID != upsertFlight.SessionID) {
+                            session = Sessions_GetById(upsertFlight.SessionID);
+                        }
+
+                        if(aircraft != null && session != null) {
+                            var flightNode = FindFlightWithStartTime(aircraftFlights, upsertFlight.StartTime, removeNode: true);
+                            var dbFlight = flightNode?.Value;
+
+                            if(dbFlight == null) {
+                                dbFlight = upsertFlight.ToBaseStationFlight();
+                                Flights_Insert(dbFlight);
+                            } else {
+                                upsertFlight.ApplyTo(dbFlight);
+                                Flights_Update(dbFlight);
+                            }
+
+                            upserted.Add(dbFlight);
+                        }
+                    }
+                }
+            }
+
+            return upserted.ToArray();
+        }
+
+        private LinkedListNode<BaseStationFlight> FindFlightWithStartTime(LinkedList<BaseStationFlight> orderedFlights, DateTime startTime, bool removeNode)
+        {
+            LinkedListNode<BaseStationFlight> result = null;
+
+            for(var node = orderedFlights.First;node != null && node.Value.StartTime <= startTime;node = node.Next) {
+                if(node.Value.StartTime == startTime) {
+                    result = node;
+
+                    if(removeNode) {
+                        orderedFlights.Remove(result);
+                    }
+
+                    break;
+                }
             }
 
             return result;
@@ -1807,6 +1888,15 @@ namespace VirtualRadar.Database.BaseStation
         private List<BaseStationSession> Sessions_GetAll()
         {
             return _Connection.Query<BaseStationSession>("SELECT * FROM [Sessions]", transaction: _Transaction).ToList();
+        }
+
+        private BaseStationSession Sessions_GetById(int sessionID)
+        {
+            return _Connection.Query<BaseStationSession>(
+                "SELECT * FROM [Sessions] WHERE [SessionID] = @sessionID", new {
+                    sessionID =  sessionID,
+                }, transaction: _Transaction
+            ).FirstOrDefault();
         }
 
         private void Sessions_Insert(BaseStationSession session)

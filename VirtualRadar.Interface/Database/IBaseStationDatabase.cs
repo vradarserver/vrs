@@ -392,5 +392,12 @@ namespace VirtualRadar.Interface.Database
         /// </summary>
         /// <param name="flight"></param>
         void DeleteFlight(BaseStationFlight flight);
+
+        /// <summary>
+        /// Inserts or updates many flights in one go.
+        /// </summary>
+        /// <param name="flights"></param>
+        /// <returns></returns>
+        BaseStationFlight[] UpsertManyFlights(IEnumerable<BaseStationFlightUpsert> flights);
     }
 }

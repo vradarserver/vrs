@@ -17,13 +17,23 @@ using System.Threading.Tasks;
 namespace VirtualRadar.Plugin.SqlServer.Models
 {
     /// <summary>
-    /// Describes the result of a bulk load of aircraft.
+    /// Describes the result of an action on the database.
     /// </summary>
-    class AircraftActionResult : ActionResult
+    class ActionResult
     {
         /// <summary>
-        /// Gets or sets the aircraft's ID.
+        /// Gets or sets a value indicating what happened to the record.
         /// </summary>
-        public int AircraftID { get; set; }
+        public string Action { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating that the <see cref="Action"/> was the created action.
+        /// </summary>
+        public bool IsCreated { get { return Action == "Created"; } }
+
+        /// <summary>
+        /// Gets a value indicating that the <see cref="Action"/> was the updated action.
+        /// </summary>
+        public bool IsUpdated { get { return Action == "Updated"; } }
     }
 }

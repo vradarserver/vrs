@@ -3377,6 +3377,81 @@ namespace Test.VirtualRadar.Database
         }
         #endregion
 
+        #region UpsertManyFlights
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void BaseStationDatabase_UpsertManyFlights_Throws_If_Writes_Disabled()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var aircraftId = (int)AddAircraft(new BaseStationAircraft() { ModeS = "123456" });
+            var sessionId = (int)AddSession(new BaseStationSession() { StartTime = DateTime.Now });
+
+            _Database.WriteSupportEnabled = false;
+
+            _Database.UpsertManyFlights(new BaseStationFlight[] {
+                new BaseStationFlight() { AircraftID = aircraftId, SessionID = sessionId, StartTime = DateTime.Now },
+            });
+        }
+
+        [TestMethod]
+        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "GetFlights$")]
+        public void BaseStationDatabase_UpsertManyFlights_Inserts_New_Flights()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var aircraftId = (int)AddAircraft(new BaseStationAircraft() { ModeS = "Y" });
+            var sessionId = (int)AddSession(new BaseStationSession() { StartTime = DateTime.Now });
+            var flight = LoadFlightFromSpreadsheet(worksheet);
+
+            flight.AircraftID = aircraftId;
+            flight.SessionID =  sessionId;
+            flight.Aircraft =   null;
+
+            var flights = _Database.UpsertManyFlights(new BaseStationFlightUpsert[] {
+                new BaseStationFlightUpsert(flight),
+            });
+
+            Assert.AreEqual(1, flights.Length);
+            AssertFlightsAreEqual(flight, flights[0], false, aircraftId);
+        }
+
+        [TestMethod]
+        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "GetFlights$")]
+        public void BaseStationDatabase_UpsertManyFlights_Updates_Existing_Flights()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var aircraftId = (int)AddAircraft(new BaseStationAircraft() { ModeS = "Y" });
+            var sessionId = (int)AddSession(new BaseStationSession() { StartTime = DateTime.Now });
+            var startTime = worksheet.DateTime("StartTime");
+
+            var originalFlight = new BaseStationFlight() {
+                AircraftID = aircraftId,
+                SessionID =  sessionId,
+                StartTime =  startTime,
+            };
+            _Database.InsertFlight(originalFlight);
+
+            var flight = LoadFlightFromSpreadsheet(worksheet);
+            flight.AircraftID = aircraftId;
+            flight.SessionID =  sessionId;
+            flight.Aircraft =   null;
+
+            var flights = _Database.UpsertManyFlights(new BaseStationFlightUpsert[] {
+                new BaseStationFlightUpsert(flight),
+            });
+
+            Assert.AreEqual(1, flights.Length);
+            Assert.AreEqual(originalFlight.FlightID, flights[0].FlightID);
+            AssertFlightsAreEqual(flight, flights[0], false, aircraftId);
+        }
+        #endregion
+
         #region GetDatabaseHistory
         [TestMethod]
         public void BaseStationDatabase_GetDatabaseHistory_Returns_Empty_List_If_File_Does_Not_Exist()

@@ -17,13 +17,13 @@ using System.Threading.Tasks;
 namespace VirtualRadar.Plugin.SqlServer.Models
 {
     /// <summary>
-    /// Describes the result of a bulk load of aircraft.
+    /// Describes the result of a bulk load of flights.
     /// </summary>
-    class AircraftActionResult : ActionResult
+    class FlightActionResult : ActionResult
     {
         /// <summary>
-        /// Gets or sets the aircraft's ID.
+        /// Gets or sets the flight's ID.
         /// </summary>
-        public int AircraftID { get; set; }
+        public int FlightID { get; set; }
     }
 }

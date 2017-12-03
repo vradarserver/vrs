@@ -1194,6 +1194,40 @@ namespace VirtualRadar.Plugin.SqlServer
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="upsertFlights"></param>
+        /// <returns></returns>
+        public BaseStationFlight[] UpsertManyFlights(IEnumerable<BaseStationFlightUpsert> flights)
+        {
+            BaseStationFlight[] result = null;
+
+            PerformInConnection(wrapper => {
+                using(var dataTable = GenerateBaseStationFlightDataTable(flights)) {
+                    var resultSets = wrapper.Connection.QueryMultiple(
+                        "[BaseStation].[Flights_Upsert]", new {
+                            @BulkFlights = dataTable,
+                        },
+                        transaction: wrapper.Transaction,
+                        commandType: CommandType.StoredProcedure
+                    );
+
+                    result = resultSets.Read<BaseStationFlight>(buffered: false).ToArray();
+                    resultSets.Read<FlightActionResult>(buffered: false);
+                }
+            });
+
+            return result ?? new BaseStationFlight[0];
+        }
+
+        private DataTable GenerateBaseStationFlightDataTable(IEnumerable<BaseStationFlightUpsert> upsertFlights)
+        {
+            var udttModels = upsertFlights.Select(r => new BaseStationFlightUpsertUdtt(r));
+            return SqlServerHelper.UdttParameter(BaseStationFlightUpsertUdtt.UdttProperties, udttModels);
+        }
+
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>
         public bool PerformInTransaction(Func<bool> action)
