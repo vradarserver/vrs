@@ -41,6 +41,11 @@ namespace VirtualRadar.Plugin.SqlServer
         /// </summary>
         private IStandingDataManager _StandingDataManager;
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string Engine => "SQL Server";
+
         private string _ConnectionString;
         /// <summary>
         /// Gets or sets the connection string to use.
@@ -1152,7 +1157,7 @@ namespace VirtualRadar.Plugin.SqlServer
         /// </summary>
         /// <param name="upsertAircraft"></param>
         /// <returns></returns>
-        public BaseStationAircraft[] UpsertManyAircraft(IEnumerable<BaseStationAircraft> upsertAircraft)
+        public BaseStationAircraft[] UpsertManyAircraft(IEnumerable<BaseStationAircraftUpsert> upsertAircraft)
         {
             if(!WriteSupportEnabled) {
                 throw new InvalidOperationException("You cannot upsert aircraft when write support is disabled");
@@ -1185,7 +1190,7 @@ namespace VirtualRadar.Plugin.SqlServer
             return result ?? new BaseStationAircraft[0];
         }
 
-        private DataTable GenerateBaseStationAircraftUpsertDataTable(IEnumerable<BaseStationAircraft> upsertAircraft)
+        private DataTable GenerateBaseStationAircraftUpsertDataTable(IEnumerable<BaseStationAircraftUpsert> upsertAircraft)
         {
             var udttModels = upsertAircraft.Select(r => new BaseStationAircraftUpsertUdtt(r));
             return SqlServerHelper.UdttParameter(BaseStationAircraftUpsertUdtt.UdttProperties, udttModels);

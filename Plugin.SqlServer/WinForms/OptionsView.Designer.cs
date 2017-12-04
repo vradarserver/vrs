@@ -36,6 +36,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.buttonUpdateSchema = new System.Windows.Forms.Button();
             this.linkLabelOpenUpdateSchemaSql = new System.Windows.Forms.LinkLabel();
+            this.linkLabelImportFromBaseStation = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
             // checkBoxEnabled
@@ -135,6 +136,18 @@
             this.linkLabelOpenUpdateSchemaSql.Text = "::OpenUpdateSchemaFile::";
             this.linkLabelOpenUpdateSchemaSql.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelOpenUpdateSchemaSql_LinkClicked);
             // 
+            // linkLabelImportFromBaseStation
+            // 
+            this.linkLabelImportFromBaseStation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.linkLabelImportFromBaseStation.AutoSize = true;
+            this.linkLabelImportFromBaseStation.Location = new System.Drawing.Point(318, 115);
+            this.linkLabelImportFromBaseStation.Name = "linkLabelImportFromBaseStation";
+            this.linkLabelImportFromBaseStation.Size = new System.Drawing.Size(128, 13);
+            this.linkLabelImportFromBaseStation.TabIndex = 10;
+            this.linkLabelImportFromBaseStation.TabStop = true;
+            this.linkLabelImportFromBaseStation.Text = "::ImportFromBaseStation::";
+            this.linkLabelImportFromBaseStation.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelImportFromBaseStation_LinkClicked);
+            // 
             // OptionsView
             // 
             this.AcceptButton = this.buttonOK;
@@ -142,6 +155,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(711, 145);
+            this.Controls.Add(this.linkLabelImportFromBaseStation);
             this.Controls.Add(this.linkLabelOpenUpdateSchemaSql);
             this.Controls.Add(this.buttonUpdateSchema);
             this.Controls.Add(this.label2);
@@ -174,5 +188,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button buttonUpdateSchema;
         private System.Windows.Forms.LinkLabel linkLabelOpenUpdateSchemaSql;
+        private System.Windows.Forms.LinkLabel linkLabelImportFromBaseStation;
     }
 }

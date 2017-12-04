@@ -124,6 +124,15 @@ namespace VirtualRadar.Plugin.SqlServer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Import from BaseStation.sqb.
+        /// </summary>
+        public static string ImportFromBaseStation {
+            get {
+                return ResourceManager.GetString("ImportFromBaseStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open UpdateSchema.sql.
         /// </summary>
         public static string OpenUpdateSchemaFile {

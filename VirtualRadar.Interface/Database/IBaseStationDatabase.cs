@@ -34,6 +34,11 @@ namespace VirtualRadar.Interface.Database
         IBaseStationDatabaseProvider Provider { get; set; }
 
         /// <summary>
+        /// Gets the name of the database engine or library that the implementation is using.
+        /// </summary>
+        string Engine { get; }
+
+        /// <summary>
         /// Gets or sets the full path and filename of the database. Changing the filename causes the current connection
         /// to close, the next operation on the database causes it to open a new connection as per usual.
         /// </summary>

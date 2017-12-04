@@ -28,7 +28,7 @@ namespace VirtualRadar.Database.BaseStation
     /// <summary>
     /// Default implementation of <see cref="IBaseStationDatabase"/>.
     /// </summary>
-    public sealed class Database : IBaseStationDatabase
+    public sealed class Database : IBaseStationDatabaseSQLite
     {
         #region Private class - DefaultProvider
         /// <summary>
@@ -93,6 +93,11 @@ namespace VirtualRadar.Database.BaseStation
         /// See interface docs.
         /// </summary>
         public IBaseStationDatabaseProvider Provider { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string Engine => "SQLite";
 
         private string _FileName;
         /// <summary>

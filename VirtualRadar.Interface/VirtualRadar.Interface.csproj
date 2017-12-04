@@ -133,6 +133,8 @@
     <Compile Include="Database\BaseStationAircraftUpsert.cs" />
     <Compile Include="Database\BaseStationAircraftUpsertLookup.cs" />
     <Compile Include="Database\BaseStationFlightUpsert.cs" />
+    <Compile Include="Database\IBaseStationDatabaseImport.cs" />
+    <Compile Include="Database\IBaseStationDatabaseSQLite.cs" />
     <Compile Include="Database\OrdinalAttribute.cs" />
     <Compile Include="EventHelperException.cs" />
     <Compile Include="HttpContentHelper.cs" />

@@ -19,6 +19,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using InterfaceFactory;
+using VirtualRadar.Interface.Database;
+using VirtualRadar.Interface.Settings;
 using VirtualRadar.WinForms;
 using VirtualRadar.WinForms.PortableBinding;
 
@@ -123,6 +126,30 @@ namespace VirtualRadar.Plugin.SqlServer.WinForms
         {
             var fullPath = Path.Combine(Plugin.Singleton.PluginFolder, "UpdateSchema.sql");
             Process.Start(fullPath);
+        }
+
+        /// <summary>
+        /// Does a test import.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LinkLabelImportFromBaseStation_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var configStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
+            var config = configStorage.Load();
+
+            var importer = Factory.Singleton.Resolve<IBaseStationDatabaseImport>();
+            importer.LogFileName = Path.Combine(configStorage.Folder, "BaseStationImportLog.txt");
+            importer.AppendLog = false;
+            importer.BaseStationFileName = config.BaseStationSettings.DatabaseFileName;
+            importer.ImportAircraft = true;
+            importer.ImportFlights = true;
+            importer.ImportLocations = true;
+            importer.ImportSessions = true;
+
+            importer.Import();
+
+            MessageBox.Show("Test import finished", "Test Import Finished");
         }
     }
 }

@@ -166,4 +166,8 @@
     <value>Open UpdateSchema.sql</value>
     <comment>UpdateSchema.sql is a file name</comment>
   </data>
+  <data name="ImportFromBaseStation" xml:space="preserve">
+    <value>Import from BaseStation.sqb</value>
+    <comment>BaseStation.sqb is a file name</comment>
+  </data>
 </root>

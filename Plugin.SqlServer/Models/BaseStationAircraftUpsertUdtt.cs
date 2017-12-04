@@ -332,7 +332,7 @@ namespace VirtualRadar.Plugin.SqlServer.Models
         /// Creates a new object.
         /// </summary>
         /// <param name="aircraft"></param>
-        public BaseStationAircraftUpsertUdtt(BaseStationAircraft aircraft)
+        public BaseStationAircraftUpsertUdtt(BaseStationAircraftUpsert aircraft)
         {
             ModeS =             aircraft.ModeS;
             FirstCreated =      aircraft.FirstCreated;

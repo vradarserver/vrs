@@ -56,6 +56,7 @@
     </Compile>
     <Compile Include="AircraftOnlineLookupCache\StandaloneAircraftOnlineLookupCache.cs" />
     <Compile Include="BaseStation\AutoConfigBaseStationDatabase.cs" />
+    <Compile Include="BaseStation\BaseStationDatabaseImport.cs" />
     <Compile Include="BaseStation\Commands.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
