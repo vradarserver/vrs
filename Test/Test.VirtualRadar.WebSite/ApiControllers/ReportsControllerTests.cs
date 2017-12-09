@@ -432,6 +432,20 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
+        public void ReportRows_DateReport_Json_Dates_Are_In_Microsoft_Format()
+        {
+            _ReportRowsAddress.Report = "date";
+            AddBlankDatabaseFlights(1);
+            _DatabaseFlights[0].StartTime = new DateTime(2007, 8, 9, 10, 11, 12, 134, DateTimeKind.Utc);    // the dates aren't really UTC but I don't want locale to affect the test
+
+            _RemoteIpAddress = "127.0.0.1";
+            var response = _Server.HttpClient.GetAsync(_ReportRowsAddress.Address).Result;
+            var content = response.Content.ReadAsStringAsync().Result;
+
+            Assert.IsTrue(content.Contains(@"""\/Date(1186654272134)\/"""));
+        }
+
+        [TestMethod]
         public void ReportRows_DateReport_Honours_Species_NonDatabase_Criteria()
         {
             _ReportRowsAddress.Report = "date";

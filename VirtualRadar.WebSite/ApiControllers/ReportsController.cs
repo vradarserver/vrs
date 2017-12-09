@@ -77,7 +77,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 jsonObj.OperatorFlagsAvailable = ImagesFolderAvailable(SharedState.FileSystem, config.BaseStationSettings.OperatorFlagsFolder);
                 jsonObj.SilhouettesAvailable = ImagesFolderAvailable(SharedState.FileSystem, config.BaseStationSettings.SilhouettesFolder);
 
-                var jsonText = JsonConvert.SerializeObject(jsonObj);
+                var jsonText = JsonConvert.SerializeObject(jsonObj, Version2JsonSerialiserSettings);
                 result = new HttpResponseMessage(HttpStatusCode.OK) {
                     Content = new StringContent(jsonText, Encoding.UTF8, MimeType.Json),
                 };

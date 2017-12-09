@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Web.Http;
 using System.Net;
+using Newtonsoft.Json;
 
 namespace VirtualRadar.Interface.Owin
 {
@@ -24,6 +25,13 @@ namespace VirtualRadar.Interface.Owin
     /// </summary>
     public class PipelineApiController : ApiController
     {
+        /// <summary>
+        /// The format settings to use when serialising version 2 API results.
+        /// </summary>
+        public static readonly JsonSerializerSettings Version2JsonSerialiserSettings = new JsonSerializerSettings() {
+            DateFormatHandling = DateFormatHandling.MicrosoftDateFormat,
+        };
+
         /// <summary>
         /// Gets the VRS / OWIN context for the request.
         /// </summary>
