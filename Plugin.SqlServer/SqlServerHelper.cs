@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dapper;
 using VirtualRadar.Plugin.SqlServer.Models;
 
 namespace VirtualRadar.Plugin.SqlServer

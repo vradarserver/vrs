@@ -4,8 +4,8 @@ BEGIN
     (
         [SessionID]     INTEGER IDENTITY
        ,[LocationID]    INTEGER NOT NULL CONSTRAINT [FK_Sessions_Location] FOREIGN KEY REFERENCES [BaseStation].[Locations] ([LocationID])
-       ,[StartTime]     DATETIME NOT NULL
-       ,[EndTime]       DATETIME NULL
+       ,[StartTime]     DATETIME2 NOT NULL
+       ,[EndTime]       DATETIME2 NULL
 
        ,CONSTRAINT [PK_Sessions] PRIMARY KEY ([SessionID])
     );

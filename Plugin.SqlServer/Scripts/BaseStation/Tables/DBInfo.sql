@@ -10,6 +10,8 @@ BEGIN
 END;
 GO
 
+-- DBInfo is only here for the sake of completeness, I don't anticipate using it.
+-- The version 2 value comes from Kinetic's BaseStation.sqb.
 IF NOT EXISTS (SELECT 1 FROM [BaseStation].[DBInfo])
 BEGIN
     INSERT INTO [BaseStation].[DBInfo] (

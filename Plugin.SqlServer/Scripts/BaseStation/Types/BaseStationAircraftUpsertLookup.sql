@@ -8,8 +8,8 @@
 BEGIN
     CREATE TYPE [BaseStation].[BaseStationAircraftUpsertLookup] AS TABLE
     (
-        [ModeS]             VARCHAR(6) NOT NULL PRIMARY KEY
-       ,[LastModified]      DATETIME NOT NULL
+        [ModeS]             NVARCHAR(6) NOT NULL PRIMARY KEY
+       ,[LastModified]      DATETIME2 NOT NULL
        ,[Registration]      NVARCHAR(20)
        ,[Country]           NVARCHAR(80)
        ,[ModeSCountry]      NVARCHAR(80)

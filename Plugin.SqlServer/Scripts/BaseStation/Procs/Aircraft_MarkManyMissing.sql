@@ -6,7 +6,7 @@ GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_MarkManyMissing]
     @Codes    AS [VRS].[Icao24] READONLY
-   ,@LocalNow AS DATETIME
+   ,@LocalNow AS DATETIME2
 AS
 BEGIN
     SET NOCOUNT ON;

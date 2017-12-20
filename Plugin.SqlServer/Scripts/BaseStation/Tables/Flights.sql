@@ -5,8 +5,8 @@ BEGIN
         [FlightID]              INTEGER IDENTITY
        ,[SessionID]             INTEGER NOT NULL CONSTRAINT [FK_Flights_Session]  FOREIGN KEY REFERENCES [BaseStation].[Sessions] ([SessionID]) ON DELETE CASCADE
        ,[AircraftID]            INTEGER NOT NULL CONSTRAINT [FK_Flights_Aircraft] FOREIGN KEY REFERENCES [BaseStation].[Aircraft] ([AircraftID]) ON DELETE CASCADE
-       ,[StartTime]             DATETIME NOT NULL
-       ,[EndTime]               DATETIME
+       ,[StartTime]             DATETIME2 NOT NULL
+       ,[EndTime]               DATETIME2
        ,[Callsign]              NVARCHAR(20)
        ,[NumPosMsgRec]          INTEGER
        ,[NumADSBMsgRec]         INTEGER

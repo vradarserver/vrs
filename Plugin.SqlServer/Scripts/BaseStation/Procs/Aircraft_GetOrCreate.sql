@@ -6,8 +6,8 @@ GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_GetOrCreate]
     @Created        BIT OUTPUT
-   ,@ModeS          VARCHAR(6)
-   ,@LocalNow       DATETIME = NULL
+   ,@ModeS          NVARCHAR(6)
+   ,@LocalNow       DATETIME2 = NULL
    ,@ModeSCountry   NVARCHAR(24) = NULL
 AS
 BEGIN

@@ -3,7 +3,7 @@ BEGIN
     CREATE TABLE [BaseStation].[SystemEvents]
     (
         [SystemEventsID]    INTEGER IDENTITY
-       ,[TimeStamp]         DATETIME NOT NULL
+       ,[TimeStamp]         DATETIME2 NOT NULL
        ,[App]               NVARCHAR(15) NOT NULL
        ,[Msg]               NVARCHAR(100) NOT NULL
 

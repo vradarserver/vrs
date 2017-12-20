@@ -8,9 +8,9 @@
 BEGIN
     CREATE TYPE [BaseStation].[BaseStationAircraftUpsert] AS TABLE
     (
-        [ModeS]             VARCHAR(6) NOT NULL PRIMARY KEY
-       ,[FirstCreated]      DATETIME NOT NULL
-       ,[LastModified]      DATETIME NOT NULL
+        [ModeS]             NVARCHAR(6) NOT NULL PRIMARY KEY
+       ,[FirstCreated]      DATETIME2 NOT NULL
+       ,[LastModified]      DATETIME2 NOT NULL
        ,[ModeSCountry]      NVARCHAR(80)
        ,[Country]           NVARCHAR(80)
        ,[Registration]      NVARCHAR(20)

@@ -39,7 +39,7 @@ IF NOT EXISTS (
 BEGIN
     CREATE TYPE [VRS].[Icao24] AS TABLE
     (
-        [ModeS] VARCHAR(6) NOT NULL PRIMARY KEY
+        [ModeS] NVARCHAR(6) NOT NULL PRIMARY KEY
     );
 END;
 GO
@@ -73,9 +73,9 @@ BEGIN
     CREATE TABLE [BaseStation].[Aircraft]
     (
         [AircraftID]        INTEGER IDENTITY
-       ,[FirstCreated]      DATETIME NOT NULL
-       ,[LastModified]      DATETIME NOT NULL
-       ,[ModeS]             VARCHAR(6) NOT NULL
+       ,[FirstCreated]      DATETIME2 NOT NULL
+       ,[LastModified]      DATETIME2 NOT NULL
+       ,[ModeS]             NVARCHAR(6) NOT NULL
        ,[ModeSCountry]      NVARCHAR(80)
        ,[Country]           NVARCHAR(80)
        ,[Registration]      NVARCHAR(20)
@@ -159,7 +159,7 @@ BEGIN
     CREATE TABLE [BaseStation].[DBHistory]
     (
         [DBHistoryID]   INTEGER IDENTITY
-       ,[TimeStamp]     DATETIME NOT NULL
+       ,[TimeStamp]     DATETIME2 NOT NULL
        ,[Description]   NVARCHAR(100) NOT NULL
 
        ,CONSTRAINT [PK_DBHistory] PRIMARY KEY ([DBHistoryID])
@@ -167,22 +167,26 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS (SELECT 1 FROM [BaseStation].[DBHistory])
+IF NOT EXISTS (SELECT 1 FROM [BaseStation].[DBHistory] WHERE [Description] LIKE 'Schema created by %')
 BEGIN
     INSERT INTO [BaseStation].[DBHistory] (
         [TimeStamp]
        ,[Description]
     ) VALUES (
-        GETUTCDATE()
+        GETDATE()
        ,'Schema created by ' + SUSER_NAME()
     );
+END;
+GO
 
+IF NOT EXISTS (SELECT 1 FROM [BaseStation].[DBHistory] WHERE [Description] = 'Database autocreated by Virtual Radar Server')
+BEGIN
     -- This one is required by BaseStationDBHistory.IsCreationOfDatabaseByVirtualRadarServer
     INSERT INTO [BaseStation].[DBHistory] (
         [TimeStamp]
        ,[Description]
     ) VALUES (
-        GETUTCDATE()
+        GETDATE()
        ,'Database autocreated by Virtual Radar Server'
     );
 END;
@@ -209,6 +213,8 @@ BEGIN
 END;
 GO
 
+-- DBInfo is only here for the sake of completeness, I don't anticipate using it.
+-- The version 2 value comes from Kinetic's BaseStation.sqb.
 IF NOT EXISTS (SELECT 1 FROM [BaseStation].[DBInfo])
 BEGIN
     INSERT INTO [BaseStation].[DBInfo] (
@@ -276,8 +282,8 @@ BEGIN
     (
         [SessionID]     INTEGER IDENTITY
        ,[LocationID]    INTEGER NOT NULL CONSTRAINT [FK_Sessions_Location] FOREIGN KEY REFERENCES [BaseStation].[Locations] ([LocationID])
-       ,[StartTime]     DATETIME NOT NULL
-       ,[EndTime]       DATETIME NULL
+       ,[StartTime]     DATETIME2 NOT NULL
+       ,[EndTime]       DATETIME2 NULL
 
        ,CONSTRAINT [PK_Sessions] PRIMARY KEY ([SessionID])
     );
@@ -304,8 +310,8 @@ BEGIN
         [FlightID]              INTEGER IDENTITY
        ,[SessionID]             INTEGER NOT NULL CONSTRAINT [FK_Flights_Session]  FOREIGN KEY REFERENCES [BaseStation].[Sessions] ([SessionID]) ON DELETE CASCADE
        ,[AircraftID]            INTEGER NOT NULL CONSTRAINT [FK_Flights_Aircraft] FOREIGN KEY REFERENCES [BaseStation].[Aircraft] ([AircraftID]) ON DELETE CASCADE
-       ,[StartTime]             DATETIME NOT NULL
-       ,[EndTime]               DATETIME
+       ,[StartTime]             DATETIME2 NOT NULL
+       ,[EndTime]               DATETIME2
        ,[Callsign]              NVARCHAR(20)
        ,[NumPosMsgRec]          INTEGER
        ,[NumADSBMsgRec]         INTEGER
@@ -364,7 +370,7 @@ BEGIN
     CREATE TABLE [BaseStation].[SystemEvents]
     (
         [SystemEventsID]    INTEGER IDENTITY
-       ,[TimeStamp]         DATETIME NOT NULL
+       ,[TimeStamp]         DATETIME2 NOT NULL
        ,[App]               NVARCHAR(15) NOT NULL
        ,[Msg]               NVARCHAR(100) NOT NULL
 
@@ -395,9 +401,9 @@ IF NOT EXISTS (
 BEGIN
     CREATE TYPE [BaseStation].[BaseStationAircraftUpsert] AS TABLE
     (
-        [ModeS]             VARCHAR(6) NOT NULL PRIMARY KEY
-       ,[FirstCreated]      DATETIME NOT NULL
-       ,[LastModified]      DATETIME NOT NULL
+        [ModeS]             NVARCHAR(6) NOT NULL PRIMARY KEY
+       ,[FirstCreated]      DATETIME2 NOT NULL
+       ,[LastModified]      DATETIME2 NOT NULL
        ,[ModeSCountry]      NVARCHAR(80)
        ,[Country]           NVARCHAR(80)
        ,[Registration]      NVARCHAR(20)
@@ -467,8 +473,8 @@ IF NOT EXISTS (
 BEGIN
     CREATE TYPE [BaseStation].[BaseStationAircraftUpsertLookup] AS TABLE
     (
-        [ModeS]             VARCHAR(6) NOT NULL PRIMARY KEY
-       ,[LastModified]      DATETIME NOT NULL
+        [ModeS]             NVARCHAR(6) NOT NULL PRIMARY KEY
+       ,[LastModified]      DATETIME2 NOT NULL
        ,[Registration]      NVARCHAR(20)
        ,[Country]           NVARCHAR(80)
        ,[ModeSCountry]      NVARCHAR(80)
@@ -504,8 +510,8 @@ BEGIN
     (
         [SessionID]             INTEGER NOT NULL
        ,[AircraftID]            INTEGER NOT NULL
-       ,[StartTime]             DATETIME NOT NULL
-       ,[EndTime]               DATETIME
+       ,[StartTime]             DATETIME2 NOT NULL
+       ,[EndTime]               DATETIME2
        ,[Callsign]              NVARCHAR(20)
        ,[NumPosMsgRec]          INTEGER
        ,[NumADSBMsgRec]         INTEGER
@@ -667,7 +673,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_GetByModeS]
-    @ModeS VARCHAR(6)
+    @ModeS NVARCHAR(6)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -722,8 +728,8 @@ GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_GetOrCreate]
     @Created        BIT OUTPUT
-   ,@ModeS          VARCHAR(6)
-   ,@LocalNow       DATETIME = NULL
+   ,@ModeS          NVARCHAR(6)
+   ,@LocalNow       DATETIME2 = NULL
    ,@ModeSCountry   NVARCHAR(24) = NULL
 AS
 BEGIN
@@ -770,9 +776,9 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_Insert]
-    @FirstCreated     DATETIME
-   ,@LastModified     DATETIME
-   ,@ModeS            VARCHAR(6)
+    @FirstCreated     DATETIME2
+   ,@LastModified     DATETIME2
+   ,@ModeS            NVARCHAR(6)
    ,@ModeSCountry     NVARCHAR(80) = NULL
    ,@Country          NVARCHAR(80) = NULL
    ,@Registration     NVARCHAR(20) = NULL
@@ -946,7 +952,7 @@ GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_MarkManyMissing]
     @Codes    AS [VRS].[Icao24] READONLY
-   ,@LocalNow AS DATETIME
+   ,@LocalNow AS DATETIME2
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -1001,9 +1007,9 @@ GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_Update]
     @AircraftID       INT
-   ,@FirstCreated     DATETIME = NULL
-   ,@LastModified     DATETIME
-   ,@ModeS            VARCHAR(6)
+   ,@FirstCreated     DATETIME2 = NULL
+   ,@LastModified     DATETIME2
+   ,@ModeS            NVARCHAR(6)
    ,@ModeSCountry     NVARCHAR(80)
    ,@Country          NVARCHAR(80)
    ,@Registration     NVARCHAR(20)
@@ -1125,7 +1131,7 @@ GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_UpdateModeSCountry]
     @AircraftID   INTEGER
-   ,@LastModified DATETIME
+   ,@LastModified DATETIME2
    ,@ModeSCountry NVARCHAR(80)
 AS
 BEGIN
@@ -1646,8 +1652,8 @@ GO
 ALTER PROCEDURE [BaseStation].[Flights_Insert]
     @SessionID           INT
    ,@AircraftID          INT
-   ,@StartTime           DATETIME
-   ,@EndTime             DATETIME = NULL
+   ,@StartTime           DATETIME2
+   ,@EndTime             DATETIME2 = NULL
    ,@Callsign            NVARCHAR(20) = NULL
    ,@NumPosMsgRec        INT = NULL
    ,@NumADSBMsgRec       INT = NULL
@@ -1783,8 +1789,8 @@ ALTER PROCEDURE [BaseStation].[Flights_Update]
     @FlightID            INT
    ,@SessionID           INT
    ,@AircraftID          INT
-   ,@StartTime           DATETIME = NULL
-   ,@EndTime             DATETIME
+   ,@StartTime           DATETIME2 = NULL
+   ,@EndTime             DATETIME2
    ,@Callsign            NVARCHAR(20)
    ,@NumPosMsgRec        INT
    ,@NumADSBMsgRec       INT
@@ -2248,8 +2254,8 @@ GO
 
 ALTER PROCEDURE [BaseStation].[Sessions_Insert]
     @LocationID INT
-   ,@StartTime  DATETIME
-   ,@EndTime    DATETIME = NULL
+   ,@StartTime  DATETIME2
+   ,@EndTime    DATETIME2 = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -2286,8 +2292,8 @@ GO
 ALTER PROCEDURE [BaseStation].[Sessions_Update]
     @SessionID  INT
    ,@LocationID INT
-   ,@StartTime  DATETIME = NULL
-   ,@EndTime    DATETIME
+   ,@StartTime  DATETIME2 = NULL
+   ,@EndTime    DATETIME2
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -2368,7 +2374,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[SystemEvents_Insert]
-    @TimeStamp DATETIME
+    @TimeStamp DATETIME2
    ,@App       NVARCHAR(15)
    ,@Msg       NVARCHAR(100)
 AS
@@ -2406,7 +2412,7 @@ GO
 
 ALTER PROCEDURE [BaseStation].[SystemEvents_Update]
     @SystemEventsID INT
-   ,@TimeStamp      DATETIME
+   ,@TimeStamp      DATETIME2
    ,@App            NVARCHAR(15)
    ,@Msg            NVARCHAR(100)
 AS

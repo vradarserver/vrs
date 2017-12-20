@@ -7,8 +7,8 @@ GO
 ALTER PROCEDURE [BaseStation].[Sessions_Update]
     @SessionID  INT
    ,@LocationID INT
-   ,@StartTime  DATETIME = NULL
-   ,@EndTime    DATETIME
+   ,@StartTime  DATETIME2 = NULL
+   ,@EndTime    DATETIME2
 AS
 BEGIN
     SET NOCOUNT ON;

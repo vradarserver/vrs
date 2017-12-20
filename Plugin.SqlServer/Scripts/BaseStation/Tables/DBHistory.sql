@@ -3,7 +3,7 @@ BEGIN
     CREATE TABLE [BaseStation].[DBHistory]
     (
         [DBHistoryID]   INTEGER IDENTITY
-       ,[TimeStamp]     DATETIME NOT NULL
+       ,[TimeStamp]     DATETIME2 NOT NULL
        ,[Description]   NVARCHAR(100) NOT NULL
 
        ,CONSTRAINT [PK_DBHistory] PRIMARY KEY ([DBHistoryID])
@@ -11,22 +11,26 @@ BEGIN
 END;
 GO
 
-IF NOT EXISTS (SELECT 1 FROM [BaseStation].[DBHistory])
+IF NOT EXISTS (SELECT 1 FROM [BaseStation].[DBHistory] WHERE [Description] LIKE 'Schema created by %')
 BEGIN
     INSERT INTO [BaseStation].[DBHistory] (
         [TimeStamp]
        ,[Description]
     ) VALUES (
-        GETUTCDATE()
+        GETDATE()
        ,'Schema created by ' + SUSER_NAME()
     );
+END;
+GO
 
+IF NOT EXISTS (SELECT 1 FROM [BaseStation].[DBHistory] WHERE [Description] = 'Database autocreated by Virtual Radar Server')
+BEGIN
     -- This one is required by BaseStationDBHistory.IsCreationOfDatabaseByVirtualRadarServer
     INSERT INTO [BaseStation].[DBHistory] (
         [TimeStamp]
        ,[Description]
     ) VALUES (
-        GETUTCDATE()
+        GETDATE()
        ,'Database autocreated by Virtual Radar Server'
     );
 END;

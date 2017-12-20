@@ -10,8 +10,8 @@ BEGIN
     (
         [SessionID]             INTEGER NOT NULL
        ,[AircraftID]            INTEGER NOT NULL
-       ,[StartTime]             DATETIME NOT NULL
-       ,[EndTime]               DATETIME
+       ,[StartTime]             DATETIME2 NOT NULL
+       ,[EndTime]               DATETIME2
        ,[Callsign]              NVARCHAR(20)
        ,[NumPosMsgRec]          INTEGER
        ,[NumADSBMsgRec]         INTEGER

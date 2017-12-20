@@ -5,7 +5,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_GetByModeS]
-    @ModeS VARCHAR(6)
+    @ModeS NVARCHAR(6)
 AS
 BEGIN
     SET NOCOUNT ON;

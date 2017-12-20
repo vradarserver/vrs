@@ -6,9 +6,9 @@ GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_Update]
     @AircraftID       INT
-   ,@FirstCreated     DATETIME = NULL
-   ,@LastModified     DATETIME
-   ,@ModeS            VARCHAR(6)
+   ,@FirstCreated     DATETIME2 = NULL
+   ,@LastModified     DATETIME2
+   ,@ModeS            NVARCHAR(6)
    ,@ModeSCountry     NVARCHAR(80)
    ,@Country          NVARCHAR(80)
    ,@Registration     NVARCHAR(20)

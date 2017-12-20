@@ -8,8 +8,8 @@ ALTER PROCEDURE [BaseStation].[Flights_Update]
     @FlightID            INT
    ,@SessionID           INT
    ,@AircraftID          INT
-   ,@StartTime           DATETIME = NULL
-   ,@EndTime             DATETIME
+   ,@StartTime           DATETIME2 = NULL
+   ,@EndTime             DATETIME2
    ,@Callsign            NVARCHAR(20)
    ,@NumPosMsgRec        INT
    ,@NumADSBMsgRec       INT

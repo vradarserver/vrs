@@ -8,7 +8,7 @@
 BEGIN
     CREATE TYPE [VRS].[Icao24] AS TABLE
     (
-        [ModeS] VARCHAR(6) NOT NULL PRIMARY KEY
+        [ModeS] NVARCHAR(6) NOT NULL PRIMARY KEY
     );
 END;
 GO
