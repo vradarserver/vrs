@@ -54,11 +54,11 @@ namespace VirtualRadar.Interface
         /// <param name="caption"></param>
         /// <param name="currentItem"></param>
         /// <param name="totalItems"></param>
-        public ProgressEventArgs(string caption, long currentItem = -1, long totalItems = -1)
+        public ProgressEventArgs(string caption, long currentItem = 0, long totalItems = -1)
         {
             Caption = caption ?? "";
             TotalItems = totalItems;
-            CurrentItem = Math.Min(currentItem, TotalItems);
+            CurrentItem = TotalItems == -1 ? 0 : Math.Min(currentItem, TotalItems);
         }
     }
 }

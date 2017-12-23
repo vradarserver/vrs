@@ -66,6 +66,7 @@ namespace BaseStationImport
             var result = Factory.Singleton.Resolve<IBaseStationDatabaseSqlServer>();
             result.ConnectionString = options.ConnectionString;
             result.WriteSupportEnabled = options.IsDestination;
+            result.CanUpdateSchema = options.IsDestination;
 
             return result;
         }

@@ -28,5 +28,10 @@ namespace VirtualRadar.Interface.Database
         /// Gets or sets the connection string to use.
         /// </summary>
         string ConnectionString { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether we are allowed to update the schema.
+        /// </summary>
+        bool CanUpdateSchema { get; set; }
     }
 }

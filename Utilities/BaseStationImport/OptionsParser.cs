@@ -60,6 +60,9 @@ namespace BaseStationImport
                     case "-nolocations":
                         result.ImportLocations = false;
                         break;
+                    case "-noschema":
+                        result.SuppressSchemaUpdate = true;
+                        break;
                     case "-nosessions":
                         result.ImportSessions = false;
                         break;
@@ -154,6 +157,7 @@ namespace BaseStationImport
             Console.WriteLine($"-import options:");
             Console.WriteLine($"  -src <dbtype> <file|con> The source database and how to connect to it");
             Console.WriteLine($"  -dst <dbtype> <file|con> The target database and how to connect to it");
+            Console.WriteLine($"  -noSchema                Do not create or update schema on target before import");
             Console.WriteLine($"  -noAircraft              Do not import aircraft");
             Console.WriteLine($"  -noLocations             Do not import locations");
             Console.WriteLine($"  -noSessions              Do not import sessions");

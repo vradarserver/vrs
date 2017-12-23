@@ -37,6 +37,12 @@ namespace BaseStationImport
         public DatabaseEngineOptions Destination { get; set; } = new DatabaseEngineOptions() { IsSource = false, };
 
         /// <summary>
+        /// Gets or sets a value indicating that the schema should not be updated / created on the target
+        /// before the import begins.
+        /// </summary>
+        public bool SuppressSchemaUpdate { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether aircraft records are to be exported from <see cref="Source"/> to <see cref="Destination"/>.
         /// </summary>
         public bool ImportAircraft { get; set; } = true;

@@ -66,7 +66,7 @@ namespace VirtualRadar.Plugin.SqlServer
 
         private bool? _CanUpdateSchema;
         /// <summary>
-        /// Gets or sets a value indicating whether we area allowed to update the schema.
+        /// Gets or sets a value indicating whether we are allowed to update the schema.
         /// </summary>
         public bool CanUpdateSchema
         {

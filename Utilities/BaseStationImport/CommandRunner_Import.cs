@@ -36,6 +36,12 @@ namespace BaseStationImport
             ValidateDatabaseEngine(Options.Source, source);
             ValidateDatabaseEngine(Options.Destination, destination);
 
+            var targetDescription = new StringBuilder(Options.Destination.ToString());
+            if(!Options.SuppressSchemaUpdate) {
+                targetDescription.Append(" (apply schema)");
+            } else {
+                targetDescription.Append(" (no schema update)");
+            }
             var aircraftAction = Options.ImportAircraft ? "Import / Update" : Options.ImportFlights ? "Load from target" : "Ignored";
             var locationsAction = Options.ImportLocations ? "Import / Update" : Options.ImportSessions || Options.ImportFlights ? "Load from target" : "Ignored";
             var sessionsAction = Options.ImportSessions ? "Import / Update" : Options.ImportFlights ? "Load from target" : "Ignored";
@@ -43,7 +49,7 @@ namespace BaseStationImport
 
             Console.WriteLine($"BaseStation Import");
             Console.WriteLine($"  Source:    {Options.Source}");
-            Console.WriteLine($"  Target:    {Options.Destination}");
+            Console.WriteLine($"  Target:    {targetDescription}");
             Console.WriteLine($"  Aircraft:  {aircraftAction}");
             Console.WriteLine($"  Locations: {locationsAction}");
             Console.WriteLine($"  Sessions:  {sessionsAction}");
@@ -51,14 +57,15 @@ namespace BaseStationImport
             Console.WriteLine();
 
             var importer = new BaseStationImporter() {
-                ImportAircraft =    Options.ImportAircraft,
-                ImportFlights =     Options.ImportFlights,
-                ImportLocations =   Options.ImportLocations,
-                ImportSessions =    Options.ImportSessions,
-                EarliestFlight =    Options.EarliestFlight,
-                LatestFlight =      Options.LatestFlight,
-                Source =            source.CreateRepository(Options.Source),
-                Destination =       destination.CreateRepository(Options.Destination),
+                ImportAircraft =        Options.ImportAircraft,
+                ImportFlights =         Options.ImportFlights,
+                ImportLocations =       Options.ImportLocations,
+                ImportSessions =        Options.ImportSessions,
+                EarliestFlight =        Options.EarliestFlight,
+                LatestFlight =          Options.LatestFlight,
+                Source =                source.CreateRepository(Options.Source),
+                Destination =           destination.CreateRepository(Options.Destination),
+                SuppressSchemaUpdate =  Options.SuppressSchemaUpdate,
             };
             importer.TableChanged += Importer_TableChanged;
             importer.ProgressChanged += Importer_ProgressChanged;

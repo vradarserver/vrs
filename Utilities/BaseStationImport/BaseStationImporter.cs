@@ -51,6 +51,11 @@ namespace BaseStationImport
         public IBaseStationDatabase Destination { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that the schema on the target should not be updated before import begins.
+        /// </summary>
+        public bool SuppressSchemaUpdate { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating that aircraft should be imported.
         /// </summary>
         public bool ImportAircraft { get; set; }
@@ -128,10 +133,29 @@ namespace BaseStationImport
         /// </summary>
         public void Import()
         {
+            UpdateSchema();
+
             ProcessLocations();
             ProcessSessions();
             ProcessAircraft();
             ProcessFlights();
+        }
+
+        private void UpdateSchema()
+        {
+            if(!SuppressSchemaUpdate) {
+                OnTableChanged(new EventArgs<string>("Schema"));
+                var progress = new ProgressEventArgs() {
+                    Caption = "Applying schema",
+                    TotalItems = 1,
+                };
+                OnProgressChanged(progress);
+
+                Destination.CreateDatabaseIfMissing(Destination.FileName);
+
+                progress.CurrentItem = 1;
+                OnProgressChanged(progress);
+            }
         }
 
         /// <summary>
