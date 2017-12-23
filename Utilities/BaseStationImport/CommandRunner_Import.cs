@@ -74,11 +74,19 @@ namespace BaseStationImport
 
             Console.WriteLine();
             Console.WriteLine($"Missing / skipped records:");
-            Console.WriteLine($"  Missing aircraft:  {importer.MissingAircraft:N0}");
-            Console.WriteLine($"  Missing locations: {importer.MissingLocations:N0}");
-            Console.WriteLine($"  Missing sessions:  {importer.MissingSessions:N0}");
-            Console.WriteLine($"  Skipped sessions:  {importer.SkippedSessions:N0}");
-            Console.WriteLine($"  Skipped flights:   {importer.SkippedFlights:N0}");
+            if(aircraftAction != "Ignored") {
+                Console.WriteLine($"  Missing aircraft:  {importer.MissingAircraft:N0}");
+            }
+            if(locationsAction != "Ignored") {
+                Console.WriteLine($"  Missing locations: {importer.MissingLocations:N0}");
+            }
+            if(sessionsAction != "Ignored") {
+                Console.WriteLine($"  Missing sessions:  {importer.MissingSessions:N0}");
+                Console.WriteLine($"  Skipped sessions:  {importer.SkippedSessions:N0}");
+            }
+            if(flightsAction != "Ignored") {
+                Console.WriteLine($"  Skipped flights:   {importer.SkippedFlights:N0}");
+            }
 
             return true;
         }

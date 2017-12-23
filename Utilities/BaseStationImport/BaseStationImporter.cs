@@ -96,6 +96,11 @@ namespace BaseStationImport
         private DateTime? LatestFlightCriteria => LatestFlight.Date == DateTime.MaxValue.Date ? (DateTime?)null : LatestFlight.Date.AddDays(1).AddTicks(-1);
 
         /// <summary>
+        /// Gets or sets the number of aircraft records to upsert at a time.
+        /// </summary>
+        public int AircraftPageSize { get; set; } = 1000;
+
+        /// <summary>
         /// Gets or sets the number of flight records to copy at a time.
         /// </summary>
         public int FlightPageSize { get; set; } = 1000;
@@ -323,7 +328,7 @@ namespace BaseStationImport
             OnProgressChanged(progress);
 
             _AircraftMap.Clear();
-            var allSource = Source.GetAllAircraft().ToDictionary(r => r.AircraftID, r => r);
+            var allSource = Source.GetAllAircraft();
 
             progress.TotalItems = allSource.Count;
             progress.CurrentItem = 0;
@@ -332,8 +337,8 @@ namespace BaseStationImport
             if(!ImportAircraft) {
                 var allDest = Target.GetAllAircraft().ToDictionary(r => r.ModeS, r => r);
                 foreach(var src in allSource) {
-                    if(allDest.TryGetValue(src.Value.ModeS, out var dest)) {
-                        _AircraftMap.Add(src.Value.AircraftID, dest.AircraftID);
+                    if(allDest.TryGetValue(src.ModeS, out var dest)) {
+                        _AircraftMap.Add(src.AircraftID, dest.AircraftID);
                     } else {
                         ++MissingAircraft;
                     }
@@ -341,26 +346,30 @@ namespace BaseStationImport
                     OnProgressChanged(progress);
                 }
             } else {
-                var upsertCandidates = new List<BaseStationAircraftUpsert>();
                 var upsertKeys = new HashSet<string>();
-                foreach(var kvp in allSource) {
-                    if(!upsertKeys.Contains(kvp.Value.ModeS)) {
-                        upsertCandidates.Add(new BaseStationAircraftUpsert(kvp.Value));
-                        upsertKeys.Add(kvp.Value.ModeS);
-                    }
-                }
-                upsertKeys.Clear();
+                var countUpserted = 0;
 
-                var upserted = Target.UpsertManyAircraft(upsertCandidates).ToDictionary(r => r.ModeS, r => r);
-                upsertCandidates.Clear();
+                while(countUpserted < allSource.Count) {
+                    var upsertCandidates = new List<BaseStationAircraftUpsert>();
+                    var subset = allSource.Skip(countUpserted).Take(AircraftPageSize).ToArray();
 
-                foreach(var sourceKvp in allSource) {
-                    var sourceID = sourceKvp.Key;
-                    if(upserted.TryGetValue(sourceKvp.Value.ModeS, out var rec)) {
-                        _AircraftMap.Add(sourceID, rec.AircraftID);
+                    foreach(var src in subset) {
+                        if(!upsertKeys.Contains(src.ModeS)) {
+                            upsertCandidates.Add(new BaseStationAircraftUpsert(src));
+                            upsertKeys.Add(src.ModeS);
+                        }
                     }
 
-                    ++progress.CurrentItem;
+                    var upserted = Target.UpsertManyAircraft(upsertCandidates).ToDictionary(r => r.ModeS, r => r);
+
+                    foreach(var src in subset) {
+                        if(upserted.TryGetValue(src.ModeS, out var rec)) {
+                            _AircraftMap.Add(src.AircraftID, rec.AircraftID);
+                        }
+                    }
+
+                    countUpserted += subset.Length;
+                    progress.CurrentItem = countUpserted;
                     OnProgressChanged(progress);
                 }
             }
