@@ -96,9 +96,34 @@ namespace BaseStationImport
         private DateTime? LatestFlightCriteria => LatestFlight.Date == DateTime.MaxValue.Date ? (DateTime?)null : LatestFlight.Date.AddDays(1).AddTicks(-1);
 
         /// <summary>
-        /// The number of flight records to copy at a time.
+        /// Gets or sets the number of flight records to copy at a time.
         /// </summary>
         public int FlightPageSize { get; set; } = 1000;
+
+        /// <summary>
+        /// Gets the number of locations that were in the source but could not be loaded from the target.
+        /// </summary>
+        public int MissingLocations { get; private set; }
+
+        /// <summary>
+        /// Gets the number of sessions that were in the source but could not be loaded from the target.
+        /// </summary>
+        public int MissingSessions { get; private set; }
+
+        /// <summary>
+        /// Gets the number of aircraft that were in the source but could not be loaded from the target.
+        /// </summary>
+        public int MissingAircraft { get; private set; }
+
+        /// <summary>
+        /// Gets the number of sessions that had to be skipped because there was no location in the target to attach them to.
+        /// </summary>
+        public int SkippedSessions { get; private set; }
+
+        /// <summary>
+        /// Gets the number of flights that had to be skipped because there was either no session or no aircraft to attach them to.
+        /// </summary>
+        public int SkippedFlights { get; private set; }
 
         /// <summary>
         /// Raised whenever the importer starts importing or loading a new table.
@@ -202,7 +227,9 @@ namespace BaseStationImport
                     }
                 }
 
-                if(rec.LocationID != 0) {
+                if(rec.LocationID == 0) {
+                    ++MissingLocations;
+                } else {
                     _LocationMap.Add(sourceID, rec.LocationID);
                 }
 
@@ -242,7 +269,9 @@ namespace BaseStationImport
             OnProgressChanged(progress);
 
             foreach(var rec in allSource) {
-                if(_LocationMap.TryGetValue(rec.LocationID, out var destLocationID)) {
+                if(!_LocationMap.TryGetValue(rec.LocationID, out var destLocationID)) {
+                    ++SkippedSessions;
+                } else {
                     var sourceID = rec.SessionID;
                     rec.LocationID = destLocationID;
 
@@ -259,7 +288,9 @@ namespace BaseStationImport
                         }
                     }
 
-                    if(rec.SessionID != 0) {
+                    if(rec.SessionID == 0) {
+                        ++MissingSessions;
+                    } else {
                         _SessionMap.Add(sourceID, rec.SessionID);
                     }
                 }
@@ -303,6 +334,8 @@ namespace BaseStationImport
                 foreach(var src in allSource) {
                     if(allDest.TryGetValue(src.Value.ModeS, out var dest)) {
                         _AircraftMap.Add(src.Value.AircraftID, dest.AircraftID);
+                    } else {
+                        ++MissingAircraft;
                     }
                     ++progress.CurrentItem;
                     OnProgressChanged(progress);
@@ -375,12 +408,16 @@ namespace BaseStationImport
                     var upsertKeys = new HashSet<string>();
                     foreach(var candidate in allSource) {
                         var key = $"{candidate.AircraftID}-{candidate.StartTime}";
-                        if(!upsertKeys.Contains(key) && _AircraftMap.TryGetValue(candidate.AircraftID, out var aircraftID) && _SessionMap.TryGetValue(candidate.SessionID, out var sessionID)) {
-                            upsertCandidates.Add(new BaseStationFlightUpsert(candidate) {
-                                AircraftID = aircraftID,
-                                SessionID =  sessionID,
-                            });
-                            upsertKeys.Add(key);
+                        if(!upsertKeys.Contains(key)) {
+                            if(!_AircraftMap.TryGetValue(candidate.AircraftID, out var aircraftID) || !_SessionMap.TryGetValue(candidate.SessionID, out var sessionID)) {
+                                ++SkippedFlights;
+                            } else {
+                                upsertCandidates.Add(new BaseStationFlightUpsert(candidate) {
+                                    AircraftID = aircraftID,
+                                    SessionID =  sessionID,
+                                });
+                                upsertKeys.Add(key);
+                            }
                         }
                     }
 
