@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("BaseStationImport")]
-[assembly: AssemblyCopyright("Copyright © 2017 onwards Andrew Whewell")]
+[assembly: AssemblyCopyright("Copyright (c) Andrew Whewell 2017 onwards")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

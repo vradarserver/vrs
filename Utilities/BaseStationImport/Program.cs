@@ -38,6 +38,11 @@ namespace BaseStationImport
                 ProgramLifetime.InitialiseManagers();
                 LoadDatabasePlugins();
 
+                var appInfo = Factory.Singleton.Resolve<IApplicationInformation>();
+                Console.WriteLine($"{appInfo.ApplicationName}, version {appInfo.ShortVersion}, built {appInfo.BuildDate} UTC");
+                Console.WriteLine(appInfo.Copyright);
+                Console.WriteLine();
+
                 CommandRunner commandRunner = null;
                 var options = OptionsParser.Parse(args);
                 switch(options.Command) {

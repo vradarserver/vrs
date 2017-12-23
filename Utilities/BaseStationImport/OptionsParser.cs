@@ -162,8 +162,8 @@ namespace BaseStationImport
             Console.WriteLine($"  -noLocations             Do not import locations");
             Console.WriteLine($"  -noSessions              Do not import sessions");
             Console.WriteLine($"  -noFlights               Do not import flights");
-            Console.WriteLine($"    -from <yyyy-MM-dd>     Earliest flight to import from [{Describe.IsoDate(defaults.EarliestFlight)}]");
-            Console.WriteLine($"    -to <yyyy-MM-dd>       Latest flight to import to [{Describe.IsoDate(defaults.LatestFlight)}]");
+            Console.WriteLine($"    -from <date>           Earliest flight to import from [{Describe.IsoDate(defaults.EarliestFlight)}]");
+            Console.WriteLine($"    -to <date>             Latest flight to import to [{Describe.IsoDate(defaults.LatestFlight)}]");
             Console.WriteLine();
             Console.WriteLine($"Common options:");
             Console.WriteLine($"  -verbose                 Show more information in error messages");
