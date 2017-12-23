@@ -41,9 +41,9 @@ namespace BaseStationImport
 
                 switch(normalisedArg) {
                     case "-dst":
-                        result.Destination.Engine = ParseEnum<DatabaseEngine>(nextArg, ref i);
+                        result.Target.Engine = ParseEnum<DatabaseEngine>(nextArg, ref i);
                         nextArg = GetNextArg(args, i);
-                        result.Destination.ConnectionString = UseNextArg(arg, nextArg, ref i);
+                        result.Target.ConnectionString = UseNextArg(arg, nextArg, ref i);
                         break;
                     case "-from":
                         result.EarliestFlight = ParseDate(arg, nextArg, ref i);

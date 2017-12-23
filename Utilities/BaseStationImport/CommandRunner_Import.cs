@@ -31,12 +31,12 @@ namespace BaseStationImport
         public override bool Run()
         {
             var source = Engine.Build(Options.Source);
-            var destination = Engine.Build(Options.Destination);
+            var target = Engine.Build(Options.Target);
 
             ValidateDatabaseEngine(Options.Source, source);
-            ValidateDatabaseEngine(Options.Destination, destination);
+            ValidateDatabaseEngine(Options.Target, target);
 
-            var targetDescription = new StringBuilder(Options.Destination.ToString());
+            var targetDescription = new StringBuilder(Options.Target.ToString());
             if(!Options.SuppressSchemaUpdate) {
                 targetDescription.Append(" (apply schema)");
             } else {
@@ -64,7 +64,7 @@ namespace BaseStationImport
                 EarliestFlight =        Options.EarliestFlight,
                 LatestFlight =          Options.LatestFlight,
                 Source =                source.CreateRepository(Options.Source),
-                Destination =           destination.CreateRepository(Options.Destination),
+                Target =                target.CreateRepository(Options.Target),
                 SuppressSchemaUpdate =  Options.SuppressSchemaUpdate,
             };
             importer.TableChanged += Importer_TableChanged;
@@ -77,7 +77,7 @@ namespace BaseStationImport
 
         private void ValidateDatabaseEngine(DatabaseEngineOptions engineOptions, Engine engine)
         {
-            var direction = engineOptions.IsSource ? "source" : "destination";
+            var direction = engineOptions.IsSource ? "source" : "target";
             if(engine == null) {
                 OptionsParser.Usage($"Missing {direction} database engine type");
             }

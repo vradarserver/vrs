@@ -31,7 +31,7 @@ namespace BaseStationImport
         public override string[] ValidateOptions(DatabaseEngineOptions options)
         {
             var result = new List<string>();
-            var direction = options.IsSource ? "source" : "destination";
+            var direction = options.IsSource ? "source" : "target";
 
             if(!Factory.Singleton.HasImplementation<IBaseStationDatabaseSqlServer>()) {
                 result.Add("The SQL Server plugin has not been installed or could not be loaded");
@@ -65,8 +65,8 @@ namespace BaseStationImport
         {
             var result = Factory.Singleton.Resolve<IBaseStationDatabaseSqlServer>();
             result.ConnectionString = options.ConnectionString;
-            result.WriteSupportEnabled = options.IsDestination;
-            result.CanUpdateSchema = options.IsDestination;
+            result.WriteSupportEnabled = options.IsTarget;
+            result.CanUpdateSchema = options.IsTarget;
 
             return result;
         }

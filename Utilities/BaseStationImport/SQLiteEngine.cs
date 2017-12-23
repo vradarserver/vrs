@@ -37,7 +37,7 @@ namespace BaseStationImport
         public override string[] ValidateOptions(DatabaseEngineOptions options)
         {
             var result = new List<string>();
-            var direction = options.IsSource ? "source" : "destination";
+            var direction = options.IsSource ? "source" : "target";
 
             var fileName = options.ConnectionString;
             if(String.IsNullOrWhiteSpace(fileName)) {
@@ -46,7 +46,7 @@ namespace BaseStationImport
                 if(!File.Exists(fileName)) {
                     result.Add($"The {direction} SQLite file {fileName} does not exist");
                 }
-            } else if(options.IsDestination) {
+            } else if(options.IsTarget) {
                 var path = Path.GetDirectoryName(fileName);
                 if(!Directory.Exists(path)) {
                     result.Add($"The {direction} SQLite file {fileName} specifies a folder that does not exist");
@@ -65,7 +65,7 @@ namespace BaseStationImport
         {
             var result = Factory.Singleton.Resolve<IBaseStationDatabaseSQLite>();
             result.FileName = options.ConnectionString;
-            result.WriteSupportEnabled = options.IsDestination;
+            result.WriteSupportEnabled = options.IsTarget;
 
             return result;
         }

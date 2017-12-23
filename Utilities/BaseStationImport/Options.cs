@@ -34,7 +34,7 @@ namespace BaseStationImport
         /// <summary>
         /// Gets or sets details of the destination.
         /// </summary>
-        public DatabaseEngineOptions Destination { get; set; } = new DatabaseEngineOptions() { IsSource = false, };
+        public DatabaseEngineOptions Target { get; set; } = new DatabaseEngineOptions() { IsSource = false, };
 
         /// <summary>
         /// Gets or sets a value indicating that the schema should not be updated / created on the target
@@ -43,22 +43,22 @@ namespace BaseStationImport
         public bool SuppressSchemaUpdate { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether aircraft records are to be exported from <see cref="Source"/> to <see cref="Destination"/>.
+        /// Gets or sets a value indicating whether aircraft records are to be exported from <see cref="Source"/> to <see cref="Target"/>.
         /// </summary>
         public bool ImportAircraft { get; set; } = true;
 
         /// <summary>
-        /// Gets or sets a value indicating whether session records are to be exported from <see cref="Source"/> to <see cref="Destination"/>.
+        /// Gets or sets a value indicating whether session records are to be exported from <see cref="Source"/> to <see cref="Target"/>.
         /// </summary>
         public bool ImportSessions { get; set; } = true;
 
         /// <summary>
-        /// Gets or sets a value indicating whether location records are to be exported from <see cref="Source"/> to <see cref="Destination"/>.
+        /// Gets or sets a value indicating whether location records are to be exported from <see cref="Source"/> to <see cref="Target"/>.
         /// </summary>
         public bool ImportLocations { get; set; } = true;
 
         /// <summary>
-        /// Gets or sets a value indicating whether flight records are to be exported from <see cref="Source"/> to <see cref="Destination"/>.
+        /// Gets or sets a value indicating whether flight records are to be exported from <see cref="Source"/> to <see cref="Target"/>.
         /// </summary>
         public bool ImportFlights { get; set; } = true;
 

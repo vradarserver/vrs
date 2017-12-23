@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("BaseStationImport")]
-[assembly: AssemblyDescription("A command-line utility to export BaseStation records from a source and import them into a destination")]
+[assembly: AssemblyDescription("A command-line utility to copy BaseStation records from a source database to a target database")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("BaseStationImport")]

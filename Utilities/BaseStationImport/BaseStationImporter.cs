@@ -26,17 +26,17 @@ namespace BaseStationImport
     class BaseStationImporter
     {
         /// <summary>
-        /// A map of source location IDs to destination location IDs.
+        /// A map of source location IDs to target location IDs.
         /// </summary>
         private Dictionary<int, int> _LocationMap = new Dictionary<int, int>();
 
         /// <summary>
-        /// A map of source session IDs to destintion session IDs.
+        /// A map of source session IDs to target session IDs.
         /// </summary>
         private Dictionary<int, int> _SessionMap = new Dictionary<int, int>();
 
         /// <summary>
-        /// A map of source aircraft IDs to destination aircraft IDs.
+        /// A map of source aircraft IDs to target aircraft IDs.
         /// </summary>
         private Dictionary<int, int> _AircraftMap = new Dictionary<int, int>();
 
@@ -46,9 +46,9 @@ namespace BaseStationImport
         public IBaseStationDatabase Source { get; set; }
 
         /// <summary>
-        /// Gets or sets the destination BaseStation database.
+        /// Gets or sets the target BaseStation database.
         /// </summary>
-        public IBaseStationDatabase Destination { get; set; }
+        public IBaseStationDatabase Target { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating that the schema on the target should not be updated before import begins.
@@ -151,7 +151,7 @@ namespace BaseStationImport
                 };
                 OnProgressChanged(progress);
 
-                Destination.CreateDatabaseIfMissing(Destination.FileName);
+                Target.CreateDatabaseIfMissing(Target.FileName);
 
                 progress.CurrentItem = 1;
                 OnProgressChanged(progress);
@@ -179,7 +179,7 @@ namespace BaseStationImport
 
             _LocationMap.Clear();
             var allSource = Source.GetLocations();
-            var allDest =   Destination.GetLocations();
+            var allDest =   Target.GetLocations();
 
             progress.TotalItems = allSource.Count;
             progress.CurrentItem = 0;
@@ -192,13 +192,13 @@ namespace BaseStationImport
                 if(existing == null) {
                     rec.LocationID = 0;
                     if(ImportLocations) {
-                        Destination.InsertLocation(rec);
+                        Target.InsertLocation(rec);
                     }
                 } else {
                     rec.LocationID = existing.LocationID;
                     existing.LocationID = -1;
                     if(ImportLocations) {
-                        Destination.UpdateLocation(rec);
+                        Target.UpdateLocation(rec);
                     }
                 }
 
@@ -235,7 +235,7 @@ namespace BaseStationImport
 
             _SessionMap.Clear();
             var allSource = Source.GetSessions();
-            var allDest = Destination.GetSessions();
+            var allDest = Target.GetSessions();
 
             progress.TotalItems = allSource.Count;
             progress.CurrentItem = 0;
@@ -250,12 +250,12 @@ namespace BaseStationImport
                     if(existing == null) {
                         rec.SessionID = 0;
                         if(ImportSessions) {
-                            Destination.InsertSession(rec);
+                            Target.InsertSession(rec);
                         }
                     } else {
                         rec.SessionID = existing.SessionID;
                         if(ImportSessions) {
-                            Destination.UpdateSession(rec);
+                            Target.UpdateSession(rec);
                         }
                     }
 
@@ -299,7 +299,7 @@ namespace BaseStationImport
             OnProgressChanged(progress);
 
             if(!ImportAircraft) {
-                var allDest = Destination.GetAllAircraft().ToDictionary(r => r.ModeS, r => r);
+                var allDest = Target.GetAllAircraft().ToDictionary(r => r.ModeS, r => r);
                 foreach(var src in allSource) {
                     if(allDest.TryGetValue(src.Value.ModeS, out var dest)) {
                         _AircraftMap.Add(src.Value.AircraftID, dest.AircraftID);
@@ -318,7 +318,7 @@ namespace BaseStationImport
                 }
                 upsertKeys.Clear();
 
-                var upserted = Destination.UpsertManyAircraft(upsertCandidates).ToDictionary(r => r.ModeS, r => r);
+                var upserted = Target.UpsertManyAircraft(upsertCandidates).ToDictionary(r => r.ModeS, r => r);
                 upsertCandidates.Clear();
 
                 foreach(var sourceKvp in allSource) {
@@ -384,7 +384,7 @@ namespace BaseStationImport
                         }
                     }
 
-                    var upserted = Destination.UpsertManyFlights(upsertCandidates);
+                    var upserted = Target.UpsertManyFlights(upsertCandidates);
                     countDest += upserted.Length;
                     startRow += FlightPageSize;
 

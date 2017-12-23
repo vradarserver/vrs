@@ -29,7 +29,7 @@ namespace BaseStationImport
         /// <summary>
         /// Gets a value indicating whether the engine represents the destination for the data.
         /// </summary>
-        public bool IsDestination => !IsSource;
+        public bool IsTarget => !IsSource;
 
         /// <summary>
         /// Gets or sets the database engine in use.
