@@ -62,6 +62,7 @@
     <Compile Include="BaseStationImporter.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="CommandRunner.cs" />
+    <Compile Include="CommandRunner_ApplySchema.cs" />
     <Compile Include="CommandRunner_Import.cs" />
     <Compile Include="ConsoleProgress.cs" />
     <Compile Include="Engine.cs" />

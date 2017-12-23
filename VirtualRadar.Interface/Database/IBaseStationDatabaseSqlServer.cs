@@ -33,5 +33,11 @@ namespace VirtualRadar.Interface.Database
         /// Gets or sets a value indicating whether we are allowed to update the schema.
         /// </summary>
         bool CanUpdateSchema { get; set; }
+
+        /// <summary>
+        /// Applies the schema (if <see cref="CanUpdateSchema"/> is true) and returns the output from the schema update script.
+        /// </summary>
+        /// <returns></returns>
+        string[] UpdateSchema();
     }
 }

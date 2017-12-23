@@ -69,5 +69,18 @@ namespace BaseStationImport
 
             return result;
         }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public override string[] UpdateSchema(DatabaseEngineOptions options)
+        {
+            using(var repository = CreateRepository(options)) {
+                repository.CreateDatabaseIfMissing(repository.FileName);
+                return new string[] { $"{repository.FileName} created / updated" };
+            }
+        }
     }
 }

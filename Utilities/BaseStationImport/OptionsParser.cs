@@ -66,6 +66,9 @@ namespace BaseStationImport
                     case "-nosessions":
                         result.ImportSessions = false;
                         break;
+                    case "-schema":
+                        result.Command = Command.ApplySchema;
+                        break;
                     case "-src":
                         result.Source.Engine = ParseEnum<DatabaseEngine>(nextArg, ref i);
                         nextArg = GetNextArg(args, i);
@@ -147,7 +150,9 @@ namespace BaseStationImport
 
             //                  123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789
             Console.WriteLine($"usage: BaseStationImport <command> [options]");
+            Console.WriteLine($"Commands:");
             Console.WriteLine($"  -import                  Copy BaseStation data from one database to another");
+            Console.WriteLine($"  -schema                  Create or update the schema");
             Console.WriteLine();
             Console.WriteLine($"Parameter types:");
             Console.WriteLine($"  <date>                   A date in yyyy-MM-dd ISO format");
@@ -164,6 +169,9 @@ namespace BaseStationImport
             Console.WriteLine($"  -noFlights               Do not import flights");
             Console.WriteLine($"    -from <date>           Earliest flight to import from [{Describe.IsoDate(defaults.EarliestFlight)}]");
             Console.WriteLine($"    -to <date>             Latest flight to import to [{Describe.IsoDate(defaults.LatestFlight)}]");
+            Console.WriteLine();
+            Console.WriteLine($"-schema options:");
+            Console.WriteLine($"  -dst <dbtype> <file|con> The database to apply the schema to");
             Console.WriteLine();
             Console.WriteLine($"Common options:");
             Console.WriteLine($"  -verbose                 Show more information in error messages");

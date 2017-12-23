@@ -44,6 +44,13 @@ namespace BaseStationImport
         public abstract IBaseStationDatabase CreateRepository(DatabaseEngineOptions options);
 
         /// <summary>
+        /// Updates the schema and returns the response from the engine.
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public abstract string[] UpdateSchema(DatabaseEngineOptions options);
+
+        /// <summary>
         /// Creates a database engine.
         /// </summary>
         /// <param name="engineOptions"></param>

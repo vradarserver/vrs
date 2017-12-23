@@ -30,5 +30,10 @@ namespace BaseStationImport
         /// Copy BaseStation.sqb data from one database to another.
         /// </summary>
         Import,
+
+        /// <summary>
+        /// Apply the current schema to the database specified
+        /// </summary>
+        ApplySchema,
     }
 }

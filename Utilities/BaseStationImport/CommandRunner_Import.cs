@@ -75,20 +75,6 @@ namespace BaseStationImport
             return true;
         }
 
-        private void ValidateDatabaseEngine(DatabaseEngineOptions engineOptions, Engine engine)
-        {
-            var direction = engineOptions.IsSource ? "source" : "target";
-            if(engine == null) {
-                OptionsParser.Usage($"Missing {direction} database engine type");
-            }
-
-            var validationErrors = engine.ValidateOptions(engineOptions);
-            if(validationErrors.Length > 0) {
-                var joinedErrors = String.Join(Environment.NewLine, validationErrors);
-                OptionsParser.Usage(joinedErrors);
-            }
-        }
-
         private void Importer_TableChanged(object sender, EventArgs<string> e)
         {
             _Progress = new ConsoleProgress();

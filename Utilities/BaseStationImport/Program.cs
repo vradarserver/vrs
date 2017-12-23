@@ -46,8 +46,9 @@ namespace BaseStationImport
                 CommandRunner commandRunner = null;
                 var options = OptionsParser.Parse(args);
                 switch(options.Command) {
-                    case Command.Import:    commandRunner = new CommandRunner_Import(); break;
-                    default:                OptionsParser.Usage("Missing command"); break;
+                    case Command.ApplySchema:   commandRunner = new CommandRunner_ApplySchema(); break;
+                    case Command.Import:        commandRunner = new CommandRunner_Import(); break;
+                    default:                    OptionsParser.Usage("Missing command"); break;
                 }
                 commandRunner.Options = options;
                 if(!commandRunner.Run()) {

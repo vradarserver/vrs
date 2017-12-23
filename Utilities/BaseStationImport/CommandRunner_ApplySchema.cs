@@ -16,24 +16,30 @@ using System.Threading.Tasks;
 
 namespace BaseStationImport
 {
-    abstract class CommandRunner
+    /// <summary>
+    /// Handles the application of a schema to the target database.
+    /// </summary>
+    class CommandRunner_ApplySchema : CommandRunner
     {
-        public Options Options { get; set; }
-
-        public abstract bool Run();
-
-        protected void ValidateDatabaseEngine(DatabaseEngineOptions engineOptions, Engine engine)
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <returns></returns>
+        public override bool Run()
         {
-            var direction = engineOptions.IsSource ? "source" : "target";
-            if(engine == null) {
-                OptionsParser.Usage($"Missing {direction} database engine type");
+            var target = Engine.Build(Options.Target);
+
+            ValidateDatabaseEngine(Options.Target, target);
+
+            Console.WriteLine($"Apply Schema");
+            Console.WriteLine($"  Target: {Options.Target}");
+            Console.WriteLine();
+
+            foreach(var outputLine in target.UpdateSchema(Options.Target)) {
+                Console.WriteLine(outputLine);
             }
 
-            var validationErrors = engine.ValidateOptions(engineOptions);
-            if(validationErrors.Length > 0) {
-                var joinedErrors = String.Join(Environment.NewLine, validationErrors);
-                OptionsParser.Usage(joinedErrors);
-            }
+            return true;
         }
     }
 }
