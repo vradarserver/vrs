@@ -44,7 +44,8 @@ namespace Test.VirtualRadar.Library
             public static bool _RegisterImplementationsThrowsException;
             public static void _Reset()
             {
-                _Id = _Name = _Version = _PluginFolder = null;
+                _Id = "_";
+                _Name = _Version = _PluginFolder = null;
                 _HasOptions = false;
                 _ConstructorCallCount.Clear();
                 _RegisterImplementationsCallCount.Clear();
@@ -104,17 +105,26 @@ namespace Test.VirtualRadar.Library
 
         class PluginA : Plugin
         {
-            public PluginA() : base() { }
+            public PluginA() : base()
+            {
+                _Id = "A";
+            }
         }
 
         class PluginB : Plugin
         {
-            public PluginB() : base() { }
+            public PluginB() : base()
+            {
+                _Id = "B";
+            }
         }
 
         class PluginC : Plugin
         {
-            public PluginC() : base() { }
+            public PluginC() : base()
+            {
+                _Id = "C";
+            }
         }
 
         class NotPlugin
@@ -263,9 +273,9 @@ namespace Test.VirtualRadar.Library
 
             _PluginManager.LoadPlugins();
 
-            Assert.AreEqual(1, Plugin._RegisterImplementationsCallCount[typeof(PluginA)]);
-            Assert.AreEqual(false, Plugin._RegisterImplementationsCallCount.ContainsKey(typeof(PluginB)));
-            Assert.AreEqual(1, Plugin._RegisterImplementationsCallCount[typeof(PluginC)]);
+            Assert.IsTrue(_PluginManager.LoadedPlugins.Any(r => r is PluginA));
+            Assert.IsFalse(_PluginManager.LoadedPlugins.Any(r => r is PluginB));
+            Assert.IsTrue(_PluginManager.LoadedPlugins.Any(r => r is PluginC));
         }
 
         [TestMethod]
@@ -438,18 +448,29 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void PluginManager_LoadPlugins_Calls_RegisterImplementations_For_Each_Plugin()
+        public void PluginManager_LoadPlugins_Does_Not_Call_RegisterImplementations_For_Each_Plugin()
         {
             SetupProviderForPlugins(typeof(Plugin));
 
             _PluginManager.LoadPlugins();
+
+            Assert.AreEqual(0, Plugin._RegisterImplementationsCallCount.Count);
+        }
+
+        [TestMethod]
+        public void PluginManager_RegisterImplementations_Calls_RegisterImplementations_For_Each_Plugin()
+        {
+            SetupProviderForPlugins(typeof(Plugin));
+
+            _PluginManager.LoadPlugins();
+            _PluginManager.RegisterImplementations();
 
             Assert.AreEqual(1, Plugin._RegisterImplementationsCallCount[typeof(Plugin)]);
             Assert.AreSame(Factory.Singleton, Plugin._RegisterImplementationsClassFactory);
         }
 
         [TestMethod]
-        public void PluginManager_LoadPlugins_Rolls_Back_RegisterImplementations_If_It_Throws_Exception()
+        public void PluginManager_RegisterImplementations_Rolls_Back_If_It_Throws_Exception()
         {
             Plugin._RegisterImplementationsThrowsException = true;
             SetupProviderForPlugins(typeof(Plugin));
@@ -457,29 +478,56 @@ namespace Test.VirtualRadar.Library
             _Provider.Setup(p => p.ClassFactoryTakeSnapshot()).Returns(snapshot);
 
             _PluginManager.LoadPlugins();
+            _PluginManager.RegisterImplementations();
 
             _Provider.Verify(p => p.ClassFactoryRestoreSnapshot(snapshot), Times.Once());
         }
 
         [TestMethod]
-        public void PluginManager_LoadPlugins_Logs_Libraries_With_RegisterImplementations_That_Throws_Exception()
+        public void PluginManager_RegisterImplementations_Removes_Plugin_From_Loaded_List_If_Exception_Thrown()
         {
             Plugin._RegisterImplementationsThrowsException = true;
             SetupProviderForPlugins(typeof(Plugin));
 
             _PluginManager.LoadPlugins();
+            _PluginManager.RegisterImplementations();
+
+            Assert.AreEqual(0, _PluginManager.LoadedPlugins.Count);
+        }
+
+        [TestMethod]
+        public void PluginManager_RegisterImplementations_Adds_Plugin_To_Ignored_List_If_Exception_Thrown()
+        {
+            Plugin._RegisterImplementationsThrowsException = true;
+            SetupProviderForPlugins(typeof(Plugin));
+
+            _PluginManager.LoadPlugins();
+            _PluginManager.RegisterImplementations();
+
+            Assert.AreEqual(1, _PluginManager.IgnoredPlugins.Count);
+        }
+
+        [TestMethod]
+        public void PluginManager_Logs_Libraries_With_RegisterImplementations_That_Throws_Exception()
+        {
+            Plugin._RegisterImplementationsThrowsException = true;
+            SetupProviderForPlugins(typeof(Plugin));
+
+            _PluginManager.LoadPlugins();
+            _PluginManager.RegisterImplementations();
 
             _Log.Verify(g => g.WriteLine(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once());
         }
 
         [TestMethod]
-        public void PluginManager_LoadPlugins_Does_Not_Roll_Back_RegisterImplementations_If_No_Exception_Thrown()
+        public void PluginManager_RegisterImplementations_Does_Not_Roll_Back_RegisterImplementations_If_No_Exception_Thrown()
         {
             SetupProviderForPlugins(typeof(Plugin));
             var snapshot = new Mock<IClassFactory>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties().Object;
             _Provider.Setup(p => p.ClassFactoryTakeSnapshot()).Returns(snapshot);
 
             _PluginManager.LoadPlugins();
+            _PluginManager.RegisterImplementations();
 
             _Provider.Verify(p => p.ClassFactoryRestoreSnapshot(snapshot), Times.Never());
         }

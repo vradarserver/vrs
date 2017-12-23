@@ -205,6 +205,15 @@ namespace VirtualRadar.Interface
         }
 
         /// <summary>
+        /// Calls RegisterImplementations on the loaded plugins.
+        /// </summary>
+        public static void RegisterPlugins()
+        {
+            var pluginManager = Factory.Singleton.ResolveSingleton<IPluginManager>();
+            pluginManager.RegisterImplementations();
+        }
+
+        /// <summary>
         /// Starts the program in single-instance mode throwing an exception if there's already a running
         /// instance. If <see cref="AllowMultipleInstances"/> is set then the single-instance check is skipped
         /// but the application is still spun up.

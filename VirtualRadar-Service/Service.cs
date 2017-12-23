@@ -134,6 +134,7 @@ namespace VirtualRadar
 
                 ProgramLifetime.InitialiseManagers();
                 ProgramLifetime.LoadPlugins();
+                ProgramLifetime.RegisterPlugins();
                 ProgramLifetime.SingleInstanceStart(args);
             } catch(ThreadAbortException) {
                 ;

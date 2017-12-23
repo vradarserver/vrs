@@ -299,5 +299,26 @@ namespace InterfaceFactory
 
             return implementation.CreateInstance();
         }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="interfaceType"></param>
+        /// <returns></returns>
+        public bool HasImplementation(Type interfaceType)
+        {
+            var singletonMap = _SingletonMap;
+            return _ImplementationMap.ContainsKey(interfaceType) || singletonMap.ContainsKey(interfaceType);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public bool HasImplementation<T>() where T: class
+        {
+            return HasImplementation(typeof(T));
+        }
     }
 }

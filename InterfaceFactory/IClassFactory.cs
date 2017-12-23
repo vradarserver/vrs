@@ -122,6 +122,20 @@ namespace InterfaceFactory
         object ResolveNewInstance(Type interfaceType);
 
         /// <summary>
+        /// Returns true if the interface type passed across has an implementation registered for it.
+        /// </summary>
+        /// <param name="interfaceType"></param>
+        /// <returns></returns>
+        bool HasImplementation(Type interfaceType);
+
+        /// <summary>
+        /// Returns true if the interface type passed across has an implementation registered for it.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        bool HasImplementation<T>() where T: class;
+
+        /// <summary>
         /// Returns a copy of the factory.
         /// </summary>
         /// <returns>A copy of the factory with all of the current interface registrations. Changes to the registrations

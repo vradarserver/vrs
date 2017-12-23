@@ -347,6 +347,48 @@ namespace Test.InterfaceFactory
         }
         #endregion
 
+        #region HasImplementation
+        [TestMethod]
+        public void ClassFactory_HasImplementation_Returns_True_If_Implementation_Registered()
+        {
+            _ClassFactory.Register<ISi, Si>();
+            Assert.IsTrue(_ClassFactory.HasImplementation(typeof(ISi)));
+        }
+
+        [TestMethod]
+        public void ClassFactory_HasImplementation_Returns_False_If_Implementation_Not_Registered()
+        {
+            Assert.IsFalse(_ClassFactory.HasImplementation(typeof(ISi)));
+        }
+
+        [TestMethod]
+        public void ClassFactory_HasImplementation_Returns_True_If_Singleton_Registered()
+        {
+            _ClassFactory.RegisterInstance<ISi>(new Si());
+            Assert.IsTrue(_ClassFactory.HasImplementation<ISi>());
+        }
+
+        [TestMethod]
+        public void ClassFactory_HasImplementation_Generic_Returns_True_If_Implementation_Registered()
+        {
+            _ClassFactory.Register<ISi, Si>();
+            Assert.IsTrue(_ClassFactory.HasImplementation<ISi>());
+        }
+
+        [TestMethod]
+        public void ClassFactory_HasImplementation_Generic_Returns_False_If_Implementation_Not_Registered()
+        {
+            Assert.IsFalse(_ClassFactory.HasImplementation<ISi>());
+        }
+
+        [TestMethod]
+        public void ClassFactory_HasImplementation_Generic_Returns_True_If_Singleton_Registered()
+        {
+            _ClassFactory.RegisterInstance<ISi>(new Si());
+            Assert.IsTrue(_ClassFactory.HasImplementation<ISi>());
+        }
+        #endregion
+
         #region CreateChildFactory
         [TestMethod]
         public void ClassFactory_CreateChildFactory_Returns_Child_That_Contains_Same_Implementations_And_Singletons()

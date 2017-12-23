@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2017 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,39 +12,54 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using InterfaceFactory;
+using System.Threading.Tasks;
+using VirtualRadar.Interface.Database;
 
-namespace VirtualRadar.Interface
+namespace BaseStationImport
 {
-    /// <summary>
-    /// The interface for the object that manages plugins on behalf of the program.
-    /// </summary>
-    [Singleton]
-    public interface IPluginManager
+    abstract class Engine
     {
         /// <summary>
-        /// Gets or sets the object that abstracts away the environment for testing.
+        /// Gets a value indicating that the engine is file-based rather than engine based.
         /// </summary>
-        IPluginManagerProvider Provider { get; set; }
+        public virtual bool UsesFileName => false;
 
         /// <summary>
-        /// Gets a list of every plugin that's been loaded into VRS.
+        /// Gets a value indicating that the engine uses connection strings.
         /// </summary>
-        IList<IPlugin> LoadedPlugins { get; }
+        public bool UsesConnectionString => !UsesFileName;
 
         /// <summary>
-        /// Gets a map of the reason why a plugin was not loaded indexed by the full path and filename of the plugin DLL.
+        /// Returns a list of issues with the options passed across. If there are no obvious problems then an empty array is returned.
         /// </summary>
-        IDictionary<string, string> IgnoredPlugins { get; }
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public abstract string[] ValidateOptions(DatabaseEngineOptions options);
 
         /// <summary>
-        /// Loads the DLLs in the Plugins folder.
+        /// Returns an implementation of <see cref="IBaseStationDatabase"/> for the engine.
         /// </summary>
-        void LoadPlugins();
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public abstract IBaseStationDatabase CreateRepository(DatabaseEngineOptions options);
 
         /// <summary>
-        /// Calls the <see cref="IPlugin.RegisterImplementations"/> methods for all loaded plugins.
+        /// Creates a database engine.
         /// </summary>
-        void RegisterImplementations();
+        /// <param name="engineOptions"></param>
+        /// <returns></returns>
+        public static Engine Build(DatabaseEngineOptions engineOptions)
+        {
+            Engine result = null;
+
+            switch(engineOptions.Engine) {
+                case DatabaseEngine.None:       result = null; break;
+                case DatabaseEngine.SQLite:     result = new SQLiteEngine(); break;
+                case DatabaseEngine.SqlServer:  result = new SqlServerEngine(); break;
+                default:                        throw new NotImplementedException();
+            }
+
+            return result;
+        }
     }
 }

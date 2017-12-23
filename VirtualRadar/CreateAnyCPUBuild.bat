@@ -33,6 +33,9 @@ rem Remove the 32-bit required flag from all VRS DLLs and EXEs
 %CORFLAGS% %DEST%\VirtualRadar-Service.exe /32BITREQ- /NOLOGO
 for /f %%f in ('dir /s/b %DEST%\VirtualRadar.*.dll') do (%CORFLAGS% %%f /32BITREQ- /NOLOGO)
 
+rem Remove the 32-bit required flag from all utilities
+%CORFLAGS% %DEST%\BaseStationImport.exe /32BITREQ- /NOLOGO
+
 rem Copy in the AnyCPU interop folders
 xcopy /ei %SolutionDir%Dependencies\AnyCPUBuilds\x86 %DEST%\x86
 xcopy /ei %SolutionDir%Dependencies\AnyCPUBuilds\x64 %DEST%\x64

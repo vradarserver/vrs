@@ -133,8 +133,8 @@
     <Compile Include="Database\BaseStationAircraftUpsert.cs" />
     <Compile Include="Database\BaseStationAircraftUpsertLookup.cs" />
     <Compile Include="Database\BaseStationFlightUpsert.cs" />
-    <Compile Include="Database\IBaseStationDatabaseImport.cs" />
     <Compile Include="Database\IBaseStationDatabaseSQLite.cs" />
+    <Compile Include="Database\IBaseStationDatabaseSqlServer.cs" />
     <Compile Include="Database\OrdinalAttribute.cs" />
     <Compile Include="EventHelperException.cs" />
     <Compile Include="HttpContentHelper.cs" />
@@ -193,6 +193,7 @@
     <Compile Include="Owin\StreamManipulatorPriority.cs" />
     <Compile Include="Presenter\IAircraftOnlineLookupLogPresenter.cs" />
     <Compile Include="ProgramLifetime.cs" />
+    <Compile Include="ProgressEventArgs.cs" />
     <Compile Include="QueueRepository.cs" />
     <Compile Include="BaseStation\BaseStationSupplementaryMessage.cs" />
     <Compile Include="BaseStation\BaseStationTranslatorException.cs" />

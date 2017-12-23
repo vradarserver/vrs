@@ -14,60 +14,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VirtualRadar.Interface.Database
+namespace BaseStationImport
 {
     /// <summary>
-    /// The interface for objects that can import from SQLite BaseStation.sqb files to a
-    /// non-SQLite implementation of <see cref="IBaseStationDatabase"/>.
+    /// Describes the options associated with a source or destination database engine.
     /// </summary>
-    public interface IBaseStationDatabaseImport
+    class DatabaseEngineOptions
     {
         /// <summary>
-        /// Gets or sets the full path and filename of the BaseStation.sqb to import from.
+        /// Gets or sets a value indicating whether the engine represents the source of data.
         /// </summary>
-        string BaseStationFileName { get; set; }
+        public bool IsSource { get; set; }
 
         /// <summary>
-        /// Gets or sets the full path and filename of the optional log file to write to.
+        /// Gets a value indicating whether the engine represents the destination for the data.
         /// </summary>
-        string LogFileName { get; set; }
+        public bool IsDestination => !IsSource;
 
         /// <summary>
-        /// Gets or sets a value indicating that the log should be appended to rather than overwritten.
+        /// Gets or sets the database engine in use.
         /// </summary>
-        bool AppendLog { get; set; }
+        public DatabaseEngine Engine { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating that the aircraft should be imported.
+        /// Gets or sets the filename or connection string to use.
         /// </summary>
-        bool ImportAircraft { get; set; }
+        public string ConnectionString { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating that sessions should be imported.
+        /// See base docs.
         /// </summary>
-        /// <remarks>
-        /// Sessions rely on locations, if locations are not imported then sessions will
-        /// not be imported either.
-        /// </remarks>
-        bool ImportSessions { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating that locations should be imported.
-        /// </summary>
-        bool ImportLocations { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating that flights should be imported.
-        /// </summary>
-        /// <remarks>
-        /// Flights rely on sessions and aircraft, if either of those are not imported then
-        /// flights will not be imported either.
-        /// </remarks>
-        bool ImportFlights { get; set; }
-
-        /// <summary>
-        /// Performs the import.
-        /// </summary>
-        void Import();
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return $"[{Engine}] {ConnectionString}";
+        }
     }
 }

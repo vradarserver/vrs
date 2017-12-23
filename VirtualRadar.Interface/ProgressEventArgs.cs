@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2017 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,37 +10,55 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using InterfaceFactory;
-using VirtualRadar.Interface;
-using VirtualRadar.Interface.Database;
-using VirtualRadar.Interface.Settings;
-using VirtualRadar.Interface.StandingData;
+using System.Threading.Tasks;
 
-namespace VirtualRadar.Database
+namespace VirtualRadar.Interface
 {
     /// <summary>
-    /// Initialises the class factory with all the standard implementations in this library.
+    /// Carries progress information.
     /// </summary>
-    public static class Implementations
+    public class ProgressEventArgs : EventArgs
     {
         /// <summary>
-        /// Initialises the class factory with all the standard implementations in this library.
+        /// Gets or sets the progress bar's caption.
         /// </summary>
-        /// <param name="factory"></param>
-        public static void Register(IClassFactory factory)
+        public string Caption { get; set; }
+
+        /// <summary>
+        /// Gets or sets the element number of the item being processed.
+        /// </summary>
+        public long CurrentItem { get; set; }
+
+        /// <summary>
+        /// Gets or sets the total number of items being processed.
+        /// </summary>
+        public long TotalItems { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating that TotalItems is negative one, which represents the unknown quantity.
+        /// </summary>
+        public bool IsTotalItemsUnknown { get => TotalItems == -1; }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        public ProgressEventArgs() : this("")
         {
-            factory.Register<IAutoConfigBaseStationDatabase, BaseStation.AutoConfigBaseStationDatabase>();
-            factory.Register<IBackgroundDataDownloader, StandingData.BackgroundDataDownloader>();
-            factory.Register<IBaseStationDatabase, BaseStation.Database>();
-            factory.Register<IBaseStationDatabaseSQLite, BaseStation.Database>();
-            factory.Register<ICallsignRouteFetcher, StandingData.CallsignRouteFetcher>();
-            factory.Register<ILogDatabase, Log.Database>();
-            factory.Register<IStandaloneAircraftOnlineLookupCache, AircraftOnlineLookupCache.StandaloneAircraftOnlineLookupCache>();
-            factory.Register<IStandingDataManager, StandingData.StandingDataManager>();
-            factory.Register<IStandingDataUpdater, StandingData.StandingDataUpdater>();
-            factory.Register<IUser, Users.User>();
-            factory.Register<IUserManager, Users.UserManager>();
+        }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="caption"></param>
+        /// <param name="currentItem"></param>
+        /// <param name="totalItems"></param>
+        public ProgressEventArgs(string caption, long currentItem = -1, long totalItems = -1)
+        {
+            Caption = caption ?? "";
+            TotalItems = totalItems;
+            CurrentItem = Math.Min(currentItem, TotalItems);
         }
     }
 }

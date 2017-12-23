@@ -386,5 +386,15 @@ namespace VirtualRadar.Interface
                 default:                                        throw new NotImplementedException();
             }
         }
+
+        /// <summary>
+        /// Returns an ISO-formatted date.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public static string IsoDate(DateTime date)
+        {
+            return date.ToString("yyyy-MM-dd");
+        }
     }
 }

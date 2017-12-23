@@ -29,7 +29,7 @@ namespace VirtualRadar.Plugin.SqlServer
     /// <summary>
     /// The SQL Server implementation of <see cref="IBaseStationDatabase"/>.
     /// </summary>
-    class BaseStationDatabase : IBaseStationDatabase
+    class BaseStationDatabase : IBaseStationDatabaseSqlServer
     {
         /// <summary>
         /// The helper object for <see cref="ITransactionable"/> implementations.

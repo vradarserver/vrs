@@ -28,7 +28,6 @@ namespace VirtualRadar.Library
     /// </summary>
     class PluginManager : IPluginManager
     {
-        #region Private class - DefaultProvider
         /// <summary>
         /// The default implementation of <see cref="IPluginManagerProvider"/>.
         /// </summary>
@@ -73,9 +72,12 @@ namespace VirtualRadar.Library
                 Factory.RestoreSnapshot(snapshot);
             }
         }
-        #endregion
 
-        #region Properties
+        /// <summary>
+        /// A map of plugin IDs to the DLL filename.
+        /// </summary>
+        private Dictionary<string, string> _PluginIDToFileNameMap = new Dictionary<string, string>();
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -90,9 +92,7 @@ namespace VirtualRadar.Library
         /// See interface docs.
         /// </summary>
         public IDictionary<string, string> IgnoredPlugins { get; private set; }
-        #endregion
 
-        #region Constructor
         /// <summary>
         /// Creates a new object.
         /// </summary>
@@ -102,9 +102,7 @@ namespace VirtualRadar.Library
             LoadedPlugins = new List<IPlugin>();
             IgnoredPlugins = new Dictionary<string, string>();
         }
-        #endregion
 
-        #region LoadPlugins
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -130,13 +128,9 @@ namespace VirtualRadar.Library
                                 var plugin = (IPlugin)Activator.CreateInstance(pluginType);
                                 plugin.PluginFolder = subFolder;
 
-                                var snapshot = Provider.ClassFactoryTakeSnapshot();
-                                try {
-                                    plugin.RegisterImplementations(Factory.Singleton);
+                                if(!_PluginIDToFileNameMap.ContainsKey(plugin.Id)) {
+                                    _PluginIDToFileNameMap.Add(plugin.Id, dllFileName);
                                     LoadedPlugins.Add(plugin);
-                                } catch {
-                                    Provider.ClassFactoryRestoreSnapshot(snapshot);
-                                    throw;
                                 }
                             } catch(Exception ex) {
                                 var exceptionMessage = FormatException(ex);
@@ -147,6 +141,29 @@ namespace VirtualRadar.Library
                             }
                         }
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void RegisterImplementations()
+        {
+            var log = Factory.Singleton.ResolveSingleton<ILog>();
+
+            foreach(var plugin in LoadedPlugins.ToArray()) {
+                var snapshot = Provider.ClassFactoryTakeSnapshot();
+                try {
+                    plugin.RegisterImplementations(Factory.Singleton);
+                } catch(Exception ex) {
+                    Provider.ClassFactoryRestoreSnapshot(snapshot);
+
+                    var dllFileName = _PluginIDToFileNameMap[plugin.Id];
+                    _PluginIDToFileNameMap.Remove(plugin.Id);
+                    LoadedPlugins.Remove(plugin);
+                    IgnoredPlugins.Add(dllFileName, String.Format(Strings.PluginCannotBeLoaded, ex.Message));
+                    log.WriteLine("Caught exception loading plugin {0}: {1}", dllFileName, FormatException(ex));
                 }
             }
         }
@@ -216,6 +233,5 @@ namespace VirtualRadar.Library
 
             return result;
         }
-        #endregion
     }
 }

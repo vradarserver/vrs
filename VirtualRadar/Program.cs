@@ -55,6 +55,7 @@ namespace VirtualRadar
 
             ProgramLifetime.InitialiseManagers();
             ProgramLifetime.LoadPlugins();
+            ProgramLifetime.RegisterPlugins();
             ProgramLifetime.SingleInstanceStart(args);
 
             // Calling Environment.Exit rather than falling off the end of Main will ensure that all threads get shut down
