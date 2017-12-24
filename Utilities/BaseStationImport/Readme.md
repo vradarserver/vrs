@@ -4,7 +4,7 @@ This utility copies records out of one BaseStation database and
 into another.
 
 ## Build Folder and Debugging
-It links to several VRS libraries and makes use of VRS plugins.
+The program links to several VRS libraries and makes use of VRS plugins.
 Visual Studio will copy the libraries into the utility's build
 folder but the plugins will not be available to the utility
 from there. There is a post-build step that copies the utility
