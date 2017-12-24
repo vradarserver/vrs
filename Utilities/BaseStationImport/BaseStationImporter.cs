@@ -346,10 +346,10 @@ namespace BaseStationImport
                     OnProgressChanged(progress);
                 }
             } else {
-                var upsertKeys = new HashSet<string>();
                 var countUpserted = 0;
 
                 while(countUpserted < allSource.Count) {
+                    var upsertKeys = new HashSet<string>();
                     var upsertCandidates = new List<BaseStationAircraftUpsert>();
                     var subset = allSource.Skip(countUpserted).Take(AircraftPageSize).ToArray();
 
