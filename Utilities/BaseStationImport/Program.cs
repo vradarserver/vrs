@@ -76,6 +76,22 @@ namespace BaseStationImport
             Environment.Exit(exitCode);
         }
 
+        /// <summary>
+        /// Initialises the database plugins.
+        /// </summary>
+        /// <remarks><para>
+        /// In the field the utility will be running in the same folder as VirtualRadar.exe and will have
+        /// access to all of VRS's plugins. The LoadPlugins call will load every plugin into the process.
+        /// However we only want the database plugins to do any work, so the function does not call the normal
+        /// RegisterImplementations on the plugin manager to get all of them hooked into the system. Rather it
+        /// picks out the database plugins and just calls RegisterImplementations on those. The other plugins
+        /// remain loaded but impotent.
+        /// </para><para>
+        /// The other thing to be aware of is that the utility's version number will be used by the VRS library
+        /// code that loads plugins. If plugins unexpectedly fail to load then make sure that the utility's
+        /// version number falls within the range of version numbers that the plugin's manifest is asking for.
+        /// </para>
+        /// </remarks>
         private static void LoadDatabasePlugins()
         {
             var pluginManager = Factory.Singleton.ResolveSingleton<IPluginManager>();

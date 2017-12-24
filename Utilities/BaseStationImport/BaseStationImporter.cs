@@ -23,6 +23,34 @@ namespace BaseStationImport
     /// <summary>
     /// Handles the importing of BaseStation databases.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// When using the importer it is necessary to keep in mind the relationships between the four tables in
+    /// Kinetic's BaseStation schema that the importer deals with.
+    /// </para>
+    /// <para>
+    /// Aircraft has an ID that is referenced by Flights. Session has an ID that is referenced by Flights.
+    /// Location has an ID that is referenced by Session.
+    /// </para>
+    /// <para>
+    /// This means that if you want to copy flights from one BaseStation to another then you need to copy
+    /// aircraft, locations and sessions as well. The importer will let you skip the copying of a table but if
+    /// you import flights and skip sessions, locations and aircraft then the importer will try to find records
+    /// in the target database that correspond with records from the source so that it can map aircraft and
+    /// session IDs for the flights that it imports.
+    /// </para>
+    /// <para>
+    /// Aircraft matches are made on the ModeS field (case sensitive), Location matches are made on the
+    /// location name (case sensitive) and Session matches are made on the session start time.
+    /// </para>
+    /// <para>
+    /// If a record is imported more than once then the second run will just update the existing record created
+    /// by the first run. It will not create duplicate records.
+    /// </para>
+    /// <para>
+    /// Record IDs are not preserved by the importer.
+    /// </para>
+    /// </remarks>
     class BaseStationImporter
     {
         /// <summary>
