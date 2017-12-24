@@ -35,6 +35,15 @@ namespace VirtualRadar.Interface.Database
         bool CanUpdateSchema { get; set; }
 
         /// <summary>
+        /// Gets or sets the duration that commands will run for before they time out.
+        /// </summary>
+        /// <remarks>
+        /// A value of 0 indicates that commands will never time out. Note that there is no code support
+        /// for connection timeouts because these can already be specified in the connection string.
+        /// </remarks>
+        int CommandTimeoutSeconds { get; set; }
+
+        /// <summary>
         /// Applies the schema (if <see cref="CanUpdateSchema"/> is true) and returns the output from the schema update script.
         /// </summary>
         /// <returns></returns>

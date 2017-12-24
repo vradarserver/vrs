@@ -65,8 +65,9 @@ namespace VirtualRadar.Plugin.SqlServer.WinForms
         /// </summary>
         private void ApplyBindings()
         {
-            AddControlBinder(new CheckBoxBoolBinder<Options>(Options,   checkBoxEnabled,            r => r.Enabled,             (r,v) => r.Enabled = v));
-            AddControlBinder(new TextBoxStringBinder<Options>(Options,  textBoxConnectionString,    r => r.ConnectionString,    (r,v) => r.ConnectionString = v));
+            AddControlBinder(new CheckBoxBoolBinder<Options>(Options,   checkBoxEnabled,                r => r.Enabled,                 (r,v) => r.Enabled = v));
+            AddControlBinder(new TextBoxStringBinder<Options>(Options,  textBoxConnectionString,        r => r.ConnectionString,        (r,v) => r.ConnectionString = v));
+            AddControlBinder(new NumericIntBinder<Options>(Options,     numericUpDownCommandTimeout,    r => r.CommandTimeoutSeconds,   (r,v) => r.CommandTimeoutSeconds = v));
         }
 
         /// <summary>
@@ -109,8 +110,9 @@ namespace VirtualRadar.Plugin.SqlServer.WinForms
         private void ButtonUpdateSchema_Click(object sender, EventArgs e)
         {
             var database = new BaseStationDatabase() {
-                ConnectionString = Options.ConnectionString,
-                CanUpdateSchema =  true,
+                ConnectionString =      Options.ConnectionString,
+                CommandTimeoutSeconds = Options.CommandTimeoutSeconds,
+                CanUpdateSchema =       true,
             };
             var scriptOutput = database.UpdateSchema();
 

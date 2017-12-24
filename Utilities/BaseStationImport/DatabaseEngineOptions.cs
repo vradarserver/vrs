@@ -42,6 +42,16 @@ namespace BaseStationImport
         public string ConnectionString { get; set; }
 
         /// <summary>
+        /// Gets or sets the command timeout in seconds, or null if the default is to be used.
+        /// </summary>
+        /// <remarks>
+        /// Note that depending on the plugin involved the default might be whatever the user
+        /// configured in VRS and not the provider default. Also note that the SQLite version
+        /// of IBaseStationDatabase does not support command timeouts.
+        /// </remarks>
+        public int? CommandTimeoutSeconds { get; set; }
+
+        /// <summary>
         /// See base docs.
         /// </summary>
         /// <returns></returns>

@@ -43,6 +43,16 @@ namespace VirtualRadar.Plugin.SqlServer
             set { SetField(ref _ConnectionString, value, nameof(ConnectionString)); }
         }
 
+        private int _CommandTimeoutSeconds = 30;
+        /// <summary>
+        /// Gets or sets the number of seconds that a command is allowed to run for before the command times out.
+        /// </summary>
+        public int CommandTimeoutSeconds
+        {
+            get { return _CommandTimeoutSeconds; }
+            set { SetField(ref _CommandTimeoutSeconds, value, nameof(CommandTimeoutSeconds)); }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>

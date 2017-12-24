@@ -53,6 +53,10 @@ namespace BaseStationImport
                 }
             }
 
+            if(options.CommandTimeoutSeconds != null) {
+                result.Add("VRS does not support command timeouts for SQLite databases");
+            }
+
             return result.ToArray();
         }
 

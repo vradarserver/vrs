@@ -51,6 +51,10 @@ namespace BaseStationImport
                         result.Add($"Could not connect to the {direction} SQL Server: {ex.Message}");
                     }
                 }
+
+                if(options.CommandTimeoutSeconds < 0) {
+                    result.Add("SQL Server timeouts must be at least 0 seconds");
+                }
             }
 
             return result.ToArray();
@@ -67,6 +71,9 @@ namespace BaseStationImport
             result.ConnectionString = options.ConnectionString;
             result.WriteSupportEnabled = options.IsTarget;
             result.CanUpdateSchema = options.IsTarget;
+            if(options.CommandTimeoutSeconds != null) {
+                result.CommandTimeoutSeconds = options.CommandTimeoutSeconds.Value;
+            }
 
             return result;
         }

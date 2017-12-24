@@ -45,6 +45,9 @@ namespace BaseStationImport
                         nextArg = GetNextArg(args, i);
                         result.Target.ConnectionString = UseNextArg(arg, nextArg, ref i);
                         break;
+                    case "-dsttimeout":
+                        result.Target.CommandTimeoutSeconds = ParseInt(arg, nextArg, ref i);
+                        break;
                     case "-from":
                         result.EarliestFlight = ParseDate(arg, nextArg, ref i);
                         break;
@@ -73,6 +76,9 @@ namespace BaseStationImport
                         result.Source.Engine = ParseEnum<DatabaseEngine>(nextArg, ref i);
                         nextArg = GetNextArg(args, i);
                         result.Source.ConnectionString = UseNextArg(arg, nextArg, ref i);
+                        break;
+                    case "-srctimeout":
+                        result.Source.CommandTimeoutSeconds = ParseInt(arg, nextArg, ref i);
                         break;
                     case "-to":
                         result.LatestFlight = ParseDate(arg, nextArg, ref i);
@@ -129,15 +135,15 @@ namespace BaseStationImport
             }
         }
 
-        private static int ParseInt(string arg, ref int argIndex)
+        private static int ParseInt(string arg, string nextArg, ref int argIndex)
         {
-            if(arg == null) {
-                Usage("Numeric parameter missing");
+            if(nextArg == null) {
+                Usage($"{arg} parameter missing");
             }
             ++argIndex;
 
-            if(!int.TryParse(arg, out int result)) {
-                Usage($"{arg} is not an integer");
+            if(!int.TryParse(nextArg, out int result)) {
+                Usage($"{arg} parameter {nextArg} is not an integer");
             }
 
             return result;
@@ -156,12 +162,15 @@ namespace BaseStationImport
             Console.WriteLine();
             Console.WriteLine($"Parameter types:");
             Console.WriteLine($"  <date>                   A date in yyyy-MM-dd ISO format");
-            Console.WriteLine($"  <dbtype>                 {databaseEngines}");
+            Console.WriteLine($"  <dbtype>                 One of {databaseEngines}");
             Console.WriteLine($"  <file|con>               A filename (SQLite only) or connection string");
+            Console.WriteLine($"  <timeout>                A timeout in seconds, 0 = disable timeout");
             Console.WriteLine();
             Console.WriteLine($"-import options:");
             Console.WriteLine($"  -src <dbtype> <file|con> The source database and how to connect to it");
             Console.WriteLine($"  -dst <dbtype> <file|con> The target database and how to connect to it");
+            Console.WriteLine($"  -srcTimeout <timeout>    An optional timeout to apply to the source");
+            Console.WriteLine($"  -dstTimeout <timeout>    An optional timeout to apply to the target");
             Console.WriteLine($"  -noSchema                Do not create or update schema on target before import");
             Console.WriteLine($"  -noAircraft              Do not import aircraft");
             Console.WriteLine($"  -noLocations             Do not import locations");
@@ -172,6 +181,7 @@ namespace BaseStationImport
             Console.WriteLine();
             Console.WriteLine($"-schema options:");
             Console.WriteLine($"  -dst <dbtype> <file|con> The database to apply the schema to");
+            Console.WriteLine($"  -dstTimeout <timeout>    An optional timeout to apply to the target");
             Console.WriteLine();
             Console.WriteLine($"Common options:");
             Console.WriteLine($"  -verbose                 Show more information in error messages");

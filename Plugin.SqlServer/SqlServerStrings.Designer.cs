@@ -70,6 +70,15 @@ namespace VirtualRadar.Plugin.SqlServer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Command timeout.
+        /// </summary>
+        public static string CommandTimeout {
+            get {
+                return ResourceManager.GetString("CommandTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connection string.
         /// </summary>
         public static string ConnectionString {
@@ -124,15 +133,6 @@ namespace VirtualRadar.Plugin.SqlServer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import from BaseStation.sqb.
-        /// </summary>
-        public static string ImportFromBaseStation {
-            get {
-                return ResourceManager.GetString("ImportFromBaseStation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Open UpdateSchema.sql.
         /// </summary>
         public static string OpenUpdateSchemaFile {
@@ -174,6 +174,15 @@ namespace VirtualRadar.Plugin.SqlServer {
         public static string SchemaUpdatedTitle {
             get {
                 return ResourceManager.GetString("SchemaUpdatedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (seconds).
+        /// </summary>
+        public static string SecondsParenthesis {
+            get {
+                return ResourceManager.GetString("SecondsParenthesis", resourceCulture);
             }
         }
         

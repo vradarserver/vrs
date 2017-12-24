@@ -36,6 +36,10 @@
             this.label2 = new System.Windows.Forms.Label();
             this.buttonUpdateSchema = new System.Windows.Forms.Button();
             this.linkLabelOpenUpdateSchemaSql = new System.Windows.Forms.LinkLabel();
+            this.numericUpDownCommandTimeout = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCommandTimeout)).BeginInit();
             this.SuspendLayout();
             // 
             // checkBoxEnabled
@@ -52,10 +56,10 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(624, 110);
+            this.buttonCancel.Location = new System.Drawing.Point(624, 135);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 8;
+            this.buttonCancel.TabIndex = 11;
             this.buttonCancel.Text = "::Cancel::";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
@@ -63,10 +67,10 @@
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOK.Location = new System.Drawing.Point(543, 110);
+            this.buttonOK.Location = new System.Drawing.Point(543, 135);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
-            this.buttonOK.TabIndex = 7;
+            this.buttonOK.TabIndex = 10;
             this.buttonOK.Text = "::OK::";
             this.buttonOK.UseVisualStyleBackColor = true;
             // 
@@ -101,24 +105,24 @@
             // 
             // label2
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(12, 65);
+            this.label2.Location = new System.Drawing.Point(12, 90);
             this.label2.Margin = new System.Windows.Forms.Padding(3, 6, 3, 12);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(687, 30);
-            this.label2.TabIndex = 5;
+            this.label2.TabIndex = 7;
             this.label2.Text = "::OptionChangesNeedARestart::";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // buttonUpdateSchema
             // 
             this.buttonUpdateSchema.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonUpdateSchema.Location = new System.Drawing.Point(15, 110);
+            this.buttonUpdateSchema.Location = new System.Drawing.Point(15, 135);
             this.buttonUpdateSchema.Name = "buttonUpdateSchema";
             this.buttonUpdateSchema.Size = new System.Drawing.Size(156, 23);
-            this.buttonUpdateSchema.TabIndex = 6;
+            this.buttonUpdateSchema.TabIndex = 8;
             this.buttonUpdateSchema.Text = "::UpdateSchema::";
             this.buttonUpdateSchema.UseVisualStyleBackColor = true;
             this.buttonUpdateSchema.Click += new System.EventHandler(this.ButtonUpdateSchema_Click);
@@ -127,7 +131,7 @@
             // 
             this.linkLabelOpenUpdateSchemaSql.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkLabelOpenUpdateSchemaSql.AutoSize = true;
-            this.linkLabelOpenUpdateSchemaSql.Location = new System.Drawing.Point(177, 115);
+            this.linkLabelOpenUpdateSchemaSql.Location = new System.Drawing.Point(177, 140);
             this.linkLabelOpenUpdateSchemaSql.Name = "linkLabelOpenUpdateSchemaSql";
             this.linkLabelOpenUpdateSchemaSql.Size = new System.Drawing.Size(135, 13);
             this.linkLabelOpenUpdateSchemaSql.TabIndex = 9;
@@ -135,13 +139,47 @@
             this.linkLabelOpenUpdateSchemaSql.Text = "::OpenUpdateSchemaFile::";
             this.linkLabelOpenUpdateSchemaSql.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelOpenUpdateSchemaSql_LinkClicked);
             // 
+            // numericUpDownCommandTimeout
+            // 
+            this.numericUpDownCommandTimeout.Location = new System.Drawing.Point(172, 62);
+            this.numericUpDownCommandTimeout.Maximum = new decimal(new int[] {
+            3600,
+            0,
+            0,
+            0});
+            this.numericUpDownCommandTimeout.Name = "numericUpDownCommandTimeout";
+            this.numericUpDownCommandTimeout.Size = new System.Drawing.Size(64, 20);
+            this.numericUpDownCommandTimeout.TabIndex = 5;
+            this.numericUpDownCommandTimeout.ThousandsSeparator = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 64);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(107, 13);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "::CommandTimeout:::";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(242, 64);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(116, 13);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "::SecondsParenthesis::";
+            // 
             // OptionsView
             // 
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(711, 145);
+            this.ClientSize = new System.Drawing.Size(711, 170);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.numericUpDownCommandTimeout);
             this.Controls.Add(this.linkLabelOpenUpdateSchemaSql);
             this.Controls.Add(this.buttonUpdateSchema);
             this.Controls.Add(this.label2);
@@ -158,6 +196,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "::PluginName::";
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCommandTimeout)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -174,5 +213,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button buttonUpdateSchema;
         private System.Windows.Forms.LinkLabel linkLabelOpenUpdateSchemaSql;
+        private System.Windows.Forms.NumericUpDown numericUpDownCommandTimeout;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
     }
 }

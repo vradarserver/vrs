@@ -56,6 +56,16 @@ namespace VirtualRadar.Plugin.SqlServer
             set { _ConnectionString = value; }
         }
 
+        private int? _CommandTimeoutSeconds;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public int CommandTimeoutSeconds
+        {
+            get { return _CommandTimeoutSeconds ?? Plugin.Singleton.Options.CommandTimeoutSeconds; }
+            set { _CommandTimeoutSeconds = value; }
+        }
+
         /// <summary>
         /// True if the connection string is not the standard one from options.
         /// </summary>
@@ -240,7 +250,7 @@ namespace VirtualRadar.Plugin.SqlServer
 
             if(CanUpdateSchema) {
                 PerformInConnection(wrapper => {
-                    result = SqlServerHelper.RunScript(wrapper.Connection, Scripts.Resources.UpdateSchema_sql);
+                    result = SqlServerHelper.RunScript(wrapper.Connection, Scripts.Resources.UpdateSchema_sql, CommandTimeoutSeconds);
                 });
             }
 
@@ -287,7 +297,7 @@ namespace VirtualRadar.Plugin.SqlServer
             PerformInConnection(wrapper => {
                 wrapper.Connection.Execute("[BaseStation].[Aircraft_Delete]", new {
                     @AircraftID = aircraft?.AircraftID,
-                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure);
+                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds);
             });
         }
 
@@ -304,7 +314,7 @@ namespace VirtualRadar.Plugin.SqlServer
             PerformInConnection(wrapper => {
                 wrapper.Connection.Execute("[BaseStation].[Flights_Delete]", new {
                     @FlightID = flight?.FlightID,
-                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure);
+                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds);
             });
         }
 
@@ -321,7 +331,7 @@ namespace VirtualRadar.Plugin.SqlServer
             PerformInConnection(wrapper => {
                 wrapper.Connection.Execute("[BaseStation].[Locations_Delete]", new {
                     @LocationID = location?.LocationID,
-                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure);
+                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds);
             });
         }
 
@@ -338,7 +348,7 @@ namespace VirtualRadar.Plugin.SqlServer
             PerformInConnection(wrapper => {
                 wrapper.Connection.Execute("[BaseStation].[Sessions_Delete]", new {
                     @SessionID = session?.SessionID,
-                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure);
+                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds);
             });
         }
 
@@ -355,7 +365,7 @@ namespace VirtualRadar.Plugin.SqlServer
             PerformInConnection(wrapper => {
                 wrapper.Connection.Execute("[BaseStation].[SystemEvents_Delete]", new {
                     @SystemEventsID = systemEvent?.SystemEventsID,
-                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure);
+                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds);
             });
         }
 
@@ -371,7 +381,7 @@ namespace VirtualRadar.Plugin.SqlServer
             PerformInConnection(wrapper => {
                 result = wrapper.Connection.Query<BaseStationAircraft>("[BaseStation].[Aircraft_GetByModeS]", new {
                     @ModeS = icao24,
-                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure)
+                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds)
                 .FirstOrDefault();
             });
 
@@ -390,7 +400,7 @@ namespace VirtualRadar.Plugin.SqlServer
             PerformInConnection(wrapper => {
                 result = wrapper.Connection.Query<BaseStationAircraft>("[BaseStation].[Aircraft_GetByID]", new {
                     @AircraftID = id,
-                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure)
+                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds)
                 .FirstOrDefault();
             });
 
@@ -409,7 +419,7 @@ namespace VirtualRadar.Plugin.SqlServer
             PerformInConnection(wrapper => {
                 result = wrapper.Connection.Query<BaseStationAircraft>("[BaseStation].[Aircraft_GetByRegistration]", new {
                     @Registration = registration,
-                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure)
+                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds)
                 .FirstOrDefault();
             });
 
@@ -426,7 +436,7 @@ namespace VirtualRadar.Plugin.SqlServer
 
             PerformInConnection(wrapper => {
                 result.AddRange(wrapper.Connection.Query<BaseStationAircraft>("[BaseStation].[Aircraft_GetAll]",
-                    transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure
+                    transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds
                 ));
             });
 
@@ -473,7 +483,8 @@ namespace VirtualRadar.Plugin.SqlServer
             return wrapper.Connection.ExecuteScalar<int>(
                 commandText.ToString(),
                 criteriaAndProperties.Parameters,
-                transaction: wrapper.Transaction
+                transaction: wrapper.Transaction,
+                commandTimeout: CommandTimeoutSeconds
             );
         }
 
@@ -538,7 +549,7 @@ namespace VirtualRadar.Plugin.SqlServer
 
             PerformInConnection(wrapper => {
                 result.AddRange(wrapper.Connection.Query<BaseStationDBHistory>("[BaseStation].[DBHistory_GetAll]",
-                    transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure
+                    transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds
                 ));
             });
 
@@ -555,7 +566,7 @@ namespace VirtualRadar.Plugin.SqlServer
 
             PerformInConnection(wrapper => {
                 result = wrapper.Connection.Query<BaseStationDBInfo>("[BaseStation].[DBInfo_GetAll]",
-                    transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure
+                    transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds
                 )
                 .OrderByDescending(r => r.CurrentVersion)
                 .FirstOrDefault();
@@ -576,7 +587,7 @@ namespace VirtualRadar.Plugin.SqlServer
             PerformInConnection(wrapper => {
                 result = wrapper.Connection.Query<BaseStationFlight>("[BaseStation].[Flights_GetByID]", new {
                     @FlightID = id,
-                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure)
+                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds)
                 .FirstOrDefault();
             });
 
@@ -649,8 +660,9 @@ namespace VirtualRadar.Plugin.SqlServer
                 result.AddRange(wrapper.Connection.Query<BaseStationFlight>(
                     commandText.ToString(),
                     criteriaAndProperties.Parameters,
-                    transaction: wrapper.Transaction)
-                );
+                    transaction: wrapper.Transaction,
+                    commandTimeout: CommandTimeoutSeconds
+                ));
                 foreach(var flight in result) {
                     flight.Aircraft = aircraft;
                 }
@@ -676,6 +688,7 @@ namespace VirtualRadar.Plugin.SqlServer
                     },
                     criteriaAndProperties.Parameters,
                     transaction: wrapper.Transaction,
+                    commandTimeout: CommandTimeoutSeconds,
                     splitOn: "AircraftID"
                 ));
             }
@@ -723,7 +736,7 @@ namespace VirtualRadar.Plugin.SqlServer
 
             PerformInConnection(wrapper => {
                 result.AddRange(wrapper.Connection.Query<BaseStationLocation>("[BaseStation].[Locations_GetAll]",
-                    transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure
+                    transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds
                 ));
             });
 
@@ -743,7 +756,7 @@ namespace VirtualRadar.Plugin.SqlServer
                 using(var dataTable = BuildIcao24Udtt(icao24s)) {
                     result = wrapper.Connection.Query<BaseStationAircraftAndFlightsCount>("[BaseStation].[AircraftAndFlightsCount_GetByCodes]", new {
                         Codes = dataTable,
-                    }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure)
+                    }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds)
                     .ToDictionary(r => r.ModeS, r => r);
                 }
             });
@@ -772,7 +785,7 @@ namespace VirtualRadar.Plugin.SqlServer
                 using(var dataTable = BuildIcao24Udtt(icao24s)) {
                     result = wrapper.Connection.Query<BaseStationAircraft>("[BaseStation].[Aircraft_GetByCodes]", new {
                         Codes = dataTable,
-                    }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure)
+                    }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds)
                     .ToDictionary(r => r.ModeS, r => r);
                 }
             });
@@ -805,7 +818,8 @@ namespace VirtualRadar.Plugin.SqlServer
                     "[BaseStation].[Aircraft_GetOrCreate]",
                     parameters,
                     transaction: wrapper.Transaction,
-                    commandType: CommandType.StoredProcedure
+                    commandType: CommandType.StoredProcedure,
+                    commandTimeout: CommandTimeoutSeconds
                 );
             });
             created = parameters.Get<bool>("@Created");
@@ -823,7 +837,7 @@ namespace VirtualRadar.Plugin.SqlServer
 
             PerformInConnection(wrapper => {
                 result.AddRange(wrapper.Connection.Query<BaseStationSession>("[BaseStation].[Sessions_GetAll]",
-                    transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure
+                    transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds
                 ));
             });
 
@@ -840,7 +854,7 @@ namespace VirtualRadar.Plugin.SqlServer
 
             PerformInConnection(wrapper => {
                 result.AddRange(wrapper.Connection.Query<BaseStationSystemEvents>("[BaseStation].[SystemEvents_GetAll]",
-                    transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure
+                    transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds
                 ));
             });
 
@@ -862,7 +876,8 @@ namespace VirtualRadar.Plugin.SqlServer
                     "[BaseStation].[Aircraft_Insert]",
                     ParameterBuilder.FromAircraft(aircraft, includeAircraftID: false),
                     transaction: wrapper.Transaction,
-                    commandType: CommandType.StoredProcedure
+                    commandType: CommandType.StoredProcedure,
+                    commandTimeout: CommandTimeoutSeconds
                 );
             });
         }
@@ -882,7 +897,8 @@ namespace VirtualRadar.Plugin.SqlServer
                     "[BaseStation].[Flights_Insert]",
                     ParameterBuilder.FromFlight(flight, includeFlightID: false),
                     transaction: wrapper.Transaction,
-                    commandType: CommandType.StoredProcedure
+                    commandType: CommandType.StoredProcedure,
+                    commandTimeout: CommandTimeoutSeconds
                 );
             });
         }
@@ -902,7 +918,8 @@ namespace VirtualRadar.Plugin.SqlServer
                     "[BaseStation].[Locations_Insert]",
                     ParameterBuilder.FromLocation(location, includeLocationID: false),
                     transaction: wrapper.Transaction,
-                    commandType: CommandType.StoredProcedure
+                    commandType: CommandType.StoredProcedure,
+                    commandTimeout: CommandTimeoutSeconds
                 );
             });
         }
@@ -922,7 +939,8 @@ namespace VirtualRadar.Plugin.SqlServer
                     "[BaseStation].[Sessions_Insert]",
                     ParameterBuilder.FromSession(session, includeSessionID: false),
                     transaction: wrapper.Transaction,
-                    commandType: CommandType.StoredProcedure
+                    commandType: CommandType.StoredProcedure,
+                    commandTimeout: CommandTimeoutSeconds
                 );
             });
         }
@@ -942,7 +960,8 @@ namespace VirtualRadar.Plugin.SqlServer
                     "[BaseStation].[SystemEvents_Insert]",
                     ParameterBuilder.FromSystemEvent(systemEvent, includeSystemEventID: false),
                     transaction: wrapper.Transaction,
-                    commandType: CommandType.StoredProcedure
+                    commandType: CommandType.StoredProcedure,
+                    commandTimeout: CommandTimeoutSeconds
                 );
             });
         }
@@ -962,7 +981,7 @@ namespace VirtualRadar.Plugin.SqlServer
                     wrapper.Connection.ExecuteScalar<int>("[BaseStation].[Aircraft_MarkManyMissing]", new {
                         @Codes = dataTable,
                         @LocalNow = DateTime.Now,
-                    }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure);
+                    }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds);
                 }
             });
         }
@@ -991,7 +1010,8 @@ namespace VirtualRadar.Plugin.SqlServer
                     "[BaseStation].[Aircraft_Update]",
                     ParameterBuilder.FromAircraft(aircraft),
                     transaction: wrapper.Transaction,
-                    commandType: CommandType.StoredProcedure
+                    commandType: CommandType.StoredProcedure,
+                    commandTimeout: CommandTimeoutSeconds
                 );
 
                 OnAircraftUpdated(new EventArgs<BaseStationAircraft>(aircraft));
@@ -1014,7 +1034,7 @@ namespace VirtualRadar.Plugin.SqlServer
                     @AircraftID =   aircraftId,
                     @ModeSCountry = modeSCountry,
                     @LastModified = DateTime.Now,
-                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure);
+                }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds);
             });
         }
 
@@ -1033,7 +1053,8 @@ namespace VirtualRadar.Plugin.SqlServer
                     "[BaseStation].[Flights_Update]",
                     ParameterBuilder.FromFlight(flight),
                     transaction: wrapper.Transaction,
-                    commandType: CommandType.StoredProcedure
+                    commandType: CommandType.StoredProcedure,
+                    commandTimeout: CommandTimeoutSeconds
                 );
             });
         }
@@ -1053,7 +1074,8 @@ namespace VirtualRadar.Plugin.SqlServer
                     "[BaseStation].[Locations_Update]",
                     ParameterBuilder.FromLocation(location),
                     transaction: wrapper.Transaction,
-                    commandType: CommandType.StoredProcedure
+                    commandType: CommandType.StoredProcedure,
+                    commandTimeout: CommandTimeoutSeconds
                 );
             });
         }
@@ -1073,7 +1095,8 @@ namespace VirtualRadar.Plugin.SqlServer
                     "[BaseStation].[Sessions_Update]",
                     ParameterBuilder.FromSession(session),
                     transaction: wrapper.Transaction,
-                    commandType: CommandType.StoredProcedure
+                    commandType: CommandType.StoredProcedure,
+                    commandTimeout: CommandTimeoutSeconds
                 );
             });
         }
@@ -1093,7 +1116,8 @@ namespace VirtualRadar.Plugin.SqlServer
                     "[BaseStation].[SystemEvents_Update]",
                     ParameterBuilder.FromSystemEvent(systemEvent),
                     transaction: wrapper.Transaction,
-                    commandType: CommandType.StoredProcedure
+                    commandType: CommandType.StoredProcedure,
+                    commandTimeout: CommandTimeoutSeconds
                 );
             });
         }
@@ -1126,7 +1150,7 @@ namespace VirtualRadar.Plugin.SqlServer
                     var resultSets = wrapper.Connection.QueryMultiple(
                         "[BaseStation].[Aircraft_UpsertLookups]", new {
                             @Lookups = dataTable
-                        }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure
+                        }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds
                     );
 
                     result = resultSets.Read<BaseStationAircraft>(buffered: false).ToArray();
@@ -1170,7 +1194,7 @@ namespace VirtualRadar.Plugin.SqlServer
                     var resultSets = wrapper.Connection.QueryMultiple(
                         "[BaseStation].[Aircraft_Upsert]", new {
                             @BulkAircraft = dataTable
-                        }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure
+                        }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds
                     );
 
                     result = resultSets.Read<BaseStationAircraft>(buffered: false).ToArray();
@@ -1212,7 +1236,8 @@ namespace VirtualRadar.Plugin.SqlServer
                             @BulkFlights = dataTable,
                         },
                         transaction: wrapper.Transaction,
-                        commandType: CommandType.StoredProcedure
+                        commandType: CommandType.StoredProcedure,
+                        commandTimeout: CommandTimeoutSeconds
                     );
 
                     result = resultSets.Read<BaseStationFlight>(buffered: false).ToArray();

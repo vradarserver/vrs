@@ -41,8 +41,9 @@ namespace VirtualRadar.Plugin.SqlServer
         /// </summary>
         /// <param name="connection"></param>
         /// <param name="script"></param>
+        /// <param name="commandTimeoutSeconds"></param>
         /// <returns>Print output from script</returns>
-        public static string[] RunScript(IDbConnection connection, string script)
+        public static string[] RunScript(IDbConnection connection, string script, int? commandTimeoutSeconds = null)
         {
             var printLines = new List<string>();
 
@@ -62,12 +63,12 @@ namespace VirtualRadar.Plugin.SqlServer
                         if(line.Trim().ToUpper() != "GO") {
                             scriptLines.Add(line);
                         } else {
-                            RunScriptChunk(connection, scriptLines);
+                            RunScriptChunk(connection, scriptLines, commandTimeoutSeconds);
                             scriptLines.Clear();
                         }
                     }
                 }
-                RunScriptChunk(connection, scriptLines);
+                RunScriptChunk(connection, scriptLines, commandTimeoutSeconds);
             } finally {
                 if(sqlConnection != null) {
                     sqlConnection.InfoMessage -= SqlConnection_InfoMessage;
@@ -96,7 +97,7 @@ namespace VirtualRadar.Plugin.SqlServer
             }
         }
 
-        private static void RunScriptChunk(IDbConnection connection, IEnumerable<string> scriptLines)
+        private static void RunScriptChunk(IDbConnection connection, IEnumerable<string> scriptLines, int? commandTimeoutSeconds = null)
         {
             var sql = String.Join(Environment.NewLine, scriptLines);
             if(!String.IsNullOrEmpty(sql)) {
@@ -104,6 +105,9 @@ namespace VirtualRadar.Plugin.SqlServer
                     command.Connection = connection;
                     command.CommandText = sql;
                     command.CommandType = CommandType.Text;
+                    if(commandTimeoutSeconds != null) {
+                        command.CommandTimeout = commandTimeoutSeconds.Value;
+                    }
 
                     command.ExecuteNonQuery();
                 }
