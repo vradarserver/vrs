@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 onwards, Andrew Whewell
+﻿// Copyright © 2018 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,17 +17,17 @@ using System.Threading.Tasks;
 namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// Constructs the chain of middleware that HTTP requests will be passed through.
+    /// The interface for objects that, after being registered with <see cref="IPipelineConfiguration"/>, are
+    /// instantiated and called every time <see cref="IStandardPipeline"/> is used to create a new pipeline for the application.
     /// </summary>
-    public interface IStandardPipeline
+    public interface IPipeline
     {
         /// <summary>
-        /// Adds all of the standard pipeline middleware registered with <see cref="IPipelineConfiguration"/>
-        /// to the web app configuration passed across.
+        /// Registers middleware against the <see cref="IWebAppConfiguration"/> passed across.
         /// </summary>
         /// <param name="webAppConfiguration"></param>
         /// <remarks>
-        /// This can only be called once per instance.
+        /// This will only ever be called once per instance.
         /// </remarks>
         void Register(IWebAppConfiguration webAppConfiguration);
     }

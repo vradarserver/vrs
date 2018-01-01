@@ -272,7 +272,12 @@ namespace VirtualRadar.WebSite
         {
             if(server == null) throw new ArgumentNullException("server");
             if(WebServer != server) {
-                if(WebServer != null) throw new InvalidOperationException("The web site can only be attached to one server");
+                if(WebServer != null) {
+                    throw new InvalidOperationException("The web site can only be attached to one server");
+                }
+
+                var owinPipelineConfig = Factory.Singleton.ResolveSingleton<IPipelineConfiguration>();
+                owinPipelineConfig.AddPipeline<WebSitePipeline>();
 
                 _UserManager = Factory.Singleton.ResolveSingleton<IUserManager>();
 

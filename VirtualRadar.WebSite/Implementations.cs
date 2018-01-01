@@ -34,9 +34,9 @@ namespace VirtualRadar.WebSite
             factory.Register<IMinifier, Minifier>();
             factory.Register<IWebAdminViewManager, WebAdminViewManagerStub>();
             factory.Register<IWebSite, WebSite>();
-            factory.Register<IWebSiteProvider, WebSiteProvider>();
             factory.Register<IWebSiteExtender, WebSiteExtender>();
             factory.Register<IWebSiteGraphics, WebSiteGraphics>();
+            factory.Register<IWebSiteProvider, WebSiteProvider>();
         }
     }
 }

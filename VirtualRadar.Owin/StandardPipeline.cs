@@ -28,7 +28,7 @@ namespace VirtualRadar.Owin
     /// </summary>
     class StandardPipeline : IStandardPipeline
     {
-        private IWebAppConfiguration _WebAppConfiguration;
+        private bool _Registered;
 
         /// <summary>
         /// See interface.
@@ -36,120 +36,15 @@ namespace VirtualRadar.Owin
         /// <param name="webAppConfiguration"></param>
         public void Register(IWebAppConfiguration webAppConfiguration)
         {
-            if(_WebAppConfiguration != null) {
-                throw new InvalidOperationException("You can only call IStandardPipeline.Register() once per object");
+            if(_Registered) {
+                throw new InvalidOperationException($"You can only call {nameof(Register)}() once per object");
             }
+            _Registered = true;
 
-            _WebAppConfiguration = webAppConfiguration;
-
-            webAppConfiguration.AddCallback(UseExceptionHandler,            StandardPipelinePriority.Exception);
-            webAppConfiguration.AddCallback(UseAccessFilter,                StandardPipelinePriority.Access);
-            webAppConfiguration.AddCallback(UseBasicAuthenticationFilter,   StandardPipelinePriority.Authentication);
-            webAppConfiguration.AddCallback(UseRedirectionFilter,           StandardPipelinePriority.Redirection);
-            webAppConfiguration.AddCallback(UseCorsHandler,                 StandardPipelinePriority.Cors);
-            webAppConfiguration.AddCallback(UseResponseStreamWrapper,       StandardPipelinePriority.ResponseStreamWrapper);
-
-            webAppConfiguration.AddCallback(ConfigureHttpConfiguration,     StandardPipelinePriority.WebApiConfiguration);
-            webAppConfiguration.AddCallback(UseWebApi,                      StandardPipelinePriority.WebApi);
-
-            webAppConfiguration.AddCallback(UseBundlerServer,               StandardPipelinePriority.BundlerServer);
-            webAppConfiguration.AddCallback(UseFileSystemServer,            StandardPipelinePriority.FileSystemServer);
-            webAppConfiguration.AddCallback(UseImageServer,                 StandardPipelinePriority.ImageServer);
-            webAppConfiguration.AddCallback(UseAudioServer,                 StandardPipelinePriority.AudioServer);
-
-            webAppConfiguration.AddStreamManipulator(Factory.Singleton.Resolve<IHtmlManipulator>(),       StreamManipulatorPriority.HtmlManipulator);
-            webAppConfiguration.AddStreamManipulator(Factory.Singleton.Resolve<IJavascriptManipulator>(), StreamManipulatorPriority.JavascriptManipulator);
-
-            Factory.Singleton.Resolve<IHtmlManipulatorConfiguration>().AddTextResponseManipulator<IBundlerHtmlManipulator>();
-        }
-
-        private void UseExceptionHandler(IAppBuilder app)
-        {
-            var handler = Factory.Singleton.Resolve<IExceptionHandler>();
-            var middleware = new Func<AppFunc, AppFunc>(handler.HandleRequest);
-            app.Use(middleware);
-        }
-
-        private void UseAccessFilter(IAppBuilder app)
-        {
-            var filter = Factory.Singleton.Resolve<IAccessFilter>();
-            var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
-            app.Use(middleware);
-        }
-
-        private void UseBasicAuthenticationFilter(IAppBuilder app)
-        {
-            var filter = Factory.Singleton.Resolve<IBasicAuthenticationFilter>();
-            var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
-            app.Use(middleware);
-        }
-
-        private void UseRedirectionFilter(IAppBuilder app)
-        {
-            var filter = Factory.Singleton.Resolve<IRedirectionFilter>();
-            var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
-            app.Use(middleware);
-        }
-
-        private void UseCorsHandler(IAppBuilder app)
-        {
-            var handler = Factory.Singleton.Resolve<ICorsHandler>();
-            var middleware = new Func<AppFunc, AppFunc>(handler.HandleRequest);
-            app.Use(middleware);
-        }
-
-        private void UseResponseStreamWrapper(IAppBuilder app)
-        {
-            var wrapper = Factory.Singleton.Resolve<IResponseStreamWrapper>();
-            wrapper.Initialise(_WebAppConfiguration.GetStreamManipulators());
-
-            var middleware = new Func<AppFunc, AppFunc>(wrapper.WrapResponseStream);
-            app.Use(middleware);
-        }
-
-        private void ConfigureHttpConfiguration(IAppBuilder app)
-        {
-            var configuration = _WebAppConfiguration.GetHttpConfiguration();
-            configuration.MapHttpAttributeRoutes();
-            configuration.Routes.MapHttpRoute(
-                name:           "DefaultApi",
-                routeTemplate:  "api/{controller}/{id}",
-                defaults:       new { id = RouteParameter.Optional }
-            );
-        }
-
-        private void UseWebApi(IAppBuilder app)
-        {
-            var configuration = _WebAppConfiguration.GetHttpConfiguration();
-            app.UseWebApi(configuration);
-        }
-
-        private void UseBundlerServer(IAppBuilder app)
-        {
-            var server = Factory.Singleton.Resolve<IBundlerServer>();
-            var middleware = new Func<AppFunc, AppFunc>(server.HandleRequest);
-            app.Use(middleware);
-        }
-
-        private void UseFileSystemServer(IAppBuilder app)
-        {
-            var server = Factory.Singleton.Resolve<IFileSystemServer>();
-            var middleware = new Func<AppFunc, AppFunc>(server.HandleRequest);
-            app.Use(middleware);
-        }
-
-        private void UseImageServer(IAppBuilder app)
-        {
-            var server = Factory.Singleton.Resolve<IImageServer>();
-            var middleware = new Func<AppFunc, AppFunc>(server.HandleRequest);
-            app.Use(middleware);
-        }
-
-        private void UseAudioServer(IAppBuilder app)
-        {
-            var server = Factory.Singleton.Resolve<IAudioServer>();
-            var middleware = new Func<AppFunc, AppFunc>(server.HandleRequest);
-            app.Use(middleware);
+            var pipelines = Factory.Singleton.ResolveSingleton<IPipelineConfiguration>().CreatePipelines();
+            foreach(var pipeline in pipelines) {
+                pipeline.Register(webAppConfiguration);
+            }
         }
     }
 }

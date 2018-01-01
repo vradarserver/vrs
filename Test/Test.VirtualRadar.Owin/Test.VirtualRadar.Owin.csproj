@@ -97,6 +97,7 @@
     <Compile Include="Configuration\HtmlManipulatorConfigurationTests.cs" />
     <Compile Include="Configuration\JavascriptManipulatorConfigurationTests.cs" />
     <Compile Include="Configuration\ManipulatorConfigurationTests.cs" />
+    <Compile Include="Configuration\PipelineConfigurationTests.cs" />
     <Compile Include="Configuration\RedirectionConfigurationTests.cs" />
     <Compile Include="LoopbackHostTests.cs" />
     <Compile Include="Middleware\AccessFilterTests.cs" />

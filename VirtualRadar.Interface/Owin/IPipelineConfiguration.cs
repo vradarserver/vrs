@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 onwards, Andrew Whewell
+﻿// Copyright © 2018 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,22 +13,52 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// Constructs the chain of middleware that HTTP requests will be passed through.
+    /// The interface for a singleton that holds collections of objects to instantiate and call to
+    /// create the application's OWIN pipeline.
     /// </summary>
-    public interface IStandardPipeline
+    [Singleton]
+    public interface IPipelineConfiguration
     {
         /// <summary>
-        /// Adds all of the standard pipeline middleware registered with <see cref="IPipelineConfiguration"/>
-        /// to the web app configuration passed across.
+        /// Adds a pipeline to the application's standard pipeline.
         /// </summary>
-        /// <param name="webAppConfiguration"></param>
-        /// <remarks>
-        /// This can only be called once per instance.
-        /// </remarks>
-        void Register(IWebAppConfiguration webAppConfiguration);
+        /// <param name="pipelineType">A type that implements <see cref="IPipeline"/>.</param>
+        void AddPipeline(Type pipelineType);
+
+        /// <summary>
+        /// Adds a pipeline to the application's standard pipeline.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        void AddPipeline<T>() where T: IPipeline;
+
+        /// <summary>
+        /// Removes a previously registered pipeline type.
+        /// </summary>
+        /// <param name="pipelineType">A type that implements <see cref="IPipeline"/>.</param>
+        void RemovePipeline(Type pipelineType);
+
+        /// <summary>
+        /// Removes a previously registered pipeline type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        void RemovePipeline<T>() where T: IPipeline;
+
+        /// <summary>
+        /// Returns an array of pipeline types that have been registered.
+        /// </summary>
+        /// <returns></returns>
+        Type[] GetPipelines();
+
+        /// <summary>
+        /// Returns a collection of newly instantiated pipelines using the types currently registered
+        /// against the configuration.
+        /// </summary>
+        /// <returns></returns>
+        IPipeline[] CreatePipelines();
     }
 }

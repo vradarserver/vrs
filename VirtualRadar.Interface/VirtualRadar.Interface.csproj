@@ -176,6 +176,8 @@
     <Compile Include="Owin\IImageServer.cs" />
     <Compile Include="Owin\IImageServerConfiguration.cs" />
     <Compile Include="Owin\IJavascriptManipulator.cs" />
+    <Compile Include="Owin\IPipeline.cs" />
+    <Compile Include="Owin\IPipelineConfiguration.cs" />
     <Compile Include="Owin\IRedirectionFilter.cs" />
     <Compile Include="Owin\IRedirectionConfiguration.cs" />
     <Compile Include="Owin\IResponseStreamWrapper.cs" />

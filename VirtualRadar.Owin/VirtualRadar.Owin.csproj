@@ -80,6 +80,7 @@
     <Compile Include="Configuration\HtmlManipulatorConfiguration.cs" />
     <Compile Include="Configuration\ImageServerConfiguration.cs" />
     <Compile Include="Configuration\JavascriptManipulatorConfiguration.cs" />
+    <Compile Include="Configuration\PipelineConfiguration.cs" />
     <Compile Include="Configuration\RedirectionConfiguration.cs" />
     <Compile Include="Configuration\RegisterStreamManipulator.cs" />
     <Compile Include="Implementations.cs" />

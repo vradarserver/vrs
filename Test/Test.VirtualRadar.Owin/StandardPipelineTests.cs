@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 onwards, Andrew Whewell
+﻿// Copyright © 2018 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,111 +13,49 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Owin;
 using Test.Framework;
 using VirtualRadar.Interface.Owin;
 
 namespace Test.VirtualRadar.Owin
 {
-    using AppFunc = Func<IDictionary<string, object>, Task>;
-
     [TestClass]
     public class StandardPipelineTests
     {
-        class MiddlewareDetail
+        class Pipeline : IPipeline
         {
-            public object Target;               // The Object property of the Mock<T> middleware
-            public string AppFuncMethodName;    // The name of the AppFunc middleware method on Target
+            public int RegisterCallCount;
+            public IWebAppConfiguration RegisterWebApp;
 
-            public override string ToString()
+            public void Register(IWebAppConfiguration webAppConfiguration)
             {
-                return $"{Target?.GetType().Name}.{AppFuncMethodName}";
-            }
-
-            public bool IsSameAs(MiddlewareDetail other)
-            {
-                var result = Object.ReferenceEquals(this, other);
-                if(!result) {
-                    result = Object.ReferenceEquals(Target, other.Target) &&
-                             String.Equals(AppFuncMethodName, other.AppFuncMethodName);
-                }
-
-                return result;
+                RegisterWebApp = webAppConfiguration;
+                ++RegisterCallCount;
             }
         }
 
         public TestContext TestContext { get; set; }
+
         private IClassFactory _Snapshot;
+        private List<Pipeline> _RegisteredPipelines;
+        private Mock<IPipelineConfiguration> _Config;
+        private Mock<IWebAppConfiguration> _WebAppConfiguration;
         private IStandardPipeline _StandardPipeline;
-
-        private List<MiddlewareDetail> _ExpectedMiddleware;
-        private Mock<IExceptionHandler> _ExceptionHandler;
-        private Mock<IAccessFilter> _AccessFilter;
-        private Mock<IBasicAuthenticationFilter> _BasicAuthenticationFilter;
-        private Mock<IRedirectionFilter> _RedirectionFilter;
-        private Mock<ICorsHandler> _CorsHandler;
-        private Mock<IResponseStreamWrapper> _ResponseStreamWrapper;
-        private Mock<IBundlerServer> _BundlerServer;
-        private Mock<IFileSystemServer> _FileSystemServer;
-        private Mock<IImageServer> _ImageServer;
-        private Mock<IAudioServer> _AudioServer;
-        private MiddlewareDetail _LastMiddlewareBeforeWebApiInit;
-
-        private List<IStreamManipulator> _ExpectedStreamManipulators;
-        private Mock<IHtmlManipulator> _HtmlManipulator;
-        private Mock<IJavascriptManipulator> _JavascriptManipulator;
-
-        private Mock<IHtmlManipulatorConfiguration> _HtmlManipulatorConfiguration;
 
         [TestInitialize]
         public void TestInitialise()
         {
             _Snapshot = Factory.TakeSnapshot();
 
-            _ExpectedMiddleware = new List<MiddlewareDetail>();
-            _ExceptionHandler =                 CreateMockMiddleware<IExceptionHandler>(nameof(IExceptionHandler.HandleRequest));
-            _AccessFilter =                     CreateMockMiddleware<IAccessFilter>(nameof(IAccessFilter.FilterRequest));
-            _BasicAuthenticationFilter =        CreateMockMiddleware<IBasicAuthenticationFilter>(nameof(IBasicAuthenticationFilter.FilterRequest));
-            _RedirectionFilter =                CreateMockMiddleware<IRedirectionFilter>(nameof(IRedirectionFilter.FilterRequest));
-            _CorsHandler =                      CreateMockMiddleware<ICorsHandler>(nameof(ICorsHandler.HandleRequest));
-            _ResponseStreamWrapper =            CreateMockMiddleware<IResponseStreamWrapper>(nameof(IResponseStreamWrapper.WrapResponseStream));
-            _LastMiddlewareBeforeWebApiInit =   _ExpectedMiddleware[_ExpectedMiddleware.Count - 1];
-            _BundlerServer =                    CreateMockMiddleware<IBundlerServer>(nameof(IBundlerServer.HandleRequest));
-            _FileSystemServer =                 CreateMockMiddleware<IFileSystemServer>(nameof(IFileSystemServer.HandleRequest));
-            _ImageServer =                      CreateMockMiddleware<IImageServer>(nameof(IImageServer.HandleRequest));
-            _AudioServer =                      CreateMockMiddleware<IAudioServer>(nameof(IAudioServer.HandleRequest));
+            _Config = TestUtilities.CreateMockSingleton<IPipelineConfiguration>();
+            _RegisteredPipelines = new List<Pipeline>();
+            _Config.Setup(r => r.CreatePipelines()).Returns(() => _RegisteredPipelines.ToArray());
 
-            _HtmlManipulatorConfiguration = TestUtilities.CreateMockImplementation<IHtmlManipulatorConfiguration>();
-            _ExpectedStreamManipulators =   new List<IStreamManipulator>();
-            _JavascriptManipulator =        CreateMockStreamManipulator<IJavascriptManipulator>();
-            _HtmlManipulator =              CreateMockStreamManipulator<IHtmlManipulator>();
+            _WebAppConfiguration = TestUtilities.CreateMockInstance<IWebAppConfiguration>();
 
             _StandardPipeline = Factory.Singleton.Resolve<IStandardPipeline>();
-        }
-
-        private Mock<T> CreateMockMiddleware<T>(string appFuncMethodName)
-            where T: class
-        {
-            var result = TestUtilities.CreateMockImplementation<T>();
-            _ExpectedMiddleware.Add(new MiddlewareDetail() {
-                Target =            result.Object,
-                AppFuncMethodName = appFuncMethodName,
-            });
-
-            return result;
-        }
-
-        private Mock<T> CreateMockStreamManipulator<T>()
-            where T: class, IStreamManipulator
-        {
-            var result = TestUtilities.CreateMockImplementation<T>();
-            _ExpectedStreamManipulators.Add(result.Object);
-
-            return result;
         }
 
         [TestCleanup]
@@ -127,90 +65,23 @@ namespace Test.VirtualRadar.Owin
         }
 
         [TestMethod]
-        public void StandardPipeline_Adds_Standard_Middleware_With_Correct_Priorities()
+        public void StandardPipeline_Register_Passes_WebAppConfiguration_To_All_Registered_Pipelines()
         {
-            var actualStreamManipulators = new List<IStreamManipulator>();
-            _ResponseStreamWrapper.Setup(r => r.Initialise(It.IsAny<IEnumerable<IStreamManipulator>>())).Callback((IEnumerable<IStreamManipulator> manipulators) => {
-                actualStreamManipulators.AddRange(manipulators);
-            });
+            var pipeline = new Pipeline();
+            _RegisteredPipelines.Add(pipeline);
 
-            var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
-            _StandardPipeline.Register(webAppConfiguration);
+            _StandardPipeline.Register(_WebAppConfiguration.Object);
 
-            var actualTargets = new List<MiddlewareDetail>();
-            MiddlewareDetail targetBeforeWebApiAdded = null;
-            var mockAppBuilder = TestUtilities.CreateMockInstance<IAppBuilder>();
-            mockAppBuilder.Setup(r => r.Use(It.IsAny<object>(), It.IsAny<object[]>())).Callback((object middlewareAbstract, object[] parameters) => {
-                if(middlewareAbstract is Func<AppFunc, AppFunc> middleware) {
-                    actualTargets.Add(new MiddlewareDetail() {
-                        Target = middleware.Target,
-                        AppFuncMethodName = middleware.Method.Name,
-                    });
-                } else if((middlewareAbstract as Type)?.FullName.StartsWith("System.Web.Http.") ?? false) {
-                    if(targetBeforeWebApiAdded == null) {
-                        targetBeforeWebApiAdded = actualTargets.Count > 0 ? actualTargets[actualTargets.Count - 1] : new MiddlewareDetail();
-                    }
-                }
-            });
-
-            webAppConfiguration.Configure(mockAppBuilder.Object);
-
-            // All middleware was added in correct order
-            Assert.AreEqual(_ExpectedMiddleware.Count, actualTargets.Count);
-            for(var i = 0;i < _ExpectedMiddleware.Count;++i) {
-                var expected = _ExpectedMiddleware[i];
-                var actual = actualTargets[i];
-                Assert.IsTrue(expected.IsSameAs(actual), $"Expected {expected}, got {actual}");
-            }
-
-            // The web api was initialised at the right point in the chain
-            Assert.IsTrue(_LastMiddlewareBeforeWebApiInit.IsSameAs(targetBeforeWebApiAdded), $"Web API should have been initialised after {_LastMiddlewareBeforeWebApiInit}, was actually after {targetBeforeWebApiAdded}");
-
-            // The response stream wrapper was initialised correctly
-            Assert.IsTrue(_ExpectedStreamManipulators.SequenceEqual(actualStreamManipulators));
-        }
-
-        [TestMethod]
-        public void StandardPipeline_Configures_Microsoft_WebApi()
-        {
-            var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
-            _StandardPipeline.Register(webAppConfiguration);
-
-            var mockAppBuilder = TestUtilities.CreateMockInstance<IAppBuilder>();
-            webAppConfiguration.Configure(mockAppBuilder.Object);
-
-            var httpConfiguration = webAppConfiguration.GetHttpConfiguration();
-
-            Assert.AreEqual(2, httpConfiguration.Routes.Count);
-            Assert.AreEqual("", httpConfiguration.Routes[0].RouteTemplate);                         // Added by MapAttributeRoutes
-            Assert.AreEqual("api/{controller}/{id}", httpConfiguration.Routes[1].RouteTemplate);    // Added by StandardPipeline
+            Assert.AreEqual(1, pipeline.RegisterCallCount);
+            Assert.AreSame(_WebAppConfiguration.Object, pipeline.RegisterWebApp);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void StandardPipeline_Register_Can_Only_Be_Called_Once()
         {
-            var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
-            _StandardPipeline.Register(webAppConfiguration);
-            _StandardPipeline.Register(webAppConfiguration);
-        }
-
-        [TestMethod]
-        public void StandardPipeline_Register_Adds_Standard_StreamManipulators()
-        {
-            var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
-            _StandardPipeline.Register(webAppConfiguration);
-
-            Assert.IsTrue(_ExpectedStreamManipulators.SequenceEqual(webAppConfiguration.GetStreamManipulators()));
-        }
-
-        [TestMethod]
-        public void StandardPipeline_Register_Adds_BundlerHtmlManipulator_To_Html_Manipulators()
-        {
-            var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
-            _StandardPipeline.Register(webAppConfiguration);
-
-            _HtmlManipulatorConfiguration.Verify(r => r.AddTextResponseManipulator<IBundlerHtmlManipulator>(), Times.Once());
+            _StandardPipeline.Register(_WebAppConfiguration.Object);
+            _StandardPipeline.Register(_WebAppConfiguration.Object);
         }
     }
 }

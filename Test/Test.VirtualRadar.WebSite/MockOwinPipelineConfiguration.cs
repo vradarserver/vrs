@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 onwards, Andrew Whewell
+﻿// Copyright © 2018 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,22 +13,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VirtualRadar.Interface.Owin;
 
-namespace VirtualRadar.Interface.Owin
+namespace Test.VirtualRadar.WebSite
 {
-    /// <summary>
-    /// Constructs the chain of middleware that HTTP requests will be passed through.
-    /// </summary>
-    public interface IStandardPipeline
+    class MockOwinPipelineConfiguration : IPipelineConfiguration
     {
-        /// <summary>
-        /// Adds all of the standard pipeline middleware registered with <see cref="IPipelineConfiguration"/>
-        /// to the web app configuration passed across.
-        /// </summary>
-        /// <param name="webAppConfiguration"></param>
-        /// <remarks>
-        /// This can only be called once per instance.
-        /// </remarks>
-        void Register(IWebAppConfiguration webAppConfiguration);
+        public int AddPipelineCallCount;
+
+        public void AddPipeline(Type pipelineType)
+        {
+            ++AddPipelineCallCount;
+        }
+
+        public void AddPipeline<T>() where T : IPipeline
+        {
+            ++AddPipelineCallCount;
+        }
+
+        public IPipeline[] CreatePipelines()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Type[] GetPipelines()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemovePipeline(Type pipelineType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemovePipeline<T>() where T : IPipeline
+        {
+            throw new NotImplementedException();
+        }
     }
 }

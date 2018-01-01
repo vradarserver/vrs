@@ -52,6 +52,11 @@ namespace VirtualRadar.WebServer.HttpListener
         private IWebAppConfiguration _WebAppConfiguration;
 
         /// <summary>
+        /// True when the standard pipeline has been added to <see cref="_WebAppConfiguration"/>.
+        /// </summary>
+        private bool _PipelineConfigured;
+
+        /// <summary>
         /// A reference to the singleton <see cref="IAuthenticationConfiguration"/>.
         /// </summary>
         private IAuthenticationConfiguration _AuthenticationConfiguration;
@@ -301,9 +306,6 @@ namespace VirtualRadar.WebServer.HttpListener
             _WebAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
             _AuthenticationConfiguration = Factory.Singleton.ResolveSingleton<IAuthenticationConfiguration>();
             _AccessConfiguration = Factory.Singleton.ResolveSingleton<IAccessConfiguration>();
-
-            var standardPipeline = Factory.Singleton.Resolve<IStandardPipeline>();
-            standardPipeline.Register(_WebAppConfiguration);
         }
 
         public void AddAdministratorPath(string pathFromRoot)
@@ -368,6 +370,12 @@ namespace VirtualRadar.WebServer.HttpListener
                 var startOptions = new StartOptions() {
                 };
                 startOptions.Urls.Add(Prefix);
+
+                if(!_PipelineConfigured) {
+                    _PipelineConfigured = true;
+                    var standardPipeline = Factory.Singleton.Resolve<IStandardPipeline>();
+                    standardPipeline.Register(_WebAppConfiguration);
+                }
 
                 _WebApp = WebApp.Start(startOptions, _WebAppConfiguration.Configure);
                 _Online = true;

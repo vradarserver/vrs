@@ -29,6 +29,7 @@ using VirtualRadar.Interface;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StandingData;
 using VirtualRadar.Interface.WebServer;
@@ -99,6 +100,7 @@ namespace Test.VirtualRadar.WebSite
         private Mock<IUser> _User1;
         private Mock<IUser> _User2;
         private string _PasswordForUser;
+        private MockOwinPipelineConfiguration _PipelineConfiguration;
 
         // The named colours (Black, Green etc.) don't compare well to the colors returned by Bitmap.GetPixel - e.g.
         // Color.Black == new Color(0, 0, 0) is false even though the ARGB values are equal. Further Color.Green isn't
@@ -267,6 +269,9 @@ namespace Test.VirtualRadar.WebSite
                 }
             });
             _WebSite.Provider = _Provider.Object;
+
+            _PipelineConfiguration = new MockOwinPipelineConfiguration();
+            Factory.Singleton.RegisterInstance<IPipelineConfiguration>(_PipelineConfiguration);
         }
 
         [TestCleanup]
@@ -467,6 +472,13 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
             _WebSite.AttachSiteToServer(new Mock<IWebServer>().Object);
+        }
+
+        [TestMethod]
+        public void WebSite_AttachSiteToServer_Registers_Standard_OWIN_Pipeline()
+        {
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+            Assert.AreEqual(1, _PipelineConfiguration.AddPipelineCallCount);
         }
 
         [TestMethod]
