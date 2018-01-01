@@ -23,27 +23,27 @@ namespace VirtualRadar.Interface.Owin
         /// <summary>
         /// The normal priority for access checking.
         /// </summary>
-        public static readonly int Access = Exception + 100;
+        public static readonly int Access = Exception + 1000;
 
         /// <summary>
         /// The normal priority for authentication.
         /// </summary>
-        public static readonly int Authentication = Access + 100;
+        public static readonly int Authentication = Access + 1000;
 
         /// <summary>
         /// The normal priority for redirecting requests.
         /// </summary>
-        public static readonly int Redirection = Authentication + 100;
+        public static readonly int Redirection = Authentication + 1000;
 
         /// <summary>
         /// The normal priority for handling CORS requests.
         /// </summary>
-        public static readonly int Cors = Redirection + 100;
+        public static readonly int Cors = Redirection + 1000;
 
         /// <summary>
         /// The normal priority for wrapping the response stream so that it can be manipulated after the pipeline has finished.
         /// </summary>
-        public static readonly int ResponseStreamWrapper = Cors + 100;
+        public static readonly int ResponseStreamWrapper = Cors + 1000;
 
         /***********************************************************************************************
          * 3rd party frameworks that short-circuit pipeline processing if they handle a request
@@ -52,7 +52,7 @@ namespace VirtualRadar.Interface.Owin
         /// <summary>
         /// The normal priority for callbacks that configure HttpConfiguration for Web API.
         /// </summary>
-        public static readonly int WebApiConfiguration = WebApi - 100;
+        public static readonly int WebApiConfiguration = WebApi - 1000;
 
         /// <summary>
         /// The normal priority for Microsft Web API requests.
@@ -66,21 +66,21 @@ namespace VirtualRadar.Interface.Owin
         /// <summary>
         /// The normal priority for JavaScript bundle requests.
         /// </summary>
-        public static readonly int BundlerServer = WebApi + 100;
+        public static readonly int BundlerServer = WebApi + 1000000;
 
         /// <summary>
         /// The normal priority for file system requests.
         /// </summary>
-        public static readonly int FileSystemServer = BundlerServer + 100;
+        public static readonly int FileSystemServer = BundlerServer + 1000000;
 
         /// <summary>
         /// The normal priority for image requests.
         /// </summary>
-        public static readonly int ImageServer = FileSystemServer + 100;
+        public static readonly int ImageServer = FileSystemServer + 1000000;
 
         /// <summary>
         /// The normal priority for audio requests.
         /// </summary>
-        public static readonly int AudioServer = ImageServer + 100;
+        public static readonly int AudioServer = ImageServer + 1000000;
     }
 }

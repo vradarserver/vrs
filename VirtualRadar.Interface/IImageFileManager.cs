@@ -44,6 +44,7 @@ namespace VirtualRadar.Interface
         /// <param name="webPathAndFileName"></param>
         /// <param name="useImageCache"></param>
         /// <returns></returns>
+        //TODO: Get rid of this.
         Image LoadFromWebSite(IWebSite webSite, string webPathAndFileName, bool useImageCache);
 
         /// <summary>

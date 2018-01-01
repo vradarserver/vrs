@@ -131,6 +131,7 @@ namespace VirtualRadar.Library
         /// <param name="webPathAndFileName"></param>
         /// <param name="useImageCache"></param>
         /// <returns></returns>
+        //TODO: Get rid of this
         public Image LoadFromWebSite(IWebSite webSite, string webPathAndFileName, bool useImageCache)
         {
             return LoadFromSiteOrCache(webPathAndFileName, useImageCache, () => FetchFromWebSite(webSite, webPathAndFileName));

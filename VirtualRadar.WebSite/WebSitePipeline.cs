@@ -36,10 +36,6 @@ namespace VirtualRadar.WebSite
         /// <param name="webAppConfiguration"></param>
         public void Register(IWebAppConfiguration webAppConfiguration)
         {
-            if(_WebAppConfiguration != null) {
-                throw new InvalidOperationException("You can only call IStandardPipeline.Register() once per object");
-            }
-
             _WebAppConfiguration = webAppConfiguration;
 
             webAppConfiguration.AddCallback(UseExceptionHandler,            StandardPipelinePriority.Exception);

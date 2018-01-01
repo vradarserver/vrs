@@ -615,6 +615,7 @@
     <None Include="app.config" />
     <None Include="BaseStation\_VirtualRadarInterfaceBaseStation.cd" />
     <None Include="Database\_VirtualRadarInterfaceDatabase.cd" />
+    <None Include="Owin\README.md" />
     <None Include="packages.config" />
     <None Include="SQLite\_VirtualRadarInterfaceSQLite.cd" />
     <None Include="StandingData\_VirtualRadarInterfaceData.cd" />
