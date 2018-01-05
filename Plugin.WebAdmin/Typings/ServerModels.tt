@@ -1,7 +1,7 @@
 ﻿<#@ template debug="false" hostspecific="True" language="C#" #>
 <#@ assembly name="System.Runtime.Serialization"#>
 <#@ assembly name="$(SolutionDir)ThirdParty\TypeLite.Net35\bin\$(ConfigurationName)\TypeLite.Net35.dll" #>
-<#@ assembly name="$(SolutionDir)Plugin.WebAdmin\bin\$(ConfigurationName)\Newtonsoft.Json.dll" #>
+<#@ assembly name="$(SolutionDir)VirtualRadar.Interface\bin\$(ConfigurationName)\Newtonsoft.Json.dll" #>
 <#@ assembly name="$(TargetDir)InterfaceFactory.dll" #>
 <#@ assembly name="$(TargetDir)VirtualRadar.Interface.dll" #>
 <#@ assembly name="$(TargetDir)$(TargetFileName)" #>
