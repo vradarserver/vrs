@@ -21,9 +21,6 @@ namespace VirtualRadar.Plugin.SqlServer.WebAdmin
 {
     class OptionsView : IOptionsView
     {
-        private string _TestConnectionOutcomeTitle;
-        private string _TestConnectionOutcomeMessage;
-
         public DialogResult ShowView()
         {
             return DialogResult.OK;
@@ -78,9 +75,6 @@ namespace VirtualRadar.Plugin.SqlServer.WebAdmin
         [WebAdminMethod]
         public TestConnectionOutcomeModel TestConnection(ViewModel viewModel)
         {
-            _TestConnectionOutcomeTitle = "";
-            _TestConnectionOutcomeMessage = "";
-
             var presenter = new WinForms.OptionsPresenter();
             var errorMessage = presenter.TestConnection(viewModel.ConnectionString);
 
