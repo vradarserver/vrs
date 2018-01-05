@@ -187,6 +187,15 @@ namespace VirtualRadar.Plugin.SqlServer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SQL Server Options.
+        /// </summary>
+        public static string SqlServerOptions {
+            get {
+                return ResourceManager.GetString("SqlServerOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Test Connection.
         /// </summary>
         public static string TestConnection {
@@ -210,6 +219,15 @@ namespace VirtualRadar.Plugin.SqlServer {
         public static string UpdateSchema {
             get {
                 return ResourceManager.GetString("UpdateSchema", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SQL Server.
+        /// </summary>
+        public static string WebAdminMenuName {
+            get {
+                return ResourceManager.GetString("WebAdminMenuName", resourceCulture);
             }
         }
     }

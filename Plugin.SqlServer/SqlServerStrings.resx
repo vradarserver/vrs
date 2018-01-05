@@ -172,4 +172,10 @@
   <data name="SecondsParenthesis" xml:space="preserve">
     <value>(seconds)</value>
   </data>
+  <data name="SqlServerOptions" xml:space="preserve">
+    <value>SQL Server Options</value>
+  </data>
+  <data name="WebAdminMenuName" xml:space="preserve">
+    <value>SQL Server</value>
+  </data>
 </root>

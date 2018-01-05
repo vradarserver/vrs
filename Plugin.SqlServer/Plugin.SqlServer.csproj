@@ -72,6 +72,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SqlServerStrings.resx</DependentUpon>
     </Compile>
+    <Compile Include="WebAdmin\IOptionsView.cs" />
+    <Compile Include="WebAdmin\OptionsModels.cs" />
+    <Compile Include="WebAdmin\OptionsView.cs" />
+    <Compile Include="WinForms\OptionsPresenter.cs" />
     <Compile Include="WinForms\OptionsView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -118,6 +122,18 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Scripts\BaseStation\README.md" />
+    <None Include="Typings\Manager.ttinclude" />
+    <None Include="Typings\SqlServerPluginModels.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SqlServerPluginModels.d.ts</LastGenOutput>
+    </None>
+    <None Include="Typings\translations-sqlserverstrings.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>translations-sqlserverstrings.d.ts</LastGenOutput>
+    </None>
+    <Content Include="Web\WebAdmin\CustomContentPluginOptions.js.map">
+      <DependentUpon>SqlServerPluginOptions.ts</DependentUpon>
+    </Content>
     <None Include="_PostBuild.bat" />
     <None Include="_PostBuildCopyLanguage.bat" />
   </ItemGroup>
@@ -181,11 +197,31 @@
     <Content Include="VirtualRadar.Plugin.SqlServer.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Web\WebAdmin\CustomContentPluginOptions.js">
+      <DependentUpon>SqlServerPluginOptions.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\SqlServerPluginOptions.html" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <TypeScriptCompile Include="Typings\SqlServerPluginEnums.ts">
+      <DependentUpon>SqlServerPluginModels.tt</DependentUpon>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\SqlServerPluginModels.d.ts">
+      <DependentUpon>SqlServerPluginModels.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\translations-sqlserverstrings.d.ts">
+      <DependentUpon>translations-sqlserverstrings.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\webadmin.d.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\SqlServerPluginOptions.ts" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>"$(ProjectDir)\_PostBuild.bat" "$(SolutionDir)" "$(ConfigurationName)" "$(TargetDir)" $(TargetName) "SqlServer"</PostBuildEvent>

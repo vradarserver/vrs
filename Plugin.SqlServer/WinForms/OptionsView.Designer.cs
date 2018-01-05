@@ -195,7 +195,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "::PluginName::";
+            this.Text = "::SqlServerOptions::";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCommandTimeout)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

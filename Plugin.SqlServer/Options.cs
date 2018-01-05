@@ -22,6 +22,16 @@ namespace VirtualRadar.Plugin.SqlServer
     /// </summary>
     public class Options : INotifyPropertyChanged
     {
+        private long _DataVersion;
+        /// <summary>
+        /// Gets or sets a value indicating the version of the saved options.
+        /// </summary>
+        public long DataVersion
+        {
+            get { return _DataVersion; }
+            set { SetField(ref _DataVersion, value, nameof(DataVersion)); }
+        }
+
         private bool _Enabled;
         /// <summary>
         /// Gets or sets a value indicating whether the plugin is enabled. This flag is only honoured at

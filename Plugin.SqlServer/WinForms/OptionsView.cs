@@ -71,31 +71,14 @@ namespace VirtualRadar.Plugin.SqlServer.WinForms
         }
 
         /// <summary>
-        /// Returns null if the connection string is good, otherwise the error reported when trying to use the connection string.
-        /// </summary>
-        private string TestConnection()
-        {
-            string result = null;
-
-            try {
-                using(var connection = new SqlConnection(Options.ConnectionString)) {
-                    connection.Open();
-                }
-            } catch(Exception ex) {
-                result = String.IsNullOrEmpty(ex?.Message) ? SqlServerStrings.UnspecifiedError : ex.Message;
-            }
-
-            return result;
-        }
-
-        /// <summary>
         /// Tests the connection to the SQL Server indicated
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ButtonTestConnection_Click(object sender, EventArgs e)
         {
-            var errorMessage = TestConnection();
+            var presenter = new OptionsPresenter();
+            var errorMessage = presenter.TestConnection(Options.ConnectionString);
             MessageBox.Show(errorMessage == null
                 ? SqlServerStrings.ConnectionStringOK
                 : String.Format(SqlServerStrings.CannotConnectToDatabase, errorMessage),

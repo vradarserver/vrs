@@ -18,6 +18,7 @@ using System.Windows.Forms;
 using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Database;
+using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Plugin.SqlServer
 {
@@ -97,6 +98,12 @@ namespace VirtualRadar.Plugin.SqlServer
         /// </summary>
         public void GuiThreadStartup()
         {
+            var webAdminViewManager = Factory.Singleton.ResolveSingleton<IWebAdminViewManager>();
+            webAdminViewManager.RegisterTranslations(typeof(SqlServerStrings), "SqlServerPlugin");
+            webAdminViewManager.AddWebAdminView(new WebAdminView("/WebAdmin/", "SqlServerPluginOptions.html", SqlServerStrings.WebAdminMenuName, () => new WebAdmin.OptionsView(), typeof(SqlServerStrings)) {
+                Plugin = this,
+            });
+            webAdminViewManager.RegisterWebAdminViewFolder(PluginFolder, "Web");
         }
 
         /// <summary>

@@ -39,21 +39,21 @@ rem Ensure that the XML manifest file is set to always copy to the output direct
 
     rem Delete and then copy the WEB folder into the plugin folder.
     rem If your plugin has no web content then comment out or remove this block
-    rem     if not exist "%WEB%\" goto WEBDELETED
-    rem         rmdir /s /q "%WEB%"
-    rem         if errorlevel 0 goto WEBDELETED
-    rem         echo FAILED: Could not remove the "%WEB%" folder, errorlevel is %ERRORLEVEL%
-    rem         goto :ENDBAD
-    rem     :WEBDELETED
-    rem         echo xcopy /EQYI "%SOURCEWEB%" "%WEB%"
-    rem         xcopy /EQYI "%SOURCEWEB%" "%WEB%"
-    rem         if not errorlevel 0 goto :WEBFAILED
-    rem         echo Copied web site output to "%WEB%"
-    rem         goto :WEBDONE
-    rem     :WEBFAILED
-    rem         echo FAILED: The copy of the plugin web site content failed with errorlevel %ERRORLEVEL%
-    rem         goto :ENDBAD
-    rem     :WEBDONE
+    if not exist "%WEB%\" goto WEBDELETED
+        rmdir /s /q "%WEB%"
+        if errorlevel 0 goto WEBDELETED
+        echo FAILED: Could not remove the "%WEB%" folder, errorlevel is %ERRORLEVEL%
+        goto :ENDBAD
+    :WEBDELETED
+        echo xcopy /EQYI "%SOURCEWEB%" "%WEB%"
+        xcopy /EQYI "%SOURCEWEB%" "%WEB%"
+        if not errorlevel 0 goto :WEBFAILED
+        echo Copied web site output to "%WEB%"
+        goto :WEBDONE
+    :WEBFAILED
+        echo FAILED: The copy of the plugin web site content failed with errorlevel %ERRORLEVEL%
+        goto :ENDBAD
+    :WEBDONE
 
     rem You need to modify the batch by hand here to copy the languages that you have translations for
     set COPYLANG=%TARGETDIR%..\..\_PostBuildCopyLanguage.bat
