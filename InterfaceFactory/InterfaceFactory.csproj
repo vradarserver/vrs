@@ -52,6 +52,7 @@
     <Compile Include="SingletonAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="README.md" />
     <None Include="_InterfaceFactory.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
