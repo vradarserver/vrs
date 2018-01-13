@@ -24,7 +24,7 @@ namespace VirtualRadar.WebSite
     /// Manages HTML content injection for <see cref="WebSite"/>.
     /// </summary>
     /// <remarks><para>
-    /// Before v3 of the site the <see cref="IWebSite"/> interface had features to help plugins
+    /// Before v3 of the server the <see cref="IWebSite"/> interface had features to help plugins
     /// inject content into the HTML that the site served. These features were moved out of the
     /// implementation of IWebSite and into <see cref="IHtmlManipulatorConfiguration"/> when the
     /// server was ported to OWIN.
