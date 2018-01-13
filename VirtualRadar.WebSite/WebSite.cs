@@ -154,33 +154,11 @@ namespace VirtualRadar.WebSite
         }
         #endregion
 
-        #region Private class - CachedUser
-        /// <summary>
-        /// The cached information about a valid user.
-        /// </summary>
-        class CachedUser
-        {
-            public IUser User;
-
-            public string KnownGoodPassword;
-        }
-        #endregion
-
         #region Fields
         /// <summary>
         /// The object that synchronises threads that are performing authentication tasks for the site.
         /// </summary>
         private object _AuthenticationSyncLock = new object();
-
-        /// <summary>
-        /// A map of every user that is allowed to view the web site, indexed by login name.
-        /// </summary>
-        Dictionary<string, CachedUser> _BasicAuthenticationUsers = new Dictionary<string,CachedUser>();
-
-        /// <summary>
-        /// A map of all administrator users indexed by login name.
-        /// </summary>
-        Dictionary<string, CachedUser> _AdministratorUsers = new Dictionary<string,CachedUser>();
 
         /// <summary>
         /// The object that will inject web site strings into the site for us.
@@ -196,11 +174,6 @@ namespace VirtualRadar.WebSite
         /// The object that performs fetches of content without going through the web server.
         /// </summary>
         private ILoopbackHost _LoopbackHost;
-
-        /// <summary>
-        /// A reference to the singleton user manager - saves us having to keep reloading it.
-        /// </summary>
-        private IUserManager _UserManager;
 
         /// <summary>
         /// The type of proxy that the server is sitting behind.
@@ -272,8 +245,6 @@ namespace VirtualRadar.WebSite
                 var owinPipelineConfig = Factory.Singleton.ResolveSingleton<IPipelineConfiguration>();
                 owinPipelineConfig.AddPipeline<WebSitePipeline>();
 
-                _UserManager = Factory.Singleton.ResolveSingleton<IUserManager>();
-
                 var configurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
                 configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
 
@@ -283,8 +254,6 @@ namespace VirtualRadar.WebSite
                 var installerSettingsStorage = Factory.Singleton.Resolve<IInstallerSettingsStorage>();
                 var installerSettings = installerSettingsStorage.Load();
                 server.Port = installerSettings.WebServerPort;
-
-                server.AuthenticationRequired += Server_AuthenticationRequired;
 
                 var redirection = Factory.Singleton.ResolveSingleton<IRedirectionConfiguration>();
                 redirection.AddRedirection("/", "/desktop.html", RedirectionContext.Any);
@@ -336,12 +305,6 @@ namespace VirtualRadar.WebSite
 
             bool result = false;
             lock(_AuthenticationSyncLock) {
-                _AdministratorUsers.Clear();
-                _BasicAuthenticationUsers.Clear();
-
-                CacheUsers(_BasicAuthenticationUsers, configuration.WebServerSettings.BasicAuthenticationUserIds);
-                CacheUsers(_AdministratorUsers, configuration.WebServerSettings.AdministratorUserIds);
-
                 if(WebServer.AuthenticationScheme != configuration.WebServerSettings.AuthenticationScheme) {
                     result = true;
                     WebServer.AuthenticationScheme = configuration.WebServerSettings.AuthenticationScheme;
@@ -351,18 +314,6 @@ namespace VirtualRadar.WebSite
             _ProxyType = configuration.GoogleMapSettings.ProxyType;
 
             return result;
-        }
-
-        private void CacheUsers(Dictionary<string, CachedUser> cacheDictionary, IEnumerable<string> userIds)
-        {
-            foreach(var user in _UserManager.GetUsersByUniqueId(userIds)) {
-                if(user.Enabled && !cacheDictionary.ContainsKey(user.LoginName)) {
-                    var key = _UserManager.LoginNameIsCaseSensitive ? user.LoginName : user.LoginName.ToUpperInvariant();
-                    cacheDictionary.Add(key, new CachedUser() {
-                        User = user,
-                    });
-                }
-            }
         }
         #endregion
 
@@ -511,41 +462,6 @@ namespace VirtualRadar.WebSite
             if(WebServer != null && LoadConfiguration()) {
                 WebServer.Online = false;
                 WebServer.Online = true;
-            }
-        }
-
-        /// <summary>
-        /// Handles the authentication events from the server.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void Server_AuthenticationRequired(object sender, AuthenticationRequiredEventArgs args)
-        {
-            lock(_AuthenticationSyncLock) {
-                if(!args.IsHandled) {
-                    args.IsAuthenticated = args.User != null;
-                    if(args.IsAuthenticated) {
-                        CachedUser cachedUser;
-                        var isAdministrator = false;
-                        var key = _UserManager.LoginNameIsCaseSensitive ? args.User : args.User.ToUpperInvariant();
-
-                        if(_AdministratorUsers.TryGetValue(key, out cachedUser)) {
-                            isAdministrator = true;
-                        } else {
-                            _BasicAuthenticationUsers.TryGetValue(key, out cachedUser);
-                        }
-
-                        if(cachedUser == null) args.IsAuthenticated = false;
-                        else if(cachedUser.KnownGoodPassword != null && cachedUser.KnownGoodPassword == args.Password) args.IsAuthenticated = true;
-                        else {
-                            args.IsAuthenticated = _UserManager.PasswordMatches(cachedUser.User, args.Password);
-                            if(args.IsAuthenticated) cachedUser.KnownGoodPassword = args.Password;
-                        }
-
-                        if(args.IsAuthenticated) args.IsAdministrator = isAdministrator;
-                    }
-                    args.IsHandled = true;
-                }
             }
         }
 
