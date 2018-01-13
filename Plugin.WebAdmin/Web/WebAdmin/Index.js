@@ -74,9 +74,6 @@ var VRS;
                                         { page: '/desktop.html', description: VRS.Server.$$.DesktopVersion },
                                         { page: '/mobile.html', description: VRS.Server.$$.MobileVersion },
                                         { page: '/fsx.html', description: VRS.Server.$$.FlightSimVersion },
-                                        { page: '/GoogleMap.htm', description: VRS.Server.$$.DesktopVersionOld },
-                                        { page: '/iPhoneMap.htm', description: VRS.Server.$$.MobileVersionOld },
-                                        { page: '/FlightSim.htm', description: VRS.Server.$$.FlightSimVersionOld },
                                         { page: '/settings.html', description: VRS.Server.$$.SettingsPage },
                                     ];
                                     var initialPerspective = 0;

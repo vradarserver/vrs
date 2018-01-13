@@ -1866,15 +1866,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <data name="OptionsDescribeEnableCompression" xml:space="preserve">
     <value>Yes to compress responses sent to browsers, no to send responses uncompressed</value>
   </data>
-  <data name="DesktopVersionOld" xml:space="preserve">
-    <value>Old Desktop Version</value>
-  </data>
-  <data name="FlightSimVersionOld" xml:space="preserve">
-    <value>Old Flight Sim Version</value>
-  </data>
-  <data name="MobileVersionOld" xml:space="preserve">
-    <value>Old Mobile Version</value>
-  </data>
   <data name="Forward" xml:space="preserve">
     <value>Forward</value>
   </data>

@@ -120,16 +120,6 @@ namespace VirtualRadar.WinForms.Controls
         }
 
         /// <summary>
-        /// Gets or sets a value indicating that <see cref="Address"/> should show the page for the old desktop version of the site.
-        /// </summary>
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool ShowOldDesktopSite
-        {
-            get { return comboBoxSite.Text == Strings.DesktopVersionOld; }
-            set { comboBoxSite.Text = Strings.DesktopVersionOld; }
-        }
-
-        /// <summary>
         /// Gets or sets a value indicating that <see cref="Address"/> should show the page for the Flight Simulator X version of the site.
         /// </summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -140,16 +130,6 @@ namespace VirtualRadar.WinForms.Controls
         }
 
         /// <summary>
-        /// Gets or sets a value indicating that <see cref="Address"/> should show the page for the old Flight Simulator X version of the site.
-        /// </summary>
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool ShowOldFlightSimSite
-        {
-            get { return comboBoxSite.Text == Strings.FlightSimVersionOld; }
-            set { comboBoxSite.Text = Strings.FlightSimVersionOld; }
-        }
-
-        /// <summary>
         /// Gets or sets a value indicating that <see cref="Address"/> should show the page for the mobile version of the site.
         /// </summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -157,16 +137,6 @@ namespace VirtualRadar.WinForms.Controls
         {
             get { return comboBoxSite.Text == Strings.MobileVersion; }
             set { comboBoxSite.Text = Strings.MobileVersion; }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating that <see cref="Address"/> should show the page for the old mobile version of the site.
-        /// </summary>
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool ShowOldMobileSite
-        {
-            get { return comboBoxSite.Text == Strings.MobileVersionOld; }
-            set { comboBoxSite.Text = Strings.MobileVersionOld; }
         }
 
         /// <summary>
@@ -329,9 +299,6 @@ namespace VirtualRadar.WinForms.Controls
                     if(ShowDesktopSite) page = "desktop.html";
                     else if(ShowMobileSite) page = "mobile.html";
                     else if(ShowFlightSimSite) page = "fsx.html";
-                    else if(ShowOldDesktopSite) page = "GoogleMap.htm";
-                    else if(ShowOldMobileSite) page = "iPhoneMap.htm";
-                    else if(ShowOldFlightSimSite) page = "FlightSim.htm";
                     else if(ShowSettingsPage) page = "settings.html";
 
                     if(page != null) {
@@ -438,9 +405,6 @@ namespace VirtualRadar.WinForms.Controls
                 comboBoxSite.Items.Add(Strings.DesktopVersion);
                 comboBoxSite.Items.Add(Strings.MobileVersion);
                 comboBoxSite.Items.Add(Strings.FlightSimVersion);
-                comboBoxSite.Items.Add(Strings.DesktopVersionOld);
-                comboBoxSite.Items.Add(Strings.MobileVersionOld);
-                comboBoxSite.Items.Add(Strings.FlightSimVersionOld);
                 comboBoxSite.Items.Add(Strings.SettingsPage);
                 comboBoxSite.SelectedIndex = 0;
 

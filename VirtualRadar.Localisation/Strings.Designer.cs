@@ -1435,15 +1435,6 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Old Desktop Version.
-        /// </summary>
-        public static string DesktopVersionOld {
-            get {
-                return ResourceManager.GetString("DesktopVersionOld", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to DF.
         /// </summary>
         public static string DF {
@@ -1845,15 +1836,6 @@ namespace VirtualRadar.Localisation {
         public static string FlightSimVersion {
             get {
                 return ResourceManager.GetString("FlightSimVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Old Flight Sim Version.
-        /// </summary>
-        public static string FlightSimVersionOld {
-            get {
-                return ResourceManager.GetString("FlightSimVersionOld", resourceCulture);
             }
         }
         
@@ -3092,15 +3074,6 @@ namespace VirtualRadar.Localisation {
         public static string MobileVersion {
             get {
                 return ResourceManager.GetString("MobileVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Old Mobile Version.
-        /// </summary>
-        public static string MobileVersionOld {
-            get {
-                return ResourceManager.GetString("MobileVersionOld", resourceCulture);
             }
         }
         

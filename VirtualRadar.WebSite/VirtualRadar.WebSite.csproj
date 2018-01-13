@@ -98,7 +98,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportParameters.cs" />
     <Compile Include="WebSitePipeline.cs" />
-    <Compile Include="TextContent.cs" />
     <Compile Include="WebAdminViewManagerStub.cs" />
     <Compile Include="WebSite.cs" />
     <Compile Include="WebSiteExtender.cs" />
