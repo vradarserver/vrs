@@ -97,11 +97,6 @@
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportParameters.cs" />
-    <Compile Include="Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="WebSitePipeline.cs" />
     <Compile Include="TextContent.cs" />
     <Compile Include="WebAdminViewManagerStub.cs" />
@@ -159,43 +154,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="OldSite\Diagnostics\AircraftList.htm" />
-    <Content Include="OldSite\Common.js" />
-    <Content Include="OldSite\Events.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMap.htm" />
-    <Content Include="OldSite\GoogleMap\GoogleMap.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapAircraftCollection.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapAircraftDetail.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapAircraftList.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapAircraftListColumns.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapAircraftListOptions.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapAudio.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapAutoSelect.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapCurrentLocation.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapGeolocation.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapGotoCurrentLocationButton.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapInfoButton.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapMarker.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapMarkerCollection.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapMovingMapControl.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapOptions.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapOptionsUI.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapOutline.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapReverseGeocode.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapSidebar.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapStylesheet.css" />
-    <Content Include="OldSite\GoogleMap\GoogleMapTimeout.js" />
-    <Content Include="OldSite\GoogleMap\GoogleMapVolumeControl.js" />
-    <Content Include="OldSite\GoogleMap\MarkerWithLabel.min.js" />
-    <Content Include="OldSite\iPhone\iPhoneMap.htm" />
-    <Content Include="OldSite\iPhone\iPhoneMapAircraftDetail.js" />
-    <Content Include="OldSite\iPhone\iPhoneMapInfoWindow.js" />
-    <Content Include="OldSite\iPhone\iPhoneMapOptionsUI.js" />
-    <Content Include="OldSite\iPhone\iPhoneMapPages.js" />
-    <Content Include="OldSite\iPhone\iPhoneMapPlaneList.js" />
-    <Content Include="OldSite\iPhone\iPhoneMapStylesheet.css" />
-    <Content Include="OldSite\jQuery\jQuery-1.6.4.js" />
-    <Content Include="OldSite\jQuery\jQuery-1.6.4.min.js" />
     <Content Include="Site\Checksums.txt" />
     <Content Include="Site\Web\css\jquery-ui\images\ui-bg_flat_thick_40_eeeeee_40x40.png" />
     <Content Include="Site\Web\css\vrs-print.css" />
@@ -350,26 +308,6 @@
       <DependentUpon>refreshManager.ts</DependentUpon>
     </Content>
     <Content Include="Site\Web\zz-norel-duplicateStrings.html" />
-    <Content Include="OldSite\Reports\AircraftReport.htm" />
-    <Content Include="OldSite\Reports\DateReport.js" />
-    <Content Include="OldSite\Reports\DateReportCriteria.js" />
-    <Content Include="OldSite\Reports\FlightReport.htm" />
-    <Content Include="OldSite\Reports\IcaoReport.js" />
-    <Content Include="OldSite\Reports\IcaoReportCriteria.js" />
-    <Content Include="OldSite\Reports\RegReport.js" />
-    <Content Include="OldSite\Reports\RegReportCriteria.js" />
-    <Content Include="OldSite\Reports\Report.js" />
-    <Content Include="OldSite\Reports\ReportAircraftDetail.js" />
-    <Content Include="OldSite\Reports\ReportAircraftFlights.js" />
-    <Content Include="OldSite\Reports\ReportCriteria.js" />
-    <Content Include="OldSite\Reports\ReportFlights.js" />
-    <Content Include="OldSite\Reports\ReportFlightsDetail.js" />
-    <Content Include="OldSite\Reports\ReportMap.js" />
-    <Content Include="OldSite\Reports\ReportPageControl.js" />
-    <Content Include="OldSite\Reports\ReportPrintStylesheet.css" />
-    <Content Include="OldSite\Reports\ReportRowProvider.js" />
-    <Content Include="OldSite\Reports\ReportScreenStylesheet.css" />
-    <Content Include="OldSite\ServerConfig.js" />
     <Content Include="Site\Web\css\jquery.dlmenu.css" />
     <Content Include="Site\Web\css\jquery-ui\images\animated-overlay.gif" />
     <Content Include="Site\Web\css\jquery-ui\images\ui-bg_diagonals-thick_40_eeeeee_40x40.png" />
@@ -859,7 +797,6 @@
       <DependentUpon>utility.ts</DependentUpon>
     </Content>
     <Content Include="Site\Web\settings.html" />
-    <Content Include="OldSite\XHR.js" />
     <EmbeddedResource Include="WebSiteStrings.de-DE.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WebSiteStrings.de-DE.Designer.cs</LastGenOutput>
@@ -887,12 +824,6 @@
     <EmbeddedResource Include="WebSiteStrings.zh-CN.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WebSiteStrings.zh-CN.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
