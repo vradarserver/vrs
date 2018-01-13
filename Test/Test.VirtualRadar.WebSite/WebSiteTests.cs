@@ -54,6 +54,7 @@ namespace Test.VirtualRadar.WebSite
         private string _LoopbackPathAndFile;
         private IDictionary<string, object> _LoopbackEnvironment;
         private SimpleContent _LoopbackResponse;
+        private Mock<IFileSystemServerConfiguration> _FileSystemServerConfiguration;
 
         // Other mocks required to get IWebSite implementation running
         private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
@@ -88,18 +89,6 @@ namespace Test.VirtualRadar.WebSite
 
             _StandingDataManager = TestUtilities.CreateMockSingleton<IStandingDataManager>();
             _UserManager = TestUtilities.CreateMockSingleton<IUserManager>();
-            _WebSite = Factory.Singleton.Resolve<IWebSite>();
-
-            _Provider = new Mock<IWebSiteProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-            _Provider.Setup(m => m.UtcNow).Returns(DateTime.UtcNow);
-            _Provider.Setup(m => m.DirectoryExists(It.IsAny<string>())).Returns((string folder) => {
-                switch(folder.ToUpper()) {
-                    case null:          throw new ArgumentNullException();
-                    case "NOTEXISTS":   return false;
-                    default:            return true;
-                }
-            });
-            _WebSite.Provider = _Provider.Object;
 
             _PipelineConfiguration = new MockOwinPipelineConfiguration();
             Factory.Singleton.RegisterInstance<IPipelineConfiguration>(_PipelineConfiguration);
@@ -116,6 +105,20 @@ namespace Test.VirtualRadar.WebSite
                 _LoopbackEnvironment = e;
                 return _LoopbackResponse;
             });
+
+            _FileSystemServerConfiguration = TestUtilities.CreateMockSingleton<IFileSystemServerConfiguration>();
+
+            _Provider = new Mock<IWebSiteProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+            _Provider.Setup(m => m.UtcNow).Returns(DateTime.UtcNow);
+            _Provider.Setup(m => m.DirectoryExists(It.IsAny<string>())).Returns((string folder) => {
+                switch(folder.ToUpper()) {
+                    case null:          throw new ArgumentNullException();
+                    case "NOTEXISTS":   return false;
+                    default:            return true;
+                }
+            });
+            _WebSite = Factory.Singleton.Resolve<IWebSite>();
+            _WebSite.Provider = _Provider.Object;
         }
 
         [TestCleanup]
@@ -220,15 +223,20 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AttachSiteToServer_Allows_Default_File_System_Site_Pages_To_Be_Served()
         {
+            SiteRoot siteRoot = null;
+            _FileSystemServerConfiguration.Setup(r => r.AddSiteRoot(It.IsAny<SiteRoot>())).Callback((SiteRoot s) => {
+                siteRoot = s;
+            });
+
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
-            var fileSystemServerConfiguration = Factory.Singleton.ResolveSingleton<IFileSystemServerConfiguration>();
-            var root = fileSystemServerConfiguration.GetSiteRootFolders();
-
             var runtime = Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>();
-            var expected = String.Format("{0}{1}", Path.Combine(runtime.ExecutablePath, "Web"), Path.DirectorySeparatorChar);
+            var expectedFolder = String.Format("{0}{1}", Path.Combine(runtime.ExecutablePath, "Web"), Path.DirectorySeparatorChar);
 
-            Assert.IsTrue(root.Contains(expected));
+            Assert.IsNotNull(siteRoot);
+            Assert.AreEqual(0, siteRoot.Priority);
+            Assert.AreEqual(expectedFolder, siteRoot.Folder);
+            Assert.IsTrue(siteRoot.Checksums.Count > 0);
         }
         #endregion
 
@@ -426,6 +434,69 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
             _WebSite.RequestSimpleContent(null);
+        }
+        #endregion
+
+        #region Configuration Changes
+        [TestMethod]
+        public void WebSite_Configuration_Change_To_Authentication_Scheme_Cycles_WebServer()
+        {
+            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Anonymous;
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+
+            _WebServer.Object.Online = true;
+
+            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
+            _SharedConfiguration.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
+
+            _WebServer.VerifySet(r => r.Online = false, Times.AtLeastOnce());
+            _WebServer.VerifySet(r => r.Online = true, Times.AtLeast(2));
+            Assert.IsTrue(_WebServer.Object.Online);
+        }
+
+        [TestMethod]
+        public void WebSite_Configuration_Change_To_Authentication_Scheme_Does_Not_Cycle_Server_If_Already_Offline()
+        {
+            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Anonymous;
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+
+            _WebServer.Object.Online = false;
+
+            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
+            _SharedConfiguration.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
+
+            _WebServer.VerifySet(r => r.Online = true, Times.Never());
+            Assert.IsFalse(_WebServer.Object.Online);
+        }
+        #endregion
+
+        #region HtmlLoadedFromFile event
+        [TestMethod]
+        public void WebSite_HtmlLoadedFromFile_Raised_When_OWIN_FileSystemConfiguration_Raises_TextLoadedFromFile()
+        {
+            var listener = new EventRecorder<TextContentEventArgs>();
+            _WebSite.HtmlLoadedFromFile += listener.Handler;
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+
+            var args = new TextContentEventArgs("/index.html", "The Content", Encoding.Unicode, MimeType.Html);
+            _FileSystemServerConfiguration.Raise(r => r.TextLoadedFromFile += null, args);
+
+            Assert.AreEqual(1, listener.CallCount);
+            Assert.AreSame(_WebSite, listener.Sender);
+            Assert.AreSame(args, listener.Args);
+        }
+
+        [TestMethod]
+        public void WebSite_HtmlLoadedFromFile_Not_Raised_For_Non_HTML_Mime_Types()
+        {
+            var listener = new EventRecorder<TextContentEventArgs>();
+            _WebSite.HtmlLoadedFromFile += listener.Handler;
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+
+            var args = new TextContentEventArgs("/index.html", "The Content", Encoding.Unicode, MimeType.Css);
+            _FileSystemServerConfiguration.Raise(r => r.TextLoadedFromFile += null, args);
+
+            Assert.AreEqual(0, listener.CallCount);
         }
         #endregion
     }

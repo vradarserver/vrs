@@ -154,11 +154,10 @@ namespace VirtualRadar.WebSite
         }
         #endregion
 
-        #region Fields
         /// <summary>
-        /// The object that synchronises threads that are performing authentication tasks for the site.
+        /// The object that synchronises writes to fields.
         /// </summary>
-        private object _AuthenticationSyncLock = new object();
+        private object _SyncLock = new object();
 
         /// <summary>
         /// The object that will inject web site strings into the site for us.
@@ -175,13 +174,6 @@ namespace VirtualRadar.WebSite
         /// </summary>
         private ILoopbackHost _LoopbackHost;
 
-        /// <summary>
-        /// The type of proxy that the server is sitting behind.
-        /// </summary>
-        private ProxyType _ProxyType;
-        #endregion
-
-        #region Properties
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -201,9 +193,7 @@ namespace VirtualRadar.WebSite
         /// See interface docs.
         /// </summary>
         public IWebServer WebServer { get; private set; }
-        #endregion
 
-        #region Events exposed
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -217,9 +207,7 @@ namespace VirtualRadar.WebSite
         {
             EventHelper.RaiseQuickly(HtmlLoadedFromFile, this, args);
         }
-        #endregion
 
-        #region Constructor
         /// <summary>
         /// Creates a new object.
         /// </summary>
@@ -227,9 +215,7 @@ namespace VirtualRadar.WebSite
         {
             Provider = Factory.Singleton.Resolve<IWebSiteProvider>();
         }
-        #endregion
 
-        #region AttachSiteToServer, LoadConfiguration
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -245,8 +231,8 @@ namespace VirtualRadar.WebSite
                 var owinPipelineConfig = Factory.Singleton.ResolveSingleton<IPipelineConfiguration>();
                 owinPipelineConfig.AddPipeline<WebSitePipeline>();
 
-                var configurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
-                configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
+                var sharedConfig = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
+                sharedConfig.ConfigurationChanged += SharedConfiguration_ConfigurationChanged;
 
                 WebServer = server;
                 server.Root = "/VirtualRadar";
@@ -273,8 +259,6 @@ namespace VirtualRadar.WebSite
                 _LoopbackHost.ConfigureStandardPipeline();
 
                 LoadConfiguration();
-
-                server.RequestReceived += Server_RequestReceived;
             }
         }
 
@@ -301,23 +285,19 @@ namespace VirtualRadar.WebSite
         /// <returns>True if the server should be restarted because of changes to the configuration.</returns>
         private bool LoadConfiguration()
         {
-            var configuration = Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Load();
+            var configuration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>().Get();
 
-            bool result = false;
-            lock(_AuthenticationSyncLock) {
+            var result = false;
+            lock(_SyncLock) {
                 if(WebServer.AuthenticationScheme != configuration.WebServerSettings.AuthenticationScheme) {
                     result = true;
                     WebServer.AuthenticationScheme = configuration.WebServerSettings.AuthenticationScheme;
                 }
             }
 
-            _ProxyType = configuration.GoogleMapSettings.ProxyType;
-
             return result;
         }
-        #endregion
 
-        #region AddSiteRoot, RemoveSiteRoot, IsSiteRootActive, GetSiteRootFolders
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -359,9 +339,7 @@ namespace VirtualRadar.WebSite
             var configuration = Factory.Singleton.ResolveSingleton<IFileSystemServerConfiguration>();
             return configuration.GetSiteRootFolders();
         }
-        #endregion
 
-        #region RequestContent, RequestSimpleContent
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -429,9 +407,7 @@ namespace VirtualRadar.WebSite
 
             return result;
         }
-        #endregion
 
-        #region AddHtmlContentInjector, RemoveHtmlContentInjector
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -449,30 +425,18 @@ namespace VirtualRadar.WebSite
         {
             _HtmlManipulator.RemoveHtmlContentInjector(contentInjector);
         }
-        #endregion
 
-        #region Events consumed
         /// <summary>
         /// Handles changes to the configuration.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        private void ConfigurationStorage_ConfigurationChanged(object sender, EventArgs args)
+        private void SharedConfiguration_ConfigurationChanged(object sender, EventArgs args)
         {
-            if(WebServer != null && LoadConfiguration()) {
+            if(WebServer != null && LoadConfiguration() && WebServer.Online) {
                 WebServer.Online = false;
                 WebServer.Online = true;
             }
-        }
-
-        /// <summary>
-        /// Handles the request for content by a server.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void Server_RequestReceived(object sender, RequestReceivedEventArgs args)
-        {
-            RequestContent(args);
         }
 
         /// <summary>
@@ -486,6 +450,5 @@ namespace VirtualRadar.WebSite
                 OnHtmlLoadedFromFile(args);
             }
         }
-        #endregion
     }
 }
