@@ -344,7 +344,6 @@ namespace VirtualRadar.Library.Presenter
 
             var webSite = Factory.Singleton.Resolve<IWebSite>();
             webSite.BaseStationDatabase = Factory.Singleton.ResolveSingleton<IAutoConfigBaseStationDatabase>().Database;
-            webSite.FlightSimulatorAircraftList = Factory.Singleton.ResolveSingleton<IFlightSimulatorAircraftList>();
             webSite.StandingDataManager = Factory.Singleton.ResolveSingleton<IStandingDataManager>();
 
             webSite.AttachSiteToServer(webServer);
@@ -358,7 +357,7 @@ namespace VirtualRadar.Library.Presenter
                 ReportWebServerStartupFailure(webServer, ex);
             }
 
-            _View.FlightSimulatorXAircraftList = webSite.FlightSimulatorAircraftList;
+            _View.FlightSimulatorXAircraftList = Factory.Singleton.ResolveSingleton<IFlightSimulatorAircraftList>();
 
             return webSite;
         }

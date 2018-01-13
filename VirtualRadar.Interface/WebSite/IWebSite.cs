@@ -32,15 +32,6 @@ namespace VirtualRadar.Interface.WebSite
         IWebSiteProvider Provider { get; set; }
 
         /// <summary>
-        /// Gets or sets the aircraft list to use when browsers ask for the FSX aircraft list.
-        /// </summary>
-        /// <remarks>
-        /// Note that this will go away in a code cleanup. <see cref="IFlightSimulatorAircraftList"/> is
-        /// a singleton, it does not need to be passed around.
-        /// </remarks>
-        IFlightSimulatorAircraftList FlightSimulatorAircraftList { get; set; }
-
-        /// <summary>
         /// Gets or sets the BaseStation database that the site will use when generating reports.
         /// </summary>
         IBaseStationDatabase BaseStationDatabase { get; set; }

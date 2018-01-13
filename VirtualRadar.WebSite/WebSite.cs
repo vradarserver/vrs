@@ -217,15 +217,6 @@ namespace VirtualRadar.WebSite
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IFlightSimulatorAircraftList FlightSimulatorAircraftList
-        {
-            get { return Factory.Singleton.ResolveSingleton<IFlightSimulatorAircraftList>(); }
-            set { ; }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
         public IBaseStationDatabase BaseStationDatabase { get; set; }
 
         /// <summary>

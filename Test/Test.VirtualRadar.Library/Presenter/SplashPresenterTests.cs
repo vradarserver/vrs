@@ -876,7 +876,6 @@ namespace Test.VirtualRadar.Library.Presenter
         {
             _WebSite.Setup(s => s.AttachSiteToServer(_WebServer.Object)).Callback(() => {
                 Assert.AreSame(_BaseStationDatabase.Object, _WebSite.Object.BaseStationDatabase);
-                Assert.AreSame(_FlightSimulatorXAircraftList.Object, _WebSite.Object.FlightSimulatorAircraftList);
                 Assert.AreSame(_StandingDataManager.Object, _WebSite.Object.StandingDataManager);
             });
 
