@@ -579,7 +579,6 @@
     <Compile Include="WebServer\MimeType.cs" />
     <Compile Include="WebServer\RequestReceivedEventArgs.cs" />
     <Compile Include="WebSite\IWebSiteExtender.cs" />
-    <Compile Include="WebSite\IWebSiteProvider.cs" />
     <Compile Include="WebSite\NamespaceDoc.cs" />
     <Compile Include="WebSite\PolarPlotJson.cs" />
     <Compile Include="WebSite\PolarPlotsJson.cs" />

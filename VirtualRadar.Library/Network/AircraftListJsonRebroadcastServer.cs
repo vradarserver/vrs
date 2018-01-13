@@ -167,8 +167,6 @@ namespace VirtualRadar.Library.Network
 
             if(_AircraftListJsonBuilder == null) {
                 _AircraftListJsonBuilder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
-                var provider = Factory.Singleton.Resolve<IWebSiteProvider>();
-                _AircraftListJsonBuilder.Initialise(provider);
             }
 
             if(_AircraftListJsonContractResolver == null) {

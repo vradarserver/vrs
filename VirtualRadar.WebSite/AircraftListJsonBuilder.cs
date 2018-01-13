@@ -39,7 +39,7 @@ namespace VirtualRadar.WebSite
 
             public bool Exists;
 
-            public bool CheckConfiguration(string folder, IWebSiteProvider provider)
+            public bool CheckConfiguration(string folder, IFileSystemProvider provider)
             {
                 if(Folder != folder || !Tested) {
                     Folder = folder;
@@ -57,6 +57,11 @@ namespace VirtualRadar.WebSite
         #endregion
 
         #region Fields
+        /// <summary>
+        /// True if the class has been initialised.
+        /// </summary>
+        private bool _Initialised;
+
         /// <summary>
         /// The number of seconds added to the display timeout when deciding if a position
         /// is stale.
@@ -94,6 +99,16 @@ namespace VirtualRadar.WebSite
         private ConfiguredFolder _ConfiguredSilhouettesFolder = new ConfiguredFolder();
 
         /// <summary>
+        /// The object that abstracts away file system operations away so they can be tested.
+        /// </summary>
+        private IFileSystemProvider _FileSystemProvider;
+
+        /// <summary>
+        /// The object that abstracts away time operations so they can be tested.
+        /// </summary>
+        private IClock _Clock;
+
+        /// <summary>
         /// True if the server allows aircraft pictures to be sent to Internet clients.
         /// </summary>
         private bool _ShowPicturesToInternetClients;
@@ -124,25 +139,21 @@ namespace VirtualRadar.WebSite
         private int _DefaultAircraftListFeedId;
         #endregion
 
-        #region Properties
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IWebSiteProvider Provider { get; private set; }
-        #endregion
-
         #region Initialise, LoadConfiguration
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public void Initialise(IWebSiteProvider provider)
+        private void Initialise()
         {
-            if(provider == null) throw new ArgumentNullException("provider");
-            Provider = provider;
+            if(!_Initialised) {
+                _Initialised = true;
 
-            _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
-            _FeedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
-            _EmptyAircraftList = Factory.Singleton.Resolve<ISimpleAircraftList>();
+                _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
+                _FeedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
+                _EmptyAircraftList = Factory.Singleton.Resolve<ISimpleAircraftList>();
+                _FileSystemProvider = Factory.Singleton.Resolve<IFileSystemProvider>();
+                _Clock = Factory.Singleton.Resolve<IClock>();
+            }
         }
 
         /// <summary>
@@ -154,9 +165,9 @@ namespace VirtualRadar.WebSite
 
             _DefaultAircraftListFeedId = config.GoogleMapSettings.WebSiteReceiverId;
             _ShowPicturesToInternetClients = config.InternetClientSettings.CanShowPictures;
-            _ShowFlags = _ConfiguredFlagsFolder.CheckConfiguration(config.BaseStationSettings.OperatorFlagsFolder, Provider);
-            _ShowPictures = _ConfiguredPicturesFolder.CheckConfiguration(config.BaseStationSettings.PicturesFolder, Provider);
-            _ShowSilhouettes = _ConfiguredSilhouettesFolder.CheckConfiguration(config.BaseStationSettings.SilhouettesFolder, Provider);
+            _ShowFlags = _ConfiguredFlagsFolder.CheckConfiguration(config.BaseStationSettings.OperatorFlagsFolder, _FileSystemProvider);
+            _ShowPictures = _ConfiguredPicturesFolder.CheckConfiguration(config.BaseStationSettings.PicturesFolder, _FileSystemProvider);
+            _ShowSilhouettes = _ConfiguredSilhouettesFolder.CheckConfiguration(config.BaseStationSettings.SilhouettesFolder, _FileSystemProvider);
             _ShortTrailLength = config.GoogleMapSettings.ShortTrailLengthSeconds;
         }
         #endregion
@@ -171,6 +182,7 @@ namespace VirtualRadar.WebSite
         {
             if(args == null) throw new ArgumentNullException("args");
 
+            Initialise();
             RefreshConfigurationSettings();
 
             var feedId = args.SourceFeedId == -1 ? _DefaultAircraftListFeedId : args.SourceFeedId;
@@ -280,7 +292,7 @@ namespace VirtualRadar.WebSite
         /// <param name="distances"></param>
         private void CopyAircraft(AircraftListJson aircraftListJson, List<IAircraft> aircraftListSnapshot, AircraftListJsonBuilderArgs args, Dictionary<int, double?> distances)
         {
-            var now = Provider.UtcNow;
+            var now = _Clock.UtcNow;
             var configuration = _SharedConfiguration.Get();
             var positionTimeoutThreshold = now.AddSeconds(-(configuration.BaseStationSettings.DisplayTimeoutSeconds + BoostStalePositionSeconds));
 

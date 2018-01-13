@@ -38,7 +38,6 @@ namespace Test.VirtualRadar.WebSite
 
         // Mocks etc. actually used by the tests
         private IWebSite _WebSite;
-        private Mock<IWebSiteProvider> _Provider;
         private Mock<IWebServer> _WebServer;
         private Mock<IRequest> _Request;
         private Mock<IResponse> _Response;
@@ -108,17 +107,7 @@ namespace Test.VirtualRadar.WebSite
 
             _FileSystemServerConfiguration = TestUtilities.CreateMockSingleton<IFileSystemServerConfiguration>();
 
-            _Provider = new Mock<IWebSiteProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-            _Provider.Setup(m => m.UtcNow).Returns(DateTime.UtcNow);
-            _Provider.Setup(m => m.DirectoryExists(It.IsAny<string>())).Returns((string folder) => {
-                switch(folder.ToUpper()) {
-                    case null:          throw new ArgumentNullException();
-                    case "NOTEXISTS":   return false;
-                    default:            return true;
-                }
-            });
             _WebSite = Factory.Singleton.Resolve<IWebSite>();
-            _WebSite.Provider = _Provider.Object;
         }
 
         [TestCleanup]
@@ -152,9 +141,6 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite = Factory.Singleton.Resolve<IWebSite>();
             Assert.IsNull(_WebSite.WebServer);
-            Assert.IsNotNull(_WebSite.Provider);
-
-            TestUtilities.TestProperty(_WebSite, "Provider", _WebSite.Provider, _Provider.Object);
             TestUtilities.TestProperty(_WebSite, "BaseStationDatabase", null, _BaseStationDatabase.Object);
             TestUtilities.TestProperty(_WebSite, "StandingDataManager", null, _StandingDataManager.Object);
         }

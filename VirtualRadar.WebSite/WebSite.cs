@@ -177,11 +177,6 @@ namespace VirtualRadar.WebSite
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IWebSiteProvider Provider { get; set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
         public IBaseStationDatabase BaseStationDatabase { get; set; }
 
         /// <summary>
@@ -206,14 +201,6 @@ namespace VirtualRadar.WebSite
         internal void OnHtmlLoadedFromFile(TextContentEventArgs args)
         {
             EventHelper.RaiseQuickly(HtmlLoadedFromFile, this, args);
-        }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public WebSite()
-        {
-            Provider = Factory.Singleton.Resolve<IWebSiteProvider>();
         }
 
         /// <summary>

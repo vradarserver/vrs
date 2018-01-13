@@ -49,7 +49,6 @@ namespace Test.VirtualRadar.Library.Network
         private ClockMock _Clock;
         private Mock<ITimer> _Timer;
         private AircraftListJson _AircraftListJson;
-        private Mock<IWebSiteProvider> _WebsiteProvider;
         private AircraftListJsonBuilderArgs _AircraftListJsonBuilderArgs;
         private Mock<IBaseStationAircraftList> _AircraftList;
         private List<IAircraft> _SnapshotAircraft;
@@ -73,7 +72,6 @@ namespace Test.VirtualRadar.Library.Network
             _Connector = new MockConnector<INetworkConnector,INetworkConnection>();
 
             _AircraftListJsonBuilder = TestUtilities.CreateMockImplementation<IAircraftListJsonBuilder>();
-            _WebsiteProvider = TestUtilities.CreateMockImplementation<IWebSiteProvider>();
             _AircraftListJson = new AircraftListJson();
             _AircraftListJsonBuilderArgs = null;
             _AircraftListJsonBuilder.Setup(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>())).Callback((AircraftListJsonBuilderArgs args) => {

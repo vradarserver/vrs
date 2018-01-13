@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Database;
+using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.StandingData;
 using VirtualRadar.Interface.WebServer;
 
@@ -25,12 +26,6 @@ namespace VirtualRadar.Interface.WebSite
     /// </summary>
     public interface IWebSite
     {
-        #region Properties
-        /// <summary>
-        /// Gets or sets the testing provider.
-        /// </summary>
-        IWebSiteProvider Provider { get; set; }
-
         /// <summary>
         /// Gets or sets the BaseStation database that the site will use when generating reports.
         /// </summary>
@@ -45,39 +40,37 @@ namespace VirtualRadar.Interface.WebSite
         /// Gets the web server that the site is attached to.
         /// </summary>
         IWebServer WebServer { get; }
-        #endregion
 
-        #region Events
         /// <summary>
         /// Raised when an HTML file is loaded from a disk-bound file. Listeners can modify the HTML before
         /// it is sent to the browser.
+        /// OBSOLETE - use <see cref="IFileSystemServerConfiguration.TextLoadedFromFile"/> instead.
         /// </summary>
         event EventHandler<TextContentEventArgs> HtmlLoadedFromFile;
-        #endregion
 
-        #region AttachSiteToServer
         /// <summary>
         /// Attaches the website to a server.
         /// </summary>
         /// <param name="server"></param>
         void AttachSiteToServer(IWebServer server);
-        #endregion
 
-        #region AddSiteRoot, RemoveSiteRoot, IsSiteRootActive, GetSiteRootFolders
         /// <summary>
         /// Adds a folder from which files can be served by the site.
+        /// OBSOLETE - use <see cref="IFileSystemServerConfiguration.AddSiteRoot"/> instead.
         /// </summary>
         /// <param name="siteRoot"></param>
         void AddSiteRoot(SiteRoot siteRoot);
 
         /// <summary>
         /// Removes a site root that had been previously added to the site via <see cref="AddSiteRoot"/>.
+        /// OBSOLETE - use <see cref="IFileSystemServerConfiguration.RemoveSiteRoot"/> instead.
         /// </summary>
         /// <param name="siteRoot"></param>
         void RemoveSiteRoot(SiteRoot siteRoot);
 
         /// <summary>
         /// Returns true if the site root is currently being used to serve files.
+        /// OBSOLETE - use <see cref="IFileSystemServerConfiguration.IsSiteRootActive"/> instead.
         /// </summary>
         /// <param name="siteRoot"></param>
         /// <param name="folderMustMatch"></param>
@@ -86,28 +79,28 @@ namespace VirtualRadar.Interface.WebSite
 
         /// <summary>
         /// Returns a collection of all of the folders from which content will be served.
+        /// OBSOLETE - use <see cref="IFileSystemServerConfiguration.GetSiteRootFolders"/> instead.
         /// </summary>
         /// <returns></returns>
         List<string> GetSiteRootFolders();
-        #endregion
 
-        #region AddHtmlContentInjector, RemoveHtmlContentInjector
         /// <summary>
         /// Adds an object that can cause content to be injected into HTML files served by the site.
+        /// OBSOLETE - use <see cref="IHtmlManipulatorConfiguration.AddTextResponseManipulator"/> instead.
         /// </summary>
         /// <param name="contentInjector"></param>
         void AddHtmlContentInjector(HtmlContentInjector contentInjector);
 
         /// <summary>
         /// Removes an HtmlContentInjector previously added by <see cref="AddHtmlContentInjector"/>.
+        /// OBSOLETE - use <see cref="IHtmlManipulatorConfiguration.RemoveTextResponseManipulator"/> instead.
         /// </summary>
         /// <param name="contentInjector"></param>
         void RemoveHtmlContentInjector(HtmlContentInjector contentInjector);
-        #endregion
 
-        #region RequestContent, RequestSimpleContent
         /// <summary>
         /// Processes the request for content as if it had been a request received event raised by a web server.
+        /// OBSOLETE - use <see cref="ILoopbackHost.SendSimpleRequest"/> instead.
         /// </summary>
         /// <param name="args"></param>
         /// <remarks>
@@ -118,10 +111,10 @@ namespace VirtualRadar.Interface.WebSite
 
         /// <summary>
         /// Processes the request for content indicated by the path from root and file passed across.
+        /// OBSOLETE - use <see cref="ILoopbackHost.SendSimpleRequest"/> instead.
         /// </summary>
         /// <param name="pathAndFile">The path and file portion of a URL.</param>
         /// <returns>An object describing the result of the request.</returns>
         SimpleContent RequestSimpleContent(string pathAndFile);
-        #endregion
     }
 }

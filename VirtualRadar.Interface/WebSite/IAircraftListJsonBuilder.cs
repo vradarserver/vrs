@@ -22,17 +22,6 @@ namespace VirtualRadar.Interface.WebSite
     public interface IAircraftListJsonBuilder
     {
         /// <summary>
-        /// Gets the provider that abstracts away some aspects of the environment for the object.
-        /// </summary>
-        IWebSiteProvider Provider { get; }
-
-        /// <summary>
-        /// Initialises the object.
-        /// </summary>
-        /// <param name="provider"></param>
-        void Initialise(IWebSiteProvider provider);
-
-        /// <summary>
         /// Returns a fully-formed <see cref="AircraftListJson"/> from the arguments passed across.
         /// </summary>
         /// <param name="args"></param>

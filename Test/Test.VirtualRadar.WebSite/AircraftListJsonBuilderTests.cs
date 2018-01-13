@@ -38,12 +38,13 @@ namespace Test.VirtualRadar.WebSite
         private IAircraftListJsonBuilder _Builder;
         private AircraftListJsonBuilderArgs _Args;
         private AircraftListJsonBuilderFilter _Filter;
-        private Mock<IWebSiteProvider> _Provider;
 
         private IClassFactory _OriginalFactory;
         private Mock<ISharedConfiguration> _SharedConfiguration;
         private Configuration _Configuration;
 
+        private MockFileSystemProvider _FileSystemProvider;
+        private ClockMock _Clock;
         private List<Mock<IFeed>> _Feeds;
         private List<Mock<IBaseStationAircraftList>> _BaseStationAircraftLists;
         private List<List<IAircraft>> _AircraftLists;
@@ -55,6 +56,12 @@ namespace Test.VirtualRadar.WebSite
         public void TestInitialise()
         {
             _OriginalFactory = Factory.TakeSnapshot();
+
+            _FileSystemProvider = new MockFileSystemProvider();
+            Factory.Singleton.RegisterInstance<IFileSystemProvider>(_FileSystemProvider);
+
+            _Clock = new ClockMock();
+            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
 
             _SharedConfiguration = TestUtilities.CreateMockSingleton<ISharedConfiguration>();
             _Configuration = new Configuration();
@@ -75,17 +82,6 @@ namespace Test.VirtualRadar.WebSite
             _FlightSimulatorAircraft = new List<IAircraft>();
             long of1, of2;
             _FlightSimulatorAircraftList.Setup(m => m.TakeSnapshot(out of1, out of2)).Returns(_FlightSimulatorAircraft);
-
-            _Provider = TestUtilities.CreateMockInstance<IWebSiteProvider>();
-            _Provider.Setup(m => m.UtcNow).Returns(DateTime.UtcNow);
-            _Provider.Setup(m => m.DirectoryExists(It.IsAny<string>())).Returns((string folder) => {
-                switch(folder.ToUpper()) {
-                    case null:          throw new ArgumentNullException();
-                    case "NOTEXISTS":   return false;
-                    default:            return true;
-                }
-            });
-            _Builder.Initialise(_Provider.Object);
         }
 
         [TestCleanup]
@@ -120,32 +116,6 @@ namespace Test.VirtualRadar.WebSite
         }
         #endregion
 
-        #region Properties
-        [TestMethod]
-        public void AircraftListJsonBuilder_Provider_Is_Null_After_Construction()
-        {
-            _Builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
-            Assert.IsNull(_Builder.Provider);
-        }
-        #endregion
-
-        #region Initialise
-        [TestMethod]
-        public void AircraftListJsonBuilder_Initialise_Sets_Provider_Property()
-        {
-            // Initialise has already been called in TestInitialise
-            Assert.IsNotNull(_Builder.Provider);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void AircraftListJsonBuilder_Initialise_Throws_If_Provider_Is_Null()
-        {
-            _Builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
-            _Builder.Initialise(null);
-        }
-        #endregion
-
         #region Simple aircraft list
         [TestMethod]
         public void AircraftListJsonBuilder_Returns_Empty_Json_When_BaseStationAircraftList_Is_Empty()
@@ -160,7 +130,6 @@ namespace Test.VirtualRadar.WebSite
         {
             _ReceiverManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
             _Builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
-            _Builder.Initialise(_Provider.Object);
 
             var json = _Builder.Build(_Args);
 
@@ -174,7 +143,6 @@ namespace Test.VirtualRadar.WebSite
         {
             _ReceiverManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
             _Builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
-            _Builder.Initialise(_Provider.Object);
 
             _Args.SourceFeedId = 9;
             var json = _Builder.Build(_Args);
@@ -321,13 +289,15 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void AircraftListJsonBuilder_Sets_ShowFlags_From_Configuration_Options()
         {
+            _FileSystemProvider.AddFolder(@"c:\flags");
+
             _Configuration.BaseStationSettings.OperatorFlagsFolder = null;
             Assert.AreEqual(false, _Builder.Build(_Args).ShowFlags);
 
-            _Configuration.BaseStationSettings.OperatorFlagsFolder = "EXISTS";
+            _Configuration.BaseStationSettings.OperatorFlagsFolder = @"c:\flags";
             Assert.AreEqual(true, _Builder.Build(_Args).ShowFlags);
 
-            _Configuration.BaseStationSettings.OperatorFlagsFolder = "NOTEXISTS";
+            _Configuration.BaseStationSettings.OperatorFlagsFolder = @"c:\no-flags";
             Assert.AreEqual(false, _Builder.Build(_Args).ShowFlags);
         }
 
@@ -349,13 +319,15 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void AircraftListJsonBuilder_Sets_ShowPictures_From_Configuration_Options()
         {
+            _FileSystemProvider.AddFolder(@"c:\pictures");
+
             _Configuration.BaseStationSettings.PicturesFolder = null;
             Assert.AreEqual(false, _Builder.Build(_Args).ShowPictures);
 
-            _Configuration.BaseStationSettings.PicturesFolder = "EXISTS";
+            _Configuration.BaseStationSettings.PicturesFolder = @"c:\pictures";
             Assert.AreEqual(true, _Builder.Build(_Args).ShowPictures);
 
-            _Configuration.BaseStationSettings.PicturesFolder = "NOTEXISTS";
+            _Configuration.BaseStationSettings.PicturesFolder = @"c:\no-pictures";
             Assert.AreEqual(false, _Builder.Build(_Args).ShowPictures);
         }
 
@@ -377,7 +349,8 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void AircraftListJsonBuilder_Can_Hide_Pictures_From_Internet_Clients()
         {
-            _Configuration.BaseStationSettings.PicturesFolder = "EXISTS";
+            _Configuration.BaseStationSettings.PicturesFolder = @"c:\Pictures";
+            _FileSystemProvider.AddFolder(_Configuration.BaseStationSettings.PicturesFolder);
 
             _Configuration.InternetClientSettings.CanShowPictures = true;
 
@@ -397,13 +370,15 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void AircraftListJsonBuilder_Sets_ShowSilhouettes_From_Configuration_Options()
         {
+            _FileSystemProvider.AddFolder(@"c:\silhouettes");
+
             _Configuration.BaseStationSettings.SilhouettesFolder = null;
             Assert.AreEqual(false, _Builder.Build(_Args).ShowSilhouettes);
 
-            _Configuration.BaseStationSettings.SilhouettesFolder = "EXISTS";
+            _Configuration.BaseStationSettings.SilhouettesFolder = @"c:\silhouettes";
             Assert.AreEqual(true, _Builder.Build(_Args).ShowSilhouettes);
 
-            _Configuration.BaseStationSettings.SilhouettesFolder = "NOTEXISTS";
+            _Configuration.BaseStationSettings.SilhouettesFolder = @"c:\no-silhouettes";
             Assert.AreEqual(false, _Builder.Build(_Args).ShowSilhouettes);
         }
 
@@ -1218,7 +1193,7 @@ namespace Test.VirtualRadar.WebSite
             var aircraft = _AircraftLists[0][0];
             Mock<IAircraft> mockAircraft = Mock.Get(aircraft);
             mockAircraft.Setup(a => a.FirstSeen).Returns(new DateTime(2001, 1, 1, 1, 2, 0));
-            _Provider.Setup(p => p.UtcNow).Returns(new DateTime(2001, 1, 1, 1, 3, 17));
+            _Clock.Setup(p => p.UtcNow).Returns(new DateTime(2001, 1, 1, 1, 3, 17));
 
             var aircraftJson = _Builder.Build(_Args).Aircraft[0];
 
@@ -1481,7 +1456,7 @@ namespace Test.VirtualRadar.WebSite
                 TestCleanup();
                 TestInitialise();
 
-                _Provider.SetupGet(r => r.UtcNow).Returns(now);
+                _Clock.SetupGet(r => r.UtcNow).Returns(now);
                 _Configuration.BaseStationSettings.DisplayTimeoutSeconds = 30;
 
                 AddBlankAircraft(1);
@@ -1496,7 +1471,7 @@ namespace Test.VirtualRadar.WebSite
                     case "on":      break;
                     case "after":   now = now.AddMilliseconds(1); break;
                 }
-                _Provider.SetupGet(r => r.UtcNow).Returns(now);
+                _Clock.SetupGet(r => r.UtcNow).Returns(now);
 
                 var json = _Builder.Build(_Args);
                 var jsonAircraft = json.Aircraft[0];
@@ -1515,7 +1490,7 @@ namespace Test.VirtualRadar.WebSite
             var now = DateTime.UtcNow;
             var boostSeconds = 60;
 
-            _Provider.SetupGet(r => r.UtcNow).Returns(now);
+            _Clock.SetupGet(r => r.UtcNow).Returns(now);
             _Configuration.BaseStationSettings.DisplayTimeoutSeconds = 30;
             AddBlankAircraft(1);
             var aircraft = Mock.Get(_AircraftLists[0][0]);
@@ -1525,7 +1500,7 @@ namespace Test.VirtualRadar.WebSite
             aircraft.SetupGet(r => r.LastSatcomUpdate).Returns(DateTime.MinValue.AddMilliseconds(1));
 
             now = now.AddSeconds(_Configuration.BaseStationSettings.DisplayTimeoutSeconds + boostSeconds + 1);
-            _Provider.SetupGet(r => r.UtcNow).Returns(now);
+            _Clock.SetupGet(r => r.UtcNow).Returns(now);
 
             var json = _Builder.Build(_Args);
             var jsonAircraft = json.Aircraft[0];

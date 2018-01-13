@@ -90,8 +90,6 @@ namespace VirtualRadar.WebSite.ApiControllers
 
             //TODO: Stop creating builders, share one between all instances of the controller
             var builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
-            builder.Initialise(new WebSiteProvider());
-
             var result = builder.Build(builderArgs);
 
             var sharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
