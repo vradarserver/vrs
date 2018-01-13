@@ -21,7 +21,7 @@ using VirtualRadar.Interface.WebSite;
 namespace VirtualRadar.WebSite
 {
     /// <summary>
-    /// Manages HTML content injection for <see cref="WebSite"/>.
+    /// Manages HTML content injection for <see cref="IWebSite"/>.
     /// </summary>
     /// <remarks><para>
     /// Before v3 of the server the <see cref="IWebSite"/> interface had features to help plugins

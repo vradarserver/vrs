@@ -26,6 +26,9 @@ using VirtualRadar.Interface.WebSite;
 using System.Windows.Forms;
 using System.Collections.Specialized;
 using VirtualRadar.Interface.Owin;
+using System.Web;
+using Microsoft.Owin;
+using System.Threading;
 
 namespace VirtualRadar.WebSite
 {
@@ -190,6 +193,11 @@ namespace VirtualRadar.WebSite
         private HtmlManipulator _HtmlManipulator = new HtmlManipulator();
 
         /// <summary>
+        /// The object that performs fetches of content without going through the web server.
+        /// </summary>
+        private ILoopbackHost _LoopbackHost;
+
+        /// <summary>
         /// A reference to the singleton user manager - saves us having to keep reloading it.
         /// </summary>
         private IUserManager _UserManager;
@@ -300,6 +308,9 @@ namespace VirtualRadar.WebSite
 
                 var javascriptManipulatorConfig = Factory.Singleton.ResolveSingleton<IJavascriptManipulatorConfiguration>();
                 javascriptManipulatorConfig.AddTextResponseManipulator(_WebSiteStringsManipulator);
+
+                _LoopbackHost = Factory.Singleton.Resolve<ILoopbackHost>();
+                _LoopbackHost.ConfigureStandardPipeline();
 
                 LoadConfiguration();
 
@@ -416,6 +427,40 @@ namespace VirtualRadar.WebSite
         public void RequestContent(RequestReceivedEventArgs args)
         {
             if(args == null) throw new ArgumentNullException("args");
+
+            var owinEnvironment = ConvertEventArgsIntoOwinEnvironment(args);
+            var simpleContent = _LoopbackHost?.SendSimpleRequest(args.Request.RawUrl, owinEnvironment);
+
+            args.Response.StatusCode = simpleContent.HttpStatusCode;
+            args.Response.ContentLength = simpleContent.Content.Length;
+            args.Response.OutputStream.Write(simpleContent.Content, 0, simpleContent.Content.Length);
+        }
+
+        private IDictionary<string, object> ConvertEventArgsIntoOwinEnvironment(RequestReceivedEventArgs args)
+        {
+            var result = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            var context = PipelineContext.GetOrCreate(result);
+            result["owin.CallCancelled"] = new CancellationToken();
+            result["owin.Version"] = "1.0.0";
+
+            var request = context.Request;
+            result["owin.RequestHeaders"] = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
+            request.Body = Stream.Null;
+            request.Method = "GET";
+            request.Scheme = "http";
+            request.Headers["Host"] = args.Request.Url.Authority;
+            request.Path = new Microsoft.Owin.PathString(args.PathAndFile);
+            request.PathBase = new Microsoft.Owin.PathString(args.Root);
+            request.Protocol = "HTTP/1.1";
+            request.QueryString = QueryString.FromUriComponent(args.Request.Url);
+            request.RemoteIpAddress = args.Request.RemoteEndPoint.Address.ToString();
+            request.RemotePort = args.Request.RemoteEndPoint.Port;
+
+            var response = context.Response;
+            result["owin.ResponseHeaders"] = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
+            response.Body = new MemoryStream();
+
+            return result;
         }
 
         /// <summary>

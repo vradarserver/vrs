@@ -101,6 +101,10 @@ namespace Test.VirtualRadar.WebSite
         private Mock<IUser> _User2;
         private string _PasswordForUser;
         private MockOwinPipelineConfiguration _PipelineConfiguration;
+        private Mock<ILoopbackHost> _LoopbackHost;
+        private string _LoopbackPathAndFile;
+        private IDictionary<string, object> _LoopbackEnvironment;
+        private SimpleContent _LoopbackResponse;
 
         // The named colours (Black, Green etc.) don't compare well to the colors returned by Bitmap.GetPixel - e.g.
         // Color.Black == new Color(0, 0, 0) is false even though the ARGB values are equal. Further Color.Green isn't
@@ -272,6 +276,19 @@ namespace Test.VirtualRadar.WebSite
 
             _PipelineConfiguration = new MockOwinPipelineConfiguration();
             Factory.Singleton.RegisterInstance<IPipelineConfiguration>(_PipelineConfiguration);
+
+            _LoopbackHost = TestUtilities.CreateMockImplementation<ILoopbackHost>();
+            _LoopbackEnvironment = null;
+            _LoopbackPathAndFile = null;
+            _LoopbackResponse = new SimpleContent() {
+                Content = new byte[0],
+                HttpStatusCode = HttpStatusCode.OK,
+            };
+            _LoopbackHost.Setup(r => r.SendSimpleRequest(It.IsAny<string>(), It.IsAny<IDictionary<string, object>>())).Returns((string p, IDictionary<string, object> e) => {
+                _LoopbackPathAndFile = p;
+                _LoopbackEnvironment = e;
+                return _LoopbackResponse;
+            });
         }
 
         [TestCleanup]
@@ -383,6 +400,25 @@ namespace Test.VirtualRadar.WebSite
         {
             var actualContent = File.ReadAllBytes(Path.Combine(TestContext.TestDeploymentDir, fileName));
             Assert.IsTrue(expectedContent.SequenceEqual(actualContent), message);
+        }
+
+        private void ConfigureRequestObject(string root, string urlFromRoot, string queryString = null, string protocol = "http", string dns = "mysite.co.uk", string remoteEndPoint = "1.2.3.4", int remotePort = 54321, int localPort = 80)
+        {
+            queryString = String.IsNullOrEmpty(queryString) ? "" : $"?{queryString}";
+            _Request.Setup(r => r.RawUrl).Returns($"{root}{urlFromRoot}{queryString}");
+            _Request.Setup(r => r.Url).Returns(new Uri($"{protocol}://{dns}:{localPort}{_Request.Object.RawUrl}"));
+            _Request.Setup(r => r.RemoteEndPoint).Returns(new IPEndPoint(IPAddress.Parse(remoteEndPoint), remotePort));
+        }
+
+        private Stream ConfigureResponseObject(Stream stream = null)
+        {
+            if(stream == null) {
+                stream = new MemoryStream();
+            }
+
+            _Response.Setup(r => r.OutputStream).Returns(stream);
+
+            return stream;
         }
         #endregion
 
@@ -903,49 +939,6 @@ namespace Test.VirtualRadar.WebSite
         }
         #endregion
 
-        #region AddSiteRoot
-        [TestMethod]
-        public void WebSite_AddSiteRoot_Can_Serve_Unprotected_Content()
-        {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
-            var checksum = checksums.First(r => Path.GetExtension(r.FileName).ToLower() == ".html" && r.FileName.Count(i => i == '\\') == 1);
-            var originalFileName = checksum.GetFullPathFromRoot(_WebRoot);
-            var newFileName = Path.Combine(TestContext.TestDeploymentDir, Path.GetFileName(originalFileName));
-            File.Copy(originalFileName, newFileName);
-            try {
-                File.AppendAllText(newFileName, "I-ADDED-THIS-TEXT!!");
-
-                for(var i = 0;i < 2;++i) {
-                    var shouldServeCustomContent = i == 0;
-                    var siteRoot = new SiteRoot() { Folder = TestContext.TestDeploymentDir, Priority = shouldServeCustomContent ? -1 : 1 };
-                    _WebSite.AddSiteRoot(siteRoot);
-
-                    SendRequest(checksum.FileName.Replace('\\', '/'));
-
-                    var text = Encoding.UTF8.GetString(_OutputStream.ToArray());
-                    var isCustomContent = text.Contains("I-ADDED-THIS-TEXT!!");
-                    if(shouldServeCustomContent) Assert.IsTrue(isCustomContent);
-                    else                         Assert.IsFalse(isCustomContent);
-
-                    _OutputStream.SetLength(0);
-                    _WebSite.RemoveSiteRoot(siteRoot);
-                }
-            } finally {
-                File.Delete(newFileName);
-            }
-        }
-        #endregion
-
-        #region GetSiteRootFolders
-        [TestMethod]
-        public void WebSite_GetSiteRootFolders_Includes_Default_Folder()
-        {
-            var folders = _WebSite.GetSiteRootFolders();
-            Assert.AreEqual(1, folders.Count);
-            Assert.AreEqual(1, folders.Count(r => r.ToLower() == (_WebRoot + '\\').ToLower()));
-        }
-        #endregion
-
         #region RequestContent
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -956,30 +949,179 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
-        public void WebSite_RequestContent_Fetches_The_Same_Content_As_A_WebServer_Request()
+        public void WebSite_RequestContent_Calls_LoopbackHost()
         {
+            var root = "/root";
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
-            if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
-            foreach(var checksum in checksums) {
-                var args = RequestReceivedEventArgsHelper.Create(_Request, _Response, checksum.FileName.Replace("\\", "/"), false);
-                var mimeType = MimeType.GetForExtension(Path.GetExtension(checksum.FileName));
-                var classification = MimeType.GetContentClassification(mimeType);
+            ConfigureRequestObject(root, "/index.html");
+            using(ConfigureResponseObject()) {
+                _WebSite.RequestContent(new RequestReceivedEventArgs(_Request.Object, _Response.Object, root));
+                _LoopbackHost.Verify(r => r.SendSimpleRequest("/root/index.html", It.IsAny<IDictionary<string, object>>()), Times.Once());
+            }
+        }
 
-                // We need to skip the strings.*.js files - the string injection code doesn't work when the running
-                // executable is the Visual Studio test runner
-                if(checksum.FileName.StartsWith("\\script\\i18n\\strings.")) {
-                    continue;
-                }
+        [TestMethod]
+        public void WebSite_RequestContent_Uses_Case_Insensitive_Dictionary()
+        {
+            var root = "/root";
+            _WebSite.AttachSiteToServer(_WebServer.Object);
 
-                _WebSite.RequestContent(args);
+            ConfigureRequestObject(root, "/index.html");
+            using(ConfigureResponseObject()) {
+                _WebSite.RequestContent(new RequestReceivedEventArgs(_Request.Object, _Response.Object, root));
 
-                Assert.AreEqual(true, args.Handled, checksum.FileName);
-                Assert.AreEqual(checksum.FileSize, _Response.Object.ContentLength, checksum.FileName);
-                Assert.AreEqual(HttpStatusCode.OK, _Response.Object.StatusCode, checksum.FileName);
-                Assert.AreEqual(mimeType, _Response.Object.MimeType, checksum.FileName);
-                Assert.AreEqual(classification, args.Classification, checksum.FileName);
+                _LoopbackEnvironment.Add("my-test", "123");
+                Assert.AreEqual(_LoopbackEnvironment["MY-TEST"], "123");
+            }
+        }
+
+        [TestMethod]
+        public void WebSite_RequestContent_Fills_All_Required_OWIN_Entries()
+        {
+            var root = "/root";
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+
+            ConfigureRequestObject(root, "/index.html", queryString: "abc=123%20456&xyz");
+            using(ConfigureResponseObject()) {
+                _WebSite.RequestContent(new RequestReceivedEventArgs(_Request.Object, _Response.Object, root));
+
+                Assert.AreSame(Stream.Null, _LoopbackEnvironment["owin.RequestBody"]);
+                Assert.IsNotNull(_LoopbackEnvironment["owin.RequestHeaders"] as IDictionary<string, string[]>);
+                Assert.AreEqual("GET", _LoopbackEnvironment["owin.RequestMethod"] as string, ignoreCase: true);
+                Assert.AreEqual("/index.html", _LoopbackEnvironment["owin.RequestPath"]);
+                Assert.AreEqual(root, _LoopbackEnvironment["owin.RequestPathBase"]);
+                Assert.AreEqual("HTTP/1.1", _LoopbackEnvironment["owin.RequestProtocol"]);
+                Assert.AreEqual("abc=123%20456&xyz", _LoopbackEnvironment["owin.RequestQueryString"]);
+                Assert.AreEqual("http", _LoopbackEnvironment["owin.RequestScheme"]);
+
+                Assert.IsNotNull(_LoopbackEnvironment["owin.ResponseBody"] as Stream);
+                Assert.AreNotSame(Stream.Null, _LoopbackEnvironment["owin.ResponseBody"]);
+                Assert.IsNotNull(_LoopbackEnvironment["owin.ResponseHeaders"]  as IDictionary<string, string[]>);
+
+                Assert.IsFalse(((CancellationToken)_LoopbackEnvironment["owin.CallCancelled"]).IsCancellationRequested);
+                Assert.AreEqual("1.0.0", _LoopbackEnvironment["owin.Version"]);
+            }
+        }
+
+        [TestMethod]
+        public void WebSite_RequestContent_Fills_Host_Request_Header()
+        {
+            var root = "/root";
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+
+            ConfigureRequestObject(root, "/index.html", dns: "example.com", localPort: 1234);
+            using(ConfigureResponseObject()) {
+                _WebSite.RequestContent(new RequestReceivedEventArgs(_Request.Object, _Response.Object, root));
+                var context = PipelineContext.GetOrCreate(_LoopbackEnvironment);
+                Assert.AreEqual("example.com:1234", context.Request.Host.Value);
+            }
+        }
+
+        [TestMethod]
+        public void WebStite_RequestContent_Handles_No_QueryString_Case()
+        {
+            var root = "/root";
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+
+            ConfigureRequestObject(root, "/index.html");
+            using(ConfigureResponseObject()) {
+                _WebSite.RequestContent(new RequestReceivedEventArgs(_Request.Object, _Response.Object, root));
+                Assert.AreEqual("", _LoopbackEnvironment["owin.RequestQueryString"]);
+            }
+        }
+
+        [TestMethod]
+        public void WebSite_RequestContent_Request_Headers_Are_Case_Insensitive()
+        {
+            var root = "/root";
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+
+            ConfigureRequestObject(root, "/index.html");
+            using(ConfigureResponseObject()) {
+                _WebSite.RequestContent(new RequestReceivedEventArgs(_Request.Object, _Response.Object, root));
+                var headers = (IDictionary<string, string[]>)_LoopbackEnvironment["owin.RequestHeaders"];
+                headers.Add("my-test", new string[] { "123" });
+                Assert.AreEqual("123", headers["MY-TEST"][0]);
+            }
+        }
+
+        [TestMethod]
+        public void WebSite_RequestContent_Response_Headers_Are_Case_Insensitive()
+        {
+            var root = "/root";
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+
+            ConfigureRequestObject(root, "/index.html");
+            using(ConfigureResponseObject()) {
+                _WebSite.RequestContent(new RequestReceivedEventArgs(_Request.Object, _Response.Object, root));
+                var headers = (IDictionary<string, string[]>)_LoopbackEnvironment["owin.ResponseHeaders"];
+                headers.Add("my-test", new string[] { "123" });
+                Assert.AreEqual("123", headers["MY-TEST"][0]);
+            }
+        }
+
+        [TestMethod]
+        public void WebSite_RequestContent_Fills_In_Remote_Endpoint()
+        {
+            var root = "/root";
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+
+            ConfigureRequestObject(root, "/index.html", remoteEndPoint: "1.2.3.4", remotePort: 54321);
+            using(ConfigureResponseObject()) {
+                _WebSite.RequestContent(new RequestReceivedEventArgs(_Request.Object, _Response.Object, root));
+                Assert.AreEqual("1.2.3.4", _LoopbackEnvironment["server.RemoteIpAddress"]);
+                Assert.AreEqual("54321", _LoopbackEnvironment["server.RemotePort"]);
+            }
+        }
+
+        [TestMethod]
+        public void WebSite_RequestContent_Returns_SimpleContent_HttpStatus()
+        {
+            var root = "/root";
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+
+            ConfigureRequestObject(root, "/index.html");
+            using(ConfigureResponseObject()) {
+                _LoopbackResponse.HttpStatusCode = HttpStatusCode.Conflict;
+                _WebSite.RequestContent(new RequestReceivedEventArgs(_Request.Object, _Response.Object, root));
+
+                Assert.AreEqual(HttpStatusCode.Conflict, _Response.Object.StatusCode);
+            }
+        }
+
+        [TestMethod]
+        public void WebSite_RequestContent_Fills_Response_Stream_With_SimpleContent_Content()
+        {
+            var root = "/root";
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+
+            ConfigureRequestObject(root, "/index.html");
+            using(var stream = ConfigureResponseObject()) {
+                _LoopbackResponse.Content = new byte[] { 1, 2, 3, 4 };
+                _WebSite.RequestContent(new RequestReceivedEventArgs(_Request.Object, _Response.Object, root));
+
+                stream.Position = 0;
+                Assert.AreEqual(4, stream.Length);
+                var streamContent = new byte[4];
+                stream.Read(streamContent, 0, streamContent.Length);
+
+                Assert.IsTrue(new byte[] { 1, 2, 3, 4 }.SequenceEqual(streamContent));
+            }
+        }
+
+        [TestMethod]
+        public void WebSite_RequestContent_Sets_ContentLength()
+        {
+            var root = "/root";
+            _WebSite.AttachSiteToServer(_WebServer.Object);
+
+            ConfigureRequestObject(root, "/index.html");
+            using(ConfigureResponseObject()) {
+                _LoopbackResponse.Content = new byte[] { 1, 2, 3, 4 };
+                _WebSite.RequestContent(new RequestReceivedEventArgs(_Request.Object, _Response.Object, root));
+
+                Assert.AreEqual(4, _Response.Object.ContentLength);
             }
         }
         #endregion
@@ -991,63 +1133,6 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
             _WebSite.RequestSimpleContent(null);
-        }
-
-        [TestMethod]
-        public void WebSite_RequestSimpleContent_Fetches_The_Same_Content_As_A_WebServer_Request()
-        {
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
-            if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
-            foreach(var checksum in checksums) {
-                var pathAndFile = checksum.FileName.Replace("\\", "/");
-                var filePath = checksum.GetFullPathFromRoot(_WebRoot);
-
-                // We need to skip the strings.*.js files - the string injection code doesn't work when the running
-                // executable is the Visual Studio test runner
-                if(checksum.FileName.StartsWith("\\script\\i18n\\strings.")) {
-                    continue;
-                }
-
-                var simpleContent = _WebSite.RequestSimpleContent(pathAndFile);
-
-                Assert.AreEqual(HttpStatusCode.OK, simpleContent.HttpStatusCode);
-                Assert.AreEqual(checksum.FileSize, simpleContent.Content.LongLength);
-                Assert.IsTrue(File.ReadAllBytes(filePath).SequenceEqual(simpleContent.Content));
-            }
-        }
-
-        [TestMethod]
-        public void WebSite_RequestSimpleContent_Returns_Correct_Response_For_Missing_Content()
-        {
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            var simpleContent = _WebSite.RequestSimpleContent("/FILE-THAT-DOES-NOT-EXIST.HTML");
-
-            Assert.AreEqual(HttpStatusCode.NotFound, simpleContent.HttpStatusCode);
-            Assert.AreEqual(0, simpleContent.Content.Length);
-        }
-
-        [TestMethod]
-        public void WebSite_RequestSimpleContent_Returns_Correct_Response_For_Bad_Checksum_Files()
-        {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
-            var checksum = checksums.First(r => r.FileName.EndsWith(".js"));
-            var checksumFile = checksum.GetFullPathFromRoot(_WebRoot);
-            var backupCopyFileName = String.Format("{0}.backup", checksumFile);
-            File.Copy(checksumFile, backupCopyFileName);
-            try {
-                File.AppendAllText(checksumFile, "\r\n");
-
-                _WebSite.AttachSiteToServer(_WebServer.Object);
-                var simpleContent = _WebSite.RequestSimpleContent(checksum.FileName.Replace("\\", "/"));
-
-                Assert.AreEqual(HttpStatusCode.BadRequest, simpleContent.HttpStatusCode);
-                Assert.AreEqual(0, simpleContent.Content.Length);
-            } finally {
-                File.Copy(backupCopyFileName, checksumFile, overwrite: true);
-                File.Delete(backupCopyFileName);
-            }
         }
         #endregion
 
