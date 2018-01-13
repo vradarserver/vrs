@@ -160,7 +160,11 @@ namespace VirtualRadar
             SQLiteWrapper.Implementations.Register(Factory.Singleton);
             VirtualRadar.Library.Implementations.Register(Factory.Singleton);
             VirtualRadar.Database.Implementations.Register(Factory.Singleton);
-            VirtualRadar.WebServer.Implementations.Register(Factory.Singleton);
+
+            VirtualRadar.WebServer.Implementations.Register(Factory.Singleton);                 // The original home brew HttpListener web server...
+            VirtualRadar.WebServer.HttpListener.Implementations.Register(Factory.Singleton);    // ... and the new OWIN HttpListener web server + shim
+            VirtualRadar.Owin.Implementations.Register(Factory.Singleton);
+
             VirtualRadar.WebSite.Implementations.Register(Factory.Singleton);
             VirtualRadar.Headless.Implementations.Register(Factory.Singleton);
 
