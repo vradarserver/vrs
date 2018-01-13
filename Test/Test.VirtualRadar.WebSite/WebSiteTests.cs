@@ -10,25 +10,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.Serialization.Json;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Web;
-using HtmlAgilityPack;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Test.Framework;
 using VirtualRadar.Interface;
-using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Database;
-using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StandingData;
@@ -40,227 +32,63 @@ namespace Test.VirtualRadar.WebSite
     [TestClass]
     public partial class WebSiteTests
     {
-        #region TestContext, Fields, TestInitialise etc.
         public TestContext TestContext { get; set; }
 
         private IClassFactory _OriginalContainer;
 
-        private bool _AutoAttached = false;
+        // Mocks etc. actually used by the tests
         private IWebSite _WebSite;
         private Mock<IWebSiteProvider> _Provider;
         private Mock<IWebServer> _WebServer;
         private Mock<IRequest> _Request;
         private Mock<IResponse> _Response;
-        private MemoryStream _OutputStream;
         private Mock<IInstallerSettingsStorage> _InstallerSettingsStorage;
         private InstallerSettings _InstallerSettings;
-        private Mock<IConfigurationStorage> _ConfigurationStorage;
         private Mock<ISharedConfiguration> _SharedConfiguration;
         private Configuration _Configuration;
-        private Mock<IFlightSimulatorAircraftList> _FlightSimulatorAircraftList;
-        private List<IAircraft> _FlightSimulatorAircraft;
-        private AircraftListAddress _AircraftListAddress;
-        private AircraftListFilter _AircraftListFilter;
-        private ReportRowsAddress _ReportRowsAddress;
         private Mock<IBaseStationDatabase> _BaseStationDatabase;
         private Mock<IAutoConfigBaseStationDatabase> _AutoConfigBaseStationDatabase;
-        private Mock<IImageFileManager> _ImageFileManager;
-        private List<BaseStationFlight> _DatabaseFlights;
-        private BaseStationAircraft _DatabaseAircraft;
-        private List<BaseStationFlight> _DatabaseFlightsForAircraft;
-        private Mock<IAircraftPictureManager> _AircraftPictureManager;
-        private bool _LoadPictureTestParams;
-        private string _LoadPictureExpectedIcao;
-        private string _LoadPictureExpectedReg;
         private Mock<IStandingDataManager> _StandingDataManager;
-        private Mock<ILog> _Log;
-        private Mock<IApplicationInformation> _ApplicationInformation;
-        private Mock<IAutoConfigPictureFolderCache> _AutoConfigPictureFolderCache;
-        private Mock<IDirectoryCache> _DirectoryCache;
-        private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
-        private Mock<IMinifier> _Minifier;
-        private string _ChecksumsFileName;
-        private string _WebRoot;
-        private List<Mock<IFeed>> _ReceiverPathways;
-        private List<Mock<IBaseStationAircraftList>> _BaseStationAircraftLists;
-        private List<List<IAircraft>> _AircraftLists;
-        private Mock<IFeedManager> _ReceiverManager;
-        private ClockMock _Clock;
-        private Image _Image;
-        private Mock<IAirportDataDotCom> _AirportDataDotCom;
-        private WebRequestResult<AirportDataThumbnailsJson> _AirportDataThumbnails;
-        private string _AirportDataThumbnailsIcao;
-        private string _AirportDataThumbnailsRegistration;
-        private int _AirportDataThumbnailsCountThumbnails;
-        private Mock<IPolarPlotter> _PolarPlotter;
-        private List<PolarPlotSlice> _PolarPlotSlices;
-        private Mock<ICallsignParser> _CallsignParser;
-        private Dictionary<string, List<string>> _RouteCallsigns;
-        private Mock<IUserManager> _UserManager;
-        private Mock<IUser> _User1;
-        private Mock<IUser> _User2;
-        private string _PasswordForUser;
         private MockOwinPipelineConfiguration _PipelineConfiguration;
         private Mock<ILoopbackHost> _LoopbackHost;
         private string _LoopbackPathAndFile;
         private IDictionary<string, object> _LoopbackEnvironment;
         private SimpleContent _LoopbackResponse;
 
-        // The named colours (Black, Green etc.) don't compare well to the colors returned by Bitmap.GetPixel - e.g.
-        // Color.Black == new Color(0, 0, 0) is false even though the ARGB values are equal. Further Color.Green isn't
-        // new Color(0, 255, 0). So we declare our own versions of the colours here to make life easier.
-        private Color _Black = Color.FromArgb(0, 0, 0);
-        private Color _White = Color.FromArgb(255, 255, 255);
-        private Color _Red = Color.FromArgb(255, 0, 0);
-        private Color _Green = Color.FromArgb(0, 255, 0);
-        private Color _Blue = Color.FromArgb(0, 0, 255);
-        private Color _Transparent = Color.FromArgb(0, 0, 0, 0);
+        // Other mocks required to get IWebSite implementation running
+        private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
+        private Mock<IUserManager> _UserManager;
 
         [TestInitialize]
         public void TestInitialise()
         {
             _OriginalContainer = Factory.TakeSnapshot();
 
-            _Clock = new ClockMock();
-
             _WebServer = new Mock<IWebServer>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-
-            _Minifier = TestUtilities.CreateMockImplementation<IMinifier>();
-            _Minifier.Setup(r => r.MinifyJavaScript(It.IsAny<string>())).Returns((string js) => js);
-            _Minifier.Setup(r => r.MinifyCss(It.IsAny<string>())).Returns((string css) => css);
-
             _Request = new Mock<IRequest>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Response = new Mock<IResponse>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-
-            _OutputStream = new MemoryStream();
-            _Response.Setup(m => m.OutputStream).Returns(_OutputStream);
 
             _InstallerSettingsStorage = TestUtilities.CreateMockImplementation<IInstallerSettingsStorage>();
             _InstallerSettings = new InstallerSettings();
             _InstallerSettingsStorage.Setup(m => m.Load()).Returns(_InstallerSettings);
 
-            _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
             _SharedConfiguration = TestUtilities.CreateMockSingleton<ISharedConfiguration>();
             _Configuration = new Configuration();
             _Configuration.GoogleMapSettings.WebSiteReceiverId = 1;
             _Configuration.GoogleMapSettings.ClosestAircraftReceiverId = 1;
-            _ConfigurationStorage.Setup(m => m.Load()).Returns(_Configuration);
             _SharedConfiguration.Setup(r => r.Get()).Returns(_Configuration);
 
             _RuntimeEnvironment = TestUtilities.CreateMockSingleton<IRuntimeEnvironment>();
             _RuntimeEnvironment.Setup(r => r.IsMono).Returns(false);
-            _RuntimeEnvironment.Setup(r => r.ExecutablePath).Returns(Path.Combine(TestContext.TestDeploymentDir));
-
-            _ReceiverPathways = new List<Mock<IFeed>>();
-            _BaseStationAircraftLists = new List<Mock<IBaseStationAircraftList>>();
-            _AircraftLists = new List<List<IAircraft>>();
-            var useVisibleFeeds = true;
-            _ReceiverManager = FeedHelper.CreateMockFeedManager(_ReceiverPathways, _BaseStationAircraftLists, _AircraftLists, useVisibleFeeds, 1, 2);
-
-            _PolarPlotter = TestUtilities.CreateMockInstance<IPolarPlotter>();
-            _PolarPlotSlices = new List<PolarPlotSlice>();
-            _PolarPlotter.Setup(r => r.TakeSnapshot()).Returns(() => {
-                return _PolarPlotSlices;
-            });
-
-            _FlightSimulatorAircraftList = new Mock<IFlightSimulatorAircraftList>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-            _FlightSimulatorAircraft = new List<IAircraft>();
-            long of1, of2;
-            _FlightSimulatorAircraftList.Setup(m => m.TakeSnapshot(out of1, out of2)).Returns(_FlightSimulatorAircraft);
-
-            _AircraftListAddress = new AircraftListAddress(_Request);
-            _AircraftListFilter = new AircraftListFilter();
-
-            _ReportRowsAddress = new ReportRowsAddress();
-            _ApplicationInformation = TestUtilities.CreateMockImplementation<IApplicationInformation>();
+            _RuntimeEnvironment.Setup(r => r.ExecutablePath).Returns(TestContext.TestDeploymentDir);
 
             _BaseStationDatabase = new Mock<IBaseStationDatabase>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _AutoConfigBaseStationDatabase = TestUtilities.CreateMockSingleton<IAutoConfigBaseStationDatabase>();
             _AutoConfigBaseStationDatabase.Setup(a => a.Database).Returns(_BaseStationDatabase.Object);
 
-            _DatabaseFlights = new List<BaseStationFlight>();
-            _BaseStationDatabase.Setup(db => db.GetCountOfFlights(It.IsAny<SearchBaseStationCriteria>())).Returns(_DatabaseFlights.Count);
-            _BaseStationDatabase.Setup(db => db.GetFlights(It.IsAny<SearchBaseStationCriteria>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(_DatabaseFlights);
-            _DatabaseFlightsForAircraft = new List<BaseStationFlight>();
-            _BaseStationDatabase.Setup(db => db.GetCountOfFlightsForAircraft(It.IsAny<BaseStationAircraft>(), It.IsAny<SearchBaseStationCriteria>())).Returns(_DatabaseFlightsForAircraft.Count);
-            _BaseStationDatabase.Setup(db => db.GetFlightsForAircraft(It.IsAny<BaseStationAircraft>(), It.IsAny<SearchBaseStationCriteria>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(_DatabaseFlightsForAircraft);
-            _DatabaseAircraft = new BaseStationAircraft();
-
-            _ImageFileManager = TestUtilities.CreateMockImplementation<IImageFileManager>();
-            _ImageFileManager.Setup(i => i.LoadFromFile(It.IsAny<string>())).Returns((string fileName) => {
-                return Bitmap.FromFile(fileName);
-            });
-
-            _AircraftPictureManager = TestUtilities.CreateMockSingleton<IAircraftPictureManager>();
-            _AutoConfigPictureFolderCache = TestUtilities.CreateMockSingleton<IAutoConfigPictureFolderCache>();
-            _DirectoryCache = new Mock<IDirectoryCache>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-            _AutoConfigPictureFolderCache.Setup(a => a.DirectoryCache).Returns(_DirectoryCache.Object);
             _StandingDataManager = TestUtilities.CreateMockSingleton<IStandingDataManager>();
-            _Log = TestUtilities.CreateMockSingleton<ILog>();
-
-            _AirportDataThumbnails = new WebRequestResult<AirportDataThumbnailsJson>();
-            _AirportDataDotCom = TestUtilities.CreateMockImplementation<IAirportDataDotCom>();
-            _AirportDataThumbnailsIcao = null;
-            _AirportDataThumbnailsRegistration = null;
-            _AirportDataThumbnailsCountThumbnails = 0;
-            _AirportDataDotCom.Setup(r => r.GetThumbnails(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>())).Returns((string icao, string reg, int countThumbnails) => {
-                _AirportDataThumbnailsIcao = icao;
-                _AirportDataThumbnailsRegistration = reg;
-                _AirportDataThumbnailsCountThumbnails = countThumbnails;
-                return _AirportDataThumbnails;
-            });
-
-            _ChecksumsFileName = Path.Combine(TestContext.TestDeploymentDir, "Checksums.txt");
-            _WebRoot = Path.Combine(TestContext.TestDeploymentDir, "Web");
-
-            _Image = null;
-            _LoadPictureTestParams = false;
-            _LoadPictureExpectedIcao = _LoadPictureExpectedReg = null;
-            _AircraftPictureManager.Setup(r => r.LoadPicture(_DirectoryCache.Object, It.IsAny<string>(), It.IsAny<string>())).Returns((IDirectoryCache cache, string lpIcao, string lpReg) => {
-                if(_LoadPictureTestParams) {
-                    Assert.AreEqual(_LoadPictureExpectedIcao, lpIcao);
-                    Assert.AreEqual(_LoadPictureExpectedReg, lpReg);
-                }
-                return _Image;
-            });
-
-            _CallsignParser = TestUtilities.CreateMockImplementation<ICallsignParser>();
-            _CallsignParser.Setup(r => r.GetAllRouteCallsigns(It.IsAny<string>(), It.IsAny<string>())).Returns((string callsign, string operatorCode) => {
-                List<string> result;
-                if(callsign == null || !_RouteCallsigns.TryGetValue(callsign, out result)) {
-                    result = new List<string>();
-                    if(!String.IsNullOrEmpty(callsign)) result.Add(callsign);
-                }
-                return result;
-            });
-            _RouteCallsigns = new Dictionary<string,List<string>>();
-
             _UserManager = TestUtilities.CreateMockSingleton<IUserManager>();
-            _User1 = TestUtilities.CreateMockInstance<IUser>();
-            _User1.Object.UniqueId = "1";
-            _User1.Object.Enabled = true;
-            _User1.Object.LoginName = "Deckard";
-            _User2 = TestUtilities.CreateMockInstance<IUser>();
-            _User2.Object.UniqueId = "2";
-            _User2.Object.Enabled = true;
-            _User2.Object.LoginName = "Leon";
-
-            _PasswordForUser = null;
-            _UserManager.Setup(r => r.GetUsersByUniqueId(It.IsAny<IEnumerable<string>>())).Returns((IEnumerable<string> ids) => {
-                var users = new List<IUser>();
-                if(ids.Contains("1")) users.Add(_User1.Object);
-                if(ids.Contains("2")) users.Add(_User2.Object);
-                return users;
-            });
-            _UserManager.Setup(r => r.PasswordMatches(It.IsAny<IUser>(), It.IsAny<string>())).Returns((IUser user, string password) => {
-                return _PasswordForUser != null && password == _PasswordForUser;
-            });
-
-            // Initialise this last, just in case the constructor uses any of the mocks
             _WebSite = Factory.Singleton.Resolve<IWebSite>();
-            _WebSite.BaseStationDatabase = _BaseStationDatabase.Object;
-            _WebSite.StandingDataManager = _StandingDataManager.Object;
-            _AutoAttached = false;
 
             _Provider = new Mock<IWebSiteProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Provider.Setup(m => m.UtcNow).Returns(DateTime.UtcNow);
@@ -294,111 +122,6 @@ namespace Test.VirtualRadar.WebSite
         public void TestCleanup()
         {
             Factory.RestoreSnapshot(_OriginalContainer);
-            if(_OutputStream != null) _OutputStream.Dispose();
-            _OutputStream = null;
-            if(_Image != null) _Image.Dispose();
-        }
-        #endregion
-
-        #region Helper Methods - Attach, SendRequest, SendJsonRequest
-        /// <summary>
-        /// Calls AttachToServer on _WebSite, but only if it has not already been called for this test.
-        /// </summary>
-        private void Attach()
-        {
-            if(!_AutoAttached) {
-                _WebSite.AttachSiteToServer(_WebServer.Object);
-                _AutoAttached = true;
-            }
-        }
-
-        /// <summary>
-        /// Attaches to the webServer with <see cref="Attach"/> and then raises an event on the webServer to simulate a request coming
-        /// in for the path and file specified. The request is not flagged as coming from the Internet.
-        /// </summary>
-        /// <param name="pathAndFile"></param>
-        private void SendRequest(string pathAndFile)
-        {
-            SendRequest(pathAndFile, false);
-        }
-
-        /// <summary>
-        /// Attaches to the webServer with <see cref="Attach"/> and then raises an event on the webServer to simulate a request coming
-        /// in for the path and file specified and with the origin optionally coming from the Internet.
-        /// </summary>
-        /// <param name="pathAndFile"></param>
-        /// <param name="isInternetClient"></param>
-        private void SendRequest(string pathAndFile, bool isInternetClient)
-        {
-            Attach();
-            _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, isInternetClient));
-        }
-
-        /// <summary>
-        /// Attaches to the webServer with <see cref="Attach"/> and then raises an event on the webServer to simulate a request for a
-        /// JSON file. The output is parsed into a JSON file of the type specified.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="pathAndFile"></param>
-        /// <param name="isInternetClient"></param>
-        /// <param name="jsonPCallback"></param>
-        /// <returns></returns>
-        private T SendJsonRequest<T>(string pathAndFile, bool isInternetClient = false, string jsonPCallback = null)
-            where T: class
-        {
-            return (T)SendJsonRequest(typeof(T), pathAndFile, isInternetClient, jsonPCallback);
-        }
-
-        /// <summary>
-        /// Attaches to the webServer with <see cref="Attach"/> and then raises an event on the webServer to simulate a request for a
-        /// JSON file. The output is parsed into a JSON file of the type specified.
-        /// </summary>
-        /// <param name="jsonType"></param>
-        /// <param name="pathAndFile"></param>
-        /// <param name="isInternetClient"></param>
-        /// <param name="jsonPCallback"></param>
-        /// <returns></returns>
-        private object SendJsonRequest(Type jsonType, string pathAndFile, bool isInternetClient = false, string jsonPCallback = null)
-        {
-            _OutputStream.SetLength(0);
-            SendRequest(pathAndFile, isInternetClient);
-
-            DataContractJsonSerializer serialiser = new DataContractJsonSerializer(jsonType);
-            object result = null;
-
-            var text = Encoding.UTF8.GetString(_OutputStream.ToArray());
-            if(!String.IsNullOrEmpty(text)) {
-                if(jsonPCallback != null) {
-                    var jsonpStart = String.Format("{0}(", jsonPCallback);
-                    var jsonpEnd = ")";
-                    Assert.IsTrue(text.StartsWith(jsonpStart), text);
-                    Assert.IsTrue(text.EndsWith(jsonpEnd), text);
-
-                    text = text.Substring(jsonpStart.Length, text.Length - (jsonpStart.Length + jsonpEnd.Length));
-                }
-
-                try {
-                    using(var stream = new MemoryStream(Encoding.UTF8.GetBytes(text))) {
-                        result = serialiser.ReadObject(stream);
-                    }
-                } catch(Exception ex) {
-                    Assert.Fail(@"Could not parse output stream into JSON file: {0}, text was ""{1}""", ex.Message, text);
-                }
-            }
-
-            return result;
-        }
-
-        private void EnsureFileDoesNotExist(string fileName)
-        {
-            var path = Path.Combine(TestContext.TestDeploymentDir, fileName);
-            if(File.Exists(path)) File.Delete(path);
-        }
-
-        private void AssertFilesAreIdentical(string fileName, byte[] expectedContent, string message = "")
-        {
-            var actualContent = File.ReadAllBytes(Path.Combine(TestContext.TestDeploymentDir, fileName));
-            Assert.IsTrue(expectedContent.SequenceEqual(actualContent), message);
         }
 
         private void ConfigureRequestObject(string root, string urlFromRoot, string queryString = null, string protocol = "http", string dns = "mysite.co.uk", string remoteEndPoint = "1.2.3.4", int remotePort = 54321, int localPort = 80)
@@ -419,57 +142,6 @@ namespace Test.VirtualRadar.WebSite
 
             return stream;
         }
-        #endregion
-
-        #region Helper Methods - AddBlankDatabaseFlights
-        private void AddBlankDatabaseFlights(int count)
-        {
-            for(var i = 0;i < count;++i) {
-                var flight = new BaseStationFlight();
-                flight.FlightID = i + 1;
-
-                var aircraft = new BaseStationAircraft();
-                aircraft.AircraftID = i + 101;
-
-                flight.Aircraft = aircraft;
-                _DatabaseFlights.Add(flight);
-            }
-        }
-
-        private void AddBlankDatabaseFlightsForAircraft(int count)
-        {
-            for(var i = 0;i < count;++i) {
-                var flight = new BaseStationFlight();
-                flight.FlightID = i + 1;
-                flight.Aircraft = _DatabaseAircraft;
-
-                _DatabaseFlightsForAircraft.Add(flight);
-            }
-        }
-        #endregion
-
-        #region Helper Methods - BuildUrl
-        /// <summary>
-        /// Builds a URL for a page and a bunch of query strings.
-        /// </summary>
-        /// <param name="pageAddress"></param>
-        /// <param name="queryStrings"></param>
-        /// <returns></returns>
-        public static string BuildUrl(string pageAddress, Dictionary<string, string> queryStrings)
-        {
-            var result = new StringBuilder(pageAddress);
-            bool first = true;
-            foreach(var keyValue in queryStrings) {
-                result.AppendFormat("{0}{1}={2}",
-                    first ? '?' : '&',
-                    HttpUtility.UrlEncode(keyValue.Key),
-                    HttpUtility.UrlDecode(keyValue.Value));
-                first = false;
-            }
-
-            return result.ToString();
-        }
-        #endregion
 
         #region Constructors and Properties
         [TestMethod]
@@ -557,28 +229,6 @@ namespace Test.VirtualRadar.WebSite
             var expected = String.Format("{0}{1}", Path.Combine(runtime.ExecutablePath, "Web"), Path.DirectorySeparatorChar);
 
             Assert.IsTrue(root.Contains(expected));
-        }
-
-        [TestMethod]
-        public void WebSite_AttachSiteToServer_Only_Attaches_Site_Once()
-        {
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
-            if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
-            foreach(var checksum in checksums) {
-                var args = RequestReceivedEventArgsHelper.Create(_Request, _Response, checksum.FileName.Replace("\\", "/"), false);
-                var mimeType = MimeType.GetForExtension(Path.GetExtension(checksum.FileName));
-                var classification = MimeType.GetContentClassification(mimeType);
-
-                // We need to skip the strings.*.js files - the string injection code doesn't work when the running
-                // executable is the Visual Studio test runner
-                if(checksum.FileName.StartsWith("\\script\\i18n\\strings.")) {
-                    continue;
-                }
-
-                _WebServer.Raise(r => r.RequestReceived += null, args);
-            }
         }
         #endregion
 
@@ -776,257 +426,6 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
             _WebSite.RequestSimpleContent(null);
-        }
-        #endregion
-
-        #region Authentication
-        [TestMethod]
-        public void WebSite_Authentication_Accepts_Basic_Authentication_Credentials_From_Configuration()
-        {
-            _PasswordForUser = "B26354";
-            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            var args = new AuthenticationRequiredEventArgs("Deckard", "B26354");
-
-            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
-
-            Assert.IsTrue(args.IsAuthenticated);
-            Assert.IsTrue(args.IsHandled);
-            Assert.IsFalse(args.IsAdministrator);
-        }
-
-        [TestMethod]
-        public void WebSite_Authentication_Rejects_Basic_Authentication_Credentials_For_Disabled_Users()
-        {
-            _User1.Object.Enabled = false;
-            _PasswordForUser = "B26354";
-            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            var args = new AuthenticationRequiredEventArgs("Deckard", "B26354");
-
-            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
-
-            Assert.IsFalse(args.IsAuthenticated);
-            Assert.IsTrue(args.IsHandled);
-        }
-
-        [TestMethod]
-        public void WebSite_Authentication_Accepts_Administrator_Credentials_From_Configuration()
-        {
-            _PasswordForUser = "B26354";
-            _Configuration.WebServerSettings.AdministratorUserIds.Add("1");
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            var args = new AuthenticationRequiredEventArgs("Deckard", "B26354");
-
-            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
-
-            Assert.IsTrue(args.IsAuthenticated);
-            Assert.IsTrue(args.IsHandled);
-            Assert.IsTrue(args.IsAdministrator);
-        }
-
-        [TestMethod]
-        public void WebSite_Authentication_Rejects_Basic_Authentication_Credentials_For_Disabled_Administrators()
-        {
-            _User1.Object.Enabled = false;
-            _PasswordForUser = "B26354";
-            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _Configuration.WebServerSettings.AdministratorUserIds.Add("1");
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            var args = new AuthenticationRequiredEventArgs("Deckard", "B26354");
-
-            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
-
-            Assert.IsFalse(args.IsAuthenticated);
-            Assert.IsTrue(args.IsHandled);
-            Assert.IsFalse(args.IsAdministrator);
-        }
-
-        [TestMethod]
-        public void WebSite_Authentication_Reports_Users_In_Both_Administrators_And_Users_As_Administrators()
-        {
-            _PasswordForUser = "B26354";
-            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _Configuration.WebServerSettings.AdministratorUserIds.Add("1");
-            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            var args = new AuthenticationRequiredEventArgs("Deckard", "B26354");
-
-            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
-
-            Assert.IsTrue(args.IsAuthenticated);
-            Assert.IsTrue(args.IsHandled);
-            Assert.IsTrue(args.IsAdministrator);
-        }
-
-        [TestMethod]
-        public void WebSite_Authentication_Rejects_Old_Basic_Authentication_Credentials_From_Configuration()
-        {
-            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _Configuration.WebServerSettings.BasicAuthenticationUser = "Deckard";
-            _Configuration.WebServerSettings.BasicAuthenticationPasswordHash = new Hash("B26354");
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            var args = new AuthenticationRequiredEventArgs("Deckard", "B26354");
-
-            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
-
-            Assert.IsFalse(args.IsAuthenticated);
-            Assert.IsTrue(args.IsHandled);
-        }
-
-        [TestMethod]
-        public void WebSite_Authentication_Rejects_Wrong_User_For_Basic_Authentication()
-        {
-            _PasswordForUser = "B26354";
-            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            var args = new AuthenticationRequiredEventArgs("Zhora", "B26354");
-
-            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
-
-            Assert.IsFalse(args.IsAuthenticated);
-            Assert.IsTrue(args.IsHandled);
-        }
-
-        [TestMethod]
-        public void WebSite_Authentication_Rejects_Wrong_Cased_User_When_User_Manager_Is_Case_Sensitive()
-        {
-            _UserManager.Setup(r => r.LoginNameIsCaseSensitive).Returns(true);
-            _PasswordForUser = "B26354";
-            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            var args = new AuthenticationRequiredEventArgs("DECKARD", "B26354");
-
-            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
-
-            Assert.IsFalse(args.IsAuthenticated);
-            Assert.IsTrue(args.IsHandled);
-        }
-
-        [TestMethod]
-        public void WebSite_Authentication_Accepts_Wrong_Cased_User_When_User_Manager_Is_Not_Case_Sensitive()
-        {
-            _PasswordForUser = "B26354";
-            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            var args = new AuthenticationRequiredEventArgs("DECKARD", "B26354");
-
-            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
-
-            Assert.IsTrue(args.IsAuthenticated);
-            Assert.IsTrue(args.IsHandled);
-        }
-
-        [TestMethod]
-        public void WebSite_Authentication_Rejects_Null_User_For_Basic_Authentication()
-        {
-            _PasswordForUser = "B26354";
-            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
-            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            var args = new AuthenticationRequiredEventArgs(null, "B26354");
-
-            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
-
-            Assert.IsFalse(args.IsAuthenticated);
-            Assert.IsTrue(args.IsHandled);
-        }
-
-        [TestMethod]
-        public void WebSite_Authentication_Rejects_Wrong_Password_For_Basic_Authentication()
-        {
-            _PasswordForUser = "B26354";
-
-            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            var args = new AuthenticationRequiredEventArgs("Deckard", "b26354");
-
-            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
-
-            Assert.IsFalse(args.IsAuthenticated);
-            Assert.IsTrue(args.IsHandled);
-        }
-
-        [TestMethod]
-        public void WebSite_Authentication_Ignores_Events_That_Have_Already_Been_Handled()
-        {
-            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
-            _PasswordForUser = "B26354";
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            var args = new AuthenticationRequiredEventArgs("Deckard", "B26354") { IsHandled = true };
-
-            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
-
-            Assert.IsFalse(args.IsAuthenticated);
-        }
-        #endregion
-
-        #region Configuration changes
-        [TestMethod]
-        public void WebSite_Configuration_Changes_Do_Not_Crash_WebSite_If_Server_Not_Attached()
-        {
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
-        }
-
-        [TestMethod]
-        public void WebSite_Configuration_Picks_Up_Change_In_Basic_Authentication_User()
-        {
-            _PasswordForUser = "B26354";
-            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("2");
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            var args = new AuthenticationRequiredEventArgs("Deckard", "B26354");
-            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
-
-            args.IsHandled = false;
-            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Clear();
-            _Configuration.WebServerSettings.BasicAuthenticationUserIds.Add("1");
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
-            _WebServer.Raise(m => m.AuthenticationRequired += null, args);
-
-            Assert.IsTrue(args.IsAuthenticated);
-        }
-
-        [TestMethod]
-        public void WebSite_Configuration_Picks_Up_Change_In_Authentication_Scheme()
-        {
-            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Anonymous;
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-
-            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
-
-            Assert.AreEqual(AuthenticationSchemes.Basic, _WebServer.Object.AuthenticationScheme);
-        }
-
-        [TestMethod]
-        public void WebSite_Configuration_Restarts_Server_If_Authentication_Scheme_Changes()
-        {
-            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Anonymous;
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            _WebServer.Object.Online = true;
-
-            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Basic;
-            _ConfigurationStorage.Raise(m => m.ConfigurationChanged += null, EventArgs.Empty);
-
-            _WebServer.VerifySet(m => m.Online = false, Times.Once());
-            _WebServer.VerifySet(m => m.Online = true, Times.Exactly(2));
-        }
-
-        [TestMethod]
-        public void WebSite_Configuration_Is_Reflected_In_Output_From_ReportMap_Js()
-        {
-            SendRequest("/ReportMap.js");
-
-            string output = Encoding.UTF8.GetString(_OutputStream.ToArray());
-            Assert.IsFalse(output.Contains("__"));
         }
         #endregion
     }
