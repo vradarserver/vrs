@@ -53,11 +53,6 @@ namespace Test.VirtualRadar.WebSite
             _I18NPath = Path.Combine(TestContext.DeploymentDirectory, @"Web\script\i18n");
         }
 
-        [TestCleanup]
-        public void TestCleanup()
-        {
-        }
-
         private void ConfigureRequestPath(string path)
         {
             _Environment.Add("owin.RequestPath", path);
@@ -77,7 +72,6 @@ namespace Test.VirtualRadar.WebSite
         public void WebSiteStringsManipulator_Injects_Web_Site_Strings_Into_Javascript()
         {
             foreach(var stringsFileName in WebSiteStringFileNames()) {
-                TestCleanup();
                 TestInitialise();
                 ConfigureRequestPath($"/script/i18n/{stringsFileName}");
                 _TextContent.Content = _JavascriptWithMarkers;

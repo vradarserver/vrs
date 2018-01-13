@@ -185,6 +185,11 @@ namespace VirtualRadar.WebSite
         private WebSiteStringsManipulator _WebSiteStringsManipulator = new WebSiteStringsManipulator();
 
         /// <summary>
+        /// The object that will inject content into HTML files for us.
+        /// </summary>
+        private HtmlManipulator _HtmlManipulator = new HtmlManipulator();
+
+        /// <summary>
         /// A reference to the singleton user manager - saves us having to keep reloading it.
         /// </summary>
         private IUserManager _UserManager;
@@ -193,17 +198,6 @@ namespace VirtualRadar.WebSite
         /// The type of proxy that the server is sitting behind.
         /// </summary>
         private ProxyType _ProxyType;
-
-        /// <summary>
-        /// The lock object that protects <see cref="_HtmlContentInjectors"/>. Do not call event handlers
-        /// with this locked.
-        /// </summary>
-        private object _HtmlContentInjectorsLock = new object();
-
-        /// <summary>
-        /// The list of content injectors.
-        /// </summary>
-        private List<HtmlContentInjector> _HtmlContentInjectors = new List<HtmlContentInjector>();
         #endregion
 
         #region Properties
@@ -300,6 +294,9 @@ namespace VirtualRadar.WebSite
                 var fileServerConfiguration = Factory.Singleton.ResolveSingleton<IFileSystemServerConfiguration>();
                 fileServerConfiguration.TextLoadedFromFile += FileSystemConfiguration_TextLoadedFromFile;
                 AddDefaultSiteRoot(fileServerConfiguration);
+
+                var htmlManipulatorConfig = Factory.Singleton.ResolveSingleton<IHtmlManipulatorConfiguration>();
+                htmlManipulatorConfig.AddTextResponseManipulator(_HtmlManipulator);
 
                 var javascriptManipulatorConfig = Factory.Singleton.ResolveSingleton<IJavascriptManipulatorConfiguration>();
                 javascriptManipulatorConfig.AddTextResponseManipulator(_WebSiteStringsManipulator);
@@ -454,8 +451,7 @@ namespace VirtualRadar.WebSite
         /// <param name="contentInjector"></param>
         public void AddHtmlContentInjector(HtmlContentInjector contentInjector)
         {
-            if(contentInjector == null) throw new ArgumentNullException("contentInjector");
-            lock(_HtmlContentInjectorsLock) _HtmlContentInjectors.Add(contentInjector);
+            _HtmlManipulator.AddHtmlContentInjector(contentInjector);
         }
 
         /// <summary>
@@ -464,67 +460,8 @@ namespace VirtualRadar.WebSite
         /// <param name="contentInjector"></param>
         public void RemoveHtmlContentInjector(HtmlContentInjector contentInjector)
         {
-            lock(_HtmlContentInjectorsLock) _HtmlContentInjectors.Remove(contentInjector);
+            _HtmlManipulator.RemoveHtmlContentInjector(contentInjector);
         }
-
-        /*
-        /// <summary>
-        /// Injects content into HTML files.
-        /// </summary>
-        /// <param name="pathAndFile"></param>
-        /// <param name="textContent"></param>
-        /// <returns></returns>
-        internal string InjectHtmlContent(string pathAndFile, TextContent textContent)
-        {
-            var result = textContent.Content;
-
-            List<HtmlContentInjector> injectors;
-            lock(_HtmlContentInjectorsLock) {
-                injectors = _HtmlContentInjectors.Where(r =>
-                    !String.IsNullOrEmpty(r.Element) &&
-                    r.Content != null &&
-                    (r.PathAndFile == null || r.PathAndFile.Equals(pathAndFile, StringComparison.OrdinalIgnoreCase))
-                ).ToList();
-            }
-            if(injectors.Any()) {
-                var document = new HtmlAgilityPack.HtmlDocument() {
-                    OptionCheckSyntax = false,
-                    OptionDefaultStreamEncoding = textContent.Encoding,
-                };
-                document.LoadHtml(result);
-
-                var modified = false;
-                foreach(var injector in injectors.OrderByDescending(r => r.Priority)) {
-                    var elements = document.DocumentNode.Descendants(injector.Element);
-                    var element = injector.AtStart ? elements.FirstOrDefault() : elements.LastOrDefault();
-                    var content = element == null ? null : injector.Content();
-                    if(element != null && !String.IsNullOrEmpty(content)) {
-                        var subDocument = new HtmlAgilityPack.HtmlDocument() {
-                            OptionCheckSyntax = false,
-                        };
-                        subDocument.LoadHtml(injector.Content());
-
-                        if(injector.AtStart) element.PrependChild(subDocument.DocumentNode);
-                        else                 element.AppendChild(subDocument.DocumentNode);
-                        modified = true;
-                    }
-                }
-
-                if(modified) {
-                    using(var stream = new MemoryStream()) {
-                        document.Save(stream);
-                        stream.Position = 0;
-                        using(var streamReader = new StreamReader(stream, textContent.Encoding, true)) {
-                            result = streamReader.ReadToEnd();
-                        }
-                    }
-                }
-            }
-
-            textContent.Content = result;
-            return result;
-        }
-        */
         #endregion
 
         #region Events consumed
