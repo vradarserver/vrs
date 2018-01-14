@@ -1512,6 +1512,20 @@ namespace Test.VirtualRadar.WebSite
 
             Assert.AreEqual(null, jsonAircraft.PositionIsStale);
         }
+
+        [TestMethod]
+        public void AircraftListJsonBuilder_In_FSX_Mode_Never_Sets_Stale_Position()
+        {
+            _Args.IsFlightSimulatorList = true;
+            _Args.AircraftList = _FlightSimulatorAircraftList.Object;
+            AddBlankFlightSimAircraft(1);
+            _FlightSimulatorAircraft[0].PositionTime = new DateTime(2010, 1, 1);
+
+            _Clock.SetupGet(r => r.UtcNow).Returns(new DateTime(2018, 1, 1));
+            var json = _Builder.Build(_Args);
+
+            Assert.IsNull(json.Aircraft[0].PositionIsStale);
+        }
         #endregion
 
         #region Sorting of list

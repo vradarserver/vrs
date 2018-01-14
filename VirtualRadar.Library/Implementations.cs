@@ -111,7 +111,6 @@ namespace VirtualRadar.Library
             factory.Register<IExternalIPAddressService, ExternalIPAddressService>();
             factory.Register<IFileSystemProvider, FileSystemProvider>();
             factory.Register<IFileSystemWatcher, FileSystemWatcherWrapper>();
-            factory.Register<IFlightSimulatorAircraftList, FlightSimulatorAircraftList>();
             factory.Register<IHeartbeatService, HeartbeatService>();
             factory.Register<IImageDimensionsFetcher, ImageDimensionsFetcher>();
             factory.Register<IImageFileManager, ParallelAccessImageFileManager>();
@@ -124,6 +123,7 @@ namespace VirtualRadar.Library
             factory.Register<ITimer, Timer>();
             factory.Register<IXmlSerialiser, XmlSerialiser>();
 
+            factory.Register<IFlightSimulatorAircraftList, FlightSimulatorX.FlightSimulatorAircraftList>();
             if(Type.GetType("Mono.Runtime") == null) {
                 factory.Register<IShutdownSignalHandler, DotNetShutdownSignalHandler>();
                 factory.Register<ISpeechSynthesizerWrapper, DotNetSpeechSynthesizerWrapper>();

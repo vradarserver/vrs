@@ -395,7 +395,8 @@ namespace VirtualRadar.WebSite
                     }
 
                     aircraftJson.SecondsTracked = (long)((now - aircraftSnapshot.FirstSeen).TotalSeconds);
-                    aircraftJson.PositionIsStale =    aircraftSnapshot.LastSatcomUpdate == DateTime.MinValue        // Never flag satcom aircraft as having a stale position
+                    aircraftJson.PositionIsStale =    !args.IsFlightSimulatorList                                   // Never flag FSX aircraft as stale
+                                                   && aircraftSnapshot.LastSatcomUpdate == DateTime.MinValue        // Never flag satcom aircraft as having a stale position
                                                    && aircraftSnapshot.PositionTime != null
                                                    && aircraftSnapshot.PositionTime < positionTimeoutThreshold ? true : (bool?)null;
                 }

@@ -15,7 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VirtualRadar.Interface;
 
-namespace VirtualRadar.Library
+namespace VirtualRadar.Library.FlightSimulatorX
 {
     /// <summary>
     /// The default implementation of <see cref="IFlightSimulatorAircraftList"/>.
