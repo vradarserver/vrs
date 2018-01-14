@@ -287,6 +287,17 @@ namespace Test.VirtualRadar.Owin.Middleware
         }
 
         [TestMethod]
+        public void ImageServer_Returns_Correct_Status_For_Resource_Images()
+        {
+            _Environment.Response.StatusCode = 404;
+            _Environment.RequestPath = $"/Images/TestSquare.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            Assert.AreEqual(200, _Environment.Response.StatusCode);
+            Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
+        }
+
+        [TestMethod]
         [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "BlankImage$")]
         public void ImageServer_Can_Create_Blank_Images_Dynamically()
@@ -307,6 +318,17 @@ namespace Test.VirtualRadar.Owin.Middleware
                     }
                 }
             }
+        }
+
+        [TestMethod]
+        public void ImageServer_Returns_Correct_Status_For_Dynamic_Images()
+        {
+            _Environment.Response.StatusCode = 404;
+            _Environment.RequestPath = $"/Images/Wdth-700/Hght-250/Blank.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            Assert.AreEqual(200, _Environment.Response.StatusCode);
+            Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
         }
 
         [TestMethod]

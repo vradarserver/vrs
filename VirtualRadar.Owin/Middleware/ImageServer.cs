@@ -237,6 +237,7 @@ namespace VirtualRadar.Owin.Middleware
                                     context.Response.ContentLength = bytes.Length;
                                     context.Response.ContentType = ImageMimeType(imageRequest.ImageFormat);
                                     context.Response.Body.Write(bytes, 0, bytes.Length);
+                                    context.Response.StatusCode = 200;
 
                                     handled = true;
                                 }
