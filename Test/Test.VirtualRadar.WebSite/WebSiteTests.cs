@@ -199,14 +199,6 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
-        public void WebSite_AttachSiteToServer_Sets_Correct_Authentication_On_Server()
-        {
-            _Configuration.WebServerSettings.AuthenticationScheme = AuthenticationSchemes.Anonymous;
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            Assert.AreEqual(AuthenticationSchemes.Anonymous, _WebServer.Object.AuthenticationScheme);
-        }
-
-        [TestMethod]
         public void WebSite_AttachSiteToServer_Allows_Default_File_System_Site_Pages_To_Be_Served()
         {
             SiteRoot siteRoot = null;

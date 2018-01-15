@@ -74,20 +74,6 @@ namespace VirtualRadar.WebServer.HttpListener
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public AuthenticationSchemes AuthenticationScheme
-        {
-            get { return Provider.AuthenticationSchemes; }
-            set { Provider.AuthenticationSchemes = value; }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public bool CacheCredentials { get; set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
         public string ExternalAddress
         {
             get
@@ -245,13 +231,6 @@ namespace VirtualRadar.WebServer.HttpListener
             EventHelper.RaiseQuickly(AfterRequestReceived, this, args);
         }
 
-        public event EventHandler<AuthenticationRequiredEventArgs> AuthenticationRequired;
-
-        internal void OnAuthenticationRequired(AuthenticationRequiredEventArgs args)
-        {
-            EventHelper.RaiseQuickly(AuthenticationRequired, this, args);
-        }
-
         public event EventHandler<RequestReceivedEventArgs> BeforeRequestReceived;
 
         internal void OnBeforeRequestReceived(RequestReceivedEventArgs args)
@@ -333,10 +312,6 @@ namespace VirtualRadar.WebServer.HttpListener
         public void RemoveAdministratorPath(string pathFromRoot)
         {
             _AuthenticationConfiguration.RemoveAdministratorPath(pathFromRoot);
-        }
-
-        public void ResetCredentialCache()
-        {
         }
 
         public void SetRestrictedPath(string pathFromRoot, Access access)

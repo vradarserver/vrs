@@ -30,7 +30,6 @@ namespace VirtualRadar.WebServer
         {
             factory.Register<IAutoConfigWebServer, AutoConfigWebServer>();
             factory.Register<IResponder, Responder>();
-            factory.Register<IWebServer, WebServer>();
 
             if(Type.GetType("Mono.Runtime") == null) {
                 factory.Register<IUniversalPlugAndPlayManager, DotNetUniversalPlugAndPlayManager>();

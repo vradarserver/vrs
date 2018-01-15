@@ -175,6 +175,11 @@ namespace VirtualRadar.WebSite
         private ILoopbackHost _LoopbackHost;
 
         /// <summary>
+        /// The currently configured authentication scheme.
+        /// </summary>
+        private AuthenticationSchemes _AuthenticationScheme;
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public IBaseStationDatabase BaseStationDatabase { get; set; }
@@ -276,9 +281,9 @@ namespace VirtualRadar.WebSite
 
             var result = false;
             lock(_SyncLock) {
-                if(WebServer.AuthenticationScheme != configuration.WebServerSettings.AuthenticationScheme) {
+                if(_AuthenticationScheme != configuration.WebServerSettings.AuthenticationScheme) {
                     result = true;
-                    WebServer.AuthenticationScheme = configuration.WebServerSettings.AuthenticationScheme;
+                    _AuthenticationScheme = configuration.WebServerSettings.AuthenticationScheme;
                 }
             }
 

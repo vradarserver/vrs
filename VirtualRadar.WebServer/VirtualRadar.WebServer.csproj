@@ -62,7 +62,6 @@
     <Compile Include="Responder.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="MonoUniversalPlugAndPlayManager.cs" />
-    <Compile Include="WebServer.cs" />
     <Compile Include="DotNetUniversalPlugAndPlayManager.cs" />
   </ItemGroup>
   <ItemGroup>

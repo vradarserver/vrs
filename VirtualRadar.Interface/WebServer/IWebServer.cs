@@ -21,25 +21,6 @@ namespace VirtualRadar.Interface.WebServer
     /// <summary>
     /// The interface for objects that can serve requests for web pages.
     /// </summary>
-    /// <remarks><para>
-    /// Once the properties have been set the server is controlled through the <see cref="Online"/> property. Setting it to
-    /// true starts the server, setting it to false takes it offline.
-    /// </para><para>
-    /// When a request is received from a browser the <see cref="RequestReceived"/> event is raised. This is passed a <see cref="RequestReceivedEventArgs"/> object.
-    /// If the handler(s) do not set the <see cref="RequestReceivedEventArgs.Handled"/> property of the args then the server responds with a "Content not found"
-    /// error, otherwise the content as described by <see cref="RequestReceivedEventArgs.Response"/> property is sent to the browser.
-    /// </para><para>
-    /// The web server supports authentication. When authentication is required the <see cref="AuthenticationScheme"/> property should be set to a value that is
-    /// not Anonymous. The server will raise <see cref="AuthenticationRequired"/> and pass an <see cref="AuthenticationRequiredEventArgs"/>. Setting the
-    /// <see cref="AuthenticationRequiredEventArgs.IsAuthenticated"/> property will allow the request to proceed. The <see cref="CacheCredentials"/> property can
-    /// be used to prevent the event being raised for credentials that the server has previously seen, and which were previously confirmed to be good by an event
-    /// handler.
-    /// </para><para>
-    /// If the implementation of IWebServer is using the .NET Framework HttpListener then be aware that this will not run without admin privileges under Windows 7
-    /// or Vista, unless you first run a NETSH command to give the application permission to listen to a particular root and port. The installer for Virtual Radar
-    /// Server sets this permission up so that Virtual Radar Server can remain at normal user permissions, if you use the server for your own applications you
-    /// may need to do the same or ask the user to run your application as an administrator. It is not guaranteed, however, that the implementation is using HttpListener.
-    /// </para></remarks>
     public interface IWebServer : IBackgroundThreadExceptionCatcher, IDisposable
     {
         #region Properties
@@ -118,35 +99,12 @@ namespace VirtualRadar.Interface.WebServer
         int ExternalPort { get; set; }
 
         /// <summary>
-        /// Gets or sets the authentication scheme to use.
-        /// </summary>
-        /// <remarks>
-        /// Defaults to AuthenticationSchemes.None. Only None, Anonymous and Basic are currently supported.
-        /// </remarks>
-        AuthenticationSchemes AuthenticationScheme { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating that authentication credentials can be cached by the server.
-        /// </summary>
-        /// <remarks>
-        /// If this is set then <see cref="AuthenticationRequired"/> will only be raised if <see cref="AuthenticationScheme"/>
-        /// is not 'None' and the combination of username and password sent by the browser has never previously been confirmed
-        /// as valid. Invalid combinations are not cached.
-        /// </remarks>
-        bool CacheCredentials { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating that the server is online.
         /// </summary>
         bool Online { get; set; }
         #endregion
 
         #region Events
-        /// <summary>
-        /// Raised when the <see cref="AuthenticationScheme"/> is not 'None' and the browser has supplied credentials that need testing.
-        /// </summary>
-        event EventHandler<AuthenticationRequiredEventArgs> AuthenticationRequired;
-
         /// <summary>
         /// Raised when the <see cref="ExternalAddress"/> property changes.
         /// </summary>
@@ -199,13 +157,6 @@ namespace VirtualRadar.Interface.WebServer
         /// the UniqueId of the <see cref="ResponseSentEventArgs"/> original created for the request.
         /// </summary>
         event EventHandler<EventArgs<long>> RequestFinished;
-        #endregion
-
-        #region ResetCredentialCache
-        /// <summary>
-        /// Clears the cache of credentials held by the server - see <see cref="CacheCredentials"/>.
-        /// </summary>
-        void ResetCredentialCache();
         #endregion
 
         #region GetAdministratorPaths, AddAdministratorPath, RemoveAdministratorPath, GetRestrictedPaths, AddRestrictedPath
