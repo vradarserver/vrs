@@ -92,12 +92,8 @@ namespace VirtualRadar.Plugin.SqlServer.WinForms
         /// <param name="e"></param>
         private void ButtonUpdateSchema_Click(object sender, EventArgs e)
         {
-            var database = new BaseStationDatabase() {
-                ConnectionString =      Options.ConnectionString,
-                CommandTimeoutSeconds = Options.CommandTimeoutSeconds,
-                CanUpdateSchema =       true,
-            };
-            var scriptOutput = database.UpdateSchema();
+            var presenter = new OptionsPresenter();
+            var scriptOutput = presenter.UpdateSchema(Options.ConnectionString, Options.CommandTimeoutSeconds);
 
             MessageBox.Show(String.Join(Environment.NewLine, scriptOutput), SqlServerStrings.SchemaUpdatedTitle);
         }

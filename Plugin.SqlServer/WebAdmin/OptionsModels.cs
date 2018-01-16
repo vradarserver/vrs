@@ -85,4 +85,20 @@ namespace VirtualRadar.Plugin.SqlServer.WebAdmin
             ViewModel = ViewModel;
         }
     }
+
+    public class UpdateSchemaOutcomeModel
+    {
+        public string Title { get; set; }
+
+        public string[] OutputLines { get; set; }
+
+        public ViewModel ViewModel { get; set; }
+
+        public UpdateSchemaOutcomeModel(string title, string[] outputLines, ViewModel viewModel)
+        {
+            Title = title;
+            OutputLines = outputLines;
+            ViewModel = ViewModel;
+        }
+    }
 }

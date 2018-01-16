@@ -39,5 +39,23 @@ namespace VirtualRadar.Plugin.SqlServer.WinForms
 
             return result;
         }
+
+        /// <summary>
+        /// Updates the schema using the connection details passed across and returns an array of output lines from the update script.
+        /// </summary>
+        /// <param name="connectionString"></param>
+        /// <param name="timeoutSeconds"></param>
+        /// <returns></returns>
+        public string[] UpdateSchema(string connectionString, int timeoutSeconds)
+        {
+            var database = new BaseStationDatabase() {
+                ConnectionString =      connectionString,
+                CommandTimeoutSeconds = timeoutSeconds,
+                CanUpdateSchema =       true,
+            };
+            var scriptOutput = database.UpdateSchema();
+
+            return scriptOutput;
+        }
     }
 }

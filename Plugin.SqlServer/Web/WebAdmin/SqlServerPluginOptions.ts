@@ -9,9 +9,11 @@
         SavedMessage?:                  KnockoutObservable<string>;
         TestConnectionOutcomeTitle?:    KnockoutObservable<string>;
         TestConnectionOutcomeMessage?:  KnockoutObservable<string>;
+        UpdateSchemaOutcomeTitle?:      KnockoutObservable<string>;
+        UpdateSchemaOutcomeMessage?:    KnockoutObservable<string>;
     }
 
-    export class PageHandler
+    export class PageHandler 
     {
         private _Model: ViewModel;
         private _ViewId: ViewId;
@@ -93,6 +95,29 @@
             this._ViewId.ajax('TestConnection', ajaxSettings);
         }
 
+        updateSchema()
+        {
+            this._Model.UpdateSchemaOutcomeMessage('');
+            this._Model.UpdateSchemaOutcomeTitle('');
+
+            var ajaxSettings = this.buildAjaxSettingsForSendConfiguration();
+            ajaxSettings.success = (outcome: IResponse<ViewJson.IUpdateSchemaOutcomeModel>) =>
+            {
+                if(outcome.Exception) {
+                    this.showFailureMessage(VRS.stringUtility.format(VRS.WebAdmin.$$.WA_Exception_Reported, outcome.Exception));
+                } else {
+                    this.showFailureMessage(null);
+
+                    var joinedOutputLines = outcome.Response.OutputLines.join('\n');
+                    this._Model.UpdateSchemaOutcomeMessage(joinedOutputLines);
+                    this._Model.UpdateSchemaOutcomeTitle(outcome.Response.Title);
+                    ko.viewmodel.updateFromModel(this._Model, outcome.Response.ViewModel);
+                    $('#update-schema-outcome').modal('show');
+                }
+            };
+            this._ViewId.ajax('UpdateSchema', ajaxSettings);
+        }
+          
         private buildAjaxSettingsForSendConfiguration() : JQueryAjaxSettings
         {
             var viewModel = ko.viewmodel.toModel(this._Model);
@@ -132,6 +157,8 @@
                                 root.SavedMessage = ko.observable('');
                                 root.TestConnectionOutcomeTitle = ko.observable('');
                                 root.TestConnectionOutcomeMessage = ko.observable('');
+                                root.UpdateSchemaOutcomeTitle = ko.observable('');
+                                root.UpdateSchemaOutcomeMessage = ko.observable('');
                             }
                         }
                     });

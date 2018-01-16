@@ -19,6 +19,11 @@ declare module VirtualRadar.Plugin.SqlServer.WebAdmin {
         Message: string;
         ViewModel: VirtualRadar.Plugin.SqlServer.WebAdmin.IViewModel;
     }
+    interface IUpdateSchemaOutcomeModel {
+        Title: string;
+        OutputLines: string[];
+        ViewModel: VirtualRadar.Plugin.SqlServer.WebAdmin.IViewModel;
+    }
 }
 
 
@@ -36,6 +41,11 @@ declare module VirtualRadar.Plugin.SqlServer.WebAdmin {
     interface ITestConnectionOutcomeModel_KO {
         Title: KnockoutObservable<string>;
         Message: KnockoutObservable<string>;
+        ViewModel: VirtualRadar.Plugin.SqlServer.WebAdmin.IViewModel_KO;
+    }
+    interface IUpdateSchemaOutcomeModel_KO {
+        Title: KnockoutObservable<string>;
+        OutputLines: KnockoutViewModelArray<string>;
         ViewModel: VirtualRadar.Plugin.SqlServer.WebAdmin.IViewModel_KO;
     }
 }

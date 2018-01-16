@@ -64,6 +64,22 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-offset-4 col-sm-4">
+                                    <button type="button" class="btn btn-info" data-bind="click: $.proxy(pageHandler.updateSchema, pageHandler)">
+                                        ::UpdateSchema::
+                                    </button>
+                                    <div id="update-schema-outcome" data-bsu="modal" data-bsu-options="header-close">
+                                        <div>
+                                            <span data-bind="text: UpdateSchemaOutcomeTitle"></span>
+                                        </div>
+                                        <div>
+                                            <textarea class="form-control" rows="25" data-bind="value: UpdateSchemaOutcomeMessage" disabled="disabled"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="row">

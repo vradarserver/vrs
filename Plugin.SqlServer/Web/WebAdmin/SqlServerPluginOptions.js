@@ -79,6 +79,26 @@ var VRS;
                     };
                     this._ViewId.ajax('TestConnection', ajaxSettings);
                 };
+                PageHandler.prototype.updateSchema = function () {
+                    var _this = this;
+                    this._Model.UpdateSchemaOutcomeMessage('');
+                    this._Model.UpdateSchemaOutcomeTitle('');
+                    var ajaxSettings = this.buildAjaxSettingsForSendConfiguration();
+                    ajaxSettings.success = function (outcome) {
+                        if (outcome.Exception) {
+                            _this.showFailureMessage(VRS.stringUtility.format(VRS.WebAdmin.$$.WA_Exception_Reported, outcome.Exception));
+                        }
+                        else {
+                            _this.showFailureMessage(null);
+                            var joinedOutputLines = outcome.Response.OutputLines.join('\n');
+                            _this._Model.UpdateSchemaOutcomeMessage(joinedOutputLines);
+                            _this._Model.UpdateSchemaOutcomeTitle(outcome.Response.Title);
+                            ko.viewmodel.updateFromModel(_this._Model, outcome.Response.ViewModel);
+                            $('#update-schema-outcome').modal('show');
+                        }
+                    };
+                    this._ViewId.ajax('UpdateSchema', ajaxSettings);
+                };
                 PageHandler.prototype.buildAjaxSettingsForSendConfiguration = function () {
                     var _this = this;
                     var viewModel = ko.viewmodel.toModel(this._Model);
@@ -113,6 +133,8 @@ var VRS;
                                         root.SavedMessage = ko.observable('');
                                         root.TestConnectionOutcomeTitle = ko.observable('');
                                         root.TestConnectionOutcomeMessage = ko.observable('');
+                                        root.UpdateSchemaOutcomeTitle = ko.observable('');
+                                        root.UpdateSchemaOutcomeMessage = ko.observable('');
                                     }
                                 }
                             });

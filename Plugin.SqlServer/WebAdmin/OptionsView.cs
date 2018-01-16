@@ -86,5 +86,18 @@ namespace VirtualRadar.Plugin.SqlServer.WebAdmin
                 viewModel
             );
         }
+
+        [WebAdminMethod]
+        public UpdateSchemaOutcomeModel UpdateSchema(ViewModel viewModel)
+        {
+            var presenter = new WinForms.OptionsPresenter();
+            var outputLines = presenter.UpdateSchema(viewModel.ConnectionString, viewModel.CommandTimeoutSeconds);
+
+            return new UpdateSchemaOutcomeModel(
+                SqlServerStrings.UpdateSchema,
+                outputLines ?? new string[0],
+                viewModel
+            );
+        }
     }
 }
