@@ -62,6 +62,7 @@
         Op:             string;
         OpIcao:         string;
         Sqk:            string;
+        Ident:          boolean;
         Help:           boolean;
         Dst:            number;
         Brng:           number;

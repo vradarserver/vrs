@@ -158,6 +158,7 @@ declare namespace VRS
         HideNoPosition:                     string;
         HighContrastMap:                    string;
         Icao:                               string;
+        IDENT:                              string;
         Import:                             string;
         ImportFailedBody:                   string;
         ImportFailedTitle:                  string;
@@ -179,6 +180,7 @@ declare namespace VRS
         Knots:                              string;
         KnotsAbbreviation:                  string;
         LandPlane:                          string;
+        LanguageCode:                       string;
         Last:                               string;
         LastAltitude:                       string;
         LastFlightLevel:                    string;
@@ -268,6 +270,7 @@ declare namespace VRS
         ListOwnershipStatus:                string;
         ListPicture:                        string;
         ListPopularName:                    string;
+        ListPositionAge:                    string;
         ListPressureAltitude:               string;
         ListPreviousId:                     string;
         ListReceiver:                       string;
@@ -382,6 +385,7 @@ declare namespace VRS
         Piston:                             string;
         Pixels:                             string;
         PopularName:                        string;
+        PositionAge:                        string;
         PositionAndAltitude:                string;
         PositionAndSpeed:                   string;
         PoweredByVRS:                       string;

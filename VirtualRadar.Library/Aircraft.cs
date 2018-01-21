@@ -339,6 +339,17 @@ namespace VirtualRadar.Library
         /// </summary>
         public long SquawkChanged { get; private set; }
 
+        private bool? _IdentActive;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool? IdentActive { get { return _IdentActive; } set { if(value != _IdentActive) { _IdentActive = value; IdentActiveChanged = DataVersion; } } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long IdentActiveChanged { get; private set; }
+
         private bool? _Emergency;
         /// <summary>
         /// See interface docs.
@@ -777,6 +788,7 @@ namespace VirtualRadar.Library
                 result.Icao24 = Icao24;
                 result.Icao24Country = Icao24Country;
                 result.Icao24Invalid = Icao24Invalid;
+                result.IdentActive = IdentActive;
                 result.IsInteresting = IsInteresting;
                 result.IsMilitary = IsMilitary;
                 result.IsTisb = IsTisb;
@@ -841,6 +853,7 @@ namespace VirtualRadar.Library
                 result.Icao24Changed = Icao24Changed;
                 result.Icao24CountryChanged = Icao24CountryChanged;
                 result.Icao24InvalidChanged = Icao24InvalidChanged;
+                result.IdentActiveChanged = IdentActiveChanged;
                 result.IsInterestingChanged = IsInterestingChanged;
                 result.IsMilitaryChanged = IsMilitaryChanged;
                 result.IsTisbChanged = IsTisbChanged;

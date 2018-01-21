@@ -424,6 +424,14 @@ var VRS;
         hasChangedCallback: function (aircraft) { return aircraft.icao.chg; },
         contentCallback: function (aircraft) { return aircraft.formatIcao(); }
     });
+    VRS.renderPropertyHandlers[VRS.RenderProperty.IdentActive] = new VRS.RenderPropertyHandler({
+        property: VRS.RenderProperty.IdentActive,
+        surfaces: VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.Marker + VRS.RenderSurface.InfoWindow,
+        headingKey: 'ListIdentActive',
+        labelKey: 'IdentActive',
+        hasChangedCallback: function (aircraft) { return aircraft.identActive.chg; },
+        contentCallback: function (aircraft, options, surface) { return surface === VRS.RenderSurface.Marker ? aircraft.formatIdent() : aircraft.formatIdentActive(); }
+    });
     VRS.renderPropertyHandlers[VRS.RenderProperty.Interesting] = new VRS.RenderPropertyHandler({
         property: VRS.RenderProperty.Interesting,
         surfaces: VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.Marker + VRS.RenderSurface.InfoWindow,
@@ -753,6 +761,18 @@ var VRS;
         hasChangedCallback: function (aircraft) { return aircraft.squawk.chg; },
         contentCallback: function (aircraft) { return aircraft.formatSquawk(); },
         tooltipCallback: function (aircraft, options, surface) { return aircraft.formatSquawkDescription(); }
+    });
+    VRS.renderPropertyHandlers[VRS.RenderProperty.SquawkAndIdent] = new VRS.RenderPropertyHandler({
+        property: VRS.RenderProperty.SquawkAndIdent,
+        surfaces: VRS.RenderSurface.List,
+        headingKey: 'ListSquawk',
+        labelKey: 'SquawkAndIdent',
+        sortableField: VRS.AircraftListSortableField.Squawk,
+        alignment: VRS.Alignment.Right,
+        hasChangedCallback: function (aircraft) { return aircraft.squawk.chg || aircraft.identActive.chg; },
+        renderCallback: function (aircraft) {
+            return VRS.format.stackedValues(aircraft.formatSquawk(), aircraft.formatIdent());
+        },
     });
     VRS.renderPropertyHandlers[VRS.RenderProperty.TargetAltitude] = new VRS.RenderPropertyHandler({
         property: VRS.RenderProperty.TargetAltitude,

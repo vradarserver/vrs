@@ -397,6 +397,7 @@ namespace VRS
         operator:               StringValue =                       new StringValue();
         operatorIcao:           StringValue =                       new StringValue();
         squawk:                 StringValue =                       new StringValue();
+        identActive:            BoolValue =                         new BoolValue();
         isEmergency:            BoolValue =                         new BoolValue();
         distanceFromHereKm:     NumberValue =                       new NumberValue();
         bearingFromHere:        NumberValue =                       new NumberValue();          // The bearing from the browser's location to the aircraft, assuming that the browser is pointing due north
@@ -472,6 +473,7 @@ namespace VRS
             this.setValue(this.operator,             aircraftJson.Op);
             this.setValue(this.operatorIcao,         aircraftJson.OpIcao);
             this.setValue(this.squawk,               aircraftJson.Sqk);
+            this.setValue(this.identActive,          aircraftJson.Ident);
             this.setValue(this.isEmergency,          aircraftJson.Help);
             this.setValue(this.distanceFromHereKm,   aircraftJson.Dst, true);
             this.setValue(this.bearingFromHere,      aircraftJson.Brng, true);
@@ -1040,6 +1042,22 @@ namespace VRS
         formatIcao() : string
         {
             return VRS.format.icao(this.icao.val);
+        }
+
+        /**
+         * Returns 'IDENT' if the ident is active or an empty string if it is not.
+         */
+        formatIdent() : string
+        {
+            return VRS.format.ident(this.identActive.val);
+        }
+
+        /**
+         * Formats the aircraft's Ident Active value as a string.
+         */
+        formatIdentActive() : string
+        {
+            return VRS.format.identActive(this.identActive.val);
         }
 
         /**

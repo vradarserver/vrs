@@ -186,6 +186,7 @@ var VRS;
             this.operator = new StringValue();
             this.operatorIcao = new StringValue();
             this.squawk = new StringValue();
+            this.identActive = new BoolValue();
             this.isEmergency = new BoolValue();
             this.distanceFromHereKm = new NumberValue();
             this.bearingFromHere = new NumberValue();
@@ -254,6 +255,7 @@ var VRS;
             this.setValue(this.operator, aircraftJson.Op);
             this.setValue(this.operatorIcao, aircraftJson.OpIcao);
             this.setValue(this.squawk, aircraftJson.Sqk);
+            this.setValue(this.identActive, aircraftJson.Ident);
             this.setValue(this.isEmergency, aircraftJson.Help);
             this.setValue(this.distanceFromHereKm, aircraftJson.Dst, true);
             this.setValue(this.bearingFromHere, aircraftJson.Brng, true);
@@ -600,6 +602,12 @@ var VRS;
         };
         Aircraft.prototype.formatIcao = function () {
             return VRS.format.icao(this.icao.val);
+        };
+        Aircraft.prototype.formatIdent = function () {
+            return VRS.format.ident(this.identActive.val);
+        };
+        Aircraft.prototype.formatIdentActive = function () {
+            return VRS.format.identActive(this.identActive.val);
         };
         Aircraft.prototype.formatIsMilitary = function () {
             return VRS.format.isMilitary(this.isMilitary.val);

@@ -1268,37 +1268,37 @@ namespace Test.VirtualRadar.WebSite
 
                 switch(property.Name) {
                     // All of these are properties that we want filled in
-                    case "HasSignalLevel":
-                    case "SignalLevel":
-                    case "Icao24":
-                    case "Altitude":
-                    case "AltitudeType":
-                    case "TargetAltitude":
-                    case "Callsign":
-                    case "Latitude":
-                    case "Longitude":
-                    case "PositionIsMlat":
-                    case "GroundSpeed":
-                    case "Track":
-                    case "TrackIsHeading":
-                    case "TargetTrack":
-                    case "Squawk":
-                    case "Emergency":
-                    case "VerticalRate":
-                    case "VerticalRateType":
-                    case "OnGround":
-                    case "SpeedType":
-                    case "CallsignIsSuspect":
-                    case "TransponderType":
-                    case "IsTisb":
-                    case "AirPressureInHg":
-                    case "GeometricAltitude":
-                    case "IsSatcomFeed":
+                    case nameof(AircraftJson.AirPressureInHg):
+                    case nameof(AircraftJson.Altitude):
+                    case nameof(AircraftJson.AltitudeType):
+                    case nameof(AircraftJson.Callsign):
+                    case nameof(AircraftJson.CallsignIsSuspect):
+                    case nameof(AircraftJson.Emergency):
+                    case nameof(AircraftJson.GeometricAltitude):
+                    case nameof(AircraftJson.GroundSpeed):
+                    case nameof(AircraftJson.HasSignalLevel):
+                    case nameof(AircraftJson.Icao24):
+                    case nameof(AircraftJson.IdentActive):
+                    case nameof(AircraftJson.IsSatcomFeed):
+                    case nameof(AircraftJson.IsTisb):
+                    case nameof(AircraftJson.Latitude):
+                    case nameof(AircraftJson.Longitude):
+                    case nameof(AircraftJson.OnGround):
+                    case nameof(AircraftJson.PositionIsMlat):
+                    case nameof(AircraftJson.SignalLevel):
+                    case nameof(AircraftJson.SpeedType):
+                    case nameof(AircraftJson.Squawk):
+                    case nameof(AircraftJson.TargetAltitude):
+                    case nameof(AircraftJson.TargetTrack):
+                    case nameof(AircraftJson.Track):
+                    case nameof(AircraftJson.TrackIsHeading):
+                    case nameof(AircraftJson.TransponderType):
+                    case nameof(AircraftJson.VerticalRate):
+                    case nameof(AircraftJson.VerticalRateType):
                         Assert.IsFalse(isEmpty, property.Name);
                         break;
                     // These are properties that get filled in whether we like it or not
-                    case "UniqueId":
-                    case "DataVersion":
+                    case nameof(AircraftJson.UniqueId):
                         break;
                     // And everything else should be null / default
                     default:

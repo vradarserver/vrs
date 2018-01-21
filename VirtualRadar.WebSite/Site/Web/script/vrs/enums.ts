@@ -367,6 +367,7 @@ namespace VRS
         Heading:                        'hdg',
         HeadingType:                    'hty',
         Icao:                           'ico',
+        IdentActive:                    'ida',
         Interesting:                    'int',
         Latitude:                       'lat',
         Longitude:                      'lng',
@@ -395,6 +396,7 @@ namespace VRS
         SpeedType:                      'sty',
 //        SpeedGraph:                     'spg',
         Squawk:                         'sqk',
+        SquawkAndIdent:           'sqi',
         TargetAltitude:                 'tal',
         TargetHeading:                  'thd',
         TimeTracked:                    'tim',
@@ -651,4 +653,3 @@ namespace VRS
         Heavy:          3
     };
 }
- 

@@ -224,6 +224,12 @@ var VRS;
         Format.prototype.icao = function (icao) {
             return icao ? icao : '';
         };
+        Format.prototype.ident = function (identActive) {
+            return identActive ? VRS.$$.IDENT : '';
+        };
+        Format.prototype.identActive = function (identActive) {
+            return identActive === undefined || identActive === null ? '' : identActive ? VRS.$$.Yes : VRS.$$.No;
+        };
         Format.prototype.isMlat = function (isMlat) {
             return isMlat === undefined || isMlat === null ? '' : isMlat ? VRS.$$.Yes : VRS.$$.No;
         };

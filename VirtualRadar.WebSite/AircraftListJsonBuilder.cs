@@ -332,6 +332,7 @@ namespace VirtualRadar.WebSite
                 if(firstTimeSeen || aircraftSnapshot.EmergencyChanged > args.PreviousDataVersion)                       aircraftJson.Emergency = aircraftSnapshot.Emergency;
                 if(firstTimeSeen || aircraftSnapshot.GeometricAltitudeChanged > args.PreviousDataVersion)               aircraftJson.GeometricAltitude = aircraftSnapshot.GeometricAltitude;
                 if(firstTimeSeen || args.AlwaysShowIcao || aircraftSnapshot.Icao24Changed > args.PreviousDataVersion)   aircraftJson.Icao24 = aircraftSnapshot.Icao24;
+                if(firstTimeSeen || aircraftSnapshot.IdentActiveChanged > args.PreviousDataVersion)                     aircraftJson.IdentActive = aircraftSnapshot.IdentActive;
                 if(firstTimeSeen || aircraftSnapshot.IsTisbChanged > args.PreviousDataVersion)                          aircraftJson.IsTisb = aircraftSnapshot.IsTisb;
                 if(firstTimeSeen || aircraftSnapshot.LatitudeChanged > args.PreviousDataVersion)                        aircraftJson.Latitude = Round.Coordinate(aircraftSnapshot.Latitude);
                 if(firstTimeSeen || aircraftSnapshot.LongitudeChanged > args.PreviousDataVersion)                       aircraftJson.Longitude = Round.Coordinate(aircraftSnapshot.Longitude);

@@ -1828,4 +1828,17 @@
     <value>en-EN</value>
     <comment>DO NOT TRANSLATE. Used by unit tests.</comment>
   </data>
+  <data name="IDENT" xml:space="preserve">
+    <value>IDENT</value>
+    <comment>Short for identity, aviation industry term that may not need translating?</comment>
+  </data>
+  <data name="IdentActive" xml:space="preserve">
+    <value>Ident Active</value>
+  </data>
+  <data name="ListIdentActive" xml:space="preserve">
+    <value>Ident Active</value>
+  </data>
+  <data name="SquawkAndIdent" xml:space="preserve">
+    <value>Squawk &amp; Ident</value>
+  </data>
 </root>

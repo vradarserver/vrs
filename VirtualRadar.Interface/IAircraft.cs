@@ -297,6 +297,16 @@ namespace VirtualRadar.Interface
         long SquawkChanged { get; }
 
         /// <summary>
+        /// Gets or sets a value indicating that the aircraft's ident is active.
+        /// </summary>
+        bool? IdentActive { get; set; }
+
+        /// <summary>
+        /// Gets the <see cref="DataVersion"/> that was current when <see cref="IdentActive"/> was last changed.
+        /// </summary>
+        long IdentActiveChanged { get; }
+
+        /// <summary>
         /// Gets or sets a value indicating that the <see cref="Squawk"/> represents an emergency code.
         /// </summary>
         bool? Emergency { get; set; }

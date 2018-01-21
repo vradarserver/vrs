@@ -1411,6 +1411,24 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IDENT.
+        /// </summary>
+        public static string IDENT {
+            get {
+                return ResourceManager.GetString("IDENT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ident Active.
+        /// </summary>
+        public static string IdentActive {
+            get {
+                return ResourceManager.GetString("IdentActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Import.
         /// </summary>
         public static string Import {
@@ -2163,6 +2181,15 @@ namespace VirtualRadar.WebSite {
         public static string ListIcao {
             get {
                 return ResourceManager.GetString("ListIcao", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ident Active.
+        /// </summary>
+        public static string ListIdentActive {
+            get {
+                return ResourceManager.GetString("ListIdentActive", resourceCulture);
             }
         }
         
@@ -4557,6 +4584,15 @@ namespace VirtualRadar.WebSite {
         public static string Squawk7700 {
             get {
                 return ResourceManager.GetString("Squawk7700", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Squawk &amp; Ident.
+        /// </summary>
+        public static string SquawkAndIdent {
+            get {
+                return ResourceManager.GetString("SquawkAndIdent", resourceCulture);
             }
         }
         

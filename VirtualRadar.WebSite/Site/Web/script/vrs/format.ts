@@ -402,6 +402,24 @@ namespace VRS
         }
 
         /**
+         * Returns 'IDENT' if ident is active, otherwise returns empty string.
+         * @param identActive
+         */
+        ident(identActive: boolean) : string
+        {
+            return identActive ? VRS.$$.IDENT : '';
+        }
+
+        /**
+         * Formats the value passed across as an Ident Active flag.
+         * @param identActive
+         */
+        identActive(identActive: boolean) : string
+        {
+            return identActive === undefined || identActive === null ? '' : identActive ? VRS.$$.Yes : VRS.$$.No;
+        }
+
+        /**
          * Formats the is-MLAT flag for display.
          */
         isMlat(isMlat: boolean) : string

@@ -248,6 +248,12 @@ namespace VirtualRadar.Interface.WebSite
         public string Squawk { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether ident is active.
+        /// </summary>
+        [DataMember(Name="Ident", IsRequired=false, EmitDefaultValue=false)]
+        public bool? IdentActive { get; set; }
+
+        /// <summary>
         /// Gets or sets a flag indicating that the aircraft is transmitting a mayday squawk.
         /// </summary>
         [DataMember(Name="Help", IsRequired=false, EmitDefaultValue=false)]

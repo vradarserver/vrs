@@ -573,6 +573,9 @@ namespace VirtualRadar.Library.BaseStation
                         aircraft.Squawk = message.Squawk;
                         aircraft.Emergency = message.Squawk == 7500 || message.Squawk == 7600 || message.Squawk == 7700;
                     }
+                    if(message.IdentActive != null) {
+                      aircraft.IdentActive = message.IdentActive;
+                    }
 
                     if(aircraft.TransponderType == TransponderType.ModeS) {
                         if((message.GroundSpeed != null && message.GroundSpeed != 0) ||
