@@ -18,6 +18,7 @@ using InterfaceFactory;
 using Owin;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.WebSite;
+using System.Net.Http.Formatting;
 
 namespace VirtualRadar.WebSite
 {
@@ -111,6 +112,16 @@ namespace VirtualRadar.WebSite
                 name:           "DefaultApi",
                 routeTemplate:  "api/{controller}/{id}",
                 defaults:       new { id = RouteParameter.Optional }
+            );
+
+            configuration.Formatters.JsonFormatter.MediaTypeMappings.Add(
+                new RequestHeaderMapping(
+                    "Accept",
+                    "text/html",
+                    StringComparison.OrdinalIgnoreCase,
+                    true,
+                    "application/json"
+                )
             );
         }
 

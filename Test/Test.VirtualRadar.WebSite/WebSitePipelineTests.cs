@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Formatting;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -185,6 +186,25 @@ namespace Test.VirtualRadar.WebSite
             Assert.AreEqual(2, httpConfiguration.Routes.Count);
             Assert.AreEqual("", httpConfiguration.Routes[0].RouteTemplate);                         // Added by MapAttributeRoutes
             Assert.AreEqual("api/{controller}/{id}", httpConfiguration.Routes[1].RouteTemplate);    // Added by WebSitePipeline
+        }
+
+        [TestMethod]
+        public void WebSitePipeline_Sets_Json_As_Default_Format_For_Microsoft_WebApi_TextHtml_Requests()
+        {
+            var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
+            _Pipeline.Register(webAppConfiguration);
+
+            var mockAppBuilder = TestUtilities.CreateMockInstance<IAppBuilder>();
+            webAppConfiguration.Configure(mockAppBuilder.Object);
+
+            var httpConfiguration = webAppConfiguration.GetHttpConfiguration();
+            var mapping = httpConfiguration.Formatters.JsonFormatter.MediaTypeMappings
+                .OfType<RequestHeaderMapping>()
+                .FirstOrDefault(r => String.Equals(r.HeaderValue, "text/html"));
+            Assert.IsNotNull(mapping);
+            Assert.AreEqual("Accept", mapping.HeaderName, ignoreCase: true);
+            Assert.AreEqual(StringComparison.OrdinalIgnoreCase, mapping.HeaderValueComparison);
+            Assert.AreEqual("application/json", mapping.MediaType.MediaType, ignoreCase: true);
         }
 
         [TestMethod]
