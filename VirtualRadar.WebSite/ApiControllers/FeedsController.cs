@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using InterfaceFactory;
 using VirtualRadar.Interface;
@@ -294,13 +295,70 @@ namespace VirtualRadar.WebSite.ApiControllers
         }
 
         /// <summary>
-        /// Version 2 endpoint for fetching all aircraft on the feed.
+        /// Old version 2 endpoint that was accessed via GET and accepted known aircraft in a header.
         /// </summary>
+        /// <param name="feed"></param>
+        /// <param name="lat"></param>
+        /// <param name="lng"></param>
+        /// <param name="ldv"></param>
+        /// <param name="stm"></param>
+        /// <param name="refreshTrails"></param>
+        /// <param name="selAc"></param>
+        /// <param name="trFmt"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("AircraftList.json")]            // pre-version 3 route
+        [Route("FlightSimList.json")]           // pre-version 3 route
+        public AircraftListJson AircraftListV2Get([FromUri] int feed = -1, double? lat = null, double? lng = null, long ldv = -1, long stm = -1, byte refreshTrails = 0, int selAc = -1, string trFmt = null)
+        {
+            var isFlightSimList = RequestContext.RouteData.Route.RouteTemplate == "FlightSimList.json";
+            var args = new AircraftListJsonBuilderArgs() {
+                BrowserLatitude =       lat,
+                BrowserLongitude =      lng,
+                IsFlightSimulatorList = isFlightSimList,
+                PreviousDataVersion =   ldv,
+                ResendTrails =          refreshTrails == 1,
+                SelectedAircraftId =    selAc,
+                ServerTimeTicks =       stm,
+                SourceFeedId =          feed,
+                Filter =                AircraftListJsonBuilderFilterFromQueryString(),
+                TrailType =             TrailTypeFromCode(trFmt),
+            };
+            SortByFromQueryString(args);
+            PreviousAircraftFromHeader(args);
+
+            return BuildAircraftList(args);
+        }
+
+        private void PreviousAircraftFromHeader(AircraftListJsonBuilderArgs args)
+        {
+            var previousAircraftIds = PipelineRequest.Headers["X-VirtualRadarServer-AircraftIds"];
+            if(!String.IsNullOrEmpty(previousAircraftIds)) {
+                var decodedPreviousAircraftIds = HttpUtility.UrlDecode(previousAircraftIds);
+                foreach(var chunk in decodedPreviousAircraftIds.Split(',')) {
+                    if(int.TryParse(chunk, out var id)) {
+                        args.PreviousAircraft.Add(id);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Improved version 2 endpoint that was accessed via POST and accepted known aircraft in the body.
+        /// </summary>
+        /// <param name="feed"></param>
+        /// <param name="lat"></param>
+        /// <param name="lng"></param>
+        /// <param name="ldv"></param>
+        /// <param name="stm"></param>
+        /// <param name="refreshTrails"></param>
+        /// <param name="selAc"></param>
+        /// <param name="trFmt"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("AircraftList.json")]            // pre-version 3 route
         [Route("FlightSimList.json")]           // pre-version 3 route
-        public AircraftListJson AircraftListV2([FromUri] int feed = -1, double? lat = null, double? lng = null, long ldv = -1, long stm = -1, byte refreshTrails = 0, int selAc = -1, string trFmt = null)
+        public AircraftListJson AircraftListV2Post([FromUri] int feed = -1, double? lat = null, double? lng = null, long ldv = -1, long stm = -1, byte refreshTrails = 0, int selAc = -1, string trFmt = null)
         {
             var isFlightSimList = RequestContext.RouteData.Route.RouteTemplate == "FlightSimList.json";
             var args = new AircraftListJsonBuilderArgs() {

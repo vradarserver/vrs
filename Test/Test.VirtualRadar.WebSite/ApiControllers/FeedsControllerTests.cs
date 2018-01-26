@@ -491,9 +491,18 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
         #region AircraftList
         [TestMethod]
-        public async Task FeedsController_AircraftList_Returns_Default_Aircraft_List_V2()
+        public async Task FeedsController_AircraftList_Returns_Default_Aircraft_List_V2_POST()
         {
             var response = await _Server.HttpClient.PostAsync("AircraftList.json", _EmptyPostBody);
+
+            var expected = ExpectedAircraftListJsonBuilderArgs();
+            AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Returns_Default_Aircraft_List_V2_GET()
+        {
+            var response = await _Server.HttpClient.GetAsync("AircraftList.json");
 
             var expected = ExpectedAircraftListJsonBuilderArgs();
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
@@ -509,9 +518,18 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Feed_V2()
+        public async Task FeedsController_AircraftList_Can_Specify_Feed_V2_POST()
         {
             var response = await _Server.HttpClient.PostAsync("AircraftList.json?feed=7", _EmptyPostBody);
+
+            var expected = ExpectedAircraftListJsonBuilderArgs(feedId: 7);
+            AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Can_Specify_Feed_V2_GET()
+        {
+            var response = await _Server.HttpClient.GetAsync("AircraftList.json?feed=7");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(feedId: 7);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
@@ -527,9 +545,18 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Browser_Location_V2()
+        public async Task FeedsController_AircraftList_Can_Specify_Browser_Location_V2_POST()
         {
             var response = await _Server.HttpClient.PostAsync("AircraftList.json?lat=1.2&lng=3.4", _EmptyPostBody);
+
+            var expected = ExpectedAircraftListJsonBuilderArgs(latitude: 1.2, longitude: 3.4);
+            AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Can_Specify_Browser_Location_V2_GET()
+        {
+            var response = await _Server.HttpClient.GetAsync("AircraftList.json?lat=1.2&lng=3.4");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(latitude: 1.2, longitude: 3.4);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
@@ -548,7 +575,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Identifies_Internet_Clients_V2()
+        public async Task FeedsController_AircraftList_Identifies_Internet_Clients_V2_POST()
         {
             _RemoteIpAddress = "127.0.0.1";
             await _Server.HttpClient.PostAsync("AircraftList.json", _EmptyPostBody);
@@ -559,6 +586,21 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             _RemoteIpAddress = "1.2.3.4";
             await _Server.HttpClient.PostAsync("AircraftList.json", _EmptyPostBody);
+            Assert.AreEqual(true, _ActualAircraftListJsonBuilderArgs.IsInternetClient);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Identifies_Internet_Clients_V2_GET()
+        {
+            _RemoteIpAddress = "127.0.0.1";
+            await _Server.HttpClient.GetAsync("AircraftList.json");
+            Assert.AreEqual(false, _ActualAircraftListJsonBuilderArgs.IsInternetClient);
+
+            TestCleanup();
+            TestInitialise();
+
+            _RemoteIpAddress = "1.2.3.4";
+            await _Server.HttpClient.GetAsync("AircraftList.json");
             Assert.AreEqual(true, _ActualAircraftListJsonBuilderArgs.IsInternetClient);
         }
 
@@ -578,9 +620,18 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Last_DataVersion_V2()
+        public async Task FeedsController_AircraftList_Can_Specify_Last_DataVersion_V2_POST()
         {
             var response = await _Server.HttpClient.PostAsync("AircraftList.json?ldv=12", _EmptyPostBody);
+
+            var expected = ExpectedAircraftListJsonBuilderArgs(previousDataVersion: 12);
+            AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Can_Specify_Last_DataVersion_V2_GET()
+        {
+            var response = await _Server.HttpClient.GetAsync("AircraftList.json?ldv=12");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(previousDataVersion: 12);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
@@ -598,9 +649,18 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_ServerTimeTicks_V2()
+        public async Task FeedsController_AircraftList_Can_Specify_ServerTimeTicks_V2_POST()
         {
             var response = await _Server.HttpClient.PostAsync("AircraftList.json?stm=12", _EmptyPostBody);
+
+            var expected = ExpectedAircraftListJsonBuilderArgs(serverTimeTicks: 12);
+            AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Can_Specify_ServerTimeTicks_V2_GET()
+        {
+            var response = await _Server.HttpClient.GetAsync("AircraftList.json?stm=12");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(serverTimeTicks: 12);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
@@ -618,9 +678,18 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Force_Resend_Of_Trails_V2()
+        public async Task FeedsController_AircraftList_Can_Force_Resend_Of_Trails_V2_POST()
         {
             var response = await _Server.HttpClient.PostAsync("AircraftList.json?refreshTrails=1", _EmptyPostBody);
+
+            var expected = ExpectedAircraftListJsonBuilderArgs(resendTrails: true);
+            AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Can_Force_Resend_Of_Trails_V2_GET()
+        {
+            var response = await _Server.HttpClient.GetAsync("AircraftList.json?refreshTrails=1");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(resendTrails: true);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
@@ -638,9 +707,18 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_SelectedAircraft_V2()
+        public async Task FeedsController_AircraftList_Can_Specify_SelectedAircraft_V2_POST()
         {
             var response = await _Server.HttpClient.PostAsync("AircraftList.json?selAc=8", _EmptyPostBody);
+
+            var expected = ExpectedAircraftListJsonBuilderArgs(selectedAircraftID: 8);
+            AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Can_Specify_SelectedAircraft_V2_GET()
+        {
+            var response = await _Server.HttpClient.GetAsync("AircraftList.json?selAc=8");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(selectedAircraftID: 8);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
@@ -658,9 +736,18 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_FSX_AircraftList_V2()
+        public async Task FeedsController_AircraftList_Can_Specify_FSX_AircraftList_V2_POST()
         {
             var response = await _Server.HttpClient.PostAsync("flightsimlist.json", _EmptyPostBody);
+
+            var expected = ExpectedAircraftListJsonBuilderArgs(isFlightSimulator: true);
+            AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Can_Specify_FSX_AircraftList_V2_GET()
+        {
+            var response = await _Server.HttpClient.GetAsync("flightsimlist.json");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(isFlightSimulator: true);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
@@ -678,9 +765,18 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Ignores_Feed_For_FSX_V2()
+        public async Task FeedsController_AircraftList_Ignores_Feed_For_FSX_V2_POST()
         {
             var response = await _Server.HttpClient.PostAsync("FLIGHTSimList.json?feed=7", _EmptyPostBody);
+
+            var expected = ExpectedAircraftListJsonBuilderArgs(isFlightSimulator: true, feedId: -1);
+            AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Ignores_Feed_For_FSX_V2_GET()
+        {
+            var response = await _Server.HttpClient.GetAsync("FLIGHTSimList.json?feed=7");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(isFlightSimulator: true, feedId: -1);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
@@ -700,7 +796,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "AircraftListFilter$")]
-        public async Task FeedsController_AircraftList_Accepts_Filter_Requests_V2()
+        public async Task FeedsController_AircraftList_Accepts_Filter_Requests_V2_POST()
         {
             var worksheet = new ExcelWorksheetData(TestContext);
 
@@ -709,7 +805,23 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             if(!String.IsNullOrEmpty(key)) {
                 var queryString = $"{key}={value}";
-                await FeedsController_AircraftList_Accepts_Filter_Requests_Worker(worksheet, $"AircraftList.json?{queryString}", _EmptyPostBody);
+                await FeedsController_AircraftList_Accepts_Filter_Requests_Worker(worksheet, $"AircraftList.json?{queryString}", _EmptyPostBody, useGet: false);
+            }
+        }
+
+        [TestMethod]
+        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "AircraftListFilter$")]
+        public async Task FeedsController_AircraftList_Accepts_Filter_Requests_V2_GET()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+
+            var key = HttpUtility.UrlEncode(worksheet.String("V2Key"));
+            var value = HttpUtility.UrlEncode(worksheet.EString("V2Value"));
+
+            if(!String.IsNullOrEmpty(key)) {
+                var queryString = $"{key}={value}";
+                await FeedsController_AircraftList_Accepts_Filter_Requests_Worker(worksheet, $"AircraftList.json?{queryString}", null, useGet: true);
             }
         }
 
@@ -728,13 +840,18 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                     Filters = new GetAircraftListFilter[] {
                         deserialisedJson
                     }
-                }));
+                }), useGet: false);
             }
         }
 
-        private async Task FeedsController_AircraftList_Accepts_Filter_Requests_Worker(ExcelWorksheetData worksheet, string url, HttpContent postBody)
+        private async Task FeedsController_AircraftList_Accepts_Filter_Requests_Worker(ExcelWorksheetData worksheet, string url, HttpContent postBody, bool useGet)
         {
-            var response = await _Server.HttpClient.PostAsync(url, postBody);
+            HttpResponseMessage response;
+            if(useGet) {
+                response = await _Server.HttpClient.GetAsync(url);
+            } else {
+                response = await _Server.HttpClient.PostAsync(url, postBody);
+            }
 
             AircraftListJsonBuilderFilter jsonFilter = null;
 
@@ -777,10 +894,23 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "AircraftListFilterName$")]
-        public async Task FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V2()
+        public async Task FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V2_POST()
         {
             var worksheet = new ExcelWorksheetData(TestContext);
+            await Test_FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V2(worksheet, useGet: false);
+        }
 
+        [TestMethod]
+        [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "AircraftListFilterName$")]
+        public async Task FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V2_GET()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+            await Test_FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V2(worksheet, useGet: true);
+        }
+
+        private async Task Test_FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V2(ExcelWorksheetData worksheet, bool useGet)
+        {
             var propertyName = HttpUtility.UrlEncode(worksheet.String("FilterProperty"));
             var queryStringKey = HttpUtility.UrlEncode(worksheet.EString("QueryStringKey"));
 
@@ -819,7 +949,12 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                     case "QN":  conditionIsValid = isStringFilter | isBoolFilter | isEnumFilter; break;
                 }
 
-                var response = await _Server.HttpClient.PostAsync($"AircraftList.json?{queryString}", _EmptyPostBody);
+                HttpResponseMessage response;
+                if(useGet) {
+                    response = await _Server.HttpClient.GetAsync($"AircraftList.json?{queryString}");
+                } else {
+                    response = await _Server.HttpClient.PostAsync($"AircraftList.json?{queryString}", _EmptyPostBody);
+                }
                 var filterUsed = _ActualAircraftListJsonBuilderArgs.Filter;
                 var actualFilter = filterUsed == null ? null : property.GetValue(_ActualAircraftListJsonBuilderArgs.Filter, null);
 
@@ -890,9 +1025,20 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Filters_Accept_Full_Set_Of_Bounds_V2()
+        public async Task FeedsController_AircraftList_Filters_Accept_Full_Set_Of_Bounds_V2_POST()
         {
             var response = await _Server.HttpClient.PostAsync($"AircraftList.json?FNBnd=1.2&FSBnd=3.4&FWBnd=5.6&FEBnd=7.8", _EmptyPostBody);
+
+            Assert.AreEqual(1.2, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.First.Latitude);
+            Assert.AreEqual(5.6, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.First.Longitude);
+            Assert.AreEqual(3.4, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.Second.Latitude);
+            Assert.AreEqual(7.8, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.Second.Longitude);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Filters_Accept_Full_Set_Of_Bounds_V2_GET()
+        {
+            var response = await _Server.HttpClient.GetAsync($"AircraftList.json?FNBnd=1.2&FSBnd=3.4&FWBnd=5.6&FEBnd=7.8");
 
             Assert.AreEqual(1.2, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.First.Latitude);
             Assert.AreEqual(5.6, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.First.Longitude);
@@ -923,9 +1069,17 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Filters_Ignore_Partial_Set_Of_Bounds_V2()
+        public async Task FeedsController_AircraftList_Filters_Ignore_Partial_Set_Of_Bounds_V2_POST()
         {
             var response = await _Server.HttpClient.PostAsync($"AircraftList.json?FNBnd=1.2&FWBnd=5.6", _EmptyPostBody);
+
+            Assert.IsNull(_ActualAircraftListJsonBuilderArgs.Filter);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Filters_Ignore_Partial_Set_Of_Bounds_V2_GET()
+        {
+            var response = await _Server.HttpClient.GetAsync($"AircraftList.json?FNBnd=1.2&FWBnd=5.6");
 
             Assert.IsNull(_ActualAircraftListJsonBuilderArgs.Filter);
         }
@@ -948,7 +1102,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Trail_Format_V2()
+        public async Task FeedsController_AircraftList_Can_Specify_Trail_Format_V2_POST()
         {
             foreach(var queryStringValue in new string[] { "F", "FA", "FS", "S", "SA", "SS" }) {
                 TestCleanup();
@@ -972,7 +1126,31 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Trail_Format_Is_Case_Insensitive_V2()
+        public async Task FeedsController_AircraftList_Can_Specify_Trail_Format_V2_GET()
+        {
+            foreach(var queryStringValue in new string[] { "F", "FA", "FS", "S", "SA", "SS" }) {
+                TestCleanup();
+                TestInitialise();
+
+                var trailType = TrailType.None;
+                switch(queryStringValue) {
+                    case "F":   trailType = TrailType.Full; break;
+                    case "FA":  trailType = TrailType.FullAltitude; break;
+                    case "FS":  trailType = TrailType.FullSpeed; break;
+                    case "S":   trailType = TrailType.Short; break;
+                    case "SA":  trailType = TrailType.ShortAltitude; break;
+                    case "SS":  trailType = TrailType.ShortSpeed; break;
+                }
+
+                var expected = ExpectedAircraftListJsonBuilderArgs(trailType: trailType);
+                var response = await _Server.HttpClient.GetAsync($"AircraftList.json?trFmt={queryStringValue}");
+
+                AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+            }
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Trail_Format_Is_Case_Insensitive_V2_POST()
         {
             foreach(var upperCase in new bool[] { true, false }) {
                 TestCleanup();
@@ -985,6 +1163,25 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
                 var expected = ExpectedAircraftListJsonBuilderArgs(trailType: TrailType.FullAltitude);
                 var response = await _Server.HttpClient.PostAsync($"AircraftList.json?{queryString}", _EmptyPostBody);
+
+                AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+            }
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Trail_Format_Is_Case_Insensitive_V2_GET()
+        {
+            foreach(var upperCase in new bool[] { true, false }) {
+                TestCleanup();
+                TestInitialise();
+
+                var queryString = "trfmt=fa";
+                if(upperCase) {
+                    queryString = queryString.ToUpper();
+                }
+
+                var expected = ExpectedAircraftListJsonBuilderArgs(trailType: TrailType.FullAltitude);
+                var response = await _Server.HttpClient.GetAsync($"AircraftList.json?{queryString}");
 
                 AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
             }
@@ -1007,7 +1204,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Single_Sort_Column_V2()
+        public async Task FeedsController_AircraftList_Can_Specify_Single_Sort_Column_V2_POST()
         {
             foreach(var aircraftComparerColumn in AircraftComparerColumns()) {
                 foreach(var sortOrder in new string[] { "asc", "desc" }) {
@@ -1019,6 +1216,25 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                         sortAscending1: sortOrder == "asc"
                     );
                     var response = await _Server.HttpClient.PostAsync($"AircraftList.json?sortBy1={aircraftComparerColumn}&sortOrder1={sortOrder}", _EmptyPostBody);
+
+                    AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Can_Specify_Single_Sort_Column_V2_GET()
+        {
+            foreach(var aircraftComparerColumn in AircraftComparerColumns()) {
+                foreach(var sortOrder in new string[] { "asc", "desc" }) {
+                    TestCleanup();
+                    TestInitialise();
+
+                    var expected = ExpectedAircraftListJsonBuilderArgs(
+                        sortColumn1: aircraftComparerColumn,
+                        sortAscending1: sortOrder == "asc"
+                    );
+                    var response = await _Server.HttpClient.GetAsync($"AircraftList.json?sortBy1={aircraftComparerColumn}&sortOrder1={sortOrder}");
 
                     AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
                 }
@@ -1049,7 +1265,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Two_Sort_Columns_V2()
+        public async Task FeedsController_AircraftList_Can_Specify_Two_Sort_Columns_V2_POST()
         {
             foreach(var aircraftComparerColumn in AircraftComparerColumns()) {
                 foreach(var sortOrder in new string[] { "asc", "desc" }) {
@@ -1066,6 +1282,30 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                     var response = await _Server.HttpClient.PostAsync($"AircraftList.json?sortBy1={AircraftComparerColumn.Altitude}&sortOrder1=ASC" +
                         $"&sortBy2={aircraftComparerColumn}&sortOrder2={sortOrder}",
                     _EmptyPostBody);
+
+                    AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Can_Specify_Two_Sort_Columns_V2_GET()
+        {
+            foreach(var aircraftComparerColumn in AircraftComparerColumns()) {
+                foreach(var sortOrder in new string[] { "asc", "desc" }) {
+                    TestCleanup();
+                    TestInitialise();
+
+                    var expected = ExpectedAircraftListJsonBuilderArgs(
+                        sortColumn1: AircraftComparerColumn.Altitude,
+                        sortAscending1: true,
+
+                        sortColumn2: aircraftComparerColumn,
+                        sortAscending2: sortOrder == "asc"
+                    );
+                    var response = await _Server.HttpClient.GetAsync($"AircraftList.json?sortBy1={AircraftComparerColumn.Altitude}&sortOrder1=ASC" +
+                        $"&sortBy2={aircraftComparerColumn}&sortOrder2={sortOrder}"
+                    );
 
                     AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
                 }
@@ -1100,7 +1340,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Single_Known_Aircraft_V2()
+        public async Task FeedsController_AircraftList_Can_Specify_Single_Known_Aircraft_V2_POST()
         {
             var expected = ExpectedAircraftListJsonBuilderArgs(previousAircraft: new int[] {
                 0x4008f6,
@@ -1109,6 +1349,20 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             var response = await _Server.HttpClient.PostAsync($"AircraftList.json", HttpContentHelper.FormUrlEncoded(new string[,] {
                 { "icaos", "4008f6" }
             }));
+
+            AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Can_Specify_Single_Known_Aircraft_V2_GET()
+        {
+            var expected = ExpectedAircraftListJsonBuilderArgs(previousAircraft: new int[] {
+                0x4008f6,
+            });
+
+            var message = new HttpRequestMessage(HttpMethod.Get, $"AircraftList.json");
+            message.Headers.Add("X-VirtualRadarServer-AircraftIds", "4196598");
+            var response = await _Server.HttpClient.SendAsync(message);
 
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
@@ -1130,7 +1384,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Many_Known_Aircraft_V2()
+        public async Task FeedsController_AircraftList_Can_Specify_Many_Known_Aircraft_V2_POST()
         {
             var expected = ExpectedAircraftListJsonBuilderArgs(previousAircraft: new int[] {
                 0x4008f6,
@@ -1140,6 +1394,21 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             var response = await _Server.HttpClient.PostAsync($"AircraftList.json", HttpContentHelper.FormUrlEncoded(new string[,] {
                 { "icaos", "4008f6-A88CC0" }
             }));
+
+            AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Can_Specify_Many_Known_Aircraft_V2_GET()
+        {
+            var expected = ExpectedAircraftListJsonBuilderArgs(previousAircraft: new int[] {
+                0x4008f6,
+                0xA88CC0,
+            });
+
+            var message = new HttpRequestMessage(HttpMethod.Get, $"AircraftList.json");
+            message.Headers.Add("X-VirtualRadarServer-AircraftIds",$"4196598,11046080");
+            var response = await _Server.HttpClient.SendAsync(message);
 
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
@@ -1162,13 +1431,25 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Ignores_Invalid_Known_Aircraft_V2()
+        public async Task FeedsController_AircraftList_Can_Ignores_Invalid_Known_Aircraft_V2_POST()
         {
             var expected = ExpectedAircraftListJsonBuilderArgs();
 
             var response = await _Server.HttpClient.PostAsync($"AircraftList.json", HttpContentHelper.FormUrlEncoded(new string[,] {
                 { "icaos", "ANDREW" }
             }));
+
+            AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Can_Ignores_Invalid_Known_Aircraft_V2_GET()
+        {
+            var expected = ExpectedAircraftListJsonBuilderArgs();
+
+            var message = new HttpRequestMessage(HttpMethod.Get, $"AircraftList.json");
+            message.Headers.Add("X-VirtualRadarServer-AircraftIds",$"ANDREW");
+            var response = await _Server.HttpClient.SendAsync(message);
 
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
@@ -1188,7 +1469,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_V2_Can_Post_Known_Aircraft_And_QueryString_Values()
+        public async Task FeedsController_AircraftList_V2_POST_Can_Post_Known_Aircraft_And_QueryString_Values()
         {
             var expected = ExpectedAircraftListJsonBuilderArgs(previousAircraft: new int[] {
                 0x4008f6,
@@ -1202,7 +1483,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Sets_ServerConfigChanged_If_Changed_V2()
+        public async Task FeedsController_AircraftList_Sets_ServerConfigChanged_If_Changed_V2_POST()
         {
             var configLastLoaded = new DateTime(1, 7, 29);
             var configLastLoadedTicks = JavascriptHelper.ToJavascriptTicks(configLastLoaded);
@@ -1210,6 +1491,21 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
 
             var response = await _Server.HttpClient.PostAsync($"AircraftList.json?stm={configLastLoadedTicks - 1}", _EmptyPostBody);
+            var jsonText = response.Content.ReadAsStringAsync().Result;
+            var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
+
+            Assert.IsTrue(aircraftList.ServerConfigChanged);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Sets_ServerConfigChanged_If_Changed_V2_GET()
+        {
+            var configLastLoaded = new DateTime(1, 7, 29);
+            var configLastLoadedTicks = JavascriptHelper.ToJavascriptTicks(configLastLoaded);
+
+            _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
+
+            var response = await _Server.HttpClient.GetAsync($"AircraftList.json?stm={configLastLoadedTicks - 1}");
             var jsonText = response.Content.ReadAsStringAsync().Result;
             var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
 
@@ -1234,7 +1530,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Clears_ServerConfigChanged_If_Not_Changed_V2()
+        public async Task FeedsController_AircraftList_Clears_ServerConfigChanged_If_Not_Changed_V2_POST()
         {
             var configLastLoaded = new DateTime(1, 7, 29);
             var configLastLoadedTicks = JavascriptHelper.ToJavascriptTicks(configLastLoaded);
@@ -1242,6 +1538,21 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
 
             var response = await _Server.HttpClient.PostAsync($"AircraftList.json?stm={configLastLoadedTicks + 1}", _EmptyPostBody);
+            var jsonText = response.Content.ReadAsStringAsync().Result;
+            var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
+
+            Assert.IsFalse(aircraftList.ServerConfigChanged);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Clears_ServerConfigChanged_If_Not_Changed_V2_GET()
+        {
+            var configLastLoaded = new DateTime(1, 7, 29);
+            var configLastLoadedTicks = JavascriptHelper.ToJavascriptTicks(configLastLoaded);
+
+            _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
+
+            var response = await _Server.HttpClient.GetAsync($"AircraftList.json?stm={configLastLoadedTicks + 1}");
             var jsonText = response.Content.ReadAsStringAsync().Result;
             var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
 
