@@ -37,23 +37,13 @@ namespace VirtualRadar.Interface
         Size ImageFileDimensions(string fileName);
 
         /// <summary>
-        /// Loads the image from the web site passed across. If caching is allowed then a clone of the cached
-        /// image is always returned.
-        /// </summary>
-        /// <param name="webSite"></param>
-        /// <param name="webPathAndFileName"></param>
-        /// <param name="useImageCache"></param>
-        /// <returns></returns>
-        //TODO: Get rid of this.
-        Image LoadFromWebSite(IWebSite webSite, string webPathAndFileName, bool useImageCache);
-
-        /// <summary>
         /// Loads an image using the standard web site pipeline. If caching is allowed then a clone of the
         /// cached image is always returned.
         /// </summary>
         /// <param name="webPathAndFileName"></param>
         /// <param name="useImageCache"></param>
+        /// <param name="owinEnvironment"></param>
         /// <returns></returns>
-        Image LoadFromStandardPipeline(string webPathAndFileName, bool useImageCache);
+        Image LoadFromStandardPipeline(string webPathAndFileName, bool useImageCache, IDictionary<string, object> owinEnvironment);
     }
 }

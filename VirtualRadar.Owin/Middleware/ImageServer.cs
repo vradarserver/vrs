@@ -203,7 +203,7 @@ namespace VirtualRadar.Owin.Middleware
                 Image tempImage = null;
 
                 try {
-                    result = BuildInitialImage(imageRequest, context.Request, ref stockImage, ref tempImage);
+                    result = BuildInitialImage(context, imageRequest, ref stockImage, ref tempImage);
 
                     if(result) {
                         var configuration = _SharedConfiguration.Get();
@@ -397,18 +397,20 @@ namespace VirtualRadar.Owin.Middleware
         /// <summary>
         /// Fills either of the stock image or temporary image parameters with the initial image to use (before any alterations are made).
         /// </summary>
+        /// <param name="context"></param>
         /// <param name="imageRequest"></param>
-        /// <param name="request"></param>
         /// <param name="stockImage"></param>
         /// <param name="tempImage"></param>
         /// <returns></returns>
-        private bool BuildInitialImage(ImageRequest imageRequest, PipelineRequest request, ref Image stockImage, ref Image tempImage)
+        private bool BuildInitialImage(PipelineContext context, ImageRequest imageRequest, ref Image stockImage, ref Image tempImage)
         {
             var result = true;
 
             if(imageRequest.WebSiteFileName != null) {
-                stockImage = _ImageServerConfiguration.ImageFileManager.LoadFromStandardPipeline(imageRequest.WebSiteFileName, !imageRequest.NoCache);
+                stockImage = _ImageServerConfiguration.ImageFileManager.LoadFromStandardPipeline(imageRequest.WebSiteFileName, !imageRequest.NoCache, context.Environment);
             } else {
+                var request = context.Request;
+
                 switch(imageRequest.ImageName) {
                     case "AIRPLANE":                stockImage = Images.Clone_Marker_Airplane(); break;
                     case "AIRPLANESELECTED":        stockImage = Images.Clone_Marker_AirplaneSelected(); break;

@@ -127,25 +127,13 @@ namespace VirtualRadar.Library
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="webSite"></param>
         /// <param name="webPathAndFileName"></param>
         /// <param name="useImageCache"></param>
+        /// <param name="owinEnvironment"></param>
         /// <returns></returns>
-        //TODO: Get rid of this
-        public Image LoadFromWebSite(IWebSite webSite, string webPathAndFileName, bool useImageCache)
+        public Image LoadFromStandardPipeline(string webPathAndFileName, bool useImageCache, IDictionary<string, object> owinEnvironment)
         {
-            return LoadFromSiteOrCache(webPathAndFileName, useImageCache, () => FetchFromWebSite(webSite, webPathAndFileName));
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="webPathAndFileName"></param>
-        /// <param name="useImageCache"></param>
-        /// <returns></returns>
-        public Image LoadFromStandardPipeline(string webPathAndFileName, bool useImageCache)
-        {
-            return LoadFromSiteOrCache(webPathAndFileName, useImageCache, () => FetchFromOwinPipeline(webPathAndFileName));
+            return LoadFromSiteOrCache(webPathAndFileName, useImageCache, () => FetchFromOwinPipeline(webPathAndFileName, owinEnvironment));
         }
 
         private Image LoadFromSiteOrCache(string webPathAndFileName, bool useImageCache, Func<Image> buildImage)
@@ -196,24 +184,14 @@ namespace VirtualRadar.Library
         }
 
         /// <summary>
-        /// Fetches an image from the web site passed across.
-        /// </summary>
-        /// <param name="webSite"></param>
-        /// <param name="webPathAndFileName"></param>
-        /// <returns></returns>
-        private Image FetchFromWebSite(IWebSite webSite, string webPathAndFileName)
-        {
-            return ExtractFromSimpleContent(webSite.RequestSimpleContent(webPathAndFileName));
-        }
-
-        /// <summary>
         /// Fetches an image from the standard OWIN pipeline.
         /// </summary>
         /// <param name="webPathAndFileName"></param>
+        /// <param name="owinEnvironment"></param>
         /// <returns></returns>
-        private Image FetchFromOwinPipeline(string webPathAndFileName)
+        private Image FetchFromOwinPipeline(string webPathAndFileName, IDictionary<string, object> owinEnvironment)
         {
-            return ExtractFromSimpleContent(_LoopbackHost.SendSimpleRequest(webPathAndFileName));
+            return ExtractFromSimpleContent(_LoopbackHost.SendSimpleRequest(webPathAndFileName, owinEnvironment));
         }
 
         private Image ExtractFromSimpleContent(SimpleContent simpleContent)
