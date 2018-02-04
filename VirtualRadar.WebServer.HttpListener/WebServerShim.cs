@@ -88,43 +88,55 @@ namespace VirtualRadar.WebServer.HttpListener
         public AppFunc ShimMiddleware(AppFunc next)
         {
             AppFunc appFunc = async(IDictionary<string, object> environment) => {
+                var startTime = WebServer.Provider.UtcNow;
                 var context = new Context(environment);
+                var requestArgs = new RequestReceivedEventArgs(context.Request, context.Response, WebServer.Root);
 
-                var handled = HandleRequest(context);
+                RaiseRequestReceivedEvents(context, requestArgs);
 
-                if(!handled) {
+                if(!requestArgs.Handled) {
                     await next.Invoke(environment);
                 }
+
+                RaiseRequestCompletedEvents(context, requestArgs, startTime);
             };
 
             return appFunc;
         }
 
         /// <summary>
-        /// Raises events on the web server object to expose a web request to the rest of the system.
+        /// Raises events that old web site code would use to listen for requests.
         /// </summary>
         /// <param name="context"></param>
-        /// <returns>True if the request was handled by the event handlers attached to the shim.</returns>
-        private bool HandleRequest(Context context)
+        /// <param name="requestArgs"></param>
+        private void RaiseRequestReceivedEvents(Context context, RequestReceivedEventArgs requestArgs)
         {
-            var result = false;
-
-            var requestArgs = new RequestReceivedEventArgs(context.Request, context.Response, WebServer.Root);
-            var requestReceivedEventArgsId = requestArgs.UniqueId;
-
             try {
-                var startTime = WebServer.Provider.UtcNow;
-
                 WebServer.OnBeforeRequestReceived(requestArgs);
                 WebServer.OnRequestReceived(requestArgs);
                 WebServer.OnAfterRequestReceived(requestArgs);
+            } catch(ThreadAbortException) {
+                ;
+            } catch(Exception ex) {
+                // The HttpListener version doesn't log these as there can be lot of them, but given that
+                // this stuff is all brand new I think I'd like to see what exceptions are being thrown
+                // during processing.
+                var log = Factory.Singleton.ResolveSingleton<ILog>();
+                log.WriteLine("Caught exception in general request handling event handlers: {0}", ex);
+            }
+        }
 
-                if(!requestArgs.Handled) {
-                    context.Response.StatusCode = HttpStatusCode.NotFound;
-                } else {
-                    result = true;
-                }
+        /// <summary>
+        /// Raises events that used to occur after a request had been processed.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="requestArgs"></param>
+        /// <param name="startTime"></param>
+        private void RaiseRequestCompletedEvents(Context context, RequestReceivedEventArgs requestArgs, DateTime startTime)
+        {
+            var requestReceivedEventArgsId = requestArgs.UniqueId;
 
+            try {
                 var fullClientAddress = String.Format("{0}:{1}", requestArgs.ClientAddress, context.Request.RemoteEndPoint.Port);
                 var responseArgs = new ResponseSentEventArgs(requestArgs.PathAndFile, fullClientAddress, requestArgs.ClientAddress,
                                                                 context.Response.ContentLength, requestArgs.Classification, context.Request,
@@ -137,9 +149,6 @@ namespace VirtualRadar.WebServer.HttpListener
                 // during processing.
                 var log = Factory.Singleton.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception in general request handling event handlers: {0}", ex);
-
-                Debug.WriteLine($"WebServer.GetContextHandler caught exception {ex}");
-                WebServer.OnExceptionCaught(new EventArgs<Exception>(new RequestException(context.Request, ex)));
             }
 
             // The request finished event has to be raised after the response has been sent. This is
@@ -153,8 +162,6 @@ namespace VirtualRadar.WebServer.HttpListener
                     RaiseEventTimeUtc = DateTime.UtcNow.AddSeconds(2),
                 });
             }
-
-            return result;
         }
 
         /// <summary>

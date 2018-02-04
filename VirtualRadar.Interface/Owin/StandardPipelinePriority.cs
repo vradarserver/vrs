@@ -16,9 +16,14 @@ namespace VirtualRadar.Interface.Owin
          **********************************************************************************************/
 
         /// <summary>
+        /// The lowest priority that any VRS middleware uses.
+        /// </summary>
+        public static readonly int LowestVrsMiddlewarePriority = -1000000;
+
+        /// <summary>
         /// The normal priority for exception handling.
         /// </summary>
-        public static readonly int Exception = -1000000;
+        public static readonly int Exception = LowestVrsMiddlewarePriority;
 
         /// <summary>
         /// The normal priority for access checking.
@@ -45,6 +50,11 @@ namespace VirtualRadar.Interface.Owin
         /// </summary>
         public static readonly int ResponseStreamWrapper = Cors + 1000;
 
+        /// <summary>
+        /// The normal priority for the shim middleware that fires the IWebServer events.
+        /// </summary>
+        public static readonly int ShimServerPriority = ResponseStreamWrapper + 1000;
+
         /***********************************************************************************************
          * 3rd party frameworks that short-circuit pipeline processing if they handle a request
          **********************************************************************************************/
@@ -64,9 +74,14 @@ namespace VirtualRadar.Interface.Owin
          **********************************************************************************************/
 
         /// <summary>
+        /// The lowest priority for VRS content middleware (image content, file content etc.)
+        /// </summary>
+        public static readonly int LowestVrsContentMiddlewarePriority = WebApi + 1000000;
+
+        /// <summary>
         /// The normal priority for JavaScript bundle requests.
         /// </summary>
-        public static readonly int BundlerServer = WebApi + 1000000;
+        public static readonly int BundlerServer = LowestVrsContentMiddlewarePriority;
 
         /// <summary>
         /// The normal priority for file system requests.
@@ -82,5 +97,10 @@ namespace VirtualRadar.Interface.Owin
         /// The normal priority for audio requests.
         /// </summary>
         public static readonly int AudioServer = ImageServer + 1000000;
+
+        /// <summary>
+        /// The highest priority used by VRS content middleware.
+        /// </summary>
+        public static readonly int HighestVrsContentMiddlewarePriority = AudioServer;
     }
 }
