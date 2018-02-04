@@ -137,11 +137,22 @@ namespace VirtualRadar.WebServer.HttpListener
             var requestReceivedEventArgsId = requestArgs.UniqueId;
 
             try {
-                var fullClientAddress = String.Format("{0}:{1}", requestArgs.ClientAddress, context.Request.RemoteEndPoint.Port);
-                var responseArgs = new ResponseSentEventArgs(requestArgs.PathAndFile, fullClientAddress, requestArgs.ClientAddress,
-                                                                context.Response.ContentLength, requestArgs.Classification, context.Request,
-                                                                (int)context.Response.StatusCode, (int)(WebServer.Provider.UtcNow - startTime).TotalMilliseconds,
-                                                                context.BasicUserName);
+                var request = context.Request;
+                var response = context.Response;
+
+                var fullClientAddress = String.Format("{0}:{1}", requestArgs.ClientAddress, request.RemoteEndPoint.Port);
+
+                var responseArgs = new ResponseSentEventArgs(
+                    requestArgs.PathAndFile,
+                    fullClientAddress,
+                    requestArgs.ClientAddress,
+                    response.ContentLength,
+                    MimeType.GetContentClassification(response.MimeType),
+                    request,
+                    (int)response.StatusCode,
+                    (int)(WebServer.Provider.UtcNow - startTime).TotalMilliseconds,
+                    context.BasicUserName
+                );
                 WebServer.OnResponseSent(responseArgs);
             } catch(Exception ex) {
                 // The HttpListener version doesn't log these as there can be lot of them, but given that
