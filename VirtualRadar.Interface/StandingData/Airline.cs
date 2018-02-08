@@ -35,6 +35,18 @@ namespace VirtualRadar.Interface.StandingData
         public string Name { get; set; }
 
         /// <summary>
+        /// Gets or sets the regular expression that, when matched, indicates that
+        /// a flight for this airline is a positioning or ferry flight.
+        /// </summary>
+        public string PositioningFlightPattern { get; set; }
+
+        /// <summary>
+        /// Gets or sets the regular expression that, when matched, indicates that
+        /// a flight for this airline is a charter flight.
+        /// </summary>
+        public string CharterFlightPattern { get; set; }
+
+        /// <summary>
         /// See base docs.
         /// </summary>
         /// <returns></returns>

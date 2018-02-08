@@ -21,6 +21,7 @@ using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.SQLite;
 using VirtualRadar.Interface.StandingData;
 using VirtualRadar.Localisation;
+using Dapper;
 
 namespace VirtualRadar.Database.StandingData
 {
@@ -245,10 +246,7 @@ namespace VirtualRadar.Database.StandingData
             var result = -1;
 
             using(var connection = CreateOpenConnection()) {
-                Sql.RunSql(connection, null, "SELECT [Version] FROM [DatabaseVersion]", null, reader => {
-                    result = Sql.GetInt32(reader, 0);
-                    return false;
-                }, false, null);
+                result = connection.ExecuteScalar<int>("SELECT [Version] FROM [DatabaseVersion]");
             }
 
             return result;
@@ -259,24 +257,19 @@ namespace VirtualRadar.Database.StandingData
             var newCache = new List<CodeBlockBitMask>();
             if(_FilesValid) {
                 using(var connection = CreateOpenConnection()) {
-                    Sql.RunSql(connection, null,
-                        "SELECT [BitMask]" +
-                        "      ,[SignificantBitMask]" +
-                        "      ,[IsMilitary]" +
-                        "      ,[Country]" +
-                        "  FROM [CodeBlockView]",
-                    null, (reader) => {
-                        var cacheEntry = new CodeBlockBitMask() {
-                            BitMask =               Sql.GetInt32(reader, 0),
-                            SignificantBitMask =    Sql.GetInt32(reader, 1),
-                            CodeBlock = new CodeBlock() {
-                                IsMilitary =        Sql.GetBool(reader, 2),
-                                Country =           Sql.GetString(reader, 3),
-                            },
-                        };
+                    foreach(var cacheEntry in connection.Query<CodeBlockBitMask, CodeBlock, CodeBlockBitMask>(@"
+                        SELECT [BitMask]
+                              ,[SignificantBitMask]
+                              ,[IsMilitary]
+                              ,[Country]
+                        FROM   [CodeBlockView]
+                    ", map: (bitmask, codeblock) => {
+                        bitmask.CodeBlock = codeblock;
+                        return bitmask;
+                    }, splitOn: nameof(CodeBlock.IsMilitary)
+                    )) {
                         newCache.Add(cacheEntry);
-                        return true;
-                    }, false, null);
+                    }
                 }
                 newCache.Sort((CodeBlockBitMask lhs, CodeBlockBitMask rhs) => { return -(lhs.SignificantBitMask - rhs.SignificantBitMask); });
             }
@@ -399,71 +392,75 @@ namespace VirtualRadar.Database.StandingData
         {
             Route result = null;
 
-            const string selectFields = "SELECT [RouteId]" +
-                                        "      ,[FromAirportIcao]" +
-                                        "      ,[FromAirportIata]" +
-                                        "      ,[FromAirportName]" +
-                                        "      ,[FromAirportLatitude]" +
-                                        "      ,[FromAirportLongitude]" +
-                                        "      ,[FromAirportAltitude]" +
-                                        "      ,[FromAirportLocation]" +
-                                        "      ,[FromAirportCountry]" +
-                                        "      ,[ToAirportIcao]" +
-                                        "      ,[ToAirportIata]" +
-                                        "      ,[ToAirportName]" +
-                                        "      ,[ToAirportLatitude]" +
-                                        "      ,[ToAirportLongitude]" +
-                                        "      ,[ToAirportAltitude]" +
-                                        "      ,[ToAirportLocation]" +
-                                        "      ,[ToAirportCountry]" +
-                                        "  FROM [RouteView]";
+            const string selectFields = @"
+                SELECT [RouteId]
+                      ,[FromAirportIcao]
+                      ,[FromAirportIata]
+                      ,[FromAirportName]
+                      ,[FromAirportLatitude]
+                      ,[FromAirportLongitude]
+                      ,[FromAirportAltitude]
+                      ,[FromAirportLocation]
+                      ,[FromAirportCountry]
+                      ,[ToAirportIcao]
+                      ,[ToAirportIata]
+                      ,[ToAirportName]
+                      ,[ToAirportLatitude]
+                      ,[ToAirportLongitude]
+                      ,[ToAirportAltitude]
+                      ,[ToAirportLocation]
+                      ,[ToAirportCountry]
+                FROM   [RouteView]
+            ";
 
             if(!String.IsNullOrEmpty(callSign)) {
                 string airlineCode = null, flightCode = null;
-                if(_DatabaseVersion < 3) SplitCallsign(callSign, out airlineCode, out flightCode);
+                if(_DatabaseVersion < 3) {
+                    SplitCallsign(callSign, out airlineCode, out flightCode);
+                }
                 if(_DatabaseVersion >= 3 || (!String.IsNullOrEmpty(airlineCode) && !String.IsNullOrEmpty(flightCode) && (airlineCode.Length == 2 || airlineCode.Length == 3))) {
                     lock(Lock) {
                         if(_FilesValid) {
                             using(var connection = CreateOpenConnection()) {
                                 var selectCommand = selectFields;
-                                var parameters = new Dictionary<string, object>();
+                                var parameters = new DynamicParameters();
+
                                 if(_DatabaseVersion >= 3) {
-                                    selectCommand = String.Format("{0} WHERE [Callsign] = @callsign", selectCommand);
-                                    parameters.Add("@callsign", callSign);
+                                    selectCommand = $"{selectCommand} WHERE [Callsign] = @callsign";
+                                    parameters.Add("callsign", callSign);
                                 } else {
                                     var airlineField = airlineCode.Length == 2 ? "Iata" : "Icao";
-                                    selectCommand = String.Format("{0} WHERE [Operator{1}] = @airlineCode AND [FlightNumber] = @flightCode", selectCommand, airlineField);
-                                    parameters.Add("@airlineCode",   airlineCode);
-                                    parameters.Add("@flightCode",    flightCode);
+                                    selectCommand = $"{selectCommand} WHERE [Operator{airlineField}] = @airlineCode AND [FlightNumber] = @flightCode";
+                                    parameters.Add("airlineCode", airlineCode);
+                                    parameters.Add("flightCode",  flightCode);
                                 }
 
-                                Sql.RunSql(connection, null, selectCommand, parameters, (reader) => {
-                                    var routeId = Sql.GetInt64(reader, 0);
+                                var routeView = connection.QueryFirstOrDefault<RouteViewModel>(selectCommand, parameters);
+                                if(routeView != null) {
                                     result = new Route() {
                                         From = CreateAirport(
-                                            icao:       Sql.GetString(reader, 1),
-                                            iata:       Sql.GetString(reader, 2),
-                                            name:       Sql.GetString(reader, 3),
-                                            latitude:   Sql.GetNDouble(reader, 4),
-                                            longitude:  Sql.GetNDouble(reader, 5),
-                                            altitude:   Sql.GetNInt32(reader, 6),
-                                            location:   Sql.GetString(reader, 7),
-                                            country:    Sql.GetString(reader, 8)
+                                            icao:       routeView.FromAirportIcao,
+                                            iata:       routeView.FromAirportIata,
+                                            name:       routeView.FromAirportName,
+                                            latitude:   routeView.FromAirportLatitude,
+                                            longitude:  routeView.FromAirportLongitude,
+                                            altitude:   routeView.FromAirportAltitude,
+                                            location:   routeView.FromAirportLocation,
+                                            country:    routeView.FromAirportCountry
                                         ),
                                         To = CreateAirport(
-                                            icao:       Sql.GetString(reader, 9),
-                                            iata:       Sql.GetString(reader, 10),
-                                            name:       Sql.GetString(reader, 11),
-                                            latitude:   Sql.GetNDouble(reader, 12),
-                                            longitude:  Sql.GetNDouble(reader, 13),
-                                            altitude:   Sql.GetNInt32(reader, 14),
-                                            location:   Sql.GetString(reader, 15),
-                                            country:    Sql.GetString(reader, 16)
+                                            icao:       routeView.ToAirportIcao,
+                                            iata:       routeView.ToAirportIata,
+                                            name:       routeView.ToAirportName,
+                                            latitude:   routeView.ToAirportLatitude,
+                                            longitude:  routeView.ToAirportLongitude,
+                                            altitude:   routeView.ToAirportAltitude,
+                                            location:   routeView.ToAirportLocation,
+                                            country:    routeView.ToAirportCountry
                                         ),
                                     };
-                                    LoadStopovers(connection, null, null, routeId, result.Stopovers);
-                                    return false;
-                                }, false, null);
+                                    LoadStopovers(connection, null, null, routeView.RouteId, result.Stopovers);
+                                }
                             }
                         }
                     }
@@ -483,34 +480,32 @@ namespace VirtualRadar.Database.StandingData
         /// <param name="airports"></param>
         private void LoadStopovers(IDbConnection connection, IDbTransaction transaction, TextWriter log, long routeId, ICollection<Airport> airports)
         {
-            Sql.RunSql(connection, transaction,
-                    "SELECT [AirportIcao]" +
-                    "      ,[AirportIata]" +
-                    "      ,[AirportName]" +
-                    "      ,[AirportLatitude]" +
-                    "      ,[AirportLongitude]" +
-                    "      ,[AirportAltitude]" +
-                    "      ,[AirportLocation]" +
-                    "      ,[AirportCountry]" +
-                    "  FROM [RouteStopView]" +
-                    " WHERE [RouteId] = @routeId" +
-                    " ORDER BY [SequenceNo] ASC",
-                new Dictionary<string, object>() {
-                    { "@routeId", routeId },
-                }, (reader) => {
-                    airports.Add(CreateAirport(
-                        icao:       Sql.GetString(reader, 0),
-                        iata:       Sql.GetString(reader, 1),
-                        name:       Sql.GetString(reader, 2),
-                        latitude:   Sql.GetNDouble(reader, 3),
-                        longitude:  Sql.GetNDouble(reader, 4),
-                        altitude:   Sql.GetNInt32(reader, 5),
-                        location:   Sql.GetString(reader, 6),
-                        country:    Sql.GetString(reader, 7)
-                    ));
-                    return true;
-                }, false, log
-            );
+            foreach(var routeStop in connection.Query<RouteStopViewModel>(@"
+                SELECT   [AirportIcao]
+                        ,[AirportIata]
+                        ,[AirportName]
+                        ,[AirportLatitude]
+                        ,[AirportLongitude]
+                        ,[AirportAltitude]
+                        ,[AirportLocation]
+                        ,[AirportCountry]
+                FROM     [RouteStopView]
+                WHERE    [RouteId] = @routeId
+                ORDER BY [SequenceNo] ASC
+            ", new {
+                routeId = routeId,
+            })) {
+                airports.Add(CreateAirport(
+                    icao:       routeStop.AirportIcao,
+                    iata:       routeStop.AirportIata,
+                    name:       routeStop.AirportName,
+                    latitude:   routeStop.AirportLatitude,
+                    longitude:  routeStop.AirportLongitude,
+                    altitude:   routeStop.AirportAltitude,
+                    location:   routeStop.AirportLocation,
+                    country:    routeStop.AirportCountry
+                ));
+            }
         }
 
         /// <summary>
@@ -588,39 +583,42 @@ namespace VirtualRadar.Database.StandingData
                 lock(Lock) {
                     if(_FilesValid) {
                         using(var connection = CreateOpenConnection()) {
-                            Sql.RunSql(connection, null,
-                                "SELECT [Icao]" +
-                                "      ,[WakeTurbulenceId]" +
-                                "      ,[SpeciesId]" +
-                                "      ,[EngineTypeId]" +
-                                "      ,[Engines]" +
-                                "      ,[Model]" +
-                                "      ,[Manufacturer]" +
-                                (_DatabaseVersion >= 5 ? ",[EnginePlacementId]" : "") +
-                                "  FROM [AircraftTypeNoEnumsView]" +
-                                " WHERE [Icao] = @icao",
-                            new Dictionary<string,object>() {
-                                { "@icao", type },
-                            }, (reader) => {
+                            foreach(var aircraftType in connection.Query<AircraftType, string, string, AircraftType>(@"
+                                SELECT [Icao]             AS [Type]
+                                      ,[WakeTurbulenceId] AS [WakeTurbulenceCategory]
+                                      ,[SpeciesId]        AS [Species]
+                                      ,[EngineTypeId]     AS [EngineType]
+                                      ,[Engines]" +
+                                       (_DatabaseVersion >= 5 ? ",[EnginePlacementId] AS [EnginePlacement]" : "") +
+                                @"    ,[Manufacturer]
+                                      ,[Model]
+                                FROM   [AircraftTypeNoEnumsView]
+                                WHERE  [Icao] = @icao
+                            ",
+                            map: (acType, manufacturer, model) => {
+                                if(!String.IsNullOrEmpty(manufacturer)) {
+                                    acType.Manufacturers.Add(manufacturer);
+                                }
+                                if(!String.IsNullOrEmpty(model)) {
+                                    acType.Models.Add(model);
+                                }
+                                return acType;
+                            },
+                            splitOn: $"Manufacturer,Model",
+                            param: new {
+                                icao = type
+                            })) {
                                 if(result == null) {
-                                    result = new AircraftType() {
-                                        Type =  Sql.GetString(reader, 0),
-                                        WakeTurbulenceCategory = (WakeTurbulenceCategory)Sql.GetInt32(reader, 1),
-                                        Species = (Species)Sql.GetInt32(reader, 2),
-                                        EngineType = (EngineType)Sql.GetInt32(reader, 3),
-                                        Engines = Sql.GetString(reader, 4),
-                                    };
+                                    result = aircraftType;
+                                } else {
+                                    if(aircraftType.Manufacturers.Count > 0) {
+                                        result.Manufacturers.Add(aircraftType.Manufacturers[0]);
+                                    }
+                                    if(aircraftType.Models.Count > 0) {
+                                        result.Models.Add(aircraftType.Models[0]);
+                                    }
                                 }
-                                result.Models.Add(Sql.GetString(reader, 5));
-                                var manufacturer = Sql.GetString(reader, 6);
-                                if(!String.IsNullOrEmpty(manufacturer)) result.Manufacturers.Add(manufacturer);
-
-                                if(_DatabaseVersion >= 5) {
-                                    result.EnginePlacement = (EnginePlacement)Sql.GetInt32(reader, 7);
-                                }
-
-                                return true;
-                            }, false, null);
+                            };
                         }
                     }
                 }
@@ -660,16 +658,16 @@ namespace VirtualRadar.Database.StandingData
                 lock(Lock) {
                     if(_FilesValid) {
                         using(var connection = CreateOpenConnection()) {
-                            Sql.RunSql(connection, null, String.Format("SELECT [Icao], [Iata], [Name] FROM [Operator] WHERE [{0}] = @code", code.Length == 2 ? "Iata" : "Icao"), new Dictionary<string,object>() {
-                                { "@code", code },
-                            }, reader => {
-                                result.Add(new Airline() {
-                                    IcaoCode = Sql.GetString(reader, 0),
-                                    IataCode = Sql.GetString(reader, 1),
-                                    Name = Sql.GetString(reader, 2),
-                                });
-                                return true;
-                            }, false, null);
+                            var codeType = code.Length == 2 ? "Iata" : "Icao";
+                            result.AddRange(connection.Query<Airline>(@"
+                                SELECT [Icao] AS [IcaoCode]
+                                      ,[Iata] AS [IataCode]
+                                      ,[Name]" +
+                                       (_DatabaseVersion >= 6 ? ",[PositioningFlightPattern], [CharterFlightPattern]" : "") +
+                            $"  FROM [Operator] WHERE [{codeType}] = @code",
+                            new {
+                                code
+                            }));
                         }
                     }
                 }

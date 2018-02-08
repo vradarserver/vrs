@@ -81,6 +81,8 @@
     <Compile Include="SqlPreparedCommand.cs" />
     <Compile Include="StandingData\BackgroundDataDownloader.cs" />
     <Compile Include="StandingData\CallsignRouteFetcher.cs" />
+    <Compile Include="StandingData\RouteStopViewModel.cs" />
+    <Compile Include="StandingData\RouteViewModel.cs" />
     <Compile Include="StandingData\StandingDataManager.cs" />
     <Compile Include="StandingData\StandingDataUpdater.cs" />
     <Compile Include="Table.cs" />

@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2018 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,44 +10,49 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using InterfaceFactory;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Test.Framework;
-using VirtualRadar.Interface.StandingData;
+using System.Threading.Tasks;
 
-namespace Test.VirtualRadar.Interface.Data
+namespace VirtualRadar.Database.StandingData
 {
-    [TestClass]
-    public class AirlineTests
+    /// <summary>
+    /// Describes a row in a RouteView.
+    /// </summary>
+    class RouteViewModel
     {
-        [TestMethod]
-        public void Airline_Constructor_Initialises_To_Known_State_And_Properties_Work()
-        {
-            var airline = new Airline();
+        public long RouteId { get; set; }
 
-            TestUtilities.TestProperty(airline, r => r.IataCode, null, "Aa");
-            TestUtilities.TestProperty(airline, r => r.IcaoCode, null, "An");
-            TestUtilities.TestProperty(airline, r => r.Name, null, "Bb");
-            TestUtilities.TestProperty(airline, r => r.PositioningFlightPattern, null, "Ab");
-            TestUtilities.TestProperty(airline, r => r.CharterFlightPattern, null, "Ab");
-        }
+        public string FromAirportIcao { get; set; }
 
-        [TestMethod]
-        public void Airline_ToString_Returns_Standardised_Text()
-        {
-            var airline = new Airline();
+        public string FromAirportIata { get; set; }
 
-            airline.IataCode = "IATA";
-            airline.IcaoCode = "ICAO";
-            airline.Name = "NAME";
-            Assert.AreEqual("ICAO NAME", airline.ToString());
+        public string FromAirportName { get; set; }
 
-            airline.IcaoCode = null;
-            Assert.AreEqual("IATA NAME", airline.ToString());
+        public double? FromAirportLatitude { get; set; }
 
-            airline.IcaoCode = "";
-            Assert.AreEqual("IATA NAME", airline.ToString());
-        }
+        public double? FromAirportLongitude { get; set; }
+
+        public int? FromAirportAltitude { get; set; }
+
+        public string FromAirportLocation { get; set; }
+
+        public string FromAirportCountry { get; set; }
+
+        public string ToAirportIcao { get; set; }
+
+        public string ToAirportIata { get; set; }
+
+        public string ToAirportName { get; set; }
+
+        public double? ToAirportLatitude { get; set; }
+
+        public double? ToAirportLongitude { get; set; }
+
+        public int? ToAirportAltitude { get; set; }
+
+        public string ToAirportLocation { get; set; }
+
+        public string ToAirportCountry { get; set; }
     }
 }
