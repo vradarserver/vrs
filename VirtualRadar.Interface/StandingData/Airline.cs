@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace VirtualRadar.Interface.StandingData
 {
@@ -53,6 +54,36 @@ namespace VirtualRadar.Interface.StandingData
         public override string ToString()
         {
             return String.Format("{0} {1}", !String.IsNullOrEmpty(IcaoCode) ? IcaoCode : IataCode, Name);
+        }
+
+        /// <summary>
+        /// Returns true if the flight number represents a positioning flight.
+        /// </summary>
+        /// <param name="flightNumber"></param>
+        /// <returns></returns>
+        public bool IsPositioningFlightNumber(string flightNumber)
+        {
+            return MatchesFlightNumber(PositioningFlightPattern, flightNumber);
+        }
+
+        /// <summary>
+        /// Returns true if the flight number represents a charter flight.
+        /// </summary>
+        /// <param name="flightNumber"></param>
+        /// <returns></returns>
+        public bool IsCharterFlightNumber(string flightNumber)
+        {
+            return MatchesFlightNumber(CharterFlightPattern, flightNumber);
+        }
+
+        private bool MatchesFlightNumber(string regex, string flightNumber)
+        {
+            var result = !String.IsNullOrEmpty(regex) && !String.IsNullOrEmpty(flightNumber);
+            if(result) {
+                result = Regex.IsMatch(flightNumber, regex);
+            }
+
+            return result;
         }
     }
 }

@@ -21,6 +21,8 @@ namespace Test.VirtualRadar.Interface.Data
     [TestClass]
     public class AirlineTests
     {
+        public TestContext TestContext { get; set; }
+
         [TestMethod]
         public void Airline_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
@@ -48,6 +50,38 @@ namespace Test.VirtualRadar.Interface.Data
 
             airline.IcaoCode = "";
             Assert.AreEqual("IATA NAME", airline.ToString());
+        }
+
+        [TestMethod]
+        [DataSource("Data Source='DataTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "AirlineFlightNumberRegex$")]
+        public void Airline_IsPositioningFlightNumber_Returns_Correct_Value()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var regex = worksheet.EString("Regex");
+            var flightNumber = worksheet.EString("FlightNumber");
+
+            var airline = new Airline() { PositioningFlightPattern = regex };
+            var actual = airline.IsPositioningFlightNumber(flightNumber);
+            var expected = worksheet.Bool("Matches");
+
+            Assert.AreEqual(expected, actual, $"FlightNumber '{flightNumber}' and Regex '{regex}'");
+        }
+
+        [TestMethod]
+        [DataSource("Data Source='DataTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "AirlineFlightNumberRegex$")]
+        public void Airline_IsCharterFlightNumber_Returns_Correct_Value()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var regex = worksheet.EString("Regex");
+            var flightNumber = worksheet.EString("FlightNumber");
+
+            var airline = new Airline() { CharterFlightPattern = regex };
+            var actual = airline.IsCharterFlightNumber(flightNumber);
+            var expected = worksheet.Bool("Matches");
+
+            Assert.AreEqual(expected, actual, $"FlightNumber '{flightNumber}' and Regex '{regex}'");
         }
     }
 }
