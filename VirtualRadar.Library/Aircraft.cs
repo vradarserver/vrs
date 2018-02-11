@@ -514,6 +514,28 @@ namespace VirtualRadar.Library
         /// </summary>
         public long StopoversChanged { get; set; }
 
+        private bool _IsPositioningFlight;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IsPositioningFlight { get => _IsPositioningFlight; set { if(value != _IsPositioningFlight) { _IsPositioningFlight = value; IsPositioningFlightChanged = DataVersion; } } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long IsPositioningFlightChanged { get; private set; }
+
+        private bool _IsCharterFlight;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IsCharterFlight { get => _IsCharterFlight; set { if(value != _IsCharterFlight) { _IsCharterFlight = value; IsCharterFlightChanged = DataVersion; } } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long IsCharterFlightChanged { get; private set; }
+
         private string _Operator;
         /// <summary>
         /// See interface docs.
@@ -789,8 +811,10 @@ namespace VirtualRadar.Library
                 result.Icao24Country = Icao24Country;
                 result.Icao24Invalid = Icao24Invalid;
                 result.IdentActive = IdentActive;
+                result.IsCharterFlight = IsCharterFlight;
                 result.IsInteresting = IsInteresting;
                 result.IsMilitary = IsMilitary;
+                result.IsPositioningFlight = IsPositioningFlight;
                 result.IsTisb = IsTisb;
                 result.IsTransmittingTrack = IsTransmittingTrack;
                 result.LastUpdate = LastUpdate;
@@ -854,8 +878,10 @@ namespace VirtualRadar.Library
                 result.Icao24CountryChanged = Icao24CountryChanged;
                 result.Icao24InvalidChanged = Icao24InvalidChanged;
                 result.IdentActiveChanged = IdentActiveChanged;
+                result.IsCharterFlightChanged = IsCharterFlightChanged;
                 result.IsInterestingChanged = IsInterestingChanged;
                 result.IsMilitaryChanged = IsMilitaryChanged;
+                result.IsPositioningFlightChanged = IsPositioningFlightChanged;
                 result.IsTisbChanged = IsTisbChanged;
                 result.LatitudeChanged = LatitudeChanged;
                 result.LongitudeChanged = LongitudeChanged;

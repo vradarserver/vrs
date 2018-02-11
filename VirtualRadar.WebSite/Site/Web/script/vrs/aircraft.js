@@ -183,6 +183,8 @@ var VRS;
             this.from = new RouteValue();
             this.to = new RouteValue();
             this.via = new ArrayValue();
+            this.isCharterFlight = new BoolValue();
+            this.isPositioningFlight = new BoolValue();
             this.operator = new StringValue();
             this.operatorIcao = new StringValue();
             this.squawk = new StringValue();
@@ -252,6 +254,8 @@ var VRS;
             this.setValue(this.modelIcao, aircraftJson.Type);
             this.setValue(this.from, aircraftJson.From);
             this.setValue(this.to, aircraftJson.To);
+            this.setValue(this.isCharterFlight, aircraftJson.IsCharterFlight);
+            this.setValue(this.isPositioningFlight, aircraftJson.IsFerryFlight);
             this.setValue(this.operator, aircraftJson.Op);
             this.setValue(this.operatorIcao, aircraftJson.OpIcao);
             this.setValue(this.squawk, aircraftJson.Sqk);
@@ -454,7 +458,10 @@ var VRS;
             return result;
         };
         Aircraft.prototype.hasRoute = function () {
-            return !!this.from.val && !!this.to.val;
+            return !this.isCharterFlight.val && !this.isPositioningFlight.val && !!this.from.val && !!this.to.val;
+        };
+        Aircraft.prototype.canSubmitRoute = function () {
+            return !this.isCharterFlight.val && !this.isPositioningFlight.val;
         };
         Aircraft.prototype.hasRouteChanged = function () {
             return this.from.chg || this.to.chg || this.via.chg;
@@ -664,13 +671,13 @@ var VRS;
             return VRS.format.registration(this.registration.val, onlyAlphaNumeric);
         };
         Aircraft.prototype.formatRouteFull = function () {
-            return VRS.format.routeFull(this.callsign.val, this.from.val, this.to.val, this.getViaAirports());
+            return VRS.format.routeFull(this.callsign.val, this.from.val, this.to.val, this.getViaAirports(), this.isCharterFlight.val, this.isPositioningFlight.val);
         };
         Aircraft.prototype.formatRouteMultiLine = function () {
-            return VRS.format.routeMultiLine(this.callsign.val, this.from.val, this.to.val, this.getViaAirports());
+            return VRS.format.routeMultiLine(this.callsign.val, this.from.val, this.to.val, this.getViaAirports(), this.isCharterFlight.val, this.isPositioningFlight.val);
         };
         Aircraft.prototype.formatRouteShort = function (abbreviateStopovers, showRouteNotKnown) {
-            return VRS.format.routeShort(this.callsign.val, this.from.val, this.to.val, this.getViaAirports(), abbreviateStopovers, showRouteNotKnown);
+            return VRS.format.routeShort(this.callsign.val, this.from.val, this.to.val, this.getViaAirports(), abbreviateStopovers, showRouteNotKnown, this.isCharterFlight.val, this.isPositioningFlight.val);
         };
         Aircraft.prototype.formatSecondsTracked = function () {
             return VRS.format.secondsTracked(this.secondsTracked);

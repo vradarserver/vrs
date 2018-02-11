@@ -394,6 +394,8 @@ namespace VRS
         from:                   RouteValue =                        new RouteValue();
         to:                     RouteValue =                        new RouteValue();
         via:                    ArrayValue<RouteValue> =            new ArrayValue<RouteValue>();
+        isCharterFlight:        BoolValue =                         new BoolValue();
+        isPositioningFlight:    BoolValue =                         new BoolValue();
         operator:               StringValue =                       new StringValue();
         operatorIcao:           StringValue =                       new StringValue();
         squawk:                 StringValue =                       new StringValue();
@@ -470,6 +472,8 @@ namespace VRS
             this.setValue(this.modelIcao,            aircraftJson.Type);
             this.setValue(this.from,                 aircraftJson.From);
             this.setValue(this.to,                   aircraftJson.To);
+            this.setValue(this.isCharterFlight,      aircraftJson.IsCharterFlight);
+            this.setValue(this.isPositioningFlight,  aircraftJson.IsFerryFlight);
             this.setValue(this.operator,             aircraftJson.Op);
             this.setValue(this.operatorIcao,         aircraftJson.OpIcao);
             this.setValue(this.squawk,               aircraftJson.Sqk);
@@ -724,7 +728,15 @@ namespace VRS
          */
         hasRoute() : boolean
         {
-            return !!this.from.val && !!this.to.val;
+            return !this.isCharterFlight.val && !this.isPositioningFlight.val && !!this.from.val && !!this.to.val;
+        }
+
+        /**
+         * Returns true if the SDM site allows routes for the aircraft.
+         */
+        canSubmitRoute() : boolean
+        {
+            return !this.isCharterFlight.val && !this.isPositioningFlight.val;
         }
 
         /**
@@ -1209,7 +1221,7 @@ namespace VRS
          */
         formatRouteFull() : string
         {
-            return VRS.format.routeFull(this.callsign.val, this.from.val, this.to.val, this.getViaAirports());
+            return VRS.format.routeFull(this.callsign.val, this.from.val, this.to.val, this.getViaAirports(), this.isCharterFlight.val, this.isPositioningFlight.val);
         }
 
         /**
@@ -1217,7 +1229,7 @@ namespace VRS
          */
         formatRouteMultiLine() : string
         {
-            return VRS.format.routeMultiLine(this.callsign.val, this.from.val, this.to.val, this.getViaAirports());
+            return VRS.format.routeMultiLine(this.callsign.val, this.from.val, this.to.val, this.getViaAirports(), this.isCharterFlight.val, this.isPositioningFlight.val);
         }
 
         /**
@@ -1225,7 +1237,7 @@ namespace VRS
          */
         formatRouteShort(abbreviateStopovers?: boolean, showRouteNotKnown?: boolean) : string
         {
-            return VRS.format.routeShort(this.callsign.val, this.from.val, this.to.val, this.getViaAirports(), abbreviateStopovers, showRouteNotKnown);
+            return VRS.format.routeShort(this.callsign.val, this.from.val, this.to.val, this.getViaAirports(), abbreviateStopovers, showRouteNotKnown, this.isCharterFlight.val, this.isPositioningFlight.val);
         }
 
         /**

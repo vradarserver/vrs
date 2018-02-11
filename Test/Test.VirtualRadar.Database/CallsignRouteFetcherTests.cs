@@ -33,6 +33,7 @@ namespace Test.VirtualRadar.Database
         private ICallsignRouteFetcher _Fetcher;
         private EventRecorder<EventArgs<CallsignRouteDetail>> _FetchedHandler;
         private Mock<IAircraft> _Aircraft;
+        private List<Airline> _LookupAirlines;
         private string _AircraftCallsign;
         private string _AircraftOperatorCode;
         private Mock<IHeartbeatService> _Heartbeat;
@@ -83,6 +84,11 @@ namespace Test.VirtualRadar.Database
             _StandingDataManager.Setup(r => r.FindRoute(It.IsAny<string>())).Returns((string callsign) => {
                 return callsign == _RouteCallsign ? _Route : null;
             });
+
+            _LookupAirlines = new List<Airline>();
+            _StandingDataManager.Setup(r => r.FindAirlinesForCode(It.IsAny<string>())).Returns((string code) => {
+                return _LookupAirlines;
+            });
         }
 
         [TestCleanup]
@@ -120,6 +126,42 @@ namespace Test.VirtualRadar.Database
             _Heartbeat.Raise(r => r.FastTick += null, EventArgs.Empty);
 
             _StandingDataManager.Verify(r => r.FindRoute(""), Times.Never());
+            _StandingDataManager.Verify(r => r.FindAirlinesForCode(""), Times.Never());
+        }
+
+        [TestMethod]
+        public void CallsignRouteFinder_RegisterAircraft_Fetches_Airline_From_Callsign()
+        {
+            _AircraftCallsign = "BAW1";
+            _Fetcher.RegisterAircraft(_Aircraft.Object);
+
+            _Heartbeat.Raise(r => r.FastTick += null, EventArgs.Empty);
+
+            _StandingDataManager.Verify(r => r.FindAirlinesForCode("BAW"), Times.Once());
+        }
+
+        [TestMethod]
+        public void CallsignRouteFinder_RegisterAircraft_Does_Not_Lookup_Positioning_Flights()
+        {
+            _AircraftCallsign = "BAW9001";
+            _Fetcher.RegisterAircraft(_Aircraft.Object);
+            _LookupAirlines.Add(new Airline() { PositioningFlightPattern = @"^9\d\d\d$", });
+
+            _Heartbeat.Raise(r => r.FastTick += null, EventArgs.Empty);
+
+            _CallsignParser.Verify(r => r.GetAllRouteCallsigns("BAW9001", It.IsAny<string>()), Times.Never());
+        }
+
+        [TestMethod]
+        public void CallsignRouteFinder_RegisterAircraft_Does_Not_Lookup_Charter_Flights()
+        {
+            _AircraftCallsign = "BAW9001";
+            _Fetcher.RegisterAircraft(_Aircraft.Object);
+            _LookupAirlines.Add(new Airline() { CharterFlightPattern = @"^9\d\d\d$", });
+
+            _Heartbeat.Raise(r => r.FastTick += null, EventArgs.Empty);
+
+            _CallsignParser.Verify(r => r.GetAllRouteCallsigns("BAW9001", It.IsAny<string>()), Times.Never());
         }
 
         [TestMethod]
@@ -282,6 +324,7 @@ namespace Test.VirtualRadar.Database
         {
             _Route = new Route();
             _Fetcher.RegisterAircraft(_Aircraft.Object);
+            _LookupAirlines.Add(new Airline());
 
             _Heartbeat.Raise(r => r.FastTick += null, EventArgs.Empty);
 
@@ -290,6 +333,9 @@ namespace Test.VirtualRadar.Database
             Assert.AreEqual("ABC123", _FetchedHandler.Args.Value.Icao24);
             Assert.AreSame(_Route, _FetchedHandler.Args.Value.Route);
             Assert.AreEqual("BAW1", _FetchedHandler.Args.Value.UsedCallsign);
+            Assert.AreEqual(false, _FetchedHandler.Args.Value.IsPositioningFlight);
+            Assert.AreEqual(false, _FetchedHandler.Args.Value.IsCharterFlight);
+
             Assert.AreSame(_Fetcher, _FetchedHandler.Sender);
         }
 
@@ -304,6 +350,46 @@ namespace Test.VirtualRadar.Database
             _Heartbeat.Raise(r => r.SlowTick += null, EventArgs.Empty);
 
             Assert.AreEqual(1, _FetchedHandler.CallCount);
+        }
+
+        [TestMethod]
+        public void CallsignRouteFetcher_Shows_Correct_Details_For_Positioning_Flights()
+        {
+            _Route = new Route();
+            _Fetcher.RegisterAircraft(_Aircraft.Object);
+            _LookupAirlines.Add(new Airline() { PositioningFlightPattern = @"^1$", });
+
+            _Heartbeat.Raise(r => r.FastTick += null, EventArgs.Empty);
+
+            Assert.AreEqual(1, _FetchedHandler.CallCount);
+            Assert.AreEqual("BAW1", _FetchedHandler.Args.Value.Callsign);
+            Assert.AreEqual("ABC123", _FetchedHandler.Args.Value.Icao24);
+            Assert.IsNull(_FetchedHandler.Args.Value.Route);
+            Assert.AreEqual("BAW1", _FetchedHandler.Args.Value.UsedCallsign);
+            Assert.AreEqual(true, _FetchedHandler.Args.Value.IsPositioningFlight);
+            Assert.AreEqual(false, _FetchedHandler.Args.Value.IsCharterFlight);
+
+            Assert.AreSame(_Fetcher, _FetchedHandler.Sender);
+        }
+
+        [TestMethod]
+        public void CallsignRouteFetcher_Shows_Correct_Details_For_Charter_Flights()
+        {
+            _Route = new Route();
+            _Fetcher.RegisterAircraft(_Aircraft.Object);
+            _LookupAirlines.Add(new Airline() { CharterFlightPattern = @"^1$", });
+
+            _Heartbeat.Raise(r => r.FastTick += null, EventArgs.Empty);
+
+            Assert.AreEqual(1, _FetchedHandler.CallCount);
+            Assert.AreEqual("BAW1", _FetchedHandler.Args.Value.Callsign);
+            Assert.AreEqual("ABC123", _FetchedHandler.Args.Value.Icao24);
+            Assert.IsNull(_FetchedHandler.Args.Value.Route);
+            Assert.AreEqual("BAW1", _FetchedHandler.Args.Value.UsedCallsign);
+            Assert.AreEqual(false, _FetchedHandler.Args.Value.IsPositioningFlight);
+            Assert.AreEqual(true, _FetchedHandler.Args.Value.IsCharterFlight);
+
+            Assert.AreSame(_Fetcher, _FetchedHandler.Sender);
         }
         #endregion
 

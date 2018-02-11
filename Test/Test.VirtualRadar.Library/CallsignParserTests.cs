@@ -24,7 +24,6 @@ namespace Test.VirtualRadar.Library
     [TestClass]
     public class CallsignParserTests
     {
-        #region Fields, TestInitialise, TestCleanup
         public TestContext TestContext { get; set; }
 
         private IClassFactory _OriginalFactory;
@@ -53,9 +52,7 @@ namespace Test.VirtualRadar.Library
         {
             Factory.RestoreSnapshot(_OriginalFactory);
         }
-        #endregion
 
-        #region Helpers - AddAirlineToStandingData, InitialiseStandingDataFromWorksheet
         /// <summary>
         /// Adds an airline to the dictionary that the standing data mock uses when faking the "find airlines by code" call.
         /// </summary>
@@ -94,9 +91,7 @@ namespace Test.VirtualRadar.Library
                 }
             }
         }
-        #endregion
 
-        #region GetAllAlternateCallsigns
         [TestMethod]
         [DataSource("Data Source='LibraryTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "CallsignParserAlt$")]
@@ -118,9 +113,7 @@ namespace Test.VirtualRadar.Library
                 Assert.IsTrue(result.Contains(expected), "Missing '{0}'. {1}", expected, message);
             }
         }
-        #endregion
 
-        #region GetAllRouteCallsigns
         [TestMethod]
         [DataSource("Data Source='LibraryTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "CallsignParserRoute$")]
@@ -143,6 +136,5 @@ namespace Test.VirtualRadar.Library
                 Assert.IsTrue(result.Contains(expected), "Missing '{0}'. {1}", expected, message);
             }
         }
-        #endregion
     }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright © 2014 onwards, Andrew Whewell
+﻿// Copyright © 2018 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,44 +12,35 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Test.Framework;
+using VirtualRadar.Interface;
 
-namespace VirtualRadar.Interface.StandingData
+namespace Test.VirtualRadar.Interface
 {
-    /// <summary>
-    /// A DTO that carries information about a callsign and its route for instances of
-    /// <see cref="ICallsignRouteFetcher"/>.
-    /// </summary>
-    public class CallsignRouteDetail
+    [TestClass]
+    public class CallsignTests
     {
-        /// <summary>
-        /// Gets or sets the ICAO24 of the aircraft whose route has been fetched.
-        /// </summary>
-        public string Icao24 { get; set; }
+        public TestContext TestContext { get; set; }
 
-        /// <summary>
-        /// Gets or sets the callsign that the route was based on.
-        /// </summary>
-        public string Callsign { get; set; }
+        [TestMethod]
+        [DataSource("Data Source='LibraryTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "Callsign$")]
+        public void Callsign_Ctor_Parses_Callsigns_Correctly()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var callsignText = worksheet.EString("Callsign");
 
-        /// <summary>
-        /// Gets or sets the callsign that the route was actually found under.
-        /// </summary>
-        public string UsedCallsign { get; set; }
+            var callsign = new Callsign(callsignText);
 
-        /// <summary>
-        /// Gets or sets the route for the callsign. This will be null if no details could
-        /// be fetched for the callsign.
-        /// </summary>
-        public Route Route { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating that this is probably a positioning / ferry flight.
-        /// </summary>
-        public bool IsPositioningFlight { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating that the this probably a charter flight.
-        /// </summary>
-        public bool IsCharterFlight { get; set; }
+            var message = $"Callsign is '{callsignText}'";
+            Assert.AreEqual(worksheet.EString("OriginalCallsign"),          callsign.OriginalCallsign,          message);
+            Assert.AreEqual(worksheet.EString("Code"),                      callsign.Code,                      message);
+            Assert.AreEqual(worksheet.EString("Number"),                    callsign.Number,                    message);
+            Assert.AreEqual(worksheet.EString("TrimmedNumber"),             callsign.TrimmedNumber,             message);
+            Assert.AreEqual(worksheet.EString("TrimmedCallsign"),           callsign.TrimmedCallsign,           message);
+            Assert.AreEqual(worksheet.Bool(   "IsOriginalCallsignValid"),   callsign.IsOriginalCallsignValid,   message);
+        }
     }
 }

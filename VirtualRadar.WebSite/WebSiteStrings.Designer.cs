@@ -367,6 +367,24 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Charter flight.
+        /// </summary>
+        public static string CharterFlight {
+            get {
+                return ResourceManager.GetString("CharterFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CHARTER.
+        /// </summary>
+        public static string CharterFlightShort {
+            get {
+                return ResourceManager.GetString("CharterFlightShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Civil.
         /// </summary>
         public static string Civil {
@@ -3495,6 +3513,24 @@ namespace VirtualRadar.WebSite {
         public static string PositionAndSpeed {
             get {
                 return ResourceManager.GetString("PositionAndSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Positioning flight.
+        /// </summary>
+        public static string PositioningFlight {
+            get {
+                return ResourceManager.GetString("PositioningFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to POSITION.
+        /// </summary>
+        public static string PositioningFlightShort {
+            get {
+                return ResourceManager.GetString("PositioningFlightShort", resourceCulture);
             }
         }
         

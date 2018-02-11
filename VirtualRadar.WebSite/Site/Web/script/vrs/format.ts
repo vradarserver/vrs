@@ -811,12 +811,14 @@ namespace VRS
         /**
          * Returns the full route, including all stopovers and airport names, formatted as a string.
          */
-        routeFull(callsign: string, from: string, to: string, via: string[])
+        routeFull(callsign: string, from: string, to: string, via: string[], isCharter: boolean, isPositioning: boolean)
         {
             var result = '';
             if(callsign) {
-                if(!from || !to) result = VRS.$$.RouteNotKnown;
-                else result = VRS.$$.formatRoute(from, to, via);
+                if(!!isCharter)             result = VRS.$$.CharterFlight;
+                else if(!!isPositioning)    result = VRS.$$.PositioningFlight;
+                else if(!from || !to)       result = VRS.$$.RouteNotKnown;
+                else                        result = VRS.$$.formatRoute(from, to, via);
             }
 
             return result;
@@ -828,18 +830,20 @@ namespace VRS
         reportRouteFull(callsign: string, route: IReportRoute) : string
         {
             var sroute = this.extractReportRouteStrings(route);
-            return this.routeMultiLine(callsign, sroute.from, sroute.to, sroute.via);
+            return this.routeMultiLine(callsign, sroute.from, sroute.to, sroute.via, false, false);
         }
 
         /**
          * Returns HTML for the full route spread over multiple lines (separated by BR tags).
          */
-        routeMultiLine(callsign: string, from: string, to: string, via: string[]) : string
+        routeMultiLine(callsign: string, from: string, to: string, via: string[], isCharter: boolean, isPositioning: boolean) : string
         {
             var result = '';
             if(!callsign) result = VRS.$$.AircraftNotTransmittingCallsign;
             else {
-                if(!from || !to) result = VRS.$$.RouteNotKnown;
+                if(!!isCharter)             result = VRS.$$.CharterFlight;
+                else if(!!isPositioning)    result = VRS.$$.PositioningFlight;
+                else if(!from || !to)       result = VRS.$$.RouteNotKnown;
                 else {
                     result += VRS.stringUtility.htmlEscape(from);
                     var length = via.length;
@@ -863,38 +867,42 @@ namespace VRS
         reportRouteMultiLine(callsign: string, route: IReportRoute) : string
         {
             var sroute = this.extractReportRouteStrings(route);
-            return this.routeMultiLine(callsign, sroute.from, sroute.to, sroute.via);
+            return this.routeMultiLine(callsign, sroute.from, sroute.to, sroute.via, false, false);
         }
 
         /**
          * Returns HTML for the short route (where only airport codes are shown and stopovers can be reduced to an asterisk).
          */
-        routeShort(callsign: string, from: string, to: string, via: string[], abbreviateStopovers: boolean, showRouteNotKnown: boolean)
+        routeShort(callsign: string, from: string, to: string, via: string[], abbreviateStopovers: boolean, showRouteNotKnown: boolean, isCharter: boolean, isPositioning: boolean)
         {
             if(abbreviateStopovers === undefined) abbreviateStopovers = true;
 
             var result = '';
             if(callsign) {
-                var length = via.length;
-                var showCircularRoute = from && to && from === to && abbreviateStopovers && length;
+                if(!!isCharter) result = VRS.$$.CharterFlightShort;
+                else if(!!isPositioning) result = VRS.$$.PositioningFlightShort;
+                else {
+                    var length = via.length;
+                    var showCircularRoute = from && to && from === to && abbreviateStopovers && length;
 
-                if(from) result += this.routeAirportCode(from);
-                if(length) {
-                    if(abbreviateStopovers) {
-                        if(!showCircularRoute || length > 1) result += '-*';
-                        if(showCircularRoute) result += '-' + this.routeAirportCode(via[length - 1]);
-                    } else {
-                        for(var i = 0;i < length;++i) {
-                            result += '-' + this.routeAirportCode(via[i]);
+                    if(from) result += this.routeAirportCode(from);
+                    if(length) {
+                        if(abbreviateStopovers) {
+                            if(!showCircularRoute || length > 1) result += '-*';
+                            if(showCircularRoute) result += '-' + this.routeAirportCode(via[length - 1]);
+                        } else {
+                            for(var i = 0;i < length;++i) {
+                                result += '-' + this.routeAirportCode(via[i]);
+                            }
                         }
                     }
-                }
-                if(to) {
-                    if(!showCircularRoute) result += '-' + this.routeAirportCode(to);
-                }
-                if(showCircularRoute) result += ' ∞';
+                    if(to) {
+                        if(!showCircularRoute) result += '-' + this.routeAirportCode(to);
+                    }
+                    if(showCircularRoute) result += ' ∞';
 
-                if(!result) result = showRouteNotKnown ? VRS.$$.RouteNotKnown : '';
+                    if(!result) result = showRouteNotKnown ? VRS.$$.RouteNotKnown : '';
+                }
             }
 
             return result;
@@ -906,7 +914,7 @@ namespace VRS
         reportRouteShort(callsign: string, route: IReportRoute, abbreviateStopovers: boolean, showRouteNotKnown: boolean) : string
         {
             var sroute = this.extractReportRouteStrings(route);
-            return this.routeShort(callsign, sroute.from, sroute.to, sroute.via, abbreviateStopovers, showRouteNotKnown);
+            return this.routeShort(callsign, sroute.from, sroute.to, sroute.via, abbreviateStopovers, showRouteNotKnown, false, false);
         }
 
         /**

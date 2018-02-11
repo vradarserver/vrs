@@ -453,6 +453,26 @@ namespace VirtualRadar.Interface
         long StopoversChanged { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that this is probably a positioning / ferry flight.
+        /// </summary>
+        bool IsPositioningFlight { get; set; }
+
+        /// <summary>
+        /// Gets or sets the <see cref="DataVersion"/> that was current when <see cref="IsPositioningFlight"/> was last changed.
+        /// </summary>
+        long IsPositioningFlightChanged { get; }
+
+        /// <summary>
+        /// Gets or sets a value indicating that the this probably a charter flight.
+        /// </summary>
+        bool IsCharterFlight { get; set; }
+
+        /// <summary>
+        /// Gets or sets the <see cref="DataVersion"/> that was current when <see cref="IsCharterFlight"/> was last changed.
+        /// </summary>
+        long IsCharterFlightChanged { get; }
+
+        /// <summary>
         /// Gets or sets the name of the company or individual that is operating the aircraft.
         /// </summary>
         string Operator { get; set; }

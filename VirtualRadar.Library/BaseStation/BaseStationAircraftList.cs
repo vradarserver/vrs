@@ -615,7 +615,11 @@ namespace VirtualRadar.Library.BaseStation
 
                     var callsignRouteDetail = _CallsignRouteFetcher.RegisterAircraft(aircraft);
                     if(isNewAircraft || callsignChanged) {
-                        ApplyRoute(aircraft, callsignRouteDetail == null ? null : callsignRouteDetail.Route);
+                        if(callsignRouteDetail == null) {
+                            ApplyRoute(aircraft, null, false, false);
+                        } else {
+                            ApplyRoute(aircraft, callsignRouteDetail.Route, callsignRouteDetail.IsPositioningFlight, callsignRouteDetail.IsCharterFlight);
+                        }
                     }
 
                     ApplyCodeBlock(aircraft , codeBlock);
@@ -708,8 +712,8 @@ namespace VirtualRadar.Library.BaseStation
 
             if(operatorIcao != aircraft.OperatorIcao) {
                 var callsignRouteDetail = _CallsignRouteFetcher.RegisterAircraft(aircraft);
-                if(callsignRouteDetail != null && callsignRouteDetail.Route != null) {
-                    ApplyRoute(aircraft, callsignRouteDetail.Route);
+                if(callsignRouteDetail != null) {
+                    ApplyRoute(aircraft, callsignRouteDetail.Route, callsignRouteDetail.IsPositioningFlight, callsignRouteDetail.IsCharterFlight);
                 }
             }
             ApplyAircraftPicture(aircraft, aircraftDetail.Picture);
@@ -751,7 +755,9 @@ namespace VirtualRadar.Library.BaseStation
         /// </summary>
         /// <param name="aircraft"></param>
         /// <param name="route"></param>
-        private void ApplyRoute(IAircraft aircraft, Route route)
+        /// <param name="isPositioningFlight"></param>
+        /// <param name="isCharterFlight"></param>
+        private void ApplyRoute(IAircraft aircraft, Route route, bool isPositioningFlight, bool isCharterFlight)
         {
             var origin = route == null ? null : Describe.Airport(route.From, _PreferIataAirportCodes);
             var destination = route == null ? null : Describe.Airport(route.To, _PreferIataAirportCodes);
@@ -769,6 +775,13 @@ namespace VirtualRadar.Library.BaseStation
                 foreach(var stopover in stopovers) {
                     aircraft.Stopovers.Add(stopover);
                 }
+            }
+
+            if(aircraft.IsPositioningFlight != isPositioningFlight) {
+                aircraft.IsPositioningFlight = isPositioningFlight;
+            }
+            if(aircraft.IsCharterFlight != isCharterFlight) {
+                aircraft.IsCharterFlight = isCharterFlight;
             }
         }
 
@@ -1053,7 +1066,7 @@ namespace VirtualRadar.Library.BaseStation
                     if(aircraftMap.TryGetValue(uniqueId, out aircraft) && aircraft.Callsign == callsignRouteDetail.Callsign) {
                         lock(aircraft) {
                             GenerateDataVersion(aircraft);
-                            ApplyRoute(aircraft, callsignRouteDetail.Route);
+                            ApplyRoute(aircraft, callsignRouteDetail.Route, callsignRouteDetail.IsPositioningFlight, callsignRouteDetail.IsCharterFlight);
                         }
                     }
                 }

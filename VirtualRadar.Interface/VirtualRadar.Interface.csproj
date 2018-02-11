@@ -129,6 +129,7 @@
     <Compile Include="AltitudeType.cs" />
     <Compile Include="BackgroundThreadQueue.cs" />
     <Compile Include="BackgroundThreadQueueMechanism.cs" />
+    <Compile Include="Callsign.cs" />
     <Compile Include="CollectionHelper.cs" />
     <Compile Include="Database\BaseStationAircraftUpsert.cs" />
     <Compile Include="Database\BaseStationAircraftUpsertLookup.cs" />

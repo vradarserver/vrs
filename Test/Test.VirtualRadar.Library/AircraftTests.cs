@@ -68,8 +68,10 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(0, _Aircraft.Icao24CountryChanged);
             Assert.AreEqual(0, _Aircraft.Icao24InvalidChanged);
             Assert.AreEqual(0, _Aircraft.IdentActiveChanged);
+            Assert.AreEqual(0, _Aircraft.IsCharterFlightChanged);
             Assert.AreEqual(0, _Aircraft.IsInterestingChanged);
             Assert.AreEqual(0, _Aircraft.IsMilitaryChanged);
+            Assert.AreEqual(0, _Aircraft.IsPositioningFlightChanged);
             Assert.AreEqual(0, _Aircraft.IsTisbChanged);
             Assert.AreEqual(0, _Aircraft.LatitudeChanged);
             Assert.AreEqual(0, _Aircraft.LongitudeChanged);
@@ -129,9 +131,11 @@ namespace Test.VirtualRadar.Library
             TestUtilities.TestProperty(_Aircraft, r => r.Icao24, null, "ABCDEF");
             TestUtilities.TestProperty(_Aircraft, r => r.Icao24Country, null, "HG");
             TestUtilities.TestProperty(_Aircraft, r => r.Icao24Invalid, false);
+            TestUtilities.TestProperty(_Aircraft, r => r.IsCharterFlight, false);
             TestUtilities.TestProperty(_Aircraft, r => r.IsInteresting, false);
             TestUtilities.TestProperty(_Aircraft, r => r.IdentActive, null, true);
             TestUtilities.TestProperty(_Aircraft, r => r.IsMilitary, false);
+            TestUtilities.TestProperty(_Aircraft, r => r.IsPositioningFlight, false);
             TestUtilities.TestProperty(_Aircraft, r => r.IsTisb, false);
             TestUtilities.TestProperty(_Aircraft, r => r.IsTransmittingTrack, false);
             TestUtilities.TestProperty(_Aircraft, r => r.LastCoordinateChanged, 0L, 123L);
@@ -429,6 +433,10 @@ namespace Test.VirtualRadar.Library
                             case nameof(IAircraft.AirPressureLookedUpUtc):          value = _Aircraft.AirPressureLookedUpUtc = dateTimeValue; break;
                             case nameof(IAircraft.IdentActive):                     value = _Aircraft.IdentActive = property.Name == trueBool; break;
                             case nameof(IAircraft.IdentActiveChanged):              value = _Aircraft.IdentActiveChanged; break;
+                            case nameof(IAircraft.IsCharterFlight):                 value = _Aircraft.IsCharterFlight = property.Name == trueBool; break;
+                            case nameof(IAircraft.IsCharterFlightChanged):          value = _Aircraft.IsCharterFlightChanged; break;
+                            case nameof(IAircraft.IsPositioningFlight):             value = _Aircraft.IsPositioningFlight = property.Name == trueBool; break;
+                            case nameof(IAircraft.IsPositioningFlightChanged):      value = _Aircraft.IsPositioningFlightChanged; break;
                             default:                                                throw new NotImplementedException();
                         }
 

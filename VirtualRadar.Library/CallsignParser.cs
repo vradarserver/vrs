@@ -25,11 +25,6 @@ namespace VirtualRadar.Library
     class CallsignParser : ICallsignParser
     {
         /// <summary>
-        /// The Regex that splits callsigns into an ICAO/IATA code and a number.
-        /// </summary>
-        private Regex _CallsignRegex = new Regex(@"^(?<code>[A-Z]{3}|[A-Z0-9]{2})?(?<number>\d[A-Z0-9]*)");
-
-        /// <summary>
         /// The standing data manager that we can use to fetch airline information.
         /// </summary>
         private IStandingDataManager _StandingDataManager;
@@ -47,15 +42,12 @@ namespace VirtualRadar.Library
                 Initialise();
                 result.Add(callsign);
 
-                var patternMatch = _CallsignRegex.Match(callsign);
-                if(patternMatch.Success) {
-                    var code = patternMatch.Groups["code"].Value;
-                    var number = patternMatch.Groups["number"].Value.TrimStart('0');
-
+                var parsed = new Callsign(callsign);
+                if(parsed.IsOriginalCallsignValid) {
                     var processedCodes = new List<string>();
-                    foreach(var airline in _StandingDataManager.FindAirlinesForCode(code)) {
-                        ProcessAlternateAirlineCode(callsign, result, number, processedCodes, airline.IcaoCode);
-                        ProcessAlternateAirlineCode(callsign, result, number, processedCodes, airline.IataCode);
+                    foreach(var airline in _StandingDataManager.FindAirlinesForCode(parsed.Code)) {
+                        ProcessAlternateAirlineCode(callsign, result, parsed.TrimmedNumber, processedCodes, airline.IcaoCode);
+                        ProcessAlternateAirlineCode(callsign, result, parsed.TrimmedNumber, processedCodes, airline.IataCode);
                     }
                 }
             }
@@ -100,27 +92,33 @@ namespace VirtualRadar.Library
 
                 if(callsign.Length >= 1) {
                     if(Char.IsDigit(callsign[0]) && (callsign.Length == 1 || Char.IsDigit(callsign[1]))) {
-                        if(!String.IsNullOrEmpty(operatorIcao) && callsign.Length + operatorIcao.Length <= 8) result.Add(String.Format("{0}{1}", operatorIcao, callsign));
+                        if(!String.IsNullOrEmpty(operatorIcao) && callsign.Length + operatorIcao.Length <= 8) {
+                            result.Add(String.Format("{0}{1}", operatorIcao, callsign));
+                        }
                     }
                 }
 
-                var patternMatch = _CallsignRegex.Match(callsign);
-                if(patternMatch.Success) {
-                    var code = patternMatch.Groups["code"].Value;
-                    var number = patternMatch.Groups["number"].Value;
+                var parsed = new Callsign(callsign);
+                if(parsed.IsOriginalCallsignValid) {
+                    var code = parsed.Code;
+                    var number = parsed.Number;
 
                     if(!String.IsNullOrEmpty(number)) {
                         if(String.IsNullOrEmpty(code) && !String.IsNullOrEmpty(operatorIcao)) {
                             code = operatorIcao;
                         }
 
-                        var trimmedNumber = number.TrimStart('0');
-                        if(trimmedNumber != number) result.Add(String.Format("{0}{1}", code, trimmedNumber));
+                        var trimmedNumber = parsed.TrimmedNumber;
+                        if(trimmedNumber != number) {
+                            result.Add(String.Format("{0}{1}", code, trimmedNumber));
+                        }
 
                         if(code.Length == 2) {
                             foreach(var airline in _StandingDataManager.FindAirlinesForCode(code).Where(r => !String.IsNullOrEmpty(r.IcaoCode)).OrderBy(r => r.IcaoCode)) {
                                 result.Add(String.Format("{0}{1}", airline.IcaoCode, number));
-                                if(number != trimmedNumber) result.Add(String.Format("{0}{1}", airline.IcaoCode, trimmedNumber));
+                                if(number != trimmedNumber) {
+                                    result.Add(String.Format("{0}{1}", airline.IcaoCode, trimmedNumber));
+                                }
                             }
                         } else if(code.Length == 3) {
                             var isNumeric = number.Count(r => Char.IsDigit(r)) == number.Length;
@@ -134,7 +132,9 @@ namespace VirtualRadar.Library
                                                                         .Distinct();
                                     foreach(var icaoCode in icaoCodes) {
                                         result.Add(String.Format("{0}{1}", icaoCode, number));
-                                        if(number != trimmedNumber) result.Add(String.Format("{0}{1}", icaoCode, trimmedNumber));
+                                        if(number != trimmedNumber) {
+                                            result.Add(String.Format("{0}{1}", icaoCode, trimmedNumber));
+                                        }
                                     }
                                 }
                             }

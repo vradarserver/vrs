@@ -156,7 +156,7 @@ namespace VRS
         new VRS.LinkRenderHandler({
             linkSite:           VRS.LinkSite.StandingDataMaintenance,
             displayOrder:       -1,
-            canLinkAircraft:    function(aircraft) { return (!VRS.serverConfig || VRS.serverConfig.routeSubmissionEnabled()) && aircraft && !!aircraft.callsign.val; },
+            canLinkAircraft:    function(aircraft) { return (!VRS.serverConfig || VRS.serverConfig.routeSubmissionEnabled()) && aircraft && !!aircraft.callsign.val && aircraft.canSubmitRoute(); },
             hasChanged:         function(aircraft) { return aircraft.callsign.chg; },
             title:              function(aircraft) { return aircraft.hasRoute() ? VRS.$$.SubmitRouteCorrection : VRS.$$.SubmitRoute; },
             buildUrl:           function(aircraft) { return 'http://sdm.virtualradarserver.co.uk/Edit/AddCallsigns.aspx?callsigns=' + VRS.stringUtility.htmlEscape(aircraft.formatCallsign(false)); },

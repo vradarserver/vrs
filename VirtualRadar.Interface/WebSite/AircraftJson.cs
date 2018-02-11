@@ -230,6 +230,18 @@ namespace VirtualRadar.Interface.WebSite
         public List<string> Stopovers { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that this is probably a positioning / ferry flight.
+        /// </summary>
+        [DataMember(Name="IsFerryFlight", IsRequired=false, EmitDefaultValue=false)]
+        public bool? IsPositioningFlight { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating that the this probably a charter flight.
+        /// </summary>
+        [DataMember(Name="IsCharterFlight", IsRequired=false, EmitDefaultValue=false)]
+        public bool? IsCharterFlight { get; set; }
+
+        /// <summary>
         /// Gets or sets the operator's name.
         /// </summary>
         [DataMember(Name="Op", IsRequired=false, EmitDefaultValue=false)]

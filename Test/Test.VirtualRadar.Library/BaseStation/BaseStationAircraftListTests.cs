@@ -1993,6 +1993,44 @@ namespace Test.VirtualRadar.Library.BaseStation
         }
 
         [TestMethod]
+        public void BaseStationAircraftList_MessageReceived_Copes_When_Callsign_Is_Positioning_Flight()
+        {
+            _AircraftList.Start();
+
+            _BaseStationMessage.Callsign = "CALL123";
+            _CallsignRouteDetail.Route = null;
+            _CallsignRouteDetail.IsPositioningFlight = true;
+
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(0x4008F6);
+            Assert.AreEqual(null, aircraft.Origin);
+            Assert.AreEqual(null, aircraft.Destination);
+            Assert.AreEqual(0, aircraft.Stopovers.Count);
+            Assert.AreEqual(true, aircraft.IsPositioningFlight);
+            Assert.AreEqual(false, aircraft.IsCharterFlight);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_MessageReceived_Copes_When_Callsign_Is_Charter_Flight()
+        {
+            _AircraftList.Start();
+
+            _BaseStationMessage.Callsign = "CALL123";
+            _CallsignRouteDetail.Route = null;
+            _CallsignRouteDetail.IsCharterFlight = true;
+
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(0x4008F6);
+            Assert.AreEqual(null, aircraft.Origin);
+            Assert.AreEqual(null, aircraft.Destination);
+            Assert.AreEqual(0, aircraft.Stopovers.Count);
+            Assert.AreEqual(false, aircraft.IsPositioningFlight);
+            Assert.AreEqual(true, aircraft.IsCharterFlight);
+        }
+
+        [TestMethod]
         public void BaseStationAircraftList_MessageReceived_Updates_Route_When_Callsign_Changes()
         {
             _AircraftList.Start();
@@ -2026,11 +2064,50 @@ namespace Test.VirtualRadar.Library.BaseStation
             _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
 
             var aircraft = _AircraftList.FindAircraft(0x4008F6);
-            aircraft = _AircraftList.FindAircraft(0x4008F6);
 
             Assert.AreEqual(null, aircraft.Origin);
             Assert.AreEqual(null, aircraft.Destination);
             Assert.AreEqual(0, aircraft.Stopovers.Count);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_MessageReceived_Updates_Route_When_Callsign_Changes_And_New_Callsign_Is_Positioning()
+        {
+            _AircraftList.Start();
+
+            _BaseStationMessage.Callsign = "VRS1";
+            _CallsignRouteDetail.Route = _Route;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            _BaseStationMessage.Callsign = "VRS2";
+            _CallsignRouteDetail.Route = null;
+            _CallsignRouteDetail.IsPositioningFlight = true;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(0x4008F6);
+
+            Assert.AreEqual(true, aircraft.IsPositioningFlight);
+            Assert.AreEqual(false, aircraft.IsCharterFlight);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_MessageReceived_Updates_Route_When_Callsign_Changes_And_New_Callsign_Is_Charter()
+        {
+            _AircraftList.Start();
+
+            _BaseStationMessage.Callsign = "VRS1";
+            _CallsignRouteDetail.Route = _Route;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            _BaseStationMessage.Callsign = "VRS2";
+            _CallsignRouteDetail.Route = null;
+            _CallsignRouteDetail.IsCharterFlight = true;
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(0x4008F6);
+
+            Assert.AreEqual(false, aircraft.IsPositioningFlight);
+            Assert.AreEqual(true, aircraft.IsCharterFlight);
         }
 
         [TestMethod]

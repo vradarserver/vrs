@@ -42,6 +42,8 @@ declare namespace VRS
         CallsignAndShortRoute:              string;
         CallsignMayNotBeCorrect:            string;
         CentreOnSelectedAircraft:           string;
+        CharterFlight:                      string;
+        CharterFlightShort:                 string;
         Civil:                              string;
         CivilOrMilitary:                    string;
         ClosestToCurrentLocation:           string;
@@ -159,6 +161,7 @@ declare namespace VRS
         HighContrastMap:                    string;
         Icao:                               string;
         IDENT:                              string;
+        IdentActive:                        string;
         Import:                             string;
         ImportFailedBody:                   string;
         ImportFailedTitle:                  string;
@@ -243,6 +246,7 @@ declare namespace VRS
         ListHeading:                        string;
         ListHeadingType:                    string;
         ListIcao:                           string;
+        ListIdentActive:                    string;
         ListInteresting:                    string;
         ListLastAltitude:                   string;
         ListLastFlightLevel:                string;
@@ -388,6 +392,8 @@ declare namespace VRS
         PositionAge:                        string;
         PositionAndAltitude:                string;
         PositionAndSpeed:                   string;
+        PositioningFlight:                  string;
+        PositioningFlightShort:             string;
         PoweredByVRS:                       string;
         PressureAltitude:                   string;
         Pressures:                          string;
@@ -509,6 +515,7 @@ declare namespace VRS
         Squawk7500:                         string;
         Squawk7600:                         string;
         Squawk7700:                         string;
+        SquawkAndIdent:                     string;
         Start:                              string;
         StartsWith:                         string;
         StartTime:                          string;

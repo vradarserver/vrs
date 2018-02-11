@@ -1841,4 +1841,16 @@
   <data name="SquawkAndIdent" xml:space="preserve">
     <value>Squawk &amp; Ident</value>
   </data>
+  <data name="CharterFlight" xml:space="preserve">
+    <value>Charter flight</value>
+  </data>
+  <data name="CharterFlightShort" xml:space="preserve">
+    <value>CHARTER</value>
+  </data>
+  <data name="PositioningFlight" xml:space="preserve">
+    <value>Positioning flight</value>
+  </data>
+  <data name="PositioningFlightShort" xml:space="preserve">
+    <value>POSITION</value>
+  </data>
 </root>

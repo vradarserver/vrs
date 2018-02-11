@@ -24,7 +24,6 @@ namespace VirtualRadar.Database.StandingData
     /// </summary>
     class CallsignRouteFetcher : AircraftFetcher<CallsignRouteFetcher.Key, CallsignRouteDetail>, ICallsignRouteFetcher
     {
-        #region Private class - Key
         /// <summary>
         /// The immutable key used to index registrations of aircraft.
         /// </summary>
@@ -62,9 +61,7 @@ namespace VirtualRadar.Database.StandingData
                 return Icao24 == null ? 0 : Icao24.GetHashCode();
             }
         }
-        #endregion
 
-        #region Fields
         /// <summary>
         /// The singleton instance of the standing data manager that we're going to use.
         /// </summary>
@@ -74,9 +71,7 @@ namespace VirtualRadar.Database.StandingData
         /// The singleton instance of the parser that produces lists of alternate callsigns to use when fetching routes.
         /// </summary>
         private ICallsignParser _CallsignParser;
-        #endregion
 
-        #region Properties
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -97,9 +92,7 @@ namespace VirtualRadar.Database.StandingData
         {
             get { return 0; }
         }
-        #endregion
 
-        #region Events
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -113,9 +106,7 @@ namespace VirtualRadar.Database.StandingData
         {
             EventHelper.Raise(Fetched, this, args);
         }
-        #endregion
 
-        #region Dispose
         protected override void Dispose(bool disposing)
         {
             if(disposing && !Disposed) {
@@ -123,9 +114,7 @@ namespace VirtualRadar.Database.StandingData
             }
             base.Dispose(disposing);
         }
-        #endregion
 
-        #region DoInitialise
         /// <summary>
         /// See base docs.
         /// </summary>
@@ -136,9 +125,7 @@ namespace VirtualRadar.Database.StandingData
             _CallsignParser = Factory.Singleton.Resolve<ICallsignParser>();
             base.DoInitialise();
         }
-        #endregion
 
-        #region RegisterAircraft
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -156,9 +143,7 @@ namespace VirtualRadar.Database.StandingData
 
             return result;
         }
-        #endregion
 
-        #region DoFetchAircraft
         /// <summary>
         /// See base docs.
         /// </summary>
@@ -171,21 +156,30 @@ namespace VirtualRadar.Database.StandingData
 
             if(!String.IsNullOrEmpty(key.Icao24) && !String.IsNullOrEmpty(key.Callsign)) {
                 var callsignUsed = key.Callsign;
+                var parsed = new Callsign(callsignUsed);
+
+                var airlines = _StandingDataManager.FindAirlinesForCode(parsed.Code);
+                var isPositioning = airlines.Any(r => r.IsPositioningFlightNumber(parsed.TrimmedNumber));
+                var isCharter =     airlines.Any(r => r.IsCharterFlightNumber(parsed.TrimmedNumber));
 
                 Route route = null;
-                var callsigns = _CallsignParser.GetAllRouteCallsigns(key.Callsign, key.OperatorIcao);
-                foreach(var callsign in callsigns) {
-                    callsignUsed = callsign;
-                    route = _StandingDataManager.FindRoute(callsignUsed);
-                    if(route != null) break;
+                if(!isPositioning && !isCharter) {
+                    var callsigns = _CallsignParser.GetAllRouteCallsigns(key.Callsign, key.OperatorIcao);
+                    foreach(var callsign in callsigns) {
+                        callsignUsed = callsign;
+                        route = _StandingDataManager.FindRoute(callsignUsed);
+                        if(route != null) break;
+                    }
+                    if(route == null) callsignUsed = key.Callsign;
                 }
-                if(route == null) callsignUsed = key.Callsign;
 
                 detail = new CallsignRouteDetail() {
-                    Callsign = key.Callsign,
-                    UsedCallsign = callsignUsed,
-                    Icao24 = key.Icao24,
-                    Route = route,
+                    Callsign =              key.Callsign,
+                    UsedCallsign =          callsignUsed,
+                    Icao24 =                key.Icao24,
+                    Route =                 route,
+                    IsCharterFlight =       isCharter,
+                    IsPositioningFlight =   isPositioning,
                 };
 
                 OnFetched(new EventArgs<CallsignRouteDetail>(detail));
@@ -193,9 +187,7 @@ namespace VirtualRadar.Database.StandingData
 
             return detail;
         }
-        #endregion
 
-        #region Events subscribed
         /// <summary>
         /// Called when the standing data has changed.
         /// </summary>
@@ -205,6 +197,5 @@ namespace VirtualRadar.Database.StandingData
         {
             RecheckAll(true);
         }
-        #endregion
     }
 }

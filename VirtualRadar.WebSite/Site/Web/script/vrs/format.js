@@ -462,10 +462,14 @@ var VRS;
             }
             return result;
         };
-        Format.prototype.routeFull = function (callsign, from, to, via) {
+        Format.prototype.routeFull = function (callsign, from, to, via, isCharter, isPositioning) {
             var result = '';
             if (callsign) {
-                if (!from || !to)
+                if (!!isCharter)
+                    result = VRS.$$.CharterFlight;
+                else if (!!isPositioning)
+                    result = VRS.$$.PositioningFlight;
+                else if (!from || !to)
                     result = VRS.$$.RouteNotKnown;
                 else
                     result = VRS.$$.formatRoute(from, to, via);
@@ -474,14 +478,18 @@ var VRS;
         };
         Format.prototype.reportRouteFull = function (callsign, route) {
             var sroute = this.extractReportRouteStrings(route);
-            return this.routeMultiLine(callsign, sroute.from, sroute.to, sroute.via);
+            return this.routeMultiLine(callsign, sroute.from, sroute.to, sroute.via, false, false);
         };
-        Format.prototype.routeMultiLine = function (callsign, from, to, via) {
+        Format.prototype.routeMultiLine = function (callsign, from, to, via, isCharter, isPositioning) {
             var result = '';
             if (!callsign)
                 result = VRS.$$.AircraftNotTransmittingCallsign;
             else {
-                if (!from || !to)
+                if (!!isCharter)
+                    result = VRS.$$.CharterFlight;
+                else if (!!isPositioning)
+                    result = VRS.$$.PositioningFlight;
+                else if (!from || !to)
                     result = VRS.$$.RouteNotKnown;
                 else {
                     result += VRS.stringUtility.htmlEscape(from);
@@ -500,44 +508,50 @@ var VRS;
         };
         Format.prototype.reportRouteMultiLine = function (callsign, route) {
             var sroute = this.extractReportRouteStrings(route);
-            return this.routeMultiLine(callsign, sroute.from, sroute.to, sroute.via);
+            return this.routeMultiLine(callsign, sroute.from, sroute.to, sroute.via, false, false);
         };
-        Format.prototype.routeShort = function (callsign, from, to, via, abbreviateStopovers, showRouteNotKnown) {
+        Format.prototype.routeShort = function (callsign, from, to, via, abbreviateStopovers, showRouteNotKnown, isCharter, isPositioning) {
             if (abbreviateStopovers === undefined)
                 abbreviateStopovers = true;
             var result = '';
             if (callsign) {
-                var length = via.length;
-                var showCircularRoute = from && to && from === to && abbreviateStopovers && length;
-                if (from)
-                    result += this.routeAirportCode(from);
-                if (length) {
-                    if (abbreviateStopovers) {
-                        if (!showCircularRoute || length > 1)
-                            result += '-*';
-                        if (showCircularRoute)
-                            result += '-' + this.routeAirportCode(via[length - 1]);
-                    }
-                    else {
-                        for (var i = 0; i < length; ++i) {
-                            result += '-' + this.routeAirportCode(via[i]);
+                if (!!isCharter)
+                    result = VRS.$$.CharterFlightShort;
+                else if (!!isPositioning)
+                    result = VRS.$$.PositioningFlightShort;
+                else {
+                    var length = via.length;
+                    var showCircularRoute = from && to && from === to && abbreviateStopovers && length;
+                    if (from)
+                        result += this.routeAirportCode(from);
+                    if (length) {
+                        if (abbreviateStopovers) {
+                            if (!showCircularRoute || length > 1)
+                                result += '-*';
+                            if (showCircularRoute)
+                                result += '-' + this.routeAirportCode(via[length - 1]);
+                        }
+                        else {
+                            for (var i = 0; i < length; ++i) {
+                                result += '-' + this.routeAirportCode(via[i]);
+                            }
                         }
                     }
+                    if (to) {
+                        if (!showCircularRoute)
+                            result += '-' + this.routeAirportCode(to);
+                    }
+                    if (showCircularRoute)
+                        result += ' ∞';
+                    if (!result)
+                        result = showRouteNotKnown ? VRS.$$.RouteNotKnown : '';
                 }
-                if (to) {
-                    if (!showCircularRoute)
-                        result += '-' + this.routeAirportCode(to);
-                }
-                if (showCircularRoute)
-                    result += ' ∞';
-                if (!result)
-                    result = showRouteNotKnown ? VRS.$$.RouteNotKnown : '';
             }
             return result;
         };
         Format.prototype.reportRouteShort = function (callsign, route, abbreviateStopovers, showRouteNotKnown) {
             var sroute = this.extractReportRouteStrings(route);
-            return this.routeShort(callsign, sroute.from, sroute.to, sroute.via, abbreviateStopovers, showRouteNotKnown);
+            return this.routeShort(callsign, sroute.from, sroute.to, sroute.via, abbreviateStopovers, showRouteNotKnown, false, false);
         };
         Format.prototype.serial = function (serial) {
             return serial || '';
