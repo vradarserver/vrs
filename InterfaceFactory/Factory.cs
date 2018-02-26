@@ -60,5 +60,24 @@ namespace InterfaceFactory
         {
             _Singleton = previousFactory;
         }
+
+
+        //----------------------------------------------------------------------------------------
+        // Singleton class factory shortcuts
+        //----------------------------------------------------------------------------------------
+        public static void Register<TI, TM>() where TI: class where TM: class, TI =>    Singleton.Register<TI,TM>();
+        public static void Register(Type interfaceType, Type implementationType) =>     Singleton.Register(interfaceType, implementationType);
+        public static void Register<T>(Func<T> callBack) =>                             Singleton.Register<T>(callBack);
+        public static void RegisterInstance<TI>(TI instance) =>                         Singleton.RegisterInstance<TI>(instance);
+        public static void RegisterInstance(Type interfaceType, object instance) =>     Singleton.RegisterInstance(interfaceType, instance);
+        public static T Resolve<T>() where T: class =>                                  Singleton.Resolve<T>();
+        public static object Resolve(Type interfaceType) =>                             Singleton.Resolve(interfaceType);
+        public static T ResolveSingleton<T>() where T: class =>                         Singleton.ResolveSingleton<T>();
+        public static object ResolveSingleton(Type interfaceType) =>                    Singleton.ResolveSingleton(interfaceType);
+        public static T ResolveNewInstance<T>() where T: class =>                       Singleton.ResolveNewInstance<T>();
+        public static object ResolveNewInstance(Type interfaceType) =>                  Singleton.ResolveNewInstance(interfaceType);
+        public static bool HasImplementation(Type interfaceType) =>                     Singleton.HasImplementation(interfaceType);
+        public static bool HasImplementation<T>() where T: class =>                     Singleton.HasImplementation<T>();
+        public static IClassFactory CreateChildFactory() =>                             Singleton.CreateChildFactory();
     }
 }
