@@ -303,7 +303,7 @@ namespace VirtualRadar.Library
         protected virtual void OnCacheChanged(EventArgs args)
         {
             EventHelper.Raise(CacheChanged, this, args, ex => {
-                var log = Factory.Singleton.ResolveSingleton<ILog>();
+                var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception in CacheChanged event handler (folder is {0}): {1}", Folder, ex.ToString());
             });
         }
@@ -316,7 +316,7 @@ namespace VirtualRadar.Library
         public DirectoryCache()
         {
             Provider = new DefaultProvider();
-            _Clock = Factory.Singleton.Resolve<IClock>();
+            _Clock = Factory.Resolve<IClock>();
         }
 
         /// <summary>
@@ -348,7 +348,7 @@ namespace VirtualRadar.Library
                 _Disposed = true;
                 if(_HookedHeartbeat) {
                     _HookedHeartbeat = false;
-                    Factory.Singleton.ResolveSingleton<IHeartbeatService>().SlowTick -= HeartbeatService_SlowTick;
+                    Factory.ResolveSingleton<IHeartbeatService>().SlowTick -= HeartbeatService_SlowTick;
                 }
             }
         }
@@ -430,7 +430,7 @@ namespace VirtualRadar.Library
         /// </summary>
         public void BeginRefresh()
         {
-            var backgroundWorker = Factory.Singleton.Resolve<IBackgroundWorker>();
+            var backgroundWorker = Factory.Resolve<IBackgroundWorker>();
             backgroundWorker.DoWork += BackgroundWorker_DoWork;
             backgroundWorker.StartWork(null);
         }
@@ -447,7 +447,7 @@ namespace VirtualRadar.Library
             lock(_SyncLock) {
                 if(!_HookedHeartbeat) {
                     _HookedHeartbeat = true;
-                    Factory.Singleton.ResolveSingleton<IHeartbeatService>().SlowTick += HeartbeatService_SlowTick;
+                    Factory.ResolveSingleton<IHeartbeatService>().SlowTick += HeartbeatService_SlowTick;
                 }
             }
 
@@ -501,7 +501,7 @@ namespace VirtualRadar.Library
 
                     newCacheState.LastFetchTime = _Clock.UtcNow;
                 } catch(Exception ex) {
-                    Factory.Singleton.ResolveSingleton<ILog>().WriteLine("Caught exception while reading filenames from {0}: {1}", folder, ex.ToString());
+                    Factory.ResolveSingleton<ILog>().WriteLine("Caught exception while reading filenames from {0}: {1}", folder, ex.ToString());
                 } finally {
                     lock(_SyncLock) {
                         _Cache = newCache;

@@ -282,9 +282,9 @@ namespace VirtualRadar.WebServer.HttpListener
 
         public OwinWebServer()
         {
-            _WebAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
-            _AuthenticationConfiguration = Factory.Singleton.ResolveSingleton<IAuthenticationConfiguration>();
-            _AccessConfiguration = Factory.Singleton.ResolveSingleton<IAccessConfiguration>();
+            _WebAppConfiguration = Factory.Resolve<IWebAppConfiguration>();
+            _AuthenticationConfiguration = Factory.ResolveSingleton<IAuthenticationConfiguration>();
+            _AccessConfiguration = Factory.ResolveSingleton<IAccessConfiguration>();
         }
 
         public void AddAdministratorPath(string pathFromRoot)
@@ -348,7 +348,7 @@ namespace VirtualRadar.WebServer.HttpListener
 
                 if(!_PipelineConfigured) {
                     _PipelineConfigured = true;
-                    var standardPipeline = Factory.Singleton.Resolve<IStandardPipeline>();
+                    var standardPipeline = Factory.Resolve<IStandardPipeline>();
                     standardPipeline.Register(_WebAppConfiguration);
                 }
 
@@ -381,7 +381,7 @@ namespace VirtualRadar.WebServer.HttpListener
         {
             if(!_HookedHeartbeat) {
                 _HookedHeartbeat = true;
-                var heartbeatTimer = Factory.Singleton.ResolveSingleton<IHeartbeatService>();
+                var heartbeatTimer = Factory.ResolveSingleton<IHeartbeatService>();
                 heartbeatTimer.FastTick += HeartbeatService_FastTick;
             }
         }
@@ -390,7 +390,7 @@ namespace VirtualRadar.WebServer.HttpListener
         {
             if(_HookedHeartbeat) {
                 _HookedHeartbeat = false;
-                var heartbeatTimer = Factory.Singleton.ResolveSingleton<IHeartbeatService>();
+                var heartbeatTimer = Factory.ResolveSingleton<IHeartbeatService>();
                 heartbeatTimer.FastTick -= HeartbeatService_FastTick;
             }
         }

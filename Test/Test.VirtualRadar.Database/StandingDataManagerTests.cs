@@ -67,7 +67,7 @@ namespace Test.VirtualRadar.Database
             _ConfigurationStorage.Setup(r => r.Load()).Returns(_Configuration);
             _ConfigurationStorage.Setup(r => r.Folder).Returns(Path.Combine(TestContext.TestDeploymentDir, "StandingDataTest"));
 
-            _Implementation = Factory.Singleton.ResolveNewInstance<IStandingDataManager>();
+            _Implementation = Factory.ResolveNewInstance<IStandingDataManager>();
 
             _Provider = new Mock<IStandingDataManagerProvider>();
             _Implementation.Provider = _Provider.Object;
@@ -101,7 +101,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void StandingDataManager_Constructor_Initialises_Provider()
         {
-            var implementation = Factory.Singleton.ResolveNewInstance<IStandingDataManager>();
+            var implementation = Factory.ResolveNewInstance<IStandingDataManager>();
             Assert.IsNotNull(implementation.Provider);
             TestUtilities.TestProperty(implementation, "Provider", implementation.Provider, _Provider.Object);
         }

@@ -35,7 +35,7 @@ namespace Test.VirtualRadar.Library
         [TestInitialize]
         public void TestInitialise()
         {
-            _Aircraft = Factory.Singleton.Resolve<IAircraft>();
+            _Aircraft = Factory.Resolve<IAircraft>();
         }
 
         [TestCleanup]
@@ -235,7 +235,7 @@ namespace Test.VirtualRadar.Library
         {
             var worksheet = new ExcelWorksheetData(TestContext);
 
-            var aircraft = Factory.Singleton.Resolve<IAircraft>();
+            var aircraft = Factory.Resolve<IAircraft>();
             aircraft.Registration = worksheet.EString("Registration");
 
             Assert.AreEqual(worksheet.EString("IcaoCompliantRegistration"), aircraft.IcaoCompliantRegistration);
@@ -245,7 +245,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void Aircraft_IcaoCompliantRegistration_Changes_When_Registration_Changes()
         {
-            var aircraft = Factory.Singleton.Resolve<IAircraft>();
+            var aircraft = Factory.Resolve<IAircraft>();
 
             aircraft.DataVersion = 1;
             aircraft.Registration = "ABC";
@@ -259,7 +259,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void Aircraft_IcaoCompliantRegistration_Can_Be_Reset_To_Null()
         {
-            var aircraft = Factory.Singleton.Resolve<IAircraft>();
+            var aircraft = Factory.Resolve<IAircraft>();
 
             aircraft.DataVersion = 1;
             aircraft.Registration = "ABC";

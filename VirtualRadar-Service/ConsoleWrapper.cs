@@ -34,7 +34,7 @@ namespace VirtualRadar
 
         static ConsoleWrapper()
         {
-            var folder = Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Folder;
+            var folder = Factory.ResolveSingleton<IConfigurationStorage>().Folder;
             LogFullPath = Path.Combine(folder, LogFileName);
 
             if(!Directory.Exists(folder)) {

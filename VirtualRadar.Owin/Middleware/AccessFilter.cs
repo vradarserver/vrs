@@ -36,7 +36,7 @@ namespace VirtualRadar.Owin.Middleware
         /// </summary>
         public AccessFilter()
         {
-            _AccessConfiguration = Factory.Singleton.ResolveSingleton<IAccessConfiguration>();
+            _AccessConfiguration = Factory.ResolveSingleton<IAccessConfiguration>();
         }
 
         /// <summary>

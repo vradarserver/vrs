@@ -35,13 +35,13 @@ namespace VirtualRadar.Interface.Settings
     /// <example>
     /// To load a setting from within an <see cref="IPlugin"/>:
     /// <code>
-    /// IPluginSettingsStorage storage = Factory.Singleton.Resolve&lt;IPluginSettingsStorage&gt;().Singleton;
+    /// IPluginSettingsStorage storage = Factory.Resolve&lt;IPluginSettingsStorage&gt;().Singleton;
     /// PluginSettings settings = storage.Load();
     /// 
     /// bool mySetting = ReadBool(this, "Key", true);
     /// </code>
     /// To save a setting from within an <see cref="IPlugin"/>:
-    /// IPluginSettingsStorage storage = Factory.Singleton.Resolve&lt;IPluginSettingsStorage&gt;().Singleton;
+    /// IPluginSettingsStorage storage = Factory.Resolve&lt;IPluginSettingsStorage&gt;().Singleton;
     /// PluginSettings settings = storage.Load();
     /// settings.Write(this, "Key", false);
     /// storage.Save(settings);

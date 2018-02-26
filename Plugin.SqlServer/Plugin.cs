@@ -98,7 +98,7 @@ namespace VirtualRadar.Plugin.SqlServer
         /// </summary>
         public void GuiThreadStartup()
         {
-            var webAdminViewManager = Factory.Singleton.ResolveSingleton<IWebAdminViewManager>();
+            var webAdminViewManager = Factory.ResolveSingleton<IWebAdminViewManager>();
             webAdminViewManager.RegisterTranslations(typeof(SqlServerStrings), "SqlServerPlugin");
             webAdminViewManager.AddWebAdminView(new WebAdminView("/WebAdmin/", "SqlServerPluginOptions.html", SqlServerStrings.WebAdminMenuName, () => new WebAdmin.OptionsView(), typeof(SqlServerStrings)) {
                 Plugin = this,
@@ -135,7 +135,7 @@ namespace VirtualRadar.Plugin.SqlServer
                     result = false;
 
                     try {
-                        var log = Factory.Singleton.ResolveSingleton<ILog>();
+                        var log = Factory.ResolveSingleton<ILog>();
                         log.WriteLine($"Could not establish a connection to SQL Server using \"{connectionString}\": {ex}");
                     } catch {
                     }

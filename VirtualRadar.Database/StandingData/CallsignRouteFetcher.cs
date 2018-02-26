@@ -120,9 +120,9 @@ namespace VirtualRadar.Database.StandingData
         /// </summary>
         protected override void DoInitialise()
         {
-            _StandingDataManager = Factory.Singleton.ResolveSingleton<IStandingDataManager>();
+            _StandingDataManager = Factory.ResolveSingleton<IStandingDataManager>();
             _StandingDataManager.LoadCompleted += StandingDataManager_LoadCompleted;
-            _CallsignParser = Factory.Singleton.Resolve<ICallsignParser>();
+            _CallsignParser = Factory.Resolve<ICallsignParser>();
             base.DoInitialise();
         }
 

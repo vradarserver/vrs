@@ -30,7 +30,7 @@ namespace Test.VirtualRadar.Library.Listener
         [TestInitialize]
         public void TestInitialise()
         {
-            _Extractor = Factory.Singleton.Resolve<ISbs3MessageBytesExtractor>();
+            _Extractor = Factory.Resolve<ISbs3MessageBytesExtractor>();
             _CommonTests = new CommonMessageBytesExtractorTests(TestContext, _Extractor, ExtractedBytesFormat.ModeS);
         }
 

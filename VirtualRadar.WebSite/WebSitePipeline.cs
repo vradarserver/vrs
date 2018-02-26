@@ -54,50 +54,50 @@ namespace VirtualRadar.WebSite
             webAppConfiguration.AddCallback(UseImageServer,                 StandardPipelinePriority.ImageServer);
             webAppConfiguration.AddCallback(UseAudioServer,                 StandardPipelinePriority.AudioServer);
 
-            webAppConfiguration.AddStreamManipulator(Factory.Singleton.Resolve<IHtmlManipulator>(),       StreamManipulatorPriority.HtmlManipulator);
-            webAppConfiguration.AddStreamManipulator(Factory.Singleton.Resolve<IJavascriptManipulator>(), StreamManipulatorPriority.JavascriptManipulator);
+            webAppConfiguration.AddStreamManipulator(Factory.Resolve<IHtmlManipulator>(),       StreamManipulatorPriority.HtmlManipulator);
+            webAppConfiguration.AddStreamManipulator(Factory.Resolve<IJavascriptManipulator>(), StreamManipulatorPriority.JavascriptManipulator);
 
-            Factory.Singleton.Resolve<IHtmlManipulatorConfiguration>().AddTextResponseManipulator<IBundlerHtmlManipulator>();
+            Factory.Resolve<IHtmlManipulatorConfiguration>().AddTextResponseManipulator<IBundlerHtmlManipulator>();
         }
 
         private void UseExceptionHandler(IAppBuilder app)
         {
-            var handler = Factory.Singleton.Resolve<IExceptionHandler>();
+            var handler = Factory.Resolve<IExceptionHandler>();
             var middleware = new Func<AppFunc, AppFunc>(handler.HandleRequest);
             app.Use(middleware);
         }
 
         private void UseAccessFilter(IAppBuilder app)
         {
-            var filter = Factory.Singleton.Resolve<IAccessFilter>();
+            var filter = Factory.Resolve<IAccessFilter>();
             var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
             app.Use(middleware);
         }
 
         private void UseBasicAuthenticationFilter(IAppBuilder app)
         {
-            var filter = Factory.Singleton.Resolve<IBasicAuthenticationFilter>();
+            var filter = Factory.Resolve<IBasicAuthenticationFilter>();
             var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
             app.Use(middleware);
         }
 
         private void UseRedirectionFilter(IAppBuilder app)
         {
-            var filter = Factory.Singleton.Resolve<IRedirectionFilter>();
+            var filter = Factory.Resolve<IRedirectionFilter>();
             var middleware = new Func<AppFunc, AppFunc>(filter.FilterRequest);
             app.Use(middleware);
         }
 
         private void UseCorsHandler(IAppBuilder app)
         {
-            var handler = Factory.Singleton.Resolve<ICorsHandler>();
+            var handler = Factory.Resolve<ICorsHandler>();
             var middleware = new Func<AppFunc, AppFunc>(handler.HandleRequest);
             app.Use(middleware);
         }
 
         private void UseResponseStreamWrapper(IAppBuilder app)
         {
-            var wrapper = Factory.Singleton.Resolve<IResponseStreamWrapper>();
+            var wrapper = Factory.Resolve<IResponseStreamWrapper>();
             wrapper.Initialise(_WebAppConfiguration.GetStreamManipulators());
 
             var middleware = new Func<AppFunc, AppFunc>(wrapper.WrapResponseStream);
@@ -133,28 +133,28 @@ namespace VirtualRadar.WebSite
 
         private void UseBundlerServer(IAppBuilder app)
         {
-            var server = Factory.Singleton.Resolve<IBundlerServer>();
+            var server = Factory.Resolve<IBundlerServer>();
             var middleware = new Func<AppFunc, AppFunc>(server.HandleRequest);
             app.Use(middleware);
         }
 
         private void UseFileSystemServer(IAppBuilder app)
         {
-            var server = Factory.Singleton.Resolve<IFileSystemServer>();
+            var server = Factory.Resolve<IFileSystemServer>();
             var middleware = new Func<AppFunc, AppFunc>(server.HandleRequest);
             app.Use(middleware);
         }
 
         private void UseImageServer(IAppBuilder app)
         {
-            var server = Factory.Singleton.Resolve<IImageServer>();
+            var server = Factory.Resolve<IImageServer>();
             var middleware = new Func<AppFunc, AppFunc>(server.HandleRequest);
             app.Use(middleware);
         }
 
         private void UseAudioServer(IAppBuilder app)
         {
-            var server = Factory.Singleton.Resolve<IAudioServer>();
+            var server = Factory.Resolve<IAudioServer>();
             var middleware = new Func<AppFunc, AppFunc>(server.HandleRequest);
             app.Use(middleware);
         }

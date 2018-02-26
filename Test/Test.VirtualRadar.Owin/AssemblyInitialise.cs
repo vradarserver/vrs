@@ -33,10 +33,10 @@ namespace Test.VirtualRadar.Owin
             global::VirtualRadar.Owin.Implementations.Register(Factory.Singleton);
             global::VirtualRadar.WebSite.Implementations.Register(Factory.Singleton);
 
-            Factory.Singleton.RegisterInstance<IApplicationInformation>(ApplicationInformation.Object);
+            Factory.RegisterInstance<IApplicationInformation>(ApplicationInformation.Object);
             ApplicationInformation.Setup(a => a.CultureInfo).Returns((CultureInfo)null);
 
-            Factory.Singleton.RegisterInstance<IRuntimeEnvironment>(RuntimeEnvironment.Object);
+            Factory.RegisterInstance<IRuntimeEnvironment>(RuntimeEnvironment.Object);
             RuntimeEnvironment.Setup(r => r.IsTest).Returns(true);
         }
     }

@@ -134,9 +134,9 @@ namespace VirtualRadar.Library.Presenter
         /// </summary>
         public MainPresenter()
         {
-            _Clock = Factory.Singleton.Resolve<IClock>();
+            _Clock = Factory.Resolve<IClock>();
             _LastAutoSavePolarPlots = _Clock.UtcNow;
-            _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
+            _SharedConfiguration = Factory.ResolveSingleton<ISharedConfiguration>();
         }
         #endregion
 
@@ -149,23 +149,23 @@ namespace VirtualRadar.Library.Presenter
         {
             if(view == null) throw new ArgumentNullException("view");
             View = view;
-            View.LogFileName = Factory.Singleton.ResolveSingleton<ILog>().FileName;
-            View.InvalidPluginCount = Factory.Singleton.ResolveSingleton<IPluginManager>().IgnoredPlugins.Count;
+            View.LogFileName = Factory.ResolveSingleton<ILog>().FileName;
+            View.InvalidPluginCount = Factory.ResolveSingleton<IPluginManager>().IgnoredPlugins.Count;
 
-            var heartbeatService = Factory.Singleton.ResolveSingleton<IHeartbeatService>();
+            var heartbeatService = Factory.ResolveSingleton<IHeartbeatService>();
             heartbeatService.SlowTick += HeartbeatService_SlowTick;
             heartbeatService.FastTick += HeartbeatService_FastTick;
 
-            var newVersionChecker = Factory.Singleton.ResolveSingleton<INewVersionChecker>();
+            var newVersionChecker = Factory.ResolveSingleton<INewVersionChecker>();
             newVersionChecker.NewVersionAvailable += NewVersionChecker_NewVersionAvailable;
 
-            _FeedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
+            _FeedManager = Factory.ResolveSingleton<IFeedManager>();
             _FeedManager.ConnectionStateChanged += FeedManager_ConnectionStateChanged;
             _FeedManager.FeedsChanged += FeedManager_FeedsChanged;
             UpdateFeedCounters();
             View.ShowFeeds(GetFeedCounters());
 
-            _WebServer = Factory.Singleton.ResolveSingleton<IAutoConfigWebServer>().WebServer;
+            _WebServer = Factory.ResolveSingleton<IAutoConfigWebServer>().WebServer;
             _WebServer.ExternalAddressChanged += WebServer_ExternalAddressChanged;
             _WebServer.OnlineChanged += WebServer_OnlineChanged;
             _WebServer.ResponseSent += WebServer_ResponseSent;
@@ -174,7 +174,7 @@ namespace VirtualRadar.Library.Presenter
             View.WebServerNetworkAddress = _WebServer.NetworkAddress;
             View.WebServerExternalAddress = _WebServer.ExternalAddress;
 
-            _RebroadcastServerManager = Factory.Singleton.ResolveSingleton<IRebroadcastServerManager>();
+            _RebroadcastServerManager = Factory.ResolveSingleton<IRebroadcastServerManager>();
             DoDisplayRebroadcastServerConnections();
 
             _SharedConfiguration.ConfigurationChanged += SharedConfiguration_ConfigurationChanged;
@@ -205,7 +205,7 @@ namespace VirtualRadar.Library.Presenter
         /// <returns></returns>
         public IFeed[] GetReceiverFeeds()
         {
-            return Factory.Singleton.ResolveSingleton<IFeedManager>().Feeds.Where(r => !(r.Listener is IMergedFeedListener)).ToArray();
+            return Factory.ResolveSingleton<IFeedManager>().Feeds.Where(r => !(r.Listener is IMergedFeedListener)).ToArray();
         }
 
         /// <summary>
@@ -233,7 +233,7 @@ namespace VirtualRadar.Library.Presenter
         {
             var configuration = _SharedConfiguration.Get();
             var now = _Clock.UtcNow;
-            var log = Factory.Singleton.ResolveSingleton<ILog>();
+            var log = Factory.ResolveSingleton<ILog>();
 
             try {
                 PerformVersionCheck(configuration, now);
@@ -260,7 +260,7 @@ namespace VirtualRadar.Library.Presenter
                 if((now - _LastVersionCheck).TotalDays >= configuration.VersionCheckSettings.CheckPeriodDays) {
                     _LastVersionCheck = now;
 
-                    var newVersionChecker = Factory.Singleton.ResolveSingleton<INewVersionChecker>();
+                    var newVersionChecker = Factory.ResolveSingleton<INewVersionChecker>();
                     newVersionChecker.CheckForNewVersion();
                 }
             }
@@ -272,7 +272,7 @@ namespace VirtualRadar.Library.Presenter
                 if((now - _LastAutoSavePolarPlots).TotalMinutes >= configuration.BaseStationSettings.AutoSavePolarPlotsMinutes) {
                     _LastAutoSavePolarPlots = now;
 
-                    var storage = Factory.Singleton.ResolveSingleton<ISavedPolarPlotStorage>();
+                    var storage = Factory.ResolveSingleton<ISavedPolarPlotStorage>();
                     storage.Save();
                 }
             }
@@ -289,7 +289,7 @@ namespace VirtualRadar.Library.Presenter
 
             var previousState = View.ShowBusy(true, null);
             try {
-                var versionChecker = Factory.Singleton.ResolveSingleton<INewVersionChecker>();
+                var versionChecker = Factory.ResolveSingleton<INewVersionChecker>();
                 newVersionAvailable = versionChecker.CheckForNewVersion();
             } finally {
                 View.ShowBusy(false, previousState);

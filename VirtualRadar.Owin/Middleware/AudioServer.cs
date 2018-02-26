@@ -39,7 +39,7 @@ namespace VirtualRadar.Owin.Middleware
         /// </summary>
         public AudioServer()
         {
-            _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
+            _SharedConfiguration = Factory.ResolveSingleton<ISharedConfiguration>();
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace VirtualRadar.Owin.Middleware
                         if(text == null) {
                             result = false;
                         } else {
-                            var audio = Factory.Singleton.Resolve<IAudio>();
+                            var audio = Factory.Resolve<IAudio>();
                             var audioBytes = audio.SpeechToWavBytes(text);
 
                             var response = context.Response;

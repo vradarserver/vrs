@@ -89,7 +89,7 @@ namespace Test.VirtualRadar.Library.Listener
             _Statistics = StatisticsHelper.CreateLockableStatistics();
 
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
             _RuntimeEnvironment = TestUtilities.CreateMockSingleton<IRuntimeEnvironment>();
             _RuntimeEnvironment.Setup(r => r.IsTest).Returns(true);
@@ -112,7 +112,7 @@ namespace Test.VirtualRadar.Library.Listener
             _Compressor.Setup(r => r.Decompress(It.IsAny<byte[]>())).Returns(_Port30003Message);
             _JsonConverter.Setup(r => r.ConvertIntoBaseStationMessageEventArgs(It.IsAny<AircraftListJson>())).Returns(new List<BaseStationMessageEventArgs>() { new BaseStationMessageEventArgs(_Port30003Message) });
 
-            _Listener = Factory.Singleton.Resolve<IListener>();
+            _Listener = Factory.Resolve<IListener>();
             _Connector = new MockConnector<IConnector, IConnection>();
             _BytesExtractor = new MockMessageBytesExtractor();
 

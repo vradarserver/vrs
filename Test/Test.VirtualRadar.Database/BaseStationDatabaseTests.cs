@@ -62,14 +62,14 @@ namespace Test.VirtualRadar.Database
             _RuntimeEnvironment = TestUtilities.CreateMockSingleton<IRuntimeEnvironment>();
 
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
             _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
             _Configuration = new Configuration();
             _ConfigurationStorage.Setup(s => s.Load()).Returns(_Configuration);
 
             _FileSystem = new MockFileSystemProvider();
-            Factory.Singleton.RegisterInstance<IFileSystemProvider>(_FileSystem);
+            Factory.RegisterInstance<IFileSystemProvider>(_FileSystem);
 
             _CreateDatabaseFileName = Path.Combine(TestContext.TestDeploymentDir, "CreatedDatabase.sqb");
             if(File.Exists(_CreateDatabaseFileName)) {
@@ -89,7 +89,7 @@ namespace Test.VirtualRadar.Database
             _StandingDataManager = TestUtilities.CreateMockSingleton<IStandingDataManager>();
             _StandingDataManager.Setup(r => r.FindCodeBlock(It.IsAny<string>())).Returns(_Icao24CodeBlock);
 
-            _Database = Factory.Singleton.Resolve<IBaseStationDatabase>();
+            _Database = Factory.Resolve<IBaseStationDatabase>();
             _Database.FileName = _EmptyDatabaseFileName;
 
             _Provider = new Mock<IBaseStationDatabaseProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
@@ -539,7 +539,7 @@ namespace Test.VirtualRadar.Database
         public void BaseStationDatabase_Constructor_Initialises_To_Known_Values_And_Properties_Work()
         {
             _Database.Dispose();
-            _Database = Factory.Singleton.Resolve<IBaseStationDatabase>();
+            _Database = Factory.Resolve<IBaseStationDatabase>();
 
             Assert.IsNotNull(_Database.Provider);
             TestUtilities.TestProperty(_Database, "Provider", _Database.Provider, _Provider.Object);

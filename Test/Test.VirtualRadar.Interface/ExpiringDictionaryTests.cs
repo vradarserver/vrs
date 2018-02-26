@@ -36,7 +36,7 @@ namespace Test.VirtualRadar.Interface
         {
             _OriginalFactory = Factory.TakeSnapshot();
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
             _HeartbeatService = TestUtilities.CreateMockSingleton<IHeartbeatService>();
 

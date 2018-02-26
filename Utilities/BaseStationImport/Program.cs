@@ -28,7 +28,7 @@ namespace BaseStationImport
             try {
                 ProgramLifetime.Headless = true;
                 ProgramLifetime.InitialiseUnhandledExceptionHandling();
-                Factory.Singleton.Register<IApplicationInformation, ApplicationInformation>();
+                Factory.Register<IApplicationInformation, ApplicationInformation>();
 
                 VirtualRadar.SQLiteWrapper.Implementations.Register(Factory.Singleton);
                 VirtualRadar.Headless.Implementations.Register(Factory.Singleton);
@@ -38,7 +38,7 @@ namespace BaseStationImport
                 ProgramLifetime.InitialiseManagers();
                 LoadDatabasePlugins();
 
-                var appInfo = Factory.Singleton.Resolve<IApplicationInformation>();
+                var appInfo = Factory.Resolve<IApplicationInformation>();
                 Console.WriteLine($"{appInfo.ApplicationName}, version {appInfo.ShortVersion}, built {appInfo.BuildDate} UTC");
                 Console.WriteLine(appInfo.Copyright);
                 Console.WriteLine();
@@ -63,7 +63,7 @@ namespace BaseStationImport
                 }
 
                 try {
-                    var log = Factory.Singleton.ResolveSingleton<ILog>();
+                    var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine($"Caught exception in BaseStationImport: {ex.ToString()}");
                     Console.WriteLine("Full details have been recorded in the log");
                 } catch(Exception iEx) {
@@ -94,7 +94,7 @@ namespace BaseStationImport
         /// </remarks>
         private static void LoadDatabasePlugins()
         {
-            var pluginManager = Factory.Singleton.ResolveSingleton<IPluginManager>();
+            var pluginManager = Factory.ResolveSingleton<IPluginManager>();
             ProgramLifetime.LoadPlugins();
 
             foreach(var plugin in pluginManager.LoadedPlugins) {

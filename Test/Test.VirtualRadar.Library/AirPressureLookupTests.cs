@@ -31,7 +31,7 @@ namespace Test.VirtualRadar.Library
         [TestInitialize]
         public void TestInitialise()
         {
-            _Lookup = Factory.Singleton.ResolveNewInstance<IAirPressureLookup>();
+            _Lookup = Factory.ResolveNewInstance<IAirPressureLookup>();
             _AirPressures = new List<AirPressure>();
             _Now = DateTime.UtcNow;
         }

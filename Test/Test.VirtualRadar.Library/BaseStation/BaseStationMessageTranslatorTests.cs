@@ -28,7 +28,7 @@ namespace Test.VirtualRadar.Library.BaseStation
         [TestInitialize]
         public void TestInitialise()
         {
-            _Implementation = Factory.Singleton.Resolve<IBaseStationMessageTranslator>();
+            _Implementation = Factory.Resolve<IBaseStationMessageTranslator>();
         }
 
         public TestContext TestContext { get; set; }

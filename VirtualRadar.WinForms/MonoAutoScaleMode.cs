@@ -69,7 +69,7 @@ namespace VirtualRadar.WinForms
             // Unfortunately this MUST be called in the constructor for forms and user controls, which means this will be called at design-time.
             // The factory doesn't have anything in it at design-time, so it'll throw an exception. We need to throw the exception away.
             try {
-                _IsMono = AlwaysDisableFontScaling ? true : Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>().IsMono;
+                _IsMono = AlwaysDisableFontScaling ? true : Factory.ResolveSingleton<IRuntimeEnvironment>().IsMono;
             } catch { }
         }
 

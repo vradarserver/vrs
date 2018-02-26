@@ -91,7 +91,7 @@ namespace VirtualRadar.Library.Settings
         private void OnConfigurationChanged(EventArgs args)
         {
             EventHelper.Raise(ConfigurationChanged, this, args, ex => {
-                var log = Factory.Singleton.ResolveSingleton<ILog>();
+                var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception in ConfigurationChanged event handler: {0}", ex.ToString());
             });
         }
@@ -177,7 +177,7 @@ namespace VirtualRadar.Library.Settings
             try {
                 if(File.Exists(FileName)) {
                     using(StreamReader stream = new StreamReader(FileName, Encoding.UTF8)) {
-                        var serialiser = Factory.Singleton.Resolve<IXmlSerialiser>();
+                        var serialiser = Factory.Resolve<IXmlSerialiser>();
                         result = serialiser.Deserialise<Configuration>(stream);
                     }
                 }
@@ -273,10 +273,10 @@ namespace VirtualRadar.Library.Settings
 
             var settings = configuration == null ? null : configuration.WebServerSettings;
             if(settings != null && !settings.ConvertedUser && !String.IsNullOrEmpty(settings.BasicAuthenticationUser)) {
-                var userManager = Factory.Singleton.ResolveSingleton<IUserManager>();
+                var userManager = Factory.ResolveSingleton<IUserManager>();
                 var user = userManager.GetUserByLoginName(settings.BasicAuthenticationUser);
                 if(user == null && userManager.CanCreateUsersWithHash) {
-                    user = Factory.Singleton.Resolve<IUser>();
+                    user = Factory.Resolve<IUser>();
                     user.Enabled = true;
                     user.LoginName = settings.BasicAuthenticationUser;
                     user.Name = Strings.ConvertedBasicAuthenticationUser;
@@ -324,7 +324,7 @@ namespace VirtualRadar.Library.Settings
                 ++configuration.DataVersion;
 
                 using(StreamWriter stream = new StreamWriter(FileName, false, Encoding.UTF8)) {
-                    var serialiser = Factory.Singleton.Resolve<IXmlSerialiser>();
+                    var serialiser = Factory.Resolve<IXmlSerialiser>();
                     serialiser.Serialise(configuration, stream);
                 }
             }

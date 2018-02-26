@@ -187,13 +187,13 @@ namespace VirtualRadar.Library.Listener
         /// </summary>
         private void LoadConfiguration()
         {
-            var configurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
+            var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
             var configuration = configurationStorage.Load();
 
             var receiverRange = configuration.RawDecodingSettings.ReceiverRange;
             if(_SanityChecker == null || receiverRange != _ReceiverRange) {
                 _ReceiverRange = receiverRange;
-                _SanityChecker = Factory.Singleton.Resolve<IAircraftSanityChecker>();
+                _SanityChecker = Factory.Resolve<IAircraftSanityChecker>();
                 foreach(var slice in _Slices) {
                     slice.PolarPlots.Clear();
                 }

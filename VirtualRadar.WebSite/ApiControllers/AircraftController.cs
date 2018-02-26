@@ -50,7 +50,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 result = new AirportDataThumbnailsJson() { Error = "Invalid ICAO" };
             } else {
                 try {
-                    var airportDataDotCom = Factory.Singleton.Resolve<IAirportDataDotCom>();
+                    var airportDataDotCom = Factory.Resolve<IAirportDataDotCom>();
                     var outcome = airportDataDotCom.GetThumbnails((icao ?? "").ToUpper(), (reg ?? "").ToUpper(), numThumbs);
                     if(outcome.Result == null) {
                         result = new AirportDataThumbnailsJson() { Status = (int)outcome.HttpStatusCode, Error = "Could not retrieve thumbnails" };
@@ -89,9 +89,9 @@ namespace VirtualRadar.WebSite.ApiControllers
             ProximityGadgetAircraftJson result = null;
 
             var context = PipelineContext;
-            var config = Factory.Singleton.ResolveSingleton<ISharedConfiguration>().Get();
+            var config = Factory.ResolveSingleton<ISharedConfiguration>().Get();
             if(!context.Request.IsInternet || config.InternetClientSettings.AllowInternetProximityGadgets) {
-                var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
+                var feedManager = Factory.ResolveSingleton<IFeedManager>();
                 var feed = feedManager.GetByUniqueId(config.GoogleMapSettings.ClosestAircraftReceiverId, ignoreInvisibleFeeds: true);
 
                 if(feed?.AircraftList != null) {

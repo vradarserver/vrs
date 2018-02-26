@@ -62,7 +62,7 @@ namespace VirtualRadar.Library
                         ;   // these get rethrown automatically, I just don't want them logged
                     } catch(Exception ex) {
                         try {
-                            var log = Factory.Singleton.ResolveSingleton<ILog>();
+                            var log = Factory.ResolveSingleton<ILog>();
                             log.WriteLine("Caught exception in shutdown signal handler: {0}", ex);
                         } catch {
                             // Don't let exceptions bubble out of a background thread

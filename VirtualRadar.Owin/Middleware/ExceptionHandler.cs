@@ -39,7 +39,7 @@ namespace VirtualRadar.Owin.Middleware
                 } catch(Exception ex) {
                     try {
                         var context = PipelineContext.GetOrCreate(environment);
-                        var log = Factory.Singleton.ResolveSingleton<ILog>();
+                        var log = Factory.ResolveSingleton<ILog>();
                         log.WriteLine($"Exception caught during handling of request {context.Request.Uri}: {ex}");
                     } catch {
                     }

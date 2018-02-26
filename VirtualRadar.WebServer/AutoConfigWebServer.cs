@@ -85,16 +85,16 @@ namespace VirtualRadar.WebServer
         /// </summary>
         public void Initialise()
         {
-            WebServer = Factory.Singleton.Resolve<IWebServer>();
-            WebServer.Port = Factory.Singleton.Resolve<IInstallerSettingsStorage>().Load().WebServerPort;
+            WebServer = Factory.Resolve<IWebServer>();
+            WebServer.Port = Factory.Resolve<IInstallerSettingsStorage>().Load().WebServerPort;
 
-            Factory.Singleton.ResolveSingleton<IConfigurationStorage>().ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
-            Factory.Singleton.ResolveSingleton<IExternalIPAddressService>().AddressUpdated += ExternalIPAddressService_AddressUpdated;
+            Factory.ResolveSingleton<IConfigurationStorage>().ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
+            Factory.ResolveSingleton<IExternalIPAddressService>().AddressUpdated += ExternalIPAddressService_AddressUpdated;
 
             LoadConfiguration();
             LoadExternalIPAddress();
 
-            var heartbeat = Factory.Singleton.ResolveSingleton<IHeartbeatService>();
+            var heartbeat = Factory.ResolveSingleton<IHeartbeatService>();
             heartbeat.SlowTick += Heartbeat_SlowTick;
             heartbeat.SlowTickNow();
         }
@@ -106,7 +106,7 @@ namespace VirtualRadar.WebServer
         /// </summary>
         private void LoadConfiguration()
         {
-            var configuration = Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Load();
+            var configuration = Factory.ResolveSingleton<IConfigurationStorage>().Load();
 
             WebServer.ExternalPort = configuration.WebServerSettings.UPnpPort;
             WebServer.Provider.EnableCompression = configuration.GoogleMapSettings.EnableCompression;
@@ -117,7 +117,7 @@ namespace VirtualRadar.WebServer
         /// </summary>
         private void LoadExternalIPAddress()
         {
-            var service = Factory.Singleton.ResolveSingleton<IExternalIPAddressService>();
+            var service = Factory.ResolveSingleton<IExternalIPAddressService>();
 
             WebServer.ExternalIPAddress = service.Address;
         }
@@ -153,16 +153,16 @@ namespace VirtualRadar.WebServer
         {
             if(!_FetchedExternalIPAddress) {
                 try {
-                    var clock = Factory.Singleton.Resolve<IClock>();
+                    var clock = Factory.Resolve<IClock>();
                     var threshold = _LastFetchAttempt.AddMinutes(MinutesBetweenExternalAddressAttempts);
                     if(clock.UtcNow >= threshold) {
                         _LastFetchAttempt = clock.UtcNow;
-                        Factory.Singleton.ResolveSingleton<IExternalIPAddressService>().GetExternalIPAddress();
+                        Factory.ResolveSingleton<IExternalIPAddressService>().GetExternalIPAddress();
                         _FetchedExternalIPAddress = true;
                     }
                 } catch(Exception ex) {
                     Debug.WriteLine(String.Format("AutoConfigWebServer.Heartbeat_SlowTick caught exception {0}", ex.ToString()));
-                    var log = Factory.Singleton.ResolveSingleton<ILog>();
+                    var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine("Exception caught during fetch of external IP address: {0}", ex.ToString());
                 }
             }

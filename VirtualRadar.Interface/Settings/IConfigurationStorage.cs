@@ -21,12 +21,12 @@ namespace VirtualRadar.Interface.Settings
     /// <example>
     /// To read all of the application settings in one go:
     /// <code>
-    /// IConfigurationStorage storage = Factory.Singleton.Resolve&lt;IConfigurationStorage&gt;().Singleton;
+    /// IConfigurationStorage storage = Factory.Resolve&lt;IConfigurationStorage&gt;().Singleton;
     /// Configuration configuration = storage.Load();
     /// </code>
     /// To change a setting, save it and automatically raise <see cref="ConfigurationChanged"/>:
     /// <code>
-    /// IConfigurationStorage storage = Factory.Singleton.Resolve&lt;IConfigurationStorage&gt;().Singleton;
+    /// IConfigurationStorage storage = Factory.Resolve&lt;IConfigurationStorage&gt;().Singleton;
     /// Configuration configuration = storage.Load();
     /// configuration.AudioSettings.Enabled = false;
     /// storage.Save(configuration);
@@ -35,7 +35,7 @@ namespace VirtualRadar.Interface.Settings
     /// <code>
     /// private void SetupMyObject()
     /// {
-    ///     IConfigurationStorage storage = Factory.Singleton.Resolve&lt;IConfigurationStorage&gt;().Singleton;
+    ///     IConfigurationStorage storage = Factory.Resolve&lt;IConfigurationStorage&gt;().Singleton;
     ///     storage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
     /// }
     /// 

@@ -40,9 +40,9 @@ namespace Test.VirtualRadar.Owin.Configuration
 
             _FileSystemWatcher = TestUtilities.CreateMockImplementation<IFileSystemWatcher>();
             _FileSystemProvider = new MockFileSystemProvider();
-            Factory.Singleton.RegisterInstance<IFileSystemProvider>(_FileSystemProvider);
+            Factory.RegisterInstance<IFileSystemProvider>(_FileSystemProvider);
 
-            _Configuration = Factory.Singleton.ResolveNewInstance<IFileSystemServerConfiguration>();
+            _Configuration = Factory.ResolveNewInstance<IFileSystemServerConfiguration>();
         }
 
         [TestCleanup]

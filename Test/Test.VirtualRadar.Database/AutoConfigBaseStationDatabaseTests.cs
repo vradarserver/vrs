@@ -47,7 +47,7 @@ namespace Test.VirtualRadar.Database
             _Configuration = new Configuration();
             _ConfigurationStorage.Setup(s => s.Load()).Returns(_Configuration);
 
-            _AutoConfigDatabase = Factory.Singleton.ResolveNewInstance<IAutoConfigBaseStationDatabase>();
+            _AutoConfigDatabase = Factory.ResolveNewInstance<IAutoConfigBaseStationDatabase>();
         }
 
         [TestCleanup]

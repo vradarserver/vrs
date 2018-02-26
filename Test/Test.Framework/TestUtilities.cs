@@ -345,30 +345,6 @@ namespace Test.Framework
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        /// <remarks><para>
-        /// The application has adopted the idea that singletons are denoted by the <see cref="ISingleton{T}"/> interface. This
-        /// declares a property which returns the same singleton reference regardless of the instance that it's called from. We
-        /// need to make sure that any tests will pick up the accidental use of a private instance of the class. For example we
-        /// want to make sure that if the user does this:
-        /// </para><code>
-        /// var log = Factory.Singleton.Resolve&lt;ILog&gt;();
-        /// log.DoSomething();
-        /// </code><para>
-        /// instead of this:
-        /// </para><code>
-        /// var log = Factory.Singleton.Resolve&lt;ILog&gt;().Singleton;
-        /// log.DoSomething();
-        /// </code><para>
-        /// then the test will throw an exception. We do this by creating a strict mock that only has Singleton setup for it, so any
-        /// call on it other than to read Singleton will cause the mock to throw an exception and fail the test. This strict mock is
-        /// then registered with the class factory.
-        /// </para><para>
-        /// The Singleton property of the strict mock is then set up to return a friendly mock, and it is this mock that gets returned
-        /// by the method. The test can configure this mock with the correct behaviour and rest assured that the code under test
-        /// could only get a reference to this mock by asking the class factory to resolve the interface and then reading the Singleton
-        /// property of the object that the class factory dished up.
-        /// </para>
-        /// </remarks>
         public static Mock<T> CreateMockSingleton<T>()
             where T: class
         {
@@ -399,7 +375,7 @@ namespace Test.Framework
             var lambda = Expression.Lambda<Func<T, T>>(body, parameter);
             strict.Setup(lambda).Returns(result.Object);
 
-            Factory.Singleton.RegisterInstance(typeof(T), strict.Object);
+            Factory.RegisterInstance(typeof(T), strict.Object);
             #pragma warning restore
 
             return result;
@@ -409,7 +385,7 @@ namespace Test.Framework
             where T: class
         {
             var result = CreateMockInstance<T>();
-            Factory.Singleton.RegisterInstance<T>(result.Object);
+            Factory.RegisterInstance<T>(result.Object);
 
             return result;
         }
@@ -428,7 +404,7 @@ namespace Test.Framework
             }
 
             var result = CreateMockInstance<T>();
-            Factory.Singleton.RegisterInstance(typeof(T), result.Object);
+            Factory.RegisterInstance(typeof(T), result.Object);
             #pragma warning restore
 
             return result;

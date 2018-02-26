@@ -50,7 +50,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         [ResponseType(typeof(DirectoryEntryJson))]
         public IHttpActionResult GetDirectoryEntry(string key = null)
         {
-            var configuration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>().Get();
+            var configuration = Factory.ResolveSingleton<ISharedConfiguration>().Get();
             var keyInvalid = String.IsNullOrEmpty(key) || !String.Equals(key, configuration.GoogleMapSettings.DirectoryEntryKey, StringComparison.OrdinalIgnoreCase);
 
             return keyInvalid ? (IHttpActionResult)NotFound() : Content(HttpStatusCode.OK, BuildDirectoryEntry());
@@ -62,7 +62,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         /// <returns></returns>
         private DirectoryEntryJson BuildDirectoryEntry()
         {
-            var feeds = Factory.Singleton.ResolveSingleton<IFeedManager>().VisibleFeeds.Where(r => r.AircraftList != null).ToArray();
+            var feeds = Factory.ResolveSingleton<IFeedManager>().VisibleFeeds.Where(r => r.AircraftList != null).ToArray();
             var maxAircraft = feeds.Select(r => {
                 long unused1, unused2;
                 var aircraftList = r?.AircraftList.TakeSnapshot(out unused1, out unused2);
@@ -70,7 +70,7 @@ namespace VirtualRadar.WebSite.ApiControllers
             }).DefaultIfEmpty(0).Max();
 
             return new DirectoryEntryJson() {
-                Version =           Factory.Singleton.Resolve<IApplicationInformation>().ShortVersion,
+                Version =           Factory.Resolve<IApplicationInformation>().ShortVersion,
                 NumberOfFeeds =     feeds.Length,
                 NumberOfAircraft =  maxAircraft,
             };

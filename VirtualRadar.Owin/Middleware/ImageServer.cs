@@ -157,11 +157,11 @@ namespace VirtualRadar.Owin.Middleware
         /// </summary>
         public ImageServer()
         {
-            _ImageServerConfiguration = Factory.Singleton.ResolveSingleton<IImageServerConfiguration>();
-            _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
-            _Graphics = Factory.Singleton.ResolveSingleton<IWebSiteGraphics>();
-            _AircraftPictureManager = Factory.Singleton.ResolveSingleton<IAircraftPictureManager>();
-            _AutoConfigPictureFolderCache = Factory.Singleton.ResolveSingleton<IAutoConfigPictureFolderCache>();
+            _ImageServerConfiguration = Factory.ResolveSingleton<IImageServerConfiguration>();
+            _SharedConfiguration = Factory.ResolveSingleton<ISharedConfiguration>();
+            _Graphics = Factory.ResolveSingleton<IWebSiteGraphics>();
+            _AircraftPictureManager = Factory.ResolveSingleton<IAircraftPictureManager>();
+            _AutoConfigPictureFolderCache = Factory.ResolveSingleton<IAutoConfigPictureFolderCache>();
         }
 
         /// <summary>
@@ -504,7 +504,7 @@ namespace VirtualRadar.Owin.Middleware
                 foreach(var chunk in logo.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries)) {
                     if(chunk.IndexOfAny(Path.GetInvalidFileNameChars()) == -1 && chunk.IndexOfAny(Path.GetInvalidPathChars()) == -1) {
                         string fullPath = Path.Combine(folder, String.Format("{0}.bmp", chunk));
-                        var fileSystem = Factory.Singleton.Resolve<IFileSystemProvider>();
+                        var fileSystem = Factory.Resolve<IFileSystemProvider>();
                         if(fileSystem.FileExists(fullPath)) {
                             result = _ImageServerConfiguration.ImageFileManager.LoadFromFile(fullPath);
 

@@ -58,7 +58,7 @@ namespace VirtualRadar.Library.Presenter
         {
             ILog log;
             try {
-                log = Factory.Singleton.ResolveSingleton<ILog>();
+                log = Factory.ResolveSingleton<ILog>();
             } catch {
                 log = null;
             }
@@ -90,36 +90,36 @@ namespace VirtualRadar.Library.Presenter
         private void ShutdownAircraftOnlineLookupManager()
         {
             _View.ReportProgress(Strings.ShuttingDownOnlineLookupManager);
-            Factory.Singleton.ResolveSingleton<IAircraftOnlineLookupManager>().Dispose();
+            Factory.ResolveSingleton<IAircraftOnlineLookupManager>().Dispose();
         }
 
         private void ShutdownAirPressureManager()
         {
             _View.ReportProgress(Strings.ShuttingDownAirPressureManager);
-            Factory.Singleton.ResolveSingleton<IAirPressureManager>().Stop();
+            Factory.ResolveSingleton<IAirPressureManager>().Stop();
         }
 
         private void ShutdownRebroadcastServers()
         {
             _View.ReportProgress(Strings.ShuttingDownRebroadcastServer);
-            Factory.Singleton.ResolveSingleton<IRebroadcastServerManager>().Dispose();
+            Factory.ResolveSingleton<IRebroadcastServerManager>().Dispose();
         }
 
         private void SavePolarPlots()
         {
             _View.ReportProgress(Strings.SavingPolarPlots);
-            Factory.Singleton.ResolveSingleton<ISavedPolarPlotStorage>().Save();
+            Factory.ResolveSingleton<ISavedPolarPlotStorage>().Save();
         }
 
         private void ShutdownListeners()
         {
             _View.ReportProgress(Strings.ShuttingDownBaseStationListener);
-            Factory.Singleton.ResolveSingleton<IFeedManager>().Dispose();
+            Factory.ResolveSingleton<IFeedManager>().Dispose();
         }
 
         private void ShutdownPlugins()
         {
-            var plugins = Factory.Singleton.ResolveSingleton<IPluginManager>().LoadedPlugins;
+            var plugins = Factory.ResolveSingleton<IPluginManager>().LoadedPlugins;
             foreach(var plugin in plugins) {
                 _View.ReportProgress(String.Format(Strings.ShuttingDownPlugin, plugin.Name));
 
@@ -127,7 +127,7 @@ namespace VirtualRadar.Library.Presenter
                     plugin.Shutdown();
                 } catch(Exception ex) {
                     Debug.WriteLine(String.Format("ShutdownPresenter.ShutdownPlugins caught exception: {0}", ex.ToString()));
-                    Factory.Singleton.ResolveSingleton<ILog>().WriteLine("Plugin {0} threw an exception during shutdown: {1}", plugin.Name, ex.ToString());
+                    Factory.ResolveSingleton<ILog>().WriteLine("Plugin {0} threw an exception during shutdown: {1}", plugin.Name, ex.ToString());
                 }
             }
         }
@@ -141,31 +141,31 @@ namespace VirtualRadar.Library.Presenter
         private void ShutdownConnectionLogger()
         {
             _View.ReportProgress(Strings.ShuttingDownConnectionLogger);
-            Factory.Singleton.ResolveSingleton<IConnectionLogger>().Dispose();
+            Factory.ResolveSingleton<IConnectionLogger>().Dispose();
         }
 
         private void ShutdownWebServer()
         {
             _View.ReportProgress(Strings.ShuttingDownWebServer);
-            Factory.Singleton.ResolveSingleton<IAutoConfigWebServer>().Dispose();
+            Factory.ResolveSingleton<IAutoConfigWebServer>().Dispose();
         }
 
         private void ShutdownBaseStationDatabase()
         {
             _View.ReportProgress(Strings.ShuttingDownBaseStationDatabase);
-            Factory.Singleton.ResolveSingleton<IAutoConfigBaseStationDatabase>().Dispose();
+            Factory.ResolveSingleton<IAutoConfigBaseStationDatabase>().Dispose();
         }
 
         private void ShutdownUserManager()
         {
             _View.ReportProgress(Strings.ShuttingDownUserManager);
-            Factory.Singleton.ResolveSingleton<IUserManager>().Shutdown();
+            Factory.ResolveSingleton<IUserManager>().Shutdown();
         }
 
         private void ShutdownLogDatabase()
         {
             _View.ReportProgress(Strings.ShuttingDownLogDatabase);
-            Factory.Singleton.ResolveSingleton<ILogDatabase>().Dispose();
+            Factory.ResolveSingleton<ILogDatabase>().Dispose();
         }
     }
 }

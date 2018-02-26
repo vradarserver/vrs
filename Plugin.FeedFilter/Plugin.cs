@@ -151,18 +151,18 @@ namespace VirtualRadar.Plugin.FeedFilter
         {
             var options = OptionsStorage.Load(this);
 
-            _HtmlLocaliser = Factory.Singleton.Resolve<IHtmlLocaliser>();
+            _HtmlLocaliser = Factory.Resolve<IHtmlLocaliser>();
             _HtmlLocaliser.Initialise();
             _HtmlLocaliser.AddResourceStrings(typeof(FeedFilterStrings));
 
-            _WebSiteExtender = Factory.Singleton.Resolve<IWebSiteExtender>();
+            _WebSiteExtender = Factory.Resolve<IWebSiteExtender>();
             _WebSiteExtender.Enabled = false;
             _WebSiteExtender.WebRootSubFolder = "Web";
             _WebSiteExtender.PageHandlers.Add(String.Format("/{0}/FetchFilterConfiguration.json", ProtectedFolder), FetchFilterConfiguration);
             _WebSiteExtender.PageHandlers.Add(String.Format("/{0}/SaveFilterConfiguration.json", ProtectedFolder), SaveFilterConfiguration);
             _WebSiteExtender.Initialise(parameters);
 
-            var redirection = Factory.Singleton.ResolveSingleton<IRedirectionConfiguration>();
+            var redirection = Factory.ResolveSingleton<IRedirectionConfiguration>();
             redirection.AddRedirection("/FeedFilter",  "/FeedFilter/index.html", RedirectionContext.Any);
             redirection.AddRedirection("/FeedFilter/", "/FeedFilter/index.html", RedirectionContext.Any);
 
@@ -192,7 +192,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         public void ShowWinFormsOptionsUI()
         {
             using(var dialog = new WinForms.OptionsView()) {
-                var webServer = Factory.Singleton.ResolveSingleton<IAutoConfigWebServer>().WebServer;
+                var webServer = Factory.ResolveSingleton<IAutoConfigWebServer>().WebServer;
 
                 dialog.Options = OptionsStorage.Load(this);
                 dialog.FilterSettingsUrl = String.Format("{0}/FeedFilter/index.html", webServer.LocalAddress);
@@ -280,7 +280,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// <returns></returns>
         private string LogException(Exception ex, string logMessage)
         {
-            var log = Factory.Singleton.ResolveSingleton<ILog>();
+            var log = Factory.ResolveSingleton<ILog>();
             log.WriteLine(logMessage);
 
             return ex.Message;
@@ -308,7 +308,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         private void SendJsonResponse<T>(RequestReceivedEventArgs args, T json)
         {
             var jsonText = JsonConvert.SerializeObject(json);
-            var responder = Factory.Singleton.Resolve<IResponder>();
+            var responder = Factory.Resolve<IResponder>();
             responder.SendText(args.Request, args.Response, jsonText, Encoding.UTF8, MimeType.Json);
             args.Handled = true;
         }

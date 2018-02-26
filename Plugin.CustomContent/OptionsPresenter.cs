@@ -76,7 +76,7 @@ namespace VirtualRadar.Plugin.CustomContent
                         if(String.IsNullOrEmpty(_View.InjectFileName)) results.Results.Add(new ValidationResult(ValidationField.Name, CustomContentStrings.FileNameRequired));
                         else if(!File.Exists(_View.InjectFileName))    results.Results.Add(new ValidationResult(ValidationField.Name, String.Format(CustomContentStrings.FileDoesNotExist, _View.InjectFileName)));
                     } catch(Exception ex) {
-                        Factory.Singleton.ResolveSingleton<ILog>().WriteLine("Caught exception while checking injection file: {0}", ex.ToString());
+                        Factory.ResolveSingleton<ILog>().WriteLine("Caught exception while checking injection file: {0}", ex.ToString());
                         results.Results.Add(new ValidationResult(ValidationField.Name, String.Format(CustomContentStrings.ErrorCheckingFileName, ex.Message)));
                     }
 
@@ -95,7 +95,7 @@ namespace VirtualRadar.Plugin.CustomContent
                         if(!Directory.Exists(_View.SiteRootFolder)) message = String.Format(CustomContentStrings.DirectoryDoesNotExist, _View.SiteRootFolder);
                         if(IsDuplicateSiteRootFolder(_View.SiteRootFolder)) message = String.Format(CustomContentStrings.DirectoryAlreadyInUse, _View.SiteRootFolder);
                     } catch(Exception ex) {
-                        Factory.Singleton.ResolveSingleton<ILog>().WriteLine("Caught exception while checking custom content site root folder: {0}", ex.ToString());
+                        Factory.ResolveSingleton<ILog>().WriteLine("Caught exception while checking custom content site root folder: {0}", ex.ToString());
                         message = String.Format(CustomContentStrings.ErrorCheckingFolder, ex.Message);
                     }
                     if(!String.IsNullOrEmpty(message)) results.Results.Add(new ValidationResult(ValidationField.SiteRootFolder, message));
@@ -106,7 +106,7 @@ namespace VirtualRadar.Plugin.CustomContent
                     try {
                         if(!Directory.Exists(_View.ResourceImagesFolder)) message = String.Format(CustomContentStrings.DirectoryDoesNotExist, _View.ResourceImagesFolder);
                     } catch(Exception ex) {
-                        Factory.Singleton.ResolveSingleton<ILog>().WriteLine("Caught exception while checking custom content resource images folder: {0}", ex.ToString());
+                        Factory.ResolveSingleton<ILog>().WriteLine("Caught exception while checking custom content resource images folder: {0}", ex.ToString());
                         message = String.Format(CustomContentStrings.ErrorCheckingFolder, ex.Message);
                     }
                     if(!String.IsNullOrEmpty(message)) results.Results.Add(new ValidationResult(ValidationField.ResourceImagesFolder, message));

@@ -51,7 +51,7 @@ namespace Test.VirtualRadar.Library.Listener
         {
             _SnapshotFactory = Factory.TakeSnapshot();
 
-            _Manager = Factory.Singleton.ResolveNewInstance<IFeedManager>();
+            _Manager = Factory.ResolveNewInstance<IFeedManager>();
 
             _Receiver1 = new Receiver() { UniqueId = 1, Name = "First", DataSource = DataSource.Port30003, ConnectionType = ConnectionType.TCP, Address = "127.0.0.1", Port = 30003 };
             _Receiver2 = new Receiver() { UniqueId = 2, Name = "Second", DataSource = DataSource.Beast, ConnectionType = ConnectionType.COM, ComPort = "COM1", BaudRate = 19200, DataBits = 8, StopBits = StopBits.One };
@@ -69,7 +69,7 @@ namespace Test.VirtualRadar.Library.Listener
             _CreatedListeners = new List<Mock<IListener>>();
             _CreatedFeeds = new List<Mock<IFeed>>();
             _MergedFeedFeeds = new Dictionary<MergedFeed,List<IFeed>>();
-            Factory.Singleton.Register<IFeed>(() => {
+            Factory.Register<IFeed>(() => {
                 var feed = TestUtilities.CreateMockInstance<IFeed>();
                 var listener = TestUtilities.CreateMockInstance<IListener>();
                 _CreatedListeners.Add(listener);
@@ -128,7 +128,7 @@ namespace Test.VirtualRadar.Library.Listener
         public void FeedManager_Constructor_Initialises_To_Known_Value_And_Properties_Work()
         {
             _Manager.Dispose();
-            _Manager = Factory.Singleton.ResolveNewInstance<IFeedManager>();
+            _Manager = Factory.ResolveNewInstance<IFeedManager>();
 
             Assert.AreEqual(0, _Manager.Feeds.Length);
             Assert.AreEqual(0, _Manager.VisibleFeeds.Length);

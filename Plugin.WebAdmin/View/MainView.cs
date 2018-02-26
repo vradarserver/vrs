@@ -147,7 +147,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         {
             _ViewModel = new ViewModel(this);
 
-            _Presenter = Factory.Singleton.Resolve<IMainPresenter>();
+            _Presenter = Factory.Resolve<IMainPresenter>();
             _Presenter.Initialise(this);
             _Presenter.UPnpManager = _UPnpManager;
 
@@ -177,7 +177,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         [WebAdminMethod]
         public void RaiseReconnectFeed(int feedId)
         {
-            var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
+            var feedManager = Factory.ResolveSingleton<IFeedManager>();
             var feed = feedManager.GetByUniqueId(feedId, false);
             if(feed != null) {
                 EventHelper.Raise(ReconnectFeed, this, new EventArgs<IFeed>(feed));
@@ -187,7 +187,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         [WebAdminMethod]
         public void RaiseResetPolarPlot(int feedId)
         {
-            var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
+            var feedManager = Factory.ResolveSingleton<IFeedManager>();
             var feed = feedManager.GetByUniqueId(feedId, false);
             if(feed != null) {
                 EventHelper.Raise(ResetPolarPlot, this, new EventArgs<IFeed>(feed));

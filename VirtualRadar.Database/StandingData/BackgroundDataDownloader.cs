@@ -56,7 +56,7 @@ namespace VirtualRadar.Database.StandingData
         /// </summary>
         public void Start()
         {
-            Factory.Singleton.ResolveSingleton<IHeartbeatService>().SlowTick += Heartbeat_SlowTick;
+            Factory.ResolveSingleton<IHeartbeatService>().SlowTick += Heartbeat_SlowTick;
         }
 
         /// <summary>
@@ -66,15 +66,15 @@ namespace VirtualRadar.Database.StandingData
         /// <param name="args"></param>
         private void Heartbeat_SlowTick(object sender, EventArgs args)
         {
-            if(Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Load().FlightRouteSettings.AutoUpdateEnabled) {
+            if(Factory.ResolveSingleton<IConfigurationStorage>().Load().FlightRouteSettings.AutoUpdateEnabled) {
                 if(_LastUpdateTime.AddHours(1) <= Provider.UtcNow) {
                     try {
                         _LastUpdateTime = Provider.UtcNow;
-                        var updater = Factory.Singleton.Resolve<IStandingDataUpdater>();
+                        var updater = Factory.Resolve<IStandingDataUpdater>();
                         updater.Update();
                     } catch(Exception ex) {
                         Debug.WriteLine(String.Format("BackgroundDataDownloader.Heartbeat_SlowTick caught exception: {0}", ex.ToString()));
-                        Factory.Singleton.ResolveSingleton<ILog>().WriteLine("Exception caught during data download: {0}", ex.ToString());
+                        Factory.ResolveSingleton<ILog>().WriteLine("Exception caught during data download: {0}", ex.ToString());
                     }
                 }
             }

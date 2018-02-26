@@ -29,7 +29,7 @@ namespace Test.VirtualRadar.Library
         [TestInitialize]
         public void TestInitialise()
         {
-            _Statistics = Factory.Singleton.Resolve<IStatistics>();
+            _Statistics = Factory.Resolve<IStatistics>();
         }
 
         [TestMethod]

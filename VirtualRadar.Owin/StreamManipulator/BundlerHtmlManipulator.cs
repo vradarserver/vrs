@@ -41,7 +41,7 @@ namespace VirtualRadar.Owin.StreamManipulator
         {
             var configuration = _SharedConfiguration;
             if(configuration == null) {
-                configuration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
+                configuration = Factory.ResolveSingleton<ISharedConfiguration>();
                 _SharedConfiguration = configuration;
             }
 
@@ -113,7 +113,7 @@ namespace VirtualRadar.Owin.StreamManipulator
                         parserErrors.Add($"Bundle start at line {bundleStart.Line} has no end");
                         finished = true;
                     } else {
-                        var bundleConfig = Factory.Singleton.ResolveSingleton<IBundlerConfiguration>();
+                        var bundleConfig = Factory.ResolveSingleton<IBundlerConfiguration>();
                         var bundlePath = bundleConfig.RegisterJavascriptBundle(context.Environment, bundleIndex++, pathsAndFiles);
 
                         var bundleNode = HtmlNode.CreateNode($@"<script src=""{bundlePath}"" type=""text/javascript""></script>");

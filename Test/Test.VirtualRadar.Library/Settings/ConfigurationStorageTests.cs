@@ -54,7 +54,7 @@ namespace Test.VirtualRadar.Library.Settings
 
             _Provider = new TestProvider();
             _Provider.Folder = TestContext.TestDeploymentDir;
-            _Implementation = Factory.Singleton.ResolveNewInstance<IConfigurationStorage>();
+            _Implementation = Factory.ResolveNewInstance<IConfigurationStorage>();
             _Implementation.Provider = _Provider;
 
             _ConfigurationChangedEvent = new EventRecorder<EventArgs>();
@@ -80,7 +80,7 @@ namespace Test.VirtualRadar.Library.Settings
         [TestMethod]
         public void ConfigurationStorage_Initialises_To_Known_State_And_Properties_Work()
         {
-            _Implementation = Factory.Singleton.ResolveNewInstance<IConfigurationStorage>();
+            _Implementation = Factory.ResolveNewInstance<IConfigurationStorage>();
             Assert.IsNotNull(_Implementation.Provider);
             Assert.AreNotSame(_Provider, _Implementation.Provider);
             _Implementation.Provider = _Provider;

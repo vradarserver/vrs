@@ -68,7 +68,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 }
             );
 
-            _Filter = Factory.Singleton.Resolve<IRedirectionFilter>();
+            _Filter = Factory.Resolve<IRedirectionFilter>();
             _Environment = new MockOwinEnvironment();
             _Pipeline = new MockOwinPipeline();
         }

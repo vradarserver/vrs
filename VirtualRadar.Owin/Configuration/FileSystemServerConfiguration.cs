@@ -170,7 +170,7 @@ namespace VirtualRadar.Owin.Configuration
         /// <param name="siteRoot"></param>
         public void AddSiteRoot(SiteRoot siteRoot)
         {
-            var fileSystem = Factory.Singleton.Resolve<IFileSystemProvider>();
+            var fileSystem = Factory.Resolve<IFileSystemProvider>();
 
             if(siteRoot == null) {
                 throw new ArgumentNullException(nameof(siteRoot));

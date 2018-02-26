@@ -419,7 +419,7 @@ namespace VirtualRadar.WinForms
         /// </summary>
         public SettingsView()
         {
-            _ConfigurationListener = Factory.Singleton.Resolve<IConfigurationListener>();
+            _ConfigurationListener = Factory.Resolve<IConfigurationListener>();
             _ConfigurationListener.PropertyChanged += ConfigurationListener_PropertyChanged;
             _Users.ListChanged += Users_ListChanged;
 
@@ -448,7 +448,7 @@ namespace VirtualRadar.WinForms
                 InlineHelp = "";
                 InlineHelpTitle = "";
 
-                _Presenter = Factory.Singleton.Resolve<ISettingsPresenter>();
+                _Presenter = Factory.Resolve<ISettingsPresenter>();
                 _Presenter.Initialise(this);
 
                 InitialiseCombinedFeed();

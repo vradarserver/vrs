@@ -28,7 +28,7 @@ namespace VirtualRadar.Library.Settings
         /// </summary>
         class DefaultProvider : IInstallerSettingsStorageProvider
         {
-            public string Folder { get { return Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Folder; } }
+            public string Folder { get { return Factory.ResolveSingleton<IConfigurationStorage>().Folder; } }
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace VirtualRadar.Library.Settings
             string fileName = Path.Combine(Provider.Folder, "InstallerConfiguration.xml");
             if(File.Exists(fileName)) {
                 using(StreamReader reader = new StreamReader(fileName)) {
-                    var serialiser = Factory.Singleton.Resolve<IXmlSerialiser>();
+                    var serialiser = Factory.Resolve<IXmlSerialiser>();
                     result = serialiser.Deserialise<InstallerSettings>(reader);
                 }
             }

@@ -44,7 +44,7 @@ namespace VirtualRadar.Library.Presenter
         /// </summary>
         public StatisticsPresenter()
         {
-            _Clock = Factory.Singleton.Resolve<IClock>();
+            _Clock = Factory.Resolve<IClock>();
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace VirtualRadar.Library.Presenter
             _View.CloseClicked += View_CloseClicked;
             _View.UpdateCounters();
 
-            Factory.Singleton.ResolveSingleton<IHeartbeatService>().FastTick += HeartbeatService_FastTick;
+            Factory.ResolveSingleton<IHeartbeatService>().FastTick += HeartbeatService_FastTick;
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.CloseClicked -= View_CloseClicked;
             _View.ResetCountersClicked -= View_ResetCountersClicked;
-            Factory.Singleton.ResolveSingleton<IHeartbeatService>().FastTick -= HeartbeatService_FastTick;
+            Factory.ResolveSingleton<IHeartbeatService>().FastTick -= HeartbeatService_FastTick;
         }
 
         /// <summary>

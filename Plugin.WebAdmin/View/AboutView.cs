@@ -63,7 +63,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public DialogResult ShowView()
         {
-            _Presenter = Factory.Singleton.Resolve<IAboutPresenter>();
+            _Presenter = Factory.Resolve<IAboutPresenter>();
             _Presenter.Initialise(this);
 
             return DialogResult.OK;

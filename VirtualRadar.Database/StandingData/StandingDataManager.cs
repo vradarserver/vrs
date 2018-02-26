@@ -165,7 +165,7 @@ namespace VirtualRadar.Database.StandingData
             Provider = new DefaultProvider();
             RouteStatus = Strings.NotLoaded;
 
-            var configurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
+            var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
             _DatabaseFileName = Path.Combine(configurationStorage.Folder, "StandingData.sqb");
             _StateFileName = Path.Combine(configurationStorage.Folder, "FlightNumberCoverage.csv");
         }
@@ -178,14 +178,14 @@ namespace VirtualRadar.Database.StandingData
         /// <returns></returns>
         private IDbConnection CreateOpenConnection()
         {
-            var connectionStringBuilder = Factory.Singleton.Resolve<ISQLiteConnectionStringBuilder>().Initialise();
+            var connectionStringBuilder = Factory.Resolve<ISQLiteConnectionStringBuilder>().Initialise();
             connectionStringBuilder.DataSource = _DatabaseFileName;
             connectionStringBuilder.DateTimeFormat = SQLiteDateFormats.ISO8601;
             connectionStringBuilder.FailIfMissing = true;
             connectionStringBuilder.ReadOnly = true;
             connectionStringBuilder.JournalMode = SQLiteJournalModeEnum.Off;  // <-- standing data is *ALWAYS* read-only, we don't need to create a journal
 
-            var result = Factory.Singleton.Resolve<ISQLiteConnectionProvider>().Create(connectionStringBuilder.ConnectionString);
+            var result = Factory.Resolve<ISQLiteConnectionProvider>().Create(connectionStringBuilder.ConnectionString);
             result.Open();
 
             return result;
@@ -282,8 +282,8 @@ namespace VirtualRadar.Database.StandingData
 
         private void LoadOverrides()
         {
-            var configurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
-            var log = Factory.Singleton.ResolveSingleton<ILog>();
+            var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
+            var log = Factory.ResolveSingleton<ILog>();
 
             var codeBlocksFileName = Path.Combine(configurationStorage.Folder, "LocalAircraft.txt");
             if(Provider.FileExists(codeBlocksFileName)) LoadCodeBlocksOverrides(codeBlocksFileName, log);

@@ -40,7 +40,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             _Minifier = TestUtilities.CreateMockImplementation<IMinifier>();
             _Minifier.Setup(r => r.MinifyJavaScript(It.IsAny<string>())).Returns((string r) => r);
 
-            _Manipulator = Factory.Singleton.Resolve<IJavascriptManipulator>();
+            _Manipulator = Factory.Resolve<IJavascriptManipulator>();
         }
 
         [TestMethod]

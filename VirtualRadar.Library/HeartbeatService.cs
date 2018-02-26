@@ -56,7 +56,7 @@ namespace VirtualRadar.Library
         private void OnSlowTick(EventArgs args)
         {
             EventHelper.Raise(SlowTick, this, args, ex => {
-                ILog log = Factory.Singleton.ResolveSingleton<ILog>();
+                ILog log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("Caught an exception on a slow tick heartbeat event: {0}", ex.ToString());
             });
         }
@@ -73,7 +73,7 @@ namespace VirtualRadar.Library
         private void OnFastTick(EventArgs args)
         {
             EventHelper.Raise(FastTick, this, args, ex => {
-                ILog log = Factory.Singleton.ResolveSingleton<ILog>();
+                ILog log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("Caught an exception on a fast tick heartbeat event: {0}", ex.ToString());
             });
         }

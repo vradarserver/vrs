@@ -55,7 +55,7 @@ namespace Test.VirtualRadar.WebServer
         [TestInitialize]
         public void TestInitialise()
         {
-            _Responder = Factory.Singleton.Resolve<IResponder>();
+            _Responder = Factory.Resolve<IResponder>();
 
             _Request = TestUtilities.CreateMockInstance<IRequest>();
             _Response = TestUtilities.CreateMockInstance<IResponse>();

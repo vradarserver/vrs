@@ -103,7 +103,7 @@ namespace VirtualRadar.Library
         /// </summary>
         public ConnectionLogger()
         {
-            _Clock = Factory.Singleton.Resolve<IClock>();
+            _Clock = Factory.Resolve<IClock>();
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace VirtualRadar.Library
             if(LogDatabase == null) throw new InvalidOperationException("The database must be supplied before the connection logger can be used");
 
             WebServer.ResponseSent += WebServer_ResponseSent;
-            Factory.Singleton.ResolveSingleton<IHeartbeatService>().SlowTick += Heartbeat_SlowTick;
+            Factory.ResolveSingleton<IHeartbeatService>().SlowTick += Heartbeat_SlowTick;
         }
         #endregion
 

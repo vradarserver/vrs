@@ -65,7 +65,7 @@ namespace VirtualRadar.Owin.Configuration
                 lock(_SyncLock) {
                     if(!_Manipulators.Any(r => r is T)) {
                         var newList = CollectionHelper.ShallowCopy(_Manipulators);
-                        var implementation = typeof(T).IsInterface ? (T)Factory.Singleton.Resolve(typeof(T)) : (T)Activator.CreateInstance<T>();
+                        var implementation = typeof(T).IsInterface ? (T)Factory.Resolve(typeof(T)) : (T)Activator.CreateInstance<T>();
                         newList.Add(implementation);
                         _Manipulators = newList;
                     }

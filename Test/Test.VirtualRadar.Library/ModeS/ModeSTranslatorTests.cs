@@ -37,7 +37,7 @@ namespace Test.VirtualRadar.Library.ModeS
             _OriginalFactory = Factory.TakeSnapshot();
 
             _Statistics = StatisticsHelper.CreateLockableStatistics();
-            _Translator = Factory.Singleton.Resolve<IModeSTranslator>();
+            _Translator = Factory.Resolve<IModeSTranslator>();
             _Translator.Statistics = _Statistics.Object;
         }
 

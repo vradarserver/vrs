@@ -98,7 +98,7 @@ namespace VirtualRadar.Library
         public Log()
         {
             Provider = new DefaultProvider();
-            _Clock = Factory.Singleton.Resolve<IClock>();
+            _Clock = Factory.Resolve<IClock>();
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace VirtualRadar.Library
         private void Initialise()
         {
             if(_Folder == null) {
-                _Folder = Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Folder;
+                _Folder = Factory.ResolveSingleton<IConfigurationStorage>().Folder;
                 FileName = Path.Combine(_Folder, "VirtualRadarLog.txt");
             }
         }

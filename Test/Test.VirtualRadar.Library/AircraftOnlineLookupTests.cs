@@ -50,7 +50,7 @@ namespace Test.VirtualRadar.Library
             _RuntimeEnvironment = TestUtilities.CreateMockSingleton<IRuntimeEnvironment>();
             _RuntimeEnvironment.Setup(r => r.IsTest).Returns(true);
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
             _Heartbeat = TestUtilities.CreateMockSingleton<IHeartbeatService>();
             _SharedConfiguration = TestUtilities.CreateMockSingleton<ISharedConfiguration>();
             _Configuration = new Configuration();
@@ -81,7 +81,7 @@ namespace Test.VirtualRadar.Library
 
             _FetchedRecorder = new EventRecorder<AircraftOnlineLookupEventArgs>();
 
-            _Lookup = Factory.Singleton.ResolveNewInstance<IAircraftOnlineLookup>();
+            _Lookup = Factory.ResolveNewInstance<IAircraftOnlineLookup>();
         }
 
         [TestCleanup]
@@ -95,7 +95,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void AircraftOnlineLookup_Provider_Is_Initially_Null()
         {
-            var lookup = Factory.Singleton.ResolveNewInstance<IAircraftOnlineLookup>();
+            var lookup = Factory.ResolveNewInstance<IAircraftOnlineLookup>();
             Assert.IsNull(lookup.Provider);
         }
 

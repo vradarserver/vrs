@@ -200,8 +200,8 @@ namespace VirtualRadar.Interface
             ExpireMilliseconds = expireMilliseconds;
             MillisecondsBetweenChecks = millisecondsBetweenChecks;
 
-            _Clock = Factory.Singleton.Resolve<IClock>();
-            _HeartbeatService = Factory.Singleton.ResolveSingleton<IHeartbeatService>();
+            _Clock = Factory.Resolve<IClock>();
+            _HeartbeatService = Factory.ResolveSingleton<IHeartbeatService>();
         }
 
         /// <summary>

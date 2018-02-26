@@ -57,7 +57,7 @@ namespace Test.VirtualRadar.Library
             _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
             _ConfigurationStorage.Setup(s => s.Load()).Returns(_Configuration);
 
-            _AutoConfig = Factory.Singleton.ResolveNewInstance<IAutoConfigPictureFolderCache>();
+            _AutoConfig = Factory.ResolveNewInstance<IAutoConfigPictureFolderCache>();
 
             _ConfigurationChangedHandler = new EventRecorder<EventArgs>();
             _AutoConfig.CacheConfigurationChanged += _ConfigurationChangedHandler.Handler;

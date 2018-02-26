@@ -108,7 +108,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public StatisticsView()
         {
-            _FeedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
+            _FeedManager = Factory.ResolveSingleton<IFeedManager>();
 
             AdsbMessageTypeCount = new long[256];
             ModeSDFStatistics = new ModeSDFStatistics[32];
@@ -117,7 +117,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public DialogResult ShowView()
         {
-            _Presenter = Factory.Singleton.Resolve<IStatisticsPresenter>();
+            _Presenter = Factory.Resolve<IStatisticsPresenter>();
             _Presenter.Initialise(this);
 
             return DialogResult.OK;

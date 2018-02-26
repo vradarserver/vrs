@@ -39,7 +39,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Snapshot = Factory.TakeSnapshot();
 
             _Configuration = TestUtilities.CreateMockImplementation<IBundlerConfiguration>();
-            _Server = Factory.Singleton.Resolve<IBundlerServer>();
+            _Server = Factory.Resolve<IBundlerServer>();
 
             _Environment = new MockOwinEnvironment();
             _Pipeline = new MockOwinPipeline();

@@ -50,7 +50,7 @@ namespace VirtualRadar.Owin.Middleware
         private void InitialiseConfiguration()
         {
             if(_Configuration == null) {
-                _Configuration = Factory.Singleton.ResolveSingleton<IBundlerConfiguration>();
+                _Configuration = Factory.ResolveSingleton<IBundlerConfiguration>();
             }
         }
 

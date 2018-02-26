@@ -77,7 +77,7 @@ namespace VirtualRadar
             if(_ServiceThread != null) {
                 IConsole console = null;
                 try {
-                    console = Factory.Singleton.ResolveSingleton<IConsole>();
+                    console = Factory.ResolveSingleton<IConsole>();
                 } catch {
                     console = null;
                 }
@@ -140,7 +140,7 @@ namespace VirtualRadar
                 ;
             } catch(Exception ex) {
                 try {
-                    var log = Factory.Singleton.ResolveSingleton<ILog>();
+                    var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine("Caught exception in ServiceThread: {0}", ex);
                 } catch {
                     ;
@@ -155,7 +155,7 @@ namespace VirtualRadar
         /// </summary>
         private static void InitialiseClassFactory()
         {
-            Factory.Singleton.Register<IApplicationInformation, ApplicationInformation>();
+            Factory.Register<IApplicationInformation, ApplicationInformation>();
 
             SQLiteWrapper.Implementations.Register(Factory.Singleton);
             VirtualRadar.Library.Implementations.Register(Factory.Singleton);
@@ -168,7 +168,7 @@ namespace VirtualRadar
             VirtualRadar.WebSite.Implementations.Register(Factory.Singleton);
             VirtualRadar.Headless.Implementations.Register(Factory.Singleton);
 
-            Factory.Singleton.Register<IConsole, ConsoleWrapper>();
+            Factory.Register<IConsole, ConsoleWrapper>();
         }
     }
 }

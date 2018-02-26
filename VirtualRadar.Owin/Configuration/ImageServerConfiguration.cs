@@ -60,7 +60,7 @@ namespace VirtualRadar.Owin.Configuration
                         Folder = result,
                     };
                     if(!String.IsNullOrEmpty(checkedFolder.Folder)) {
-                        checkedFolder.Exists = Factory.Singleton.Resolve<IFileSystemProvider>().DirectoryExists(checkedFolder.Folder);
+                        checkedFolder.Exists = Factory.Resolve<IFileSystemProvider>().DirectoryExists(checkedFolder.Folder);
                     }
                     lock(_SyncLock) {
                         _CheckedOperatorFolder = checkedFolder;
@@ -86,7 +86,7 @@ namespace VirtualRadar.Owin.Configuration
                         Folder = result,
                     };
                     if(!String.IsNullOrEmpty(checkedFolder.Folder)) {
-                        checkedFolder.Exists = Factory.Singleton.Resolve<IFileSystemProvider>().DirectoryExists(checkedFolder.Folder);
+                        checkedFolder.Exists = Factory.Resolve<IFileSystemProvider>().DirectoryExists(checkedFolder.Folder);
                     }
                     lock(_SyncLock) {
                         _CheckedSilhouettesFolder = checkedFolder;
@@ -107,8 +107,8 @@ namespace VirtualRadar.Owin.Configuration
         /// </summary>
         public ImageServerConfiguration()
         {
-            _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
-            ImageFileManager = Factory.Singleton.Resolve<IImageFileManager>();
+            _SharedConfiguration = Factory.ResolveSingleton<ISharedConfiguration>();
+            ImageFileManager = Factory.Resolve<IImageFileManager>();
         }
     }
 }

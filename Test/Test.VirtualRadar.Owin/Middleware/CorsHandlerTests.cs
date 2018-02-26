@@ -46,7 +46,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _SharedConfiguration.Setup(r => r.Get()).Returns(_Configuration);
             _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(DateTime.UtcNow);
 
-            _Handler = Factory.Singleton.Resolve<ICorsHandler>();
+            _Handler = Factory.Resolve<ICorsHandler>();
             _Environment = new MockOwinEnvironment();
             _Pipeline = new MockOwinPipeline();
         }

@@ -24,7 +24,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void Clock_UtcNow_Is_Roughly_Correct()
         {
-            var clock = Factory.Singleton.Resolve<IClock>();
+            var clock = Factory.Resolve<IClock>();
             var now = clock.UtcNow;
             var expected = DateTime.UtcNow;
 

@@ -31,7 +31,7 @@ namespace Test.VirtualRadar.Library.Listener
         [TestInitialize]
         public void TestInitialise()
         {
-            _Component = Factory.Singleton.Resolve<IMergedFeedComponentListener>();
+            _Component = Factory.Resolve<IMergedFeedComponentListener>();
             _Listener = TestUtilities.CreateMockInstance<IListener>();
         }
 
@@ -69,7 +69,7 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void MergedFeedComponentListener_Equals_Returns_True_If_Two_Objects_Are_Same()
         {
-            var other = Factory.Singleton.Resolve<IMergedFeedComponentListener>();
+            var other = Factory.Resolve<IMergedFeedComponentListener>();
             _Component.SetListener(_Listener.Object, true);
             other.SetListener(_Listener.Object, true);
 
@@ -79,7 +79,7 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void MergedFeedComponentListener_Equals_Returns_False_If_Listener_Is_Different()
         {
-            var other = Factory.Singleton.Resolve<IMergedFeedComponentListener>();
+            var other = Factory.Resolve<IMergedFeedComponentListener>();
             _Component.SetListener(_Listener.Object, true);
             other.SetListener(TestUtilities.CreateMockInstance<IListener>().Object, true);
 
@@ -89,7 +89,7 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void MergedFeedComponentListener_Equals_Returns_False_If_MLAT_Feed_Type_Is_Different()
         {
-            var other = Factory.Singleton.Resolve<IMergedFeedComponentListener>();
+            var other = Factory.Resolve<IMergedFeedComponentListener>();
             _Component.SetListener(_Listener.Object, true);
             other.SetListener(_Listener.Object, false);
 

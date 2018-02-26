@@ -57,12 +57,12 @@ namespace Test.VirtualRadar.Library.FlightSimulatorX
         [TestInitialize]
         public void TestInitialise()
         {
-            _OriginalClassFactory = Factory.Singleton.CreateChildFactory();
+            _OriginalClassFactory = Factory.CreateChildFactory();
 
             _SimConnect = TestUtilities.CreateMockImplementation<ISimConnectWrapper>();
             _SimConnect.Setup(m => m.IsInstalled).Returns(true);
 
-            _Fsx = Factory.Singleton.Resolve<IFlightSimulatorX>();
+            _Fsx = Factory.Resolve<IFlightSimulatorX>();
 
             _ClientEventIdMap = new Dictionary<string,Enum>();
             _SimConnect.Setup(m => m.MapClientEventToSimEvent(It.IsAny<Enum>(), It.IsAny<string>())).Callback((Enum id, string name) => { _ClientEventIdMap.Add(name, id); });
@@ -204,7 +204,7 @@ namespace Test.VirtualRadar.Library.FlightSimulatorX
         public void FlightSimulatorX_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
             _Fsx.Dispose();
-            _Fsx = Factory.Singleton.Resolve<IFlightSimulatorX>();
+            _Fsx = Factory.Resolve<IFlightSimulatorX>();
 
             Assert.AreEqual(false, _Fsx.Connected);
             Assert.AreEqual(Strings.Disconnected, _Fsx.ConnectionStatus);

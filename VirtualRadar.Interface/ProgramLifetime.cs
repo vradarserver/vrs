@@ -120,7 +120,7 @@ namespace VirtualRadar.Interface
             if(ex != null) {
                 ShowException(ex);
             } else {
-                Factory.Singleton.Resolve<IMessageBox>().Show(String.Format("An exception that was not of type Exception was caught.\r\n{0}", e.ExceptionObject), "Unknown Exception Caught");
+                Factory.Resolve<IMessageBox>().Show(String.Format("An exception that was not of type Exception was caught.\r\n{0}", e.ExceptionObject), "Unknown Exception Caught");
             }
         }
 
@@ -138,14 +138,14 @@ namespace VirtualRadar.Interface
 
                 ILog log = null;
                 try {
-                    log = Factory.Singleton.ResolveSingleton<ILog>();
+                    log = Factory.ResolveSingleton<ILog>();
                     if(log != null) {
                         log.WriteLine(message);
                     }
                 } catch { }
 
                 try {
-                    Factory.Singleton.Resolve<IMessageBox>().Show(message, "Unhandled Exception Caught");
+                    Factory.Resolve<IMessageBox>().Show(message, "Unhandled Exception Caught");
                 } catch(Exception doubleEx) {
                     Debug.WriteLine(String.Format("Program.ShowException caught double-exception: {0} when trying to display / log {1}", doubleEx.ToString(), ex.ToString()));
                     try {
@@ -188,10 +188,10 @@ namespace VirtualRadar.Interface
         /// </summary>
         public static void InitialiseManagers()
         {
-            var receiverFormatManager = Factory.Singleton.ResolveSingleton<IReceiverFormatManager>();
+            var receiverFormatManager = Factory.ResolveSingleton<IReceiverFormatManager>();
             receiverFormatManager.Initialise();
 
-            var rebroadcastFormatManager = Factory.Singleton.ResolveSingleton<IRebroadcastFormatManager>();
+            var rebroadcastFormatManager = Factory.ResolveSingleton<IRebroadcastFormatManager>();
             rebroadcastFormatManager.Initialise();
         }
 
@@ -200,7 +200,7 @@ namespace VirtualRadar.Interface
         /// </summary>
         public static void LoadPlugins()
         {
-            var pluginManager = Factory.Singleton.ResolveSingleton<IPluginManager>();
+            var pluginManager = Factory.ResolveSingleton<IPluginManager>();
             pluginManager.LoadPlugins();
         }
 
@@ -209,7 +209,7 @@ namespace VirtualRadar.Interface
         /// </summary>
         public static void RegisterPlugins()
         {
-            var pluginManager = Factory.Singleton.ResolveSingleton<IPluginManager>();
+            var pluginManager = Factory.ResolveSingleton<IPluginManager>();
             pluginManager.RegisterImplementations();
         }
 
@@ -245,7 +245,7 @@ namespace VirtualRadar.Interface
             Mutex result = null;
             mutexAcquired = false;
 
-            var runtimeEnvironment = Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>();
+            var runtimeEnvironment = Factory.ResolveSingleton<IRuntimeEnvironment>();
             if(runtimeEnvironment.IsMono) {
                 result = new Mutex(false, _SingleInstanceMutexName);
             } else {
@@ -260,7 +260,7 @@ namespace VirtualRadar.Interface
                     try {
                         mutexAcquired = result.WaitOne(1000, false);
                         if(!mutexAcquired) {
-                            Factory.Singleton.Resolve<IMessageBox>().Show(Strings.AnotherInstanceRunningFull, Strings.AnotherInstanceRunningTitle);
+                            Factory.Resolve<IMessageBox>().Show(Strings.AnotherInstanceRunningFull, Strings.AnotherInstanceRunningTitle);
                             result = null;
                         }
                     } catch(AbandonedMutexException) {
@@ -285,7 +285,7 @@ namespace VirtualRadar.Interface
             bool loadSucceded = false;
 
             try {
-                using(var splashScreen = Factory.Singleton.Resolve<ISplashView>()) {
+                using(var splashScreen = Factory.Resolve<ISplashView>()) {
                     splashScreen.Initialise(args, BackgroundThread_ExceptionCaught);
                     splashScreen.ShowView();
 
@@ -295,21 +295,21 @@ namespace VirtualRadar.Interface
                     flightSimulatorXAircraftList = splashScreen.FlightSimulatorXAircraftList;
                 }
 
-                var shutdownSignalHandler = Factory.Singleton.ResolveSingleton<IShutdownSignalHandler>();
+                var shutdownSignalHandler = Factory.ResolveSingleton<IShutdownSignalHandler>();
                 try {
                     if(loadSucceded) {
-                        var pluginManager = Factory.Singleton.ResolveSingleton<IPluginManager>();
+                        var pluginManager = Factory.ResolveSingleton<IPluginManager>();
                         foreach(var plugin in pluginManager.LoadedPlugins) {
                             try {
                                 plugin.GuiThreadStartup();
                             } catch(Exception ex) {
-                                var log = Factory.Singleton.ResolveSingleton<ILog>();
+                                var log = Factory.ResolveSingleton<ILog>();
                                 log.WriteLine($"Caught exception in {plugin.Name} plugin while calling GuiThreadStartup: {ex}");
                             }
                         }
 
                         try {
-                            using(var mainWindow = Factory.Singleton.Resolve<IMainView>()) {
+                            using(var mainWindow = Factory.Resolve<IMainView>()) {
                                 MainView = mainWindow;
                                 mainWindow.Initialise(uPnpManager, flightSimulatorXAircraftList);
 
@@ -324,13 +324,13 @@ namespace VirtualRadar.Interface
                 } finally {
                     shutdownSignalHandler.Cleanup();
 
-                    using(var shutdownWindow = Factory.Singleton.Resolve<IShutdownView>()) {
+                    using(var shutdownWindow = Factory.Resolve<IShutdownView>()) {
                         shutdownWindow.Initialise(uPnpManager, baseStationAircraftList);
                         shutdownWindow.ShowView();
                         Thread.Sleep(1000);
                     }
 
-                    Factory.Singleton.ResolveSingleton<ILog>().WriteLine("Clean shutdown complete");
+                    Factory.ResolveSingleton<ILog>().WriteLine("Clean shutdown complete");
                 }
             } finally {
                 _ShutdownCompleteWaitHandle.Set();
@@ -358,7 +358,7 @@ namespace VirtualRadar.Interface
             if(MainView != null) {
                 MainView.BubbleExceptionToGui(args.Value);
             } else {
-                var log = Factory.Singleton.ResolveSingleton<ILog>();
+                var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("Unhandled exception caught in BaseStationAircraftList before GUI available to show to user: {0}", args.Value.ToString());
             }
         }

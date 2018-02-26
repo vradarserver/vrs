@@ -106,7 +106,7 @@ namespace Test.VirtualRadar.Library
 
             _FetchedRecorder = new EventRecorder<AircraftOnlineLookupEventArgs>();
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
             _Lookup = TestUtilities.CreateMockSingleton<IAircraftOnlineLookup>();
             _LookupUsed = new List<string>();
@@ -140,7 +140,7 @@ namespace Test.VirtualRadar.Library
             SetupCache(1, _Cache1, _Cache1Icaos);
             SetupCache(2, _Cache2, _Cache2Icaos);
 
-            _Manager = Factory.Singleton.ResolveNewInstance<IAircraftOnlineLookupManager>();
+            _Manager = Factory.ResolveNewInstance<IAircraftOnlineLookupManager>();
             _Manager.RegisterCache(_Cache1.Object, 1, false);
             _Manager.RegisterCache(_Cache2.Object, 2, false);   // <-- this has a higher priority and should take precedence
         }
@@ -229,7 +229,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void AircraftOnlineLookupManager_Dispose_Disposes_Of_Managed_Caches()
         {
-            var manager = Factory.Singleton.ResolveNewInstance<IAircraftOnlineLookupManager>();
+            var manager = Factory.ResolveNewInstance<IAircraftOnlineLookupManager>();
             var disposableCache = new DisposableCache();
             manager.RegisterCache(disposableCache, 1, letManagerControlLifetime: true);
 
@@ -241,7 +241,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void AircraftOnlineLookupManager_Dispose_Does_Not_Dispose_Of_Unmanaged_Caches()
         {
-            var manager = Factory.Singleton.ResolveNewInstance<IAircraftOnlineLookupManager>();
+            var manager = Factory.ResolveNewInstance<IAircraftOnlineLookupManager>();
             var disposableCache = new DisposableCache();
             manager.RegisterCache(disposableCache, 1, letManagerControlLifetime: false);
 
@@ -253,7 +253,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void AircraftOnlineLookupManager_Dispose_Does_Not_Call_Dispose_On_Managed_Caches_That_Are_Not_Disposable()
         {
-            var manager = Factory.Singleton.ResolveNewInstance<IAircraftOnlineLookupManager>();
+            var manager = Factory.ResolveNewInstance<IAircraftOnlineLookupManager>();
             manager.RegisterCache(_Cache1.Object, 1, letManagerControlLifetime: true);
 
             manager.Dispose();

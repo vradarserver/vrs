@@ -200,7 +200,7 @@ namespace VirtualRadar.Plugin.CustomContent
             var options = OptionsStorage.Load(this);
             ApplyOptions(options);
 
-            var heartbeat = Factory.Singleton.ResolveSingleton<IHeartbeatService>();
+            var heartbeat = Factory.ResolveSingleton<IHeartbeatService>();
             heartbeat.SlowTick += Heartbeat_SlowTick;
         }
         #endregion
@@ -211,7 +211,7 @@ namespace VirtualRadar.Plugin.CustomContent
         /// </summary>
         public void GuiThreadStartup()
         {
-            var webAdminViewManager = Factory.Singleton.ResolveSingleton<IWebAdminViewManager>();
+            var webAdminViewManager = Factory.ResolveSingleton<IWebAdminViewManager>();
             webAdminViewManager.RegisterTranslations(typeof(CustomContentStrings), "CustomContentPlugin");
             webAdminViewManager.AddWebAdminView(new WebAdminView("/WebAdmin/", "CustomContentPluginOptions.html", CustomContentStrings.WebAdminMenuName, () => new WebAdmin.OptionsView(), typeof(CustomContentStrings)) {
                 Plugin = this,
@@ -236,7 +236,7 @@ namespace VirtualRadar.Plugin.CustomContent
         /// </summary>
         public void ShowWinFormsOptionsUI()
         {
-            using(var view = Factory.Singleton.Resolve<IOptionsView>()) {
+            using(var view = Factory.Resolve<IOptionsView>()) {
                 var options = OptionsStorage.Load(this);
 
                 view.WebSite = _WebSite;

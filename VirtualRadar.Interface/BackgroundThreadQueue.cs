@@ -166,7 +166,7 @@ namespace VirtualRadar.Interface
         /// <param name="maxQueuedItems"></param>
         public BackgroundThreadQueue(string queueName, BackgroundThreadQueueMechanism mechanism, int maxQueuedItems = int.MaxValue)
         {
-            var runtimeEnvironment = Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>();
+            var runtimeEnvironment = Factory.ResolveSingleton<IRuntimeEnvironment>();
 
             if(mechanism == BackgroundThreadQueueMechanism.QueueWithNoBlock) {
                 if(runtimeEnvironment.IsMono) mechanism = BackgroundThreadQueueMechanism.Queue;
@@ -273,7 +273,7 @@ namespace VirtualRadar.Interface
         private void BackgroundThreadMethod()
         {
             try {
-                var applicationInformation = Factory.Singleton.Resolve<IApplicationInformation>();
+                var applicationInformation = Factory.Resolve<IApplicationInformation>();
                 if(applicationInformation.CultureInfo != null) {
                     Thread.CurrentThread.CurrentCulture = applicationInformation.CultureInfo;
                     Thread.CurrentThread.CurrentUICulture = applicationInformation.CultureInfo;
@@ -317,7 +317,7 @@ namespace VirtualRadar.Interface
             } catch(ThreadAbortException) {
             } catch(Exception ex) {
                 try {
-                    var log = Factory.Singleton.ResolveSingleton<ILog>();
+                    var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine("Caught exception in BackgroundThreadMethod for queue {0}: {1}", _QueueName, ex);
                 } catch {
                 }
@@ -466,7 +466,7 @@ namespace VirtualRadar.Interface
             } catch(ThreadAbortException) {
             } catch(Exception ex) {
                 try {
-                    var log = Factory.Singleton.ResolveSingleton<ILog>();
+                    var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine("Caught exception in CallProcessObjectFromThreadPool for queue {0}: {1}", _QueueName, ex);
                 } catch {
                 }

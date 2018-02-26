@@ -37,7 +37,7 @@ namespace Test.VirtualRadar.Library
         {
             _ClassFactorySnapshot = Factory.TakeSnapshot();
 
-            _NewVersionChecker = Factory.Singleton.ResolveNewInstance<INewVersionChecker>();
+            _NewVersionChecker = Factory.ResolveNewInstance<INewVersionChecker>();
             _Provider = new Mock<INewVersionCheckerProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _NewVersionChecker.Provider = _Provider.Object;
             _NewVersionAvailable = new EventRecorder<EventArgs>();
@@ -53,7 +53,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void NewVersionChecker_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            _NewVersionChecker = Factory.Singleton.ResolveNewInstance<INewVersionChecker>();
+            _NewVersionChecker = Factory.ResolveNewInstance<INewVersionChecker>();
 
             Assert.IsNotNull(_NewVersionChecker.Provider);
             TestUtilities.TestProperty(_NewVersionChecker, "Provider", _NewVersionChecker.Provider, _Provider.Object);

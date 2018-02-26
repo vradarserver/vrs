@@ -85,9 +85,9 @@ namespace Test.VirtualRadar.Library.Presenter
             _FeedManager = FeedHelper.CreateMockFeedManager(_Feeds, _Listeners, useVisibleFeeds, 1, 2);
 
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
-            _Presenter = Factory.Singleton.Resolve<IMainPresenter>();
+            _Presenter = Factory.Resolve<IMainPresenter>();
             _View = new Mock<IMainView>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
         }
 

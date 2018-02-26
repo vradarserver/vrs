@@ -48,7 +48,7 @@ namespace Test.VirtualRadar.WebServer
             _ClassFactorySnapshot = Factory.TakeSnapshot();
 
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
             _WebServer = TestUtilities.CreateMockImplementation<IWebServer>();
             _WebServerProvider = TestUtilities.CreateMockImplementation<IWebServerProvider>();
@@ -64,7 +64,7 @@ namespace Test.VirtualRadar.WebServer
             _InstallerSettings = new InstallerSettings();
             _InstallerSettingsStorage.Setup(s => s.Load()).Returns(_InstallerSettings);
 
-            _AutoConfigWebServer = Factory.Singleton.ResolveNewInstance<IAutoConfigWebServer>();
+            _AutoConfigWebServer = Factory.ResolveNewInstance<IAutoConfigWebServer>();
         }
 
         [TestCleanup]

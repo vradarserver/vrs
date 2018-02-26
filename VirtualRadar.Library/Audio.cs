@@ -34,7 +34,7 @@ namespace VirtualRadar.Library
         /// </summary>
         public bool IsSupported
         {
-            get { return !Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>().IsMono; }
+            get { return !Factory.ResolveSingleton<IRuntimeEnvironment>().IsMono; }
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace VirtualRadar.Library
             if(IsSupported) {
                 using(MemoryStream memoryStream = new MemoryStream()) {
                     using(SpeechSynthesizer speechSynthesizer = new SpeechSynthesizer() { Rate = -3 }) {
-                        var configuration = Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Load();
+                        var configuration = Factory.ResolveSingleton<IConfigurationStorage>().Load();
 
                         speechSynthesizer.Rate = configuration.AudioSettings.VoiceRate;
                         string defaultVoice = speechSynthesizer.Voice.Name;

@@ -33,14 +33,14 @@ namespace BaseStationImport
             var result = new List<string>();
             var direction = options.IsSource ? "source" : "target";
 
-            if(!Factory.Singleton.HasImplementation<IBaseStationDatabaseSqlServer>()) {
+            if(!Factory.HasImplementation<IBaseStationDatabaseSqlServer>()) {
                 result.Add("The SQL Server plugin has not been installed or could not be loaded");
             } else {
                 if(String.IsNullOrEmpty(options.ConnectionString)) {
                     result.Add($"You must specify the connection string for the {direction} SQL Server connection");
                 } else {
                     try {
-                        using(var repository = Factory.Singleton.Resolve<IBaseStationDatabaseSqlServer>()) {
+                        using(var repository = Factory.Resolve<IBaseStationDatabaseSqlServer>()) {
                             repository.ConnectionString = options.ConnectionString;
 
                             if(!repository.TestConnection()) {
@@ -67,7 +67,7 @@ namespace BaseStationImport
         /// <returns></returns>
         public override IBaseStationDatabase CreateRepository(DatabaseEngineOptions options)
         {
-            var result = Factory.Singleton.Resolve<IBaseStationDatabaseSqlServer>();
+            var result = Factory.Resolve<IBaseStationDatabaseSqlServer>();
             result.ConnectionString = options.ConnectionString;
             result.WriteSupportEnabled = options.IsTarget;
             result.CanUpdateSchema = options.IsTarget;

@@ -49,7 +49,7 @@ namespace Test.VirtualRadar.Library.Presenter
                 foreach(var session in _LogSessions) sessions.Add(session);
             });
 
-            _Presenter = Factory.Singleton.Resolve<IConnectionSessionLogPresenter>();
+            _Presenter = Factory.Resolve<IConnectionSessionLogPresenter>();
             _View = new Mock<IConnectionSessionLogView>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
         }
 

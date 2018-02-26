@@ -152,7 +152,7 @@ namespace Test.VirtualRadar.Library.Listener
         {
             _OriginalFactory = Factory.TakeSnapshot();
 
-            _Feed = Factory.Singleton.Resolve<IFeed>();
+            _Feed = Factory.Resolve<IFeed>();
             _Receiver = new Receiver() { UniqueId = 1, Name = "A", ReceiverLocationId = 1, IsSatcomFeed = true, };
             _RawDecodingSettings = new RawDecodingSettings();
 
@@ -266,7 +266,7 @@ namespace Test.VirtualRadar.Library.Listener
         public void Feed_Constructor_Initialises_To_Known_Value_And_Properties_Work()
         {
             _Feed.Dispose();
-            _Feed = Factory.Singleton.Resolve<IFeed>();
+            _Feed = Factory.Resolve<IFeed>();
 
             Assert.IsNull(_Feed.AircraftList);
             Assert.IsFalse(_Feed.IsVisible);

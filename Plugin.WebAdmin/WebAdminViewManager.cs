@@ -133,7 +133,7 @@ namespace VirtualRadar.Plugin.WebAdmin
             _ViewMethodMapper = new ViewMethodMapper();
             _WebAdminViewMapByFullPath = new Dictionary<string,WebAdminView>();
 
-            Responder = Factory.Singleton.Resolve<IResponder>();
+            Responder = Factory.Resolve<IResponder>();
         }
 
         /// <summary>
@@ -252,7 +252,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <param name="stringResources"></param>
         private void AddHtmlLocaliser(Type stringResources)
         {
-            var htmlLocaliser = Factory.Singleton.Resolve<IHtmlLocaliser>();
+            var htmlLocaliser = Factory.Resolve<IHtmlLocaliser>();
             htmlLocaliser.Initialise(stringResources);
 
             var newMap = CollectionHelper.ShallowCopy(_HtmlLocalisers);

@@ -29,7 +29,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public DialogResult ShowView()
         {
-            _Presenter = Factory.Singleton.Resolve<IAircraftOnlineLookupLogPresenter>();
+            _Presenter = Factory.Resolve<IAircraftOnlineLookupLogPresenter>();
             _Presenter.Initialise(this);
 
             return DialogResult.OK;

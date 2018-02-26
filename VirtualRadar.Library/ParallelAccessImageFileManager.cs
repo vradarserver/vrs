@@ -79,8 +79,8 @@ namespace VirtualRadar.Library
                 lock(_SyncLock) {
                     if(!_Initialised) {
                         _Initialised = true;
-                        _Clock = Factory.Singleton.Resolve<IClock>();
-                        _LoopbackHost = Factory.Singleton.Resolve<ILoopbackHost>();
+                        _Clock = Factory.Resolve<IClock>();
+                        _LoopbackHost = Factory.Resolve<ILoopbackHost>();
                         _LoopbackHost.ConfigureStandardPipeline();
                     }
                 }

@@ -35,7 +35,7 @@ namespace Test.VirtualRadar.WebSite
         [TestInitialize]
         public void TestInitialise()
         {
-            _Comparer = Factory.Singleton.Resolve<IAircraftComparer>();
+            _Comparer = Factory.Resolve<IAircraftComparer>();
 
             _Lhs = new Mock<IAircraft>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties().Object;
             _Rhs = new Mock<IAircraft>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties().Object;

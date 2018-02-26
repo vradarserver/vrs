@@ -63,7 +63,7 @@ namespace VirtualRadar.Interface.WebSite
         /// <returns></returns>
         public static string GenerateChecksum(string fileName)
         {
-            var fileSystem = Factory.Singleton.Resolve<IFileSystemProvider>();
+            var fileSystem = Factory.Resolve<IFileSystemProvider>();
 
             if(fileName == null) {
                 throw new ArgumentNullException(nameof(fileName));
@@ -90,7 +90,7 @@ namespace VirtualRadar.Interface.WebSite
         /// <returns></returns>
         public static long GetFileSize(string fileName)
         {
-            var fileSystem = Factory.Singleton.Resolve<IFileSystemProvider>();
+            var fileSystem = Factory.Resolve<IFileSystemProvider>();
 
             if(fileName == null) {
                 throw new ArgumentNullException(nameof(fileName));

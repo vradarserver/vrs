@@ -157,12 +157,12 @@ namespace VirtualRadar.Library.Network
         {
             if(disposing) {
                 if(_HookedConfigurationChanged) {
-                    Factory.Singleton.ResolveSingleton<IConfigurationStorage>().ConfigurationChanged -= ConfigurationStorage_ConfigurationChanged;
+                    Factory.ResolveSingleton<IConfigurationStorage>().ConfigurationChanged -= ConfigurationStorage_ConfigurationChanged;
                     _HookedConfigurationChanged = false;
                 }
 
                 if(_HookedFeedsChanged) {
-                    Factory.Singleton.ResolveSingleton<IFeedManager>().FeedsChanged -= FeedManager_FeedsChanged;
+                    Factory.ResolveSingleton<IFeedManager>().FeedsChanged -= FeedManager_FeedsChanged;
                     _HookedFeedsChanged = false;
                 }
 
@@ -186,7 +186,7 @@ namespace VirtualRadar.Library.Network
             configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
             _HookedConfigurationChanged = true;
 
-            var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
+            var feedManager = Factory.ResolveSingleton<IFeedManager>();
             feedManager.FeedsChanged += FeedManager_FeedsChanged;
             _HookedFeedsChanged = true;
         }
@@ -196,10 +196,10 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         private IConfigurationStorage LoadConfiguration()
         {
-            var result = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
+            var result = Factory.ResolveSingleton<IConfigurationStorage>();
             var configuration = result.Load();
 
-            var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
+            var feedManager = Factory.ResolveSingleton<IFeedManager>();
 
             var unusedServers = new List<IRebroadcastServer>(RebroadcastServers);
             var newServers = new List<RebroadcastSettings>();
@@ -250,11 +250,11 @@ namespace VirtualRadar.Library.Network
 
             foreach(var rebroadcastSettings in newServers) {
                 var feed = feedManager.GetByUniqueId(rebroadcastSettings.ReceiverId, ignoreInvisibleFeeds: false);
-                var server = Factory.Singleton.Resolve<IRebroadcastServer>();
+                var server = Factory.Resolve<IRebroadcastServer>();
                 server.UniqueId = rebroadcastSettings.UniqueId;
                 server.Name = rebroadcastSettings.Name;
                 server.Feed = feed;
-                server.Connector = Factory.Singleton.Resolve<INetworkConnector>();
+                server.Connector = Factory.Resolve<INetworkConnector>();
                 server.Connector.Name = rebroadcastSettings.Name;
                 server.Connector.Port = rebroadcastSettings.Port;
                 server.Connector.StaleMessageTimeout = rebroadcastSettings.StaleSeconds * 1000;
@@ -298,7 +298,7 @@ namespace VirtualRadar.Library.Network
                (existingAuthentication != null && existingAuthentication.Passphrase != passphrase)) {
                 if(passphrase == "") server.Connector.Authentication = null;
                 else {
-                    var authentication = Factory.Singleton.Resolve<IPassphraseAuthentication>();
+                    var authentication = Factory.Resolve<IPassphraseAuthentication>();
                     authentication.Passphrase = rebroadcastSettings.Passphrase;
                     server.Connector.Authentication = authentication;
                 }

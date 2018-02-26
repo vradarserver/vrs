@@ -58,17 +58,17 @@ namespace Test.VirtualRadar.WebSite
             _OriginalFactory = Factory.TakeSnapshot();
 
             _FileSystemProvider = new MockFileSystemProvider();
-            Factory.Singleton.RegisterInstance<IFileSystemProvider>(_FileSystemProvider);
+            Factory.RegisterInstance<IFileSystemProvider>(_FileSystemProvider);
 
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
             _SharedConfiguration = TestUtilities.CreateMockSingleton<ISharedConfiguration>();
             _Configuration = new Configuration();
             _SharedConfiguration.Setup(r => r.Get()).Returns(_Configuration);
             _Configuration.GoogleMapSettings.WebSiteReceiverId = 1;
 
-            _Builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
+            _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
             _Args = new AircraftListJsonBuilderArgs();
             _Filter = new AircraftListJsonBuilderFilter();
 
@@ -129,7 +129,7 @@ namespace Test.VirtualRadar.WebSite
         public void AircraftListJsonBuilder_Returns_Empty_Json_When_There_Are_No_Feeds()
         {
             _ReceiverManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
-            _Builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
+            _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
 
             var json = _Builder.Build(_Args);
 
@@ -142,7 +142,7 @@ namespace Test.VirtualRadar.WebSite
         public void AircraftListJsonBuilder_Returns_Requested_SourceFeedId_When_There_Are_No_Feeds()
         {
             _ReceiverManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
-            _Builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
+            _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
 
             _Args.SourceFeedId = 9;
             var json = _Builder.Build(_Args);

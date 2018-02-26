@@ -83,7 +83,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
                 }
             );
 
-            _Manipulator = Factory.Singleton.Resolve<IBundlerHtmlManipulator>();
+            _Manipulator = Factory.Resolve<IBundlerHtmlManipulator>();
         }
 
         [TestCleanup]

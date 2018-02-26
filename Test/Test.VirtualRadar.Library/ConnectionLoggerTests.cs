@@ -54,7 +54,7 @@ namespace Test.VirtualRadar.Library
             _ExceptionCaughtEvent = new EventRecorder<EventArgs<Exception>>();
 
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
             _NestedTransactionCount = 0;
             _LogDatabase.Setup(r => r.PerformInTransaction(It.IsAny<Func<bool>>())).Callback((Func<bool> r) => {
@@ -65,7 +65,7 @@ namespace Test.VirtualRadar.Library
                 --_NestedTransactionCount;
             });
 
-            _ConnectionLogger = Factory.Singleton.ResolveNewInstance<IConnectionLogger>();
+            _ConnectionLogger = Factory.ResolveNewInstance<IConnectionLogger>();
             _ConnectionLogger.WebServer = _WebServer.Object;
             _ConnectionLogger.LogDatabase = _LogDatabase.Object;
         }
@@ -122,7 +122,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void ConnectionLogger_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            _ConnectionLogger = Factory.Singleton.ResolveNewInstance<IConnectionLogger>();
+            _ConnectionLogger = Factory.ResolveNewInstance<IConnectionLogger>();
 
             TestUtilities.TestProperty(_ConnectionLogger, "LogDatabase", null, _LogDatabase.Object);
             TestUtilities.TestProperty(_ConnectionLogger, "WebServer", null, _WebServer.Object);

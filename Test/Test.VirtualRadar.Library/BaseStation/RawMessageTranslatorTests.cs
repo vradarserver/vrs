@@ -51,14 +51,14 @@ namespace Test.VirtualRadar.Library.BaseStation
             _OriginalClassFactory = Factory.TakeSnapshot();
 
             _Clock = new ClockMock() { UtcNowValue = new DateTime(1999, 12, 31) };
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
             _HeartbeatService = TestUtilities.CreateMockSingleton<IHeartbeatService>();
             _StandingDataManager = TestUtilities.CreateMockSingleton<IStandingDataManager>();
             _StandingDataManager.Setup(r => r.FindCodeBlock(It.IsAny<string>())).Returns(new CodeBlock() { Country = "X" });
             _StandingDataManager.Setup(r => r.CodeBlocksLoaded).Returns(true);
             _Statistics = StatisticsHelper.CreateLockableStatistics();
 
-            _Translator = Factory.Singleton.Resolve<IRawMessageTranslator>();
+            _Translator = Factory.Resolve<IRawMessageTranslator>();
             _Translator.Statistics = _Statistics.Object;
 
             _PositionResetEvent = new EventRecorder<EventArgs<string>>();
@@ -257,7 +257,7 @@ namespace Test.VirtualRadar.Library.BaseStation
         public void RawMessageTranslator_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
             _Translator.Dispose();
-            _Translator = Factory.Singleton.Resolve<IRawMessageTranslator>();
+            _Translator = Factory.Resolve<IRawMessageTranslator>();
 
             TestUtilities.TestProperty(_Translator, r => r.AcceptIcaoInNonPICount, 0, 100);
             TestUtilities.TestProperty(_Translator, r => r.AcceptIcaoInNonPIMilliseconds, 0, 100);
@@ -290,7 +290,7 @@ namespace Test.VirtualRadar.Library.BaseStation
             // may have been used for aircraft tracks etc., so this event is raised when the situation is seen and
             // before the message has been translated.
 
-            var cpr = Factory.Singleton.Resolve<ICompactPositionReporting>();
+            var cpr = Factory.Resolve<ICompactPositionReporting>();
             var adsbMessage = CreateAdsbMessagesForExtendedSquitters().First();
             adsbMessage.ModeSMessage.Icao24 = 0xabc123;
             var airborneMessage = adsbMessage.AirbornePosition = new AirbornePositionMessage();
@@ -1591,7 +1591,7 @@ namespace Test.VirtualRadar.Library.BaseStation
                     }
                 }
                 Assert.IsTrue(parsedOK);
-                result = Factory.Singleton.Resolve<ICompactPositionReporting>().Encode(new GlobalCoordinate(latitude, longitude), isOddFormat.Value, (byte)bits);
+                result = Factory.Resolve<ICompactPositionReporting>().Encode(new GlobalCoordinate(latitude, longitude), isOddFormat.Value, (byte)bits);
             }
 
             return result;
@@ -1602,7 +1602,7 @@ namespace Test.VirtualRadar.Library.BaseStation
         {
             var expectedLatitude = 51.4;
             var expectedLongitude = -0.6;
-            var encoder = Factory.Singleton.Resolve<ICompactPositionReporting>();
+            var encoder = Factory.Resolve<ICompactPositionReporting>();
             var oddCpr = encoder.Encode(new GlobalCoordinate(expectedLatitude, expectedLongitude), oddFormat: true, numberOfBits: 12);
             var evenCpr = encoder.Encode(new GlobalCoordinate(expectedLatitude, expectedLongitude), oddFormat: false, numberOfBits: 12);
 

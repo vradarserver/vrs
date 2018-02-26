@@ -51,7 +51,7 @@ namespace VirtualRadar.WebSite
         /// </summary>
         public WebSiteGraphics()
         {
-            _IsMono = Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>().IsMono;
+            _IsMono = Factory.ResolveSingleton<IRuntimeEnvironment>().IsMono;
         }
         #endregion
 
@@ -249,7 +249,7 @@ namespace VirtualRadar.WebSite
                             Trimming = StringTrimming.EllipsisCharacter,
                         });
                     } catch(Exception ex) {
-                        var log = Factory.Singleton.ResolveSingleton<ILog>();
+                        var log = Factory.ResolveSingleton<ILog>();
                         log.WriteLine("Swallowed exception while generating {0} splash: {1}", isIPad ? "iPad" : "iPhone", ex.Message);
                     }
                 }

@@ -31,7 +31,7 @@ namespace Test.VirtualRadar.Library.BaseStation
         [TestInitialize]
         public void TestInitialise()
         {
-            _Compressor = Factory.Singleton.Resolve<IBaseStationMessageCompressor>();
+            _Compressor = Factory.Resolve<IBaseStationMessageCompressor>();
 
             _Message = new BaseStationMessage();
             _Message.MessageType = BaseStationMessageType.Transmission;

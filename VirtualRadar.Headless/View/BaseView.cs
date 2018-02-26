@@ -29,7 +29,7 @@ namespace VirtualRadar.Headless.View
 
         public BaseView()
         {
-            _Console = Factory.Singleton.ResolveSingleton<IConsole>();
+            _Console = Factory.ResolveSingleton<IConsole>();
         }
 
         /// <summary>

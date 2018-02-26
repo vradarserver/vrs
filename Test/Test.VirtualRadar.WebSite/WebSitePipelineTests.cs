@@ -136,7 +136,7 @@ namespace Test.VirtualRadar.WebSite
                 actualStreamManipulators.AddRange(manipulators);
             });
 
-            var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
+            var webAppConfiguration = Factory.Resolve<IWebAppConfiguration>();
             _Pipeline.Register(webAppConfiguration);
 
             var actualTargets = new List<MiddlewareDetail>();
@@ -175,7 +175,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSitePipeline_Configures_Microsoft_WebApi()
         {
-            var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
+            var webAppConfiguration = Factory.Resolve<IWebAppConfiguration>();
             _Pipeline.Register(webAppConfiguration);
 
             var mockAppBuilder = TestUtilities.CreateMockInstance<IAppBuilder>();
@@ -191,7 +191,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSitePipeline_Sets_Json_As_Default_Format_For_Microsoft_WebApi_TextHtml_Requests()
         {
-            var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
+            var webAppConfiguration = Factory.Resolve<IWebAppConfiguration>();
             _Pipeline.Register(webAppConfiguration);
 
             var mockAppBuilder = TestUtilities.CreateMockInstance<IAppBuilder>();
@@ -210,7 +210,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSitePipeline_Register_Adds_Standard_StreamManipulators()
         {
-            var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
+            var webAppConfiguration = Factory.Resolve<IWebAppConfiguration>();
             _Pipeline.Register(webAppConfiguration);
 
             Assert.IsTrue(_ExpectedStreamManipulators.SequenceEqual(webAppConfiguration.GetStreamManipulators()));
@@ -219,7 +219,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSitePipeline_Register_Adds_BundlerHtmlManipulator_To_Html_Manipulators()
         {
-            var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
+            var webAppConfiguration = Factory.Resolve<IWebAppConfiguration>();
             _Pipeline.Register(webAppConfiguration);
 
             _HtmlManipulatorConfiguration.Verify(r => r.AddTextResponseManipulator<IBundlerHtmlManipulator>(), Times.Once());

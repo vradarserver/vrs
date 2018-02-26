@@ -58,7 +58,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _StreamManipulators = new List<IStreamManipulator>();
             _StreamManipulators.Add(_Manipulator);
 
-            _Wrapper = Factory.Singleton.Resolve<IResponseStreamWrapper>();
+            _Wrapper = Factory.Resolve<IResponseStreamWrapper>();
 
             _Environment = new MockOwinEnvironment();
             _Pipeline = new MockOwinPipeline();

@@ -37,7 +37,7 @@ namespace Test.VirtualRadar.Interface.WebSite
             _Snapshot = Factory.TakeSnapshot();
 
             _FileSystem = new MockFileSystemProvider();
-            Factory.Singleton.RegisterInstance<IFileSystemProvider>(_FileSystem);
+            Factory.RegisterInstance<IFileSystemProvider>(_FileSystem);
             _ChecksumGenerator = new Crc64();
 
             _Instance = new ChecksumFileEntry();

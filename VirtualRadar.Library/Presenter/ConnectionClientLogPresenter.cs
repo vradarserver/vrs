@@ -79,7 +79,7 @@ namespace VirtualRadar.Library.Presenter
         public ConnectionClientLogPresenter()
         {
             Provider = new DefaultProvider();
-            _Clock = Factory.Singleton.Resolve<IClock>();
+            _Clock = Factory.Resolve<IClock>();
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace VirtualRadar.Library.Presenter
 
             var clients = new List<LogClient>();
             Dictionary<long, IList<LogSession>> sessionMap = new Dictionary<long,IList<LogSession>>();
-            var logDatabase = Factory.Singleton.ResolveSingleton<ILogDatabase>();
+            var logDatabase = Factory.ResolveSingleton<ILogDatabase>();
             logDatabase.FetchAll(clients, sessionMap);
             _View.ShowClientsAndSessions(clients, sessionMap);
 
@@ -107,7 +107,7 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="lookupClients"></param>
         private void LookupReverseDNS(IList<LogClient> lookupClients)
         {
-            var database = Factory.Singleton.ResolveSingleton<ILogDatabase>();
+            var database = Factory.ResolveSingleton<ILogDatabase>();
 
             foreach(var client in lookupClients) {
                 string reverseDns = null;
@@ -123,7 +123,7 @@ namespace VirtualRadar.Library.Presenter
                     canSave = false;
                 } catch(Exception ex) {
                     Debug.WriteLine(String.Format("ConnectionClientLogPresenter.LookupReverseDNS caught exception: {0}", ex.ToString()));
-                    var log = Factory.Singleton.ResolveSingleton<ILog>();
+                    var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine("{0}: {1}", Strings.CaughtExceptionInReverseDNS, ex.ToString());
                     canSave = false;
                 }

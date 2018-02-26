@@ -27,7 +27,7 @@ namespace Test.VirtualRadar.Owin.Configuration
 
         protected override void ExtraConfiguration()
         {
-            _Config = Factory.Singleton.ResolveNewInstance<IJavascriptManipulatorConfiguration>();
+            _Config = Factory.ResolveNewInstance<IJavascriptManipulatorConfiguration>();
         }
 
         [TestMethod]

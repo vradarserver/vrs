@@ -58,7 +58,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _BasicAuthenticationFilter = MockBasicAuthenticationFilter.CreateAndRegister();
             _RedirectionFilter = MockRedirectionFilter.CreateAndRegister();
 
-            _WebAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
+            _WebAppConfiguration = Factory.Resolve<IWebAppConfiguration>();
             _WebAppConfiguration.AddCallback(UsetTestEnvironmentSetup,   StandardPipelinePriority.Access - 1);
             _WebAppConfiguration.AddCallback(ConfigureHttpConfiguration, StandardPipelinePriority.WebApiConfiguration);
             _WebAppConfiguration.AddCallback(UseWebApi,                  StandardPipelinePriority.WebApi);

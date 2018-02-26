@@ -56,7 +56,7 @@ namespace Test.VirtualRadar.Owin.Configuration
         public void TestInitialise()
         {
             _Snapshot = Factory.TakeSnapshot();
-            Factory.Singleton.Register<IWrappingInterface, WrappingManipulator>();
+            Factory.Register<IWrappingInterface, WrappingManipulator>();
 
             _Manipulator = new TextResponseManipulator();
             ExtraConfiguration();

@@ -39,7 +39,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         [HttpGet, Route("api/3.00/feeds")]
         public FeedJson[] GetFeeds()
         {
-            var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
+            var feedManager = Factory.ResolveSingleton<IFeedManager>();
             return feedManager.VisibleFeeds.Select(r => FeedJson.ToModel(r)).Where(r => r != null).ToArray();
         }
 
@@ -51,7 +51,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         [HttpGet, Route("api/3.00/feeds/{id}")]
         public FeedJson GetFeed(int id)
         {
-            var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
+            var feedManager = Factory.ResolveSingleton<IFeedManager>();
             return FeedJson.ToModel(feedManager.GetByUniqueId(id, ignoreInvisibleFeeds: true));
         }
 
@@ -65,12 +65,12 @@ namespace VirtualRadar.WebSite.ApiControllers
         [Route("PolarPlot.json")]                       // pre-version 3 route
         public PolarPlotsJson GetPolarPlot(int feedId = -1)
         {
-            var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
+            var feedManager = Factory.ResolveSingleton<IFeedManager>();
             var feed = feedManager.GetByUniqueId(feedId, ignoreInvisibleFeeds: true);
             var plotter = feed?.AircraftList?.PolarPlotter;
 
             if(plotter != null && PipelineRequest.IsInternet) {
-                var configuration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>().Get();
+                var configuration = Factory.ResolveSingleton<ISharedConfiguration>().Get();
                 if(!configuration.InternetClientSettings.CanShowPolarPlots) {
                     plotter = null;
                 }
@@ -84,16 +84,16 @@ namespace VirtualRadar.WebSite.ApiControllers
         private AircraftListJson BuildAircraftList(AircraftListJsonBuilderArgs builderArgs)
         {
             if(builderArgs.IsFlightSimulatorList) {
-                builderArgs.AircraftList = Factory.Singleton.ResolveSingleton<IFlightSimulatorAircraftList>();
+                builderArgs.AircraftList = Factory.ResolveSingleton<IFlightSimulatorAircraftList>();
                 builderArgs.SourceFeedId = -1;
             }
             builderArgs.IsInternetClient = PipelineRequest.IsInternet;
 
             //TODO: Stop creating builders, share one between all instances of the controller
-            var builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
+            var builder = Factory.Resolve<IAircraftListJsonBuilder>();
             var result = builder.Build(builderArgs);
 
-            var sharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
+            var sharedConfiguration = Factory.ResolveSingleton<ISharedConfiguration>();
             var configLastChanged = JavascriptHelper.ToJavascriptTicks(sharedConfiguration.GetConfigurationChangedUtc());
             if(configLastChanged > builderArgs.ServerTimeTicks) {
                 result.ServerConfigChanged = true;

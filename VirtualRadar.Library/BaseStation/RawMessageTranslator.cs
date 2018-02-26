@@ -328,8 +328,8 @@ namespace VirtualRadar.Library.BaseStation
         /// </summary>
         public RawMessageTranslator()
         {
-            _StandingDataManager = Factory.Singleton.ResolveSingleton<IStandingDataManager>();
-            _Clock = Factory.Singleton.Resolve<IClock>();
+            _StandingDataManager = Factory.ResolveSingleton<IStandingDataManager>();
+            _Clock = Factory.Resolve<IClock>();
 
             GlobalDecodeAirborneThresholdMilliseconds = 10000;
             GlobalDecodeFastSurfaceThresholdMilliseconds = 25000;
@@ -343,7 +343,7 @@ namespace VirtualRadar.Library.BaseStation
             AcceptIcaoInPI0Milliseconds = 1000;
             IgnoreInvalidCodeBlockInOtherMessages = true;
 
-            _CompactPositionReporting = Factory.Singleton.Resolve<ICompactPositionReporting>();
+            _CompactPositionReporting = Factory.Resolve<ICompactPositionReporting>();
             _TrackedAircraft.CountChangedDelegate = TrackedAircraft_CountChanged;
         }
 

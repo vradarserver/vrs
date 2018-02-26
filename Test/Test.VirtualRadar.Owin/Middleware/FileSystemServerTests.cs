@@ -54,7 +54,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 }
             );
 
-            _Server = Factory.Singleton.Resolve<IFileSystemServer>();
+            _Server = Factory.Resolve<IFileSystemServer>();
             _FileSystem = new MockFileSystemProvider();
             _Server.FileSystemProvider = _FileSystem;
 
@@ -119,14 +119,14 @@ namespace Test.VirtualRadar.Owin.Middleware
         [TestMethod]
         public void FileSystemServer_Constructor_Initialises_Properties_To_Known_Values()
         {
-            var server = Factory.Singleton.Resolve<IFileSystemServer>();
+            var server = Factory.Resolve<IFileSystemServer>();
             Assert.IsNotNull(server.FileSystemProvider);
         }
 
         [TestMethod]
         public void FileSystemServer_FileSystemProvider_Remains_Consistent()
         {
-            var server = Factory.Singleton.Resolve<IFileSystemServer>();
+            var server = Factory.Resolve<IFileSystemServer>();
             var provider = server.FileSystemProvider;
             Assert.AreSame(provider, server.FileSystemProvider);
         }

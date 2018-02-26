@@ -67,7 +67,7 @@ namespace VirtualRadar.Library.Settings
         protected virtual void OnConfigurationChanged(EventArgs args)
         {
             EventHelper.Raise(ConfigurationChanged, this, args, ex => {
-                var log = Factory.Singleton.ResolveSingleton<ILog>();
+                var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception in shared ConfigurationChanged handler: {0}", ex.ToString());
             });
         }
@@ -109,15 +109,15 @@ namespace VirtualRadar.Library.Settings
             lock(_SyncLock) {
                 if(forceLoad || _Configuration == null) {
                     if(_ConfigurationStorage == null) {
-                        _ConfigurationListener = Factory.Singleton.Resolve<IConfigurationListener>();
+                        _ConfigurationListener = Factory.Resolve<IConfigurationListener>();
                         _ConfigurationListener.PropertyChanged += ConfigurationListener_PropertyChanged;
 
-                        _ConfigurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
+                        _ConfigurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
                         _ConfigurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
 
                         _Subscribers = new List<WeakReference<ISharedConfigurationSubscriber>>();
 
-                        var heartbeat = Factory.Singleton.ResolveSingleton<IHeartbeatService>();
+                        var heartbeat = Factory.ResolveSingleton<IHeartbeatService>();
                         heartbeat.SlowTick += HeartBeat_SlowTick;
                     }
 
@@ -164,7 +164,7 @@ namespace VirtualRadar.Library.Settings
                     try {
                         subscriber.SharedConfigurationChanged(this);
                     } catch(Exception ex) {
-                        var log = Factory.Singleton.ResolveSingleton<ILog>();
+                        var log = Factory.ResolveSingleton<ILog>();
                         log.WriteLine("Caught exception while calling ISharedConfiguration subscriber: {0}", ex);
                     }
                 }

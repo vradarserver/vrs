@@ -90,7 +90,7 @@ namespace Test.VirtualRadar.WebSite
             _UserManager = TestUtilities.CreateMockSingleton<IUserManager>();
 
             _PipelineConfiguration = new MockOwinPipelineConfiguration();
-            Factory.Singleton.RegisterInstance<IPipelineConfiguration>(_PipelineConfiguration);
+            Factory.RegisterInstance<IPipelineConfiguration>(_PipelineConfiguration);
 
             _LoopbackHost = TestUtilities.CreateMockImplementation<ILoopbackHost>();
             _LoopbackEnvironment = null;
@@ -107,7 +107,7 @@ namespace Test.VirtualRadar.WebSite
 
             _FileSystemServerConfiguration = TestUtilities.CreateMockSingleton<IFileSystemServerConfiguration>();
 
-            _WebSite = Factory.Singleton.Resolve<IWebSite>();
+            _WebSite = Factory.Resolve<IWebSite>();
         }
 
         [TestCleanup]
@@ -139,7 +139,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            _WebSite = Factory.Singleton.Resolve<IWebSite>();
+            _WebSite = Factory.Resolve<IWebSite>();
             Assert.IsNull(_WebSite.WebServer);
             TestUtilities.TestProperty(_WebSite, "BaseStationDatabase", null, _BaseStationDatabase.Object);
             TestUtilities.TestProperty(_WebSite, "StandingDataManager", null, _StandingDataManager.Object);
@@ -208,7 +208,7 @@ namespace Test.VirtualRadar.WebSite
 
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
-            var runtime = Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>();
+            var runtime = Factory.ResolveSingleton<IRuntimeEnvironment>();
             var expectedFolder = String.Format("{0}{1}", Path.Combine(runtime.ExecutablePath, "Web"), Path.DirectorySeparatorChar);
 
             Assert.IsNotNull(siteRoot);

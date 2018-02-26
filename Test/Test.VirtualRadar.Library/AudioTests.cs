@@ -37,7 +37,7 @@ namespace Test.VirtualRadar.Library
 
             _RuntimeEnvironment = TestUtilities.CreateMockSingleton<IRuntimeEnvironment>();
             _RuntimeEnvironment.Setup(e => e.IsMono).Returns(false);
-            _Audio = Factory.Singleton.Resolve<IAudio>();
+            _Audio = Factory.Resolve<IAudio>();
         }
 
         [TestCleanup]

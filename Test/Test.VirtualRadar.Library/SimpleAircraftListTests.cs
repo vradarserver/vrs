@@ -38,9 +38,9 @@ namespace Test.VirtualRadar.Library
             _OriginalClassFactory = Factory.TakeSnapshot();
 
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
-            _AircraftList = Factory.Singleton.Resolve<ISimpleAircraftList>();
+            _AircraftList = Factory.Resolve<ISimpleAircraftList>();
             _Aircraft = new Mock<IAircraft>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
 
             _Aircraft.Setup(m => m.Clone()).Returns(() => {

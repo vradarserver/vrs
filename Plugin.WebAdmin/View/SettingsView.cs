@@ -85,7 +85,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
             _ValidationHelper = new ValidationModelHelper(_ViewModel.FindViewModelForRecord);
             Users = new NotifyList<IUser>();
 
-            _Presenter = Factory.Singleton.Resolve<ISettingsPresenter>();
+            _Presenter = Factory.Resolve<ISettingsPresenter>();
             _Presenter.Initialise(this);
 
             _ViewModel.Configuration.RefreshFromConfiguration(Configuration, Users);
@@ -148,7 +148,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
                     OnSaveClicked(EventArgs.Empty);
                     _ViewModel.Outcome = _FailedValidation ? "FailedValidation" : "Saved";
                 } catch(ConflictingUpdateException) {
-                    var configurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
+                    var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
                     var configuration = configurationStorage.Load();
                     _ViewModel.Configuration.RefreshFromConfiguration(configuration, Users);
                     ApplyConfigurationModelToView(_ViewModel.Configuration);

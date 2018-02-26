@@ -50,7 +50,7 @@ namespace VirtualRadar.Library.Presenter
 
             public DefaultProvider()
             {
-                _SpeechSynthesizer = Factory.Singleton.Resolve<ISpeechSynthesizerWrapper>();
+                _SpeechSynthesizer = Factory.Resolve<ISpeechSynthesizerWrapper>();
             }
 
             public void Dispose()
@@ -135,7 +135,7 @@ namespace VirtualRadar.Library.Presenter
             public void TestTextToSpeech(string name, int rate)
             {
                 _SpeechSynthesizer.Dispose();
-                _SpeechSynthesizer = Factory.Singleton.Resolve<ISpeechSynthesizerWrapper>();
+                _SpeechSynthesizer = Factory.Resolve<ISpeechSynthesizerWrapper>();
 
                 _SpeechSynthesizer.SelectVoice(name ?? _DefaultVoiceName);
                 _SpeechSynthesizer.Rate = rate;
@@ -264,19 +264,19 @@ namespace VirtualRadar.Library.Presenter
             _View.UseRecommendedRawDecodingSettingsClicked += View_UseRecommendedRawDecodingSettingsClicked;
             _View.OpenUrlClicked += View_OpenUrlClicked;
 
-            var configStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
+            var configStorage = Factory.ResolveSingleton<IConfigurationStorage>();
             var config = configStorage.Load();
 
-            _ReceiverFormatManager = Factory.Singleton.ResolveSingleton<IReceiverFormatManager>();
-            _RebroadcastFormatManager = Factory.Singleton.ResolveSingleton<IRebroadcastFormatManager>();
-            _UserManager = Factory.Singleton.ResolveSingleton<IUserManager>();
+            _ReceiverFormatManager = Factory.ResolveSingleton<IReceiverFormatManager>();
+            _RebroadcastFormatManager = Factory.ResolveSingleton<IRebroadcastFormatManager>();
+            _UserManager = Factory.ResolveSingleton<IUserManager>();
             _View.UserManager = _UserManager.Name;
 
             var highestReceiver = config.Receivers.OrderBy(r => r.UniqueId).LastOrDefault();
             var highestMergedFeed = config.MergedFeeds.OrderBy(r => r.UniqueId).LastOrDefault();
             _InitialMaxCombinedFeedId = Math.Max(highestReceiver == null ? 0 : highestReceiver.UniqueId, highestMergedFeed == null ? 0 : highestMergedFeed.UniqueId);
 
-            _ConfigurationListener = Factory.Singleton.Resolve<IConfigurationListener>();
+            _ConfigurationListener = Factory.Resolve<IConfigurationListener>();
             _ConfigurationListener.PropertyChanged += ConfigurationListener_PropertyChanged;
             _ConfigurationListener.Initialise(config);
 
@@ -314,7 +314,7 @@ namespace VirtualRadar.Library.Presenter
         {
             try {
                 try {
-                    var lookup = Factory.Singleton.ResolveSingleton<IAircraftOnlineLookup>();
+                    var lookup = Factory.ResolveSingleton<IAircraftOnlineLookup>();
                     lookup.InitialiseProvider();
                     if(lookup.Provider != null) {
                         _View.ShowAircraftDataLookupSettings(
@@ -325,7 +325,7 @@ namespace VirtualRadar.Library.Presenter
                     }
                 } catch(ThreadAbortException) {
                 } catch(Exception ex) {
-                    var log = Factory.Singleton.ResolveSingleton<ILog>();
+                    var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine("Caught exception while fetching online lookup provider details: {0}", ex);
                 }
             } catch {
@@ -428,7 +428,7 @@ namespace VirtualRadar.Library.Presenter
         /// <returns></returns>
         public IUser CreateUser()
         {
-            var result = Factory.Singleton.Resolve<IUser>();
+            var result = Factory.Resolve<IUser>();
             result.Enabled = true;
             result.LoginName = "";
             result.Name = "";
@@ -505,7 +505,7 @@ namespace VirtualRadar.Library.Presenter
         /// </summary>
         private void UpdateReceiverLocationsFromBaseStationDatabase()
         {
-            var database = Factory.Singleton.ResolveSingleton<IAutoConfigBaseStationDatabase>().Database;
+            var database = Factory.ResolveSingleton<IAutoConfigBaseStationDatabase>().Database;
             var databaseLocations = database.GetLocations().Select(r => new ReceiverLocation() {
                 Name = r.LocationName,
                 Latitude = r.Latitude,
@@ -957,7 +957,7 @@ namespace VirtualRadar.Library.Presenter
                     var isValid = String.IsNullOrEmpty(r.InitialSettings);
                     if(!isValid) {
                         try {
-                            var parser = Factory.Singleton.Resolve<ISiteSettingsParser>();
+                            var parser = Factory.Resolve<ISiteSettingsParser>();
                             parser.Load(r.InitialSettings);
                             isValid = parser.IsValid;
                         } catch {
@@ -1201,7 +1201,7 @@ namespace VirtualRadar.Library.Presenter
 
                 // Port cannot clash with the web server port
                 ConditionIsTrue(server, r => {
-                    var autoConfigWebServer = Factory.Singleton.ResolveSingleton<IAutoConfigWebServer>();
+                    var autoConfigWebServer = Factory.ResolveSingleton<IAutoConfigWebServer>();
                     return r.IsTransmitter || r.Port != autoConfigWebServer.WebServer.Port;
                 }, new Validation(ValidationField.RebroadcastServerPort, defaults) {
                     Format = Strings.PortIsUsedByWebServer,
@@ -1349,7 +1349,7 @@ namespace VirtualRadar.Library.Presenter
 
                     // Port cannot clash with the web server port
                     ConditionIsTrue(receiver, r => {
-                        var autoConfigWebServer = Factory.Singleton.ResolveSingleton<IAutoConfigWebServer>();
+                        var autoConfigWebServer = Factory.ResolveSingleton<IAutoConfigWebServer>();
                         return r.Port != autoConfigWebServer.WebServer.Port;
                     }, new Validation(ValidationField.BaseStationPort, defaults) {
                         Format = Strings.PortIsUsedByWebServer,
@@ -1569,7 +1569,7 @@ namespace VirtualRadar.Library.Presenter
             if(!validationResults.HasErrors) {
                 SaveUsers();
 
-                var configurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
+                var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
                 configurationStorage.Save(_View.Configuration);
             }
         }

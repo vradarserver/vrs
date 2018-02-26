@@ -165,7 +165,7 @@ namespace VirtualRadar.WinForms
                 labelApplicationVersion.Text = "";
                 labelProgressText.Text = "";
 
-                _Presenter = Factory.Singleton.Resolve<ISplashPresenter>();
+                _Presenter = Factory.Resolve<ISplashPresenter>();
                 _Presenter.BackgroundThreadExceptionHandler = _BackgroundThreadExceptionHandler;
                 _Presenter.CommandLineArgs = _CommandLineArgs;
                 _Presenter.Initialise(this);

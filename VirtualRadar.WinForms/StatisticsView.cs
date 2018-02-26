@@ -417,7 +417,7 @@ namespace VirtualRadar.WinForms
 
             _OnlineHelp = new OnlineHelpHelper(this, OnlineHelpAddress.WinFormsStatisticsDialog);
 
-            _Presenter = Factory.Singleton.Resolve<IStatisticsPresenter>();
+            _Presenter = Factory.Resolve<IStatisticsPresenter>();
             _Presenter.Initialise(this);
         }
 

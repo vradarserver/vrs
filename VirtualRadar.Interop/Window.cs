@@ -56,7 +56,7 @@ namespace VirtualRadar.Interop
         static Window()
         {
             try {
-                IsInert = Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>().IsMono;
+                IsInert = Factory.ResolveSingleton<IRuntimeEnvironment>().IsMono;
             } catch {
                 // This can be called inadvertently by the VS designer - it'll always throw an exception
             }

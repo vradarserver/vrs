@@ -34,7 +34,7 @@ namespace VirtualRadar.Owin.StreamManipulator
         /// </summary>
         public HtmlManipulator()
         {
-            _Config = Factory.Singleton.ResolveSingleton<IHtmlManipulatorConfiguration>();
+            _Config = Factory.ResolveSingleton<IHtmlManipulatorConfiguration>();
         }
 
         /// <summary>

@@ -115,7 +115,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _BaseStationDatabase.Setup(r => r.GetOrInsertAircraftByCode(It.IsAny<string>(), out created)).Returns(_GetOrInsertAircraftResult);
 
             _HeartbeatService = TestUtilities.CreateMockInstance<IHeartbeatService>();
-            Factory.Singleton.RegisterInstance(typeof(IHeartbeatService), _HeartbeatService.Object);
+            Factory.RegisterInstance(typeof(IHeartbeatService), _HeartbeatService.Object);
 
             _StandingDataManager = TestUtilities.CreateMockSingleton<IStandingDataManager>();
             _Log = TestUtilities.CreateMockSingleton<ILog>();

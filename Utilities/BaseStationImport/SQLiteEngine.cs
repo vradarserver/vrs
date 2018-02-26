@@ -67,7 +67,7 @@ namespace BaseStationImport
         /// <returns></returns>
         public override IBaseStationDatabase CreateRepository(DatabaseEngineOptions options)
         {
-            var result = Factory.Singleton.Resolve<IBaseStationDatabaseSQLite>();
+            var result = Factory.Resolve<IBaseStationDatabaseSQLite>();
             result.FileName = options.ConnectionString;
             result.WriteSupportEnabled = options.IsTarget;
 

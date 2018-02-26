@@ -179,7 +179,7 @@ namespace VirtualRadar.Plugin.SqlServer
         /// </summary>
         public BaseStationDatabase()
         {
-            _StandingDataManager = Factory.Singleton.ResolveSingleton<IStandingDataManager>();
+            _StandingDataManager = Factory.ResolveSingleton<IStandingDataManager>();
         }
 
         /// <summary>

@@ -178,7 +178,7 @@ namespace VirtualRadar.Library.Network
             Connector.Name = Name;
             Connector.EstablishConnection();
 
-            var providerManager = Factory.Singleton.ResolveSingleton<IRebroadcastFormatManager>();
+            var providerManager = Factory.ResolveSingleton<IRebroadcastFormatManager>();
             _Provider = providerManager.CreateProvider(Format);
             if(_Provider == null) throw new InvalidOperationException($"There is no rebroadcast format registered with a unique ID of {Format}");
 
@@ -186,7 +186,7 @@ namespace VirtualRadar.Library.Network
             _Provider.HookFeed();
 
             if(_Provider.UsesSendIntervalMilliseconds) {
-                _Timer = Factory.Singleton.Resolve<ITimer>();
+                _Timer = Factory.Resolve<ITimer>();
                 _Timer.Elapsed += Timer_Elapsed;
                 _Timer.AutoReset = false;
                 _Timer.Enabled = true;

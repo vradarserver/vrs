@@ -52,7 +52,7 @@ namespace Test.VirtualRadar.Library.Network
             _Server = TestUtilities.CreateMockImplementation<IRebroadcastServer>();
 
             _Connector = new MockConnector<INetworkConnector,INetworkConnection>();
-            Factory.Singleton.RegisterInstance<INetworkConnector>(_Connector.Object);
+            Factory.RegisterInstance<INetworkConnector>(_Connector.Object);
             _Connector.Object.Authentication = null;
 
             _PassphraseAuthentication = TestUtilities.CreateMockImplementation<IPassphraseAuthentication>();
@@ -81,7 +81,7 @@ namespace Test.VirtualRadar.Library.Network
             };
             _Configuration.RebroadcastSettings.Add(_RebroadcastSettings);
 
-            _Manager = Factory.Singleton.ResolveNewInstance<IRebroadcastServerManager>();
+            _Manager = Factory.ResolveNewInstance<IRebroadcastServerManager>();
         }
 
         [TestCleanup]
@@ -96,7 +96,7 @@ namespace Test.VirtualRadar.Library.Network
         [TestMethod]
         public void RebroadcastServerManager_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            var manager = Factory.Singleton.ResolveNewInstance<IRebroadcastServerManager>();
+            var manager = Factory.ResolveNewInstance<IRebroadcastServerManager>();
 
             Assert.AreEqual(0, manager.RebroadcastServers.Count);
             TestUtilities.TestProperty(manager, r => r.Online, false);

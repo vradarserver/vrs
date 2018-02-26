@@ -66,7 +66,7 @@ namespace VirtualRadar.Library.Settings
             if(Provider.FileExists(manifestFileName)) {
                 var fileContent = Provider.ReadAllText(manifestFileName);
                 using(var textReader = new StringReader(fileContent)) {
-                    var serialiser = Factory.Singleton.Resolve<IXmlSerialiser>();
+                    var serialiser = Factory.Resolve<IXmlSerialiser>();
                     result = serialiser.Deserialise<PluginManifest>(textReader);
                 }
             }

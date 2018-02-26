@@ -182,13 +182,13 @@ namespace VirtualRadar.Plugin.WebAdmin
 
             _WebAdminViewManager.RegisterWebAdminViewFolder(PluginFolder, "Web");
 
-            _WebSiteExtender = Factory.Singleton.Resolve<IWebSiteExtender>();
+            _WebSiteExtender = Factory.Resolve<IWebSiteExtender>();
             _WebSiteExtender.Enabled = _Options.Enabled;
             _WebSiteExtender.PageHandlers.Add(String.Format("/{0}/ViewMap.json", ProtectedFolder), WebSite_HandleViewMapJson);
             _WebSiteExtender.ProtectFolder(ProtectedFolder);
             _WebSiteExtender.Initialise(parameters);
 
-            var redirection = Factory.Singleton.ResolveSingleton<IRedirectionConfiguration>();
+            var redirection = Factory.ResolveSingleton<IRedirectionConfiguration>();
             redirection.AddRedirection("/WebAdmin",  "/WebAdmin/Index.html", RedirectionContext.Any);
             redirection.AddRedirection("/WebAdmin/", "/WebAdmin/Index.html", RedirectionContext.Any);
 
@@ -215,7 +215,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         public void ShowWinFormsOptionsUI()
         {
             using(var dialog = new WinForms.OptionsView()) {
-                var webServer = Factory.Singleton.ResolveSingleton<IAutoConfigWebServer>().WebServer;
+                var webServer = Factory.ResolveSingleton<IAutoConfigWebServer>().WebServer;
                 dialog.IndexPageAddress = String.Format("{0}/{1}", webServer.LocalAddress, "WebAdmin/Index.html");
                 dialog.Options = OptionsStorage.Load();
 

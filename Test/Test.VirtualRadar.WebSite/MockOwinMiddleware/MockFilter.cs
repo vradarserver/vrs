@@ -45,7 +45,7 @@ namespace Test.VirtualRadar.WebSite.MockOwinMiddleware
             where TImplementation: TInterface, new()
         {
             var instance = new TImplementation();
-            Factory.Singleton.RegisterInstance<TInterface>(instance);
+            Factory.RegisterInstance<TInterface>(instance);
             return instance;
         }
     }

@@ -180,7 +180,7 @@ namespace VirtualRadar.Headless.View
         /// <returns></returns>
         public DialogResult ShowView()
         {
-            var presenter = Factory.Singleton.Resolve<IMainPresenter>();
+            var presenter = Factory.Resolve<IMainPresenter>();
             presenter.UPnpManager = _UPnpManager;
             presenter.Initialise(this);
 
@@ -223,7 +223,7 @@ namespace VirtualRadar.Headless.View
         /// <param name="ex"></param>
         public void BubbleExceptionToGui(Exception ex)
         {
-            var exceptionReporter = Factory.Singleton.Resolve<IExceptionReporter>();
+            var exceptionReporter = Factory.Resolve<IExceptionReporter>();
             exceptionReporter.ShowUnhandledException(ex);
         }
 

@@ -327,7 +327,7 @@ namespace VirtualRadar.WinForms.Controls
                     Process.Start(Address);
                 } catch(Exception ex) {
                     try {
-                        var log = Factory.Singleton.ResolveSingleton<ILog>();
+                        var log = Factory.ResolveSingleton<ILog>();
                         log.WriteLine("Caught exception when trying to start the default browser: {0}", ex.ToString());
                     } catch {
                     }
@@ -408,7 +408,7 @@ namespace VirtualRadar.WinForms.Controls
                 comboBoxSite.Items.Add(Strings.SettingsPage);
                 comboBoxSite.SelectedIndex = 0;
 
-                if(Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>().IsMono) {
+                if(Factory.ResolveSingleton<IRuntimeEnvironment>().IsMono) {
                     linkLabelAddress.TextAlign = ContentAlignment.TopLeft;
                 }
             }

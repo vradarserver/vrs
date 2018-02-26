@@ -158,7 +158,7 @@ namespace Test.VirtualRadar.Library
         {
             _ClassFactorySnapshot = Factory.TakeSnapshot();
 
-            _PluginManager = Factory.Singleton.ResolveNewInstance<IPluginManager>();
+            _PluginManager = Factory.ResolveNewInstance<IPluginManager>();
 
             _Provider = new Mock<IPluginManagerProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Provider.Setup(p => p.ApplicationStartupPath).Returns("x");
@@ -198,7 +198,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void PluginManager_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            var manager = Factory.Singleton.ResolveNewInstance<IPluginManager>();
+            var manager = Factory.ResolveNewInstance<IPluginManager>();
             Assert.IsNotNull(manager.Provider);
             TestUtilities.TestProperty(manager, "Provider", manager.Provider, _Provider.Object);
 

@@ -47,13 +47,13 @@ namespace Test.VirtualRadar.Library
             _FullPath = Path.Combine(_ConfigurationStorage.Object.Folder, _FileName);
 
             _Clock = new ClockMock() { UtcNowValue = new DateTime(2001, 2, 3, 4, 5, 6, 789) };
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
             _Provider = new Mock<ILogProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Provider.Setup(p => p.FileExists(It.IsAny<string>())).Returns(true);
             _Provider.Setup(p => p.FolderExists(It.IsAny<string>())).Returns(true);
 
-            _Log = Factory.Singleton.ResolveNewInstance<ILog>();
+            _Log = Factory.ResolveNewInstance<ILog>();
             _Log.Provider = _Provider.Object;
         }
 

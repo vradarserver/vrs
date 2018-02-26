@@ -68,7 +68,7 @@ namespace VirtualRadar.Library.Presenter
         {
             base.Initialise(view);
 
-            var log = Factory.Singleton.ResolveSingleton<IAircraftOnlineLookupLog>();
+            var log = Factory.ResolveSingleton<IAircraftOnlineLookupLog>();
             _View.Populate(log.GetResponses());
 
             _AircraftOnlineLookupLog = log;

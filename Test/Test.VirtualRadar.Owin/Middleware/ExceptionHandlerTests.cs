@@ -41,7 +41,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Pipeline = new MockOwinPipeline();
 
             _Log = TestUtilities.CreateMockSingleton<ILog>();
-            _ExceptionHandler = Factory.Singleton.Resolve<IExceptionHandler>();
+            _ExceptionHandler = Factory.Resolve<IExceptionHandler>();
         }
 
         [TestCleanup]

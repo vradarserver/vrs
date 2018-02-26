@@ -45,11 +45,11 @@ namespace Test.VirtualRadar.Owin
             _Snapshot = Factory.TakeSnapshot();
 
             _StandardPipeline = TestUtilities.CreateMockImplementation<IStandardPipeline>();
-            _WebAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
+            _WebAppConfiguration = Factory.Resolve<IWebAppConfiguration>();
             _LoopbackEnvironment = null;
             _Environment = new MockOwinEnvironment();
 
-            _LoopbackHost = Factory.Singleton.Resolve<ILoopbackHost>();
+            _LoopbackHost = Factory.Resolve<ILoopbackHost>();
         }
 
         private void AddCallback(Func<IDictionary<string, object>, bool> callNextMiddleware)

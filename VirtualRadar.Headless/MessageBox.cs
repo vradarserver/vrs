@@ -39,7 +39,7 @@ namespace VirtualRadar.Headless
         /// </summary>
         static MessageBox()
         {
-            _Console = Factory.Singleton.ResolveSingleton<IConsole>();
+            _Console = Factory.ResolveSingleton<IConsole>();
         }
 
         /// <summary>

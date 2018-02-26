@@ -28,7 +28,7 @@ namespace Test.VirtualRadar.Owin.Configuration
         [TestInitialize]
         public void TestInitialise()
         {
-            _Configuration = Factory.Singleton.ResolveNewInstance<IAuthenticationConfiguration>();
+            _Configuration = Factory.ResolveNewInstance<IAuthenticationConfiguration>();
         }
 
         [TestMethod]

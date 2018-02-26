@@ -220,34 +220,34 @@ namespace VirtualRadar.WebSite
                     throw new InvalidOperationException("The web site can only be attached to one server");
                 }
 
-                var owinPipelineConfig = Factory.Singleton.ResolveSingleton<IPipelineConfiguration>();
+                var owinPipelineConfig = Factory.ResolveSingleton<IPipelineConfiguration>();
                 owinPipelineConfig.AddPipeline<WebSitePipeline>();
 
-                var sharedConfig = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
+                var sharedConfig = Factory.ResolveSingleton<ISharedConfiguration>();
                 sharedConfig.ConfigurationChanged += SharedConfiguration_ConfigurationChanged;
 
                 WebServer = server;
                 server.Root = "/VirtualRadar";
 
-                var installerSettingsStorage = Factory.Singleton.Resolve<IInstallerSettingsStorage>();
+                var installerSettingsStorage = Factory.Resolve<IInstallerSettingsStorage>();
                 var installerSettings = installerSettingsStorage.Load();
                 server.Port = installerSettings.WebServerPort;
 
-                var redirection = Factory.Singleton.ResolveSingleton<IRedirectionConfiguration>();
+                var redirection = Factory.ResolveSingleton<IRedirectionConfiguration>();
                 redirection.AddRedirection("/", "/desktop.html", RedirectionContext.Any);
                 redirection.AddRedirection("/", "/mobile.html", RedirectionContext.Mobile);
 
-                var fileServerConfiguration = Factory.Singleton.ResolveSingleton<IFileSystemServerConfiguration>();
+                var fileServerConfiguration = Factory.ResolveSingleton<IFileSystemServerConfiguration>();
                 fileServerConfiguration.TextLoadedFromFile += FileSystemConfiguration_TextLoadedFromFile;
                 AddDefaultSiteRoot(fileServerConfiguration);
 
-                var htmlManipulatorConfig = Factory.Singleton.ResolveSingleton<IHtmlManipulatorConfiguration>();
+                var htmlManipulatorConfig = Factory.ResolveSingleton<IHtmlManipulatorConfiguration>();
                 htmlManipulatorConfig.AddTextResponseManipulator(_HtmlManipulator);
 
-                var javascriptManipulatorConfig = Factory.Singleton.ResolveSingleton<IJavascriptManipulatorConfiguration>();
+                var javascriptManipulatorConfig = Factory.ResolveSingleton<IJavascriptManipulatorConfiguration>();
                 javascriptManipulatorConfig.AddTextResponseManipulator(_WebSiteStringsManipulator);
 
-                _LoopbackHost = Factory.Singleton.Resolve<ILoopbackHost>();
+                _LoopbackHost = Factory.Resolve<ILoopbackHost>();
                 _LoopbackHost.ConfigureStandardPipeline();
 
                 LoadConfiguration();
@@ -256,7 +256,7 @@ namespace VirtualRadar.WebSite
 
         private void AddDefaultSiteRoot(IFileSystemServerConfiguration fileServerConfiguration)
         {
-            var runtime = Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>();
+            var runtime = Factory.ResolveSingleton<IRuntimeEnvironment>();
             var defaultSiteRoot = new SiteRoot() {
                 Folder = String.Format("{0}{1}", Path.Combine(runtime.ExecutablePath, "Web"), Path.DirectorySeparatorChar),
                 Priority = 0,
@@ -277,7 +277,7 @@ namespace VirtualRadar.WebSite
         /// <returns>True if the server should be restarted because of changes to the configuration.</returns>
         private bool LoadConfiguration()
         {
-            var configuration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>().Get();
+            var configuration = Factory.ResolveSingleton<ISharedConfiguration>().Get();
 
             var result = false;
             lock(_SyncLock) {
@@ -296,7 +296,7 @@ namespace VirtualRadar.WebSite
         /// <param name="siteRoot"></param>
         public void AddSiteRoot(SiteRoot siteRoot)
         {
-            var configuration = Factory.Singleton.ResolveSingleton<IFileSystemServerConfiguration>();
+            var configuration = Factory.ResolveSingleton<IFileSystemServerConfiguration>();
             configuration.AddSiteRoot(siteRoot);
         }
 
@@ -306,7 +306,7 @@ namespace VirtualRadar.WebSite
         /// <param name="siteRoot"></param>
         public void RemoveSiteRoot(SiteRoot siteRoot)
         {
-            var configuration = Factory.Singleton.ResolveSingleton<IFileSystemServerConfiguration>();
+            var configuration = Factory.ResolveSingleton<IFileSystemServerConfiguration>();
             configuration.RemoveSiteRoot(siteRoot);
         }
 
@@ -318,7 +318,7 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         public bool IsSiteRootActive(SiteRoot siteRoot, bool folderMustMatch)
         {
-            var configuration = Factory.Singleton.ResolveSingleton<IFileSystemServerConfiguration>();
+            var configuration = Factory.ResolveSingleton<IFileSystemServerConfiguration>();
             return configuration.IsSiteRootActive(siteRoot, folderMustMatch);
         }
 
@@ -328,7 +328,7 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         public List<string> GetSiteRootFolders()
         {
-            var configuration = Factory.Singleton.ResolveSingleton<IFileSystemServerConfiguration>();
+            var configuration = Factory.ResolveSingleton<IFileSystemServerConfiguration>();
             return configuration.GetSiteRootFolders();
         }
 

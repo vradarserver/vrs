@@ -41,8 +41,8 @@ namespace VirtualRadar.Owin.StreamManipulator
         /// </summary>
         public JavascriptManipulator()
         {
-            _Minifier = Factory.Singleton.Resolve<IMinifier>();
-            _Config = Factory.Singleton.ResolveSingleton<IJavascriptManipulatorConfiguration>();
+            _Minifier = Factory.Resolve<IMinifier>();
+            _Config = Factory.ResolveSingleton<IJavascriptManipulatorConfiguration>();
         }
 
         /// <summary>

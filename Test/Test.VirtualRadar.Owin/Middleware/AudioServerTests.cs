@@ -50,7 +50,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Audio.Setup(r => r.SpeechToWavBytes(It.IsAny<string>())).Returns(new byte[0]);
             _SomeBytes = new byte[] { 0x01, 0x02 };
 
-            _Server = Factory.Singleton.Resolve<IAudioServer>();
+            _Server = Factory.Resolve<IAudioServer>();
 
             _Environment = new MockOwinEnvironment();
             _Environment.Request.RemoteIpAddress = "127.0.0.1";

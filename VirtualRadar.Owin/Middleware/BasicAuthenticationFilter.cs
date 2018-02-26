@@ -98,11 +98,11 @@ namespace VirtualRadar.Owin.Middleware
         /// </summary>
         public BasicAuthenticationFilter()
         {
-            _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
-            _AuthenticationConfiguration = Factory.Singleton.ResolveSingleton<IAuthenticationConfiguration>();
-            _UserManager = Factory.Singleton.ResolveSingleton<IUserManager>();
+            _SharedConfiguration = Factory.ResolveSingleton<ISharedConfiguration>();
+            _AuthenticationConfiguration = Factory.ResolveSingleton<IAuthenticationConfiguration>();
+            _UserManager = Factory.ResolveSingleton<IUserManager>();
 
-            _UserCache = Factory.Singleton.Resolve<IUserCache>();
+            _UserCache = Factory.Resolve<IUserCache>();
             _UserCache.LoadAllUsers = false;
             _UserCache.TagAction = (cachedUser) => cachedUser.Tag = new CachedUserTag();
             _UserCache.Refresh();

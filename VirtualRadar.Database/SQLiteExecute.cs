@@ -139,7 +139,7 @@ namespace VirtualRadar.Database
                     action();
                     executed = true;
                 } catch(Exception ex) {
-                    var sqliteException = Factory.Singleton.Resolve<ISQLiteException>();
+                    var sqliteException = Factory.Resolve<ISQLiteException>();
                     sqliteException.Initialise(ex);
                     if(!sqliteException.IsLocked || !RetryIfLocked) {
                         throw;

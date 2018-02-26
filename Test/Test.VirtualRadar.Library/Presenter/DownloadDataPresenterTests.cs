@@ -43,7 +43,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _StandingDataManager = TestUtilities.CreateMockSingleton<IStandingDataManager>();
             _StandingDataUpdater = TestUtilities.CreateMockImplementation<IStandingDataUpdater>();
 
-            _Presenter = Factory.Singleton.Resolve<IDownloadDataPresenter>();
+            _Presenter = Factory.Resolve<IDownloadDataPresenter>();
             _View = new Mock<IDownloadDataView>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
         }
 

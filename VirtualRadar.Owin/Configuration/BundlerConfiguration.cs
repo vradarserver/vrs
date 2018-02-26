@@ -159,7 +159,7 @@ namespace VirtualRadar.Owin.Configuration
         private void CreateLoopbackHost()
         {
             if(_LoopbackHost == null) {
-                var loopbackHost = Factory.Singleton.Resolve<ILoopbackHost>();
+                var loopbackHost = Factory.Resolve<ILoopbackHost>();
                 loopbackHost.ConfigureStandardPipeline();
                 loopbackHost.ModifyEnvironmentAction = r => {
                     if(r.ContainsKey(EnvironmentKey.SuppressJavascriptBundles)) {

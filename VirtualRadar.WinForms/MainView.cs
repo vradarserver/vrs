@@ -535,11 +535,11 @@ namespace VirtualRadar.WinForms
 
                 _OnlineHelp = new OnlineHelpHelper(this, OnlineHelpAddress.WinFormsMainDialog);
 
-                _Presenter = Factory.Singleton.Resolve<IMainPresenter>();
+                _Presenter = Factory.Resolve<IMainPresenter>();
                 _Presenter.Initialise(this);
                 _Presenter.UPnpManager = _UPnpManager;
 
-                var runtimeEnvironment = Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>();
+                var runtimeEnvironment = Factory.ResolveSingleton<IRuntimeEnvironment>();
                 if(runtimeEnvironment.Is64BitProcess) {
                     Text = String.Format("{0} ({1})", Text, Strings.Title64Bit);
                 }
@@ -553,7 +553,7 @@ namespace VirtualRadar.WinForms
         protected override void OnResize(EventArgs e)
         {
             if(WindowState == FormWindowState.Minimized) {
-                var configuration = Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Load();
+                var configuration = Factory.ResolveSingleton<IConfigurationStorage>().Load();
                 if(configuration.BaseStationSettings.MinimiseToSystemTray) MinimiseToNotificationTray();
             } else if(WindowState == FormWindowState.Normal) {
                 if(notifyIcon.Visible) notifyIcon.Visible = false;
@@ -604,7 +604,7 @@ namespace VirtualRadar.WinForms
         {
             if(_FlightSimulatorXView != null) _FlightSimulatorXView.Activate();
             else {
-                var webServer = Factory.Singleton.ResolveSingleton<IAutoConfigWebServer>().WebServer;
+                var webServer = Factory.ResolveSingleton<IAutoConfigWebServer>().WebServer;
                 _FlightSimulatorXView = new FlightSimulatorXView();
                 _FlightSimulatorXView.CloseClicked += FlightSimulatorXView_CloseClicked;
                 _FlightSimulatorXView.Initialise(null, _FlightSimulatorXAircraftList, webServer);

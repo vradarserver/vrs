@@ -107,7 +107,7 @@ namespace VirtualRadar.WinForms
             if(!DesignMode) {
                 Localise.Form(this);
 
-                _Presenter = Factory.Singleton.Resolve<IBackgroundThreadQueuesPresenter>();
+                _Presenter = Factory.Resolve<IBackgroundThreadQueuesPresenter>();
                 _Presenter.Initialise(this);
             }
         }

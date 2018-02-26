@@ -61,14 +61,14 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         /// <returns></returns>
         private IDbConnection CreateOpenConnection()
         {
-            var connectionStringBuilder = Factory.Singleton.Resolve<ISQLiteConnectionStringBuilder>().Initialise();
+            var connectionStringBuilder = Factory.Resolve<ISQLiteConnectionStringBuilder>().Initialise();
             connectionStringBuilder.DataSource = BuildFileName();
             connectionStringBuilder.DateTimeFormat = SQLiteDateFormats.ISO8601;
             connectionStringBuilder.FailIfMissing = false;
             connectionStringBuilder.ReadOnly = false;
             connectionStringBuilder.JournalMode = SQLiteJournalModeEnum.Persist;
 
-            var result = Factory.Singleton.Resolve<ISQLiteConnectionProvider>().Create(connectionStringBuilder.ConnectionString);
+            var result = Factory.Resolve<ISQLiteConnectionProvider>().Create(connectionStringBuilder.ConnectionString);
             result.Open();
 
             UpdateSchema(result);
@@ -85,7 +85,7 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
             if(_FileName == null) {
                 lock(_SyncLock) {
                     if(_FileName == null) {
-                        var configurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
+                        var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
                         _FileName = Path.Combine(configurationStorage.Folder, "AircraftOnlineLookupCache.sqb");
                     }
                 }

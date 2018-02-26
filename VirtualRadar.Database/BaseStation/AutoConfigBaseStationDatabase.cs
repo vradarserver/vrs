@@ -59,10 +59,10 @@ namespace VirtualRadar.Database.BaseStation
         /// </summary>
         public void Initialise()
         {
-            Database = Factory.Singleton.Resolve<IBaseStationDatabase>();
+            Database = Factory.Resolve<IBaseStationDatabase>();
             LoadConfiguration();
 
-            Factory.Singleton.ResolveSingleton<IConfigurationStorage>().ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
+            Factory.ResolveSingleton<IConfigurationStorage>().ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace VirtualRadar.Database.BaseStation
         /// </summary>
         private void LoadConfiguration()
         {
-            var configuration = Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Load();
+            var configuration = Factory.ResolveSingleton<IConfigurationStorage>().Load();
             Database.FileName = configuration.BaseStationSettings.DatabaseFileName;
         }
 

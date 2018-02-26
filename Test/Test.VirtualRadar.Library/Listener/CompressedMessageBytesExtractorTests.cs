@@ -28,7 +28,7 @@ namespace Test.VirtualRadar.Library.Listener
         [TestInitialize]
         public void TestInitialise()
         {
-            _Extractor = Factory.Singleton.Resolve<ICompressedMessageBytesExtractor>();
+            _Extractor = Factory.Resolve<ICompressedMessageBytesExtractor>();
             _CommonTests = new CommonMessageBytesExtractorTests(TestContext, _Extractor, ExtractedBytesFormat.Compressed);
         }
 

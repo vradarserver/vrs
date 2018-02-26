@@ -39,9 +39,9 @@ namespace VirtualRadar.Library.Presenter
             _View = view;
             _View.OpenConfigurationFolderClicked += View_OpenConfigurationFolderClicked;
 
-            var applicationInformation = Factory.Singleton.Resolve<IApplicationInformation>();
-            var configurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
-            var runtimeEnvironment = Factory.Singleton.ResolveSingleton<IRuntimeEnvironment>();
+            var applicationInformation = Factory.Resolve<IApplicationInformation>();
+            var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
+            var runtimeEnvironment = Factory.ResolveSingleton<IRuntimeEnvironment>();
 
             _View.BuildDate = applicationInformation.BuildDate;
             _View.Caption = applicationInformation.ApplicationName;

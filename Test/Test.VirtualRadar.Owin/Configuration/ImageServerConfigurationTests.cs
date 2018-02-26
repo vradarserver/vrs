@@ -39,13 +39,13 @@ namespace Test.VirtualRadar.Owin.Configuration
             _Snapshot = Factory.TakeSnapshot();
 
             _FileSystemProvider = new MockFileSystemProvider();
-            Factory.Singleton.RegisterInstance<IFileSystemProvider>(_FileSystemProvider);
+            Factory.RegisterInstance<IFileSystemProvider>(_FileSystemProvider);
 
             _SharedConfiguration = TestUtilities.CreateMockSingleton<ISharedConfiguration>();
             _Settings = new global::VirtualRadar.Interface.Settings.Configuration();
             _SharedConfiguration.Setup(r => r.Get()).Returns(_Settings);
 
-            _Configuration = Factory.Singleton.ResolveNewInstance<IImageServerConfiguration>();
+            _Configuration = Factory.ResolveNewInstance<IImageServerConfiguration>();
         }
 
         [TestCleanup]

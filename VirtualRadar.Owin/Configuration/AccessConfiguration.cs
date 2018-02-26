@@ -55,7 +55,7 @@ namespace VirtualRadar.Owin.Configuration
             {
                 Path = path;
                 NormalisedPath = NormalisePath(path);
-                AccessFilter = Factory.Singleton.Resolve<VirtualRadar.Interface.IAccessFilter>();
+                AccessFilter = Factory.Resolve<VirtualRadar.Interface.IAccessFilter>();
                 AccessFilter.Initialise(access);
             }
 

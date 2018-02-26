@@ -41,7 +41,7 @@ namespace VirtualRadar.Owin
             }
             _Registered = true;
 
-            var pipelines = Factory.Singleton.ResolveSingleton<IPipelineConfiguration>().CreatePipelines();
+            var pipelines = Factory.ResolveSingleton<IPipelineConfiguration>().CreatePipelines();
             foreach(var pipeline in pipelines) {
                 pipeline.Register(webAppConfiguration);
             }

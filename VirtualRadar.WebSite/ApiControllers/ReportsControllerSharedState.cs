@@ -39,7 +39,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 if(_SharedConfiguration == null) {
                     lock(_SyncLock) {
                         if(_SharedConfiguration == null) {
-                            _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
+                            _SharedConfiguration = Factory.ResolveSingleton<ISharedConfiguration>();
                         }
                     }
                 }
@@ -57,7 +57,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 if(_AutoConfigBaseStationDatabase == null) {
                     lock(_SyncLock) {
                         if(_AutoConfigBaseStationDatabase == null) {
-                            _AutoConfigBaseStationDatabase = Factory.Singleton.ResolveSingleton<IAutoConfigBaseStationDatabase>();
+                            _AutoConfigBaseStationDatabase = Factory.ResolveSingleton<IAutoConfigBaseStationDatabase>();
                         }
                     }
                 }
@@ -75,7 +75,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 if(_StandingDataManager == null) {
                     lock(_SyncLock) {
                         if(_StandingDataManager == null) {
-                            _StandingDataManager = Factory.Singleton.ResolveSingleton<IStandingDataManager>();
+                            _StandingDataManager = Factory.ResolveSingleton<IStandingDataManager>();
                         }
                     }
                 }
@@ -93,7 +93,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 if(_CallsignParser == null) {
                     lock(_SyncLock) {
                         if(_CallsignParser == null) {
-                            _CallsignParser = Factory.Singleton.Resolve<ICallsignParser>();
+                            _CallsignParser = Factory.Resolve<ICallsignParser>();
                         }
                     }
                 }
@@ -111,7 +111,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 if(_AircraftPictureManager == null) {
                     lock(_SyncLock) {
                         if(_AircraftPictureManager == null) {
-                            _AircraftPictureManager = Factory.Singleton.ResolveSingleton<IAircraftPictureManager>();
+                            _AircraftPictureManager = Factory.ResolveSingleton<IAircraftPictureManager>();
                         }
                     }
                 }
@@ -129,7 +129,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 if(_PictureFolderCache == null) {
                     lock(_SyncLock) {
                         if(_PictureFolderCache == null) {
-                            _PictureFolderCache = Factory.Singleton.ResolveSingleton<IAutoConfigPictureFolderCache>();
+                            _PictureFolderCache = Factory.ResolveSingleton<IAutoConfigPictureFolderCache>();
                         }
                     }
                 }
@@ -147,7 +147,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 if(_Clock == null) {
                     lock(_SyncLock) {
                         if(_Clock == null) {
-                            _Clock = Factory.Singleton.Resolve<IClock>();
+                            _Clock = Factory.Resolve<IClock>();
                         }
                     }
                 }
@@ -165,7 +165,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 if(_FileSystemProvider == null) {
                     lock(_SyncLock) {
                         if(_FileSystemProvider == null) {
-                            _FileSystemProvider = Factory.Singleton.Resolve<IFileSystemProvider>();
+                            _FileSystemProvider = Factory.Resolve<IFileSystemProvider>();
                         }
                     }
                 }

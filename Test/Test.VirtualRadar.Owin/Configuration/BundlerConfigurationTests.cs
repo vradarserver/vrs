@@ -59,7 +59,7 @@ namespace Test.VirtualRadar.Owin.Configuration
                 return result;
             });
 
-            _Config = Factory.Singleton.ResolveNewInstance<IBundlerConfiguration>();
+            _Config = Factory.ResolveNewInstance<IBundlerConfiguration>();
         }
 
         [TestCleanup]

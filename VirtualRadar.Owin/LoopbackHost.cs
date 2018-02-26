@@ -58,8 +58,8 @@ namespace VirtualRadar.Owin
                 throw new InvalidOperationException($"You cannot configure an {nameof(ILoopbackHost)} more than once");
             }
 
-            var webAppConfiguration = Factory.Singleton.Resolve<IWebAppConfiguration>();
-            var standardPipeline = Factory.Singleton.Resolve<IStandardPipeline>();
+            var webAppConfiguration = Factory.Resolve<IWebAppConfiguration>();
+            var standardPipeline = Factory.Resolve<IStandardPipeline>();
 
             standardPipeline.Register(webAppConfiguration);
             ConfigureCustomPipeline(webAppConfiguration);

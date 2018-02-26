@@ -98,7 +98,7 @@ namespace VirtualRadar.Database.BaseStation
         private static void GetAlternateCallsignCriteria(StringBuilder command, DynamicParameters parameters, FilterString criteria, string callsignField)
         {
             if(criteria != null && !String.IsNullOrEmpty(criteria.Value)) {
-                var callsignParser = Factory.Singleton.Resolve<ICallsignParser>();
+                var callsignParser = Factory.Resolve<ICallsignParser>();
                 var alternates = callsignParser.GetAllAlternateCallsigns(criteria.Value);
                 for(var i = 0;i < alternates.Count;++i) {
                     var isFirst = i == 0;

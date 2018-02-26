@@ -108,9 +108,9 @@ namespace VirtualRadar.Library
         /// </summary>
         public void LoadPlugins()
         {
-            var log = Factory.Singleton.ResolveSingleton<ILog>();
-            var manifestStorage = Factory.Singleton.Resolve<IPluginManifestStorage>();
-            var applicationVersion = Factory.Singleton.Resolve<IApplicationInformation>().Version;
+            var log = Factory.ResolveSingleton<ILog>();
+            var manifestStorage = Factory.Resolve<IPluginManifestStorage>();
+            var applicationVersion = Factory.Resolve<IApplicationInformation>().Version;
 
             var rootFolder = Path.Combine(Provider.ApplicationStartupPath, "Plugins");
             if(Provider.DirectoryExists(rootFolder)) {
@@ -150,7 +150,7 @@ namespace VirtualRadar.Library
         /// </summary>
         public void RegisterImplementations()
         {
-            var log = Factory.Singleton.ResolveSingleton<ILog>();
+            var log = Factory.ResolveSingleton<ILog>();
 
             foreach(var plugin in LoadedPlugins.ToArray()) {
                 var snapshot = Provider.ClassFactoryTakeSnapshot();

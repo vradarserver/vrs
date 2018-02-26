@@ -49,7 +49,7 @@ namespace Test.VirtualRadar.Library.Listener
             _Configuration = new Configuration();
             _ConfigurationStorage.Setup(r => r.Load()).Returns(_Configuration);
 
-            _Plotter = Factory.Singleton.Resolve<IPolarPlotter>();
+            _Plotter = Factory.Resolve<IPolarPlotter>();
             _SanityChecker = TestUtilities.CreateMockImplementation<IAircraftSanityChecker>();
 
             _CheckAltitudeResult = Certainty.ProbablyRight;

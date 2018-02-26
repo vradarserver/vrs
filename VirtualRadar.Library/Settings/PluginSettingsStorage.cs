@@ -58,7 +58,7 @@ namespace VirtualRadar.Library.Settings
         {
             get
             {
-                return Path.Combine(Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Folder, "PluginsConfiguration.txt");
+                return Path.Combine(Factory.ResolveSingleton<IConfigurationStorage>().Folder, "PluginsConfiguration.txt");
             }
         }
         #endregion

@@ -122,7 +122,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _Provider = new Mock<ISplashPresenterProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Provider.Setup(p => p.FolderExists(It.IsAny<string>())).Returns(true);
 
-            _Presenter = Factory.Singleton.Resolve<ISplashPresenter>();
+            _Presenter = Factory.Resolve<ISplashPresenter>();
             _Presenter.Provider = _Provider.Object;
 
             _View = new Mock<ISplashView>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
@@ -139,7 +139,7 @@ namespace Test.VirtualRadar.Library.Presenter
         [TestMethod]
         public void SplashPresenter_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            _Presenter = Factory.Singleton.Resolve<ISplashPresenter>();
+            _Presenter = Factory.Resolve<ISplashPresenter>();
 
             Assert.IsNotNull(_Presenter.Provider);
             TestUtilities.TestProperty(_Presenter, "Provider", _Presenter.Provider, _Provider.Object);

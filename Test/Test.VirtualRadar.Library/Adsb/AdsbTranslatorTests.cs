@@ -41,7 +41,7 @@ namespace Test.VirtualRadar.Library.Adsb
             _OriginalFactory = Factory.TakeSnapshot();
 
             _Statistics = StatisticsHelper.CreateLockableStatistics();
-            _Translator = Factory.Singleton.Resolve<IAdsbTranslator>();
+            _Translator = Factory.Resolve<IAdsbTranslator>();
             _Translator.Statistics = _Statistics.Object;
             _ModeSMessage = new ModeSMessage();
         }

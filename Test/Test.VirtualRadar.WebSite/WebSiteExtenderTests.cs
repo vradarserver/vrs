@@ -48,7 +48,7 @@ namespace Test.VirtualRadar.WebSite
         {
             _OriginalFactory = Factory.TakeSnapshot();
 
-            _Extender = Factory.Singleton.Resolve<IWebSiteExtender>();
+            _Extender = Factory.Resolve<IWebSiteExtender>();
 
             _WebSite = TestUtilities.CreateMockInstance<IWebSite>();
             _PluginStartupParameters = new PluginStartupParameters(null, null, _WebSite.Object, "PluginFolder");

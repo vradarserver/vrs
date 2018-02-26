@@ -31,7 +31,7 @@ namespace Test.VirtualRadar.Library
         {
             Implementations.Register(Factory.Singleton);
 
-            Factory.Singleton.RegisterInstance<IApplicationInformation>(ApplicationInformation.Object);
+            Factory.RegisterInstance<IApplicationInformation>(ApplicationInformation.Object);
             ApplicationInformation.Setup(a => a.CultureInfo).Returns((CultureInfo)null);
         }
     }

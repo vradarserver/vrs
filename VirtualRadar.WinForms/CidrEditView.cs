@@ -99,7 +99,7 @@ namespace VirtualRadar.WinForms
             if(!DesignMode) {
                 Localise.Form(this);
 
-                _Presenter = Factory.Singleton.Resolve<ICidrEditPresenter>();
+                _Presenter = Factory.Resolve<ICidrEditPresenter>();
                 _Presenter.Initialise(this);
             }
         }

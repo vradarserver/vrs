@@ -64,7 +64,7 @@ namespace VirtualRadar
 
         private static void InitialiseClassFactory()
         {
-            Factory.Singleton.Register<IApplicationInformation, ApplicationInformation>();
+            Factory.Register<IApplicationInformation, ApplicationInformation>();
 
             SQLiteWrapper.Implementations.Register(Factory.Singleton);
             VirtualRadar.Library.Implementations.Register(Factory.Singleton);
@@ -84,10 +84,10 @@ namespace VirtualRadar
 
         private static void ShowConfigurationFolder()
         {
-            var configurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
+            var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
             var folderMessage = String.Format("Configuration folder: {0}", configurationStorage.Folder);
             Console.WriteLine(folderMessage);
-            Factory.Singleton.Resolve<IMessageBox>().Show("Configuration Folder");
+            Factory.Resolve<IMessageBox>().Show("Configuration Folder");
         }
    }
 }

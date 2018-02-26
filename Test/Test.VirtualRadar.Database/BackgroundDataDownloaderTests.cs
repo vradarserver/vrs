@@ -53,7 +53,7 @@ namespace Test.VirtualRadar.Database
             _Configuration.FlightRouteSettings.AutoUpdateEnabled = true;
             _ConfigurationStorage.Setup(c => c.Load()).Returns(_Configuration);
 
-            _BackgroundDataDownloader = Factory.Singleton.ResolveNewInstance<IBackgroundDataDownloader>();
+            _BackgroundDataDownloader = Factory.ResolveNewInstance<IBackgroundDataDownloader>();
             _Provider = new Mock<IBackgroundDataDownloaderProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _BackgroundDataDownloader.Provider = _Provider.Object;
         }
@@ -73,7 +73,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void BackgroundDataDownloader_Constructor_Initialises_To_Known_Values_And_Properties_Work()
         {
-            var downloader = Factory.Singleton.ResolveNewInstance<IBackgroundDataDownloader>();
+            var downloader = Factory.ResolveNewInstance<IBackgroundDataDownloader>();
 
             Assert.IsNotNull(downloader.Provider);
             TestUtilities.TestProperty(downloader, "Provider", downloader.Provider, _Provider.Object);

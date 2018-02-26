@@ -49,7 +49,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// <returns></returns>
         public static Options Load(Plugin plugin)
         {
-            var pluginStorage = Factory.Singleton.ResolveSingleton<IPluginSettingsStorage>();
+            var pluginStorage = Factory.ResolveSingleton<IPluginSettingsStorage>();
             var pluginSettings = pluginStorage.Load();
             var serialisedOptions = pluginSettings.ReadString(plugin, Key);
 
@@ -57,7 +57,7 @@ namespace VirtualRadar.Plugin.FeedFilter
             if(result == null) {
                 try {
                     using(var stream = new MemoryStream(Encoding.UTF8.GetBytes(serialisedOptions))) {
-                        var serialiser = Factory.Singleton.Resolve<IXmlSerialiser>();
+                        var serialiser = Factory.Resolve<IXmlSerialiser>();
                         result = serialiser.Deserialise<Options>(stream);
                     }
                 } catch {
@@ -76,10 +76,10 @@ namespace VirtualRadar.Plugin.FeedFilter
         public static void Save(Plugin plugin, Options options)
         {
             using(var stream = new MemoryStream()) {
-                var serialiser = Factory.Singleton.Resolve<IXmlSerialiser>();
+                var serialiser = Factory.Resolve<IXmlSerialiser>();
                 serialiser.Serialise(options, stream);
 
-                var pluginStorage = Factory.Singleton.ResolveSingleton<IPluginSettingsStorage>();
+                var pluginStorage = Factory.ResolveSingleton<IPluginSettingsStorage>();
                 var pluginSettings = pluginStorage.Load();
                 pluginSettings.Write(plugin, Key, Encoding.UTF8.GetString(stream.ToArray()));
                 pluginStorage.Save(pluginSettings);

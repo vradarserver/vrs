@@ -133,11 +133,11 @@ namespace VirtualRadar.Library.Presenter
         public FlightSimulatorXPresenter()
         {
             Provider = new DefaultProvider();
-            _FlightSimulatorX = Factory.Singleton.Resolve<IFlightSimulatorX>();
-            _Clock = Factory.Singleton.Resolve<IClock>();
+            _FlightSimulatorX = Factory.Resolve<IFlightSimulatorX>();
+            _Clock = Factory.Resolve<IClock>();
 
-            Factory.Singleton.ResolveSingleton<IConfigurationStorage>().ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
-            Factory.Singleton.ResolveSingleton<IFeedManager>().FeedsChanged += FeedManager_FeedsChanged;
+            Factory.ResolveSingleton<IConfigurationStorage>().ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
+            Factory.ResolveSingleton<IFeedManager>().FeedsChanged += FeedManager_FeedsChanged;
         }
 
         /// <summary>
@@ -166,8 +166,8 @@ namespace VirtualRadar.Library.Presenter
         protected virtual void Dispose(bool disposing)
         {
             if(disposing) {
-                Factory.Singleton.ResolveSingleton<IConfigurationStorage>().ConfigurationChanged -= ConfigurationStorage_ConfigurationChanged;
-                Factory.Singleton.ResolveSingleton<IFeedManager>().FeedsChanged -= FeedManager_FeedsChanged;
+                Factory.ResolveSingleton<IConfigurationStorage>().ConfigurationChanged -= ConfigurationStorage_ConfigurationChanged;
+                Factory.ResolveSingleton<IFeedManager>().FeedsChanged -= FeedManager_FeedsChanged;
                 _Feed = null;
             }
         }
@@ -223,10 +223,10 @@ namespace VirtualRadar.Library.Presenter
         /// </summary>
         private void LoadConfiguration()
         {
-            var configuration = Factory.Singleton.ResolveSingleton<IConfigurationStorage>().Load();
+            var configuration = Factory.ResolveSingleton<IConfigurationStorage>().Load();
             _ShortTrailLengthSeconds = configuration.GoogleMapSettings.ShortTrailLengthSeconds;
 
-            var feedManager = Factory.Singleton.ResolveSingleton<IFeedManager>();
+            var feedManager = Factory.ResolveSingleton<IFeedManager>();
             _Feed = feedManager.GetByUniqueId(configuration.GoogleMapSettings.FlightSimulatorXReceiverId, ignoreInvisibleFeeds: false);
         }
         #endregion
@@ -242,7 +242,7 @@ namespace VirtualRadar.Library.Presenter
                 IAircraft aircraft;
                 if(FlightSimulatorAircraftList.Aircraft.Count != 0) aircraft = FlightSimulatorAircraftList.Aircraft[0];
                 else {
-                    aircraft = Factory.Singleton.Resolve<IAircraft>();
+                    aircraft = Factory.Resolve<IAircraft>();
                     aircraft.Icao24 = "000000";
                     aircraft.UniqueId = 1;
                     FlightSimulatorAircraftList.Aircraft.Add(aircraft);
@@ -428,7 +428,7 @@ namespace VirtualRadar.Library.Presenter
                 _TimeLastFsxExceptionRaised = now;
                 throw args.Value;
             } else {
-                var log = Factory.Singleton.ResolveSingleton<ILog>();
+                var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("FSX exception seen within 20 seconds of the last one: {0}", args.Value.Message);
             }
         }

@@ -65,7 +65,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _SharedConfiguration.Setup(r => r.Get()).Returns(_ProgramConfiguration);
 
             _FileSystem = new MockFileSystemProvider();
-            Factory.Singleton.RegisterInstance<IFileSystemProvider>(_FileSystem);
+            Factory.RegisterInstance<IFileSystemProvider>(_FileSystem);
 
             _FileSystemServerConfiguration = TestUtilities.CreateMockSingleton<IFileSystemServerConfiguration>();
             _FileSystemServerConfiguration.Setup(r => r.GetSiteRootFolders()).Returns(() => new List<string>() {
@@ -83,7 +83,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ServerConfiguration = TestUtilities.CreateMockSingleton<IImageServerConfiguration>();
             _ServerConfiguration.SetupGet(r => r.ImageFileManager).Returns(_ImageFileManager.Object);
 
-            _Server = Factory.Singleton.Resolve<IImageServer>();
+            _Server = Factory.Resolve<IImageServer>();
 
             _Environment = new MockOwinEnvironment();
             _Environment.Request.RemoteIpAddress = "127.0.0.1";
@@ -439,7 +439,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                                 textLines.AddRange(lines);
                                 return (Image)image.Clone();
                            });
-            _Server = Factory.Singleton.Resolve<IImageServer>();
+            _Server = Factory.Resolve<IImageServer>();
 
             _Environment.RequestPath = "/Images/PL1-Hello/PL2-There/TestSquare.png";
             _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);

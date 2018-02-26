@@ -252,7 +252,7 @@ namespace VirtualRadar.Plugin.CustomContent.WinForms
                     textBoxInjectPathAndFile,
                 });
 
-                _Presenter = Factory.Singleton.Resolve<IOptionsPresenter>();
+                _Presenter = Factory.Resolve<IOptionsPresenter>();
                 _Presenter.Initialise(this);
             }
         }

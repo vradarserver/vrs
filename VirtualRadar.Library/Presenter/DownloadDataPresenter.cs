@@ -39,7 +39,7 @@ namespace VirtualRadar.Library.Presenter
             _View = view;
             _View.DownloadButtonClicked += View_DownloadButtonClicked;
 
-            _View.Status = Factory.Singleton.ResolveSingleton<IStandingDataManager>().RouteStatus;
+            _View.Status = Factory.ResolveSingleton<IStandingDataManager>().RouteStatus;
         }
 
         /// <summary>
@@ -49,13 +49,13 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="args"></param>
         private void View_DownloadButtonClicked(object sender, EventArgs args)
         {
-            var standingDataManager = Factory.Singleton.ResolveSingleton<IStandingDataManager>();
+            var standingDataManager = Factory.ResolveSingleton<IStandingDataManager>();
 
             var busyState = _View.ShowBusy(true, null);
             try {
                 _View.Status = Strings.DownloadingPleaseWait;
 
-                IStandingDataUpdater updater = Factory.Singleton.Resolve<IStandingDataUpdater>();
+                IStandingDataUpdater updater = Factory.Resolve<IStandingDataUpdater>();
                 updater.Update();
 
                 standingDataManager.Load();

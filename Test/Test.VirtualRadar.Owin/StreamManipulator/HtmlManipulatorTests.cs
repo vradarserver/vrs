@@ -35,7 +35,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             _Manipulators = new List<ITextResponseManipulator>();
             _Config.Setup(r => r.GetTextResponseManipulators()).Returns(() => _Manipulators);
 
-            _Manipulator = Factory.Singleton.Resolve<IHtmlManipulator>();
+            _Manipulator = Factory.Resolve<IHtmlManipulator>();
         }
 
         [TestMethod]

@@ -68,9 +68,9 @@ namespace Test.VirtualRadar.Library
             _RuntimeEnvironment.Setup(r => r.IsTest).Returns(true);
 
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
-            _Fetcher = Factory.Singleton.ResolveNewInstance<IAircraftDetailFetcher>();
+            _Fetcher = Factory.ResolveNewInstance<IAircraftDetailFetcher>();
             _FetchedHandler = new EventRecorder<EventArgs<AircraftDetail>>();
             _Fetcher.Fetched += _FetchedHandler.Handler;
 
@@ -81,7 +81,7 @@ namespace Test.VirtualRadar.Library
             // the TestUtilities don't support creating non-singleton instances of ISingletons, do we
             // have to do it manually.
             _Heartbeat = TestUtilities.CreateMockInstance<IHeartbeatService>();
-            Factory.Singleton.RegisterInstance<IHeartbeatService>(_Heartbeat.Object);
+            Factory.RegisterInstance<IHeartbeatService>(_Heartbeat.Object);
 
             _AutoConfigDatabase = TestUtilities.CreateMockSingleton<IAutoConfigBaseStationDatabase>();
             _Database = TestUtilities.CreateMockInstance<IBaseStationDatabase>();

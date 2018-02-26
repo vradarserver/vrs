@@ -81,7 +81,7 @@ namespace VirtualRadar.WinForms
 
                 labelProgressText.Text = "";
 
-                _Presenter = Factory.Singleton.Resolve<IShutdownPresenter>();
+                _Presenter = Factory.Resolve<IShutdownPresenter>();
                 _Presenter.UPnpManager = _UPnpManager;
                 _Presenter.Initialise(this);
 

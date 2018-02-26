@@ -150,7 +150,7 @@ namespace VirtualRadar.Library.Listener
         protected virtual void Dispose(bool disposing)
         {
             if(disposing) {
-                var configurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
+                var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
                 configurationStorage.ConfigurationChanged -= ConfigurationStorage_ConfigurationChanged;
 
                 foreach(var feed in Feeds) {
@@ -170,7 +170,7 @@ namespace VirtualRadar.Library.Listener
         {
             if(_Initialised) throw new InvalidOperationException("The feed manager has already been initialised");
 
-            var configurationStorage = Factory.Singleton.ResolveSingleton<IConfigurationStorage>();
+            var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
             var configuration = configurationStorage.Load();
             configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
 
@@ -192,7 +192,7 @@ namespace VirtualRadar.Library.Listener
 
         private void CreateFeedForReceiver(Receiver receiver, Configuration configuration, List<IFeed> feeds)
         {
-            var feed = Factory.Singleton.Resolve<IFeed>();
+            var feed = Factory.Resolve<IFeed>();
             feed.Initialise(receiver, configuration);
             AttachFeed(feed, feeds);
             feed.Listener.Connect();
@@ -201,7 +201,7 @@ namespace VirtualRadar.Library.Listener
         private void CreateFeedForMergedFeed(MergedFeed mergedFeed, IEnumerable<IFeed> allReceiverPathways, List<IFeed> feeds)
         {
             var mergeFeeds = allReceiverPathways.Where(r => mergedFeed.ReceiverIds.Contains(r.UniqueId)).ToArray();
-            var feed = Factory.Singleton.Resolve<IFeed>();
+            var feed = Factory.Resolve<IFeed>();
             feed.Initialise(mergedFeed, mergeFeeds);
             AttachFeed(feed, feeds);
         }

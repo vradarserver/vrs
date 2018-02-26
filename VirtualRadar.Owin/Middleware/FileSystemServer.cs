@@ -40,7 +40,7 @@ namespace VirtualRadar.Owin.Middleware
             {
                 var result = _FileSystemProvider;
                 if(result == null) {
-                    result = Factory.Singleton.Resolve<IFileSystemProvider>();
+                    result = Factory.Resolve<IFileSystemProvider>();
                     _FileSystemProvider = result;
                 }
 
@@ -62,7 +62,7 @@ namespace VirtualRadar.Owin.Middleware
         /// </summary>
         public FileSystemServer()
         {
-            _Configuration = Factory.Singleton.ResolveSingleton<IFileSystemServerConfiguration>();
+            _Configuration = Factory.ResolveSingleton<IFileSystemServerConfiguration>();
         }
 
         /// <summary>

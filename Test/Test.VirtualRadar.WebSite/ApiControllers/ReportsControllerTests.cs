@@ -84,10 +84,10 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _StandingDataManager = TestUtilities.CreateMockSingleton<IStandingDataManager>();
 
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<VRSInterface.IClock>(_Clock.Object);
+            Factory.RegisterInstance<VRSInterface.IClock>(_Clock.Object);
 
             _FileSystemProvider = new MockFileSystemProvider();
-            Factory.Singleton.RegisterInstance<VRSInterface.IFileSystemProvider>(_FileSystemProvider);
+            Factory.RegisterInstance<VRSInterface.IFileSystemProvider>(_FileSystemProvider);
         }
 
         private Type ReportJsonType(ReportJsonClass type)

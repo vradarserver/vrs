@@ -124,7 +124,7 @@ namespace VirtualRadar.Library
         /// </summary>
         public AircraftSanityChecker()
         {
-            _SharedConfiguration = Factory.Singleton.ResolveSingleton<ISharedConfiguration>();
+            _SharedConfiguration = Factory.ResolveSingleton<ISharedConfiguration>();
         }
 
         /// <summary>

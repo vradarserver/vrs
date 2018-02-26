@@ -40,7 +40,7 @@ namespace Test.VirtualRadar.WebSite
             _SharedConfiguration = TestUtilities.CreateMockSingleton<ISharedConfiguration>();
             _SharedConfiguration.Setup(r => r.Get()).Returns(_Configuration);
 
-            _Minifier = Factory.Singleton.Resolve<IMinifier>();
+            _Minifier = Factory.Resolve<IMinifier>();
         }
 
         [TestCleanup]

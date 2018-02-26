@@ -60,7 +60,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 return _AdministratorPaths.Any(r => normalised.StartsWith(r));
             });
 
-            _Filter = Factory.Singleton.Resolve<IBasicAuthenticationFilter>();
+            _Filter = Factory.Resolve<IBasicAuthenticationFilter>();
             _Environment = new MockOwinEnvironment();
             _Pipeline = new MockOwinPipeline();
         }

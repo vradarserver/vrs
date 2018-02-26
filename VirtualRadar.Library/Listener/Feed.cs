@@ -145,9 +145,9 @@ namespace VirtualRadar.Library.Listener
             if(configuration == null) throw new ArgumentNullException("configuration");
             if(!receiver.Enabled) throw new InvalidOperationException($"The {receiver.Name} receiver has not been enabled");
             var receiverLocation = configuration.ReceiverLocation(receiver.ReceiverLocationId);
-            _ReceiverFormatManager = Factory.Singleton.ResolveSingleton<IReceiverFormatManager>();
+            _ReceiverFormatManager = Factory.ResolveSingleton<IReceiverFormatManager>();
 
-            Listener = Factory.Singleton.Resolve<IListener>();
+            Listener = Factory.Resolve<IListener>();
             Listener.ExceptionCaught += Listener_ExceptionCaught;
             Listener.IgnoreBadMessages = true;
             ApplyReceiverListenerSettings(false, receiver, configuration, receiverLocation);
@@ -172,7 +172,7 @@ namespace VirtualRadar.Library.Listener
 
             var mergedListeners = GetListenersFromMergeFeeds(mergedFeed, mergeFeeds);
 
-            var mergedFeedListener = Factory.Singleton.Resolve<IMergedFeedListener>();
+            var mergedFeedListener = Factory.Resolve<IMergedFeedListener>();
             Listener = mergedFeedListener;
             Listener.ExceptionCaught += Listener_ExceptionCaught;
             Listener.IgnoreBadMessages = true;
@@ -193,7 +193,7 @@ namespace VirtualRadar.Library.Listener
                     var mergedFeedReceiver = mergedFeed.ReceiverFlags.FirstOrDefault(r => r.UniqueId == receiverId);
                     var isMlatFeed = mergedFeedReceiver == null ? false : mergedFeedReceiver.IsMlatFeed;
 
-                    var mergedFeedComponent = Factory.Singleton.Resolve<IMergedFeedComponentListener>();
+                    var mergedFeedComponent = Factory.Resolve<IMergedFeedComponentListener>();
                     mergedFeedComponent.SetListener(listener, isMlatFeed);
                     result.Add(mergedFeedComponent);
                 }
@@ -220,10 +220,10 @@ namespace VirtualRadar.Library.Listener
             Listener.ReceiverName = Name;
             Listener.IsSatcomFeed = isSatcomFeed;
 
-            AircraftList = Factory.Singleton.Resolve<IBaseStationAircraftList>();
+            AircraftList = Factory.Resolve<IBaseStationAircraftList>();
             AircraftList.ExceptionCaught += AircraftList_ExceptionCaught;
             AircraftList.Listener = Listener;
-            AircraftList.StandingDataManager = Factory.Singleton.ResolveSingleton<IStandingDataManager>();
+            AircraftList.StandingDataManager = Factory.ResolveSingleton<IStandingDataManager>();
 
             SetIsVisible(receiverUsage);
 
@@ -262,7 +262,7 @@ namespace VirtualRadar.Library.Listener
                (existingAuthentication == null && passphrase != "")) {
                 IPassphraseAuthentication authentication = null;
                 if(passphrase != "") {
-                    authentication = Factory.Singleton.Resolve<IPassphraseAuthentication>();
+                    authentication = Factory.Resolve<IPassphraseAuthentication>();
                     authentication.Passphrase = receiver.Passphrase;
                 }
                 if(!feedSourceHasChanged) Listener.Connector.Authentication = authentication;
@@ -319,10 +319,10 @@ namespace VirtualRadar.Library.Listener
         private void SaveCurrentPolarPlot()
         {
             try {
-                var storage = Factory.Singleton.ResolveSingleton<ISavedPolarPlotStorage>();
+                var storage = Factory.ResolveSingleton<ISavedPolarPlotStorage>();
                 storage.Save(this);
             } catch(Exception ex) {
-                var log = Factory.Singleton.ResolveSingleton<ILog>();
+                var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception while saving polar plot from feed initialisation: {0}", ex.ToString());
             }
         }
@@ -333,14 +333,14 @@ namespace VirtualRadar.Library.Listener
         private void LoadCurrentPolarPlot()
         {
             try {
-                var storage = Factory.Singleton.ResolveSingleton<ISavedPolarPlotStorage>();
+                var storage = Factory.ResolveSingleton<ISavedPolarPlotStorage>();
                 var savedPolarPlot = storage.Load(this);
 
                 if(savedPolarPlot != null && savedPolarPlot.IsForSameFeed(this)) {
                     AircraftList.PolarPlotter.LoadFrom(savedPolarPlot);
                 }
             } catch(Exception ex) {
-                var log = Factory.Singleton.ResolveSingleton<ILog>();
+                var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception while loading polar plot from feed initialisation: {0}", ex.ToString());
             }
         }
@@ -356,7 +356,7 @@ namespace VirtualRadar.Library.Listener
             else {
                 var existingPlotter = AircraftList.PolarPlotter;
                 if(existingPlotter == null || existingPlotter.Latitude != receiverLocation.Latitude || existingPlotter.Longitude != receiverLocation.Longitude) {
-                    var polarPlotter = existingPlotter ?? Factory.Singleton.Resolve<IPolarPlotter>();
+                    var polarPlotter = existingPlotter ?? Factory.Resolve<IPolarPlotter>();
                     polarPlotter.Initialise(receiverLocation.Latitude, receiverLocation.Longitude);
                     if(existingPlotter == null) {
                         AircraftList.PolarPlotter = polarPlotter;
@@ -412,7 +412,7 @@ namespace VirtualRadar.Library.Listener
                        existingSerialProvider.DataBits != settings.DataBits || existingSerialProvider.Handshake != settings.Handshake || 
                        existingSerialProvider.Parity != settings.Parity || existingSerialProvider.ShutdownText != settings.ShutdownText ||
                        existingSerialProvider.StartupText != settings.StartupText || existingSerialProvider.StopBits != settings.StopBits) {
-                        var serialConnector = Factory.Singleton.Resolve<ISerialConnector>();
+                        var serialConnector = Factory.Resolve<ISerialConnector>();
                         serialConnector.Name =          settings.Name;
                         serialConnector.BaudRate =      settings.BaudRate;
                         serialConnector.ComPort =       settings.ComPort;
@@ -434,7 +434,7 @@ namespace VirtualRadar.Library.Listener
                        existingConnector.IsPassive != settings.IsPassive ||
                        (!settings.IsPassive && existingConnector.Address != settings.Address) ||
                        (settings.IsPassive && !Object.Equals(existingConnector.Access, settings.Access))) {
-                        var ipConnector = Factory.Singleton.Resolve<INetworkConnector>();
+                        var ipConnector = Factory.Resolve<INetworkConnector>();
                         ipConnector.Name =            settings.Name;
                         ipConnector.IsPassive =       settings.IsPassive;
                         ipConnector.Port =            settings.Port;
@@ -487,7 +487,7 @@ namespace VirtualRadar.Library.Listener
         /// <returns></returns>
         private IRawMessageTranslator DetermineRawMessageTranslator(Receiver receiver, ReceiverLocation receiverLocation, Configuration config, bool isNewSource)
         {
-            var result = isNewSource || Listener.RawMessageTranslator == null ? Factory.Singleton.Resolve<IRawMessageTranslator>() : Listener.RawMessageTranslator;
+            var result = isNewSource || Listener.RawMessageTranslator == null ? Factory.Resolve<IRawMessageTranslator>() : Listener.RawMessageTranslator;
 
             // There's every chance that the translator is in use while we're changing the properties here. In practise I
             // don't think it's going to make a huge difference, and people won't be changing this stuff very often anyway,

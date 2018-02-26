@@ -53,7 +53,7 @@ namespace Test.VirtualRadar.Owin.Configuration
         [TestInitialize]
         public void TestInitialise()
         {
-            _Config = Factory.Singleton.ResolveNewInstance<IPipelineConfiguration>();
+            _Config = Factory.ResolveNewInstance<IPipelineConfiguration>();
         }
 
         [TestMethod]

@@ -39,7 +39,7 @@ namespace Test.VirtualRadar.Owin.Configuration
         [TestInitialize]
         public void TestInitialise()
         {
-            _Configuration = Factory.Singleton.Resolve<IWebAppConfiguration>();
+            _Configuration = Factory.Resolve<IWebAppConfiguration>();
             _AppBuilder = new Mock<IAppBuilder>();
         }
 

@@ -40,7 +40,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Snapshot = Factory.TakeSnapshot();
             _AccessConfiguration = TestUtilities.CreateMockSingleton<IAccessConfiguration>();
 
-            _Filter = Factory.Singleton.Resolve<IAccessFilter>();
+            _Filter = Factory.Resolve<IAccessFilter>();
             _Environment = new MockOwinEnvironment();
             _Pipeline = new MockOwinPipeline();
         }

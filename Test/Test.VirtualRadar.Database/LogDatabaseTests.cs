@@ -47,7 +47,7 @@ namespace Test.VirtualRadar.Database
 
             _FullPath = Path.Combine(_ConfigurationStorage.Object.Folder, _FileName);
 
-            _LogDatabase = Factory.Singleton.ResolveNewInstance<ILogDatabase>();
+            _LogDatabase = Factory.ResolveNewInstance<ILogDatabase>();
 
             _Provider = new Mock<ILogDatabaseProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Provider.Setup(m => m.UtcNow).Returns(() => { return DateTime.UtcNow; });
@@ -71,7 +71,7 @@ namespace Test.VirtualRadar.Database
         public void LogDatabase_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
             _LogDatabase.Dispose();
-            _LogDatabase = Factory.Singleton.ResolveNewInstance<ILogDatabase>();
+            _LogDatabase = Factory.ResolveNewInstance<ILogDatabase>();
             Assert.IsNotNull(_LogDatabase.Provider);
             TestUtilities.TestProperty(_LogDatabase, "Provider", _LogDatabase.Provider, _Provider.Object);
         }
@@ -268,7 +268,7 @@ namespace Test.VirtualRadar.Database
         public void LogDatabase_UpdateSession_Throws_If_Database_Not_Open()
         {
             LogSession session;
-            using(var otherConnection = Factory.Singleton.ResolveNewInstance<ILogDatabase>()) {
+            using(var otherConnection = Factory.ResolveNewInstance<ILogDatabase>()) {
                 session = otherConnection.EstablishSession("1.2.3.4", null);
             }
 
@@ -391,7 +391,7 @@ namespace Test.VirtualRadar.Database
         public void LogDatabase_UpdateClient_Throws_If_Database_Is_Not_Open()
         {
             LogClient client;
-            using(var otherConnection = Factory.Singleton.ResolveNewInstance<ILogDatabase>()) {
+            using(var otherConnection = Factory.ResolveNewInstance<ILogDatabase>()) {
                 otherConnection.EstablishSession("1.2.3.4", null);
                 var clients = new List<LogClient>();
                 var sessionMap = new Dictionary<long, IList<LogSession>>();

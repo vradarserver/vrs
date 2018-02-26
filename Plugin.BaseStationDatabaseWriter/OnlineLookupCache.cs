@@ -73,7 +73,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// </summary>
         public OnlineLookupCache()
         {
-            _StandingDataManager = Factory.Singleton.ResolveSingleton<IStandingDataManager>();
+            _StandingDataManager = Factory.ResolveSingleton<IStandingDataManager>();
         }
 
         /// <summary>

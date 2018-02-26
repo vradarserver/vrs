@@ -55,7 +55,7 @@ namespace Test.VirtualRadar.Owin
 
             _WebAppConfiguration = TestUtilities.CreateMockInstance<IWebAppConfiguration>();
 
-            _StandardPipeline = Factory.Singleton.Resolve<IStandardPipeline>();
+            _StandardPipeline = Factory.Resolve<IStandardPipeline>();
         }
 
         [TestCleanup]
