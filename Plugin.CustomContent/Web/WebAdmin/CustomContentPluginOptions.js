@@ -161,7 +161,7 @@ var VRS;
                     }
                 };
                 return PageHandler;
-            })();
+            }());
             CustomContentPluginOptions.PageHandler = PageHandler;
         })(CustomContentPluginOptions = WebAdmin.CustomContentPluginOptions || (WebAdmin.CustomContentPluginOptions = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
