@@ -177,8 +177,10 @@ namespace VirtualRadar.WebSite
         /// Returns a fully-formed <see cref="AircraftListJson"/> from the aircraft list passed across.
         /// </summary>
         /// <param name="args"></param>
+        /// <param name="ignoreInvisibleFeeds"></param>
+        /// <param name="fallbackToDefaultFeed">
         /// <returns></returns>
-        public AircraftListJson Build(AircraftListJsonBuilderArgs args)
+        public AircraftListJson Build(AircraftListJsonBuilderArgs args, bool ignoreInvisibleFeeds, bool fallbackToDefaultFeed)
         {
             if(args == null) throw new ArgumentNullException("args");
 
@@ -190,8 +192,8 @@ namespace VirtualRadar.WebSite
             IAircraftList aircraftList = null;
             if(args.IsFlightSimulatorList) aircraftList = args.AircraftList;
             else {
-                var selectedFeed = _FeedManager.GetByUniqueId(feedId, ignoreInvisibleFeeds: true);
-                if(selectedFeed == null) {
+                var selectedFeed = _FeedManager.GetByUniqueId(feedId, ignoreInvisibleFeeds);
+                if(selectedFeed == null && fallbackToDefaultFeed) {
                     feedId = _DefaultAircraftListFeedId;
                     selectedFeed = _FeedManager.GetByUniqueId(feedId, ignoreInvisibleFeeds: true);
                 }

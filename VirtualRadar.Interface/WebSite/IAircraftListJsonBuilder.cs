@@ -24,8 +24,10 @@ namespace VirtualRadar.Interface.WebSite
         /// <summary>
         /// Returns a fully-formed <see cref="AircraftListJson"/> from the arguments passed across.
         /// </summary>
-        /// <param name="args"></param>
+        /// <param name="args">The build criteria.</param>
+        /// <param name="ignoreInvisibleFeeds">True if feeds that are hidden from the web site should be ignored.</param>
+        /// <param name="fallbackToDefaultFeed">True if the default feed should be used if the requested feed is unavailable for any reason.</param>
         /// <returns></returns>
-        AircraftListJson Build(AircraftListJsonBuilderArgs args);
+        AircraftListJson Build(AircraftListJsonBuilderArgs args, bool ignoreInvisibleFeeds, bool fallbackToDefaultFeed);
     }
 }

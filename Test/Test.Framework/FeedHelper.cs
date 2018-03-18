@@ -76,8 +76,14 @@ namespace Test.Framework
             result.Setup(r => r.GetByUniqueId(It.IsAny<int>(), useVisibleFeeds)).Returns((int id, bool ignoreInvisibleFeeds) => {
                 return feeds.Select(r => r.Object).FirstOrDefault(r => r.UniqueId == id);
             });
+            result.Setup(r => r.GetByUniqueId(It.IsAny<int>(), !useVisibleFeeds)).Returns((int id, bool ignoreInvisibleFeeds) => {
+                return null;
+            });
             result.Setup(r => r.GetByName(It.IsAny<string>(), useVisibleFeeds)).Returns((string name, bool ignoreInvisibleFeeds) => {
                 return feeds.Select(r => r.Object).FirstOrDefault(r => String.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase));
+            });
+            result.Setup(r => r.GetByName(It.IsAny<string>(), !useVisibleFeeds)).Returns((string name, bool ignoreInvisibleFeeds) => {
+                return null;
             });
             return result;
         }

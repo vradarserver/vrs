@@ -233,7 +233,7 @@ namespace VirtualRadar.Library.Network
                     _PreviousDataVersion = dataVersion;
                 }
 
-                var json = _AircraftListJsonBuilder.Build(args);
+                var json = _AircraftListJsonBuilder.Build(args, ignoreInvisibleFeeds: false, fallbackToDefaultFeed: false);
                 if(json.Aircraft.Count > 0) {
                     var jsonText = JsonConvert.SerializeObject(json, _AircraftListJsonSerialiserSettings);
 

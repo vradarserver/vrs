@@ -48,7 +48,7 @@ namespace Test.VirtualRadar.WebSite
         private List<Mock<IFeed>> _Feeds;
         private List<Mock<IBaseStationAircraftList>> _BaseStationAircraftLists;
         private List<List<IAircraft>> _AircraftLists;
-        private Mock<IFeedManager> _ReceiverManager;
+        private Mock<IFeedManager> _FeedManager;
         private Mock<ISimpleAircraftList> _FlightSimulatorAircraftList;
         private List<IAircraft> _FlightSimulatorAircraft;
 
@@ -76,7 +76,7 @@ namespace Test.VirtualRadar.WebSite
             _BaseStationAircraftLists = new List<Mock<IBaseStationAircraftList>>();
             _AircraftLists = new List<List<IAircraft>>();
             var useVisibleFeeds = true;
-            _ReceiverManager = FeedHelper.CreateMockFeedManager(_Feeds, _BaseStationAircraftLists, _AircraftLists, useVisibleFeeds, 1, 2);
+            _FeedManager = FeedHelper.CreateMockFeedManager(_Feeds, _BaseStationAircraftLists, _AircraftLists, useVisibleFeeds, 1, 2);
 
             _FlightSimulatorAircraftList = new Mock<ISimpleAircraftList>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _FlightSimulatorAircraft = new List<IAircraft>();
@@ -120,18 +120,69 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void AircraftListJsonBuilder_Returns_Empty_Json_When_BaseStationAircraftList_Is_Empty()
         {
-            var json = _Builder.Build(_Args);
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.AreEqual(0, json.Aircraft.Count);
             Assert.AreEqual(0, json.AvailableAircraft);
         }
 
         [TestMethod]
-        public void AircraftListJsonBuilder_Returns_Empty_Json_When_There_Are_No_Feeds()
+        public void AircraftListJsonBuilder_Passes_True_IgnoreInvisibleFeeds_Parameter_To_FeedManager_When_Fetching_Source_Feed()
         {
-            _ReceiverManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
+            _FeedManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
             _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
 
-            var json = _Builder.Build(_Args);
+            _Args.SourceFeedId = 5;
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
+
+            _FeedManager.Verify(r => r.GetByUniqueId(5, true), Times.Once());
+            _FeedManager.Verify(r => r.GetByUniqueId(5, false), Times.Never());
+        }
+
+        [TestMethod]
+        public void AircraftListJsonBuilder_Passes_False_IgnoreInvisibleFeeds_Parameter_To_FeedManager_When_Fetching_Source_Feed()
+        {
+            _FeedManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
+            _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
+
+            _Args.SourceFeedId = 5;
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: false, fallbackToDefaultFeed: true);
+
+            _FeedManager.Verify(r => r.GetByUniqueId(5, false), Times.Once());
+            _FeedManager.Verify(r => r.GetByUniqueId(5, true), Times.Never());
+        }
+
+        [TestMethod]
+        public void AircraftListJsonBuilder_Passes_False_IgnoreInvisibleFeeds_Parameter_When_Falling_Back_To_Default()
+        {
+            _FeedManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
+            _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
+
+            _Args.SourceFeedId = 5;
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: false, fallbackToDefaultFeed: true);
+
+            _FeedManager.Verify(r => r.GetByUniqueId(1, true), Times.Once());
+            _FeedManager.Verify(r => r.GetByUniqueId(1, false), Times.Never());
+        }
+
+        [TestMethod]
+        public void AircraftListJsonBuilder_Fallback_To_Default_Can_Be_Suppressed()
+        {
+            _FeedManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
+            _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
+
+            _Args.SourceFeedId = 5;
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: false, fallbackToDefaultFeed: false);
+
+            _FeedManager.Verify(r => r.GetByUniqueId(1, It.IsAny<bool>()), Times.Never());
+        }
+
+        [TestMethod]
+        public void AircraftListJsonBuilder_Returns_Empty_Json_When_There_Are_No_Feeds()
+        {
+            _FeedManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
+            _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
+
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
 
             Assert.AreEqual(0, json.Aircraft.Count);
             Assert.AreEqual(0, json.AvailableAircraft);
@@ -141,11 +192,11 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void AircraftListJsonBuilder_Returns_Requested_SourceFeedId_When_There_Are_No_Feeds()
         {
-            _ReceiverManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
+            _FeedManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
             _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
 
             _Args.SourceFeedId = 9;
-            var json = _Builder.Build(_Args);
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
 
             Assert.AreEqual(9, json.SourceFeedId);
         }
@@ -156,7 +207,7 @@ namespace Test.VirtualRadar.WebSite
             AddBlankAircraft(1, listIndex: 1);
             _Args.SourceFeedId = 2;
 
-            var json = _Builder.Build(_Args);
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.AreEqual(1, json.Aircraft.Count);
             Assert.AreEqual(1, json.AvailableAircraft);
             Assert.AreEqual(2, json.SourceFeedId);
@@ -168,7 +219,7 @@ namespace Test.VirtualRadar.WebSite
             AddBlankAircraft(1, listIndex: 1);
             _Configuration.GoogleMapSettings.WebSiteReceiverId = 2;
 
-            var json = _Builder.Build(_Args);
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.AreEqual(1, json.Aircraft.Count);
             Assert.AreEqual(1, json.AvailableAircraft);
             Assert.AreEqual(2, json.SourceFeedId);
@@ -180,7 +231,7 @@ namespace Test.VirtualRadar.WebSite
             AddBlankAircraft(1, listIndex: 1);
             _Configuration.GoogleMapSettings.WebSiteReceiverId = 2;
 
-            var json = _Builder.Build(_Args);
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.AreEqual(1, json.Aircraft.Count);
             Assert.AreEqual(1, json.AvailableAircraft);
             Assert.AreEqual(2, json.SourceFeedId);
@@ -197,7 +248,7 @@ namespace Test.VirtualRadar.WebSite
                 _Feeds[0].Setup(r => r.Name).Returns("Feed 1");
                 _Feeds[1].Setup(r => r.Name).Returns("Feed 2");
 
-                var json = _Builder.Build(_Args);
+                var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
 
                 Assert.AreEqual(2, json.Feeds.Count);
 
@@ -215,7 +266,7 @@ namespace Test.VirtualRadar.WebSite
         public void AircraftListJsonBuilder_Does_Not_Returns_Feeds_If_FeedsNotRequired_Is_True()
         {
             _Args.FeedsNotRequired = true;
-            var json = _Builder.Build(_Args);
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.AreEqual(0, json.Feeds.Count);
         }
 
@@ -226,7 +277,7 @@ namespace Test.VirtualRadar.WebSite
             _Args.AircraftList = null;
             _Args.IsFlightSimulatorList = true;
 
-            var json = _Builder.Build(_Args);
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
 
             Assert.AreEqual(0, json.Aircraft.Count);
             Assert.AreEqual(0, json.AvailableAircraft);
@@ -240,12 +291,12 @@ namespace Test.VirtualRadar.WebSite
             AddBlankAircraft(1, listIndex: 1);
             _Configuration.GoogleMapSettings.WebSiteReceiverId = 1;
 
-            var json = _Builder.Build(_Args);
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.AreEqual(0, json.Aircraft.Count);
 
             _Configuration.GoogleMapSettings.WebSiteReceiverId = 2;
 
-            json = _Builder.Build(_Args);
+            json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.AreEqual(1, json.Aircraft.Count);
         }
         #endregion
@@ -255,7 +306,7 @@ namespace Test.VirtualRadar.WebSite
         public void AircraftListJsonBuilder_Sets_Flag_Dimensions_Correctly()
         {
             // These are currently non-configurable
-            var json = _Builder.Build(_Args);
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.AreEqual(85, json.FlagWidth);
             Assert.AreEqual(20, json.FlagHeight);
         }
@@ -265,12 +316,12 @@ namespace Test.VirtualRadar.WebSite
         {
             long o1 = 0, o2 = 200;
             FeedHelper.SetupTakeSnapshot(_BaseStationAircraftLists, _AircraftLists, 0, o1, o2);
-            var json = _Builder.Build(_Args);
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.AreEqual("200", json.LastDataVersion);
 
             o2 = 573;
             FeedHelper.SetupTakeSnapshot(_BaseStationAircraftLists, _AircraftLists, 0, o1, o2);
-            json = _Builder.Build(_Args);
+            json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.AreEqual("573", json.LastDataVersion);
         }
 
@@ -281,7 +332,7 @@ namespace Test.VirtualRadar.WebSite
             long o1 = timestamp.Ticks, o2 = 0;
             FeedHelper.SetupTakeSnapshot(_BaseStationAircraftLists, _AircraftLists, 0, o1, o2);
 
-            var json = _Builder.Build(_Args);
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
 
             Assert.AreEqual(JavascriptHelper.ToJavascriptTicks(timestamp), json.ServerTime);
         }
@@ -292,13 +343,13 @@ namespace Test.VirtualRadar.WebSite
             _FileSystemProvider.AddFolder(@"c:\flags");
 
             _Configuration.BaseStationSettings.OperatorFlagsFolder = null;
-            Assert.AreEqual(false, _Builder.Build(_Args).ShowFlags);
+            Assert.AreEqual(false, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowFlags);
 
             _Configuration.BaseStationSettings.OperatorFlagsFolder = @"c:\flags";
-            Assert.AreEqual(true, _Builder.Build(_Args).ShowFlags);
+            Assert.AreEqual(true, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowFlags);
 
             _Configuration.BaseStationSettings.OperatorFlagsFolder = @"c:\no-flags";
-            Assert.AreEqual(false, _Builder.Build(_Args).ShowFlags);
+            Assert.AreEqual(false, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowFlags);
         }
 
         [TestMethod]
@@ -307,13 +358,13 @@ namespace Test.VirtualRadar.WebSite
             _Args.IsFlightSimulatorList = true;
 
             _Configuration.BaseStationSettings.OperatorFlagsFolder = null;
-            Assert.AreEqual(false, _Builder.Build(_Args).ShowFlags);
+            Assert.AreEqual(false, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowFlags);
 
             _Configuration.BaseStationSettings.OperatorFlagsFolder = "EXISTS";
-            Assert.AreEqual(false, _Builder.Build(_Args).ShowFlags);
+            Assert.AreEqual(false, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowFlags);
 
             _Configuration.BaseStationSettings.OperatorFlagsFolder = "NOTEXISTS";
-            Assert.AreEqual(false, _Builder.Build(_Args).ShowFlags);
+            Assert.AreEqual(false, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowFlags);
         }
 
         [TestMethod]
@@ -322,13 +373,13 @@ namespace Test.VirtualRadar.WebSite
             _FileSystemProvider.AddFolder(@"c:\pictures");
 
             _Configuration.BaseStationSettings.PicturesFolder = null;
-            Assert.AreEqual(false, _Builder.Build(_Args).ShowPictures);
+            Assert.AreEqual(false, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowPictures);
 
             _Configuration.BaseStationSettings.PicturesFolder = @"c:\pictures";
-            Assert.AreEqual(true, _Builder.Build(_Args).ShowPictures);
+            Assert.AreEqual(true, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowPictures);
 
             _Configuration.BaseStationSettings.PicturesFolder = @"c:\no-pictures";
-            Assert.AreEqual(false, _Builder.Build(_Args).ShowPictures);
+            Assert.AreEqual(false, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowPictures);
         }
 
         [TestMethod]
@@ -337,13 +388,13 @@ namespace Test.VirtualRadar.WebSite
             _Args.IsFlightSimulatorList = true;
 
             _Configuration.BaseStationSettings.PicturesFolder = null;
-            Assert.AreEqual(false, _Builder.Build(_Args).ShowPictures);
+            Assert.AreEqual(false, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowPictures);
 
             _Configuration.BaseStationSettings.PicturesFolder = "EXISTS";
-            Assert.AreEqual(false, _Builder.Build(_Args).ShowPictures);
+            Assert.AreEqual(false, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowPictures);
 
             _Configuration.BaseStationSettings.PicturesFolder = "NOTEXISTS";
-            Assert.AreEqual(false, _Builder.Build(_Args).ShowPictures);
+            Assert.AreEqual(false, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowPictures);
         }
 
         [TestMethod]
@@ -355,16 +406,16 @@ namespace Test.VirtualRadar.WebSite
             _Configuration.InternetClientSettings.CanShowPictures = true;
 
             _Args.IsInternetClient = true;
-            Assert.AreEqual(true, _Builder.Build(_Args).ShowPictures);
+            Assert.AreEqual(true, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowPictures);
             _Args.IsInternetClient = false;
-            Assert.AreEqual(true, _Builder.Build(_Args).ShowPictures);
+            Assert.AreEqual(true, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowPictures);
 
             _Configuration.InternetClientSettings.CanShowPictures = false;
 
             _Args.IsInternetClient = true;
-            Assert.AreEqual(false, _Builder.Build(_Args).ShowPictures);
+            Assert.AreEqual(false, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowPictures);
             _Args.IsInternetClient = false;
-            Assert.AreEqual(true, _Builder.Build(_Args).ShowPictures);
+            Assert.AreEqual(true, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowPictures);
         }
 
         [TestMethod]
@@ -373,13 +424,13 @@ namespace Test.VirtualRadar.WebSite
             _FileSystemProvider.AddFolder(@"c:\silhouettes");
 
             _Configuration.BaseStationSettings.SilhouettesFolder = null;
-            Assert.AreEqual(false, _Builder.Build(_Args).ShowSilhouettes);
+            Assert.AreEqual(false, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowSilhouettes);
 
             _Configuration.BaseStationSettings.SilhouettesFolder = @"c:\silhouettes";
-            Assert.AreEqual(true, _Builder.Build(_Args).ShowSilhouettes);
+            Assert.AreEqual(true, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowSilhouettes);
 
             _Configuration.BaseStationSettings.SilhouettesFolder = @"c:\no-silhouettes";
-            Assert.AreEqual(false, _Builder.Build(_Args).ShowSilhouettes);
+            Assert.AreEqual(false, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowSilhouettes);
         }
 
         [TestMethod]
@@ -388,13 +439,13 @@ namespace Test.VirtualRadar.WebSite
             _Args.IsFlightSimulatorList = true;
 
             _Configuration.BaseStationSettings.SilhouettesFolder = null;
-            Assert.AreEqual(false, _Builder.Build(_Args).ShowSilhouettes);
+            Assert.AreEqual(false, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowSilhouettes);
 
             _Configuration.BaseStationSettings.SilhouettesFolder = "EXISTS";
-            Assert.AreEqual(false, _Builder.Build(_Args).ShowSilhouettes);
+            Assert.AreEqual(false, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowSilhouettes);
 
             _Configuration.BaseStationSettings.SilhouettesFolder = "NOTEXISTS";
-            Assert.AreEqual(false, _Builder.Build(_Args).ShowSilhouettes);
+            Assert.AreEqual(false, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShowSilhouettes);
         }
 
         [TestMethod]
@@ -403,10 +454,10 @@ namespace Test.VirtualRadar.WebSite
             _Args.TrailType = TrailType.Short;
 
             _Configuration.GoogleMapSettings.ShortTrailLengthSeconds = 10;
-            Assert.AreEqual(10, _Builder.Build(_Args).ShortTrailLengthSeconds);
+            Assert.AreEqual(10, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShortTrailLengthSeconds);
 
             _Configuration.GoogleMapSettings.ShortTrailLengthSeconds = 20;
-            Assert.AreEqual(20, _Builder.Build(_Args).ShortTrailLengthSeconds);
+            Assert.AreEqual(20, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShortTrailLengthSeconds);
         }
 
         [TestMethod]
@@ -415,18 +466,18 @@ namespace Test.VirtualRadar.WebSite
             _Args.TrailType = TrailType.Full;
 
             _Configuration.GoogleMapSettings.ShortTrailLengthSeconds = 10;
-            Assert.AreEqual(10, _Builder.Build(_Args).ShortTrailLengthSeconds);
+            Assert.AreEqual(10, _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).ShortTrailLengthSeconds);
         }
 
         [TestMethod]
         public void AircraftListJsonBuilder_Sets_Source_Correctly()
         {
             _BaseStationAircraftLists[0].Setup(m => m.Source).Returns(AircraftListSource.BaseStation);
-            var json = _Builder.Build(_Args);
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.AreEqual(1, json.Source);
 
             _BaseStationAircraftLists[0].Setup(m => m.Source).Returns(AircraftListSource.FlightSimulatorX);
-            json = _Builder.Build(_Args);
+            json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.AreEqual(3, json.Source);
         }
         #endregion
@@ -437,7 +488,7 @@ namespace Test.VirtualRadar.WebSite
         {
             AddBlankAircraft(2);
 
-            var json = _Builder.Build(_Args);
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
 
             Assert.AreEqual(2, json.Aircraft.Count);
             Assert.IsTrue(json.Aircraft.Where(a => a.UniqueId == 0).Any());
@@ -451,7 +502,7 @@ namespace Test.VirtualRadar.WebSite
             _Args.AircraftList = _FlightSimulatorAircraftList.Object;
             AddBlankFlightSimAircraft(2);
 
-            var json = _Builder.Build(_Args);
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
 
             Assert.AreEqual(2, json.Aircraft.Count);
             Assert.IsTrue(json.Aircraft.Where(a => a.UniqueId == 0).Any());
@@ -472,7 +523,7 @@ namespace Test.VirtualRadar.WebSite
             var aircraftValue = TestUtilities.ChangeType(worksheet.EString("AircraftValue"), aircraftProperty.PropertyType, new CultureInfo("en-GB"));
             aircraftProperty.SetValue(aircraft.Object, aircraftValue, null);
 
-            var json = _Builder.Build(_Args);
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.AreEqual(1, json.Aircraft.Count);
             var aircraftJson = json.Aircraft[0];
 
@@ -537,31 +588,31 @@ namespace Test.VirtualRadar.WebSite
                 // If the browser has never been sent a list before then the property must be returned
                 aircraft.Setup(lambda).Returns(0L);
                 _Args.PreviousDataVersion = -1L;
-                aircraftJson = _Builder.Build(_Args).Aircraft[0];
+                aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
                 Assert.IsNotNull(jsonProperty.GetValue(aircraftJson, null), aircraftProperty.Name);
 
                 aircraft.Setup(lambda).Returns(10L);
-                aircraftJson = _Builder.Build(_Args).Aircraft[0];
+                aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
                 Assert.IsNotNull(jsonProperty.GetValue(aircraftJson, null), aircraftProperty.Name);
 
                 // If the browser version is prior to the list version then the property must be returned
                 _Args.PreviousDataVersion = 9L;
-                aircraftJson = _Builder.Build(_Args).Aircraft[0];
+                aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
                 Assert.IsNotNull(jsonProperty.GetValue(aircraftJson, null), aircraftProperty.Name);
 
                 // If the browser version is the same as the list version then the property must not be returned
                 _Args.PreviousDataVersion = 10L;
-                aircraftJson = _Builder.Build(_Args).Aircraft[0];
+                aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
                 Assert.IsNull(jsonProperty.GetValue(aircraftJson, null), aircraftProperty.Name);
 
                 // If the browser version is the after the list version then the property must not be returned
                 _Args.PreviousDataVersion = 11L;
-                aircraftJson = _Builder.Build(_Args).Aircraft[0];
+                aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
                 Assert.IsNull(jsonProperty.GetValue(aircraftJson, null), aircraftProperty.Name);
 
                 // If the browser version is after the list version, but the aircraft has not been seen before, then the property must be returned
                 _Args.PreviousAircraft.Clear();
-                aircraftJson = _Builder.Build(_Args).Aircraft[0];
+                aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
                 Assert.IsNotNull(jsonProperty.GetValue(aircraftJson, null), aircraftProperty.Name);
             }
         }
@@ -576,7 +627,7 @@ namespace Test.VirtualRadar.WebSite
             _Args.PreviousAircraft.Add(0);
             _Args.PreviousDataVersion = _AircraftLists[0][0].Icao24Changed;
 
-            var aircraftJson = _Builder.Build(_Args);
+            var aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.AreEqual("A", aircraftJson.Aircraft[0].Icao24);
         }
 
@@ -593,7 +644,7 @@ namespace Test.VirtualRadar.WebSite
             _Args.PreviousAircraft.Add(0);
             _Args.PreviousAircraft.Add(2);
 
-            var aircraftJson = _Builder.Build(_Args);
+            var aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
 
             // We have 3 aircraft and we've told the list builder that we know about the 1st and 3rd entries in the list and we already know the
             // callsigns. The second one is unknown to us, so it must send us everything it knows about it
@@ -619,7 +670,7 @@ namespace Test.VirtualRadar.WebSite
             _Args.BrowserLatitude = worksheet.NDouble("BrowserLatitude");
             _Args.BrowserLongitude = worksheet.NDouble("BrowserLongitude");
 
-            var list = _Builder.Build(_Args);
+            var list = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.AreEqual(1, list.Aircraft.Count);
             var aircraftJson = list.Aircraft[0];
 
@@ -644,7 +695,7 @@ namespace Test.VirtualRadar.WebSite
             _Args.BrowserLatitude = worksheet.NDouble("BrowserLatitude");
             _Args.BrowserLongitude = worksheet.NDouble("BrowserLongitude");
 
-            var list = _Builder.Build(_Args);
+            var list = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.AreEqual(1, list.Aircraft.Count);
             var aircraftJson = list.Aircraft[0];
 
@@ -670,7 +721,7 @@ namespace Test.VirtualRadar.WebSite
                 _Args.BrowserLatitude = worksheet.NDouble("BrowserLatitude");
                 _Args.BrowserLongitude = worksheet.NDouble("BrowserLongitude");
 
-                var list = _Builder.Build(_Args);
+                var list = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
                 Assert.AreEqual(1, list.Aircraft.Count);
                 var aircraftJson = list.Aircraft[0];
 
@@ -692,7 +743,7 @@ namespace Test.VirtualRadar.WebSite
 
             _Args.BrowserLatitude = _Args.BrowserLongitude = 2.0;
 
-            var list = _Builder.Build(_Args);
+            var list = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.IsNull(list.Aircraft[0].DistanceFromHere);
         }
 
@@ -705,12 +756,12 @@ namespace Test.VirtualRadar.WebSite
 
             _AircraftLists[0].Add(aircraft.Object);
 
-            var list = _Builder.Build(_Args);
+            var list = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.IsNull(list.Aircraft[0].Stopovers);
 
             stopovers.Add("Stop 1");
             stopovers.Add("Stop 2");
-            list = _Builder.Build(_Args);
+            list = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             Assert.AreEqual(2, list.Aircraft[0].Stopovers.Count);
             Assert.AreEqual("Stop 1", list.Aircraft[0].Stopovers[0]);
             Assert.AreEqual("Stop 2", list.Aircraft[0].Stopovers[1]);
@@ -754,7 +805,7 @@ namespace Test.VirtualRadar.WebSite
             if(worksheet.Bool("ArgsIsPrevAC")) _Args.PreviousAircraft.Add(0);
             _Args.ResendTrails = worksheet.Bool("ArgsResend");
 
-            var aircraftJson = _Builder.Build(_Args).Aircraft[0];
+            var aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
 
             var count = worksheet.Int("Count");
             if(count == 0) {
@@ -795,7 +846,7 @@ namespace Test.VirtualRadar.WebSite
             aircraft.ShortCoordinates.Add(new Coordinate(1001, 1001, 2, 3, 9, 9200, 200));
 
             _Args.TrailType = TrailType.None;
-            var aircraftJson = _Builder.Build(_Args).Aircraft[0];
+            var aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
 
             Assert.AreEqual(null, aircraftJson.TrailType);
             Assert.AreEqual(null, aircraftJson.FullCoordinates);
@@ -825,7 +876,7 @@ namespace Test.VirtualRadar.WebSite
             aircraft.ShortCoordinates.Add(new Coordinate(901, 800000000000000000L, 3, 4, 9, 9200, 200));
 
             _Args.TrailType = TrailType.ShortAltitude;
-            var aircraftJson = _Builder.Build(_Args).Aircraft[0];
+            var aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
 
             Assert.AreEqual("a", aircraftJson.TrailType);
             Assert.AreEqual(null, aircraftJson.FullCoordinates);
@@ -865,7 +916,7 @@ namespace Test.VirtualRadar.WebSite
             aircraft.ShortCoordinates.Add(new Coordinate(901, 800000000000000000L, 3, 4, 9, 9200, 200));
 
             _Args.TrailType = TrailType.ShortSpeed;
-            var aircraftJson = _Builder.Build(_Args).Aircraft[0];
+            var aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
 
             Assert.AreEqual("s", aircraftJson.TrailType);
             Assert.AreEqual(null, aircraftJson.FullCoordinates);
@@ -904,7 +955,7 @@ namespace Test.VirtualRadar.WebSite
             aircraft.FullCoordinates.Add(new Coordinate(1010, 1002, 4, 5, 9, 9300, 200));   // Same track as before - this exists purely because the altitude changed. When full trails are requested we should merge this.
 
             _Args.TrailType = TrailType.Full;
-            var aircraftJson = _Builder.Build(_Args).Aircraft[0];
+            var aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
 
             // We should get 2 coordinates and the middle coordinate should be ignored because there was no change in track
             Assert.AreEqual(6, aircraftJson.FullCoordinates.Count);
@@ -941,7 +992,7 @@ namespace Test.VirtualRadar.WebSite
             aircraft.FullCoordinates.Add(new Coordinate(1010, 1002, 4, 5, 9, 10000, 300));   // Same track as before - this exists purely because the speed changed. When full trails are requested we should merge this.
 
             _Args.TrailType = TrailType.Full;
-            var aircraftJson = _Builder.Build(_Args).Aircraft[0];
+            var aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
 
             // We should get 2 coordinates and the middle coordinate should be ignored because there was no change in track
             Assert.AreEqual(6, aircraftJson.FullCoordinates.Count);
@@ -978,7 +1029,7 @@ namespace Test.VirtualRadar.WebSite
             aircraft.FullCoordinates.Add(new Coordinate(1010, 1002, 4, 5, 9, 9300, 200));   // Same track as before - this exists purely because the altitude changed. When full trails are requested we should merge this.
 
             _Args.TrailType = TrailType.FullAltitude;
-            var aircraftJson = _Builder.Build(_Args).Aircraft[0];
+            var aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
 
             // We should get all 3 coordinates
             Assert.AreEqual(12, aircraftJson.FullCoordinates.Count);
@@ -1022,7 +1073,7 @@ namespace Test.VirtualRadar.WebSite
             aircraft.FullCoordinates.Add(new Coordinate(1010, 1002, 4, 5, 9, 10000, 200));
 
             _Args.TrailType = TrailType.FullSpeed;
-            var aircraftJson = _Builder.Build(_Args).Aircraft[0];
+            var aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
 
             // We should get all 3 coordinates
             Assert.AreEqual(12, aircraftJson.FullCoordinates.Count);
@@ -1066,7 +1117,7 @@ namespace Test.VirtualRadar.WebSite
             aircraft.FullCoordinates.Add(new Coordinate(1010, 1002, 4, 5, 9, 9000, 220));   // Same track as before - this exists purely because the speed changed. When full trails are requested we should merge this.
 
             _Args.TrailType = TrailType.FullAltitude;
-            var aircraftJson = _Builder.Build(_Args).Aircraft[0];
+            var aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
 
             // We should get all 3 coordinates
             Assert.AreEqual(8, aircraftJson.FullCoordinates.Count);
@@ -1105,7 +1156,7 @@ namespace Test.VirtualRadar.WebSite
             aircraft.FullCoordinates.Add(new Coordinate(1010, 1002, 4, 5, 9, 10000, 200));
 
             _Args.TrailType = TrailType.FullSpeed;
-            var aircraftJson = _Builder.Build(_Args).Aircraft[0];
+            var aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
 
             // We should get all 3 coordinates
             Assert.AreEqual(8, aircraftJson.FullCoordinates.Count);
@@ -1142,7 +1193,7 @@ namespace Test.VirtualRadar.WebSite
             aircraft.FullCoordinates.Add(new Coordinate(1000, 1000, 1, 2, 9, 9000, 200));   // Initial coordinate
 
             _Args.TrailType = TrailType.FullAltitude;
-            var aircraftJson = _Builder.Build(_Args).Aircraft[0];
+            var aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
 
             // We should get 2 coordinates and the altitude should have been rounded
             Assert.AreEqual(8, aircraftJson.FullCoordinates.Count);
@@ -1174,7 +1225,7 @@ namespace Test.VirtualRadar.WebSite
             aircraft.FullCoordinates.Add(new Coordinate(1000, 1000, 1, 2, 9, 9000, 200));   // Initial coordinate
 
             _Args.TrailType = TrailType.FullSpeed;
-            var aircraftJson = _Builder.Build(_Args).Aircraft[0];
+            var aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
 
             // We should get 2 coordinates and the altitude should have been rounded
             Assert.AreEqual(8, aircraftJson.FullCoordinates.Count);
@@ -1195,7 +1246,7 @@ namespace Test.VirtualRadar.WebSite
             mockAircraft.Setup(a => a.FirstSeen).Returns(new DateTime(2001, 1, 1, 1, 2, 0));
             _Clock.Setup(p => p.UtcNow).Returns(new DateTime(2001, 1, 1, 1, 3, 17));
 
-            var aircraftJson = _Builder.Build(_Args).Aircraft[0];
+            var aircraftJson = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
 
             Assert.AreEqual(77L, aircraftJson.SecondsTracked);
         }
@@ -1242,7 +1293,7 @@ namespace Test.VirtualRadar.WebSite
             aircraft.Object.LastSatcomUpdate = DateTime.UtcNow;
 
             _Args.OnlyIncludeMessageFields = true;
-            var json = _Builder.Build(_Args).Aircraft[0];
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
 
             foreach(var property in typeof(AircraftJson).GetProperties()) {
                 var value = property.GetValue(json, null);
@@ -1338,7 +1389,7 @@ namespace Test.VirtualRadar.WebSite
                 _Args.OnlyIncludeMessageFields = true;
                 _Args.PreviousDataVersion = 1;
                 _Args.PreviousAircraft.Add(7);
-                var json = _Builder.Build(_Args).Aircraft[0];
+                var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
 
                 Assert.AreEqual(i == 0 ? 7 : 10, json.Latitude);
                 Assert.AreEqual(i == 1 ? 7 : 20, json.Longitude);
@@ -1363,7 +1414,7 @@ namespace Test.VirtualRadar.WebSite
             _Args.PreviousDataVersion = 1;
             aircraft.Object.DataVersion = 2;
             aircraft.SetupGet(r => r.AltitudeChanged).Returns(2);
-            var json = _Builder.Build(_Args).Aircraft[0];
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
             Assert.IsNotNull(json.Altitude);
             Assert.IsNotNull(json.AltitudeType);
             Assert.IsNotNull(json.GeometricAltitude);
@@ -1371,7 +1422,7 @@ namespace Test.VirtualRadar.WebSite
             _Args.PreviousDataVersion = 2;
             aircraft.Object.DataVersion = 3;
             aircraft.SetupGet(r => r.GeometricAltitudeChanged).Returns(3);
-            json = _Builder.Build(_Args).Aircraft[0];
+            json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
             Assert.IsNotNull(json.Altitude);
             Assert.IsNotNull(json.AltitudeType);
             Assert.IsNotNull(json.GeometricAltitude);
@@ -1379,7 +1430,7 @@ namespace Test.VirtualRadar.WebSite
             _Args.PreviousDataVersion = 3;
             aircraft.Object.DataVersion = 4;
             aircraft.SetupGet(r => r.AltitudeTypeChanged).Returns(4);
-            json = _Builder.Build(_Args).Aircraft[0];
+            json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
             Assert.IsNotNull(json.Altitude);
             Assert.IsNotNull(json.AltitudeType);
             Assert.IsNotNull(json.GeometricAltitude);
@@ -1409,7 +1460,7 @@ namespace Test.VirtualRadar.WebSite
                 _Args.OnlyIncludeMessageFields = true;
                 _Args.PreviousDataVersion = 1;
                 _Args.PreviousAircraft.Add(7);
-                var json = _Builder.Build(_Args).Aircraft[0];
+                var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft[0];
 
                 Assert.IsNull(json.Latitude);
                 Assert.IsNull(json.Longitude);
@@ -1429,7 +1480,7 @@ namespace Test.VirtualRadar.WebSite
 
             _Args.PreviousDataVersion = 100;
             _Args.IgnoreUnchanged = true;
-            var json = _Builder.Build(_Args);
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
 
             Assert.AreEqual(1, json.Aircraft.Count);
             Assert.AreEqual(aircraft2.Object.UniqueId, json.Aircraft[0].UniqueId);
@@ -1473,7 +1524,7 @@ namespace Test.VirtualRadar.WebSite
                 }
                 _Clock.SetupGet(r => r.UtcNow).Returns(now);
 
-                var json = _Builder.Build(_Args);
+                var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
                 var jsonAircraft = json.Aircraft[0];
 
                 switch(threshold) {
@@ -1502,7 +1553,7 @@ namespace Test.VirtualRadar.WebSite
             now = now.AddSeconds(_Configuration.BaseStationSettings.DisplayTimeoutSeconds + boostSeconds + 1);
             _Clock.SetupGet(r => r.UtcNow).Returns(now);
 
-            var json = _Builder.Build(_Args);
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
             var jsonAircraft = json.Aircraft[0];
 
             // By this point the setup should be the same as for the "after" position in the
@@ -1522,7 +1573,7 @@ namespace Test.VirtualRadar.WebSite
             _FlightSimulatorAircraft[0].PositionTime = new DateTime(2010, 1, 1);
 
             _Clock.SetupGet(r => r.UtcNow).Returns(new DateTime(2018, 1, 1));
-            var json = _Builder.Build(_Args);
+            var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
 
             Assert.IsNull(json.Aircraft[0].PositionIsStale);
         }
@@ -1542,7 +1593,7 @@ namespace Test.VirtualRadar.WebSite
                 _AircraftLists[0][0].FirstSeen = order == 0 ? hiTime : loTime;
                 _AircraftLists[0][1].FirstSeen = order == 0 ? loTime : hiTime;
 
-                var list = _Builder.Build(_Args).Aircraft;
+                var list = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft;
 
                 Assert.AreEqual(order == 0 ? hiTime : loTime, list[0].FirstSeen);
                 Assert.AreEqual(order == 0 ? loTime : hiTime, list[1].FirstSeen);
@@ -1579,7 +1630,7 @@ namespace Test.VirtualRadar.WebSite
                             if(pass != 2) PrepareForSortTest(sortColumn, lhs, pass != 1);
                             if(pass != 3) PrepareForSortTest(sortColumn, rhs, pass != 0);
 
-                            var list = _Builder.Build(_Args).Aircraft;
+                            var list = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft;
 
                             bool expectLhsFirst = pass == 0 || pass == 2;
                             if(sortDescending != 0) expectLhsFirst = !expectLhsFirst;
@@ -1636,7 +1687,7 @@ namespace Test.VirtualRadar.WebSite
                 _AircraftLists[0][0].Registration = order == 0 ? "A" : "B";
                 _AircraftLists[0][1].Registration = order == 0 ? "B" : "A";
 
-                var list = _Builder.Build(_Args).Aircraft;
+                var list = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true).Aircraft;
 
                 Assert.AreEqual("A", list[0].Registration);
                 Assert.AreEqual("B", list[1].Registration);

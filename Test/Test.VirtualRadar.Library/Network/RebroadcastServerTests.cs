@@ -50,6 +50,8 @@ namespace Test.VirtualRadar.Library.Network
         private Mock<ITimer> _Timer;
         private AircraftListJson _AircraftListJson;
         private AircraftListJsonBuilderArgs _AircraftListJsonBuilderArgs;
+        private bool? _IgnoreInvisibleFeeds;
+        private bool? _FallbackToDefault;
         private Mock<IBaseStationAircraftList> _AircraftList;
         private List<IAircraft> _SnapshotAircraft;
 
@@ -74,8 +76,12 @@ namespace Test.VirtualRadar.Library.Network
             _AircraftListJsonBuilder = TestUtilities.CreateMockImplementation<IAircraftListJsonBuilder>();
             _AircraftListJson = new AircraftListJson();
             _AircraftListJsonBuilderArgs = null;
-            _AircraftListJsonBuilder.Setup(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>())).Callback((AircraftListJsonBuilderArgs args) => {
+            _IgnoreInvisibleFeeds = null;
+            _FallbackToDefault = null;
+            _AircraftListJsonBuilder.Setup(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>(), It.IsAny<bool>(), It.IsAny<bool>())).Callback((AircraftListJsonBuilderArgs args, bool ignoreInvisibleFeeds, bool fallbackToDefault) => {
                 _AircraftListJsonBuilderArgs = args;
+                _IgnoreInvisibleFeeds = ignoreInvisibleFeeds;
+                _FallbackToDefault = fallbackToDefault;
             }).Returns(_AircraftListJson);
 
             _AircraftList = TestUtilities.CreateMockImplementation<IBaseStationAircraftList>();
@@ -688,6 +694,9 @@ namespace Test.VirtualRadar.Library.Network
             // However for the first call, which this is, the previous settings should all have default values.
             Assert.AreEqual(-1, _AircraftListJsonBuilderArgs.PreviousDataVersion);
             Assert.AreEqual(0, _AircraftListJsonBuilderArgs.PreviousAircraft.Count);
+
+            Assert.IsFalse(_IgnoreInvisibleFeeds.Value);
+            Assert.IsFalse(_FallbackToDefault.Value);
         }
 
         [TestMethod]
@@ -701,7 +710,7 @@ namespace Test.VirtualRadar.Library.Network
 
             _Timer.Raise(r => r.Elapsed += null, EventArgs.Empty);
 
-            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>()), Times.Exactly(2));
+            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Exactly(2));
             Assert.AreEqual(null, _AircraftListJsonBuilderArgs.AircraftList);
             Assert.AreEqual(true, _AircraftListJsonBuilderArgs.AlwaysShowIcao);
             Assert.AreEqual(null, _AircraftListJsonBuilderArgs.BrowserLatitude);
@@ -720,6 +729,9 @@ namespace Test.VirtualRadar.Library.Network
 
             Assert.AreEqual(1, _AircraftListJsonBuilderArgs.PreviousAircraft.Count);
             Assert.AreEqual(91, _AircraftListJsonBuilderArgs.PreviousAircraft[0]);
+
+            Assert.IsFalse(_IgnoreInvisibleFeeds.Value);
+            Assert.IsFalse(_FallbackToDefault.Value);
         }
 
         [TestMethod]
@@ -759,10 +771,13 @@ namespace Test.VirtualRadar.Library.Network
             var args = new ConnectionEventArgs(connection.Object);
             _Connector.Raise(r => r.AddingConnection += null, args);
 
-            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>()), Times.Once());
+            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Once());
             Assert.AreEqual(-1, _AircraftListJsonBuilderArgs.PreviousDataVersion);
             Assert.AreEqual(0, _AircraftListJsonBuilderArgs.PreviousAircraft.Count);
             connection.Verify(r => r.Write(It.IsAny<byte[]>(), It.IsAny<int>()), Times.Once());
+
+            Assert.IsFalse(_IgnoreInvisibleFeeds.Value);
+            Assert.IsFalse(_FallbackToDefault.Value);
         }
 
         [TestMethod]
@@ -822,7 +837,7 @@ namespace Test.VirtualRadar.Library.Network
 
             long of1, of2;
             _AircraftList.Verify(r => r.TakeSnapshot(out of1, out of2), Times.Never());
-            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>()), Times.Never());
+            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Never());
             Assert.AreEqual(0, _Connector.Written.Count);
             _Timer.Verify(r => r.Start(), Times.Exactly(2));
         }
@@ -840,7 +855,7 @@ namespace Test.VirtualRadar.Library.Network
 
             long of1, of2;
             _AircraftList.Verify(r => r.TakeSnapshot(out of1, out of2), Times.Never());
-            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>()), Times.Never());
+            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Never());
             Assert.AreEqual(0, _Connector.Written.Count);
             _Timer.Verify(r => r.Start(), Times.Exactly(2));
         }
@@ -858,7 +873,7 @@ namespace Test.VirtualRadar.Library.Network
             var args = new ConnectionEventArgs(connection.Object);
             _Connector.Raise(r => r.AddingConnection += null, args);
 
-            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>()), Times.Once());
+            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Once());
         }
         #endregion
 
@@ -964,7 +979,7 @@ namespace Test.VirtualRadar.Library.Network
 
             _Timer.Raise(r => r.Elapsed += null, EventArgs.Empty);
 
-            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>()), Times.Never());
+            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Never());
         }
 
         [TestMethod]
@@ -977,7 +992,7 @@ namespace Test.VirtualRadar.Library.Network
             var args = new ConnectionEventArgs(connection.Object);
             _Connector.Raise(r => r.AddingConnection += null, args);
 
-            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>()), Times.Never());
+            _AircraftListJsonBuilder.Verify(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Never());
         }
         #endregion
     }

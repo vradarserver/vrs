@@ -42,6 +42,8 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         private Mock<IAircraftListJsonBuilder> _AircraftListJsonBuilder;
         private AircraftListJson _AircraftListJson;
         private AircraftListJsonBuilderArgs _ActualAircraftListJsonBuilderArgs;
+        private bool? _ActualAircraftListJsonBuilderIgnoreInvisibleFeeds;
+        private bool? _ActualAircraftListJsonBuilderFallbackToDefault;
         private Mock<IFlightSimulatorAircraftList> _FlightSimulatorAircraftList;
         private HttpContent _EmptyPostBody;
 
@@ -61,11 +63,14 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             _AircraftListJson = new AircraftListJson();
             _ActualAircraftListJsonBuilderArgs = null;
+
             _AircraftListJsonBuilder = TestUtilities.CreateMockImplementation<IAircraftListJsonBuilder>();
             _AircraftListJsonBuilder
-                .Setup(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>()))
-                .Returns((AircraftListJsonBuilderArgs args) => {
+                .Setup(r => r.Build(It.IsAny<AircraftListJsonBuilderArgs>(), It.IsAny<bool>(), It.IsAny<bool>()))
+                .Returns((AircraftListJsonBuilderArgs args, bool ignoreInvisibleFeeds, bool fallbackToDefault) => {
                     _ActualAircraftListJsonBuilderArgs = args;
+                    _ActualAircraftListJsonBuilderIgnoreInvisibleFeeds = ignoreInvisibleFeeds;
+                    _ActualAircraftListJsonBuilderFallbackToDefault = fallbackToDefault;
                     return _AircraftListJson;
                 });
 
@@ -195,6 +200,9 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             AssertFiltersAreEqual(expected.Filter, actual.Filter);
             AssertSortColumnsAreEqual(expected.SortBy, actual.SortBy);
             AssertPreviousAircraftAreEqual(expected.PreviousAircraft, actual.PreviousAircraft);
+
+            Assert.IsTrue(_ActualAircraftListJsonBuilderIgnoreInvisibleFeeds.Value);
+            Assert.IsTrue(_ActualAircraftListJsonBuilderFallbackToDefault.Value);
         }
 
         private void AssertFiltersAreEqual(AircraftListJsonBuilderFilter expected, AircraftListJsonBuilderFilter actual)
