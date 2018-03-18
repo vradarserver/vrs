@@ -287,6 +287,8 @@ body.wait .modal {
     border: 1px solid #a0a0a0;
     margin: 2px;
     max-width: 95%;
+    height: auto;
+    width: auto;
 }
 .vrsAircraftDetail li.multiline {
     float: none;
