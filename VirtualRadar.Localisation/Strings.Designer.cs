@@ -358,6 +358,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Airnav XRange.
+        /// </summary>
+        public static string AirnavXRange {
+            get {
+                return ResourceManager.GetString("AirnavXRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ALL.
         /// </summary>
         public static string AllCaps {

@@ -1,4 +1,4 @@
-﻿// Copyright © 2012 onwards, Andrew Whewell
+﻿// Copyright © 2018 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,43 +11,33 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace VirtualRadar.Interface.Listener
 {
     /// <summary>
-    /// An enumeration of the different formats that the payload of <see cref="ExtractedBytes"/> can be in.
+    /// The JSON object transmitted by Airnav XRange receivers.
     /// </summary>
-    public enum ExtractedBytesFormat
+    public class AirnavXRangeJson
     {
         /// <summary>
-        /// The format of the payload is unknown.
+        /// Gets or sets the current time at UTC in single digit precision floating point seconds since 1st Jan 1970.
         /// </summary>
-        None,
+        [DataMember(Name = "now")]
+        public float Now { get; set; }
 
         /// <summary>
-        /// The format of the payload corresponds with Kinetic's de-facto standard port 30003 text.
+        /// Gets or sets a number of messages... perhaps the count received since the unit was first powered on?
         /// </summary>
-        Port30003,
+        [DataMember(Name = "messages")]
+        public long Messages { get; set; }
 
         /// <summary>
-        /// The format of the payload corresponds with ICAO's specification for Mode-S messages.
+        /// Gets a list of aircraft.
         /// </summary>
-        ModeS,
-
-        /// <summary>
-        /// The format of the payload is a compressed Port30003 object.
-        /// </summary>
-        Compressed,
-
-        /// <summary>
-        /// The format of the payload is an aircraft list formatted in UTF-8 JSON.
-        /// </summary>
-        AircraftListJson,
-
-        /// <summary>
-        /// The format of the payload is an Airnav XRange JSON object.
-        /// </summary>
-        AirnavXRange,
+        [DataMember(Name = "aircraft")]
+        public List<AirnavXRangeAircraftJson> Aircraft { get; set; } = new List<AirnavXRangeAircraftJson>();
     }
 }

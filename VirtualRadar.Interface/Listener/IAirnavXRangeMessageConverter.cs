@@ -1,4 +1,4 @@
-﻿// Copyright © 2012 onwards, Andrew Whewell
+﻿// Copyright © 2018 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,42 +12,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using VirtualRadar.Interface.BaseStation;
 
 namespace VirtualRadar.Interface.Listener
 {
     /// <summary>
-    /// An enumeration of the different formats that the payload of <see cref="ExtractedBytes"/> can be in.
+    /// The interface for an object that can take an Airnav XRange JSON object and convert it into
+    /// a collection of <see cref="BaseStationMessageEventArgs"/> objects.
     /// </summary>
-    public enum ExtractedBytesFormat
+    public interface IAirnavXRangeMessageConverter
     {
         /// <summary>
-        /// The format of the payload is unknown.
+        /// Returns a collection of <see cref="BaseStationMessageEventArgs"/> objects, one for each aircraft
+        /// in the aircraft list of the <see cref=""/> passed across.
         /// </summary>
-        None,
-
-        /// <summary>
-        /// The format of the payload corresponds with Kinetic's de-facto standard port 30003 text.
-        /// </summary>
-        Port30003,
-
-        /// <summary>
-        /// The format of the payload corresponds with ICAO's specification for Mode-S messages.
-        /// </summary>
-        ModeS,
-
-        /// <summary>
-        /// The format of the payload is a compressed Port30003 object.
-        /// </summary>
-        Compressed,
-
-        /// <summary>
-        /// The format of the payload is an aircraft list formatted in UTF-8 JSON.
-        /// </summary>
-        AircraftListJson,
-
-        /// <summary>
-        /// The format of the payload is an Airnav XRange JSON object.
-        /// </summary>
-        AirnavXRange,
+        /// <param name="json"></param>
+        /// <returns></returns>
+        IEnumerable<BaseStationMessageEventArgs>ConvertIntoBaseStationMessageEventArgs(AirnavXRangeJson json);
     }
 }

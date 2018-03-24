@@ -1,4 +1,4 @@
-﻿// Copyright © 2012 onwards, Andrew Whewell
+﻿// Copyright © 2018 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,42 +12,57 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using InterfaceFactory;
+using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.Settings;
+using VirtualRadar.Localisation;
 
-namespace VirtualRadar.Interface.Listener
+namespace VirtualRadar.Library.Listener
 {
     /// <summary>
-    /// An enumeration of the different formats that the payload of <see cref="ExtractedBytes"/> can be in.
+    /// The default implementation of <see cref="IReceiverFormatProvider"/> for Airnav XRange receivers.
     /// </summary>
-    public enum ExtractedBytesFormat
+    class AirnavXRangeReceiverProvider : IReceiverFormatProvider
     {
         /// <summary>
-        /// The format of the payload is unknown.
+        /// See interface docs.
         /// </summary>
-        None,
+        public string UniqueId
+        {
+            get { return DataSource.AirnavXRange; }
+        }
 
         /// <summary>
-        /// The format of the payload corresponds with Kinetic's de-facto standard port 30003 text.
+        /// See interface docs.
         /// </summary>
-        Port30003,
+        public string ShortName
+        {
+            get { return Strings.AirnavXRange; }
+        }
 
         /// <summary>
-        /// The format of the payload corresponds with ICAO's specification for Mode-S messages.
+        /// See interface docs.
         /// </summary>
-        ModeS,
+        public bool IsRawFormat { get { return false; } }
 
         /// <summary>
-        /// The format of the payload is a compressed Port30003 object.
+        /// See interface docs.
         /// </summary>
-        Compressed,
+        /// <returns></returns>
+        public IMessageBytesExtractor CreateMessageBytesExtractor()
+        {
+            return Factory.Resolve<IAirnavXRangeMessageBytesExtractor>();
+        }
 
         /// <summary>
-        /// The format of the payload is an aircraft list formatted in UTF-8 JSON.
+        /// See interface docs.
         /// </summary>
-        AircraftListJson,
-
-        /// <summary>
-        /// The format of the payload is an Airnav XRange JSON object.
-        /// </summary>
-        AirnavXRange,
+        /// <param name="extractor"></param>
+        /// <returns></returns>
+        public bool IsUsableBytesExtractor(IMessageBytesExtractor extractor)
+        {
+            return extractor != null && extractor is IAirnavXRangeMessageBytesExtractor;
+        }
     }
 }

@@ -104,6 +104,11 @@ namespace VirtualRadar.Library.Listener
         private IAircraftListJsonMessageConverter _AircraftListJsonMessageConverter;
 
         /// <summary>
+        /// The object that can translate from <see cref="AirnavXRangeJson"/> JSON to lists of <see cref="BaseStationMessage"/> objects.
+        /// </summary>
+        private IAirnavXRangeMessageConverter _AirnavXRangeMessageConverter;
+
+        /// <summary>
         /// The background thread that will dispatch Port30003 messages for us.
         /// </summary>
         private BackgroundThreadQueue<MessageDispatch> _MessageProcessingAndDispatchQueue;
@@ -134,6 +139,13 @@ namespace VirtualRadar.Library.Listener
         /// Deserialisation settings for aircraft list JSON.
         /// </summary>
         private static JsonSerializerSettings _AircraftListJsonSerialiserSettings = new JsonSerializerSettings() {
+            MissingMemberHandling = MissingMemberHandling.Ignore,
+        };
+
+        /// <summary>
+        /// Deserialisation settings for Airnav XRange JSON.
+        /// </summary>
+        private static JsonSerializerSettings _AirnavXRangeJsonSerialiserSettings = new JsonSerializerSettings() {
             MissingMemberHandling = MissingMemberHandling.Ignore,
         };
         #endregion
@@ -328,6 +340,7 @@ namespace VirtualRadar.Library.Listener
             _ModeSParity = Factory.Resolve<IModeSParity>();
             _Compressor = Factory.Resolve<IBaseStationMessageCompressor>();
             _AircraftListJsonMessageConverter = Factory.Resolve<IAircraftListJsonMessageConverter>();
+            _AirnavXRangeMessageConverter = Factory.Resolve<IAirnavXRangeMessageConverter>();
 
             _ModeSMessageTranslator.Statistics = Statistics;
             _AdsbMessageTranslator.Statistics = Statistics;
@@ -546,6 +559,7 @@ namespace VirtualRadar.Library.Listener
                                 case ExtractedBytesFormat.ModeS:            ProcessModeSMessageBytes(now, extractedBytes); break;
                                 case ExtractedBytesFormat.Compressed:       ProcessCompressedMessageBytes(now, extractedBytes); break;
                                 case ExtractedBytesFormat.AircraftListJson: ProcessAircraftListJsonMessageBytes(now, extractedBytes); break;
+                                case ExtractedBytesFormat.AirnavXRange:     ProcessAirnavXRangeMessageBytes(now, extractedBytes); break;
                                 default:                                    throw new NotImplementedException();
                             }
                         }
@@ -619,23 +633,64 @@ namespace VirtualRadar.Library.Listener
         /// <param name="extractedBytes"></param>
         private void ProcessAircraftListJsonMessageBytes(DateTime now, ExtractedBytes extractedBytes)
         {
+            ProcessJsonMessageBytes<AircraftListJson>(
+                now,
+                extractedBytes,
+                _AircraftListJsonSerialiserSettings,
+                (json) => _AircraftListJsonMessageConverter.ConvertIntoBaseStationMessageEventArgs(json)
+            );
+        }
+
+        /// <summary>
+        /// Translates the bytes for an <see cref="AirnavXRangeJson"/> JSON object into a list of cooked messages and
+        /// raises the appropriate events.
+        /// </summary>
+        /// <param name="now"></param>
+        /// <param name="extractedBytes"></param>
+        private void ProcessAirnavXRangeMessageBytes(DateTime now, ExtractedBytes extractedBytes)
+        {
+            ProcessJsonMessageBytes<AirnavXRangeJson>(
+                now,
+                extractedBytes,
+                _AirnavXRangeJsonSerialiserSettings,
+                (json) => _AirnavXRangeMessageConverter.ConvertIntoBaseStationMessageEventArgs(json)
+            );
+        }
+
+        /// <summary>
+        /// Handles the translation of JSON messages into message received events.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="now"></param>
+        /// <param name="extractedBytes"></param>
+        /// <param name="jsonSerialiserSettings"></param>
+        /// <param name="jsonToEventArgs"></param>
+        private void ProcessJsonMessageBytes<T>(DateTime now, ExtractedBytes extractedBytes, JsonSerializerSettings jsonSerialiserSettings, Func<T, IEnumerable<BaseStationMessageEventArgs>> jsonToEventArgs)
+        {
             try {
                 var jsonText = Encoding.UTF8.GetString(extractedBytes.Bytes, extractedBytes.Offset, extractedBytes.Length);
-                var json = JsonConvert.DeserializeObject<AircraftListJson>(jsonText, _AircraftListJsonSerialiserSettings);
+                var json = JsonConvert.DeserializeObject<T>(jsonText, jsonSerialiserSettings);
+
                 var totalMessages = 0;
-                foreach(var eventArgs in _AircraftListJsonMessageConverter.ConvertIntoBaseStationMessageEventArgs(json)) {
+                foreach(var eventArgs in jsonToEventArgs(json)) {
                     ++totalMessages;
                     _MessageProcessingAndDispatchQueue.Enqueue(new MessageDispatch() { Port30003MessageEventArgs = eventArgs });
                 }
 
                 if(totalMessages != 0) {
                     TotalMessages += totalMessages;
-                    if(Statistics != null) Statistics.Lock(r => r.BaseStationMessagesReceived += totalMessages);
+                    if(Statistics != null) {
+                        Statistics.Lock(r => r.BaseStationMessagesReceived += totalMessages);
+                    }
                 }
             } catch(Exception) {
                 ++TotalBadMessages;
-                if(Statistics != null) Statistics.Lock(r => ++r.BaseStationBadFormatMessagesReceived);
-                if(!IgnoreBadMessages) throw;
+                if(Statistics != null) {
+                    Statistics.Lock(r => ++r.BaseStationBadFormatMessagesReceived);
+                }
+                if(!IgnoreBadMessages) {
+                    throw;
+                }
             }
         }
 

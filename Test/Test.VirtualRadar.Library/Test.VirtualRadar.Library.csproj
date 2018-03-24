@@ -75,6 +75,8 @@
     <Compile Include="BitStreamTests.cs" />
     <Compile Include="Listener\AircraftListJsonMessageBytesExtractorTests.cs" />
     <Compile Include="Listener\AircraftListJsonMessageConverterTests.cs" />
+    <Compile Include="Listener\AirnavXRangeMessageBytesExtractorTests.cs" />
+    <Compile Include="Listener\AirnavXRangeMessageConverterTests.cs" />
     <Compile Include="Listener\BeastMessageBytesExtractorTests.cs" />
     <Compile Include="Listener\CommonListenerTests.cs" />
     <Compile Include="Listener\CommonMessageBytesExtractorTests.cs" />

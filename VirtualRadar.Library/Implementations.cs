@@ -36,6 +36,8 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.FlightSimulatorX.IFlightSimulatorX, FlightSimulatorX.FlightSimulatorX>();
             factory.Register<VirtualRadar.Interface.Listener.IAircraftListJsonMessageBytesExtractor, Listener.AircraftListJsonMessageBytesExtractor>();
             factory.Register<VirtualRadar.Interface.Listener.IAircraftListJsonMessageConverter, Listener.AircraftListJsonMessageConverter>();
+            factory.Register<VirtualRadar.Interface.Listener.IAirnavXRangeMessageBytesExtractor, Listener.AirnavXRangeMessageBytesExtractor>();
+            factory.Register<VirtualRadar.Interface.Listener.IAirnavXRangeMessageConverter, Listener.AirnavXRangeMessageConverter>();
             factory.Register<VirtualRadar.Interface.Listener.IBeastMessageBytesExtractor, Listener.BeastMessageBytesExtractor>();
             factory.Register<VirtualRadar.Interface.Listener.ICompressedMessageBytesExtractor, Listener.CompressedMessageBytesExtractor>();
             factory.Register<VirtualRadar.Interface.Listener.IFeed, Listener.Feed>();

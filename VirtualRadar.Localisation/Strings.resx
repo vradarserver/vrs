@@ -2735,4 +2735,8 @@ Show this message.</value>
     <value>Use SVG graphics on reports</value>
     <comment>SVG is a graphics file format</comment>
   </data>
+  <data name="AirnavXRange" xml:space="preserve">
+    <value>Airnav XRange</value>
+    <comment>Manufacturer and product name</comment>
+  </data>
 </root>

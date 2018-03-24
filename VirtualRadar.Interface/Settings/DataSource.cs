@@ -51,6 +51,11 @@ namespace VirtualRadar.Interface.Settings
         /// </summary>
         public static readonly string PlaneFinder = "PlaneFinder";
 
+        /// <summary>
+        /// The receiver is sending its feed in AirnavXRange format.
+        /// </summary>
+        public static readonly string AirnavXRange = "AirnavXRange";
+
         static string[] _AllInternalDataSources = new string[] {
             DataSource.Port30003,
             DataSource.Sbs3,
@@ -58,6 +63,7 @@ namespace VirtualRadar.Interface.Settings
             DataSource.CompressedVRS,
             DataSource.AircraftListJson,
             DataSource.PlaneFinder,
+            DataSource.AirnavXRange,
         };
         /// <summary>
         /// Gets an array of all internal data sources. This is not used by the server, it's just to

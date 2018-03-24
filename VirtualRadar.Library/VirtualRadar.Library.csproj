@@ -106,8 +106,12 @@
     <Compile Include="ImageDimensionsFetcher.cs" />
     <Compile Include="Listener\AircraftListJsonMessageBytesExtractor.cs" />
     <Compile Include="Listener\AircraftListJsonMessageConverter.cs" />
+    <Compile Include="Listener\AirnavXRangeMessageBytesExtractor.cs" />
+    <Compile Include="Listener\AirnavXRangeMessageConverter.cs" />
+    <Compile Include="Listener\AirnavXRangeReceiverProvider.cs" />
     <Compile Include="Listener\BeastReceiverProvider.cs" />
     <Compile Include="Listener\AircraftListJsonReceiverProvider.cs" />
+    <Compile Include="Listener\JsonMessageBytesExtractor.cs" />
     <Compile Include="Listener\MergedFeedComponentListener.cs" />
     <Compile Include="Listener\PlaneFinderMessageBytesExtractor.cs" />
     <Compile Include="Listener\PlaneFinderReceiverProvider.cs" />
