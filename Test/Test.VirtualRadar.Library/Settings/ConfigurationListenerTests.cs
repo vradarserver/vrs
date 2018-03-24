@@ -515,6 +515,7 @@ namespace Test.VirtualRadar.Library.Settings
                     { r => r.DataBits,                  r => r.DataBits += 1 },
                     { r => r.DataSource,                r => r.DataSource = DataSource.Beast },
                     { r => r.Enabled,                   r => r.Enabled = !r.Enabled },
+                    { r => r.FetchIntervalMilliseconds, r => r.FetchIntervalMilliseconds += 1 },
                     { r => r.Handshake,                 r => r.Handshake = System.IO.Ports.Handshake.RequestToSendXOnXOff },
                     { r => r.IdleTimeoutMilliseconds,   r => r.IdleTimeoutMilliseconds++ },
                     { r => r.IsPassive,                 r => r.IsPassive = !r.IsPassive },
@@ -530,6 +531,7 @@ namespace Test.VirtualRadar.Library.Settings
                     { r => r.StopBits,                  r => r.StopBits = System.IO.Ports.StopBits.OnePointFive },
                     { r => r.UniqueId,                  r => r.UniqueId += 1 },
                     { r => r.UseKeepAlive,              r => r.UseKeepAlive = !r.UseKeepAlive },
+                    { r => r.WebAddress,                r => r.WebAddress = "TEST" },
                 });
 
                 Assert.IsTrue(RaisedEvent(ConfigurationListenerGroup.Receiver, propertyName, settings, isListChild: true), "Receiver.{0}", propertyName);

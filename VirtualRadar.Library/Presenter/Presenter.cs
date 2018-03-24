@@ -314,6 +314,44 @@ namespace VirtualRadar.Library.Presenter
         }
 
         /// <summary>
+        /// Returns true if the URI is valid.
+        /// </summary>
+        /// <param name="uriString"></param>
+        /// <param name="uriKind"></param>
+        /// <param name="validSchemes">Pass null if any scheme is valid.</param>
+        /// <param name="valParams"></param>
+        /// <returns></returns>
+        protected bool UriIsValid(string uriString, UriKind uriKind, string[] validSchemes, Validation valParams)
+        {
+            return valParams.IsValid(() => UriIsValid(uriString, uriKind, validSchemes));
+        }
+
+        /// <summary>
+        /// Returns true if the URI is valid.
+        /// </summary>
+        /// <param name="uriString"></param>
+        /// <param name="uriKind"></param>
+        /// <param name="validSchemes">Pass null if any scheme is valid.</param>
+        /// <returns></returns>
+        protected bool UriIsValid(string uriString, UriKind uriKind, string[] validSchemes)
+        {
+            uriString = (uriString ?? "").Trim();
+            validSchemes = validSchemes ?? new string[0];
+
+            var result = false;
+            try {
+                result = Uri.TryCreate(uriString, uriKind, out var uri);
+                if(result && validSchemes.Length > 0) {
+                    result = validSchemes.Any(r => String.Equals(uri.Scheme, r, StringComparison.OrdinalIgnoreCase));
+                }
+            } catch {
+                result = false;
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Returns true if the arbitrary condition is true.
         /// </summary>
         /// <typeparam name="TValue"></typeparam>

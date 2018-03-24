@@ -369,6 +369,8 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(null, receiver.Passphrase);
                         Assert.AreEqual(ReceiverUsage.Normal, receiver.ReceiverUsage);
                         Assert.AreEqual(true, receiver.IsSatcomFeed);
+                        Assert.AreEqual("http://example.com:1/path/page", receiver.WebAddress);
+                        Assert.AreEqual(12345, receiver.FetchIntervalMilliseconds);
 
                         receiver = readBack.Receivers[1];
                         Assert.AreEqual(false, receiver.Enabled);
@@ -394,6 +396,8 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual("Two", receiver.Passphrase);
                         Assert.AreEqual(ReceiverUsage.MergeOnly, receiver.ReceiverUsage);
                         Assert.AreEqual(false, receiver.IsSatcomFeed);
+                        Assert.AreEqual("http://example.com:2/path/page", receiver.WebAddress);
+                        Assert.AreEqual(67890, receiver.FetchIntervalMilliseconds);
 
                         Assert.AreEqual(DefaultAccess.Deny, readBack.Receivers[0].Access.DefaultAccess);
                         Assert.AreEqual(2, readBack.Receivers[0].Access.Addresses.Count);
@@ -730,6 +734,8 @@ namespace Test.VirtualRadar.Library.Settings
                     Passphrase = null,
                     ReceiverUsage = ReceiverUsage.Normal,
                     IsSatcomFeed = true,
+                    WebAddress = "http://example.com:1/path/page",
+                    FetchIntervalMilliseconds = 12345,
                 },
                 new Receiver() {
                     Enabled = false,
@@ -761,6 +767,8 @@ namespace Test.VirtualRadar.Library.Settings
                     Passphrase = "Two",
                     ReceiverUsage = ReceiverUsage.MergeOnly,
                     IsSatcomFeed = false,
+                    WebAddress = "http://example.com:2/path/page",
+                    FetchIntervalMilliseconds = 67890,
                 },
             });
         }

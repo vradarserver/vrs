@@ -103,6 +103,9 @@ namespace VirtualRadar.WinForms.SettingPage
                     { ValidationField.ComPort,              page == null ? null : page.comboBoxSerialComPort },
                     { ValidationField.BaudRate,             page == null ? null : page.comboBoxSerialBaudRate },
                     { ValidationField.DataBits,             page == null ? null : page.comboBoxSerialDataBits },
+
+                    { ValidationField.WebAddress,           page == null ? null : page.textBoxWebAddress },
+                    { ValidationField.FetchInterval,        page == null ? null : page.numericFetchIntervalSeconds },
                 });
             }
         }
@@ -187,9 +190,12 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new TextBoxStringBinder<Receiver>  (Receiver, textBoxPassphrase,           r => r.Passphrase,      (r,v) => r.Passphrase = v));
             AddControlBinder(new TextBoxStringBinder<Receiver>  (Receiver, textBoxSerialStartupText,    r => r.StartupText,     (r,v) => r.StartupText = v));
             AddControlBinder(new TextBoxStringBinder<Receiver>  (Receiver, textBoxSerialShutdownText,   r => r.ShutdownText,    (r,v) => r.ShutdownText = v));
+            AddControlBinder(new TextBoxStringBinder<Receiver>  (Receiver, textBoxWebAddress,           r => r.WebAddress,      (r,v) => r.WebAddress = v));
 
             AddControlBinder(new NumericIntBinder<Receiver>     (Receiver, numericPort,             r => r.Port,                            (r,v) => r.Port = v));
             AddControlBinder(new NumericIntBinder<Receiver>     (Receiver, numericIdleTimeout,      r => r.IdleTimeoutMilliseconds / 1000,  (r,v) => r.IdleTimeoutMilliseconds = v * 1000) { ModelPropertyName = nameof(Receiver.IdleTimeoutMilliseconds) });
+
+            AddControlBinder(new NumericDoubleBinder<Receiver>  (Receiver, numericFetchIntervalSeconds, r => ((double)r.FetchIntervalMilliseconds) / 1000.0, (r,v) => r.FetchIntervalMilliseconds = (int)(v * 1000.0)) { ModelPropertyName = nameof(Receiver.FetchIntervalMilliseconds) });
 
             AddControlBinder(new ComboBoxBinder<Receiver, ReceiverLocation, int> (Receiver, comboBoxLocationId, SettingsView.Configuration.ReceiverLocations, r => r.ReceiverLocationId, (r,v) => r.ReceiverLocationId = v) { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId, SortList = true, });
             AddControlBinder(new ComboBoxBinder<Receiver, ReceiverFormatName, string>(Receiver, comboBoxDataSource, receiverFormats,                              r => r.DataSource,         (r,v) => r.DataSource = v)         { GetListItemDescription = r => r.ShortName, GetListItemValue = r => r.UniqueId, SortList = true, });
@@ -238,6 +244,9 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(comboBoxSerialHandshake,          Strings.SerialHandshake,        Strings.OptionsDescribeDataSourcesHandshake);
             SetInlineHelp(textBoxSerialStartupText,         Strings.SerialStartupText,      Strings.OptionsDescribeDataSourcesStartupText);
             SetInlineHelp(textBoxSerialShutdownText,        Strings.SerialShutdownText,     Strings.OptionsDescribeDataSourcesShutdownText);
+
+            SetInlineHelp(textBoxWebAddress,                Strings.Http,                   Strings.OptionsDescribeReceiverWebAddress);
+            SetInlineHelp(numericFetchIntervalSeconds,      Strings.FetchInterval,          Strings.OptionsDescribeReceiverFetchInterval);
         }
 
         /// <summary>
@@ -253,6 +262,7 @@ namespace VirtualRadar.WinForms.SettingPage
                 accessControl.AlignmentFieldLeftPosition = textBoxAddress.Left - 5;
 
                 groupBoxSerial.Location = Point.Empty;
+                groupBoxHttp.Location = Point.Empty;
                 ShowHideConnectionTypePanels();
                 EnableDisableControls();
             }
@@ -265,10 +275,13 @@ namespace VirtualRadar.WinForms.SettingPage
             groupBoxNetwork.Visible = Receiver.ConnectionType == ConnectionType.TCP;
             groupBoxAccessControl.Visible = Receiver.ConnectionType == ConnectionType.TCP;
             groupBoxSerial.Visible = Receiver.ConnectionType == ConnectionType.COM;
+            groupBoxHttp.Visible = Receiver.ConnectionType == ConnectionType.HTTP;
+
             switch(Receiver.ConnectionType) {
-                case ConnectionType.COM: Height = panelConnectionTypeSettings.Top + groupBoxSerial.Height + 5; break;
-                case ConnectionType.TCP: Height = panelConnectionTypeSettings.Top + groupBoxAccessControl.Top + groupBoxAccessControl.Height + 5; break;
-                default:                 throw new NotImplementedException();
+                case ConnectionType.COM:    Height = panelConnectionTypeSettings.Top + groupBoxSerial.Height + 5; break;
+                case ConnectionType.TCP:    Height = panelConnectionTypeSettings.Top + groupBoxAccessControl.Top + groupBoxAccessControl.Height + 5; break;
+                case ConnectionType.HTTP:   Height = panelConnectionTypeSettings.Top + groupBoxHttp.Top + groupBoxHttp.Height + 5; break;
+                default:                    throw new NotImplementedException();
             }
 
             EnableDisableControls();

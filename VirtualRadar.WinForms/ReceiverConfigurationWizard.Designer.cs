@@ -35,6 +35,15 @@
             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.textBoxNetworkAddress = new System.Windows.Forms.TextBox();
             this.wizard = new Gui.Wizard.Wizard();
+            this.wizardPageDedicatedReceiver = new Gui.Wizard.WizardPage();
+            this.radioPanelDedicatedReceiver = new RadioPanelApp.RadioPanel();
+            this.radioButtonDedicatedPlaneFinderRadar = new System.Windows.Forms.RadioButton();
+            this.radioButtonDedicatedRadarBox = new System.Windows.Forms.RadioButton();
+            this.radioButtonDedicatedOther = new System.Windows.Forms.RadioButton();
+            this.radioButtonDedicatedKinetics = new System.Windows.Forms.RadioButton();
+            this.radioButtonDedicatedMicroAdsb = new System.Windows.Forms.RadioButton();
+            this.radioButtonDedicatedBeast = new System.Windows.Forms.RadioButton();
+            this.label4 = new System.Windows.Forms.Label();
             this.wizardPageSdrDecoder = new Gui.Wizard.WizardPage();
             this.radioPanelSdrDecoder = new RadioPanelApp.RadioPanel();
             this.radioButtonSdrFR24Feeder = new System.Windows.Forms.RadioButton();
@@ -72,20 +81,18 @@
             this.radioButtonConnectionTypeNetwork = new System.Windows.Forms.RadioButton();
             this.radioButtonConnectionTypeUsb = new System.Windows.Forms.RadioButton();
             this.label5 = new System.Windows.Forms.Label();
-            this.wizardPageDedicatedReceiver = new Gui.Wizard.WizardPage();
-            this.radioPanelDedicatedReceiver = new RadioPanelApp.RadioPanel();
-            this.radioButtonDedicatedRadarBox = new System.Windows.Forms.RadioButton();
-            this.radioButtonDedicatedOther = new System.Windows.Forms.RadioButton();
-            this.radioButtonDedicatedKinetics = new System.Windows.Forms.RadioButton();
-            this.radioButtonDedicatedMicroAdsb = new System.Windows.Forms.RadioButton();
-            this.radioButtonDedicatedBeast = new System.Windows.Forms.RadioButton();
-            this.label4 = new System.Windows.Forms.Label();
-            this.radioButtonDedicatedPlaneFinderRadar = new System.Windows.Forms.RadioButton();
+            this.radioButtonDedicatedAirnavXRange = new System.Windows.Forms.RadioButton();
+            this.wizardPageWebAddress = new Gui.Wizard.WizardPage();
+            this.textBoxWebAddress = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.labelWebAddressTitle = new System.Windows.Forms.Label();
             this.panelBorder.SuspendLayout();
             this.panelHeading.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.wizard.SuspendLayout();
+            this.wizardPageDedicatedReceiver.SuspendLayout();
+            this.radioPanelDedicatedReceiver.SuspendLayout();
             this.wizardPageSdrDecoder.SuspendLayout();
             this.radioPanelSdrDecoder.SuspendLayout();
             this.wizardPageSdrOrDedicated.SuspendLayout();
@@ -98,8 +105,7 @@
             this.radioPanelKineticConnection.SuspendLayout();
             this.wizardPageConnectionType.SuspendLayout();
             this.radioPanelConnectionType.SuspendLayout();
-            this.wizardPageDedicatedReceiver.SuspendLayout();
-            this.radioPanelDedicatedReceiver.SuspendLayout();
+            this.wizardPageWebAddress.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelBorder
@@ -166,14 +172,15 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.wizard.BackColor = System.Drawing.SystemColors.Control;
-            this.wizard.Controls.Add(this.wizardPageDedicatedReceiver);
-            this.wizard.Controls.Add(this.wizardPageSdrDecoder);
-            this.wizard.Controls.Add(this.wizardPageSdrOrDedicated);
-            this.wizard.Controls.Add(this.wizardPageFinish);
+            this.wizard.Controls.Add(this.wizardPageWebAddress);
             this.wizard.Controls.Add(this.wizardPageNetworkAddress);
             this.wizard.Controls.Add(this.wizardPageLoopback);
             this.wizard.Controls.Add(this.wizardPageKineticConnection);
             this.wizard.Controls.Add(this.wizardPageConnectionType);
+            this.wizard.Controls.Add(this.wizardPageFinish);
+            this.wizard.Controls.Add(this.wizardPageDedicatedReceiver);
+            this.wizard.Controls.Add(this.wizardPageSdrDecoder);
+            this.wizard.Controls.Add(this.wizardPageSdrOrDedicated);
             this.wizard.Location = new System.Drawing.Point(0, 57);
             this.wizard.Margin = new System.Windows.Forms.Padding(0);
             this.wizard.Name = "wizard";
@@ -185,9 +192,110 @@
             this.wizardPageKineticConnection,
             this.wizardPageLoopback,
             this.wizardPageNetworkAddress,
+            this.wizardPageWebAddress,
             this.wizardPageFinish});
             this.wizard.Size = new System.Drawing.Size(569, 350);
             this.wizard.TabIndex = 0;
+            // 
+            // wizardPageDedicatedReceiver
+            // 
+            this.wizardPageDedicatedReceiver.Controls.Add(this.radioPanelDedicatedReceiver);
+            this.wizardPageDedicatedReceiver.Controls.Add(this.label4);
+            this.wizardPageDedicatedReceiver.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.wizardPageDedicatedReceiver.IsFinishPage = false;
+            this.wizardPageDedicatedReceiver.Location = new System.Drawing.Point(0, 0);
+            this.wizardPageDedicatedReceiver.Name = "wizardPageDedicatedReceiver";
+            this.wizardPageDedicatedReceiver.Size = new System.Drawing.Size(569, 302);
+            this.wizardPageDedicatedReceiver.TabIndex = 5;
+            // 
+            // radioPanelDedicatedReceiver
+            // 
+            this.radioPanelDedicatedReceiver.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.radioPanelDedicatedReceiver.Controls.Add(this.radioButtonDedicatedAirnavXRange);
+            this.radioPanelDedicatedReceiver.Controls.Add(this.radioButtonDedicatedPlaneFinderRadar);
+            this.radioPanelDedicatedReceiver.Controls.Add(this.radioButtonDedicatedRadarBox);
+            this.radioPanelDedicatedReceiver.Controls.Add(this.radioButtonDedicatedOther);
+            this.radioPanelDedicatedReceiver.Controls.Add(this.radioButtonDedicatedKinetics);
+            this.radioPanelDedicatedReceiver.Controls.Add(this.radioButtonDedicatedMicroAdsb);
+            this.radioPanelDedicatedReceiver.Controls.Add(this.radioButtonDedicatedBeast);
+            this.radioPanelDedicatedReceiver.Location = new System.Drawing.Point(12, 44);
+            this.radioPanelDedicatedReceiver.Name = "radioPanelDedicatedReceiver";
+            this.radioPanelDedicatedReceiver.Size = new System.Drawing.Size(545, 172);
+            this.radioPanelDedicatedReceiver.TabIndex = 9;
+            this.radioPanelDedicatedReceiver.ValueMember = null;
+            // 
+            // radioButtonDedicatedPlaneFinderRadar
+            // 
+            this.radioButtonDedicatedPlaneFinderRadar.AutoSize = true;
+            this.radioButtonDedicatedPlaneFinderRadar.Location = new System.Drawing.Point(3, 72);
+            this.radioButtonDedicatedPlaneFinderRadar.Name = "radioButtonDedicatedPlaneFinderRadar";
+            this.radioButtonDedicatedPlaneFinderRadar.Size = new System.Drawing.Size(93, 17);
+            this.radioButtonDedicatedPlaneFinderRadar.TabIndex = 3;
+            this.radioButtonDedicatedPlaneFinderRadar.Text = "::PlaneFinder::";
+            this.radioButtonDedicatedPlaneFinderRadar.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonDedicatedRadarBox
+            // 
+            this.radioButtonDedicatedRadarBox.AutoSize = true;
+            this.radioButtonDedicatedRadarBox.Location = new System.Drawing.Point(3, 3);
+            this.radioButtonDedicatedRadarBox.Name = "radioButtonDedicatedRadarBox";
+            this.radioButtonDedicatedRadarBox.Size = new System.Drawing.Size(222, 17);
+            this.radioButtonDedicatedRadarBox.TabIndex = 0;
+            this.radioButtonDedicatedRadarBox.Text = "::RecConWizDedicatedAirNavRadarBox::";
+            this.radioButtonDedicatedRadarBox.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonDedicatedOther
+            // 
+            this.radioButtonDedicatedOther.AutoSize = true;
+            this.radioButtonDedicatedOther.Location = new System.Drawing.Point(3, 148);
+            this.radioButtonDedicatedOther.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
+            this.radioButtonDedicatedOther.Name = "radioButtonDedicatedOther";
+            this.radioButtonDedicatedOther.Size = new System.Drawing.Size(63, 17);
+            this.radioButtonDedicatedOther.TabIndex = 5;
+            this.radioButtonDedicatedOther.Text = "::Other::";
+            this.radioButtonDedicatedOther.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonDedicatedKinetics
+            // 
+            this.radioButtonDedicatedKinetics.AutoSize = true;
+            this.radioButtonDedicatedKinetics.Location = new System.Drawing.Point(3, 49);
+            this.radioButtonDedicatedKinetics.Name = "radioButtonDedicatedKinetics";
+            this.radioButtonDedicatedKinetics.Size = new System.Drawing.Size(180, 17);
+            this.radioButtonDedicatedKinetics.TabIndex = 2;
+            this.radioButtonDedicatedKinetics.Text = "::RecConWizDedicatedKinetics::";
+            this.radioButtonDedicatedKinetics.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonDedicatedMicroAdsb
+            // 
+            this.radioButtonDedicatedMicroAdsb.AutoSize = true;
+            this.radioButtonDedicatedMicroAdsb.Location = new System.Drawing.Point(3, 95);
+            this.radioButtonDedicatedMicroAdsb.Name = "radioButtonDedicatedMicroAdsb";
+            this.radioButtonDedicatedMicroAdsb.Size = new System.Drawing.Size(193, 17);
+            this.radioButtonDedicatedMicroAdsb.TabIndex = 4;
+            this.radioButtonDedicatedMicroAdsb.Text = "::RecConWizDedicatedMicroAdsb::";
+            this.radioButtonDedicatedMicroAdsb.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonDedicatedBeast
+            // 
+            this.radioButtonDedicatedBeast.AutoSize = true;
+            this.radioButtonDedicatedBeast.Location = new System.Drawing.Point(3, 26);
+            this.radioButtonDedicatedBeast.Name = "radioButtonDedicatedBeast";
+            this.radioButtonDedicatedBeast.Size = new System.Drawing.Size(170, 17);
+            this.radioButtonDedicatedBeast.TabIndex = 1;
+            this.radioButtonDedicatedBeast.Text = "::RecConWizDedicatedBeast::";
+            this.radioButtonDedicatedBeast.UseVisualStyleBackColor = true;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(12, 18);
+            this.label4.Margin = new System.Windows.Forms.Padding(3, 20, 3, 10);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(172, 13);
+            this.label4.TabIndex = 2;
+            this.label4.Text = "::RecConWizDedicatedTitle::";
             // 
             // wizardPageSdrDecoder
             // 
@@ -363,7 +471,7 @@
             this.wizardPageFinish.IsFinishPage = true;
             this.wizardPageFinish.Location = new System.Drawing.Point(0, 0);
             this.wizardPageFinish.Name = "wizardPageFinish";
-            this.wizardPageFinish.Size = new System.Drawing.Size(511, 283);
+            this.wizardPageFinish.Size = new System.Drawing.Size(569, 302);
             this.wizardPageFinish.TabIndex = 10;
             // 
             // label10
@@ -395,7 +503,7 @@
             this.wizardPageNetworkAddress.IsFinishPage = false;
             this.wizardPageNetworkAddress.Location = new System.Drawing.Point(0, 0);
             this.wizardPageNetworkAddress.Name = "wizardPageNetworkAddress";
-            this.wizardPageNetworkAddress.Size = new System.Drawing.Size(511, 283);
+            this.wizardPageNetworkAddress.Size = new System.Drawing.Size(569, 302);
             this.wizardPageNetworkAddress.TabIndex = 9;
             // 
             // label8
@@ -426,7 +534,7 @@
             this.wizardPageLoopback.IsFinishPage = false;
             this.wizardPageLoopback.Location = new System.Drawing.Point(0, 0);
             this.wizardPageLoopback.Name = "wizardPageLoopback";
-            this.wizardPageLoopback.Size = new System.Drawing.Size(511, 283);
+            this.wizardPageLoopback.Size = new System.Drawing.Size(569, 302);
             this.wizardPageLoopback.TabIndex = 8;
             // 
             // radioPanelLoopback
@@ -437,7 +545,7 @@
             this.radioPanelLoopback.Controls.Add(this.radioButtonLoopbackYes);
             this.radioPanelLoopback.Location = new System.Drawing.Point(13, 47);
             this.radioPanelLoopback.Name = "radioPanelLoopback";
-            this.radioPanelLoopback.Size = new System.Drawing.Size(486, 50);
+            this.radioPanelLoopback.Size = new System.Drawing.Size(544, 50);
             this.radioPanelLoopback.TabIndex = 8;
             this.radioPanelLoopback.ValueMember = null;
             // 
@@ -483,7 +591,7 @@
             this.wizardPageKineticConnection.IsFinishPage = false;
             this.wizardPageKineticConnection.Location = new System.Drawing.Point(0, 0);
             this.wizardPageKineticConnection.Name = "wizardPageKineticConnection";
-            this.wizardPageKineticConnection.Size = new System.Drawing.Size(511, 283);
+            this.wizardPageKineticConnection.Size = new System.Drawing.Size(569, 302);
             this.wizardPageKineticConnection.TabIndex = 7;
             // 
             // label7
@@ -494,7 +602,7 @@
             this.label7.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.label7.Location = new System.Drawing.Point(12, 105);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(487, 162);
+            this.label7.Size = new System.Drawing.Size(545, 181);
             this.label7.TabIndex = 2;
             this.label7.Text = "::RecConWizKineticConNote::";
             // 
@@ -506,7 +614,7 @@
             this.radioPanelKineticConnection.Controls.Add(this.radioButtonKineticConnectBaseStation);
             this.radioPanelKineticConnection.Location = new System.Drawing.Point(15, 47);
             this.radioPanelKineticConnection.Name = "radioPanelKineticConnection";
-            this.radioPanelKineticConnection.Size = new System.Drawing.Size(484, 55);
+            this.radioPanelKineticConnection.Size = new System.Drawing.Size(542, 55);
             this.radioPanelKineticConnection.TabIndex = 7;
             this.radioPanelKineticConnection.ValueMember = null;
             // 
@@ -551,7 +659,7 @@
             this.wizardPageConnectionType.IsFinishPage = false;
             this.wizardPageConnectionType.Location = new System.Drawing.Point(0, 0);
             this.wizardPageConnectionType.Name = "wizardPageConnectionType";
-            this.wizardPageConnectionType.Size = new System.Drawing.Size(511, 283);
+            this.wizardPageConnectionType.Size = new System.Drawing.Size(569, 302);
             this.wizardPageConnectionType.TabIndex = 6;
             // 
             // radioPanelConnectionType
@@ -562,7 +670,7 @@
             this.radioPanelConnectionType.Controls.Add(this.radioButtonConnectionTypeUsb);
             this.radioPanelConnectionType.Location = new System.Drawing.Point(15, 46);
             this.radioPanelConnectionType.Name = "radioPanelConnectionType";
-            this.radioPanelConnectionType.Size = new System.Drawing.Size(484, 58);
+            this.radioPanelConnectionType.Size = new System.Drawing.Size(542, 58);
             this.radioPanelConnectionType.TabIndex = 8;
             this.radioPanelConnectionType.ValueMember = null;
             // 
@@ -597,104 +705,56 @@
             this.label5.TabIndex = 5;
             this.label5.Text = "::RecConWizConnectionTypeTitle::";
             // 
-            // wizardPageDedicatedReceiver
+            // radioButtonDedicatedAirnavXRange
             // 
-            this.wizardPageDedicatedReceiver.Controls.Add(this.radioPanelDedicatedReceiver);
-            this.wizardPageDedicatedReceiver.Controls.Add(this.label4);
-            this.wizardPageDedicatedReceiver.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.wizardPageDedicatedReceiver.IsFinishPage = false;
-            this.wizardPageDedicatedReceiver.Location = new System.Drawing.Point(0, 0);
-            this.wizardPageDedicatedReceiver.Name = "wizardPageDedicatedReceiver";
-            this.wizardPageDedicatedReceiver.Size = new System.Drawing.Size(569, 302);
-            this.wizardPageDedicatedReceiver.TabIndex = 5;
+            this.radioButtonDedicatedAirnavXRange.AutoSize = true;
+            this.radioButtonDedicatedAirnavXRange.Location = new System.Drawing.Point(3, 118);
+            this.radioButtonDedicatedAirnavXRange.Name = "radioButtonDedicatedAirnavXRange";
+            this.radioButtonDedicatedAirnavXRange.Size = new System.Drawing.Size(106, 17);
+            this.radioButtonDedicatedAirnavXRange.TabIndex = 6;
+            this.radioButtonDedicatedAirnavXRange.Text = "::AirnavXRange::";
+            this.radioButtonDedicatedAirnavXRange.UseVisualStyleBackColor = true;
             // 
-            // radioPanelDedicatedReceiver
+            // wizardPageWebAddress
             // 
-            this.radioPanelDedicatedReceiver.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.radioPanelDedicatedReceiver.Controls.Add(this.radioButtonDedicatedPlaneFinderRadar);
-            this.radioPanelDedicatedReceiver.Controls.Add(this.radioButtonDedicatedRadarBox);
-            this.radioPanelDedicatedReceiver.Controls.Add(this.radioButtonDedicatedOther);
-            this.radioPanelDedicatedReceiver.Controls.Add(this.radioButtonDedicatedKinetics);
-            this.radioPanelDedicatedReceiver.Controls.Add(this.radioButtonDedicatedMicroAdsb);
-            this.radioPanelDedicatedReceiver.Controls.Add(this.radioButtonDedicatedBeast);
-            this.radioPanelDedicatedReceiver.Location = new System.Drawing.Point(12, 44);
-            this.radioPanelDedicatedReceiver.Name = "radioPanelDedicatedReceiver";
-            this.radioPanelDedicatedReceiver.Size = new System.Drawing.Size(545, 153);
-            this.radioPanelDedicatedReceiver.TabIndex = 9;
-            this.radioPanelDedicatedReceiver.ValueMember = null;
+            this.wizardPageWebAddress.Controls.Add(this.textBoxWebAddress);
+            this.wizardPageWebAddress.Controls.Add(this.label11);
+            this.wizardPageWebAddress.Controls.Add(this.labelWebAddressTitle);
+            this.wizardPageWebAddress.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.wizardPageWebAddress.IsFinishPage = false;
+            this.wizardPageWebAddress.Location = new System.Drawing.Point(0, 0);
+            this.wizardPageWebAddress.Name = "wizardPageWebAddress";
+            this.wizardPageWebAddress.Size = new System.Drawing.Size(569, 302);
+            this.wizardPageWebAddress.TabIndex = 11;
             // 
-            // radioButtonDedicatedRadarBox
+            // textBoxWebAddress
             // 
-            this.radioButtonDedicatedRadarBox.AutoSize = true;
-            this.radioButtonDedicatedRadarBox.Location = new System.Drawing.Point(3, 3);
-            this.radioButtonDedicatedRadarBox.Name = "radioButtonDedicatedRadarBox";
-            this.radioButtonDedicatedRadarBox.Size = new System.Drawing.Size(222, 17);
-            this.radioButtonDedicatedRadarBox.TabIndex = 0;
-            this.radioButtonDedicatedRadarBox.Text = "::RecConWizDedicatedAirNavRadarBox::";
-            this.radioButtonDedicatedRadarBox.UseVisualStyleBackColor = true;
+            this.errorProvider.SetIconAlignment(this.textBoxWebAddress, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+            this.textBoxWebAddress.Location = new System.Drawing.Point(141, 46);
+            this.textBoxWebAddress.MaxLength = 256;
+            this.textBoxWebAddress.Name = "textBoxWebAddress";
+            this.textBoxWebAddress.Size = new System.Drawing.Size(416, 20);
+            this.textBoxWebAddress.TabIndex = 13;
             // 
-            // radioButtonDedicatedOther
+            // label11
             // 
-            this.radioButtonDedicatedOther.AutoSize = true;
-            this.radioButtonDedicatedOther.Location = new System.Drawing.Point(3, 125);
-            this.radioButtonDedicatedOther.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
-            this.radioButtonDedicatedOther.Name = "radioButtonDedicatedOther";
-            this.radioButtonDedicatedOther.Size = new System.Drawing.Size(63, 17);
-            this.radioButtonDedicatedOther.TabIndex = 5;
-            this.radioButtonDedicatedOther.Text = "::Other::";
-            this.radioButtonDedicatedOther.UseVisualStyleBackColor = true;
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(12, 49);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(83, 13);
+            this.label11.TabIndex = 12;
+            this.label11.Text = "::WebAddress:::";
             // 
-            // radioButtonDedicatedKinetics
+            // labelWebAddressTitle
             // 
-            this.radioButtonDedicatedKinetics.AutoSize = true;
-            this.radioButtonDedicatedKinetics.Location = new System.Drawing.Point(3, 49);
-            this.radioButtonDedicatedKinetics.Name = "radioButtonDedicatedKinetics";
-            this.radioButtonDedicatedKinetics.Size = new System.Drawing.Size(180, 17);
-            this.radioButtonDedicatedKinetics.TabIndex = 2;
-            this.radioButtonDedicatedKinetics.Text = "::RecConWizDedicatedKinetics::";
-            this.radioButtonDedicatedKinetics.UseVisualStyleBackColor = true;
-            // 
-            // radioButtonDedicatedMicroAdsb
-            // 
-            this.radioButtonDedicatedMicroAdsb.AutoSize = true;
-            this.radioButtonDedicatedMicroAdsb.Location = new System.Drawing.Point(3, 95);
-            this.radioButtonDedicatedMicroAdsb.Name = "radioButtonDedicatedMicroAdsb";
-            this.radioButtonDedicatedMicroAdsb.Size = new System.Drawing.Size(193, 17);
-            this.radioButtonDedicatedMicroAdsb.TabIndex = 4;
-            this.radioButtonDedicatedMicroAdsb.Text = "::RecConWizDedicatedMicroAdsb::";
-            this.radioButtonDedicatedMicroAdsb.UseVisualStyleBackColor = true;
-            // 
-            // radioButtonDedicatedBeast
-            // 
-            this.radioButtonDedicatedBeast.AutoSize = true;
-            this.radioButtonDedicatedBeast.Location = new System.Drawing.Point(3, 26);
-            this.radioButtonDedicatedBeast.Name = "radioButtonDedicatedBeast";
-            this.radioButtonDedicatedBeast.Size = new System.Drawing.Size(170, 17);
-            this.radioButtonDedicatedBeast.TabIndex = 1;
-            this.radioButtonDedicatedBeast.Text = "::RecConWizDedicatedBeast::";
-            this.radioButtonDedicatedBeast.UseVisualStyleBackColor = true;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(12, 18);
-            this.label4.Margin = new System.Windows.Forms.Padding(3, 20, 3, 10);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(172, 13);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "::RecConWizDedicatedTitle::";
-            // 
-            // radioButtonDedicatedPlaneFinderRadar
-            // 
-            this.radioButtonDedicatedPlaneFinderRadar.AutoSize = true;
-            this.radioButtonDedicatedPlaneFinderRadar.Location = new System.Drawing.Point(3, 72);
-            this.radioButtonDedicatedPlaneFinderRadar.Name = "radioButtonDedicatedPlaneFinderRadar";
-            this.radioButtonDedicatedPlaneFinderRadar.Size = new System.Drawing.Size(93, 17);
-            this.radioButtonDedicatedPlaneFinderRadar.TabIndex = 3;
-            this.radioButtonDedicatedPlaneFinderRadar.Text = "::PlaneFinder::";
-            this.radioButtonDedicatedPlaneFinderRadar.UseVisualStyleBackColor = true;
+            this.labelWebAddressTitle.AutoSize = true;
+            this.labelWebAddressTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelWebAddressTitle.Location = new System.Drawing.Point(12, 20);
+            this.labelWebAddressTitle.Margin = new System.Windows.Forms.Padding(3, 20, 3, 10);
+            this.labelWebAddressTitle.Name = "labelWebAddressTitle";
+            this.labelWebAddressTitle.Size = new System.Drawing.Size(294, 13);
+            this.labelWebAddressTitle.TabIndex = 11;
+            this.labelWebAddressTitle.Text = "Enter the web address for <INSERT NAME HERE>";
             // 
             // ReceiverConfigurationWizard
             // 
@@ -717,6 +777,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             this.wizard.ResumeLayout(false);
+            this.wizardPageDedicatedReceiver.ResumeLayout(false);
+            this.wizardPageDedicatedReceiver.PerformLayout();
+            this.radioPanelDedicatedReceiver.ResumeLayout(false);
+            this.radioPanelDedicatedReceiver.PerformLayout();
             this.wizardPageSdrDecoder.ResumeLayout(false);
             this.wizardPageSdrDecoder.PerformLayout();
             this.radioPanelSdrDecoder.ResumeLayout(false);
@@ -741,10 +805,8 @@
             this.wizardPageConnectionType.PerformLayout();
             this.radioPanelConnectionType.ResumeLayout(false);
             this.radioPanelConnectionType.PerformLayout();
-            this.wizardPageDedicatedReceiver.ResumeLayout(false);
-            this.wizardPageDedicatedReceiver.PerformLayout();
-            this.radioPanelDedicatedReceiver.ResumeLayout(false);
-            this.radioPanelDedicatedReceiver.PerformLayout();
+            this.wizardPageWebAddress.ResumeLayout(false);
+            this.wizardPageWebAddress.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -804,5 +866,10 @@
         private System.Windows.Forms.PictureBox pictureBoxLogo;
         private System.Windows.Forms.RadioButton radioButtonSdrFR24Feeder;
         private System.Windows.Forms.RadioButton radioButtonDedicatedPlaneFinderRadar;
+        private System.Windows.Forms.RadioButton radioButtonDedicatedAirnavXRange;
+        private Gui.Wizard.WizardPage wizardPageWebAddress;
+        private System.Windows.Forms.TextBox textBoxWebAddress;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label labelWebAddressTitle;
     }
 }

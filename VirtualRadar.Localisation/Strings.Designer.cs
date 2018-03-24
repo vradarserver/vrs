@@ -1777,6 +1777,24 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fetch interval.
+        /// </summary>
+        public static string FetchInterval {
+            get {
+                return ResourceManager.GetString("FetchInterval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The fetch interval must be between 0.1 and 9999.9 seconds.
+        /// </summary>
+        public static string FetchIntervalOutOfBounds {
+            get {
+                return ResourceManager.GetString("FetchIntervalOutOfBounds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Finish.
         /// </summary>
         public static string Finish {
@@ -1971,6 +1989,15 @@ namespace VirtualRadar.Localisation {
         public static string HideFromWebSite {
             get {
                 return ResourceManager.GetString("HideFromWebSite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HTTP.
+        /// </summary>
+        public static string Http {
+            get {
+                return ResourceManager.GetString("Http", resourceCulture);
             }
         }
         
@@ -4194,6 +4221,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The number of seconds to wait between each update of the feed..
+        /// </summary>
+        public static string OptionsDescribeReceiverFetchInterval {
+            get {
+                return ResourceManager.GetString("OptionsDescribeReceiverFetchInterval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The latitude of the receiver. This can be between -90° and 90° but cannot be exactly zero..
         /// </summary>
         public static string OptionsDescribeReceiverLocationLatitude {
@@ -4226,6 +4262,15 @@ namespace VirtualRadar.Localisation {
         public static string OptionsDescribeReceiverName {
             get {
                 return ResourceManager.GetString("OptionsDescribeReceiverName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The HTTP or HTTPS address of the receiver to connect to..
+        /// </summary>
+        public static string OptionsDescribeReceiverWebAddress {
+            get {
+                return ResourceManager.GetString("OptionsDescribeReceiverWebAddress", resourceCulture);
             }
         }
         
@@ -5495,6 +5540,15 @@ namespace VirtualRadar.Localisation {
         public static string RecConWizSourceTheSdr {
             get {
                 return ResourceManager.GetString("RecConWizSourceTheSdr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the web address of the {0} receiver.
+        /// </summary>
+        public static string RecConWizWebAddressTitle {
+            get {
+                return ResourceManager.GetString("RecConWizWebAddressTitle", resourceCulture);
             }
         }
         
@@ -7243,6 +7297,33 @@ namespace VirtualRadar.Localisation {
         public static string Warning {
             get {
                 return ResourceManager.GetString("Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web address.
+        /// </summary>
+        public static string WebAddress {
+            get {
+                return ResourceManager.GetString("WebAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The web address is invalid.
+        /// </summary>
+        public static string WebAddressIsInvalid {
+            get {
+                return ResourceManager.GetString("WebAddressIsInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The web address must be supplied.
+        /// </summary>
+        public static string WebAddressRequired {
+            get {
+                return ResourceManager.GetString("WebAddressRequired", resourceCulture);
             }
         }
         

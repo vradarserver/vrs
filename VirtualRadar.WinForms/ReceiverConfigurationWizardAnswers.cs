@@ -115,6 +115,16 @@ namespace VirtualRadar.WinForms
             set { SetField(ref _NetworkAddress, value, nameof(NetworkAddress)); }
         }
 
+        private string _WebAddress;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string WebAddress
+        {
+            get { return _WebAddress; }
+            set { SetField(ref _WebAddress, value, nameof(WebAddress)); }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>

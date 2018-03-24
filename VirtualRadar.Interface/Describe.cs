@@ -184,6 +184,7 @@ namespace VirtualRadar.Interface
             switch(connectionType) {
                 case Settings.ConnectionType.COM:   return Strings.USBOverCOM;
                 case Settings.ConnectionType.TCP:   return Strings.Network;
+                case Settings.ConnectionType.HTTP:  return Strings.Http;
                 default:                            throw new NotImplementedException();
             }
         }

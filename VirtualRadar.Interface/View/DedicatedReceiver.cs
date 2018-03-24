@@ -47,6 +47,11 @@ namespace VirtualRadar.Interface.View
         PlaneFinderRadar,
 
         /// <summary>
+        /// The user has an Airnav XRange receiver.
+        /// </summary>
+        AirnavXRange,
+
+        /// <summary>
         /// The user has a receiver that we don't know about.
         /// </summary>
         Other,

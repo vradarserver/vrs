@@ -260,6 +260,26 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _ShutdownText, value, nameof(ShutdownText)); }
         }
 
+        private string _WebAddress;
+        /// <summary>
+        /// Gets or sets the HTTP address to fetch data from.
+        /// </summary>
+        public string WebAddress
+        {
+            get { return _WebAddress; }
+            set { SetField(ref _WebAddress, value, nameof(WebAddress)); }
+        }
+
+        private int _FetchIntervalMillseconds;
+        /// <summary>
+        /// Gets or sets the interval between fetches in milliseconds.
+        /// </summary>
+        public int FetchIntervalMilliseconds
+        {
+            get { return _FetchIntervalMillseconds; }
+            set { SetField(ref _FetchIntervalMillseconds, value, nameof(FetchIntervalMilliseconds)); }
+        }
+
         private int _ReceiverLocationId;
         /// <summary>
         /// Gets or sets the identifier of the receiever location record associated with the receiver.
@@ -337,6 +357,7 @@ namespace VirtualRadar.Interface.Settings
             Handshake = Handshake.None;
             StartupText = "#43-02\\r";
             ShutdownText = "#43-00\\r";
+            FetchIntervalMilliseconds = 1000;
         }
 
         /// <summary>

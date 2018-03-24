@@ -671,6 +671,12 @@ namespace VirtualRadar.Library.Presenter
                             receiver.Address = answers.NetworkAddress;
                             receiver.Port = 30054;
                             break;
+                        case DedicatedReceiver.AirnavXRange:
+                            receiver.ConnectionType = ConnectionType.HTTP;
+                            receiver.DataSource = DataSource.AirnavXRange;
+                            receiver.WebAddress = answers.WebAddress;
+                            receiver.FetchIntervalMilliseconds = 1000;
+                            break;
                         case DedicatedReceiver.RadarBox:
                         case DedicatedReceiver.Other:
                             receiver.ConnectionType = ConnectionType.TCP;
@@ -1421,6 +1427,17 @@ namespace VirtualRadar.Library.Presenter
                         // The data bits value must be a known good value
                         ValueIsInRange(receiver.DataBits, 5, 8, new Validation(ValidationField.DataBits, defaults) {
                             Message = Strings.SerialDataBitsOutOfBounds,
+                        });
+                        break;
+                    case ConnectionType.HTTP:
+                        // The address must be supplied and must look like a valid URI
+                        UriIsValid(receiver.WebAddress, UriKind.Absolute, new string[] { "http", "https" }, new Validation(ValidationField.WebAddress, defaults) {
+                            Message = Strings.WebAddressIsInvalid,
+                        });
+
+                        // The fetch interval must be between 0.1 and 9999.9 seconds
+                        ValueIsInRange(receiver.FetchIntervalMilliseconds, 100, 10000000, new Validation(ValidationField.FetchInterval, defaults) {
+                            Message = Strings.FetchIntervalOutOfBounds,
                         });
                         break;
                     default:

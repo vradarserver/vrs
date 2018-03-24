@@ -418,11 +418,14 @@ var VRS;
                                         model.ConnectionParameters = ko.computed(function () {
                                             var connectionParameters = '';
                                             switch (model.ConnectionType()) {
+                                                case 0:
+                                                    connectionParameters = VRS.stringUtility.format("{0}:{1}", model.Address(), model.Port());
+                                                    break;
                                                 case 1:
                                                     connectionParameters = VRS.stringUtility.format('{0}, {1}, {2}/{3}, {4}, {5}, "{6}", "{7}"', model.ComPort(), model.BaudRate(), model.DataBits(), _this._ViewId.describeEnum(model.StopBits(), state.Response.StopBits), _this._ViewId.describeEnum(model.Parity(), state.Response.Parities), _this._ViewId.describeEnum(model.Handshake(), state.Response.Handshakes), model.StartupText(), model.ShutdownText());
                                                     break;
-                                                case 0:
-                                                    connectionParameters = VRS.stringUtility.format("{0}:{1}", model.Address(), model.Port());
+                                                case 2:
+                                                    connectionParameters = model.WebAddress();
                                                     break;
                                             }
                                             return connectionParameters;
@@ -434,6 +437,15 @@ var VRS;
                                             },
                                             write: function (value) {
                                                 model.IdleTimeoutMilliseconds(value * 1000);
+                                            },
+                                            owner: _this
+                                        });
+                                        model.FetchIntervalSeconds = ko.pureComputed({
+                                            read: function () {
+                                                return Math.floor(model.FetchIntervalMilliseconds() / 100) / 10;
+                                            },
+                                            write: function (value) {
+                                                model.FetchIntervalMilliseconds(value * 1000);
                                             },
                                             owner: _this
                                         });

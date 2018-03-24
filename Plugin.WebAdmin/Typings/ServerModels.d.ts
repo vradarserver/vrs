@@ -364,6 +364,8 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         StartupText: string;
         ShutdownText: string;
         ReceiverLocationId: number;
+        WebAddress: string;
+        FetchIntervalMilliseconds: number;
         ReceiverLocationIdValidation: VirtualRadar.Interface.View.IValidationModelField;
         ReceiverUsage: number;
     }
@@ -848,6 +850,8 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         StartupText: KnockoutObservable<string>;
         ShutdownText: KnockoutObservable<string>;
         ReceiverLocationId: KnockoutObservable<number>;
+        WebAddress: KnockoutObservable<string>;
+        FetchIntervalMilliseconds: KnockoutObservable<number>;
         ReceiverLocationIdValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         ReceiverUsage: KnockoutObservable<number>;
     }

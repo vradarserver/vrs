@@ -111,6 +111,7 @@
         ConnectionParameters?:      KnockoutComputed<string>;
         Location?:                  KnockoutComputed<ReceiverLocationModel>;
         IdleTimeoutSeconds?:        KnockoutComputed<number>;
+        FetchIntervalSeconds?:      KnockoutComputed<number>;
         WrapUpValidation?:          IValidation_KC;
 
         SelectRow?:                 (row: ReceiverModel) => void;
@@ -649,6 +650,12 @@
                                 model.ConnectionParameters = ko.computed(() => {
                                     let connectionParameters = '';
                                     switch(model.ConnectionType()) {
+                                        case 0:     // TCP
+                                            connectionParameters = VRS.stringUtility.format("{0}:{1}",
+                                                model.Address(),
+                                                model.Port()
+                                            );
+                                            break;
                                         case 1:     // COM
                                             connectionParameters = VRS.stringUtility.format('{0}, {1}, {2}/{3}, {4}, {5}, "{6}", "{7}"',
                                                 model.ComPort(),
@@ -661,11 +668,8 @@
                                                 model.ShutdownText()
                                             );
                                             break;
-                                        case 0:     // TCP
-                                            connectionParameters = VRS.stringUtility.format("{0}:{1}",
-                                                model.Address(),
-                                                model.Port()
-                                            );
+                                        case 2:     // HTTP
+                                            connectionParameters = model.WebAddress();
                                             break;
                                     }
                                     return connectionParameters;
@@ -679,6 +683,15 @@
                                     },
                                     write: (value) => {
                                         model.IdleTimeoutMilliseconds(value * 1000);
+                                    },
+                                    owner: this
+                                });
+                                model.FetchIntervalSeconds = ko.pureComputed({
+                                    read: () => {
+                                        return Math.floor(model.FetchIntervalMilliseconds() / 100) / 10;
+                                    },
+                                    write: (value) => {
+                                        model.FetchIntervalMilliseconds(value * 1000);
                                     },
                                     owner: this
                                 });

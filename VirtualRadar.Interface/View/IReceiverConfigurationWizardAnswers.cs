@@ -60,5 +60,10 @@ namespace VirtualRadar.Interface.View
         /// it cannot be reached over the loopback interface.
         /// </summary>
         string NetworkAddress { get; set; }
+
+        /// <summary>
+        /// Gets or sets the address to use if the receiver exposes a web interface.
+        /// </summary>
+        string WebAddress { get; set; }
     }
 }

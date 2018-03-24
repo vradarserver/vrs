@@ -413,6 +413,27 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div data-bind="visible: ConnectionType() == 2">
+                                        <div class="form-section">
+                                            ::Http::
+                                        </div>
+                                        <div class="form-group" data-bsu="field-validate" data-bsu-field="WebAddressValidation">
+                                            <label class="col-sm-4">::WebAddress:::</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" data-bind="textInput: WebAddress" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group" data-bsu="field-validate" data-bsu-field="FetchIntervalMillisecondsValidation">
+                                            <label class="col-sm-4">::FetchInterval:::</label>
+                                            <div class="col-sm-8">
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" data-bind="textInput: FetchIntervalSeconds" min="0.1" max="9999.9" step="0.1" />
+                                                    <span class="input-group-addon">::Seconds::</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 

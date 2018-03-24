@@ -29,5 +29,10 @@ namespace VirtualRadar.Interface.Settings
         /// The connection to the data source is via a serial COM port.
         /// </summary>
         COM,
+
+        /// <summary>
+        /// The connection to the data source is over HTTP.
+        /// </summary>
+        HTTP,
     }
 }

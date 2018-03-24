@@ -326,8 +326,18 @@ namespace VirtualRadar.Interface.View
         SendInterval,
 
         /// <summary>
-        /// 
+        /// The acceptable CORS domains.
         /// </summary>
         AllowCorsDomains,
+
+        /// <summary>
+        /// The HTTP or HTTPS address.
+        /// </summary>
+        WebAddress,
+
+        /// <summary>
+        /// The fetch interval.
+        /// </summary>
+        FetchInterval,
     }
 }

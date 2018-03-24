@@ -77,6 +77,12 @@
             this.radioButtonUsageMergeOnly = new System.Windows.Forms.RadioButton();
             this.radioButtonPanelUsage = new VirtualRadar.WinForms.Controls.RadioButtonPanel();
             this.checkBoxIsSatcomFeed = new System.Windows.Forms.CheckBox();
+            this.groupBoxHttp = new System.Windows.Forms.GroupBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.textBoxWebAddress = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.numericFetchIntervalSeconds = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).BeginInit();
             this.groupBoxSerial.SuspendLayout();
             this.groupBoxNetwork.SuspendLayout();
@@ -84,6 +90,8 @@
             this.panelConnectionTypeSettings.SuspendLayout();
             this.groupBoxAccessControl.SuspendLayout();
             this.radioButtonPanelUsage.SuspendLayout();
+            this.groupBoxHttp.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericFetchIntervalSeconds)).BeginInit();
             this.SuspendLayout();
             // 
             // label14
@@ -521,12 +529,13 @@
             this.panelConnectionTypeSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelConnectionTypeSettings.Controls.Add(this.groupBoxHttp);
             this.panelConnectionTypeSettings.Controls.Add(this.groupBoxSerial);
             this.panelConnectionTypeSettings.Controls.Add(this.groupBoxNetwork);
             this.panelConnectionTypeSettings.Controls.Add(this.groupBoxAccessControl);
             this.panelConnectionTypeSettings.Location = new System.Drawing.Point(3, 207);
             this.panelConnectionTypeSettings.Name = "panelConnectionTypeSettings";
-            this.panelConnectionTypeSettings.Size = new System.Drawing.Size(633, 601);
+            this.panelConnectionTypeSettings.Size = new System.Drawing.Size(633, 676);
             this.panelConnectionTypeSettings.TabIndex = 30;
             // 
             // groupBoxAccessControl
@@ -609,6 +618,82 @@
             this.checkBoxIsSatcomFeed.Text = "::IsSatcomFeed::";
             this.checkBoxIsSatcomFeed.UseVisualStyleBackColor = true;
             // 
+            // groupBoxHttp
+            // 
+            this.groupBoxHttp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxHttp.Controls.Add(this.label19);
+            this.groupBoxHttp.Controls.Add(this.label20);
+            this.groupBoxHttp.Controls.Add(this.numericFetchIntervalSeconds);
+            this.groupBoxHttp.Controls.Add(this.label17);
+            this.groupBoxHttp.Controls.Add(this.textBoxWebAddress);
+            this.groupBoxHttp.Location = new System.Drawing.Point(0, 604);
+            this.groupBoxHttp.Name = "groupBoxHttp";
+            this.groupBoxHttp.Size = new System.Drawing.Size(633, 71);
+            this.groupBoxHttp.TabIndex = 3;
+            this.groupBoxHttp.TabStop = false;
+            this.groupBoxHttp.Text = "::Http::";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(6, 22);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(83, 13);
+            this.label17.TabIndex = 3;
+            this.label17.Text = "::WebAddress:::";
+            // 
+            // textBoxWebAddress
+            // 
+            this.textBoxWebAddress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxWebAddress.Location = new System.Drawing.Point(197, 19);
+            this.textBoxWebAddress.Name = "textBoxWebAddress";
+            this.textBoxWebAddress.Size = new System.Drawing.Size(430, 20);
+            this.textBoxWebAddress.TabIndex = 4;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(280, 47);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(68, 13);
+            this.label19.TabIndex = 13;
+            this.label19.Text = "::PSeconds::";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(6, 47);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(84, 13);
+            this.label20.TabIndex = 11;
+            this.label20.Text = "::FetchInterval:::";
+            // 
+            // numericFetchIntervalSeconds
+            // 
+            this.numericFetchIntervalSeconds.DecimalPlaces = 1;
+            this.numericFetchIntervalSeconds.Location = new System.Drawing.Point(197, 45);
+            this.numericFetchIntervalSeconds.Maximum = new decimal(new int[] {
+            99999,
+            0,
+            0,
+            65536});
+            this.numericFetchIntervalSeconds.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.numericFetchIntervalSeconds.Name = "numericFetchIntervalSeconds";
+            this.numericFetchIntervalSeconds.Size = new System.Drawing.Size(77, 20);
+            this.numericFetchIntervalSeconds.TabIndex = 12;
+            this.numericFetchIntervalSeconds.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numericFetchIntervalSeconds.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
             // PageReceiver
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -628,7 +713,7 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.comboBoxDataSource);
             this.Name = "PageReceiver";
-            this.Size = new System.Drawing.Size(636, 811);
+            this.Size = new System.Drawing.Size(636, 886);
             ((System.ComponentModel.ISupportInitialize)(this.numericPort)).EndInit();
             this.groupBoxSerial.ResumeLayout(false);
             this.groupBoxSerial.PerformLayout();
@@ -639,6 +724,9 @@
             this.groupBoxAccessControl.ResumeLayout(false);
             this.radioButtonPanelUsage.ResumeLayout(false);
             this.radioButtonPanelUsage.PerformLayout();
+            this.groupBoxHttp.ResumeLayout(false);
+            this.groupBoxHttp.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericFetchIntervalSeconds)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -695,5 +783,11 @@
         private System.Windows.Forms.RadioButton radioButtonUsageMergeOnly;
         private VirtualRadar.WinForms.Controls.RadioButtonPanel radioButtonPanelUsage;
         private System.Windows.Forms.CheckBox checkBoxIsSatcomFeed;
+        private System.Windows.Forms.GroupBox groupBoxHttp;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.NumericUpDown numericFetchIntervalSeconds;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.TextBox textBoxWebAddress;
     }
 }

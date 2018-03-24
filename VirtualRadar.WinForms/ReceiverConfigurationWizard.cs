@@ -141,6 +141,7 @@ namespace VirtualRadar.WinForms
             radioButtonDedicatedOther.Tag =             DedicatedReceiver.Other;
             radioButtonDedicatedRadarBox.Tag =          DedicatedReceiver.RadarBox;
             radioButtonDedicatedPlaneFinderRadar.Tag =  DedicatedReceiver.PlaneFinderRadar;
+            radioButtonDedicatedAirnavXRange.Tag =      DedicatedReceiver.AirnavXRange;
             radioPanelDedicatedReceiver.ValueMember = nameof(ReceiverConfigurationWizardAnswers.DedicatedReceiver);
             radioPanelDedicatedReceiver.DataSource = Answers;
 
@@ -164,6 +165,9 @@ namespace VirtualRadar.WinForms
 
             // Network address
             textBoxNetworkAddress.DataBindings.Add("Text", answers, nameof(ReceiverConfigurationWizardAnswers.NetworkAddress));
+
+            // Web address
+            textBoxWebAddress.DataBindings.Add("Text", answers, nameof(ReceiverConfigurationWizardAnswers.WebAddress));
         }
         #endregion
 
@@ -197,6 +201,27 @@ namespace VirtualRadar.WinForms
                     }
                 }
                 errorProvider.SetError(textBoxNetworkAddress, message);
+            }
+
+            if(page == wizardPageWebAddress) {
+                Answers.WebAddress = (Answers.WebAddress ?? "").Trim();
+                if(Answers.WebAddress == "") {
+                    message = Strings.WebAddressRequired;
+                } else {
+                    try {
+                        if(!Uri.TryCreate(Answers.WebAddress, UriKind.Absolute, out var uri)) {
+                            message = Strings.WebAddressIsInvalid;
+                        } else {
+                            if(!String.Equals(uri.Scheme, "http", StringComparison.OrdinalIgnoreCase) &&
+                               !String.Equals(uri.Scheme, "https", StringComparison.OrdinalIgnoreCase)) {
+                                message = Strings.WebAddressIsInvalid;
+                            }
+                        }
+                    } catch {
+                        message = Strings.WebAddressIsInvalid;
+                    }
+                }
+                errorProvider.SetError(textBoxWebAddress, message);
             }
 
             return message == null;
@@ -249,6 +274,7 @@ namespace VirtualRadar.WinForms
                         case DedicatedReceiver.Beast:               args.Page = wizardPageConnectionType; break;
                         case DedicatedReceiver.KineticAvionicsAll:  args.Page = wizardPageKineticConnection; break;
                         case DedicatedReceiver.MicroAdsb:           args.Page = wizardPageFinish; break;
+                        case DedicatedReceiver.AirnavXRange:        args.Page = wizardPageWebAddress; break;
                         default:                                    args.Page = wizardPageNetworkAddress; break;
                     }
                 } else if(page == wizardPageConnectionType) {
@@ -277,11 +303,17 @@ namespace VirtualRadar.WinForms
                     else                                       args.Page = wizardPageFinish;
                 } else if(page == wizardPageNetworkAddress) {
                     args.Page = wizardPageFinish;
+                } else if(page == wizardPageWebAddress) {
+                    args.Page = wizardPageFinish;
                 }
 
                 labelLoopbackTitle.Text = String.Format(Strings.RecConWizLoopbackTitle, _SourceName);
-                if(_SourceIsProgram) labelNetworkAddressTitle.Text = String.Format(Strings.RecConWizNetworkProgramAddressTitle, _SourceName);
-                else                 labelNetworkAddressTitle.Text = String.Format(Strings.RecConWizNetworkHardwareAddressTitle, _SourceName);
+                labelWebAddressTitle.Text = String.Format(Strings.RecConWizWebAddressTitle, _SourceName);
+                if(_SourceIsProgram) {
+                    labelNetworkAddressTitle.Text = String.Format(Strings.RecConWizNetworkProgramAddressTitle, _SourceName);
+                } else {
+                    labelNetworkAddressTitle.Text = String.Format(Strings.RecConWizNetworkHardwareAddressTitle, _SourceName);
+                }
 
                 _PageHistory.Push(page);
             }

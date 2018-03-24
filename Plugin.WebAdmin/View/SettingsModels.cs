@@ -1087,6 +1087,16 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public int ReceiverLocationId { get; set; }
 
+        public string WebAddress { get; set; }
+
+        [ValidationModelField(ValidationField.WebAddress)]
+        public ValidationModelField WebAddressValidation { get; set; }
+
+        public int FetchIntervalMilliseconds { get; set; }
+
+        [ValidationModelField(ValidationField.FetchInterval)]
+        public ValidationModelField FetchIntervalMillisecondsValidation { get; set; }
+
         [ValidationModelField(ValidationField.Location)]
         public ValidationModelField ReceiverLocationIdValidation { get; set; }
 
@@ -1128,35 +1138,39 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             ShutdownText =                  settings.ShutdownText;
             ReceiverLocationId =            settings.ReceiverLocationId;
             ReceiverUsage =                 (int)settings.ReceiverUsage;
+            WebAddress =                    settings.WebAddress;
+            FetchIntervalMilliseconds =     settings.FetchIntervalMilliseconds;
 
             Access.RefreshFromSettings(settings.Access);
         }
 
         public Receiver CopyToSettings(Receiver settings)
         {
-            settings.Enabled =                  Enabled;
-            settings.UniqueId =                 UniqueId;
-            settings.Name =                     Name;
-            settings.DataSource =               DataSource;
-            settings.IsSatcomFeed =             IsSatcomFeed;
-            settings.ConnectionType =           EnumModel.CastFromInt<ConnectionType>(ConnectionType);
-            settings.AutoReconnectAtStartup =   AutoReconnectAtStartup;
-            settings.IsPassive =                IsPassive;
-            settings.Address =                  Address;
-            settings.Port =                     Port;
-            settings.UseKeepAlive =             UseKeepAlive;
-            settings.IdleTimeoutMilliseconds =  IdleTimeoutMilliseconds;
-            settings.Passphrase =               Passphrase;
-            settings.ComPort =                  ComPort;
-            settings.BaudRate =                 BaudRate;
-            settings.DataBits =                 DataBits;
-            settings.StopBits =                 EnumModel.CastFromInt<StopBits>(StopBits);
-            settings.Parity =                   EnumModel.CastFromInt<Parity>(Parity);
-            settings.Handshake =                EnumModel.CastFromInt<Handshake>(Handshake);
-            settings.StartupText =              StartupText;
-            settings.ShutdownText =             ShutdownText;
-            settings.ReceiverLocationId =       ReceiverLocationId;
-            settings.ReceiverUsage =            EnumModel.CastFromInt<ReceiverUsage>(ReceiverUsage);
+            settings.Enabled =                      Enabled;
+            settings.UniqueId =                     UniqueId;
+            settings.Name =                         Name;
+            settings.DataSource =                   DataSource;
+            settings.IsSatcomFeed =                 IsSatcomFeed;
+            settings.ConnectionType =               EnumModel.CastFromInt<ConnectionType>(ConnectionType);
+            settings.AutoReconnectAtStartup =       AutoReconnectAtStartup;
+            settings.IsPassive =                    IsPassive;
+            settings.Address =                      Address;
+            settings.Port =                         Port;
+            settings.UseKeepAlive =                 UseKeepAlive;
+            settings.IdleTimeoutMilliseconds =      IdleTimeoutMilliseconds;
+            settings.Passphrase =                   Passphrase;
+            settings.ComPort =                      ComPort;
+            settings.BaudRate =                     BaudRate;
+            settings.DataBits =                     DataBits;
+            settings.StopBits =                     EnumModel.CastFromInt<StopBits>(StopBits);
+            settings.Parity =                       EnumModel.CastFromInt<Parity>(Parity);
+            settings.Handshake =                    EnumModel.CastFromInt<Handshake>(Handshake);
+            settings.StartupText =                  StartupText;
+            settings.ShutdownText =                 ShutdownText;
+            settings.ReceiverLocationId =           ReceiverLocationId;
+            settings.ReceiverUsage =                EnumModel.CastFromInt<ReceiverUsage>(ReceiverUsage);
+            settings.WebAddress =                   WebAddress;
+            settings.FetchIntervalMilliseconds =    FetchIntervalMilliseconds;
 
             Access.CopyToSettings(settings.Access);
 

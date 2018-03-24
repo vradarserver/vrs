@@ -2739,4 +2739,31 @@ Show this message.</value>
     <value>Airnav XRange</value>
     <comment>Manufacturer and product name</comment>
   </data>
+  <data name="Http" xml:space="preserve">
+    <value>HTTP</value>
+  </data>
+  <data name="FetchInterval" xml:space="preserve">
+    <value>Fetch interval</value>
+  </data>
+  <data name="FetchIntervalOutOfBounds" xml:space="preserve">
+    <value>The fetch interval must be between 0.1 and 9999.9 seconds</value>
+  </data>
+  <data name="OptionsDescribeReceiverFetchInterval" xml:space="preserve">
+    <value>The number of seconds to wait between each update of the feed.</value>
+  </data>
+  <data name="OptionsDescribeReceiverWebAddress" xml:space="preserve">
+    <value>The HTTP or HTTPS address of the receiver to connect to.</value>
+  </data>
+  <data name="RecConWizWebAddressTitle" xml:space="preserve">
+    <value>Enter the web address of the {0} receiver</value>
+  </data>
+  <data name="WebAddress" xml:space="preserve">
+    <value>Web address</value>
+  </data>
+  <data name="WebAddressIsInvalid" xml:space="preserve">
+    <value>The web address is invalid</value>
+  </data>
+  <data name="WebAddressRequired" xml:space="preserve">
+    <value>The web address must be supplied</value>
+  </data>
 </root>

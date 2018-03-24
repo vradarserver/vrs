@@ -53,6 +53,8 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.ReceiverLocationId, 0, 1);
             TestUtilities.TestProperty(settings, r => r.ReceiverUsage, ReceiverUsage.Normal, ReceiverUsage.MergeOnly);
             TestUtilities.TestProperty(settings, r => r.IsSatcomFeed, false);
+            TestUtilities.TestProperty(settings, r => r.WebAddress, null, "Abc");
+            TestUtilities.TestProperty(settings, r => r.FetchIntervalMilliseconds, 1000, 12000);
 
             Assert.IsNotNull(settings.Access);
         }
