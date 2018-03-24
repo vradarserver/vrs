@@ -11,34 +11,60 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VirtualRadar.Interface.Listener
+namespace VirtualRadar.Library.Network
 {
     /// <summary>
-    /// The JSON object transmitted by Airnav XRange receivers.
+    /// Describes a byte array that represents a buffer that needs to be copied in chunks into
+    /// a smaller buffer over repeated calls.
     /// </summary>
-    [DataContract]
-    public class AirnavXRangeJson
+    class ByteBuffer
     {
-        /// <summary>
-        /// Gets or sets the current time at UTC in single digit precision floating point seconds since 1st Jan 1970.
-        /// </summary>
-        [DataMember(Name = "now")]
-        public float Now { get; set; }
+        private byte[] _Buffer;
+
+        private int _Offset;
+
+        private int _Length;
+
+        private int _OffsetNextRead;
 
         /// <summary>
-        /// Gets or sets a number of messages... perhaps the count received since the unit was first powered on?
+        /// Gets the number of bytes left to copy.
         /// </summary>
-        [DataMember(Name = "messages")]
-        public long Messages { get; set; }
+        public int LengthRemaining { get => _Length - (_OffsetNextRead - _Offset); }
 
         /// <summary>
-        /// Gets a list of aircraft.
+        /// Records the buffer's content for subsequent copies via <see cref="CopyChunkIntoBuffer"/>.
         /// </summary>
-        [DataMember(Name = "aircraft")]
-        public List<AirnavXRangeAircraftJson> Aircraft { get; set; } = new List<AirnavXRangeAircraftJson>();
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        public void SetBuffer(byte[] buffer, int offset, int length)
+        {
+            _Buffer = buffer;
+            _Offset = offset;
+            _Length = length;
+
+            _OffsetNextRead = _Offset;
+        }
+
+        /// <summary>
+        /// Copies a chunk of the buffer recorded with <see cref="SetBuffer"/> into the buffer passed across.
+        /// Automatically adjusts <paramref name="length"/> so that it cannot exceed <see cref="LengthRemaining"/>.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <returns>The number of bytes actually copied into the buffer.</returns>
+        public int CopyChunkIntoBuffer(byte[] buffer, int offset, int length)
+        {
+            length = Math.Min(length, LengthRemaining);
+            Array.ConstrainedCopy(_Buffer, _OffsetNextRead, buffer, offset, length);
+            _OffsetNextRead += length;
+
+            return length;
+        }
     }
 }

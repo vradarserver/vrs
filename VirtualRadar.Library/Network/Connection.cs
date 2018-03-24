@@ -45,7 +45,7 @@ namespace VirtualRadar.Library.Network
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Description { get; protected set; }
+        public virtual string Description { get; protected set; }
 
         /// <summary>
         /// See interface docs.

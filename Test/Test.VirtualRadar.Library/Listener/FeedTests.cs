@@ -91,6 +91,7 @@ namespace Test.VirtualRadar.Library.Listener
 
         private Mock<INetworkConnector> _IPActiveConnector;
         private Mock<ISerialConnector> _SerialActiveConnector;
+        private Mock<IHttpConnector> _HttpActiveConnector;
         private Mock<IPassphraseAuthentication> _PassphraseAuthentication;
         private Mock<IPort30003MessageBytesExtractor> _Port30003Extractor;
         private Mock<ISbs3MessageBytesExtractor> _Sbs3MessageBytesExtractor;
@@ -98,6 +99,7 @@ namespace Test.VirtualRadar.Library.Listener
         private Mock<ICompressedMessageBytesExtractor> _CompressedMessageBytesExtractor;
         private Mock<IAircraftListJsonMessageBytesExtractor> _AircraftListJsonMessageBytesExtractor;
         private Mock<IPlaneFinderMessageBytesExtractor> _PlaneFinderMessageBytesExtractor;
+        private Mock<IAirnavXRangeMessageBytesExtractor> _AirnavXRangeMessageBytesExtractor;
         private Mock<IRawMessageTranslator> _RawMessageTranslator;
         private Mock<ISavedPolarPlotStorage> _SavedPolarPlotStorage;
         private SavedPolarPlot _SavedPolarPlot;
@@ -244,8 +246,10 @@ namespace Test.VirtualRadar.Library.Listener
             // and registers them as the default object.
             _IPActiveConnector = TestUtilities.CreateMockImplementation<INetworkConnector>();
             _SerialActiveConnector = TestUtilities.CreateMockImplementation<ISerialConnector>();
+            _HttpActiveConnector = TestUtilities.CreateMockImplementation<IHttpConnector>();
             _IPActiveConnector.Object.Authentication = null;
             _SerialActiveConnector.Object.Authentication = null;
+            _HttpActiveConnector.Object.Authentication = null;
 
             _Port30003Extractor = TestUtilities.CreateMockImplementation<IPort30003MessageBytesExtractor>();
             _Sbs3MessageBytesExtractor = TestUtilities.CreateMockImplementation<ISbs3MessageBytesExtractor>();
@@ -253,6 +257,7 @@ namespace Test.VirtualRadar.Library.Listener
             _CompressedMessageBytesExtractor = TestUtilities.CreateMockImplementation<ICompressedMessageBytesExtractor>();
             _AircraftListJsonMessageBytesExtractor = TestUtilities.CreateMockImplementation<IAircraftListJsonMessageBytesExtractor>();
             _PlaneFinderMessageBytesExtractor = TestUtilities.CreateMockImplementation<IPlaneFinderMessageBytesExtractor>();
+            _AirnavXRangeMessageBytesExtractor = TestUtilities.CreateMockImplementation<IAirnavXRangeMessageBytesExtractor>();
 
             _RawMessageTranslator = TestUtilities.CreateMockImplementation<IRawMessageTranslator>();
             _RawMessageTranslator.Object.ReceiverLocation = null;
@@ -384,6 +389,8 @@ namespace Test.VirtualRadar.Library.Listener
                     Assert.AreSame(_AircraftListJsonMessageBytesExtractor.Object, _Listener.Object.BytesExtractor);
                 } else if(dataSource == DataSource.PlaneFinder) {
                     Assert.AreSame(_PlaneFinderMessageBytesExtractor.Object, _Listener.Object.BytesExtractor);
+                } else if(dataSource == DataSource.AirnavXRange) {
+                    Assert.AreSame(_AirnavXRangeMessageBytesExtractor.Object, _Listener.Object.BytesExtractor);
                 } else {
                     throw new NotImplementedException();
                 }
@@ -391,6 +398,7 @@ namespace Test.VirtualRadar.Library.Listener
                 switch(connectionType) {
                     case ConnectionType.COM:        Assert.AreSame(_SerialActiveConnector.Object, _Listener.Object.Connector); break;
                     case ConnectionType.TCP:        Assert.AreSame(_IPActiveConnector.Object, _Listener.Object.Connector); break;
+                    case ConnectionType.HTTP:       Assert.AreSame(_HttpActiveConnector.Object, _Listener.Object.Connector); break;
                     default:                        throw new NotImplementedException();
                 }
 
@@ -428,6 +436,9 @@ namespace Test.VirtualRadar.Library.Listener
                 _Receiver.StartupText = "Up";
                 _Receiver.ShutdownText = "Down";
 
+                _Receiver.WebAddress = "Web Address";
+                _Receiver.FetchIntervalMilliseconds = 12345;
+
                 action();
 
                 Assert.AreEqual(true, _Listener.Object.IgnoreBadMessages);
@@ -442,6 +453,10 @@ namespace Test.VirtualRadar.Library.Listener
                         Assert.AreEqual(Handshake.XOnXOff, _SerialActiveConnector.Object.Handshake);
                         Assert.AreEqual("Up", _SerialActiveConnector.Object.StartupText);
                         Assert.AreEqual("Down", _SerialActiveConnector.Object.ShutdownText);
+                        break;
+                    case ConnectionType.HTTP:
+                        Assert.AreEqual("Web Address", _HttpActiveConnector.Object.WebAddress);
+                        Assert.AreEqual(12345, _HttpActiveConnector.Object.FetchIntervalMilliseconds);
                         break;
                     case ConnectionType.TCP:
                         Assert.AreEqual("TCP Address", _IPActiveConnector.Object.Address);

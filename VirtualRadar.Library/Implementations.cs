@@ -54,6 +54,7 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.ModeS.IModeSTranslator, ModeS.ModeSTranslator>();
             factory.Register<VirtualRadar.Interface.Network.IConnectorActivityLog, Network.ConnectorActivityLog>();
             factory.Register<VirtualRadar.Interface.Network.IConnectorSnapshotLogger, Network.ConnectorSnapshotLogger>();
+            factory.Register<VirtualRadar.Interface.Network.IHttpConnector, Network.HttpConnector>();
             factory.Register<VirtualRadar.Interface.Network.INetworkConnector, Network.NetworkConnector>();
             factory.Register<VirtualRadar.Interface.Network.IPassphraseAuthentication, Network.PassphraseAuthentication>();
             factory.Register<VirtualRadar.Interface.Network.IRebroadcastFormatManager, Network.RebroadcastFormatManager>();

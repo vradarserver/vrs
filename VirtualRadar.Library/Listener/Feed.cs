@@ -450,6 +450,19 @@ namespace VirtualRadar.Library.Listener
                         result = ipConnector;
                     }
                     break;
+                case ConnectionType.HTTP:
+                    var existingHttpConnector = result as IHttpConnector;
+                    if(   existingHttpConnector == null
+                       || existingHttpConnector.WebAddress != settings.WebAddress
+                       || existingHttpConnector.FetchIntervalMilliseconds != settings.FetchIntervalMilliseconds
+                    ) {
+                        var httpConnector = Factory.Resolve<IHttpConnector>();
+                        httpConnector.Name =                        settings.Name;
+                        httpConnector.WebAddress =                  settings.WebAddress;
+                        httpConnector.FetchIntervalMilliseconds =   settings.FetchIntervalMilliseconds;
+                        result = httpConnector;
+                    }
+                    break;
                 default:
                     throw new NotImplementedException();
             }

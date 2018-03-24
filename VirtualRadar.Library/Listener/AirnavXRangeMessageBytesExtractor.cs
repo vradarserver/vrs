@@ -27,5 +27,11 @@ namespace VirtualRadar.Library.Listener
         /// See base docs.
         /// </summary>
         protected override ExtractedBytes _ExtractedBytes => _AirnavXRangeExtractedBytes;
+
+        public override IEnumerable<ExtractedBytes> ExtractMessageBytes(byte[] bytes, int offset, int length)
+        {
+            // Easy debug point...
+            return base.ExtractMessageBytes(bytes, offset, length);
+        }
     }
 }

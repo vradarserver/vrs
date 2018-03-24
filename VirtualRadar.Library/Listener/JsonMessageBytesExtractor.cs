@@ -92,7 +92,7 @@ namespace VirtualRadar.Library.Listener
         /// <param name="offset"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public IEnumerable<ExtractedBytes> ExtractMessageBytes(byte[] bytes, int offset, int length)
+        public virtual IEnumerable<ExtractedBytes> ExtractMessageBytes(byte[] bytes, int offset, int length)
         {
             var resetBufferIfNoStartFound = _ReadBufferLength != 0;
             if(!AppendBytesToReadBuffer(bytes, offset, length)) {

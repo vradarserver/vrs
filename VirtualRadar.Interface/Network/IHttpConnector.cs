@@ -11,34 +11,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VirtualRadar.Interface.Listener
+namespace VirtualRadar.Interface.Network
 {
     /// <summary>
-    /// The JSON object transmitted by Airnav XRange receivers.
+    /// A connector that fetches data from an HTTP endpoint.
     /// </summary>
-    [DataContract]
-    public class AirnavXRangeJson
+    public interface IHttpConnector : IConnector
     {
         /// <summary>
-        /// Gets or sets the current time at UTC in single digit precision floating point seconds since 1st Jan 1970.
+        /// Gets or sets the address of the HTTP endpoint.
         /// </summary>
-        [DataMember(Name = "now")]
-        public float Now { get; set; }
+        string WebAddress { get; set; }
 
         /// <summary>
-        /// Gets or sets a number of messages... perhaps the count received since the unit was first powered on?
+        /// Gets or sets the interval between fetches in milliseconds.
         /// </summary>
-        [DataMember(Name = "messages")]
-        public long Messages { get; set; }
-
-        /// <summary>
-        /// Gets a list of aircraft.
-        /// </summary>
-        [DataMember(Name = "aircraft")]
-        public List<AirnavXRangeAircraftJson> Aircraft { get; set; } = new List<AirnavXRangeAircraftJson>();
+        int FetchIntervalMilliseconds { get; set; }
     }
 }

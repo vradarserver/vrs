@@ -21,6 +21,7 @@ namespace VirtualRadar.Interface.Listener
     /// <summary>
     /// Describes an aircraft in an <see cref="AirnavXRangeJson"/> object.
     /// </summary>
+    [DataContract]
     public class AirnavXRangeAircraftJson
     {
         /// <summary>
