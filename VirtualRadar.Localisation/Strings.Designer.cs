@@ -358,7 +358,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Airnav XRange.
+        ///   Looks up a localized string similar to Airnav xRange.
         /// </summary>
         public static string AirnavXRange {
             get {

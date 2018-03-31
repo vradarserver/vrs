@@ -2736,7 +2736,7 @@ Show this message.</value>
     <comment>SVG is a graphics file format</comment>
   </data>
   <data name="AirnavXRange" xml:space="preserve">
-    <value>Airnav XRange</value>
+    <value>Airnav xRange</value>
     <comment>Manufacturer and product name</comment>
   </data>
   <data name="Http" xml:space="preserve">
