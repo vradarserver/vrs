@@ -417,6 +417,20 @@ namespace Test.VirtualRadar.Owin.Middleware
         }
 
         [TestMethod]
+        public void ImageServer_Dynamically_Resizes_For_HighDpi_Devices()
+        {
+            _Environment.RequestPath = "/Images/hiDpi/TestSquare.png";
+            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+
+            using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
+                using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
+                    Assert.AreEqual(18, siteImage.Width);
+                    Assert.AreEqual(18, siteImage.Height);
+                }
+            }
+        }
+
+        [TestMethod]
         public void ImageServer_Can_Dynamically_Add_Altitude_Stalk()
         {
             _Environment.RequestPath = "/Images/Hght-15/CenX-4/Alt-/TestSquare.png";

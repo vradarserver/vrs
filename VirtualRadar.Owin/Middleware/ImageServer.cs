@@ -208,6 +208,9 @@ namespace VirtualRadar.Owin.Middleware
                     if(result) {
                         var configuration = _SharedConfiguration.Get();
 
+                        if(imageRequest.IsHighDpi) {
+                            tempImage = _Graphics.UseImage(tempImage, _Graphics.ResizeForHiDpi(tempImage ?? stockImage));
+                        }
                         if(imageRequest.RotateDegrees > 0.0) {
                             tempImage = _Graphics.UseImage(tempImage, _Graphics.RotateImage(tempImage ?? stockImage, imageRequest.RotateDegrees.Value));
                         }
@@ -219,6 +222,7 @@ namespace VirtualRadar.Owin.Middleware
                         } else if(imageRequest.Height != null) {
                             tempImage = _Graphics.UseImage(tempImage, _Graphics.HeightenImage(tempImage ?? stockImage, imageRequest.Height.Value, imageRequest.CentreImageVertically));
                         }
+
                         var addTextLines = imageRequest.HasTextLines && (!context.Request.IsInternet || configuration.InternetClientSettings.CanShowPinText);
                         if(addTextLines) {
                             tempImage = _Graphics.UseImage(tempImage, _Graphics.AddTextLines(tempImage ?? stockImage, imageRequest.TextLines, centreText: true, isHighDpi: imageRequest.IsHighDpi));
