@@ -468,23 +468,6 @@ namespace VirtualRadar.Library
         }
 
         /// <summary>
-        /// Called when the basic aircraft details have changed.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void BasicAircraftLookup_ContentUpdated(object sender, EventArgs args)
-        {
-            try {
-                ForceRefetchOnFastTick = true;
-            } catch(ThreadAbortException) {
-                // Will automatically get re-thrown - we don't want these logged
-            } catch(Exception ex) {
-                var log = Factory.ResolveSingleton<ILog>();
-                log.WriteLine("Caught exception during refresh of aircraft database detail: {0}", ex.ToString());
-            }
-        }
-
-        /// <summary>
         /// Called when the picture folder cache's configuration has been changed.
         /// </summary>
         /// <param name="sender"></param>
