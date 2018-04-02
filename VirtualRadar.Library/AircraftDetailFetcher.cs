@@ -146,8 +146,12 @@ namespace VirtualRadar.Library
                     _AutoConfigDatabase.Database.AircraftUpdated -= BaseStationDatabase_AircraftUpdated;
                     _AutoConfigDatabase.Database.FileNameChanged -= BaseStationDatabase_FileNameChanged;
                 }
-                if(_PictureFolderCache != null) Factory.ResolveSingleton<IAutoConfigPictureFolderCache>().CacheConfigurationChanged -= AutoConfigPictureFolderCache_CacheConfigurationChanged;
-                if(_StandingDataManager != null) _StandingDataManager.LoadCompleted -= StandingDataManager_LoadCompleted;
+                if(_PictureFolderCache != null) {
+                    Factory.ResolveSingleton<IAutoConfigPictureFolderCache>().CacheConfigurationChanged -= AutoConfigPictureFolderCache_CacheConfigurationChanged;
+                }
+                if(_StandingDataManager != null) {
+                    _StandingDataManager.LoadCompleted -= StandingDataManager_LoadCompleted;
+                }
             }
             base.Dispose(disposing);
         }
@@ -175,8 +179,9 @@ namespace VirtualRadar.Library
             _StandingDataManager.LoadCompleted += StandingDataManager_LoadCompleted;
 
             if(_PictureLookupThread == null) {
-                _PictureLookupThread = new BackgroundThreadQueue<LookupPictureDetail>("PictureLookup", BackgroundThreadQueueMechanism.ThreadPool);
-                _PictureLookupThread.MaximumParallelThreads = 10;
+                _PictureLookupThread = new BackgroundThreadQueue<LookupPictureDetail>("PictureLookup", BackgroundThreadQueueMechanism.ThreadPool) {
+                    MaximumParallelThreads = 10,
+                };
                 _PictureLookupThread.StartBackgroundThread(PictureLookupThread_ProcessLookup, PictureLookupThread_ProcessException);
             }
 
@@ -192,10 +197,14 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         public AircraftDetail RegisterAircraft(IAircraft aircraft)
         {
-            if(aircraft == null) throw new ArgumentNullException("aircraft");
+            if(aircraft == null) {
+                throw new ArgumentNullException(nameof(aircraft));
+            }
 
             AircraftDetail result = null;
-            if(!String.IsNullOrEmpty(aircraft.Icao24)) result = DoRegisterAircraft(aircraft.Icao24, aircraft);
+            if(!String.IsNullOrEmpty(aircraft.Icao24)) {
+                result = DoRegisterAircraft(aircraft.Icao24, aircraft);
+            }
 
             return result;
         }
@@ -211,6 +220,7 @@ namespace VirtualRadar.Library
         {
             var databaseAircraft = _AutoConfigDatabase.Database.GetAircraftByCode(fetchedDetail.Aircraft.Icao24);
             var onlineAircraft = _AircraftOnlineLookupManager.Lookup(fetchedDetail.Aircraft.Icao24, databaseAircraft, searchedForBaseStationAircraft: true);
+
             return ApplyDatabaseRecord(fetchedDetail.Detail, databaseAircraft, onlineAircraft, fetchedDetail.Aircraft, fetchedDetail.IsFirstFetch);
         }
 
@@ -222,8 +232,8 @@ namespace VirtualRadar.Library
         protected override bool DoFetchManyAircraft(IEnumerable<AircraftFetcher<string, AircraftDetail>.FetchedDetail> fetchedDetails)
         {
             var allIcaos = fetchedDetails.Select(r => r.Key).ToArray();
-            var newIcaos = fetchedDetails.Where(r => r.Detail == null || r.Detail.Aircraft == null).Select(r => r.Key).ToArray();
-            var existingIcaos = fetchedDetails.Where(r => r.Detail != null && r.Detail.Aircraft != null).Select(r => r.Key).ToArray();
+            var newIcaos = fetchedDetails.Where(r => r.Detail?.Aircraft == null).Select(r => r.Key).ToArray();
+            var existingIcaos = fetchedDetails.Where(r => r.Detail?.Aircraft != null).Select(r => r.Key).ToArray();
 
             var aircraftAndFlightCounts = _AutoConfigDatabase.Database.GetManyAircraftAndFlightsCountByCode(newIcaos);
             var aircraft = _AutoConfigDatabase.Database.GetManyAircraftByCode(existingIcaos);
@@ -241,13 +251,11 @@ namespace VirtualRadar.Library
                 var icao24 = kvp.Key;
                 var fetchedDetail = kvp;
 
-                BaseStationAircraft databaseAircraft = null;
                 BaseStationAircraftAndFlightsCount databaseAircraftAndFlights = null;
-                if(!aircraft.TryGetValue(icao24, out databaseAircraft)) {
+                if(!aircraft.TryGetValue(icao24, out var databaseAircraft)) {
                     aircraftAndFlightCounts.TryGetValue(icao24, out databaseAircraftAndFlights);
                 }
-                AircraftOnlineLookupDetail onlineAircraft;
-                allOnlineAircraft.TryGetValue(icao24, out onlineAircraft);
+                allOnlineAircraft.TryGetValue(icao24, out var onlineAircraft);
 
                 kvp.Detail = ApplyDatabaseRecord(
                     fetchedDetail.Detail,
@@ -256,7 +264,7 @@ namespace VirtualRadar.Library
                     fetchedDetail.Aircraft,
                     fetchedDetail.IsFirstFetch,
                     databaseAircraftAndFlights != null ? databaseAircraftAndFlights.FlightsCount
-                                                       : fetchedDetail.Detail != null ? fetchedDetail.Detail.FlightsCount : 0
+                                                       : fetchedDetail.Detail?.FlightsCount ?? 0
                 );
             }
 
@@ -276,25 +284,35 @@ namespace VirtualRadar.Library
         {
             var databaseAircraftChanged = detail == null;
             if(!databaseAircraftChanged) {
-                if(detail.Aircraft == null) databaseAircraftChanged = databaseAircraft != null;
-                else {
+                if(detail.Aircraft == null) {
+                    databaseAircraftChanged = databaseAircraft != null;
+                } else {
                     databaseAircraftChanged = !detail.Aircraft.Equals(databaseAircraft);
-                    if(!databaseAircraftChanged && flightsCount > -1 && flightsCount != detail.FlightsCount) databaseAircraftChanged = true;
+                    if(!databaseAircraftChanged && flightsCount > -1 && flightsCount != detail.FlightsCount) {
+                        databaseAircraftChanged = true;
+                    }
                 }
             }
 
             var onlineAircraftChanged = detail == null;
             if(!onlineAircraftChanged) {
-                if(detail.OnlineAircraft == null) onlineAircraftChanged = onlineAircraft != null;
-                else                              onlineAircraftChanged = !detail.OnlineAircraft.ContentEquals(onlineAircraft);
+                if(detail.OnlineAircraft == null) {
+                    onlineAircraftChanged = onlineAircraft != null;
+                } else {
+                    onlineAircraftChanged = !detail.OnlineAircraft.ContentEquals(onlineAircraft);
+                }
             }
 
-            if(_ForceRefreshOfStandingData && detail != null) detail.AircraftType = null;
+            if(_ForceRefreshOfStandingData && detail != null) {
+                detail.AircraftType = null;
+            }
 
-            var icaoTypeCode = databaseAircraft == null ? null : databaseAircraft.ICAOTypeCode;
-            if(String.IsNullOrEmpty(icaoTypeCode) && onlineAircraft != null) icaoTypeCode = onlineAircraft.ModelIcao;
+            var icaoTypeCode = databaseAircraft?.ICAOTypeCode;
+            if(String.IsNullOrEmpty(icaoTypeCode) && onlineAircraft != null) {
+                icaoTypeCode = onlineAircraft.ModelIcao;
+            }
 
-            var aircraftType = detail == null ? null : detail.AircraftType;
+            var aircraftType = detail?.AircraftType;
             var aircraftTypeChanged = detail == null;
             if(icaoTypeCode != null && (_ForceRefreshOfStandingData || detail == null || detail.Aircraft == null || detail.ModelIcao != icaoTypeCode)) {
                 aircraftType = _StandingDataManager.FindAircraftType(icaoTypeCode);
@@ -303,7 +321,7 @@ namespace VirtualRadar.Library
 
             if(databaseAircraftChanged || onlineAircraftChanged || aircraftTypeChanged) {
                 if(flightsCount == -1) {
-                    flightsCount = detail != null ? detail.FlightsCount 
+                    flightsCount = detail != null ? detail.FlightsCount
                                           : databaseAircraft == null ? 0
                                           : _AutoConfigDatabase.Database.GetCountOfFlightsForAircraft(databaseAircraft, new SearchBaseStationCriteria() {
                                                 Date = new FilterRange<DateTime>(DateTime.MinValue, DateTime.MaxValue),
@@ -311,26 +329,26 @@ namespace VirtualRadar.Library
                 }
 
                 detail = new AircraftDetail() {
-                    Aircraft = databaseAircraft,
-                    OnlineAircraft = onlineAircraft,
-                    AircraftType = aircraftType,
-                    FlightsCount = flightsCount,
-                    Icao24 = aircraft.Icao24,
-                    Picture = detail == null ? null : detail.Picture,
+                    Aircraft =          databaseAircraft,
+                    OnlineAircraft =    onlineAircraft,
+                    AircraftType =      aircraftType,
+                    FlightsCount =      flightsCount,
+                    Icao24 =            aircraft.Icao24,
+                    Picture =           detail?.Picture,
                 };
                 OnFetched(new EventArgs<AircraftDetail>(detail));
             }
 
             var registration = databaseAircraft != null ? databaseAircraft.Registration : aircraft.Registration;
-            if(registration == null && onlineAircraft != null) registration = onlineAircraft.Registration;
-
-            if(_PictureLookupThread != null) {
-                _PictureLookupThread.Enqueue(new LookupPictureDetail() {
-                    Icao = aircraft.Icao24,
-                    Registration = registration,
-                    PictureDetail = detail == null ? null : detail.Picture,
-                });
+            if(registration == null && onlineAircraft != null) {
+                registration = onlineAircraft.Registration;
             }
+
+            _PictureLookupThread?.Enqueue(new LookupPictureDetail() {
+                Icao =          aircraft.Icao24,
+                Registration =  registration,
+                PictureDetail = detail?.Picture,
+            });
 
             return detail;
         }
@@ -347,8 +365,11 @@ namespace VirtualRadar.Library
                 if(detail != null) {
                     var pictureDetail = lookupPictureDetail.Result;
                     var pictureDetailChanged = false;
-                    if(detail.Picture == null) pictureDetailChanged = pictureDetail != null;
-                    else                       pictureDetailChanged = !detail.Picture.Equals(pictureDetail);
+                    if(detail.Picture == null) {
+                        pictureDetailChanged = pictureDetail != null;
+                    } else {
+                        pictureDetailChanged = !detail.Picture.Equals(pictureDetail);
+                    }
 
                     if(pictureDetailChanged) {
                         fetchedDetail.Detail.Picture = pictureDetail;
@@ -365,16 +386,16 @@ namespace VirtualRadar.Library
         /// </summary>
         protected override void DoExtraFastTimerTickWork()
         {
-            List<LookupPictureDetail> lookupPictureResults = null;
+            List<LookupPictureDetail> pictureDetails = null;
             lock(_PictureLookupResultsSyncLock) {
                 if(_PictureLookupResults.Count > 0) {
-                    lookupPictureResults = new List<LookupPictureDetail>(_PictureLookupResults);
+                    pictureDetails = new List<LookupPictureDetail>(_PictureLookupResults);
                     _PictureLookupResults.Clear();
                 }
             }
 
-            if(lookupPictureResults != null) {
-                foreach(var lookupPictureResult in lookupPictureResults) {
+            if(pictureDetails != null) {
+                foreach(var lookupPictureResult in pictureDetails) {
                     ApplyPictureLookup(lookupPictureResult);
                 }
             }
@@ -391,8 +412,11 @@ namespace VirtualRadar.Library
             foreach(var registered in allRegistered) {
                 var currentIcao24 = registered.Key;
                 var currentDetail = registered.Value;
-                FauxFetchAircraft(currentIcao24, (string icao24, AircraftDetail detail, bool isFirstFetch, IAircraft aircraft) => {
-                    if(detail != null) detail = ApplyDatabaseRecord(detail, detail.Aircraft, detail.OnlineAircraft, aircraft, isFirstFetch);
+                CallWithinFetchLock(currentIcao24, (string icao24, AircraftDetail detail, bool isFirstFetch, IAircraft aircraft) => {
+                    if(detail != null) {
+                        detail = ApplyDatabaseRecord(detail, detail.Aircraft, detail.OnlineAircraft, aircraft, isFirstFetch);
+                    }
+
                     return detail;
                 });
             }
@@ -413,9 +437,8 @@ namespace VirtualRadar.Library
         {
             try {
                 foreach(var onlineAircraft in args.AircraftDetails) {
-                    FauxFetchAircraft(onlineAircraft.Icao.ToUpper(), (string icao24, AircraftDetail detail, bool isFirstFetch, IAircraft aircraft) => {
-                        detail = ApplyDatabaseRecord(detail, detail.Aircraft, onlineAircraft, aircraft, isFirstFetch);
-                        return detail;
+                    CallWithinFetchLock(onlineAircraft.Icao.ToUpper(), (string icao24, AircraftDetail detail, bool isFirstFetch, IAircraft aircraft) => {
+                        return ApplyDatabaseRecord(detail, detail.Aircraft, onlineAircraft, aircraft, isFirstFetch);
                     });
                 }
             } catch(ThreadAbortException) {
@@ -437,9 +460,8 @@ namespace VirtualRadar.Library
                 var databaseAircraft = args.Value;
 
                 if(databaseAircraft != null && !String.IsNullOrEmpty(databaseAircraft.ModeS)) {
-                    FauxFetchAircraft(databaseAircraft.ModeS.ToUpper(), (string icao24, AircraftDetail detail, bool isFirstFetch, IAircraft aircraft) => {
-                        detail = ApplyDatabaseRecord(detail, databaseAircraft, detail.OnlineAircraft, aircraft, isFirstFetch);
-                        return detail;
+                    CallWithinFetchLock(databaseAircraft.ModeS.ToUpper(), (string icao24, AircraftDetail detail, bool isFirstFetch, IAircraft aircraft) => {
+                        return ApplyDatabaseRecord(detail, databaseAircraft, detail.OnlineAircraft, aircraft, isFirstFetch);
                     });
                 }
             } catch(ThreadAbortException) {

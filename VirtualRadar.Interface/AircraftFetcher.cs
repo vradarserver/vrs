@@ -133,7 +133,7 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public AircraftFetcher()
+        protected AircraftFetcher()
         {
         }
 
@@ -218,8 +218,7 @@ namespace VirtualRadar.Interface
             Initialise();
 
             lock(_QueueLock) {
-                FetchedDetail fetchedDetail;
-                if(!_FetchedDetailMap.TryGetValue(key, out fetchedDetail)) {
+                if(!_FetchedDetailMap.TryGetValue(key, out var fetchedDetail)) {
                     if(!_LookupQueue.TryGetValue(key, out fetchedDetail)) {
                         fetchedDetail = new FetchedDetail() {
                             Aircraft = aircraft,
@@ -291,7 +290,7 @@ namespace VirtualRadar.Interface
         /// </summary>
         /// <param name="key"></param>
         /// <param name="fakeFetchAircraft"></param>
-        protected void FauxFetchAircraft(TKey key, Func<TKey, TDetail, bool, IAircraft, TDetail> fakeFetchAircraft)
+        protected void CallWithinFetchLock(TKey key, Func<TKey, TDetail, bool, IAircraft, TDetail> fakeFetchAircraft)
         {
             FetchedDetail fetchedDetail;
             lock(_QueueLock) {
@@ -319,7 +318,10 @@ namespace VirtualRadar.Interface
 
             var lookupList = new List<FetchedDetail>();
             lock(_QueueLock) {
-                lookupList.AddRange(_FetchedDetailMap.Values.Where(r => forceRefetch || (r.LastCheckedUtc.Year > 1 && r.LastCheckedUtc.AddMilliseconds(recheckMilliseconds) <= now)));
+                lookupList.AddRange(_FetchedDetailMap.Values.Where(r =>
+                       forceRefetch
+                    || (r.LastCheckedUtc.Year > 1 && r.LastCheckedUtc.AddMilliseconds(recheckMilliseconds) <= now)
+                ));
             }
 
             if(!FetchAllAircraft(lookupList)) {
@@ -363,7 +365,9 @@ namespace VirtualRadar.Interface
                 foreach(var kvp in _FetchedDetailMap) {
                     var key = kvp.Key;
                     var fetchedDetail = kvp.Value;
-                    if(fetchedDetail.LastRegisteredUtc.AddMilliseconds(interval) <= now) oldKeys.Add(key);
+                    if(fetchedDetail.LastRegisteredUtc.AddMilliseconds(interval) <= now) {
+                        oldKeys.Add(key);
+                    }
                 }
 
                 foreach(var oldKey in oldKeys) {
@@ -430,7 +434,6 @@ namespace VirtualRadar.Interface
         /// </summary>
         protected virtual void DoExtraFastTimerTickWork()
         {
-            ;
         }
 
         /// <summary>
@@ -443,7 +446,10 @@ namespace VirtualRadar.Interface
         private void Heartbeat_SlowTimerTicked(object sender, EventArgs args)
         {
             AutoDeregisterEntries();
-            if(AutomaticRecheckIntervalMilliseconds > 0) RecheckAll(forceRefetch: false);
+            if(AutomaticRecheckIntervalMilliseconds > 0) {
+                RecheckAll(forceRefetch: false);
+            }
+
             DoExtraSlowTimerTickWork();
         }
 
@@ -452,7 +458,6 @@ namespace VirtualRadar.Interface
         /// </summary>
         protected virtual void DoExtraSlowTimerTickWork()
         {
-            ;
         }
         #endregion
     }

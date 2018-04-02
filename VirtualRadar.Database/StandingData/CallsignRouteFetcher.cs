@@ -29,20 +29,20 @@ namespace VirtualRadar.Database.StandingData
         /// </summary>
         public class Key
         {
-            public string Icao24 { get; private set; }
-            public string Callsign { get; private set; }
-            public string OperatorIcao { get; private set; }
+            public string Icao24 { get; }
+            public string Callsign { get; }
+            public string OperatorIcao { get; }
 
             public Key(IAircraft aircraft)
             {
-                Icao24 = aircraft.Icao24;
-                Callsign = aircraft.Callsign;
-                OperatorIcao = aircraft.OperatorIcao;
+                Icao24 = aircraft.Icao24?.ToUpper();
+                Callsign = aircraft.Callsign?.ToUpper();
+                OperatorIcao = aircraft.OperatorIcao?.ToUpper();
             }
 
             public override string ToString()
             {
-                return String.Format("[{0}] Call={1} Op={2}", Icao24, Callsign, OperatorIcao);
+                return $"[{Icao24}] Call={Callsign} Op={OperatorIcao}";
             }
 
             public override bool Equals(object obj)
@@ -50,7 +50,10 @@ namespace VirtualRadar.Database.StandingData
                 var result = Object.ReferenceEquals(this, obj);
                 if(!result) {
                     var other = obj as Key;
-                    result = other != null && other.Icao24 == Icao24 && other.Callsign == Callsign && other.OperatorIcao == OperatorIcao;
+                    result = other != null
+                          && other.Icao24 == Icao24
+                          && other.Callsign == Callsign
+                          && other.OperatorIcao == OperatorIcao;
                 }
 
                 return result;
@@ -58,7 +61,7 @@ namespace VirtualRadar.Database.StandingData
 
             public override int GetHashCode()
             {
-                return Icao24 == null ? 0 : Icao24.GetHashCode();
+                return Icao24?.GetHashCode() ?? 0;
             }
         }
 
@@ -110,7 +113,9 @@ namespace VirtualRadar.Database.StandingData
         protected override void Dispose(bool disposing)
         {
             if(disposing && !Disposed) {
-                if(_StandingDataManager != null) _StandingDataManager.LoadCompleted -= StandingDataManager_LoadCompleted;
+                if(_StandingDataManager != null) {
+                    _StandingDataManager.LoadCompleted -= StandingDataManager_LoadCompleted;
+                }
             }
             base.Dispose(disposing);
         }
@@ -133,7 +138,9 @@ namespace VirtualRadar.Database.StandingData
         /// <returns></returns>
         public CallsignRouteDetail RegisterAircraft(IAircraft aircraft)
         {
-            if(aircraft == null) throw new ArgumentNullException("aircraft");
+            if(aircraft == null) {
+                throw new ArgumentNullException("aircraft");
+            }
             
             CallsignRouteDetail result = null;
             if(!String.IsNullOrEmpty(aircraft.Callsign)) {
@@ -168,9 +175,13 @@ namespace VirtualRadar.Database.StandingData
                     foreach(var callsign in callsigns) {
                         callsignUsed = callsign;
                         route = _StandingDataManager.FindRoute(callsignUsed);
-                        if(route != null) break;
+                        if(route != null) {
+                            break;
+                        }
                     }
-                    if(route == null) callsignUsed = key.Callsign;
+                    if(route == null) {
+                        callsignUsed = key.Callsign;
+                    }
                 }
 
                 detail = new CallsignRouteDetail() {
