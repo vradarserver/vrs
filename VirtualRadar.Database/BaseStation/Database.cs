@@ -42,6 +42,11 @@ namespace VirtualRadar.Database.BaseStation
 
         #region Fields
         /// <summary>
+        /// The value in UserString1 that indicates that the record is for an aircraft that could not be found by the online lookup.
+        /// </summary>
+        const string _MissingMarkerInUserString1 = "Missing";
+
+        /// <summary>
         /// The object that we synchronise threads on.
         /// </summary>
         private object _ConnectionLock = new Object();
@@ -807,21 +812,19 @@ namespace VirtualRadar.Database.BaseStation
 
         private void RecordEmptyAircraft(BaseStationAircraft aircraft, string icao, DateTime localNow)
         {
-            const string missingMarker = "Missing";
-
             if(aircraft != null) {
                 aircraft.LastModified = localNow;
                 if(String.IsNullOrEmpty(aircraft.Registration) &&
                    String.IsNullOrEmpty(aircraft.Manufacturer) &&
                    String.IsNullOrEmpty(aircraft.Type) &&
                    String.IsNullOrEmpty(aircraft.RegisteredOwners)) {
-                    aircraft.UserString1 = missingMarker;
+                    aircraft.UserString1 = _MissingMarkerInUserString1;
                 }
                 Aircraft_Update(aircraft);
             } else {
                 aircraft = new BaseStationAircraft() {
                     ModeS = icao,
-                    UserString1 = missingMarker,
+                    UserString1 = _MissingMarkerInUserString1,
                     FirstCreated = localNow,
                     LastModified = localNow,
                 };
@@ -833,7 +836,7 @@ namespace VirtualRadar.Database.BaseStation
         /// See interface docs.
         /// </summary>
         /// <returns></returns>
-        public BaseStationAircraft UpsertAircraft(BaseStationAircraftUpsertLookup aircraft)
+        public BaseStationAircraft UpsertAircraftLookup(BaseStationAircraftUpsertLookup aircraft, bool onlyUpdateIfMarkedAsMissing)
         {
             if(!WriteSupportEnabled) throw new InvalidOperationException("You cannot upsert aircraft when write support is disabled");
 
@@ -846,7 +849,9 @@ namespace VirtualRadar.Database.BaseStation
                     var localNow = _Clock.LocalNow;
 
                     result = Aircraft_GetByIcao(aircraft.ModeS);
-                    result = UpsertAircraft(result, aircraft, FillFromUpsertLookup, ref updated);
+                    if(result == null || CanUpdateAircraftLookup(result, onlyUpdateIfMarkedAsMissing)) {
+                        result = UpsertAircraft(result, aircraft, FillFromUpsertLookup, ref updated);
+                    }
                 }
             }
 
@@ -862,7 +867,7 @@ namespace VirtualRadar.Database.BaseStation
         /// </summary>
         /// <param name="allUpsertAircraft"></param>
         /// <returns></returns>
-        public BaseStationAircraft[] UpsertManyAircraft(IEnumerable<BaseStationAircraftUpsertLookup> allUpsertAircraft)
+        public BaseStationAircraft[] UpsertManyAircraftLookup(IEnumerable<BaseStationAircraftUpsertLookup> allUpsertAircraft, bool onlyUpdateIfMarkedAsMissing)
         {
             if(!WriteSupportEnabled) throw new InvalidOperationException("You cannot upsert aircraft when write support is disabled");
 
@@ -880,11 +885,13 @@ namespace VirtualRadar.Database.BaseStation
                         foreach(var icao in icaos) {
                             var thisUpdated = false;
                             allAircraft.TryGetValue(ParameterBuilder.NormaliseAircraftIcao(icao), out var aircraft);
-                            var upsertAircraft = allUpsertAircraft.First(r => r.ModeS == icao);
-                            aircraft = UpsertAircraft(aircraft, upsertAircraft, FillFromUpsertLookup, ref thisUpdated);
-                            if(aircraft != null) {
-                                result.Add(aircraft);
-                                updated.Add(thisUpdated);
+                            if(aircraft == null || CanUpdateAircraftLookup(aircraft, onlyUpdateIfMarkedAsMissing)) {
+                                var upsertAircraft = allUpsertAircraft.First(r => r.ModeS == icao);
+                                aircraft = UpsertAircraft(aircraft, upsertAircraft, FillFromUpsertLookup, ref thisUpdated);
+                                if(aircraft != null) {
+                                    result.Add(aircraft);
+                                    updated.Add(thisUpdated);
+                                }
                             }
                         }
                         return true;
@@ -897,6 +904,13 @@ namespace VirtualRadar.Database.BaseStation
             }
 
             return result.ToArray();
+        }
+
+        private bool CanUpdateAircraftLookup(BaseStationAircraft result, bool onlyUpdateIfMarkedAsMissing)
+        {
+            return result == null ||
+                   !onlyUpdateIfMarkedAsMissing ||
+                   (result.UserString1 == _MissingMarkerInUserString1 && String.IsNullOrEmpty(result.Registration?.Trim()));
         }
 
         public BaseStationAircraft[] UpsertManyAircraft(IEnumerable<BaseStationAircraftUpsert> allUpsertAircraft)

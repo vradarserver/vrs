@@ -349,15 +349,17 @@ namespace VirtualRadar.Interface.Database
         /// Creates or updates an aircraft record, populating the details retrieved by online lookups.
         /// </summary>
         /// <param name="aircraft"></param>
+        /// <param name="onlyUpdateIfMarkedAsMissing"></param>
         /// <returns></returns>
-        BaseStationAircraft UpsertAircraft(BaseStationAircraftUpsertLookup aircraft);
+        BaseStationAircraft UpsertAircraftLookup(BaseStationAircraftUpsertLookup aircraft, bool onlyUpdateIfMarkedAsMissing);
 
         /// <summary>
         /// Does the same as <see cref="UpsertAircraft"/> but for many aircraft.
         /// </summary>
         /// <param name="aircraft"></param>
+        /// <param name="onlyUpdateIfMarkedAsMissing"></param>
         /// <returns></returns>
-        BaseStationAircraft[] UpsertManyAircraft(IEnumerable<BaseStationAircraftUpsertLookup> aircraft);
+        BaseStationAircraft[] UpsertManyAircraftLookup(IEnumerable<BaseStationAircraftUpsertLookup> aircraft, bool onlyUpdateIfMarkedAsMissing);
 
         /// <summary>
         /// Creates or updates full-size aircraft records.

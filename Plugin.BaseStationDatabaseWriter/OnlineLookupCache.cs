@@ -50,6 +50,11 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         public bool RefreshOutOfDateAircraft { get; set; }
 
         /// <summary>
+        /// Another interpretation of <see cref="RefreshOutOfDateAircraft"/> that more closely matches <see cref="IBaseStationDatabase"/> call parameters.
+        /// </summary>
+        private bool OnlyUpdateIfMarkedAsMissing { get => !RefreshOutOfDateAircraft; }
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public IBaseStationDatabase Database { get; set; }
@@ -100,8 +105,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
 
             if(baseStationAircraft != null) {
                 foreach(var icao in icaos) {
-                    BaseStationAircraft databaseRecord;
-                    if(baseStationAircraft.TryGetValue(icao, out databaseRecord)) {
+                    if(baseStationAircraft.TryGetValue(icao, out var databaseRecord)) {
                         result.Add(icao, Convert(databaseRecord));
                     } else {
                         result.Add(icao, null);
@@ -202,7 +206,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
             var database = Database;
             if(database != null && Enabled) {
                 var upsertDetails = BuildUpsertDetails(lookupDetail, DateTime.Now);
-                database.UpsertAircraft(upsertDetails);
+                database.UpsertAircraftLookup(upsertDetails, OnlyUpdateIfMarkedAsMissing);
             }
         }
 
@@ -215,7 +219,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
             var database = Database;
             if(database != null && Enabled) {
                 var map = new Dictionary<string, AircraftOnlineLookupDetail>();
-                Func<string, string> normaliseIcao = (icao) => { return icao.ToUpper(); };
+                string normaliseIcao(string icao) => icao.ToUpper();
 
                 foreach(var lookupDetail in lookupDetails) {
                     var icao = normaliseIcao(lookupDetail.Icao);
@@ -226,7 +230,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
 
                 var now = DateTime.Now;
                 var upsertDetails = map.Select(r => BuildUpsertDetails(r.Value, now));
-                database.UpsertManyAircraft(upsertDetails);
+                database.UpsertManyAircraftLookup(upsertDetails, OnlyUpdateIfMarkedAsMissing);
             }
         }
 
@@ -239,7 +243,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         private BaseStationAircraftUpsertLookup BuildUpsertDetails(AircraftOnlineLookupDetail lookupDetail, DateTime localNow)
         {
             var codeBlock = _StandingDataManager.FindCodeBlock(lookupDetail.Icao);
-            if(codeBlock?.Country != null && codeBlock.Country.StartsWith("Unknown ")) {
+            if(codeBlock?.Country?.StartsWith("Unknown ") ?? false) {
                 codeBlock = null;
             }
 

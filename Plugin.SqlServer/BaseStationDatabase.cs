@@ -1126,18 +1126,20 @@ namespace VirtualRadar.Plugin.SqlServer
         /// See interface docs.
         /// </summary>
         /// <param name="upsertLookup"></param>
+        /// <param name="onlyUpdateIfMarkedAsMissing"></param>
         /// <returns></returns>
-        public BaseStationAircraft UpsertAircraft(BaseStationAircraftUpsertLookup upsertLookup)
+        public BaseStationAircraft UpsertAircraftLookup(BaseStationAircraftUpsertLookup upsertLookup, bool onlyUpdateIfMarkedAsMissing)
         {
-            return UpsertManyAircraft(new BaseStationAircraftUpsertLookup[] { upsertLookup }).FirstOrDefault();
+            return UpsertManyAircraftLookup(new BaseStationAircraftUpsertLookup[] { upsertLookup }, onlyUpdateIfMarkedAsMissing).FirstOrDefault();
         }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
         /// <param name="upsertLookups"></param>
+        /// <param name="onlyUpdateIfMarkedAsMissing"></param>
         /// <returns></returns>
-        public BaseStationAircraft[] UpsertManyAircraft(IEnumerable<BaseStationAircraftUpsertLookup> upsertLookups)
+        public BaseStationAircraft[] UpsertManyAircraftLookup(IEnumerable<BaseStationAircraftUpsertLookup> upsertLookups, bool onlyUpdateIfMarkedAsMissing)
         {
             if(!WriteSupportEnabled) {
                 throw new InvalidOperationException("You cannot upsert aircraft when write support is disabled");
@@ -1149,7 +1151,8 @@ namespace VirtualRadar.Plugin.SqlServer
                 PerformInConnection(wrapper => {
                     var resultSets = wrapper.Connection.QueryMultiple(
                         "[BaseStation].[Aircraft_UpsertLookups]", new {
-                            @Lookups = dataTable
+                            @Lookups =                      dataTable,
+                            @OnlyUpdateIfMarkedAsMissing =  onlyUpdateIfMarkedAsMissing
                         }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds
                     );
 
