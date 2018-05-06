@@ -42,6 +42,11 @@ namespace VirtualRadar.Plugin.SqlServer
         private IStandingDataManager _StandingDataManager;
 
         /// <summary>
+        /// The clock object that makes unit / integration testing this class a bit easier.
+        /// </summary>
+        private IClock _Clock;
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public string Engine => "SQL Server";
@@ -180,6 +185,7 @@ namespace VirtualRadar.Plugin.SqlServer
         public BaseStationDatabase()
         {
             _StandingDataManager = Factory.ResolveSingleton<IStandingDataManager>();
+            _Clock = Factory.Resolve<IClock>();
         }
 
         /// <summary>
@@ -768,7 +774,7 @@ namespace VirtualRadar.Plugin.SqlServer
         {
             return SqlServerHelper.UdttParameter<Icao24Udtt>(
                 Icao24Udtt.UdttProperties,
-                icao24s.Select(r => (r ?? "").ToUpper().Trim()).Where(r => r != "").Distinct().Select(r => new Icao24Udtt(r))
+                icao24s?.Select(r => (r ?? "").ToUpper().Trim()).Where(r => r != "").Distinct().Select(r => new Icao24Udtt(r))
             );
         }
 
@@ -810,7 +816,7 @@ namespace VirtualRadar.Plugin.SqlServer
             var parameters = new DynamicParameters();
             parameters.Add("@ModeS", icao24);
             parameters.Add("@Created", dbType: DbType.Boolean, direction: ParameterDirection.Output);
-            parameters.Add("@LocalNow", DateTime.Now);
+            parameters.Add("@LocalNow", _Clock.LocalNow);
             parameters.Add("@ModeSCountry", _StandingDataManager.FindCodeBlock(icao24)?.ModeSCountry);
 
             PerformInConnection(wrapper => {
@@ -979,8 +985,8 @@ namespace VirtualRadar.Plugin.SqlServer
             PerformInConnection(wrapper => {
                 using(var dataTable = BuildIcao24Udtt(icaos)) {
                     wrapper.Connection.ExecuteScalar<int>("[BaseStation].[Aircraft_MarkManyMissing]", new {
-                        @Codes = dataTable,
-                        @LocalNow = DateTime.Now,
+                        @Codes =    dataTable,
+                        @LocalNow = _Clock.LocalNow,
                     }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds);
                 }
             });
@@ -1033,7 +1039,6 @@ namespace VirtualRadar.Plugin.SqlServer
                 wrapper.Connection.ExecuteScalar<int>("[BaseStation].[Aircraft_UpdateModeSCountry]", new {
                     @AircraftID =   aircraftId,
                     @ModeSCountry = modeSCountry,
-                    @LastModified = DateTime.Now,
                 }, transaction: wrapper.Transaction, commandType: CommandType.StoredProcedure, commandTimeout: CommandTimeoutSeconds);
             });
         }
@@ -1230,6 +1235,10 @@ namespace VirtualRadar.Plugin.SqlServer
         /// <returns></returns>
         public BaseStationFlight[] UpsertManyFlights(IEnumerable<BaseStationFlightUpsert> flights)
         {
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot upsert flights when write support is disabled");
+            }
+
             BaseStationFlight[] result = null;
 
             PerformInConnection(wrapper => {

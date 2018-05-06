@@ -10,7 +10,7 @@ ALTER PROCEDURE [BaseStation].[Flights_Update]
    ,@AircraftID          INT
    ,@StartTime           DATETIME2 = NULL
    ,@EndTime             DATETIME2
-   ,@Callsign            NVARCHAR(20)
+   ,@Callsign            NVARCHAR(80)
    ,@NumPosMsgRec        INT
    ,@NumADSBMsgRec       INT
    ,@NumModeSMsgRec      INT
@@ -41,7 +41,7 @@ ALTER PROCEDURE [BaseStation].[Flights_Update]
    ,@HadAlert            BIT
    ,@HadEmergency        BIT
    ,@HadSPI              BIT
-   ,@UserNotes           NVARCHAR(300)
+   ,@UserNotes           NVARCHAR(3000)
 AS
 BEGIN
     SET NOCOUNT ON;

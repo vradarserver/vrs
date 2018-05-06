@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace VirtualRadar.Plugin.SqlServer.Scripts {
+namespace Test.VirtualRadar.Database.Scripts {
     using System;
     
     
@@ -22,24 +22,24 @@ namespace VirtualRadar.Plugin.SqlServer.Scripts {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Resources {
+    internal class ScriptResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal ScriptResources() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("VirtualRadar.Plugin.SqlServer.Scripts.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Test.VirtualRadar.Database.Scripts.ScriptResources", typeof(ScriptResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace VirtualRadar.Plugin.SqlServer.Scripts {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,23 +61,29 @@ namespace VirtualRadar.Plugin.SqlServer.Scripts {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DECLARE @dbName AS NVARCHAR(128) = DB_NAME();
-        ///IF @dbName IN (&apos;master&apos;, &apos;model&apos;, &apos;msdb&apos;, &apos;tempdb&apos;) BEGIN
-        ///    RAISERROR(N&apos;You cannot apply the VRS schema to %s. Update your connection string to refer to a valid database and try again&apos;, 20, -1, @dbName) WITH LOG;
+        ///   Looks up a localized string similar to USE [master];
+        ///
+        ///-- Create the test database if it does not already exist
+        ///IF NOT EXISTS (SELECT 1 FROM [sys].[databases] WHERE [name] = &apos;VRSTest&apos;)
+        ///BEGIN
+        ///    CREATE DATABASE [VRSTest];
         ///END;
         ///GO
         ///
-        ///PRINT &apos;Running schema upgrade on &apos; + @@SERVERNAME + &apos; in &apos; + DB_NAME() + &apos; as user &apos; + SUSER_NAME();
-        ///PRINT &apos;&apos;;
-        ///GO
         ///
-        ///-------------------------------------------------------------------------------
-        ///-- VRS/Schema/VRS.sql
-        ///------------- [rest of string was truncated]&quot;;.
+        ///USE [VRSTest];
+        ///
+        ///-- Drop all tables and views
+        ///IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = &apos;BaseStation&apos; AND TABLE_NAME = &apos;Flights&apos;)
+        ///BEGIN
+        ///    DROP TABLE [BaseStation].[Flights];
+        ///END;
+        ///GO
+        ///IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = &apos;BaseStation&apos; AND [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string UpdateSchema_sql {
+        internal static string SqlServerReset {
             get {
-                return ResourceManager.GetString("UpdateSchema_sql", resourceCulture);
+                return ResourceManager.GetString("SqlServerReset", resourceCulture);
             }
         }
     }

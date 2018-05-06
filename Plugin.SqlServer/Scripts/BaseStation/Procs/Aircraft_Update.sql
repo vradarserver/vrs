@@ -8,53 +8,53 @@ ALTER PROCEDURE [BaseStation].[Aircraft_Update]
     @AircraftID       INT
    ,@FirstCreated     DATETIME2 = NULL
    ,@LastModified     DATETIME2
-   ,@ModeS            NVARCHAR(6)
+   ,@ModeS            NVARCHAR(20)
    ,@ModeSCountry     NVARCHAR(80)
    ,@Country          NVARCHAR(80)
-   ,@Registration     NVARCHAR(20)
-   ,@CurrentRegDate   NVARCHAR(20)
-   ,@PreviousID       NVARCHAR(20)
-   ,@FirstRegDate     NVARCHAR(20)
-   ,@Status           NVARCHAR(10)
-   ,@DeRegDate        NVARCHAR(10)
+   ,@Registration     NVARCHAR(80)
+   ,@CurrentRegDate   NVARCHAR(80)
+   ,@PreviousID       NVARCHAR(80)
+   ,@FirstRegDate     NVARCHAR(80)
+   ,@Status           NVARCHAR(80)
+   ,@DeRegDate        NVARCHAR(80)
    ,@Manufacturer     NVARCHAR(80)
-   ,@ICAOTypeCode     NVARCHAR(10)
+   ,@ICAOTypeCode     NVARCHAR(80)
    ,@Type             NVARCHAR(80)
-   ,@SerialNo         NVARCHAR(30)
+   ,@SerialNo         NVARCHAR(80)
    ,@PopularName      NVARCHAR(80)
    ,@GenericName      NVARCHAR(80)
    ,@AircraftClass    NVARCHAR(80)
-   ,@Engines          NVARCHAR(40)
-   ,@OwnershipStatus  NVARCHAR(20)
+   ,@Engines          NVARCHAR(80)
+   ,@OwnershipStatus  NVARCHAR(80)
    ,@RegisteredOwners NVARCHAR(100)
-   ,@MTOW             NVARCHAR(20)
-   ,@TotalHours       NVARCHAR(20)
-   ,@YearBuilt        NVARCHAR(4)
-   ,@CofACategory     NVARCHAR(30)
-   ,@CofAExpiry       NVARCHAR(20)
+   ,@MTOW             NVARCHAR(80)
+   ,@TotalHours       NVARCHAR(80)
+   ,@YearBuilt        NVARCHAR(80)
+   ,@CofACategory     NVARCHAR(80)
+   ,@CofAExpiry       NVARCHAR(80)
    ,@UserNotes        NVARCHAR(300)
    ,@Interested       BIT
-   ,@UserTag          NVARCHAR(80)
-   ,@InfoURL          NVARCHAR(150)
-   ,@PictureURL1      NVARCHAR(150)
-   ,@PictureURL2      NVARCHAR(150)
-   ,@PictureURL3      NVARCHAR(150)
+   ,@UserTag          NVARCHAR(300)
+   ,@InfoURL          NVARCHAR(300)
+   ,@PictureURL1      NVARCHAR(300)
+   ,@PictureURL2      NVARCHAR(300)
+   ,@PictureURL3      NVARCHAR(300)
    ,@UserBool1        BIT
    ,@UserBool2        BIT
    ,@UserBool3        BIT
    ,@UserBool4        BIT
    ,@UserBool5        BIT
-   ,@UserString1      NVARCHAR(40)
-   ,@UserString2      NVARCHAR(40)
-   ,@UserString3      NVARCHAR(40)
-   ,@UserString4      NVARCHAR(40)
-   ,@UserString5      NVARCHAR(40)
+   ,@UserString1      NVARCHAR(MAX)
+   ,@UserString2      NVARCHAR(MAX)
+   ,@UserString3      NVARCHAR(MAX)
+   ,@UserString4      NVARCHAR(MAX)
+   ,@UserString5      NVARCHAR(MAX)
    ,@UserInt1         BIGINT
    ,@UserInt2         BIGINT
    ,@UserInt3         BIGINT
    ,@UserInt4         BIGINT
    ,@UserInt5         BIGINT
-   ,@OperatorFlagCode NVARCHAR(20)
+   ,@OperatorFlagCode NVARCHAR(80)
 AS
 BEGIN
     SET NOCOUNT ON;

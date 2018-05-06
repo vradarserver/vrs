@@ -118,6 +118,11 @@ namespace VirtualRadar.Plugin.SqlServer
                 BaseStationDatabase.ConnectionStringIsGood = TestConnectionString(Options.ConnectionString);
                 classFactory.Register<IBaseStationDatabase, BaseStationDatabase>();
             }
+            RegisterTestableImplementations(classFactory);
+        }
+
+        public static void RegisterTestableImplementations(IClassFactory classFactory)
+        {
             classFactory.Register<IBaseStationDatabaseSqlServer, BaseStationDatabase>();
         }
 

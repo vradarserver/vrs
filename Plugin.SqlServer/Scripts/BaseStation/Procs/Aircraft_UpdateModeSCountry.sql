@@ -6,15 +6,13 @@ GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_UpdateModeSCountry]
     @AircraftID   INTEGER
-   ,@LastModified DATETIME2
    ,@ModeSCountry NVARCHAR(80)
 AS
 BEGIN
     SET NOCOUNT ON;
 
     UPDATE [BaseStation].[Aircraft]
-    SET    [LastModified] = @LastModified
-          ,[ModeSCountry] = @ModeSCountry
-    WHERE [AircraftID] = @AircraftID;
+    SET    [ModeSCountry] = @ModeSCountry
+    WHERE  [AircraftID] = @AircraftID;
 END;
 GO

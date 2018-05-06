@@ -75,53 +75,53 @@ BEGIN
         [AircraftID]        INTEGER IDENTITY
        ,[FirstCreated]      DATETIME2 NOT NULL
        ,[LastModified]      DATETIME2 NOT NULL
-       ,[ModeS]             NVARCHAR(6) NOT NULL
+       ,[ModeS]             NVARCHAR(20) NOT NULL
        ,[ModeSCountry]      NVARCHAR(80)
        ,[Country]           NVARCHAR(80)
-       ,[Registration]      NVARCHAR(20)
-       ,[CurrentRegDate]    NVARCHAR(20)
-       ,[PreviousID]        NVARCHAR(20)
-       ,[FirstRegDate]      NVARCHAR(20)
-       ,[Status]            NVARCHAR(10)
-       ,[DeRegDate]         NVARCHAR(10)
+       ,[Registration]      NVARCHAR(80)
+       ,[CurrentRegDate]    NVARCHAR(80)
+       ,[PreviousID]        NVARCHAR(80)
+       ,[FirstRegDate]      NVARCHAR(80)
+       ,[Status]            NVARCHAR(80)
+       ,[DeRegDate]         NVARCHAR(80)
        ,[Manufacturer]      NVARCHAR(80)
-       ,[ICAOTypeCode]      NVARCHAR(10)
+       ,[ICAOTypeCode]      NVARCHAR(80)
        ,[Type]              NVARCHAR(80)
-       ,[SerialNo]          NVARCHAR(30)
+       ,[SerialNo]          NVARCHAR(80)
        ,[PopularName]       NVARCHAR(80)
        ,[GenericName]       NVARCHAR(80)
        ,[AircraftClass]     NVARCHAR(80)
-       ,[Engines]           NVARCHAR(40)
-       ,[OwnershipStatus]   NVARCHAR(20)
+       ,[Engines]           NVARCHAR(80)
+       ,[OwnershipStatus]   NVARCHAR(80)
        ,[RegisteredOwners]  NVARCHAR(100)
-       ,[MTOW]              NVARCHAR(20)
-       ,[TotalHours]        NVARCHAR(20)
-       ,[YearBuilt]         NVARCHAR(4)
-       ,[CofACategory]      NVARCHAR(30)
-       ,[CofAExpiry]        NVARCHAR(20)
+       ,[MTOW]              NVARCHAR(80)
+       ,[TotalHours]        NVARCHAR(80)
+       ,[YearBuilt]         NVARCHAR(80)
+       ,[CofACategory]      NVARCHAR(80)
+       ,[CofAExpiry]        NVARCHAR(80)
        ,[UserNotes]         NVARCHAR(300)
        ,[Interested]        BIT NOT NULL CONSTRAINT [DF_Aircraft_Interested] DEFAULT 0
-       ,[UserTag]           NVARCHAR(80)
-       ,[InfoURL]           NVARCHAR(150)
-       ,[PictureURL1]       NVARCHAR(150)
-       ,[PictureURL2]       NVARCHAR(150)
-       ,[PictureURL3]       NVARCHAR(150)
+       ,[UserTag]           NVARCHAR(300)
+       ,[InfoURL]           NVARCHAR(300)
+       ,[PictureURL1]       NVARCHAR(300)
+       ,[PictureURL2]       NVARCHAR(300)
+       ,[PictureURL3]       NVARCHAR(300)
        ,[UserBool1]         BIT NOT NULL CONSTRAINT [DF_Aircraft_UserBool1] DEFAULT 0
        ,[UserBool2]         BIT NOT NULL CONSTRAINT [DF_Aircraft_UserBool2] DEFAULT 0
        ,[UserBool3]         BIT NOT NULL CONSTRAINT [DF_Aircraft_UserBool3] DEFAULT 0
        ,[UserBool4]         BIT NOT NULL CONSTRAINT [DF_Aircraft_UserBool4] DEFAULT 0
        ,[UserBool5]         BIT NOT NULL CONSTRAINT [DF_Aircraft_UserBool5] DEFAULT 0
-       ,[UserString1]       NVARCHAR(40)
-       ,[UserString2]       NVARCHAR(40)
-       ,[UserString3]       NVARCHAR(40)
-       ,[UserString4]       NVARCHAR(40)
-       ,[UserString5]       NVARCHAR(40)
+       ,[UserString1]       NVARCHAR(MAX)
+       ,[UserString2]       NVARCHAR(MAX)
+       ,[UserString3]       NVARCHAR(MAX)
+       ,[UserString4]       NVARCHAR(MAX)
+       ,[UserString5]       NVARCHAR(MAX)
        ,[UserInt1]          BIGINT CONSTRAINT [DF_Aircraft_UserInt1] DEFAULT 0
        ,[UserInt2]          BIGINT CONSTRAINT [DF_Aircraft_UserInt2] DEFAULT 0
        ,[UserInt3]          BIGINT CONSTRAINT [DF_Aircraft_UserInt3] DEFAULT 0
        ,[UserInt4]          BIGINT CONSTRAINT [DF_Aircraft_UserInt4] DEFAULT 0
        ,[UserInt5]          BIGINT CONSTRAINT [DF_Aircraft_UserInt5] DEFAULT 0
-       ,[OperatorFlagCode]  NVARCHAR(20)
+       ,[OperatorFlagCode]  NVARCHAR(80)
 
        ,CONSTRAINT [PK_Aircraft] PRIMARY KEY ([AircraftID])
     );
@@ -160,7 +160,7 @@ BEGIN
     (
         [DBHistoryID]   INTEGER IDENTITY
        ,[TimeStamp]     DATETIME2 NOT NULL
-       ,[Description]   NVARCHAR(100) NOT NULL
+       ,[Description]   NVARCHAR(1000) NOT NULL
 
        ,CONSTRAINT [PK_DBHistory] PRIMARY KEY ([DBHistoryID])
     );
@@ -241,7 +241,7 @@ BEGIN
     CREATE TABLE [BaseStation].[Locations]
     (
         [LocationID]    INTEGER IDENTITY
-       ,[LocationName]  NVARCHAR(80) NOT NULL
+       ,[LocationName]  NVARCHAR(300) NOT NULL
        ,[Latitude]      REAL NOT NULL
        ,[Longitude]     REAL NOT NULL
        ,[Altitude]      REAL NOT NULL
@@ -312,7 +312,7 @@ BEGIN
        ,[AircraftID]            INTEGER NOT NULL CONSTRAINT [FK_Flights_Aircraft] FOREIGN KEY REFERENCES [BaseStation].[Aircraft] ([AircraftID]) ON DELETE CASCADE
        ,[StartTime]             DATETIME2 NOT NULL
        ,[EndTime]               DATETIME2
-       ,[Callsign]              NVARCHAR(20)
+       ,[Callsign]              NVARCHAR(80)
        ,[NumPosMsgRec]          INTEGER
        ,[NumADSBMsgRec]         INTEGER
        ,[NumModeSMsgRec]        INTEGER
@@ -343,7 +343,7 @@ BEGIN
        ,[HadAlert]              BIT NOT NULL CONSTRAINT [DF_Flights_HadAlert] DEFAULT 0
        ,[HadEmergency]          BIT NOT NULL CONSTRAINT [DF_Flights_HadEmergency] DEFAULT 0
        ,[HadSPI]                BIT NOT NULL CONSTRAINT [DF_Flights_HadSPI] DEFAULT 0
-       ,[UserNotes]             NVARCHAR(300)
+       ,[UserNotes]             NVARCHAR(3000)
 
        ,CONSTRAINT [PK_Flights] PRIMARY KEY ([FlightID])
     );
@@ -371,8 +371,8 @@ BEGIN
     (
         [SystemEventsID]    INTEGER IDENTITY
        ,[TimeStamp]         DATETIME2 NOT NULL
-       ,[App]               NVARCHAR(15) NOT NULL
-       ,[Msg]               NVARCHAR(100) NOT NULL
+       ,[App]               NVARCHAR(500) NOT NULL
+       ,[Msg]               NVARCHAR(2500) NOT NULL
 
        ,CONSTRAINT [PK_SystemEvents] PRIMARY KEY ([SystemEventsID])
     );
@@ -778,53 +778,53 @@ GO
 ALTER PROCEDURE [BaseStation].[Aircraft_Insert]
     @FirstCreated     DATETIME2
    ,@LastModified     DATETIME2
-   ,@ModeS            NVARCHAR(6)
+   ,@ModeS            NVARCHAR(20)
    ,@ModeSCountry     NVARCHAR(80) = NULL
    ,@Country          NVARCHAR(80) = NULL
-   ,@Registration     NVARCHAR(20) = NULL
-   ,@CurrentRegDate   NVARCHAR(20) = NULL
-   ,@PreviousID       NVARCHAR(20) = NULL
-   ,@FirstRegDate     NVARCHAR(20) = NULL
-   ,@Status           NVARCHAR(10) = NULL
-   ,@DeRegDate        NVARCHAR(10) = NULL
+   ,@Registration     NVARCHAR(80) = NULL
+   ,@CurrentRegDate   NVARCHAR(80) = NULL
+   ,@PreviousID       NVARCHAR(80) = NULL
+   ,@FirstRegDate     NVARCHAR(80) = NULL
+   ,@Status           NVARCHAR(80) = NULL
+   ,@DeRegDate        NVARCHAR(80) = NULL
    ,@Manufacturer     NVARCHAR(80) = NULL
-   ,@ICAOTypeCode     NVARCHAR(10) = NULL
+   ,@ICAOTypeCode     NVARCHAR(80) = NULL
    ,@Type             NVARCHAR(80) = NULL
-   ,@SerialNo         NVARCHAR(30) = NULL
+   ,@SerialNo         NVARCHAR(80) = NULL
    ,@PopularName      NVARCHAR(80) = NULL
    ,@GenericName      NVARCHAR(80) = NULL
    ,@AircraftClass    NVARCHAR(80) = NULL
-   ,@Engines          NVARCHAR(40) = NULL
-   ,@OwnershipStatus  NVARCHAR(20) = NULL
+   ,@Engines          NVARCHAR(80) = NULL
+   ,@OwnershipStatus  NVARCHAR(80) = NULL
    ,@RegisteredOwners NVARCHAR(100) = NULL
-   ,@MTOW             NVARCHAR(20) = NULL
-   ,@TotalHours       NVARCHAR(20) = NULL
-   ,@YearBuilt        NVARCHAR(4) = NULL
-   ,@CofACategory     NVARCHAR(30) = NULL
-   ,@CofAExpiry       NVARCHAR(20) = NULL
+   ,@MTOW             NVARCHAR(80) = NULL
+   ,@TotalHours       NVARCHAR(80) = NULL
+   ,@YearBuilt        NVARCHAR(80) = NULL
+   ,@CofACategory     NVARCHAR(80) = NULL
+   ,@CofAExpiry       NVARCHAR(80) = NULL
    ,@UserNotes        NVARCHAR(300) = NULL
    ,@Interested       BIT = 0
-   ,@UserTag          NVARCHAR(80) = NULL
-   ,@InfoURL          NVARCHAR(150) = NULL
-   ,@PictureURL1      NVARCHAR(150) = NULL
-   ,@PictureURL2      NVARCHAR(150) = NULL
-   ,@PictureURL3      NVARCHAR(150) = NULL
+   ,@UserTag          NVARCHAR(300) = NULL
+   ,@InfoURL          NVARCHAR(300) = NULL
+   ,@PictureURL1      NVARCHAR(300) = NULL
+   ,@PictureURL2      NVARCHAR(300) = NULL
+   ,@PictureURL3      NVARCHAR(300) = NULL
    ,@UserBool1        BIT = 0
    ,@UserBool2        BIT = 0
    ,@UserBool3        BIT = 0
    ,@UserBool4        BIT = 0
    ,@UserBool5        BIT = 0
-   ,@UserString1      NVARCHAR(40) = NULL
-   ,@UserString2      NVARCHAR(40) = NULL
-   ,@UserString3      NVARCHAR(40) = NULL
-   ,@UserString4      NVARCHAR(40) = NULL
-   ,@UserString5      NVARCHAR(40) = NULL
+   ,@UserString1      NVARCHAR(MAX) = NULL
+   ,@UserString2      NVARCHAR(MAX) = NULL
+   ,@UserString3      NVARCHAR(MAX) = NULL
+   ,@UserString4      NVARCHAR(MAX) = NULL
+   ,@UserString5      NVARCHAR(MAX) = NULL
    ,@UserInt1         BIGINT = 0
    ,@UserInt2         BIGINT = 0
    ,@UserInt3         BIGINT = 0
    ,@UserInt4         BIGINT = 0
    ,@UserInt5         BIGINT = 0
-   ,@OperatorFlagCode NVARCHAR(20) = NULL
+   ,@OperatorFlagCode NVARCHAR(80) = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -987,6 +987,16 @@ BEGIN
     AND    ISNULL([aircraft].[Manufacturer], '') = ''
     AND    ISNULL([aircraft].[Type], '') = ''
     AND    ISNULL([aircraft].[RegisteredOwners], '') = '';
+
+    -- Update just the last modified time if the aircraft has details
+    UPDATE [aircraft]
+    SET    [LastModified] = @LocalNow
+    FROM   [BaseStation].[Aircraft] AS [aircraft]
+    JOIN   @Codes                   AS [code]     ON [aircraft].[ModeS] = [code].[ModeS]
+    WHERE  ISNULL([aircraft].[Registration], '') <> ''
+    OR     ISNULL([aircraft].[Manufacturer], '') <> ''
+    OR     ISNULL([aircraft].[Type], '') <> ''
+    OR     ISNULL([aircraft].[RegisteredOwners], '') <> '';
 END;
 GO
 
@@ -1009,53 +1019,53 @@ ALTER PROCEDURE [BaseStation].[Aircraft_Update]
     @AircraftID       INT
    ,@FirstCreated     DATETIME2 = NULL
    ,@LastModified     DATETIME2
-   ,@ModeS            NVARCHAR(6)
+   ,@ModeS            NVARCHAR(20)
    ,@ModeSCountry     NVARCHAR(80)
    ,@Country          NVARCHAR(80)
-   ,@Registration     NVARCHAR(20)
-   ,@CurrentRegDate   NVARCHAR(20)
-   ,@PreviousID       NVARCHAR(20)
-   ,@FirstRegDate     NVARCHAR(20)
-   ,@Status           NVARCHAR(10)
-   ,@DeRegDate        NVARCHAR(10)
+   ,@Registration     NVARCHAR(80)
+   ,@CurrentRegDate   NVARCHAR(80)
+   ,@PreviousID       NVARCHAR(80)
+   ,@FirstRegDate     NVARCHAR(80)
+   ,@Status           NVARCHAR(80)
+   ,@DeRegDate        NVARCHAR(80)
    ,@Manufacturer     NVARCHAR(80)
-   ,@ICAOTypeCode     NVARCHAR(10)
+   ,@ICAOTypeCode     NVARCHAR(80)
    ,@Type             NVARCHAR(80)
-   ,@SerialNo         NVARCHAR(30)
+   ,@SerialNo         NVARCHAR(80)
    ,@PopularName      NVARCHAR(80)
    ,@GenericName      NVARCHAR(80)
    ,@AircraftClass    NVARCHAR(80)
-   ,@Engines          NVARCHAR(40)
-   ,@OwnershipStatus  NVARCHAR(20)
+   ,@Engines          NVARCHAR(80)
+   ,@OwnershipStatus  NVARCHAR(80)
    ,@RegisteredOwners NVARCHAR(100)
-   ,@MTOW             NVARCHAR(20)
-   ,@TotalHours       NVARCHAR(20)
-   ,@YearBuilt        NVARCHAR(4)
-   ,@CofACategory     NVARCHAR(30)
-   ,@CofAExpiry       NVARCHAR(20)
+   ,@MTOW             NVARCHAR(80)
+   ,@TotalHours       NVARCHAR(80)
+   ,@YearBuilt        NVARCHAR(80)
+   ,@CofACategory     NVARCHAR(80)
+   ,@CofAExpiry       NVARCHAR(80)
    ,@UserNotes        NVARCHAR(300)
    ,@Interested       BIT
-   ,@UserTag          NVARCHAR(80)
-   ,@InfoURL          NVARCHAR(150)
-   ,@PictureURL1      NVARCHAR(150)
-   ,@PictureURL2      NVARCHAR(150)
-   ,@PictureURL3      NVARCHAR(150)
+   ,@UserTag          NVARCHAR(300)
+   ,@InfoURL          NVARCHAR(300)
+   ,@PictureURL1      NVARCHAR(300)
+   ,@PictureURL2      NVARCHAR(300)
+   ,@PictureURL3      NVARCHAR(300)
    ,@UserBool1        BIT
    ,@UserBool2        BIT
    ,@UserBool3        BIT
    ,@UserBool4        BIT
    ,@UserBool5        BIT
-   ,@UserString1      NVARCHAR(40)
-   ,@UserString2      NVARCHAR(40)
-   ,@UserString3      NVARCHAR(40)
-   ,@UserString4      NVARCHAR(40)
-   ,@UserString5      NVARCHAR(40)
+   ,@UserString1      NVARCHAR(MAX)
+   ,@UserString2      NVARCHAR(MAX)
+   ,@UserString3      NVARCHAR(MAX)
+   ,@UserString4      NVARCHAR(MAX)
+   ,@UserString5      NVARCHAR(MAX)
    ,@UserInt1         BIGINT
    ,@UserInt2         BIGINT
    ,@UserInt3         BIGINT
    ,@UserInt4         BIGINT
    ,@UserInt5         BIGINT
-   ,@OperatorFlagCode NVARCHAR(20)
+   ,@OperatorFlagCode NVARCHAR(80)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -1131,16 +1141,14 @@ GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_UpdateModeSCountry]
     @AircraftID   INTEGER
-   ,@LastModified DATETIME2
    ,@ModeSCountry NVARCHAR(80)
 AS
 BEGIN
     SET NOCOUNT ON;
 
     UPDATE [BaseStation].[Aircraft]
-    SET    [LastModified] = @LastModified
-          ,[ModeSCountry] = @ModeSCountry
-    WHERE [AircraftID] = @AircraftID;
+    SET    [ModeSCountry] = @ModeSCountry
+    WHERE  [AircraftID] = @AircraftID;
 END;
 GO
 
@@ -1406,7 +1414,8 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Aircraft_UpsertLookups]
-    @Lookups [BaseStation].[BaseStationAircraftUpsertLookup] READONLY
+    @Lookups                        [BaseStation].[BaseStationAircraftUpsertLookup] READONLY
+   ,@OnlyUpdateIfMarkedAsMissing    BIT
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -1469,18 +1478,27 @@ BEGIN
     INTO   @action
     FROM   @Lookups                 AS [lookup]
     JOIN   [BaseStation].[Aircraft] AS [aircraft] ON [lookup].[ModeS] = [aircraft].[ModeS]
-    WHERE  [aircraft].[LastModified] <> [lookup].[LastModified]
-    OR     ISNULL(NULLIF([aircraft].[Registration],     [lookup].[Registration]),       NULLIF([lookup].[Registration],     [aircraft].[Registration])) IS NOT NULL
-    OR     ISNULL(NULLIF([aircraft].[Country],          [lookup].[Country]),            NULLIF([lookup].[Country],          [aircraft].[Country])) IS NOT NULL
-    OR     ISNULL(NULLIF([aircraft].[ModeSCountry],     [lookup].[ModeSCountry]),       NULLIF([lookup].[ModeSCountry],     [aircraft].[ModeSCountry])) IS NOT NULL
-    OR     ISNULL(NULLIF([aircraft].[Manufacturer],     [lookup].[Manufacturer]),       NULLIF([lookup].[Manufacturer],     [aircraft].[Manufacturer])) IS NOT NULL
-    OR     ISNULL(NULLIF([aircraft].[Type],             [lookup].[Type]),               NULLIF([lookup].[Type],             [aircraft].[Type])) IS NOT NULL
-    OR     ISNULL(NULLIF([aircraft].[ICAOTypeCode],     [lookup].[ICAOTypeCode]),       NULLIF([lookup].[ICAOTypeCode],     [aircraft].[ICAOTypeCode])) IS NOT NULL
-    OR     ISNULL(NULLIF([aircraft].[RegisteredOwners], [lookup].[RegisteredOwners]),   NULLIF([lookup].[RegisteredOwners], [aircraft].[RegisteredOwners])) IS NOT NULL
-    OR     ISNULL(NULLIF([aircraft].[OperatorFlagCode], [lookup].[OperatorFlagCode]),   NULLIF([lookup].[OperatorFlagCode], [aircraft].[OperatorFlagCode])) IS NOT NULL
-    OR     ISNULL(NULLIF([aircraft].[SerialNo],         [lookup].[SerialNo]),           NULLIF([lookup].[SerialNo],         [aircraft].[SerialNo])) IS NOT NULL
-    OR     ISNULL(NULLIF([aircraft].[YearBuilt],        [lookup].[YearBuilt]),          NULLIF([lookup].[YearBuilt],        [aircraft].[YearBuilt])) IS NOT NULL
-    OR     [aircraft].[UserString1] = 'Missing';
+    WHERE  (
+                @OnlyUpdateIfMarkedAsMissing = 0
+            OR  (
+                     [aircraft].[UserString1] = 'Missing'
+                 AND LTRIM(RTRIM(ISNULL([aircraft].[Registration], ''))) = ''
+                )
+           )
+    AND    (
+                   [aircraft].[LastModified] <> [lookup].[LastModified]
+            OR     ISNULL(NULLIF([aircraft].[Registration],     [lookup].[Registration]),       NULLIF([lookup].[Registration],     [aircraft].[Registration])) IS NOT NULL
+            OR     ISNULL(NULLIF([aircraft].[Country],          [lookup].[Country]),            NULLIF([lookup].[Country],          [aircraft].[Country])) IS NOT NULL
+            OR     ISNULL(NULLIF([aircraft].[ModeSCountry],     [lookup].[ModeSCountry]),       NULLIF([lookup].[ModeSCountry],     [aircraft].[ModeSCountry])) IS NOT NULL
+            OR     ISNULL(NULLIF([aircraft].[Manufacturer],     [lookup].[Manufacturer]),       NULLIF([lookup].[Manufacturer],     [aircraft].[Manufacturer])) IS NOT NULL
+            OR     ISNULL(NULLIF([aircraft].[Type],             [lookup].[Type]),               NULLIF([lookup].[Type],             [aircraft].[Type])) IS NOT NULL
+            OR     ISNULL(NULLIF([aircraft].[ICAOTypeCode],     [lookup].[ICAOTypeCode]),       NULLIF([lookup].[ICAOTypeCode],     [aircraft].[ICAOTypeCode])) IS NOT NULL
+            OR     ISNULL(NULLIF([aircraft].[RegisteredOwners], [lookup].[RegisteredOwners]),   NULLIF([lookup].[RegisteredOwners], [aircraft].[RegisteredOwners])) IS NOT NULL
+            OR     ISNULL(NULLIF([aircraft].[OperatorFlagCode], [lookup].[OperatorFlagCode]),   NULLIF([lookup].[OperatorFlagCode], [aircraft].[OperatorFlagCode])) IS NOT NULL
+            OR     ISNULL(NULLIF([aircraft].[SerialNo],         [lookup].[SerialNo]),           NULLIF([lookup].[SerialNo],         [aircraft].[SerialNo])) IS NOT NULL
+            OR     ISNULL(NULLIF([aircraft].[YearBuilt],        [lookup].[YearBuilt]),          NULLIF([lookup].[YearBuilt],        [aircraft].[YearBuilt])) IS NOT NULL
+            OR     [aircraft].[UserString1] = 'Missing'
+           );
 
     SELECT [aircraft].*
     FROM   [BaseStation].[Aircraft] AS [aircraft]
@@ -1654,7 +1672,7 @@ ALTER PROCEDURE [BaseStation].[Flights_Insert]
    ,@AircraftID          INT
    ,@StartTime           DATETIME2
    ,@EndTime             DATETIME2 = NULL
-   ,@Callsign            NVARCHAR(20) = NULL
+   ,@Callsign            NVARCHAR(80) = NULL
    ,@NumPosMsgRec        INT = NULL
    ,@NumADSBMsgRec       INT = NULL
    ,@NumModeSMsgRec      INT = NULL
@@ -1685,7 +1703,7 @@ ALTER PROCEDURE [BaseStation].[Flights_Insert]
    ,@HadAlert            BIT = 0
    ,@HadEmergency        BIT = 0
    ,@HadSPI              BIT = 0
-   ,@UserNotes           NVARCHAR(300) = NULL
+   ,@UserNotes           NVARCHAR(3000) = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -1791,7 +1809,7 @@ ALTER PROCEDURE [BaseStation].[Flights_Update]
    ,@AircraftID          INT
    ,@StartTime           DATETIME2 = NULL
    ,@EndTime             DATETIME2
-   ,@Callsign            NVARCHAR(20)
+   ,@Callsign            NVARCHAR(80)
    ,@NumPosMsgRec        INT
    ,@NumADSBMsgRec       INT
    ,@NumModeSMsgRec      INT
@@ -1822,7 +1840,7 @@ ALTER PROCEDURE [BaseStation].[Flights_Update]
    ,@HadAlert            BIT
    ,@HadEmergency        BIT
    ,@HadSPI              BIT
-   ,@UserNotes           NVARCHAR(300)
+   ,@UserNotes           NVARCHAR(3000)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -2127,7 +2145,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Locations_Insert]
-    @LocationName NVARCHAR(80)
+    @LocationName NVARCHAR(300)
    ,@Latitude     REAL
    ,@Longitude    REAL
    ,@Altitude     REAL
@@ -2168,7 +2186,7 @@ GO
 
 ALTER PROCEDURE [BaseStation].[Locations_Update]
     @LocationID   INT
-   ,@LocationName NVARCHAR(80)
+   ,@LocationName NVARCHAR(300)
    ,@Latitude     REAL
    ,@Longitude    REAL
    ,@Altitude     REAL
@@ -2375,8 +2393,8 @@ GO
 
 ALTER PROCEDURE [BaseStation].[SystemEvents_Insert]
     @TimeStamp DATETIME2
-   ,@App       NVARCHAR(15)
-   ,@Msg       NVARCHAR(100)
+   ,@App       NVARCHAR(500)
+   ,@Msg       NVARCHAR(2500)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -2413,8 +2431,8 @@ GO
 ALTER PROCEDURE [BaseStation].[SystemEvents_Update]
     @SystemEventsID INT
    ,@TimeStamp      DATETIME2
-   ,@App            NVARCHAR(15)
-   ,@Msg            NVARCHAR(100)
+   ,@App            NVARCHAR(500)
+   ,@Msg            NVARCHAR(2500)
 AS
 BEGIN
     SET NOCOUNT ON;

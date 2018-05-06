@@ -6,7 +6,7 @@ GO
 
 ALTER PROCEDURE [BaseStation].[Locations_Update]
     @LocationID   INT
-   ,@LocationName NVARCHAR(80)
+   ,@LocationName NVARCHAR(300)
    ,@Latitude     REAL
    ,@Longitude    REAL
    ,@Altitude     REAL

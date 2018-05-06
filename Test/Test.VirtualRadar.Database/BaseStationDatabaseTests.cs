@@ -1,62 +1,59 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
-// All rights reserved.
-//
-// Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-//    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-//    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-//    * Neither the name of the author nor the names of the program's contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-using System;
-using System.Text;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VirtualRadar.Interface.Database;
+using System.Data;
+using System.Data.Common;
 using System.IO;
-using Test.Framework;
-using System.Data.SQLite;
-using Moq;
-using System.Reflection;
+using System.Linq;
+using System.Text;
 using System.Threading;
-using System.Globalization;
+using System.Threading.Tasks;
 using InterfaceFactory;
-using VirtualRadar.Interface.Settings;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using Test.Framework;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Database;
+using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StandingData;
+using Dapper;
+using System.Reflection;
 
 namespace Test.VirtualRadar.Database
 {
-    [TestClass]
     public class BaseStationDatabaseTests
     {
-        #region Fields, TestContext etc.
         public TestContext TestContext { get; set; }
 
-        private IClassFactory _OriginalClassFactory;
-        private IBaseStationDatabase _Database;
-        private Mock<IBaseStationDatabaseProvider> _Provider;
-        private string _EmptyDatabaseFileName;
-        private SQLiteConnectionStringBuilder _ConnectionStringBuilder;
-        private SearchBaseStationCriteria _Criteria;
-        private readonly string[] _SortColumns = new string[] { "callsign", "country", "date", "model", "type", "operator", "reg", "icao", "firstaltitude", "lastaltitude", };
-        private string _CreateDatabaseFileName;
-        private Mock<IConfigurationStorage> _ConfigurationStorage;
-        private Configuration _Configuration;
-        private EventRecorder<EventArgs> _FileNameChangingEvent;
-        private EventRecorder<EventArgs> _FileNameChangedEvent;
-        private EventRecorder<EventArgs<BaseStationAircraft>> _AircraftUpdatedEvent;
-        private readonly string[] _Cultures = new string[] { "en-GB", "de-DE", "fr-FR", "it-IT", "el-GR", "ru-RU" };
-        private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
-        private Mock<ICallsignParser> _CallsignParser;
-        private ClockMock _Clock;
-        private MockFileSystemProvider _FileSystem;
-        private Mock<IStandingDataManager> _StandingDataManager;
-        private CodeBlock _Icao24CodeBlock;
+        protected virtual string SchemaPrefix => "";
+        protected virtual bool EngineTruncatesMilliseconds => false;
 
-        [TestInitialize]
-        public void TestInitialise()
+        protected IClassFactory _OriginalClassFactory;
+        protected IBaseStationDatabase _Database;
+        protected Mock<IBaseStationDatabaseProvider> _Provider;
+        protected SearchBaseStationCriteria _Criteria;
+        protected Func<IDbConnection> _CreateConnection;
+        protected string _SqlReturnNewIdentity;
+        protected readonly string[] _SortColumns = new string[] { "callsign", "country", "date", "model", "type", "operator", "reg", "icao", "firstaltitude", "lastaltitude", };
+        protected Mock<IConfigurationStorage> _ConfigurationStorage;
+        protected Configuration _Configuration;
+        protected EventRecorder<EventArgs> _FileNameChangingEvent;
+        protected EventRecorder<EventArgs> _FileNameChangedEvent;
+        protected EventRecorder<EventArgs<BaseStationAircraft>> _AircraftUpdatedEvent;
+        protected readonly string[] _Cultures = new string[] { "en-GB", "de-DE", "fr-FR", "it-IT", "el-GR", "ru-RU" };
+        protected Mock<IRuntimeEnvironment> _RuntimeEnvironment;
+        protected Mock<ICallsignParser> _CallsignParser;
+        protected ClockMock _Clock;
+        protected MockFileSystemProvider _FileSystem;
+        protected Mock<IStandingDataManager> _StandingDataManager;
+        protected CodeBlock _Icao24CodeBlock;
+
+        protected BaseStationAircraft _DefaultAircraft;
+        protected BaseStationSession _DefaultSession;
+        protected BaseStationLocation _DefaultLocation;
+        protected BaseStationFlight _DefaultFlight;
+
+        protected void CommonTestInitialise<T>(Action initialiseDatabase, Func<IDbConnection> createConnection, Action<T> initialiseImplementation, string sqlReturnNewIdentity)
+            where T: class, IBaseStationDatabase
         {
             _OriginalClassFactory = Factory.TakeSnapshot();
             _RuntimeEnvironment = TestUtilities.CreateMockSingleton<IRuntimeEnvironment>();
@@ -71,17 +68,6 @@ namespace Test.VirtualRadar.Database
             _FileSystem = new MockFileSystemProvider();
             Factory.RegisterInstance<IFileSystemProvider>(_FileSystem);
 
-            _CreateDatabaseFileName = Path.Combine(TestContext.TestDeploymentDir, "CreatedDatabase.sqb");
-            if(File.Exists(_CreateDatabaseFileName)) {
-                RetryAction(() => File.Delete(_CreateDatabaseFileName));
-            }
-
-            _EmptyDatabaseFileName = Path.Combine(TestContext.TestDeploymentDir, "TestCopyBaseStation.sqb");
-            if(File.Exists(_EmptyDatabaseFileName)) {
-                RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-            }
-            File.Copy(Path.Combine(TestContext.TestDeploymentDir, "BaseStation.sqb"), _EmptyDatabaseFileName, true);
-
             _Icao24CodeBlock = new CodeBlock() {
                 Country = "United Kingdom",
                 IsMilitary = false,
@@ -89,14 +75,17 @@ namespace Test.VirtualRadar.Database
             _StandingDataManager = TestUtilities.CreateMockSingleton<IStandingDataManager>();
             _StandingDataManager.Setup(r => r.FindCodeBlock(It.IsAny<string>())).Returns(_Icao24CodeBlock);
 
-            _Database = Factory.Resolve<IBaseStationDatabase>();
-            _Database.FileName = _EmptyDatabaseFileName;
+            initialiseDatabase?.Invoke();
+            _CreateConnection = createConnection;
+            _SqlReturnNewIdentity = sqlReturnNewIdentity;
+
+            var implementation = Factory.Resolve(typeof(T)) as T;
+            _Database = implementation;
 
             _Provider = new Mock<IBaseStationDatabaseProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Database.Provider = _Provider.Object;
             _Provider.Setup(p => p.UtcNow).Returns(DateTime.UtcNow);
-
-            _ConnectionStringBuilder = new SQLiteConnectionStringBuilder() { DataSource = _EmptyDatabaseFileName };
+            initialiseImplementation?.Invoke(implementation);
 
             _CallsignParser = TestUtilities.CreateMockImplementation<ICallsignParser>();
 
@@ -109,10 +98,26 @@ namespace Test.VirtualRadar.Database
             _FileNameChangingEvent = new EventRecorder<EventArgs>();
             _FileNameChangedEvent = new EventRecorder<EventArgs>();
             _AircraftUpdatedEvent = new EventRecorder<EventArgs<BaseStationAircraft>>();
+
+            _DefaultAircraft = new BaseStationAircraft() {
+                ModeS = "123456",
+            };
+            _DefaultLocation = new BaseStationLocation() {
+                Altitude = 25,
+                Latitude = 54.1,
+                Longitude = -0.6,
+                LocationName = "Default Location",
+            };
+            _DefaultSession = new BaseStationSession() {
+                StartTime = DateTime.Now,
+                EndTime = DateTime.Now.AddSeconds(30),
+            };
+            _DefaultFlight = new BaseStationFlight() {
+                StartTime = DateTime.Now,
+            };
         }
 
-        [TestCleanup]
-        public void TestCleanup()
+        protected void CommonTestCleanup()
         {
             if(_Database != null) {
                 _Database.Dispose();
@@ -121,9 +126,26 @@ namespace Test.VirtualRadar.Database
 
             Factory.RestoreSnapshot(_OriginalClassFactory);
         }
-        #endregion
 
-        #region Helper methods
+        private MethodInfo _TestInitialise;
+        private void RunTestInitialise()
+        {
+            if(_TestInitialise == null) {
+                _TestInitialise = GetType().GetMethods().Single(r => r.GetCustomAttributes(typeof(TestInitializeAttribute), inherit: false).Length != 0);
+            }
+            _TestInitialise.Invoke(this, new object[0]);
+        }
+
+        private MethodInfo _TestCleanup;
+        private void RunTestCleanup()
+        {
+            if(_TestCleanup == null) {
+                _TestCleanup = GetType().GetMethods().Single(r => r.GetCustomAttributes(typeof(TestCleanupAttribute), inherit: false).Length != 0);
+            }
+            _TestCleanup.Invoke(this, new object[0]);
+        }
+
+        #region Helpers
         /// <summary>
         /// Retries an action until it either stops giving IO errors or too many errors have occurred.
         /// </summary>
@@ -133,9 +155,9 @@ namespace Test.VirtualRadar.Database
         /// it had been disposed of. This function retries file operations until either they stop giving
         /// exceptions or a counter expires.
         /// </remarks>
-        void RetryAction(Action action)
+        protected void RetryAction(Action action)
         {
-            var retries = 20;
+            const int retries = 20;
             for(var i = 0;i < retries;++i) {
                 var pause = false;
                 var giveUp = i + 1 == retries;
@@ -143,13 +165,19 @@ namespace Test.VirtualRadar.Database
                     action();
                     break;
                 } catch(IOException) {
-                    if(giveUp) throw;
+                    if(giveUp) {
+                        throw;
+                    }
                     pause = true;
                 } catch(UnauthorizedAccessException) {
-                    if(giveUp) throw;
+                    if(giveUp) {
+                        throw;
+                    }
                     pause = true;
                 }
-                if(pause) Thread.Sleep(250);
+                if(pause) {
+                    Thread.Sleep(250);
+                }
             }
         }
 
@@ -159,12 +187,12 @@ namespace Test.VirtualRadar.Database
         /// <param name="date"></param>
         /// <returns></returns>
         /// <remarks>
-        /// The library stores all dates and times with the milliseconds stripped off - this helps keep
+        /// The SQLite implementation of IBaseStationDatabase stores times with the milliseconds stripped off - this helps keep
         /// compatibility with some 3rd party utilities.
         /// </remarks>
-        private DateTime TruncateDate(DateTime date)
+        protected DateTime TruncateDate(DateTime date)
         {
-            return new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second);
+            return !EngineTruncatesMilliseconds ? date : new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second);
         }
 
         /// <summary>
@@ -172,12 +200,12 @@ namespace Test.VirtualRadar.Database
         /// </summary>
         /// <param name="date"></param>
         /// <returns></returns>
-        private DateTime? TruncateDate(DateTime? date)
+        protected DateTime? TruncateDate(DateTime? date)
         {
-            return date == null ? (DateTime?)null : TruncateDate(date.Value);
+            return !EngineTruncatesMilliseconds ? date : date == null ? (DateTime?)null : TruncateDate(date.Value);
         }
 
-        private BaseStationAircraft CreateAircraft(string icao24 = "123456", string registration = "G-VRST")
+        protected BaseStationAircraft CreateAircraft(string icao24 = "123456", string registration = "G-VRST")
         {
             return new BaseStationAircraft() {
                 ModeS = icao24,
@@ -198,7 +226,7 @@ namespace Test.VirtualRadar.Database
         /// OperatorFlagCode, OwnershipStatus, PopularName, PreviousID, RegisteredOwners, Registration, SerialNo, Status, Type, CofACategory, CofAExpiry
         /// CurrentRegDate, FirstRegDate, InfoUrl, Interested, MTOW, PictureUrl1, PictureUrl2, PictureUrl3, TotalHours, UserNotes, UserTag and YearBuilt.
         /// </remarks>
-        private BaseStationAircraft LoadAircraftFromSpreadsheet(ExcelWorksheetData worksheet, int firstOrdinal = 0, BaseStationAircraft copyIntoAircraft = null)
+        protected BaseStationAircraft LoadAircraftFromSpreadsheet(ExcelWorksheetData worksheet, int firstOrdinal = 0, BaseStationAircraft copyIntoAircraft = null)
         {
             var result = copyIntoAircraft == null ? new BaseStationAircraft() : copyIntoAircraft;
 
@@ -256,41 +284,46 @@ namespace Test.VirtualRadar.Database
             return result;
         }
 
-        private long AddAircraft(BaseStationAircraft aircraft)
+        protected long AddAircraft(BaseStationAircraft aircraft)
         {
             long result = 0;
 
-            using(var connection = new SQLiteConnection(_ConnectionStringBuilder.ConnectionString)) {
+            using(var connection = _CreateConnection()) {
                 connection.Open();
 
-                using(var command = connection.CreateCommand()) {
-                    var fieldNames = new StringBuilder();
-                    var parameters = new StringBuilder();
+                var dynamicParameters = new DynamicParameters();
+                var fieldNames = new StringBuilder();
+                var parameters = new StringBuilder();
 
-                    foreach(var property in typeof(BaseStationAircraft).GetProperties()) {
-                        var fieldName = property.Name;
-                        if(fieldName == "AircraftID") continue;
+                foreach(var property in typeof(BaseStationAircraft).GetProperties()) {
+                    var fieldName = property.Name;
+                    if(fieldName == nameof(BaseStationAircraft.AircraftID)) continue;
 
-                        if(fieldNames.Length > 0) fieldNames.Append(',');
-                        if(parameters.Length > 0) parameters.Append(',');
+                    if(fieldNames.Length > 0) fieldNames.Append(',');
+                    if(parameters.Length > 0) parameters.Append(',');
 
-                        fieldNames.AppendFormat("[{0}]", fieldName);
-                        parameters.Append('?');
-
-                        var parameter = command.CreateParameter();
-                        parameter.Value = property.GetValue(aircraft, null);
-                        command.Parameters.Add(parameter);
-                    }
-
-
-                    command.CommandText = String.Format("INSERT INTO [Aircraft] ({0}) VALUES ({1}); SELECT last_insert_rowid();", fieldNames, parameters);
-
-                    result = (long)command.ExecuteScalar();
-                    aircraft.AircraftID = (int)result;
+                    fieldNames.Append($"[{fieldName}]");
+                    parameters.Append($"@{fieldName}");
+                    dynamicParameters.Add(fieldName, property.GetValue(aircraft, null));
                 }
+
+                result = connection.ExecuteScalar<long>($"INSERT INTO {SchemaPrefix}[Aircraft] ({fieldNames}) VALUES ({parameters}); {_SqlReturnNewIdentity}", dynamicParameters);
+                aircraft.AircraftID = (int)result;
             }
 
             return result;
+        }
+
+        protected BaseStationAircraft PrepareAircraftReference(BaseStationAircraft aircraft)
+        {
+            if(aircraft == null) {
+                aircraft = _DefaultAircraft;
+            }
+            if(aircraft.AircraftID == 0) {
+                AddAircraft(aircraft);
+            }
+
+            return aircraft;
         }
 
         /// <summary>
@@ -298,7 +331,7 @@ namespace Test.VirtualRadar.Database
         /// </summary>
         /// <param name="actual"></param>
         /// <returns></returns>
-        private BaseStationFlight CreateFlight(BaseStationAircraft aircraft = null, string id = null)
+        protected BaseStationFlight CreateFlight(BaseStationAircraft aircraft = null, string id = null)
         {
             var result = new BaseStationFlight() { Aircraft = new BaseStationAircraft() };
             if(id != null) result.Callsign = id;
@@ -315,7 +348,7 @@ namespace Test.VirtualRadar.Database
         /// <param name="setCallsign"></param>
         /// <param name="setRegistration"></param>
         /// <returns></returns>
-        private BaseStationFlight CreateFlight(string id, bool setCallsign = true, bool setRegistration = true)
+        protected BaseStationFlight CreateFlight(string id, bool setCallsign = true, bool setRegistration = true)
         {
             var result = CreateFlight();
             result.Aircraft.ModeS = id;
@@ -338,14 +371,14 @@ namespace Test.VirtualRadar.Database
         /// NumIDMsgRec, NumSurPosMsgRec, NumAirPosMsgRec, NumAirVelMsgRec, NumSurAltMsgRec, NumSurIDMsgRec, NumAirToAirMsgRec, NumAirCallRepMsgRec, NumPosMsgRec
         /// and StartTime
         /// </remarks>
-        private BaseStationFlight LoadFlightFromSpreadsheet(ExcelWorksheetData worksheet, int firstOrdinal = 0, BaseStationFlight copyIntoFlight = null)
+        protected BaseStationFlight LoadFlightFromSpreadsheet(ExcelWorksheetData worksheet, int firstOrdinal = 0, BaseStationFlight copyIntoFlight = null)
         {
             int ordinal = firstOrdinal;
 
             var aircraft = CreateAircraft();
             aircraft.AircraftID = worksheet.Int(ordinal++);
 
-            var result = copyIntoFlight == null ? CreateFlight(aircraft) : copyIntoFlight;
+            var result = copyIntoFlight ?? CreateFlight(aircraft) ;
             result.AircraftID = aircraft.AircraftID;
             result.Callsign = worksheet.EString(ordinal++);
             result.EndTime = worksheet.DateTime(ordinal++);
@@ -385,4186 +418,362 @@ namespace Test.VirtualRadar.Database
             return result;
         }
 
-        private long AddFlight(BaseStationFlight flight)
+        protected long AddFlight(BaseStationFlight flight, BaseStationSession session = null, BaseStationAircraft aircraft = null)
         {
             long result = 0;
 
-            using(var connection = new SQLiteConnection(_ConnectionStringBuilder.ConnectionString)) {
+            if(flight.SessionID == 0) {
+                session = PrepareSessionReference(session);
+            }
+            if(flight.AircraftID == 0) {
+                aircraft = PrepareAircraftReference(aircraft ?? flight.Aircraft);
+            }
+
+            using(var connection = _CreateConnection()) {
                 connection.Open();
 
-                using(var command = connection.CreateCommand()) {
-                    var fieldNames = new StringBuilder();
-                    var parameters = new StringBuilder();
+                var dynamicParameters = new DynamicParameters();
+                var fieldNames = new StringBuilder();
+                var parameters = new StringBuilder();
 
-                    foreach(var property in typeof(BaseStationFlight).GetProperties()) {
-                        var fieldName = property.Name;
-                        object value = property.GetValue(flight, null);
+                foreach(var property in typeof(BaseStationFlight).GetProperties()) {
+                    var fieldName = property.Name;
+                    var value = property.GetValue(flight, null);
 
-                        if(fieldName == "FlightID") continue;
-                        else if(fieldName == "Aircraft") continue;
-
-                        if(fieldNames.Length > 0) fieldNames.Append(',');
-                        if(parameters.Length > 0) parameters.Append(',');
-
-                        fieldNames.AppendFormat("[{0}]", fieldName);
-                        parameters.Append('?');
-
-                        var parameter = command.CreateParameter();
-                        parameter.Value = value;
-                        command.Parameters.Add(parameter);
+                    switch(fieldName) {
+                        case nameof(BaseStationFlight.FlightID):
+                        case nameof(BaseStationFlight.Aircraft):
+                            continue;
+                        case nameof(BaseStationFlight.AircraftID):
+                            if(flight.AircraftID == 0) {
+                                value = aircraft.AircraftID;
+                            }
+                            break;
+                        case nameof(BaseStationFlight.SessionID):
+                            if(flight.SessionID == 0) {
+                                value = session.SessionID;
+                            }
+                            break;
                     }
 
-                    command.CommandText = String.Format("INSERT INTO [Flights] ({0}) VALUES ({1}); SELECT last_insert_rowid();", fieldNames, parameters);
+                    if(fieldNames.Length > 0) fieldNames.Append(',');
+                    if(parameters.Length > 0) parameters.Append(',');
 
-                    result = (long)command.ExecuteScalar();
-                    flight.FlightID = (int)result;
+                    fieldNames.Append($"[{fieldName}]");
+                    parameters.Append($"@{fieldName}");
+                    dynamicParameters.Add(fieldName, value);
                 }
+
+                result = connection.ExecuteScalar<long>($"INSERT INTO {SchemaPrefix}[Flights] ({fieldNames}) VALUES ({parameters}); {_SqlReturnNewIdentity}", dynamicParameters);
+                flight.FlightID = (int)result;
             }
 
             return result;
         }
 
-        private void AddFlightAndAircraft(BaseStationFlight flight)
+        protected BaseStationFlight PrepareFlightReference(BaseStationFlight flight)
+        {
+            if(flight == null) {
+                flight = _DefaultFlight;
+            }
+            if(flight.SessionID == 0) {
+                flight.SessionID = PrepareSessionReference(null).SessionID;
+            }
+            if(flight.AircraftID == 0) {
+                flight.Aircraft = flight.Aircraft ?? _DefaultAircraft;
+                flight.AircraftID = PrepareAircraftReference(flight.Aircraft).AircraftID;
+            }
+            if(flight.FlightID == 0) {
+                AddFlight(flight);
+            }
+
+            return flight;
+        }
+
+        protected void AddFlightAndAircraft(BaseStationFlight flight)
         {
             flight.AircraftID = (int)AddAircraft(flight.Aircraft);
             AddFlight(flight);
         }
 
-        private long AddDBHistory(BaseStationDBHistory dbHistory)
+        protected void ClearDBHistory()
+        {
+            using(var connection = _CreateConnection()) {
+                connection.Execute($"DELETE FROM {SchemaPrefix}[DBHistory]");
+            }
+        }
+
+        protected long AddDBHistory(BaseStationDBHistory dbHistory)
         {
             long result = 0;
 
-            using(var connection = new SQLiteConnection(_ConnectionStringBuilder.ConnectionString)) {
+            using(var connection = _CreateConnection()) {
                 connection.Open();
 
-                using(var command = connection.CreateCommand()) {
-                    command.CommandText = "INSERT INTO [DBHistory] ([TimeStamp], [Description]) VALUES (?,?); SELECT last_insert_rowid();";
-                    command.Parameters.Add(new SQLiteParameter() { Value = dbHistory.TimeStamp });
-                    command.Parameters.Add(new SQLiteParameter() { Value = dbHistory.Description });
-
-                    result = (long)command.ExecuteScalar();
-                    dbHistory.DBHistoryID = (int)result;
-                }
+                result = connection.ExecuteScalar<long>($@"
+                    INSERT INTO {SchemaPrefix}[DBHistory] (
+                        [TimeStamp]
+                       ,[Description]
+                    ) VALUES (
+                        @TimeStamp
+                       ,@Description
+                    ); {_SqlReturnNewIdentity}", new {
+                        dbHistory.TimeStamp,
+                        dbHistory.Description,
+                    }
+                );
+                dbHistory.DBHistoryID = (int)result;
             }
 
             return result;
         }
 
-        private long AddDBInfo(BaseStationDBInfo dbInfo)
+        protected long AddDBInfo(BaseStationDBInfo dbInfo)
         {
             long result = 0;
 
-            using(var connection = new SQLiteConnection(_ConnectionStringBuilder.ConnectionString)) {
+            using(var connection = _CreateConnection()) {
                 connection.Open();
 
-                using(var command = connection.CreateCommand()) {
-                    command.CommandText = "INSERT INTO [DBInfo] ([OriginalVersion], [CurrentVersion]) VALUES (?,?); SELECT last_insert_rowid();";
-                    command.Parameters.Add(new SQLiteParameter() { Value = dbInfo.OriginalVersion });
-                    command.Parameters.Add(new SQLiteParameter() { Value = dbInfo.CurrentVersion });
-
-                    result = (long)command.ExecuteScalar();
-                }
+                result = connection.ExecuteScalar<long>($@"
+                    INSERT INTO {SchemaPrefix}[DBInfo] (
+                        [OriginalVersion]
+                       ,[CurrentVersion]
+                    ) VALUES (
+                        @OriginalVersion
+                       ,@CurrentVersion
+                    );{_SqlReturnNewIdentity}", new {
+                        dbInfo.OriginalVersion,
+                        dbInfo.CurrentVersion,
+                    }
+                );
             }
 
             return result;
         }
 
-        private long AddSystemEvent(BaseStationSystemEvents systemEvent)
+        protected void ClearSystemEvents()
+        {
+            using(var connection = _CreateConnection()) {
+                connection.Execute($"DELETE FROM {SchemaPrefix}[SystemEvents]");
+            }
+        }
+
+        protected long AddSystemEvent(BaseStationSystemEvents systemEvent)
         {
             long result = 0;
 
-            using(var connection = new SQLiteConnection(_ConnectionStringBuilder.ConnectionString)) {
+            using(var connection = _CreateConnection()) {
                 connection.Open();
 
-                using(var command = connection.CreateCommand()) {
-                    command.CommandText = "INSERT INTO [SystemEvents] ([App], [Msg], [TimeStamp]) VALUES (?,?,?); SELECT last_insert_rowid();";
-                    command.Parameters.Add(new SQLiteParameter() { Value = systemEvent.App });
-                    command.Parameters.Add(new SQLiteParameter() { Value = systemEvent.Msg });
-                    command.Parameters.Add(new SQLiteParameter() { Value = systemEvent.TimeStamp });
-
-                    result = (long)command.ExecuteScalar();
-                    systemEvent.SystemEventsID = (int)result;
-                }
+                result = connection.ExecuteScalar<long>($@"
+                    INSERT INTO {SchemaPrefix}[SystemEvents] (
+                        [App]
+                       ,[Msg]
+                       ,[TimeStamp]
+                    ) VALUES (
+                        @App
+                       ,@Msg
+                       ,@TimeStamp
+                    ); {_SqlReturnNewIdentity}", new {
+                        systemEvent.App,
+                        systemEvent.Msg,
+                        systemEvent.TimeStamp,
+                    }
+                );
+                systemEvent.SystemEventsID = (int)result;
             }
 
             return result;
         }
 
-        private long AddLocation(BaseStationLocation location)
+        protected void ClearLocations()
+        {
+            using(var connection = _CreateConnection()) {
+                connection.Execute($"DELETE FROM {SchemaPrefix}[Locations]");
+            }
+        }
+
+        protected long AddLocation(BaseStationLocation location)
         {
             long result = 0;
 
-            using(var connection = new SQLiteConnection(_ConnectionStringBuilder.ConnectionString)) {
+            using(var connection = _CreateConnection()) {
                 connection.Open();
 
-                using(var command = connection.CreateCommand()) {
-                    command.CommandText = "INSERT INTO [Locations] ([Altitude], [Latitude], [LocationName], [Longitude]) VALUES (?,?,?,?); SELECT last_insert_rowid();";
-                    command.Parameters.Add(new SQLiteParameter() { Value = location.Altitude });
-                    command.Parameters.Add(new SQLiteParameter() { Value = location.Latitude });
-                    command.Parameters.Add(new SQLiteParameter() { Value = location.LocationName });
-                    command.Parameters.Add(new SQLiteParameter() { Value = location.Longitude });
-
-                    result = (long)command.ExecuteScalar();
-                    location.LocationID = (int)result;
-                }
+                result = connection.ExecuteScalar<long>($@"
+                    INSERT INTO {SchemaPrefix}[Locations] (
+                        [Altitude]
+                       ,[Latitude]
+                       ,[LocationName]
+                       ,[Longitude]
+                    ) VALUES (
+                        @altitude
+                       ,@latitude
+                       ,@locationName
+                       ,@longitude
+                    ); {_SqlReturnNewIdentity}", new {
+                        location.Altitude,
+                        location.Latitude,
+                        location.LocationName,
+                        location.Longitude,
+                    }
+                );
+                location.LocationID = (int)result;
             }
 
             return result;
         }
 
-        private long AddSession(BaseStationSession session)
+        protected BaseStationLocation PrepareLocationReference(BaseStationLocation location)
+        {
+            if(location == null) {
+                location = _DefaultLocation;
+            }
+            if(location.LocationID == 0) {
+                AddLocation(location);
+            }
+
+            return location;
+        }
+
+        protected long AddSession(BaseStationSession session)
         {
             long result = 0;
 
-            using(var connection = new SQLiteConnection(_ConnectionStringBuilder.ConnectionString)) {
+            using(var connection = _CreateConnection()) {
                 connection.Open();
 
-                using(var command = connection.CreateCommand()) {
-                    command.CommandText = "INSERT INTO [Sessions] ([LocationID], [StartTime], [EndTime]) VALUES (?,?,?); SELECT last_insert_rowid();";
-                    command.Parameters.Add(new SQLiteParameter() { Value = session.LocationID });
-                    command.Parameters.Add(new SQLiteParameter() { Value = session.StartTime });
-                    command.Parameters.Add(new SQLiteParameter() { Value = session.EndTime });
-
-                    result = (long)command.ExecuteScalar();
-                    session.SessionID = (int)result;
-                }
+                result = connection.ExecuteScalar<long>($@"
+                    INSERT INTO {SchemaPrefix}[Sessions] (
+                        [LocationID]
+                       ,[StartTime]
+                       ,[EndTime]
+                    ) VALUES (
+                        @locationID
+                       ,@startTime
+                       ,@endTime
+                    ); {_SqlReturnNewIdentity}", new {
+                        session.LocationID,
+                        session.StartTime,
+                        session.EndTime,
+                    }
+                );
+                session.SessionID = (int)result;
             }
 
             return result;
         }
-        #endregion
 
-        #region Constructors and properties
-        [TestMethod]
-        public void BaseStationDatabase_Constructor_Initialises_To_Known_Values_And_Properties_Work()
+        protected BaseStationSession PrepareSessionReference(BaseStationSession session)
         {
-            _Database.Dispose();
-            _Database = Factory.Resolve<IBaseStationDatabase>();
-
-            Assert.IsNotNull(_Database.Provider);
-            TestUtilities.TestProperty(_Database, "Provider", _Database.Provider, _Provider.Object);
-
-            Assert.AreEqual(null, _Database.FileName);
-            Assert.IsFalse(_Database.IsConnected);
-            Assert.IsFalse(_Database.WriteSupportEnabled);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_IsConnected_Indicates_State_Of_Connection()
-        {
-            Assert.IsFalse(_Database.IsConnected);
-            _Database.GetAircraftByCode("000000");
-            Assert.IsTrue(_Database.IsConnected);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_FileName_Change_Closes_Connection_If_Changed()
-        {
-            _Database.GetAircraftByCode("000000");
-            _Database.FileName = _CreateDatabaseFileName;
-            Assert.IsFalse(_Database.IsConnected);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_FileName_Set_Does_Not_Close_Connection_If_Value_Unchanged()
-        {
-            _Database.GetAircraftByCode("000000");
-            _Database.FileName = _Database.FileName;
-            Assert.IsTrue(_Database.IsConnected);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_FileName_Change_Can_Allow_Methods_To_Start_Returning_Data()
-        {
-            AddAircraft(CreateAircraft("123456", "REG"));
-
-            _Database.FileName = "c:\\DoesNotExist\\ThisFileDoesNotExist.ifitdoesthenitwillbetremendousbadluck";
-
-            Assert.IsNull(_Database.GetAircraftByRegistration("REG"));
-            Assert.IsFalse(_Database.IsConnected);
-
-            _Database.FileName = _EmptyDatabaseFileName;
-
-            Assert.IsNotNull(_Database.GetAircraftByRegistration("REG"));
-            Assert.IsTrue(_Database.IsConnected);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabse_WriteSupportEnabled_Closes_Connection_If_Changed()
-        {
-            _Database.GetAircraftByCode("000000");
-            _Database.WriteSupportEnabled = true;
-            Assert.AreEqual(true, _Database.WriteSupportEnabled);
-            Assert.IsFalse(_Database.IsConnected);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabse_WriteSupportEnabled_Leaves_Connection_If_Not_Changed()
-        {
-            _Database.GetAircraftByCode("000000");
-            _Database.WriteSupportEnabled = false;
-            Assert.AreEqual(false, _Database.WriteSupportEnabled);
-            Assert.IsTrue(_Database.IsConnected);
-        }
-        #endregion
-
-        #region MaxParameters
-        [TestMethod]
-        public void BaseStationDatabase_MaxParameters_Returns_Minus_One_When_Disconnected()
-        {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-            Assert.AreEqual(-1, _Database.MaxParameters);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_MaxParameters_Returns_Correct_Value_When_Connected()
-        {
-            // SQLite's max parameters is a compile time variable. It can be fetched via a C function call but
-            // that's a little tricky to do with ADO.NET when you can't use interop, so we're hard-coding to
-            // the default, which is 999. The database object lops off a few parameters for internal use,
-            // leaving a result of 900. This will need adjusting for other engines.
-            Assert.AreEqual(900, _Database.MaxParameters);
-        }
-        #endregion
-
-        #region FileNameChanging event
-        [TestMethod]
-        public void BaseStationDatabase_FileNameChanging_Raised_Before_FileName_Changes()
-        {
-            _Database.FileName = "OLD";
-            _Database.FileNameChanging += _FileNameChangingEvent.Handler;
-            _FileNameChangingEvent.EventRaised += (s, a) => {
-                Assert.AreEqual("OLD", _Database.FileName);
-            };
-
-            _Database.FileName = "NEW";
-
-            Assert.AreEqual(1, _FileNameChangingEvent.CallCount);
-            Assert.AreSame(_Database, _FileNameChangingEvent.Sender);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_FileNameChanging_Not_Raised_If_FileName_Does_Not_Change()
-        {
-            _Database.FileName = "OLD";
-            _Database.FileNameChanging += _FileNameChangingEvent.Handler;
-
-            _Database.FileName = "OLD";
-
-            Assert.AreEqual(0, _FileNameChangingEvent.CallCount);
-        }
-        #endregion
-
-        #region FileNameChanged event
-        [TestMethod]
-        public void BaseStationDatabase_FileNameChanged_Raised_After_FileName_Changes()
-        {
-            _Database.FileName = "OLD";
-            _Database.FileNameChanged += _FileNameChangedEvent.Handler;
-            _FileNameChangedEvent.EventRaised += (s, a) => {
-                Assert.AreEqual("NEW", _Database.FileName);
-            };
-
-            _Database.FileName = "NEW";
-
-            Assert.AreEqual(1, _FileNameChangedEvent.CallCount);
-            Assert.AreSame(_Database, _FileNameChangedEvent.Sender);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_FileNameChanged_Not_Raised_If_FileName_Does_Not_Change()
-        {
-            _Database.FileName = "OLD";
-            _Database.FileNameChanged += _FileNameChangedEvent.Handler;
-
-            _Database.FileName = "OLD";
-
-            Assert.AreEqual(0, _FileNameChangedEvent.CallCount);
-        }
-        #endregion
-
-        #region Dispose
-        [TestMethod]
-        public void BaseStationDatabaseTests_Dispose_Prevents_Reopening_Of_Connection()
-        {
-            var flight = CreateFlight("ABC123");
-            AddAircraft(flight.Aircraft);
-            AddFlight(flight);
-            _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
-
-            _Database.Dispose();
-
-            var flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
-            Assert.AreEqual(0, flights.Count);
-        }
-        #endregion
-
-        #region TestConnection
-        [TestMethod]
-        public void BaseStationDatabase_TestConnection_Returns_False_If_File_Could_Not_Be_Opened()
-        {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-            Assert.IsFalse(_Database.TestConnection());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_TestConnection_Returns_True_If_File_Could_Be_Opened()
-        {
-            Assert.IsTrue(_Database.TestConnection());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_TestConnection_Leaves_Connection_Open()
-        {
-            Assert.IsTrue(_Database.TestConnection());
-            Assert.IsTrue(_Database.IsConnected);
-
-            bool seenConnectionOpen = false;
-            try {
-                File.Delete(_EmptyDatabaseFileName);
-            } catch(IOException) {
-                seenConnectionOpen = true;
+            if(session == null) {
+                session = _DefaultSession;
             }
-            Assert.IsTrue(seenConnectionOpen);
-        }
-        #endregion
-
-        #region Connection
-        [TestMethod]
-        public void BaseStationDatabase_Connection_Does_Not_Create_File_If_Missing()
-        {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-            _Database.GetAircraftByRegistration("G-ABCD");
-            Assert.IsFalse(File.Exists(_EmptyDatabaseFileName));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_Connection_Does_Not_Try_To_Use_Zero_Length_Files()
-        {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-            File.Create(_EmptyDatabaseFileName).Close();
-
-            Assert.IsNull(_Database.GetAircraftByRegistration("G-ABCD"));
-            Assert.AreEqual(false, _Database.IsConnected);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_Connection_Can_Work_With_ReadOnly_Access()
-        {
-            var fileInfo = new FileInfo(_EmptyDatabaseFileName);
-            try {
-                AddAircraft(CreateAircraft("ABCDEF", "G-AGWP"));
-                fileInfo.IsReadOnly = true;
-                Assert.IsNotNull(_Database.GetAircraftByRegistration("G-AGWP"));
-            } finally {
-                fileInfo.IsReadOnly = false;
+            if(session.LocationID == 0) {
+                session.LocationID = PrepareLocationReference(null).LocationID;
             }
-        }
-        #endregion
-
-        #region FileExists
-        [TestMethod]
-        public void BaseStationDatabase_FileExists_Returns_True_If_The_FileName_Exists()
-        {
-            _FileSystem.AddFile(@"c:\tmp\file.sqb", new byte[0]);
-            _Database.FileName = @"c:\tmp\file.sqb";
-
-            Assert.IsTrue(_Database.FileExists());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_FileExists_Returns_False_If_The_FileName_Does_Not_Exist()
-        {
-            _FileSystem.AddFile(@"c:\tmp\file.sqb", new byte[0]);
-            _Database.FileName = @"c:\tmp\not-file.sqb";
-
-            Assert.IsFalse(_Database.FileExists());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_FileExists_Does_Not_Test_Null_FileName()
-        {
-            _Database.FileName = null;
-            Assert.IsFalse(_Database.FileExists());
-            Assert.AreEqual(0, _FileSystem.FileExists_CallCount);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_FileExists_Does_Not_Test_Empty_FileName()
-        {
-            _Database.FileName = "";
-            Assert.IsFalse(_Database.FileExists());
-            Assert.AreEqual(0, _FileSystem.FileExists_CallCount);
-        }
-        #endregion
-
-        #region FileIsEmpty
-        [TestMethod]
-        public void BaseStationDatabase_FileIsEmpty_Returns_True_If_The_File_Is_Empty()
-        {
-            _FileSystem.AddFile(@"c:\tmp\file.sqb", new byte[0]);
-            _Database.FileName = @"c:\tmp\file.sqb";
-
-            Assert.IsTrue(_Database.FileIsEmpty());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_FileIsEmpty_Returns_False_If_The_FileName_Is_Not_Empty()
-        {
-            _FileSystem.AddFile(@"c:\tmp\file.sqb", new byte[] { 0x01 });
-            _Database.FileName = @"c:\tmp\file.sqb";
-
-            Assert.IsFalse(_Database.FileIsEmpty());
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(FileNotFoundException))]
-        public void BaseStationDatabase_FileIsEmpty_Throws_Exception_If_File_Does_Not_Exist()
-        {
-            _FileSystem.AddFolder(@"c:\tmp");
-            _Database.FileName = @"c:\tmp\no-file.sqb";
-            _Database.FileIsEmpty();
-        }
-        #endregion
-
-        #region GetAircraftByRegistration
-        [TestMethod]
-        public void BaseStationDatatbase_GetAircraftByRegistration_Returns_Null_If_Passed_Null()
-        {
-            Assert.IsNull(_Database.GetAircraftByRegistration(null));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetAircraftByRegistration_Returns_Null_If_Aircraft_Does_Not_Exist()
-        {
-            Assert.IsNull(_Database.GetAircraftByRegistration("REG"));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetAircraftByRegistration_Returns_Null_If_Database_File_Does_Not_Exist()
-        {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-            Assert.IsNull(_Database.GetAircraftByRegistration("REG"));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetAircraftByRegistration_Returns_Null_If_Database_File_Not_Configured()
-        {
-            _Database.FileName = null;
-            Assert.IsNull(_Database.GetAircraftByRegistration("REG"));
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetAircraftBy$")]
-        public void BaseStationDatabase_GetAircraftByRegistration_Returns_Aircraft_Object_For_Registration()
-        {
-            var worksheet = new ExcelWorksheetData(TestContext);
-            var mockAircraft = LoadAircraftFromSpreadsheet(worksheet);
-
-            var id = AddAircraft(mockAircraft);
-
-            var aircraft = _Database.GetAircraftByRegistration(mockAircraft.Registration);
-            Assert.AreNotSame(aircraft, mockAircraft);
-
-            AssertAircraftAreEqual(mockAircraft, aircraft, id);
-        }
-        #endregion
-
-        #region GetAircraftByCode
-        [TestMethod]
-        public void BaseStationDatatbase_GetAircraftByCode_Returns_Null_If_Passed_Null()
-        {
-            Assert.IsNull(_Database.GetAircraftByCode(null));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetAircraftByCode_Returns_Null_If_Aircraft_Does_Not_Exist()
-        {
-            Assert.IsNull(_Database.GetAircraftByCode("ABC123"));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetAircraftByCode_Returns_Null_If_File_Does_Not_Exist()
-        {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-            Assert.IsNull(_Database.GetAircraftByCode("ABC123"));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetAircraftByCode_Returns_Null_If_File_Not_Configured()
-        {
-            _Database.FileName = null;
-            Assert.IsNull(_Database.GetAircraftByCode("ABC123"));
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetAircraftBy$")]
-        public void BaseStationDatabase_GetAircraftByCode_Returns_Aircraft_Object_For_ICAO24_Code()
-        {
-            var worksheet = new ExcelWorksheetData(TestContext);
-            var mockAircraft = LoadAircraftFromSpreadsheet(worksheet);
-
-            var id = AddAircraft(mockAircraft);
-
-            var aircraft = _Database.GetAircraftByCode(mockAircraft.ModeS);
-            Assert.AreNotSame(aircraft, mockAircraft);
-
-            AssertAircraftAreEqual(mockAircraft, aircraft, id);
-        }
-        #endregion
-
-        #region GetManyAircraftByCode
-        [TestMethod]
-        public void BaseStationDatatbase_GetManyAircraftByCode_Returns_Empty_Collection_If_Passed_Null()
-        {
-            Assert.AreEqual(0, _Database.GetManyAircraftByCode(null).Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetManyAircraftByCode_Returns_Empty_Collection_If_Aircraft_Does_Not_Exist()
-        {
-            Assert.AreEqual(0, _Database.GetManyAircraftByCode(new string[] { "ABC123" }).Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetManyAircraftByCode_Returns_Empty_Collection_If_File_Does_Not_Exist()
-        {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-            Assert.AreEqual(0, _Database.GetManyAircraftByCode(new string[] { "ABC123" }).Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetManyAircraftByCode_Returns_Empty_Collection_If_File_Not_Configured()
-        {
-            _Database.FileName = null;
-            Assert.AreEqual(0, _Database.GetManyAircraftByCode(new string[] { "ABC123" }).Count);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetAircraftBy$")]
-        public void BaseStationDatabase_GetManyAircraftByCode_Returns_Aircraft_Object_For_ICAO24_Code()
-        {
-            var worksheet = new ExcelWorksheetData(TestContext);
-            var mockAircraft = LoadAircraftFromSpreadsheet(worksheet);
-
-            var id = AddAircraft(mockAircraft);
-
-            var manyAircraft = _Database.GetManyAircraftByCode(new string[] { mockAircraft.ModeS });
-            Assert.AreEqual(1, manyAircraft.Count);
-
-            var aircraft = manyAircraft.First().Value;
-            Assert.AreNotSame(aircraft, mockAircraft);
-
-            AssertAircraftAreEqual(mockAircraft, aircraft, id);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetManyAircraftByCode_Can_Return_More_Than_One_Aircraft()
-        {
-            var flight1 = CreateFlight("ABC123", setRegistration: true);
-            var flight2 = CreateFlight("EFG456", setRegistration: true);
-            var flight3 = CreateFlight("XYZ789", setRegistration: true);
-
-            AddAircraft(flight1.Aircraft);
-            AddAircraft(flight2.Aircraft);
-            AddAircraft(flight3.Aircraft);
-
-            AddFlight(flight1);
-            AddFlight(flight2);
-            AddFlight(flight3);
-
-            var firstAndLast = _Database.GetManyAircraftByCode(new string[] { "ABC123", "XYZ789" });
-
-            Assert.AreEqual(2, firstAndLast.Count);
-            Assert.IsTrue(firstAndLast.Where(r => r.Value.Registration == "ABC123").Any());
-            Assert.IsTrue(firstAndLast.Where(r => r.Value.Registration == "XYZ789").Any());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetManyAircraftByCode_Transparently_Handles_Call_Splitting_When_Number_Of_Icaos_Exceeds_MaxParameters()
-        {
-            var flight1 = CreateFlight("ABC123", setRegistration: true);
-            var flight2 = CreateFlight("XYZ789", setRegistration: true);
-
-            AddAircraft(flight1.Aircraft);
-            AddAircraft(flight2.Aircraft);
-
-            AddFlight(flight1);
-            AddFlight(flight2);
-
-            var icaos = new string[_Database.MaxParameters + 1];
-            for(var i = 0;i < icaos.Length;++i) {
-                icaos[i] = "";
-            }
-            icaos[0] = "ABC123";
-            icaos[icaos.Length - 1] = "XYZ789";
-
-            var allAircraft = _Database.GetManyAircraftByCode(icaos);
-
-            Assert.AreEqual(2, allAircraft.Count);
-            Assert.IsNotNull(allAircraft["ABC123"]);
-            Assert.IsNotNull(allAircraft["XYZ789"]);
-        }
-        #endregion
-
-        #region GetManyAircraftAndFlightsCountByCode
-        [TestMethod]
-        public void BaseStationDatatbase_GetManyAircraftAndFlightsCountByCode_Returns_Empty_Collection_If_Passed_Null()
-        {
-            Assert.AreEqual(0, _Database.GetManyAircraftAndFlightsCountByCode(null).Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetManyAircraftAndFlightsCountByCode_Returns_Empty_Collection_If_Aircraft_Does_Not_Exist()
-        {
-            Assert.AreEqual(0, _Database.GetManyAircraftAndFlightsCountByCode(new string[] { "ABC123" }).Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetManyAircraftAndFlightsCountByCode_Returns_Empty_Collection_If_File_Does_Not_Exist()
-        {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-            Assert.AreEqual(0, _Database.GetManyAircraftAndFlightsCountByCode(new string[] { "ABC123" }).Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetManyAircraftAndFlightsCountByCode_Returns_Empty_Collection_If_File_Not_Configured()
-        {
-            _Database.FileName = null;
-            Assert.AreEqual(0, _Database.GetManyAircraftAndFlightsCountByCode(new string[] { "ABC123" }).Count);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetAircraftBy$")]
-        public void BaseStationDatabase_GetManyAircraftAndFlightsCountByCode_Returns_Aircraft_Object_For_ICAO24_Code()
-        {
-            var worksheet = new ExcelWorksheetData(TestContext);
-            var mockAircraft = LoadAircraftFromSpreadsheet(worksheet);
-
-            var id = AddAircraft(mockAircraft);
-
-            var manyAircraft = _Database.GetManyAircraftAndFlightsCountByCode(new string[] { mockAircraft.ModeS });
-            Assert.AreEqual(1, manyAircraft.Count);
-
-            var aircraft = manyAircraft.First().Value;
-            Assert.AreNotSame(aircraft, mockAircraft);
-
-            AssertAircraftAreEqual(mockAircraft, aircraft, id);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetManyAircraftAndFlightsCountByCode_Can_Return_More_Than_One_Aircraft()
-        {
-            var flight1 = CreateFlight("ABC123", setRegistration: true);
-            var flight2 = CreateFlight("EFG456", setRegistration: true);
-            var flight3 = CreateFlight("XYZ789", setRegistration: true);
-
-            AddAircraft(flight1.Aircraft);
-            AddAircraft(flight2.Aircraft);
-            AddAircraft(flight3.Aircraft);
-
-            AddFlight(flight1);
-            AddFlight(flight2);
-            AddFlight(flight3);
-
-            var firstAndLast = _Database.GetManyAircraftAndFlightsCountByCode(new string[] { "ABC123", "XYZ789" });
-
-            Assert.AreEqual(2, firstAndLast.Count);
-            Assert.IsTrue(firstAndLast.Where(r => r.Value.Registration == "ABC123").Any());
-            Assert.IsTrue(firstAndLast.Where(r => r.Value.Registration == "XYZ789").Any());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetManyAircraftAndFlightsCountByCode_Returns_Counts_Of_Flights()
-        {
-            var flight1 = CreateFlight("ABC123", setRegistration: true);
-            flight1.AircraftID = (int)AddAircraft(flight1.Aircraft);
-            var flight2 = CreateFlight(flight1.Aircraft, "XYZ999");
-
-            AddFlight(flight1);
-            AddFlight(flight2);
-
-            var allAircraft = _Database.GetManyAircraftAndFlightsCountByCode(new string[] { "ABC123" });
-
-            Assert.AreEqual(1, allAircraft.Count);
-            Assert.AreEqual(2, allAircraft.First().Value.FlightsCount);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetManyAircraftAndFlightsCountByCode_Transparently_Handles_Call_Splitting_When_Number_Of_Icaos_Exceeds_MaxParameters()
-        {
-            var flight1 = CreateFlight("ABC123", setRegistration: true);
-            var flight2 = CreateFlight("XYZ789", setRegistration: true);
-
-            AddAircraft(flight1.Aircraft);
-            AddAircraft(flight2.Aircraft);
-
-            AddFlight(flight1);
-            AddFlight(flight2);
-
-            var icaos = new string[_Database.MaxParameters + 1];
-            icaos[0] = "ABC123";
-            icaos[icaos.Length - 1] = "XYZ789";
-
-            var allAircraft = _Database.GetManyAircraftAndFlightsCountByCode(icaos);
-
-            Assert.AreEqual(2, allAircraft.Count);
-            Assert.IsNotNull(allAircraft["ABC123"]);
-            Assert.IsNotNull(allAircraft["XYZ789"]);
-        }
-        #endregion
-
-        #region GetAircraftById
-        [TestMethod]
-        public void BaseStationDatabase_GetAircraftById_Returns_Null_If_Aircraft_Does_Not_Exist()
-        {
-            Assert.IsNull(_Database.GetAircraftById(1));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetAircraftById_Returns_Null_If_File_Does_Not_Exist()
-        {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-            Assert.IsNull(_Database.GetAircraftById(1));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetAircraftById_Returns_Null_If_File_Not_Configured()
-        {
-            _Database.FileName = null;
-            Assert.IsNull(_Database.GetAircraftById(1));
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetAircraftBy$")]
-        public void BaseStationDatabase_GetAircraftById_Returns_Aircraft_Object_For_Record_Identifier()
-        {
-            var worksheet = new ExcelWorksheetData(TestContext);
-            var mockAircraft = LoadAircraftFromSpreadsheet(worksheet);
-
-            var id = (int)AddAircraft(mockAircraft);
-
-            var aircraft = _Database.GetAircraftById(id);
-            Assert.AreNotSame(aircraft, mockAircraft);
-
-            AssertAircraftAreEqual(mockAircraft, aircraft, id);
-        }
-        #endregion
-
-        #region InsertAircraft
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_InsertAircraft_Throws_If_Writes_Disabled()
-        {
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456" });
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertAircraft_Does_Nothing_If_File_Does_Not_Exist()
-        {
-            _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456" });
-            Assert.AreEqual(null, _Database.GetAircraftByCode("123456"));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertAircraft_Does_Nothing_If_File_Not_Configured()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.FileName = null;
-
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "X" });
-            Assert.AreEqual(null, _Database.GetAircraftByCode("X"));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertAircraft_Truncates_Milliseconds_From_Date()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            var time1 = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-            var time2 = new DateTime(2009, 8, 7, 6, 5, 4, 321);
-
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "X", FirstCreated = time1, LastModified = time2 });
-            var readBack = _Database.GetAircraftByCode("X");
-
-            Assert.AreEqual(TruncateDate(time1), readBack.FirstCreated);
-            Assert.AreEqual(TruncateDate(time2), readBack.LastModified);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetAircraftBy$")]
-        public void BaseStationDatabase_InsertAircraft_Correctly_Inserts_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            var worksheet = new ExcelWorksheetData(TestContext);
-            var aircraft = LoadAircraftFromSpreadsheet(worksheet);
-
-            _Database.InsertAircraft(aircraft);
-            Assert.AreNotEqual(0, aircraft.AircraftID);
-
-            var readBack = _Database.GetAircraftById(aircraft.AircraftID);
-            AssertAircraftAreEqual(aircraft, readBack);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetAircraftBy$")]
-        public void BaseStationDatabase_InsertAircraft_Works_For_Different_Cultures()
-        {
-            foreach(var culture in _Cultures) {
-                using(var switcher = new CultureSwitcher(culture)) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    try {
-                        BaseStationDatabase_InsertAircraft_Correctly_Inserts_Record();
-                    } catch(Exception ex) {
-                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
-                    }
-                }
-            }
-        }
-        #endregion
-
-        #region GetOrInsertAircraftByCode
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_GetOrInsertAircraftByCode_Throws_If_Writes_Disabled()
-        {
-            _Database.GetOrInsertAircraftByCode("123456", out var created);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetOrInsertAircraftByCode_Returns_Record_If_It_Exists()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456" });
-
-            var result = _Database.GetOrInsertAircraftByCode("123456", out var created);
-
-            Assert.AreNotEqual(0, result.AircraftID);
-            Assert.AreEqual("123456", result.ModeS);
-            Assert.AreEqual(false, created);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetOrInsertAircraftByCode_Does_Nothing_If_File_Does_Not_Exist()
-        {
-            _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-
-            _Database.GetOrInsertAircraftByCode("123456", out var created);
-            Assert.AreEqual(null, _Database.GetAircraftByCode("123456"));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetOrInsertAircraftByCode_Does_Nothing_If_File_Not_Configured()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.FileName = null;
-
-            _Database.GetOrInsertAircraftByCode("123456", out var created);
-            Assert.AreEqual(null, _Database.GetAircraftByCode("X"));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetOrInsertAircraftByCode_Correctly_Inserts_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            var aircraft = _Database.GetOrInsertAircraftByCode("Abc123", out bool created);
-            Assert.AreNotEqual(0, aircraft.AircraftID);
-
-            var readBack = _Database.GetAircraftById(aircraft.AircraftID);
-            AssertAircraftAreEqual(new BaseStationAircraft() {
-                AircraftID =    aircraft.AircraftID,
-                FirstCreated =  TruncateDate(_Clock.LocalNowValue),
-                LastModified =  TruncateDate(_Clock.LocalNowValue),
-                ModeS =         "Abc123",
-                ModeSCountry =  "United Kingdom",
-            }, readBack);
-            Assert.AreEqual(true, created);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetOrInsertAircraftByCode_Looks_Up_ModeSCountry()
-        {
-            _Icao24CodeBlock.Country = "USA";
-
-            _Database.WriteSupportEnabled = true;
-
-            var aircraft = _Database.GetOrInsertAircraftByCode("abc123", out bool created);
-            Assert.AreEqual("USA", aircraft.ModeSCountry);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetOrInsertAircraftByCode_Deals_With_Null_CodeBlock()
-        {
-            _StandingDataManager.Setup(r => r.FindCodeBlock("abc123")).Returns((CodeBlock)null);
-
-            _Database.WriteSupportEnabled = true;
-
-            var aircraft = _Database.GetOrInsertAircraftByCode("abc123", out bool created);
-            Assert.IsNull(aircraft.ModeSCountry);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetOrInsertAircraftByCode_Deals_With_Null_Country()
-        {
-            _Icao24CodeBlock.Country = null;
-
-            _Database.WriteSupportEnabled = true;
-            var aircraft = _Database.GetOrInsertAircraftByCode("abc123", out bool created);
-            Assert.IsNull(aircraft.ModeSCountry);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetOrInsertAircraftByCode_Deals_With_Unknown_Country()
-        {
-            _Icao24CodeBlock.Country = "Unknown Country";
-
-            _Database.WriteSupportEnabled = true;
-            var aircraft = _Database.GetOrInsertAircraftByCode("abc123", out bool created);
-            Assert.IsNull(aircraft.ModeSCountry);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetOrInsertAircraftByCode_Truncates_Milliseconds_From_Date()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            var time = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-            _Clock.LocalNowValue = time;
-
-            _Database.GetOrInsertAircraftByCode("X", out var created);
-            var readBack = _Database.GetAircraftByCode("X");
-
-            Assert.AreEqual(TruncateDate(time), readBack.FirstCreated);
-            Assert.AreEqual(TruncateDate(time), readBack.LastModified);
-        }
-        #endregion
-
-        #region UpdateAircraft
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_UpdateAircraft_Throws_If_Writes_Disabled()
-        {
-            var aircraft = new BaseStationAircraft() { ModeS = "X" };
-            aircraft.AircraftID = (int)AddAircraft(aircraft);
-
-            aircraft.Registration = "C";
-            _Database.UpdateAircraft(aircraft);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateAircraft_Does_Nothing_If_File_Does_Not_Exist()
-        {
-            _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-
-            _Database.UpdateAircraft(new BaseStationAircraft() { ModeS = "X" });
-            Assert.AreEqual(null, _Database.GetAircraftByCode("X"));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateAircraft_Does_Nothing_If_File_Not_Configured()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.FileName = null;
-
-            _Database.UpdateAircraft(new BaseStationAircraft() { ModeS = "X" });
-            Assert.AreEqual(null, _Database.GetAircraftByCode("X"));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateAircraft_Truncates_Milliseconds_From_Date()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "X" });
-            var time1 = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-            var time2 = new DateTime(2009, 8, 7, 6, 5, 4, 321);
-
-            var update = _Database.GetAircraftByCode("X");
-            update.FirstCreated = time1;
-            update.LastModified = time2;
-            _Database.UpdateAircraft(update);
-
-            var readBack = _Database.GetAircraftByCode("X");
-            Assert.AreEqual(TruncateDate(time1), readBack.FirstCreated);
-            Assert.AreEqual(TruncateDate(time2), readBack.LastModified);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateAircraft_Raises_AircraftUpdated()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            var aircraft = new BaseStationAircraft() { ModeS = "X" };
-
-            _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
-            _AircraftUpdatedEvent.EventRaised += (sender, args) => {
-                Assert.AreSame(aircraft, args.Value);
-            };
-
-            _Database.InsertAircraft(aircraft);
-            Assert.AreEqual(0, _AircraftUpdatedEvent.CallCount);
-
-            _Database.UpdateAircraft(aircraft);
-            Assert.AreEqual(1, _AircraftUpdatedEvent.CallCount);
-            Assert.AreSame(_Database, _AircraftUpdatedEvent.Sender);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetAircraftBy$")]
-        public void BaseStationDatabase_UpdateAircraft_Correctly_Updates_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-            var worksheet = new ExcelWorksheetData(TestContext);
-
-            var id = (int)AddAircraft(new BaseStationAircraft() { ModeS = "ZZZZZZ" });
-
-            var update = _Database.GetAircraftById(id);
-            LoadAircraftFromSpreadsheet(worksheet, 0, update);
-
-            _Database.UpdateAircraft(update);
-
-            var readBack = _Database.GetAircraftById(id);
-            AssertAircraftAreEqual(update, readBack, id);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetAircraftBy$")]
-        public void BaseStationDatabase_UpdateAircraft_Works_For_Different_Cultures()
-        {
-            foreach(var culture in _Cultures) {
-                using(var switcher = new CultureSwitcher(culture)) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    try {
-                        BaseStationDatabase_UpdateAircraft_Correctly_Updates_Record();
-                    } catch(Exception ex) {
-                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
-                    }
-                }
-            }
-        }
-        #endregion
-
-        #region UpdateAircraftModeSCountry
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_UpdateAircraftModeSCountry_Throws_If_Writes_Disabled()
-        {
-            var aircraft = new BaseStationAircraft() { ModeS = "X" };
-            aircraft.AircraftID = (int)AddAircraft(aircraft);
-
-            aircraft.Registration = "C";
-            _Database.UpdateAircraftModeSCountry(aircraft.AircraftID, "X");
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateAircraftModeSCountry_Does_Nothing_If_File_Not_Configured()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.FileName = null;
-
-            _Database.UpdateAircraftModeSCountry(1, "X");
-            Assert.AreEqual(null, _Database.GetAircraftByCode("X"));
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetAircraftBy$")]
-        public void BaseStationDatabase_UpdateAircraftModeSCountry_Updates_ModeSCountry_For_Existing_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-            var worksheet = new ExcelWorksheetData(TestContext);
-
-            var id = (int)AddAircraft(new BaseStationAircraft() { ModeS = "ZZZZZZ" });
-
-            var update = _Database.GetAircraftById(id);
-            LoadAircraftFromSpreadsheet(worksheet, 0, update);
-
-            _Database.UpdateAircraft(update);
-
-            update.ModeSCountry = "Updated Mode-S Country";
-            _Database.UpdateAircraftModeSCountry(update.AircraftID, update.ModeSCountry);
-
-            var readBack = _Database.GetAircraftById(id);
-            AssertAircraftAreEqual(update, readBack, id);
-
-            update.ModeSCountry = null;
-            _Database.UpdateAircraftModeSCountry(update.AircraftID, update.ModeSCountry);
-
-            readBack = _Database.GetAircraftById(id);
-            AssertAircraftAreEqual(update, readBack, id);
-        }
-        #endregion
-
-        #region RecordMissingAircraft
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_RecordMissingAircraft_Throws_Exception_If_Writes_Not_Enabled()
-        {
-            _Database.RecordMissingAircraft("123456");
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_RecordMissingAircraft_Creates_Almost_Empty_Aircraft_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            _Database.RecordMissingAircraft("123456");
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.IsNotNull(aircraft);
-            Assert.AreEqual("123456", aircraft.ModeS);
-            Assert.AreEqual("Missing", aircraft.UserString1);
-            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.FirstCreated);
-            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
-            Assert.IsNull(aircraft.Registration);
-            Assert.IsNull(aircraft.Manufacturer);
-            Assert.IsNull(aircraft.Type);
-            Assert.IsNull(aircraft.RegisteredOwners);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_RecordMissingAircraft_Updates_Existing_Empty_Records()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.RecordMissingAircraft("123456");
-
-            var createdDate = _Clock.LocalNowValue;
-            _Clock.AddMilliseconds(60000);
-            _Database.RecordMissingAircraft("123456");
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.AreEqual(TruncateDate(createdDate),          aircraft.FirstCreated);
-            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_RecordMissingAircraft_Updates_Existing_Empty_Records_With_Wrong_UserString1()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456", FirstCreated = _Clock.LocalNowValue, LastModified = _Clock.LocalNowValue, });
-
-            var createdDate = _Clock.LocalNowValue;
-            _Clock.AddMilliseconds(60000);
-            _Database.RecordMissingAircraft("123456");
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.AreEqual(TruncateDate(createdDate),          aircraft.FirstCreated);
-            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
-            Assert.AreEqual("Missing",                          aircraft.UserString1);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_RecordMissingAircraft_Only_Updates_Time_On_Existing_Records_With_Values()
-        {
-            foreach(var property in new String[] { "Registration", "Manufacturer", "Model", "Operator" }) {
-                TestCleanup();
-                TestInitialise();
-
-                _Database.WriteSupportEnabled = true;
-                var aircraft = new BaseStationAircraft() { ModeS = "123456", UserString1 = "something", FirstCreated = _Clock.LocalNowValue, LastModified = _Clock.LocalNowValue, };
-                switch(property) {
-                    case "Registration":    aircraft.Registration = "A"; break;
-                    case "Manufacturer":    aircraft.Manufacturer = "A"; break;
-                    case "Model":           aircraft.Type = "A"; break;
-                    case "Operator":        aircraft.RegisteredOwners = "A"; break;
-                    default:                throw new NotImplementedException();
-                }
-                _Database.InsertAircraft(aircraft);
-
-                var createdDate = _Clock.LocalNowValue;
-                _Clock.AddMilliseconds(60000);
-                _Database.RecordMissingAircraft("123456");
-
-                aircraft = _Database.GetAircraftByCode("123456");
-                Assert.AreEqual(TruncateDate(createdDate), aircraft.FirstCreated);
-                Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
-                Assert.AreEqual("something", aircraft.UserString1);
-            }
-        }
-        #endregion
-
-        #region RecordManyMissingAircraft
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_RecordManyMissingAircraft_Throws_Exception_If_Writes_Not_Enabled()
-        {
-            _Database.RecordManyMissingAircraft(new string[] { "A", "B" });
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_RecordManyMissingAircraft_Creates_Almost_Empty_Aircraft_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            _Database.RecordManyMissingAircraft(new string[] { "A", "B" });
-
-            var aircraft = _Database.GetAircraftByCode("A");
-            Assert.IsNotNull(aircraft);
-            Assert.AreEqual("A", aircraft.ModeS);
-            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.FirstCreated);
-            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
-            Assert.AreEqual("Missing", aircraft.UserString1);
-
-            aircraft = _Database.GetAircraftByCode("B");
-            Assert.IsNotNull(aircraft);
-            Assert.AreEqual("B", aircraft.ModeS);
-            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.FirstCreated);
-            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
-            Assert.AreEqual("Missing", aircraft.UserString1);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_RecordManyMissingAircraft_Updates_Existing_Empty_Records()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.RecordManyMissingAircraft(new string[] { "123456" });
-
-            var createdDate = _Clock.LocalNowValue;
-            _Clock.AddMilliseconds(60000);
-            _Database.RecordManyMissingAircraft(new string[] { "123456" });
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.AreEqual(TruncateDate(createdDate),          aircraft.FirstCreated);
-            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_RecordManyMissingAircraft_Only_Updates_LastModified_Time_On_Existing_Records_With_Registrations()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456", Registration = "A", FirstCreated = _Clock.LocalNowValue, LastModified = _Clock.LocalNowValue });
-
-            var createdDate = _Clock.LocalNowValue;
-            _Clock.AddMilliseconds(60000);
-            _Database.RecordManyMissingAircraft(new string[] { "123456" });
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.AreEqual("A",                       aircraft.Registration);
-            Assert.AreEqual(TruncateDate(createdDate), aircraft.FirstCreated);
-            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
-        }
-        #endregion
-
-        #region UpsertAircraft
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_UpsertAircraft_Throws_Exception_If_Writes_Not_Enabled()
-        {
-            _Database.UpsertAircraftLookup(new BaseStationAircraftUpsertLookup() { ModeS = "123456", }, false);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertAircraft_Inserts_New_Lookups()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-            _Database.UpsertAircraftLookup(new BaseStationAircraftUpsertLookup() {
-                ModeS =             "123456",
-                Country =           "UK",
-                ICAOTypeCode =      "A380",
-                LastModified =      now,
-                Manufacturer =      "Airbus",
-                ModeSCountry =      "France",
-                OperatorFlagCode =  "TWA",
-                RegisteredOwners =  "Transworld",
-                Registration =      "G-ABCD",
-                SerialNo =          "9182",
-                Type =              "Big Plane",
-                YearBuilt =         "1992",
-            }, false);
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.IsNotNull(aircraft);
-
-            Assert.AreEqual("123456",           aircraft.ModeS);
-            Assert.AreEqual("UK",               aircraft.Country);
-            Assert.AreEqual("A380",             aircraft.ICAOTypeCode);
-            Assert.AreEqual(TruncateDate(now),  aircraft.FirstCreated);
-            Assert.AreEqual(TruncateDate(now),  aircraft.LastModified);
-            Assert.AreEqual("Airbus",           aircraft.Manufacturer);
-            Assert.AreEqual("France",           aircraft.ModeSCountry);
-            Assert.AreEqual("TWA",              aircraft.OperatorFlagCode);
-            Assert.AreEqual("Transworld",       aircraft.RegisteredOwners);
-            Assert.AreEqual("G-ABCD",           aircraft.Registration);
-            Assert.AreEqual("9182",             aircraft.SerialNo);
-            Assert.AreEqual("Big Plane",        aircraft.Type);
-            Assert.AreEqual("1992",             aircraft.YearBuilt);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertAircraft_Updates_Existing_Aircraft()
-        {
-            var createdDate = new DateTime(1999, 8, 7, 6, 5, 4, 321);
-            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() {
-                ModeS =         "123456",
-                Registration =  "N12345",
-                FirstCreated =  createdDate,
-                LastModified =  createdDate,
-            });
-
-            _Database.UpsertAircraftLookup(new BaseStationAircraftUpsertLookup() {
-                ModeS =             "123456",
-                Country =           "Germany",
-                ICAOTypeCode =      "B747",
-                LastModified =      now,
-                Manufacturer =      "Boeing",
-                ModeSCountry =      "USA",
-                OperatorFlagCode =  "BAW",
-                RegisteredOwners =  "British Airways",
-                Registration =      "D-WXYZ",
-                SerialNo =          "00119",
-                Type =              "Big Jobs",
-                YearBuilt =         "1979",
-            }, false);
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.IsNotNull(aircraft);
-
-            Assert.AreEqual("123456",                   aircraft.ModeS);
-            Assert.AreEqual("Germany",                  aircraft.Country);
-            Assert.AreEqual("B747",                     aircraft.ICAOTypeCode);
-            Assert.AreEqual(TruncateDate(createdDate),  aircraft.FirstCreated);
-            Assert.AreEqual(TruncateDate(now),          aircraft.LastModified);
-            Assert.AreEqual("Boeing",                   aircraft.Manufacturer);
-            Assert.AreEqual("USA",                      aircraft.ModeSCountry);
-            Assert.AreEqual("BAW",                      aircraft.OperatorFlagCode);
-            Assert.AreEqual("British Airways",          aircraft.RegisteredOwners);
-            Assert.AreEqual("D-WXYZ",                   aircraft.Registration);
-            Assert.AreEqual("00119",                    aircraft.SerialNo);
-            Assert.AreEqual("Big Jobs",                 aircraft.Type);
-            Assert.AreEqual("1979",                     aircraft.YearBuilt);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertAircraft_Can_Ignore_Existing_Aircraft_When_Required()
-        {
-            var createdDate = new DateTime(1999, 8, 7, 6, 5, 4, 321);
-            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() {
-                ModeS =             "123456",
-                Registration =      "G-ABCD",
-                FirstCreated =      createdDate,
-                LastModified =      createdDate,
-            });
-
-            _Database.UpsertAircraftLookup(new BaseStationAircraftUpsertLookup() {
-                ModeS =             "123456",
-                Country =           "Germany",
-                ICAOTypeCode =      "B747",
-                LastModified =      now,
-                Manufacturer =      "Boeing",
-                ModeSCountry =      "USA",
-                OperatorFlagCode =  "BAW",
-                RegisteredOwners =  "British Airways",
-                Registration =      "D-WXYZ",
-                SerialNo =          "00119",
-                Type =              "Big Jobs",
-                YearBuilt =         "1979",
-            }, onlyUpdateIfMarkedAsMissing: true);
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.IsNotNull(aircraft);
-
-            Assert.AreEqual("123456",                   aircraft.ModeS);
-            Assert.IsNull(                              aircraft.Country);
-            Assert.IsNull(                              aircraft.ICAOTypeCode);
-            Assert.AreEqual(TruncateDate(createdDate),  aircraft.FirstCreated);
-            Assert.AreEqual(TruncateDate(createdDate),  aircraft.LastModified);
-            Assert.IsNull(                              aircraft.Manufacturer);
-            Assert.IsNull(                              aircraft.ModeSCountry);
-            Assert.IsNull(                              aircraft.OperatorFlagCode);
-            Assert.IsNull(                              aircraft.RegisteredOwners);
-            Assert.AreEqual("G-ABCD",                   aircraft.Registration);
-            Assert.IsNull(                              aircraft.SerialNo);
-            Assert.IsNull(                              aircraft.Type);
-            Assert.IsNull(                              aircraft.YearBuilt);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertAircraft_Will_Overwrite_Missing_Aircraft_When_Required()
-        {
-            var createdDate = new DateTime(1999, 8, 7, 6, 5, 4, 321);
-            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() {
-                ModeS =             "123456",
-                UserString1 =       "Missing",
-            });
-
-            _Database.UpsertAircraftLookup(new BaseStationAircraftUpsertLookup() {
-                ModeS =             "123456",
-                Registration =      "D-WXYZ",
-            }, onlyUpdateIfMarkedAsMissing: true);
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.IsNotNull(aircraft);
-
-            Assert.AreEqual("123456", aircraft.ModeS);
-            Assert.AreEqual("D-WXYZ", aircraft.Registration);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertAircraft_Will_Not_Consider_Aircraft_Missing_If_They_Have_Registration()
-        {
-            var createdDate = new DateTime(1999, 8, 7, 6, 5, 4, 321);
-            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() {
-                ModeS =             "123456",
-                Registration =      "G-ABCD",
-                UserString1 =       "Missing",
-            });
-
-            _Database.UpsertAircraftLookup(new BaseStationAircraftUpsertLookup() {
-                ModeS =             "123456",
-                Registration =      "D-WXYZ",
-            }, onlyUpdateIfMarkedAsMissing: true);
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.IsNotNull(aircraft);
-
-            Assert.AreEqual("123456", aircraft.ModeS);
-            Assert.AreEqual("G-ABCD", aircraft.Registration);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertAircraft_Raises_AircraftUpdated_On_Update()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456", Registration = "ABC" });
-            _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
-
-            _Database.UpsertAircraftLookup(new BaseStationAircraftUpsertLookup() { ModeS = "123456", Registration = "XYZ", }, false);
-
-            Assert.AreEqual(1, _AircraftUpdatedEvent.CallCount);
-            Assert.AreEqual("123456", _AircraftUpdatedEvent.Args.Value.ModeS);
-            Assert.AreEqual("XYZ", _AircraftUpdatedEvent.Args.Value.Registration);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertAircraft_Does_Not_Raise_AircraftUpdated_On_Insert()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
-
-            _Database.UpsertAircraftLookup(new BaseStationAircraftUpsertLookup() { ModeS = "123456", Registration = "XYZ", }, false);
-
-            Assert.AreEqual(0, _AircraftUpdatedEvent.CallCount);
-        }
-        #endregion
-
-        #region UpsertManyAircraft
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_UpsertManyAircraft_LookupVersion_Throws_Exception_If_Writes_Not_Enabled()
-        {
-            _Database.UpsertManyAircraftLookup(new BaseStationAircraftUpsertLookup[] {
-                new BaseStationAircraftUpsertLookup() { ModeS = "A" },
-            }, false);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_UpsertManyAircraft_FullVersion_Throws_Exception_If_Writes_Not_Enabled()
-        {
-            _Database.UpsertManyAircraft(new BaseStationAircraftUpsert[] {
-                new BaseStationAircraftUpsert() { ModeS = "A" },
-            });
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertManyAircraft_Inserts_New_Lookups()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-            _Database.UpsertManyAircraftLookup(new BaseStationAircraftUpsertLookup[] {
-                new BaseStationAircraftUpsertLookup() {
-                    ModeS =             "123456",
-                    Country =           "UK",
-                    ICAOTypeCode =      "A380",
-                    LastModified =      now,
-                    Manufacturer =      "Airbus",
-                    ModeSCountry =      "France",
-                    OperatorFlagCode =  "TWA",
-                    RegisteredOwners =  "Transworld",
-                    Registration =      "G-ABCD",
-                    SerialNo =          "9182",
-                    Type =              "Big Plane",
-                    YearBuilt =         "1992",
-                },
-                new BaseStationAircraftUpsertLookup() {
-                    ModeS =             "789ABC",
-                    Country =           "Germany",
-                    ICAOTypeCode =      "B747",
-                    LastModified =      now,
-                    Manufacturer =      "Boeing",
-                    ModeSCountry =      "USA",
-                    OperatorFlagCode =  "BAW",
-                    RegisteredOwners =  "British Airways",
-                    Registration =      "D-WXYZ",
-                    SerialNo =          "00119",
-                    Type =              "Big Jobs",
-                    YearBuilt =         "1979",
-                },
-            }, false);
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.IsNotNull(aircraft);
-            Assert.AreEqual("123456",           aircraft.ModeS);
-            Assert.AreEqual("UK",               aircraft.Country);
-            Assert.AreEqual("A380",             aircraft.ICAOTypeCode);
-            Assert.AreEqual(TruncateDate(now),  aircraft.FirstCreated);
-            Assert.AreEqual(TruncateDate(now),  aircraft.LastModified);
-            Assert.AreEqual("Airbus",           aircraft.Manufacturer);
-            Assert.AreEqual("France",           aircraft.ModeSCountry);
-            Assert.AreEqual("TWA",              aircraft.OperatorFlagCode);
-            Assert.AreEqual("Transworld",       aircraft.RegisteredOwners);
-            Assert.AreEqual("G-ABCD",           aircraft.Registration);
-            Assert.AreEqual("9182",             aircraft.SerialNo);
-            Assert.AreEqual("Big Plane",        aircraft.Type);
-            Assert.AreEqual("1992",             aircraft.YearBuilt);
-
-            aircraft = _Database.GetAircraftByCode("789ABC");
-            Assert.IsNotNull(aircraft);
-            Assert.AreEqual("789ABC",           aircraft.ModeS);
-            Assert.AreEqual("Germany",          aircraft.Country);
-            Assert.AreEqual("B747",             aircraft.ICAOTypeCode);
-            Assert.AreEqual(TruncateDate(now),  aircraft.FirstCreated);
-            Assert.AreEqual(TruncateDate(now),  aircraft.LastModified);
-            Assert.AreEqual("Boeing",           aircraft.Manufacturer);
-            Assert.AreEqual("USA",              aircraft.ModeSCountry);
-            Assert.AreEqual("BAW",              aircraft.OperatorFlagCode);
-            Assert.AreEqual("British Airways",  aircraft.RegisteredOwners);
-            Assert.AreEqual("D-WXYZ",           aircraft.Registration);
-            Assert.AreEqual("00119",            aircraft.SerialNo);
-            Assert.AreEqual("Big Jobs",         aircraft.Type);
-            Assert.AreEqual("1979",             aircraft.YearBuilt);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertManyAircraft_Inserts_New_Aircraft()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-            _Database.UpsertManyAircraft(new BaseStationAircraftUpsert[] {
-                new BaseStationAircraftUpsert() {
-                    ModeS =             "123456",
-                    Country =           "UK",
-                    FirstCreated =      now,
-                    YearBuilt =         "1992",
-                    UserString4 =       "Esoteric"
-                },
-                new BaseStationAircraftUpsert() {
-                    ModeS =             "789ABC",
-                    LastModified =      now,
-                    Manufacturer =      "Boeing",
-                    UserBool2 =         true,
-                },
-            });
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.IsNotNull(aircraft);
-            Assert.AreEqual("123456",           aircraft.ModeS);
-            Assert.AreEqual("UK",               aircraft.Country);
-            Assert.AreEqual(TruncateDate(now),  aircraft.FirstCreated);
-            Assert.AreEqual("1992",             aircraft.YearBuilt);
-            Assert.AreEqual("Esoteric",         aircraft.UserString4);
-
-            aircraft = _Database.GetAircraftByCode("789ABC");
-            Assert.IsNotNull(aircraft);
-            Assert.AreEqual("789ABC",           aircraft.ModeS);
-            Assert.AreEqual(TruncateDate(now),  aircraft.LastModified);
-            Assert.AreEqual("Boeing",           aircraft.Manufacturer);
-            Assert.AreEqual(true,               aircraft.UserBool2);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertManyAircraft_Updates_Existing_Lookups()
-        {
-            var createdDate = new DateTime(1999, 8, 7, 6, 5, 4, 321);
-            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() {
-                ModeS =         "123456",
-                Registration =  "N12345",
-                FirstCreated =  createdDate,
-                LastModified =  createdDate,
-            });
-
-            _Database.UpsertManyAircraftLookup(new BaseStationAircraftUpsertLookup[] {
-                new BaseStationAircraftUpsertLookup() {
-                    ModeS =             "123456",
-                    Country =           "Germany",
-                    ICAOTypeCode =      "B747",
-                    LastModified =      now,
-                    Manufacturer =      "Boeing",
-                    ModeSCountry =      "USA",
-                    OperatorFlagCode =  "BAW",
-                    RegisteredOwners =  "British Airways",
-                    Registration =      "D-WXYZ",
-                    SerialNo =          "00119",
-                    Type =              "Big Jobs",
-                    YearBuilt =         "1979",
-                },
-            }, false);
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.IsNotNull(aircraft);
-
-            Assert.AreEqual("123456",                   aircraft.ModeS);
-            Assert.AreEqual("Germany",                  aircraft.Country);
-            Assert.AreEqual("B747",                     aircraft.ICAOTypeCode);
-            Assert.AreEqual(TruncateDate(createdDate),  aircraft.FirstCreated);
-            Assert.AreEqual(TruncateDate(now),          aircraft.LastModified);
-            Assert.AreEqual("Boeing",                   aircraft.Manufacturer);
-            Assert.AreEqual("USA",                      aircraft.ModeSCountry);
-            Assert.AreEqual("BAW",                      aircraft.OperatorFlagCode);
-            Assert.AreEqual("British Airways",          aircraft.RegisteredOwners);
-            Assert.AreEqual("D-WXYZ",                   aircraft.Registration);
-            Assert.AreEqual("00119",                    aircraft.SerialNo);
-            Assert.AreEqual("Big Jobs",                 aircraft.Type);
-            Assert.AreEqual("1979",                     aircraft.YearBuilt);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertManyAircraft_Updates_Existing_Aircraft()
-        {
-            var createdDate = new DateTime(1999, 8, 7, 6, 5, 4, 321);
-            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() {
-                ModeS =         "123456",
-                Registration =  "N12345",
-                FirstCreated =  createdDate,
-                LastModified =  createdDate,
-            });
-
-            _Database.UpsertManyAircraft(new BaseStationAircraftUpsert[] {
-                new BaseStationAircraft() {
-                    ModeS =             "123456",
-                    Country =           "Germany",
-                    ICAOTypeCode =      "B747",
-                    FirstCreated =      now,
-                    LastModified =      createdDate,
-                    Manufacturer =      "Boeing",
-                    ModeSCountry =      "USA",
-                    OperatorFlagCode =  "BAW",
-                    RegisteredOwners =  "British Airways",
-                    Registration =      "D-WXYZ",
-                    SerialNo =          "00119",
-                    Type =              "Big Jobs",
-                    YearBuilt =         "1979",
-                    UserBool4 =         true,
-                },
-            });
-
-            var aircraft = _Database.GetAircraftByCode("123456");
-            Assert.IsNotNull(aircraft);
-
-            Assert.AreEqual("123456",                   aircraft.ModeS);
-            Assert.AreEqual("Germany",                  aircraft.Country);
-            Assert.AreEqual("B747",                     aircraft.ICAOTypeCode);
-            Assert.AreEqual(TruncateDate(now),          aircraft.FirstCreated);
-            Assert.AreEqual(TruncateDate(createdDate),  aircraft.LastModified);
-            Assert.AreEqual("Boeing",                   aircraft.Manufacturer);
-            Assert.AreEqual("USA",                      aircraft.ModeSCountry);
-            Assert.AreEqual("BAW",                      aircraft.OperatorFlagCode);
-            Assert.AreEqual("British Airways",          aircraft.RegisteredOwners);
-            Assert.AreEqual("D-WXYZ",                   aircraft.Registration);
-            Assert.AreEqual("00119",                    aircraft.SerialNo);
-            Assert.AreEqual("Big Jobs",                 aircraft.Type);
-            Assert.AreEqual("1979",                     aircraft.YearBuilt);
-            Assert.AreEqual(true,                       aircraft.UserBool4);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertManyAircraft_Raises_AircraftUpdated_On_Update_Lookup()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "AAAAAA", Registration = "---" });
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "BBBBBB", Registration = "===" });
-            _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
-
-            _Database.UpsertManyAircraftLookup(new BaseStationAircraftUpsertLookup[] {
-                new BaseStationAircraftUpsertLookup() { ModeS = "AAAAAA", Registration = "111" },
-                new BaseStationAircraftUpsertLookup() { ModeS = "BBBBBB", Registration = "222" },
-            }, false);
-
-            Assert.AreEqual(2, _AircraftUpdatedEvent.CallCount);
-            Assert.AreEqual("111", _AircraftUpdatedEvent.AllArgs.Single(r => r.Value.ModeS == "AAAAAA").Value.Registration);
-            Assert.AreEqual("222", _AircraftUpdatedEvent.AllArgs.Single(r => r.Value.ModeS == "BBBBBB").Value.Registration);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertManyAircraft_Raises_AircraftUpdated_On_Update_Aircraft()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "AAAAAA", Registration = "---" });
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "BBBBBB", Registration = "===" });
-            _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
-
-            _Database.UpsertManyAircraft(new BaseStationAircraftUpsert[] {
-                new BaseStationAircraftUpsert() { ModeS = "AAAAAA", Registration = "111" },
-                new BaseStationAircraftUpsert() { ModeS = "BBBBBB", Registration = "222" },
-            });
-
-            Assert.AreEqual(2, _AircraftUpdatedEvent.CallCount);
-            Assert.AreEqual("111", _AircraftUpdatedEvent.AllArgs.Single(r => r.Value.ModeS == "AAAAAA").Value.Registration);
-            Assert.AreEqual("222", _AircraftUpdatedEvent.AllArgs.Single(r => r.Value.ModeS == "BBBBBB").Value.Registration);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpsertManyAircraft_Does_Not_Raise_AircraftUpdated_On_Insert()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.UpsertManyAircraftLookup(new BaseStationAircraftUpsertLookup[] {
-                new BaseStationAircraftUpsertLookup() { ModeS = "AAAAAA", Registration = "111" },
-                new BaseStationAircraftUpsertLookup() { ModeS = "BBBBBB", Registration = "222" },
-            }, false);
-
-            Assert.AreEqual(0, _AircraftUpdatedEvent.CallCount);
-        }
-        #endregion
-
-        #region DeleteAircraft
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_DeleteAircraft_Throws_If_Writes_Disabled()
-        {
-            var aircraft = new BaseStationAircraft() { ModeS = "X" };
-            aircraft.AircraftID = (int)AddAircraft(aircraft);
-
-            _Database.DeleteAircraft(aircraft);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_DeleteAircraft_Does_Nothing_If_File_Does_Not_Exist()
-        {
-            _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-
-            _Database.DeleteAircraft(new BaseStationAircraft());
-            Assert.IsFalse(File.Exists(_EmptyDatabaseFileName));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_DeleteAircraft_Does_Nothing_If_File_Not_Configured()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.FileName = null;
-
-            _Database.DeleteAircraft(new BaseStationAircraft());
-            // Nothing much we can do to assure ourselves that nothing has changed here
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetAircraftBy$")]
-        public void BaseStationDatabase_DeleteAircraft_Correctly_Deletes_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-            var worksheet = new ExcelWorksheetData(TestContext);
-            var id = (int)AddAircraft(LoadAircraftFromSpreadsheet(worksheet));
-
-            var aircraft = _Database.GetAircraftById(id);
-            _Database.DeleteAircraft(aircraft);
-
-            Assert.AreEqual(null, _Database.GetAircraftById(id));
-        }
-        #endregion
-
-        #region GetFlights
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void BaseStationDatabase_GetFlights_Throws_If_Criteria_Is_Null()
-        {
-            _Database.GetFlights(null, -1, -1, null, false, null, false);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetFlights$")]
-        public void BaseStationDatabase_GetFlights_Copies_Database_Record_To_Flight_Object()
-        {
-            Do_GetFlightsAllVersions_Copies_Database_Record_To_Flight_Object(true);
-        }
-
-        private void Do_GetFlightsAllVersions_Copies_Database_Record_To_Flight_Object(bool getFlights)
-        {
-            var worksheet = new ExcelWorksheetData(TestContext);
-            var mockFlight = LoadFlightFromSpreadsheet(worksheet);
-
-            var aircraftId = (int)AddAircraft(mockFlight.Aircraft);
-            mockFlight.AircraftID = aircraftId;
-            mockFlight.SessionID = (int)AddSession(new BaseStationSession() { StartTime = DateTime.Now });
-            var flightId = AddFlight(mockFlight);
-
-            List<BaseStationFlight> flights = null;
-            if(getFlights) flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
-            else           flights = _Database.GetFlightsForAircraft(mockFlight.Aircraft, _Criteria, -1, -1, null, false, null, false);
-
-            Assert.AreEqual(1, flights.Count);
-
-            Assert.AreNotSame(flights[0], mockFlight);
-            if(getFlights) Assert.AreNotSame(flights[0].Aircraft, mockFlight.Aircraft);
-            else           Assert.AreSame(flights[0].Aircraft, mockFlight.Aircraft);
-
-            AssertFlightsAreEqual(mockFlight, flights[0], true, aircraftId);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlights_Can_Return_List_Of_All_Flights()
-        {
-            var flight1 = CreateFlight("ABC123");
-            var flight2 = CreateFlight("XYZ789");
-
-            AddAircraft(flight1.Aircraft);
-            AddAircraft(flight2.Aircraft);
-
-            AddFlight(flight1);
-            AddFlight(flight2);
-
-            var flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
-
-            Assert.AreEqual(2, flights.Count);
-            Assert.IsTrue(flights.Where(f => f.Callsign == "ABC123").Any());
-            Assert.IsTrue(flights.Where(f => f.Callsign == "XYZ789").Any());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlights_Can_Filter_Flights_By_Equality_Criteria()
-        {
-            var defaultFlight = CreateFlight("default", false);
-            var notEqualFlight = CreateFlight("notEquals", false);
-            var equalsFlight = CreateFlight("equals", false);
-
-            foreach(var reverseCondition in new bool[] { false, true }) {
-                foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    if(SetEqualityCriteria(criteriaProperty, defaultFlight, notEqualFlight, equalsFlight, reverseCondition)) {
-                        AddFlightAndAircraft(defaultFlight);
-                        AddFlightAndAircraft(notEqualFlight);
-                        AddFlightAndAircraft(equalsFlight);
-
-                        var flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
-                        if(!reverseCondition) {
-                            Assert.AreEqual(1, flights.Count, criteriaProperty.Name);
-                            Assert.AreEqual(equalsFlight.FlightID, flights[0].FlightID, criteriaProperty.Name);
-                        } else {
-                            var expectedCount = 1;
-                            switch(criteriaProperty.Name) {
-                                // NOT NULL properties will return 2 records, nullable properties will ignore nulls and just return 1
-                                case "Icao":
-                                case "IsEmergency":
-                                    expectedCount = 2;
-                                    break;
-                            }
-                            Assert.AreEqual(expectedCount, flights.Count, criteriaProperty.Name);
-                            Assert.IsFalse(flights.Any(r => r.FlightID == equalsFlight.FlightID), criteriaProperty.Name);
-                        }
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlights_Can_Filter_Flights_By_Contains_Criteria()
-        {
-            var defaultFlight = CreateFlight("default", false);
-            var notContainsFlight = CreateFlight("notContains", false);
-            var containsFlight = CreateFlight("contains", false);
-
-            foreach(var reverseCondition in new bool[] { false, true }) {
-                foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    if(SetContainsCriteria(criteriaProperty, defaultFlight, notContainsFlight, containsFlight, reverseCondition)) {
-                        AddFlightAndAircraft(defaultFlight);
-                        AddFlightAndAircraft(notContainsFlight);
-                        AddFlightAndAircraft(containsFlight);
-
-                        var flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
-                        if(!reverseCondition) {
-                            Assert.AreEqual(1, flights.Count, criteriaProperty.Name);
-                            Assert.AreEqual(containsFlight.FlightID, flights[0].FlightID, criteriaProperty.Name);
-                        } else {
-                            var expectedCount = 1;
-                            switch(criteriaProperty.Name) {
-                                // NOT NULL properties will return 2 records, nullable properties will ignore nulls and just return 1
-                                case "Icao":
-                                case "IsEmergency":
-                                    expectedCount = 2;
-                                    break;
-                            }
-                            Assert.AreEqual(expectedCount, flights.Count, criteriaProperty.Name);
-                            Assert.IsFalse(flights.Any(r => r.FlightID == containsFlight.FlightID), criteriaProperty.Name);
-                        }
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlights_Can_Filter_Flights_By_StartsWith_Criteria()
-        {
-            var defaultFlight = CreateFlight("default", false);
-            var notStartsWithFlight = CreateFlight("notContains", false);
-            var startsWithFlight = CreateFlight("contains", false);
-
-            foreach(var reverseCondition in new bool[] { false, true }) {
-                foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    if(SetStartsWithCriteria(criteriaProperty, defaultFlight, notStartsWithFlight, startsWithFlight, reverseCondition)) {
-                        AddFlightAndAircraft(defaultFlight);
-                        AddFlightAndAircraft(notStartsWithFlight);
-                        AddFlightAndAircraft(startsWithFlight);
-
-                        var flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
-                        if(!reverseCondition) {
-                            Assert.AreEqual(1, flights.Count, criteriaProperty.Name);
-                            Assert.AreEqual(startsWithFlight.FlightID, flights[0].FlightID, criteriaProperty.Name);
-                        } else {
-                            var expectedCount = 1;
-                            switch(criteriaProperty.Name) {
-                                // NOT NULL properties will return 2 records, nullable properties will ignore nulls and just return 1
-                                case "Icao":
-                                case "IsEmergency":
-                                    expectedCount = 2;
-                                    break;
-                            }
-                            Assert.AreEqual(expectedCount, flights.Count, criteriaProperty.Name);
-                            Assert.IsFalse(flights.Any(r => r.FlightID == startsWithFlight.FlightID), criteriaProperty.Name);
-                        }
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlights_Can_Filter_Flights_By_EndsWith_Criteria()
-        {
-            var defaultFlight = CreateFlight("default", false);
-            var notEndsWithFlight = CreateFlight("notContains", false);
-            var endsWithFlight = CreateFlight("contains", false);
-
-            foreach(var reverseCondition in new bool[] { false, true }) {
-                foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    if(SetEndsWithCriteria(criteriaProperty, defaultFlight, notEndsWithFlight, endsWithFlight, reverseCondition)) {
-                        AddFlightAndAircraft(defaultFlight);
-                        AddFlightAndAircraft(notEndsWithFlight);
-                        AddFlightAndAircraft(endsWithFlight);
-
-                        var flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
-                        if(!reverseCondition) {
-                            Assert.AreEqual(1, flights.Count, criteriaProperty.Name);
-                            Assert.AreEqual(endsWithFlight.FlightID, flights[0].FlightID, criteriaProperty.Name);
-                        } else {
-                            var expectedCount = 1;
-                            switch(criteriaProperty.Name) {
-                                // NOT NULL properties will return 2 records, nullable properties will ignore nulls and just return 1
-                                case "Icao":
-                                case "IsEmergency":
-                                    expectedCount = 2;
-                                    break;
-                            }
-                            Assert.AreEqual(expectedCount, flights.Count, criteriaProperty.Name);
-                            Assert.IsFalse(flights.Any(r => r.FlightID == endsWithFlight.FlightID), criteriaProperty.Name);
-                        }
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlights_Can_Filter_Flights_By_Range_Criteria()
-        {
-            var belowRangeFlight = CreateFlight("belowRange");
-            var startRangeFlight = CreateFlight("startRange");
-            var inRangeFlight = CreateFlight("inRange");
-            var endRangeFlight = CreateFlight("endRange");
-            var aboveRangeFlight = CreateFlight("aboveRange");
-
-            foreach(var reverseCondition in new bool[] { false, true }) {
-                foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    if(SetRangeCriteria(criteriaProperty, belowRangeFlight, startRangeFlight, inRangeFlight, endRangeFlight, aboveRangeFlight, reverseCondition)) {
-                        AddFlightAndAircraft(belowRangeFlight);
-                        AddFlightAndAircraft(startRangeFlight);
-                        AddFlightAndAircraft(inRangeFlight);
-                        AddFlightAndAircraft(endRangeFlight);
-                        AddFlightAndAircraft(aboveRangeFlight);
-
-                        var flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
-                        var message = "";
-                        foreach(var flight in flights) message = String.Format("{0}{1}{2}", message, message.Length == 0 ? "" : ", " , flight.Callsign);
-
-                        if(!reverseCondition) {
-                            Assert.AreEqual(3, flights.Count, message);
-                            Assert.IsTrue(flights.Where(f => f.Callsign == "startRange").Any(), message);
-                            Assert.IsTrue(flights.Where(f => f.Callsign == "inRange").Any(), message);
-                            Assert.IsTrue(flights.Where(f => f.Callsign == "endRange").Any(), message);
-                        } else {
-                            Assert.AreEqual(2, flights.Count, message);
-                            Assert.IsTrue(flights.Where(f => f.Callsign == "belowRange").Any(), message);
-                            Assert.IsTrue(flights.Where(f => f.Callsign == "aboveRange").Any(), message);
-                        }
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlights_String_Properties_Can_Match_Null_Or_Empty_Fields()
-        {
-            foreach(var reverseCondition in new bool[] { false, true }) {
-                foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
-                    foreach(var filterValue in new string[] { null, "" }) {
-                        foreach(var databaseValue in new string[] { null, "" }) {
-                            if(IsFilterStringProperty(criteriaProperty)) {
-                                if(criteriaProperty.Name == "Icao") continue;     // these can't be set to null on the database
-
-                                TestCleanup();
-                                TestInitialise();
-
-                                var filter = new FilterString(filterValue) { Condition = FilterCondition.Equals, ReverseCondition = reverseCondition };
-                                criteriaProperty.SetValue(_Criteria, filter, null);
-
-                                var nullFlight = CreateFlight("nullFlight", false, false);
-                                var notNullFlight = CreateFlight("notNullFlight", false, false);
-                                SetStringAircraftProperty(criteriaProperty, nullFlight, databaseValue);
-                                SetStringAircraftProperty(criteriaProperty, notNullFlight, "A");
-                                AddFlightAndAircraft(nullFlight);
-                                AddFlightAndAircraft(notNullFlight);
-
-                                var flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
-
-                                var message = String.Format("{0}/{1}/Filter:{2}/DB:{3}", criteriaProperty.Name, reverseCondition, filterValue == null ? "null" : "empty", databaseValue == null ? "null" : "empty");
-                                Assert.AreEqual(1, flights.Count, message);
-                                var expected = reverseCondition ? "notNullFlight" : "nullFlight";
-                                Assert.AreEqual(expected, flights[0].Aircraft.ModeS, message);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "Callsigns$")]
-        public void BaseStationDatabase_GetFlights_Can_Search_For_All_Variations_Of_A_Callsign()
-        {
-            var worksheet = new ExcelWorksheetData(TestContext);
-            var comments = worksheet.String("Comments");
-
-            // Setup flights in database
-            for(var i = 1;i <= 3;++i) {
-                var flightCallsign = worksheet.EString(String.Format("Callsign{0}", i));
-                if(flightCallsign != null) {
-                    var flight = CreateFlight("Flight" + i.ToString());
-                    flight.Callsign = flightCallsign;
-                    AddFlightAndAircraft(flight);
-                }
+            if(session.SessionID == 0) {
+                AddSession(session);
             }
 
-            // Setup alternate codes
-            var alternates = new List<string>();
-            for(var i = 1;i <= 3;++i) {
-                var altCallsign = worksheet.String(String.Format("Alt{0}", i));
-                if(!String.IsNullOrEmpty(altCallsign)) alternates.Add(altCallsign);
-            }
-
-            // Setup criteria
-            var callsign = worksheet.EString("Callsign");
-            if(callsign != null) {
-                alternates.Add(callsign);       // The alternates API always returns the callsign you asked for at a minimum unless it's null or empty
-                _CallsignParser.Setup(r => r.GetAllAlternateCallsigns(callsign)).Returns(alternates);
-            }
-
-            var findAlternates = worksheet.Bool("FindAlts");
-            var condition = worksheet.ParseEnum<FilterCondition>("Condition");
-            var reverseCondition = worksheet.Bool("Reverse");
-            _Criteria.Callsign = new FilterString(callsign) { Condition = condition, ReverseCondition = reverseCondition };
-            _Criteria.UseAlternateCallsigns = findAlternates;
-
-            // Get flights
-            var flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
-
-            // Assert that we got what we expected
-            Assert.AreEqual(worksheet.Int("Count"), flights.Count, comments);
-            for(var i = 1;i <= 3;++i) {
-                var expectCallsign = worksheet.EString(String.Format("Expect{0}", i));
-                if(expectCallsign != null) {
-                    Assert.IsNotNull(flights.Single(r => r.Callsign == expectCallsign), comments);
-                }
-            }
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlights_Some_Criteria_Is_Case_Insensitive()
-        {
-            Do_GetFlightsAllVersions_Some_Criteria_Is_Case_Insensitive(true);
-        }
-
-        private void Do_GetFlightsAllVersions_Some_Criteria_Is_Case_Insensitive(bool getFlights)
-        {
-            var flight = CreateFlight("1");
-            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
-                if(!getFlights && !IsFlightCriteria(criteriaProperty)) continue;
-
-                TestCleanup();
-                TestInitialise();
-
-                bool isStringProperty = true;
-                switch(criteriaProperty.Name) {
-                    case "Callsign":        _Criteria.Callsign = new FilterString("a"); flight.Callsign = "A"; break;
-                    case "Registration":    _Criteria.Registration = new FilterString("a"); flight.Aircraft.Registration = "A"; break;
-                    case "Icao":            _Criteria.Icao = new FilterString("a"); flight.Aircraft.ModeS = "A"; break;
-                    case "Type":            _Criteria.Type = new FilterString("a"); flight.Aircraft.ICAOTypeCode = "A"; break;
-                    case "Operator":
-                    case "Country":
-                    case "Date":
-                    case "IsEmergency":
-                    case "UseAlternateCallsigns":
-                    case "FirstAltitude":
-                    case "LastAltitude":
-                        isStringProperty = false;
-                        break;
-                    default:                throw new NotImplementedException(criteriaProperty.Name);
-                }
-
-                if(isStringProperty) {
-                    AddFlightAndAircraft(flight);
-
-                    List<BaseStationFlight> flights = null;
-                    if(getFlights) flights = _Database.GetFlights(_Criteria, -1, -1, null, true, null, true);
-                    else           flights = _Database.GetFlightsForAircraft(flight.Aircraft, _Criteria, -1, -1, null, true, null, true);
-
-                    Assert.AreEqual(1, flights.Count, criteriaProperty.Name);
-                }
-            }
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlights_Some_Criteria_Is_Case_Sensitive()
-        {
-            Do_GetFlightsAllVersions_Some_Criteria_Is_Case_Sensitive(true);
-        }
-
-        private void Do_GetFlightsAllVersions_Some_Criteria_Is_Case_Sensitive(bool getFlights)
-        {
-            var flight = CreateFlight("1");
-            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
-                if(!getFlights && !IsFlightCriteria(criteriaProperty)) continue;
-
-                TestCleanup();
-                TestInitialise();
-
-                bool isStringProperty = true;
-                switch(criteriaProperty.Name) {
-                    case "Operator":        _Criteria.Operator = new FilterString("a"); flight.Aircraft.RegisteredOwners = "A"; break;
-                    case "Country":         _Criteria.Country = new FilterString("a"); flight.Aircraft.ModeSCountry = "A"; break;
-                    case "Callsign":
-                    case "Registration":
-                    case "Icao":
-                    case "Date":
-                    case "Type":
-                    case "IsEmergency":
-                    case "UseAlternateCallsigns":
-                    case "FirstAltitude":
-                    case "LastAltitude":
-                        isStringProperty = false;
-                        break;
-                    default:                throw new NotImplementedException(criteriaProperty.Name);
-                }
-
-                if(isStringProperty) {
-                    AddFlightAndAircraft(flight);
-
-                    List<BaseStationFlight> flights = null;
-                    if(getFlights) flights = _Database.GetFlights(_Criteria, -1, -1, null, true, null, true);
-                    else           flights = _Database.GetFlightsForAircraft(flight.Aircraft, _Criteria, -1, -1, null, true, null, true);
-
-                    Assert.AreEqual(0, flights.Count, criteriaProperty.Name);
-                }
-            }
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetFlightsRows$")]
-        public void BaseStationDatabase_GetFlights_Can_Return_Subset_Of_Rows()
-        {
-            Do_GetFlightsAllVersions_Can_Return_Subset_Of_Rows(true);
-        }
-
-        private void Do_GetFlightsAllVersions_Can_Return_Subset_Of_Rows(bool getFlights)
-        {
-            var worksheet = new ExcelWorksheetData(TestContext);
-
-            int flightCount = worksheet.Int("Flights");
-
-            var aircraft = CreateAircraft();
-            AddAircraft(aircraft);
-
-            for(int flightNumber = 0;flightNumber < flightCount;++flightNumber) {
-                var flight = CreateFlight(aircraft, (flightNumber + 1).ToString());
-                AddFlight(flight);
-            }
-
-            List<BaseStationFlight> flights;
-            if(getFlights) flights = _Database.GetFlights(_Criteria, worksheet.Int("StartRow"), worksheet.Int("EndRow"), "CALLSIGN", true, null, false);
-            else           flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, worksheet.Int("StartRow"), worksheet.Int("EndRow"), "CALLSIGN", true, null, false);
-
-            var rows = "";
-            foreach(var flight in flights) {
-                rows = String.Format("{0}{1}{2}", rows, rows.Length == 0 ? "" : ",", flight.Callsign);
-            }
-
-            Assert.AreEqual(worksheet.Int("ExpectedCount"), flights.Count);
-            Assert.AreEqual(worksheet.EString("ExpectedRows"), rows);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlights_Ignores_Unknown_Sort_Columns()
-        {
-            Do_GetFlightsAllVersions_Ignores_Unknown_Sort_Columns(true);
-        }
-
-        private void Do_GetFlightsAllVersions_Ignores_Unknown_Sort_Columns(bool getFlights)
-        {
-            var aircraft = CreateAircraft();
-            AddAircraft(aircraft);
-            AddFlight(CreateFlight(aircraft, "1"));
-            AddFlight(CreateFlight(aircraft, "2"));
-
-            List<BaseStationFlight> flights;
-            if(getFlights) flights = _Database.GetFlights(_Criteria, -1, -1, "ThisColumnDoesNotExist", true, "AndNeitherDoesThis", false);
-            else           flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, "ThisColumnDoesNotExist", true, "AndNeitherDoesThis", false);
-
-            Assert.AreEqual(2, flights.Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlights_Ignores_Case_On_Sort_Column_Names()
-        {
-            Do_GetFlightsAllVersions_Ignores_Case_On_Sort_Column_Names(true);
-        }
-
-        private void Do_GetFlightsAllVersions_Ignores_Case_On_Sort_Column_Names(bool getFlights)
-        {
-            var aircraft = CreateAircraft();
-            AddAircraft(aircraft);
-
-            AddFlight(CreateFlight(aircraft, "ABC"));
-            AddFlight(CreateFlight(aircraft, "XYZ"));
-
-            List<BaseStationFlight> flights;
-            if(getFlights) flights = _Database.GetFlights(_Criteria, -1, -1, "callsign", true, null, false);
-            else           flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, "callsign", true, null, false);
-
-            Assert.AreEqual("ABC", flights[0].Callsign);
-            Assert.AreEqual("XYZ", flights[1].Callsign);
-
-            if(getFlights) flights = _Database.GetFlights(_Criteria, -1, -1, "callsign", false, null, false);
-            else           flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, "callsign", false, null, false);
-
-            Assert.AreEqual("XYZ", flights[0].Callsign);
-            Assert.AreEqual("ABC", flights[1].Callsign);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlights_Sorts_By_One_Column_Correctly()
-        {
-            var defaultFlight = CreateFlight("defaultFlight", false);
-            var lowFlight = CreateFlight("lowFlight", false);
-            var highFlight = CreateFlight("highFlight", false);
-
-            defaultFlight.NumPosMsgRec = 1;
-            lowFlight.NumPosMsgRec = 2;
-            highFlight.NumPosMsgRec = 3;
-
-            foreach(var sortColumn in _SortColumns) {
-                TestCleanup();
-                TestInitialise();
-
-                SetSortColumnValue(defaultFlight, sortColumn, true, false);
-                SetSortColumnValue(lowFlight, sortColumn, false, false);
-                SetSortColumnValue(highFlight, sortColumn, false, true);
-
-                AddFlightAndAircraft(defaultFlight);
-                AddFlightAndAircraft(lowFlight);
-                AddFlightAndAircraft(highFlight);
-
-                var flights = _Database.GetFlights(_Criteria, -1, -1, sortColumn, true, null, false);
-                Assert.AreEqual(3, flights.Count, sortColumn);
-                Assert.AreEqual(1, flights[0].NumPosMsgRec, sortColumn);
-                Assert.AreEqual(2, flights[1].NumPosMsgRec, sortColumn);
-                Assert.AreEqual(3, flights[2].NumPosMsgRec, sortColumn);
-
-                flights = _Database.GetFlights(_Criteria, -1, -1, sortColumn, false, null, false);
-                Assert.AreEqual(3, flights.Count, sortColumn);
-                Assert.AreEqual(3, flights[0].NumPosMsgRec, sortColumn);
-                Assert.AreEqual(2, flights[1].NumPosMsgRec, sortColumn);
-                Assert.AreEqual(1, flights[2].NumPosMsgRec, sortColumn);
-            }
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlights_Sorts_By_Two_Columns_Correctly()
-        {
-            var firstFlight = CreateFlight("1");
-            var secondFlight = CreateFlight("2");
-            var thirdFlight = CreateFlight("3");
-            var fourthFlight = CreateFlight("4");
-
-            firstFlight.Aircraft.Type = "1";
-            secondFlight.Aircraft.Type = thirdFlight.Aircraft.Type = "2";
-            fourthFlight.Aircraft.Type = "3";
-
-            secondFlight.Aircraft.Registration = "A";
-            thirdFlight.Aircraft.Registration = "B";
-
-            AddFlightAndAircraft(firstFlight);
-            AddFlightAndAircraft(secondFlight);
-            AddFlightAndAircraft(thirdFlight);
-            AddFlightAndAircraft(fourthFlight);
-
-            var flights = _Database.GetFlights(_Criteria, -1, -1, "model", true, "reg", true);
-            Assert.AreEqual("1", flights[0].Callsign);
-            Assert.AreEqual("2", flights[1].Callsign);
-            Assert.AreEqual("3", flights[2].Callsign);
-            Assert.AreEqual("4", flights[3].Callsign);
-
-            flights = _Database.GetFlights(_Criteria, -1, -1, "model", true, "reg", false);
-            Assert.AreEqual("1", flights[0].Callsign);
-            Assert.AreEqual("3", flights[1].Callsign);
-            Assert.AreEqual("2", flights[2].Callsign);
-            Assert.AreEqual("4", flights[3].Callsign);
-        }
-        #endregion
-
-        #region GetFlightsForAircraft
-        [TestMethod]
-        public void BaseStationDatabase_GetFlightsForAircraft_Returns_Empty_List_If_Aircraft_Is_Null()
-        {
-            Assert.AreEqual(0, _Database.GetFlightsForAircraft(null, _Criteria, 0, int.MaxValue, null, false, null, false).Count);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void BaseStationDatabase_GetFlightsForAircraft_Throws_If_Criteria_Is_Null()
-        {
-            _Database.GetFlightsForAircraft(CreateAircraft(), null, 0, int.MaxValue, null, false, null, false);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlightsForAircraft_Restricts_Search_To_Single_Aircraft()
-        {
-            var flight1 = CreateFlight("1");
-            var flight2 = CreateFlight("2");
-
-            AddFlightAndAircraft(flight1);
-            AddFlightAndAircraft(flight2);
-
-            var flights = _Database.GetFlightsForAircraft(flight2.Aircraft, _Criteria, -1, -1, null, false, null, false);
-            Assert.AreEqual(1, flights.Count);
-            Assert.AreEqual("2", flights[0].Callsign);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlightsForAircraft_Does_Not_Create_New_Aircraft_Objects()
-        {
-            var aircraft = CreateAircraft("icao", "reg");
-            AddAircraft(aircraft);
-
-            AddFlight(CreateFlight(aircraft));
-            AddFlight(CreateFlight(aircraft));
-
-            var flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, null, false, null, false);
-            Assert.AreEqual(2, flights.Count);
-            Assert.AreSame(aircraft, flights[0].Aircraft);
-            Assert.AreSame(aircraft, flights[1].Aircraft);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetFlights$")]
-        public void BaseStationDatabase_GetFlightsForAircraft_Copies_Database_Record_To_Flight_Object()
-        {
-            Do_GetFlightsAllVersions_Copies_Database_Record_To_Flight_Object(false);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlightsForAircraft_Can_Filter_Flights_By_Equality_Criteria()
-        {
-            var aircraft = CreateAircraft("icao", "reg");
-            var defaultFlight = CreateFlight(aircraft);
-            var notEqualFlight = CreateFlight(aircraft);
-            var equalsFlight = CreateFlight(aircraft);
-
-            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
-                if(!IsFlightCriteria(criteriaProperty)) continue;
-
-                TestCleanup();
-                TestInitialise();
-
-                if(SetEqualityCriteria(criteriaProperty, defaultFlight, notEqualFlight, equalsFlight, false)) {
-                    AddFlight(defaultFlight);
-                    AddFlight(notEqualFlight);
-                    AddFlight(equalsFlight);
-
-                    var flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, null, false, null, false);
-                    Assert.AreEqual(1, flights.Count, criteriaProperty.Name);
-                    Assert.AreEqual(equalsFlight.FlightID, flights[0].FlightID, criteriaProperty.Name);
-                }
-            }
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlightsForAircraft_Can_Filter_Flights_By_Range_Criteria()
-        {
-            var aircraft = CreateAircraft("icao", "reg");
-            var belowRangeFlight = CreateFlight(aircraft, "belowRange");
-            var startRangeFlight = CreateFlight(aircraft, "startRange");
-            var inRangeFlight = CreateFlight(aircraft, "inRange");
-            var endRangeFlight = CreateFlight(aircraft, "endRange");
-            var aboveRangeFlight = CreateFlight(aircraft, "aboveRange");
-
-            foreach(var reverseCondition in new bool[] { false, true }) {
-                foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
-                    if(!IsFlightCriteria(criteriaProperty)) continue;
-
-                    TestCleanup();
-                    TestInitialise();
-
-                    if(SetRangeCriteria(criteriaProperty, belowRangeFlight, startRangeFlight, inRangeFlight, endRangeFlight, aboveRangeFlight, reverseCondition)) {
-                        AddFlight(belowRangeFlight);
-                        AddFlight(startRangeFlight);
-                        AddFlight(inRangeFlight);
-                        AddFlight(endRangeFlight);
-                        AddFlight(aboveRangeFlight);
-
-                        var flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, null, false, null, false);
-                        var message = String.Format("{0}:", criteriaProperty.Name);
-                        foreach(var flight in flights) message = String.Format("{0} {1}", message, flight.Callsign);
-
-                        if(!reverseCondition) {
-                            Assert.AreEqual(3, flights.Count, message);
-                            Assert.IsTrue(flights.Where(f => f.Callsign == "startRange").Any(), message);
-                            Assert.IsTrue(flights.Where(f => f.Callsign == "inRange").Any(), message);
-                            Assert.IsTrue(flights.Where(f => f.Callsign == "endRange").Any(), message);
-                        } else {
-                            Assert.AreEqual(2, flights.Count, message);
-                            Assert.IsTrue(flights.Where(f => f.Callsign == "belowRange").Any(), message);
-                            Assert.IsTrue(flights.Where(f => f.Callsign == "aboveRange").Any(), message);
-                        }
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlightsForAircraft_Some_Criteria_Is_Case_Insensitive()
-        {
-            Do_GetFlightsAllVersions_Some_Criteria_Is_Case_Insensitive(false);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlightsForAircraft_Some_Criteria_Is_Case_Sensitive()
-        {
-            Do_GetFlightsAllVersions_Some_Criteria_Is_Case_Sensitive(false);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetFlightsRows$")]
-        public void BaseStationDatabase_GetFlightsForAircraft_Can_Return_Subset_Of_Rows()
-        {
-            Do_GetFlightsAllVersions_Can_Return_Subset_Of_Rows(false);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlightsForAircraft_Ignores_Unknown_Sort_Columns()
-        {
-            Do_GetFlightsAllVersions_Ignores_Unknown_Sort_Columns(false);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlightsForAircraft_Ignores_Case_On_Sort_Column_Names()
-        {
-            Do_GetFlightsAllVersions_Ignores_Case_On_Sort_Column_Names(false);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlightsForAircraft_Sorts_By_One_Column_Correctly()
-        {
-            var aircraft = CreateAircraft();
-
-            var defaultFlight = CreateFlight(aircraft, "defaultFlight");
-            var lowFlight = CreateFlight(aircraft, "lowFlight");
-            var highFlight = CreateFlight(aircraft, "highFlight");
-
-            defaultFlight.NumPosMsgRec = 1;
-            lowFlight.NumPosMsgRec = 2;
-            highFlight.NumPosMsgRec = 3;
-
-            foreach(var sortColumn in _SortColumns) {
-                if(!IsFlightSortColumn(sortColumn)) continue;
-
-                TestCleanup();
-                TestInitialise();
-
-                SetSortColumnValue(defaultFlight, sortColumn, true, false);
-                SetSortColumnValue(lowFlight, sortColumn, false, false);
-                SetSortColumnValue(highFlight, sortColumn, false, true);
-
-                AddAircraft(aircraft);
-
-                AddFlight(defaultFlight);
-                AddFlight(lowFlight);
-                AddFlight(highFlight);
-
-                var flights = _Database.GetFlights(_Criteria, -1, -1, sortColumn, true, null, false);
-                Assert.AreEqual(3, flights.Count, sortColumn);
-                Assert.AreEqual(1, flights[0].NumPosMsgRec, sortColumn);
-                Assert.AreEqual(2, flights[1].NumPosMsgRec, sortColumn);
-                Assert.AreEqual(3, flights[2].NumPosMsgRec, sortColumn);
-
-                flights = _Database.GetFlights(_Criteria, -1, -1, sortColumn, false, null, false);
-                Assert.AreEqual(3, flights.Count, sortColumn);
-                Assert.AreEqual(3, flights[0].NumPosMsgRec, sortColumn);
-                Assert.AreEqual(2, flights[1].NumPosMsgRec, sortColumn);
-                Assert.AreEqual(1, flights[2].NumPosMsgRec, sortColumn);
-            }
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlightsForAircraft_Sorts_By_Two_Columns_Correctly()
-        {
-            var aircraft = CreateAircraft();
-            AddAircraft(aircraft);
-
-            var firstFlight = CreateFlight(aircraft, "1");
-            var secondFlight = CreateFlight(aircraft, "2");
-            var thirdFlight = CreateFlight(aircraft, "2");
-            var fourthFlight = CreateFlight(aircraft, "3");
-
-            firstFlight.FirstAltitude = 1;
-            secondFlight.FirstAltitude = 2;
-            thirdFlight.FirstAltitude = 3;
-            fourthFlight.FirstAltitude = 4;
-
-            var startTime = new DateTime(2010, 2, 3);
-            firstFlight.StartTime = startTime;
-            secondFlight.StartTime = startTime.AddDays(1);
-            thirdFlight.StartTime = startTime.AddDays(2);
-            fourthFlight.StartTime = startTime.AddDays(3);
-
-            AddFlight(firstFlight);
-            AddFlight(secondFlight);
-            AddFlight(thirdFlight);
-            AddFlight(fourthFlight);
-
-            var flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, "callsign", true, "date", true);
-            Assert.AreEqual(1, flights[0].FirstAltitude);
-            Assert.AreEqual(2, flights[1].FirstAltitude);
-            Assert.AreEqual(3, flights[2].FirstAltitude);
-            Assert.AreEqual(4, flights[3].FirstAltitude);
-
-            flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, "callsign", true, "date", false);
-            Assert.AreEqual(1, flights[0].FirstAltitude);
-            Assert.AreEqual(3, flights[1].FirstAltitude);
-            Assert.AreEqual(2, flights[2].FirstAltitude);
-            Assert.AreEqual(4, flights[3].FirstAltitude);
-        }
-        #endregion
-
-        #region GetCountOfFlights
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void BaseStationDatabase_GetCountOfFlights_Throws_If_Criteria_Is_Null()
-        {
-            _Database.GetCountOfFlights(null);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetCountOfFlights_Returns_Count_Of_Flights_Matching_Criteria()
-        {
-            AddFlightAndAircraft(CreateFlight("ABC"));
-            AddFlightAndAircraft(CreateFlight("XYZ"));
-
-            Assert.AreEqual(2, _Database.GetCountOfFlights(_Criteria));
-
-            _Criteria.Callsign = new FilterString("XYZ");
-            Assert.AreEqual(1, _Database.GetCountOfFlights(_Criteria));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetCountOfFlights_Counts_Equality_Criteria()
-        {
-            var defaultFlight = CreateFlight("default", false);
-            var notEqualFlight = CreateFlight("notEquals", false);
-            var equalsFlight = CreateFlight("equals", false);
-
-            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
-                TestCleanup();
-                TestInitialise();
-
-                if(SetEqualityCriteria(criteriaProperty, defaultFlight, notEqualFlight, equalsFlight, false)) {
-                    AddFlightAndAircraft(defaultFlight);
-                    AddFlightAndAircraft(notEqualFlight);
-                    AddFlightAndAircraft(equalsFlight);
-
-                    Assert.AreEqual(1, _Database.GetCountOfFlights(_Criteria), "{0}", criteriaProperty.Name);
-                }
-            }
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetCountOfFlights_Counts_Range_Criteria()
-        {
-            var belowRangeFlight = CreateFlight("belowRange");
-            var startRangeFlight = CreateFlight("startRange");
-            var inRangeFlight = CreateFlight("inRange");
-            var endRangeFlight = CreateFlight("endRange");
-            var aboveRangeFlight = CreateFlight("aboveRange");
-
-            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
-                TestCleanup();
-                TestInitialise();
-
-                if(SetRangeCriteria(criteriaProperty, belowRangeFlight, startRangeFlight, inRangeFlight, endRangeFlight, aboveRangeFlight, false)) {
-                    AddFlightAndAircraft(belowRangeFlight);
-                    AddFlightAndAircraft(startRangeFlight);
-                    AddFlightAndAircraft(inRangeFlight);
-                    AddFlightAndAircraft(endRangeFlight);
-                    AddFlightAndAircraft(aboveRangeFlight);
-
-                    Assert.AreEqual(3, _Database.GetCountOfFlights(_Criteria), criteriaProperty.Name);
-                }
-            }
-        }
-        #endregion
-
-        #region GetCountOfFlightsForAircraft
-        [TestMethod]
-        public void BaseStationDatabase_GetCountOfFlightsForAircraft_Returns_Zero_If_Aircraft_Is_Null()
-        {
-            AddFlightAndAircraft(CreateFlight("1"));
-
-            Assert.AreEqual(0, _Database.GetCountOfFlightsForAircraft(null, _Criteria));
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void BaseStationDatabase_GetCountOfFlightsForAircraft_Throws_If_Criteria_Is_Null()
-        {
-            _Database.GetCountOfFlightsForAircraft(CreateAircraft(), null);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetCountOfFlightsForAircraft_Returns_Count_Of_Flights_Matching_Criteria()
-        {
-            var aircraft = CreateAircraft();
-            AddAircraft(aircraft);
-
-            AddFlight(CreateFlight(aircraft, "ABC"));
-            AddFlight(CreateFlight(aircraft, "XYZ"));
-            AddFlightAndAircraft(CreateFlight("XYZ"));  // <-- different actual, should not be included
-
-            Assert.AreEqual(2, _Database.GetCountOfFlightsForAircraft(aircraft, _Criteria));
-
-            _Criteria.Callsign = new FilterString("XYZ");
-            Assert.AreEqual(1, _Database.GetCountOfFlightsForAircraft(aircraft, _Criteria));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetCountOfFlightsForAircraft_Counts_Equality_Criteria()
-        {
-            var aircraft = CreateAircraft();
-            var defaultFlight = CreateFlight(aircraft);
-            var notEqualFlight = CreateFlight(aircraft);
-            var equalsFlight = CreateFlight(aircraft);
-
-            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
-                if(!IsFlightCriteria(criteriaProperty)) continue;
-
-                TestCleanup();
-                TestInitialise();
-
-                if(SetEqualityCriteria(criteriaProperty, defaultFlight, notEqualFlight, equalsFlight, false)) {
-                    var aircraftId = (int)AddAircraft(aircraft);
-                    defaultFlight.AircraftID = notEqualFlight.AircraftID = equalsFlight.AircraftID = aircraftId;
-
-                    AddFlight(defaultFlight);
-                    AddFlight(notEqualFlight);
-                    AddFlight(equalsFlight);
-
-                    Assert.AreEqual(1, _Database.GetCountOfFlightsForAircraft(aircraft, _Criteria));
-                }
-            }
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetCountOfFlightsForAircraft_Counts_Range_Criteria()
-        {
-            var aircraft = CreateAircraft();
-            var belowRangeFlight = CreateFlight(aircraft);
-            var startRangeFlight = CreateFlight(aircraft);
-            var inRangeFlight = CreateFlight(aircraft);
-            var endRangeFlight = CreateFlight(aircraft);
-            var aboveRangeFlight = CreateFlight(aircraft);
-
-            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
-                if(!IsFlightCriteria(criteriaProperty)) continue;
-
-                TestCleanup();
-                TestInitialise();
-
-                if(SetRangeCriteria(criteriaProperty, belowRangeFlight, startRangeFlight, inRangeFlight, endRangeFlight, aboveRangeFlight, false)) {
-                    var aircraftId = (int)AddAircraft(aircraft);
-                    belowRangeFlight.AircraftID = startRangeFlight.AircraftID = inRangeFlight.AircraftID = endRangeFlight.AircraftID = aboveRangeFlight.AircraftID = aircraftId;
-
-                    AddFlight(belowRangeFlight);
-                    AddFlight(startRangeFlight);
-                    AddFlight(inRangeFlight);
-                    AddFlight(endRangeFlight);
-                    AddFlight(aboveRangeFlight);
-
-                    Assert.AreEqual(3, _Database.GetCountOfFlightsForAircraft(aircraft, _Criteria));
-                }
-            }
-        }
-        #endregion
-
-        #region GetFlightById
-        [TestMethod]
-        public void BaseStationDatabase_GetFlightById_Returns_Null_If_Flight_Does_Not_Exist()
-        {
-            Assert.IsNull(_Database.GetFlightById(1));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlightById_Returns_Null_If_File_Does_Not_Exist()
-        {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-            Assert.IsNull(_Database.GetFlightById(1));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetFlightById_Returns_Null_If_File_Not_Configured()
-        {
-            _Database.FileName = null;
-            Assert.IsNull(_Database.GetFlightById(1));
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetFlights$")]
-        public void BaseStationDatabase_GetFlightById_Returns_Flight_Object_For_Record_Identifier()
-        {
-            var worksheet = new ExcelWorksheetData(TestContext);
-
-            var aircraft = new BaseStationAircraft() { ModeS = "A" };
-            aircraft.AircraftID = (int)AddAircraft(aircraft);
-            var mockFlight = LoadFlightFromSpreadsheet(worksheet);
-            mockFlight.SessionID = (int)AddSession(new BaseStationSession() { StartTime = DateTime.Now });
-            mockFlight.Aircraft = aircraft;
-            mockFlight.AircraftID = aircraft.AircraftID;
-
-            var id = (int)AddFlight(mockFlight);
-
-            var flight = _Database.GetFlightById(id);
-            Assert.AreNotSame(flight, mockFlight);
-
-            AssertFlightsAreEqual(mockFlight, flight, false, aircraft.AircraftID);
-        }
-        #endregion
-
-        #region InsertFlight
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_InsertFlight_Throws_If_Writes_Disabled()
-        {
-            var aircraftId = (int)AddAircraft(new BaseStationAircraft() { ModeS = "Z" });
-            _Database.InsertFlight(new BaseStationFlight() { AircraftID = aircraftId, StartTime = DateTime.Now });
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertFlight_Does_Nothing_If_File_Does_Not_Exist()
-        {
-            _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-
-            _Database.InsertFlight(new BaseStationFlight());
-            Assert.IsFalse(File.Exists(_EmptyDatabaseFileName));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertFlight_Does_Nothing_If_File_Not_Configured()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.FileName = null;
-
-            _Database.InsertFlight(new BaseStationFlight());
-            // Can't think of a good way to test that it didn't do anything, but if it tried to write to a file without knowing the
-            // name of the file it'd crash so if the test passes without any exceptions being raised then that's a good sign
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertFlight_Truncates_Milliseconds_From_Date()
-        {
-            _Database.WriteSupportEnabled = true;
-            var aircraftId = (int)AddAircraft(new BaseStationAircraft() { ModeS = "Y" });
-            var sessionId = (int)AddSession(new BaseStationSession() { StartTime = DateTime.Now });
-
-            var time1 = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-            var time2 = new DateTime(2009, 8, 7, 6, 5, 4, 321);
-
-            var flight = new BaseStationFlight() { AircraftID = aircraftId, SessionID = sessionId, StartTime = time1, EndTime = time2 };
-            _Database.InsertFlight(flight);
-
-            var readBack = _Database.GetFlightById(flight.FlightID);
-            Assert.AreEqual(TruncateDate(time1), readBack.StartTime);
-            Assert.AreEqual(TruncateDate(time2), readBack.EndTime);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetFlights$")]
-        public void BaseStationDatabase_InsertFlight_Correctly_Inserts_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            var worksheet = new ExcelWorksheetData(TestContext);
-            var aircraftId = (int)AddAircraft(new BaseStationAircraft() { ModeS = "Y" });
-            var sessionId = (int)AddSession(new BaseStationSession() { StartTime = DateTime.Now });
-            var flight = LoadFlightFromSpreadsheet(worksheet);
-            flight.AircraftID = aircraftId;
-            flight.SessionID = sessionId;
-            flight.Aircraft = null;
-
-            _Database.InsertFlight(flight);
-            Assert.AreNotEqual(0, flight.FlightID);
-
-            var readBack = _Database.GetFlightById(flight.FlightID);
-            AssertFlightsAreEqual(flight, readBack, false, aircraftId);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetFlights$")]
-        public void BaseStationDatabase_InsertFlight_Works_In_Different_Cultures()
-        {
-            foreach(var culture in _Cultures) {
-                using(var switcher = new CultureSwitcher(culture)) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    try {
-                        BaseStationDatabase_InsertFlight_Correctly_Inserts_Record();
-                    } catch(Exception ex) {
-                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
-                    }
-                }
-            }
-        }
-        #endregion
-
-        #region UpdateFlight
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_UpdateFlight_Throws_If_Writes_Disabled()
-        {
-            var flight = new BaseStationFlight() {
-                AircraftID = (int)AddAircraft(new BaseStationAircraft() { ModeS = "Z" }),
-                SessionID = (int)AddSession(new BaseStationSession() { StartTime = DateTime.Now }),
-            };
-
-            flight.FlightID = (int)AddFlight(flight);
-
-            flight.FirstTrack = 42;
-            _Database.UpdateFlight(flight);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateFlight_Does_Nothing_If_File_Does_Not_Exist()
-        {
-            _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-
-            _Database.UpdateFlight(new BaseStationFlight());
-            Assert.IsFalse(File.Exists(_EmptyDatabaseFileName));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateFlight_Does_Nothing_If_File_Not_Configured()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.FileName = null;
-
-            _Database.UpdateFlight(new BaseStationFlight());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateFlight_Truncates_Milliseconds_From_Date()
-        {
-            _Database.WriteSupportEnabled = true;
-            var aircraftId = (int)AddAircraft(new BaseStationAircraft() { ModeS = "Y" });
-            var sessionId = (int)AddSession(new BaseStationSession() { StartTime = DateTime.Now });
-
-            var flight = new BaseStationFlight() { AircraftID = aircraftId, SessionID = sessionId };
-            _Database.InsertFlight(flight);
-
-            var time1 = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-            var time2 = new DateTime(2009, 8, 7, 6, 5, 4, 321);
-
-            var update = _Database.GetFlightById(flight.FlightID);
-            update.StartTime = time1;
-            update.EndTime = time2;
-            _Database.UpdateFlight(update);
-
-            var readBack = _Database.GetFlightById(flight.FlightID);
-            Assert.AreEqual(TruncateDate(time1), readBack.StartTime);
-            Assert.AreEqual(TruncateDate(time2), readBack.EndTime);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetFlights$")]
-        public void BaseStationDatabase_UpdateFlight_Correctly_Updates_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-            var worksheet = new ExcelWorksheetData(TestContext);
-
-            var originalAircraftId = (int)AddAircraft(new BaseStationAircraft() { ModeS = "Z" });
-            var originalSessionId = (int)AddSession(new BaseStationSession() { StartTime = DateTime.Now });
-            var flightId = (int)AddFlight(new BaseStationFlight() { AircraftID = originalAircraftId, SessionID = originalSessionId });
-
-            var update = _Database.GetFlightById(flightId);
-            LoadFlightFromSpreadsheet(worksheet, 0, update);
-            update.Aircraft = null;
-
-            var newAircraftId = (int)AddAircraft(new BaseStationAircraft() { ModeS = "XYZ" });
-            var newSessionId = (int)AddSession(new BaseStationSession() { StartTime = DateTime.Now.AddDays(1) });
-            update.AircraftID = newAircraftId;
-            update.SessionID = newSessionId;
-
-            _Database.UpdateFlight(update);
-
-            var readBack = _Database.GetFlightById(flightId);
-            AssertFlightsAreEqual(update, readBack, false, newAircraftId);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetFlights$")]
-        public void BaseStationDatabase_UpdateFlight_Works_For_Different_Cultures()
-        {
-            foreach(var culture in _Cultures) {
-                using(var switcher = new CultureSwitcher(culture)) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    try {
-                        BaseStationDatabase_UpdateFlight_Correctly_Updates_Record();
-                    } catch(Exception ex) {
-                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
-                    }
-                }
-            }
-        }
-        #endregion
-
-        #region DeleteFlight
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_DeleteFlight_Throws_If_Writes_Disabled()
-        {
-            var flight = new BaseStationFlight() {
-                AircraftID = (int)AddAircraft(new BaseStationAircraft() { ModeS = "Z" }),
-                SessionID = (int)AddSession(new BaseStationSession() { StartTime = DateTime.Now }),
-            };
-
-            flight.FlightID = (int)AddFlight(flight);
-
-            _Database.DeleteFlight(flight);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_DeleteFlight_Does_Nothing_If_File_Does_Not_Exist()
-        {
-            _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-
-            _Database.DeleteFlight(new BaseStationFlight());
-            Assert.IsFalse(File.Exists(_EmptyDatabaseFileName));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_DeleteFlight_Does_Nothing_If_File_Not_Configured()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.FileName = null;
-
-            _Database.DeleteFlight(new BaseStationFlight());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_DeleteFlight_Correctly_Deletes_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            var aircraftId = (int)AddAircraft(new BaseStationAircraft() { ModeS = "Z" });
-            var sessionId = (int)AddSession(new BaseStationSession() { StartTime = DateTime.Now });
-            var flightId = (int)AddFlight(new BaseStationFlight() { AircraftID = aircraftId, SessionID = sessionId });
-
-            var delete = _Database.GetFlightById(flightId);
-
-            _Database.DeleteFlight(delete);
-
-            Assert.AreEqual(null, _Database.GetFlightById(flightId));
-
-            Assert.AreNotEqual(null, _Database.GetAircraftById(aircraftId));
-            Assert.AreEqual(sessionId, _Database.GetSessions()[0].SessionID);
-        }
-        #endregion
-
-        #region UpsertManyFlights
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_UpsertManyFlights_Throws_If_Writes_Disabled()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            var aircraftId = (int)AddAircraft(new BaseStationAircraft() { ModeS = "123456" });
-            var sessionId = (int)AddSession(new BaseStationSession() { StartTime = DateTime.Now });
-
-            _Database.WriteSupportEnabled = false;
-
-            _Database.UpsertManyFlights(new BaseStationFlight[] {
-                new BaseStationFlight() { AircraftID = aircraftId, SessionID = sessionId, StartTime = DateTime.Now },
-            });
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetFlights$")]
-        public void BaseStationDatabase_UpsertManyFlights_Inserts_New_Flights()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            var worksheet = new ExcelWorksheetData(TestContext);
-            var aircraftId = (int)AddAircraft(new BaseStationAircraft() { ModeS = "Y" });
-            var sessionId = (int)AddSession(new BaseStationSession() { StartTime = DateTime.Now });
-            var flight = LoadFlightFromSpreadsheet(worksheet);
-
-            flight.AircraftID = aircraftId;
-            flight.SessionID =  sessionId;
-            flight.Aircraft =   null;
-
-            var flights = _Database.UpsertManyFlights(new BaseStationFlightUpsert[] {
-                new BaseStationFlightUpsert(flight),
-            });
-
-            Assert.AreEqual(1, flights.Length);
-            AssertFlightsAreEqual(flight, flights[0], false, aircraftId);
-        }
-
-        [TestMethod]
-        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "GetFlights$")]
-        public void BaseStationDatabase_UpsertManyFlights_Updates_Existing_Flights()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            var worksheet = new ExcelWorksheetData(TestContext);
-            var aircraftId = (int)AddAircraft(new BaseStationAircraft() { ModeS = "Y" });
-            var sessionId = (int)AddSession(new BaseStationSession() { StartTime = DateTime.Now });
-            var startTime = worksheet.DateTime("StartTime");
-
-            var originalFlight = new BaseStationFlight() {
-                AircraftID = aircraftId,
-                SessionID =  sessionId,
-                StartTime =  startTime,
-            };
-            _Database.InsertFlight(originalFlight);
-
-            var flight = LoadFlightFromSpreadsheet(worksheet);
-            flight.AircraftID = aircraftId;
-            flight.SessionID =  sessionId;
-            flight.Aircraft =   null;
-
-            var flights = _Database.UpsertManyFlights(new BaseStationFlightUpsert[] {
-                new BaseStationFlightUpsert(flight),
-            });
-
-            Assert.AreEqual(1, flights.Length);
-            Assert.AreEqual(originalFlight.FlightID, flights[0].FlightID);
-            AssertFlightsAreEqual(flight, flights[0], false, aircraftId);
-        }
-        #endregion
-
-        #region GetDatabaseHistory
-        [TestMethod]
-        public void BaseStationDatabase_GetDatabaseHistory_Returns_Empty_List_If_File_Does_Not_Exist()
-        {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-            Assert.AreEqual(0, _Database.GetDatabaseHistory().Count());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetDatabaseHistory_Returns_Empty_List_If_File_Not_Configured()
-        {
-            _Database.FileName = null;
-            Assert.AreEqual(0, _Database.GetDatabaseHistory().Count());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetDatabaseHistory_Retrieves_All_Records_In_DBHistory_Table()
-        {
-            var timeStamp1 = DateTime.Now;
-            var timeStamp2 = DateTime.Now.AddSeconds(10);
-
-            AddDBHistory(new BaseStationDBHistory() { Description = "A", TimeStamp = timeStamp1 });
-            AddDBHistory(new BaseStationDBHistory() { Description = "B", TimeStamp = timeStamp2 });
-
-            var history = _Database.GetDatabaseHistory();
-            Assert.AreEqual(2, history.Count());
-
-            var historyA = history.Where(h => h.Description == "A").FirstOrDefault();
-            var historyB = history.Where(h => h.Description == "B").FirstOrDefault();
-
-            Assert.AreEqual(timeStamp1, historyA.TimeStamp);
-            Assert.AreEqual(timeStamp2, historyB.TimeStamp);
-        }
-        #endregion
-
-        #region GetDatabaseVersion
-        [TestMethod]
-        public void BaseStationDatabase_GetDatabaseVersion_Returns_Null_If_File_Does_Not_Exist()
-        {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-            Assert.AreEqual(null, _Database.GetDatabaseVersion());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetDatabaseVersion_Returns_Null_If_File_Not_Configured()
-        {
-            _Database.FileName = null;
-            Assert.AreEqual(null, _Database.GetDatabaseVersion());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetDatabaseVersion_Retrieves_Record_In_DBInfo_Table()
-        {
-            // The table has no key, it appears that the intention is to only ever have one record in the table
-            AddDBInfo(new BaseStationDBInfo() { OriginalVersion = 2, CurrentVersion = 3 });
-
-            var dbInfo = _Database.GetDatabaseVersion();
-            Assert.AreEqual(2, dbInfo.OriginalVersion);
-            Assert.AreEqual(3, dbInfo.CurrentVersion);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetDatabaseVersion_Retrieves_Last_Record_In_DBInfo_Table()
-        {
-            // While there should only be one record in the table there's nothing to stop there being more than
-            // one, in which case we need to decide what to do. We just retrieve the last record but we can't
-            // really tell which one that might be, so we just need to make sure it doesn't blow up.
-            AddDBInfo(new BaseStationDBInfo() { OriginalVersion = 2, CurrentVersion = 3 });
-            AddDBInfo(new BaseStationDBInfo() { OriginalVersion = 1, CurrentVersion = 2 });
-
-            var dbInfo = _Database.GetDatabaseVersion();
-            Assert.IsTrue((dbInfo.OriginalVersion == 2 && dbInfo.CurrentVersion == 3) || (dbInfo.OriginalVersion == 1 && dbInfo.CurrentVersion == 2));
-        }
-        #endregion
-
-        #region GetSystemEvents
-        [TestMethod]
-        public void BaseStationDatabase_GetSystemEvents_Returns_Empty_List_If_File_Does_Not_Exist()
-        {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-            Assert.AreEqual(0, _Database.GetSystemEvents().Count());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetSystemEvents_Returns_Empty_List_If_File_Not_Configured()
-        {
-            _Database.FileName = null;
-            Assert.AreEqual(0, _Database.GetSystemEvents().Count());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetSystemEvents_Retrieves_All_Records_In_SystemEvents_Table()
-        {
-            var timeStamp1 = DateTime.Now;
-            var timeStamp2 = DateTime.Now.AddHours(2.1);
-            AddSystemEvent(new BaseStationSystemEvents() { App = "A", Msg = "B", TimeStamp = timeStamp1 });
-            AddSystemEvent(new BaseStationSystemEvents() { App = "2", Msg = "3", TimeStamp = timeStamp2 });
-
-            var systemEvents = _Database.GetSystemEvents();
-            Assert.AreEqual(2, systemEvents.Count());
-
-            Assert.IsTrue(systemEvents.Where(s => s.App == "A" && s.Msg == "B" && s.TimeStamp == timeStamp1 && s.SystemEventsID != 0).Any());
-            Assert.IsTrue(systemEvents.Where(s => s.App == "2" && s.Msg == "3" && s.TimeStamp == timeStamp2 && s.SystemEventsID != 0).Any());
-        }
-        #endregion
-
-        #region InsertSystemEvents
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_InsertSystemEvents_Throws_If_Writes_Disabled()
-        {
-            _Database.InsertSystemEvent(new BaseStationSystemEvents() { App = "A", Msg = "D", TimeStamp = DateTime.Now });
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertSystemEvents_Does_Nothing_If_File_Does_Not_Exist()
-        {
-            _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-
-            _Database.InsertSystemEvent(new BaseStationSystemEvents() { App = "A", Msg = "D", TimeStamp = DateTime.Now });
-            Assert.AreEqual(0, _Database.GetSystemEvents().Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertSystemEvents_Does_Nothing_If_File_Not_Configured()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.FileName = null;
-
-            _Database.InsertSystemEvent(new BaseStationSystemEvents() { App = "A", Msg = "D", TimeStamp = DateTime.Now });
-            Assert.AreEqual(0, _Database.GetSystemEvents().Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertSystemEvents_Correctly_Inserts_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            var timestamp = DateTime.Now;
-            var systemEvent = new BaseStationSystemEvents() { App = "123456789.12345", Msg = new String('X', 100), TimeStamp = timestamp };
-
-            _Database.InsertSystemEvent(systemEvent);
-            Assert.AreNotEqual(0, systemEvent.SystemEventsID);
-
-            var readBack = _Database.GetSystemEvents()[0];
-            Assert.AreEqual(systemEvent.SystemEventsID, readBack.SystemEventsID);
-            Assert.AreEqual("123456789.12345", readBack.App);
-            Assert.AreEqual(new String('X', 100), readBack.Msg);
-            Assert.AreEqual(TruncateDate(timestamp), readBack.TimeStamp);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertSystemEvents_Works_For_Different_Cultures()
-        {
-            foreach(var culture in _Cultures) {
-                using(var switcher = new CultureSwitcher(culture)) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    try {
-                        BaseStationDatabase_InsertSystemEvents_Correctly_Inserts_Record();
-                    } catch(Exception ex) {
-                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
-                    }
-                }
-            }
-        }
-        #endregion
-
-        #region UpdateSystemEvents
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_UpdateSystemEvents_Throws_If_Writes_Disabled()
-        {
-            AddSystemEvent(new BaseStationSystemEvents() { App = "K", Msg = "Z", TimeStamp = DateTime.Now });
-            var update = _Database.GetSystemEvents()[0];
-            _Database.UpdateSystemEvent(update);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateSystemEvents_Does_Nothing_If_File_Does_Not_Exist()
-        {
-            _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-
-            _Database.UpdateSystemEvent(new BaseStationSystemEvents());
-            Assert.AreEqual(0, _Database.GetSystemEvents().Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateSystemEvents_Does_Nothing_If_File_Not_Configured()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.FileName = null;
-
-            _Database.UpdateSystemEvent(new BaseStationSystemEvents());
-            Assert.AreEqual(0, _Database.GetSystemEvents().Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateSystemEvents_Correctly_Updates_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            AddSystemEvent(new BaseStationSystemEvents() { App = "K", Msg = "Z", TimeStamp = DateTime.Now });
-            var update = _Database.GetSystemEvents()[0];
-
-            var timestamp = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-            update.App = "123456789.12345";
-            update.Msg = new String('X', 100);
-            update.TimeStamp = timestamp;
-
-            _Database.UpdateSystemEvent(update);
-
-            var allSystemEvents = _Database.GetSystemEvents();
-            Assert.AreEqual(1, allSystemEvents.Count());
-
-            var readBack = allSystemEvents[0];
-            Assert.AreEqual(update.SystemEventsID, readBack.SystemEventsID);
-            Assert.AreEqual("123456789.12345", readBack.App);
-            Assert.AreEqual(new String('X', 100), readBack.Msg);
-            Assert.AreEqual(TruncateDate(timestamp), readBack.TimeStamp);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateSystemEvents_Works_For_Different_Cultures()
-        {
-            foreach(var culture in _Cultures) {
-                using(var switcher = new CultureSwitcher(culture)) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    try {
-                        BaseStationDatabase_UpdateSystemEvents_Correctly_Updates_Record();
-                    } catch(Exception ex) {
-                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
-                    }
-                }
-            }
-        }
-        #endregion
-
-        #region DeleteSystemEvents
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_DeleteSystemEvents_Throws_If_Writes_Disabled()
-        {
-            AddSystemEvent(new BaseStationSystemEvents() { App = "K", Msg = "Z", TimeStamp = DateTime.Now });
-            var delete = _Database.GetSystemEvents()[0];
-            _Database.DeleteSystemEvent(delete);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_DeleteSystemEvents_Does_Nothing_If_File_Does_Not_Exist()
-        {
-            _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-
-            _Database.DeleteSystemEvent(new BaseStationSystemEvents());
-            Assert.AreEqual(0, _Database.GetSystemEvents().Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_DeleteSystemEvents_Does_Nothing_If_File_Not_Configured()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.FileName = null;
-
-            _Database.DeleteSystemEvent(new BaseStationSystemEvents());
-            Assert.AreEqual(0, _Database.GetSystemEvents().Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_DeleteSystemEvents_Correctly_Deletes_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            AddSystemEvent(new BaseStationSystemEvents() { App = "K", Msg = "Z", TimeStamp = DateTime.Now });
-            var delete = _Database.GetSystemEvents()[0];
-
-            _Database.DeleteSystemEvent(delete);
-
-            Assert.AreEqual(0, _Database.GetSystemEvents().Count());
-        }
-        #endregion
-
-        #region GetLocations
-        [TestMethod]
-        public void BaseStationDatabase_GetLocations_Returns_Empty_List_If_File_Does_Not_Exist()
-        {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-            Assert.AreEqual(0, _Database.GetLocations().Count());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetLocations_Returns_Empty_List_If_File_Not_Configured()
-        {
-            _Database.FileName = null;
-            Assert.AreEqual(0, _Database.GetLocations().Count());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetLocations_Retrieves_All_Records_In_Locations_Table()
-        {
-            AddLocation(new BaseStationLocation() { LocationName = "A", Latitude = 1.2, Longitude = 9.8, Altitude = 6.5 });
-            AddLocation(new BaseStationLocation() { LocationName = "B", Latitude = 6.5, Longitude = 4.3, Altitude = 2.1 });
-
-            var locations = _Database.GetLocations();
-            Assert.AreEqual(2, locations.Count());
-
-            Assert.IsTrue(locations.Where(n => n.LocationName == "A").Any());
-            Assert.IsTrue(locations.Where(n => n.LocationName == "B").Any());
-        }
-        #endregion
-
-        #region InsertLocation
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_InsertLocation_Throws_If_Writes_Disabled()
-        {
-            _Database.InsertLocation(new BaseStationLocation() { LocationName = "X" });
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertLocation_Does_Nothing_If_File_Does_Not_Exist()
-        {
-            _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-
-            _Database.InsertLocation(new BaseStationLocation() { LocationName = "X" });
-            Assert.AreEqual(0, _Database.GetLocations().Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertLocation_Does_Nothing_If_File_Not_Configured()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.FileName = null;
-
-            _Database.InsertLocation(new BaseStationLocation() { LocationName = "X" });
-            Assert.AreEqual(0, _Database.GetLocations().Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertLocation_Correctly_Inserts_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-
-            var location = new BaseStationLocation() {
-                Altitude = 1.2468,
-                Latitude = 51.3921,
-                Longitude = 123.9132,
-                LocationName = "123456789.123456789.",
-            };
-
-            _Database.InsertLocation(location);
-            Assert.AreNotEqual(0, location.LocationID);
-
-            var readBack = _Database.GetLocations()[0];
-            Assert.AreEqual(location.LocationID, readBack.LocationID);
-            Assert.AreEqual(1.2468, readBack.Altitude, 0.00001);
-            Assert.AreEqual(51.3921, readBack.Latitude, 0.00001);
-            Assert.AreEqual(123.9132, readBack.Longitude, 0.00001);
-            Assert.AreEqual("123456789.123456789.", readBack.LocationName);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertLocation_Works_For_Different_Cultures()
-        {
-            foreach(var culture in _Cultures) {
-                using(var switcher = new CultureSwitcher(culture)) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    try {
-                        BaseStationDatabase_InsertLocation_Correctly_Inserts_Record();
-                    } catch(Exception ex) {
-                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
-                    }
-                }
-            }
-        }
-        #endregion
-
-        #region UpdateLocation
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_UpdateLocation_Throws_If_Writes_Disabled()
-        {
-            var location = new BaseStationLocation() { LocationName = "B" };
-            location.LocationID = (int)AddLocation(location);
-
-            location.LocationName = "C";
-            _Database.UpdateLocation(location);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateLocation_Does_Nothing_If_File_Does_Not_Exist()
-        {
-            _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-
-            _Database.UpdateLocation(new BaseStationLocation() { LocationName = "X" });
-            Assert.AreEqual(0, _Database.GetLocations().Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateLocation_Does_Nothing_If_File_Not_Configured()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.FileName = null;
-
-            _Database.UpdateLocation(new BaseStationLocation() { LocationName = "X" });
-            Assert.AreEqual(0, _Database.GetLocations().Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateLocation_Correctly_Updates_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-            AddLocation(new BaseStationLocation() {
-                Altitude = 1.2468,
-                Latitude = 51.3921,
-                Longitude = 123.9132,
-                LocationName = "123456789.123456789.",
-            });
-
-            var update = _Database.GetLocations()[0];
-            var originalId = update.LocationID;
-            update.Altitude = 4.6543;
-            update.Latitude = 7.6533;
-            update.Longitude = 9.2341;
-            update.LocationName = "Hello";
-
-            _Database.UpdateLocation(update);
-
-            var allLocations = _Database.GetLocations();
-            Assert.AreEqual(1, allLocations.Count);
-            var readBack = allLocations[0];
-            Assert.AreEqual(originalId, readBack.LocationID);
-            Assert.AreEqual(4.6543, readBack.Altitude, 0.00001);
-            Assert.AreEqual(7.6533, readBack.Latitude, 0.00001);
-            Assert.AreEqual(9.2341, readBack.Longitude, 0.00001);
-            Assert.AreEqual("Hello", readBack.LocationName);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateLocation_Works_For_Different_Cultures()
-        {
-            foreach(var culture in _Cultures) {
-                using(var switcher = new CultureSwitcher(culture)) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    try {
-                        BaseStationDatabase_UpdateLocation_Correctly_Updates_Record();
-                    } catch(Exception ex) {
-                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
-                    }
-                }
-            }
-        }
-        #endregion
-
-        #region DeleteLocation
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_DeleteLocation_Throws_If_Writes_Disabled()
-        {
-            var location = new BaseStationLocation() { LocationName = "B" };
-            location.LocationID = (int)AddLocation(location);
-
-            _Database.DeleteLocation(location);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_DeleteLocation_Does_Nothing_If_File_Does_Not_Exist()
-        {
-            _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-
-            _Database.DeleteLocation(new BaseStationLocation() { LocationName = "X" });
-            Assert.AreEqual(0, _Database.GetLocations().Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_DeleteLocation_Does_Nothing_If_File_Not_Configured()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.FileName = null;
-
-            _Database.DeleteLocation(new BaseStationLocation() { LocationName = "X" });
-            Assert.AreEqual(0, _Database.GetLocations().Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_DeleteLocation_Correctly_Deletes_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-            AddLocation(new BaseStationLocation() {
-                Altitude = 1.2468,
-                Latitude = 51.3921,
-                Longitude = 123.9132,
-                LocationName = "123456789.123456789.",
-            });
-
-            var update = _Database.GetLocations()[0];
-            var originalId = update.LocationID;
-
-            _Database.DeleteLocation(update);
-
-            Assert.AreEqual(0, _Database.GetLocations().Count);
-        }
-        #endregion
-
-        #region GetSessions
-        [TestMethod]
-        public void BaseStationDatabase_GetSessions_Returns_Empty_List_If_File_Does_Not_Exist()
-        {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-            Assert.AreEqual(0, _Database.GetSessions().Count());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetSessions_Returns_Empty_List_If_File_Not_Configured()
-        {
-            _Database.FileName = null;
-
-            Assert.AreEqual(0, _Database.GetSessions().Count());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_GetSessions_Retrieves_All_Records_In_Sessions_Table()
-        {
-            var location1 = (int)AddLocation(new BaseStationLocation() { LocationName = "A" });
-            var location2 = (int)AddLocation(new BaseStationLocation() { LocationName = "B" });
-            var startTime1 = DateTime.Now;
-            var startTime2 = DateTime.Now.AddYears(1);
-            var endTime1 = startTime1.AddSeconds(10);
-            var endTime2 = startTime2.AddMinutes(10);
-
-            AddSession(new BaseStationSession() { LocationID = location1, StartTime = startTime1, EndTime = endTime1 });
-            AddSession(new BaseStationSession() { LocationID = location2, StartTime = startTime2, EndTime = endTime2 });
-
-            var sessions = _Database.GetSessions();
-
-            Assert.AreEqual(2, sessions.Count);
-            Assert.IsTrue(sessions.Where(s => s.LocationID == location1 && s.StartTime == startTime1 && s.EndTime == endTime1 && s.SessionID != 0).Any());
-            Assert.IsTrue(sessions.Where(s => s.LocationID == location2 && s.StartTime == startTime2 && s.EndTime == endTime2 && s.SessionID != 0).Any());
-        }
-        #endregion
-
-        #region InsertSession
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_InsertSession_Throws_If_Writes_Disabled()
-        {
-            _Database.InsertSession(new BaseStationSession());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertSession_Does_Nothing_If_File_Does_Not_Exist()
-        {
-            _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-
-            _Database.InsertSession(new BaseStationSession());
-            Assert.AreEqual(0, _Database.GetSessions().Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertSession_Does_Nothing_If_File_Not_Configured()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.FileName = null;
-
-            _Database.InsertSession(new BaseStationSession());
-            Assert.AreEqual(0, _Database.GetSessions().Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertSession_Inserts_Record_Correctly()
-        {
-            _Database.WriteSupportEnabled = true;
-            var locationId = (int)AddLocation(new BaseStationLocation() { LocationName = "X" });
-            var startTime = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-            var endTime = startTime.AddDays(1);
-
-            var record = new BaseStationSession() {
-                EndTime = endTime,
-                LocationID = locationId,
-                StartTime = startTime,
-            };
-
-            _Database.InsertSession(record);
-            Assert.AreNotEqual(0, record.SessionID);
-
-            var allSessions = _Database.GetSessions();
-            Assert.AreEqual(1, allSessions.Count);
-            var readBack = allSessions[0];
-            Assert.AreEqual(record.SessionID, readBack.SessionID);
-            Assert.AreEqual(locationId, readBack.LocationID);
-            Assert.AreEqual(TruncateDate(startTime), readBack.StartTime);
-            Assert.AreEqual(TruncateDate(endTime), readBack.EndTime);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertSession_Works_For_Different_Cultures()
-        {
-            foreach(var culture in _Cultures) {
-                using(var switcher = new CultureSwitcher(culture)) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    try {
-                        BaseStationDatabase_InsertSession_Inserts_Record_Correctly();
-                    } catch(Exception ex) {
-                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_InsertSession_Copes_If_There_Are_No_Locations()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertSession(new BaseStationSession() {
-                LocationID = 0,
-                StartTime = DateTime.Now,
-            });
-
-            var readBack = _Database.GetSessions()[0];
-            Assert.AreEqual(0, readBack.LocationID);
-            Assert.AreNotEqual(0, readBack.SessionID);
-        }
-        #endregion
-
-        #region UpdateSession
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_UpdateSession_Throws_If_Writes_Disabled()
-        {
-            var locationId = (int)AddLocation(new BaseStationLocation() { LocationName = "X" });
-            var session = new BaseStationSession() { LocationID = locationId, StartTime = DateTime.Now };
-            session.SessionID = (int)AddSession(session);
-
-            session.EndTime = DateTime.Now;
-            _Database.UpdateSession(session);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateSession_Does_Nothing_If_File_Does_Not_Exist()
-        {
-            _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-
-            _Database.UpdateSession(new BaseStationSession());
-            Assert.AreEqual(0, _Database.GetSessions().Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateSession_Does_Nothing_If_File_Not_Configured()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.FileName = null;
-
-            _Database.UpdateSession(new BaseStationSession());
-            Assert.AreEqual(0, _Database.GetSessions().Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateSession_Correctly_Updates_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-            var locationId = (int)AddLocation(new BaseStationLocation() { LocationName = "X" });
-            var newLocationId = (int)AddLocation(new BaseStationLocation() { LocationName = "Y" });
-            AddSession(new BaseStationSession() {
-                EndTime = null,
-                LocationID = locationId,
-                StartTime = new DateTime(2001, 2, 3, 4, 5, 6, 789),
-            });
-
-            var update = _Database.GetSessions()[0];
-            var originalId = update.SessionID;
-            update.EndTime = new DateTime(2007, 8, 9, 10, 11, 12, 772);
-            update.LocationID = newLocationId;
-            update.StartTime = new DateTime(2006, 7, 8, 9, 10, 11, 124);
-
-            _Database.UpdateSession(update);
-
-            var allSessions = _Database.GetSessions();
-            Assert.AreEqual(1, allSessions.Count);
-            var readBack = allSessions[0];
-            Assert.AreEqual(originalId, readBack.SessionID);
-            Assert.AreEqual(new DateTime(2007, 8, 9, 10, 11, 12), readBack.EndTime);
-            Assert.AreEqual(newLocationId, readBack.LocationID);
-            Assert.AreEqual(new DateTime(2006, 7, 8, 9, 10, 11), readBack.StartTime);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_UpdateSession_Works_For_Different_Cultures()
-        {
-            foreach(var culture in _Cultures) {
-                using(var switcher = new CultureSwitcher(culture)) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    try {
-                        BaseStationDatabase_UpdateSession_Correctly_Updates_Record();
-                    } catch(Exception ex) {
-                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
-                    }
-                }
-            }
-        }
-        #endregion
-
-        #region DeleteSession
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_DeleteSession_Throws_If_Writes_Disabled()
-        {
-            var locationId = (int)AddLocation(new BaseStationLocation() { LocationName = "X" });
-            var session = new BaseStationSession() { LocationID = locationId, StartTime = DateTime.Now };
-            session.SessionID = (int)AddSession(session);
-
-            _Database.DeleteSession(session);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_DeleteSession_Does_Nothing_If_File_Does_Not_Exist()
-        {
-            _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
-
-            _Database.DeleteSession(new BaseStationSession());
-            Assert.AreEqual(0, _Database.GetSessions().Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_DeleteSession_Does_Nothing_If_File_Not_Configured()
-        {
-            _Database.WriteSupportEnabled = true;
-            _Database.FileName = null;
-
-            _Database.DeleteSession(new BaseStationSession());
-            Assert.AreEqual(0, _Database.GetSessions().Count);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_DeleteSession_Correctly_Deletes_Record()
-        {
-            _Database.WriteSupportEnabled = true;
-            var locationId = (int)AddLocation(new BaseStationLocation() { LocationName = "X" });
-            AddSession(new BaseStationSession() {
-                EndTime = null,
-                LocationID = locationId,
-                StartTime = new DateTime(2001, 2, 3, 4, 5, 6),
-            });
-
-            var record = _Database.GetSessions()[0];
-            _Database.DeleteSession(record);
-
-            Assert.AreEqual(0, _Database.GetSessions().Count);
-        }
-        #endregion
-
-        #region CreateDatabaseIfMissing
-        [TestMethod]
-        public void BaseStationDatabase_CreateDatabaseIfMissing_Does_Nothing_If_FileName_Is_Null()
-        {
-            _Database.CreateDatabaseIfMissing(null);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_CreateDatabaseIfMissing_Does_Nothing_If_FileName_Is_Empty()
-        {
-            _Database.CreateDatabaseIfMissing("");
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_CreateDatabaseIfMissing_Creates_Path_To_Database_File()
-        {
-            string folder = Path.Combine(TestContext.TestDeploymentDir, "SubFolderForCDIF");
-            if(Directory.Exists(folder)) Directory.Delete(folder, true);
-
-            _CreateDatabaseFileName = Path.Combine(folder, "TheFile.sdb");
-
-            _Database.CreateDatabaseIfMissing(_CreateDatabaseFileName);
-
-            Assert.IsTrue(Directory.Exists(folder));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_CreateDatabaseIfMissing_Creates_File_If_Missing()
-        {
-            if(File.Exists(_CreateDatabaseFileName)) {
-                RetryAction(() => File.Delete(_CreateDatabaseFileName));
-            }
-
-            _Database.CreateDatabaseIfMissing(_CreateDatabaseFileName);
-
-            Assert.IsTrue(File.Exists(_CreateDatabaseFileName));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_CreateDatabaseIfMissing_Writes_Correct_History_Record_If_File_Empty()
-        {
-            File.Create(_CreateDatabaseFileName).Close();
-
-            _Database.CreateDatabaseIfMissing(_CreateDatabaseFileName);
-            _Database.FileName = _CreateDatabaseFileName;
-
-            Assert.IsTrue(_Database.GetDatabaseHistory().Where(h => h.IsCreationOfDatabaseByVirtualRadarServer).Any());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_CreateDatabaseIfMissing_Does_Nothing_If_File_Not_Empty()
-        {
-            _CreateDatabaseFileName = _EmptyDatabaseFileName;
-            _Database.CreateDatabaseIfMissing(_CreateDatabaseFileName);
-
-            Assert.AreEqual(0, _Database.GetDatabaseHistory().Count());
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_CreateDatabaseIfMissing_Writes_Correct_History_Record_If_Missing()
-        {
-            var timeStamp = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-            _Provider.Setup(p => p.UtcNow).Returns(timeStamp);
-
-            _Database.CreateDatabaseIfMissing(_CreateDatabaseFileName);
-            _Database.FileName = _CreateDatabaseFileName;
-
-            var allHistory = _Database.GetDatabaseHistory();
-            Assert.AreEqual(1, allHistory.Count());
-
-            var vrsCreationNote = allHistory.Where(h => h.IsCreationOfDatabaseByVirtualRadarServer).Single();
-            Assert.AreEqual(TruncateDate(timeStamp), vrsCreationNote.TimeStamp);
-            Assert.AreNotEqual(0, vrsCreationNote.DBHistoryID);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_CreateDatabaseIfMissing_Writes_Correct_History_Record_In_Different_Cultures()
-        {
-            foreach(var culture in _Cultures) {
-                using(var switcher = new CultureSwitcher(culture)) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    try {
-                        BaseStationDatabase_CreateDatabaseIfMissing_Writes_Correct_History_Record_If_Missing();
-                    } catch(Exception ex) {
-                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_CreateDatabaseIfMissing_Writes_Correct_Info_Record()
-        {
-            _Database.CreateDatabaseIfMissing(_CreateDatabaseFileName);
-            _Database.FileName = _CreateDatabaseFileName;
-
-            var dbInfo = _Database.GetDatabaseVersion();
-            Assert.AreEqual(2, dbInfo.OriginalVersion);
-            Assert.AreEqual(2, dbInfo.CurrentVersion);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_CreateDatabaseIfMissing_Writes_Correct_Info_Record_In_Different_Cultures()
-        {
-            foreach(var culture in _Cultures) {
-                using(var switcher = new CultureSwitcher(culture)) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    try {
-                        BaseStationDatabase_CreateDatabaseIfMissing_Writes_Correct_Info_Record();
-                    } catch(Exception ex) {
-                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_CreateDatabaseIfMissing_Writes_Google_Map_Default_Centre_As_Default_Location()
-        {
-            _Configuration.GoogleMapSettings.InitialMapLatitude = 2.3456;
-            _Configuration.GoogleMapSettings.InitialMapLongitude = -7.8901;
-            _ConfigurationStorage.Raise(c => c.ConfigurationChanged += null, EventArgs.Empty);
-
-            _Database.CreateDatabaseIfMissing(_CreateDatabaseFileName);
-            _Database.FileName = _CreateDatabaseFileName;
-
-            var locations = _Database.GetLocations();
-            Assert.AreEqual(1, locations.Count());
-
-            var location = locations.First();
-            Assert.AreEqual("Home", location.LocationName);
-            Assert.AreEqual(0.0, location.Altitude);
-            Assert.AreEqual(2.3456, location.Latitude, 0.00001);
-            Assert.AreEqual(-7.8901, location.Longitude, 0.00001);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_CreateDatabaseIfMissing_Writes_Default_Location_In_Different_Cultures()
-        {
-            foreach(var culture in _Cultures) {
-                using(var switcher = new CultureSwitcher(culture)) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    try {
-                        BaseStationDatabase_CreateDatabaseIfMissing_Writes_Google_Map_Default_Centre_As_Default_Location();
-                    } catch(Exception ex) {
-                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_CreateDatabaseIfMissing_Creates_Session_Table()
-        {
-            _Database.CreateDatabaseIfMissing(_CreateDatabaseFileName);
-            _Database.FileName = _CreateDatabaseFileName;
-
-            var location = _Database.GetLocations()[0];
-            var session = new BaseStationSession() { LocationID = location.LocationID };
-
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertSession(session);
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_CreateDatabaseIfMissing_Creates_SystemEvents_Table()
-        {
-            _Database.CreateDatabaseIfMissing(_CreateDatabaseFileName);
-            _Database.FileName = _CreateDatabaseFileName;
-
-            _Database.GetSystemEvents();
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_CreateDatabaseIfMissing_Creates_Aircraft_Table()
-        {
-            _Database.CreateDatabaseIfMissing(_CreateDatabaseFileName);
-            _Database.FileName = _CreateDatabaseFileName;
-
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "X" });
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_CreateDatabaseIfMissing_Creates_Flights_Table()
-        {
-            _Database.CreateDatabaseIfMissing(_CreateDatabaseFileName);
-            _Database.FileName = _CreateDatabaseFileName;
-
-            var aircraft = new BaseStationAircraft() { ModeS = "1" };
-            var session = new BaseStationSession() { StartTime = DateTime.Now };
-            _Database.WriteSupportEnabled = true;
-            _Database.InsertSession(session);
-            _Database.InsertAircraft(aircraft);
-
-            _Database.InsertFlight(new BaseStationFlight() { AircraftID = aircraft.AircraftID, SessionID = session.SessionID });
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_CreateDatabaseIfMissing_Creates_Session_Trigger_To_Delete_Flights()
-        {
-            _Database.CreateDatabaseIfMissing(_CreateDatabaseFileName);
-            _Database.FileName = _CreateDatabaseFileName;
-
-            _Database.WriteSupportEnabled = true;
-
-            var session = new BaseStationSession() { StartTime = DateTime.Now };
-            _Database.InsertSession(session);
-
-            var aircraft = new BaseStationAircraft() { ModeS = "K" };
-            _Database.InsertAircraft(aircraft);
-
-            var flight = new BaseStationFlight() { AircraftID = aircraft.AircraftID, SessionID = session.SessionID };
-            _Database.InsertFlight(flight);
-
-            _Database.DeleteSession(session);
-
-            Assert.IsNull(_Database.GetFlightById(flight.FlightID));
-            Assert.IsNotNull(_Database.GetAircraftById(aircraft.AircraftID));
-        }
-
-        [TestMethod]
-        public void BaseStationDatabase_CreateDatabaseIfMissing_Creates_Aircraft_Trigger_To_Delete_Flights()
-        {
-            _Database.CreateDatabaseIfMissing(_CreateDatabaseFileName);
-            _Database.FileName = _CreateDatabaseFileName;
-
-            _Database.WriteSupportEnabled = true;
-
-            var session = new BaseStationSession() { StartTime = DateTime.Now };
-            _Database.InsertSession(session);
-
-            var aircraft = new BaseStationAircraft() { ModeS = "K" };
-            _Database.InsertAircraft(aircraft);
-
-            var flight = new BaseStationFlight() { AircraftID = aircraft.AircraftID, SessionID = session.SessionID };
-            _Database.InsertFlight(flight);
-
-            _Database.DeleteAircraft(aircraft);
-
-            Assert.IsNull(_Database.GetFlightById(flight.FlightID));
-            Assert.AreEqual(session.SessionID, _Database.GetSessions()[0].SessionID);
+            return session;
+        }
+
+        protected void AssertAircraftAreEqual(BaseStationAircraft expected, BaseStationAircraft actual, long id = -1L)
+        {
+            Assert.AreEqual(id == -1L ? expected.AircraftID : (int)id, actual.AircraftID);
+            Assert.AreEqual(expected.AircraftClass, actual.AircraftClass);
+            Assert.AreEqual(expected.Country, actual.Country);
+            Assert.AreEqual(expected.DeRegDate, actual.DeRegDate);
+            Assert.AreEqual(expected.Engines, actual.Engines);
+            Assert.AreEqual(expected.FirstCreated, actual.FirstCreated);
+            Assert.AreEqual(expected.GenericName, actual.GenericName);
+            Assert.AreEqual(expected.ICAOTypeCode, actual.ICAOTypeCode);
+            Assert.AreEqual(expected.LastModified, actual.LastModified);
+            Assert.AreEqual(expected.Manufacturer, actual.Manufacturer);
+            Assert.AreEqual(expected.ModeS, actual.ModeS);
+            Assert.AreEqual(expected.ModeSCountry, actual.ModeSCountry);
+            Assert.AreEqual(expected.OperatorFlagCode, actual.OperatorFlagCode);
+            Assert.AreEqual(expected.OwnershipStatus, actual.OwnershipStatus);
+            Assert.AreEqual(expected.PopularName, actual.PopularName);
+            Assert.AreEqual(expected.PreviousID, actual.PreviousID);
+            Assert.AreEqual(expected.RegisteredOwners, actual.RegisteredOwners);
+            Assert.AreEqual(expected.Registration, actual.Registration);
+            Assert.AreEqual(expected.SerialNo, actual.SerialNo);
+            Assert.AreEqual(expected.Status, actual.Status);
+            Assert.AreEqual(expected.Type, actual.Type);
+            Assert.AreEqual(expected.CofACategory, actual.CofACategory);
+            Assert.AreEqual(expected.CofAExpiry, actual.CofAExpiry);
+            Assert.AreEqual(expected.CurrentRegDate, actual.CurrentRegDate);
+            Assert.AreEqual(expected.FirstRegDate, actual.FirstRegDate);
+            Assert.AreEqual(expected.InfoUrl, actual.InfoUrl);
+            Assert.AreEqual(expected.Interested, actual.Interested);
+            Assert.AreEqual(expected.MTOW, actual.MTOW);
+            Assert.AreEqual(expected.PictureUrl1, actual.PictureUrl1);
+            Assert.AreEqual(expected.PictureUrl2, actual.PictureUrl2);
+            Assert.AreEqual(expected.PictureUrl3, actual.PictureUrl3);
+            Assert.AreEqual(expected.TotalHours, actual.TotalHours);
+            Assert.AreEqual(expected.UserNotes, actual.UserNotes);
+            Assert.AreEqual(expected.UserString1, actual.UserString1);
+            Assert.AreEqual(expected.UserString2, actual.UserString2);
+            Assert.AreEqual(expected.UserString3, actual.UserString3);
+            Assert.AreEqual(expected.UserString4, actual.UserString4);
+            Assert.AreEqual(expected.UserString5, actual.UserString5);
+            Assert.AreEqual(expected.UserBool1, actual.UserBool1);
+            Assert.AreEqual(expected.UserBool2, actual.UserBool2);
+            Assert.AreEqual(expected.UserBool3, actual.UserBool3);
+            Assert.AreEqual(expected.UserBool4, actual.UserBool4);
+            Assert.AreEqual(expected.UserBool5, actual.UserBool5);
+            Assert.AreEqual(expected.UserInt1, actual.UserInt1);
+            Assert.AreEqual(expected.UserInt2, actual.UserInt2);
+            Assert.AreEqual(expected.UserInt3, actual.UserInt3);
+            Assert.AreEqual(expected.UserInt4, actual.UserInt4);
+            Assert.AreEqual(expected.UserInt5, actual.UserInt5);
+            Assert.AreEqual(expected.UserTag, actual.UserTag);
+            Assert.AreEqual(expected.YearBuilt, actual.YearBuilt);
+        }
+
+        protected static void AssertFlightsAreEqual(BaseStationFlight expected, BaseStationFlight actual, bool expectAircraftFilled, int expectedAircraftId)
+        {
+            Assert.AreEqual(expectedAircraftId, actual.AircraftID);
+            if(expectAircraftFilled) Assert.AreEqual(expectedAircraftId, actual.Aircraft.AircraftID);
+            else                     Assert.IsNull(actual.Aircraft);
+            Assert.AreEqual(expected.Callsign, actual.Callsign);
+            Assert.AreEqual(expected.EndTime, actual.EndTime);
+            Assert.AreEqual(expected.FirstAltitude, actual.FirstAltitude);
+            Assert.AreEqual(expected.FirstGroundSpeed, actual.FirstGroundSpeed);
+            Assert.AreEqual(expected.FirstIsOnGround, actual.FirstIsOnGround);
+            Assert.AreEqual(expected.FirstLat, actual.FirstLat);
+            Assert.AreEqual(expected.FirstLon, actual.FirstLon);
+            Assert.AreEqual(expected.FirstSquawk, actual.FirstSquawk);
+            Assert.AreEqual(expected.FirstTrack, actual.FirstTrack);
+            Assert.AreEqual(expected.FirstVerticalRate, actual.FirstVerticalRate);
+            Assert.AreEqual(expected.HadAlert, actual.HadAlert);
+            Assert.AreEqual(expected.HadEmergency, actual.HadEmergency);
+            Assert.AreEqual(expected.HadSpi, actual.HadSpi);
+            Assert.AreEqual(expected.LastAltitude, actual.LastAltitude);
+            Assert.AreEqual(expected.LastGroundSpeed, actual.LastGroundSpeed);
+            Assert.AreEqual(expected.LastIsOnGround, actual.LastIsOnGround);
+            Assert.AreEqual(expected.LastLat, actual.LastLat);
+            Assert.AreEqual(expected.LastLon, actual.LastLon);
+            Assert.AreEqual(expected.LastSquawk, actual.LastSquawk);
+            Assert.AreEqual(expected.LastTrack, actual.LastTrack);
+            Assert.AreEqual(expected.LastVerticalRate, actual.LastVerticalRate);
+            Assert.AreEqual(expected.NumADSBMsgRec, actual.NumADSBMsgRec);
+            Assert.AreEqual(expected.NumModeSMsgRec, actual.NumModeSMsgRec);
+            Assert.AreEqual(expected.NumIDMsgRec, actual.NumIDMsgRec);
+            Assert.AreEqual(expected.NumSurPosMsgRec, actual.NumSurPosMsgRec);
+            Assert.AreEqual(expected.NumAirPosMsgRec, actual.NumAirPosMsgRec);
+            Assert.AreEqual(expected.NumAirVelMsgRec, actual.NumAirVelMsgRec);
+            Assert.AreEqual(expected.NumSurAltMsgRec, actual.NumSurAltMsgRec);
+            Assert.AreEqual(expected.NumSurIDMsgRec, actual.NumSurIDMsgRec);
+            Assert.AreEqual(expected.NumAirToAirMsgRec, actual.NumAirToAirMsgRec);
+            Assert.AreEqual(expected.NumAirCallRepMsgRec, actual.NumAirCallRepMsgRec);
+            Assert.AreEqual(expected.NumPosMsgRec, actual.NumPosMsgRec);
+            Assert.AreEqual(expected.StartTime, actual.StartTime);
+            Assert.AreEqual(expected.SessionID, actual.SessionID);
+            Assert.AreEqual(expected.UserNotes, actual.UserNotes);
         }
         #endregion
 
@@ -4575,7 +784,7 @@ namespace Test.VirtualRadar.Database
         /// </summary>
         /// <param name="criteriaProperty"></param>
         /// <returns></returns>
-        private bool IsFlightCriteria(PropertyInfo criteriaProperty)
+        protected bool IsFlightCriteria(PropertyInfo criteriaProperty)
         {
             switch(criteriaProperty.Name) {
                 case "Date":
@@ -4600,7 +809,7 @@ namespace Test.VirtualRadar.Database
         /// </summary>
         /// <param name="sortColumn"></param>
         /// <returns></returns>
-        private bool IsFlightSortColumn(string sortColumn)
+        protected bool IsFlightSortColumn(string sortColumn)
         {
             switch(sortColumn) {
                 case "date":
@@ -4624,7 +833,7 @@ namespace Test.VirtualRadar.Database
         /// </summary>
         /// <param name="criteriaProperty"></param>
         /// <returns></returns>
-        private bool IsFilterStringProperty(PropertyInfo criteriaProperty)
+        protected bool IsFilterStringProperty(PropertyInfo criteriaProperty)
         {
             return typeof(FilterString).IsAssignableFrom(criteriaProperty.PropertyType);
         }
@@ -4635,7 +844,7 @@ namespace Test.VirtualRadar.Database
         /// <param name="criteriaProperty"></param>
         /// <param name="flight"></param>
         /// <param name="value"></param>
-        private void SetStringAircraftProperty(PropertyInfo criteriaProperty, BaseStationFlight flight, string value)
+        protected void SetStringAircraftProperty(PropertyInfo criteriaProperty, BaseStationFlight flight, string value)
         {
             switch(criteriaProperty.Name) {
                 case "Callsign":        flight.Callsign = value; break;
@@ -4659,7 +868,7 @@ namespace Test.VirtualRadar.Database
         /// <param name="equalsFlight"></param>
         /// <param name="reverseCondition"></param>
         /// <returns>Returns true if the criteria property is an equality criteria.</returns>
-        private bool SetEqualityCriteria(PropertyInfo criteriaProperty, BaseStationFlight defaultFlight, BaseStationFlight notEqualFlight, BaseStationFlight equalsFlight, bool reverseCondition)
+        protected bool SetEqualityCriteria(PropertyInfo criteriaProperty, BaseStationFlight defaultFlight, BaseStationFlight notEqualFlight, BaseStationFlight equalsFlight, bool reverseCondition)
         {
             bool result = true;
 
@@ -4736,7 +945,7 @@ namespace Test.VirtualRadar.Database
         /// <param name="containsFlight"></param>
         /// <param name="reverseCondition"></param>
         /// <returns>Returns true if the criteria property is an contains criteria.</returns>
-        private bool SetContainsCriteria(PropertyInfo criteriaProperty, BaseStationFlight defaultFlight, BaseStationFlight notContainsFlight, BaseStationFlight containsFlight, bool reverseCondition)
+        protected bool SetContainsCriteria(PropertyInfo criteriaProperty, BaseStationFlight defaultFlight, BaseStationFlight notContainsFlight, BaseStationFlight containsFlight, bool reverseCondition)
         {
             bool result = true;
 
@@ -4807,7 +1016,7 @@ namespace Test.VirtualRadar.Database
         /// <param name="startsWithFlight"></param>
         /// <param name="reverseCondition"></param>
         /// <returns>Returns true if the criteria property is an starts with criteria.</returns>
-        private bool SetStartsWithCriteria(PropertyInfo criteriaProperty, BaseStationFlight defaultFlight, BaseStationFlight notStartsWithFlight, BaseStationFlight startsWithFlight, bool reverseCondition)
+        protected bool SetStartsWithCriteria(PropertyInfo criteriaProperty, BaseStationFlight defaultFlight, BaseStationFlight notStartsWithFlight, BaseStationFlight startsWithFlight, bool reverseCondition)
         {
             bool result = true;
 
@@ -4878,7 +1087,7 @@ namespace Test.VirtualRadar.Database
         /// <param name="endsWithFlight"></param>
         /// <param name="reverseCondition"></param>
         /// <returns>Returns true if the criteria property is an ends with criteria.</returns>
-        private bool SetEndsWithCriteria(PropertyInfo criteriaProperty, BaseStationFlight defaultFlight, BaseStationFlight notEndsWithFlight, BaseStationFlight endsWithFlight, bool reverseCondition)
+        protected bool SetEndsWithCriteria(PropertyInfo criteriaProperty, BaseStationFlight defaultFlight, BaseStationFlight notEndsWithFlight, BaseStationFlight endsWithFlight, bool reverseCondition)
         {
             bool result = true;
 
@@ -4951,7 +1160,7 @@ namespace Test.VirtualRadar.Database
         /// <param name="aboveRangeFlight"></param>
         /// <param name="reverseCondition"></param>
         /// <returns></returns>
-        private bool SetRangeCriteria(PropertyInfo criteriaProperty, BaseStationFlight belowRangeFlight, BaseStationFlight startRangeFlight, BaseStationFlight inRangeFlight, BaseStationFlight endRangeFlight, BaseStationFlight aboveRangeFlight, bool reverseCondition)
+        protected bool SetRangeCriteria(PropertyInfo criteriaProperty, BaseStationFlight belowRangeFlight, BaseStationFlight startRangeFlight, BaseStationFlight inRangeFlight, BaseStationFlight endRangeFlight, BaseStationFlight aboveRangeFlight, bool reverseCondition)
         {
             bool result = true;
 
@@ -5003,7 +1212,7 @@ namespace Test.VirtualRadar.Database
             return result;
         }
 
-        private void SetSortColumnValue(BaseStationFlight flight, string sortColumn, bool isDefault, bool isHigh)
+        protected void SetSortColumnValue(BaseStationFlight flight, string sortColumn, bool isDefault, bool isHigh)
         {
             var stringValue = isDefault ? sortColumn == "reg" || sortColumn == "icao" ? "" : null : isHigh ? "B" : "A";
             var dateValue = isDefault ? default(DateTime) : isHigh ? new DateTime(2001, 1, 2) : new DateTime(2001, 1, 1);
@@ -5025,107 +1234,2788 @@ namespace Test.VirtualRadar.Database
         }
         #endregion
 
-        #region AssertAircraftAreEqual, AssertFlightsAreEqual
-        private static void AssertAircraftAreEqual(BaseStationAircraft expected, BaseStationAircraft actual, long id = -1L)
+        #region Constructors and Properties
+        protected void BaseStationDatabase_Constructor_Initialises_To_Known_Values_And_Properties_Work()
         {
-            Assert.AreEqual(id == -1L ? expected.AircraftID : (int)id, actual.AircraftID);
-            Assert.AreEqual(expected.AircraftClass, actual.AircraftClass);
-            Assert.AreEqual(expected.Country, actual.Country);
-            Assert.AreEqual(expected.DeRegDate, actual.DeRegDate);
-            Assert.AreEqual(expected.Engines, actual.Engines);
-            Assert.AreEqual(expected.FirstCreated, actual.FirstCreated);
-            Assert.AreEqual(expected.GenericName, actual.GenericName);
-            Assert.AreEqual(expected.ICAOTypeCode, actual.ICAOTypeCode);
-            Assert.AreEqual(expected.LastModified, actual.LastModified);
-            Assert.AreEqual(expected.Manufacturer, actual.Manufacturer);
-            Assert.AreEqual(expected.ModeS, actual.ModeS);
-            Assert.AreEqual(expected.ModeSCountry, actual.ModeSCountry);
-            Assert.AreEqual(expected.OperatorFlagCode, actual.OperatorFlagCode);
-            Assert.AreEqual(expected.OwnershipStatus, actual.OwnershipStatus);
-            Assert.AreEqual(expected.PopularName, actual.PopularName);
-            Assert.AreEqual(expected.PreviousID, actual.PreviousID);
-            Assert.AreEqual(expected.RegisteredOwners, actual.RegisteredOwners);
-            Assert.AreEqual(expected.Registration, actual.Registration);
-            Assert.AreEqual(expected.SerialNo, actual.SerialNo);
-            Assert.AreEqual(expected.Status, actual.Status);
-            Assert.AreEqual(expected.Type, actual.Type);
-            Assert.AreEqual(expected.CofACategory, actual.CofACategory);
-            Assert.AreEqual(expected.CofAExpiry, actual.CofAExpiry);
-            Assert.AreEqual(expected.CurrentRegDate, actual.CurrentRegDate);
-            Assert.AreEqual(expected.FirstRegDate, actual.FirstRegDate);
-            Assert.AreEqual(expected.InfoUrl, actual.InfoUrl);
-            Assert.AreEqual(expected.Interested, actual.Interested);
-            Assert.AreEqual(expected.MTOW, actual.MTOW);
-            Assert.AreEqual(expected.PictureUrl1, actual.PictureUrl1);
-            Assert.AreEqual(expected.PictureUrl2, actual.PictureUrl2);
-            Assert.AreEqual(expected.PictureUrl3, actual.PictureUrl3);
-            Assert.AreEqual(expected.TotalHours, actual.TotalHours);
-            Assert.AreEqual(expected.UserNotes, actual.UserNotes);
-            Assert.AreEqual(expected.UserString1, actual.UserString1);
-            Assert.AreEqual(expected.UserString2, actual.UserString2);
-            Assert.AreEqual(expected.UserString3, actual.UserString3);
-            Assert.AreEqual(expected.UserString4, actual.UserString4);
-            Assert.AreEqual(expected.UserString5, actual.UserString5);
-            Assert.AreEqual(expected.UserBool1, actual.UserBool1);
-            Assert.AreEqual(expected.UserBool2, actual.UserBool2);
-            Assert.AreEqual(expected.UserBool3, actual.UserBool3);
-            Assert.AreEqual(expected.UserBool4, actual.UserBool4);
-            Assert.AreEqual(expected.UserBool5, actual.UserBool5);
-            Assert.AreEqual(expected.UserInt1, actual.UserInt1);
-            Assert.AreEqual(expected.UserInt2, actual.UserInt2);
-            Assert.AreEqual(expected.UserInt3, actual.UserInt3);
-            Assert.AreEqual(expected.UserInt4, actual.UserInt4);
-            Assert.AreEqual(expected.UserInt5, actual.UserInt5);
-            Assert.AreEqual(expected.UserTag, actual.UserTag);
-            Assert.AreEqual(expected.YearBuilt, actual.YearBuilt);
+            _Database.Dispose();
+            _Database = Factory.Resolve<IBaseStationDatabase>();
+
+            Assert.IsNotNull(_Database.Provider);
+            TestUtilities.TestProperty(_Database, "Provider", _Database.Provider, _Provider.Object);
+
+            Assert.AreEqual(null, _Database.FileName);
+            Assert.IsFalse(_Database.IsConnected);
+            Assert.IsFalse(_Database.WriteSupportEnabled);
+        }
+        #endregion
+
+        #region GetAircraftByRegistration
+        protected void BaseStationDatabase_GetAircraftByRegistration_Returns_Null_If_Passed_Null()
+        {
+            Assert.IsNull(_Database.GetAircraftByRegistration(null));
         }
 
-        private static void AssertFlightsAreEqual(BaseStationFlight expected, BaseStationFlight actual, bool expectAircraftFilled, int expectedAircraftId)
+        protected void BaseStationDatabase_GetAircraftByRegistration_Returns_Null_If_Aircraft_Does_Not_Exist()
         {
-            Assert.AreEqual(expectedAircraftId, actual.AircraftID);
-            if(expectAircraftFilled) Assert.AreEqual(expectedAircraftId, actual.Aircraft.AircraftID);
-            else                     Assert.IsNull(actual.Aircraft);
-            Assert.AreEqual(expected.Callsign, actual.Callsign);
-            Assert.AreEqual(expected.EndTime, actual.EndTime);
-            Assert.AreEqual(expected.FirstAltitude, actual.FirstAltitude);
-            Assert.AreEqual(expected.FirstGroundSpeed, actual.FirstGroundSpeed);
-            Assert.AreEqual(expected.FirstIsOnGround, actual.FirstIsOnGround);
-            Assert.AreEqual(expected.FirstLat, actual.FirstLat);
-            Assert.AreEqual(expected.FirstLon, actual.FirstLon);
-            Assert.AreEqual(expected.FirstSquawk, actual.FirstSquawk);
-            Assert.AreEqual(expected.FirstTrack, actual.FirstTrack);
-            Assert.AreEqual(expected.FirstVerticalRate, actual.FirstVerticalRate);
-            Assert.AreEqual(expected.HadAlert, actual.HadAlert);
-            Assert.AreEqual(expected.HadEmergency, actual.HadEmergency);
-            Assert.AreEqual(expected.HadSpi, actual.HadSpi);
-            Assert.AreEqual(expected.LastAltitude, actual.LastAltitude);
-            Assert.AreEqual(expected.LastGroundSpeed, actual.LastGroundSpeed);
-            Assert.AreEqual(expected.LastIsOnGround, actual.LastIsOnGround);
-            Assert.AreEqual(expected.LastLat, actual.LastLat);
-            Assert.AreEqual(expected.LastLon, actual.LastLon);
-            Assert.AreEqual(expected.LastSquawk, actual.LastSquawk);
-            Assert.AreEqual(expected.LastTrack, actual.LastTrack);
-            Assert.AreEqual(expected.LastVerticalRate, actual.LastVerticalRate);
-            Assert.AreEqual(expected.NumADSBMsgRec, actual.NumADSBMsgRec);
-            Assert.AreEqual(expected.NumModeSMsgRec, actual.NumModeSMsgRec);
-            Assert.AreEqual(expected.NumIDMsgRec, actual.NumIDMsgRec);
-            Assert.AreEqual(expected.NumSurPosMsgRec, actual.NumSurPosMsgRec);
-            Assert.AreEqual(expected.NumAirPosMsgRec, actual.NumAirPosMsgRec);
-            Assert.AreEqual(expected.NumAirVelMsgRec, actual.NumAirVelMsgRec);
-            Assert.AreEqual(expected.NumSurAltMsgRec, actual.NumSurAltMsgRec);
-            Assert.AreEqual(expected.NumSurIDMsgRec, actual.NumSurIDMsgRec);
-            Assert.AreEqual(expected.NumAirToAirMsgRec, actual.NumAirToAirMsgRec);
-            Assert.AreEqual(expected.NumAirCallRepMsgRec, actual.NumAirCallRepMsgRec);
-            Assert.AreEqual(expected.NumPosMsgRec, actual.NumPosMsgRec);
-            Assert.AreEqual(expected.StartTime, actual.StartTime);
-            Assert.AreEqual(expected.SessionID, actual.SessionID);
-            Assert.AreEqual(expected.UserNotes, actual.UserNotes);
+            Assert.IsNull(_Database.GetAircraftByRegistration("REG"));
+        }
+
+        protected void BaseStationDatabase_GetAircraftByRegistration_Returns_Aircraft_Object_For_Registration()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var mockAircraft = LoadAircraftFromSpreadsheet(worksheet);
+
+            var id = AddAircraft(mockAircraft);
+
+            var aircraft = _Database.GetAircraftByRegistration(mockAircraft.Registration);
+            Assert.AreNotSame(aircraft, mockAircraft);
+
+            AssertAircraftAreEqual(mockAircraft, aircraft, id);
+        }
+        #endregion
+
+        #region GetAircraftByCode
+        protected void BaseStationDatatbase_GetAircraftByCode_Returns_Null_If_Passed_Null()
+        {
+            Assert.IsNull(_Database.GetAircraftByCode(null));
+        }
+
+        protected void BaseStationDatabase_GetAircraftByCode_Returns_Null_If_Aircraft_Does_Not_Exist()
+        {
+            Assert.IsNull(_Database.GetAircraftByCode("ABC123"));
+        }
+
+        protected void BaseStationDatabase_GetAircraftByCode_Returns_Null_If_File_Not_Configured()
+        {
+            _Database.FileName = null;
+            Assert.IsNull(_Database.GetAircraftByCode("ABC123"));
+        }
+
+        protected void BaseStationDatabase_GetAircraftByCode_Returns_Aircraft_Object_For_ICAO24_Code()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var mockAircraft = LoadAircraftFromSpreadsheet(worksheet);
+
+            var id = AddAircraft(mockAircraft);
+
+            var aircraft = _Database.GetAircraftByCode(mockAircraft.ModeS);
+            Assert.AreNotSame(aircraft, mockAircraft);
+
+            AssertAircraftAreEqual(mockAircraft, aircraft, id);
+        }
+        #endregion
+
+        #region GetManyAircraftByCode
+        protected void BaseStationDatatbase_GetManyAircraftByCode_Returns_Empty_Collection_If_Passed_Null()
+        {
+            Assert.AreEqual(0, _Database.GetManyAircraftByCode(null).Count);
+        }
+
+        protected void BaseStationDatabase_GetManyAircraftByCode_Returns_Empty_Collection_If_Aircraft_Does_Not_Exist()
+        {
+            Assert.AreEqual(0, _Database.GetManyAircraftByCode(new string[] { "ABC123" }).Count);
+        }
+
+        protected void BaseStationDatabase_GetManyAircraftByCode_Returns_Aircraft_Object_For_ICAO24_Code()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var mockAircraft = LoadAircraftFromSpreadsheet(worksheet);
+
+            var id = AddAircraft(mockAircraft);
+
+            var manyAircraft = _Database.GetManyAircraftByCode(new string[] { mockAircraft.ModeS });
+            Assert.AreEqual(1, manyAircraft.Count);
+
+            var aircraft = manyAircraft.First().Value;
+            Assert.AreNotSame(aircraft, mockAircraft);
+
+            AssertAircraftAreEqual(mockAircraft, aircraft, id);
+        }
+
+        protected void BaseStationDatabase_GetManyAircraftByCode_Can_Return_More_Than_One_Aircraft()
+        {
+            var flight1 = CreateFlight("ABC123", setRegistration: true);
+            var flight2 = CreateFlight("EFG456", setRegistration: true);
+            var flight3 = CreateFlight("XYZ789", setRegistration: true);
+
+            AddFlight(flight1);
+            AddFlight(flight2);
+            AddFlight(flight3);
+
+            var firstAndLast = _Database.GetManyAircraftByCode(new string[] { "ABC123", "XYZ789" });
+
+            Assert.AreEqual(2, firstAndLast.Count);
+            Assert.IsTrue(firstAndLast.Where(r => r.Value.Registration == "ABC123").Any());
+            Assert.IsTrue(firstAndLast.Where(r => r.Value.Registration == "XYZ789").Any());
+        }
+
+        protected void BaseStationDatabase_GetManyAircraftByCode_Transparently_Handles_Call_Splitting_When_Number_Of_Icaos_Exceeds_MaxParameters()
+        {
+            var flight1 = CreateFlight("ABC123", setRegistration: true);
+            var flight2 = CreateFlight("XYZ789", setRegistration: true);
+
+            AddAircraft(flight1.Aircraft);
+            AddAircraft(flight2.Aircraft);
+
+            AddFlight(flight1);
+            AddFlight(flight2);
+
+            var icaos = new string[_Database.MaxParameters + 1];
+            for(var i = 0;i < icaos.Length;++i) {
+                icaos[i] = "";
+            }
+            icaos[0] = "ABC123";
+            icaos[icaos.Length - 1] = "XYZ789";
+
+            var allAircraft = _Database.GetManyAircraftByCode(icaos);
+
+            Assert.AreEqual(2, allAircraft.Count);
+            Assert.IsNotNull(allAircraft["ABC123"]);
+            Assert.IsNotNull(allAircraft["XYZ789"]);
+        }
+        #endregion
+
+        #region GetManyAircraftAndFlightsCountByCode
+        protected void BaseStationDatatbase_GetManyAircraftAndFlightsCountByCode_Returns_Empty_Collection_If_Passed_Null()
+        {
+            Assert.AreEqual(0, _Database.GetManyAircraftAndFlightsCountByCode(null).Count);
+        }
+
+        protected void BaseStationDatabase_GetManyAircraftAndFlightsCountByCode_Returns_Empty_Collection_If_Aircraft_Does_Not_Exist()
+        {
+            Assert.AreEqual(0, _Database.GetManyAircraftAndFlightsCountByCode(new string[] { "ABC123" }).Count);
+        }
+
+        [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
+                    "GetAircraftBy$")]
+        protected void BaseStationDatabase_GetManyAircraftAndFlightsCountByCode_Returns_Aircraft_Object_For_ICAO24_Code()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var mockAircraft = LoadAircraftFromSpreadsheet(worksheet);
+
+            var id = AddAircraft(mockAircraft);
+
+            var manyAircraft = _Database.GetManyAircraftAndFlightsCountByCode(new string[] { mockAircraft.ModeS });
+            Assert.AreEqual(1, manyAircraft.Count);
+
+            var aircraft = manyAircraft.First().Value;
+            Assert.AreNotSame(aircraft, mockAircraft);
+
+            AssertAircraftAreEqual(mockAircraft, aircraft, id);
+        }
+
+        protected void BaseStationDatabase_GetManyAircraftAndFlightsCountByCode_Can_Return_More_Than_One_Aircraft()
+        {
+            var flight1 = CreateFlight("ABC123", setRegistration: true);
+            var flight2 = CreateFlight("EFG456", setRegistration: true);
+            var flight3 = CreateFlight("XYZ789", setRegistration: true);
+
+            AddAircraft(flight1.Aircraft);
+            AddAircraft(flight2.Aircraft);
+            AddAircraft(flight3.Aircraft);
+
+            AddFlight(flight1);
+            AddFlight(flight2);
+            AddFlight(flight3);
+
+            var firstAndLast = _Database.GetManyAircraftAndFlightsCountByCode(new string[] { "ABC123", "XYZ789" });
+
+            Assert.AreEqual(2, firstAndLast.Count);
+            Assert.IsTrue(firstAndLast.Where(r => r.Value.Registration == "ABC123").Any());
+            Assert.IsTrue(firstAndLast.Where(r => r.Value.Registration == "XYZ789").Any());
+        }
+
+        protected void BaseStationDatabase_GetManyAircraftAndFlightsCountByCode_Returns_Counts_Of_Flights()
+        {
+            var flight1 = CreateFlight("ABC123", setRegistration: true);
+            flight1.AircraftID = (int)AddAircraft(flight1.Aircraft);
+            var flight2 = CreateFlight(flight1.Aircraft, "XYZ999");
+
+            AddFlight(flight1);
+            AddFlight(flight2);
+
+            var allAircraft = _Database.GetManyAircraftAndFlightsCountByCode(new string[] { "ABC123" });
+
+            Assert.AreEqual(1, allAircraft.Count);
+            Assert.AreEqual(2, allAircraft.First().Value.FlightsCount);
+        }
+
+        protected void BaseStationDatabase_GetManyAircraftAndFlightsCountByCode_Transparently_Handles_Call_Splitting_When_Number_Of_Icaos_Exceeds_MaxParameters()
+        {
+            var flight1 = CreateFlight("ABC123", setRegistration: true);
+            var flight2 = CreateFlight("XYZ789", setRegistration: true);
+
+            AddAircraft(flight1.Aircraft);
+            AddAircraft(flight2.Aircraft);
+
+            AddFlight(flight1);
+            AddFlight(flight2);
+
+            var icaos = new string[_Database.MaxParameters + 1];
+            icaos[0] = "ABC123";
+            icaos[icaos.Length - 1] = "XYZ789";
+
+            var allAircraft = _Database.GetManyAircraftAndFlightsCountByCode(icaos);
+
+            Assert.AreEqual(2, allAircraft.Count);
+            Assert.IsNotNull(allAircraft["ABC123"]);
+            Assert.IsNotNull(allAircraft["XYZ789"]);
+        }
+        #endregion
+
+        #region GetAircraftById
+        protected void BaseStationDatabase_GetAircraftById_Returns_Null_If_Aircraft_Does_Not_Exist()
+        {
+            Assert.IsNull(_Database.GetAircraftById(1));
+        }
+
+        protected void BaseStationDatabase_GetAircraftById_Returns_Aircraft_Object_For_Record_Identifier()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var mockAircraft = LoadAircraftFromSpreadsheet(worksheet);
+
+            var id = (int)AddAircraft(mockAircraft);
+
+            var aircraft = _Database.GetAircraftById(id);
+            Assert.AreNotSame(aircraft, mockAircraft);
+
+            AssertAircraftAreEqual(mockAircraft, aircraft, id);
+        }
+        #endregion
+
+        #region InsertAircraft
+        protected void BaseStationDatabase_InsertAircraft_Throws_If_Writes_Disabled()
+        {
+            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456" });
+        }
+
+        protected void BaseStationDatabase_InsertAircraft_Correctly_Inserts_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var aircraft = LoadAircraftFromSpreadsheet(worksheet);
+
+            _Database.InsertAircraft(aircraft);
+            Assert.AreNotEqual(0, aircraft.AircraftID);
+
+            var readBack = _Database.GetAircraftById(aircraft.AircraftID);
+            AssertAircraftAreEqual(aircraft, readBack);
+        }
+
+        protected void BaseStationDatabase_InsertAircraft_Works_For_Different_Cultures()
+        {
+            foreach(var culture in _Cultures) {
+                using(var switcher = new CultureSwitcher(culture)) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    try {
+                        BaseStationDatabase_InsertAircraft_Correctly_Inserts_Record();
+                    } catch(Exception ex) {
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region GetOrInsertAircraftByCode
+        protected void BaseStationDatabase_GetOrInsertAircraftByCode_Throws_If_Writes_Disabled()
+        {
+            _Database.GetOrInsertAircraftByCode("123456", out var created);
+        }
+
+        protected void BaseStationDatabase_GetOrInsertAircraftByCode_Returns_Record_If_It_Exists()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456" });
+
+            var result = _Database.GetOrInsertAircraftByCode("123456", out var created);
+
+            Assert.AreNotEqual(0, result.AircraftID);
+            Assert.AreEqual("123456", result.ModeS);
+            Assert.AreEqual(false, created);
+        }
+
+        protected void BaseStationDatabase_GetOrInsertAircraftByCode_Correctly_Inserts_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var aircraft = _Database.GetOrInsertAircraftByCode("Abc123", out bool created);
+            Assert.AreNotEqual(0, aircraft.AircraftID);
+
+            var readBack = _Database.GetAircraftById(aircraft.AircraftID);
+            AssertAircraftAreEqual(new BaseStationAircraft() {
+                AircraftID =    aircraft.AircraftID,
+                FirstCreated =  TruncateDate(_Clock.LocalNowValue),
+                LastModified =  TruncateDate(_Clock.LocalNowValue),
+                ModeS =         "Abc123",
+                ModeSCountry =  "United Kingdom",
+            }, readBack);
+            Assert.AreEqual(true, created);
+        }
+
+        protected void BaseStationDatabase_GetOrInsertAircraftByCode_Looks_Up_ModeSCountry()
+        {
+            _Icao24CodeBlock.Country = "USA";
+
+            _Database.WriteSupportEnabled = true;
+
+            var aircraft = _Database.GetOrInsertAircraftByCode("abc123", out bool created);
+            Assert.AreEqual("USA", aircraft.ModeSCountry);
+        }
+
+        protected void BaseStationDatabase_GetOrInsertAircraftByCode_Deals_With_Null_CodeBlock()
+        {
+            _StandingDataManager.Setup(r => r.FindCodeBlock("abc123")).Returns((CodeBlock)null);
+
+            _Database.WriteSupportEnabled = true;
+
+            var aircraft = _Database.GetOrInsertAircraftByCode("abc123", out bool created);
+            Assert.IsNull(aircraft.ModeSCountry);
+        }
+
+        protected void BaseStationDatabase_GetOrInsertAircraftByCode_Deals_With_Null_Country()
+        {
+            _Icao24CodeBlock.Country = null;
+
+            _Database.WriteSupportEnabled = true;
+            var aircraft = _Database.GetOrInsertAircraftByCode("abc123", out bool created);
+            Assert.IsNull(aircraft.ModeSCountry);
+        }
+
+        protected void BaseStationDatabase_GetOrInsertAircraftByCode_Deals_With_Unknown_Country()
+        {
+            _Icao24CodeBlock.Country = "Unknown Country";
+
+            _Database.WriteSupportEnabled = true;
+            var aircraft = _Database.GetOrInsertAircraftByCode("abc123", out bool created);
+            Assert.IsNull(aircraft.ModeSCountry);
+        }
+
+        protected void BaseStationDatabase_GetOrInsertAircraftByCode_Truncates_Milliseconds_From_Date()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var time = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+            _Clock.LocalNowValue = time;
+
+            _Database.GetOrInsertAircraftByCode("X", out var created);
+            var readBack = _Database.GetAircraftByCode("X");
+            Assert.AreEqual(TruncateDate(time), readBack.FirstCreated);
+            Assert.AreEqual(TruncateDate(time), readBack.LastModified);
+        }
+        #endregion
+
+        #region UpdateAircraft
+        protected void BaseStationDatabase_UpdateAircraft_Throws_If_Writes_Disabled()
+        {
+            var aircraft = new BaseStationAircraft() { ModeS = "X" };
+            aircraft.AircraftID = (int)AddAircraft(aircraft);
+
+            aircraft.Registration = "C";
+            _Database.UpdateAircraft(aircraft);
+        }
+
+        protected void BaseStationDatabase_UpdateAircraft_Raises_AircraftUpdated()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var aircraft = new BaseStationAircraft() { ModeS = "X" };
+
+            _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
+            _AircraftUpdatedEvent.EventRaised += (sender, args) => {
+                Assert.AreSame(aircraft, args.Value);
+            };
+
+            _Database.InsertAircraft(aircraft);
+            Assert.AreEqual(0, _AircraftUpdatedEvent.CallCount);
+
+            _Database.UpdateAircraft(aircraft);
+            Assert.AreEqual(1, _AircraftUpdatedEvent.CallCount);
+            Assert.AreSame(_Database, _AircraftUpdatedEvent.Sender);
+        }
+
+        protected void BaseStationDatabase_UpdateAircraft_Correctly_Updates_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+            var worksheet = new ExcelWorksheetData(TestContext);
+
+            var id = (int)AddAircraft(new BaseStationAircraft() { ModeS = "ZZZZZZ" });
+
+            var update = _Database.GetAircraftById(id);
+            LoadAircraftFromSpreadsheet(worksheet, 0, update);
+
+            _Database.UpdateAircraft(update);
+
+            var readBack = _Database.GetAircraftById(id);
+            AssertAircraftAreEqual(update, readBack, id);
+        }
+
+        protected void BaseStationDatabase_UpdateAircraft_Works_For_Different_Cultures()
+        {
+            foreach(var culture in _Cultures) {
+                using(var switcher = new CultureSwitcher(culture)) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    try {
+                        BaseStationDatabase_UpdateAircraft_Correctly_Updates_Record();
+                    } catch(Exception ex) {
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region UpdateAircraftModeSCountry
+        protected void BaseStationDatabase_UpdateAircraftModeSCountry_Throws_If_Writes_Disabled()
+        {
+            var aircraft = new BaseStationAircraft() { ModeS = "X" };
+            aircraft.AircraftID = (int)AddAircraft(aircraft);
+
+            aircraft.Registration = "C";
+            _Database.UpdateAircraftModeSCountry(aircraft.AircraftID, "X");
+        }
+
+        protected void BaseStationDatabase_UpdateAircraftModeSCountry_Updates_ModeSCountry_For_Existing_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+            var worksheet = new ExcelWorksheetData(TestContext);
+
+            var id = (int)AddAircraft(new BaseStationAircraft() { ModeS = "ZZZZZZ" });
+
+            var update = _Database.GetAircraftById(id);
+            LoadAircraftFromSpreadsheet(worksheet, 0, update);
+
+            _Database.UpdateAircraft(update);
+
+            update.ModeSCountry = "Updated Mode-S Country";
+            _Database.UpdateAircraftModeSCountry(update.AircraftID, update.ModeSCountry);
+
+            var readBack = _Database.GetAircraftById(id);
+            AssertAircraftAreEqual(update, readBack, id);
+
+            update.ModeSCountry = null;
+            _Database.UpdateAircraftModeSCountry(update.AircraftID, update.ModeSCountry);
+
+            readBack = _Database.GetAircraftById(id);
+            AssertAircraftAreEqual(update, readBack, id);
+        }
+        #endregion
+
+        #region RecordMissingAircraft
+        protected void BaseStationDatabase_RecordMissingAircraft_Throws_Exception_If_Writes_Not_Enabled()
+        {
+            _Database.RecordMissingAircraft("123456");
+        }
+
+        protected void BaseStationDatabase_RecordMissingAircraft_Creates_Almost_Empty_Aircraft_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            _Database.RecordMissingAircraft("123456");
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNotNull(aircraft);
+            Assert.AreEqual("123456", aircraft.ModeS);
+            Assert.AreEqual("Missing", aircraft.UserString1);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
+            Assert.IsNull(aircraft.Registration);
+            Assert.IsNull(aircraft.Manufacturer);
+            Assert.IsNull(aircraft.Type);
+            Assert.IsNull(aircraft.RegisteredOwners);
+        }
+
+        protected void BaseStationDatabase_RecordMissingAircraft_Updates_Existing_Empty_Records()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.RecordMissingAircraft("123456");
+
+            var createdDate = _Clock.LocalNowValue;
+            _Clock.AddMilliseconds(60000);
+            _Database.RecordMissingAircraft("123456");
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.AreEqual(TruncateDate(createdDate),          aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
+        }
+
+        protected void BaseStationDatabase_RecordMissingAircraft_Updates_Existing_Empty_Records_With_Wrong_UserString1()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456", FirstCreated = _Clock.LocalNowValue, LastModified = _Clock.LocalNowValue, });
+
+            var createdDate = _Clock.LocalNowValue;
+            _Clock.AddMilliseconds(60000);
+            _Database.RecordMissingAircraft("123456");
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.AreEqual("Missing",                          aircraft.UserString1);
+            Assert.AreEqual(TruncateDate(createdDate),          aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
+        }
+
+        protected void BaseStationDatabase_RecordMissingAircraft_Only_Updates_Time_On_Existing_Records_With_Values()
+        {
+            foreach(var property in new String[] { "Registration", "Manufacturer", "Model", "Operator" }) {
+                RunTestCleanup();
+                RunTestInitialise();
+
+                _Database.WriteSupportEnabled = true;
+                var aircraft = new BaseStationAircraft() { ModeS = "123456", UserString1 = "something", FirstCreated = _Clock.LocalNowValue, LastModified = _Clock.LocalNowValue, };
+                switch(property) {
+                    case "Registration":    aircraft.Registration = "A"; break;
+                    case "Manufacturer":    aircraft.Manufacturer = "A"; break;
+                    case "Model":           aircraft.Type = "A"; break;
+                    case "Operator":        aircraft.RegisteredOwners = "A"; break;
+                    default:                throw new NotImplementedException();
+                }
+                _Database.InsertAircraft(aircraft);
+
+                var createdDate = _Clock.LocalNowValue;
+                _Clock.AddMilliseconds(60000);
+                _Database.RecordMissingAircraft("123456");
+
+                aircraft = _Database.GetAircraftByCode("123456");
+                Assert.AreEqual("something",                        aircraft.UserString1);
+                Assert.AreEqual(TruncateDate(createdDate),          aircraft.FirstCreated);
+                Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
+            }
+        }
+        #endregion
+
+        #region RecordManyMissingAircraft
+        protected void BaseStationDatabase_RecordManyMissingAircraft_Throws_Exception_If_Writes_Not_Enabled()
+        {
+            _Database.RecordManyMissingAircraft(new string[] { "A", "B" });
+        }
+
+        protected void BaseStationDatabase_RecordManyMissingAircraft_Creates_Almost_Empty_Aircraft_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            _Database.RecordManyMissingAircraft(new string[] { "A", "B" });
+
+            var aircraft = _Database.GetAircraftByCode("A");
+            Assert.IsNotNull(aircraft);
+            Assert.AreEqual("A",                                aircraft.ModeS);
+            Assert.AreEqual("Missing",                          aircraft.UserString1);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
+
+            aircraft = _Database.GetAircraftByCode("B");
+            Assert.IsNotNull(aircraft);
+            Assert.AreEqual("B",                                aircraft.ModeS);
+            Assert.AreEqual("Missing",                          aircraft.UserString1);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
+        }
+
+        protected void BaseStationDatabase_RecordManyMissingAircraft_Updates_Existing_Empty_Records()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.RecordManyMissingAircraft(new string[] { "123456" });
+
+            var createdDate = _Clock.LocalNowValue;
+            _Clock.AddMilliseconds(60000);
+            _Database.RecordManyMissingAircraft(new string[] { "123456" });
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.AreEqual(TruncateDate(createdDate),          aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
+        }
+
+        protected void BaseStationDatabase_RecordManyMissingAircraft_Only_Updates_LastModified_Time_On_Existing_Records_With_Registrations()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456", Registration = "A", FirstCreated = _Clock.LocalNowValue, LastModified = _Clock.LocalNowValue });
+
+            var createdDate = _Clock.LocalNowValue;
+            _Clock.AddMilliseconds(60000);
+            _Database.RecordManyMissingAircraft(new string[] { "123456" });
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.AreEqual("A",                                aircraft.Registration);
+            Assert.AreEqual(TruncateDate(createdDate),          aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(_Clock.LocalNowValue), aircraft.LastModified);
+        }
+        #endregion
+
+        #region UpsertAircraftLookup
+        protected void BaseStationDatabase_UpsertAircraftLookup_Throws_Exception_If_Writes_Not_Enabled()
+        {
+            _Database.UpsertAircraftLookup(new BaseStationAircraftUpsertLookup() { ModeS = "123456", }, false);
+        }
+
+        protected void BaseStationDatabase_UpsertAircraftLookup_Inserts_New_Lookups()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+            _Database.UpsertAircraftLookup(new BaseStationAircraftUpsertLookup() {
+                ModeS =             "123456",
+                Country =           "UK",
+                ICAOTypeCode =      "A380",
+                LastModified =      now,
+                Manufacturer =      "Airbus",
+                ModeSCountry =      "France",
+                OperatorFlagCode =  "TWA",
+                RegisteredOwners =  "Transworld",
+                Registration =      "G-ABCD",
+                SerialNo =          "9182",
+                Type =              "Big Plane",
+                YearBuilt =         "1992",
+            }, false);
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNotNull(aircraft);
+
+            Assert.AreEqual("123456",           aircraft.ModeS);
+            Assert.AreEqual("UK",               aircraft.Country);
+            Assert.AreEqual("A380",             aircraft.ICAOTypeCode);
+            Assert.AreEqual(TruncateDate(now),  aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(now),  aircraft.LastModified);
+            Assert.AreEqual("Airbus",           aircraft.Manufacturer);
+            Assert.AreEqual("France",           aircraft.ModeSCountry);
+            Assert.AreEqual("TWA",              aircraft.OperatorFlagCode);
+            Assert.AreEqual("Transworld",       aircraft.RegisteredOwners);
+            Assert.AreEqual("G-ABCD",           aircraft.Registration);
+            Assert.AreEqual("9182",             aircraft.SerialNo);
+            Assert.AreEqual("Big Plane",        aircraft.Type);
+            Assert.AreEqual("1992",             aircraft.YearBuilt);
+        }
+
+        protected void BaseStationDatabase_UpsertAircraftLookup_Updates_Existing_Aircraft()
+        {
+            var createdDate = new DateTime(1999, 8, 7, 6, 5, 4, 321);
+            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() {
+                ModeS =         "123456",
+                Registration =  "N12345",
+                FirstCreated =  createdDate,
+                LastModified =  createdDate,
+            });
+
+            _Database.UpsertAircraftLookup(new BaseStationAircraftUpsertLookup() {
+                ModeS =             "123456",
+                Country =           "Germany",
+                ICAOTypeCode =      "B747",
+                LastModified =      now,
+                Manufacturer =      "Boeing",
+                ModeSCountry =      "USA",
+                OperatorFlagCode =  "BAW",
+                RegisteredOwners =  "British Airways",
+                Registration =      "D-WXYZ",
+                SerialNo =          "00119",
+                Type =              "Big Jobs",
+                YearBuilt =         "1979",
+            }, false);
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNotNull(aircraft);
+
+            Assert.AreEqual("123456",                   aircraft.ModeS);
+            Assert.AreEqual("Germany",                  aircraft.Country);
+            Assert.AreEqual("B747",                     aircraft.ICAOTypeCode);
+            Assert.AreEqual(TruncateDate(createdDate),  aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(now),          aircraft.LastModified);
+            Assert.AreEqual("Boeing",                   aircraft.Manufacturer);
+            Assert.AreEqual("USA",                      aircraft.ModeSCountry);
+            Assert.AreEqual("BAW",                      aircraft.OperatorFlagCode);
+            Assert.AreEqual("British Airways",          aircraft.RegisteredOwners);
+            Assert.AreEqual("D-WXYZ",                   aircraft.Registration);
+            Assert.AreEqual("00119",                    aircraft.SerialNo);
+            Assert.AreEqual("Big Jobs",                 aircraft.Type);
+            Assert.AreEqual("1979",                     aircraft.YearBuilt);
+        }
+
+        protected void BaseStationDatabase_UpsertAircraftLookup_Can_Ignore_Existing_Aircraft_When_Required()
+        {
+            var createdDate = new DateTime(1999, 8, 7, 6, 5, 4, 321);
+            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() {
+                ModeS =             "123456",
+                Registration =      "G-ABCD",
+                FirstCreated =      createdDate,
+                LastModified =      createdDate,
+            });
+
+            _Database.UpsertAircraftLookup(new BaseStationAircraftUpsertLookup() {
+                ModeS =             "123456",
+                Country =           "Germany",
+                ICAOTypeCode =      "B747",
+                LastModified =      now,
+                Manufacturer =      "Boeing",
+                ModeSCountry =      "USA",
+                OperatorFlagCode =  "BAW",
+                RegisteredOwners =  "British Airways",
+                Registration =      "D-WXYZ",
+                SerialNo =          "00119",
+                Type =              "Big Jobs",
+                YearBuilt =         "1979",
+            }, onlyUpdateIfMarkedAsMissing: true);
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNotNull(aircraft);
+
+            Assert.AreEqual("123456",                   aircraft.ModeS);
+            Assert.IsNull(                              aircraft.Country);
+            Assert.IsNull(                              aircraft.ICAOTypeCode);
+            Assert.AreEqual(TruncateDate(createdDate),  aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(createdDate),  aircraft.LastModified);
+            Assert.IsNull(                              aircraft.Manufacturer);
+            Assert.IsNull(                              aircraft.ModeSCountry);
+            Assert.IsNull(                              aircraft.OperatorFlagCode);
+            Assert.IsNull(                              aircraft.RegisteredOwners);
+            Assert.AreEqual("G-ABCD",                   aircraft.Registration);
+            Assert.IsNull(                              aircraft.SerialNo);
+            Assert.IsNull(                              aircraft.Type);
+            Assert.IsNull(                              aircraft.YearBuilt);
+        }
+
+        protected void BaseStationDatabase_UpsertAircraftLookup_Will_Overwrite_Missing_Aircraft_When_Required()
+        {
+            var createdDate = new DateTime(1999, 8, 7, 6, 5, 4, 321);
+            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() {
+                ModeS =             "123456",
+                UserString1 =       "Missing",
+            });
+
+            _Database.UpsertAircraftLookup(new BaseStationAircraftUpsertLookup() {
+                ModeS =             "123456",
+                Registration =      "D-WXYZ",
+            }, onlyUpdateIfMarkedAsMissing: true);
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNotNull(aircraft);
+
+            Assert.AreEqual("123456", aircraft.ModeS);
+            Assert.AreEqual("D-WXYZ", aircraft.Registration);
+        }
+
+        protected void BaseStationDatabase_UpsertAircraftLookup_Will_Not_Consider_Aircraft_Missing_If_They_Have_Registration()
+        {
+            var createdDate = new DateTime(1999, 8, 7, 6, 5, 4, 321);
+            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() {
+                ModeS =             "123456",
+                Registration =      "G-ABCD",
+                UserString1 =       "Missing",
+            });
+
+            _Database.UpsertAircraftLookup(new BaseStationAircraftUpsertLookup() {
+                ModeS =             "123456",
+                Registration =      "D-WXYZ",
+            }, onlyUpdateIfMarkedAsMissing: true);
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNotNull(aircraft);
+
+            Assert.AreEqual("123456", aircraft.ModeS);
+            Assert.AreEqual("G-ABCD", aircraft.Registration);
+        }
+
+        protected void BaseStationDatabase_UpsertAircraftLookup_Raises_AircraftUpdated_On_Update()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456", Registration = "ABC" });
+            _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
+
+            _Database.UpsertAircraftLookup(new BaseStationAircraftUpsertLookup() { ModeS = "123456", Registration = "XYZ", }, false);
+
+            Assert.AreEqual(1, _AircraftUpdatedEvent.CallCount);
+            Assert.AreEqual("123456", _AircraftUpdatedEvent.Args.Value.ModeS);
+            Assert.AreEqual("XYZ", _AircraftUpdatedEvent.Args.Value.Registration);
+        }
+
+        protected void BaseStationDatabase_UpsertAircraftLookup_Does_Not_Raise_AircraftUpdated_On_Insert()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
+
+            _Database.UpsertAircraftLookup(new BaseStationAircraftUpsertLookup() { ModeS = "123456", Registration = "XYZ", }, false);
+
+            Assert.AreEqual(0, _AircraftUpdatedEvent.CallCount);
+        }
+        #endregion
+
+        #region UpsertManyAircraft
+        protected void BaseStationDatabase_UpsertManyAircraft_LookupVersion_Throws_Exception_If_Writes_Not_Enabled()
+        {
+            _Database.UpsertManyAircraftLookup(new BaseStationAircraftUpsertLookup[] {
+                new BaseStationAircraftUpsertLookup() { ModeS = "A" },
+            }, false);
+        }
+
+        protected void BaseStationDatabase_UpsertManyAircraft_FullVersion_Throws_Exception_If_Writes_Not_Enabled()
+        {
+            _Database.UpsertManyAircraft(new BaseStationAircraftUpsert[] {
+                new BaseStationAircraftUpsert() { ModeS = "A" },
+            });
+        }
+
+        protected void BaseStationDatabase_UpsertManyAircraft_Inserts_New_Lookups()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+            _Database.UpsertManyAircraftLookup(new BaseStationAircraftUpsertLookup[] {
+                new BaseStationAircraftUpsertLookup() {
+                    ModeS =             "123456",
+                    Country =           "UK",
+                    ICAOTypeCode =      "A380",
+                    LastModified =      now,
+                    Manufacturer =      "Airbus",
+                    ModeSCountry =      "France",
+                    OperatorFlagCode =  "TWA",
+                    RegisteredOwners =  "Transworld",
+                    Registration =      "G-ABCD",
+                    SerialNo =          "9182",
+                    Type =              "Big Plane",
+                    YearBuilt =         "1992",
+                },
+                new BaseStationAircraftUpsertLookup() {
+                    ModeS =             "789ABC",
+                    Country =           "Germany",
+                    ICAOTypeCode =      "B747",
+                    LastModified =      now,
+                    Manufacturer =      "Boeing",
+                    ModeSCountry =      "USA",
+                    OperatorFlagCode =  "BAW",
+                    RegisteredOwners =  "British Airways",
+                    Registration =      "D-WXYZ",
+                    SerialNo =          "00119",
+                    Type =              "Big Jobs",
+                    YearBuilt =         "1979",
+                },
+            }, false);
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNotNull(aircraft);
+            Assert.AreEqual("123456",           aircraft.ModeS);
+            Assert.AreEqual("UK",               aircraft.Country);
+            Assert.AreEqual("A380",             aircraft.ICAOTypeCode);
+            Assert.AreEqual(TruncateDate(now),  aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(now),  aircraft.LastModified);
+            Assert.AreEqual("Airbus",           aircraft.Manufacturer);
+            Assert.AreEqual("France",           aircraft.ModeSCountry);
+            Assert.AreEqual("TWA",              aircraft.OperatorFlagCode);
+            Assert.AreEqual("Transworld",       aircraft.RegisteredOwners);
+            Assert.AreEqual("G-ABCD",           aircraft.Registration);
+            Assert.AreEqual("9182",             aircraft.SerialNo);
+            Assert.AreEqual("Big Plane",        aircraft.Type);
+            Assert.AreEqual("1992",             aircraft.YearBuilt);
+
+            aircraft = _Database.GetAircraftByCode("789ABC");
+            Assert.IsNotNull(aircraft);
+            Assert.AreEqual("789ABC",           aircraft.ModeS);
+            Assert.AreEqual("Germany",          aircraft.Country);
+            Assert.AreEqual("B747",             aircraft.ICAOTypeCode);
+            Assert.AreEqual(TruncateDate(now),  aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(now),  aircraft.LastModified);
+            Assert.AreEqual("Boeing",           aircraft.Manufacturer);
+            Assert.AreEqual("USA",              aircraft.ModeSCountry);
+            Assert.AreEqual("BAW",              aircraft.OperatorFlagCode);
+            Assert.AreEqual("British Airways",  aircraft.RegisteredOwners);
+            Assert.AreEqual("D-WXYZ",           aircraft.Registration);
+            Assert.AreEqual("00119",            aircraft.SerialNo);
+            Assert.AreEqual("Big Jobs",         aircraft.Type);
+            Assert.AreEqual("1979",             aircraft.YearBuilt);
+        }
+
+        protected void BaseStationDatabase_UpsertManyAircraft_Inserts_New_Aircraft()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+            _Database.UpsertManyAircraft(new BaseStationAircraftUpsert[] {
+                new BaseStationAircraftUpsert() {
+                    ModeS =             "123456",
+                    Country =           "UK",
+                    FirstCreated =      now,
+                    YearBuilt =         "1992",
+                    UserString4 =       "Esoteric"
+                },
+                new BaseStationAircraftUpsert() {
+                    ModeS =             "789ABC",
+                    LastModified =      now,
+                    Manufacturer =      "Boeing",
+                    UserBool2 =         true,
+                },
+            });
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNotNull(aircraft);
+            Assert.AreEqual("123456",           aircraft.ModeS);
+            Assert.AreEqual("UK",               aircraft.Country);
+            Assert.AreEqual(TruncateDate(now),  aircraft.FirstCreated);
+            Assert.AreEqual("1992",             aircraft.YearBuilt);
+            Assert.AreEqual("Esoteric",         aircraft.UserString4);
+
+            aircraft = _Database.GetAircraftByCode("789ABC");
+            Assert.IsNotNull(aircraft);
+            Assert.AreEqual("789ABC",           aircraft.ModeS);
+            Assert.AreEqual(TruncateDate(now),  aircraft.LastModified);
+            Assert.AreEqual("Boeing",           aircraft.Manufacturer);
+            Assert.AreEqual(true,               aircraft.UserBool2);
+        }
+
+        protected void BaseStationDatabase_UpsertManyAircraft_Updates_Existing_Lookups()
+        {
+            var createdDate = new DateTime(1999, 8, 7, 6, 5, 4, 321);
+            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() {
+                ModeS =         "123456",
+                Registration =  "N12345",
+                FirstCreated =  createdDate,
+                LastModified =  createdDate,
+            });
+
+            _Database.UpsertManyAircraftLookup(new BaseStationAircraftUpsertLookup[] {
+                new BaseStationAircraftUpsertLookup() {
+                    ModeS =             "123456",
+                    Country =           "Germany",
+                    ICAOTypeCode =      "B747",
+                    LastModified =      now,
+                    Manufacturer =      "Boeing",
+                    ModeSCountry =      "USA",
+                    OperatorFlagCode =  "BAW",
+                    RegisteredOwners =  "British Airways",
+                    Registration =      "D-WXYZ",
+                    SerialNo =          "00119",
+                    Type =              "Big Jobs",
+                    YearBuilt =         "1979",
+                },
+            }, false);
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNotNull(aircraft);
+
+            Assert.AreEqual("123456",                   aircraft.ModeS);
+            Assert.AreEqual("Germany",                  aircraft.Country);
+            Assert.AreEqual("B747",                     aircraft.ICAOTypeCode);
+            Assert.AreEqual(TruncateDate(createdDate),  aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(now),          aircraft.LastModified);
+            Assert.AreEqual("Boeing",                   aircraft.Manufacturer);
+            Assert.AreEqual("USA",                      aircraft.ModeSCountry);
+            Assert.AreEqual("BAW",                      aircraft.OperatorFlagCode);
+            Assert.AreEqual("British Airways",          aircraft.RegisteredOwners);
+            Assert.AreEqual("D-WXYZ",                   aircraft.Registration);
+            Assert.AreEqual("00119",                    aircraft.SerialNo);
+            Assert.AreEqual("Big Jobs",                 aircraft.Type);
+            Assert.AreEqual("1979",                     aircraft.YearBuilt);
+        }
+
+        protected void BaseStationDatabase_UpsertManyAircraft_Updates_Existing_Aircraft()
+        {
+            var createdDate = new DateTime(1999, 8, 7, 6, 5, 4, 321);
+            var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() {
+                ModeS =         "123456",
+                Registration =  "N12345",
+                FirstCreated =  createdDate,
+                LastModified =  createdDate,
+            });
+
+            _Database.UpsertManyAircraft(new BaseStationAircraftUpsert[] {
+                new BaseStationAircraft() {
+                    ModeS =             "123456",
+                    Country =           "Germany",
+                    ICAOTypeCode =      "B747",
+                    FirstCreated =      now,
+                    LastModified =      createdDate,
+                    Manufacturer =      "Boeing",
+                    ModeSCountry =      "USA",
+                    OperatorFlagCode =  "BAW",
+                    RegisteredOwners =  "British Airways",
+                    Registration =      "D-WXYZ",
+                    SerialNo =          "00119",
+                    Type =              "Big Jobs",
+                    YearBuilt =         "1979",
+                    UserBool4 =         true,
+                },
+            });
+
+            var aircraft = _Database.GetAircraftByCode("123456");
+            Assert.IsNotNull(aircraft);
+
+            Assert.AreEqual("123456",                   aircraft.ModeS);
+            Assert.AreEqual("Germany",                  aircraft.Country);
+            Assert.AreEqual("B747",                     aircraft.ICAOTypeCode);
+            Assert.AreEqual(TruncateDate(now),          aircraft.FirstCreated);
+            Assert.AreEqual(TruncateDate(createdDate),  aircraft.LastModified);
+            Assert.AreEqual("Boeing",                   aircraft.Manufacturer);
+            Assert.AreEqual("USA",                      aircraft.ModeSCountry);
+            Assert.AreEqual("BAW",                      aircraft.OperatorFlagCode);
+            Assert.AreEqual("British Airways",          aircraft.RegisteredOwners);
+            Assert.AreEqual("D-WXYZ",                   aircraft.Registration);
+            Assert.AreEqual("00119",                    aircraft.SerialNo);
+            Assert.AreEqual("Big Jobs",                 aircraft.Type);
+            Assert.AreEqual("1979",                     aircraft.YearBuilt);
+            Assert.AreEqual(true,                       aircraft.UserBool4);
+        }
+
+        protected void BaseStationDatabase_UpsertManyAircraft_Raises_AircraftUpdated_On_Update_Lookup()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "AAAAAA", Registration = "---" });
+            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "BBBBBB", Registration = "===" });
+            _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
+
+            _Database.UpsertManyAircraftLookup(new BaseStationAircraftUpsertLookup[] {
+                new BaseStationAircraftUpsertLookup() { ModeS = "AAAAAA", Registration = "111" },
+                new BaseStationAircraftUpsertLookup() { ModeS = "BBBBBB", Registration = "222" },
+            }, false);
+
+            Assert.AreEqual(2, _AircraftUpdatedEvent.CallCount);
+            Assert.AreEqual("111", _AircraftUpdatedEvent.AllArgs.Single(r => r.Value.ModeS == "AAAAAA").Value.Registration);
+            Assert.AreEqual("222", _AircraftUpdatedEvent.AllArgs.Single(r => r.Value.ModeS == "BBBBBB").Value.Registration);
+        }
+
+        protected void BaseStationDatabase_UpsertManyAircraft_Raises_AircraftUpdated_On_Update_Aircraft()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "AAAAAA", Registration = "---" });
+            _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "BBBBBB", Registration = "===" });
+            _Database.AircraftUpdated += _AircraftUpdatedEvent.Handler;
+
+            _Database.UpsertManyAircraft(new BaseStationAircraftUpsert[] {
+                new BaseStationAircraftUpsert() { ModeS = "AAAAAA", Registration = "111" },
+                new BaseStationAircraftUpsert() { ModeS = "BBBBBB", Registration = "222" },
+            });
+
+            Assert.AreEqual(2, _AircraftUpdatedEvent.CallCount);
+            Assert.AreEqual("111", _AircraftUpdatedEvent.AllArgs.Single(r => r.Value.ModeS == "AAAAAA").Value.Registration);
+            Assert.AreEqual("222", _AircraftUpdatedEvent.AllArgs.Single(r => r.Value.ModeS == "BBBBBB").Value.Registration);
+        }
+
+        protected void BaseStationDatabase_UpsertManyAircraft_Does_Not_Raise_AircraftUpdated_On_Insert()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.UpsertManyAircraftLookup(new BaseStationAircraftUpsertLookup[] {
+                new BaseStationAircraftUpsertLookup() { ModeS = "AAAAAA", Registration = "111" },
+                new BaseStationAircraftUpsertLookup() { ModeS = "BBBBBB", Registration = "222" },
+            }, false);
+
+            Assert.AreEqual(0, _AircraftUpdatedEvent.CallCount);
+        }
+        #endregion
+
+        #region DeleteAircraft
+        protected void BaseStationDatabase_DeleteAircraft_Throws_If_Writes_Disabled()
+        {
+            var aircraft = new BaseStationAircraft() { ModeS = "X" };
+            aircraft.AircraftID = (int)AddAircraft(aircraft);
+
+            _Database.DeleteAircraft(aircraft);
+        }
+
+        protected void BaseStationDatabase_DeleteAircraft_Correctly_Deletes_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var id = (int)AddAircraft(LoadAircraftFromSpreadsheet(worksheet));
+
+            var aircraft = _Database.GetAircraftById(id);
+            _Database.DeleteAircraft(aircraft);
+
+            Assert.AreEqual(null, _Database.GetAircraftById(id));
+        }
+        #endregion
+
+        #region GetFlights
+        protected void BaseStationDatabase_GetFlights_Throws_If_Criteria_Is_Null()
+        {
+            _Database.GetFlights(null, -1, -1, null, false, null, false);
+        }
+
+        protected void BaseStationDatabase_GetFlights_Copies_Database_Record_To_Flight_Object()
+        {
+            Do_GetFlightsAllVersions_Copies_Database_Record_To_Flight_Object(true);
+        }
+
+        protected void Do_GetFlightsAllVersions_Copies_Database_Record_To_Flight_Object(bool getFlights)
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var mockFlight = LoadFlightFromSpreadsheet(worksheet);
+
+            var aircraftId = (int)AddAircraft(mockFlight.Aircraft);
+            mockFlight.AircraftID = aircraftId;
+            mockFlight.SessionID = PrepareSessionReference(new BaseStationSession() { StartTime = DateTime.Now }).SessionID;
+            var flightId = AddFlight(mockFlight);
+
+            List<BaseStationFlight> flights = null;
+            if(getFlights) flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
+            else           flights = _Database.GetFlightsForAircraft(mockFlight.Aircraft, _Criteria, -1, -1, null, false, null, false);
+
+            Assert.AreEqual(1, flights.Count);
+
+            Assert.AreNotSame(flights[0], mockFlight);
+            if(getFlights) Assert.AreNotSame(flights[0].Aircraft, mockFlight.Aircraft);
+            else           Assert.AreSame(flights[0].Aircraft, mockFlight.Aircraft);
+
+            AssertFlightsAreEqual(mockFlight, flights[0], true, aircraftId);
+        }
+
+        protected void BaseStationDatabase_GetFlights_Can_Return_List_Of_All_Flights()
+        {
+            var flight1 = CreateFlight("ABC123");
+            var flight2 = CreateFlight("XYZ789");
+
+            AddAircraft(flight1.Aircraft);
+            AddAircraft(flight2.Aircraft);
+
+            AddFlight(flight1);
+            AddFlight(flight2);
+
+            var flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
+
+            Assert.AreEqual(2, flights.Count);
+            Assert.IsTrue(flights.Where(f => f.Callsign == "ABC123").Any());
+            Assert.IsTrue(flights.Where(f => f.Callsign == "XYZ789").Any());
+        }
+
+        protected void BaseStationDatabase_GetFlights_Can_Filter_Flights_By_Equality_Criteria()
+        {
+            var defaultFlight = CreateFlight("default", false);
+            var notEqualFlight = CreateFlight("notEquals", false);
+            var equalsFlight = CreateFlight("equals", false);
+
+            foreach(var reverseCondition in new bool[] { false, true }) {
+                foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    if(SetEqualityCriteria(criteriaProperty, defaultFlight, notEqualFlight, equalsFlight, reverseCondition)) {
+                        AddFlightAndAircraft(defaultFlight);
+                        AddFlightAndAircraft(notEqualFlight);
+                        AddFlightAndAircraft(equalsFlight);
+
+                        var flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
+                        if(!reverseCondition) {
+                            Assert.AreEqual(1, flights.Count, criteriaProperty.Name);
+                            Assert.AreEqual(equalsFlight.FlightID, flights[0].FlightID, criteriaProperty.Name);
+                        } else {
+                            var expectedCount = 1;
+                            switch(criteriaProperty.Name) {
+                                // NOT NULL properties will return 2 records, nullable properties will ignore nulls and just return 1
+                                case "Icao":
+                                case "IsEmergency":
+                                    expectedCount = 2;
+                                    break;
+                            }
+                            Assert.AreEqual(expectedCount, flights.Count, criteriaProperty.Name);
+                            Assert.IsFalse(flights.Any(r => r.FlightID == equalsFlight.FlightID), criteriaProperty.Name);
+                        }
+                    }
+                }
+            }
+        }
+
+        protected void BaseStationDatabase_GetFlights_Can_Filter_Flights_By_Contains_Criteria()
+        {
+            var defaultFlight = CreateFlight("default", false);
+            var notContainsFlight = CreateFlight("notContains", false);
+            var containsFlight = CreateFlight("contains", false);
+
+            foreach(var reverseCondition in new bool[] { false, true }) {
+                foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    if(SetContainsCriteria(criteriaProperty, defaultFlight, notContainsFlight, containsFlight, reverseCondition)) {
+                        AddFlightAndAircraft(defaultFlight);
+                        AddFlightAndAircraft(notContainsFlight);
+                        AddFlightAndAircraft(containsFlight);
+
+                        var flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
+                        if(!reverseCondition) {
+                            Assert.AreEqual(1, flights.Count, criteriaProperty.Name);
+                            Assert.AreEqual(containsFlight.FlightID, flights[0].FlightID, criteriaProperty.Name);
+                        } else {
+                            var expectedCount = 1;
+                            switch(criteriaProperty.Name) {
+                                // NOT NULL properties will return 2 records, nullable properties will ignore nulls and just return 1
+                                case "Icao":
+                                case "IsEmergency":
+                                    expectedCount = 2;
+                                    break;
+                            }
+                            Assert.AreEqual(expectedCount, flights.Count, criteriaProperty.Name);
+                            Assert.IsFalse(flights.Any(r => r.FlightID == containsFlight.FlightID), criteriaProperty.Name);
+                        }
+                    }
+                }
+            }
+        }
+
+        protected void BaseStationDatabase_GetFlights_Can_Filter_Flights_By_StartsWith_Criteria()
+        {
+            var defaultFlight = CreateFlight("default", false);
+            var notStartsWithFlight = CreateFlight("notContains", false);
+            var startsWithFlight = CreateFlight("contains", false);
+
+            foreach(var reverseCondition in new bool[] { false, true }) {
+                foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    if(SetStartsWithCriteria(criteriaProperty, defaultFlight, notStartsWithFlight, startsWithFlight, reverseCondition)) {
+                        AddFlightAndAircraft(defaultFlight);
+                        AddFlightAndAircraft(notStartsWithFlight);
+                        AddFlightAndAircraft(startsWithFlight);
+
+                        var flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
+                        if(!reverseCondition) {
+                            Assert.AreEqual(1, flights.Count, criteriaProperty.Name);
+                            Assert.AreEqual(startsWithFlight.FlightID, flights[0].FlightID, criteriaProperty.Name);
+                        } else {
+                            var expectedCount = 1;
+                            switch(criteriaProperty.Name) {
+                                // NOT NULL properties will return 2 records, nullable properties will ignore nulls and just return 1
+                                case "Icao":
+                                case "IsEmergency":
+                                    expectedCount = 2;
+                                    break;
+                            }
+                            Assert.AreEqual(expectedCount, flights.Count, criteriaProperty.Name);
+                            Assert.IsFalse(flights.Any(r => r.FlightID == startsWithFlight.FlightID), criteriaProperty.Name);
+                        }
+                    }
+                }
+            }
+        }
+
+        protected void BaseStationDatabase_GetFlights_Can_Filter_Flights_By_EndsWith_Criteria()
+        {
+            var defaultFlight = CreateFlight("default", false);
+            var notEndsWithFlight = CreateFlight("notContains", false);
+            var endsWithFlight = CreateFlight("contains", false);
+
+            foreach(var reverseCondition in new bool[] { false, true }) {
+                foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    if(SetEndsWithCriteria(criteriaProperty, defaultFlight, notEndsWithFlight, endsWithFlight, reverseCondition)) {
+                        AddFlightAndAircraft(defaultFlight);
+                        AddFlightAndAircraft(notEndsWithFlight);
+                        AddFlightAndAircraft(endsWithFlight);
+
+                        var flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
+                        if(!reverseCondition) {
+                            Assert.AreEqual(1, flights.Count, criteriaProperty.Name);
+                            Assert.AreEqual(endsWithFlight.FlightID, flights[0].FlightID, criteriaProperty.Name);
+                        } else {
+                            var expectedCount = 1;
+                            switch(criteriaProperty.Name) {
+                                // NOT NULL properties will return 2 records, nullable properties will ignore nulls and just return 1
+                                case "Icao":
+                                case "IsEmergency":
+                                    expectedCount = 2;
+                                    break;
+                            }
+                            Assert.AreEqual(expectedCount, flights.Count, criteriaProperty.Name);
+                            Assert.IsFalse(flights.Any(r => r.FlightID == endsWithFlight.FlightID), criteriaProperty.Name);
+                        }
+                    }
+                }
+            }
+        }
+
+        protected void BaseStationDatabase_GetFlights_Can_Filter_Flights_By_Range_Criteria()
+        {
+            var belowRangeFlight = CreateFlight("belowRange");
+            var startRangeFlight = CreateFlight("startRange");
+            var inRangeFlight = CreateFlight("inRange");
+            var endRangeFlight = CreateFlight("endRange");
+            var aboveRangeFlight = CreateFlight("aboveRange");
+
+            foreach(var reverseCondition in new bool[] { false, true }) {
+                foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    if(SetRangeCriteria(criteriaProperty, belowRangeFlight, startRangeFlight, inRangeFlight, endRangeFlight, aboveRangeFlight, reverseCondition)) {
+                        AddFlightAndAircraft(belowRangeFlight);
+                        AddFlightAndAircraft(startRangeFlight);
+                        AddFlightAndAircraft(inRangeFlight);
+                        AddFlightAndAircraft(endRangeFlight);
+                        AddFlightAndAircraft(aboveRangeFlight);
+
+                        var flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
+                        var message = "";
+                        foreach(var flight in flights) message = String.Format("{0}{1}{2}", message, message.Length == 0 ? "" : ", " , flight.Callsign);
+
+                        if(!reverseCondition) {
+                            Assert.AreEqual(3, flights.Count, message);
+                            Assert.IsTrue(flights.Where(f => f.Callsign == "startRange").Any(), message);
+                            Assert.IsTrue(flights.Where(f => f.Callsign == "inRange").Any(), message);
+                            Assert.IsTrue(flights.Where(f => f.Callsign == "endRange").Any(), message);
+                        } else {
+                            Assert.AreEqual(2, flights.Count, message);
+                            Assert.IsTrue(flights.Where(f => f.Callsign == "belowRange").Any(), message);
+                            Assert.IsTrue(flights.Where(f => f.Callsign == "aboveRange").Any(), message);
+                        }
+                    }
+                }
+            }
+        }
+
+        protected void BaseStationDatabase_GetFlights_String_Properties_Can_Match_Null_Or_Empty_Fields()
+        {
+            foreach(var reverseCondition in new bool[] { false, true }) {
+                foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                    foreach(var filterValue in new string[] { null, "" }) {
+                        foreach(var databaseValue in new string[] { null, "" }) {
+                            if(IsFilterStringProperty(criteriaProperty)) {
+                                if(criteriaProperty.Name == "Icao") continue;     // these can't be set to null on the database
+
+                                RunTestCleanup();
+                                RunTestInitialise();
+
+                                var filter = new FilterString(filterValue) { Condition = FilterCondition.Equals, ReverseCondition = reverseCondition };
+                                criteriaProperty.SetValue(_Criteria, filter, null);
+
+                                var nullFlight = CreateFlight("nullFlight", false, false);
+                                var notNullFlight = CreateFlight("notNullFlight", false, false);
+                                SetStringAircraftProperty(criteriaProperty, nullFlight, databaseValue);
+                                SetStringAircraftProperty(criteriaProperty, notNullFlight, "A");
+                                AddFlightAndAircraft(nullFlight);
+                                AddFlightAndAircraft(notNullFlight);
+
+                                var flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
+
+                                var message = String.Format("{0}/{1}/Filter:{2}/DB:{3}", criteriaProperty.Name, reverseCondition, filterValue == null ? "null" : "empty", databaseValue == null ? "null" : "empty");
+                                Assert.AreEqual(1, flights.Count, message);
+                                var expected = reverseCondition ? "notNullFlight" : "nullFlight";
+                                Assert.AreEqual(expected, flights[0].Aircraft.ModeS, message);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        protected void BaseStationDatabase_GetFlights_Can_Search_For_All_Variations_Of_A_Callsign()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var comments = worksheet.String("Comments");
+
+            // Setup flights in database
+            for(var i = 1;i <= 3;++i) {
+                var flightCallsign = worksheet.EString(String.Format("Callsign{0}", i));
+                if(flightCallsign != null) {
+                    var flight = CreateFlight("Flight" + i.ToString());
+                    flight.Callsign = flightCallsign;
+                    AddFlightAndAircraft(flight);
+                }
+            }
+
+            // Setup alternate codes
+            var alternates = new List<string>();
+            for(var i = 1;i <= 3;++i) {
+                var altCallsign = worksheet.String(String.Format("Alt{0}", i));
+                if(!String.IsNullOrEmpty(altCallsign)) alternates.Add(altCallsign);
+            }
+
+            // Setup criteria
+            var callsign = worksheet.EString("Callsign");
+            if(callsign != null) {
+                alternates.Add(callsign);       // The alternates API always returns the callsign you asked for at a minimum unless it's null or empty
+                _CallsignParser.Setup(r => r.GetAllAlternateCallsigns(callsign)).Returns(alternates);
+            }
+
+            var findAlternates = worksheet.Bool("FindAlts");
+            var condition = worksheet.ParseEnum<FilterCondition>("Condition");
+            var reverseCondition = worksheet.Bool("Reverse");
+            _Criteria.Callsign = new FilterString(callsign) { Condition = condition, ReverseCondition = reverseCondition };
+            _Criteria.UseAlternateCallsigns = findAlternates;
+
+            // Get flights
+            var flights = _Database.GetFlights(_Criteria, -1, -1, null, false, null, false);
+
+            // Assert that we got what we expected
+            Assert.AreEqual(worksheet.Int("Count"), flights.Count, comments);
+            for(var i = 1;i <= 3;++i) {
+                var expectCallsign = worksheet.EString(String.Format("Expect{0}", i));
+                if(expectCallsign != null) {
+                    Assert.IsNotNull(flights.Single(r => r.Callsign == expectCallsign), comments);
+                }
+            }
+        }
+
+        protected void BaseStationDatabase_GetFlights_Some_Criteria_Is_Case_Insensitive()
+        {
+            Do_GetFlightsAllVersions_Some_Criteria_Is_Case_Insensitive(true);
+        }
+
+        protected void Do_GetFlightsAllVersions_Some_Criteria_Is_Case_Insensitive(bool getFlights)
+        {
+            var flight = CreateFlight("1");
+            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                if(!getFlights && !IsFlightCriteria(criteriaProperty)) continue;
+
+                RunTestCleanup();
+                RunTestInitialise();
+
+                bool isStringProperty = true;
+                switch(criteriaProperty.Name) {
+                    case "Callsign":        _Criteria.Callsign = new FilterString("a"); flight.Callsign = "A"; break;
+                    case "Registration":    _Criteria.Registration = new FilterString("a"); flight.Aircraft.Registration = "A"; break;
+                    case "Icao":            _Criteria.Icao = new FilterString("a"); flight.Aircraft.ModeS = "A"; break;
+                    case "Type":            _Criteria.Type = new FilterString("a"); flight.Aircraft.ICAOTypeCode = "A"; break;
+                    case "Operator":
+                    case "Country":
+                    case "Date":
+                    case "IsEmergency":
+                    case "UseAlternateCallsigns":
+                    case "FirstAltitude":
+                    case "LastAltitude":
+                        isStringProperty = false;
+                        break;
+                    default:                throw new NotImplementedException(criteriaProperty.Name);
+                }
+
+                if(isStringProperty) {
+                    AddFlightAndAircraft(flight);
+
+                    List<BaseStationFlight> flights = null;
+                    if(getFlights) flights = _Database.GetFlights(_Criteria, -1, -1, null, true, null, true);
+                    else           flights = _Database.GetFlightsForAircraft(flight.Aircraft, _Criteria, -1, -1, null, true, null, true);
+
+                    Assert.AreEqual(1, flights.Count, criteriaProperty.Name);
+                }
+            }
+        }
+
+        protected void BaseStationDatabase_GetFlights_Some_Criteria_Is_Case_Sensitive()
+        {
+            Do_GetFlightsAllVersions_Some_Criteria_Is_Case_Sensitive(true);
+        }
+
+        protected void Do_GetFlightsAllVersions_Some_Criteria_Is_Case_Sensitive(bool getFlights)
+        {
+            var flight = CreateFlight("1");
+            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                if(!getFlights && !IsFlightCriteria(criteriaProperty)) continue;
+
+                RunTestCleanup();
+                RunTestInitialise();
+
+                bool isStringProperty = true;
+                switch(criteriaProperty.Name) {
+                    case "Operator":        _Criteria.Operator = new FilterString("a"); flight.Aircraft.RegisteredOwners = "A"; break;
+                    case "Country":         _Criteria.Country = new FilterString("a"); flight.Aircraft.ModeSCountry = "A"; break;
+                    case "Callsign":
+                    case "Registration":
+                    case "Icao":
+                    case "Date":
+                    case "Type":
+                    case "IsEmergency":
+                    case "UseAlternateCallsigns":
+                    case "FirstAltitude":
+                    case "LastAltitude":
+                        isStringProperty = false;
+                        break;
+                    default:                throw new NotImplementedException(criteriaProperty.Name);
+                }
+
+                if(isStringProperty) {
+                    AddFlightAndAircraft(flight);
+
+                    List<BaseStationFlight> flights = null;
+                    if(getFlights) flights = _Database.GetFlights(_Criteria, -1, -1, null, true, null, true);
+                    else           flights = _Database.GetFlightsForAircraft(flight.Aircraft, _Criteria, -1, -1, null, true, null, true);
+
+                    Assert.AreEqual(0, flights.Count, criteriaProperty.Name);
+                }
+            }
+        }
+
+        protected void BaseStationDatabase_GetFlights_Can_Return_Subset_Of_Rows()
+        {
+            Do_GetFlightsAllVersions_Can_Return_Subset_Of_Rows(true);
+        }
+
+        protected void Do_GetFlightsAllVersions_Can_Return_Subset_Of_Rows(bool getFlights)
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+
+            int flightCount = worksheet.Int("Flights");
+
+            var aircraft = CreateAircraft();
+            AddAircraft(aircraft);
+
+            for(int flightNumber = 0;flightNumber < flightCount;++flightNumber) {
+                var flight = CreateFlight(aircraft, (flightNumber + 1).ToString());
+                AddFlight(flight);
+            }
+
+            List<BaseStationFlight> flights;
+            if(getFlights) flights = _Database.GetFlights(_Criteria, worksheet.Int("StartRow"), worksheet.Int("EndRow"), "CALLSIGN", true, null, false);
+            else           flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, worksheet.Int("StartRow"), worksheet.Int("EndRow"), "CALLSIGN", true, null, false);
+
+            var rows = "";
+            foreach(var flight in flights) {
+                rows = String.Format("{0}{1}{2}", rows, rows.Length == 0 ? "" : ",", flight.Callsign);
+            }
+
+            Assert.AreEqual(worksheet.Int("ExpectedCount"), flights.Count);
+            Assert.AreEqual(worksheet.EString("ExpectedRows"), rows);
+        }
+
+        protected void BaseStationDatabase_GetFlights_Ignores_Unknown_Sort_Columns()
+        {
+            Do_GetFlightsAllVersions_Ignores_Unknown_Sort_Columns(true);
+        }
+
+        protected void Do_GetFlightsAllVersions_Ignores_Unknown_Sort_Columns(bool getFlights)
+        {
+            var aircraft = CreateAircraft();
+            AddAircraft(aircraft);
+            AddFlight(CreateFlight(aircraft, "1"));
+            AddFlight(CreateFlight(aircraft, "2"));
+
+            List<BaseStationFlight> flights;
+            if(getFlights) flights = _Database.GetFlights(_Criteria, -1, -1, "ThisColumnDoesNotExist", true, "AndNeitherDoesThis", false);
+            else           flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, "ThisColumnDoesNotExist", true, "AndNeitherDoesThis", false);
+
+            Assert.AreEqual(2, flights.Count);
+        }
+
+        protected void BaseStationDatabase_GetFlights_Ignores_Case_On_Sort_Column_Names()
+        {
+            Do_GetFlightsAllVersions_Ignores_Case_On_Sort_Column_Names(true);
+        }
+
+        protected void Do_GetFlightsAllVersions_Ignores_Case_On_Sort_Column_Names(bool getFlights)
+        {
+            var aircraft = CreateAircraft();
+            AddAircraft(aircraft);
+
+            AddFlight(CreateFlight(aircraft, "ABC"));
+            AddFlight(CreateFlight(aircraft, "XYZ"));
+
+            List<BaseStationFlight> flights;
+            if(getFlights) flights = _Database.GetFlights(_Criteria, -1, -1, "callsign", true, null, false);
+            else           flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, "callsign", true, null, false);
+
+            Assert.AreEqual("ABC", flights[0].Callsign);
+            Assert.AreEqual("XYZ", flights[1].Callsign);
+
+            if(getFlights) flights = _Database.GetFlights(_Criteria, -1, -1, "callsign", false, null, false);
+            else           flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, "callsign", false, null, false);
+
+            Assert.AreEqual("XYZ", flights[0].Callsign);
+            Assert.AreEqual("ABC", flights[1].Callsign);
+        }
+
+        protected void BaseStationDatabase_GetFlights_Sorts_By_One_Column_Correctly()
+        {
+            var defaultFlight = CreateFlight("defaultFlight", false);
+            var lowFlight = CreateFlight("lowFlight", false);
+            var highFlight = CreateFlight("highFlight", false);
+
+            defaultFlight.NumPosMsgRec = 1;
+            lowFlight.NumPosMsgRec = 2;
+            highFlight.NumPosMsgRec = 3;
+
+            foreach(var sortColumn in _SortColumns) {
+                RunTestCleanup();
+                RunTestInitialise();
+
+                SetSortColumnValue(defaultFlight, sortColumn, true, false);
+                SetSortColumnValue(lowFlight, sortColumn, false, false);
+                SetSortColumnValue(highFlight, sortColumn, false, true);
+
+                AddFlightAndAircraft(defaultFlight);
+                AddFlightAndAircraft(lowFlight);
+                AddFlightAndAircraft(highFlight);
+
+                var flights = _Database.GetFlights(_Criteria, -1, -1, sortColumn, true, null, false);
+                Assert.AreEqual(3, flights.Count, sortColumn);
+                Assert.AreEqual(1, flights[0].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(2, flights[1].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(3, flights[2].NumPosMsgRec, sortColumn);
+
+                flights = _Database.GetFlights(_Criteria, -1, -1, sortColumn, false, null, false);
+                Assert.AreEqual(3, flights.Count, sortColumn);
+                Assert.AreEqual(3, flights[0].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(2, flights[1].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(1, flights[2].NumPosMsgRec, sortColumn);
+            }
+        }
+
+        protected void BaseStationDatabase_GetFlights_Sorts_By_Two_Columns_Correctly()
+        {
+            var firstFlight = CreateFlight("1");
+            var secondFlight = CreateFlight("2");
+            var thirdFlight = CreateFlight("3");
+            var fourthFlight = CreateFlight("4");
+
+            firstFlight.Aircraft.Type = "1";
+            secondFlight.Aircraft.Type = thirdFlight.Aircraft.Type = "2";
+            fourthFlight.Aircraft.Type = "3";
+
+            secondFlight.Aircraft.Registration = "A";
+            thirdFlight.Aircraft.Registration = "B";
+
+            AddFlightAndAircraft(firstFlight);
+            AddFlightAndAircraft(secondFlight);
+            AddFlightAndAircraft(thirdFlight);
+            AddFlightAndAircraft(fourthFlight);
+
+            var flights = _Database.GetFlights(_Criteria, -1, -1, "model", true, "reg", true);
+            Assert.AreEqual("1", flights[0].Callsign);
+            Assert.AreEqual("2", flights[1].Callsign);
+            Assert.AreEqual("3", flights[2].Callsign);
+            Assert.AreEqual("4", flights[3].Callsign);
+
+            flights = _Database.GetFlights(_Criteria, -1, -1, "model", true, "reg", false);
+            Assert.AreEqual("1", flights[0].Callsign);
+            Assert.AreEqual("3", flights[1].Callsign);
+            Assert.AreEqual("2", flights[2].Callsign);
+            Assert.AreEqual("4", flights[3].Callsign);
+        }
+        #endregion
+
+        #region GetFlightsForAircraft
+        protected void BaseStationDatabase_GetFlightsForAircraft_Returns_Empty_List_If_Aircraft_Is_Null()
+        {
+            Assert.AreEqual(0, _Database.GetFlightsForAircraft(null, _Criteria, 0, int.MaxValue, null, false, null, false).Count);
+        }
+
+        protected void BaseStationDatabase_GetFlightsForAircraft_Throws_If_Criteria_Is_Null()
+        {
+            _Database.GetFlightsForAircraft(CreateAircraft(), null, 0, int.MaxValue, null, false, null, false);
+        }
+
+        protected void BaseStationDatabase_GetFlightsForAircraft_Restricts_Search_To_Single_Aircraft()
+        {
+            var flight1 = CreateFlight("1");
+            var flight2 = CreateFlight("2");
+
+            AddFlightAndAircraft(flight1);
+            AddFlightAndAircraft(flight2);
+
+            var flights = _Database.GetFlightsForAircraft(flight2.Aircraft, _Criteria, -1, -1, null, false, null, false);
+            Assert.AreEqual(1, flights.Count);
+            Assert.AreEqual("2", flights[0].Callsign);
+        }
+
+        protected void BaseStationDatabase_GetFlightsForAircraft_Does_Not_Create_New_Aircraft_Objects()
+        {
+            var aircraft = CreateAircraft("icao", "reg");
+            AddAircraft(aircraft);
+
+            AddFlight(CreateFlight(aircraft));
+            AddFlight(CreateFlight(aircraft));
+
+            var flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, null, false, null, false);
+            Assert.AreEqual(2, flights.Count);
+            Assert.AreSame(aircraft, flights[0].Aircraft);
+            Assert.AreSame(aircraft, flights[1].Aircraft);
+        }
+
+        protected void BaseStationDatabase_GetFlightsForAircraft_Copies_Database_Record_To_Flight_Object()
+        {
+            Do_GetFlightsAllVersions_Copies_Database_Record_To_Flight_Object(false);
+        }
+
+        protected void BaseStationDatabase_GetFlightsForAircraft_Can_Filter_Flights_By_Equality_Criteria()
+        {
+            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                if(!IsFlightCriteria(criteriaProperty)) continue;
+
+                RunTestCleanup();
+                RunTestInitialise();
+
+                var aircraft = CreateAircraft("icao", "reg");
+                PrepareAircraftReference(aircraft);
+
+                var defaultFlight = CreateFlight(aircraft);
+                var notEqualFlight = CreateFlight(aircraft);
+                var equalsFlight = CreateFlight(aircraft);
+
+                if(SetEqualityCriteria(criteriaProperty, defaultFlight, notEqualFlight, equalsFlight, false)) {
+                    AddFlight(defaultFlight);
+                    AddFlight(notEqualFlight);
+                    AddFlight(equalsFlight);
+
+                    var flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, null, false, null, false);
+                    Assert.AreEqual(1, flights.Count, criteriaProperty.Name);
+                    Assert.AreEqual(equalsFlight.FlightID, flights[0].FlightID, criteriaProperty.Name);
+                }
+            }
+        }
+
+        protected void BaseStationDatabase_GetFlightsForAircraft_Can_Filter_Flights_By_Range_Criteria()
+        {
+            foreach(var reverseCondition in new bool[] { false, true }) {
+                foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                    if(!IsFlightCriteria(criteriaProperty)) continue;
+
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    var aircraft = CreateAircraft("icao", "reg");
+                    PrepareAircraftReference(aircraft);
+
+                    var belowRangeFlight = CreateFlight(aircraft, "belowRange");
+                    var startRangeFlight = CreateFlight(aircraft, "startRange");
+                    var inRangeFlight = CreateFlight(aircraft, "inRange");
+                    var endRangeFlight = CreateFlight(aircraft, "endRange");
+                    var aboveRangeFlight = CreateFlight(aircraft, "aboveRange");
+
+                    if(SetRangeCriteria(criteriaProperty, belowRangeFlight, startRangeFlight, inRangeFlight, endRangeFlight, aboveRangeFlight, reverseCondition)) {
+                        AddFlight(belowRangeFlight);
+                        AddFlight(startRangeFlight);
+                        AddFlight(inRangeFlight);
+                        AddFlight(endRangeFlight);
+                        AddFlight(aboveRangeFlight);
+
+                        var flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, null, false, null, false);
+                        var message = String.Format("{0}:", criteriaProperty.Name);
+                        foreach(var flight in flights) message = String.Format("{0} {1}", message, flight.Callsign);
+
+                        if(!reverseCondition) {
+                            Assert.AreEqual(3, flights.Count, message);
+                            Assert.IsTrue(flights.Any(f => f.Callsign == "startRange"), message);
+                            Assert.IsTrue(flights.Any(f => f.Callsign == "inRange"), message);
+                            Assert.IsTrue(flights.Any(f => f.Callsign == "endRange"), message);
+                        } else {
+                            Assert.AreEqual(2, flights.Count, message);
+                            Assert.IsTrue(flights.Any(f => f.Callsign == "belowRange"), message);
+                            Assert.IsTrue(flights.Any(f => f.Callsign == "aboveRange"), message);
+                        }
+                    }
+                }
+            }
+        }
+
+        protected void BaseStationDatabase_GetFlightsForAircraft_Some_Criteria_Is_Case_Insensitive()
+        {
+            Do_GetFlightsAllVersions_Some_Criteria_Is_Case_Insensitive(false);
+        }
+
+        protected void BaseStationDatabase_GetFlightsForAircraft_Some_Criteria_Is_Case_Sensitive()
+        {
+            Do_GetFlightsAllVersions_Some_Criteria_Is_Case_Sensitive(false);
+        }
+
+        protected void BaseStationDatabase_GetFlightsForAircraft_Can_Return_Subset_Of_Rows()
+        {
+            Do_GetFlightsAllVersions_Can_Return_Subset_Of_Rows(false);
+        }
+
+        protected void BaseStationDatabase_GetFlightsForAircraft_Ignores_Unknown_Sort_Columns()
+        {
+            Do_GetFlightsAllVersions_Ignores_Unknown_Sort_Columns(false);
+        }
+
+        protected void BaseStationDatabase_GetFlightsForAircraft_Ignores_Case_On_Sort_Column_Names()
+        {
+            Do_GetFlightsAllVersions_Ignores_Case_On_Sort_Column_Names(false);
+        }
+
+        protected void BaseStationDatabase_GetFlightsForAircraft_Sorts_By_One_Column_Correctly()
+        {
+            var aircraft = CreateAircraft();
+
+            var defaultFlight = CreateFlight(aircraft, "defaultFlight");
+            var lowFlight = CreateFlight(aircraft, "lowFlight");
+            var highFlight = CreateFlight(aircraft, "highFlight");
+
+            defaultFlight.NumPosMsgRec = 1;
+            lowFlight.NumPosMsgRec = 2;
+            highFlight.NumPosMsgRec = 3;
+
+            foreach(var sortColumn in _SortColumns) {
+                if(!IsFlightSortColumn(sortColumn)) continue;
+
+                RunTestCleanup();
+                RunTestInitialise();
+
+                SetSortColumnValue(defaultFlight, sortColumn, true, false);
+                SetSortColumnValue(lowFlight, sortColumn, false, false);
+                SetSortColumnValue(highFlight, sortColumn, false, true);
+
+                AddAircraft(aircraft);
+
+                AddFlight(defaultFlight);
+                AddFlight(lowFlight);
+                AddFlight(highFlight);
+
+                var flights = _Database.GetFlights(_Criteria, -1, -1, sortColumn, true, null, false);
+                Assert.AreEqual(3, flights.Count, sortColumn);
+                Assert.AreEqual(1, flights[0].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(2, flights[1].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(3, flights[2].NumPosMsgRec, sortColumn);
+
+                flights = _Database.GetFlights(_Criteria, -1, -1, sortColumn, false, null, false);
+                Assert.AreEqual(3, flights.Count, sortColumn);
+                Assert.AreEqual(3, flights[0].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(2, flights[1].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(1, flights[2].NumPosMsgRec, sortColumn);
+            }
+        }
+
+        protected void BaseStationDatabase_GetFlightsForAircraft_Sorts_By_Two_Columns_Correctly()
+        {
+            var aircraft = CreateAircraft();
+            AddAircraft(aircraft);
+
+            var firstFlight = CreateFlight(aircraft, "1");
+            var secondFlight = CreateFlight(aircraft, "2");
+            var thirdFlight = CreateFlight(aircraft, "2");
+            var fourthFlight = CreateFlight(aircraft, "3");
+
+            firstFlight.FirstAltitude = 1;
+            secondFlight.FirstAltitude = 2;
+            thirdFlight.FirstAltitude = 3;
+            fourthFlight.FirstAltitude = 4;
+
+            var startTime = new DateTime(2010, 2, 3);
+            firstFlight.StartTime = startTime;
+            secondFlight.StartTime = startTime.AddDays(1);
+            thirdFlight.StartTime = startTime.AddDays(2);
+            fourthFlight.StartTime = startTime.AddDays(3);
+
+            AddFlight(firstFlight);
+            AddFlight(secondFlight);
+            AddFlight(thirdFlight);
+            AddFlight(fourthFlight);
+
+            var flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, "callsign", true, "date", true);
+            Assert.AreEqual(1, flights[0].FirstAltitude);
+            Assert.AreEqual(2, flights[1].FirstAltitude);
+            Assert.AreEqual(3, flights[2].FirstAltitude);
+            Assert.AreEqual(4, flights[3].FirstAltitude);
+
+            flights = _Database.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, "callsign", true, "date", false);
+            Assert.AreEqual(1, flights[0].FirstAltitude);
+            Assert.AreEqual(3, flights[1].FirstAltitude);
+            Assert.AreEqual(2, flights[2].FirstAltitude);
+            Assert.AreEqual(4, flights[3].FirstAltitude);
+        }
+        #endregion
+
+        #region GetCountOfFlights
+        protected void BaseStationDatabase_GetCountOfFlights_Throws_If_Criteria_Is_Null()
+        {
+            _Database.GetCountOfFlights(null);
+        }
+
+        protected void BaseStationDatabase_GetCountOfFlights_Returns_Count_Of_Flights_Matching_Criteria()
+        {
+            AddFlightAndAircraft(CreateFlight("ABC"));
+            AddFlightAndAircraft(CreateFlight("XYZ"));
+
+            Assert.AreEqual(2, _Database.GetCountOfFlights(_Criteria));
+
+            _Criteria.Callsign = new FilterString("XYZ");
+            Assert.AreEqual(1, _Database.GetCountOfFlights(_Criteria));
+        }
+
+        protected void BaseStationDatabase_GetCountOfFlights_Counts_Equality_Criteria()
+        {
+            var defaultFlight = CreateFlight("default", false);
+            var notEqualFlight = CreateFlight("notEquals", false);
+            var equalsFlight = CreateFlight("equals", false);
+
+            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                RunTestCleanup();
+                RunTestInitialise();
+
+                if(SetEqualityCriteria(criteriaProperty, defaultFlight, notEqualFlight, equalsFlight, false)) {
+                    AddFlightAndAircraft(defaultFlight);
+                    AddFlightAndAircraft(notEqualFlight);
+                    AddFlightAndAircraft(equalsFlight);
+
+                    Assert.AreEqual(1, _Database.GetCountOfFlights(_Criteria), "{0}", criteriaProperty.Name);
+                }
+            }
+        }
+
+        protected void BaseStationDatabase_GetCountOfFlights_Counts_Range_Criteria()
+        {
+            var belowRangeFlight = CreateFlight("belowRange");
+            var startRangeFlight = CreateFlight("startRange");
+            var inRangeFlight = CreateFlight("inRange");
+            var endRangeFlight = CreateFlight("endRange");
+            var aboveRangeFlight = CreateFlight("aboveRange");
+
+            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                RunTestCleanup();
+                RunTestInitialise();
+
+                if(SetRangeCriteria(criteriaProperty, belowRangeFlight, startRangeFlight, inRangeFlight, endRangeFlight, aboveRangeFlight, false)) {
+                    AddFlightAndAircraft(belowRangeFlight);
+                    AddFlightAndAircraft(startRangeFlight);
+                    AddFlightAndAircraft(inRangeFlight);
+                    AddFlightAndAircraft(endRangeFlight);
+                    AddFlightAndAircraft(aboveRangeFlight);
+
+                    Assert.AreEqual(3, _Database.GetCountOfFlights(_Criteria), criteriaProperty.Name);
+                }
+            }
+        }
+        #endregion
+
+        #region GetCountOfFlightsForAircraft
+        protected void BaseStationDatabase_GetCountOfFlightsForAircraft_Returns_Zero_If_Aircraft_Is_Null()
+        {
+            AddFlightAndAircraft(CreateFlight("1"));
+
+            Assert.AreEqual(0, _Database.GetCountOfFlightsForAircraft(null, _Criteria));
+        }
+
+        [ExpectedException(typeof(ArgumentNullException))]
+        protected void BaseStationDatabase_GetCountOfFlightsForAircraft_Throws_If_Criteria_Is_Null()
+        {
+            _Database.GetCountOfFlightsForAircraft(CreateAircraft(), null);
+        }
+
+        protected void BaseStationDatabase_GetCountOfFlightsForAircraft_Returns_Count_Of_Flights_Matching_Criteria()
+        {
+            var aircraft = CreateAircraft();
+            AddAircraft(aircraft);
+
+            AddFlight(CreateFlight(aircraft, "ABC"));
+            AddFlight(CreateFlight(aircraft, "XYZ"));
+            AddFlightAndAircraft(CreateFlight("XYZ"));  // <-- different actual, should not be included
+
+            Assert.AreEqual(2, _Database.GetCountOfFlightsForAircraft(aircraft, _Criteria));
+
+            _Criteria.Callsign = new FilterString("XYZ");
+            Assert.AreEqual(1, _Database.GetCountOfFlightsForAircraft(aircraft, _Criteria));
+        }
+
+        protected void BaseStationDatabase_GetCountOfFlightsForAircraft_Counts_Equality_Criteria()
+        {
+            var aircraft = CreateAircraft();
+            var defaultFlight = CreateFlight(aircraft);
+            var notEqualFlight = CreateFlight(aircraft);
+            var equalsFlight = CreateFlight(aircraft);
+
+            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                if(!IsFlightCriteria(criteriaProperty)) continue;
+
+                RunTestCleanup();
+                RunTestInitialise();
+
+                if(SetEqualityCriteria(criteriaProperty, defaultFlight, notEqualFlight, equalsFlight, false)) {
+                    var aircraftId = (int)AddAircraft(aircraft);
+                    defaultFlight.AircraftID = notEqualFlight.AircraftID = equalsFlight.AircraftID = aircraftId;
+
+                    AddFlight(defaultFlight);
+                    AddFlight(notEqualFlight);
+                    AddFlight(equalsFlight);
+
+                    Assert.AreEqual(1, _Database.GetCountOfFlightsForAircraft(aircraft, _Criteria));
+                }
+            }
+        }
+
+        protected void BaseStationDatabase_GetCountOfFlightsForAircraft_Counts_Range_Criteria()
+        {
+            var aircraft = CreateAircraft();
+            var belowRangeFlight = CreateFlight(aircraft);
+            var startRangeFlight = CreateFlight(aircraft);
+            var inRangeFlight = CreateFlight(aircraft);
+            var endRangeFlight = CreateFlight(aircraft);
+            var aboveRangeFlight = CreateFlight(aircraft);
+
+            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                if(!IsFlightCriteria(criteriaProperty)) continue;
+
+                RunTestCleanup();
+                RunTestInitialise();
+
+                if(SetRangeCriteria(criteriaProperty, belowRangeFlight, startRangeFlight, inRangeFlight, endRangeFlight, aboveRangeFlight, false)) {
+                    var aircraftId = (int)AddAircraft(aircraft);
+                    belowRangeFlight.AircraftID = startRangeFlight.AircraftID = inRangeFlight.AircraftID = endRangeFlight.AircraftID = aboveRangeFlight.AircraftID = aircraftId;
+
+                    AddFlight(belowRangeFlight);
+                    AddFlight(startRangeFlight);
+                    AddFlight(inRangeFlight);
+                    AddFlight(endRangeFlight);
+                    AddFlight(aboveRangeFlight);
+
+                    Assert.AreEqual(3, _Database.GetCountOfFlightsForAircraft(aircraft, _Criteria));
+                }
+            }
+        }
+        #endregion
+
+        #region GetFlightById
+        protected void BaseStationDatabase_GetFlightById_Returns_Null_If_Flight_Does_Not_Exist()
+        {
+            Assert.IsNull(_Database.GetFlightById(1));
+        }
+
+        protected void BaseStationDatabase_GetFlightById_Returns_Flight_Object_For_Record_Identifier()
+        {
+            var worksheet = new ExcelWorksheetData(TestContext);
+
+            var aircraft = new BaseStationAircraft() { ModeS = "A" };
+            AddAircraft(aircraft);
+
+            var mockFlight = LoadFlightFromSpreadsheet(worksheet);
+            mockFlight.SessionID = PrepareSessionReference(new BaseStationSession() { StartTime = DateTime.Now }).SessionID;
+            mockFlight.Aircraft = aircraft;
+            mockFlight.AircraftID = aircraft.AircraftID;
+
+            var id = (int)AddFlight(mockFlight);
+
+            var flight = _Database.GetFlightById(id);
+            Assert.AreNotSame(flight, mockFlight);
+
+            AssertFlightsAreEqual(mockFlight, flight, false, aircraft.AircraftID);
+        }
+        #endregion
+
+        #region InsertFlight
+        protected void BaseStationDatabase_InsertFlight_Throws_If_Writes_Disabled()
+        {
+            var aircraftId = (int)AddAircraft(new BaseStationAircraft() { ModeS = "Z" });
+            _Database.InsertFlight(new BaseStationFlight() { AircraftID = aircraftId, StartTime = DateTime.Now });
+        }
+
+        protected void BaseStationDatabase_InsertFlight_Truncates_Milliseconds_From_Date()
+        {
+            _Database.WriteSupportEnabled = true;
+            var aircraftId = (int)AddAircraft(new BaseStationAircraft() { ModeS = "Y" });
+            var sessionId = (int)AddSession(new BaseStationSession() { StartTime = DateTime.Now });
+
+            var time1 = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+            var time2 = new DateTime(2009, 8, 7, 6, 5, 4, 321);
+
+            var flight = new BaseStationFlight() { AircraftID = aircraftId, SessionID = sessionId, StartTime = time1, EndTime = time2 };
+            _Database.InsertFlight(flight);
+
+            var readBack = _Database.GetFlightById(flight.FlightID);
+            Assert.AreEqual(TruncateDate(time1), readBack.StartTime);
+            Assert.AreEqual(TruncateDate(time2), readBack.EndTime);
+        }
+
+        protected void BaseStationDatabase_InsertFlight_Correctly_Inserts_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var aircraftId = PrepareAircraftReference(new BaseStationAircraft() { ModeS = "Y" }).AircraftID;
+            var sessionId = PrepareSessionReference(new BaseStationSession() { StartTime = DateTime.Now }).SessionID;
+            var flight = LoadFlightFromSpreadsheet(worksheet);
+            flight.AircraftID = aircraftId;
+            flight.SessionID = sessionId;
+            flight.Aircraft = null;
+
+            _Database.InsertFlight(flight);
+            Assert.AreNotEqual(0, flight.FlightID);
+
+            var readBack = _Database.GetFlightById(flight.FlightID);
+            AssertFlightsAreEqual(flight, readBack, false, aircraftId);
+        }
+
+        protected void BaseStationDatabase_InsertFlight_Works_In_Different_Cultures()
+        {
+            foreach(var culture in _Cultures) {
+                using(var switcher = new CultureSwitcher(culture)) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    try {
+                        BaseStationDatabase_InsertFlight_Correctly_Inserts_Record();
+                    } catch(Exception ex) {
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region UpdateFlight
+        protected void BaseStationDatabase_UpdateFlight_Throws_If_Writes_Disabled()
+        {
+            var flight = new BaseStationFlight() {
+                AircraftID = PrepareAircraftReference(new BaseStationAircraft() { ModeS = "Z" }).AircraftID,
+                SessionID = PrepareSessionReference(new BaseStationSession() { StartTime = DateTime.Now }).SessionID,
+            };
+
+            flight.FlightID = (int)AddFlight(flight);
+
+            flight.FirstTrack = 42;
+            _Database.UpdateFlight(flight);
+        }
+
+        protected void BaseStationDatabase_UpdateFlight_Truncates_Milliseconds_From_Date()
+        {
+            _Database.WriteSupportEnabled = true;
+            var aircraftId = PrepareAircraftReference(new BaseStationAircraft() { ModeS = "Y" }).AircraftID;
+            var sessionId = PrepareSessionReference(new BaseStationSession() { StartTime = DateTime.Now }).SessionID;
+
+            var flight = new BaseStationFlight() { AircraftID = aircraftId, SessionID = sessionId };
+            _Database.InsertFlight(flight);
+
+            var time1 = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+            var time2 = new DateTime(2009, 8, 7, 6, 5, 4, 321);
+
+            var update = _Database.GetFlightById(flight.FlightID);
+            update.StartTime = time1;
+            update.EndTime = time2;
+            _Database.UpdateFlight(update);
+
+            var readBack = _Database.GetFlightById(flight.FlightID);
+            Assert.AreEqual(TruncateDate(time1), readBack.StartTime);
+            Assert.AreEqual(TruncateDate(time2), readBack.EndTime);
+        }
+
+        protected void BaseStationDatabase_UpdateFlight_Correctly_Updates_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+            var worksheet = new ExcelWorksheetData(TestContext);
+
+            var originalAircraftId = PrepareAircraftReference(new BaseStationAircraft() { ModeS = "Z" }).AircraftID;
+            var originalSessionId = PrepareSessionReference(new BaseStationSession() { StartTime = DateTime.Now }).SessionID;
+            var flightId = PrepareFlightReference(new BaseStationFlight() { AircraftID = originalAircraftId, SessionID = originalSessionId }).FlightID;
+
+            var update = _Database.GetFlightById(flightId);
+            LoadFlightFromSpreadsheet(worksheet, 0, update);
+            update.Aircraft = null;
+
+            var newAircraftId = PrepareAircraftReference(new BaseStationAircraft() { ModeS = "XYZ" }).AircraftID;
+            var newSessionId = PrepareSessionReference(new BaseStationSession() { StartTime = DateTime.Now.AddDays(1) }).SessionID;
+            update.AircraftID = newAircraftId;
+            update.SessionID = newSessionId;
+
+            _Database.UpdateFlight(update);
+
+            var readBack = _Database.GetFlightById(flightId);
+            AssertFlightsAreEqual(update, readBack, false, newAircraftId);
+        }
+
+        protected void BaseStationDatabase_UpdateFlight_Works_For_Different_Cultures()
+        {
+            foreach(var culture in _Cultures) {
+                using(var switcher = new CultureSwitcher(culture)) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    try {
+                        BaseStationDatabase_UpdateFlight_Correctly_Updates_Record();
+                    } catch(Exception ex) {
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region DeleteFlight
+        protected void BaseStationDatabase_DeleteFlight_Throws_If_Writes_Disabled()
+        {
+            var flight = new BaseStationFlight() {
+                AircraftID = PrepareAircraftReference(new BaseStationAircraft() { ModeS = "Z" }).AircraftID,
+                SessionID = PrepareSessionReference(new BaseStationSession() { StartTime = DateTime.Now }).SessionID,
+            };
+
+            flight.FlightID = (int)AddFlight(flight);
+
+            _Database.DeleteFlight(flight);
+        }
+
+        protected void BaseStationDatabase_DeleteFlight_Correctly_Deletes_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var aircraftId = PrepareAircraftReference(new BaseStationAircraft() { ModeS = "Z" }).AircraftID;
+            var sessionId = PrepareSessionReference(new BaseStationSession() { StartTime = DateTime.Now }).SessionID;
+            var flightId = PrepareFlightReference(new BaseStationFlight() { AircraftID = aircraftId, SessionID = sessionId }).FlightID;
+
+            var delete = _Database.GetFlightById(flightId);
+
+            _Database.DeleteFlight(delete);
+
+            Assert.AreEqual(null, _Database.GetFlightById(flightId));
+
+            Assert.AreNotEqual(null, _Database.GetAircraftById(aircraftId));
+            Assert.AreEqual(sessionId, _Database.GetSessions()[0].SessionID);
+        }
+        #endregion
+
+        #region UpsertManyFlights
+        protected void BaseStationDatabase_UpsertManyFlights_Throws_If_Writes_Disabled()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var aircraftId = PrepareAircraftReference(new BaseStationAircraft() { ModeS = "123456" }).AircraftID;
+            var sessionId = PrepareSessionReference(new BaseStationSession() { StartTime = DateTime.Now }).SessionID;
+
+            _Database.WriteSupportEnabled = false;
+
+            _Database.UpsertManyFlights(new BaseStationFlight[] {
+                new BaseStationFlight() { AircraftID = aircraftId, SessionID = sessionId, StartTime = DateTime.Now },
+            });
+        }
+
+        protected void BaseStationDatabase_UpsertManyFlights_Inserts_New_Flights()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var aircraftId = PrepareAircraftReference(new BaseStationAircraft() { ModeS = "Y" }).AircraftID;
+            var sessionId = PrepareSessionReference(new BaseStationSession() { StartTime = DateTime.Now }).SessionID;
+            var flight = LoadFlightFromSpreadsheet(worksheet);
+
+            flight.AircraftID = aircraftId;
+            flight.SessionID =  sessionId;
+            flight.Aircraft =   null;
+
+            var flights = _Database.UpsertManyFlights(new BaseStationFlightUpsert[] {
+                new BaseStationFlightUpsert(flight),
+            });
+
+            Assert.AreEqual(1, flights.Length);
+            AssertFlightsAreEqual(flight, flights[0], false, aircraftId);
+        }
+
+        protected void BaseStationDatabase_UpsertManyFlights_Updates_Existing_Flights()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var worksheet = new ExcelWorksheetData(TestContext);
+            var aircraftId = PrepareAircraftReference(new BaseStationAircraft() { ModeS = "Y" }).AircraftID;
+            var sessionId = PrepareSessionReference(new BaseStationSession() { StartTime = DateTime.Now }).SessionID;
+            var startTime = worksheet.DateTime("StartTime");
+
+            var originalFlight = new BaseStationFlight() {
+                AircraftID = aircraftId,
+                SessionID =  sessionId,
+                StartTime =  startTime,
+            };
+            _Database.InsertFlight(originalFlight);
+
+            var flight = LoadFlightFromSpreadsheet(worksheet);
+            flight.AircraftID = aircraftId;
+            flight.SessionID =  sessionId;
+            flight.Aircraft =   null;
+
+            var flights = _Database.UpsertManyFlights(new BaseStationFlightUpsert[] {
+                new BaseStationFlightUpsert(flight),
+            });
+
+            Assert.AreEqual(1, flights.Length);
+            Assert.AreEqual(originalFlight.FlightID, flights[0].FlightID);
+            AssertFlightsAreEqual(flight, flights[0], false, aircraftId);
+        }
+        #endregion
+
+        #region GetDatabaseHistory
+        protected void BaseStationDatabase_GetDatabaseHistory_Retrieves_All_Records_In_DBHistory_Table()
+        {
+            var timeStamp1 = DateTime.Now;
+            var timeStamp2 = DateTime.Now.AddSeconds(10);
+
+            ClearDBHistory();
+            AddDBHistory(new BaseStationDBHistory() { Description = "A", TimeStamp = timeStamp1 });
+            AddDBHistory(new BaseStationDBHistory() { Description = "B", TimeStamp = timeStamp2 });
+
+            var history = _Database.GetDatabaseHistory();
+            Assert.AreEqual(2, history.Count);
+
+            var historyA = history.FirstOrDefault(h => h.Description == "A");
+            var historyB = history.FirstOrDefault(h => h.Description == "B");
+
+            Assert.AreEqual(timeStamp1, historyA.TimeStamp);
+            Assert.AreEqual(timeStamp2, historyB.TimeStamp);
+        }
+        #endregion
+
+        #region GetDatabaseVersion
+        protected void BaseStationDatabase_GetDatabaseVersion_Retrieves_Record_In_DBInfo_Table()
+        {
+            // The table has no key, it appears that the intention is to only ever have one record in the table
+            AddDBInfo(new BaseStationDBInfo() { OriginalVersion = 2, CurrentVersion = 3 });
+
+            var dbInfo = _Database.GetDatabaseVersion();
+            Assert.AreEqual(2, dbInfo.OriginalVersion);
+            Assert.AreEqual(3, dbInfo.CurrentVersion);
+        }
+
+        protected void BaseStationDatabase_GetDatabaseVersion_Retrieves_Last_Record_In_DBInfo_Table()
+        {
+            // While there should only be one record in the table there's nothing to stop there being more than
+            // one, in which case we need to decide what to do. We just retrieve the last record but we can't
+            // really tell which one that might be, so we just need to make sure it doesn't blow up.
+            AddDBInfo(new BaseStationDBInfo() { OriginalVersion = 2, CurrentVersion = 3 });
+            AddDBInfo(new BaseStationDBInfo() { OriginalVersion = 1, CurrentVersion = 2 });
+
+            var dbInfo = _Database.GetDatabaseVersion();
+            Assert.IsTrue((dbInfo.OriginalVersion == 2 && dbInfo.CurrentVersion == 3) || (dbInfo.OriginalVersion == 1 && dbInfo.CurrentVersion == 2));
+        }
+        #endregion
+
+        #region GetSystemEvents
+        protected void BaseStationDatabase_GetSystemEvents_Retrieves_All_Records_In_SystemEvents_Table()
+        {
+            ClearSystemEvents();
+
+            var timeStamp1 = DateTime.Now;
+            var timeStamp2 = DateTime.Now.AddHours(2.1);
+            AddSystemEvent(new BaseStationSystemEvents() { App = "A", Msg = "B", TimeStamp = timeStamp1 });
+            AddSystemEvent(new BaseStationSystemEvents() { App = "2", Msg = "3", TimeStamp = timeStamp2 });
+
+            var systemEvents = _Database.GetSystemEvents();
+            Assert.AreEqual(2, systemEvents.Count);
+
+            Assert.IsTrue(systemEvents.Any(s => s.App == "A" && s.Msg == "B" && s.TimeStamp == timeStamp1 && s.SystemEventsID != 0));
+            Assert.IsTrue(systemEvents.Any(s => s.App == "2" && s.Msg == "3" && s.TimeStamp == timeStamp2 && s.SystemEventsID != 0));
+        }
+        #endregion
+
+        #region InsertSystemEvents
+        protected void BaseStationDatabase_InsertSystemEvents_Throws_If_Writes_Disabled()
+        {
+            _Database.InsertSystemEvent(new BaseStationSystemEvents() { App = "A", Msg = "D", TimeStamp = DateTime.Now });
+        }
+
+        protected void BaseStationDatabase_InsertSystemEvents_Correctly_Inserts_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var timestamp = DateTime.Now;
+            var systemEvent = new BaseStationSystemEvents() { App = "123456789.12345", Msg = new String('X', 100), TimeStamp = timestamp };
+
+            _Database.InsertSystemEvent(systemEvent);
+            Assert.AreNotEqual(0, systemEvent.SystemEventsID);
+
+            var readBack = _Database.GetSystemEvents()[0];
+            Assert.AreEqual(systemEvent.SystemEventsID, readBack.SystemEventsID);
+            Assert.AreEqual("123456789.12345", readBack.App);
+            Assert.AreEqual(new String('X', 100), readBack.Msg);
+            Assert.AreEqual(TruncateDate(timestamp), readBack.TimeStamp);
+        }
+
+        protected void BaseStationDatabase_InsertSystemEvents_Works_For_Different_Cultures()
+        {
+            foreach(var culture in _Cultures) {
+                using(var switcher = new CultureSwitcher(culture)) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    try {
+                        BaseStationDatabase_InsertSystemEvents_Correctly_Inserts_Record();
+                    } catch(Exception ex) {
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region UpdateSystemEvents
+        protected void BaseStationDatabase_UpdateSystemEvents_Throws_If_Writes_Disabled()
+        {
+            AddSystemEvent(new BaseStationSystemEvents() { App = "K", Msg = "Z", TimeStamp = DateTime.Now });
+            var update = _Database.GetSystemEvents()[0];
+            _Database.UpdateSystemEvent(update);
+        }
+
+        protected void BaseStationDatabase_UpdateSystemEvents_Correctly_Updates_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            AddSystemEvent(new BaseStationSystemEvents() { App = "K", Msg = "Z", TimeStamp = DateTime.Now });
+            var update = _Database.GetSystemEvents()[0];
+
+            var timestamp = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+            update.App = "123456789.12345";
+            update.Msg = new String('X', 100);
+            update.TimeStamp = timestamp;
+
+            _Database.UpdateSystemEvent(update);
+
+            var allSystemEvents = _Database.GetSystemEvents();
+            Assert.AreEqual(1, allSystemEvents.Count());
+
+            var readBack = allSystemEvents[0];
+            Assert.AreEqual(update.SystemEventsID, readBack.SystemEventsID);
+            Assert.AreEqual("123456789.12345", readBack.App);
+            Assert.AreEqual(new String('X', 100), readBack.Msg);
+            Assert.AreEqual(TruncateDate(timestamp), readBack.TimeStamp);
+        }
+
+        protected void BaseStationDatabase_UpdateSystemEvents_Works_For_Different_Cultures()
+        {
+            foreach(var culture in _Cultures) {
+                using(var switcher = new CultureSwitcher(culture)) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    try {
+                        BaseStationDatabase_UpdateSystemEvents_Correctly_Updates_Record();
+                    } catch(Exception ex) {
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region DeleteSystemEvents
+        protected void BaseStationDatabase_DeleteSystemEvents_Throws_If_Writes_Disabled()
+        {
+            AddSystemEvent(new BaseStationSystemEvents() { App = "K", Msg = "Z", TimeStamp = DateTime.Now });
+            var delete = _Database.GetSystemEvents()[0];
+            _Database.DeleteSystemEvent(delete);
+        }
+
+        protected void BaseStationDatabase_DeleteSystemEvents_Correctly_Deletes_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            AddSystemEvent(new BaseStationSystemEvents() { App = "K", Msg = "Z", TimeStamp = DateTime.Now });
+            var delete = _Database.GetSystemEvents()[0];
+
+            _Database.DeleteSystemEvent(delete);
+
+            Assert.AreEqual(0, _Database.GetSystemEvents().Count);
+        }
+        #endregion
+
+        #region GetLocations
+        protected void BaseStationDatabase_GetLocations_Retrieves_All_Records_In_Locations_Table()
+        {
+            ClearLocations();
+            AddLocation(new BaseStationLocation() { LocationName = "A", Latitude = 1.2, Longitude = 9.8, Altitude = 6.5 });
+            AddLocation(new BaseStationLocation() { LocationName = "B", Latitude = 6.5, Longitude = 4.3, Altitude = 2.1 });
+
+            var locations = _Database.GetLocations();
+            Assert.AreEqual(2, locations.Count);
+
+            Assert.IsTrue(locations.Any(n => n.LocationName == "A"));
+            Assert.IsTrue(locations.Any(n => n.LocationName == "B"));
+        }
+        #endregion
+
+        #region InsertLocation
+        protected void BaseStationDatabase_InsertLocation_Throws_If_Writes_Disabled()
+        {
+            _Database.InsertLocation(new BaseStationLocation() { LocationName = "X" });
+        }
+
+        protected void BaseStationDatabase_InsertLocation_Correctly_Inserts_Record()
+        {
+            ClearLocations();
+            _Database.WriteSupportEnabled = true;
+
+            var location = new BaseStationLocation() {
+                Altitude = 1.2468,
+                Latitude = 51.3921,
+                Longitude = 123.9132,
+                LocationName = "123456789.123456789.",
+            };
+
+            _Database.InsertLocation(location);
+            Assert.AreNotEqual(0, location.LocationID);
+
+            var readBack = _Database.GetLocations()[0];
+            Assert.AreEqual(location.LocationID, readBack.LocationID);
+            Assert.AreEqual(1.2468, readBack.Altitude, 0.00001);
+            Assert.AreEqual(51.3921, readBack.Latitude, 0.00001);
+            Assert.AreEqual(123.9132, readBack.Longitude, 0.00001);
+            Assert.AreEqual("123456789.123456789.", readBack.LocationName);
+        }
+
+        protected void BaseStationDatabase_InsertLocation_Works_For_Different_Cultures()
+        {
+            foreach(var culture in _Cultures) {
+                using(var switcher = new CultureSwitcher(culture)) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    try {
+                        BaseStationDatabase_InsertLocation_Correctly_Inserts_Record();
+                    } catch(Exception ex) {
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region UpdateLocation
+        protected void BaseStationDatabase_UpdateLocation_Throws_If_Writes_Disabled()
+        {
+            var location = new BaseStationLocation() { LocationName = "B" };
+            location.LocationID = (int)AddLocation(location);
+
+            location.LocationName = "C";
+            _Database.UpdateLocation(location);
+        }
+
+        protected void BaseStationDatabase_UpdateLocation_Correctly_Updates_Record()
+        {
+            ClearLocations();
+            _Database.WriteSupportEnabled = true;
+            AddLocation(new BaseStationLocation() {
+                Altitude = 1.2468,
+                Latitude = 51.3921,
+                Longitude = 123.9132,
+                LocationName = "123456789.123456789.",
+            });
+
+            var update = _Database.GetLocations()[0];
+            var originalId = update.LocationID;
+            update.Altitude = 4.6543;
+            update.Latitude = 7.6533;
+            update.Longitude = 9.2341;
+            update.LocationName = "Hello";
+
+            _Database.UpdateLocation(update);
+
+            var allLocations = _Database.GetLocations();
+            Assert.AreEqual(1, allLocations.Count);
+            var readBack = allLocations[0];
+            Assert.AreEqual(originalId, readBack.LocationID);
+            Assert.AreEqual(4.6543, readBack.Altitude, 0.00001);
+            Assert.AreEqual(7.6533, readBack.Latitude, 0.00001);
+            Assert.AreEqual(9.2341, readBack.Longitude, 0.00001);
+            Assert.AreEqual("Hello", readBack.LocationName);
+        }
+
+        protected void BaseStationDatabase_UpdateLocation_Works_For_Different_Cultures()
+        {
+            foreach(var culture in _Cultures) {
+                using(var switcher = new CultureSwitcher(culture)) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    try {
+                        BaseStationDatabase_UpdateLocation_Correctly_Updates_Record();
+                    } catch(Exception ex) {
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region DeleteLocation
+        protected void BaseStationDatabase_DeleteLocation_Throws_If_Writes_Disabled()
+        {
+            var location = new BaseStationLocation() { LocationName = "B" };
+            location.LocationID = (int)AddLocation(location);
+
+            _Database.DeleteLocation(location);
+        }
+
+        protected void BaseStationDatabase_DeleteLocation_Correctly_Deletes_Record()
+        {
+            ClearLocations();
+            _Database.WriteSupportEnabled = true;
+            AddLocation(new BaseStationLocation() {
+                Altitude = 1.2468,
+                Latitude = 51.3921,
+                Longitude = 123.9132,
+                LocationName = "123456789.123456789.",
+            });
+
+            var update = _Database.GetLocations()[0];
+            var originalId = update.LocationID;
+
+            _Database.DeleteLocation(update);
+
+            Assert.AreEqual(0, _Database.GetLocations().Count);
+        }
+        #endregion
+
+        #region GetSessions
+        protected void BaseStationDatabase_GetSessions_Retrieves_All_Records_In_Sessions_Table()
+        {
+            var location1 = PrepareLocationReference(new BaseStationLocation() { LocationName = "A" }).LocationID;
+            var location2 = PrepareLocationReference(new BaseStationLocation() { LocationName = "B" }).LocationID;
+            var startTime1 = DateTime.Now;
+            var startTime2 = DateTime.Now.AddYears(1);
+            var endTime1 = startTime1.AddSeconds(10);
+            var endTime2 = startTime2.AddMinutes(10);
+
+            AddSession(new BaseStationSession() { LocationID = location1, StartTime = startTime1, EndTime = endTime1 });
+            AddSession(new BaseStationSession() { LocationID = location2, StartTime = startTime2, EndTime = endTime2 });
+
+            var sessions = _Database.GetSessions();
+
+            Assert.AreEqual(2, sessions.Count);
+            Assert.IsTrue(sessions.Any(s => s.LocationID == location1 && s.StartTime == startTime1 && s.EndTime == endTime1 && s.SessionID != 0));
+            Assert.IsTrue(sessions.Any(s => s.LocationID == location2 && s.StartTime == startTime2 && s.EndTime == endTime2 && s.SessionID != 0));
+        }
+        #endregion
+
+        #region InsertSession
+        protected void BaseStationDatabase_InsertSession_Throws_If_Writes_Disabled()
+        {
+            _Database.InsertSession(new BaseStationSession());
+        }
+
+        protected void BaseStationDatabase_InsertSession_Inserts_Record_Correctly()
+        {
+            _Database.WriteSupportEnabled = true;
+            var locationId = (int)AddLocation(new BaseStationLocation() { LocationName = "X" });
+            var startTime = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+            var endTime = startTime.AddDays(1);
+
+            var record = new BaseStationSession() {
+                EndTime = endTime,
+                LocationID = locationId,
+                StartTime = startTime,
+            };
+
+            _Database.InsertSession(record);
+            Assert.AreNotEqual(0, record.SessionID);
+
+            var allSessions = _Database.GetSessions();
+            Assert.AreEqual(1, allSessions.Count);
+            var readBack = allSessions[0];
+            Assert.AreEqual(record.SessionID, readBack.SessionID);
+            Assert.AreEqual(locationId, readBack.LocationID);
+            Assert.AreEqual(TruncateDate(startTime), readBack.StartTime);
+            Assert.AreEqual(TruncateDate(endTime), readBack.EndTime);
+        }
+
+        protected void BaseStationDatabase_InsertSession_Works_For_Different_Cultures()
+        {
+            foreach(var culture in _Cultures) {
+                using(var switcher = new CultureSwitcher(culture)) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    try {
+                        BaseStationDatabase_InsertSession_Inserts_Record_Correctly();
+                    } catch(Exception ex) {
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
+                    }
+                }
+            }
+        }
+
+        protected void BaseStationDatabase_InsertSession_Copes_If_There_Are_No_Locations()
+        {
+            _Database.WriteSupportEnabled = true;
+            _Database.InsertSession(new BaseStationSession() {
+                LocationID = 0,
+                StartTime = DateTime.Now,
+            });
+
+            var readBack = _Database.GetSessions()[0];
+            Assert.AreEqual(0, readBack.LocationID);
+            Assert.AreNotEqual(0, readBack.SessionID);
+        }
+        #endregion
+
+        #region UpdateSession
+        protected void BaseStationDatabase_UpdateSession_Throws_If_Writes_Disabled()
+        {
+            var locationId = (int)AddLocation(new BaseStationLocation() { LocationName = "X" });
+            var session = new BaseStationSession() { LocationID = locationId, StartTime = DateTime.Now };
+            session.SessionID = (int)AddSession(session);
+
+            session.EndTime = DateTime.Now;
+            _Database.UpdateSession(session);
+        }
+
+        protected void BaseStationDatabase_UpdateSession_Correctly_Updates_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+            var locationId = (int)AddLocation(new BaseStationLocation() { LocationName = "X" });
+            var newLocationId = (int)AddLocation(new BaseStationLocation() { LocationName = "Y" });
+            AddSession(new BaseStationSession() {
+                EndTime = null,
+                LocationID = locationId,
+                StartTime = new DateTime(2001, 2, 3, 4, 5, 6, 789),
+            });
+
+            var update = _Database.GetSessions()[0];
+            var originalId = update.SessionID;
+            update.EndTime = new DateTime(2007, 8, 9, 10, 11, 12, 772);
+            update.LocationID = newLocationId;
+            update.StartTime = new DateTime(2006, 7, 8, 9, 10, 11, 124);
+
+            _Database.UpdateSession(update);
+
+            var allSessions = _Database.GetSessions();
+            Assert.AreEqual(1, allSessions.Count);
+            var readBack = allSessions[0];
+            Assert.AreEqual(originalId, readBack.SessionID);
+            Assert.AreEqual(new DateTime(2007, 8, 9, 10, 11, 12), readBack.EndTime);
+            Assert.AreEqual(newLocationId, readBack.LocationID);
+            Assert.AreEqual(new DateTime(2006, 7, 8, 9, 10, 11), readBack.StartTime);
+        }
+
+        protected void BaseStationDatabase_UpdateSession_Works_For_Different_Cultures()
+        {
+            foreach(var culture in _Cultures) {
+                using(var switcher = new CultureSwitcher(culture)) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    try {
+                        BaseStationDatabase_UpdateSession_Correctly_Updates_Record();
+                    } catch(Exception ex) {
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region DeleteSession
+        protected void BaseStationDatabase_DeleteSession_Throws_If_Writes_Disabled()
+        {
+            var locationId = (int)AddLocation(new BaseStationLocation() { LocationName = "X" });
+            var session = new BaseStationSession() { LocationID = locationId, StartTime = DateTime.Now };
+            session.SessionID = (int)AddSession(session);
+
+            _Database.DeleteSession(session);
+        }
+
+        protected void BaseStationDatabase_DeleteSession_Correctly_Deletes_Record()
+        {
+            _Database.WriteSupportEnabled = true;
+            var locationId = (int)AddLocation(new BaseStationLocation() { LocationName = "X" });
+            AddSession(new BaseStationSession() {
+                EndTime = null,
+                LocationID = locationId,
+                StartTime = new DateTime(2001, 2, 3, 4, 5, 6),
+            });
+
+            var record = _Database.GetSessions()[0];
+            _Database.DeleteSession(record);
+
+            Assert.AreEqual(0, _Database.GetSessions().Count);
         }
         #endregion
 
         #region Transactions
-        [TestMethod]
-        public void BaseStationDatabase_Transactions_Can_Commit_Operations_To_Database()
+        protected void BaseStationDatabase_Transactions_Can_Commit_Operations_To_Database()
         {
             _Database.WriteSupportEnabled = true;
             _Database.PerformInTransaction(() => {
@@ -5138,8 +4028,7 @@ namespace Test.VirtualRadar.Database
             Assert.AreNotEqual(0, aircraft.AircraftID);
         }
 
-        [TestMethod]
-        public void BaseStationDatabase_Transactions_Can_Rollback_Inserts()
+        protected void BaseStationDatabase_Transactions_Can_Rollback_Inserts()
         {
             _Database.WriteSupportEnabled = true;
             _Database.PerformInTransaction(() => {
@@ -5150,9 +4039,7 @@ namespace Test.VirtualRadar.Database
             Assert.AreEqual(null, _Database.GetAircraftByCode("Z"));
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void BaseStationDatabase_Transactions_Cannot_Be_Nested()
+        protected void BaseStationDatabase_Transactions_Cannot_Be_Nested()
         {
             _Database.WriteSupportEnabled = true;
             _Database.PerformInTransaction(() => {

@@ -4,7 +4,7 @@ BEGIN
     (
         [DBHistoryID]   INTEGER IDENTITY
        ,[TimeStamp]     DATETIME2 NOT NULL
-       ,[Description]   NVARCHAR(100) NOT NULL
+       ,[Description]   NVARCHAR(1000) NOT NULL
 
        ,CONSTRAINT [PK_DBHistory] PRIMARY KEY ([DBHistoryID])
     );

@@ -4,8 +4,8 @@ BEGIN
     (
         [SystemEventsID]    INTEGER IDENTITY
        ,[TimeStamp]         DATETIME2 NOT NULL
-       ,[App]               NVARCHAR(15) NOT NULL
-       ,[Msg]               NVARCHAR(100) NOT NULL
+       ,[App]               NVARCHAR(500) NOT NULL
+       ,[Msg]               NVARCHAR(2500) NOT NULL
 
        ,CONSTRAINT [PK_SystemEvents] PRIMARY KEY ([SystemEventsID])
     );

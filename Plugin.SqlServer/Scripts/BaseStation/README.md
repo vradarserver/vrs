@@ -11,10 +11,10 @@ database default. VRS should work with either case-sensitive or -insensitive
 collation.
 
 2. SQLite does not have strict field sizes in the same way that SQL Server
-does. Sizes have been suggested by the SQLite schema but some of them are
-too small (e.g. around 20 characters for manufacturer name). I have buffed
-some of the sizes to fit in with limits used in the VRS SDM site.
+does. In pre-release versions of the plugin I went with sizes that had been
+suggested by the SQLite schema but users quickly reported truncation errors.
+I have set the field sizes to be as large as I can get them without
+exceeding the page size.
 
-3. Following on from the point above, SQLite row IDs are technically 64-bit
-integers. However, VRS assumes that integer IDs are 32-bit. I have made them
-32-bit in the database.
+3. SQLite row IDs are 64-bit integers. However, VRS assumes that integer IDs
+are 32-bit. I have made them 32-bit in the database.

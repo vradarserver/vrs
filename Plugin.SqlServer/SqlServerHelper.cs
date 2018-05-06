@@ -146,8 +146,10 @@ namespace VirtualRadar.Plugin.SqlServer
                 }
             }
 
-            foreach(var element in collection) {
-                var row = result.Rows.Add(getValues(element));
+            if(collection != null) {
+                foreach(var element in collection) {
+                    var row = result.Rows.Add(getValues(element));
+                }
             }
 
             return result;

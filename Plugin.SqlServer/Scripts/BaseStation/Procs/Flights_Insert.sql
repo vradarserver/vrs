@@ -9,7 +9,7 @@ ALTER PROCEDURE [BaseStation].[Flights_Insert]
    ,@AircraftID          INT
    ,@StartTime           DATETIME2
    ,@EndTime             DATETIME2 = NULL
-   ,@Callsign            NVARCHAR(20) = NULL
+   ,@Callsign            NVARCHAR(80) = NULL
    ,@NumPosMsgRec        INT = NULL
    ,@NumADSBMsgRec       INT = NULL
    ,@NumModeSMsgRec      INT = NULL
@@ -40,7 +40,7 @@ ALTER PROCEDURE [BaseStation].[Flights_Insert]
    ,@HadAlert            BIT = 0
    ,@HadEmergency        BIT = 0
    ,@HadSPI              BIT = 0
-   ,@UserNotes           NVARCHAR(300) = NULL
+   ,@UserNotes           NVARCHAR(3000) = NULL
 AS
 BEGIN
     SET NOCOUNT ON;

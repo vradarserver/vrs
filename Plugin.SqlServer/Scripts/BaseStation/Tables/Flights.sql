@@ -7,7 +7,7 @@ BEGIN
        ,[AircraftID]            INTEGER NOT NULL CONSTRAINT [FK_Flights_Aircraft] FOREIGN KEY REFERENCES [BaseStation].[Aircraft] ([AircraftID]) ON DELETE CASCADE
        ,[StartTime]             DATETIME2 NOT NULL
        ,[EndTime]               DATETIME2
-       ,[Callsign]              NVARCHAR(20)
+       ,[Callsign]              NVARCHAR(80)
        ,[NumPosMsgRec]          INTEGER
        ,[NumADSBMsgRec]         INTEGER
        ,[NumModeSMsgRec]        INTEGER
@@ -38,7 +38,7 @@ BEGIN
        ,[HadAlert]              BIT NOT NULL CONSTRAINT [DF_Flights_HadAlert] DEFAULT 0
        ,[HadEmergency]          BIT NOT NULL CONSTRAINT [DF_Flights_HadEmergency] DEFAULT 0
        ,[HadSPI]                BIT NOT NULL CONSTRAINT [DF_Flights_HadSPI] DEFAULT 0
-       ,[UserNotes]             NVARCHAR(300)
+       ,[UserNotes]             NVARCHAR(3000)
 
        ,CONSTRAINT [PK_Flights] PRIMARY KEY ([FlightID])
     );

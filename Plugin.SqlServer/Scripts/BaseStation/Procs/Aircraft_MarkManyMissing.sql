@@ -41,5 +41,15 @@ BEGIN
     AND    ISNULL([aircraft].[Manufacturer], '') = ''
     AND    ISNULL([aircraft].[Type], '') = ''
     AND    ISNULL([aircraft].[RegisteredOwners], '') = '';
+
+    -- Update just the last modified time if the aircraft has details
+    UPDATE [aircraft]
+    SET    [LastModified] = @LocalNow
+    FROM   [BaseStation].[Aircraft] AS [aircraft]
+    JOIN   @Codes                   AS [code]     ON [aircraft].[ModeS] = [code].[ModeS]
+    WHERE  ISNULL([aircraft].[Registration], '') <> ''
+    OR     ISNULL([aircraft].[Manufacturer], '') <> ''
+    OR     ISNULL([aircraft].[Type], '') <> ''
+    OR     ISNULL([aircraft].[RegisteredOwners], '') <> '';
 END;
 GO

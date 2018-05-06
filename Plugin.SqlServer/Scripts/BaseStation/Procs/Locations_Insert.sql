@@ -5,7 +5,7 @@ END;
 GO
 
 ALTER PROCEDURE [BaseStation].[Locations_Insert]
-    @LocationName NVARCHAR(80)
+    @LocationName NVARCHAR(300)
    ,@Latitude     REAL
    ,@Longitude    REAL
    ,@Altitude     REAL

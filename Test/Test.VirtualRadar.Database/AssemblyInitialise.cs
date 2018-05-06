@@ -25,6 +25,7 @@ namespace Test.VirtualRadar.Database
         {
             global::VirtualRadar.SQLiteWrapper.Implementations.Register(Factory.Singleton);
             global::VirtualRadar.Database.Implementations.Register(Factory.Singleton);
+            global::VirtualRadar.Plugin.SqlServer.Plugin.RegisterTestableImplementations(Factory.Singleton);
         }
     }
 }

@@ -3,7 +3,7 @@ BEGIN
     CREATE TABLE [BaseStation].[Locations]
     (
         [LocationID]    INTEGER IDENTITY
-       ,[LocationName]  NVARCHAR(80) NOT NULL
+       ,[LocationName]  NVARCHAR(300) NOT NULL
        ,[Latitude]      REAL NOT NULL
        ,[Longitude]     REAL NOT NULL
        ,[Altitude]      REAL NOT NULL

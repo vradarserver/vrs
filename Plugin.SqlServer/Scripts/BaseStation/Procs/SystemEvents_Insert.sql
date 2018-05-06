@@ -6,8 +6,8 @@ GO
 
 ALTER PROCEDURE [BaseStation].[SystemEvents_Insert]
     @TimeStamp DATETIME2
-   ,@App       NVARCHAR(15)
-   ,@Msg       NVARCHAR(100)
+   ,@App       NVARCHAR(500)
+   ,@Msg       NVARCHAR(2500)
 AS
 BEGIN
     SET NOCOUNT ON;

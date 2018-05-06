@@ -7,53 +7,53 @@ GO
 ALTER PROCEDURE [BaseStation].[Aircraft_Insert]
     @FirstCreated     DATETIME2
    ,@LastModified     DATETIME2
-   ,@ModeS            NVARCHAR(6)
+   ,@ModeS            NVARCHAR(20)
    ,@ModeSCountry     NVARCHAR(80) = NULL
    ,@Country          NVARCHAR(80) = NULL
-   ,@Registration     NVARCHAR(20) = NULL
-   ,@CurrentRegDate   NVARCHAR(20) = NULL
-   ,@PreviousID       NVARCHAR(20) = NULL
-   ,@FirstRegDate     NVARCHAR(20) = NULL
-   ,@Status           NVARCHAR(10) = NULL
-   ,@DeRegDate        NVARCHAR(10) = NULL
+   ,@Registration     NVARCHAR(80) = NULL
+   ,@CurrentRegDate   NVARCHAR(80) = NULL
+   ,@PreviousID       NVARCHAR(80) = NULL
+   ,@FirstRegDate     NVARCHAR(80) = NULL
+   ,@Status           NVARCHAR(80) = NULL
+   ,@DeRegDate        NVARCHAR(80) = NULL
    ,@Manufacturer     NVARCHAR(80) = NULL
-   ,@ICAOTypeCode     NVARCHAR(10) = NULL
+   ,@ICAOTypeCode     NVARCHAR(80) = NULL
    ,@Type             NVARCHAR(80) = NULL
-   ,@SerialNo         NVARCHAR(30) = NULL
+   ,@SerialNo         NVARCHAR(80) = NULL
    ,@PopularName      NVARCHAR(80) = NULL
    ,@GenericName      NVARCHAR(80) = NULL
    ,@AircraftClass    NVARCHAR(80) = NULL
-   ,@Engines          NVARCHAR(40) = NULL
-   ,@OwnershipStatus  NVARCHAR(20) = NULL
+   ,@Engines          NVARCHAR(80) = NULL
+   ,@OwnershipStatus  NVARCHAR(80) = NULL
    ,@RegisteredOwners NVARCHAR(100) = NULL
-   ,@MTOW             NVARCHAR(20) = NULL
-   ,@TotalHours       NVARCHAR(20) = NULL
-   ,@YearBuilt        NVARCHAR(4) = NULL
-   ,@CofACategory     NVARCHAR(30) = NULL
-   ,@CofAExpiry       NVARCHAR(20) = NULL
+   ,@MTOW             NVARCHAR(80) = NULL
+   ,@TotalHours       NVARCHAR(80) = NULL
+   ,@YearBuilt        NVARCHAR(80) = NULL
+   ,@CofACategory     NVARCHAR(80) = NULL
+   ,@CofAExpiry       NVARCHAR(80) = NULL
    ,@UserNotes        NVARCHAR(300) = NULL
    ,@Interested       BIT = 0
-   ,@UserTag          NVARCHAR(80) = NULL
-   ,@InfoURL          NVARCHAR(150) = NULL
-   ,@PictureURL1      NVARCHAR(150) = NULL
-   ,@PictureURL2      NVARCHAR(150) = NULL
-   ,@PictureURL3      NVARCHAR(150) = NULL
+   ,@UserTag          NVARCHAR(300) = NULL
+   ,@InfoURL          NVARCHAR(300) = NULL
+   ,@PictureURL1      NVARCHAR(300) = NULL
+   ,@PictureURL2      NVARCHAR(300) = NULL
+   ,@PictureURL3      NVARCHAR(300) = NULL
    ,@UserBool1        BIT = 0
    ,@UserBool2        BIT = 0
    ,@UserBool3        BIT = 0
    ,@UserBool4        BIT = 0
    ,@UserBool5        BIT = 0
-   ,@UserString1      NVARCHAR(40) = NULL
-   ,@UserString2      NVARCHAR(40) = NULL
-   ,@UserString3      NVARCHAR(40) = NULL
-   ,@UserString4      NVARCHAR(40) = NULL
-   ,@UserString5      NVARCHAR(40) = NULL
+   ,@UserString1      NVARCHAR(MAX) = NULL
+   ,@UserString2      NVARCHAR(MAX) = NULL
+   ,@UserString3      NVARCHAR(MAX) = NULL
+   ,@UserString4      NVARCHAR(MAX) = NULL
+   ,@UserString5      NVARCHAR(MAX) = NULL
    ,@UserInt1         BIGINT = 0
    ,@UserInt2         BIGINT = 0
    ,@UserInt3         BIGINT = 0
    ,@UserInt4         BIGINT = 0
    ,@UserInt5         BIGINT = 0
-   ,@OperatorFlagCode NVARCHAR(20) = NULL
+   ,@OperatorFlagCode NVARCHAR(80) = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
