@@ -14,12 +14,12 @@ using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.Database;
 
-namespace VirtualRadar.Plugin.DatabaseEditor.Json
+namespace VirtualRadar.Plugin.DatabaseEditor.Models
 {
     /// <summary>
     /// Returned by a search for a single aircraft.
     /// </summary>
-    class SingleSearchResultsJson : ResponseJson
+    public class SingleSearchResultsJson : ResponseJson
     {
         /// <summary>
         /// Gets or sets the aircraft found in the search.

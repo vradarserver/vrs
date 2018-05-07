@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Web;
 using System.Windows.Forms;
 using InterfaceFactory;
@@ -23,7 +24,7 @@ using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
 using VirtualRadar.Localisation;
-using VirtualRadar.Plugin.DatabaseEditor.Json;
+using VirtualRadar.Plugin.DatabaseEditor.Models;
 
 namespace VirtualRadar.Plugin.DatabaseEditor
 {
@@ -33,7 +34,6 @@ namespace VirtualRadar.Plugin.DatabaseEditor
     /// </summary>
     public class Plugin : IPlugin
     {
-        #region Fields
         /// <summary>
         /// The plugin's protected folder.
         /// </summary>
@@ -55,23 +55,6 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// </summary>
         private IHtmlLocaliser _HtmlLocaliser;
 
-        /// <summary>
-        /// The object that handles access to the database.
-        /// </summary>
-        private IBaseStationDatabase _BaseStationDatabase;
-
-        /// <summary>
-        /// The number of searches made through the plugin.
-        /// </summary>
-        private int _SearchCount;
-
-        /// <summary>
-        /// The number of updates made through the plugin.
-        /// </summary>
-        private int _UpdateCount;
-        #endregion
-
-        #region Properties
         /// <summary>
         /// Gets the last initialised instance of the plugin object. At run-time only one plugin
         /// object gets created and initialised.
@@ -132,9 +115,26 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// See interface docs.
         /// </summary>
         public bool HasOptions { get { return true; } }
-        #endregion
 
-        #region Events
+        /// <summary>
+        /// The object that handles access to the database.
+        /// </summary>
+        internal IBaseStationDatabase BaseStationDatabase { get; private set; }
+
+        /// <summary>
+        /// The number of searches made through the plugin.
+        /// </summary>
+        private int _SearchCount;
+        internal int SearchCount => _SearchCount;
+        internal void IncrementSearchCount() => Interlocked.Increment(ref _SearchCount);
+
+        /// <summary>
+        /// The number of updates made through the plugin.
+        /// </summary>
+        private int _UpdateCount;
+        internal int UpdateCount => _UpdateCount;
+        internal void IncrementUpdateCount() => Interlocked.Increment(ref _UpdateCount);
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -163,9 +163,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
             ApplyOptions(args.Value);
             EventHelper.Raise(SettingsChanged, this, args);
         }
-        #endregion
 
-        #region Plugin methods
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -187,8 +185,8 @@ namespace VirtualRadar.Plugin.DatabaseEditor
             _HtmlLocaliser.Initialise();
             _HtmlLocaliser.AddResourceStrings(typeof(DatabaseEditorStrings));
 
-            _BaseStationDatabase = Factory.ResolveSingleton<IAutoConfigBaseStationDatabase>().Database;
-            _BaseStationDatabase.WriteSupportEnabled = true;
+            BaseStationDatabase = Factory.ResolveSingleton<IAutoConfigBaseStationDatabase>().Database;
+            BaseStationDatabase.WriteSupportEnabled = true;
 
             _WebSiteExtender = Factory.Resolve<IWebSiteExtender>();
             _WebSiteExtender.Enabled = false;
@@ -196,8 +194,6 @@ namespace VirtualRadar.Plugin.DatabaseEditor
             _WebSiteExtender.InjectContent = @"<script src=""script-DatabaseEditor/inject.js"" type=""text/javascript"">";
             _WebSiteExtender.InjectMapPages();
             _WebSiteExtender.InjectReportPages();
-            _WebSiteExtender.PageHandlers.Add(String.Format("/{0}/SingleAircraftSearch.json", ProtectedFolder), SingleAircraftSearch);
-            _WebSiteExtender.PageHandlers.Add(String.Format("/{0}/SingleAircraftSave.json", ProtectedFolder), SingleAircraftSave);
             _WebSiteExtender.Initialise(parameters);
             _WebSiteExtender.ProtectFolder(ProtectedFolder);
 
@@ -255,9 +251,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
             var webServer = Factory.ResolveSingleton<IAutoConfigWebServer>().WebServer;
             return String.Format("{0}/{1}", webServer.LocalAddress, "DatabaseEditor/index.html");
         }
-        #endregion
 
-        #region ApplyOptions
         /// <summary>
         /// Applies the settings from the currently loaded options.
         /// </summary>
@@ -281,75 +275,10 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// <summary>
         /// Shows the counters on the status description line.
         /// </summary>
-        private void UpdateStatusTotals()
+        internal void UpdateStatusTotals()
         {
             using(new CultureSwitcher()) {
                 StatusDescription = String.Format(DatabaseEditorStrings.StatusStatistics, _SearchCount, _UpdateCount);
-            }
-        }
-        #endregion
-
-        #region JSON page handlers - SingleAircraftSearch, SingleAircraftSave
-        /// <summary>
-        /// Handles searches for a single aircraft.
-        /// </summary>
-        /// <param name="args"></param>
-        private void SingleAircraftSearch(RequestReceivedEventArgs args)
-        {
-            if(args.Request.HttpMethod == "GET") {
-                var json = new SingleSearchResultsJson();
-                string icao = null;
-
-                try {
-                    icao = (args.QueryString["icao"] ?? "").ToUpper();
-                    if(icao != "") {
-                        json.Aircraft = _BaseStationDatabase.GetAircraftByCode(icao);
-                        ++_SearchCount;
-                        UpdateStatusTotals();
-                    }
-                } catch(Exception ex) {
-                    json.Exception = LogException(ex, "Exception caught during DatabaseEditor SingleAircraftSearch ({0}): {1}", icao, ex.ToString());
-                }
-
-                SendJsonResponse(args, json);
-            }
-        }
-
-        /// <summary>
-        /// Handles requests to save a single aircraft's data.
-        /// </summary>
-        /// <param name="args"></param>
-        private void SingleAircraftSave(RequestReceivedEventArgs args)
-        {
-            if(args.Request.HttpMethod == "POST") {
-                var json = new SingleAircraftSaveResultsJson();
-
-                try {
-                    var aircraftJson = args.Request.ReadBodyAsString(Encoding.UTF8);
-                    json.Aircraft = JsonConvert.DeserializeObject<BaseStationAircraft>(aircraftJson);
-
-                    if(json.Aircraft.ModeS != null && json.Aircraft.ModeS.Length == 6) {
-                        if(json.Aircraft.Registration != null)      json.Aircraft.Registration =     json.Aircraft.Registration.ToUpper();
-                        if(json.Aircraft.ICAOTypeCode != null)      json.Aircraft.ICAOTypeCode =     json.Aircraft.ICAOTypeCode.ToUpper();
-                        if(json.Aircraft.OperatorFlagCode != null)  json.Aircraft.OperatorFlagCode = json.Aircraft.OperatorFlagCode.ToUpper();
-                        json.Aircraft.LastModified = DateTime.Now;
-
-                        if(json.Aircraft.AircraftID == 0) {
-                            _BaseStationDatabase.InsertAircraft(json.Aircraft);
-                        } else {
-                            _BaseStationDatabase.UpdateAircraft(json.Aircraft);
-                        }
-
-                        ++_UpdateCount;
-                        UpdateStatusTotals();
-                    }
-                } catch(Exception ex) {
-                    var aircraftID = json.Aircraft == null ? "<no aircraft>" : json.Aircraft.AircraftID.ToString();
-                    var icao = json.Aircraft == null ? "<no aircraft>" : json.Aircraft.ModeS;
-                    json.Exception = LogException(ex, "Exception caught during DatabaseEditor SingleAircraftSave ({0}/{1}): {2}", aircraftID, icao, ex.ToString());
-                }
-
-                SendJsonResponse(args, json);
             }
         }
 
@@ -358,7 +287,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// </summary>
         /// <param name="ex"></param>
         /// <returns></returns>
-        private string LogException(Exception ex, string logMessage)
+        internal string LogException(Exception ex, string logMessage)
         {
             var log = Factory.ResolveSingleton<ILog>();
             log.WriteLine(logMessage);
@@ -373,28 +302,12 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// <param name="formatLogMessage"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        private string LogException(Exception ex, string formatLogMessage, params object[] args)
+        internal string LogException(Exception ex, string formatLogMessage, params object[] args)
         {
             var logMessage = String.Format(formatLogMessage, args);
             return LogException(ex, logMessage);
         }
 
-        /// <summary>
-        /// Sends the object passed across as a JSON response.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="args"></param>
-        /// <param name="json"></param>
-        private void SendJsonResponse<T>(RequestReceivedEventArgs args, T json)
-        {
-            var jsonText = JsonConvert.SerializeObject(json);
-            var responder = Factory.Resolve<IResponder>();
-            responder.SendText(args.Request, args.Response, jsonText, Encoding.UTF8, MimeType.Json);
-            args.Handled = true;
-        }
-        #endregion
-
-        #region Events subscribed
         /// <summary>
         /// Called whenever the web site fetches an HTML file from disk.
         /// </summary>
@@ -407,6 +320,5 @@ namespace VirtualRadar.Plugin.DatabaseEditor
                 e.Content = _HtmlLocaliser.Html(e.Content, e.Encoding);
             }
         }
-        #endregion
     }
 }

@@ -14,12 +14,12 @@ using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.Database;
 
-namespace VirtualRadar.Plugin.DatabaseEditor.Json
+namespace VirtualRadar.Plugin.DatabaseEditor.Models
 {
     /// <summary>
     /// The JSON returned by a save on a single aircraft.
     /// </summary>
-    class SingleAircraftSaveResultsJson : ResponseJson
+    public class SingleAircraftSaveResultsJson : ResponseJson
     {
         /// <summary>
         /// Gets or sets the aircraft saved.

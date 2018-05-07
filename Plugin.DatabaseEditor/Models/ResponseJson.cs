@@ -13,12 +13,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VirtualRadar.Plugin.DatabaseEditor.Json
+namespace VirtualRadar.Plugin.DatabaseEditor.Models
 {
     /// <summary>
     /// The base class for all JSON response objects.
     /// </summary>
-    class ResponseJson
+    public class ResponseJson
     {
         /// <summary>
         /// Gets or sets the message from the exception encountered during the processing of the request.
