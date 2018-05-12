@@ -23,9 +23,13 @@ namespace VirtualRadar.Plugin.DatabaseEditor.ApiControllers
             var result = new SingleSearchResultsJson();
             var plugin = Plugin.Singleton;
 
-            if(!String.IsNullOrEmpty(icao)) {
+            if(!String.IsNullOrEmpty(icao) && CustomConvert.Icao24(icao) > 0) {
                 try {
                     result.Aircraft = plugin.BaseStationDatabase.GetAircraftByCode(icao);
+                    if(result.Aircraft == null) {
+                        result.Aircraft = new BaseStationAircraft();
+                        result.Aircraft.ModeS = icao.ToUpper();
+                    }
                     plugin.IncrementSearchCount();
                     plugin.UpdateStatusTotals();
                 } catch(Exception ex) {
@@ -58,6 +62,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor.ApiControllers
                     }
 
                     if(aircraft.AircraftID == 0) {
+                        aircraft.FirstCreated = aircraft.LastModified;
                         plugin.BaseStationDatabase.InsertAircraft(aircraft);
                     } else {
                         plugin.BaseStationDatabase.UpdateAircraft(aircraft);
