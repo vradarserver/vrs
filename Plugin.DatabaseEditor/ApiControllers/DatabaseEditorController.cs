@@ -48,9 +48,9 @@ namespace VirtualRadar.Plugin.DatabaseEditor.ApiControllers
                 result.Aircraft = aircraft;
 
                 if(CustomConvert.Icao24(aircraft?.ModeS) > 0) {
-                    aircraft.Registration =     aircraft?.Registration.ToUpper().Trim();
-                    aircraft.ICAOTypeCode =     aircraft?.ICAOTypeCode.ToUpper().Trim();
-                    aircraft.OperatorFlagCode = aircraft?.OperatorFlagCode.ToUpper().Trim();
+                    aircraft.Registration =     aircraft?.Registration?.ToUpper().Trim();
+                    aircraft.ICAOTypeCode =     aircraft?.ICAOTypeCode?.ToUpper().Trim();
+                    aircraft.OperatorFlagCode = aircraft?.OperatorFlagCode?.ToUpper().Trim();
                     aircraft.LastModified = DateTime.Now;
 
                     if(aircraft.UserString1 == "Missing") {
