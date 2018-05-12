@@ -31,48 +31,6 @@ namespace VirtualRadar.Owin.Middleware
     class BasicAuthenticationFilter : IBasicAuthenticationFilter
     {
         /// <summary>
-        /// Extra information stored against cached users.
-        /// </summary>
-        class CachedUserTag
-        {
-            /// <summary>
-            /// Gets or sets the last known good password for the user.
-            /// </summary>
-            /// <remarks>
-            /// This will be null when the user is loaded from the database. The object using the cache can
-            /// store a known good password here to save having to always compare hashes.
-            /// </remarks>
-            public string LastKnownGoodPassword { get; set; }
-
-            /// <summary>
-            /// Gets or sets the cached principal object for the user.
-            /// </summary>
-            public GenericPrincipal Principal { get; set; }
-
-            /// <summary>
-            /// Returns true if the password either matches <see cref="LastKnownGoodPassword"/> or is good according
-            /// to the user manager. Updates <see cref="LastKnownGoodPassword"/>.
-            /// </summary>
-            /// <param name="userManager"></param>
-            /// <param name="user"></param>
-            /// <param name="password"></param>
-            /// <returns></returns>
-            public bool CheckPassword(IUserManager userManager, IUser user, string password)
-            {
-                var result = LastKnownGoodPassword != null && LastKnownGoodPassword == password;
-                if(!result) {
-                    result = userManager.PasswordMatches(user, password);
-
-                    if(result) {
-                        LastKnownGoodPassword = password;
-                    }
-                }
-
-                return result;
-            }
-        }
-
-        /// <summary>
         /// The shared configuration that we'll be using.
         /// </summary>
         private ISharedConfiguration _SharedConfiguration;
@@ -83,15 +41,9 @@ namespace VirtualRadar.Owin.Middleware
         private IAuthenticationConfiguration _AuthenticationConfiguration;
 
         /// <summary>
-        /// The manager that will authenticate users for us.
+        /// The object that holds all of the common code for basic authentication.
         /// </summary>
-        private IUserManager _UserManager;
-
-        /// <summary>
-        /// A cache of all web content users and administrators. Automatically refreshes when the
-        /// configuration changes.
-        /// </summary>
-        private IUserCache _UserCache;
+        private BasicAuthenticationHelper _BasicAuthentication;
 
         /// <summary>
         /// Creates a new object.
@@ -100,12 +52,7 @@ namespace VirtualRadar.Owin.Middleware
         {
             _SharedConfiguration = Factory.ResolveSingleton<ISharedConfiguration>();
             _AuthenticationConfiguration = Factory.ResolveSingleton<IAuthenticationConfiguration>();
-            _UserManager = Factory.ResolveSingleton<IUserManager>();
-
-            _UserCache = Factory.Resolve<IUserCache>();
-            _UserCache.LoadAllUsers = false;
-            _UserCache.TagAction = (cachedUser) => cachedUser.Tag = new CachedUserTag();
-            _UserCache.Refresh();
+            _BasicAuthentication = new BasicAuthenticationHelper();
         }
 
         /// <summary>
@@ -147,13 +94,13 @@ namespace VirtualRadar.Owin.Middleware
                 string userName = null;
                 string password = null;
                 if(ExtractCredentials(request, ref userName, ref password)) {
-                    var cachedUser = _UserCache.GetWebContentUser(userName);
-                    var cachedUserTag = (CachedUserTag)cachedUser?.Tag;
-                    var isPasswordValid = cachedUser != null && cachedUserTag.CheckPassword(_UserManager, cachedUser.User, password);
+                    var cachedUser = _BasicAuthentication.GetCachedUser(userName);
+                    var cachedUserTag = _BasicAuthentication.GetCachedUserTag(cachedUser);
+                    var isPasswordValid = _BasicAuthentication.IsPasswordValid(cachedUser, cachedUserTag, password);
 
                     result = isPasswordValid && (!isAdminOnlyPath || cachedUser.IsAdministrator);
                     if(result) {
-                        request.User = CreatePrincipal(cachedUser, cachedUserTag);
+                        request.User = _BasicAuthentication.CreatePrincipal(cachedUser, cachedUserTag);
                     }
                 }
 
@@ -175,56 +122,8 @@ namespace VirtualRadar.Owin.Middleware
         /// <returns></returns>
         private bool ExtractCredentials(OwinRequest request, ref string userName, ref string password)
         {
-            var result = false;
-
             var authorizationMime64 = request.Headers["Authorization"] ?? "";
-            if(authorizationMime64 != "") {
-                const string basicScheme = "Basic ";
-                if(authorizationMime64.StartsWith(basicScheme, StringComparison.OrdinalIgnoreCase)) {
-                    var usernamePassword = authorizationMime64.Substring(basicScheme.Length).Trim();
-                    var authorizationBytes = Convert.FromBase64String(usernamePassword);
-                    var authorization = Encoding.UTF8.GetString(authorizationBytes);
-
-                    var separatorPosn = authorization.IndexOf(':');
-                    if(separatorPosn != -1) {
-                        userName = authorization.Substring(0, separatorPosn);
-                        password = authorization.Substring(separatorPosn + 1);
-
-                        result = userName.Length > 0;
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Returns the principal cached against the user or creates and returns a new principal if the
-        /// user has not got a cached principal.
-        /// </summary>
-        /// <param name="cachedUser"></param>
-        /// <param name="cachedUserTag"></param>
-        /// <returns></returns>
-        private IPrincipal CreatePrincipal(CachedUser cachedUser, CachedUserTag cachedUserTag)
-        {
-            var result = cachedUserTag.Principal;
-
-            if(result == null) {
-                var roles = new List<string>();
-                roles.Add(Roles.User);
-                if(cachedUser.IsAdministrator) {
-                    roles.Add(Roles.Admin);
-                }
-
-                result = new GenericPrincipal(
-                    new GenericIdentity(cachedUser.User.LoginName, "basic"),
-                    roles.ToArray()
-                );
-
-                cachedUserTag.Principal = result;
-            }
-
-            return result;
+            return _BasicAuthentication.ExtractCredentials(authorizationMime64, ref userName, ref password);
         }
 
         /// <summary>

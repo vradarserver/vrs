@@ -167,6 +167,7 @@
     <Compile Include="Owin\IAudioServer.cs" />
     <Compile Include="Owin\IAuthenticationConfiguration.cs" />
     <Compile Include="Owin\IBasicAuthenticationFilter.cs" />
+    <Compile Include="Owin\IBasicAuthenticationWebApiMessageHandler.cs" />
     <Compile Include="Owin\IBundlerConfiguration.cs" />
     <Compile Include="Owin\IBundlerHtmlManipulator.cs" />
     <Compile Include="Owin\IBundlerServer.cs" />

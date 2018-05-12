@@ -89,6 +89,8 @@
     <Compile Include="Middleware\AccessFilter.cs" />
     <Compile Include="Middleware\AudioServer.cs" />
     <Compile Include="Middleware\BasicAuthenticationFilter.cs" />
+    <Compile Include="Middleware\BasicAuthenticationHelper.cs" />
+    <Compile Include="Middleware\BasicAuthenticationWebApiMessageHandler.cs" />
     <Compile Include="Middleware\BundlerServer.cs" />
     <Compile Include="Middleware\CorsHandler.cs" />
     <Compile Include="Middleware\ExceptionHandler.cs" />

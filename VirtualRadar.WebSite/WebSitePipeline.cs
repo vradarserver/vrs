@@ -114,6 +114,9 @@ namespace VirtualRadar.WebSite
                 defaults:       new { id = RouteParameter.Optional }
             );
 
+            var basicAuthenticationWebApiHandler = (System.Net.Http.DelegatingHandler)Factory.Resolve<IBasicAuthenticationWebApiMessageHandler>();
+            configuration.MessageHandlers.Add(basicAuthenticationWebApiHandler);
+
             configuration.Formatters.JsonFormatter.MediaTypeMappings.Add(
                 new RequestHeaderMapping(
                     "Accept",
