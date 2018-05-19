@@ -112,14 +112,12 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxEnableMinifying,                   r => r.EnableMinifying,                      (r,v) => r.EnableMinifying = v));
             AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxEnableCompression,                 r => r.EnableCompression,                    (r,v) => r.EnableCompression = v));
             AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxEnableCorsSupport,                 r => r.EnableCorsSupport,                    (r,v) => r.EnableCorsSupport = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
-            AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxUseGoogleMapsKeyWithLocalRequests, r => r.UseGoogleMapsAPIKeyWithLocalRequests, (r,v) => r.UseGoogleMapsAPIKeyWithLocalRequests = v));
             AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxUseSvgGraphicsOnDesktop,           r => r.UseSvgGraphicsOnDesktop,              (r,v) => r.UseSvgGraphicsOnDesktop = v));
             AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxUseSvgGraphicsOnMobile,            r => r.UseSvgGraphicsOnMobile,               (r,v) => r.UseSvgGraphicsOnMobile= v));
             AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(settings, checkBoxUseSvgGraphicsOnReports,           r => r.UseSvgGraphicsOnReports,              (r,v) => r.UseSvgGraphicsOnReports = v));
 
             AddControlBinder(new TextBoxStringBinder<GoogleMapSettings>(settings, textBoxDirectoryEntryKey, r => r.DirectoryEntryKey, (r,v) => r.DirectoryEntryKey = v));
             AddControlBinder(new TextBoxStringBinder<GoogleMapSettings>(settings, textBoxAllowCorsDomains,  r => r.AllowCorsDomains,  (r,v) => r.AllowCorsDomains = v));
-            AddControlBinder(new TextBoxStringBinder<GoogleMapSettings>(settings, textBoxGoogleMapsAPIKey,  r => r.GoogleMapsApiKey,  (r,v) => r.GoogleMapsApiKey = v));
 
             AddControlBinder(new NumericIntBinder<GoogleMapSettings>(settings, numericInitialRefresh,   r => r.InitialRefreshSeconds,   (r,v) => r.InitialRefreshSeconds = v));
             AddControlBinder(new NumericIntBinder<GoogleMapSettings>(settings, numericMinimumRefresh,   r => r.MinimumRefreshSeconds,   (r,v) => r.MinimumRefreshSeconds = v));
@@ -143,7 +141,6 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(comboBoxInitialSpeedUnits,                    Strings.InitialSpeedUnits,                  Strings.OptionsDescribeWebSiteInitialSpeedUnit);
             SetInlineHelp(checkBoxPreferIataAirportCodes,               Strings.PreferIataAirportCodes,             Strings.OptionsDescribeWebSitePreferIataAirportCodes);
             SetInlineHelp(checkBoxEnableCorsSupport,                    Strings.EnableCorsSupport,                  Strings.OptionsDescribeWebSiteEnableCorsSupport);
-            SetInlineHelp(checkBoxUseGoogleMapsKeyWithLocalRequests,    Strings.UseGoogleMapsKeyWithLocalRequests,  Strings.OptionsDescribeUseGoogleMapsKeyWithLocalRequests);
             SetInlineHelp(checkBoxUseSvgGraphicsOnDesktop,              Strings.UseSvgGraphicsOnDesktop,            Strings.OptionsDescribeUseSvgGraphicsOnDesktop);
             SetInlineHelp(checkBoxUseSvgGraphicsOnMobile,               Strings.UseSvgGraphicsOnMobile,             Strings.OptionsDescribeUseSvgGraphicsOnMobile);
             SetInlineHelp(checkBoxUseSvgGraphicsOnReports,              Strings.UseSvgGraphicsOnReports,            Strings.OptionsDescribeUseSvgGraphicsOnReports);
@@ -155,7 +152,6 @@ namespace VirtualRadar.WinForms.SettingPage
 
             SetInlineHelp(textBoxDirectoryEntryKey,         Strings.DirectoryEntryKey,  Strings.OptionsDescribeDirectoryEntryKey);
             SetInlineHelp(textBoxAllowCorsDomains,          Strings.AllowedCorsDomains, Strings.OptionsDescribeWebSiteAllowCorsDomains);
-            SetInlineHelp(textBoxGoogleMapsAPIKey,          Strings.GoogleMapsAPIKey,   Strings.OptionsDescribeGoogleMapsAPIKey);
         }
 
         /// <summary>

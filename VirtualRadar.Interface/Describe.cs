@@ -397,5 +397,19 @@ namespace VirtualRadar.Interface
         {
             return date.ToString("yyyy-MM-dd");
         }
+
+        /// <summary>
+        /// Returns a description of a map provider.
+        /// </summary>
+        /// <param name="mapProvider"></param>
+        /// <returns></returns>
+        public static string MapProvider(MapProvider mapProvider)
+        {
+            switch(mapProvider) {
+                case Settings.MapProvider.GoogleMaps:       return Strings.GoogleMaps;
+                case Settings.MapProvider.OpenStreetMap:    return Strings.OpenStreetMap;
+                default:                                    throw new NotImplementedException();
+            }
+        }
     }
 }

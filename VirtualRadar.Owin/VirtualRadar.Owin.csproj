@@ -105,6 +105,7 @@
     <Compile Include="StreamManipulator\BundlerHtmlManipulator.cs" />
     <Compile Include="StreamManipulator\HtmlManipulator.cs" />
     <Compile Include="StreamManipulator\JavascriptManipulator.cs" />
+    <Compile Include="StreamManipulator\MapPluginHtmlManipulator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

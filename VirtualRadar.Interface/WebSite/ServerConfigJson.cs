@@ -192,6 +192,12 @@ namespace VirtualRadar.Interface.WebSite
         public bool UseSvgGraphicsOnReports { get; set; }
 
         /// <summary>
+        /// Gets or sets the Leaflet-compatible URL for the OpenStreetMap tile server to use.
+        /// </summary>
+        [DataMember]
+        public string OpenStreetMapTileServerUrl { get; set; }
+
+        /// <summary>
         /// Returns a new model.
         /// </summary>
         /// <param name="isLocalAddress"></param>
@@ -223,6 +229,7 @@ namespace VirtualRadar.Interface.WebSite
                 IsAudioEnabled =                        configuration.AudioSettings.Enabled,
                 IsLocalAddress =                        isLocalAddress,
                 IsMono =                                isMono,
+                OpenStreetMapTileServerUrl =            configuration.GoogleMapSettings.OpenStreetMapTileServerUrl,
                 UseMarkerLabels =                       isMono ? configuration.MonoSettings.UseMarkerLabels : false,
                 UseSvgGraphicsOnDesktop =               configuration.GoogleMapSettings.UseSvgGraphicsOnDesktop,
                 UseSvgGraphicsOnMobile =                configuration.GoogleMapSettings.UseSvgGraphicsOnMobile,

@@ -2766,4 +2766,17 @@ Show this message.</value>
   <data name="WebAddressRequired" xml:space="preserve">
     <value>The web address must be supplied</value>
   </data>
+  <data name="MapProvider" xml:space="preserve">
+    <value>Map provider</value>
+  </data>
+  <data name="MapProviderTitle" xml:space="preserve">
+    <value>Map Provider</value>
+  </data>
+  <data name="OpenStreetMap" xml:space="preserve">
+    <value>OpenStreetMap</value>
+    <comment>The site seems to be all one word</comment>
+  </data>
+  <data name="OpenStreetMapTileServerUrl" xml:space="preserve">
+    <value>OpenStreetMap tile server URL</value>
+  </data>
 </root>

@@ -183,6 +183,7 @@
     <Compile Include="Owin\IImageServer.cs" />
     <Compile Include="Owin\IImageServerConfiguration.cs" />
     <Compile Include="Owin\IJavascriptManipulator.cs" />
+    <Compile Include="Owin\IMapPluginHtmlManipulator.cs" />
     <Compile Include="Owin\IPipeline.cs" />
     <Compile Include="Owin\IPipelineConfiguration.cs" />
     <Compile Include="Owin\IRedirectionFilter.cs" />
@@ -227,6 +228,7 @@
     <Compile Include="Settings\CachedUser.cs" />
     <Compile Include="Settings\ISharedConfigurationSubscriber.cs" />
     <Compile Include="Settings\IUserCache.cs" />
+    <Compile Include="Settings\MapProvider.cs" />
     <Compile Include="Settings\MergedFeedReceiver.cs" />
     <Compile Include="Settings\ReceiverUsage.cs" />
     <Compile Include="StandingData\EnginePlacement.cs" />

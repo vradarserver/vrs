@@ -224,5 +224,14 @@ namespace Test.VirtualRadar.WebSite
 
             _HtmlManipulatorConfiguration.Verify(r => r.AddTextResponseManipulator<IBundlerHtmlManipulator>(), Times.Once());
         }
+
+        [TestMethod]
+        public void WebSitePipeline_Register_Adds_MapPluginHtmlManipulator_To_Html_Manipulators()
+        {
+            var webAppConfiguration = Factory.Resolve<IWebAppConfiguration>();
+            _Pipeline.Register(webAppConfiguration);
+
+            _HtmlManipulatorConfiguration.Verify(r => r.AddTextResponseManipulator<IMapPluginHtmlManipulator>(), Times.Once());
+        }
     }
 }

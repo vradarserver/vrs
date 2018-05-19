@@ -78,6 +78,7 @@ namespace Test.VirtualRadar.Interface.WebSite
             TestUtilities.TestProperty(json, r => r.IsLocalAddress, false);
             TestUtilities.TestProperty(json, r => r.IsMono, false);
             TestUtilities.TestProperty(json, r => r.MinimumRefreshSeconds, 0, 123);
+            TestUtilities.TestProperty(json, r => r.OpenStreetMapTileServerUrl, null, "Abc");
             TestUtilities.TestProperty(json, r => r.RefreshSeconds, 0, 123);
             TestUtilities.TestProperty(json, r => r.UseMarkerLabels, false);
             TestUtilities.TestProperty(json, r => r.UseSvgGraphicsOnDesktop, false);
@@ -192,32 +193,33 @@ namespace Test.VirtualRadar.Interface.WebSite
                 _RuntimeEnvironment.Setup(r => r.IsMono).Returns(isMono);
 
                 switch(configProperty) {
-                    case "VrsVersion":              _ApplicationInformation.Setup(r => r.ShortVersion).Returns(worksheet.String("Value")); break;
-                    case "IsLocalAddress":          isLocalAddress = worksheet.Bool("Value"); break;
-                    case "IsMono":                  break;
-                    case "InitialMapLatitude":      _Configuration.GoogleMapSettings.InitialMapLatitude = worksheet.Double("Value"); break;
-                    case "InitialMapLongitude":     _Configuration.GoogleMapSettings.InitialMapLongitude = worksheet.Double("Value"); break;
-                    case "InitialMapType":          _Configuration.GoogleMapSettings.InitialMapType = worksheet.EString("Value"); break;
-                    case "InitialMapZoom":          _Configuration.GoogleMapSettings.InitialMapZoom = worksheet.Int("Value"); break;
-                    case "InitialRefreshSeconds":   _Configuration.GoogleMapSettings.InitialRefreshSeconds = worksheet.Int("Value"); break;
-                    case "InitialSettings":         _Configuration.GoogleMapSettings.InitialSettings = worksheet.EString("Value"); break;
-                    case "MinimumRefreshSeconds":   _Configuration.GoogleMapSettings.MinimumRefreshSeconds = worksheet.Int("Value"); break;
-                    case "InitialDistanceUnit":     _Configuration.GoogleMapSettings.InitialDistanceUnit = worksheet.ParseEnum<DistanceUnit>("Value"); break;
-                    case "InitialHeightUnit":       _Configuration.GoogleMapSettings.InitialHeightUnit = worksheet.ParseEnum<HeightUnit>("Value"); break;
-                    case "InitialSpeedUnit":        _Configuration.GoogleMapSettings.InitialSpeedUnit = worksheet.ParseEnum<SpeedUnit>("Value"); break;
-                    case "CanRunReports":           _Configuration.InternetClientSettings.CanRunReports = worksheet.Bool("Value"); break;
-                    case "CanShowPinText":          _Configuration.InternetClientSettings.CanShowPinText = worksheet.Bool("Value"); break;
-                    case "TimeoutMinutes":          _Configuration.InternetClientSettings.TimeoutMinutes = worksheet.Int("Value"); break;
-                    case "CanPlayAudio":            _Configuration.InternetClientSettings.CanPlayAudio = worksheet.Bool("Value"); break;
-                    case "CanSubmitRoutes":         _Configuration.InternetClientSettings.CanSubmitRoutes = worksheet.Bool("Value"); break;
-                    case "CanShowPictures":         _Configuration.InternetClientSettings.CanShowPictures = worksheet.Bool("Value"); break;
-                    case "AudioEnabled":            _Configuration.AudioSettings.Enabled = worksheet.Bool("Value"); break;
-                    case "CanShowPolarPlots":       _Configuration.InternetClientSettings.CanShowPolarPlots = worksheet.Bool("Value"); break;
-                    case "UseMarkerLabels":         _Configuration.MonoSettings.UseMarkerLabels = worksheet.Bool("Value"); break;
-                    case "UseSvgGraphicsOnDesktop": _Configuration.GoogleMapSettings.UseSvgGraphicsOnDesktop = worksheet.Bool("Value"); break;
-                    case "UseSvgGraphicsOnMobile":  _Configuration.GoogleMapSettings.UseSvgGraphicsOnMobile = worksheet.Bool("Value"); break;
-                    case "UseSvgGraphicsOnReports": _Configuration.GoogleMapSettings.UseSvgGraphicsOnReports = worksheet.Bool("Value"); break;
-                    default:                        throw new NotImplementedException();
+                    case "VrsVersion":                  _ApplicationInformation.Setup(r => r.ShortVersion).Returns(worksheet.String("Value")); break;
+                    case "IsLocalAddress":              isLocalAddress = worksheet.Bool("Value"); break;
+                    case "IsMono":                      break;
+                    case "InitialMapLatitude":          _Configuration.GoogleMapSettings.InitialMapLatitude = worksheet.Double("Value"); break;
+                    case "InitialMapLongitude":         _Configuration.GoogleMapSettings.InitialMapLongitude = worksheet.Double("Value"); break;
+                    case "InitialMapType":              _Configuration.GoogleMapSettings.InitialMapType = worksheet.EString("Value"); break;
+                    case "InitialMapZoom":              _Configuration.GoogleMapSettings.InitialMapZoom = worksheet.Int("Value"); break;
+                    case "InitialRefreshSeconds":       _Configuration.GoogleMapSettings.InitialRefreshSeconds = worksheet.Int("Value"); break;
+                    case "InitialSettings":             _Configuration.GoogleMapSettings.InitialSettings = worksheet.EString("Value"); break;
+                    case "MinimumRefreshSeconds":       _Configuration.GoogleMapSettings.MinimumRefreshSeconds = worksheet.Int("Value"); break;
+                    case "InitialDistanceUnit":         _Configuration.GoogleMapSettings.InitialDistanceUnit = worksheet.ParseEnum<DistanceUnit>("Value"); break;
+                    case "InitialHeightUnit":           _Configuration.GoogleMapSettings.InitialHeightUnit = worksheet.ParseEnum<HeightUnit>("Value"); break;
+                    case "InitialSpeedUnit":            _Configuration.GoogleMapSettings.InitialSpeedUnit = worksheet.ParseEnum<SpeedUnit>("Value"); break;
+                    case "CanRunReports":               _Configuration.InternetClientSettings.CanRunReports = worksheet.Bool("Value"); break;
+                    case "CanShowPinText":              _Configuration.InternetClientSettings.CanShowPinText = worksheet.Bool("Value"); break;
+                    case "TimeoutMinutes":              _Configuration.InternetClientSettings.TimeoutMinutes = worksheet.Int("Value"); break;
+                    case "CanPlayAudio":                _Configuration.InternetClientSettings.CanPlayAudio = worksheet.Bool("Value"); break;
+                    case "CanSubmitRoutes":             _Configuration.InternetClientSettings.CanSubmitRoutes = worksheet.Bool("Value"); break;
+                    case "CanShowPictures":             _Configuration.InternetClientSettings.CanShowPictures = worksheet.Bool("Value"); break;
+                    case "AudioEnabled":                _Configuration.AudioSettings.Enabled = worksheet.Bool("Value"); break;
+                    case "CanShowPolarPlots":           _Configuration.InternetClientSettings.CanShowPolarPlots = worksheet.Bool("Value"); break;
+                    case "UseMarkerLabels":             _Configuration.MonoSettings.UseMarkerLabels = worksheet.Bool("Value"); break;
+                    case "UseSvgGraphicsOnDesktop":     _Configuration.GoogleMapSettings.UseSvgGraphicsOnDesktop = worksheet.Bool("Value"); break;
+                    case "UseSvgGraphicsOnMobile":      _Configuration.GoogleMapSettings.UseSvgGraphicsOnMobile = worksheet.Bool("Value"); break;
+                    case "UseSvgGraphicsOnReports":     _Configuration.GoogleMapSettings.UseSvgGraphicsOnReports = worksheet.Bool("Value"); break;
+                    case "OpenStreetMapTileServerUrl":  _Configuration.GoogleMapSettings.OpenStreetMapTileServerUrl = worksheet.EString("Value"); break;
+                    default:                            throw new NotImplementedException();
                 }
             }
 
@@ -225,32 +227,33 @@ namespace Test.VirtualRadar.Interface.WebSite
 
             var propertyName = worksheet.String("ConfigProperty");
             switch(propertyName) {
-                case "VrsVersion":                  Assert.AreEqual(worksheet.EString("JsonValue"), model.VrsVersion); break;
-                case "IsLocalAddress":              Assert.AreEqual(worksheet.Bool("JsonValue"), model.IsLocalAddress); break;
-                case "IsMono":                      Assert.AreEqual(worksheet.Bool("JsonValue"), model.IsMono); break;
-                case "InitialMapLatitude":          Assert.AreEqual(worksheet.Double("JsonValue"), model.InitialLatitude); break;
-                case "InitialMapLongitude":         Assert.AreEqual(worksheet.Double("JsonValue"), model.InitialLongitude); break;
-                case "InitialMapType":              Assert.AreEqual(worksheet.EString("JsonValue"), model.InitialMapType); break;
-                case "InitialMapZoom":              Assert.AreEqual(worksheet.Int("JsonValue"), model.InitialZoom); break;
-                case "InitialRefreshSeconds":       Assert.AreEqual(worksheet.Int("JsonValue"), model.RefreshSeconds); break;
-                case "InitialSettings":             Assert.AreEqual(worksheet.EString("JsonValue"), model.InitialSettings); break;
-                case "MinimumRefreshSeconds":       Assert.AreEqual(worksheet.Int("JsonValue"), model.MinimumRefreshSeconds); break;
-                case "InitialDistanceUnit":         Assert.AreEqual(worksheet.String("JsonValue"), model.InitialDistanceUnit); break;
-                case "InitialHeightUnit":           Assert.AreEqual(worksheet.String("JsonValue"), model.InitialHeightUnit); break;
-                case "InitialSpeedUnit":            Assert.AreEqual(worksheet.String("JsonValue"), model.InitialSpeedUnit); break;
-                case "CanRunReports":               Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientCanRunReports); break;
-                case "CanShowPinText":              Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientCanShowPinText); break;
-                case "TimeoutMinutes":              Assert.AreEqual(worksheet.Int("JsonValue"), model.InternetClientTimeoutMinutes); break;
-                case "CanPlayAudio":                Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientsCanPlayAudio); break;
-                case "CanSubmitRoutes":             Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientsCanSubmitRoutes); break;
-                case "CanShowPictures":             Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientsCanSeeAircraftPictures); break;
-                case "AudioEnabled":                Assert.AreEqual(worksheet.Bool("JsonValue"), model.IsAudioEnabled); break;
-                case "CanShowPolarPlots":           Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientsCanSeePolarPlots); break;
-                case "UseMarkerLabels":             Assert.AreEqual(worksheet.Bool("JsonValue"), model.UseMarkerLabels); break;
-                case "UseSvgGraphicsOnDesktop":     Assert.AreEqual(worksheet.Bool("JsonValue"), model.UseSvgGraphicsOnDesktop); break;
-                case "UseSvgGraphicsOnMobile":      Assert.AreEqual(worksheet.Bool("JsonValue"), model.UseSvgGraphicsOnMobile); break;
-                case "UseSvgGraphicsOnReports":     Assert.AreEqual(worksheet.Bool("JsonValue"), model.UseSvgGraphicsOnReports); break;
-                default:                            throw new NotImplementedException();
+                case "VrsVersion":                      Assert.AreEqual(worksheet.EString("JsonValue"), model.VrsVersion); break;
+                case "IsLocalAddress":                  Assert.AreEqual(worksheet.Bool("JsonValue"), model.IsLocalAddress); break;
+                case "IsMono":                          Assert.AreEqual(worksheet.Bool("JsonValue"), model.IsMono); break;
+                case "InitialMapLatitude":              Assert.AreEqual(worksheet.Double("JsonValue"), model.InitialLatitude); break;
+                case "InitialMapLongitude":             Assert.AreEqual(worksheet.Double("JsonValue"), model.InitialLongitude); break;
+                case "InitialMapType":                  Assert.AreEqual(worksheet.EString("JsonValue"), model.InitialMapType); break;
+                case "InitialMapZoom":                  Assert.AreEqual(worksheet.Int("JsonValue"), model.InitialZoom); break;
+                case "InitialRefreshSeconds":           Assert.AreEqual(worksheet.Int("JsonValue"), model.RefreshSeconds); break;
+                case "InitialSettings":                 Assert.AreEqual(worksheet.EString("JsonValue"), model.InitialSettings); break;
+                case "MinimumRefreshSeconds":           Assert.AreEqual(worksheet.Int("JsonValue"), model.MinimumRefreshSeconds); break;
+                case "InitialDistanceUnit":             Assert.AreEqual(worksheet.String("JsonValue"), model.InitialDistanceUnit); break;
+                case "InitialHeightUnit":               Assert.AreEqual(worksheet.String("JsonValue"), model.InitialHeightUnit); break;
+                case "InitialSpeedUnit":                Assert.AreEqual(worksheet.String("JsonValue"), model.InitialSpeedUnit); break;
+                case "CanRunReports":                   Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientCanRunReports); break;
+                case "CanShowPinText":                  Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientCanShowPinText); break;
+                case "TimeoutMinutes":                  Assert.AreEqual(worksheet.Int("JsonValue"), model.InternetClientTimeoutMinutes); break;
+                case "CanPlayAudio":                    Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientsCanPlayAudio); break;
+                case "CanSubmitRoutes":                 Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientsCanSubmitRoutes); break;
+                case "CanShowPictures":                 Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientsCanSeeAircraftPictures); break;
+                case "AudioEnabled":                    Assert.AreEqual(worksheet.Bool("JsonValue"), model.IsAudioEnabled); break;
+                case "CanShowPolarPlots":               Assert.AreEqual(worksheet.Bool("JsonValue"), model.InternetClientsCanSeePolarPlots); break;
+                case "UseMarkerLabels":                 Assert.AreEqual(worksheet.Bool("JsonValue"), model.UseMarkerLabels); break;
+                case "UseSvgGraphicsOnDesktop":         Assert.AreEqual(worksheet.Bool("JsonValue"), model.UseSvgGraphicsOnDesktop); break;
+                case "UseSvgGraphicsOnMobile":          Assert.AreEqual(worksheet.Bool("JsonValue"), model.UseSvgGraphicsOnMobile); break;
+                case "UseSvgGraphicsOnReports":         Assert.AreEqual(worksheet.Bool("JsonValue"), model.UseSvgGraphicsOnReports); break;
+                case "OpenStreetMapTileServerUrl":      Assert.AreEqual(worksheet.EString("JsonValue"), model.OpenStreetMapTileServerUrl); break;
+                default:                                throw new NotImplementedException();
             }
         }
     }

@@ -23,6 +23,16 @@ namespace VirtualRadar.Interface.Settings
     /// </summary>
     public class GoogleMapSettings : INotifyPropertyChanged
     {
+        private MapProvider _MapProvider;
+        /// <summary>
+        /// Gets or sets the map provider to use.
+        /// </summary>
+        public MapProvider MapProvider
+        {
+            get { return _MapProvider; }
+            set { SetField(ref _MapProvider, value, nameof(MapProvider)); }
+        }
+
         private string _InitialSettings;
         /// <summary>
         /// Gets or sets the initial settings to use for new visitors.
@@ -273,6 +283,16 @@ namespace VirtualRadar.Interface.Settings
         {
             get { return _UseGoogleMapsAPIKeyWithLocalRequests; }
             set { SetField(ref _UseGoogleMapsAPIKeyWithLocalRequests, value, nameof(UseGoogleMapsAPIKeyWithLocalRequests)); }
+        }
+
+        private string _OpenStreetMapTileServerUrl;
+        /// <summary>
+        /// Gets or sets the tile server to use when using the OpenStreetMap provider.
+        /// </summary>
+        public string OpenStreetMapTileServerUrl
+        {
+            get { return _OpenStreetMapTileServerUrl; }
+            set { SetField(ref _OpenStreetMapTileServerUrl, value, nameof(OpenStreetMapTileServerUrl)); }
         }
 
         private bool _UseSvgGraphicsOnDesktop;

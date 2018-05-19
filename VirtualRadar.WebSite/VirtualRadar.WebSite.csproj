@@ -155,6 +155,12 @@
   <ItemGroup>
     <Content Include="Site\Checksums.txt" />
     <Content Include="Site\Web\css\jquery-ui\images\ui-bg_flat_thick_40_eeeeee_40x40.png" />
+    <Content Include="Site\Web\css\leaflet\images\layers-2x.png" />
+    <Content Include="Site\Web\css\leaflet\images\layers.png" />
+    <Content Include="Site\Web\css\leaflet\images\marker-icon-2x.png" />
+    <Content Include="Site\Web\css\leaflet\images\marker-icon.png" />
+    <Content Include="Site\Web\css\leaflet\images\marker-shadow.png" />
+    <Content Include="Site\Web\css\leaflet\leaflet.css" />
     <Content Include="Site\Web\css\vrs-print.css" />
     <Content Include="Site\Web\fonts\icomoon-content.txt" />
     <Content Include="Site\Web\fsx.html" />
@@ -268,6 +274,8 @@
     <Content Include="Site\Web\script\jquiplugin\jqueryuihelper.js.map">
       <DependentUpon>jqueryuihelper.ts</DependentUpon>
     </Content>
+    <Content Include="Site\Web\script\leaflet-src.js" />
+    <Content Include="Site\Web\script\leaflet.js" />
     <Content Include="Site\Web\script\markercluster.js" />
     <Content Include="Site\Web\script\modernizr.js" />
     <Content Include="Site\Web\script\vrs\airportDataApi.js">
@@ -553,11 +561,17 @@
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftList.js.map">
       <DependentUpon>jquery.vrs.aircraftList.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.map.js">
-      <DependentUpon>jquery.vrs.map.ts</DependentUpon>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.map-google-maps.js">
+      <DependentUpon>jquery.vrs.map-google-maps.ts</DependentUpon>
     </Content>
-    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.map.js.map">
-      <DependentUpon>jquery.vrs.map.ts</DependentUpon>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.map-google-maps.js.map">
+      <DependentUpon>jquery.vrs.map-google-maps.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.map-openstreetmap.js">
+      <DependentUpon>jquery.vrs.map-openstreetmap.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\jquiplugin\jquery.vrs.map-openstreetmap.js.map">
+      <DependentUpon>jquery.vrs.map-openstreetmap.ts</DependentUpon>
     </Content>
     <Content Include="Site\Web\script\jquiplugin\jquery.vrs.optionDialog.js">
       <DependentUpon>jquery.vrs.optionDialog.ts</DependentUpon>
@@ -847,10 +861,14 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>translations.d.ts</LastGenOutput>
     </None>
+    <None Include="Site\Web\script\leaflet-src.js.map" />
+    <None Include="Site\Web\script\leaflet.js.map" />
     <None Include="_PostBuild.bat" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Site\typings\globalOptions.d.ts" />
+    <TypeScriptCompile Include="Site\typings\geojson.d.ts" />
+    <TypeScriptCompile Include="Site\typings\leaflet.d.ts" />
     <TypeScriptCompile Include="Site\typings\markerclustererplus.d.ts" />
     <TypeScriptCompile Include="Site\typings\modernizr-tests.d.ts" />
     <TypeScriptCompile Include="Site\typings\modernizr.d.ts" />
@@ -861,7 +879,8 @@
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftInfoWindow.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftLinks.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftList.ts" />
-    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.map.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.map-google-maps.ts" />
+    <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.map-openstreetmap.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.mapNextPageButton.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.menu.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.optionDialog.ts" />

@@ -54,6 +54,7 @@ namespace VirtualRadar.Owin
             factory.Register<Interface.Owin.IBundlerHtmlManipulator, StreamManipulator.BundlerHtmlManipulator>();
             factory.Register<Interface.Owin.IHtmlManipulator, StreamManipulator.HtmlManipulator>();
             factory.Register<Interface.Owin.IJavascriptManipulator, StreamManipulator.JavascriptManipulator>();
+            factory.Register<Interface.Owin.IMapPluginHtmlManipulator, StreamManipulator.MapPluginHtmlManipulator>();
 
             factory.Register<Interface.Owin.ILoopbackHost, LoopbackHost>();
             factory.Register<Interface.Owin.IStandardPipeline, StandardPipeline>();

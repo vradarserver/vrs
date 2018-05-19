@@ -57,7 +57,9 @@ namespace VirtualRadar.WebSite
             webAppConfiguration.AddStreamManipulator(Factory.Resolve<IHtmlManipulator>(),       StreamManipulatorPriority.HtmlManipulator);
             webAppConfiguration.AddStreamManipulator(Factory.Resolve<IJavascriptManipulator>(), StreamManipulatorPriority.JavascriptManipulator);
 
-            Factory.Resolve<IHtmlManipulatorConfiguration>().AddTextResponseManipulator<IBundlerHtmlManipulator>();
+            var htmlManipulatorConfiguration = Factory.ResolveSingleton<IHtmlManipulatorConfiguration>();
+            htmlManipulatorConfiguration.AddTextResponseManipulator<IMapPluginHtmlManipulator>();
+            htmlManipulatorConfiguration.AddTextResponseManipulator<IBundlerHtmlManipulator>();
         }
 
         private void UseExceptionHandler(IAppBuilder app)

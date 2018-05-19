@@ -246,6 +246,8 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(false, readBack.GoogleMapSettings.UseSvgGraphicsOnDesktop);
                         Assert.AreEqual(false, readBack.GoogleMapSettings.UseSvgGraphicsOnMobile);
                         Assert.AreEqual(false, readBack.GoogleMapSettings.UseSvgGraphicsOnReports);
+                        Assert.AreEqual(MapProvider.OpenStreetMap, readBack.GoogleMapSettings.MapProvider);
+                        Assert.AreEqual("http://tiles.example.com", readBack.GoogleMapSettings.OpenStreetMapTileServerUrl);
                         break;
                     case nameof(Configuration.VersionCheckSettings):
                         Assert.AreEqual(false, readBack.VersionCheckSettings.CheckAutomatically);
@@ -570,6 +572,8 @@ namespace Test.VirtualRadar.Library.Settings
                 UseSvgGraphicsOnDesktop = false,
                 UseSvgGraphicsOnMobile = false,
                 UseSvgGraphicsOnReports = false,
+                MapProvider = MapProvider.OpenStreetMap,
+                OpenStreetMapTileServerUrl = "http://tiles.example.com",
             };
         }
 

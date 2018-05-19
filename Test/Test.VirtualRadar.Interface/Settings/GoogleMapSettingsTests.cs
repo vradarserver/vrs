@@ -65,6 +65,8 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.UseSvgGraphicsOnDesktop, true);
             TestUtilities.TestProperty(settings, r => r.UseSvgGraphicsOnMobile, true);
             TestUtilities.TestProperty(settings, r => r.UseSvgGraphicsOnReports, true);
+            TestUtilities.TestProperty(settings, r => r.MapProvider, MapProvider.GoogleMaps, MapProvider.OpenStreetMap);
+            TestUtilities.TestProperty(settings, r => r.OpenStreetMapTileServerUrl, null, "A url");
         }
     }
 }

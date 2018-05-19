@@ -58,6 +58,7 @@ namespace VRS
         InternetClientsCanSubmitRoutes:         boolean;
         InternetClientsCanSeeAircraftPictures:  boolean;
         InternetClientsCanSeePolarPlots:        boolean;
+        OpenStreetMapTileServerUrl:             string;
     }
 
     export interface IServerConfigReceiver
