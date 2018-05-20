@@ -37,7 +37,7 @@ namespace VRS
 
     export class LeafletUtilities
     {
-        fromLeafletLatLng(latLng: L.LatLng) : ILatLng
+        fromLeafletLatLng(latLng: L.LatLng): ILatLng
         {
             return latLng;
         }
@@ -51,6 +51,24 @@ namespace VRS
             }
 
             return null;
+        }
+
+        fromLeafletLatLngArray(latLngArray: L.LatLng[]): ILatLng[]
+        {
+            return latLngArray;
+        }
+
+        toLeafletLatLngArray(latLngArray: ILatLng[]): L.LatLng[]
+        {
+            latLngArray = latLngArray || [];
+
+            var result = [];
+            var len = latLngArray.length;
+            for(var i = 0;i < len;++i) {
+                result.push(this.toLeafletLatLng(latLngArray[i]));
+            }
+
+            return result;
         }
 
         fromLeafletLatLngBounds(bounds: L.LatLngBounds): IBounds
@@ -441,6 +459,141 @@ namespace VRS
     }
 
     /**
+     * An object that wraps a map's native polyline object.
+     */
+    class MapPolyline implements IMapPolyline
+    {
+        id:         string | number;
+        map:        L.Map;
+        polyline:   L.Polyline;
+        tag:        any;
+        visible:    boolean;
+
+        constructor(id: string | number, map: L.Map, nativePolyline: L.Polyline, tag: any, options: IMapPolylineSettings)
+        {
+            this.id = id;
+            this.map = map;
+            this.polyline = nativePolyline;
+            this.tag = tag;
+            this.visible = options.visible;
+
+            this._StrokeColour = options.strokeColour;
+            this._StrokeOpacity = options.strokeOpacity;
+            this._StrokeWeight = options.strokeWeight;
+        }
+
+        getDraggable() : boolean
+        {
+            return false;
+        }
+
+        setDraggable(draggable: boolean)
+        {
+            ;
+        }
+
+        getEditable() : boolean
+        {
+            return false;
+        }
+
+        setEditable(editable: boolean)
+        {
+            ;
+        }
+
+        getVisible() : boolean
+        {
+            return this.visible;
+        }
+
+        setVisible(visible: boolean)
+        {
+            if(this.visible !== visible) {
+                if(visible) {
+                    this.polyline.addTo(this.map);
+                } else {
+                    this.polyline.removeFrom(this.map);
+                }
+                this.visible = visible;
+            }
+        }
+
+        private _StrokeColour: string;
+        getStrokeColour() : string
+        {
+            return this._StrokeColour;
+        }
+        setStrokeColour(value: string)
+        {
+            if(value !== this._StrokeColour) {
+                this._StrokeColour = value;
+                this.polyline.setStyle({
+                    color: value
+                });
+            }
+        }
+
+        private _StrokeOpacity: number;
+        getStrokeOpacity() : number
+        {
+            return this._StrokeOpacity;
+        }
+        setStrokeOpacity(value: number)
+        {
+            if(value !== this._StrokeOpacity) {
+                this._StrokeOpacity = value;
+                this.polyline.setStyle({
+                    opacity: value
+                });
+            }
+        }
+
+        private _StrokeWeight: number;
+        getStrokeWeight() : number
+        {
+            return this._StrokeWeight;
+        }
+        setStrokeWeight(value: number)
+        {
+            if(value !== this._StrokeWeight) {
+                this._StrokeWeight = value;
+                this.polyline.setStyle({
+                    weight: value
+                });
+            }
+        }
+
+        getPath() : ILatLng[]
+        {
+            return VRS.leafletUtilities.fromLeafletLatLngArray(<L.LatLng[]>(this.polyline.getLatLngs()));
+        }
+
+        setPath(path: ILatLng[])
+        {
+            this.polyline.setLatLngs(VRS.leafletUtilities.toLeafletLatLngArray(path));
+        }
+
+        getFirstLatLng() : ILatLng
+        {
+            var result = null;
+            var nativePath = <L.LatLng[]>this.polyline.getLatLngs();
+            if(nativePath.length) result = VRS.leafletUtilities.fromLeafletLatLng(nativePath[0]);
+
+            return result;
+        }
+
+        getLastLatLng() : ILatLng
+        {
+            var result = null;
+            var nativePath = <L.LatLng[]>this.polyline.getLatLngs();
+            if(nativePath.length) result = VRS.leafletUtilities.fromLeafletLatLng(nativePath[nativePath.length - 1]);
+
+            return result;
+        }
+    }
+
+    /**
      * The state held for every map plugin object.
      */
     class MapPluginState
@@ -459,6 +612,11 @@ namespace VRS
          * An associative array of marker IDs to markers.
          */
         markers: { [markerId: string]: MapMarker } = {};
+
+        /**
+         * An associative array of polyline IDs to polylines.
+         */
+        polylines: { [polylineId: string]: MapPolyline } = {};
     }
 
     /**
@@ -776,6 +934,7 @@ namespace VRS
             }
 
             var leafletOptions: L.MapOptions = {
+                attributionControl:     true,
                 zoom:                   mapOptions.zoom,
                 center:                 VRS.leafletUtilities.toLeafletLatLng(mapOptions.center),
                 scrollWheelZoom:        mapOptions.scrollwheel,
@@ -786,7 +945,9 @@ namespace VRS
             var state = this._getState();
             state.map = L.map(state.mapContainer[0], leafletOptions);
 
-            L.tileLayer(VRS.serverConfig.get().OpenStreetMapTileServerUrl).addTo(state.map);
+            L.tileLayer(VRS.serverConfig.get().OpenStreetMapTileServerUrl, {
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a></a>'
+            }).addTo(state.map);
 
             var waitUntilReady = () => {
                 if(this.options.waitUntilReady && !this.isReady()) {
@@ -944,37 +1105,124 @@ namespace VRS
 
         addPolyline(id: string | number, userOptions: IMapPolylineSettings): IMapPolyline
         {
-            return null;
+            var result: MapPolyline;
+
+            var state = this._getState();
+            if(state.map) {
+                var leafletOptions: L.PolylineOptions = {
+                    color:      userOptions.strokeColour || '#000000'
+                };
+                if(userOptions.strokeOpacity || leafletOptions.opacity === 0) leafletOptions.opacity = userOptions.strokeOpacity;
+                if(userOptions.strokeWeight || leafletOptions.weight === 0) leafletOptions.weight = userOptions.strokeWeight;
+
+                var path: L.LatLng[] = [];
+                if(userOptions.path) path = VRS.leafletUtilities.toLeafletLatLngArray(userOptions.path);
+
+                this.destroyPolyline(id);
+                var polyline = L.polyline(path, leafletOptions);
+                if(userOptions.visible) {
+                    polyline.addTo(state.map);
+                }
+
+                result = new MapPolyline(id, state.map, polyline, userOptions.tag, {
+                    strokeColour:   userOptions.strokeColour,
+                    strokeOpacity:  userOptions.strokeOpacity,
+                    strokeWeight:   userOptions.strokeWeight
+                });
+                state.polylines[id] = result;
+            }
+
+            return result;
         }
 
         getPolyline(idOrPolyline: string | number | IMapPolyline): IMapPolyline
         {
-            return null;
+            if(idOrPolyline instanceof MapPolyline) return idOrPolyline;
+            var state = this._getState();
+            return state.polylines[<string | number>idOrPolyline];
         }
 
         destroyPolyline(idOrPolyline: string | number | IMapPolyline)
         {
-            ;
+            var state = this._getState();
+            var polyline = <MapPolyline>this.getPolyline(idOrPolyline);
+            if(polyline) {
+                polyline.setVisible(false);
+                polyline.polyline = null;
+                polyline.map = null;
+                polyline.tag = null;
+                delete state.polylines[polyline.id];
+                polyline.id = null;
+            }
         }
 
         trimPolyline(idOrPolyline: string | number | IMapPolyline, countPoints: number, fromStart: boolean): IMapTrimPolylineResult
         {
-            return null;
+            var emptied = false;
+            var countRemoved = 0;
+
+            if(countPoints > 0) {
+                var polyline = <MapPolyline>this.getPolyline(idOrPolyline);
+                var points = <L.LatLng[]>polyline.polyline.getLatLngs();
+                var length = points.length;
+                if(length < countPoints) countPoints = length;
+                if(countPoints > 0) {
+                    countRemoved = countPoints;
+                    emptied = countPoints === length;
+
+                    if(emptied) {
+                        points = [];
+                    } else {
+                        if(fromStart) {
+                            points.splice(0, countPoints);
+                        } else {
+                            points.splice(length - countPoints, countPoints);
+                        }
+                    }
+                    polyline.polyline.setLatLngs(points);
+                }
+            }
+
+            return { emptied: emptied, countRemoved: countRemoved };
         }
 
         removePolylinePointAt(idOrPolyline: string | number | IMapPolyline, index: number)
         {
-            ;
+            var polyline = <MapPolyline>this.getPolyline(idOrPolyline);
+            var points = <L.LatLng[]>polyline.polyline.getLatLngs();
+            points.splice(index, 1);
+            polyline.polyline.setLatLngs(points);
         }
 
         appendToPolyline(idOrPolyline: string | number | IMapPolyline, path: ILatLng[], toStart: boolean)
         {
-            ;
+            var length = !path ? 0 : path.length;
+            if(length > 0) {
+                var polyline = <MapPolyline>this.getPolyline(idOrPolyline);
+                var points = <L.LatLng[]>polyline.polyline.getLatLngs();
+                var insertAt = toStart ? 0 : -1;
+                for(var i = 0;i < length;++i) {
+                    var leafletPoint = VRS.leafletUtilities.toLeafletLatLng(path[i]);
+                    if(toStart) {
+                        points.splice(insertAt++, 0, leafletPoint);
+                    } else {
+                        points.push(leafletPoint);
+                    }
+                }
+                polyline.polyline.setLatLngs(points);
+            }
         }
 
         replacePolylinePointAt(idOrPolyline: string | number | IMapPolyline, index: number, point: ILatLng)
         {
-            ;
+            var polyline = <MapPolyline>this.getPolyline(idOrPolyline);
+            var points = <L.LatLng[]>polyline.polyline.getLatLngs();
+            var length = points.length;
+            if(index === -1) index = length - 1;
+            if(index >= 0 && index < length) {
+                points.splice(index, 1, VRS.leafletUtilities.toLeafletLatLng(point));
+                polyline.polyline.setLatLngs(points);
+            }
         }
 
         addPolygon(id: string | number, userOptions: IMapPolygonSettings): IMapPolygon

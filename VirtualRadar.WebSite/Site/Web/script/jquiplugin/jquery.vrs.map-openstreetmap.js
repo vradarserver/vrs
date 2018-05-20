@@ -37,6 +37,18 @@ var VRS;
             }
             return null;
         };
+        LeafletUtilities.prototype.fromLeafletLatLngArray = function (latLngArray) {
+            return latLngArray;
+        };
+        LeafletUtilities.prototype.toLeafletLatLngArray = function (latLngArray) {
+            latLngArray = latLngArray || [];
+            var result = [];
+            var len = latLngArray.length;
+            for (var i = 0; i < len; ++i) {
+                result.push(this.toLeafletLatLng(latLngArray[i]));
+            }
+            return result;
+        };
         LeafletUtilities.prototype.fromLeafletLatLngBounds = function (bounds) {
             if (!bounds) {
                 return null;
@@ -243,11 +255,104 @@ var VRS;
         };
         return MapMarker;
     }());
+    var MapPolyline = (function () {
+        function MapPolyline(id, map, nativePolyline, tag, options) {
+            this.id = id;
+            this.map = map;
+            this.polyline = nativePolyline;
+            this.tag = tag;
+            this.visible = options.visible;
+            this._StrokeColour = options.strokeColour;
+            this._StrokeOpacity = options.strokeOpacity;
+            this._StrokeWeight = options.strokeWeight;
+        }
+        MapPolyline.prototype.getDraggable = function () {
+            return false;
+        };
+        MapPolyline.prototype.setDraggable = function (draggable) {
+            ;
+        };
+        MapPolyline.prototype.getEditable = function () {
+            return false;
+        };
+        MapPolyline.prototype.setEditable = function (editable) {
+            ;
+        };
+        MapPolyline.prototype.getVisible = function () {
+            return this.visible;
+        };
+        MapPolyline.prototype.setVisible = function (visible) {
+            if (this.visible !== visible) {
+                if (visible) {
+                    this.polyline.addTo(this.map);
+                }
+                else {
+                    this.polyline.removeFrom(this.map);
+                }
+                this.visible = visible;
+            }
+        };
+        MapPolyline.prototype.getStrokeColour = function () {
+            return this._StrokeColour;
+        };
+        MapPolyline.prototype.setStrokeColour = function (value) {
+            if (value !== this._StrokeColour) {
+                this._StrokeColour = value;
+                this.polyline.setStyle({
+                    color: value
+                });
+            }
+        };
+        MapPolyline.prototype.getStrokeOpacity = function () {
+            return this._StrokeOpacity;
+        };
+        MapPolyline.prototype.setStrokeOpacity = function (value) {
+            if (value !== this._StrokeOpacity) {
+                this._StrokeOpacity = value;
+                this.polyline.setStyle({
+                    opacity: value
+                });
+            }
+        };
+        MapPolyline.prototype.getStrokeWeight = function () {
+            return this._StrokeWeight;
+        };
+        MapPolyline.prototype.setStrokeWeight = function (value) {
+            if (value !== this._StrokeWeight) {
+                this._StrokeWeight = value;
+                this.polyline.setStyle({
+                    weight: value
+                });
+            }
+        };
+        MapPolyline.prototype.getPath = function () {
+            return VRS.leafletUtilities.fromLeafletLatLngArray((this.polyline.getLatLngs()));
+        };
+        MapPolyline.prototype.setPath = function (path) {
+            this.polyline.setLatLngs(VRS.leafletUtilities.toLeafletLatLngArray(path));
+        };
+        MapPolyline.prototype.getFirstLatLng = function () {
+            var result = null;
+            var nativePath = this.polyline.getLatLngs();
+            if (nativePath.length)
+                result = VRS.leafletUtilities.fromLeafletLatLng(nativePath[0]);
+            return result;
+        };
+        MapPolyline.prototype.getLastLatLng = function () {
+            var result = null;
+            var nativePath = this.polyline.getLatLngs();
+            if (nativePath.length)
+                result = VRS.leafletUtilities.fromLeafletLatLng(nativePath[nativePath.length - 1]);
+            return result;
+        };
+        return MapPolyline;
+    }());
     var MapPluginState = (function () {
         function MapPluginState() {
             this.map = undefined;
             this.mapContainer = undefined;
             this.markers = {};
+            this.polylines = {};
         }
         return MapPluginState;
     }());
@@ -472,6 +577,7 @@ var VRS;
                 mapOptions.mapTypeId = settings.mapTypeId;
             }
             var leafletOptions = {
+                attributionControl: true,
                 zoom: mapOptions.zoom,
                 center: VRS.leafletUtilities.toLeafletLatLng(mapOptions.center),
                 scrollWheelZoom: mapOptions.scrollwheel,
@@ -480,7 +586,9 @@ var VRS;
             };
             var state = this._getState();
             state.map = L.map(state.mapContainer[0], leafletOptions);
-            L.tileLayer(VRS.serverConfig.get().OpenStreetMapTileServerUrl).addTo(state.map);
+            L.tileLayer(VRS.serverConfig.get().OpenStreetMapTileServerUrl, {
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a></a>'
+            }).addTo(state.map);
             var waitUntilReady = function () {
                 if (_this.options.waitUntilReady && !_this.isReady()) {
                     setTimeout(waitUntilReady, 100);
@@ -608,25 +716,113 @@ var VRS;
             return null;
         };
         MapPlugin.prototype.addPolyline = function (id, userOptions) {
-            return null;
+            var result;
+            var state = this._getState();
+            if (state.map) {
+                var leafletOptions = {
+                    color: userOptions.strokeColour || '#000000'
+                };
+                if (userOptions.strokeOpacity || leafletOptions.opacity === 0)
+                    leafletOptions.opacity = userOptions.strokeOpacity;
+                if (userOptions.strokeWeight || leafletOptions.weight === 0)
+                    leafletOptions.weight = userOptions.strokeWeight;
+                var path = [];
+                if (userOptions.path)
+                    path = VRS.leafletUtilities.toLeafletLatLngArray(userOptions.path);
+                this.destroyPolyline(id);
+                var polyline = L.polyline(path, leafletOptions);
+                if (userOptions.visible) {
+                    polyline.addTo(state.map);
+                }
+                result = new MapPolyline(id, state.map, polyline, userOptions.tag, {
+                    strokeColour: userOptions.strokeColour,
+                    strokeOpacity: userOptions.strokeOpacity,
+                    strokeWeight: userOptions.strokeWeight
+                });
+                state.polylines[id] = result;
+            }
+            return result;
         };
         MapPlugin.prototype.getPolyline = function (idOrPolyline) {
-            return null;
+            if (idOrPolyline instanceof MapPolyline)
+                return idOrPolyline;
+            var state = this._getState();
+            return state.polylines[idOrPolyline];
         };
         MapPlugin.prototype.destroyPolyline = function (idOrPolyline) {
-            ;
+            var state = this._getState();
+            var polyline = this.getPolyline(idOrPolyline);
+            if (polyline) {
+                polyline.setVisible(false);
+                polyline.polyline = null;
+                polyline.map = null;
+                polyline.tag = null;
+                delete state.polylines[polyline.id];
+                polyline.id = null;
+            }
         };
         MapPlugin.prototype.trimPolyline = function (idOrPolyline, countPoints, fromStart) {
-            return null;
+            var emptied = false;
+            var countRemoved = 0;
+            if (countPoints > 0) {
+                var polyline = this.getPolyline(idOrPolyline);
+                var points = polyline.polyline.getLatLngs();
+                var length = points.length;
+                if (length < countPoints)
+                    countPoints = length;
+                if (countPoints > 0) {
+                    countRemoved = countPoints;
+                    emptied = countPoints === length;
+                    if (emptied) {
+                        points = [];
+                    }
+                    else {
+                        if (fromStart) {
+                            points.splice(0, countPoints);
+                        }
+                        else {
+                            points.splice(length - countPoints, countPoints);
+                        }
+                    }
+                    polyline.polyline.setLatLngs(points);
+                }
+            }
+            return { emptied: emptied, countRemoved: countRemoved };
         };
         MapPlugin.prototype.removePolylinePointAt = function (idOrPolyline, index) {
-            ;
+            var polyline = this.getPolyline(idOrPolyline);
+            var points = polyline.polyline.getLatLngs();
+            points.splice(index, 1);
+            polyline.polyline.setLatLngs(points);
         };
         MapPlugin.prototype.appendToPolyline = function (idOrPolyline, path, toStart) {
-            ;
+            var length = !path ? 0 : path.length;
+            if (length > 0) {
+                var polyline = this.getPolyline(idOrPolyline);
+                var points = polyline.polyline.getLatLngs();
+                var insertAt = toStart ? 0 : -1;
+                for (var i = 0; i < length; ++i) {
+                    var leafletPoint = VRS.leafletUtilities.toLeafletLatLng(path[i]);
+                    if (toStart) {
+                        points.splice(insertAt++, 0, leafletPoint);
+                    }
+                    else {
+                        points.push(leafletPoint);
+                    }
+                }
+                polyline.polyline.setLatLngs(points);
+            }
         };
         MapPlugin.prototype.replacePolylinePointAt = function (idOrPolyline, index, point) {
-            ;
+            var polyline = this.getPolyline(idOrPolyline);
+            var points = polyline.polyline.getLatLngs();
+            var length = points.length;
+            if (index === -1)
+                index = length - 1;
+            if (index >= 0 && index < length) {
+                points.splice(index, 1, VRS.leafletUtilities.toLeafletLatLng(point));
+                polyline.polyline.setLatLngs(points);
+            }
         };
         MapPlugin.prototype.addPolygon = function (id, userOptions) {
             return null;
