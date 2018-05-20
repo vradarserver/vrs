@@ -402,30 +402,6 @@ namespace VRS
     export var googleMapUtilities = new VRS.GoogleMapUtilities();
 
     /**
-     * Describes an icon drawn onto the map.
-     */
-    // For legacy reasons this needs to be exported by all map implementations.
-    export class MapIcon implements IMapIcon
-    {
-        anchor:         IPoint;
-        origin:         IPoint;
-        scaledSize:     ISize;
-        size:           ISize;
-        url:            string;
-        labelAnchor:    IPoint;
-
-        constructor(url: string, size: ISize, anchor: IPoint, origin: IPoint, scaledSize?: ISize, labelAnchor?: IPoint)
-        {
-            this.url = url;
-            this.size = size;
-            this.anchor = anchor;
-            this.origin = origin;
-            this.scaledSize = scaledSize;
-            this.labelAnchor = labelAnchor;
-        }
-    }
-
-    /**
      * An abstracted wrapper around an object that represents a map's native marker.
      */
     class MapMarker implements IMapMarker

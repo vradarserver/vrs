@@ -73,6 +73,97 @@ namespace VRS
             }
             return new L.LatLngBounds([ bounds.brLat, bounds.tlLng ], [ bounds.tlLat, bounds.brLng ]);
         }
+
+        fromLeafletIcon(icon: L.Icon|L.DivIcon): IMapIcon
+        {
+            // For now I'm just supporting Icon objects
+            if(icon === null || icon === undefined) {
+                return null;
+            }
+
+            return new MapIcon(
+                icon.options.iconUrl,
+                VRS.leafletUtilities.fromLeafletSize(icon.options.iconSize),
+                VRS.leafletUtilities.fromLeafletPoint(icon.options.iconAnchor),
+                null,
+                null
+            );
+        }
+
+        toLeafletIcon(icon: string|IMapIcon): L.Icon
+        {
+            if(typeof icon === 'string') {
+                return null;
+            }
+
+            return L.icon({
+                iconUrl: icon.url,
+                iconSize: VRS.leafletUtilities.toLeafletSize(icon.size),
+                iconAnchor: VRS.leafletUtilities.toLeafletPoint(icon.anchor)
+            });
+        }
+
+        fromLeafletContent(content: L.Content): string
+        {
+            if(content === null || content === undefined) {
+                return null;
+            } else {
+                if(typeof content === "string") {
+                    return content;
+                }
+                return (<HTMLElement>content).innerText;
+            }
+        }
+
+        fromLeafletSize(size: L.PointExpression): ISize
+        {
+            if(size === null || size === undefined) {
+                return null;
+            }
+            if(size instanceof L.Point) {
+                return {
+                    width: size.x,
+                    height: size.y
+                };
+            }
+            return {
+                width:  (<L.PointTuple>size)[0],
+                height: (<L.PointTuple>size)[1]
+            };
+        }
+
+        toLeafletSize(size: ISize): L.Point
+        {
+            if(size === null || size === undefined) {
+                return null;
+            }
+            return L.point(size.width, size.height);
+        }
+
+        fromLeafletPoint(point: L.PointExpression): IPoint
+        {
+            if(point === null || point === undefined) {
+                return null;
+            }
+            if(point instanceof L.Point) {
+                return point;
+            }
+            return {
+                x:  (<L.PointTuple>point)[0],
+                y: (<L.PointTuple>point)[1]
+            };
+        }
+
+        toLeafletPoint(point: IPoint): L.Point
+        {
+            if(point === null || point === undefined) {
+                return null;
+            }
+            if(point instanceof L.Point) {
+                return point;
+            }
+            return L.point(point.x, point.y);
+        }
     }
     export var leafletUtilities = new VRS.LeafletUtilities();
 
@@ -129,6 +220,227 @@ namespace VRS
     }
 
     /**
+     * An abstracted wrapper around an object that represents a leaflet marker.
+     */
+    class MapMarker implements IMapMarker
+    {
+        /**
+         * The identifier of the marker.
+         */
+        id: string|number;
+
+        /**
+         * The native marker object.
+         */
+        marker: L.Marker;
+
+        /**
+         * The map that the marker is shown on.
+         */
+        map: L.Map;
+
+        /**
+         * The map icon used by the marker.
+         */
+        mapIcon: IMapIcon;
+
+        /**
+         * The Z-index used by the marker.
+         */
+        zIndex: number;
+
+        /**
+         * Unused for the moment, once I implement leaflet marker labels it'll indicate that this is not a normal icon marker.
+         */
+        isMarkerWithLabel: boolean;
+
+        /**
+         * The object that the marker has been tagged with. Not used by the plugin.
+         */
+        tag: any;
+
+        /**
+         * Creates a new object.
+         * @param {string|number}       id                  The identifier of the marker.
+         * @param {L.Map}               nativeMap           The map that this marker will be (or is) attached to.
+         * @param {L.Marker}            nativeMarker        The native map marker handle to wrap.
+         * @param {L.MarkerOptions}     markerOptions       The options used when creating the marker.
+         * @param {boolean}             isMarkerWithLabel   See notes against field of same name.
+         * @param {*}                   tag                 An object to carry around with the marker. No meaning is attached to the tag.
+        */
+        constructor(id: string|number, map: L.Map, nativeMarker: L.Marker, markerOptions: L.MarkerOptions, isMarkerWithLabel: boolean, tag: any)
+        {
+            this.id = id;
+            this.map = map;
+            this.marker = nativeMarker;
+            this.mapIcon = VRS.leafletUtilities.fromLeafletIcon(markerOptions.icon);
+            this.zIndex = markerOptions.zIndexOffset;
+            this.isMarkerWithLabel = isMarkerWithLabel;
+            this.tag = tag;
+        }
+
+        /**
+         * Returns true if the marker can be dragged.
+         */
+        getDraggable() : boolean
+        {
+            return this.marker.dragging.enabled();
+        }
+
+        /**
+         * Sets a value indicating whether the marker can be dragged.
+         */
+        setDraggable(draggable: boolean)
+        {
+            if(draggable) {
+                this.marker.dragging.enable();
+            } else {
+                this.marker.dragging.disable();
+            }
+        }
+
+        /**
+         * Returns the icon for the marker.
+         */
+        getIcon() : IMapIcon
+        {
+            return this.mapIcon;
+        }
+
+        /**
+         * Sets the icon for the marker.
+         */
+        setIcon(icon: IMapIcon)
+        {
+            this.marker.setIcon(VRS.leafletUtilities.toLeafletIcon(icon));
+            this.mapIcon = icon;
+        }
+
+        /**
+         * Gets the coordinates of the marker.
+         */
+        getPosition() : ILatLng
+        {
+            return VRS.leafletUtilities.fromLeafletLatLng(this.marker.getLatLng());
+        }
+
+        /**
+         * Sets the coordinates for the marker.
+         */
+        setPosition(position: ILatLng)
+        {
+            this.marker.setLatLng(VRS.leafletUtilities.toLeafletLatLng(position));
+        }
+
+        /**
+         * Gets the tooltip for the marker.
+         */
+        getTooltip() : string
+        {
+            return VRS.leafletUtilities.fromLeafletContent(this.marker.getTooltip().getContent());
+        }
+
+        /**
+         * Sets the tooltip for the marker.
+         */
+        setTooltip(tooltip: string)
+        {
+            this.marker.getTooltip().setContent(tooltip);
+        }
+
+        /**
+         * Gets a value indicating that the marker is visible.
+         */
+        getVisible() : boolean
+        {
+            return !!this.marker.getPane();
+        }
+
+        /**
+         * Sets a value indicating whether the marker is visible.
+         */
+        setVisible(visible: boolean)
+        {
+            if(visible !== this.getVisible()) {
+                if(visible) {
+                    this.marker.addTo(this.map);
+                } else {
+                    this.marker.removeFrom(this.map);
+                }
+            }
+        }
+
+        /**
+         * Gets the z-index of the marker.
+         */
+        getZIndex() : number
+        {
+            return this.zIndex;
+        }
+
+        /**
+         * Sets the z-index of the marker.
+         */
+        setZIndex(zIndex: number)
+        {
+            this.marker.setZIndexOffset(zIndex);
+            this.zIndex = zIndex;
+        }
+
+        /**
+         * Returns true if the marker was created with useMarkerWithLabel and the label is visible.
+         * Note that this is not a part of the marker interface.
+         */
+        getLabelVisible() : boolean
+        {
+            return false;
+        }
+
+        /**
+         * Sets the visibility of a marker's label. Only works on markers that have been created with useMarkerWithLabel.
+         * Note that this is not a part of the marker interface.
+         */
+        setLabelVisible(visible: boolean)
+        {
+            ;
+        }
+
+        /**
+         * Sets the label content. Only works on markers that have been created with useMarkerWithLabel.
+         */
+        getLabelContent()
+        {
+            return '';
+        }
+
+        /**
+         * Sets the content of a marker's label. Only works on markers that have been created with useMarkerWithLabel.
+         * Note that this is not a part of the marker interface.
+         */
+        setLabelContent(content: string)
+        {
+            ;
+        }
+
+        /**
+         * Gets the label anchor. Only works on markers that have been created with useMarkerWithLabel.
+         */
+        getLabelAnchor()
+        {
+            return null;
+        }
+
+        /**
+         * Sets the anchor for a marker's label. Only works on markers that have been created with useMarkerWithLabel.
+         * Note that this is not a part of the marker interface.
+         */
+        setLabelAnchor(anchor: IPoint)
+        {
+            ;
+        }
+    }
+
+    /**
      * The state held for every map plugin object.
      */
     class MapPluginState
@@ -142,6 +454,11 @@ namespace VRS
          * The map's container.
          */
         mapContainer: JQuery = undefined;
+
+        /**
+         * An associative array of marker IDs to markers.
+         */
+        markers: { [markerId: string]: MapMarker } = {};
     }
 
     /**
@@ -560,22 +877,64 @@ namespace VRS
 
         addMarker(id: string | number, userOptions: IMapMarkerSettings): IMapMarker
         {
-            return null;
+            var result: MapMarker;
+
+            var state = this._getState();
+            if(state.map) {
+                if(userOptions.zIndex === null || userOptions.zIndex === undefined) {
+                    userOptions.zIndex = 0;
+                }
+                var leafletOptions: L.MarkerOptions = {
+                    interactive:    userOptions.clickable !== undefined ? userOptions.clickable : true,
+                    draggable:      userOptions.draggable !== undefined ? userOptions.draggable : false,
+                    zIndexOffset:   userOptions.zIndex,
+                };
+                if(userOptions.icon) {
+                    leafletOptions.icon = VRS.leafletUtilities.toLeafletIcon(userOptions.icon);
+                }
+
+                var position = userOptions.position ? VRS.leafletUtilities.toLeafletLatLng(userOptions.position) : state.map.getCenter();
+
+                this.destroyMarker(id);
+                var nativeMarker = L.marker(position, leafletOptions);
+                if(userOptions.visible) {
+                    nativeMarker.addTo(state.map);
+                }
+                result = new MapMarker(id, state.map, nativeMarker, leafletOptions, !!userOptions.useMarkerWithLabel, userOptions.tag);
+                state.markers[id] = result;
+            }
+
+            return result;
         }
 
         getMarker(idOrMarker: string | number | IMapMarker): IMapMarker
         {
-            return null;
+            if(idOrMarker instanceof MapMarker) return idOrMarker;
+            var state = this._getState();
+            return state.markers[<string | number>idOrMarker];
         }
 
         destroyMarker(idOrMarker: string | number | IMapMarker)
         {
-            ;
+            var state = this._getState();
+            var marker = <MapMarker>this.getMarker(idOrMarker);
+            if(marker) {
+                marker.setVisible(false);
+                marker.marker = null;
+                marker.map = null;
+                marker.tag = null;
+                delete state.markers[marker.id];
+                marker.id = null;
+            }
         }
 
         centerOnMarker(idOrMarker: string | number | IMapMarker)
         {
-            ;
+            var state = this._getState();
+            var marker = <MapMarker>this.getMarker(idOrMarker);
+            if(marker) {
+                this.setCenter(marker.getPosition());
+            }
         }
 
         createMapMarkerClusterer(settings?: IMapMarkerClustererSettings): IMapMarkerClusterer

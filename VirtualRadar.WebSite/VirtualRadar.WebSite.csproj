@@ -474,6 +474,12 @@
     <Content Include="Site\Web\script\vrs\linksRenderer.js.map">
       <DependentUpon>linksRenderer.ts</DependentUpon>
     </Content>
+    <Content Include="Site\Web\script\vrs\map-common.js">
+      <DependentUpon>map-common.ts</DependentUpon>
+    </Content>
+    <Content Include="Site\Web\script\vrs\map-common.js.map">
+      <DependentUpon>map-common.ts</DependentUpon>
+    </Content>
     <Content Include="Site\Web\script\vrs\pageManager.js">
       <DependentUpon>pageManager.ts</DependentUpon>
     </Content>
@@ -917,6 +923,7 @@
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftListFetcher.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftListFilter.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftListSorter.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\map-common.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\svgGenerator.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftPlotter.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftRenderer.ts" />

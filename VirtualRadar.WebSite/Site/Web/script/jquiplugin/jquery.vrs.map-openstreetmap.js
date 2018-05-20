@@ -54,6 +54,75 @@ var VRS;
             }
             return new L.LatLngBounds([bounds.brLat, bounds.tlLng], [bounds.tlLat, bounds.brLng]);
         };
+        LeafletUtilities.prototype.fromLeafletIcon = function (icon) {
+            if (icon === null || icon === undefined) {
+                return null;
+            }
+            return new VRS.MapIcon(icon.options.iconUrl, VRS.leafletUtilities.fromLeafletSize(icon.options.iconSize), VRS.leafletUtilities.fromLeafletPoint(icon.options.iconAnchor), null, null);
+        };
+        LeafletUtilities.prototype.toLeafletIcon = function (icon) {
+            if (typeof icon === 'string') {
+                return null;
+            }
+            return L.icon({
+                iconUrl: icon.url,
+                iconSize: VRS.leafletUtilities.toLeafletSize(icon.size),
+                iconAnchor: VRS.leafletUtilities.toLeafletPoint(icon.anchor)
+            });
+        };
+        LeafletUtilities.prototype.fromLeafletContent = function (content) {
+            if (content === null || content === undefined) {
+                return null;
+            }
+            else {
+                if (typeof content === "string") {
+                    return content;
+                }
+                return content.innerText;
+            }
+        };
+        LeafletUtilities.prototype.fromLeafletSize = function (size) {
+            if (size === null || size === undefined) {
+                return null;
+            }
+            if (size instanceof L.Point) {
+                return {
+                    width: size.x,
+                    height: size.y
+                };
+            }
+            return {
+                width: size[0],
+                height: size[1]
+            };
+        };
+        LeafletUtilities.prototype.toLeafletSize = function (size) {
+            if (size === null || size === undefined) {
+                return null;
+            }
+            return L.point(size.width, size.height);
+        };
+        LeafletUtilities.prototype.fromLeafletPoint = function (point) {
+            if (point === null || point === undefined) {
+                return null;
+            }
+            if (point instanceof L.Point) {
+                return point;
+            }
+            return {
+                x: point[0],
+                y: point[1]
+            };
+        };
+        LeafletUtilities.prototype.toLeafletPoint = function (point) {
+            if (point === null || point === undefined) {
+                return null;
+            }
+            if (point instanceof L.Point) {
+                return point;
+            }
+            return L.point(point.x, point.y);
+        };
         return LeafletUtilities;
     }());
     VRS.LeafletUtilities = LeafletUtilities;
@@ -94,10 +163,91 @@ var VRS;
             __nop: null
         }, overrides);
     };
+    var MapMarker = (function () {
+        function MapMarker(id, map, nativeMarker, markerOptions, isMarkerWithLabel, tag) {
+            this.id = id;
+            this.map = map;
+            this.marker = nativeMarker;
+            this.mapIcon = VRS.leafletUtilities.fromLeafletIcon(markerOptions.icon);
+            this.zIndex = markerOptions.zIndexOffset;
+            this.isMarkerWithLabel = isMarkerWithLabel;
+            this.tag = tag;
+        }
+        MapMarker.prototype.getDraggable = function () {
+            return this.marker.dragging.enabled();
+        };
+        MapMarker.prototype.setDraggable = function (draggable) {
+            if (draggable) {
+                this.marker.dragging.enable();
+            }
+            else {
+                this.marker.dragging.disable();
+            }
+        };
+        MapMarker.prototype.getIcon = function () {
+            return this.mapIcon;
+        };
+        MapMarker.prototype.setIcon = function (icon) {
+            this.marker.setIcon(VRS.leafletUtilities.toLeafletIcon(icon));
+            this.mapIcon = icon;
+        };
+        MapMarker.prototype.getPosition = function () {
+            return VRS.leafletUtilities.fromLeafletLatLng(this.marker.getLatLng());
+        };
+        MapMarker.prototype.setPosition = function (position) {
+            this.marker.setLatLng(VRS.leafletUtilities.toLeafletLatLng(position));
+        };
+        MapMarker.prototype.getTooltip = function () {
+            return VRS.leafletUtilities.fromLeafletContent(this.marker.getTooltip().getContent());
+        };
+        MapMarker.prototype.setTooltip = function (tooltip) {
+            this.marker.getTooltip().setContent(tooltip);
+        };
+        MapMarker.prototype.getVisible = function () {
+            return !!this.marker.getPane();
+        };
+        MapMarker.prototype.setVisible = function (visible) {
+            if (visible !== this.getVisible()) {
+                if (visible) {
+                    this.marker.addTo(this.map);
+                }
+                else {
+                    this.marker.removeFrom(this.map);
+                }
+            }
+        };
+        MapMarker.prototype.getZIndex = function () {
+            return this.zIndex;
+        };
+        MapMarker.prototype.setZIndex = function (zIndex) {
+            this.marker.setZIndexOffset(zIndex);
+            this.zIndex = zIndex;
+        };
+        MapMarker.prototype.getLabelVisible = function () {
+            return false;
+        };
+        MapMarker.prototype.setLabelVisible = function (visible) {
+            ;
+        };
+        MapMarker.prototype.getLabelContent = function () {
+            return '';
+        };
+        MapMarker.prototype.setLabelContent = function (content) {
+            ;
+        };
+        MapMarker.prototype.getLabelAnchor = function () {
+            return null;
+        };
+        MapMarker.prototype.setLabelAnchor = function (anchor) {
+            ;
+        };
+        return MapMarker;
+    }());
     var MapPluginState = (function () {
         function MapPluginState() {
             this.map = undefined;
             this.mapContainer = undefined;
+            this.markers = {};
         }
         return MapPluginState;
     }());
@@ -404,16 +554,55 @@ var VRS;
             };
         };
         MapPlugin.prototype.addMarker = function (id, userOptions) {
-            return null;
+            var result;
+            var state = this._getState();
+            if (state.map) {
+                if (userOptions.zIndex === null || userOptions.zIndex === undefined) {
+                    userOptions.zIndex = 0;
+                }
+                var leafletOptions = {
+                    interactive: userOptions.clickable !== undefined ? userOptions.clickable : true,
+                    draggable: userOptions.draggable !== undefined ? userOptions.draggable : false,
+                    zIndexOffset: userOptions.zIndex,
+                };
+                if (userOptions.icon) {
+                    leafletOptions.icon = VRS.leafletUtilities.toLeafletIcon(userOptions.icon);
+                }
+                var position = userOptions.position ? VRS.leafletUtilities.toLeafletLatLng(userOptions.position) : state.map.getCenter();
+                this.destroyMarker(id);
+                var nativeMarker = L.marker(position, leafletOptions);
+                if (userOptions.visible) {
+                    nativeMarker.addTo(state.map);
+                }
+                result = new MapMarker(id, state.map, nativeMarker, leafletOptions, !!userOptions.useMarkerWithLabel, userOptions.tag);
+                state.markers[id] = result;
+            }
+            return result;
         };
         MapPlugin.prototype.getMarker = function (idOrMarker) {
-            return null;
+            if (idOrMarker instanceof MapMarker)
+                return idOrMarker;
+            var state = this._getState();
+            return state.markers[idOrMarker];
         };
         MapPlugin.prototype.destroyMarker = function (idOrMarker) {
-            ;
+            var state = this._getState();
+            var marker = this.getMarker(idOrMarker);
+            if (marker) {
+                marker.setVisible(false);
+                marker.marker = null;
+                marker.map = null;
+                marker.tag = null;
+                delete state.markers[marker.id];
+                marker.id = null;
+            }
         };
         MapPlugin.prototype.centerOnMarker = function (idOrMarker) {
-            ;
+            var state = this._getState();
+            var marker = this.getMarker(idOrMarker);
+            if (marker) {
+                this.setCenter(marker.getPosition());
+            }
         };
         MapPlugin.prototype.createMapMarkerClusterer = function (settings) {
             return null;
