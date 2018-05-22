@@ -604,6 +604,185 @@ namespace VRS
         }
     }
 
+    /**
+     * An object that wraps a map's native circle object.
+     * @constructor
+     */
+    class MapCircle implements IMapCircle
+    {
+        id:         string | number;
+        circle:     L.Circle;
+        map:        L.Map;
+        tag:        any;
+        visible:    boolean;
+
+        /**
+         * Creates a new object.
+         * @param {string|number}           id                  The unique identifier of the circle object.
+         * @param {L.Map}                   map                 The map to add the circle to or remove the circle from.
+         * @param {L.Circle}                nativeCircle        The native object that is being wrapped.
+         * @param {*}                       tag                 An object attached to the circle.
+         * @param {IMapCircleSettings}      options             The options used when the circle was created.
+        */
+        constructor(id: string | number, map: L.Map, nativeCircle: L.Circle, tag: any, options: IMapCircleSettings)
+        {
+            this.id = id;
+            this.circle = nativeCircle;
+            this.map = map;
+            this.tag = tag;
+            this.visible = options.visible;
+
+            this._FillOpacity = options.fillOpacity;
+            this._FillColour = options.fillColor;
+            this._StrokeOpacity = options.strokeOpacity;
+            this._StrokeColour = options.strokeColor;
+            this._StrokeWeight = options.strokeWeight;
+            this._ZIndex = options.zIndex;
+        }
+
+        getBounds() : IBounds
+        {
+            return VRS.leafletUtilities.fromLeafletLatLngBounds(this.circle.getBounds());
+        }
+
+        getCenter() : ILatLng
+        {
+            return VRS.leafletUtilities.fromLeafletLatLng(this.circle.getLatLng());
+        }
+        setCenter(value: ILatLng)
+        {
+            this.circle.setLatLng(VRS.leafletUtilities.toLeafletLatLng(value));
+        }
+
+        getDraggable() : boolean
+        {
+            return false;
+        }
+        setDraggable(value: boolean)
+        {
+            ;
+        }
+
+        getEditable() : boolean
+        {
+            return false;
+        }
+        setEditable(value: boolean)
+        {
+            ;
+        }
+
+        getRadius() : number
+        {
+            return this.circle.getRadius();
+        }
+        setRadius(value: number)
+        {
+            this.circle.setRadius(value);
+        }
+
+        getVisible() : boolean
+        {
+            return this.visible;
+        }
+        setVisible(visible: boolean)
+        {
+            if(this.visible !== visible) {
+                if(visible) {
+                    this.circle.addTo(this.map);
+                } else {
+                    this.circle.removeFrom(this.map);
+                }
+                this.visible = visible;
+            }
+        }
+
+        private _FillColour: string;
+        getFillColor() : string
+        {
+            return this._FillColour;
+        }
+        setFillColor(value: string)
+        {
+            if(this._FillColour !== value) {
+                this._FillColour = value;
+                this.circle.setStyle({
+                    fillColor: value
+                });
+            }
+        }
+
+        private _FillOpacity: number;
+        getFillOpacity() : number
+        {
+            return this._FillOpacity;
+        }
+        setFillOpacity(value: number)
+        {
+            if(this._FillOpacity !== value) {
+                this._FillOpacity = value;
+                this.circle.setStyle({
+                    fillOpacity: value
+                });
+            }
+        }
+
+        private _StrokeColour: string;
+        getStrokeColor() : string
+        {
+            return this._StrokeColour;
+        }
+        setStrokeColor(value: string)
+        {
+            if(this._StrokeColour !== value) {
+                this._StrokeColour = value;
+                this.circle.setStyle({
+                    color: value
+                });
+            }
+        }
+
+        private _StrokeOpacity: number;
+        getStrokeOpacity() : number
+        {
+            return this._StrokeOpacity;
+        }
+        setStrokeOpacity(value: number)
+        {
+            if(this._StrokeOpacity !== value) {
+                this._StrokeOpacity = value;
+                this.circle.setStyle({
+                    opacity: value
+                });
+            }
+        }
+
+        private _StrokeWeight: number;
+        getStrokeWeight() : number
+        {
+            return this._StrokeWeight;
+        }
+        setStrokeWeight(value: number)
+        {
+            if(this._StrokeWeight !== value) {
+                this._StrokeWeight = value;
+                this.circle.setStyle({
+                    weight: value
+                });
+            }
+        }
+
+        private _ZIndex: number;
+        getZIndex() : number
+        {
+            return this._ZIndex;
+        }
+        setZIndex(value: number)
+        {
+            this._ZIndex = value;
+        }
+    }
+
     class MapControl extends L.Control
     {
         constructor(readonly element: JQuery | HTMLElement, options: L.ControlOptions)
@@ -644,6 +823,11 @@ namespace VRS
          * An associative array of polyline IDs to polylines.
          */
         polylines: { [polylineId: string]: MapPolyline } = {};
+
+        /**
+         * An associative array of circle IDs to circles.
+         */
+        circles: { [circleId: string]: MapCircle } = {};
     }
 
     /**
@@ -749,7 +933,7 @@ namespace VRS
         }
         private _setCenter(state: MapPluginState, latLng: ILatLng)
         {
-            if(state.map) state.map.setView(VRS.leafletUtilities.toLeafletLatLng(latLng), state.map.getZoom());
+            if(state.map) state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(latLng));
             else          this.options.center = latLng;
         }
 
@@ -1275,17 +1459,54 @@ namespace VRS
 
         addCircle(id: string | number, userOptions: IMapCircleSettings): IMapCircle
         {
-            return null;
+            var result: MapCircle = null;
+
+            var state = this._getState();
+            if(state.map) {
+                var options = $.extend(<IMapPolylineSettings>{}, userOptions, {
+                    visible: true
+                });
+                var leafletOptions: L.CircleMarkerOptions = {
+                    fillColor:      '#000',
+                    fillOpacity:    0,
+                    color:          '#000',
+                    opacity:        1,
+                    weight:         1,
+                    radius:         options.radius || 0
+                };
+                var centre = VRS.leafletUtilities.toLeafletLatLng(options.center);
+
+                this.destroyCircle(id);
+                var circle = L.circle(centre, leafletOptions);
+                if(options.visible) {
+                    circle.addTo(state.map);
+                }
+                result = new MapCircle(id, state.map, circle, options.tag, options);
+                state.circles[id] = result;
+            }
+
+            return result;
         }
 
         getCircle(idOrCircle: string | number | IMapCircle): IMapCircle
         {
-            return null;
+            if(idOrCircle instanceof MapCircle) return idOrCircle;
+            var state = this._getState();
+            return state.circles[<string | number>idOrCircle];
         }
 
         destroyCircle(idOrCircle: string | number | IMapCircle)
         {
-            ;
+            var state = this._getState();
+            var circle = <MapCircle>this.getCircle(idOrCircle);
+            if(circle) {
+                circle.setVisible(false);
+                circle.circle = null;
+                circle.map = null;
+                circle.tag = null;
+                delete state.circles[circle.id];
+                circle.id = null;
+            }
         }
 
         getUnusedInfoWindowId(): string

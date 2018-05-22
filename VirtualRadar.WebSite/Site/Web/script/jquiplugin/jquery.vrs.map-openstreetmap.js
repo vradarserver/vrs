@@ -377,6 +377,124 @@ var VRS;
         };
         return MapPolyline;
     }());
+    var MapCircle = (function () {
+        function MapCircle(id, map, nativeCircle, tag, options) {
+            this.id = id;
+            this.circle = nativeCircle;
+            this.map = map;
+            this.tag = tag;
+            this.visible = options.visible;
+            this._FillOpacity = options.fillOpacity;
+            this._FillColour = options.fillColor;
+            this._StrokeOpacity = options.strokeOpacity;
+            this._StrokeColour = options.strokeColor;
+            this._StrokeWeight = options.strokeWeight;
+            this._ZIndex = options.zIndex;
+        }
+        MapCircle.prototype.getBounds = function () {
+            return VRS.leafletUtilities.fromLeafletLatLngBounds(this.circle.getBounds());
+        };
+        MapCircle.prototype.getCenter = function () {
+            return VRS.leafletUtilities.fromLeafletLatLng(this.circle.getLatLng());
+        };
+        MapCircle.prototype.setCenter = function (value) {
+            this.circle.setLatLng(VRS.leafletUtilities.toLeafletLatLng(value));
+        };
+        MapCircle.prototype.getDraggable = function () {
+            return false;
+        };
+        MapCircle.prototype.setDraggable = function (value) {
+            ;
+        };
+        MapCircle.prototype.getEditable = function () {
+            return false;
+        };
+        MapCircle.prototype.setEditable = function (value) {
+            ;
+        };
+        MapCircle.prototype.getRadius = function () {
+            return this.circle.getRadius();
+        };
+        MapCircle.prototype.setRadius = function (value) {
+            this.circle.setRadius(value);
+        };
+        MapCircle.prototype.getVisible = function () {
+            return this.visible;
+        };
+        MapCircle.prototype.setVisible = function (visible) {
+            if (this.visible !== visible) {
+                if (visible) {
+                    this.circle.addTo(this.map);
+                }
+                else {
+                    this.circle.removeFrom(this.map);
+                }
+                this.visible = visible;
+            }
+        };
+        MapCircle.prototype.getFillColor = function () {
+            return this._FillColour;
+        };
+        MapCircle.prototype.setFillColor = function (value) {
+            if (this._FillColour !== value) {
+                this._FillColour = value;
+                this.circle.setStyle({
+                    fillColor: value
+                });
+            }
+        };
+        MapCircle.prototype.getFillOpacity = function () {
+            return this._FillOpacity;
+        };
+        MapCircle.prototype.setFillOpacity = function (value) {
+            if (this._FillOpacity !== value) {
+                this._FillOpacity = value;
+                this.circle.setStyle({
+                    fillOpacity: value
+                });
+            }
+        };
+        MapCircle.prototype.getStrokeColor = function () {
+            return this._StrokeColour;
+        };
+        MapCircle.prototype.setStrokeColor = function (value) {
+            if (this._StrokeColour !== value) {
+                this._StrokeColour = value;
+                this.circle.setStyle({
+                    color: value
+                });
+            }
+        };
+        MapCircle.prototype.getStrokeOpacity = function () {
+            return this._StrokeOpacity;
+        };
+        MapCircle.prototype.setStrokeOpacity = function (value) {
+            if (this._StrokeOpacity !== value) {
+                this._StrokeOpacity = value;
+                this.circle.setStyle({
+                    opacity: value
+                });
+            }
+        };
+        MapCircle.prototype.getStrokeWeight = function () {
+            return this._StrokeWeight;
+        };
+        MapCircle.prototype.setStrokeWeight = function (value) {
+            if (this._StrokeWeight !== value) {
+                this._StrokeWeight = value;
+                this.circle.setStyle({
+                    weight: value
+                });
+            }
+        };
+        MapCircle.prototype.getZIndex = function () {
+            return this._ZIndex;
+        };
+        MapCircle.prototype.setZIndex = function (value) {
+            this._ZIndex = value;
+        };
+        return MapCircle;
+    }());
     var MapControl = (function (_super) {
         __extends(MapControl, _super);
         function MapControl(element, options) {
@@ -397,6 +515,7 @@ var VRS;
             this.mapContainer = undefined;
             this.markers = {};
             this.polylines = {};
+            this.circles = {};
         }
         return MapPluginState;
     }());
@@ -473,7 +592,7 @@ var VRS;
         };
         MapPlugin.prototype._setCenter = function (state, latLng) {
             if (state.map)
-                state.map.setView(VRS.leafletUtilities.toLeafletLatLng(latLng), state.map.getZoom());
+                state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(latLng));
             else
                 this.options.center = latLng;
         };
@@ -884,13 +1003,48 @@ var VRS;
             ;
         };
         MapPlugin.prototype.addCircle = function (id, userOptions) {
-            return null;
+            var result = null;
+            var state = this._getState();
+            if (state.map) {
+                var options = $.extend({}, userOptions, {
+                    visible: true
+                });
+                var leafletOptions = {
+                    fillColor: '#000',
+                    fillOpacity: 0,
+                    color: '#000',
+                    opacity: 1,
+                    weight: 1,
+                    radius: options.radius || 0
+                };
+                var centre = VRS.leafletUtilities.toLeafletLatLng(options.center);
+                this.destroyCircle(id);
+                var circle = L.circle(centre, leafletOptions);
+                if (options.visible) {
+                    circle.addTo(state.map);
+                }
+                result = new MapCircle(id, state.map, circle, options.tag, options);
+                state.circles[id] = result;
+            }
+            return result;
         };
         MapPlugin.prototype.getCircle = function (idOrCircle) {
-            return null;
+            if (idOrCircle instanceof MapCircle)
+                return idOrCircle;
+            var state = this._getState();
+            return state.circles[idOrCircle];
         };
         MapPlugin.prototype.destroyCircle = function (idOrCircle) {
-            ;
+            var state = this._getState();
+            var circle = this.getCircle(idOrCircle);
+            if (circle) {
+                circle.setVisible(false);
+                circle.circle = null;
+                circle.map = null;
+                circle.tag = null;
+                delete state.circles[circle.id];
+                circle.id = null;
+            }
         };
         MapPlugin.prototype.getUnusedInfoWindowId = function () {
             return null;
