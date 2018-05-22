@@ -35,6 +35,8 @@ namespace VRS
     VRS.globalOptions.mapShowPointsOfInterest = VRS.globalOptions.mapShowPointsOfInterest !== undefined ? VRS.globalOptions.mapShowPointsOfInterest : false;
     VRS.globalOptions.mapShowScaleControl = VRS.globalOptions.mapShowScaleControl !== undefined ? VRS.globalOptions.mapShowScaleControl : true;
 
+    export type LeafletControlPosition = 'topleft' | 'topright' | 'bottomleft' | 'bottomright';
+
     export class LeafletUtilities
     {
         fromLeafletLatLng(latLng: L.LatLng): ILatLng
@@ -182,6 +184,37 @@ namespace VRS
             }
             return L.point(point.x, point.y);
         }
+
+        fromLeafletMapPosition(mapPosition: LeafletControlPosition): VRS.MapPositionEnum
+        {
+            switch(mapPosition || '') {
+                case 'topleft':     return VRS.MapPosition.TopLeft;
+                case 'bottomleft':  return VRS.MapPosition.BottomLeft;
+                case 'bottomright': return VRS.MapPosition.BottomRight;
+                default:            return VRS.MapPosition.TopRight;
+            }
+        }
+
+        toLeafletMapPosition(mapPosition: VRS.MapPositionEnum): LeafletControlPosition
+        {
+            switch(mapPosition || VRS.MapPosition.TopRight) {
+                case VRS.MapPosition.BottomCentre:
+                case VRS.MapPosition.BottomLeft:
+                case VRS.MapPosition.LeftBottom:
+                case VRS.MapPosition.LeftCentre:
+                    return 'bottomleft';
+                case VRS.MapPosition.BottomRight:
+                case VRS.MapPosition.RightBottom:
+                case VRS.MapPosition.RightCentre:
+                    return 'bottomright';
+                case VRS.MapPosition.LeftTop:
+                case VRS.MapPosition.TopCentre:
+                case VRS.MapPosition.TopLeft:
+                    return 'topleft';
+                default:
+                    return 'topright';
+            }
+        }
     }
     export var leafletUtilities = new VRS.LeafletUtilities();
 
@@ -242,40 +275,14 @@ namespace VRS
      */
     class MapMarker implements IMapMarker
     {
-        /**
-         * The identifier of the marker.
-         */
         id: string|number;
-
-        /**
-         * The native marker object.
-         */
         marker: L.Marker;
-
-        /**
-         * The map that the marker is shown on.
-         */
         map: L.Map;
-
-        /**
-         * The map icon used by the marker.
-         */
         mapIcon: IMapIcon;
-
-        /**
-         * The Z-index used by the marker.
-         */
         zIndex: number;
-
-        /**
-         * Unused for the moment, once I implement leaflet marker labels it'll indicate that this is not a normal icon marker.
-         */
         isMarkerWithLabel: boolean;
-
-        /**
-         * The object that the marker has been tagged with. Not used by the plugin.
-         */
         tag: any;
+        visible: boolean;
 
         /**
          * Creates a new object.
@@ -284,9 +291,10 @@ namespace VRS
          * @param {L.Marker}            nativeMarker        The native map marker handle to wrap.
          * @param {L.MarkerOptions}     markerOptions       The options used when creating the marker.
          * @param {boolean}             isMarkerWithLabel   See notes against field of same name.
+         * @param {boolean}             isVisible           True if the marker is already attached to a map.
          * @param {*}                   tag                 An object to carry around with the marker. No meaning is attached to the tag.
         */
-        constructor(id: string|number, map: L.Map, nativeMarker: L.Marker, markerOptions: L.MarkerOptions, isMarkerWithLabel: boolean, tag: any)
+        constructor(id: string|number, map: L.Map, nativeMarker: L.Marker, markerOptions: L.MarkerOptions, isMarkerWithLabel: boolean, isVisible: boolean, tag: any)
         {
             this.id = id;
             this.map = map;
@@ -295,6 +303,7 @@ namespace VRS
             this.zIndex = markerOptions.zIndexOffset;
             this.isMarkerWithLabel = isMarkerWithLabel;
             this.tag = tag;
+            this.visible = isVisible;
         }
 
         /**
@@ -355,7 +364,8 @@ namespace VRS
          */
         getTooltip() : string
         {
-            return VRS.leafletUtilities.fromLeafletContent(this.marker.getTooltip().getContent());
+            var tooltip = this.marker.getTooltip();
+            return tooltip ? VRS.leafletUtilities.fromLeafletContent(tooltip.getContent()) : null;
         }
 
         /**
@@ -363,7 +373,7 @@ namespace VRS
          */
         setTooltip(tooltip: string)
         {
-            this.marker.getTooltip().setContent(tooltip);
+            this.marker.setTooltipContent(tooltip);
         }
 
         /**
@@ -371,7 +381,7 @@ namespace VRS
          */
         getVisible() : boolean
         {
-            return !!this.marker.getPane();
+            return this.visible;
         }
 
         /**
@@ -385,6 +395,7 @@ namespace VRS
                 } else {
                     this.marker.removeFrom(this.map);
                 }
+                this.visible = visible;
             }
         }
 
@@ -590,6 +601,22 @@ namespace VRS
             if(nativePath.length) result = VRS.leafletUtilities.fromLeafletLatLng(nativePath[nativePath.length - 1]);
 
             return result;
+        }
+    }
+
+    class MapControl extends L.Control
+    {
+        constructor(readonly element: JQuery | HTMLElement, options: L.ControlOptions)
+        {
+            super(options);
+        }
+
+        onAdd(map: L.Map): HTMLElement
+        {
+            var result = $('<div class="leaflet-control"></div>');
+            result.append(this.element);
+
+            return result[0];
         }
     }
 
@@ -1053,6 +1080,9 @@ namespace VRS
                 if(userOptions.icon) {
                     leafletOptions.icon = VRS.leafletUtilities.toLeafletIcon(userOptions.icon);
                 }
+                if(userOptions.tooltip) {
+                    leafletOptions.title = userOptions.tooltip;
+                }
 
                 var position = userOptions.position ? VRS.leafletUtilities.toLeafletLatLng(userOptions.position) : state.map.getCenter();
 
@@ -1061,7 +1091,7 @@ namespace VRS
                 if(userOptions.visible) {
                     nativeMarker.addTo(state.map);
                 }
-                result = new MapMarker(id, state.map, nativeMarker, leafletOptions, !!userOptions.useMarkerWithLabel, userOptions.tag);
+                result = new MapMarker(id, state.map, nativeMarker, leafletOptions, !!userOptions.useMarkerWithLabel, userOptions.visible, userOptions.tag);
                 state.markers[id] = result;
             }
 
@@ -1109,25 +1139,28 @@ namespace VRS
 
             var state = this._getState();
             if(state.map) {
+                var options = $.extend(<IMapPolylineSettings>{}, userOptions, {
+                    visible: true
+                });
                 var leafletOptions: L.PolylineOptions = {
-                    color:      userOptions.strokeColour || '#000000'
+                    color:      options.strokeColour || '#000000'
                 };
-                if(userOptions.strokeOpacity || leafletOptions.opacity === 0) leafletOptions.opacity = userOptions.strokeOpacity;
-                if(userOptions.strokeWeight || leafletOptions.weight === 0) leafletOptions.weight = userOptions.strokeWeight;
+                if(options.strokeOpacity || leafletOptions.opacity === 0) leafletOptions.opacity = options.strokeOpacity;
+                if(options.strokeWeight || leafletOptions.weight === 0) leafletOptions.weight = options.strokeWeight;
 
                 var path: L.LatLng[] = [];
-                if(userOptions.path) path = VRS.leafletUtilities.toLeafletLatLngArray(userOptions.path);
+                if(options.path) path = VRS.leafletUtilities.toLeafletLatLngArray(options.path);
 
                 this.destroyPolyline(id);
                 var polyline = L.polyline(path, leafletOptions);
-                if(userOptions.visible) {
+                if(options.visible) {
                     polyline.addTo(state.map);
                 }
 
-                result = new MapPolyline(id, state.map, polyline, userOptions.tag, {
-                    strokeColour:   userOptions.strokeColour,
-                    strokeOpacity:  userOptions.strokeOpacity,
-                    strokeWeight:   userOptions.strokeWeight
+                result = new MapPolyline(id, state.map, polyline, options.tag, {
+                    strokeColour:   options.strokeColour,
+                    strokeOpacity:  options.strokeOpacity,
+                    strokeWeight:   options.strokeWeight
                 });
                 state.polylines[id] = result;
             }
@@ -1287,7 +1320,14 @@ namespace VRS
 
         addControl(element: JQuery | HTMLElement, mapPosition: MapPositionEnum)
         {
-            ;
+            var state = this._getState();
+            if(state.map) {
+                var controlOptions: L.ControlOptions = {
+                    position: VRS.leafletUtilities.toLeafletMapPosition(mapPosition)
+                };
+                var control = new MapControl(element, controlOptions);
+                control.addTo(state.map);
+            }
         }
     }
 

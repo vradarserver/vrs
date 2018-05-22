@@ -135,6 +135,33 @@ var VRS;
             }
             return L.point(point.x, point.y);
         };
+        LeafletUtilities.prototype.fromLeafletMapPosition = function (mapPosition) {
+            switch (mapPosition || '') {
+                case 'topleft': return VRS.MapPosition.TopLeft;
+                case 'bottomleft': return VRS.MapPosition.BottomLeft;
+                case 'bottomright': return VRS.MapPosition.BottomRight;
+                default: return VRS.MapPosition.TopRight;
+            }
+        };
+        LeafletUtilities.prototype.toLeafletMapPosition = function (mapPosition) {
+            switch (mapPosition || VRS.MapPosition.TopRight) {
+                case VRS.MapPosition.BottomCentre:
+                case VRS.MapPosition.BottomLeft:
+                case VRS.MapPosition.LeftBottom:
+                case VRS.MapPosition.LeftCentre:
+                    return 'bottomleft';
+                case VRS.MapPosition.BottomRight:
+                case VRS.MapPosition.RightBottom:
+                case VRS.MapPosition.RightCentre:
+                    return 'bottomright';
+                case VRS.MapPosition.LeftTop:
+                case VRS.MapPosition.TopCentre:
+                case VRS.MapPosition.TopLeft:
+                    return 'topleft';
+                default:
+                    return 'topright';
+            }
+        };
         return LeafletUtilities;
     }());
     VRS.LeafletUtilities = LeafletUtilities;
@@ -176,7 +203,7 @@ var VRS;
         }, overrides);
     };
     var MapMarker = (function () {
-        function MapMarker(id, map, nativeMarker, markerOptions, isMarkerWithLabel, tag) {
+        function MapMarker(id, map, nativeMarker, markerOptions, isMarkerWithLabel, isVisible, tag) {
             this.id = id;
             this.map = map;
             this.marker = nativeMarker;
@@ -184,6 +211,7 @@ var VRS;
             this.zIndex = markerOptions.zIndexOffset;
             this.isMarkerWithLabel = isMarkerWithLabel;
             this.tag = tag;
+            this.visible = isVisible;
         }
         MapMarker.prototype.getDraggable = function () {
             return this.marker.dragging.enabled();
@@ -210,13 +238,14 @@ var VRS;
             this.marker.setLatLng(VRS.leafletUtilities.toLeafletLatLng(position));
         };
         MapMarker.prototype.getTooltip = function () {
-            return VRS.leafletUtilities.fromLeafletContent(this.marker.getTooltip().getContent());
+            var tooltip = this.marker.getTooltip();
+            return tooltip ? VRS.leafletUtilities.fromLeafletContent(tooltip.getContent()) : null;
         };
         MapMarker.prototype.setTooltip = function (tooltip) {
-            this.marker.getTooltip().setContent(tooltip);
+            this.marker.setTooltipContent(tooltip);
         };
         MapMarker.prototype.getVisible = function () {
-            return !!this.marker.getPane();
+            return this.visible;
         };
         MapMarker.prototype.setVisible = function (visible) {
             if (visible !== this.getVisible()) {
@@ -226,6 +255,7 @@ var VRS;
                 else {
                     this.marker.removeFrom(this.map);
                 }
+                this.visible = visible;
             }
         };
         MapMarker.prototype.getZIndex = function () {
@@ -347,6 +377,20 @@ var VRS;
         };
         return MapPolyline;
     }());
+    var MapControl = (function (_super) {
+        __extends(MapControl, _super);
+        function MapControl(element, options) {
+            var _this = _super.call(this, options) || this;
+            _this.element = element;
+            return _this;
+        }
+        MapControl.prototype.onAdd = function (map) {
+            var result = $('<div class="leaflet-control"></div>');
+            result.append(this.element);
+            return result[0];
+        };
+        return MapControl;
+    }(L.Control));
     var MapPluginState = (function () {
         function MapPluginState() {
             this.map = undefined;
@@ -676,13 +720,16 @@ var VRS;
                 if (userOptions.icon) {
                     leafletOptions.icon = VRS.leafletUtilities.toLeafletIcon(userOptions.icon);
                 }
+                if (userOptions.tooltip) {
+                    leafletOptions.title = userOptions.tooltip;
+                }
                 var position = userOptions.position ? VRS.leafletUtilities.toLeafletLatLng(userOptions.position) : state.map.getCenter();
                 this.destroyMarker(id);
                 var nativeMarker = L.marker(position, leafletOptions);
                 if (userOptions.visible) {
                     nativeMarker.addTo(state.map);
                 }
-                result = new MapMarker(id, state.map, nativeMarker, leafletOptions, !!userOptions.useMarkerWithLabel, userOptions.tag);
+                result = new MapMarker(id, state.map, nativeMarker, leafletOptions, !!userOptions.useMarkerWithLabel, userOptions.visible, userOptions.tag);
                 state.markers[id] = result;
             }
             return result;
@@ -719,25 +766,28 @@ var VRS;
             var result;
             var state = this._getState();
             if (state.map) {
+                var options = $.extend({}, userOptions, {
+                    visible: true
+                });
                 var leafletOptions = {
-                    color: userOptions.strokeColour || '#000000'
+                    color: options.strokeColour || '#000000'
                 };
-                if (userOptions.strokeOpacity || leafletOptions.opacity === 0)
-                    leafletOptions.opacity = userOptions.strokeOpacity;
-                if (userOptions.strokeWeight || leafletOptions.weight === 0)
-                    leafletOptions.weight = userOptions.strokeWeight;
+                if (options.strokeOpacity || leafletOptions.opacity === 0)
+                    leafletOptions.opacity = options.strokeOpacity;
+                if (options.strokeWeight || leafletOptions.weight === 0)
+                    leafletOptions.weight = options.strokeWeight;
                 var path = [];
-                if (userOptions.path)
-                    path = VRS.leafletUtilities.toLeafletLatLngArray(userOptions.path);
+                if (options.path)
+                    path = VRS.leafletUtilities.toLeafletLatLngArray(options.path);
                 this.destroyPolyline(id);
                 var polyline = L.polyline(path, leafletOptions);
-                if (userOptions.visible) {
+                if (options.visible) {
                     polyline.addTo(state.map);
                 }
-                result = new MapPolyline(id, state.map, polyline, userOptions.tag, {
-                    strokeColour: userOptions.strokeColour,
-                    strokeOpacity: userOptions.strokeOpacity,
-                    strokeWeight: userOptions.strokeWeight
+                result = new MapPolyline(id, state.map, polyline, options.tag, {
+                    strokeColour: options.strokeColour,
+                    strokeOpacity: options.strokeOpacity,
+                    strokeWeight: options.strokeWeight
                 });
                 state.polylines[id] = result;
             }
@@ -861,7 +911,14 @@ var VRS;
             ;
         };
         MapPlugin.prototype.addControl = function (element, mapPosition) {
-            ;
+            var state = this._getState();
+            if (state.map) {
+                var controlOptions = {
+                    position: VRS.leafletUtilities.toLeafletMapPosition(mapPosition)
+                };
+                var control = new MapControl(element, controlOptions);
+                control.addTo(state.map);
+            }
         };
         return MapPlugin;
     }(JQueryUICustomWidget));
