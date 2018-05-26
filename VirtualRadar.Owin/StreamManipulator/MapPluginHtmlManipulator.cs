@@ -39,19 +39,27 @@ namespace VirtualRadar.Owin.StreamManipulator
         /// <param name="textContent"></param>
         public void ManipulateTextResponse(IDictionary<string, object> environment, TextContent textContent)
         {
+            string mapStylesheet = null;
             string mapJavascript = null;
+
             switch(_SharedConfiguration.Get().GoogleMapSettings.MapProvider) {
                 case MapProvider.GoogleMaps:
                     mapJavascript = @"<script src=""script/jquiplugin/jquery.vrs.map-google-maps.js"" type=""text/javascript""></script>";
                     break;
                 case MapProvider.OpenStreetMap:
+                    mapStylesheet = @"<link rel=""stylesheet"" href=""css/leaflet/leaflet.css"" type=""text/css"" media=""screen"" />";
                     mapJavascript = @"<script src=""script/leaflet-src.js"" type=""text/javascript""></script><script src=""script/jquiplugin/jquery.vrs.map-openstreetmap.js"" type=""text/javascript""></script>";
                     break;
                 default:
                     throw new NotImplementedException();
             }
 
-            textContent.Content = textContent.Content.Replace("<!-- [[ MAP PLUGIN ]] -->", mapJavascript);
+            if(!String.IsNullOrEmpty(mapStylesheet)) {
+                textContent.Content = textContent.Content.Replace("<!-- [[ MAP STYLESHEET ]] -->", mapStylesheet);
+            }
+            if(!String.IsNullOrEmpty(mapJavascript)) {
+                textContent.Content = textContent.Content.Replace("<!-- [[ MAP PLUGIN ]] -->", mapJavascript);
+            }
         }
     }
 }

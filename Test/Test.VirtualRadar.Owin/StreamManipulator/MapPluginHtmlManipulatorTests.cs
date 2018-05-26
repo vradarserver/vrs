@@ -28,7 +28,11 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
     [TestClass]
     public class MapPluginHtmlManipulatorTests
     {
+        private const string MapStylesheetMarker = "<!-- [[ MAP STYLESHEET ]] -->";
         private const string MapPluginMarker = "<!-- [[ MAP PLUGIN ]] -->";
+        private const string ExpectedGoogleJavaScript = @"<script src=""script/jquiplugin/jquery.vrs.map-google-maps.js"" type=""text/javascript""></script>";
+        private const string ExpectedOpenStreetMapStylesheet = @"<link rel=""stylesheet"" href=""css/leaflet/leaflet.css"" type=""text/css"" media=""screen"" />";
+        private const string ExpectedOpenStreetMapJavaScript = @"<script src=""script/leaflet-src.js"" type=""text/javascript""></script><script src=""script/jquiplugin/jquery.vrs.map-openstreetmap.js"" type=""text/javascript""></script>";
 
         public TestContext TestContext { get; set; }
 
@@ -107,7 +111,6 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             var actualHtml = StripHtmlWhitespace(textContent.Content);
 
             Assert.AreEqual(expectedHtml, actualHtml, ignoreCase: true);
-            Assert.IsFalse(textContent.IsDirty);
         }
 
         [TestMethod]
@@ -123,6 +126,18 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
         }
 
         [TestMethod]
+        public void MapPluginHtmlManipulator_Does_Not_Replace_Stylesheet_With_Google_Maps_Reference()
+        {
+            var htmlPath = "/index.html";
+            var textContent = FakeCall(htmlPath, $"{MapStylesheetMarker}");
+
+            _Configuration.GoogleMapSettings.MapProvider = MapProvider.GoogleMaps;
+            _Manipulator.ManipulateTextResponse(_Environment.Environment, textContent);
+
+            AssertTextUnchanged(textContent, MapStylesheetMarker);
+        }
+
+        [TestMethod]
         public void MapPluginHtmlManipulator_Replaces_Marker_With_OpenStreetMap_Reference()
         {
             var htmlPath = "/index.html";
@@ -131,19 +146,31 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             _Configuration.GoogleMapSettings.MapProvider = MapProvider.OpenStreetMap;
             _Manipulator.ManipulateTextResponse(_Environment.Environment, textContent);
 
-            AssertTextChanged(textContent, $@"<script src=""script/jquiplugin/jquery.vrs.map-openstreetmap.js"" type=""text/javascript""></script>");
+            AssertTextChanged(textContent, ExpectedOpenStreetMapJavaScript);
         }
 
         [TestMethod]
-        public void MapPluginHtmlManipulator_Only_Replaces_Marker()
+        public void MapPluginHtmlManipulator_Replaces_Stylesheet_With_OpenStreetMap_Reference()
         {
             var htmlPath = "/index.html";
-            var textContent = FakeCall(htmlPath, $"TextBefore-{MapPluginMarker}-TextAfter");
+            var textContent = FakeCall(htmlPath, $"{MapStylesheetMarker}");
 
             _Configuration.GoogleMapSettings.MapProvider = MapProvider.OpenStreetMap;
             _Manipulator.ManipulateTextResponse(_Environment.Environment, textContent);
 
-            AssertTextChanged(textContent, $@"TextBefore-<script src=""script/jquiplugin/jquery.vrs.map-openstreetmap.js"" type=""text/javascript""></script>-TextAfter");
+            AssertTextChanged(textContent, ExpectedOpenStreetMapStylesheet);
+        }
+
+        [TestMethod]
+        public void MapPluginHtmlManipulator_Only_Replaces_Marker_And_Stylesheet()
+        {
+            var htmlPath = "/index.html";
+            var textContent = FakeCall(htmlPath, $"Start-{MapStylesheetMarker}-Middle-{MapPluginMarker}-End");
+
+            _Configuration.GoogleMapSettings.MapProvider = MapProvider.OpenStreetMap;
+            _Manipulator.ManipulateTextResponse(_Environment.Environment, textContent);
+
+            AssertTextChanged(textContent, $"Start-{ExpectedOpenStreetMapStylesheet}-Middle-{ExpectedOpenStreetMapJavaScript}-End");
         }
     }
 }
