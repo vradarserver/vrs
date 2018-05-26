@@ -152,8 +152,11 @@ body.wait .modal {
     white-space: nowrap;
 }
 
-/*endregion */
+.vrs-leaflet-tile-layer {
+    filter: brightness(70%);
+}
 
+/*endregion */
 /*region icoMoon icons */
 .vrsIcon {
     font-family: 'icomoon' !important;

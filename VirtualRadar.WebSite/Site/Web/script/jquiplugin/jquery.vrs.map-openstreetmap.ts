@@ -1157,7 +1157,8 @@ namespace VRS
             state.map = L.map(state.mapContainer[0], leafletOptions);
 
             L.tileLayer(VRS.serverConfig.get().OpenStreetMapTileServerUrl, {
-                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a></a>'
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a></a>',
+                className: 'vrs-leaflet-tile-layer'
             }).addTo(state.map);
 
             var waitUntilReady = () => {
