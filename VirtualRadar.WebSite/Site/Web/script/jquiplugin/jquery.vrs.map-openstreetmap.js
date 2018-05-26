@@ -509,6 +509,123 @@ var VRS;
         };
         return MapControl;
     }(L.Control));
+    var MapPolygon = (function () {
+        function MapPolygon(id, nativeMap, nativePolygon, tag, options) {
+            this.id = id;
+            this.map = nativeMap;
+            this.polygon = nativePolygon;
+            this.tag = tag;
+            this.visible = options.visible;
+            this._FillColour = options.fillColour;
+            this._FillOpacity = options.fillOpacity;
+            this._StrokeColour = options.strokeColour;
+            this._StrokeOpacity = options.strokeOpacity;
+            this._StrokeWeight = options.strokeWeight;
+            this._ZIndex = options.zIndex;
+        }
+        MapPolygon.prototype.getDraggable = function () {
+            return false;
+        };
+        MapPolygon.prototype.setDraggable = function (draggable) {
+            ;
+        };
+        MapPolygon.prototype.getEditable = function () {
+            return false;
+        };
+        MapPolygon.prototype.setEditable = function (editable) {
+            ;
+        };
+        MapPolygon.prototype.getVisible = function () {
+            return this.visible;
+        };
+        MapPolygon.prototype.setVisible = function (visible) {
+            if (visible != this.visible) {
+                if (visible) {
+                    this.polygon.addTo(this.map);
+                }
+                else {
+                    this.polygon.removeFrom(this.map);
+                }
+                this.visible = visible;
+            }
+        };
+        MapPolygon.prototype.getFirstPath = function () {
+            return VRS.leafletUtilities.fromLeafletLatLngArray(this.polygon.getLatLngs());
+        };
+        MapPolygon.prototype.setFirstPath = function (path) {
+            this.polygon.setLatLngs(path);
+        };
+        MapPolygon.prototype.getPaths = function () {
+            return [
+                this.getFirstPath()
+            ];
+        };
+        MapPolygon.prototype.setPaths = function (paths) {
+            this.setFirstPath(paths[0]);
+        };
+        MapPolygon.prototype.getClickable = function () {
+            return this.polygon.options.interactive;
+        };
+        MapPolygon.prototype.setClickable = function (value) {
+            if (value !== this.getClickable()) {
+                this.polygon.options.interactive = value;
+            }
+        };
+        MapPolygon.prototype.getFillColour = function () {
+            return this._FillColour;
+        };
+        MapPolygon.prototype.setFillColour = function (value) {
+            if (value !== this._FillColour) {
+                this._FillColour = value;
+                this.polygon.setStyle({ fillColor: value });
+            }
+        };
+        MapPolygon.prototype.getFillOpacity = function () {
+            return this._FillOpacity;
+        };
+        MapPolygon.prototype.setFillOpacity = function (value) {
+            if (value !== this._FillOpacity) {
+                this._FillOpacity = value;
+                this.polygon.setStyle({ fillOpacity: value });
+            }
+        };
+        MapPolygon.prototype.getStrokeColour = function () {
+            return this._StrokeColour;
+        };
+        MapPolygon.prototype.setStrokeColour = function (value) {
+            if (value !== this._StrokeColour) {
+                this._StrokeColour = value;
+                this.polygon.setStyle({ color: value });
+            }
+        };
+        MapPolygon.prototype.getStrokeOpacity = function () {
+            return this._StrokeOpacity;
+        };
+        MapPolygon.prototype.setStrokeOpacity = function (value) {
+            if (value !== this._StrokeOpacity) {
+                this._StrokeOpacity = value;
+                this.polygon.setStyle({ opacity: value });
+            }
+        };
+        MapPolygon.prototype.getStrokeWeight = function () {
+            return this._StrokeWeight;
+        };
+        MapPolygon.prototype.setStrokeWeight = function (value) {
+            if (value !== this._StrokeWeight) {
+                this._StrokeWeight = value;
+                this.polygon.setStyle({ weight: value });
+            }
+        };
+        MapPolygon.prototype.getZIndex = function () {
+            return this._ZIndex;
+        };
+        MapPolygon.prototype.setZIndex = function (value) {
+            if (value !== this._ZIndex) {
+                this._ZIndex = value;
+            }
+        };
+        return MapPolygon;
+    }());
     var MapPluginState = (function () {
         function MapPluginState() {
             this.map = undefined;
@@ -516,6 +633,7 @@ var VRS;
             this.markers = {};
             this.polylines = {};
             this.circles = {};
+            this.polygons = {};
         }
         return MapPluginState;
     }());
@@ -995,13 +1113,52 @@ var VRS;
             }
         };
         MapPlugin.prototype.addPolygon = function (id, userOptions) {
-            return null;
+            var result;
+            var state = this._getState();
+            if (state.map) {
+                var options = $.extend({}, userOptions, {
+                    visible: true
+                });
+                var leafletOptions = {
+                    color: options.strokeColour || '#000000',
+                    fillColor: options.fillColour || '#ffffff',
+                };
+                if (options.strokeOpacity || leafletOptions.opacity === 0)
+                    leafletOptions.opacity = options.strokeOpacity;
+                if (options.fillOpacity || leafletOptions.fillOpacity === 0)
+                    leafletOptions.fillOpacity = options.fillOpacity;
+                if (options.strokeWeight || leafletOptions.weight === 0)
+                    leafletOptions.weight = options.strokeWeight;
+                var paths = [];
+                if (options.paths)
+                    paths = VRS.leafletUtilities.toLeafletLatLngArray(options.paths[0]);
+                this.destroyPolygon(id);
+                var polygon = new L.Polygon(paths, leafletOptions);
+                if (options.visible) {
+                    polygon.addTo(state.map);
+                }
+                result = new MapPolygon(id, state.map, polygon, userOptions.tag, userOptions);
+                state.polygons[id] = result;
+            }
+            return result;
         };
         MapPlugin.prototype.getPolygon = function (idOrPolygon) {
-            return null;
+            if (idOrPolygon instanceof MapPolygon)
+                return idOrPolygon;
+            var state = this._getState();
+            return state.polygons[idOrPolygon];
         };
         MapPlugin.prototype.destroyPolygon = function (idOrPolygon) {
-            ;
+            var state = this._getState();
+            var polygon = this.getPolygon(idOrPolygon);
+            if (polygon) {
+                polygon.setVisible(false);
+                polygon.map = null;
+                polygon.polygon = null;
+                polygon.tag = null;
+                delete state.polygons[polygon.id];
+                polygon.id = null;
+            }
         };
         MapPlugin.prototype.addCircle = function (id, userOptions) {
             var result = null;

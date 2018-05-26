@@ -800,6 +800,225 @@ namespace VRS
     }
 
     /**
+     * Describes a polygon on a map.
+     */
+    class MapPolygon implements IMapPolygon
+    {
+        id:         string | number;
+        map:        L.Map;
+        polygon:    L.Polygon;
+        tag:        any;
+        visible:    boolean;
+
+        constructor(id: string | number, nativeMap: L.Map, nativePolygon: L.Polygon, tag: any, options: IMapPolygonSettings)
+        {
+            this.id = id;
+            this.map = nativeMap;
+            this.polygon = nativePolygon;
+            this.tag = tag;
+            this.visible = options.visible;
+
+            this._FillColour = options.fillColour;
+            this._FillOpacity = options.fillOpacity;
+            this._StrokeColour = options.strokeColour;
+            this._StrokeOpacity = options.strokeOpacity;
+            this._StrokeWeight = options.strokeWeight;
+            this._ZIndex = options.zIndex;
+        }
+
+        getDraggable() : boolean
+        {
+            return false;
+        }
+
+        setDraggable(draggable: boolean)
+        {
+            ;
+        }
+
+        getEditable() : boolean
+        {
+            return false;
+        }
+
+        setEditable(editable: boolean)
+        {
+            ;
+        }
+
+        getVisible() : boolean
+        {
+            return this.visible;
+        }
+
+        setVisible(visible: boolean)
+        {
+            if(visible != this.visible) {
+                if(visible) {
+                    this.polygon.addTo(this.map);
+                } else {
+                    this.polygon.removeFrom(this.map);
+                }
+                this.visible = visible;
+            }
+        }
+
+        getFirstPath() : ILatLng[]
+        {
+            return VRS.leafletUtilities.fromLeafletLatLngArray(<L.LatLng[]>this.polygon.getLatLngs());
+        }
+
+        setFirstPath(path: ILatLng[])
+        {
+            this.polygon.setLatLngs(path);
+        }
+
+        getPaths() : ILatLng[][]
+        {
+            // For now I'm just supporting single path polygons
+            return <ILatLng[][]> [
+                this.getFirstPath()
+            ];
+        }
+
+        setPaths(paths: ILatLng[][])
+        {
+            // For now I'm just supporting single path polygons
+            this.setFirstPath(paths[0]);
+        }
+
+        /**
+         * Gets a value indicating whether the polygon handles mouse events.
+         */
+        getClickable() : boolean
+        {
+            return this.polygon.options.interactive;
+        }
+        /**
+         * Sets a value that indicates whether the polygon handles mouse events.
+         */
+        setClickable(value: boolean)
+        {
+            if(value !== this.getClickable()) {
+                this.polygon.options.interactive = value;
+            }
+        }
+
+        private _FillColour: string;
+        /**
+         * Gets the CSS colour of the fill area.
+         */
+        getFillColour() : string
+        {
+            return this._FillColour;
+        }
+        /**
+         * Sets the CSS colour of the fill area.
+         */
+        setFillColour(value: string)
+        {
+            if(value !== this._FillColour) {
+                this._FillColour = value;
+                this.polygon.setStyle({ fillColor: value });
+            }
+        }
+
+        private _FillOpacity: number;
+        /**
+         * Gets the opacity of the fill area.
+         */
+        getFillOpacity() : number
+        {
+            return this._FillOpacity;
+        }
+        /**
+         * Sets the opacity of the fill area (between 0 and 1).
+         */
+        setFillOpacity(value: number)
+        {
+            if(value !== this._FillOpacity) {
+                this._FillOpacity = value;
+                this.polygon.setStyle({ fillOpacity: value });
+            }
+        }
+
+        private _StrokeColour: string;
+        /**
+         * Gets the CSS colour of the stroke line.
+         */
+        getStrokeColour() : string
+        {
+            return this._StrokeColour;
+        }
+        /**
+         * Sets the CSS colour of the stroke line.
+         */
+        setStrokeColour(value: string)
+        {
+            if(value !== this._StrokeColour) {
+                this._StrokeColour = value;
+                this.polygon.setStyle({ color: value });
+            }
+        }
+
+        private _StrokeOpacity: number;
+        /**
+         * Gets the opacity of the stroke line.
+         */
+        getStrokeOpacity() : number
+        {
+            return this._StrokeOpacity;
+        }
+        /**
+         * Sets the opacity of the stroke line (between 0 and 1).
+         */
+        setStrokeOpacity(value: number)
+        {
+            if(value !== this._StrokeOpacity) {
+                this._StrokeOpacity = value;
+                this.polygon.setStyle({ opacity: value });
+            }
+        }
+
+        private _StrokeWeight: number;
+        /**
+         * Gets the weight of the stroke line in pixels.
+         */
+        getStrokeWeight() : number
+        {
+            return this._StrokeWeight;
+        }
+        /**
+         * Sets the weight of the stroke line in pixels.
+         */
+        setStrokeWeight(value: number)
+        {
+            if(value !== this._StrokeWeight) {
+                this._StrokeWeight = value;
+                this.polygon.setStyle({ weight: value });
+            }
+        }
+
+        private _ZIndex: number;
+        /**
+         * Gets the z-index of the polygon.
+         */
+        getZIndex() : number
+        {
+            return this._ZIndex;
+        }
+        /**
+         * Sets the z-index of the polygon.
+         */
+        setZIndex(value: number)
+        {
+            if(value !== this._ZIndex) {
+                this._ZIndex = value;
+            }
+        }
+    }
+
+    /**
      * The state held for every map plugin object.
      */
     class MapPluginState
@@ -828,6 +1047,11 @@ namespace VRS
          * An associative array of circle IDs to circles.
          */
         circles: { [circleId: string]: MapCircle } = {};
+
+        /**
+         * An associative array of polygon IDs to polygons.
+         */
+        polygons: { [polygonId: string]: MapPolygon } = {};
     }
 
     /**
@@ -1445,17 +1669,55 @@ namespace VRS
 
         addPolygon(id: string | number, userOptions: IMapPolygonSettings): IMapPolygon
         {
-            return null;
+            var result: MapPolygon;
+
+            var state = this._getState();
+            if(state.map) {
+                var options: IMapPolygonSettings = $.extend(<IMapPolygonSettings>{}, userOptions, {
+                    visible: true
+                });
+                var leafletOptions: L.PolylineOptions = {
+                    color: options.strokeColour || '#000000',
+                    fillColor: options.fillColour || '#ffffff',
+                };
+                if(options.strokeOpacity || leafletOptions.opacity === 0)   leafletOptions.opacity = options.strokeOpacity;
+                if(options.fillOpacity || leafletOptions.fillOpacity === 0) leafletOptions.fillOpacity = options.fillOpacity;
+                if(options.strokeWeight || leafletOptions.weight === 0)     leafletOptions.weight = options.strokeWeight;
+
+                var paths: L.LatLng[] = [];
+                if(options.paths) paths = VRS.leafletUtilities.toLeafletLatLngArray(options.paths[0]);
+
+                this.destroyPolygon(id);
+                var polygon = new L.Polygon(paths, leafletOptions);
+                if(options.visible) {
+                    polygon.addTo(state.map);
+                }
+                result = new MapPolygon(id, state.map, polygon, userOptions.tag, userOptions);
+                state.polygons[id] = result;
+            }
+
+            return result;
         }
 
         getPolygon(idOrPolygon: string | number | IMapPolygon): IMapPolygon
         {
-            return null;
+            if(idOrPolygon instanceof MapPolygon) return idOrPolygon;
+            var state = this._getState();
+            return state.polygons[<string | number>idOrPolygon];
         }
 
         destroyPolygon(idOrPolygon: string | number | IMapPolygon)
         {
-            ;
+            var state = this._getState();
+            var polygon = <MapPolygon>this.getPolygon(idOrPolygon);
+            if(polygon) {
+                polygon.setVisible(false);
+                polygon.map = null;
+                polygon.polygon = null;
+                polygon.tag = null;
+                delete state.polygons[polygon.id];
+                polygon.id = null;
+            }
         }
 
         addCircle(id: string | number, userOptions: IMapCircleSettings): IMapCircle
