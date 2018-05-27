@@ -887,16 +887,10 @@ namespace VRS
             this.setFirstPath(paths[0]);
         }
 
-        /**
-         * Gets a value indicating whether the polygon handles mouse events.
-         */
         getClickable() : boolean
         {
             return this.polygon.options.interactive;
         }
-        /**
-         * Sets a value that indicates whether the polygon handles mouse events.
-         */
         setClickable(value: boolean)
         {
             if(value !== this.getClickable()) {
@@ -905,16 +899,10 @@ namespace VRS
         }
 
         private _FillColour: string;
-        /**
-         * Gets the CSS colour of the fill area.
-         */
         getFillColour() : string
         {
             return this._FillColour;
         }
-        /**
-         * Sets the CSS colour of the fill area.
-         */
         setFillColour(value: string)
         {
             if(value !== this._FillColour) {
@@ -924,16 +912,10 @@ namespace VRS
         }
 
         private _FillOpacity: number;
-        /**
-         * Gets the opacity of the fill area.
-         */
         getFillOpacity() : number
         {
             return this._FillOpacity;
         }
-        /**
-         * Sets the opacity of the fill area (between 0 and 1).
-         */
         setFillOpacity(value: number)
         {
             if(value !== this._FillOpacity) {
@@ -943,16 +925,10 @@ namespace VRS
         }
 
         private _StrokeColour: string;
-        /**
-         * Gets the CSS colour of the stroke line.
-         */
         getStrokeColour() : string
         {
             return this._StrokeColour;
         }
-        /**
-         * Sets the CSS colour of the stroke line.
-         */
         setStrokeColour(value: string)
         {
             if(value !== this._StrokeColour) {
@@ -962,16 +938,10 @@ namespace VRS
         }
 
         private _StrokeOpacity: number;
-        /**
-         * Gets the opacity of the stroke line.
-         */
         getStrokeOpacity() : number
         {
             return this._StrokeOpacity;
         }
-        /**
-         * Sets the opacity of the stroke line (between 0 and 1).
-         */
         setStrokeOpacity(value: number)
         {
             if(value !== this._StrokeOpacity) {
@@ -981,16 +951,10 @@ namespace VRS
         }
 
         private _StrokeWeight: number;
-        /**
-         * Gets the weight of the stroke line in pixels.
-         */
         getStrokeWeight() : number
         {
             return this._StrokeWeight;
         }
-        /**
-         * Sets the weight of the stroke line in pixels.
-         */
         setStrokeWeight(value: number)
         {
             if(value !== this._StrokeWeight) {
@@ -1000,21 +964,113 @@ namespace VRS
         }
 
         private _ZIndex: number;
-        /**
-         * Gets the z-index of the polygon.
-         */
         getZIndex() : number
         {
             return this._ZIndex;
         }
-        /**
-         * Sets the z-index of the polygon.
-         */
         setZIndex(value: number)
         {
             if(value !== this._ZIndex) {
                 this._ZIndex = value;
             }
+        }
+    }
+
+    /**
+     * A wrapper around a map's native info window.
+     */
+    class MapInfoWindow implements IMapInfoWindow
+    {
+        id:         string | number;
+        map:        L.Map;
+        infoWindow: L.Popup;
+        tag:        any;
+        isOpen:     boolean;
+
+        /**
+         * Creates a new object.
+         * @param {string|number}           id                  The unique identifier of the info window
+         * @param {L.Popup}                 nativeInfoWindow    The map's native info window object that this wraps.
+         * @param {*}                       tag                 An abstract object that is associated with the info window.
+         * @param {IMapInfoWindowSettings}  options             The options used to create the info window.
+        */
+        constructor(id: string | number, nativeMap: L.Map, nativeInfoWindow: L.Popup, tag: any, options: IMapInfoWindowSettings)
+        {
+            this.id = id;
+            this.map = nativeMap;
+            this.infoWindow = nativeInfoWindow;
+            this.tag = tag;
+            this.isOpen = false;
+
+            this._DisableAutoPan = options.disableAutoPan;
+            this._MaxWidth = options.maxWidth;
+            this._PixelOffset = options.pixelOffset;
+        }
+
+        getContent() : Element
+        {
+            return <Element>this.infoWindow.getContent();
+        }
+        setContent(value: Element)
+        {
+            this.infoWindow.setContent(<any>value);
+        }
+
+        private _DisableAutoPan: boolean;
+        getDisableAutoPan() : boolean
+        {
+            return this._DisableAutoPan;
+        }
+        setDisableAutoPan(value: boolean)
+        {
+            if(this._DisableAutoPan !== value) {
+                this._DisableAutoPan = value;
+                this.infoWindow.options.autoPan = !value;
+            }
+        }
+
+        private _MaxWidth: number;
+        getMaxWidth() : number
+        {
+            return this._MaxWidth;
+        }
+        setMaxWidth(value: number)
+        {
+            if(this._MaxWidth !== value) {
+                this._MaxWidth = value;
+                this.infoWindow.options.maxWidth = value;
+            }
+        }
+
+        private _PixelOffset: ISize;
+        getPixelOffset() : ISize
+        {
+            return this._PixelOffset;
+        }
+        setPixelOffset(value: ISize)
+        {
+            if(this._PixelOffset !== value) {
+                this._PixelOffset = value;
+                this.infoWindow.options.offset = VRS.leafletUtilities.toLeafletSize(value);
+            }
+        }
+
+        getPosition() : ILatLng
+        {
+            return VRS.leafletUtilities.fromLeafletLatLng(this.infoWindow.getLatLng());
+        }
+        setPosition(value: ILatLng)
+        {
+            this.infoWindow.setLatLng(VRS.leafletUtilities.toLeafletLatLng(value));
+        }
+
+        getZIndex() : number
+        {
+            return 1;
+        }
+        setZIndex(value: number)
+        {
+            ;
         }
     }
 
@@ -1052,6 +1108,11 @@ namespace VRS
          * An associative array of polygon IDs to polygons.
          */
         polygons: { [polygonId: string]: MapPolygon } = {};
+
+        /**
+         * An associative array of info window IDs to info windows.
+         */
+        infoWindows: { [infoWindowId: string]: MapInfoWindow } = {};
     }
 
     /**
@@ -1774,32 +1835,96 @@ namespace VRS
 
         getUnusedInfoWindowId(): string
         {
-            return null;
+            var result;
+
+            var state = this._getState();
+            for(var i = 1;i > 0;++i) {
+                result = 'autoID' + i;
+                if(!state.infoWindows[result]) break;
+            }
+
+            return result;
         }
 
         addInfoWindow(id: string | number, userOptions: IMapInfoWindowSettings): IMapInfoWindow
         {
-            return null;
+            var result: MapInfoWindow = null;
+
+            var state = this._getState();
+            if(state.map) {
+                var options: IMapInfoWindowSettings = $.extend({
+                    visible: true
+                }, userOptions);
+                var leafletOptions: L.PopupOptions = {
+                    autoPan:        !!!options.disableAutoPan,
+                    autoClose:      false,
+                    closeOnClick:   false,
+                    maxWidth:       options.maxWidth
+                };
+                if(options.pixelOffset) {
+                    leafletOptions.offset = VRS.leafletUtilities.toLeafletSize(options.pixelOffset);
+                }
+
+                this.destroyInfoWindow(id);
+                var infoWindow = new L.Popup(leafletOptions);
+                if(options.position) {
+                    infoWindow.setLatLng(VRS.leafletUtilities.toLeafletLatLng(options.position));
+                }
+                if(options.content) {
+                    infoWindow.setContent(<HTMLElement>options.content);
+                }
+
+                result = new MapInfoWindow(id, state.map, infoWindow, options.tag, options);
+                state.infoWindows[id] = result;
+            }
+
+            return result;
         }
 
         getInfoWindow(idOrInfoWindow: string | number | IMapInfoWindow): IMapInfoWindow
         {
-            return null;
+            if(idOrInfoWindow instanceof MapInfoWindow) return idOrInfoWindow;
+            var state = this._getState();
+            return state.infoWindows[<string | number>idOrInfoWindow];
         }
 
         destroyInfoWindow(idOrInfoWindow: string | number | IMapInfoWindow)
         {
-            ;
+            var state = this._getState();
+            var infoWindow = <MapInfoWindow>this.getInfoWindow(idOrInfoWindow);
+            if(infoWindow) {
+                this.closeInfoWindow(infoWindow);
+                infoWindow.infoWindow.setContent('');
+                infoWindow.map = null;
+                infoWindow.tag = null;
+                infoWindow.infoWindow = null;
+                delete state.infoWindows[infoWindow.id];
+                infoWindow.id = null;
+            }
         }
 
         openInfoWindow(idOrInfoWindow: string | number | IMapInfoWindow, mapMarker?: IMapMarker)
         {
-            ;
+            var state = this._getState();
+            var infoWindow = <MapInfoWindow>this.getInfoWindow(idOrInfoWindow);
+            if(infoWindow && state.map && !infoWindow.isOpen) {
+                if(!mapMarker) {
+                    infoWindow.map.openPopup(infoWindow.infoWindow);
+                } else {
+                    var marker = <MapMarker>mapMarker;
+                    marker.marker.bindPopup(infoWindow.infoWindow).openPopup();
+                }
+                infoWindow.isOpen = true;
+            }
         }
 
         closeInfoWindow(idOrInfoWindow: string | number | IMapInfoWindow)
         {
-            ;
+            var infoWindow = <MapInfoWindow>this.getInfoWindow(idOrInfoWindow);
+            if(infoWindow.isOpen) {
+                infoWindow.map.closePopup(infoWindow.infoWindow);
+                infoWindow.isOpen = false;
+            }
         }
 
         addControl(element: JQuery | HTMLElement, mapPosition: MapPositionEnum)

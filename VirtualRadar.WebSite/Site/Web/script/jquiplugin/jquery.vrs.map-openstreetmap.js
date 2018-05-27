@@ -626,6 +626,64 @@ var VRS;
         };
         return MapPolygon;
     }());
+    var MapInfoWindow = (function () {
+        function MapInfoWindow(id, nativeMap, nativeInfoWindow, tag, options) {
+            this.id = id;
+            this.map = nativeMap;
+            this.infoWindow = nativeInfoWindow;
+            this.tag = tag;
+            this.isOpen = false;
+            this._DisableAutoPan = options.disableAutoPan;
+            this._MaxWidth = options.maxWidth;
+            this._PixelOffset = options.pixelOffset;
+        }
+        MapInfoWindow.prototype.getContent = function () {
+            return this.infoWindow.getContent();
+        };
+        MapInfoWindow.prototype.setContent = function (value) {
+            this.infoWindow.setContent(value);
+        };
+        MapInfoWindow.prototype.getDisableAutoPan = function () {
+            return this._DisableAutoPan;
+        };
+        MapInfoWindow.prototype.setDisableAutoPan = function (value) {
+            if (this._DisableAutoPan !== value) {
+                this._DisableAutoPan = value;
+                this.infoWindow.options.autoPan = !value;
+            }
+        };
+        MapInfoWindow.prototype.getMaxWidth = function () {
+            return this._MaxWidth;
+        };
+        MapInfoWindow.prototype.setMaxWidth = function (value) {
+            if (this._MaxWidth !== value) {
+                this._MaxWidth = value;
+                this.infoWindow.options.maxWidth = value;
+            }
+        };
+        MapInfoWindow.prototype.getPixelOffset = function () {
+            return this._PixelOffset;
+        };
+        MapInfoWindow.prototype.setPixelOffset = function (value) {
+            if (this._PixelOffset !== value) {
+                this._PixelOffset = value;
+                this.infoWindow.options.offset = VRS.leafletUtilities.toLeafletSize(value);
+            }
+        };
+        MapInfoWindow.prototype.getPosition = function () {
+            return VRS.leafletUtilities.fromLeafletLatLng(this.infoWindow.getLatLng());
+        };
+        MapInfoWindow.prototype.setPosition = function (value) {
+            this.infoWindow.setLatLng(VRS.leafletUtilities.toLeafletLatLng(value));
+        };
+        MapInfoWindow.prototype.getZIndex = function () {
+            return 1;
+        };
+        MapInfoWindow.prototype.setZIndex = function (value) {
+            ;
+        };
+        return MapInfoWindow;
+    }());
     var MapPluginState = (function () {
         function MapPluginState() {
             this.map = undefined;
@@ -634,6 +692,7 @@ var VRS;
             this.polylines = {};
             this.circles = {};
             this.polygons = {};
+            this.infoWindows = {};
         }
         return MapPluginState;
     }());
@@ -1205,22 +1264,83 @@ var VRS;
             }
         };
         MapPlugin.prototype.getUnusedInfoWindowId = function () {
-            return null;
+            var result;
+            var state = this._getState();
+            for (var i = 1; i > 0; ++i) {
+                result = 'autoID' + i;
+                if (!state.infoWindows[result])
+                    break;
+            }
+            return result;
         };
         MapPlugin.prototype.addInfoWindow = function (id, userOptions) {
-            return null;
+            var result = null;
+            var state = this._getState();
+            if (state.map) {
+                var options = $.extend({
+                    visible: true
+                }, userOptions);
+                var leafletOptions = {
+                    autoPan: !!!options.disableAutoPan,
+                    autoClose: false,
+                    closeOnClick: false,
+                    maxWidth: options.maxWidth
+                };
+                if (options.pixelOffset) {
+                    leafletOptions.offset = VRS.leafletUtilities.toLeafletSize(options.pixelOffset);
+                }
+                this.destroyInfoWindow(id);
+                var infoWindow = new L.Popup(leafletOptions);
+                if (options.position) {
+                    infoWindow.setLatLng(VRS.leafletUtilities.toLeafletLatLng(options.position));
+                }
+                if (options.content) {
+                    infoWindow.setContent(options.content);
+                }
+                result = new MapInfoWindow(id, state.map, infoWindow, options.tag, options);
+                state.infoWindows[id] = result;
+            }
+            return result;
         };
         MapPlugin.prototype.getInfoWindow = function (idOrInfoWindow) {
-            return null;
+            if (idOrInfoWindow instanceof MapInfoWindow)
+                return idOrInfoWindow;
+            var state = this._getState();
+            return state.infoWindows[idOrInfoWindow];
         };
         MapPlugin.prototype.destroyInfoWindow = function (idOrInfoWindow) {
-            ;
+            var state = this._getState();
+            var infoWindow = this.getInfoWindow(idOrInfoWindow);
+            if (infoWindow) {
+                this.closeInfoWindow(infoWindow);
+                infoWindow.infoWindow.setContent('');
+                infoWindow.map = null;
+                infoWindow.tag = null;
+                infoWindow.infoWindow = null;
+                delete state.infoWindows[infoWindow.id];
+                infoWindow.id = null;
+            }
         };
         MapPlugin.prototype.openInfoWindow = function (idOrInfoWindow, mapMarker) {
-            ;
+            var state = this._getState();
+            var infoWindow = this.getInfoWindow(idOrInfoWindow);
+            if (infoWindow && state.map && !infoWindow.isOpen) {
+                if (!mapMarker) {
+                    infoWindow.map.openPopup(infoWindow.infoWindow);
+                }
+                else {
+                    var marker = mapMarker;
+                    marker.marker.bindPopup(infoWindow.infoWindow).openPopup();
+                }
+                infoWindow.isOpen = true;
+            }
         };
         MapPlugin.prototype.closeInfoWindow = function (idOrInfoWindow) {
-            ;
+            var infoWindow = this.getInfoWindow(idOrInfoWindow);
+            if (infoWindow.isOpen) {
+                infoWindow.map.closePopup(infoWindow.infoWindow);
+                infoWindow.isOpen = false;
+            }
         };
         MapPlugin.prototype.addControl = function (element, mapPosition) {
             var state = this._getState();
