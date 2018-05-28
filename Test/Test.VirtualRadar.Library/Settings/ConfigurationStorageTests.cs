@@ -254,6 +254,8 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual("ABC.COM", readBack.GoogleMapSettings.AllowCorsDomains);
                         Assert.AreEqual("API Key", readBack.GoogleMapSettings.GoogleMapsApiKey);
                         Assert.AreEqual(true, readBack.GoogleMapSettings.UseGoogleMapsAPIKeyWithLocalRequests);
+                        Assert.AreEqual(MapProvider.OpenStreetMap, readBack.GoogleMapSettings.MapProvider);
+                        Assert.AreEqual("http://tiles.example.com", readBack.GoogleMapSettings.OpenStreetMapTileServerUrl);
                         break;
                     case "VersionCheckSettings":
                         Assert.AreEqual(false, readBack.VersionCheckSettings.CheckAutomatically);
@@ -536,6 +538,8 @@ namespace Test.VirtualRadar.Library.Settings
                                                         AllowCorsDomains = "ABC.COM",
                                                         GoogleMapsApiKey = "API Key",
                                                         UseGoogleMapsAPIKeyWithLocalRequests = true,
+                                                        MapProvider = MapProvider.OpenStreetMap,
+                                                        OpenStreetMapTileServerUrl = "http://tiles.example.com",
                                                     }; break;
                     case "VersionCheckSettings":    result.VersionCheckSettings = new VersionCheckSettings() {
                                                         CheckAutomatically = false,

@@ -191,7 +191,7 @@ var VRS;
             if (!icon)
                 return null;
             else
-                return new MapIcon(icon.url, this.fromGoogleSize(icon.size), this.fromGooglePoint(icon.anchor), this.fromGooglePoint(icon.origin), this.fromGoogleSize(icon.scaledSize));
+                return new VRS.MapIcon(icon.url, this.fromGoogleSize(icon.size), this.fromGooglePoint(icon.anchor), this.fromGooglePoint(icon.origin), this.fromGoogleSize(icon.scaledSize));
         };
         GoogleMapUtilities.prototype.toGoogleIcon = function (icon) {
             if (!icon)
@@ -289,18 +289,6 @@ var VRS;
     }());
     VRS.GoogleMapUtilities = GoogleMapUtilities;
     VRS.googleMapUtilities = new VRS.GoogleMapUtilities();
-    var MapIcon = (function () {
-        function MapIcon(url, size, anchor, origin, scaledSize, labelAnchor) {
-            this.url = url;
-            this.size = size;
-            this.anchor = anchor;
-            this.origin = origin;
-            this.scaledSize = scaledSize;
-            this.labelAnchor = labelAnchor;
-        }
-        return MapIcon;
-    }());
-    VRS.MapIcon = MapIcon;
     var MapMarker = (function () {
         function MapMarker(id, nativeMarker, isMarkerWithLabel, tag) {
             this.nativeListeners = [];
@@ -776,7 +764,7 @@ var VRS;
     VRS.jQueryUIHelper.getMapOptions = function (overrides) {
         return $.extend({
             key: null,
-            version: '3.24',
+            version: '3.31',
             sensor: false,
             libraries: [],
             loadMarkerWithLabel: false,
@@ -1610,4 +1598,4 @@ var VRS;
     }(JQueryUICustomWidget));
     $.widget('vrs.vrsMap', new MapPlugin());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.map.js.map
+//# sourceMappingURL=jquery.vrs.map-google-maps.js.map

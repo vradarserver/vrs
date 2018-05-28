@@ -85,20 +85,36 @@ namespace VirtualRadar.WinForms.SettingPage
         /// <summary>
         /// See base docs.
         /// </summary>
+        protected override void InitialiseControls()
+        {
+            base.InitialiseControls();
+            EnableDisableControls();
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
         protected override void CreateBindings()
         {
             base.CreateBindings();
             var baseStationSettings = SettingsView.Configuration.BaseStationSettings;
+            var mapSettings = SettingsView.Configuration.GoogleMapSettings;
+
+            AddControlBinder(new ComboBoxEnumBinder<GoogleMapSettings, MapProvider>(mapSettings, comboBoxMapProvider, r => r.MapProvider, (r,v) => r.MapProvider = v, r => Describe.MapProvider(r)) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
+
+            AddControlBinder(new TextBoxStringBinder<GoogleMapSettings>(mapSettings, textBoxGoogleMapsAPIKey,           r => r.GoogleMapsApiKey,            (r,v) => r.GoogleMapsApiKey = v));
+            AddControlBinder(new TextBoxStringBinder<GoogleMapSettings>(mapSettings, textBoxOpenStreetMapTileServerUrl, r => r.OpenStreetMapTileServerUrl,  (r,v) => r.OpenStreetMapTileServerUrl = v));
 
             AddControlBinder(new FileNameStringBinder<BaseStationSettings>(baseStationSettings, fileDatabaseFileName,    r => r.DatabaseFileName,   (r,v) => r.DatabaseFileName = v));
 
-            AddControlBinder(new FolderStringBinder<BaseStationSettings>(baseStationSettings, folderFlags,                       r => r.OperatorFlagsFolder,    (r,v) => r.OperatorFlagsFolder = v));
-            AddControlBinder(new FolderStringBinder<BaseStationSettings>(baseStationSettings, folderSilhouettes,                 r => r.SilhouettesFolder,      (r,v) => r.SilhouettesFolder = v));
-            AddControlBinder(new FolderStringBinder<BaseStationSettings>(baseStationSettings, folderPictures,                    r => r.PicturesFolder,         (r,v) => r.PicturesFolder = v));
+            AddControlBinder(new FolderStringBinder<BaseStationSettings>(baseStationSettings, folderFlags,          r => r.OperatorFlagsFolder,    (r,v) => r.OperatorFlagsFolder = v));
+            AddControlBinder(new FolderStringBinder<BaseStationSettings>(baseStationSettings, folderSilhouettes,    r => r.SilhouettesFolder,      (r,v) => r.SilhouettesFolder = v));
+            AddControlBinder(new FolderStringBinder<BaseStationSettings>(baseStationSettings, folderPictures,       r => r.PicturesFolder,         (r,v) => r.PicturesFolder = v));
 
-            AddControlBinder(new CheckBoxBoolBinder<BaseStationSettings>(baseStationSettings, checkBoxSearchPictureSubFolders,      r => r.SearchPictureSubFolders,             (r,v) => r.SearchPictureSubFolders = v));
-            AddControlBinder(new CheckBoxBoolBinder<BaseStationSettings>(baseStationSettings, checkBoxLookupAircraftDetailsOnline,  r => r.LookupAircraftDetailsOnline,         (r,v) => r.LookupAircraftDetailsOnline = v));
-            AddControlBinder(new CheckBoxBoolBinder<BaseStationSettings>(baseStationSettings, checkBoxDownloadWeather,              r => r.DownloadGlobalAirPressureReadings,   (r,v) => r.DownloadGlobalAirPressureReadings = v));
+            AddControlBinder(new CheckBoxBoolBinder<GoogleMapSettings>(mapSettings,           checkBoxUseGoogleMapsKeyWithLocalRequests,    r => r.UseGoogleMapsAPIKeyWithLocalRequests, (r,v) => r.UseGoogleMapsAPIKeyWithLocalRequests = v));
+            AddControlBinder(new CheckBoxBoolBinder<BaseStationSettings>(baseStationSettings, checkBoxSearchPictureSubFolders,              r => r.SearchPictureSubFolders,              (r,v) => r.SearchPictureSubFolders = v));
+            AddControlBinder(new CheckBoxBoolBinder<BaseStationSettings>(baseStationSettings, checkBoxLookupAircraftDetailsOnline,          r => r.LookupAircraftDetailsOnline,          (r,v) => r.LookupAircraftDetailsOnline = v));
+            AddControlBinder(new CheckBoxBoolBinder<BaseStationSettings>(baseStationSettings, checkBoxDownloadWeather,                      r => r.DownloadGlobalAirPressureReadings,    (r,v) => r.DownloadGlobalAirPressureReadings = v));
 
             AddControlBinder(new LabelStringBinder<SettingsView>(SettingsView, labelAircraftLookupDataProvider,     r => r.AircraftOnlineLookupDataSupplier,        (r,v) => {;}));
             AddControlBinder(new LabelStringBinder<SettingsView>(SettingsView, labelAircraftLookupSupplierCredits,  r => r.AircraftOnlineLookupDataSupplierCredits, (r,v) => {;}));
@@ -112,13 +128,15 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void AssociateInlineHelp()
         {
             base.AssociateInlineHelp();
-            SetInlineHelp(fileDatabaseFileName,                 Strings.DatabaseFileName,                   Strings.OptionsDescribeDataSourcesDatabaseFileName);
-            SetInlineHelp(folderFlags,                          Strings.FlagsFolder,                        Strings.OptionsDescribeDataSourcesFlagsFolder);
-            SetInlineHelp(folderSilhouettes,                    Strings.SilhouettesFolder,                  Strings.OptionsDescribeDataSourcesSilhouettesFolder);
-            SetInlineHelp(folderPictures,                       Strings.PicturesFolder,                     Strings.OptionsDescribeDataSourcesPicturesFolder);
-            SetInlineHelp(checkBoxSearchPictureSubFolders,      Strings.SearchPictureSubFolders,            Strings.OptionsDescribeDataSourcesSearchPictureSubFolders);
-            SetInlineHelp(checkBoxLookupAircraftDetailsOnline,  Strings.LookupAircraftDetailsOnline,        Strings.OptionsDescribeDataSourcesLookupAircraftDetailsOnline);
-            SetInlineHelp(checkBoxDownloadWeather,              Strings.DownloadGlobalAirPressureReadings,  Strings.OptionsDescribeDownloadGlobalAirPressureReadings);
+            SetInlineHelp(fileDatabaseFileName,                      Strings.DatabaseFileName,                   Strings.OptionsDescribeDataSourcesDatabaseFileName);
+            SetInlineHelp(folderFlags,                               Strings.FlagsFolder,                        Strings.OptionsDescribeDataSourcesFlagsFolder);
+            SetInlineHelp(folderSilhouettes,                         Strings.SilhouettesFolder,                  Strings.OptionsDescribeDataSourcesSilhouettesFolder);
+            SetInlineHelp(folderPictures,                            Strings.PicturesFolder,                     Strings.OptionsDescribeDataSourcesPicturesFolder);
+            SetInlineHelp(checkBoxSearchPictureSubFolders,           Strings.SearchPictureSubFolders,            Strings.OptionsDescribeDataSourcesSearchPictureSubFolders);
+            SetInlineHelp(checkBoxLookupAircraftDetailsOnline,       Strings.LookupAircraftDetailsOnline,        Strings.OptionsDescribeDataSourcesLookupAircraftDetailsOnline);
+            SetInlineHelp(checkBoxDownloadWeather,                   Strings.DownloadGlobalAirPressureReadings,  Strings.OptionsDescribeDownloadGlobalAirPressureReadings);
+            SetInlineHelp(checkBoxUseGoogleMapsKeyWithLocalRequests, Strings.UseGoogleMapsKeyWithLocalRequests,  Strings.OptionsDescribeUseGoogleMapsKeyWithLocalRequests);
+            SetInlineHelp(textBoxGoogleMapsAPIKey,                   Strings.GoogleMapsAPIKey,                   Strings.OptionsDescribeGoogleMapsAPIKey);
         }
 
         /// <summary>
@@ -129,6 +147,27 @@ namespace VirtualRadar.WinForms.SettingPage
         private void linkLabelAircraftLookupSupplierUrl_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             SettingsView.RaiseOpenUrlClicked(new EventArgs<string>(linkLabelAircraftLookupSupplierUrl.Text));
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="args"></param>
+        internal override void ConfigurationChanged(ConfigurationListenerEventArgs args)
+        {
+            base.ConfigurationChanged(args);
+            if(SettingsView != null && IsHandleCreated) {
+                if(args.Group == ConfigurationListenerGroup.GoogleMapSettings) {
+                    EnableDisableControls();
+                }
+            }
+        }
+
+        private void EnableDisableControls()
+        {
+            textBoxGoogleMapsAPIKey.Enabled = SettingsView.Configuration.GoogleMapSettings.MapProvider == MapProvider.GoogleMaps;
+            checkBoxUseGoogleMapsKeyWithLocalRequests.Enabled = SettingsView.Configuration.GoogleMapSettings.MapProvider == MapProvider.GoogleMaps;
+            textBoxOpenStreetMapTileServerUrl.Enabled = SettingsView.Configuration.GoogleMapSettings.MapProvider == MapProvider.OpenStreetMap;
         }
     }
 }

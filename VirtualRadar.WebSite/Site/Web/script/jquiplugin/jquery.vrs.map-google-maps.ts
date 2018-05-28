@@ -10,7 +10,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @fileoverview A jQuery UI plugin that wraps maps.
+ * @fileoverview A jQuery UI plugin that wraps Google Maps.
  */
 
 namespace VRS
@@ -400,30 +400,6 @@ namespace VRS
     }
 
     export var googleMapUtilities = new VRS.GoogleMapUtilities();
-
-    /**
-     * Describes an icon drawn onto the map.
-     */
-    // For legacy reasons this needs to be exported by all map implementations.
-    export class MapIcon implements IMapIcon
-    {
-        anchor:         IPoint;
-        origin:         IPoint;
-        scaledSize:     ISize;
-        size:           ISize;
-        url:            string;
-        labelAnchor:    IPoint;
-
-        constructor(url: string, size: ISize, anchor: IPoint, origin: IPoint, scaledSize?: ISize, labelAnchor?: IPoint)
-        {
-            this.url = url;
-            this.size = size;
-            this.anchor = anchor;
-            this.origin = origin;
-            this.scaledSize = scaledSize;
-            this.labelAnchor = labelAnchor;
-        }
-    }
 
     /**
      * An abstracted wrapper around an object that represents a map's native marker.
@@ -1421,7 +1397,7 @@ namespace VRS
         return $.extend({
             // Google Map load options - THESE ONLY HAVE ANY EFFECT ON THE FIRST MAP LOADED ON A PAGE
             key:                null,                                   // If supplied then the Google Maps script is loaded with this API key. API keys are no longer optional for public servers but remain optional for LAN and local loopback servers.
-            version:            '3.24',                                 // The version of Google Maps to load.
+            version:            '3.31',                                 // The version of Google Maps to load.
             sensor:             false,                                  // True if the location-aware stuff is to be turned on.
             libraries:          [],                                     // The optional libraries to load.
             loadMarkerWithLabel:false,                                  // Loads the marker-with-labels library after loading Google Maps.
@@ -1461,7 +1437,7 @@ namespace VRS
     }
 
     /**
-     * A jQuery UI plugin that wraps a map.
+     * A jQuery UI plugin that wraps the Google Maps map.
      */
     class MapPlugin extends JQueryUICustomWidget implements IMap
     {
@@ -2248,7 +2224,7 @@ namespace VRS
         /**
          * Gets a VRS.MapMarker by its ID or, if passed a marker, returns the same marker.
          */
-        getMarker(idOrMarker: string | number | IMapMarker) : MapMarker
+        getMarker(idOrMarker: string | number | IMapMarker) : IMapMarker
         {
             if(idOrMarker instanceof MapMarker) return idOrMarker;
             var state = this._getState();
@@ -2261,7 +2237,7 @@ namespace VRS
         destroyMarker(idOrMarker: string | number | IMapMarker)
         {
             var state = this._getState();
-            var marker = this.getMarker(idOrMarker);
+            var marker = <MapMarker>this.getMarker(idOrMarker);
             if(marker) {
                 $.each(marker.nativeListeners, function(idx, listener) {
                     google.maps.event.removeListener(listener);
@@ -2281,7 +2257,7 @@ namespace VRS
         centerOnMarker(idOrMarker: string | number | IMapMarker)
         {
             var state = this._getState();
-            var marker = this.getMarker(idOrMarker);
+            var marker = <MapMarker>this.getMarker(idOrMarker);
             if(marker) {
                 state.map.setCenter(marker.marker.getPosition());
             }
@@ -2355,7 +2331,7 @@ namespace VRS
         /**
          * Returns the VRS.MapPolyline associated with the ID.
          */
-        getPolyline(idOrPolyline: string | number | IMapPolyline) : MapPolyline
+        getPolyline(idOrPolyline: string | number | IMapPolyline) : IMapPolyline
         {
             if(idOrPolyline instanceof MapPolyline) return idOrPolyline;
             var state = this._getState();
@@ -2368,7 +2344,7 @@ namespace VRS
         destroyPolyline(idOrPolyline: string | number | IMapPolyline)
         {
             var state = this._getState();
-            var polyline = this.getPolyline(idOrPolyline);
+            var polyline = <MapPolyline>this.getPolyline(idOrPolyline);
             if(polyline) {
                 polyline.polyline.setMap(null);
                 polyline.polyline = null;
@@ -2387,7 +2363,7 @@ namespace VRS
             var countRemoved = 0;
 
             if(countPoints > 0) {
-                var polyline = this.getPolyline(idOrPolyline);
+                var polyline = <MapPolyline>this.getPolyline(idOrPolyline);
                 var points = polyline.polyline.getPath();
                 var length = points.getLength();
                 if(length < countPoints) countPoints = length;
@@ -2413,7 +2389,7 @@ namespace VRS
          */
         removePolylinePointAt(idOrPolyline: string | number | IMapPolyline, index: number)
         {
-            var polyline = this.getPolyline(idOrPolyline);
+            var polyline = <MapPolyline>this.getPolyline(idOrPolyline);
             var points = polyline.polyline.getPath();
             points.removeAt(index);
         }
@@ -2428,7 +2404,7 @@ namespace VRS
         {
             var length = !path ? 0 : path.length;
             if(length > 0) {
-                var polyline = this.getPolyline(idOrPolyline);
+                var polyline = <MapPolyline>this.getPolyline(idOrPolyline);
                 var points = polyline.polyline.getPath();
                 var insertAt = toStart ? 0 : -1;
                 for(var i = 0;i < length;++i) {
@@ -2444,7 +2420,7 @@ namespace VRS
          */
         replacePolylinePointAt(idOrPolyline: string | number | IMapPolyline, index: number, point: ILatLng)
         {
-            var polyline = this.getPolyline(idOrPolyline);
+            var polyline = <MapPolyline>this.getPolyline(idOrPolyline);
             var points = polyline.polyline.getPath();
             var length = points.getLength();
             if(index === -1) index = length - 1;
@@ -2460,7 +2436,7 @@ namespace VRS
         /**
          * Adds a polygon to the map. The behaviour is undefined if the map has not already been opened.
          */
-        addPolygon(id: string | number, userOptions: IMapPolygonSettings) : MapPolygon
+        addPolygon(id: string | number, userOptions: IMapPolygonSettings) : IMapPolygon
         {
             var result: MapPolygon;
 
@@ -2494,7 +2470,7 @@ namespace VRS
         /**
          * Returns the VRS.MapPolygon associated with the ID.
          */
-        getPolygon(idOrPolygon: string | number | IMapPolygon) : MapPolygon
+        getPolygon(idOrPolygon: string | number | IMapPolygon) : IMapPolygon
         {
             if(idOrPolygon instanceof MapPolygon) return idOrPolygon;
             var state = this._getState();
@@ -2507,7 +2483,7 @@ namespace VRS
         destroyPolygon(idOrPolygon: string | number | IMapPolygon)
         {
             var state = this._getState();
-            var polygon = this.getPolygon(idOrPolygon);
+            var polygon = <MapPolygon>this.getPolygon(idOrPolygon);
             if(polygon) {
                 polygon.polygon.setMap(null);
                 polygon.polygon = null;
@@ -2526,7 +2502,7 @@ namespace VRS
         /**
          * Adds a circle to the map.
          */
-        addCircle(id: string | number, userOptions: IMapCircleSettings) : MapCircle
+        addCircle(id: string | number, userOptions: IMapCircleSettings) : IMapCircle
         {
             var result: MapCircle = null;
 
@@ -2558,7 +2534,7 @@ namespace VRS
         /**
          * Returns the VRS.MapCircle associated with the ID.
          */
-        getCircle(idOrCircle: string | number | IMapCircle) : MapCircle
+        getCircle(idOrCircle: string | number | IMapCircle) : IMapCircle
         {
             if(idOrCircle instanceof MapCircle) return idOrCircle;
             var state = this._getState();
@@ -2571,7 +2547,7 @@ namespace VRS
         destroyCircle(idOrCircle: string | number | IMapCircle)
         {
             var state = this._getState();
-            var circle = this.getCircle(idOrCircle);
+            var circle = <MapCircle>this.getCircle(idOrCircle);
             if(circle) {
                 circle.circle.setMap(null);
                 circle.circle = null;
@@ -2606,7 +2582,7 @@ namespace VRS
         /**
          * Creates a new info window for the map.
          */
-        addInfoWindow(id: string | number, userOptions: IMapInfoWindowSettings) : MapInfoWindow
+        addInfoWindow(id: string | number, userOptions: IMapInfoWindowSettings) : IMapInfoWindow
         {
             var result: MapInfoWindow = null;
 
@@ -2635,7 +2611,7 @@ namespace VRS
          * If passed the ID of an info window then the associated info window is returned. If passed an info window
          * then it is just returned.
          */
-        getInfoWindow(idOrInfoWindow: string | number | IMapInfoWindow) : MapInfoWindow
+        getInfoWindow(idOrInfoWindow: string | number | IMapInfoWindow) : IMapInfoWindow
         {
             if(idOrInfoWindow instanceof MapInfoWindow) return idOrInfoWindow;
             var state = this._getState();
@@ -2648,7 +2624,7 @@ namespace VRS
         destroyInfoWindow(idOrInfoWindow: string | number | IMapInfoWindow)
         {
             var state = this._getState();
-            var infoWindow = this.getInfoWindow(idOrInfoWindow);
+            var infoWindow = <MapInfoWindow>this.getInfoWindow(idOrInfoWindow);
             if(infoWindow) {
                 $.each(infoWindow.nativeListeners, function(idx, listener) {
                     google.maps.event.removeListener(listener);
@@ -2669,7 +2645,7 @@ namespace VRS
         openInfoWindow(idOrInfoWindow: string | number | IMapInfoWindow, mapMarker?: IMapMarker)
         {
             var state = this._getState();
-            var infoWindow = this.getInfoWindow(idOrInfoWindow);
+            var infoWindow = <MapInfoWindow>this.getInfoWindow(idOrInfoWindow);
             if(infoWindow && state.map && !infoWindow.isOpen) {
                 infoWindow.infoWindow.open(state.map, mapMarker ? (<MapMarker>mapMarker).marker : undefined);
                 infoWindow.isOpen = true;
@@ -2681,7 +2657,7 @@ namespace VRS
          */
         closeInfoWindow(idOrInfoWindow: string | number | IMapInfoWindow)
         {
-            var infoWindow = this.getInfoWindow(idOrInfoWindow);
+            var infoWindow = <MapInfoWindow>this.getInfoWindow(idOrInfoWindow);
             if(infoWindow && infoWindow.isOpen) {
                 infoWindow.infoWindow.close();
                 infoWindow.isOpen = false;

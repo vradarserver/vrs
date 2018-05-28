@@ -191,6 +191,11 @@ namespace VirtualRadar.WebSite
         private IBundler _Bundler;
 
         /// <summary>
+        /// Another object that modifies HTML... see notes at head of HtmlModifier module.
+        /// </summary>
+        private HtmlModifier _HtmlModifier;
+
+        /// <summary>
         /// The object that will minify JavaScript and CSS for us.
         /// </summary>
         private IMinifier _Minifier;
@@ -351,6 +356,8 @@ namespace VirtualRadar.WebSite
 
                 _Bundler = Factory.Singleton.Resolve<IBundler>();
                 _Bundler.AttachToWebSite(this);
+
+                _HtmlModifier = new HtmlModifier();
 
                 _Minifier = Factory.Singleton.Resolve<IMinifier>();
                 _Minifier.Initialise();
@@ -552,6 +559,20 @@ namespace VirtualRadar.WebSite
         internal string BundleHtml(string requestPathAndFile, TextContent textContent)
         {
             var result = _Bundler.BundleHtml(requestPathAndFile, textContent.Content);
+            textContent.Content = result;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Modifies HTML.
+        /// </summary>
+        /// <param name="requestPathAndFile"></param>
+        /// <param name="textContent"></param>
+        /// <returns></returns>
+        internal string ModifyHtml(string requestPathAndFile, TextContent textContent)
+        {
+            var result = _HtmlModifier.ModifyHtml(requestPathAndFile, textContent.Content);
             textContent.Content = result;
 
             return result;

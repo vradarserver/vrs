@@ -19,7 +19,7 @@ namespace VirtualRadar.Localisation {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Strings {
@@ -2673,6 +2673,24 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Map provider.
+        /// </summary>
+        public static string MapProvider {
+            get {
+                return ResourceManager.GetString("MapProvider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Map Provider.
+        /// </summary>
+        public static string MapProviderTitle {
+            get {
+                return ResourceManager.GetString("MapProviderTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Max airborne speed.
         /// </summary>
         public static string MaxAirborneSpeed {
@@ -3353,6 +3371,24 @@ namespace VirtualRadar.Localisation {
         public static string OK {
             get {
                 return ResourceManager.GetString("OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OpenStreetMap.
+        /// </summary>
+        public static string OpenStreetMap {
+            get {
+                return ResourceManager.GetString("OpenStreetMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OpenStreetMap tile server URL.
+        /// </summary>
+        public static string OpenStreetMapTileServerUrl {
+            get {
+                return ResourceManager.GetString("OpenStreetMapTileServerUrl", resourceCulture);
             }
         }
         

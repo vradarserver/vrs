@@ -105,6 +105,7 @@ namespace VirtualRadar.WebSite
                     IsMono = isMono,
                     UseMarkerLabels = isMono ? configuration.MonoSettings.UseMarkerLabels : false,
                     MinimumRefreshSeconds = configuration.GoogleMapSettings.MinimumRefreshSeconds,
+                    OpenStreetMapTileServerUrl = configuration.GoogleMapSettings.OpenStreetMapTileServerUrl,
                     RefreshSeconds = configuration.GoogleMapSettings.InitialRefreshSeconds,
                     VrsVersion = applicationInformation.ShortVersion,
                 };

@@ -152,6 +152,10 @@ body.wait .modal {
     white-space: nowrap;
 }
 
+.vrs-leaflet-tile-layer {
+    filter: brightness(70%);
+}
+
 /*endregion */
 
 /*region icoMoon icons */

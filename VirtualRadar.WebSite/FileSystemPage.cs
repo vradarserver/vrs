@@ -321,6 +321,7 @@ namespace VirtualRadar.WebSite
                                 _WebSite.OnHtmlLoadedFromFile(textContentArgs);
                                 r.Content = textContentArgs.Content;
 
+                                _WebSite.ModifyHtml(args.PathAndFile, r);
                                 _WebSite.InjectHtmlContent(args.PathAndFile, r);
                                 _WebSite.BundleHtml(args.PathAndFile, r);
                             });

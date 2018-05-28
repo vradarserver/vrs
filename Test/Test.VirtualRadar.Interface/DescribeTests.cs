@@ -125,5 +125,21 @@ namespace Test.VirtualRadar.Interface
                 }
             }
         }
+
+        [TestMethod]
+        public void Describe_MapProvider_Returns_Correct_Description()
+        {
+            foreach(MapProvider mapProvider in Enum.GetValues(typeof(MapProvider))) {
+                var expected = "";
+                switch(mapProvider) {
+                    case MapProvider.GoogleMaps:    expected = "Google Maps"; break;
+                    case MapProvider.OpenStreetMap: expected = "OpenStreetMap"; break;
+                    default:                        throw new NotImplementedException();
+                }
+
+                var actual = Describe.MapProvider(mapProvider);
+                Assert.AreEqual(expected, actual, $"Expected {expected} for map provider {mapProvider}, actually got {actual}");
+            }
+        }
     }
 }

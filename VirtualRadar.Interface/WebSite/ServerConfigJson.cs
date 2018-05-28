@@ -172,6 +172,12 @@ namespace VirtualRadar.Interface.WebSite
         public string GoogleMapsApiKey { get; set; }
 
         /// <summary>
+        /// Gets or sets the Leaflet-compatible URL for the OpenStreetMap tile server to use.
+        /// </summary>
+        [DataMember]
+        public string OpenStreetMapTileServerUrl { get; set; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         public ServerConfigJson()
@@ -207,6 +213,7 @@ namespace VirtualRadar.Interface.WebSite
             result.IsLocalAddress = IsLocalAddress;
             result.IsMono = IsMono;
             result.MinimumRefreshSeconds = MinimumRefreshSeconds;
+            result.OpenStreetMapTileServerUrl = OpenStreetMapTileServerUrl;
             result.RefreshSeconds = RefreshSeconds;
             result.Receivers.AddRange(Receivers.Select(r => (ServerReceiverJson)r.Clone()));
             result.UseMarkerLabels = UseMarkerLabels;

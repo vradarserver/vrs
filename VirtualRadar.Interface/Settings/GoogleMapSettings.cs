@@ -23,6 +23,16 @@ namespace VirtualRadar.Interface.Settings
     /// </summary>
     public class GoogleMapSettings : INotifyPropertyChanged
     {
+        private MapProvider _MapProvider;
+        /// <summary>
+        /// Gets or sets the map provider to use.
+        /// </summary>
+        public MapProvider MapProvider
+        {
+            get { return _MapProvider; }
+            set { SetField(ref _MapProvider, value, () => MapProvider); }
+        }
+
         private string _InitialSettings;
         /// <summary>
         /// Gets or sets the initial settings to use for new visitors.
@@ -275,6 +285,16 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _UseGoogleMapsAPIKeyWithLocalRequests, value, () => UseGoogleMapsAPIKeyWithLocalRequests); }
         }
 
+        private string _OpenStreetMapTileServerUrl;
+        /// <summary>
+        /// Gets or sets the tile server to use when using the OpenStreetMap provider.
+        /// </summary>
+        public string OpenStreetMapTileServerUrl
+        {
+            get { return _OpenStreetMapTileServerUrl; }
+            set { SetField(ref _OpenStreetMapTileServerUrl, value, () => OpenStreetMapTileServerUrl); }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -327,6 +347,9 @@ namespace VirtualRadar.Interface.Settings
             EnableBundling = true;
             EnableMinifying = true;
             EnableCompression = true;
+
+            MapProvider = MapProvider.OpenStreetMap;
+            OpenStreetMapTileServerUrl = @"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
         }
     }
 }
