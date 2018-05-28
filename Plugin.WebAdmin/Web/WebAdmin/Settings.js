@@ -154,37 +154,26 @@ var VRS;
                         alert.hide();
                     }
                 };
-                /**
-                 * Called when items are added to or removed from Receivers and MergedFeeds.
-                 */
                 PageHandler.prototype.feedlistChanged = function () {
                     this.synchroniseFeeds();
                     this.removeDeletedReceiversFromMergedFeeds();
                 };
-                /**
-                 * Keeps the Feeds array in sync with the content of the Receivers and MergedFeeds arrays.
-                 */
                 PageHandler.prototype.synchroniseFeeds = function () {
                     var allFeeds = [];
                     $.each(this._Model.Receivers(), function (idx, feed) { return allFeeds.push({ UniqueId: feed.UniqueId, Name: feed.Name }); });
                     $.each(this._Model.MergedFeeds(), function (idx, feed) { return allFeeds.push({ UniqueId: feed.UniqueId, Name: feed.Name }); });
                     var feeds = this._Model.Feeds();
-                    // Delete items in Feeds that no longer appear in Receivers or MergedFeeds
                     for (var i = feeds.length - 1; i >= 0; --i) {
                         var feed = feeds[i];
                         if (!VRS.arrayHelper.findFirst(allFeeds, function (r) { return r.UniqueId() == feed.UniqueId(); })) {
                             this._Model.Feeds.splice(i, 1);
                         }
                     }
-                    // Add items to Feeds if they only appear in Receivers or MergedFeeds
                     var addList = VRS.arrayHelper.except(allFeeds, feeds, function (lhs, rhs) { return lhs.UniqueId() === rhs.UniqueId(); });
                     for (var i = 0; i < addList.length; ++i) {
                         this._Model.Feeds.push(addList[i]);
                     }
                 };
-                /**
-                 * Removes deleted receiver identifiers from merged feeds.
-                 */
                 PageHandler.prototype.removeDeletedReceiversFromMergedFeeds = function () {
                     var receiverIds = [];
                     $.each(this._Model.Receivers(), function (idx, receiver) { return receiverIds.push(receiver.UniqueId()); });
@@ -261,7 +250,7 @@ var VRS;
                                                 value !== model.DisplayTimeoutSecondsValidation &&
                                                 value !== model.TrackingTimeoutSecondsValidation &&
                                                 value !== model.SatcomDisplayTimeoutMinutesValidation &&
-                                                value !== model.SatcomTrackingTimeoutMinutesValidation; // Shown in General
+                                                value !== model.SatcomTrackingTimeoutMinutesValidation;
                                         }));
                                     },
                                     '{root}.GoogleMapSettings': function (model) {
@@ -269,7 +258,7 @@ var VRS;
                                             return value !== model.ClosestAircraftReceiverIdValidation &&
                                                 value !== model.FlightSimulatorXReceiverIdValidation &&
                                                 value !== model.ShortTrailLengthSecondsValidation &&
-                                                value !== model.WebSiteReceiverIdValidation; // Shown in Receivers
+                                                value !== model.WebSiteReceiverIdValidation;
                                         }));
                                     },
                                     '{root}.InternetClientSettingsModel': function (model) {

@@ -32,9 +32,6 @@ var VRS;
                     }
                 });
             };
-            /**
-             * Adds the HTML for the top navigation bar.
-             */
             Menu.prototype.addTopNavbar = function () {
                 var toggleSidebarButton;
                 if (Menu.suppressSidebar) {
@@ -62,9 +59,6 @@ var VRS;
                     .text(VRS.WebAdmin.$$.WA_Title_WebAdmin))));
                 $('#page-container').prepend(html);
             };
-            /**
-             * Adds the HTML for the sidebar.
-             */
             Menu.prototype.addNavSidebar = function () {
                 var sidebar = $('<nav />')
                     .attr('id', 'sidebar')
@@ -73,9 +67,6 @@ var VRS;
                 this._MenuItemsList = $('<ul />').attr('data-spy', 'affix').addClass('nav').appendTo(sidebar);
                 $('#content > .row').prepend(sidebar);
             };
-            /**
-             * Adds the menu items to the list.
-             */
             Menu.prototype.populateMenu = function () {
                 var _this = this;
                 var currentPageUrl = location.pathname.substring(location.pathname.lastIndexOf('/') + 1);
