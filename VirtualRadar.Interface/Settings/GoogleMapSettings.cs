@@ -347,6 +347,7 @@ namespace VirtualRadar.Interface.Settings
             EnableBundling = true;
             EnableMinifying = true;
             EnableCompression = true;
+            PreferIataAirportCodes = true;
 
             MapProvider = MapProvider.OpenStreetMap;
             OpenStreetMapTileServerUrl = @"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
