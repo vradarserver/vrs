@@ -1,8 +1,13 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var VRS;
 (function (VRS) {
     VRS.globalOptions = VRS.globalOptions || {};
@@ -24,7 +29,7 @@ var VRS;
     var StringValue = (function (_super) {
         __extends(StringValue, _super);
         function StringValue(value) {
-            _super.call(this, value);
+            return _super.call(this, value) || this;
         }
         return StringValue;
     }(Value));
@@ -32,7 +37,7 @@ var VRS;
     var BoolValue = (function (_super) {
         __extends(BoolValue, _super);
         function BoolValue(value) {
-            _super.call(this, value);
+            return _super.call(this, value) || this;
         }
         return BoolValue;
     }(Value));
@@ -40,7 +45,7 @@ var VRS;
     var NumberValue = (function (_super) {
         __extends(NumberValue, _super);
         function NumberValue(value) {
-            _super.call(this, value);
+            return _super.call(this, value) || this;
         }
         return NumberValue;
     }(Value));
@@ -89,7 +94,7 @@ var VRS;
     var RouteValue = (function (_super) {
         __extends(RouteValue, _super);
         function RouteValue(value) {
-            _super.call(this, value);
+            return _super.call(this, value) || this;
         }
         RouteValue.prototype.getAirportCode = function () {
             if (this._AirportCodeDerivedFromVal !== this.val) {
@@ -104,8 +109,9 @@ var VRS;
     var AirportDataThumbnailValue = (function (_super) {
         __extends(AirportDataThumbnailValue, _super);
         function AirportDataThumbnailValue(value) {
-            _super.call(this, value);
-            this._LastResetChgValue = false;
+            var _this = _super.call(this, value) || this;
+            _this._LastResetChgValue = false;
+            return _this;
         }
         AirportDataThumbnailValue.prototype.resetChg = function () {
             if (this.chg && this._LastResetChgValue)

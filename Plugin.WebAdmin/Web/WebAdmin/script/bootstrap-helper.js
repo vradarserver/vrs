@@ -3,15 +3,27 @@ var Bootstrap;
     var Helper = (function () {
         function Helper() {
         }
+        /**
+         * Finds tags decorated with data-bsu attributes and uses those to flesh out
+         * the HTML that Bootstrap needs for different elements.
+         */
         Helper.decorateBootstrapElements = function () {
             Helper.decorateValidationElements();
             Helper.decorateCollapsiblePanels();
             Helper.decorateModals();
         };
+        /**
+         * Finds tags decorated with various validation tags and fleshes out the
+         * Bootstrap and knockout tags required.
+         */
         Helper.decorateValidationElements = function () {
             Helper.decorateValidationFieldValidate();
             Helper.decorateValidationIcons();
         };
+        /**
+         * Adds validation displays to input elements. Apply the tag in a parent of the input,
+         * set data-bsu-field to the full path to the ValidationFieldModel element.
+         */
         Helper.decorateValidationFieldValidate = function () {
             var fieldValidates = $('[data-bsu="field-validate"]');
             $.each(fieldValidates, function () {
@@ -55,6 +67,9 @@ var Bootstrap;
                     .prependTo(helpBlock);
             });
         };
+        /**
+         * Adds span elements to show the warning and error states. Usually associated with wrap-up validation elements.
+         */
         Helper.decorateValidationIcons = function () {
             var validateIcons = $('[data-bsu="validate-icons"]');
             $.each(validateIcons, function () {
@@ -72,6 +87,10 @@ var Bootstrap;
                     .appendTo(validateIcon);
             });
         };
+        /**
+         * Finds tags decorated with collapsible-panel data-bsu attributes and fleshes
+         * out the HTML required for a collapsible panel.
+         */
         Helper.decorateCollapsiblePanels = function () {
             var collapsiblePanels = $('[data-bsu="collapsible-panel"]');
             $.each(collapsiblePanels, function () {
@@ -129,6 +148,10 @@ var Bootstrap;
                     .attr('aria-labelledby', '#' + headingId);
             });
         };
+        /**
+         * Finds tags decorated with modal data-bsu attributes and fleshes out the HTML required
+         * for a modal.
+         */
         Helper.decorateModals = function () {
             var modals = $('[data-bsu="modal"]');
             $.each(modals, function () {
@@ -201,9 +224,9 @@ var Bootstrap;
             }
             return result;
         };
-        Helper._UniqueId = 0;
         return Helper;
     }());
+    Helper._UniqueId = 0;
     Bootstrap.Helper = Helper;
 })(Bootstrap || (Bootstrap = {}));
 //# sourceMappingURL=bootstrap-helper.js.map

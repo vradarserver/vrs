@@ -2,12 +2,12 @@ var VRS;
 (function (VRS) {
     var WebAdmin;
     (function (WebAdmin) {
+        var DefaultAccess;
         (function (DefaultAccess) {
             DefaultAccess[DefaultAccess["Unrestricted"] = 0] = "Unrestricted";
             DefaultAccess[DefaultAccess["Allow"] = 1] = "Allow";
             DefaultAccess[DefaultAccess["Deny"] = 2] = "Deny";
-        })(WebAdmin.DefaultAccess || (WebAdmin.DefaultAccess = {}));
-        var DefaultAccess = WebAdmin.DefaultAccess;
+        })(DefaultAccess = WebAdmin.DefaultAccess || (WebAdmin.DefaultAccess = {}));
         var AccessEditor = (function () {
             function AccessEditor() {
             }
@@ -126,6 +126,13 @@ var VRS;
                 if (!result && other) {
                     result = this.getFromAddress() === other.getFromAddress() &&
                         this.getToAddress() === other.getToAddress();
+                    //var length = this._AddressBytes.length;
+                    //result = length === other._AddressBytes.length && this._BitmaskBits === other._BitmaskBits;
+                    //for(let i = 0;result && i < length;++i) {
+                    //    if(this._AddressBytes[i] !== other._AddressBytes[i]) {
+                    //        result = false;
+                    //    }
+                    //}
                 }
                 return result;
             };

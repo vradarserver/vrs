@@ -29,7 +29,7 @@ var JQueryUICustomWidget = (function () {
     JQueryUICustomWidget.prototype._on = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
+            args[_i] = arguments[_i];
         }
         throw 'Should not see this';
     };
@@ -42,7 +42,7 @@ var JQueryUICustomWidget = (function () {
     JQueryUICustomWidget.prototype._super = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
+            args[_i] = arguments[_i];
         }
         throw 'Should not see this';
     };
@@ -67,7 +67,7 @@ var JQueryUICustomWidget = (function () {
     JQueryUICustomWidget.prototype.option = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
+            args[_i] = arguments[_i];
         }
         throw 'Should not see this';
     };

@@ -1,8 +1,13 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var VRS;
 (function (VRS) {
     VRS.globalOptions = VRS.globalOptions || {};
@@ -154,11 +159,12 @@ var VRS;
     var SplitterPane = (function (_super) {
         __extends(SplitterPane, _super);
         function SplitterPane() {
-            _super.apply(this, arguments);
-            this.options = {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.options = {
                 isVertical: false,
                 minPixels: 1,
             };
+            return _this;
         }
         SplitterPane.prototype._getState = function () {
             var result = this.element.data('splitterPaneState');
@@ -258,8 +264,8 @@ var VRS;
     var Splitter = (function (_super) {
         __extends(Splitter, _super);
         function Splitter() {
-            _super.apply(this, arguments);
-            this.options = {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.options = {
                 name: undefined,
                 vertical: true,
                 savePane: 1,
@@ -272,6 +278,7 @@ var VRS;
                 splitterGroupPersistence: null,
                 isTopLevelSplitter: false,
             };
+            return _this;
         }
         Splitter.prototype._getState = function () {
             var result = this.element.data('splitterState');

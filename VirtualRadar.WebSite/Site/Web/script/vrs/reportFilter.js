@@ -1,8 +1,13 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var VRS;
 (function (VRS) {
     VRS.globalOptions = VRS.globalOptions || {};
@@ -11,9 +16,9 @@ var VRS;
     var ReportFilterPropertyHandler = (function (_super) {
         __extends(ReportFilterPropertyHandler, _super);
         function ReportFilterPropertyHandler(settings) {
-            _super.call(this, $.extend({
+            return _super.call(this, $.extend({
                 propertyEnumObject: VRS.ReportFilterProperty
-            }, settings));
+            }, settings)) || this;
         }
         return ReportFilterPropertyHandler;
     }(VRS.FilterPropertyHandler));
@@ -132,7 +137,7 @@ var VRS;
     var ReportFilter = (function (_super) {
         __extends(ReportFilter, _super);
         function ReportFilter(reportFilterProperty, valueCondition) {
-            _super.call(this, {
+            return _super.call(this, {
                 property: reportFilterProperty,
                 valueCondition: valueCondition,
                 propertyEnumObject: VRS.ReportFilterProperty,
@@ -140,7 +145,7 @@ var VRS;
                 cloneCallback: function (property, valueCondition) {
                     return new VRS.ReportFilter(property, valueCondition);
                 }
-            });
+            }) || this;
         }
         return ReportFilter;
     }(VRS.Filter));
@@ -148,13 +153,13 @@ var VRS;
     var ReportFilterHelper = (function (_super) {
         __extends(ReportFilterHelper, _super);
         function ReportFilterHelper() {
-            _super.call(this, {
+            return _super.call(this, {
                 propertyEnumObject: VRS.ReportFilterProperty,
                 filterPropertyHandlers: VRS.reportFilterPropertyHandlers,
                 createFilterCallback: function (propertyHandler, valueCondition) {
                     return new VRS.ReportFilter(propertyHandler.property, valueCondition);
                 }
-            });
+            }) || this;
         }
         return ReportFilterHelper;
     }(VRS.FilterHelper));

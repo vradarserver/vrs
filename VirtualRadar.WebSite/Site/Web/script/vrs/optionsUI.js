@@ -1,8 +1,13 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var VRS;
 (function (VRS) {
     var OptionField = (function () {
@@ -118,6 +123,7 @@ var VRS;
     var OptionFieldButton = (function (_super) {
         __extends(OptionFieldButton, _super);
         function OptionFieldButton(settings) {
+            var _this = this;
             settings = $.extend({
                 dispatcherName: 'VRS.OptionFieldButton',
                 controlType: VRS.optionControlTypes.button,
@@ -126,8 +132,9 @@ var VRS;
                 secondaryIcon: null,
                 showText: true
             }, settings);
-            _super.call(this, settings);
-            this._Enabled = true;
+            _this = _super.call(this, settings) || this;
+            _this._Enabled = true;
+            return _this;
         }
         OptionFieldButton.prototype.getPrimaryIcon = function () {
             return this._Settings.primaryIcon || this._Settings.icon;
@@ -153,11 +160,13 @@ var VRS;
     var OptionFieldCheckBox = (function (_super) {
         __extends(OptionFieldCheckBox, _super);
         function OptionFieldCheckBox(settings) {
+            var _this = this;
             settings = $.extend({
                 dispatcherName: 'VRS.OptionFieldCheckBox',
                 controlType: VRS.optionControlTypes.checkBox
             }, settings);
-            _super.call(this, settings);
+            _this = _super.call(this, settings) || this;
+            return _this;
         }
         return OptionFieldCheckBox;
     }(OptionField));
@@ -165,12 +174,14 @@ var VRS;
     var OptionFieldColour = (function (_super) {
         __extends(OptionFieldColour, _super);
         function OptionFieldColour(settings) {
+            var _this = this;
             settings = $.extend({
                 dispatcherName: 'VRS.OptionFieldColour',
                 controlType: VRS.optionControlTypes.colour,
                 inputWidth: VRS.InputWidth.NineChar
             }, settings);
-            _super.call(this, settings);
+            _this = _super.call(this, settings) || this;
+            return _this;
         }
         return OptionFieldColour;
     }(OptionField));
@@ -178,13 +189,15 @@ var VRS;
     var OptionFieldComboBox = (function (_super) {
         __extends(OptionFieldComboBox, _super);
         function OptionFieldComboBox(settings) {
+            var _this = this;
             settings = $.extend({
                 dispatcherName: 'VRS.OptionFieldComboBox',
                 controlType: VRS.optionControlTypes.comboBox,
                 values: [],
                 changed: $.noop
             }, settings);
-            _super.call(this, settings);
+            _this = _super.call(this, settings) || this;
+            return _this;
         }
         OptionFieldComboBox.prototype.getValues = function () {
             return this._Settings.values;
@@ -198,6 +211,7 @@ var VRS;
     var OptionFieldDate = (function (_super) {
         __extends(OptionFieldDate, _super);
         function OptionFieldDate(settings) {
+            var _this = this;
             settings = $.extend({
                 dispatcherName: 'VRS.OptionFieldDate',
                 controlType: VRS.optionControlTypes.date,
@@ -205,7 +219,8 @@ var VRS;
                 minDate: null,
                 maxDate: null
             }, settings);
-            _super.call(this, settings);
+            _this = _super.call(this, settings) || this;
+            return _this;
         }
         OptionFieldDate.prototype.getDefaultDate = function () {
             return this._Settings.defaultDate;
@@ -222,12 +237,14 @@ var VRS;
     var OptionFieldLabel = (function (_super) {
         __extends(OptionFieldLabel, _super);
         function OptionFieldLabel(settings) {
+            var _this = this;
             settings = $.extend({
                 dispatcherName: 'VRS.OptionFieldLabel',
                 controlType: VRS.optionControlTypes.label,
                 labelWidth: VRS.LabelWidth.Auto
             }, settings);
-            _super.call(this, settings);
+            _this = _super.call(this, settings) || this;
+            return _this;
         }
         OptionFieldLabel.prototype.getLabelWidth = function () {
             return this._Settings.labelWidth;
@@ -238,13 +255,15 @@ var VRS;
     var OptionFieldLinkLabel = (function (_super) {
         __extends(OptionFieldLinkLabel, _super);
         function OptionFieldLinkLabel(settings) {
+            var _this = this;
             settings = $.extend({
                 dispatcherName: 'VRS.OptionFieldLinkLabel',
                 controlType: VRS.optionControlTypes.linkLabel,
                 getHref: $.noop,
                 getTarget: $.noop
             }, settings);
-            _super.call(this, settings);
+            _this = _super.call(this, settings) || this;
+            return _this;
         }
         OptionFieldLinkLabel.prototype.getHref = function () {
             return this._Settings.getHref() || '#';
@@ -258,6 +277,7 @@ var VRS;
     var OptionFieldNumeric = (function (_super) {
         __extends(OptionFieldNumeric, _super);
         function OptionFieldNumeric(settings) {
+            var _this = this;
             settings = $.extend({
                 name: null,
                 dispatcherName: 'VRS.OptionFieldNumeric',
@@ -270,7 +290,8 @@ var VRS;
                 sliderStep: undefined,
                 allowNullValue: false
             }, settings);
-            _super.call(this, settings);
+            _this = _super.call(this, settings) || this;
+            return _this;
         }
         OptionFieldNumeric.prototype.getMin = function () {
             return this._Settings.min;
@@ -299,13 +320,15 @@ var VRS;
     var OptionFieldOrderedSubset = (function (_super) {
         __extends(OptionFieldOrderedSubset, _super);
         function OptionFieldOrderedSubset(settings) {
+            var _this = this;
             settings = $.extend({
                 dispatcherName: 'VRS.OptionFieldOrderedSubset',
                 controlType: VRS.optionControlTypes.orderedSubset,
                 values: [],
                 keepValuesSorted: false
             }, settings);
-            _super.call(this, settings);
+            _this = _super.call(this, settings) || this;
+            return _this;
         }
         OptionFieldOrderedSubset.prototype.getValues = function () {
             return this._Settings.values;
@@ -319,6 +342,7 @@ var VRS;
     var OptionFieldPaneList = (function (_super) {
         __extends(OptionFieldPaneList, _super);
         function OptionFieldPaneList(settings) {
+            var _this = this;
             settings = $.extend({
                 dispatcherName: 'VRS.OptionFieldPaneList',
                 controlType: VRS.optionControlTypes.paneList,
@@ -331,12 +355,13 @@ var VRS;
                     $(':button', addParentJQ).button('option', 'disabled', disabled);
                 }
             }, settings);
-            _super.call(this, settings);
-            this._PaneListEvents = {
+            _this = _super.call(this, settings) || this;
+            _this._PaneListEvents = {
                 paneAdded: 'paneAdded',
                 paneRemoved: 'paneRemoved',
                 maxPanesChanged: 'maxPanesChanged'
             };
+            return _this;
         }
         OptionFieldPaneList.prototype.getMaxPanes = function () {
             return this._Settings.maxPanes;
@@ -433,12 +458,14 @@ var VRS;
     var OptionFieldRadioButton = (function (_super) {
         __extends(OptionFieldRadioButton, _super);
         function OptionFieldRadioButton(settings) {
+            var _this = this;
             settings = $.extend({
                 dispatcherName: 'VRS.OptionFieldRadioButton',
                 controlType: VRS.optionControlTypes.radioButton,
                 values: []
             }, settings);
-            _super.call(this, settings);
+            _this = _super.call(this, settings) || this;
+            return _this;
         }
         OptionFieldRadioButton.prototype.getValues = function () {
             return this._Settings.values;
@@ -449,6 +476,7 @@ var VRS;
     var OptionFieldTextBox = (function (_super) {
         __extends(OptionFieldTextBox, _super);
         function OptionFieldTextBox(settings) {
+            var _this = this;
             settings = $.extend({
                 dispatcherName: 'VRS.OptionFieldTextBox',
                 controlType: VRS.optionControlTypes.textBox,
@@ -456,7 +484,8 @@ var VRS;
                 lowerCase: false,
                 maxLength: undefined
             }, settings);
-            _super.call(this, settings);
+            _this = _super.call(this, settings) || this;
+            return _this;
         }
         OptionFieldTextBox.prototype.getUpperCase = function () {
             return this._Settings.upperCase;

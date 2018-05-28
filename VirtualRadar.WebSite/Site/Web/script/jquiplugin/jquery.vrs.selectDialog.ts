@@ -132,7 +132,7 @@ namespace VRS
                         .val(item.getValue())
                         .text(item.getText())
                         .appendTo(select);
-                if(item.selected) option.prop('selected', item.selected);
+                if(item.getSelected()) option.prop('selected', item.getSelected());
             }
             if(options.value) {
                 var value = options.value;

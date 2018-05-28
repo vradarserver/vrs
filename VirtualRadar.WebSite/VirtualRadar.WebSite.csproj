@@ -16,6 +16,7 @@
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
     <ReleaseVersion>2.0.2</ReleaseVersion>
+    <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -891,6 +892,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="Site\typings\globalOptions.d.ts" />
     <TypeScriptCompile Include="Site\typings\markerclustererplus.d.ts" />
+    <TypeScriptCompile Include="Site\typings\navigator.d.ts" />
     <TypeScriptCompile Include="Site\Web\script\i18n\localise.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.ui.widget.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.aircraftDetail.ts" />

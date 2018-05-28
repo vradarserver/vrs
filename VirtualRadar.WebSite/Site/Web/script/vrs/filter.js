@@ -1,8 +1,13 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var VRS;
 (function (VRS) {
     VRS.globalOptions = VRS.globalOptions || {};
@@ -30,8 +35,9 @@ var VRS;
     var OneValueCondition = (function (_super) {
         __extends(OneValueCondition, _super);
         function OneValueCondition(condition, reverseCondition, value) {
-            _super.call(this, condition, reverseCondition);
-            this._Value = value;
+            var _this = _super.call(this, condition, reverseCondition) || this;
+            _this._Value = value;
+            return _this;
         }
         OneValueCondition.prototype.getValue = function () {
             return this._Value;
@@ -65,9 +71,10 @@ var VRS;
     var TwoValueCondition = (function (_super) {
         __extends(TwoValueCondition, _super);
         function TwoValueCondition(condition, reverseCondition, value1, value2) {
-            _super.call(this, condition, reverseCondition);
-            this._Value1 = value1;
-            this._Value2 = value2;
+            var _this = _super.call(this, condition, reverseCondition) || this;
+            _this._Value1 = value1;
+            _this._Value2 = value2;
+            return _this;
         }
         TwoValueCondition.prototype.getValue1 = function () {
             return this._Value1;

@@ -1783,7 +1783,6 @@ namespace VRS
             details.mapMarker = null;
             details.mapPolylines = [];
             delete this._PlottedDetail[details.id];
-            details.id = null;
             details.pinTexts = null;
             details.iconUrl = null;
         }

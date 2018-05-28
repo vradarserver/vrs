@@ -1,20 +1,27 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var VRS;
 (function (VRS) {
     var BootstrapReport = (function (_super) {
         __extends(BootstrapReport, _super);
         function BootstrapReport(settings) {
+            var _this = this;
             settings = $.extend({
                 dispatcherName: 'VRS.BootstrapReport',
                 suppressTitleUpdate: false,
                 settingsPosition: VRS.MapPosition.TopLeft,
                 settingsMenuAlignment: VRS.Alignment.Left
             }, settings);
-            _super.call(this, settings);
+            _this = _super.call(this, settings) || this;
+            return _this;
         }
         BootstrapReport.prototype.initialise = function (userPageSettings) {
             var _this = this;

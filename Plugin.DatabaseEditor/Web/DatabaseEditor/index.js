@@ -130,13 +130,13 @@ var DatabaseEditor;
         var RecordModel = (function () {
             function RecordModel() {
             }
-            RecordModel.mapping = {
-                'ICAOTypeCode': { create: function (options) { return ko.observable(options.data).extend({ uppercase: true }); } },
-                'OperatorIcao': { create: function (options) { return ko.observable(options.data).extend({ uppercase: true }); } },
-                'Registration': { create: function (options) { return ko.observable(options.data).extend({ uppercase: true }); } }
-            };
             return RecordModel;
         }());
+        RecordModel.mapping = {
+            'ICAOTypeCode': { create: function (options) { return ko.observable(options.data).extend({ uppercase: true }); } },
+            'OperatorIcao': { create: function (options) { return ko.observable(options.data).extend({ uppercase: true }); } },
+            'Registration': { create: function (options) { return ko.observable(options.data).extend({ uppercase: true }); } }
+        };
     })(Index = DatabaseEditor.Index || (DatabaseEditor.Index = {}));
 })(DatabaseEditor || (DatabaseEditor = {}));
 //# sourceMappingURL=index.js.map
