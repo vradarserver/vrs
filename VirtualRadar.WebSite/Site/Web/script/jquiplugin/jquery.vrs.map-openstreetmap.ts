@@ -276,6 +276,7 @@ namespace VRS
     class MapMarker implements IMapMarker
     {
         id: string|number;
+        mapPlugin: MapPlugin;
         marker: L.Marker;
         map: L.Map;
         mapIcon: IMapIcon;
@@ -284,9 +285,12 @@ namespace VRS
         tag: any;
         visible: boolean;
 
+        private _eventsHooked = false;
+
         /**
          * Creates a new object.
          * @param {string|number}       id                  The identifier of the marker.
+         * @param {MapPlugin}           mapPlugin           The map plugin that owns this marker.
          * @param {L.Map}               nativeMap           The map that this marker will be (or is) attached to.
          * @param {L.Marker}            nativeMarker        The native map marker handle to wrap.
          * @param {L.MarkerOptions}     markerOptions       The options used when creating the marker.
@@ -294,9 +298,10 @@ namespace VRS
          * @param {boolean}             isVisible           True if the marker is already attached to a map.
          * @param {*}                   tag                 An object to carry around with the marker. No meaning is attached to the tag.
         */
-        constructor(id: string|number, map: L.Map, nativeMarker: L.Marker, markerOptions: L.MarkerOptions, isMarkerWithLabel: boolean, isVisible: boolean, tag: any)
+        constructor(id: string|number, mapPlugin: MapPlugin, map: L.Map, nativeMarker: L.Marker, markerOptions: L.MarkerOptions, isMarkerWithLabel: boolean, isVisible: boolean, tag: any)
         {
             this.id = id;
+            this.mapPlugin = mapPlugin;
             this.map = map;
             this.marker = nativeMarker;
             this.mapIcon = VRS.leafletUtilities.fromLeafletIcon(markerOptions.icon);
@@ -304,6 +309,31 @@ namespace VRS
             this.isMarkerWithLabel = isMarkerWithLabel;
             this.tag = tag;
             this.visible = isVisible;
+
+            this.hookEvents(true);
+        }
+
+        hookEvents(hook: boolean)
+        {
+            if(this._eventsHooked !== hook) {
+                this._eventsHooked = hook;
+
+                if(hook) this.marker.on ('click', this._marker_clicked, this);
+                else     this.marker.off('click', this._marker_clicked, this);
+
+                if(hook) this.marker.on ('dragend', this._marker_dragged, this);
+                else     this.marker.off('dragend', this._marker_dragged, this);
+            }
+        }
+
+        private _marker_clicked(e: Event)
+        {
+            this.mapPlugin.raiseMarkerClicked(this.id);
+        }
+
+        private _marker_dragged(e: L.DragEndEvent)
+        {
+            this.mapPlugin.raiseMarkerDragged(this.id);
         }
 
         /**
@@ -1443,7 +1473,7 @@ namespace VRS
         {
             return VRS.globalDispatch.hookJQueryUIPluginEvent(this.element, this._EventPluginName, 'markerClicked', callback, forceThis);
         }
-        private _raiseMarkerClicked(id: string | number)
+        raiseMarkerClicked(id: string | number)
         {
             this._trigger('markerClicked', null, <IMapMarkerEventArgs>{ id: id });
         }
@@ -1452,7 +1482,7 @@ namespace VRS
         {
             return VRS.globalDispatch.hookJQueryUIPluginEvent(this.element, this._EventPluginName, 'markerDragged', callback, forceThis);
         }
-        private _raiseMarkerDragged(id: string | number)
+        raiseMarkerDragged(id: string | number)
         {
             this._trigger('markerDragged', null, <IMapMarkerEventArgs>{ id: id });
         }
@@ -1642,7 +1672,7 @@ namespace VRS
                 if(userOptions.visible) {
                     nativeMarker.addTo(state.map);
                 }
-                result = new MapMarker(id, state.map, nativeMarker, leafletOptions, !!userOptions.useMarkerWithLabel, userOptions.visible, userOptions.tag);
+                result = new MapMarker(id, this, state.map, nativeMarker, leafletOptions, !!userOptions.useMarkerWithLabel, userOptions.visible, userOptions.tag);
                 state.markers[id] = result;
             }
 
@@ -1661,7 +1691,9 @@ namespace VRS
             var state = this._getState();
             var marker = <MapMarker>this.getMarker(idOrMarker);
             if(marker) {
+                marker.hookEvents(false);
                 marker.setVisible(false);
+                marker.mapPlugin = null;
                 marker.marker = null;
                 marker.map = null;
                 marker.tag = null;

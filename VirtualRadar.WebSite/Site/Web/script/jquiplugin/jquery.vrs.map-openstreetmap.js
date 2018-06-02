@@ -203,8 +203,10 @@ var VRS;
         }, overrides);
     };
     var MapMarker = (function () {
-        function MapMarker(id, map, nativeMarker, markerOptions, isMarkerWithLabel, isVisible, tag) {
+        function MapMarker(id, mapPlugin, map, nativeMarker, markerOptions, isMarkerWithLabel, isVisible, tag) {
+            this._eventsHooked = false;
             this.id = id;
+            this.mapPlugin = mapPlugin;
             this.map = map;
             this.marker = nativeMarker;
             this.mapIcon = VRS.leafletUtilities.fromLeafletIcon(markerOptions.icon);
@@ -212,7 +214,27 @@ var VRS;
             this.isMarkerWithLabel = isMarkerWithLabel;
             this.tag = tag;
             this.visible = isVisible;
+            this.hookEvents(true);
         }
+        MapMarker.prototype.hookEvents = function (hook) {
+            if (this._eventsHooked !== hook) {
+                this._eventsHooked = hook;
+                if (hook)
+                    this.marker.on('click', this._marker_clicked, this);
+                else
+                    this.marker.off('click', this._marker_clicked, this);
+                if (hook)
+                    this.marker.on('dragend', this._marker_dragged, this);
+                else
+                    this.marker.off('dragend', this._marker_dragged, this);
+            }
+        };
+        MapMarker.prototype._marker_clicked = function (e) {
+            this.mapPlugin.raiseMarkerClicked(this.id);
+        };
+        MapMarker.prototype._marker_dragged = function (e) {
+            this.mapPlugin.raiseMarkerDragged(this.id);
+        };
         MapMarker.prototype.getDraggable = function () {
             return this.marker.dragging.enabled();
         };
@@ -931,13 +953,13 @@ var VRS;
         MapPlugin.prototype.hookMarkerClicked = function (callback, forceThis) {
             return VRS.globalDispatch.hookJQueryUIPluginEvent(this.element, this._EventPluginName, 'markerClicked', callback, forceThis);
         };
-        MapPlugin.prototype._raiseMarkerClicked = function (id) {
+        MapPlugin.prototype.raiseMarkerClicked = function (id) {
             this._trigger('markerClicked', null, { id: id });
         };
         MapPlugin.prototype.hookMarkerDragged = function (callback, forceThis) {
             return VRS.globalDispatch.hookJQueryUIPluginEvent(this.element, this._EventPluginName, 'markerDragged', callback, forceThis);
         };
-        MapPlugin.prototype._raiseMarkerDragged = function (id) {
+        MapPlugin.prototype.raiseMarkerDragged = function (id) {
             this._trigger('markerDragged', null, { id: id });
         };
         MapPlugin.prototype.hookInfoWindowClosedByUser = function (callback, forceThis) {
@@ -1089,7 +1111,7 @@ var VRS;
                 if (userOptions.visible) {
                     nativeMarker.addTo(state.map);
                 }
-                result = new MapMarker(id, state.map, nativeMarker, leafletOptions, !!userOptions.useMarkerWithLabel, userOptions.visible, userOptions.tag);
+                result = new MapMarker(id, this, state.map, nativeMarker, leafletOptions, !!userOptions.useMarkerWithLabel, userOptions.visible, userOptions.tag);
                 state.markers[id] = result;
             }
             return result;
@@ -1104,7 +1126,9 @@ var VRS;
             var state = this._getState();
             var marker = this.getMarker(idOrMarker);
             if (marker) {
+                marker.hookEvents(false);
                 marker.setVisible(false);
+                marker.mapPlugin = null;
                 marker.marker = null;
                 marker.map = null;
                 marker.tag = null;
