@@ -1420,6 +1420,9 @@ var VRS;
                 }
                 else {
                     var marker = mapMarker;
+                    var markerAnchor = marker.getIcon().anchor;
+                    var markerHeight = marker.getIcon().size.height;
+                    infoWindow.setPixelOffset({ width: 0, height: -markerHeight });
                     marker.marker.bindPopup(infoWindow.infoWindow).openPopup();
                 }
                 infoWindow.isOpen = true;
