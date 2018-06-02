@@ -1653,6 +1653,9 @@ namespace VRS
                 if(userOptions.zIndex === null || userOptions.zIndex === undefined) {
                     userOptions.zIndex = 0;
                 }
+                if(userOptions.draggable) {
+                    userOptions.clickable = true;
+                }
                 var leafletOptions: L.MarkerOptions = {
                     interactive:    userOptions.clickable !== undefined ? userOptions.clickable : true,
                     draggable:      userOptions.draggable !== undefined ? userOptions.draggable : false,
