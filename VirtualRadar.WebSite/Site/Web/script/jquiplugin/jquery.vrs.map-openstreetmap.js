@@ -686,13 +686,15 @@ var VRS;
     }());
     var MapPluginState = (function () {
         function MapPluginState() {
-            this.map = undefined;
             this.mapContainer = undefined;
+            this.map = undefined;
+            this.tileLayer = undefined;
             this.markers = {};
             this.polylines = {};
             this.circles = {};
             this.polygons = {};
             this.infoWindows = {};
+            this.eventsHooked = false;
         }
         return MapPluginState;
     }());
@@ -734,10 +736,70 @@ var VRS;
         };
         MapPlugin.prototype._destroy = function () {
             var state = this._getState();
+            this._hookEvents(state, false);
             if (VRS.refreshManager)
                 VRS.refreshManager.unregisterTarget(this.element);
             if (state.mapContainer)
                 state.mapContainer.remove();
+        };
+        MapPlugin.prototype._hookEvents = function (state, hook) {
+            if (state.map) {
+                if ((hook && !state.eventsHooked) || (!hook && state.eventsHooked)) {
+                    state.eventsHooked = hook;
+                    if (hook)
+                        state.map.on('resize', this._map_resized, this);
+                    else
+                        state.map.off('resize', this._map_resized, this);
+                    if (hook)
+                        state.map.on('move', this._map_moved, this);
+                    else
+                        state.map.off('move', this._map_moved, this);
+                    if (hook)
+                        state.map.on('moveend', this._map_moveEnded, this);
+                    else
+                        state.map.off('moveend', this._map_moveEnded, this);
+                    if (hook)
+                        state.map.on('click', this._map_clicked, this);
+                    else
+                        state.map.off('click', this._map_clicked, this);
+                    if (hook)
+                        state.map.on('dblclick', this._map_doubleClicked, this);
+                    else
+                        state.map.off('dblclick', this._map_doubleClicked, this);
+                    if (hook)
+                        state.map.on('zoomend', this._map_zoomEnded, this);
+                    else
+                        state.map.off('zoomend', this._map_zoomEnded, this);
+                    if (hook)
+                        state.tileLayer.on('load', this._tileLayer_loaded, this);
+                    else
+                        state.tileLayer.off('load', this._tileLayer_loaded, this);
+                }
+            }
+        };
+        MapPlugin.prototype._map_resized = function (e) {
+            this._raiseBoundsChanged();
+        };
+        MapPlugin.prototype._map_moved = function (e) {
+            this._raiseCenterChanged();
+        };
+        MapPlugin.prototype._map_moveEnded = function (e) {
+            this._onIdle();
+        };
+        MapPlugin.prototype._map_clicked = function (e) {
+            this._userNotIdle();
+            this._raiseClicked(e);
+        };
+        MapPlugin.prototype._map_doubleClicked = function (e) {
+            this._userNotIdle();
+            this._raiseDoubleClicked(e);
+        };
+        MapPlugin.prototype._map_zoomEnded = function (e) {
+            this._raiseZoomChanged();
+            this._onIdle();
+        };
+        MapPlugin.prototype._tileLayer_loaded = function (e) {
+            this._raiseTilesLoaded();
         };
         MapPlugin.prototype.getNative = function () {
             return this._getState().map;
@@ -926,10 +988,11 @@ var VRS;
             };
             var state = this._getState();
             state.map = L.map(state.mapContainer[0], leafletOptions);
-            L.tileLayer(VRS.serverConfig.get().OpenStreetMapTileServerUrl, {
+            state.tileLayer = L.tileLayer(VRS.serverConfig.get().OpenStreetMapTileServerUrl, {
                 attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a></a>',
                 className: 'vrs-leaflet-tile-layer'
             }).addTo(state.map);
+            this._hookEvents(state, true);
             var waitUntilReady = function () {
                 if (_this.options.waitUntilReady && !_this.isReady()) {
                     setTimeout(waitUntilReady, 100);

@@ -1080,14 +1080,19 @@ namespace VRS
     class MapPluginState
     {
         /**
+         * The map's container.
+         */
+        mapContainer: JQuery = undefined;
+
+        /**
          * The leaflet map.
          */
         map: L.Map = undefined;
 
         /**
-         * The map's container.
+         * The map tile layer.
          */
-        mapContainer: JQuery = undefined;
+        tileLayer: L.TileLayer = undefined;
 
         /**
          * An associative array of marker IDs to markers.
@@ -1113,6 +1118,11 @@ namespace VRS
          * An associative array of info window IDs to info windows.
          */
         infoWindows: { [infoWindowId: string]: MapInfoWindow } = {};
+
+        /**
+         * True if the map's events have been hooked.
+         */
+        eventsHooked = false;
     }
 
     /**
@@ -1168,9 +1178,78 @@ namespace VRS
         {
             var state = this._getState();
 
-            if(VRS.refreshManager) VRS.refreshManager.unregisterTarget(this.element);
+            this._hookEvents(state, false);
 
+            if(VRS.refreshManager) VRS.refreshManager.unregisterTarget(this.element);
             if(state.mapContainer) state.mapContainer.remove();
+        }
+
+        _hookEvents(state: MapPluginState, hook: boolean)
+        {
+            if(state.map) {
+                if((hook && !state.eventsHooked) || (!hook && state.eventsHooked)) {
+                    state.eventsHooked = hook;
+
+                    if(hook)    state.map.on ('resize', this._map_resized, this);
+                    else        state.map.off('resize', this._map_resized, this);
+
+                    if(hook)    state.map.on ('move', this._map_moved, this);
+                    else        state.map.off('move', this._map_moved, this);
+
+                    if(hook)    state.map.on ('moveend', this._map_moveEnded, this);
+                    else        state.map.off('moveend', this._map_moveEnded, this);
+
+                    if(hook)    state.map.on ('click', this._map_clicked, this);
+                    else        state.map.off('click', this._map_clicked, this);
+
+                    if(hook)    state.map.on ('dblclick', this._map_doubleClicked, this);
+                    else        state.map.off('dblclick', this._map_doubleClicked, this);
+
+                    if(hook)    state.map.on ('zoomend', this._map_zoomEnded, this);
+                    else        state.map.off('zoomend', this._map_zoomEnded, this);
+
+                    if(hook)    state.tileLayer.on ('load', this._tileLayer_loaded, this);
+                    else        state.tileLayer.off('load', this._tileLayer_loaded, this);
+                }
+            }
+        }
+
+        _map_resized(e: L.ResizeEvent)
+        {
+            this._raiseBoundsChanged();
+        }
+
+        _map_moved(e: Event)
+        {
+            this._raiseCenterChanged();
+        }
+
+        _map_moveEnded(e: Event)
+        {
+            this._onIdle();
+        }
+
+        _map_clicked(e: MouseEvent)
+        {
+            this._userNotIdle();
+            this._raiseClicked(e);
+        }
+
+        _map_doubleClicked(e: MouseEvent)
+        {
+            this._userNotIdle();
+            this._raiseDoubleClicked(e);
+        }
+
+        _map_zoomEnded(e: Event)
+        {
+            this._raiseZoomChanged();
+            this._onIdle();
+        }
+
+        _tileLayer_loaded(e:Event)
+        {
+            this._raiseTilesLoaded();
         }
 
         getNative(): any
@@ -1441,10 +1520,12 @@ namespace VRS
             var state = this._getState();
             state.map = L.map(state.mapContainer[0], leafletOptions);
 
-            L.tileLayer(VRS.serverConfig.get().OpenStreetMapTileServerUrl, {
+            state.tileLayer = L.tileLayer(VRS.serverConfig.get().OpenStreetMapTileServerUrl, {
                 attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a></a>',
                 className: 'vrs-leaflet-tile-layer'
             }).addTo(state.map);
+
+            this._hookEvents(state, true);
 
             var waitUntilReady = () => {
                 if(this.options.waitUntilReady && !this.isReady()) {
