@@ -1419,7 +1419,6 @@ var VRS;
                 }
                 result = new MapInfoWindow(id, state.map, infoWindow, options.tag, options);
                 state.infoWindows[id] = result;
-                console.log('Added info window ' + id);
             }
             return result;
         };
@@ -1439,7 +1438,6 @@ var VRS;
                 infoWindow.tag = null;
                 infoWindow.infoWindow = null;
                 delete state.infoWindows[infoWindow.id];
-                console.log('Destroyed info window ' + infoWindow.id);
                 infoWindow.id = null;
             }
         };
