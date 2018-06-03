@@ -1011,11 +1011,12 @@ namespace VRS
      */
     class MapInfoWindow implements IMapInfoWindow
     {
-        id:         string | number;
-        map:        L.Map;
-        infoWindow: L.Popup;
-        tag:        any;
-        isOpen:     boolean;
+        id:             string | number;
+        map:            L.Map;
+        infoWindow:     L.Popup;
+        tag:            any;
+        isOpen:         boolean;
+        boundMarker:    MapMarker;
 
         /**
          * Creates a new object.
@@ -1101,6 +1102,39 @@ namespace VRS
         setZIndex(value: number)
         {
             ;
+        }
+
+        open(mapMarker: MapMarker)
+        {
+            this.close();
+
+            if(!this.isOpen) {
+                this.isOpen = true;
+                if(!mapMarker) {
+                    this.map.openPopup(this.infoWindow);
+                } else {
+                    this.boundMarker = mapMarker;
+                    var markerHeight = mapMarker.getIcon().size.height;
+                    this.setPixelOffset({ width: 0, height: -markerHeight });
+                    mapMarker.marker.bindPopup(this.infoWindow).openPopup();
+                }
+            }
+        }
+
+        close()
+        {
+            if(this.isOpen) {
+                this.isOpen = false;
+                if(!this.boundMarker) {
+                    this.map.closePopup(this.infoWindow);
+                } else {
+                    if(this.boundMarker.marker) {
+                        this.boundMarker.marker.closePopup();
+                        this.boundMarker.marker.unbindPopup();
+                    }
+                    this.boundMarker = null;
+                }
+            }
         }
     }
 
@@ -1992,6 +2026,7 @@ namespace VRS
 
                 result = new MapInfoWindow(id, state.map, infoWindow, options.tag, options);
                 state.infoWindows[id] = result;
+console.log('Added info window ' + id);
             }
 
             return result;
@@ -2015,6 +2050,7 @@ namespace VRS
                 infoWindow.tag = null;
                 infoWindow.infoWindow = null;
                 delete state.infoWindows[infoWindow.id];
+console.log('Destroyed info window ' + infoWindow.id);
                 infoWindow.id = null;
             }
         }
@@ -2023,26 +2059,15 @@ namespace VRS
         {
             var state = this._getState();
             var infoWindow = <MapInfoWindow>this.getInfoWindow(idOrInfoWindow);
-            if(infoWindow && state.map && !infoWindow.isOpen) {
-                if(!mapMarker) {
-                    infoWindow.map.openPopup(infoWindow.infoWindow);
-                } else {
-                    var marker = <MapMarker>mapMarker;
-                    var markerHeight = marker.getIcon().size.height;
-                    infoWindow.setPixelOffset({ width: 0, height: -markerHeight });
-                    marker.marker.bindPopup(infoWindow.infoWindow).openPopup();
-                }
-                infoWindow.isOpen = true;
+            if(infoWindow && state.map) {
+                infoWindow.open(<MapMarker>mapMarker);
             }
         }
 
         closeInfoWindow(idOrInfoWindow: string | number | IMapInfoWindow)
         {
             var infoWindow = <MapInfoWindow>this.getInfoWindow(idOrInfoWindow);
-            if(infoWindow.isOpen) {
-                infoWindow.map.closePopup(infoWindow.infoWindow);
-                infoWindow.isOpen = false;
-            }
+            infoWindow.close();
         }
 
         addControl(element: JQuery | HTMLElement, mapPosition: MapPositionEnum)

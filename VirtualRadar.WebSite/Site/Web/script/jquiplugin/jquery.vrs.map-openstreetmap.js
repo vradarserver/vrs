@@ -704,6 +704,36 @@ var VRS;
         MapInfoWindow.prototype.setZIndex = function (value) {
             ;
         };
+        MapInfoWindow.prototype.open = function (mapMarker) {
+            this.close();
+            if (!this.isOpen) {
+                this.isOpen = true;
+                if (!mapMarker) {
+                    this.map.openPopup(this.infoWindow);
+                }
+                else {
+                    this.boundMarker = mapMarker;
+                    var markerHeight = mapMarker.getIcon().size.height;
+                    this.setPixelOffset({ width: 0, height: -markerHeight });
+                    mapMarker.marker.bindPopup(this.infoWindow).openPopup();
+                }
+            }
+        };
+        MapInfoWindow.prototype.close = function () {
+            if (this.isOpen) {
+                this.isOpen = false;
+                if (!this.boundMarker) {
+                    this.map.closePopup(this.infoWindow);
+                }
+                else {
+                    if (this.boundMarker.marker) {
+                        this.boundMarker.marker.closePopup();
+                        this.boundMarker.marker.unbindPopup();
+                    }
+                    this.boundMarker = null;
+                }
+            }
+        };
         return MapInfoWindow;
     }());
     var MapPluginState = (function () {
@@ -1389,6 +1419,7 @@ var VRS;
                 }
                 result = new MapInfoWindow(id, state.map, infoWindow, options.tag, options);
                 state.infoWindows[id] = result;
+                console.log('Added info window ' + id);
             }
             return result;
         };
@@ -1408,32 +1439,20 @@ var VRS;
                 infoWindow.tag = null;
                 infoWindow.infoWindow = null;
                 delete state.infoWindows[infoWindow.id];
+                console.log('Destroyed info window ' + infoWindow.id);
                 infoWindow.id = null;
             }
         };
         MapPlugin.prototype.openInfoWindow = function (idOrInfoWindow, mapMarker) {
             var state = this._getState();
             var infoWindow = this.getInfoWindow(idOrInfoWindow);
-            if (infoWindow && state.map && !infoWindow.isOpen) {
-                if (!mapMarker) {
-                    infoWindow.map.openPopup(infoWindow.infoWindow);
-                }
-                else {
-                    var marker = mapMarker;
-                    var markerAnchor = marker.getIcon().anchor;
-                    var markerHeight = marker.getIcon().size.height;
-                    infoWindow.setPixelOffset({ width: 0, height: -markerHeight });
-                    marker.marker.bindPopup(infoWindow.infoWindow).openPopup();
-                }
-                infoWindow.isOpen = true;
+            if (infoWindow && state.map) {
+                infoWindow.open(mapMarker);
             }
         };
         MapPlugin.prototype.closeInfoWindow = function (idOrInfoWindow) {
             var infoWindow = this.getInfoWindow(idOrInfoWindow);
-            if (infoWindow.isOpen) {
-                infoWindow.map.closePopup(infoWindow.infoWindow);
-                infoWindow.isOpen = false;
-            }
+            infoWindow.close();
         };
         MapPlugin.prototype.addControl = function (element, mapPosition) {
             var state = this._getState();
