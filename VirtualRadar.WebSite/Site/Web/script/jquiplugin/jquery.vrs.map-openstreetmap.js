@@ -747,6 +747,7 @@ var VRS;
             this.polygons = {};
             this.infoWindows = {};
             this.eventsHooked = false;
+            this.settingCenter = undefined;
         }
         return MapPluginState;
     }());
@@ -882,10 +883,18 @@ var VRS;
             this._setCenter(this._getState(), latLng);
         };
         MapPlugin.prototype._setCenter = function (state, latLng) {
-            if (state.map)
-                state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(latLng));
-            else
-                this.options.center = latLng;
+            if (state.settingCenter === undefined || state.settingCenter === null || state.settingCenter.lat != latLng.lat || state.settingCenter.lng != latLng.lng) {
+                try {
+                    state.settingCenter = latLng;
+                    if (state.map)
+                        state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(latLng));
+                    else
+                        this.options.center = latLng;
+                }
+                finally {
+                    state.settingCenter = undefined;
+                }
+            }
         };
         MapPlugin.prototype.getDraggable = function () {
             return this.options.draggable;
@@ -1070,10 +1079,18 @@ var VRS;
             this._panTo(mapCenter, this._getState());
         };
         MapPlugin.prototype._panTo = function (mapCenter, state) {
-            if (state.map)
-                state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(mapCenter));
-            else
-                this.options.center = mapCenter;
+            if (state.settingCenter === undefined || state.settingCenter === null || state.settingCenter.lat != mapCenter.lat || state.settingCenter.lng != mapCenter.lng) {
+                try {
+                    state.settingCenter = mapCenter;
+                    if (state.map)
+                        state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(mapCenter));
+                    else
+                        this.options.center = mapCenter;
+                }
+                finally {
+                    state.settingCenter = undefined;
+                }
+            }
         };
         MapPlugin.prototype.fitBounds = function (bounds) {
             var state = this._getState();

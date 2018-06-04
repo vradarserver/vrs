@@ -1187,6 +1187,12 @@ namespace VRS
          * True if the map's events have been hooked.
          */
         eventsHooked = false;
+
+        /**
+         * The map centre that we're setting. Used to prevent recursive map events
+         * while moving the map.
+         */
+        settingCenter: ILatLng = undefined;
     }
 
     /**
@@ -1361,8 +1367,16 @@ namespace VRS
         }
         private _setCenter(state: MapPluginState, latLng: ILatLng)
         {
-            if(state.map) state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(latLng));
-            else          this.options.center = latLng;
+            if(state.settingCenter === undefined || state.settingCenter === null || state.settingCenter.lat != latLng.lat || state.settingCenter.lng != latLng.lng) {
+                try {
+                    state.settingCenter = latLng;
+
+                    if(state.map) state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(latLng));
+                    else          this.options.center = latLng;
+                } finally {
+                    state.settingCenter = undefined;
+                }
+            }
         }
 
         getDraggable() : boolean
@@ -1620,8 +1634,16 @@ namespace VRS
         }
         private _panTo(mapCenter: ILatLng, state: MapPluginState)
         {
-            if(state.map) state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(mapCenter));
-            else          this.options.center = mapCenter;
+            if(state.settingCenter === undefined || state.settingCenter === null || state.settingCenter.lat != mapCenter.lat || state.settingCenter.lng != mapCenter.lng) {
+                try {
+                    state.settingCenter = mapCenter;
+
+                    if(state.map) state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(mapCenter));
+                    else          this.options.center = mapCenter;
+                } finally {
+                    state.settingCenter = undefined;
+                }
+            }
         }
 
         fitBounds(bounds: IBounds)
