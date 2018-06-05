@@ -803,6 +803,9 @@ var VRS;
             state.mapContainer = $('<div />')
                 .addClass('vrsMap')
                 .appendTo(this.element);
+            if (VRS.refreshManager) {
+                VRS.refreshManager.registerTarget(this.element, this._targetResized, this);
+            }
             if (this.options.afterCreate) {
                 this.options.afterCreate(this);
             }
@@ -1501,6 +1504,12 @@ var VRS;
                 var control = new MapControl(element, controlOptions);
                 control.addTo(state.map);
             }
+        };
+        MapPlugin.prototype._targetResized = function () {
+            var state = this._getState();
+            var center = this._getCenter(state);
+            this.refreshMap();
+            this._setCenter(state, center);
         };
         return MapPlugin;
     }(JQueryUICustomWidget));

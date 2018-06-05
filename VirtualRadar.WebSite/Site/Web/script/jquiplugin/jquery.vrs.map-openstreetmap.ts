@@ -1258,6 +1258,10 @@ namespace VRS
                 .addClass('vrsMap')
                 .appendTo(this.element);
 
+            if(VRS.refreshManager) {
+                VRS.refreshManager.registerTarget(this.element, this._targetResized, this);
+            }
+
             if(this.options.afterCreate) {
                 this.options.afterCreate(this);
             }
@@ -2122,6 +2126,26 @@ namespace VRS
                 var control = new MapControl(element, controlOptions);
                 control.addTo(state.map);
             }
+        }
+
+
+
+        //
+        // VRS EVENTS SUBSCRIBED
+        //
+
+
+        /**
+         * Called when the refresh manager indicates that one of our parents has resized, or done something that we need
+         * to refresh for.
+         */
+        private _targetResized()
+        {
+            var state = this._getState();
+
+            var center = this._getCenter(state);
+            this.refreshMap();
+            this._setCenter(state, center);
         }
     }
 
