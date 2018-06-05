@@ -203,7 +203,7 @@ var VRS;
         }, overrides);
     };
     var MapMarker = (function () {
-        function MapMarker(id, mapPlugin, map, nativeMarker, markerOptions, isMarkerWithLabel, isVisible, tag) {
+        function MapMarker(id, mapPlugin, map, nativeMarker, markerOptions, userOptions) {
             this._eventsHooked = false;
             this.id = id;
             this.mapPlugin = mapPlugin;
@@ -211,9 +211,18 @@ var VRS;
             this.marker = nativeMarker;
             this.mapIcon = VRS.leafletUtilities.fromLeafletIcon(markerOptions.icon);
             this.zIndex = markerOptions.zIndexOffset;
-            this.isMarkerWithLabel = isMarkerWithLabel;
-            this.tag = tag;
-            this.visible = isVisible;
+            this.isMarkerWithLabel = !!userOptions.useMarkerWithLabel;
+            this.tag = userOptions.tag;
+            this.visible = !!userOptions.visible;
+            if (this.isMarkerWithLabel) {
+                this.labelTooltip = new L.Tooltip({
+                    permanent: true,
+                    className: userOptions.mwlLabelClass,
+                    direction: 'bottom',
+                    pane: 'shadowPane'
+                });
+                this.labelTooltip.setLatLng(this.marker.getLatLng());
+            }
             this.hookEvents(true);
         }
         MapMarker.prototype.hookEvents = function (hook) {
@@ -258,6 +267,9 @@ var VRS;
         };
         MapMarker.prototype.setPosition = function (position) {
             this.marker.setLatLng(VRS.leafletUtilities.toLeafletLatLng(position));
+            if (this.labelTooltip) {
+                this.labelTooltip.setLatLng(this.marker.getLatLng());
+            }
         };
         MapMarker.prototype.getTooltip = function () {
             var tooltip = this.marker.getTooltip();
@@ -288,16 +300,27 @@ var VRS;
             this.zIndex = zIndex;
         };
         MapMarker.prototype.getLabelVisible = function () {
-            return false;
+            return this.labelTooltip && this.labelTooltip.isOpen();
         };
         MapMarker.prototype.setLabelVisible = function (visible) {
-            ;
+            if (this.labelTooltip) {
+                if (visible !== this.getLabelVisible()) {
+                    if (visible) {
+                        this.map.openTooltip(this.labelTooltip);
+                    }
+                    else {
+                        this.map.closeTooltip(this.labelTooltip);
+                    }
+                }
+            }
         };
         MapMarker.prototype.getLabelContent = function () {
-            return '';
+            return this.labelTooltip ? this.labelTooltip.getContent() : '';
         };
         MapMarker.prototype.setLabelContent = function (content) {
-            ;
+            if (this.labelTooltip) {
+                this.labelTooltip.setContent(content);
+            }
         };
         MapMarker.prototype.getLabelAnchor = function () {
             return null;
@@ -1161,7 +1184,7 @@ var VRS;
                 if (userOptions.visible) {
                     nativeMarker.addTo(state.map);
                 }
-                result = new MapMarker(id, this, state.map, nativeMarker, leafletOptions, !!userOptions.useMarkerWithLabel, userOptions.visible, userOptions.tag);
+                result = new MapMarker(id, this, state.map, nativeMarker, leafletOptions, userOptions);
                 state.markers[id] = result;
             }
             return result;

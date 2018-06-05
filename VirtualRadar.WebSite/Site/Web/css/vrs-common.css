@@ -155,6 +155,36 @@ body.wait .modal {
 .vrs-leaflet-tile-layer {
     filter: brightness(70%);
 }
+.leaflet-tooltip.markerLabel {
+    padding: 0px;
+    background-image: url('../images/markerLabelBackground.png');
+    background-color: #aaa;
+    border: 1px solid #000;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 8pt;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    opacity: 0.1;
+}
+.leaflet-tooltip-top.markerLabel:before {
+    border-top-color: #333;
+}
+.leaflet-tooltip-bottom.markerLabel:before {
+    border-bottom-color: #333;
+}
+.leaflet-tooltip-left.markerLabel:before {
+    border-left-color: #333;
+}
+.leaflet-tooltip-right.markerLabel:before {
+    border-right-color: #333;
+}
+
 
 /*endregion */
 

@@ -284,6 +284,7 @@ namespace VRS
         isMarkerWithLabel: boolean;
         tag: any;
         visible: boolean;
+        labelTooltip: L.Tooltip;
 
         private _eventsHooked = false;
 
@@ -294,11 +295,9 @@ namespace VRS
          * @param {L.Map}               nativeMap           The map that this marker will be (or is) attached to.
          * @param {L.Marker}            nativeMarker        The native map marker handle to wrap.
          * @param {L.MarkerOptions}     markerOptions       The options used when creating the marker.
-         * @param {boolean}             isMarkerWithLabel   See notes against field of same name.
-         * @param {boolean}             isVisible           True if the marker is already attached to a map.
-         * @param {*}                   tag                 An object to carry around with the marker. No meaning is attached to the tag.
+         * @param {IMapMarkerSettings}  userOptions         The options passed for the creation of the marker.
         */
-        constructor(id: string|number, mapPlugin: MapPlugin, map: L.Map, nativeMarker: L.Marker, markerOptions: L.MarkerOptions, isMarkerWithLabel: boolean, isVisible: boolean, tag: any)
+        constructor(id: string|number, mapPlugin: MapPlugin, map: L.Map, nativeMarker: L.Marker, markerOptions: L.MarkerOptions, userOptions: IMapMarkerSettings)
         {
             this.id = id;
             this.mapPlugin = mapPlugin;
@@ -306,9 +305,19 @@ namespace VRS
             this.marker = nativeMarker;
             this.mapIcon = VRS.leafletUtilities.fromLeafletIcon(markerOptions.icon);
             this.zIndex = markerOptions.zIndexOffset;
-            this.isMarkerWithLabel = isMarkerWithLabel;
-            this.tag = tag;
-            this.visible = isVisible;
+            this.isMarkerWithLabel = !!userOptions.useMarkerWithLabel;
+            this.tag = userOptions.tag;
+            this.visible = !!userOptions.visible;
+
+            if(this.isMarkerWithLabel) {
+                this.labelTooltip = new L.Tooltip({
+                    permanent: true,
+                    className: userOptions.mwlLabelClass,
+                    direction: 'bottom',
+                    pane: 'shadowPane'
+                });
+                this.labelTooltip.setLatLng(this.marker.getLatLng());
+            }
 
             this.hookEvents(true);
         }
@@ -387,6 +396,9 @@ namespace VRS
         setPosition(position: ILatLng)
         {
             this.marker.setLatLng(VRS.leafletUtilities.toLeafletLatLng(position));
+            if(this.labelTooltip) {
+                this.labelTooltip.setLatLng(this.marker.getLatLng());
+            }
         }
 
         /**
@@ -452,7 +464,7 @@ namespace VRS
          */
         getLabelVisible() : boolean
         {
-            return false;
+            return this.labelTooltip && this.labelTooltip.isOpen();
         }
 
         /**
@@ -461,15 +473,23 @@ namespace VRS
          */
         setLabelVisible(visible: boolean)
         {
-            ;
+            if(this.labelTooltip) {
+                if(visible !== this.getLabelVisible()) {
+                    if(visible) {
+                        this.map.openTooltip(this.labelTooltip);
+                    } else {
+                        this.map.closeTooltip(this.labelTooltip);
+                    }
+                }
+            }
         }
 
         /**
          * Sets the label content. Only works on markers that have been created with useMarkerWithLabel.
          */
-        getLabelContent()
+        getLabelContent(): string
         {
-            return '';
+            return this.labelTooltip ? <string>this.labelTooltip.getContent() : '';
         }
 
         /**
@@ -478,7 +498,9 @@ namespace VRS
          */
         setLabelContent(content: string)
         {
-            ;
+            if(this.labelTooltip) {
+                this.labelTooltip.setContent(content);
+            }
         }
 
         /**
@@ -1731,7 +1753,7 @@ namespace VRS
                 if(userOptions.visible) {
                     nativeMarker.addTo(state.map);
                 }
-                result = new MapMarker(id, this, state.map, nativeMarker, leafletOptions, !!userOptions.useMarkerWithLabel, userOptions.visible, userOptions.tag);
+                result = new MapMarker(id, this, state.map, nativeMarker, leafletOptions, userOptions);
                 state.markers[id] = result;
             }
 
