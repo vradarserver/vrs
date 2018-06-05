@@ -152,9 +152,13 @@ body.wait .modal {
     white-space: nowrap;
 }
 
+/*endregion */
+
+/*region leaflet overrides */
 .vrs-leaflet-tile-layer {
     filter: brightness(70%);
 }
+
 .leaflet-tooltip.markerLabel {
     padding: 0px;
     background-image: url('../images/markerLabelBackground.png');
@@ -172,21 +176,29 @@ body.wait .modal {
     box-shadow: 0 1px 3px rgba(0,0,0,0.4);
     opacity: 0.1;
 }
+
 .leaflet-tooltip-top.markerLabel:before {
     border-top-color: #333;
 }
+
 .leaflet-tooltip-bottom.markerLabel:before {
     border-bottom-color: #333;
 }
+
 .leaflet-tooltip-left.markerLabel:before {
     border-left-color: #333;
 }
+
 .leaflet-tooltip-right.markerLabel:before {
     border-right-color: #333;
 }
-
-
-/*endregion */
+.leaflet-control {
+    clear: none !important;
+}
+.leaflet-control > .vrsMenu {
+    margin-top: -8px;
+}
+/*endregion*/
 
 /*region icoMoon icons */
 .vrsIcon {
