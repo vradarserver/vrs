@@ -62,7 +62,7 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.AllowCorsDomains, null, "a.b.com");
             TestUtilities.TestProperty(settings, r => r.GoogleMapsApiKey, null, "Key");
             TestUtilities.TestProperty(settings, r => r.UseGoogleMapsAPIKeyWithLocalRequests, false);
-            TestUtilities.TestProperty(settings, r => r.MapProvider, MapProvider.GoogleMaps, MapProvider.OpenStreetMap);
+            TestUtilities.TestProperty(settings, r => r.MapProvider, MapProvider.GoogleMaps, MapProvider.Leaflet);
             TestUtilities.TestProperty(settings, r => r.OpenStreetMapTileServerUrl, null, "A url");
         }
     }

@@ -167,7 +167,7 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             textBoxGoogleMapsAPIKey.Enabled = SettingsView.Configuration.GoogleMapSettings.MapProvider == MapProvider.GoogleMaps;
             checkBoxUseGoogleMapsKeyWithLocalRequests.Enabled = SettingsView.Configuration.GoogleMapSettings.MapProvider == MapProvider.GoogleMaps;
-            textBoxOpenStreetMapTileServerUrl.Enabled = SettingsView.Configuration.GoogleMapSettings.MapProvider == MapProvider.OpenStreetMap;
+            textBoxOpenStreetMapTileServerUrl.Enabled = SettingsView.Configuration.GoogleMapSettings.MapProvider == MapProvider.Leaflet;
         }
     }
 }

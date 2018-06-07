@@ -396,7 +396,7 @@ namespace VirtualRadar.Interface
         {
             switch(mapProvider) {
                 case Settings.MapProvider.GoogleMaps:       return Strings.GoogleMaps;
-                case Settings.MapProvider.OpenStreetMap:    return Strings.OpenStreetMap;
+                case Settings.MapProvider.Leaflet:          return Strings.Leaflet;
                 default:                                    throw new NotImplementedException();
             }
         }

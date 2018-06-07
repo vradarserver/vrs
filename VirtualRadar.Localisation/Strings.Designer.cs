@@ -2524,6 +2524,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Leaflet.
+        /// </summary>
+        public static string Leaflet {
+            get {
+                return ResourceManager.GetString("Leaflet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to License.
         /// </summary>
         public static string License {
@@ -3371,24 +3380,6 @@ namespace VirtualRadar.Localisation {
         public static string OK {
             get {
                 return ResourceManager.GetString("OK", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to OpenStreetMap.
-        /// </summary>
-        public static string OpenStreetMap {
-            get {
-                return ResourceManager.GetString("OpenStreetMap", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to OpenStreetMap tile server URL.
-        /// </summary>
-        public static string OpenStreetMapTileServerUrl {
-            get {
-                return ResourceManager.GetString("OpenStreetMapTileServerUrl", resourceCulture);
             }
         }
         
@@ -6802,6 +6793,15 @@ namespace VirtualRadar.Localisation {
         public static string Throughput {
             get {
                 return ResourceManager.GetString("Throughput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tile server URL.
+        /// </summary>
+        public static string TileServerUrl {
+            get {
+                return ResourceManager.GetString("TileServerUrl", resourceCulture);
             }
         }
         

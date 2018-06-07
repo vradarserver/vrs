@@ -349,7 +349,7 @@ namespace VirtualRadar.Interface.Settings
             EnableCompression = true;
             PreferIataAirportCodes = true;
 
-            MapProvider = MapProvider.OpenStreetMap;
+            MapProvider = MapProvider.Leaflet;
             OpenStreetMapTileServerUrl = @"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
         }
     }

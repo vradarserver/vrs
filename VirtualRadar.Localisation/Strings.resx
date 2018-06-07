@@ -2740,11 +2740,12 @@ Show this message.</value>
   <data name="MapProviderTitle" xml:space="preserve">
     <value>Map Provider</value>
   </data>
-  <data name="OpenStreetMap" xml:space="preserve">
-    <value>OpenStreetMap</value>
-    <comment>The site seems to be all one word</comment>
+  <data name="Leaflet" xml:space="preserve">
+    <value>Leaflet</value>
+    <comment>This is the name of an internet map provider, no need to translate</comment>
   </data>
-  <data name="OpenStreetMapTileServerUrl" xml:space="preserve">
-    <value>OpenStreetMap tile server URL</value>
+  <data name="TileServerUrl" xml:space="preserve">
+    <value>Tile server URL</value>
+    <comment>"Tile Server" refers to map tiles, square images joined together to form a map.</comment>
   </data>
 </root>

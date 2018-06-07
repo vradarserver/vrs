@@ -17,8 +17,8 @@ namespace VirtualRadar.Interface.Settings
 {
     public enum MapProvider
     {
-        GoogleMaps,
+        Leaflet,
 
-        OpenStreetMap,
+        GoogleMaps,
     }
 }
