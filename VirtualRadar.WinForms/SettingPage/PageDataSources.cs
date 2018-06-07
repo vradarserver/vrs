@@ -103,7 +103,7 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new ComboBoxEnumBinder<GoogleMapSettings, MapProvider>(mapSettings, comboBoxMapProvider, r => r.MapProvider, (r,v) => r.MapProvider = v, r => Describe.MapProvider(r)) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });
 
             AddControlBinder(new TextBoxStringBinder<GoogleMapSettings>(mapSettings, textBoxGoogleMapsAPIKey,           r => r.GoogleMapsApiKey,            (r,v) => r.GoogleMapsApiKey = v));
-            AddControlBinder(new TextBoxStringBinder<GoogleMapSettings>(mapSettings, textBoxOpenStreetMapTileServerUrl, r => r.OpenStreetMapTileServerUrl,  (r,v) => r.OpenStreetMapTileServerUrl = v));
+            AddControlBinder(new TextBoxStringBinder<GoogleMapSettings>(mapSettings, textBoxTileServerUrl, r => r.OpenStreetMapTileServerUrl,  (r,v) => r.OpenStreetMapTileServerUrl = v));
 
             AddControlBinder(new FileNameStringBinder<BaseStationSettings>(baseStationSettings, fileDatabaseFileName,    r => r.DatabaseFileName,   (r,v) => r.DatabaseFileName = v));
 
@@ -167,7 +167,7 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             textBoxGoogleMapsAPIKey.Enabled = SettingsView.Configuration.GoogleMapSettings.MapProvider == MapProvider.GoogleMaps;
             checkBoxUseGoogleMapsKeyWithLocalRequests.Enabled = SettingsView.Configuration.GoogleMapSettings.MapProvider == MapProvider.GoogleMaps;
-            textBoxOpenStreetMapTileServerUrl.Enabled = SettingsView.Configuration.GoogleMapSettings.MapProvider == MapProvider.Leaflet;
+            textBoxTileServerUrl.Enabled = SettingsView.Configuration.GoogleMapSettings.MapProvider == MapProvider.Leaflet;
         }
     }
 }
