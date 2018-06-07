@@ -301,7 +301,6 @@
       <DependentUpon>jqueryuihelper.ts</DependentUpon>
     </Content>
     <Content Include="Site\Web\script\leaflet-src.js" />
-    <Content Include="Site\Web\script\leaflet.js" />
     <Content Include="Site\Web\script\markercluster.js" />
     <Content Include="Site\Web\script\vrs\airportDataApi.js">
       <DependentUpon>airportDataApi.ts</DependentUpon>
@@ -907,8 +906,6 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>translations.d.ts</LastGenOutput>
     </None>
-    <None Include="Site\Web\script\leaflet-src.js.map" />
-    <None Include="Site\Web\script\leaflet.js.map" />
     <None Include="_PostBuild.bat" />
     <None Include="_PostBuild.sh" />
   </ItemGroup>
