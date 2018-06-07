@@ -334,6 +334,7 @@ namespace Test.VirtualRadar.Library
         public void XmlSerialiser_Ctor_Initialises_To_Known_Values_And_Properties_Work()
         {
             TestUtilities.TestProperty(_Serialiser, r => r.XmlSerializerCompatible, true);
+            TestUtilities.TestProperty(_Serialiser, r => r.UseDefaultEnumValueIfUnknown, false);
         }
         #endregion
 
@@ -1158,6 +1159,23 @@ namespace Test.VirtualRadar.Library
                 return _Serialiser.Deserialise<ListOfStrings>(CreateStream(r));
             });
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.ArgumentException))]
+        public void XmlSerialiser_Deserialise_Stream_Throws_Exception_By_Default_If_Enum_Value_Unknown()
+        {
+            Throws_Exception_By_Default_If_Enum_Value_Unknown(r => {
+                return _Serialiser.Deserialise<EnumClass>(CreateStream(r));
+            });
+        }
+
+        [TestMethod]
+        public void XmlSerialiser_Deserialise_Stream_Can_Use_Default_Enum_Value_For_Unknown_Values_If_Required()
+        {
+            Can_Use_Default_Enum_Value_For_Unknown_Values_If_Required(r => {
+                return _Serialiser.Deserialise<EnumClass>(CreateStream(r));
+            });
+        }
         #endregion
 
         #region Deserialise TextReader
@@ -1325,6 +1343,23 @@ namespace Test.VirtualRadar.Library
         {
             Produces_Correct_Object_For_ListOfStrings_With_Null_Element(r => {
                 return _Serialiser.Deserialise<ListOfStrings>(CreateTextReader(r));
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.ArgumentException))]
+        public void XmlSerialiser_Deserialise_TextReader_Throws_Exception_By_Default_If_Enum_Value_Unknown()
+        {
+            Throws_Exception_By_Default_If_Enum_Value_Unknown(r => {
+                return _Serialiser.Deserialise<EnumClass>(CreateTextReader(r));
+            });
+        }
+
+        [TestMethod]
+        public void XmlSerialiser_Deserialise_TextReader_Can_Use_Default_Enum_Value_For_Unknown_Values_If_Required()
+        {
+            Can_Use_Default_Enum_Value_For_Unknown_Values_If_Required(r => {
+                return _Serialiser.Deserialise<EnumClass>(CreateTextReader(r));
             });
         }
         #endregion
@@ -1570,6 +1605,29 @@ namespace Test.VirtualRadar.Library
             var expected = DeserialiseWithXmlSerializer<ListOfStrings>(text);
             var actual = run(text);
             Assert.AreEqual(expected, actual);
+        }
+
+        private void Throws_Exception_By_Default_If_Enum_Value_Unknown(Func<string, EnumClass> run)
+        {
+            var text = @"<?xml version=""1.0"" encoding=""utf-8""?>
+                <EnumClass xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+                  <FileAccess>NotAFileAccessValue</FileAccess>
+                </EnumClass>
+            ";
+            run(text);
+        }
+
+        private void Can_Use_Default_Enum_Value_For_Unknown_Values_If_Required(Func<string, EnumClass> run)
+        {
+            var text = @"<?xml version=""1.0"" encoding=""utf-8""?>
+                <EnumClass xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+                  <FileAccess>NotAFileAccessValue</FileAccess>
+                </EnumClass>
+            ";
+            _Serialiser.UseDefaultEnumValueIfUnknown = true;
+            var enumClass = run(text);
+
+            Assert.AreEqual((FileAccess)0, enumClass.FileAccess);
         }
         #endregion
     }

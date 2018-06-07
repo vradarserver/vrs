@@ -49,7 +49,7 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.InitialDistanceUnit, DistanceUnit.NauticalMiles, DistanceUnit.Kilometres);
             TestUtilities.TestProperty(settings, r => r.InitialHeightUnit, HeightUnit.Feet, HeightUnit.Metres);
             TestUtilities.TestProperty(settings, r => r.InitialSpeedUnit, SpeedUnit.Knots, SpeedUnit.MilesPerHour);
-            TestUtilities.TestProperty(settings, r => r.PreferIataAirportCodes, false);
+            TestUtilities.TestProperty(settings, r => r.PreferIataAirportCodes, true);
             TestUtilities.TestProperty(settings, r => r.EnableBundling, true);
             TestUtilities.TestProperty(settings, r => r.EnableMinifying, true);
             TestUtilities.TestProperty(settings, r => r.EnableCompression, true);
@@ -62,7 +62,7 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.AllowCorsDomains, null, "a.b.com");
             TestUtilities.TestProperty(settings, r => r.GoogleMapsApiKey, null, "Key");
             TestUtilities.TestProperty(settings, r => r.UseGoogleMapsAPIKeyWithLocalRequests, false);
-            TestUtilities.TestProperty(settings, r => r.MapProvider, MapProvider.GoogleMaps, MapProvider.Leaflet);
+            TestUtilities.TestProperty(settings, r => r.MapProvider, MapProvider.Leaflet, MapProvider.GoogleMaps);
             TestUtilities.TestProperty(settings, r => r.OpenStreetMapTileServerUrl, null, "A url");
         }
     }

@@ -36,6 +36,12 @@ namespace VirtualRadar.Interface
         bool XmlSerializerCompatible { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that attempts to deserialise an unrecognised enum value will
+        /// deserialise to the default enum value rather than throw an exception. Defaults to false.
+        /// </summary>
+        bool UseDefaultEnumValueIfUnknown { get; set; }
+
+        /// <summary>
         /// Serialises the object to a stream.
         /// </summary>
         /// <param name="obj"></param>

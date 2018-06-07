@@ -161,7 +161,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
         #endregion
 
-        #region Save
+        #region Save and Load
         [TestMethod]
         public void ConfigurationStorage_Save_Raises_ConfigurationChanged()
         {
@@ -752,6 +752,22 @@ namespace Test.VirtualRadar.Library.Settings
             }
 
             return result;
+        }
+
+        [TestMethod]
+        public void ConfigurationStorage_Load_Asks_XmlSerialiser_To_Use_Defaults_If_Enum_Unrecognised()
+        {
+            var config = new Configuration();
+
+            var xmlSerialiser = TestUtilities.CreateMockImplementation<IXmlSerialiser>();
+            xmlSerialiser.Object.UseDefaultEnumValueIfUnknown = false;
+            xmlSerialiser.Setup(r => r.Deserialise<Configuration>(It.IsAny<Stream>())).Returns(config);
+            xmlSerialiser.Setup(r => r.Deserialise<Configuration>(It.IsAny<TextReader>())).Returns(config);
+
+            _Implementation = Factory.Singleton.Resolve<IConfigurationStorage>();
+            _Implementation.Load();
+
+            Assert.AreEqual(true, xmlSerialiser.Object.UseDefaultEnumValueIfUnknown);
         }
         #endregion
 

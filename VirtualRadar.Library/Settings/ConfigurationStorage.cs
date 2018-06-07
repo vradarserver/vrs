@@ -184,6 +184,7 @@ namespace VirtualRadar.Library.Settings
                 if(File.Exists(FileName)) {
                     using(StreamReader stream = new StreamReader(FileName, Encoding.UTF8)) {
                         var serialiser = Factory.Singleton.Resolve<IXmlSerialiser>();
+                        serialiser.UseDefaultEnumValueIfUnknown = true;
                         result = serialiser.Deserialise<Configuration>(stream);
                     }
                 }
