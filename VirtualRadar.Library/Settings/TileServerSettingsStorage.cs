@@ -103,9 +103,28 @@ namespace VirtualRadar.Library.Settings
                     var settingsList = JsonConvert.DeserializeObject<TileServerSettings[]>(jsonText);
 
                     foreach(var setting in settingsList) {
+                        setting.Name = (setting.Name ?? "").Trim();
+                        if(setting.Name == "") {
+                            continue;
+                        }
+                        if(isCustom) {
+                            setting.Name = String.Format("* {0}", setting.Name);
+                        }
+
                         if(!results.Any(r => String.Equals(r.Name, setting.Name, StringComparison.OrdinalIgnoreCase) && r.MapProvider == setting.MapProvider)) {
                             setting.IsCustom = isCustom;
                             setting.IsDefault = isCustom ? false : setting.IsDefault;
+
+                            setting.Url = (setting.Url ?? "").Trim();
+                            if(setting.Url == "") {
+                                continue;
+                            }
+
+                            setting.Attribution = (setting.Attribution ?? "").Trim();
+                            if(setting.Attribution == "") {
+                                continue;
+                            }
+
                             results.Add(setting);
                         }
                     }

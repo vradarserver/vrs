@@ -86,7 +86,7 @@ Examples are:
 CHOOSING A NAME
 ===============
 If you specify more than one tile server then the names for each tile server
-must be unique. Your names will be prefixed with "[Custom]" in the VRS user
+must be unique. Your names will be prefixed with "*" in the VRS user
 interface.
 
 
