@@ -6806,6 +6806,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tile server.
+        /// </summary>
+        public static string TileServer {
+            get {
+                return ResourceManager.GetString("TileServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to HOW TO ADD YOUR OWN TILE SERVER SETTINGS
         ///========================================
         ///
@@ -6823,15 +6832,6 @@ namespace VirtualRadar.Localisation {
         public static string TileServerSettings_ReadMe {
             get {
                 return ResourceManager.GetString("TileServerSettings_ReadMe", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tile server URL.
-        /// </summary>
-        public static string TileServerUrl {
-            get {
-                return ResourceManager.GetString("TileServerUrl", resourceCulture);
             }
         }
         

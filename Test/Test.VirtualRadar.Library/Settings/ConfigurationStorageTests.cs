@@ -255,7 +255,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual("API Key", readBack.GoogleMapSettings.GoogleMapsApiKey);
                         Assert.AreEqual(true, readBack.GoogleMapSettings.UseGoogleMapsAPIKeyWithLocalRequests);
                         Assert.AreEqual(MapProvider.Leaflet, readBack.GoogleMapSettings.MapProvider);
-                        Assert.AreEqual("http://tiles.example.com", readBack.GoogleMapSettings.OpenStreetMapTileServerUrl);
+                        Assert.AreEqual("My Tile Server", readBack.GoogleMapSettings.TileServerSettingName);
                         break;
                     case "VersionCheckSettings":
                         Assert.AreEqual(false, readBack.VersionCheckSettings.CheckAutomatically);
@@ -539,7 +539,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                         GoogleMapsApiKey = "API Key",
                                                         UseGoogleMapsAPIKeyWithLocalRequests = true,
                                                         MapProvider = MapProvider.Leaflet,
-                                                        OpenStreetMapTileServerUrl = "http://tiles.example.com",
+                                                        TileServerSettingName = "My Tile Server",
                                                     }; break;
                     case "VersionCheckSettings":    result.VersionCheckSettings = new VersionCheckSettings() {
                                                         CheckAutomatically = false,

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using InterfaceFactory;
 using VirtualRadar.Interface;
@@ -197,7 +198,81 @@ namespace VirtualRadar.Library.Settings
         private void LoadTileServerSettings()
         {
             lock(_SyncLock) {
-                _TileServerSettings = _Storage.Load();
+                var settings = _Storage.Load();
+
+                AddDefaultLeafletTileServer(settings);
+                EnsureSingleDefaultIsPresent(settings, MapProvider.Leaflet);
+                FixupAttributions(settings);
+
+                _TileServerSettings = settings;
+            }
+        }
+
+        private void EnsureSingleDefaultIsPresent(List<TileServerSettings> results, MapProvider mapProvider)
+        {
+            var allDefaults = results.Where(r => r.MapProvider == mapProvider && r.IsDefault && !r.IsCustom).ToArray();
+            switch(allDefaults.Length) {
+                case 0:
+                    var nominated = results.OrderBy(r => (r.Name ?? "").ToLower()).FirstOrDefault(r => r.MapProvider == mapProvider && !r.IsCustom);
+                    if(nominated != null) {
+                        nominated.IsDefault = true;
+                    }
+                    break;
+                case 1:
+                    break;
+                default:
+                    foreach(var notDefault in allDefaults.OrderBy(r => (r.Name ?? "").ToLower()).Skip(1)) {
+                        notDefault.IsDefault = false;
+                    }
+                    break;
+            }
+        }
+
+        private void AddDefaultLeafletTileServer(List<TileServerSettings> results)
+        {
+            if(!results.Any(r => r.MapProvider == MapProvider.Leaflet)) {
+                results.Add(new TileServerSettings() {
+                    MapProvider =   MapProvider.Leaflet,
+                    Name =          "OpenStreetMap",
+                    IsDefault =     true,
+                    Url =           "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    Attribution =   "[c] [a href=http://www.openstreetmap.org/copyright]OpenStreetMap[/a]",
+                    ClassName =     "vrs-brightness-70",
+                    MaxZoom =       19,
+                });
+            }
+        }
+
+        static Regex _AttributionRegex = new Regex(@"\[attribution (?<name>.+?)\]");
+
+        private void FixupAttributions(List<TileServerSettings> allSettings)
+        {
+            foreach(var mapProvider in allSettings.Select(r => r.MapProvider).Distinct()) {
+                var providerSettings = allSettings.Where(r => r.MapProvider == mapProvider).ToArray();
+                foreach(var setting in providerSettings) {
+                    var usedNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    var completed = false;
+
+                    do {
+                        var match = _AttributionRegex.Match(setting.Attribution ?? "");
+                        completed = !match.Success;
+                        if(!completed) {
+                            var name = match.Groups["name"].Value ?? "";
+                            if(usedNames.Contains(name)) {
+                                throw new InvalidOperationException(String.Format("Found recursive reference to {0} when expanding attribute for {1} server {2}", name, mapProvider, setting.Name));
+                            }
+                            usedNames.Add(name);
+
+                            var otherSetting = providerSettings.FirstOrDefault(r => String.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase));
+                            if(otherSetting != null) {
+                                var buffer = new StringBuilder(setting.Attribution);
+                                buffer.Remove(match.Index, match.Length);
+                                buffer.Insert(match.Index, otherSetting.Attribution);
+                                setting.Attribution = buffer.ToString();
+                            }
+                        }
+                    } while(!completed);
+                }
             }
         }
 

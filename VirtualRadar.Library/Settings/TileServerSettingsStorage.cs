@@ -71,9 +71,6 @@ namespace VirtualRadar.Library.Settings
             LoadIfFileExists(result, DownloadedTileServerSettingsFileName, isCustom: false);
             LoadIfFileExists(result, CustomTileServerSettingsFileName, isCustom: true);
 
-            AddDefaultLeafletTileServer(result);
-            EnsureSingleDefaultIsPresent(result, MapProvider.Leaflet);
-
             return result;
         }
 
@@ -137,41 +134,6 @@ namespace VirtualRadar.Library.Settings
                     var log = Factory.Singleton.Resolve<ILog>().Singleton;
                     log.WriteLine("Caught exception parsing {0}: {1}", fullPath, ex.ToString());
                 }
-            }
-        }
-
-        private void EnsureSingleDefaultIsPresent(List<TileServerSettings> results, MapProvider mapProvider)
-        {
-            var allDefaults = results.Where(r => r.MapProvider == mapProvider && r.IsDefault && !r.IsCustom).ToArray();
-            switch(allDefaults.Length) {
-                case 0:
-                    var nominated = results.OrderBy(r => (r.Name ?? "").ToLower()).FirstOrDefault(r => r.MapProvider == mapProvider && !r.IsCustom);
-                    if(nominated != null) {
-                        nominated.IsDefault = true;
-                    }
-                    break;
-                case 1:
-                    break;
-                default:
-                    foreach(var notDefault in allDefaults.OrderBy(r => (r.Name ?? "").ToLower()).Skip(1)) {
-                        notDefault.IsDefault = false;
-                    }
-                    break;
-            }
-        }
-
-        private void AddDefaultLeafletTileServer(List<TileServerSettings> results)
-        {
-            if(!results.Any(r => r.MapProvider == MapProvider.Leaflet)) {
-                results.Add(new TileServerSettings() {
-                    MapProvider =   MapProvider.Leaflet,
-                    Name =          "OpenStreetMap",
-                    IsDefault =     true,
-                    Url =           "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                    Attribution =   "[c] [a href=http://www.openstreetmap.org/copyright]OpenStreetMap[/a]",
-                    ClassName =     "vrs-brightness-70",
-                    MaxZoom =       19,
-                });
             }
         }
 

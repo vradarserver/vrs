@@ -285,14 +285,14 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _UseGoogleMapsAPIKeyWithLocalRequests, value, () => UseGoogleMapsAPIKeyWithLocalRequests); }
         }
 
-        private string _OpenStreetMapTileServerUrl;
+        private string _TileServerSettingName;
         /// <summary>
-        /// Gets or sets the tile server to use when using the OpenStreetMap provider.
+        /// Gets or sets the name of the tile server setting to use with map providers that use tile servers.
         /// </summary>
-        public string OpenStreetMapTileServerUrl
+        public string TileServerSettingName
         {
-            get { return _OpenStreetMapTileServerUrl; }
-            set { SetField(ref _OpenStreetMapTileServerUrl, value, () => OpenStreetMapTileServerUrl); }
+            get { return _TileServerSettingName; }
+            set { SetField(ref _TileServerSettingName, value, () => TileServerSettingName); }
         }
 
         /// <summary>
@@ -335,6 +335,7 @@ namespace VirtualRadar.Interface.Settings
         /// </summary>
         public GoogleMapSettings()
         {
+            MapProvider = MapProvider.Leaflet;
             InitialMapLatitude = 51.47;
             InitialMapLongitude = -0.6;
             InitialMapType = "ROADMAP";
@@ -348,9 +349,6 @@ namespace VirtualRadar.Interface.Settings
             EnableMinifying = true;
             EnableCompression = true;
             PreferIataAirportCodes = true;
-
-            MapProvider = MapProvider.Leaflet;
-            OpenStreetMapTileServerUrl = @"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
         }
     }
 }

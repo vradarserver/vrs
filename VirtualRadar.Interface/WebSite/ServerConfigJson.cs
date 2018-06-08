@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Interface.WebSite
 {
@@ -171,11 +172,8 @@ namespace VirtualRadar.Interface.WebSite
         [DataMember]
         public string GoogleMapsApiKey { get; set; }
 
-        /// <summary>
-        /// Gets or sets the Leaflet-compatible URL for the OpenStreetMap tile server to use.
-        /// </summary>
         [DataMember]
-        public string OpenStreetMapTileServerUrl { get; set; }
+        public TileServerSettings TileServerSettings { get; set; }
 
         /// <summary>
         /// Creates a new object.
@@ -213,9 +211,9 @@ namespace VirtualRadar.Interface.WebSite
             result.IsLocalAddress = IsLocalAddress;
             result.IsMono = IsMono;
             result.MinimumRefreshSeconds = MinimumRefreshSeconds;
-            result.OpenStreetMapTileServerUrl = OpenStreetMapTileServerUrl;
             result.RefreshSeconds = RefreshSeconds;
             result.Receivers.AddRange(Receivers.Select(r => (ServerReceiverJson)r.Clone()));
+            result.TileServerSettings = TileServerSettings;
             result.UseMarkerLabels = UseMarkerLabels;
             result.VrsVersion = VrsVersion;
 

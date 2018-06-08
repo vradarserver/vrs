@@ -1045,51 +1045,107 @@ var VRS;
         };
         MapPlugin.prototype.open = function (userOptions) {
             var _this = this;
-            var mapOptions = $.extend({}, userOptions, {
-                zoom: this.options.zoom,
-                center: this.options.center,
-                mapTypeControl: this.options.showMapTypeControl,
-                mapTypeId: this.options.mapTypeId,
-                streetViewControl: this.options.streetViewControl,
-                scrollwheel: this.options.scrollwheel,
-                scaleControl: this.options.scaleControl,
-                draggable: this.options.draggable,
-                showHighContrast: this.options.showHighContrast,
-                controlStyle: this.options.controlStyle,
-                controlPosition: this.options.controlPosition,
-                mapControls: this.options.mapControls
-            });
-            if (this.options.useStateOnOpen) {
-                var settings = this.loadState();
-                mapOptions.zoom = settings.zoom;
-                mapOptions.center = settings.center;
-                mapOptions.mapTypeId = settings.mapTypeId;
+            var tileServerSettings = VRS.serverConfig.get().TileServerSettings;
+            if (tileServerSettings) {
+                var mapOptions = $.extend({}, userOptions, {
+                    zoom: this.options.zoom,
+                    center: this.options.center,
+                    mapTypeControl: this.options.showMapTypeControl,
+                    mapTypeId: this.options.mapTypeId,
+                    streetViewControl: this.options.streetViewControl,
+                    scrollwheel: this.options.scrollwheel,
+                    scaleControl: this.options.scaleControl,
+                    draggable: this.options.draggable,
+                    showHighContrast: this.options.showHighContrast,
+                    controlStyle: this.options.controlStyle,
+                    controlPosition: this.options.controlPosition,
+                    mapControls: this.options.mapControls
+                });
+                if (this.options.useStateOnOpen) {
+                    var settings = this.loadState();
+                    mapOptions.zoom = settings.zoom;
+                    mapOptions.center = settings.center;
+                    mapOptions.mapTypeId = settings.mapTypeId;
+                }
+                mapOptions.zoom = this._normaliseZoom(mapOptions.zoom, tileServerSettings.MinZoom, tileServerSettings.MaxZoom);
+                var leafletOptions = {
+                    attributionControl: true,
+                    zoom: mapOptions.zoom,
+                    center: VRS.leafletUtilities.toLeafletLatLng(mapOptions.center),
+                    scrollWheelZoom: mapOptions.scrollwheel,
+                    dragging: mapOptions.draggable,
+                    zoomControl: mapOptions.scaleControl
+                };
+                var state = this._getState();
+                state.map = L.map(state.mapContainer[0], leafletOptions);
+                var tileServerOptions = this._buildTileServerOptions(tileServerSettings);
+                state.tileLayer = L.tileLayer(tileServerSettings.Url, tileServerOptions);
+                state.tileLayer.addTo(state.map);
+                this._hookEvents(state, true);
+                var waitUntilReady = function () {
+                    if (_this.options.waitUntilReady && !_this.isReady()) {
+                        setTimeout(waitUntilReady, 100);
+                    }
+                    else {
+                        if (_this.options.afterOpen)
+                            _this.options.afterOpen(_this);
+                    }
+                };
+                waitUntilReady();
             }
-            var leafletOptions = {
-                attributionControl: true,
-                zoom: mapOptions.zoom,
-                center: VRS.leafletUtilities.toLeafletLatLng(mapOptions.center),
-                scrollWheelZoom: mapOptions.scrollwheel,
-                dragging: mapOptions.draggable,
-                zoomControl: mapOptions.scaleControl
+        };
+        MapPlugin.prototype._buildTileServerOptions = function (settings) {
+            var result = {
+                attribution: this._attributionToHtml(settings.Attribution),
+                detectRetina: settings.DetectRetina,
+                zoomReverse: settings.ZoomReverse,
             };
-            var state = this._getState();
-            state.map = L.map(state.mapContainer[0], leafletOptions);
-            state.tileLayer = L.tileLayer(VRS.serverConfig.get().OpenStreetMapTileServerUrl, {
-                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a></a>',
-                className: 'vrs-leaflet-tile-layer'
-            }).addTo(state.map);
-            this._hookEvents(state, true);
-            var waitUntilReady = function () {
-                if (_this.options.waitUntilReady && !_this.isReady()) {
-                    setTimeout(waitUntilReady, 100);
+            if (settings.ClassName) {
+                result.className = settings.ClassName;
+            }
+            if (settings.MaxNativeZoom !== null && settings.MaxNativeZoom !== undefined) {
+                result.maxNativeZoom = settings.MaxNativeZoom;
+            }
+            if (settings.MinNativeZoom !== null && settings.MinNativeZoom !== undefined) {
+                result.minNativeZoom = settings.MinNativeZoom;
+            }
+            if (settings.MaxZoom !== null && settings.MaxZoom !== undefined) {
+                result.maxZoom = settings.MaxZoom;
+            }
+            if (settings.MinZoom !== null && settings.MinZoom !== undefined) {
+                result.minZoom = settings.MinZoom;
+            }
+            if (settings.Subdomains !== null && settings.Subdomains !== undefined) {
+                result.subdomains = settings.Subdomains;
+            }
+            if (settings.ZoomOffset !== null && settings.ZoomOffset !== undefined) {
+                result.zoomOffset = settings.ZoomOffset;
+            }
+            var countExpandos = settings.ExpandoOptions === null || settings.ExpandoOptions === undefined ? 0 : settings.ExpandoOptions.length;
+            for (var i = 0; i < countExpandos; ++i) {
+                var expando = settings.ExpandoOptions[i];
+                result[expando.Option] = expando.Value;
+            }
+            return result;
+        };
+        MapPlugin.prototype._attributionToHtml = function (attribution) {
+            var result = VRS.stringUtility.htmlEscape(attribution);
+            result = result.replace(/\[c\]/g, '&copy;');
+            result = result.replace(/\[\/a\]/g, '</a>');
+            result = result.replace(/\[a href=(.+?)\]/g, '<a href="$1">');
+            return result;
+        };
+        MapPlugin.prototype._normaliseZoom = function (zoom, minZoom, maxZoom) {
+            var result = zoom;
+            if (result !== undefined && result !== null) {
+                if (minZoom !== undefined && minZoom !== null && result < minZoom) {
+                    result = minZoom;
                 }
-                else {
-                    if (_this.options.afterOpen)
-                        _this.options.afterOpen(_this);
+                if (maxZoom !== undefined && maxZoom !== null && result > maxZoom) {
+                    result = maxZoom;
                 }
-            };
-            waitUntilReady();
+            }
+            return result;
         };
         MapPlugin.prototype._userNotIdle = function () {
             if (VRS.timeoutManager)

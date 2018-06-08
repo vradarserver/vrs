@@ -2744,8 +2744,8 @@ Show this message.</value>
     <value>Leaflet</value>
     <comment>This is the name of an internet map provider, no need to translate</comment>
   </data>
-  <data name="TileServerUrl" xml:space="preserve">
-    <value>Tile server URL</value>
+  <data name="TileServer" xml:space="preserve">
+    <value>Tile server</value>
     <comment>"Tile Server" refers to map tiles, square images joined together to form a map.</comment>
   </data>
   <data name="SplashScreenInitialisingTileServerSettingsManager" xml:space="preserve">

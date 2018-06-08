@@ -105,7 +105,6 @@ namespace VirtualRadar.WebSite
                     IsMono = isMono,
                     UseMarkerLabels = isMono ? configuration.MonoSettings.UseMarkerLabels : false,
                     MinimumRefreshSeconds = configuration.GoogleMapSettings.MinimumRefreshSeconds,
-                    OpenStreetMapTileServerUrl = configuration.GoogleMapSettings.OpenStreetMapTileServerUrl,
                     RefreshSeconds = configuration.GoogleMapSettings.InitialRefreshSeconds,
                     VrsVersion = applicationInformation.ShortVersion,
                 };
@@ -126,6 +125,13 @@ namespace VirtualRadar.WebSite
                         HasPolarPlot = false,
                     });
                 }
+
+                var tileServerSettingsManager = Factory.Singleton.Resolve<ITileServerSettingsManager>().Singleton;
+                _ServerConfigJson.TileServerSettings = tileServerSettingsManager.GetTileServerSettings(
+                    configuration.GoogleMapSettings.MapProvider,
+                    configuration.GoogleMapSettings.TileServerSettingName,
+                    fallbackToDefaultIfMissing: true
+                );
             }
         }
 

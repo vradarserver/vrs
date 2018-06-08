@@ -49,7 +49,6 @@ namespace Test.VirtualRadar.Interface.WebSite
             TestUtilities.TestProperty(json, r => r.IsLocalAddress, false);
             TestUtilities.TestProperty(json, r => r.IsMono, false);
             TestUtilities.TestProperty(json, r => r.MinimumRefreshSeconds, 0, 123);
-            TestUtilities.TestProperty(json, r => r.OpenStreetMapTileServerUrl, null, "Abc");
             TestUtilities.TestProperty(json, r => r.RefreshSeconds, 0, 123);
             TestUtilities.TestProperty(json, r => r.UseMarkerLabels, false);
             TestUtilities.TestProperty(json, r => r.VrsVersion, null, "Abc");
@@ -84,7 +83,6 @@ namespace Test.VirtualRadar.Interface.WebSite
                         case "IsLocalAddress":                          expected = json.IsLocalAddress = pass == 0; break;
                         case "IsMono":                                  expected = json.IsMono = pass == 0; break;
                         case "MinimumRefreshSeconds":                   expected = json.MinimumRefreshSeconds = pass == 0 ? 1 : 2; break;
-                        case "OpenStreetMapTileServerUrl":              expected = json.OpenStreetMapTileServerUrl = pass == 0 ? "A" : "B"; break;
                         case "RefreshSeconds":                          expected = json.RefreshSeconds = pass == 0 ? 1 : 2; break;
                         case "UseMarkerLabels":                         expected = json.UseMarkerLabels = pass == 0; break;
                         case "VrsVersion":                              expected = json.VrsVersion = pass == 0 ? "A" : "B"; break;

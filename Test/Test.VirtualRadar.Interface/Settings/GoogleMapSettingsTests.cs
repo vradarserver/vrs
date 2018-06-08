@@ -63,7 +63,7 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.GoogleMapsApiKey, null, "Key");
             TestUtilities.TestProperty(settings, r => r.UseGoogleMapsAPIKeyWithLocalRequests, false);
             TestUtilities.TestProperty(settings, r => r.MapProvider, MapProvider.Leaflet, MapProvider.GoogleMaps);
-            TestUtilities.TestProperty(settings, r => r.OpenStreetMapTileServerUrl, null, "A url");
+            TestUtilities.TestProperty(settings, r => r.TileServerSettingName, null, "Abc");
         }
     }
 }
