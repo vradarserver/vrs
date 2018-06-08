@@ -155,10 +155,6 @@ body.wait .modal {
 /*endregion */
 
 /*region leaflet overrides */
-.vrs-leaflet-tile-layer {
-    filter: brightness(70%);
-}
-
 .leaflet-tooltip.markerLabel {
     padding: 0px;
     background-image: url('../images/markerLabelBackground.png');
@@ -198,6 +194,23 @@ body.wait .modal {
 .leaflet-control > .vrsMenu {
     margin-top: -8px;
 }
+/*endregion*/
+
+/*region filters */
+.vrs-brightness-10 { filter: brightness(10%); }
+.vrs-brightness-20 { filter: brightness(20%); }
+.vrs-brightness-30 { filter: brightness(30%); }
+.vrs-brightness-40 { filter: brightness(40%); }
+.vrs-brightness-50 { filter: brightness(50%); }
+.vrs-brightness-60 { filter: brightness(60%); }
+.vrs-brightness-70 { filter: brightness(70%); }
+.vrs-brightness-80 { filter: brightness(80%); }
+.vrs-brightness-90 { filter: brightness(90%); }
+.vrs-brightness-110 { filter: brightness(110%); }
+.vrs-brightness-120 { filter: brightness(120%); }
+.vrs-brightness-130 { filter: brightness(130%); }
+.vrs-brightness-140 { filter: brightness(140%); }
+.vrs-brightness-150 { filter: brightness(150%); }
 /*endregion*/
 
 /*region icoMoon icons */

@@ -184,6 +184,9 @@
     <Compile Include="Settings\SavedPolarPlotStorage.cs" />
     <Compile Include="Settings\SharedConfiguration.cs" />
     <Compile Include="Settings\SiteSettingsParser.cs" />
+    <Compile Include="Settings\TileServerSettingsDownloader.cs" />
+    <Compile Include="Settings\TileServerSettingsManager.cs" />
+    <Compile Include="Settings\TileServerSettingsStorage.cs" />
     <Compile Include="SimpleAircraftList.cs" />
     <Compile Include="Statistics.cs" />
     <Compile Include="Network\TcpConnectionStateService.cs" />

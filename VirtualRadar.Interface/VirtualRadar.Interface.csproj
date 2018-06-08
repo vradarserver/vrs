@@ -145,7 +145,11 @@
     <Compile Include="IStandaloneAircraftOnlineLookupCache.cs" />
     <Compile Include="Listener\IMergedFeedComponentListener.cs" />
     <Compile Include="Presenter\IBackgroundThreadQueuesPresenter.cs" />
+    <Compile Include="Settings\ITileServerSettingsDownloader.cs" />
+    <Compile Include="Settings\ITileServerSettingsManager.cs" />
+    <Compile Include="Settings\ITileServerSettingsStorage.cs" />
     <Compile Include="Settings\MapProvider.cs" />
+    <Compile Include="Settings\TileServerSettings.cs" />
     <Compile Include="Settings\MergedFeedReceiver.cs" />
     <Compile Include="Settings\ReceiverUsage.cs" />
     <Compile Include="StandingData\EnginePlacement.cs" />
