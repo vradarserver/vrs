@@ -1124,7 +1124,7 @@ var VRS;
             var countExpandos = settings.ExpandoOptions === null || settings.ExpandoOptions === undefined ? 0 : settings.ExpandoOptions.length;
             for (var i = 0; i < countExpandos; ++i) {
                 var expando = settings.ExpandoOptions[i];
-                result[expando.Option] = expando.Value;
+                result[expando.Option] = VRS.stringUtility.htmlEscape(expando.Value);
             }
             return result;
         };
