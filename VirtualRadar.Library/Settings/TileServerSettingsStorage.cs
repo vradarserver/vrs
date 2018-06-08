@@ -147,7 +147,7 @@ namespace VirtualRadar.Library.Settings
                 Directory.CreateDirectory(folder);
             }
 
-            File.WriteAllText(Path.Combine(folder, ReadMeFileName), Strings.TileServerSettings_ReadMe);
+            File.WriteAllText(Path.Combine(folder, ReadMeFileName), Strings.TileServerSettings_ReadMe.Replace("\r\n", Environment.NewLine));
         }
     }
 }
