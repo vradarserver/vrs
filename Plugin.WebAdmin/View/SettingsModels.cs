@@ -57,6 +57,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public EnumModel[] HeightUnits { get; private set; }
 
+        public EnumModel[] MapProviders { get; private set; }
+
         public EnumModel[] Parities { get; private set; }
 
         public EnumModel[] ProxyTypes { get; private set; }
@@ -73,6 +75,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public string[] VoiceNames { get; set; }
 
+        public string[] TileServerSettingNames { get; set; }
+
         public ViewModel()
         {
             Configuration = new ConfigurationModel();
@@ -86,6 +90,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             DistanceUnits =         EnumModel.CreateFromEnum<DistanceUnit>(r => Describe.DistanceUnit(r));
             Handshakes =            EnumModel.CreateFromEnum<Handshake>(r => Describe.Handshake(r));
             HeightUnits =           EnumModel.CreateFromEnum<HeightUnit>(r => Describe.HeightUnit(r));
+            MapProviders =          EnumModel.CreateFromEnum<MapProvider>(r => Describe.MapProvider(r));
             Parities =              EnumModel.CreateFromEnum<Parity>(r => Describe.Parity(r));
             ProxyTypes =            EnumModel.CreateFromEnum<ProxyType>(r => Describe.ProxyType(r));
             RebroadcastFormats =    rebroadcastFormatManager.GetRegisteredFormats();
@@ -95,6 +100,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
             ComPortNames = new string[]{};
             VoiceNames = new string[]{};
+            TileServerSettingNames = new string[]{};
         }
 
         public object FindViewModelForRecord(ValidationResult validationResult)
@@ -526,6 +532,10 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public bool UseGoogleMapsAPIKeyWithLocalRequests { get; set; }
 
+        public int MapProvider { get; set; }                // MapProvider
+
+        public string TileServerSettingName { get; set; }
+
         public GoogleMapSettingsModel()
         {
         }
@@ -561,6 +571,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             AllowCorsDomains =                      settings.AllowCorsDomains;
             GoogleMapsApiKey =                      settings.GoogleMapsApiKey;
             UseGoogleMapsAPIKeyWithLocalRequests =  settings.UseGoogleMapsAPIKeyWithLocalRequests;
+            MapProvider =                           (int)settings.MapProvider;
+            TileServerSettingName =                 settings.TileServerSettingName;
         }
 
         public GoogleMapSettings CopyToSettings(GoogleMapSettings settings)
@@ -589,6 +601,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             settings.AllowCorsDomains =                     AllowCorsDomains;
             settings.GoogleMapsApiKey =                     GoogleMapsApiKey;
             settings.UseGoogleMapsAPIKeyWithLocalRequests = UseGoogleMapsAPIKeyWithLocalRequests;
+            settings.MapProvider =                          EnumModel.CastFromInt<MapProvider>(MapProvider);
+            settings.TileServerSettingName =                TileServerSettingName;
 
             return settings;
         }

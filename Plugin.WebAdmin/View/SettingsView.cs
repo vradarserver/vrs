@@ -83,6 +83,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
             _ViewModel.ComPortNames = _Presenter.GetSerialPortNames().ToArray();
             _ViewModel.VoiceNames = _Presenter.GetVoiceNames().ToArray();
+            _ViewModel.TileServerSettingNames = _Presenter.GetTileServerSettingNames().ToArray();
 
             return DialogResult.OK;
         }

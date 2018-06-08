@@ -39,6 +39,37 @@
                                     <div class="pull-right" data-bsu="validate-icons" data-bsu-field="WrapUpValidation"></div>
                                 </div>
                                 <div class="form-horizontal">
+                                    <div class="form-section">
+                                        ::MapProviderTitle::
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-4">::MapProvider:::</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-control" data-bind="options: $root.MapProviders, optionsText: 'Description', optionsValue: 'Value', value: $root.GoogleMapSettings.MapProvider"></select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-4">::TileServer:::</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-control" data-bind="options: $root.TileServerSettingNames, value: $root.GoogleMapSettings.TileServerSettingName"></select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-4">::GoogleMapsAPIKey:::</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" data-bind="textInput: $root.GoogleMapSettings.GoogleMapsApiKey" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
+                                            <label>
+                                                <input type="checkbox" data-bind="checked: $root.GoogleMapSettings.UseGoogleMapsAPIKeyWithLocalRequests" />
+                                                ::UseGoogleMapsKeyWithLocalRequests::
+                                            </label>
+                                        </div>
+                                    </div>
+
                                     <div class="form-group" data-bsu="field-validate" data-bsu-field="DatabaseFileNameValidation">
                                         <label class="col-sm-4">::DatabaseFileName:::</label>
                                         <div class="col-sm-8">
@@ -1305,20 +1336,6 @@
                                         <label class="col-sm-4">::DirectoryEntryKey:::</label>
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control" data-bind="textInput: DirectoryEntryKey" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-4">::GoogleMapsAPIKey:::</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control" data-bind="textInput: GoogleMapsApiKey" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="col-sm-offset-4 col-sm-8 checkbox">
-                                            <label>
-                                                <input type="checkbox" data-bind="checked: UseGoogleMapsAPIKeyWithLocalRequests" />
-                                                ::UseGoogleMapsKeyWithLocalRequests::
-                                            </label>
                                         </div>
                                     </div>
                                 </div>

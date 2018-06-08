@@ -334,7 +334,7 @@ namespace VirtualRadar.Library.Presenter
         }
         #endregion
 
-        #region Source Helpers - GetSerialPortNames, GetVoiceNames
+        #region Source Helpers - GetSerialPortNames, GetVoiceNames, GetTileServerSettingNames
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -351,6 +351,24 @@ namespace VirtualRadar.Library.Presenter
         public IEnumerable<string> GetVoiceNames()
         {
             return Provider.GetVoiceNames();
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> GetTileServerSettingNames()
+        {
+            var manager = Factory.Singleton.Resolve<ITileServerSettingsManager>().Singleton;
+            var result = manager.GetAllTileServerSettings(MapProvider.Leaflet)
+                .OrderBy(r => r.IsDefault && !r.IsCustom ? 0 : 1)
+                .ThenBy(r => !r.IsCustom ? 0 : 1)
+                .ThenBy(r => r.DisplayOrder)
+                .ThenBy(r => (r.Name ?? "").ToLower())
+                .Select(r => r.Name)
+                .ToArray();
+
+            return result;
         }
         #endregion
 

@@ -35,7 +35,6 @@ declare module VirtualRadar.Plugin.WebAdmin.View {
         FormattedBuildDate: string;
         Copyright: string;
         Description: string;
-        ConfigurationFolder: string;
         IsMono: boolean;
         Is64BitProcess: boolean;
     }
@@ -130,6 +129,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         DistanceUnits: VirtualRadar.Interface.View.IEnumModel[];
         Handshakes: VirtualRadar.Interface.View.IEnumModel[];
         HeightUnits: VirtualRadar.Interface.View.IEnumModel[];
+        MapProviders: VirtualRadar.Interface.View.IEnumModel[];
         Parities: VirtualRadar.Interface.View.IEnumModel[];
         ProxyTypes: VirtualRadar.Interface.View.IEnumModel[];
         RebroadcastFormats: VirtualRadar.Interface.Network.IRebroadcastFormatName[];
@@ -138,6 +138,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         StopBits: VirtualRadar.Interface.View.IEnumModel[];
         ComPortNames: string[];
         VoiceNames: string[];
+        TileServerSettingNames: string[];
     }
     interface IConfigurationModel {
         DataVersion: number;
@@ -224,6 +225,8 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         AllowCorsDomainsValidation: VirtualRadar.Interface.View.IValidationModelField;
         GoogleMapsApiKey: string;
         UseGoogleMapsAPIKeyWithLocalRequests: boolean;
+        MapProvider: number;
+        TileServerSettingName: string;
     }
     interface IInternetClientSettingsModel {
         CanRunReports: boolean;
@@ -514,7 +517,6 @@ declare module VirtualRadar.Plugin.WebAdmin.View {
         FormattedBuildDate: KnockoutObservable<string>;
         Copyright: KnockoutObservable<string>;
         Description: KnockoutObservable<string>;
-        ConfigurationFolder: KnockoutObservable<string>;
         IsMono: KnockoutObservable<boolean>;
         Is64BitProcess: KnockoutObservable<boolean>;
     }
@@ -609,6 +611,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         DistanceUnits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         Handshakes: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         HeightUnits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
+        MapProviders: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         Parities: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         ProxyTypes: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         RebroadcastFormats: KnockoutViewModelArray<VirtualRadar.Interface.Network.IRebroadcastFormatName_KO>;
@@ -617,6 +620,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         StopBits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         ComPortNames: KnockoutViewModelArray<string>;
         VoiceNames: KnockoutViewModelArray<string>;
+        TileServerSettingNames: KnockoutViewModelArray<string>;
     }
     interface IConfigurationModel_KO {
         DataVersion: KnockoutObservable<number>;
@@ -703,6 +707,8 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         AllowCorsDomainsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         GoogleMapsApiKey: KnockoutObservable<string>;
         UseGoogleMapsAPIKeyWithLocalRequests: KnockoutObservable<boolean>;
+        MapProvider: KnockoutObservable<number>;
+        TileServerSettingName: KnockoutObservable<string>;
     }
     interface IInternetClientSettingsModel_KO {
         CanRunReports: KnockoutObservable<boolean>;
