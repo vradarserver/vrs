@@ -191,7 +191,7 @@ namespace VirtualRadar.Library.Network
             var result = !connector.UseKeepAlive;
             if(result) {
                 var elapsed = now - (_LastNetworkActivity == DateTime.MinValue ? Created : _LastNetworkActivity);
-                result = elapsed.Milliseconds >= connector.IdleTimeout;
+                result = elapsed.TotalMilliseconds >= connector.IdleTimeout;
             }
 
             return result;
