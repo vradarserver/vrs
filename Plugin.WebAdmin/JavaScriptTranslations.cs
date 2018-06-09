@@ -96,11 +96,11 @@ namespace VirtualRadar.Plugin.WebAdmin
                     builder.AppendLine(@"        culture: function() {");
                     builder.AppendLine(@"            return {");
                     builder.AppendLine(@"                numberFormat: {");
-                    builder.AppendLine(String.Format(@"                    name: '{0}',", cultureInfo.Name));
-                    builder.AppendLine(String.Format(@"                    groupSizes: [{0}],", String.Join(", ", cultureInfo.NumberFormat.NumberGroupSizes.Select(r => r.ToString(CultureInfo.InvariantCulture)).ToArray())));
-                    builder.AppendLine(String.Format(@"                    ',': '{0}',", cultureInfo.NumberFormat.CurrencyGroupSeparator));
-                    builder.AppendLine(String.Format(@"                    '.': '{0}',", cultureInfo.NumberFormat.CurrencyDecimalSeparator));
-                    builder.AppendLine(String.Format(@"                    pattern: ['{0}']", NegativePattern(cultureInfo.NumberFormat.NumberNegativePattern)));
+                    builder.AppendLine(String.Format(@"                    name: '{0}',", Escape(cultureInfo.Name)));
+                    builder.AppendLine(String.Format(@"                    groupSizes: [{0}],", Escape(String.Join(", ", cultureInfo.NumberFormat.NumberGroupSizes.Select(r => r.ToString(CultureInfo.InvariantCulture)).ToArray()))));
+                    builder.AppendLine(String.Format(@"                    ',': '{0}',", Escape(cultureInfo.NumberFormat.CurrencyGroupSeparator)));
+                    builder.AppendLine(String.Format(@"                    '.': '{0}',", Escape(cultureInfo.NumberFormat.CurrencyDecimalSeparator)));
+                    builder.AppendLine(String.Format(@"                    pattern: ['{0}']", Escape(NegativePattern(cultureInfo.NumberFormat.NumberNegativePattern))));
                     builder.AppendLine(@"                }");
                     builder.AppendLine(@"            };");
                     builder.AppendLine(@"        }");
@@ -116,6 +116,11 @@ namespace VirtualRadar.Plugin.WebAdmin
         {
             var patterns = new string[] { "(n)", "-n", "- n", "n-", "n -" };
             return patterns[patternIndex];
+        }
+
+        private static string Escape(string text, char quoteChar = '\'')
+        {
+            return String.IsNullOrEmpty(text) ? text : quoteChar == '"' ? text.Replace("\"", "\\\"") : text.Replace("'", "\\'");
         }
     }
 }
