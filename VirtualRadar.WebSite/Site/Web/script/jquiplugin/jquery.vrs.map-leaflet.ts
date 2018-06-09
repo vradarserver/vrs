@@ -10,7 +10,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @fileoverview A jQuery UI plugin that wraps OpenStreetMap.
+ * @fileoverview A jQuery UI plugin that wraps Leaflet maps.
  */
 namespace VRS
 {
@@ -229,7 +229,7 @@ namespace VRS
     jQueryUIHelper.getMapOptions = (overrides: IMapOptions) : IMapOptions =>
     {
         return $.extend({
-            // OpenStreetMap load options - THESE ONLY HAVE ANY EFFECT ON THE FIRST MAP LOADED ON A PAGE
+            // Google Maps options, these are ignored
             key:                null,                                   // Unused
             version:            '',                                     // Unused
             sensor:             false,                                  // Unused
@@ -1218,7 +1218,7 @@ namespace VRS
     }
 
     /**
-     * A jQuery plugin that wraps the OpenStreetMap map.
+     * A jQuery plugin that wraps Leaflet maps.
      */
     class MapPlugin extends JQueryUICustomWidget implements IMap
     {
@@ -1779,7 +1779,7 @@ namespace VRS
 
         private _persistenceKey() : string
         {
-            return 'vrsOpenStreetMapState-' + (this.options.name || 'default');
+            return 'vrsMapState-' + (this.options.name || 'default');
         }
 
         private _createSettings() : IMapSaveState

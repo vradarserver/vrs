@@ -1203,7 +1203,7 @@ var VRS;
             this.applyState(this.loadState());
         };
         MapPlugin.prototype._persistenceKey = function () {
-            return 'vrsOpenStreetMapState-' + (this.options.name || 'default');
+            return 'vrsMapState-' + (this.options.name || 'default');
         };
         MapPlugin.prototype._createSettings = function () {
             var state = this._getState();
