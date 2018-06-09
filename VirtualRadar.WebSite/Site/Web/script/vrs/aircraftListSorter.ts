@@ -231,7 +231,7 @@ namespace VRS
     VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.Mlat] = new VRS.AircraftListSortHandler({
         field:              VRS.AircraftListSortableField.Mlat,
         labelKey:           'Mlat',
-        getNumberCallback:  function(aircraft) { return aircraft.isMlat.val === undefined ? 0 : aircraft.isMlat ? 1 : 2; }
+        getNumberCallback:  function(aircraft) { return aircraft.isMlat.val === undefined ? 0 : aircraft.isMlat.val ? 1 : 2; }
     });
 
     VRS.aircraftListSortHandlers[VRS.AircraftListSortableField.Model] = new VRS.AircraftListSortHandler({
