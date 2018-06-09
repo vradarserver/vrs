@@ -329,6 +329,10 @@ namespace VirtualRadar.Plugin.DatabaseEditor
                         if(json.Aircraft.OperatorFlagCode != null)  json.Aircraft.OperatorFlagCode = json.Aircraft.OperatorFlagCode.ToUpper();
                         json.Aircraft.LastModified = DateTime.Now;
 
+                        if(json.Aircraft.UserString1 == "Missing") {
+                            json.Aircraft.UserString1 = null;
+                        }
+
                         if(json.Aircraft.AircraftID == 0) {
                             _BaseStationDatabase.InsertAircraft(json.Aircraft);
                         } else {
