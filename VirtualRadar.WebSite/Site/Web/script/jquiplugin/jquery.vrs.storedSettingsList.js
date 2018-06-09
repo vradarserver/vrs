@@ -114,6 +114,7 @@ var VRS;
             return result;
         };
         StoredSettingsList.prototype._buildKeysTable = function (state) {
+            var _this = this;
             state.keysContainer.empty();
             var statistics = $('<table/>')
                 .addClass('statistics')
@@ -128,10 +129,9 @@ var VRS;
                 .appendTo(state.keysContainer);
             var hasContent = false;
             var keys = VRS.configStorage.getAllVirtualRadarKeys().sort();
-            $.each(keys, function () {
-                var _this = this;
+            $.each(keys, function (idx, key) {
                 hasContent = true;
-                var keyName = String(this);
+                var keyName = String(key);
                 var listItem = $('<li/>')
                     .text(keyName)
                     .click(function () { return _this._keyClicked(keyName); })
