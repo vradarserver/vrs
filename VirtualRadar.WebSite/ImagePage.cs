@@ -468,8 +468,10 @@ namespace VirtualRadar.WebSite
                         if(File.Exists(fullPath)) {
                             result = ImageFileManager.LoadFromFile(fullPath);
 
-                            if(result.Width != width)   result = _Graphics.UseImage(result, _Graphics.WidenImage(result, width, true));
-                            if(result.Height != height) result = _Graphics.UseImage(result, _Graphics.HeightenImage(result, height, true));
+                            if(result != null) {
+                                if(result.Width != width)   result = _Graphics.UseImage(result, _Graphics.WidenImage(result, width, true));
+                                if(result.Height != height) result = _Graphics.UseImage(result, _Graphics.HeightenImage(result, height, true));
+                            }
 
                             break;
                         }
