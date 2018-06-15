@@ -322,6 +322,21 @@ namespace VRS
             this.hookEvents(true);
         }
 
+        destroy()
+        {
+            if(this.labelTooltip) {
+                this.setLabelVisible(false);
+                this.labelTooltip = null;
+            }
+
+            this.hookEvents(false);
+            this.setVisible(false);
+            this.mapPlugin = null;
+            this.marker = null;
+            this.map = null;
+            this.tag = null;
+        }
+
         hookEvents(hook: boolean)
         {
             if(this._eventsHooked !== hook) {
@@ -1846,12 +1861,7 @@ namespace VRS
             var state = this._getState();
             var marker = <MapMarker>this.getMarker(idOrMarker);
             if(marker) {
-                marker.hookEvents(false);
-                marker.setVisible(false);
-                marker.mapPlugin = null;
-                marker.marker = null;
-                marker.map = null;
-                marker.tag = null;
+                marker.destroy();
                 delete state.markers[marker.id];
                 marker.id = null;
             }

@@ -225,6 +225,18 @@ var VRS;
             }
             this.hookEvents(true);
         }
+        MapMarker.prototype.destroy = function () {
+            if (this.labelTooltip) {
+                this.setLabelVisible(false);
+                this.labelTooltip = null;
+            }
+            this.hookEvents(false);
+            this.setVisible(false);
+            this.mapPlugin = null;
+            this.marker = null;
+            this.map = null;
+            this.tag = null;
+        };
         MapMarker.prototype.hookEvents = function (hook) {
             if (this._eventsHooked !== hook) {
                 this._eventsHooked = hook;
@@ -1258,12 +1270,7 @@ var VRS;
             var state = this._getState();
             var marker = this.getMarker(idOrMarker);
             if (marker) {
-                marker.hookEvents(false);
-                marker.setVisible(false);
-                marker.mapPlugin = null;
-                marker.marker = null;
-                marker.map = null;
-                marker.tag = null;
+                marker.destroy();
                 delete state.markers[marker.id];
                 marker.id = null;
             }
