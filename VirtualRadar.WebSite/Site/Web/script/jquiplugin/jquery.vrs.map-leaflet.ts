@@ -1649,6 +1649,12 @@ namespace VRS
 
                 this._hookEvents(state, true);
 
+                if(mapOptions.mapControls) {
+                    $.each(mapOptions.mapControls, (idx, ctrl) => {
+                        this.addControl(ctrl.control, ctrl.position);
+                    });
+                }
+
                 var waitUntilReady = () => {
                     if(this.options.waitUntilReady && !this.isReady()) {
                         setTimeout(waitUntilReady, 100);

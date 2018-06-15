@@ -1094,6 +1094,11 @@ var VRS;
                 state.tileLayer = L.tileLayer(tileServerSettings.Url, tileServerOptions);
                 state.tileLayer.addTo(state.map);
                 this._hookEvents(state, true);
+                if (mapOptions.mapControls) {
+                    $.each(mapOptions.mapControls, function (idx, ctrl) {
+                        _this.addControl(ctrl.control, ctrl.position);
+                    });
+                }
                 var waitUntilReady = function () {
                     if (_this.options.waitUntilReady && !_this.isReady()) {
                         setTimeout(waitUntilReady, 100);
