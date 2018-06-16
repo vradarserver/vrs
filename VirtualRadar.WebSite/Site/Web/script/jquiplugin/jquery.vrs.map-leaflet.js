@@ -284,11 +284,14 @@ var VRS;
             }
         };
         MapMarker.prototype.getTooltip = function () {
-            var tooltip = this.marker.getTooltip();
-            return tooltip ? VRS.leafletUtilities.fromLeafletContent(tooltip.getContent()) : null;
+            var icon = this.marker.getElement();
+            return icon ? icon.title : null;
         };
-        MapMarker.prototype.setTooltip = function (tooltip) {
-            this.marker.setTooltipContent(tooltip);
+        MapMarker.prototype.setTooltip = function (text) {
+            var icon = this.marker.getElement();
+            if (icon) {
+                icon.title = text;
+            }
         };
         MapMarker.prototype.getVisible = function () {
             return this.visible;

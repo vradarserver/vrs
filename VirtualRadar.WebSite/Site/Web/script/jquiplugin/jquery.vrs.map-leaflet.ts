@@ -421,16 +421,19 @@ namespace VRS
          */
         getTooltip() : string
         {
-            var tooltip = this.marker.getTooltip();
-            return tooltip ? VRS.leafletUtilities.fromLeafletContent(tooltip.getContent()) : null;
+            var icon = this.marker.getElement();
+            return icon ? icon.title : null;
         }
 
         /**
          * Sets the tooltip for the marker.
          */
-        setTooltip(tooltip: string)
+        setTooltip(text: string)
         {
-            this.marker.setTooltipContent(tooltip);
+            var icon = this.marker.getElement();
+            if(icon) {
+                icon.title = text;
+            }
         }
 
         /**
