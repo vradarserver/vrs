@@ -563,6 +563,14 @@ namespace VRS
             this._StrokeWeight = options.strokeWeight;
         }
 
+        destroy()
+        {
+            this.setVisible(false);
+            this.polyline = null;
+            this.map = null;
+            this.tag = null;
+        }
+
         getDraggable() : boolean
         {
             return false;
@@ -708,6 +716,14 @@ namespace VRS
             this._StrokeColour = options.strokeColor;
             this._StrokeWeight = options.strokeWeight;
             this._ZIndex = options.zIndex;
+        }
+
+        destroy()
+        {
+            this.setVisible(false);
+            this.circle = null;
+            this.map = null;
+            this.tag = null;
         }
 
         getBounds() : IBounds
@@ -896,6 +912,14 @@ namespace VRS
             this._ZIndex = options.zIndex;
         }
 
+        destroy()
+        {
+            this.setVisible(false);
+            this.map = null;
+            this.polygon = null;
+            this.tag = null;
+        }
+
         getDraggable() : boolean
         {
             return false;
@@ -1076,6 +1100,14 @@ namespace VRS
             this._DisableAutoPan = options.disableAutoPan;
             this._MaxWidth = options.maxWidth;
             this._PixelOffset = options.pixelOffset;
+        }
+
+        destroy()
+        {
+            this.infoWindow.setContent('');
+            this.map = null;
+            this.tag = null;
+            this.infoWindow = null;
         }
 
         getContent() : Element
@@ -1937,10 +1969,7 @@ namespace VRS
             var state = this._getState();
             var polyline = <MapPolyline>this.getPolyline(idOrPolyline);
             if(polyline) {
-                polyline.setVisible(false);
-                polyline.polyline = null;
-                polyline.map = null;
-                polyline.tag = null;
+                polyline.destroy();
                 delete state.polylines[polyline.id];
                 polyline.id = null;
             }
@@ -2059,10 +2088,7 @@ namespace VRS
             var state = this._getState();
             var polygon = <MapPolygon>this.getPolygon(idOrPolygon);
             if(polygon) {
-                polygon.setVisible(false);
-                polygon.map = null;
-                polygon.polygon = null;
-                polygon.tag = null;
+                polygon.destroy();
                 delete state.polygons[polygon.id];
                 polygon.id = null;
             }
@@ -2111,10 +2137,7 @@ namespace VRS
             var state = this._getState();
             var circle = <MapCircle>this.getCircle(idOrCircle);
             if(circle) {
-                circle.setVisible(false);
-                circle.circle = null;
-                circle.map = null;
-                circle.tag = null;
+                circle.destroy();
                 delete state.circles[circle.id];
                 circle.id = null;
             }
@@ -2181,10 +2204,7 @@ namespace VRS
             var infoWindow = <MapInfoWindow>this.getInfoWindow(idOrInfoWindow);
             if(infoWindow) {
                 this.closeInfoWindow(infoWindow);
-                infoWindow.infoWindow.setContent('');
-                infoWindow.map = null;
-                infoWindow.tag = null;
-                infoWindow.infoWindow = null;
+                infoWindow.destroy();
                 delete state.infoWindows[infoWindow.id];
                 infoWindow.id = null;
             }
