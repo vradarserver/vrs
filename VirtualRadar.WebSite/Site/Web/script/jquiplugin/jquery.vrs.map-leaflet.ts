@@ -2074,15 +2074,15 @@ namespace VRS
 
             var state = this._getState();
             if(state.map) {
-                var options = $.extend(<IMapPolylineSettings>{}, userOptions, {
+                var options: IMapCircleSettings = $.extend({}, userOptions, {
                     visible: true
                 });
                 var leafletOptions: L.CircleMarkerOptions = {
-                    fillColor:      '#000',
-                    fillOpacity:    0,
-                    color:          '#000',
-                    opacity:        1,
-                    weight:         1,
+                    fillColor:      options.fillColor || '#000',
+                    fillOpacity:    options.fillOpacity !== null && options.fillOpacity !== undefined ? options.fillOpacity : 0,
+                    color:          options.strokeColor || '#000',
+                    opacity:        options.strokeOpacity !== null && options.strokeOpacity !== undefined ? options.strokeOpacity : 1,
+                    weight:         options.strokeWeight !== null && options.strokeWeight !== undefined ? options.strokeWeight : 1,
                     radius:         options.radius || 0
                 };
                 var centre = VRS.leafletUtilities.toLeafletLatLng(options.center);
