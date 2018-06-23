@@ -49,7 +49,7 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.InitialDistanceUnit, DistanceUnit.NauticalMiles, DistanceUnit.Kilometres);
             TestUtilities.TestProperty(settings, r => r.InitialHeightUnit, HeightUnit.Feet, HeightUnit.Metres);
             TestUtilities.TestProperty(settings, r => r.InitialSpeedUnit, SpeedUnit.Knots, SpeedUnit.MilesPerHour);
-            TestUtilities.TestProperty(settings, r => r.PreferIataAirportCodes, false);
+            TestUtilities.TestProperty(settings, r => r.PreferIataAirportCodes, true);
             TestUtilities.TestProperty(settings, r => r.EnableBundling, true);
             TestUtilities.TestProperty(settings, r => r.EnableMinifying, true);
             TestUtilities.TestProperty(settings, r => r.EnableCompression, true);

@@ -378,6 +378,7 @@ namespace VirtualRadar.Interface.Settings
             EnableBundling = true;
             EnableMinifying = true;
             EnableCompression = true;
+            PreferIataAirportCodes = true;
             UseSvgGraphicsOnDesktop = true;
             UseSvgGraphicsOnMobile = true;
             UseSvgGraphicsOnReports = true;
