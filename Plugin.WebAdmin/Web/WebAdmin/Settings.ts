@@ -28,6 +28,7 @@
 
         ComPortNames?:                      string[];
         VoiceNames?:                        string[];
+        TileServerSettingNames?:            string[];
         BaudRates?:                         number[];
         ConnectionTypes?:                   VirtualRadar.Interface.View.IEnumModel[];
         DataSources?:                       VirtualRadar.Interface.Listener.IReceiverFormatName[];
@@ -35,6 +36,7 @@
         DistanceUnits?:                     VirtualRadar.Interface.View.IEnumModel[];
         Handshakes?:                        VirtualRadar.Interface.View.IEnumModel[];
         HeightUnits?:                       VirtualRadar.Interface.View.IEnumModel[];
+        MapProviders?:                      VirtualRadar.Interface.View.IEnumModel[];
         Parities?:                          VirtualRadar.Interface.View.IEnumModel[];
         ProxyTypes?:                        VirtualRadar.Interface.View.IEnumModel[];
         RebroadcastFormats?:                VirtualRadar.Interface.Network.IRebroadcastFormatName[];
@@ -444,20 +446,22 @@
                                 root.SelectedReceiverLocation = <KnockoutObservable<ReceiverLocationModel>> ko.observable(null);
                                 root.SelectedUser = <KnockoutObservable<UserModel>> ko.observable(null);
 
-                                root.ComPortNames =         state.Response.ComPortNames;
-                                root.VoiceNames =           state.Response.VoiceNames;
-                                root.ConnectionTypes =      state.Response.ConnectionTypes;
-                                root.DataSources =          state.Response.DataSources;
-                                root.DefaultAccesses =      state.Response.DefaultAccesses;
-                                root.DistanceUnits =        state.Response.DistanceUnits;
-                                root.Handshakes =           state.Response.Handshakes;
-                                root.HeightUnits =          state.Response.HeightUnits;
-                                root.Parities =             state.Response.Parities;
-                                root.ProxyTypes =           state.Response.ProxyTypes;
-                                root.RebroadcastFormats =   state.Response.RebroadcastFormats;
-                                root.ReceiverUsages =       state.Response.ReceiverUsages;
-                                root.SpeedUnits =           state.Response.SpeedUnits;
-                                root.StopBits =             state.Response.StopBits;
+                                root.ComPortNames =             state.Response.ComPortNames;
+                                root.VoiceNames =               state.Response.VoiceNames;
+                                root.TileServerSettingNames =   state.Response.TileServerSettingNames;
+                                root.ConnectionTypes =          state.Response.ConnectionTypes;
+                                root.DataSources =              state.Response.DataSources;
+                                root.DefaultAccesses =          state.Response.DefaultAccesses;
+                                root.DistanceUnits =            state.Response.DistanceUnits;
+                                root.Handshakes =               state.Response.Handshakes;
+                                root.HeightUnits =              state.Response.HeightUnits;
+                                root.MapProviders =             state.Response.MapProviders;
+                                root.Parities =                 state.Response.Parities;
+                                root.ProxyTypes =               state.Response.ProxyTypes;
+                                root.RebroadcastFormats =       state.Response.RebroadcastFormats;
+                                root.ReceiverUsages =           state.Response.ReceiverUsages;
+                                root.SpeedUnits =               state.Response.SpeedUnits;
+                                root.StopBits =                 state.Response.StopBits;
                             },
 
                             '{root}.AudioSettings': (model: AudioSettingsModel) =>

@@ -32,6 +32,7 @@ namespace Test.VirtualRadar.Interface.WebSite
         private Mock<IApplicationInformation> _ApplicationInformation;
         private Mock<ISharedConfiguration> _SharedConfiguration;
         private Configuration _Configuration;
+        private Mock<ITileServerSettingsManager> _TileServerSettingsManager;
 
         [TestInitialize]
         public void TestInitialise()
@@ -41,6 +42,7 @@ namespace Test.VirtualRadar.Interface.WebSite
             _RuntimeEnvironment = TestUtilities.CreateMockSingleton<IRuntimeEnvironment>();
             _ApplicationInformation = TestUtilities.CreateMockImplementation<IApplicationInformation>();
             _SharedConfiguration = TestUtilities.CreateMockSingleton<ISharedConfiguration>();
+            _TileServerSettingsManager = TestUtilities.CreateMockSingleton<ITileServerSettingsManager>();
             _Configuration = new Configuration();
             _SharedConfiguration.Setup(r => r.Get()).Returns(_Configuration);
         }
@@ -78,8 +80,8 @@ namespace Test.VirtualRadar.Interface.WebSite
             TestUtilities.TestProperty(json, r => r.IsLocalAddress, false);
             TestUtilities.TestProperty(json, r => r.IsMono, false);
             TestUtilities.TestProperty(json, r => r.MinimumRefreshSeconds, 0, 123);
-            TestUtilities.TestProperty(json, r => r.OpenStreetMapTileServerUrl, null, "Abc");
             TestUtilities.TestProperty(json, r => r.RefreshSeconds, 0, 123);
+            TestUtilities.TestProperty(json, r => r.TileServerSettings, null, new TileServerSettings());
             TestUtilities.TestProperty(json, r => r.UseMarkerLabels, false);
             TestUtilities.TestProperty(json, r => r.UseSvgGraphicsOnDesktop, false);
             TestUtilities.TestProperty(json, r => r.UseSvgGraphicsOnMobile, false);
@@ -180,6 +182,20 @@ namespace Test.VirtualRadar.Interface.WebSite
         }
 
         [TestMethod]
+        public void ServerConfigJson_ToModel_Copies_Current_TileServerSettings_To_Model()
+        {
+            var tileServerSettings = new TileServerSettings();
+
+            _Configuration.GoogleMapSettings.MapProvider = MapProvider.Leaflet;
+            _Configuration.GoogleMapSettings.TileServerSettingName = "My Tile Server";
+            _TileServerSettingsManager.Setup(r => r.GetTileServerSettings(MapProvider.Leaflet, "My Tile Server", true)).Returns(tileServerSettings);
+
+            var model = ServerConfigJson.ToModel(isLocalAddress: true);
+
+            Assert.AreSame(tileServerSettings, model.TileServerSettings);
+        }
+
+        [TestMethod]
         [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "SubstituteConfiguration$")]
         public void ServerConfigJson_ToModel_Fills_Model_Correctly()
@@ -218,7 +234,6 @@ namespace Test.VirtualRadar.Interface.WebSite
                     case "UseSvgGraphicsOnDesktop":     _Configuration.GoogleMapSettings.UseSvgGraphicsOnDesktop = worksheet.Bool("Value"); break;
                     case "UseSvgGraphicsOnMobile":      _Configuration.GoogleMapSettings.UseSvgGraphicsOnMobile = worksheet.Bool("Value"); break;
                     case "UseSvgGraphicsOnReports":     _Configuration.GoogleMapSettings.UseSvgGraphicsOnReports = worksheet.Bool("Value"); break;
-                    case "OpenStreetMapTileServerUrl":  _Configuration.GoogleMapSettings.OpenStreetMapTileServerUrl = worksheet.EString("Value"); break;
                     default:                            throw new NotImplementedException();
                 }
             }
@@ -252,7 +267,6 @@ namespace Test.VirtualRadar.Interface.WebSite
                 case "UseSvgGraphicsOnDesktop":         Assert.AreEqual(worksheet.Bool("JsonValue"), model.UseSvgGraphicsOnDesktop); break;
                 case "UseSvgGraphicsOnMobile":          Assert.AreEqual(worksheet.Bool("JsonValue"), model.UseSvgGraphicsOnMobile); break;
                 case "UseSvgGraphicsOnReports":         Assert.AreEqual(worksheet.Bool("JsonValue"), model.UseSvgGraphicsOnReports); break;
-                case "OpenStreetMapTileServerUrl":      Assert.AreEqual(worksheet.EString("JsonValue"), model.OpenStreetMapTileServerUrl); break;
                 default:                                throw new NotImplementedException();
             }
         }

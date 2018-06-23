@@ -152,11 +152,67 @@ body.wait .modal {
     white-space: nowrap;
 }
 
-.vrs-leaflet-tile-layer {
-    filter: brightness(70%);
+/*endregion */
+
+/*region leaflet overrides */
+.leaflet-tooltip.markerLabel {
+    padding: 0px;
+    background-image: url('../images/markerLabelBackground.png');
+    background-color: #aaa;
+    border: 1px solid #000;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 8pt;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    opacity: 0.1;
 }
 
-/*endregion */
+.leaflet-tooltip-top.markerLabel:before {
+    border-top-color: #333;
+}
+
+.leaflet-tooltip-bottom.markerLabel:before {
+    border-bottom-color: #333;
+}
+
+.leaflet-tooltip-left.markerLabel:before {
+    border-left-color: #333;
+}
+
+.leaflet-tooltip-right.markerLabel:before {
+    border-right-color: #333;
+}
+.leaflet-control {
+    clear: none !important;
+}
+.leaflet-control > .vrsMenu {
+    margin-top: -8px;
+}
+/*endregion*/
+
+/*region filters */
+.vrs-brightness-10 { filter: brightness(10%); }
+.vrs-brightness-20 { filter: brightness(20%); }
+.vrs-brightness-30 { filter: brightness(30%); }
+.vrs-brightness-40 { filter: brightness(40%); }
+.vrs-brightness-50 { filter: brightness(50%); }
+.vrs-brightness-60 { filter: brightness(60%); }
+.vrs-brightness-70 { filter: brightness(70%); }
+.vrs-brightness-80 { filter: brightness(80%); }
+.vrs-brightness-90 { filter: brightness(90%); }
+.vrs-brightness-110 { filter: brightness(110%); }
+.vrs-brightness-120 { filter: brightness(120%); }
+.vrs-brightness-130 { filter: brightness(130%); }
+.vrs-brightness-140 { filter: brightness(140%); }
+.vrs-brightness-150 { filter: brightness(150%); }
+/*endregion*/
+
 /*region icoMoon icons */
 .vrsIcon {
     font-family: 'icomoon' !important;

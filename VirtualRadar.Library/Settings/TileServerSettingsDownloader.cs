@@ -10,20 +10,47 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
+using VirtualRadar.Interface.Settings;
 
-namespace VirtualRadar.Interface.Settings
+namespace VirtualRadar.Library.Settings
 {
     /// <summary>
-    /// An enumeration of all of the different jQueryUI plugins that have been written that implement
-    /// the TypeScript IMap interface.
+    /// Default implementation of <see cref="ITileServerSettingsDownloader"/>
     /// </summary>
-    public enum MapProvider
+    class TileServerSettingsDownloader : ITileServerSettingsDownloader
     {
-        Leaflet = 0,
+        internal const string TileServerSettingsUrl = "http://sdm.virtualradarserver.co.uk/api/1.00/tile-servers";
 
-        GoogleMaps = 1,
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="timeoutSeconds"></param>
+        /// <returns></returns>
+        public TileServerSettings[] Download(int timeoutSeconds)
+        {
+            var request = (HttpWebRequest)HttpWebRequest.Create(TileServerSettingsUrl);
+            request.Method = "GET";
+            request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+            request.Timeout = timeoutSeconds * 1000;
+
+            string jsonText = null;
+            using(var response = request.GetResponse()) {
+                using(var streamReader = new StreamReader(response.GetResponseStream())) {
+                    jsonText = streamReader.ReadToEnd();
+                }
+            }
+
+            TileServerSettings[] result = null;
+            if(!String.IsNullOrEmpty(jsonText)) {
+                result = JsonConvert.DeserializeObject<TileServerSettings[]>(jsonText);
+            }
+
+            return result;
+        }
     }
 }

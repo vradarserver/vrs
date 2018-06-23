@@ -2524,6 +2524,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Leaflet.
+        /// </summary>
+        public static string Leaflet {
+            get {
+                return ResourceManager.GetString("Leaflet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to License.
         /// </summary>
         public static string License {
@@ -3362,24 +3371,6 @@ namespace VirtualRadar.Localisation {
         public static string OK {
             get {
                 return ResourceManager.GetString("OK", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to OpenStreetMap.
-        /// </summary>
-        public static string OpenStreetMap {
-            get {
-                return ResourceManager.GetString("OpenStreetMap", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to OpenStreetMap tile server URL.
-        /// </summary>
-        public static string OpenStreetMapTileServerUrl {
-            get {
-                return ResourceManager.GetString("OpenStreetMapTileServerUrl", resourceCulture);
             }
         }
         
@@ -6534,6 +6525,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Initialising tile server settings manager.
+        /// </summary>
+        public static string SplashScreenInitialisingTileServerSettingsManager {
+            get {
+                return ResourceManager.GetString("SplashScreenInitialisingTileServerSettingsManager", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Initialising UPnP manager.
         /// </summary>
         public static string SplashScreenInitialisingUPnPManager {
@@ -6847,6 +6847,36 @@ namespace VirtualRadar.Localisation {
         public static string Throughput {
             get {
                 return ResourceManager.GetString("Throughput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tile server.
+        /// </summary>
+        public static string TileServer {
+            get {
+                return ResourceManager.GetString("TileServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HOW TO ADD YOUR OWN TILE SERVER SETTINGS
+        ///========================================
+        ///
+        ///It is a requirement for most free tile servers that the program does not hard
+        ///code their address and that there is some way to remove support for a
+        ///particular tile server if their operators request it.
+        ///
+        ///To that end VRS downloads a copy of the tile server settings from the SDM site
+        ///once a day. The downloaded settings are stored in a file called:
+        ///
+        ///    TileServerSettings-Downloaded.json.
+        ///
+        ///DO NOT CHANGE THE SETTINGS I [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string TileServerSettings_ReadMe {
+            get {
+                return ResourceManager.GetString("TileServerSettings_ReadMe", resourceCulture);
             }
         }
         

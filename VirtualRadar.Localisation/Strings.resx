@@ -2772,11 +2772,19 @@ Show this message.</value>
   <data name="MapProviderTitle" xml:space="preserve">
     <value>Map Provider</value>
   </data>
-  <data name="OpenStreetMap" xml:space="preserve">
-    <value>OpenStreetMap</value>
-    <comment>The site seems to be all one word</comment>
+  <data name="Leaflet" xml:space="preserve">
+    <value>Leaflet</value>
+    <comment>This is the name of an internet map provider, no need to translate</comment>
   </data>
-  <data name="OpenStreetMapTileServerUrl" xml:space="preserve">
-    <value>OpenStreetMap tile server URL</value>
+  <data name="SplashScreenInitialisingTileServerSettingsManager" xml:space="preserve">
+    <value>Initialising tile server settings manager</value>
+  </data>
+  <data name="TileServer" xml:space="preserve">
+    <value>Tile server</value>
+    <comment>"Tile Server" refers to map tiles, square images joined together to form a map.</comment>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="TileServerSettings_ReadMe" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content\tileserversettings-readme.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
 </root>

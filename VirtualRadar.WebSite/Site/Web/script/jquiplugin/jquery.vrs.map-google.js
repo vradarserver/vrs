@@ -1598,4 +1598,4 @@ var VRS;
     }(JQueryUICustomWidget));
     $.widget('vrs.vrsMap', new MapPlugin());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.map-google-maps.js.map
+//# sourceMappingURL=jquery.vrs.map-google.js.map

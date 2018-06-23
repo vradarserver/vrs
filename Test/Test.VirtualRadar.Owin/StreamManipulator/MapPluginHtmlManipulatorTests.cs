@@ -30,9 +30,11 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
     {
         private const string MapStylesheetMarker = "<!-- [[ MAP STYLESHEET ]] -->";
         private const string MapPluginMarker = "<!-- [[ MAP PLUGIN ]] -->";
-        private const string ExpectedGoogleJavaScript = @"<script src=""script/jquiplugin/jquery.vrs.map-google-maps.js"" type=""text/javascript""></script>";
-        private const string ExpectedOpenStreetMapStylesheet = @"<link rel=""stylesheet"" href=""css/leaflet/leaflet.css"" type=""text/css"" media=""screen"" />";
-        private const string ExpectedOpenStreetMapJavaScript = @"<script src=""script/leaflet-src.js"" type=""text/javascript""></script><script src=""script/jquiplugin/jquery.vrs.map-openstreetmap.js"" type=""text/javascript""></script>";
+        private const string ExpectedGoogleJavaScript = @"<script src=""script/jquiplugin/jquery.vrs.map-google.js"" type=""text/javascript""></script>";
+        private const string ExpectedLeafletStylesheet = @"<link rel=""stylesheet"" href=""css/leaflet/leaflet.css"" type=""text/css"" media=""screen"" />";
+        private const string ExpectedLeafletJavaScript =
+                                    @"<script src=""script/leaflet-src.js"" type=""text/javascript""></script>
+                                      <script src=""script/jquiplugin/jquery.vrs.map-leaflet.js"" type=""text/javascript""></script>";
 
         public TestContext TestContext { get; set; }
 
@@ -122,7 +124,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             _Configuration.GoogleMapSettings.MapProvider = MapProvider.GoogleMaps;
             _Manipulator.ManipulateTextResponse(_Environment.Environment, textContent);
 
-            AssertTextChanged(textContent, $@"<script src=""script/jquiplugin/jquery.vrs.map-google-maps.js"" type=""text/javascript""></script>");
+            AssertTextChanged(textContent, ExpectedGoogleJavaScript);
         }
 
         [TestMethod]
@@ -138,27 +140,27 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
         }
 
         [TestMethod]
-        public void MapPluginHtmlManipulator_Replaces_Marker_With_OpenStreetMap_Reference()
+        public void MapPluginHtmlManipulator_Replaces_Marker_With_Leaflet_Reference()
         {
             var htmlPath = "/index.html";
             var textContent = FakeCall(htmlPath, $"{MapPluginMarker}");
 
-            _Configuration.GoogleMapSettings.MapProvider = MapProvider.OpenStreetMap;
+            _Configuration.GoogleMapSettings.MapProvider = MapProvider.Leaflet;
             _Manipulator.ManipulateTextResponse(_Environment.Environment, textContent);
 
-            AssertTextChanged(textContent, ExpectedOpenStreetMapJavaScript);
+            AssertTextChanged(textContent, ExpectedLeafletJavaScript);
         }
 
         [TestMethod]
-        public void MapPluginHtmlManipulator_Replaces_Stylesheet_With_OpenStreetMap_Reference()
+        public void MapPluginHtmlManipulator_Replaces_Stylesheet_With_Leaflet_Reference()
         {
             var htmlPath = "/index.html";
             var textContent = FakeCall(htmlPath, $"{MapStylesheetMarker}");
 
-            _Configuration.GoogleMapSettings.MapProvider = MapProvider.OpenStreetMap;
+            _Configuration.GoogleMapSettings.MapProvider = MapProvider.Leaflet;
             _Manipulator.ManipulateTextResponse(_Environment.Environment, textContent);
 
-            AssertTextChanged(textContent, ExpectedOpenStreetMapStylesheet);
+            AssertTextChanged(textContent, ExpectedLeafletStylesheet);
         }
 
         [TestMethod]
@@ -167,10 +169,10 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             var htmlPath = "/index.html";
             var textContent = FakeCall(htmlPath, $"Start-{MapStylesheetMarker}-Middle-{MapPluginMarker}-End");
 
-            _Configuration.GoogleMapSettings.MapProvider = MapProvider.OpenStreetMap;
+            _Configuration.GoogleMapSettings.MapProvider = MapProvider.Leaflet;
             _Manipulator.ManipulateTextResponse(_Environment.Environment, textContent);
 
-            AssertTextChanged(textContent, $"Start-{ExpectedOpenStreetMapStylesheet}-Middle-{ExpectedOpenStreetMapJavaScript}-End");
+            AssertTextChanged(textContent, $"Start-{ExpectedLeafletStylesheet}-Middle-{ExpectedLeafletJavaScript}-End");
         }
     }
 }

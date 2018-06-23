@@ -174,6 +174,12 @@ namespace VirtualRadar.Interface.WebSite
         public string GoogleMapsApiKey { get; set; }
 
         /// <summary>
+        /// Gets or sets the tile server settings to supply to map providers that use tile servers.
+        /// </summary>
+        [DataMember]
+        public TileServerSettings TileServerSettings { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating that SVG graphics should be used on desktop pages.
         /// </summary>
         [DataMember]
@@ -192,12 +198,6 @@ namespace VirtualRadar.Interface.WebSite
         public bool UseSvgGraphicsOnReports { get; set; }
 
         /// <summary>
-        /// Gets or sets the Leaflet-compatible URL for the OpenStreetMap tile server to use.
-        /// </summary>
-        [DataMember]
-        public string OpenStreetMapTileServerUrl { get; set; }
-
-        /// <summary>
         /// Returns a new model.
         /// </summary>
         /// <param name="isLocalAddress"></param>
@@ -207,6 +207,13 @@ namespace VirtualRadar.Interface.WebSite
             var applicationInformation = Factory.Resolve<IApplicationInformation>();
             var runtimeEnvironment = Factory.ResolveSingleton<IRuntimeEnvironment>();
             var configuration = Factory.ResolveSingleton<ISharedConfiguration>().Get();
+
+            var tileServerSettingsManager = Factory.ResolveSingleton<ITileServerSettingsManager>();
+            var tileServerSettings = tileServerSettingsManager.GetTileServerSettings(
+                configuration.GoogleMapSettings.MapProvider,
+                configuration.GoogleMapSettings.TileServerSettingName,
+                fallbackToDefaultIfMissing: true
+            );
 
             var isMono = runtimeEnvironment.IsMono;
 
@@ -229,13 +236,13 @@ namespace VirtualRadar.Interface.WebSite
                 IsAudioEnabled =                        configuration.AudioSettings.Enabled,
                 IsLocalAddress =                        isLocalAddress,
                 IsMono =                                isMono,
-                OpenStreetMapTileServerUrl =            configuration.GoogleMapSettings.OpenStreetMapTileServerUrl,
                 UseMarkerLabels =                       isMono ? configuration.MonoSettings.UseMarkerLabels : false,
                 UseSvgGraphicsOnDesktop =               configuration.GoogleMapSettings.UseSvgGraphicsOnDesktop,
                 UseSvgGraphicsOnMobile =                configuration.GoogleMapSettings.UseSvgGraphicsOnMobile,
                 UseSvgGraphicsOnReports =               configuration.GoogleMapSettings.UseSvgGraphicsOnReports,
                 MinimumRefreshSeconds =                 configuration.GoogleMapSettings.MinimumRefreshSeconds,
                 RefreshSeconds =                        configuration.GoogleMapSettings.InitialRefreshSeconds,
+                TileServerSettings =                    tileServerSettings,
                 VrsVersion =                            applicationInformation.ShortVersion,
             };
             result.Receivers.AddRange(configuration.Receivers.Select(r => ServerReceiverJson.ToModel(r)).Where(r => r != null));

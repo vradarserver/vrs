@@ -133,7 +133,7 @@ namespace Test.VirtualRadar.Interface
                 var expected = "";
                 switch(mapProvider) {
                     case MapProvider.GoogleMaps:    expected = "Google Maps"; break;
-                    case MapProvider.OpenStreetMap: expected = "OpenStreetMap"; break;
+                    case MapProvider.Leaflet:       expected = "Leaflet"; break;
                     default:                        throw new NotImplementedException();
                 }
 

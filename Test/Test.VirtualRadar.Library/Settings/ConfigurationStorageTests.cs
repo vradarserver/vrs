@@ -150,7 +150,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
         #endregion
 
-        #region Save
+        #region Save and Load
         [TestMethod]
         public void ConfigurationStorage_Save_Raises_ConfigurationChanged()
         {
@@ -207,6 +207,22 @@ namespace Test.VirtualRadar.Library.Settings
             var backupFileName = Directory.GetFiles(backupFolder, "Configuration-*.xml").Single();
             var backupContent = File.ReadAllText(backupFileName);
             Assert.AreEqual(oldConfigContent, backupContent);
+        }
+
+        [TestMethod]
+        public void ConfigurationStorage_Load_Asks_XmlSerialiser_To_Use_Defaults_If_Enum_Unrecognised()
+        {
+            var config = new Configuration();
+
+            var xmlSerialiser = TestUtilities.CreateMockImplementation<IXmlSerialiser>();
+            xmlSerialiser.Object.UseDefaultEnumValueIfUnknown = false;
+            xmlSerialiser.Setup(r => r.Deserialise<Configuration>(It.IsAny<Stream>())).Returns(config);
+            xmlSerialiser.Setup(r => r.Deserialise<Configuration>(It.IsAny<TextReader>())).Returns(config);
+
+            _Implementation = Factory.Singleton.Resolve<IConfigurationStorage>();
+            _Implementation.Load();
+
+            Assert.AreEqual(true, xmlSerialiser.Object.UseDefaultEnumValueIfUnknown);
         }
 
         [TestMethod]
@@ -291,8 +307,8 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(false, readBack.GoogleMapSettings.UseSvgGraphicsOnDesktop);
                         Assert.AreEqual(false, readBack.GoogleMapSettings.UseSvgGraphicsOnMobile);
                         Assert.AreEqual(false, readBack.GoogleMapSettings.UseSvgGraphicsOnReports);
-                        Assert.AreEqual(MapProvider.OpenStreetMap, readBack.GoogleMapSettings.MapProvider);
-                        Assert.AreEqual("http://tiles.example.com", readBack.GoogleMapSettings.OpenStreetMapTileServerUrl);
+                        Assert.AreEqual(MapProvider.Leaflet, readBack.GoogleMapSettings.MapProvider);
+                        Assert.AreEqual("My Tile Server", readBack.GoogleMapSettings.TileServerSettingName);
                         break;
                     case nameof(Configuration.VersionCheckSettings):
                         Assert.AreEqual(false, readBack.VersionCheckSettings.CheckAutomatically);
@@ -617,8 +633,8 @@ namespace Test.VirtualRadar.Library.Settings
                 UseSvgGraphicsOnDesktop = false,
                 UseSvgGraphicsOnMobile = false,
                 UseSvgGraphicsOnReports = false,
-                MapProvider = MapProvider.OpenStreetMap,
-                OpenStreetMapTileServerUrl = "http://tiles.example.com",
+                MapProvider = MapProvider.Leaflet,
+                TileServerSettingName = "My Tile Server",
             };
         }
 

@@ -227,10 +227,14 @@
     <Compile Include="Presenter\IBackgroundThreadQueuesPresenter.cs" />
     <Compile Include="Settings\CachedUser.cs" />
     <Compile Include="Settings\ISharedConfigurationSubscriber.cs" />
+    <Compile Include="Settings\ITileServerSettingsDownloader.cs" />
+    <Compile Include="Settings\ITileServerSettingsManager.cs" />
+    <Compile Include="Settings\ITileServerSettingsStorage.cs" />
     <Compile Include="Settings\IUserCache.cs" />
     <Compile Include="Settings\MapProvider.cs" />
     <Compile Include="Settings\MergedFeedReceiver.cs" />
     <Compile Include="Settings\ReceiverUsage.cs" />
+    <Compile Include="Settings\TileServerSettings.cs" />
     <Compile Include="StandingData\EnginePlacement.cs" />
     <Compile Include="StringBuilderExtensions.cs" />
     <Compile Include="TextContent.cs" />

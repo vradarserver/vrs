@@ -10,7 +10,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @fileoverview A jQuery UI plugin that wraps OpenStreetMap.
+ * @fileoverview A jQuery UI plugin that wraps Leaflet maps.
  */
 namespace VRS
 {
@@ -229,7 +229,7 @@ namespace VRS
     jQueryUIHelper.getMapOptions = (overrides: IMapOptions) : IMapOptions =>
     {
         return $.extend({
-            // OpenStreetMap load options - THESE ONLY HAVE ANY EFFECT ON THE FIRST MAP LOADED ON A PAGE
+            // Google Maps options, these are ignored
             key:                null,                                   // Unused
             version:            '',                                     // Unused
             sensor:             false,                                  // Unused
@@ -276,6 +276,7 @@ namespace VRS
     class MapMarker implements IMapMarker
     {
         id: string|number;
+        mapPlugin: MapPlugin;
         marker: L.Marker;
         map: L.Map;
         mapIcon: IMapIcon;
@@ -283,27 +284,80 @@ namespace VRS
         isMarkerWithLabel: boolean;
         tag: any;
         visible: boolean;
+        labelTooltip: L.Tooltip;
+
+        private _eventsHooked = false;
 
         /**
          * Creates a new object.
          * @param {string|number}       id                  The identifier of the marker.
+         * @param {MapPlugin}           mapPlugin           The map plugin that owns this marker.
          * @param {L.Map}               nativeMap           The map that this marker will be (or is) attached to.
          * @param {L.Marker}            nativeMarker        The native map marker handle to wrap.
          * @param {L.MarkerOptions}     markerOptions       The options used when creating the marker.
-         * @param {boolean}             isMarkerWithLabel   See notes against field of same name.
-         * @param {boolean}             isVisible           True if the marker is already attached to a map.
-         * @param {*}                   tag                 An object to carry around with the marker. No meaning is attached to the tag.
+         * @param {IMapMarkerSettings}  userOptions         The options passed for the creation of the marker.
         */
-        constructor(id: string|number, map: L.Map, nativeMarker: L.Marker, markerOptions: L.MarkerOptions, isMarkerWithLabel: boolean, isVisible: boolean, tag: any)
+        constructor(id: string|number, mapPlugin: MapPlugin, map: L.Map, nativeMarker: L.Marker, markerOptions: L.MarkerOptions, userOptions: IMapMarkerSettings)
         {
             this.id = id;
+            this.mapPlugin = mapPlugin;
             this.map = map;
             this.marker = nativeMarker;
             this.mapIcon = VRS.leafletUtilities.fromLeafletIcon(markerOptions.icon);
             this.zIndex = markerOptions.zIndexOffset;
-            this.isMarkerWithLabel = isMarkerWithLabel;
-            this.tag = tag;
-            this.visible = isVisible;
+            this.isMarkerWithLabel = !!userOptions.useMarkerWithLabel;
+            this.tag = userOptions.tag;
+            this.visible = !!userOptions.visible;
+
+            if(this.isMarkerWithLabel) {
+                this.labelTooltip = new L.Tooltip({
+                    permanent: true,
+                    className: userOptions.mwlLabelClass,
+                    direction: 'bottom',
+                    pane: 'shadowPane'
+                });
+                this.labelTooltip.setLatLng(this.marker.getLatLng());
+            }
+
+            this.hookEvents(true);
+        }
+
+        destroy()
+        {
+            if(this.labelTooltip) {
+                this.setLabelVisible(false);
+                this.labelTooltip = null;
+            }
+
+            this.hookEvents(false);
+            this.setVisible(false);
+            this.mapPlugin = null;
+            this.marker = null;
+            this.map = null;
+            this.tag = null;
+        }
+
+        hookEvents(hook: boolean)
+        {
+            if(this._eventsHooked !== hook) {
+                this._eventsHooked = hook;
+
+                if(hook) this.marker.on ('click', this._marker_clicked, this);
+                else     this.marker.off('click', this._marker_clicked, this);
+
+                if(hook) this.marker.on ('dragend', this._marker_dragged, this);
+                else     this.marker.off('dragend', this._marker_dragged, this);
+            }
+        }
+
+        private _marker_clicked(e: Event)
+        {
+            this.mapPlugin.raiseMarkerClicked(this.id);
+        }
+
+        private _marker_dragged(e: L.DragEndEvent)
+        {
+            this.mapPlugin.raiseMarkerDragged(this.id);
         }
 
         /**
@@ -357,6 +411,9 @@ namespace VRS
         setPosition(position: ILatLng)
         {
             this.marker.setLatLng(VRS.leafletUtilities.toLeafletLatLng(position));
+            if(this.labelTooltip) {
+                this.labelTooltip.setLatLng(this.marker.getLatLng());
+            }
         }
 
         /**
@@ -364,16 +421,19 @@ namespace VRS
          */
         getTooltip() : string
         {
-            var tooltip = this.marker.getTooltip();
-            return tooltip ? VRS.leafletUtilities.fromLeafletContent(tooltip.getContent()) : null;
+            var icon = this.marker.getElement();
+            return icon ? icon.title : null;
         }
 
         /**
          * Sets the tooltip for the marker.
          */
-        setTooltip(tooltip: string)
+        setTooltip(text: string)
         {
-            this.marker.setTooltipContent(tooltip);
+            var icon = this.marker.getElement();
+            if(icon) {
+                icon.title = text;
+            }
         }
 
         /**
@@ -422,7 +482,7 @@ namespace VRS
          */
         getLabelVisible() : boolean
         {
-            return false;
+            return this.labelTooltip && this.labelTooltip.isOpen();
         }
 
         /**
@@ -431,15 +491,23 @@ namespace VRS
          */
         setLabelVisible(visible: boolean)
         {
-            ;
+            if(this.labelTooltip) {
+                if(visible !== this.getLabelVisible()) {
+                    if(visible) {
+                        this.map.openTooltip(this.labelTooltip);
+                    } else {
+                        this.map.closeTooltip(this.labelTooltip);
+                    }
+                }
+            }
         }
 
         /**
          * Sets the label content. Only works on markers that have been created with useMarkerWithLabel.
          */
-        getLabelContent()
+        getLabelContent(): string
         {
-            return '';
+            return this.labelTooltip ? <string>this.labelTooltip.getContent() : '';
         }
 
         /**
@@ -448,7 +516,9 @@ namespace VRS
          */
         setLabelContent(content: string)
         {
-            ;
+            if(this.labelTooltip) {
+                this.labelTooltip.setContent(content);
+            }
         }
 
         /**
@@ -491,6 +561,14 @@ namespace VRS
             this._StrokeColour = options.strokeColour;
             this._StrokeOpacity = options.strokeOpacity;
             this._StrokeWeight = options.strokeWeight;
+        }
+
+        destroy()
+        {
+            this.setVisible(false);
+            this.polyline = null;
+            this.map = null;
+            this.tag = null;
         }
 
         getDraggable() : boolean
@@ -638,6 +716,14 @@ namespace VRS
             this._StrokeColour = options.strokeColor;
             this._StrokeWeight = options.strokeWeight;
             this._ZIndex = options.zIndex;
+        }
+
+        destroy()
+        {
+            this.setVisible(false);
+            this.circle = null;
+            this.map = null;
+            this.tag = null;
         }
 
         getBounds() : IBounds
@@ -826,6 +912,14 @@ namespace VRS
             this._ZIndex = options.zIndex;
         }
 
+        destroy()
+        {
+            this.setVisible(false);
+            this.map = null;
+            this.polygon = null;
+            this.tag = null;
+        }
+
         getDraggable() : boolean
         {
             return false;
@@ -981,11 +1075,12 @@ namespace VRS
      */
     class MapInfoWindow implements IMapInfoWindow
     {
-        id:         string | number;
-        map:        L.Map;
-        infoWindow: L.Popup;
-        tag:        any;
-        isOpen:     boolean;
+        id:             string | number;
+        map:            L.Map;
+        infoWindow:     L.Popup;
+        tag:            any;
+        isOpen:         boolean;
+        boundMarker:    MapMarker;
 
         /**
          * Creates a new object.
@@ -1005,6 +1100,14 @@ namespace VRS
             this._DisableAutoPan = options.disableAutoPan;
             this._MaxWidth = options.maxWidth;
             this._PixelOffset = options.pixelOffset;
+        }
+
+        destroy()
+        {
+            this.infoWindow.setContent('');
+            this.map = null;
+            this.tag = null;
+            this.infoWindow = null;
         }
 
         getContent() : Element
@@ -1072,6 +1175,39 @@ namespace VRS
         {
             ;
         }
+
+        open(mapMarker: MapMarker)
+        {
+            this.close();
+
+            if(!this.isOpen) {
+                this.isOpen = true;
+                if(!mapMarker) {
+                    this.map.openPopup(this.infoWindow);
+                } else {
+                    this.boundMarker = mapMarker;
+                    var markerHeight = mapMarker.getIcon().size.height;
+                    this.setPixelOffset({ width: 0, height: -markerHeight });
+                    mapMarker.marker.bindPopup(this.infoWindow).openPopup();
+                }
+            }
+        }
+
+        close()
+        {
+            if(this.isOpen) {
+                this.isOpen = false;
+                if(!this.boundMarker) {
+                    this.map.closePopup(this.infoWindow);
+                } else {
+                    if(this.boundMarker.marker) {
+                        this.boundMarker.marker.closePopup();
+                        this.boundMarker.marker.unbindPopup();
+                    }
+                    this.boundMarker = null;
+                }
+            }
+        }
     }
 
     /**
@@ -1080,14 +1216,19 @@ namespace VRS
     class MapPluginState
     {
         /**
+         * The map's container.
+         */
+        mapContainer: JQuery = undefined;
+
+        /**
          * The leaflet map.
          */
         map: L.Map = undefined;
 
         /**
-         * The map's container.
+         * The map tile layer.
          */
-        mapContainer: JQuery = undefined;
+        tileLayer: L.TileLayer = undefined;
 
         /**
          * An associative array of marker IDs to markers.
@@ -1113,10 +1254,21 @@ namespace VRS
          * An associative array of info window IDs to info windows.
          */
         infoWindows: { [infoWindowId: string]: MapInfoWindow } = {};
+
+        /**
+         * True if the map's events have been hooked.
+         */
+        eventsHooked = false;
+
+        /**
+         * The map centre that we're setting. Used to prevent recursive map events
+         * while moving the map.
+         */
+        settingCenter: ILatLng = undefined;
     }
 
     /**
-     * A jQuery plugin that wraps the OpenStreetMap map.
+     * A jQuery plugin that wraps Leaflet maps.
      */
     class MapPlugin extends JQueryUICustomWidget implements IMap
     {
@@ -1156,6 +1308,10 @@ namespace VRS
                 .addClass('vrsMap')
                 .appendTo(this.element);
 
+            if(VRS.refreshManager) {
+                VRS.refreshManager.registerTarget(this.element, this._targetResized, this);
+            }
+
             if(this.options.afterCreate) {
                 this.options.afterCreate(this);
             }
@@ -1168,9 +1324,78 @@ namespace VRS
         {
             var state = this._getState();
 
-            if(VRS.refreshManager) VRS.refreshManager.unregisterTarget(this.element);
+            this._hookEvents(state, false);
 
+            if(VRS.refreshManager) VRS.refreshManager.unregisterTarget(this.element);
             if(state.mapContainer) state.mapContainer.remove();
+        }
+
+        _hookEvents(state: MapPluginState, hook: boolean)
+        {
+            if(state.map) {
+                if((hook && !state.eventsHooked) || (!hook && state.eventsHooked)) {
+                    state.eventsHooked = hook;
+
+                    if(hook)    state.map.on ('resize', this._map_resized, this);
+                    else        state.map.off('resize', this._map_resized, this);
+
+                    if(hook)    state.map.on ('move', this._map_moved, this);
+                    else        state.map.off('move', this._map_moved, this);
+
+                    if(hook)    state.map.on ('moveend', this._map_moveEnded, this);
+                    else        state.map.off('moveend', this._map_moveEnded, this);
+
+                    if(hook)    state.map.on ('click', this._map_clicked, this);
+                    else        state.map.off('click', this._map_clicked, this);
+
+                    if(hook)    state.map.on ('dblclick', this._map_doubleClicked, this);
+                    else        state.map.off('dblclick', this._map_doubleClicked, this);
+
+                    if(hook)    state.map.on ('zoomend', this._map_zoomEnded, this);
+                    else        state.map.off('zoomend', this._map_zoomEnded, this);
+
+                    if(hook)    state.tileLayer.on ('load', this._tileLayer_loaded, this);
+                    else        state.tileLayer.off('load', this._tileLayer_loaded, this);
+                }
+            }
+        }
+
+        _map_resized(e: L.ResizeEvent)
+        {
+            this._raiseBoundsChanged();
+        }
+
+        _map_moved(e: Event)
+        {
+            this._raiseCenterChanged();
+        }
+
+        _map_moveEnded(e: Event)
+        {
+            this._onIdle();
+        }
+
+        _map_clicked(e: MouseEvent)
+        {
+            this._userNotIdle();
+            this._raiseClicked(e);
+        }
+
+        _map_doubleClicked(e: MouseEvent)
+        {
+            this._userNotIdle();
+            this._raiseDoubleClicked(e);
+        }
+
+        _map_zoomEnded(e: Event)
+        {
+            this._raiseZoomChanged();
+            this._onIdle();
+        }
+
+        _tileLayer_loaded(e:Event)
+        {
+            this._raiseTilesLoaded();
         }
 
         getNative(): any
@@ -1218,8 +1443,16 @@ namespace VRS
         }
         private _setCenter(state: MapPluginState, latLng: ILatLng)
         {
-            if(state.map) state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(latLng));
-            else          this.options.center = latLng;
+            if(state.settingCenter === undefined || state.settingCenter === null || state.settingCenter.lat != latLng.lat || state.settingCenter.lng != latLng.lng) {
+                try {
+                    state.settingCenter = latLng;
+
+                    if(state.map) state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(latLng));
+                    else          this.options.center = latLng;
+                } finally {
+                    state.settingCenter = undefined;
+                }
+            }
         }
 
         getDraggable() : boolean
@@ -1364,7 +1597,7 @@ namespace VRS
         {
             return VRS.globalDispatch.hookJQueryUIPluginEvent(this.element, this._EventPluginName, 'markerClicked', callback, forceThis);
         }
-        private _raiseMarkerClicked(id: string | number)
+        raiseMarkerClicked(id: string | number)
         {
             this._trigger('markerClicked', null, <IMapMarkerEventArgs>{ id: id });
         }
@@ -1373,7 +1606,7 @@ namespace VRS
         {
             return VRS.globalDispatch.hookJQueryUIPluginEvent(this.element, this._EventPluginName, 'markerDragged', callback, forceThis);
         }
-        private _raiseMarkerDragged(id: string | number)
+        raiseMarkerDragged(id: string | number)
         {
             this._trigger('markerDragged', null, <IMapMarkerEventArgs>{ id: id });
         }
@@ -1407,53 +1640,131 @@ namespace VRS
 
         open(userOptions?: IMapOpenOptions)
         {
-            var mapOptions: IMapOptions = $.extend(<IMapOptions>{}, userOptions, {
-                zoom:               this.options.zoom,
-                center:             this.options.center,
-                mapTypeControl:     this.options.showMapTypeControl,
-                mapTypeId:          this.options.mapTypeId,
-                streetViewControl:  this.options.streetViewControl,
-                scrollwheel:        this.options.scrollwheel,
-                scaleControl:       this.options.scaleControl,
-                draggable:          this.options.draggable,
-                showHighContrast:   this.options.showHighContrast,
-                controlStyle:       this.options.controlStyle,
-                controlPosition:    this.options.controlPosition,
-                mapControls:        this.options.mapControls
-            });
+            var tileServerSettings = VRS.serverConfig.get().TileServerSettings;
+            if(tileServerSettings) {
+                var mapOptions: IMapOptions = $.extend(<IMapOptions>{}, userOptions, {
+                    zoom:               this.options.zoom,
+                    center:             this.options.center,
+                    mapTypeControl:     this.options.showMapTypeControl,
+                    mapTypeId:          this.options.mapTypeId,
+                    streetViewControl:  this.options.streetViewControl,
+                    scrollwheel:        this.options.scrollwheel,
+                    scaleControl:       this.options.scaleControl,
+                    draggable:          this.options.draggable,
+                    showHighContrast:   this.options.showHighContrast,
+                    controlStyle:       this.options.controlStyle,
+                    controlPosition:    this.options.controlPosition,
+                    mapControls:        this.options.mapControls
+                });
 
-            if(this.options.useStateOnOpen) {
-                var settings = this.loadState();
-                mapOptions.zoom = settings.zoom;
-                mapOptions.center = settings.center;
-                mapOptions.mapTypeId = settings.mapTypeId;
+                if(this.options.useStateOnOpen) {
+                    var settings = this.loadState();
+                    mapOptions.zoom = settings.zoom;
+                    mapOptions.center = settings.center;
+                    mapOptions.mapTypeId = settings.mapTypeId;
+                }
+
+                mapOptions.zoom = this._normaliseZoom(mapOptions.zoom, tileServerSettings.MinZoom, tileServerSettings.MaxZoom);
+
+                var leafletOptions: L.MapOptions = {
+                    attributionControl:     true,
+                    zoom:                   mapOptions.zoom,
+                    center:                 VRS.leafletUtilities.toLeafletLatLng(mapOptions.center),
+                    scrollWheelZoom:        mapOptions.scrollwheel,
+                    dragging:               mapOptions.draggable,
+                    zoomControl:            mapOptions.scaleControl
+                };
+
+                var state = this._getState();
+                state.map = L.map(state.mapContainer[0], leafletOptions);
+
+                var tileServerOptions = this._buildTileServerOptions(tileServerSettings);
+                state.tileLayer = L.tileLayer(tileServerSettings.Url, tileServerOptions);
+                state.tileLayer.addTo(state.map);
+
+                this._hookEvents(state, true);
+
+                if(mapOptions.mapControls) {
+                    $.each(mapOptions.mapControls, (idx, ctrl) => {
+                        this.addControl(ctrl.control, ctrl.position);
+                    });
+                }
+
+                var waitUntilReady = () => {
+                    if(this.options.waitUntilReady && !this.isReady()) {
+                        setTimeout(waitUntilReady, 100);
+                    } else {
+                        if(this.options.afterOpen) this.options.afterOpen(this);
+                    }
+                };
+                waitUntilReady();
+            }
+        }
+
+        private _buildTileServerOptions(settings: ITileServerSettings) : L.TileLayerOptions
+        {
+            var result: L.TileLayerOptions = {
+                attribution:    this._attributionToHtml(settings.Attribution),
+                detectRetina:   settings.DetectRetina,
+                zoomReverse:    settings.ZoomReverse,
+            };
+
+            if(settings.ClassName) {
+                result.className = settings.ClassName;
+            }
+            if(settings.MaxNativeZoom !== null && settings.MaxNativeZoom !== undefined) {
+                result.maxNativeZoom = settings.MaxNativeZoom;
+            }
+            if(settings.MinNativeZoom !== null && settings.MinNativeZoom !== undefined) {
+                result.minNativeZoom = settings.MinNativeZoom;
+            }
+            if(settings.MaxZoom !== null && settings.MaxZoom !== undefined) {
+                result.maxZoom = settings.MaxZoom;
+            }
+            if(settings.MinZoom !== null && settings.MinZoom !== undefined) {
+                result.minZoom = settings.MinZoom;
+            }
+            if(settings.Subdomains !== null && settings.Subdomains !== undefined) {
+                result.subdomains = settings.Subdomains;
+            }
+            if(settings.ZoomOffset !== null && settings.ZoomOffset !== undefined) {
+                result.zoomOffset = settings.ZoomOffset;
             }
 
-            var leafletOptions: L.MapOptions = {
-                attributionControl:     true,
-                zoom:                   mapOptions.zoom,
-                center:                 VRS.leafletUtilities.toLeafletLatLng(mapOptions.center),
-                scrollWheelZoom:        mapOptions.scrollwheel,
-                dragging:               mapOptions.draggable,
-                zoomControl:            mapOptions.scaleControl
-            };
+            var countExpandos = settings.ExpandoOptions === null || settings.ExpandoOptions === undefined ? 0 : settings.ExpandoOptions.length;
+            for(var i = 0;i < countExpandos;++i) {
+                var expando = settings.ExpandoOptions[i];
+                result[expando.Option] = VRS.stringUtility.htmlEscape(expando.Value);
+            }
 
-            var state = this._getState();
-            state.map = L.map(state.mapContainer[0], leafletOptions);
+            return result;
+        }
 
-            L.tileLayer(VRS.serverConfig.get().OpenStreetMapTileServerUrl, {
-                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a></a>',
-                className: 'vrs-leaflet-tile-layer'
-            }).addTo(state.map);
+        private _attributionToHtml(attribution: string) : string
+        {
+            var result = VRS.stringUtility.htmlEscape(attribution);
 
-            var waitUntilReady = () => {
-                if(this.options.waitUntilReady && !this.isReady()) {
-                    setTimeout(waitUntilReady, 100);
-                } else {
-                    if(this.options.afterOpen) this.options.afterOpen(this);
+            result = result.replace(/\[c\]/g, '&copy;');
+            result = result.replace(/\[\/a\]/g, '</a>');
+            result = result.replace(/\[a href=(.+?)\]/g, '<a href="$1">');
+
+            return result;
+        }
+
+        private _normaliseZoom(zoom: number, minZoom: number, maxZoom: number) : number
+        {
+            var result = zoom;
+
+            if(result !== undefined && result !== null) {
+                if(minZoom !== undefined && minZoom !== null && result < minZoom) {
+                    result = minZoom;
                 }
-            };
-            waitUntilReady();
+                if(maxZoom !== undefined && maxZoom !== null && result > maxZoom) {
+                    result = maxZoom;
+                }
+            }
+
+            return result;
         }
 
         private _userNotIdle()
@@ -1475,8 +1786,16 @@ namespace VRS
         }
         private _panTo(mapCenter: ILatLng, state: MapPluginState)
         {
-            if(state.map) state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(mapCenter));
-            else          this.options.center = mapCenter;
+            if(state.settingCenter === undefined || state.settingCenter === null || state.settingCenter.lat != mapCenter.lat || state.settingCenter.lng != mapCenter.lng) {
+                try {
+                    state.settingCenter = mapCenter;
+
+                    if(state.map) state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(mapCenter));
+                    else          this.options.center = mapCenter;
+                } finally {
+                    state.settingCenter = undefined;
+                }
+            }
         }
 
         fitBounds(bounds: IBounds)
@@ -1516,7 +1835,7 @@ namespace VRS
 
         private _persistenceKey() : string
         {
-            return 'vrsOpenStreetMapState-' + (this.options.name || 'default');
+            return 'vrsMapState-' + (this.options.name || 'default');
         }
 
         private _createSettings() : IMapSaveState
@@ -1542,6 +1861,9 @@ namespace VRS
                 if(userOptions.zIndex === null || userOptions.zIndex === undefined) {
                     userOptions.zIndex = 0;
                 }
+                if(userOptions.draggable) {
+                    userOptions.clickable = true;
+                }
                 var leafletOptions: L.MarkerOptions = {
                     interactive:    userOptions.clickable !== undefined ? userOptions.clickable : true,
                     draggable:      userOptions.draggable !== undefined ? userOptions.draggable : false,
@@ -1561,7 +1883,7 @@ namespace VRS
                 if(userOptions.visible) {
                     nativeMarker.addTo(state.map);
                 }
-                result = new MapMarker(id, state.map, nativeMarker, leafletOptions, !!userOptions.useMarkerWithLabel, userOptions.visible, userOptions.tag);
+                result = new MapMarker(id, this, state.map, nativeMarker, leafletOptions, userOptions);
                 state.markers[id] = result;
             }
 
@@ -1580,10 +1902,7 @@ namespace VRS
             var state = this._getState();
             var marker = <MapMarker>this.getMarker(idOrMarker);
             if(marker) {
-                marker.setVisible(false);
-                marker.marker = null;
-                marker.map = null;
-                marker.tag = null;
+                marker.destroy();
                 delete state.markers[marker.id];
                 marker.id = null;
             }
@@ -1650,10 +1969,7 @@ namespace VRS
             var state = this._getState();
             var polyline = <MapPolyline>this.getPolyline(idOrPolyline);
             if(polyline) {
-                polyline.setVisible(false);
-                polyline.polyline = null;
-                polyline.map = null;
-                polyline.tag = null;
+                polyline.destroy();
                 delete state.polylines[polyline.id];
                 polyline.id = null;
             }
@@ -1772,10 +2088,7 @@ namespace VRS
             var state = this._getState();
             var polygon = <MapPolygon>this.getPolygon(idOrPolygon);
             if(polygon) {
-                polygon.setVisible(false);
-                polygon.map = null;
-                polygon.polygon = null;
-                polygon.tag = null;
+                polygon.destroy();
                 delete state.polygons[polygon.id];
                 polygon.id = null;
             }
@@ -1787,15 +2100,15 @@ namespace VRS
 
             var state = this._getState();
             if(state.map) {
-                var options = $.extend(<IMapPolylineSettings>{}, userOptions, {
+                var options: IMapCircleSettings = $.extend({}, userOptions, {
                     visible: true
                 });
                 var leafletOptions: L.CircleMarkerOptions = {
-                    fillColor:      '#000',
-                    fillOpacity:    0,
-                    color:          '#000',
-                    opacity:        1,
-                    weight:         1,
+                    fillColor:      options.fillColor || '#000',
+                    fillOpacity:    options.fillOpacity !== null && options.fillOpacity !== undefined ? options.fillOpacity : 0,
+                    color:          options.strokeColor || '#000',
+                    opacity:        options.strokeOpacity !== null && options.strokeOpacity !== undefined ? options.strokeOpacity : 1,
+                    weight:         options.strokeWeight !== null && options.strokeWeight !== undefined ? options.strokeWeight : 1,
                     radius:         options.radius || 0
                 };
                 var centre = VRS.leafletUtilities.toLeafletLatLng(options.center);
@@ -1824,10 +2137,7 @@ namespace VRS
             var state = this._getState();
             var circle = <MapCircle>this.getCircle(idOrCircle);
             if(circle) {
-                circle.setVisible(false);
-                circle.circle = null;
-                circle.map = null;
-                circle.tag = null;
+                circle.destroy();
                 delete state.circles[circle.id];
                 circle.id = null;
             }
@@ -1894,10 +2204,7 @@ namespace VRS
             var infoWindow = <MapInfoWindow>this.getInfoWindow(idOrInfoWindow);
             if(infoWindow) {
                 this.closeInfoWindow(infoWindow);
-                infoWindow.infoWindow.setContent('');
-                infoWindow.map = null;
-                infoWindow.tag = null;
-                infoWindow.infoWindow = null;
+                infoWindow.destroy();
                 delete state.infoWindows[infoWindow.id];
                 infoWindow.id = null;
             }
@@ -1907,24 +2214,15 @@ namespace VRS
         {
             var state = this._getState();
             var infoWindow = <MapInfoWindow>this.getInfoWindow(idOrInfoWindow);
-            if(infoWindow && state.map && !infoWindow.isOpen) {
-                if(!mapMarker) {
-                    infoWindow.map.openPopup(infoWindow.infoWindow);
-                } else {
-                    var marker = <MapMarker>mapMarker;
-                    marker.marker.bindPopup(infoWindow.infoWindow).openPopup();
-                }
-                infoWindow.isOpen = true;
+            if(infoWindow && state.map) {
+                infoWindow.open(<MapMarker>mapMarker);
             }
         }
 
         closeInfoWindow(idOrInfoWindow: string | number | IMapInfoWindow)
         {
             var infoWindow = <MapInfoWindow>this.getInfoWindow(idOrInfoWindow);
-            if(infoWindow.isOpen) {
-                infoWindow.map.closePopup(infoWindow.infoWindow);
-                infoWindow.isOpen = false;
-            }
+            infoWindow.close();
         }
 
         addControl(element: JQuery | HTMLElement, mapPosition: MapPositionEnum)
@@ -1937,6 +2235,26 @@ namespace VRS
                 var control = new MapControl(element, controlOptions);
                 control.addTo(state.map);
             }
+        }
+
+
+
+        //
+        // VRS EVENTS SUBSCRIBED
+        //
+
+
+        /**
+         * Called when the refresh manager indicates that one of our parents has resized, or done something that we need
+         * to refresh for.
+         */
+        private _targetResized()
+        {
+            var state = this._getState();
+
+            var center = this._getCenter(state);
+            this.refreshMap();
+            this._setCenter(state, center);
         }
     }
 

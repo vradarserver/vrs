@@ -71,6 +71,12 @@ namespace VirtualRadar.Interface.Presenter
         IEnumerable<string> GetVoiceNames();
 
         /// <summary>
+        /// Returns a collection of tile server setting names.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<string> GetTileServerSettingNames();
+
+        /// <summary>
         /// Validates the current content of the entire form and reports the results back to the view.
         /// </summary>
         void ValidateView();

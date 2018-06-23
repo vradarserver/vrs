@@ -352,6 +352,24 @@ namespace VirtualRadar.Library.Presenter
         {
             return Provider.GetVoiceNames();
         }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> GetTileServerSettingNames()
+        {
+            var manager = Factory.ResolveSingleton<ITileServerSettingsManager>();
+            var result = manager.GetAllTileServerSettings(MapProvider.Leaflet)
+                .OrderBy(r => r.IsDefault && !r.IsCustom ? 0 : 1)
+                .ThenBy(r => !r.IsCustom ? 0 : 1)
+                .ThenBy(r => r.DisplayOrder)
+                .ThenBy(r => (r.Name ?? "").ToLower())
+                .Select(r => r.Name)
+                .ToArray();
+
+            return result;
+        }
         #endregion
 
         #region Child object creation - CreateReceiver, CreateReceiverLocation, CreateMergedFeed, CreateRebroadcastServer, CreateUser

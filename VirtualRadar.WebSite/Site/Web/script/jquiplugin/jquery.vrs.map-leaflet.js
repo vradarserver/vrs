@@ -203,16 +203,59 @@ var VRS;
         }, overrides);
     };
     var MapMarker = (function () {
-        function MapMarker(id, map, nativeMarker, markerOptions, isMarkerWithLabel, isVisible, tag) {
+        function MapMarker(id, mapPlugin, map, nativeMarker, markerOptions, userOptions) {
+            this._eventsHooked = false;
             this.id = id;
+            this.mapPlugin = mapPlugin;
             this.map = map;
             this.marker = nativeMarker;
             this.mapIcon = VRS.leafletUtilities.fromLeafletIcon(markerOptions.icon);
             this.zIndex = markerOptions.zIndexOffset;
-            this.isMarkerWithLabel = isMarkerWithLabel;
-            this.tag = tag;
-            this.visible = isVisible;
+            this.isMarkerWithLabel = !!userOptions.useMarkerWithLabel;
+            this.tag = userOptions.tag;
+            this.visible = !!userOptions.visible;
+            if (this.isMarkerWithLabel) {
+                this.labelTooltip = new L.Tooltip({
+                    permanent: true,
+                    className: userOptions.mwlLabelClass,
+                    direction: 'bottom',
+                    pane: 'shadowPane'
+                });
+                this.labelTooltip.setLatLng(this.marker.getLatLng());
+            }
+            this.hookEvents(true);
         }
+        MapMarker.prototype.destroy = function () {
+            if (this.labelTooltip) {
+                this.setLabelVisible(false);
+                this.labelTooltip = null;
+            }
+            this.hookEvents(false);
+            this.setVisible(false);
+            this.mapPlugin = null;
+            this.marker = null;
+            this.map = null;
+            this.tag = null;
+        };
+        MapMarker.prototype.hookEvents = function (hook) {
+            if (this._eventsHooked !== hook) {
+                this._eventsHooked = hook;
+                if (hook)
+                    this.marker.on('click', this._marker_clicked, this);
+                else
+                    this.marker.off('click', this._marker_clicked, this);
+                if (hook)
+                    this.marker.on('dragend', this._marker_dragged, this);
+                else
+                    this.marker.off('dragend', this._marker_dragged, this);
+            }
+        };
+        MapMarker.prototype._marker_clicked = function (e) {
+            this.mapPlugin.raiseMarkerClicked(this.id);
+        };
+        MapMarker.prototype._marker_dragged = function (e) {
+            this.mapPlugin.raiseMarkerDragged(this.id);
+        };
         MapMarker.prototype.getDraggable = function () {
             return this.marker.dragging.enabled();
         };
@@ -236,13 +279,19 @@ var VRS;
         };
         MapMarker.prototype.setPosition = function (position) {
             this.marker.setLatLng(VRS.leafletUtilities.toLeafletLatLng(position));
+            if (this.labelTooltip) {
+                this.labelTooltip.setLatLng(this.marker.getLatLng());
+            }
         };
         MapMarker.prototype.getTooltip = function () {
-            var tooltip = this.marker.getTooltip();
-            return tooltip ? VRS.leafletUtilities.fromLeafletContent(tooltip.getContent()) : null;
+            var icon = this.marker.getElement();
+            return icon ? icon.title : null;
         };
-        MapMarker.prototype.setTooltip = function (tooltip) {
-            this.marker.setTooltipContent(tooltip);
+        MapMarker.prototype.setTooltip = function (text) {
+            var icon = this.marker.getElement();
+            if (icon) {
+                icon.title = text;
+            }
         };
         MapMarker.prototype.getVisible = function () {
             return this.visible;
@@ -266,16 +315,27 @@ var VRS;
             this.zIndex = zIndex;
         };
         MapMarker.prototype.getLabelVisible = function () {
-            return false;
+            return this.labelTooltip && this.labelTooltip.isOpen();
         };
         MapMarker.prototype.setLabelVisible = function (visible) {
-            ;
+            if (this.labelTooltip) {
+                if (visible !== this.getLabelVisible()) {
+                    if (visible) {
+                        this.map.openTooltip(this.labelTooltip);
+                    }
+                    else {
+                        this.map.closeTooltip(this.labelTooltip);
+                    }
+                }
+            }
         };
         MapMarker.prototype.getLabelContent = function () {
-            return '';
+            return this.labelTooltip ? this.labelTooltip.getContent() : '';
         };
         MapMarker.prototype.setLabelContent = function (content) {
-            ;
+            if (this.labelTooltip) {
+                this.labelTooltip.setContent(content);
+            }
         };
         MapMarker.prototype.getLabelAnchor = function () {
             return null;
@@ -296,6 +356,12 @@ var VRS;
             this._StrokeOpacity = options.strokeOpacity;
             this._StrokeWeight = options.strokeWeight;
         }
+        MapPolyline.prototype.destroy = function () {
+            this.setVisible(false);
+            this.polyline = null;
+            this.map = null;
+            this.tag = null;
+        };
         MapPolyline.prototype.getDraggable = function () {
             return false;
         };
@@ -391,6 +457,12 @@ var VRS;
             this._StrokeWeight = options.strokeWeight;
             this._ZIndex = options.zIndex;
         }
+        MapCircle.prototype.destroy = function () {
+            this.setVisible(false);
+            this.circle = null;
+            this.map = null;
+            this.tag = null;
+        };
         MapCircle.prototype.getBounds = function () {
             return VRS.leafletUtilities.fromLeafletLatLngBounds(this.circle.getBounds());
         };
@@ -523,6 +595,12 @@ var VRS;
             this._StrokeWeight = options.strokeWeight;
             this._ZIndex = options.zIndex;
         }
+        MapPolygon.prototype.destroy = function () {
+            this.setVisible(false);
+            this.map = null;
+            this.polygon = null;
+            this.tag = null;
+        };
         MapPolygon.prototype.getDraggable = function () {
             return false;
         };
@@ -637,6 +715,12 @@ var VRS;
             this._MaxWidth = options.maxWidth;
             this._PixelOffset = options.pixelOffset;
         }
+        MapInfoWindow.prototype.destroy = function () {
+            this.infoWindow.setContent('');
+            this.map = null;
+            this.tag = null;
+            this.infoWindow = null;
+        };
         MapInfoWindow.prototype.getContent = function () {
             return this.infoWindow.getContent();
         };
@@ -682,17 +766,50 @@ var VRS;
         MapInfoWindow.prototype.setZIndex = function (value) {
             ;
         };
+        MapInfoWindow.prototype.open = function (mapMarker) {
+            this.close();
+            if (!this.isOpen) {
+                this.isOpen = true;
+                if (!mapMarker) {
+                    this.map.openPopup(this.infoWindow);
+                }
+                else {
+                    this.boundMarker = mapMarker;
+                    var markerHeight = mapMarker.getIcon().size.height;
+                    this.setPixelOffset({ width: 0, height: -markerHeight });
+                    mapMarker.marker.bindPopup(this.infoWindow).openPopup();
+                }
+            }
+        };
+        MapInfoWindow.prototype.close = function () {
+            if (this.isOpen) {
+                this.isOpen = false;
+                if (!this.boundMarker) {
+                    this.map.closePopup(this.infoWindow);
+                }
+                else {
+                    if (this.boundMarker.marker) {
+                        this.boundMarker.marker.closePopup();
+                        this.boundMarker.marker.unbindPopup();
+                    }
+                    this.boundMarker = null;
+                }
+            }
+        };
         return MapInfoWindow;
     }());
     var MapPluginState = (function () {
         function MapPluginState() {
-            this.map = undefined;
             this.mapContainer = undefined;
+            this.map = undefined;
+            this.tileLayer = undefined;
             this.markers = {};
             this.polylines = {};
             this.circles = {};
             this.polygons = {};
             this.infoWindows = {};
+            this.eventsHooked = false;
+            this.settingCenter = undefined;
         }
         return MapPluginState;
     }());
@@ -725,6 +842,9 @@ var VRS;
             state.mapContainer = $('<div />')
                 .addClass('vrsMap')
                 .appendTo(this.element);
+            if (VRS.refreshManager) {
+                VRS.refreshManager.registerTarget(this.element, this._targetResized, this);
+            }
             if (this.options.afterCreate) {
                 this.options.afterCreate(this);
             }
@@ -734,10 +854,70 @@ var VRS;
         };
         MapPlugin.prototype._destroy = function () {
             var state = this._getState();
+            this._hookEvents(state, false);
             if (VRS.refreshManager)
                 VRS.refreshManager.unregisterTarget(this.element);
             if (state.mapContainer)
                 state.mapContainer.remove();
+        };
+        MapPlugin.prototype._hookEvents = function (state, hook) {
+            if (state.map) {
+                if ((hook && !state.eventsHooked) || (!hook && state.eventsHooked)) {
+                    state.eventsHooked = hook;
+                    if (hook)
+                        state.map.on('resize', this._map_resized, this);
+                    else
+                        state.map.off('resize', this._map_resized, this);
+                    if (hook)
+                        state.map.on('move', this._map_moved, this);
+                    else
+                        state.map.off('move', this._map_moved, this);
+                    if (hook)
+                        state.map.on('moveend', this._map_moveEnded, this);
+                    else
+                        state.map.off('moveend', this._map_moveEnded, this);
+                    if (hook)
+                        state.map.on('click', this._map_clicked, this);
+                    else
+                        state.map.off('click', this._map_clicked, this);
+                    if (hook)
+                        state.map.on('dblclick', this._map_doubleClicked, this);
+                    else
+                        state.map.off('dblclick', this._map_doubleClicked, this);
+                    if (hook)
+                        state.map.on('zoomend', this._map_zoomEnded, this);
+                    else
+                        state.map.off('zoomend', this._map_zoomEnded, this);
+                    if (hook)
+                        state.tileLayer.on('load', this._tileLayer_loaded, this);
+                    else
+                        state.tileLayer.off('load', this._tileLayer_loaded, this);
+                }
+            }
+        };
+        MapPlugin.prototype._map_resized = function (e) {
+            this._raiseBoundsChanged();
+        };
+        MapPlugin.prototype._map_moved = function (e) {
+            this._raiseCenterChanged();
+        };
+        MapPlugin.prototype._map_moveEnded = function (e) {
+            this._onIdle();
+        };
+        MapPlugin.prototype._map_clicked = function (e) {
+            this._userNotIdle();
+            this._raiseClicked(e);
+        };
+        MapPlugin.prototype._map_doubleClicked = function (e) {
+            this._userNotIdle();
+            this._raiseDoubleClicked(e);
+        };
+        MapPlugin.prototype._map_zoomEnded = function (e) {
+            this._raiseZoomChanged();
+            this._onIdle();
+        };
+        MapPlugin.prototype._tileLayer_loaded = function (e) {
+            this._raiseTilesLoaded();
         };
         MapPlugin.prototype.getNative = function () {
             return this._getState().map;
@@ -768,10 +948,18 @@ var VRS;
             this._setCenter(this._getState(), latLng);
         };
         MapPlugin.prototype._setCenter = function (state, latLng) {
-            if (state.map)
-                state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(latLng));
-            else
-                this.options.center = latLng;
+            if (state.settingCenter === undefined || state.settingCenter === null || state.settingCenter.lat != latLng.lat || state.settingCenter.lng != latLng.lng) {
+                try {
+                    state.settingCenter = latLng;
+                    if (state.map)
+                        state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(latLng));
+                    else
+                        this.options.center = latLng;
+                }
+                finally {
+                    state.settingCenter = undefined;
+                }
+            }
         };
         MapPlugin.prototype.getDraggable = function () {
             return this.options.draggable;
@@ -869,13 +1057,13 @@ var VRS;
         MapPlugin.prototype.hookMarkerClicked = function (callback, forceThis) {
             return VRS.globalDispatch.hookJQueryUIPluginEvent(this.element, this._EventPluginName, 'markerClicked', callback, forceThis);
         };
-        MapPlugin.prototype._raiseMarkerClicked = function (id) {
+        MapPlugin.prototype.raiseMarkerClicked = function (id) {
             this._trigger('markerClicked', null, { id: id });
         };
         MapPlugin.prototype.hookMarkerDragged = function (callback, forceThis) {
             return VRS.globalDispatch.hookJQueryUIPluginEvent(this.element, this._EventPluginName, 'markerDragged', callback, forceThis);
         };
-        MapPlugin.prototype._raiseMarkerDragged = function (id) {
+        MapPlugin.prototype.raiseMarkerDragged = function (id) {
             this._trigger('markerDragged', null, { id: id });
         };
         MapPlugin.prototype.hookInfoWindowClosedByUser = function (callback, forceThis) {
@@ -896,50 +1084,112 @@ var VRS;
         };
         MapPlugin.prototype.open = function (userOptions) {
             var _this = this;
-            var mapOptions = $.extend({}, userOptions, {
-                zoom: this.options.zoom,
-                center: this.options.center,
-                mapTypeControl: this.options.showMapTypeControl,
-                mapTypeId: this.options.mapTypeId,
-                streetViewControl: this.options.streetViewControl,
-                scrollwheel: this.options.scrollwheel,
-                scaleControl: this.options.scaleControl,
-                draggable: this.options.draggable,
-                showHighContrast: this.options.showHighContrast,
-                controlStyle: this.options.controlStyle,
-                controlPosition: this.options.controlPosition,
-                mapControls: this.options.mapControls
-            });
-            if (this.options.useStateOnOpen) {
-                var settings = this.loadState();
-                mapOptions.zoom = settings.zoom;
-                mapOptions.center = settings.center;
-                mapOptions.mapTypeId = settings.mapTypeId;
+            var tileServerSettings = VRS.serverConfig.get().TileServerSettings;
+            if (tileServerSettings) {
+                var mapOptions = $.extend({}, userOptions, {
+                    zoom: this.options.zoom,
+                    center: this.options.center,
+                    mapTypeControl: this.options.showMapTypeControl,
+                    mapTypeId: this.options.mapTypeId,
+                    streetViewControl: this.options.streetViewControl,
+                    scrollwheel: this.options.scrollwheel,
+                    scaleControl: this.options.scaleControl,
+                    draggable: this.options.draggable,
+                    showHighContrast: this.options.showHighContrast,
+                    controlStyle: this.options.controlStyle,
+                    controlPosition: this.options.controlPosition,
+                    mapControls: this.options.mapControls
+                });
+                if (this.options.useStateOnOpen) {
+                    var settings = this.loadState();
+                    mapOptions.zoom = settings.zoom;
+                    mapOptions.center = settings.center;
+                    mapOptions.mapTypeId = settings.mapTypeId;
+                }
+                mapOptions.zoom = this._normaliseZoom(mapOptions.zoom, tileServerSettings.MinZoom, tileServerSettings.MaxZoom);
+                var leafletOptions = {
+                    attributionControl: true,
+                    zoom: mapOptions.zoom,
+                    center: VRS.leafletUtilities.toLeafletLatLng(mapOptions.center),
+                    scrollWheelZoom: mapOptions.scrollwheel,
+                    dragging: mapOptions.draggable,
+                    zoomControl: mapOptions.scaleControl
+                };
+                var state = this._getState();
+                state.map = L.map(state.mapContainer[0], leafletOptions);
+                var tileServerOptions = this._buildTileServerOptions(tileServerSettings);
+                state.tileLayer = L.tileLayer(tileServerSettings.Url, tileServerOptions);
+                state.tileLayer.addTo(state.map);
+                this._hookEvents(state, true);
+                if (mapOptions.mapControls) {
+                    $.each(mapOptions.mapControls, function (idx, ctrl) {
+                        _this.addControl(ctrl.control, ctrl.position);
+                    });
+                }
+                var waitUntilReady = function () {
+                    if (_this.options.waitUntilReady && !_this.isReady()) {
+                        setTimeout(waitUntilReady, 100);
+                    }
+                    else {
+                        if (_this.options.afterOpen)
+                            _this.options.afterOpen(_this);
+                    }
+                };
+                waitUntilReady();
             }
-            var leafletOptions = {
-                attributionControl: true,
-                zoom: mapOptions.zoom,
-                center: VRS.leafletUtilities.toLeafletLatLng(mapOptions.center),
-                scrollWheelZoom: mapOptions.scrollwheel,
-                dragging: mapOptions.draggable,
-                zoomControl: mapOptions.scaleControl
+        };
+        MapPlugin.prototype._buildTileServerOptions = function (settings) {
+            var result = {
+                attribution: this._attributionToHtml(settings.Attribution),
+                detectRetina: settings.DetectRetina,
+                zoomReverse: settings.ZoomReverse,
             };
-            var state = this._getState();
-            state.map = L.map(state.mapContainer[0], leafletOptions);
-            L.tileLayer(VRS.serverConfig.get().OpenStreetMapTileServerUrl, {
-                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a></a>',
-                className: 'vrs-leaflet-tile-layer'
-            }).addTo(state.map);
-            var waitUntilReady = function () {
-                if (_this.options.waitUntilReady && !_this.isReady()) {
-                    setTimeout(waitUntilReady, 100);
+            if (settings.ClassName) {
+                result.className = settings.ClassName;
+            }
+            if (settings.MaxNativeZoom !== null && settings.MaxNativeZoom !== undefined) {
+                result.maxNativeZoom = settings.MaxNativeZoom;
+            }
+            if (settings.MinNativeZoom !== null && settings.MinNativeZoom !== undefined) {
+                result.minNativeZoom = settings.MinNativeZoom;
+            }
+            if (settings.MaxZoom !== null && settings.MaxZoom !== undefined) {
+                result.maxZoom = settings.MaxZoom;
+            }
+            if (settings.MinZoom !== null && settings.MinZoom !== undefined) {
+                result.minZoom = settings.MinZoom;
+            }
+            if (settings.Subdomains !== null && settings.Subdomains !== undefined) {
+                result.subdomains = settings.Subdomains;
+            }
+            if (settings.ZoomOffset !== null && settings.ZoomOffset !== undefined) {
+                result.zoomOffset = settings.ZoomOffset;
+            }
+            var countExpandos = settings.ExpandoOptions === null || settings.ExpandoOptions === undefined ? 0 : settings.ExpandoOptions.length;
+            for (var i = 0; i < countExpandos; ++i) {
+                var expando = settings.ExpandoOptions[i];
+                result[expando.Option] = VRS.stringUtility.htmlEscape(expando.Value);
+            }
+            return result;
+        };
+        MapPlugin.prototype._attributionToHtml = function (attribution) {
+            var result = VRS.stringUtility.htmlEscape(attribution);
+            result = result.replace(/\[c\]/g, '&copy;');
+            result = result.replace(/\[\/a\]/g, '</a>');
+            result = result.replace(/\[a href=(.+?)\]/g, '<a href="$1">');
+            return result;
+        };
+        MapPlugin.prototype._normaliseZoom = function (zoom, minZoom, maxZoom) {
+            var result = zoom;
+            if (result !== undefined && result !== null) {
+                if (minZoom !== undefined && minZoom !== null && result < minZoom) {
+                    result = minZoom;
                 }
-                else {
-                    if (_this.options.afterOpen)
-                        _this.options.afterOpen(_this);
+                if (maxZoom !== undefined && maxZoom !== null && result > maxZoom) {
+                    result = maxZoom;
                 }
-            };
-            waitUntilReady();
+            }
+            return result;
         };
         MapPlugin.prototype._userNotIdle = function () {
             if (VRS.timeoutManager)
@@ -955,10 +1205,18 @@ var VRS;
             this._panTo(mapCenter, this._getState());
         };
         MapPlugin.prototype._panTo = function (mapCenter, state) {
-            if (state.map)
-                state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(mapCenter));
-            else
-                this.options.center = mapCenter;
+            if (state.settingCenter === undefined || state.settingCenter === null || state.settingCenter.lat != mapCenter.lat || state.settingCenter.lng != mapCenter.lng) {
+                try {
+                    state.settingCenter = mapCenter;
+                    if (state.map)
+                        state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(mapCenter));
+                    else
+                        this.options.center = mapCenter;
+                }
+                finally {
+                    state.settingCenter = undefined;
+                }
+            }
         };
         MapPlugin.prototype.fitBounds = function (bounds) {
             var state = this._getState();
@@ -989,7 +1247,7 @@ var VRS;
             this.applyState(this.loadState());
         };
         MapPlugin.prototype._persistenceKey = function () {
-            return 'vrsOpenStreetMapState-' + (this.options.name || 'default');
+            return 'vrsMapState-' + (this.options.name || 'default');
         };
         MapPlugin.prototype._createSettings = function () {
             var state = this._getState();
@@ -1009,6 +1267,9 @@ var VRS;
                 if (userOptions.zIndex === null || userOptions.zIndex === undefined) {
                     userOptions.zIndex = 0;
                 }
+                if (userOptions.draggable) {
+                    userOptions.clickable = true;
+                }
                 var leafletOptions = {
                     interactive: userOptions.clickable !== undefined ? userOptions.clickable : true,
                     draggable: userOptions.draggable !== undefined ? userOptions.draggable : false,
@@ -1026,7 +1287,7 @@ var VRS;
                 if (userOptions.visible) {
                     nativeMarker.addTo(state.map);
                 }
-                result = new MapMarker(id, state.map, nativeMarker, leafletOptions, !!userOptions.useMarkerWithLabel, userOptions.visible, userOptions.tag);
+                result = new MapMarker(id, this, state.map, nativeMarker, leafletOptions, userOptions);
                 state.markers[id] = result;
             }
             return result;
@@ -1041,10 +1302,7 @@ var VRS;
             var state = this._getState();
             var marker = this.getMarker(idOrMarker);
             if (marker) {
-                marker.setVisible(false);
-                marker.marker = null;
-                marker.map = null;
-                marker.tag = null;
+                marker.destroy();
                 delete state.markers[marker.id];
                 marker.id = null;
             }
@@ -1100,10 +1358,7 @@ var VRS;
             var state = this._getState();
             var polyline = this.getPolyline(idOrPolyline);
             if (polyline) {
-                polyline.setVisible(false);
-                polyline.polyline = null;
-                polyline.map = null;
-                polyline.tag = null;
+                polyline.destroy();
                 delete state.polylines[polyline.id];
                 polyline.id = null;
             }
@@ -1211,10 +1466,7 @@ var VRS;
             var state = this._getState();
             var polygon = this.getPolygon(idOrPolygon);
             if (polygon) {
-                polygon.setVisible(false);
-                polygon.map = null;
-                polygon.polygon = null;
-                polygon.tag = null;
+                polygon.destroy();
                 delete state.polygons[polygon.id];
                 polygon.id = null;
             }
@@ -1227,11 +1479,11 @@ var VRS;
                     visible: true
                 });
                 var leafletOptions = {
-                    fillColor: '#000',
-                    fillOpacity: 0,
-                    color: '#000',
-                    opacity: 1,
-                    weight: 1,
+                    fillColor: options.fillColor || '#000',
+                    fillOpacity: options.fillOpacity !== null && options.fillOpacity !== undefined ? options.fillOpacity : 0,
+                    color: options.strokeColor || '#000',
+                    opacity: options.strokeOpacity !== null && options.strokeOpacity !== undefined ? options.strokeOpacity : 1,
+                    weight: options.strokeWeight !== null && options.strokeWeight !== undefined ? options.strokeWeight : 1,
                     radius: options.radius || 0
                 };
                 var centre = VRS.leafletUtilities.toLeafletLatLng(options.center);
@@ -1255,10 +1507,7 @@ var VRS;
             var state = this._getState();
             var circle = this.getCircle(idOrCircle);
             if (circle) {
-                circle.setVisible(false);
-                circle.circle = null;
-                circle.map = null;
-                circle.tag = null;
+                circle.destroy();
                 delete state.circles[circle.id];
                 circle.id = null;
             }
@@ -1313,10 +1562,7 @@ var VRS;
             var infoWindow = this.getInfoWindow(idOrInfoWindow);
             if (infoWindow) {
                 this.closeInfoWindow(infoWindow);
-                infoWindow.infoWindow.setContent('');
-                infoWindow.map = null;
-                infoWindow.tag = null;
-                infoWindow.infoWindow = null;
+                infoWindow.destroy();
                 delete state.infoWindows[infoWindow.id];
                 infoWindow.id = null;
             }
@@ -1324,23 +1570,13 @@ var VRS;
         MapPlugin.prototype.openInfoWindow = function (idOrInfoWindow, mapMarker) {
             var state = this._getState();
             var infoWindow = this.getInfoWindow(idOrInfoWindow);
-            if (infoWindow && state.map && !infoWindow.isOpen) {
-                if (!mapMarker) {
-                    infoWindow.map.openPopup(infoWindow.infoWindow);
-                }
-                else {
-                    var marker = mapMarker;
-                    marker.marker.bindPopup(infoWindow.infoWindow).openPopup();
-                }
-                infoWindow.isOpen = true;
+            if (infoWindow && state.map) {
+                infoWindow.open(mapMarker);
             }
         };
         MapPlugin.prototype.closeInfoWindow = function (idOrInfoWindow) {
             var infoWindow = this.getInfoWindow(idOrInfoWindow);
-            if (infoWindow.isOpen) {
-                infoWindow.map.closePopup(infoWindow.infoWindow);
-                infoWindow.isOpen = false;
-            }
+            infoWindow.close();
         };
         MapPlugin.prototype.addControl = function (element, mapPosition) {
             var state = this._getState();
@@ -1352,8 +1588,14 @@ var VRS;
                 control.addTo(state.map);
             }
         };
+        MapPlugin.prototype._targetResized = function () {
+            var state = this._getState();
+            var center = this._getCenter(state);
+            this.refreshMap();
+            this._setCenter(state, center);
+        };
         return MapPlugin;
     }(JQueryUICustomWidget));
     $.widget('vrs.vrsMap', new MapPlugin());
 })(VRS || (VRS = {}));
-//# sourceMappingURL=jquery.vrs.map-openstreetmap.js.map
+//# sourceMappingURL=jquery.vrs.map-leaflet.js.map

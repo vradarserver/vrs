@@ -27,7 +27,6 @@ namespace VirtualRadar.Library
     /// </summary>
     class XmlSerialiser : IXmlSerialiser
     {
-        #region Fields
         /// <summary>
         /// The namespace that we assign the XSI alias to.
         /// </summary>
@@ -57,16 +56,17 @@ namespace VirtualRadar.Library
             { "UInt32", "UnsignedInt" },
             { "UInt64", "UnsignedLong" },
         };
-        #endregion
 
-        #region Properties
         /// <summary>
         /// See base docs.
         /// </summary>
         public bool XmlSerializerCompatible { get; set; }
-        #endregion
 
-        #region Ctor
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        public bool UseDefaultEnumValueIfUnknown { get; set; }
+
         /// <summary>
         /// Creates a new object.
         /// </summary>
@@ -74,9 +74,7 @@ namespace VirtualRadar.Library
         {
             XmlSerializerCompatible = true;
         }
-        #endregion
 
-        #region Serialise
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -221,9 +219,7 @@ namespace VirtualRadar.Library
                 }
             }
         }
-        #endregion
 
-        #region Deserialise
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -289,6 +285,8 @@ namespace VirtualRadar.Library
                     } else if(isList) {
                         result = Activator.CreateInstance(type);
                         ReadList(node, (IList)result);
+                    } else if(type.IsEnum) {
+                        result = ReadEnumValue(node.Value, type);
                     } else {
                         var valueText = node.Value;
                         var isChar = type == typeof(char);     // XmlSerializer writes chars as ints... 
@@ -329,9 +327,21 @@ namespace VirtualRadar.Library
                 list.Add(elementValue);
             }
         }
-        #endregion
 
-        #region Utility methods - GetValueName
+        private object ReadEnumValue(string enumText, Type enumType)
+        {
+            object result = null;
+
+            if(!UseDefaultEnumValueIfUnknown || Enum.GetNames(enumType).Any(r => r == enumText)) {
+                result = CustomConvert.ChangeType(enumText, enumType, CultureInfo.InvariantCulture);
+            }
+            if(result == null) {
+                result = CustomConvert.ChangeType(0, enumType, CultureInfo.InvariantCulture);
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// Returns the element name for a type.
         /// </summary>
@@ -360,6 +370,5 @@ namespace VirtualRadar.Library
 
             return result;
         }
-        #endregion
     }
 }

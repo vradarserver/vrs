@@ -47,12 +47,12 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.textBoxOpenStreetMapTileServerUrl = new System.Windows.Forms.TextBox();
             this.checkBoxUseGoogleMapsKeyWithLocalRequests = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
             this.textBoxGoogleMapsAPIKey = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.comboBoxMapProvider = new System.Windows.Forms.ComboBox();
+            this.comboBoxTileServerSettingsName = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -253,8 +253,8 @@
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.comboBoxTileServerSettingsName);
             this.groupBox3.Controls.Add(this.label8);
-            this.groupBox3.Controls.Add(this.textBoxOpenStreetMapTileServerUrl);
             this.groupBox3.Controls.Add(this.checkBoxUseGoogleMapsKeyWithLocalRequests);
             this.groupBox3.Controls.Add(this.label11);
             this.groupBox3.Controls.Add(this.textBoxGoogleMapsAPIKey);
@@ -270,50 +270,40 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 98);
+            this.label8.Location = new System.Drawing.Point(6, 49);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(158, 13);
-            this.label8.TabIndex = 5;
-            this.label8.Text = "::OpenStreetMapTileServerUrl:::";
-            // 
-            // textBoxOpenStreetMapTileServerUrl
-            // 
-            this.textBoxOpenStreetMapTileServerUrl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxOpenStreetMapTileServerUrl.Location = new System.Drawing.Point(200, 95);
-            this.textBoxOpenStreetMapTileServerUrl.MaxLength = 60;
-            this.textBoxOpenStreetMapTileServerUrl.Name = "textBoxOpenStreetMapTileServerUrl";
-            this.textBoxOpenStreetMapTileServerUrl.Size = new System.Drawing.Size(499, 20);
-            this.textBoxOpenStreetMapTileServerUrl.TabIndex = 6;
+            this.label8.Size = new System.Drawing.Size(70, 13);
+            this.label8.TabIndex = 2;
+            this.label8.Text = "::TileServer:::";
             // 
             // checkBoxUseGoogleMapsKeyWithLocalRequests
             // 
             this.checkBoxUseGoogleMapsKeyWithLocalRequests.AutoSize = true;
-            this.checkBoxUseGoogleMapsKeyWithLocalRequests.Location = new System.Drawing.Point(200, 72);
+            this.checkBoxUseGoogleMapsKeyWithLocalRequests.Location = new System.Drawing.Point(200, 98);
             this.checkBoxUseGoogleMapsKeyWithLocalRequests.Name = "checkBoxUseGoogleMapsKeyWithLocalRequests";
             this.checkBoxUseGoogleMapsKeyWithLocalRequests.Size = new System.Drawing.Size(228, 17);
-            this.checkBoxUseGoogleMapsKeyWithLocalRequests.TabIndex = 4;
+            this.checkBoxUseGoogleMapsKeyWithLocalRequests.TabIndex = 6;
             this.checkBoxUseGoogleMapsKeyWithLocalRequests.Text = "::UseGoogleMapsKeyWithLocalRequests::";
             this.checkBoxUseGoogleMapsKeyWithLocalRequests.UseVisualStyleBackColor = true;
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(6, 49);
+            this.label11.Location = new System.Drawing.Point(6, 75);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(117, 13);
-            this.label11.TabIndex = 2;
+            this.label11.TabIndex = 4;
             this.label11.Text = "::GoogleMapsAPIKey:::";
             // 
             // textBoxGoogleMapsAPIKey
             // 
             this.textBoxGoogleMapsAPIKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxGoogleMapsAPIKey.Location = new System.Drawing.Point(200, 46);
+            this.textBoxGoogleMapsAPIKey.Location = new System.Drawing.Point(200, 72);
             this.textBoxGoogleMapsAPIKey.MaxLength = 60;
             this.textBoxGoogleMapsAPIKey.Name = "textBoxGoogleMapsAPIKey";
             this.textBoxGoogleMapsAPIKey.Size = new System.Drawing.Size(499, 20);
-            this.textBoxGoogleMapsAPIKey.TabIndex = 3;
+            this.textBoxGoogleMapsAPIKey.TabIndex = 5;
             // 
             // label7
             // 
@@ -332,6 +322,15 @@
             this.comboBoxMapProvider.Name = "comboBoxMapProvider";
             this.comboBoxMapProvider.Size = new System.Drawing.Size(249, 21);
             this.comboBoxMapProvider.TabIndex = 1;
+            // 
+            // comboBoxTileServerSettingsName
+            // 
+            this.comboBoxTileServerSettingsName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxTileServerSettingsName.FormattingEnabled = true;
+            this.comboBoxTileServerSettingsName.Location = new System.Drawing.Point(200, 46);
+            this.comboBoxTileServerSettingsName.Name = "comboBoxTileServerSettingsName";
+            this.comboBoxTileServerSettingsName.Size = new System.Drawing.Size(354, 21);
+            this.comboBoxTileServerSettingsName.TabIndex = 3;
             // 
             // PageDataSources
             // 
@@ -375,9 +374,9 @@
         private System.Windows.Forms.ComboBox comboBoxMapProvider;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox textBoxOpenStreetMapTileServerUrl;
         private System.Windows.Forms.CheckBox checkBoxUseGoogleMapsKeyWithLocalRequests;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox textBoxGoogleMapsAPIKey;
+        private System.Windows.Forms.ComboBox comboBoxTileServerSettingsName;
     }
 }

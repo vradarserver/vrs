@@ -58,7 +58,31 @@ namespace VRS
         InternetClientsCanSubmitRoutes:         boolean;
         InternetClientsCanSeeAircraftPictures:  boolean;
         InternetClientsCanSeePolarPlots:        boolean;
-        OpenStreetMapTileServerUrl:             string;
+        TileServerSettings:                     ITileServerSettings;
+    }
+
+    export interface ITileServerSettings
+    {
+        Name:           string;
+        Url:            string;
+        Subdomains:     string;
+        Version:        string;
+        MinZoom:        number;
+        MaxZoom:        number;
+        ZoomOffset:     number;
+        MinNativeZoom:  number;
+        MaxNativeZoom:  number;
+        ZoomReverse:    boolean;
+        DetectRetina:   boolean;
+        ClassName:      string;
+        Attribution:    string;
+        ExpandoOptions: ITileServerSettingExpandoOption[];
+    }
+
+    export interface ITileServerSettingExpandoOption
+    {
+        Option: string;
+        Value:  string;
     }
 
     export interface IServerConfigReceiver

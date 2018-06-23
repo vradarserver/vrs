@@ -12,18 +12,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
-    /// An enumeration of all of the different jQueryUI plugins that have been written that implement
-    /// the TypeScript IMap interface.
+    /// The interface for objects that can download tile server settings.
     /// </summary>
-    public enum MapProvider
+    public interface ITileServerSettingsDownloader
     {
-        Leaflet = 0,
-
-        GoogleMaps = 1,
+        /// <summary>
+        /// Downloads and returns the latest complete set of tile server settings.
+        /// </summary>
+        /// <param name="timeoutSeconds"></param>
+        /// <returns></returns>
+        TileServerSettings[] Download(int timeoutSeconds);
     }
 }

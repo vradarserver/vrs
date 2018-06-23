@@ -12,18 +12,42 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
-    /// An enumeration of all of the different jQueryUI plugins that have been written that implement
-    /// the TypeScript IMap interface.
+    /// The interface for classes that can load tile server settings.
     /// </summary>
-    public enum MapProvider
+    [Singleton]
+    public interface ITileServerSettingsStorage
     {
-        Leaflet = 0,
+        /// <summary>
+        /// Gets or sets the folder to load tile server settings from. If null then the <see cref="IConfigurationStorage"/> folder is used.
+        /// </summary>
+        string Folder { get; set; }
 
-        GoogleMaps = 1,
+        /// <summary>
+        /// Returns true if the settings have been downloaded at least once.
+        /// </summary>
+        /// <returns></returns>
+        bool DownloadedSettingsFileExists();
+
+        /// <summary>
+        /// Loads and returns the entire set of tile server settings. If no settings could be found on disk then a default set is returned.
+        /// </summary>
+        /// <returns></returns>
+        List<TileServerSettings> Load();
+
+        /// <summary>
+        /// Saves a set of downloaded settings.
+        /// </summary>
+        /// <param name="settings"></param>
+        void SaveDownloadedSettings(TileServerSettings[] settings);
+
+        /// <summary>
+        /// Saves a readme file detailing how to create a custom tile server settings file.
+        /// </summary>
+        void CreateReadme();
     }
 }

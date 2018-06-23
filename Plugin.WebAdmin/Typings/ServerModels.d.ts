@@ -130,6 +130,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         DistanceUnits: VirtualRadar.Interface.View.IEnumModel[];
         Handshakes: VirtualRadar.Interface.View.IEnumModel[];
         HeightUnits: VirtualRadar.Interface.View.IEnumModel[];
+        MapProviders: VirtualRadar.Interface.View.IEnumModel[];
         Parities: VirtualRadar.Interface.View.IEnumModel[];
         ProxyTypes: VirtualRadar.Interface.View.IEnumModel[];
         RebroadcastFormats: VirtualRadar.Interface.Network.IRebroadcastFormatName[];
@@ -138,6 +139,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         StopBits: VirtualRadar.Interface.View.IEnumModel[];
         ComPortNames: string[];
         VoiceNames: string[];
+        TileServerSettingNames: string[];
     }
     interface IConfigurationModel {
         DataVersion: number;
@@ -227,6 +229,8 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         UseSvgGraphicsOnDesktop: boolean;
         UseSvgGraphicsOnMobile: boolean;
         UseSvgGraphicsOnReports: boolean;
+        MapProvider: number;
+        TileServerSettingName: string;
     }
     interface IInternetClientSettingsModel {
         CanRunReports: boolean;
@@ -365,7 +369,9 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         ShutdownText: string;
         ReceiverLocationId: number;
         WebAddress: string;
+        WebAddressValidation: VirtualRadar.Interface.View.IValidationModelField;
         FetchIntervalMilliseconds: number;
+        FetchIntervalMillisecondsValidation: VirtualRadar.Interface.View.IValidationModelField;
         ReceiverLocationIdValidation: VirtualRadar.Interface.View.IValidationModelField;
         ReceiverUsage: number;
     }
@@ -616,6 +622,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         DistanceUnits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         Handshakes: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         HeightUnits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
+        MapProviders: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         Parities: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         ProxyTypes: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         RebroadcastFormats: KnockoutViewModelArray<VirtualRadar.Interface.Network.IRebroadcastFormatName_KO>;
@@ -624,6 +631,7 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         StopBits: KnockoutViewModelArray<VirtualRadar.Interface.View.IEnumModel_KO>;
         ComPortNames: KnockoutViewModelArray<string>;
         VoiceNames: KnockoutViewModelArray<string>;
+        TileServerSettingNames: KnockoutViewModelArray<string>;
     }
     interface IConfigurationModel_KO {
         DataVersion: KnockoutObservable<number>;
@@ -713,6 +721,8 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         UseSvgGraphicsOnDesktop: KnockoutObservable<boolean>;
         UseSvgGraphicsOnMobile: KnockoutObservable<boolean>;
         UseSvgGraphicsOnReports: KnockoutObservable<boolean>;
+        MapProvider: KnockoutObservable<number>;
+        TileServerSettingName: KnockoutObservable<string>;
     }
     interface IInternetClientSettingsModel_KO {
         CanRunReports: KnockoutObservable<boolean>;
@@ -851,7 +861,9 @@ declare module VirtualRadar.Plugin.WebAdmin.View.Settings {
         ShutdownText: KnockoutObservable<string>;
         ReceiverLocationId: KnockoutObservable<number>;
         WebAddress: KnockoutObservable<string>;
+        WebAddressValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         FetchIntervalMilliseconds: KnockoutObservable<number>;
+        FetchIntervalMillisecondsValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         ReceiverLocationIdValidation: VirtualRadar.Interface.View.IValidationModelField_KO;
         ReceiverUsage: KnockoutObservable<number>;
     }

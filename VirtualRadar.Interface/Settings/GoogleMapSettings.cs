@@ -285,14 +285,14 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _UseGoogleMapsAPIKeyWithLocalRequests, value, nameof(UseGoogleMapsAPIKeyWithLocalRequests)); }
         }
 
-        private string _OpenStreetMapTileServerUrl;
+        private string _TileServerSettingName;
         /// <summary>
-        /// Gets or sets the tile server to use when using the OpenStreetMap provider.
+        /// Gets or sets the name of the tile server setting to use with map providers that use tile servers.
         /// </summary>
-        public string OpenStreetMapTileServerUrl
+        public string TileServerSettingName
         {
-            get { return _OpenStreetMapTileServerUrl; }
-            set { SetField(ref _OpenStreetMapTileServerUrl, value, nameof(OpenStreetMapTileServerUrl)); }
+            get { return _TileServerSettingName; }
+            set { SetField(ref _TileServerSettingName, value, nameof(TileServerSettingName)); }
         }
 
         private bool _UseSvgGraphicsOnDesktop;
@@ -366,6 +366,7 @@ namespace VirtualRadar.Interface.Settings
         /// </summary>
         public GoogleMapSettings()
         {
+            MapProvider = MapProvider.Leaflet;
             InitialMapLatitude = 51.47;
             InitialMapLongitude = -0.6;
             InitialMapType = "ROADMAP";

@@ -13,4 +13,4 @@ var VRS;
     }());
     VRS.MapIcon = MapIcon;
 })(VRS || (VRS = {}));
-//# sourceMappingURL=map-common.js.map
+//# sourceMappingURL=jquery.vrs.map-common.js.map
