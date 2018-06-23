@@ -321,6 +321,8 @@ namespace VirtualRadar.Library.Settings
                                                          $"Current data version is {currentConfiguration.DataVersion}, you are attempting to save version {configuration.DataVersion}.");
                 }
 
+                BackupOldSettings();
+
                 ++configuration.DataVersion;
 
                 using(StreamWriter stream = new StreamWriter(FileName, false, Encoding.UTF8)) {
@@ -330,6 +332,26 @@ namespace VirtualRadar.Library.Settings
             }
 
             OnConfigurationChanged(EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Copies the settings file into the ConfigBackups folder and gives it a timestamp.
+        /// </summary>
+        private void BackupOldSettings()
+        {
+            if(File.Exists(FileName)) {
+                var folder = Path.Combine(Provider.Folder, "ConfigBackups");
+                if(!Directory.Exists(folder)) {
+                    Directory.CreateDirectory(folder);
+                }
+
+                var fileInfo = new FileInfo(FileName);
+
+                var backupFileName = Path.Combine(folder, String.Format("Configuration-{0:yyyy}-{0:MM}-{0:dd}-{0:HH}-{0:mm}-{0:ss}.xml", fileInfo.LastWriteTimeUtc));
+                if(!File.Exists(backupFileName)) {
+                    File.Copy(FileName, backupFileName, overwrite: false);
+                }
+            }
         }
     }
 }

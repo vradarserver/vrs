@@ -165,6 +165,51 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
+        public void ConfigurationStorage_Save_Increments_DataVersion()
+        {
+            var config = _Implementation.Load();
+            var initialDataVersion = config.DataVersion;
+
+            _Implementation.Save(config);
+
+            Assert.AreEqual(initialDataVersion + 1, config.DataVersion);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ConflictingUpdateException))]
+        public void ConfigurationStorage_Save_Rejects_Unexpected_DataVersion()
+        {
+            var config = _Implementation.Load();
+            _Implementation.Save(config);
+
+            --config.DataVersion;
+            _Implementation.Save(config);
+        }
+
+        [TestMethod]
+        public void ConfigurationStorage_Save_Backs_Up_Current_Configuration()
+        {
+            var config = _Implementation.Load();
+            _Implementation.Save(config);
+
+            var configFileName = Path.Combine(_Implementation.Folder, "Configuration.xml");
+            var oldConfigContent = File.ReadAllText(configFileName);
+
+            var backupFolder = Path.Combine(_Implementation.Folder, "ConfigBackups");
+            if(Directory.Exists(backupFolder)) {
+                Directory.Delete(backupFolder, recursive: true);
+            }
+
+            config.AudioSettings.Enabled = !config.AudioSettings.Enabled;
+            _Implementation.Save(config);
+
+            Assert.IsTrue(Directory.Exists(backupFolder));
+            var backupFileName = Directory.GetFiles(backupFolder, "Configuration-*.xml").Single();
+            var backupContent = File.ReadAllText(backupFileName);
+            Assert.AreEqual(oldConfigContent, backupContent);
+        }
+
+        [TestMethod]
         public void ConfigurationStorage_Can_Save_And_Load_Configurations()
         {
             var configuration = CreateKnownConfiguration();
