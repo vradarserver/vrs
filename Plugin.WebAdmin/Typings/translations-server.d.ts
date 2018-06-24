@@ -41,6 +41,7 @@ declare module VRS.Server
         AircraftDetailOnlineLookupLog:                             string;
         AircraftDetailsOnlineLookup:                               string;
         AircraftListJson:                                          string;
+        AirnavXRange:                                              string;
         AllCaps:                                                   string;
         AllowAccess:                                               string;
         AllowCorsDomainsRequired:                                  string;
@@ -65,6 +66,7 @@ declare module VRS.Server
         BaseStation:                                               string;
         BaseStationStatus:                                         string;
         BeastModeSFeed:                                            string;
+        Beta:                                                      string;
         BytesBuffered:                                             string;
         BytesReceived:                                             string;
         BytesSent:                                                 string;
@@ -158,13 +160,10 @@ declare module VRS.Server
         Description:                                               string;
         DesktopSite:                                               string;
         DesktopVersion:                                            string;
-        DesktopVersionOld:                                         string;
         DF:                                                        string;
         DirectoryEntryKey:                                         string;
         Disconnected:                                              string;
         Disconnecting:                                             string;
-        DotNetVersionTooLowFull:                                   string;
-        DotNetVersionTooLowTitle:                                  string;
         Download:                                                  string;
         DownloadData:                                              string;
         DownloadGlobalAirPressureReadings:                         string;
@@ -198,6 +197,8 @@ declare module VRS.Server
         FeedAndServerNamesMustBeUnique:                            string;
         FeedStatus:                                                string;
         Feet:                                                      string;
+        FetchInterval:                                             string;
+        FetchIntervalOutOfBounds:                                  string;
         Finish:                                                    string;
         FirstSeen:                                                 string;
         FlagsFolder:                                               string;
@@ -206,7 +207,6 @@ declare module VRS.Server
         FlightSimulatorXReceiverRequired:                          string;
         FlightSimulatorXShutdown:                                  string;
         FlightSimVersion:                                          string;
-        FlightSimVersionOld:                                       string;
         FolderDoesNotExistFull:                                    string;
         FolderDoesNotExistTitle:                                   string;
         Format:                                                    string;
@@ -221,6 +221,7 @@ declare module VRS.Server
         Help:                                                      string;
         Hidden:                                                    string;
         HideFromWebSite:                                           string;
+        Http:                                                      string;
         ICAO:                                                      string;
         IcaoTimeout:                                               string;
         IcaoTimeoutOutOfBounds:                                    string;
@@ -279,6 +280,7 @@ declare module VRS.Server
         Latitude:                                                  string;
         LatitudeCannotBeZero:                                      string;
         LatitudeOutOfBounds:                                       string;
+        Leaflet:                                                   string;
         License:                                                   string;
         LicenseContent:                                            string;
         Local:                                                     string;
@@ -295,6 +297,8 @@ declare module VRS.Server
         LongitudeOutOfBounds:                                      string;
         LookupAircraftDetailsOnline:                               string;
         Manufacturer:                                              string;
+        MapProvider:                                               string;
+        MapProviderTitle:                                          string;
         MaxAirborneSpeed:                                          string;
         MaxSurfaceSpeed:                                           string;
         MaxTransitionSpeed:                                        string;
@@ -344,7 +348,6 @@ declare module VRS.Server
         MLAT:                                                      string;
         MobileSite:                                                string;
         MobileVersion:                                             string;
-        MobileVersionOld:                                          string;
         Model:                                                     string;
         ModeS:                                                     string;
         MonoSettings:                                              string;
@@ -468,15 +471,19 @@ declare module VRS.Server
         OptionsDescribeRebroadcastTransmitAddress:                 string;
         OptionsDescribeRebroadcastUseKeepAlive:                    string;
         OptionsDescribeReceiverEnabled:                            string;
+        OptionsDescribeReceiverFetchInterval:                      string;
         OptionsDescribeReceiverLocationLatitude:                   string;
         OptionsDescribeReceiverLocationLongitude:                  string;
         OptionsDescribeReceiverLocationName:                       string;
         OptionsDescribeReceiverName:                               string;
+        OptionsDescribeReceiverWebAddress:                         string;
         OptionsDescribeUseGoogleMapsKeyWithLocalRequests:          string;
         OptionsDescribeUserEnabled:                                string;
         OptionsDescribeUserName:                                   string;
         OptionsDescribeUserPassword:                               string;
-        OptionsDescribeUseSvgGraphics:                             string;
+        OptionsDescribeUseSvgGraphicsOnDesktop:                    string;
+        OptionsDescribeUseSvgGraphicsOnMobile:                     string;
+        OptionsDescribeUseSvgGraphicsOnReports:                    string;
         OptionsDescribeWebServerAllowInternetProximityGadgets:     string;
         OptionsDescribeWebServerAutoStartUPnp:                     string;
         OptionsDescribeWebServerEnableUPnpFeatures:                string;
@@ -611,6 +618,7 @@ declare module VRS.Server
         RecConWizSdrTitle:                                         string;
         RecConWizSourceTheReceiver:                                string;
         RecConWizSourceTheSdr:                                     string;
+        RecConWizWebAddressTitle:                                  string;
         ReceivedCountMessages:                                     string;
         Receiver:                                                  string;
         ReceiverCannotBeMergeOnly:                                 string;
@@ -716,6 +724,7 @@ declare module VRS.Server
         SplashScreenInitialisingBaseStationListener:               string;
         SplashScreenInitialisingConnectionLogger:                  string;
         SplashScreenInitialisingLog:                               string;
+        SplashScreenInitialisingTileServerSettingsManager:         string;
         SplashScreenInitialisingUPnPManager:                       string;
         SplashScreenInitialisingUserManager:                       string;
         SplashScreenLoadingConfiguration:                          string;
@@ -751,6 +760,8 @@ declare module VRS.Server
         TextToSpeechVoice:                                         string;
         TheseSettingsOnlyAffectInternetBrowsers:                   string;
         Throughput:                                                string;
+        TileServer:                                                string;
+        TileServerSettings_ReadMe:                                 string;
         Time:                                                      string;
         Title64Bit:                                                string;
         To:                                                        string;
@@ -797,12 +808,17 @@ declare module VRS.Server
         UserNameMissing:                                           string;
         Users:                                                     string;
         UseSlewMethod:                                             string;
-        UseSvgGraphics:                                            string;
+        UseSvgGraphicsOnDesktop:                                   string;
+        UseSvgGraphicsOnMobile:                                    string;
+        UseSvgGraphicsOnReports:                                   string;
         Version:                                                   string;
         VersionCheckResult:                                        string;
         VirtualRadarServer:                                        string;
         Waiting:                                                   string;
         Warning:                                                   string;
+        WebAddress:                                                string;
+        WebAddressIsInvalid:                                       string;
+        WebAddressRequired:                                        string;
         WebServer:                                                 string;
         WebServerOffline:                                          string;
         WebServerOnline:                                           string;
@@ -812,8 +828,6 @@ declare module VRS.Server
         WebSiteReceiverRequired:                                   string;
         WebSiteUrl:                                                string;
         WebSiteUser:                                               string;
-        WindowsVersionTooLowFull:                                  string;
-        WindowsVersionTooLowTitle:                                 string;
         Wizard:                                                    string;
         Year:                                                      string;
         Yes:                                                       string;
