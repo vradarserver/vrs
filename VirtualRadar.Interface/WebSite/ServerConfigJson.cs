@@ -15,6 +15,7 @@ using System.Text;
 using System.Runtime.Serialization;
 using InterfaceFactory;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Localisation;
 
 namespace VirtualRadar.Interface.WebSite
 {
@@ -243,7 +244,7 @@ namespace VirtualRadar.Interface.WebSite
                 MinimumRefreshSeconds =                 configuration.GoogleMapSettings.MinimumRefreshSeconds,
                 RefreshSeconds =                        configuration.GoogleMapSettings.InitialRefreshSeconds,
                 TileServerSettings =                    tileServerSettings,
-                VrsVersion =                            applicationInformation.ShortVersion,
+                VrsVersion =                            applicationInformation.IsBeta ? $"{applicationInformation.ShortVersion} {Strings.Beta}" : applicationInformation.ShortVersion,
             };
             result.Receivers.AddRange(configuration.Receivers.Select(r => ServerReceiverJson.ToModel(r)).Where(r => r != null));
             result.Receivers.AddRange(configuration.MergedFeeds.Select(r => ServerReceiverJson.ToModel(r)).Where(r => r != null));

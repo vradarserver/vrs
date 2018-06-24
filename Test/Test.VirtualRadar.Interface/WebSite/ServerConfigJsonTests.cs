@@ -109,7 +109,6 @@ namespace Test.VirtualRadar.Interface.WebSite
             Assert.IsFalse(model.IsMono);
         }
 
-
         [TestMethod]
         public void ServerConfigJson_ToModel_Sets_VrsVersion_Correctly()
         {
@@ -118,6 +117,17 @@ namespace Test.VirtualRadar.Interface.WebSite
             var model = ServerConfigJson.ToModel(isLocalAddress: true);
 
             Assert.AreEqual("1.2.3", model.VrsVersion);
+        }
+
+        [TestMethod]
+        public void ServerConfigJson_ToModel_Sets_VrsVersion_Correctly_For_Beta_Versions()
+        {
+            _ApplicationInformation.Setup(r => r.ShortVersion).Returns("1.2.3");
+            _ApplicationInformation.Setup(r => r.IsBeta).Returns(true);
+
+            var model = ServerConfigJson.ToModel(isLocalAddress: true);
+
+            Assert.AreEqual("1.2.3 Beta", model.VrsVersion);
         }
 
         [TestMethod]
