@@ -198,8 +198,10 @@ namespace VirtualRadar.Library.Presenter
 
             var log = Factory.ResolveSingleton<ILog>();
             var applicationInformation = Factory.Resolve<IApplicationInformation>();
+            var version = applicationInformation.IsBeta ? $"{applicationInformation.ShortVersion} Beta" : applicationInformation.ShortVersion;
+
             log.Truncate(100);
-            log.WriteLine("Program started, version {0}, build date {1} UTC", applicationInformation.FullVersion, applicationInformation.BuildDate);
+            log.WriteLine("Program started, version {0}, build date {1} UTC", version, applicationInformation.BuildDate);
             log.WriteLine("Working folder {0}", configurationStorage.Folder);
         }
 
