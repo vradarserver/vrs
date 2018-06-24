@@ -37,6 +37,21 @@ namespace VirtualRadar.Interface
         string FullVersion { get; }
 
         /// <summary>
+        /// Gets the short version number that the beta is based on. Returns null if not a beta.
+        /// </summary>
+        string BetaBasedOnShortVersion { get; }
+
+        /// <summary>
+        /// Gets the full version number that the beta is based on. Returns null if not a beta.
+        /// </summary>
+        string BetaBasedOnFullVersion { get; }
+
+        /// <summary>
+        /// Gets a value indicating that this is a beta version.
+        /// </summary>
+        bool IsBeta { get; }
+
+        /// <summary>
         /// Gets the build date of the application.
         /// </summary>
         DateTime BuildDate { get; }

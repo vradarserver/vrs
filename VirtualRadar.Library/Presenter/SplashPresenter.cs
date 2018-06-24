@@ -94,8 +94,11 @@ namespace VirtualRadar.Library.Presenter
         {
             _View = view;
 
+            var applicationInfo = Factory.Resolve<IApplicationInformation>();
+
             _View.ApplicationName = Strings.VirtualRadarServer;
-            _View.ApplicationVersion = Factory.Resolve<IApplicationInformation>().ShortVersion;
+            _View.IsBeta = applicationInfo.IsBeta;
+            _View.ApplicationVersion = applicationInfo.ShortVersion;
         }
 
         /// <summary>

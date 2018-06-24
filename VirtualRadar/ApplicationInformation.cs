@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2010 onwards, Andrew Whewell  
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,6 +17,7 @@ using System.Reflection;
 using VirtualRadar.Localisation;
 using System.Globalization;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace VirtualRadar
 {
@@ -31,6 +32,8 @@ namespace VirtualRadar
         private static Version _Version;
         private static string _ShortVersion;
         private static string _FullVersion;
+        private static string _BetaBasedOnShortVersion;
+        private static string _BetaBasedOnFullVersion;
         private static string _ApplicationName;
         private static string _ProductName;
         private static string _Description;
@@ -42,57 +45,72 @@ namespace VirtualRadar
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public Version Version { get { return _Version; } }
+        public Version Version => _Version;
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string ShortVersion { get { return _ShortVersion; } }
+        public string ShortVersion => _ShortVersion;
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string FullVersion { get { return _FullVersion; } }
+        public string FullVersion => _FullVersion;
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public DateTime BuildDate { get { return _BuildDate; } }
+        public string BetaBasedOnShortVersion => _BetaBasedOnShortVersion;
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string ApplicationName { get { return _ApplicationName; } }
+        public string BetaBasedOnFullVersion => _BetaBasedOnFullVersion;
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string ProductName { get { return _ProductName; } }
+        public bool IsBeta => !String.IsNullOrEmpty(_BetaBasedOnFullVersion);
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Description { get { return _Description; } }
+        public DateTime BuildDate => _BuildDate;
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Copyright { get { return _Copyright; } }
+        public string ApplicationName => _ApplicationName;
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public CultureInfo CultureInfo { get { return ProgramLifetime.ForcedCultureInfo; } }
+        public string ProductName => _ProductName;
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public bool Headless { get { return _Headless; } }
+        public string Description => _Description;
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public bool IsService {get { return _IsService; } }
+        public string Copyright => _Copyright;
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public CultureInfo CultureInfo => ProgramLifetime.ForcedCultureInfo;
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool Headless => _Headless;
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IsService => _IsService;
 
         /// <summary>
         /// Creates a new object.
@@ -112,6 +130,20 @@ namespace VirtualRadar
                 _Description = String.Format("{0}{1}{1}{2}:{1}{1}{3}", Strings.ApplicationDescription, Environment.NewLine, Strings.License, Strings.LicenseContent);
                 _Copyright = Strings.Copyright;
                 _BuildDate = ExtractBuildDate(assembly);
+
+                var informationalVersion = (assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute)?.InformationalVersion;
+                if(!String.IsNullOrEmpty(informationalVersion)) {
+                    var betaRegex = new Regex(@"^(?<major>\d+)\.(?<minor>\d+)\.(?<build>\d+)\.(?<revision>\d+) beta$");
+                    var match = betaRegex.Match(informationalVersion);
+                    if(match.Success) {
+                        var major = match.Groups["major"].Value;
+                        var minor = match.Groups["minor"].Value;
+                        var build = match.Groups["build"].Value;
+                        var revision = match.Groups["revision"].Value;
+                        _BetaBasedOnFullVersion = $"{major}.{minor}.{build}.{revision}";
+                        _BetaBasedOnShortVersion = $"{major}.{minor}.{build}";
+                    }
+                }
             }
         }
 

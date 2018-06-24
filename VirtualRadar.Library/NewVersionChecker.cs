@@ -94,15 +94,22 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         public bool CheckForNewVersion()
         {
-            bool result = false;
+            var result = false;
 
-            string content = Provider.DownloadFileContent("http://www.virtualradarserver.co.uk/LatestVersion.txt");
+            var content = Provider.DownloadFileContent("http://www.virtualradarserver.co.uk/LatestVersion.txt");
             if(!String.IsNullOrEmpty(content)) {
-                Version thisVersion = Factory.Resolve<IApplicationInformation>().Version;
+                var applicationInfo = Factory.Resolve<IApplicationInformation>();
+                var thisVersion = applicationInfo.Version;
+                if(applicationInfo.IsBeta) {
+                    thisVersion = new Version(applicationInfo.BetaBasedOnFullVersion);
+                }
+
                 result = VersionComparer.Compare(content, thisVersion) > 0;
 
                 IsNewVersionAvailable = result;
-                if(result) OnNewVersionAvailable(EventArgs.Empty);
+                if(result) {
+                    OnNewVersionAvailable(EventArgs.Empty);
+                }
             }
 
             return result;

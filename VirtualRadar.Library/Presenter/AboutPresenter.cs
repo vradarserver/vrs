@@ -17,6 +17,7 @@ using VirtualRadar.Interface.Presenter;
 using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Localisation;
 
 namespace VirtualRadar.Library.Presenter
 {
@@ -51,7 +52,8 @@ namespace VirtualRadar.Library.Presenter
             _View.Is64BitProcess = runtimeEnvironment.Is64BitProcess;
             _View.IsMono = runtimeEnvironment.IsMono;
             _View.ProductName = applicationInformation.ProductName;
-            _View.Version = applicationInformation.FullVersion;
+
+            _View.Version = applicationInformation.IsBeta ? $"{applicationInformation.ShortVersion} {Strings.Beta}" : applicationInformation.ShortVersion;
         }
 
         /// <summary>

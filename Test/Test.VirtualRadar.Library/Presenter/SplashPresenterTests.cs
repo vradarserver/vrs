@@ -165,6 +165,15 @@ namespace Test.VirtualRadar.Library.Presenter
 
             Assert.AreEqual("1.2.3", _View.Object.ApplicationVersion);
         }
+
+        [TestMethod]
+        public void SplashPresenter_Initialise_Sets_IsBeta()
+        {
+            _ApplicationInformation.Setup(p => p.IsBeta).Returns(true);
+            _Presenter.Initialise(_View.Object);
+
+            Assert.AreEqual(true, _View.Object.IsBeta);
+        }
         #endregion
 
         #region StartApplication

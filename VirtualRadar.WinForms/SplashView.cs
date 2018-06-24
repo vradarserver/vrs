@@ -34,7 +34,6 @@ namespace VirtualRadar.WinForms
     /// </summary>
     public partial class SplashView : BaseForm, ISplashView
     {
-        #region Fields
         /// <summary>
         /// The presenter that is controlling this view.
         /// </summary>
@@ -46,9 +45,7 @@ namespace VirtualRadar.WinForms
 
         // The culture info in use on the UI thread.
         private CultureInfo _UIThreadCultureInfo;
-        #endregion
 
-        #region Properties
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -58,13 +55,24 @@ namespace VirtualRadar.WinForms
             set { labelApplicationTitle.Text = value; }
         }
 
+        private string _ApplicationVersion;
         /// <summary>
         /// See interface docs.
         /// </summary>
         public string ApplicationVersion
         {
-            get { return labelApplicationVersion.Text; }
-            set { labelApplicationVersion.Text = value; }
+            get { return _ApplicationVersion; }
+            set { _ApplicationVersion = value; DisplayVersion(); }
+        }
+
+        private bool _IsBeta;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IsBeta
+        {
+            get { return _IsBeta; }
+            set { _IsBeta = value; DisplayVersion(); }
         }
 
         /// <summary>
@@ -86,9 +94,7 @@ namespace VirtualRadar.WinForms
         /// See interface docs.
         /// </summary>
         public IUniversalPlugAndPlayManager UPnpManager { get; set; }
-        #endregion
 
-        #region Constructors
         /// <summary>
         /// Creates a new object.
         /// </summary>
@@ -96,9 +102,7 @@ namespace VirtualRadar.WinForms
         {
             InitializeComponent();
         }
-        #endregion
 
-        #region Initialise
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -109,9 +113,17 @@ namespace VirtualRadar.WinForms
             _CommandLineArgs = commandLineArgs;
             _BackgroundThreadExceptionHandler = backgroundThreadExceptionHandler;
         }
-        #endregion
 
-        #region ReportProgress, ReportProblem, YesNoPrompt
+        /// <summary>
+        /// Displays the version details.
+        /// </summary>
+        private void DisplayVersion()
+        {
+            if(!String.IsNullOrEmpty(ApplicationVersion)) {
+                labelApplicationVersion.Text = IsBeta ? $"{ApplicationVersion} {Strings.Beta}" : ApplicationVersion;
+            }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -145,9 +157,7 @@ namespace VirtualRadar.WinForms
         {
             return MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question, defaultYes ? MessageBoxDefaultButton.Button1 : MessageBoxDefaultButton.Button2) == DialogResult.Yes;
         }
-        #endregion
 
-        #region Events subscribed
         /// <summary>
         /// Raised when the form has loaded but before it's on view.
         /// </summary>
@@ -197,6 +207,5 @@ namespace VirtualRadar.WinForms
             LoadSucceeded = e.Error == null;
             if(e.Error != null) throw new System.ApplicationException("An exception was thrown on a background thread, see inner exception for details", e.Error);
         }
-        #endregion
     }
 }

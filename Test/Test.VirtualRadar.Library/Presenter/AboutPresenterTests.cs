@@ -21,6 +21,7 @@ using InterfaceFactory;
 using Test.Framework;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Localisation;
 
 namespace Test.VirtualRadar.Library.Presenter
 {
@@ -61,7 +62,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _ApplicationInformation.Setup(m => m.Copyright).Returns("The copyright");
             _ApplicationInformation.Setup(m => m.Description).Returns("The description");
             _ApplicationInformation.Setup(m => m.ApplicationName).Returns("The name");
-            _ApplicationInformation.Setup(m => m.FullVersion).Returns("The version");
+            _ApplicationInformation.Setup(m => m.ShortVersion).Returns("The version");
             _ApplicationInformation.Setup(m => m.ProductName).Returns("The product name");
             _ApplicationInformation.Setup(m => m.BuildDate).Returns(buildDate);
             _ConfigurationStorage.Setup(m => m.Folder).Returns("The config folder");
@@ -88,6 +89,17 @@ namespace Test.VirtualRadar.Library.Presenter
 
             _View.Raise(m => m.OpenConfigurationFolderClicked += null, EventArgs.Empty);
             _View.Verify(m => m.ShowConfigurationFolderContents(), Times.Once());
+        }
+
+        [TestMethod]
+        public void AboutPresenter_Shows_Beta_Version()
+        {
+            _ApplicationInformation.Setup(r => r.ShortVersion).Returns("1.2.3");
+            _ApplicationInformation.Setup(r => r.IsBeta).Returns(true);
+
+            _Presenter.Initialise(_View.Object);
+
+            Assert.AreEqual($"1.2.3 {Strings.Beta}", _View.Object.Version);
         }
     }
 }

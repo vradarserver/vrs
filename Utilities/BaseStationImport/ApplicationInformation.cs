@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VirtualRadar.Interface;
 
@@ -74,12 +75,27 @@ namespace BaseStationImport
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public bool Headless { get => true; }
+        public bool Headless => true;
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public bool IsService { get => false; }
+        public bool IsService => false;
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string BetaBasedOnShortVersion { get; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string BetaBasedOnFullVersion { get; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IsBeta => !String.IsNullOrEmpty(BetaBasedOnFullVersion);
 
         /// <summary>
         /// Creates a new object.
@@ -98,6 +114,20 @@ namespace BaseStationImport
             var fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             Description = fileVersionInfo.FileDescription;
             Copyright = fileVersionInfo.LegalCopyright;
+
+            var informationalVersion = (assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute)?.InformationalVersion;
+            if(!String.IsNullOrEmpty(informationalVersion)) {
+                var betaRegex = new Regex(@"^(?<major>\d+)\.(?<minor>\d+)\.(?<build>\d+)\.(?<revision>\d+) beta$");
+                var match = betaRegex.Match(informationalVersion);
+                if(match.Success) {
+                    var major = match.Groups["major"].Value;
+                    var minor = match.Groups["minor"].Value;
+                    var build = match.Groups["build"].Value;
+                    var revision = match.Groups["revision"].Value;
+                    BetaBasedOnFullVersion = $"{major}.{minor}.{build}.{revision}";
+                    BetaBasedOnShortVersion = $"{major}.{minor}.{build}";
+                }
+            }
         }
 
         /// <summary>

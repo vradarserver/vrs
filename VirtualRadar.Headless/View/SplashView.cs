@@ -44,6 +44,11 @@ namespace VirtualRadar.Headless.View
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public bool IsBeta { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public bool LoadSucceeded { get; private set; }
 
         /// <summary>

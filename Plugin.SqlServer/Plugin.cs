@@ -54,7 +54,7 @@ namespace VirtualRadar.Plugin.SqlServer
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Version => "2.4.0";
+        public string Version => "3.0.0";
 
         /// <summary>
         /// See interface docs.

@@ -76,13 +76,16 @@ namespace Test.VirtualRadar.Library
         public void NewVersionChecker_CheckForNewVersion_Returns_Correct_Value()
         {
             var worksheet = new ExcelWorksheetData(TestContext);
+            if(!String.IsNullOrEmpty(worksheet.String("ApplicationVersion"))) {
+                _ApplicationInformation.Setup(p => p.Version).Returns(new Version(worksheet.String("ApplicationVersion")));
+                _ApplicationInformation.Setup(p => p.BetaBasedOnFullVersion).Returns(worksheet.EString("BetaBasedOnFullVersion"));
+                _ApplicationInformation.Setup(p => p.IsBeta).Returns(!String.IsNullOrEmpty(worksheet.EString("BetaBasedOnFullVersion")));
+                _Provider.Setup(p => p.DownloadFileContent(It.IsAny<string>())).Returns(worksheet.String("WebsiteVersion").Replace(@"\r", "\r").Replace(@"\n", "\n"));
 
-            _ApplicationInformation.Setup(p => p.Version).Returns(new Version(worksheet.String("ApplicationVersion")));
-            _Provider.Setup(p => p.DownloadFileContent(It.IsAny<string>())).Returns(worksheet.String("WebsiteVersion").Replace(@"\r", "\r").Replace(@"\n", "\n"));
-
-            bool expected = worksheet.Bool("IsNewer");
-            Assert.AreEqual(expected, _NewVersionChecker.CheckForNewVersion());
-            Assert.AreEqual(expected, _NewVersionChecker.IsNewVersionAvailable);
+                var expected = worksheet.Bool("IsNewer");
+                Assert.AreEqual(expected, _NewVersionChecker.CheckForNewVersion());
+                Assert.AreEqual(expected, _NewVersionChecker.IsNewVersionAvailable);
+            }
         }
 
         [TestMethod]
@@ -91,22 +94,25 @@ namespace Test.VirtualRadar.Library
         public void NewVersionChecker_CheckForNewVersion_Raises_NewVersionAvailable_When_Appropriate()
         {
             var worksheet = new ExcelWorksheetData(TestContext);
+            if(!String.IsNullOrEmpty(worksheet.String("ApplicationVersion"))) {
+                _NewVersionChecker.NewVersionAvailable += _NewVersionAvailable.Handler;
+                _NewVersionAvailable.EventRaised += (object sender, EventArgs args) => {
+                    Assert.AreEqual(true, _NewVersionChecker.IsNewVersionAvailable);
+                };
 
-            _NewVersionChecker.NewVersionAvailable += _NewVersionAvailable.Handler;
-            _NewVersionAvailable.EventRaised += (object sender, EventArgs args) => {
-                Assert.AreEqual(true, _NewVersionChecker.IsNewVersionAvailable);
-            };
+                _ApplicationInformation.Setup(p => p.Version).Returns(new Version(worksheet.String("ApplicationVersion")));
+                _ApplicationInformation.Setup(p => p.BetaBasedOnFullVersion).Returns(worksheet.EString("BetaBasedOnFullVersion"));
+                _ApplicationInformation.Setup(p => p.IsBeta).Returns(!String.IsNullOrEmpty(worksheet.EString("BetaBasedOnFullVersion")));
+                _Provider.Setup(p => p.DownloadFileContent(It.IsAny<string>())).Returns(worksheet.String("WebsiteVersion").Replace(@"\r", "\r").Replace(@"\n", "\n"));
 
-            _ApplicationInformation.Setup(p => p.Version).Returns(new Version(worksheet.String("ApplicationVersion")));
-            _Provider.Setup(p => p.DownloadFileContent(It.IsAny<string>())).Returns(worksheet.String("WebsiteVersion").Replace(@"\r", "\r").Replace(@"\n", "\n"));
+                _NewVersionChecker.CheckForNewVersion();
 
-            _NewVersionChecker.CheckForNewVersion();
-
-            if(!worksheet.Bool("IsNewer")) Assert.AreEqual(0, _NewVersionAvailable.CallCount);
-            else {
-                Assert.AreEqual(1, _NewVersionAvailable.CallCount);
-                Assert.AreSame(_NewVersionChecker, _NewVersionAvailable.Sender);
-                Assert.IsNotNull(_NewVersionAvailable.Args);
+                if(!worksheet.Bool("IsNewer")) Assert.AreEqual(0, _NewVersionAvailable.CallCount);
+                else {
+                    Assert.AreEqual(1, _NewVersionAvailable.CallCount);
+                    Assert.AreSame(_NewVersionChecker, _NewVersionAvailable.Sender);
+                    Assert.IsNotNull(_NewVersionAvailable.Args);
+                }
             }
         }
     }

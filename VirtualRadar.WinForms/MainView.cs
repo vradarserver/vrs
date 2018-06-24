@@ -541,7 +541,12 @@ namespace VirtualRadar.WinForms
 
                 var runtimeEnvironment = Factory.ResolveSingleton<IRuntimeEnvironment>();
                 if(runtimeEnvironment.Is64BitProcess) {
-                    Text = String.Format("{0} ({1})", Text, Strings.Title64Bit);
+                    Text = $"{Text} ({Strings.Title64Bit})";
+                }
+
+                var applicationInfo = Factory.Resolve<IApplicationInformation>();
+                if(applicationInfo.IsBeta) {
+                    Text = $"{Text} [{Strings.Beta}]";
                 }
             }
         }

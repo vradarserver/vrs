@@ -33,6 +33,11 @@ namespace VirtualRadar.Interface.View
         string ApplicationVersion { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that this is a beta version of the program.
+        /// </summary>
+        bool IsBeta { get; set; }
+
+        /// <summary>
         /// Gets a value indicating that the load succeeded without any obvious problems.
         /// </summary>
         bool LoadSucceeded { get; }
