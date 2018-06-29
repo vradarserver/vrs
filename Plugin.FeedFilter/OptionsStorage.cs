@@ -75,6 +75,12 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// <param name="options"></param>
         public static void Save(Plugin plugin, Options options)
         {
+            var currentOptions = Load(plugin);
+            if(options.DataVersion != currentOptions.DataVersion) {
+                throw new ConflictingUpdateException($"The options you are trying to save have changed since you loaded them. You are editing version {options.DataVersion}, the current version is {currentOptions.DataVersion}");
+            }
+            ++options.DataVersion;
+
             using(var stream = new MemoryStream()) {
                 var serialiser = Factory.Resolve<IXmlSerialiser>();
                 serialiser.Serialise(options, stream);

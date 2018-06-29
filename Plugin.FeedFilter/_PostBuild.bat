@@ -20,9 +20,11 @@ rem Ensure that the XML manifest file is set to always copy to the output direct
     set SOURCEDLL=%TARGETDIR%%ASSEMBLY%.dll
     set SOURCEXML=%TARGETDIR%%ASSEMBLY%.xml
     set SOURCEWEB=%TARGETDIR%..\..\Web
+    set SOURCEWA=%TARGETDIR%..\..\Web-WebAdmin
     set PLUGINS=%SLNDIR%VirtualRadar\bin\x86\%CONFDIR%\Plugins
     set DEST=%PLUGINS%\%PLUGINDIR%
     set WEB=%PLUGINS%\%PLUGINDIR%\Web
+    set WEBADMIN=%PLUGINS%\%PLUGINDIR%\Web-WebAdmin
 
     if exist "%PLUGINS%" goto MKDEST
         md "%PLUGINS%"
@@ -52,6 +54,22 @@ rem Ensure that the XML manifest file is set to always copy to the output direct
         echo FAILED: The copy of the plugin web site content failed with errorlevel %ERRORLEVEL%
         goto :ENDBAD
     :WEBDONE
+
+    if not exist "%WEBADMIN%\" goto WA_DELETED
+        rmdir /s /q "%WEBADMIN%"
+        if errorlevel 0 goto WA_DELETED
+        echo FAILED: Could not remove the "%WEBADMIN%" folder, errorlevel is %ERRORLEVEL%
+        goto :ENDBAD
+    :WA_DELETED
+        echo xcopy /EQYI "%SOURCEWA%" "%WEBADMIN%"
+        xcopy /EQYI "%SOURCEWA%" "%WEBADMIN%"
+        if not errorlevel 0 goto :WA_FAILED
+        echo Copied web admin site output to "%WEBADMIN%"
+        goto :WA_DONE
+    :WA_FAILED
+        echo FAILED: The copy of the plugin web admin site content failed with errorlevel %ERRORLEVEL%
+        goto :ENDBAD
+    :WA_DONE
 
     rem You need to modify the batch by hand here to copy the languages that you have translations for
     set COPYLANG=%TARGETDIR%..\..\_PostBuildCopyLanguage.bat

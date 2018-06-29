@@ -59,6 +59,12 @@ namespace VirtualRadar.Plugin.FeedFilter
 
         #region Properties
         /// <summary>
+        /// Gets the last initialised instance of the plugin object. At run-time only one plugin
+        /// object gets created and initialised.
+        /// </summary>
+        public static Plugin Singleton { get; private set; }
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public string Id { get { return "VirtualRadarServer.Plugin.FeedFilter"; } }
@@ -112,6 +118,18 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// See interface docs.
         /// </summary>
         public bool HasOptions { get { return true; } }
+
+        /// <summary>
+        /// Gets the URL of the filter settings page.
+        /// </summary>
+        internal string FilterSettingsUrl
+        {
+            get {
+                var webServer = Factory.ResolveSingleton<IAutoConfigWebServer>().WebServer;
+                return $"{webServer.LocalAddress}/FeedFilter/index.html";
+                
+            }
+        }
         #endregion
 
         #region Events
@@ -149,6 +167,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// <param name="parameters"></param>
         public void Startup(PluginStartupParameters parameters)
         {
+            Singleton = this;
             var options = OptionsStorage.Load(this);
 
             _HtmlLocaliser = Factory.Resolve<IHtmlLocaliser>();
@@ -176,6 +195,12 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// </summary>
         public void GuiThreadStartup()
         {
+            var webAdminViewManager = Factory.ResolveSingleton<IWebAdminViewManager>();
+            webAdminViewManager.RegisterTranslations(typeof(FeedFilterStrings), "FeedFilterPlugin");
+            webAdminViewManager.AddWebAdminView(new WebAdminView("/WebAdmin/", "FeedFilterPluginOptions.html", FeedFilterStrings.WebAdminMenuName, () => new WebAdmin.OptionsView(), typeof(FeedFilterStrings)) {
+                Plugin = this,
+            });
+            webAdminViewManager.RegisterWebAdminViewFolder(PluginFolder, "Web-WebAdmin");
         }
 
         /// <summary>
@@ -192,10 +217,8 @@ namespace VirtualRadar.Plugin.FeedFilter
         public void ShowWinFormsOptionsUI()
         {
             using(var dialog = new WinForms.OptionsView()) {
-                var webServer = Factory.ResolveSingleton<IAutoConfigWebServer>().WebServer;
-
                 dialog.Options = OptionsStorage.Load(this);
-                dialog.FilterSettingsUrl = String.Format("{0}/FeedFilter/index.html", webServer.LocalAddress);
+                dialog.FilterSettingsUrl = FilterSettingsUrl;
 
                 if(dialog.ShowDialog() == DialogResult.OK) {
                     OptionsStorage.Save(this, dialog.Options);

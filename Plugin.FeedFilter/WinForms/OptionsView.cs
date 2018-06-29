@@ -25,15 +25,15 @@ namespace VirtualRadar.Plugin.FeedFilter.WinForms
     /// <summary>
     /// The view that presents the plugin's options to the user.
     /// </summary>
-    public partial class OptionsView : BaseForm
+    public partial class OptionsView : BaseForm, IOptionsView
     {
         /// <summary>
-        /// Gets or sets the options to show to the user, and those set by the user.
+        /// See interface docs.
         /// </summary>
         public Options Options { get; set; }
 
         /// <summary>
-        /// Gets or sets the URL to send people to when they click the filter settings link.
+        /// See interface docs.
         /// </summary>
         public string FilterSettingsUrl
         {
