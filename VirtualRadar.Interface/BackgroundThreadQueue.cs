@@ -45,7 +45,7 @@ namespace VirtualRadar.Interface
         // test of 25 hours of network packets all sent consecutively the Set call accounted for a third
         // of the packet processing time. So now the foreground thread queues the items and the background
         // thread spins, polling the queue and immediately surrendering its timeslice when the queue is
-        // empty. In testing this had no discernable affect on CPU usage and improved the throughput of
+        // empty. In testing this had no discernable effect on CPU usage and improved the throughput of
         // messages enormously, previously it would take ~1 minute 40 seconds to process 113Mb of network
         // packets, after switching to the spinning & polling mechanism this was reduced to ~45 seconds.
         // 
