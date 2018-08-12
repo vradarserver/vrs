@@ -866,7 +866,6 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>translations.d.ts</LastGenOutput>
     </None>
-    <None Include="_PostBuild.bat" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Site\typings\globalOptions.d.ts" />
@@ -1011,7 +1010,7 @@
     <PreBuildEvent Condition="'$(OS)' == 'Unix'">mono "$(SolutionDir)Dependencies\ChecksumFiles.exe" -root:"$(ProjectDir)Site\Web" -out:"$(ProjectDir)Site\Checksums.txt"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>call "$(ProjectDir)_PostBuild.bat" "$(SolutionDir)" "$(ProjectDir)" "$(ConfigurationName)"</PostBuildEvent>
+    <PostBuildEvent>PowerShell.exe -ExecutionPolicy Bypass "$(SolutionDir)_PostBuild.ps1" -projectName "$(ProjectName)"  -configurationName "$(ConfigurationName)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
