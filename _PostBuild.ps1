@@ -1,10 +1,17 @@
 ﻿param (
     [string] $projectName,
-    [string] $configurationName
+    [string] $configurationName,
+    [string] $targetName
 )
-if([string]::IsNullOrWhiteSpace($projectName) -or [string]::IsNullOrWhiteSpace($configurationName)) {
-    Write-Host 'usage: _PostBuild.ps1 -projectName <project name> -configurationName <configuration name>'
+function Usage
+{
+    Write-Host 'usage: _PostBuild.ps1 -projectName <project name> -configurationName <configuration name> [-targetName <targetName>]'
+    Write-Host 'The targetName parameter is not optional for plugins'
     Exit 1
+}
+
+if([string]::IsNullOrWhiteSpace($projectName) -or [string]::IsNullOrWhiteSpace($configurationName)) {
+    Usage
 }
 
 $solutionDir = Split-Path -Parent $PSCommandPath
@@ -23,8 +30,42 @@ function Copy-File
         [string] $destFolder
     )
 
-    Write-Host ("Copying " + $source + " to " + $destFolder)
+    Write-Host ('Copying ' + $source + ' to ' + $destFolder)
+
+    if(![io.Directory]::Exists($destFolder)) {
+        Write-Host ('Creating folder ' + $destFolder)
+        $dirInfo = [io.Directory]::CreateDirectory($destFolder)
+    }
+
+    if(![io.File]::Exists($source)) {
+        Write-Host ($source + ' does not exist')
+        Write-Host 'Cannot copy missing file'
+        Exit 1
+    }
+
     Copy-Item $source $destFolder
+}
+
+function Delete-Folder
+{
+    param (
+        [string] $folder
+    )
+
+    if([io.Directory]::Exists($folder)) {
+        Write-Host ('Deleting folder ' + $folder)
+        Remove-Item $folder -Recurse -Force
+
+        $retryCounter = 0
+        while([io.Directory]::Exists($folder)) {
+            if($retryCounter -gt 3) {
+                Write-Host 'Could not remove folder'
+                Exit 1
+            }
+            ++$retryCounter
+            Start-Sleep -Milliseconds 500
+        }
+    }
 }
 
 function Copy-Folder
@@ -36,19 +77,8 @@ function Copy-Folder
         [switch] $recursive
     )
 
-    if([io.Directory]::Exists($destFolder) -and $deleteBeforeCopy) {
-        Write-Host ('Deleting folder ' + $destFolder)
-        [io.Directory]::Delete($destFolder, $true)
-
-        $retryCounter = 0
-        while([io.Directory]::Exists($destFolder)) {
-            if($retryCounter -gt 3) {
-                Write-Host 'Could not remove folder'
-                Exit 1
-            }
-            ++$retryCounter
-            Start-Sleep -Milliseconds 500
-        }
+    if($deleteBeforeCopy) {
+        Delete-Folder $destFolder
     }
 
     Write-Host ("Copying " + $sourceFolder + " to " + $destFolder)
@@ -99,6 +129,45 @@ function PostBuild-WebSite-Project
     Copy-Folder $webDir $vrsWebDir -deleteBeforeCopy -recursive
 }
 
-if($projectName.ToLower() -eq 'virtualradar.website') {
-    PostBuild-WebSite-Project
+function PostBuild-Plugin
+{
+    param (
+        [string] $pluginName = '',
+        [string] $projectWebDir = 'Web',
+        [string] $destWebDir = 'Web'
+    )
+    if([string]::IsNullOrWhiteSpace($targetName)) {
+        Usage
+    }
+    if([string]::IsNullOrWhiteSpace($pluginName)) {
+        $lastDotIdx = $projectName.LastIndexOf('.')
+        if($lastDotIdx -eq -1) {
+            Write-Host ("Cannot extract name of plugin from " + $projectName + ", use -pluginName parameter")
+            Exit 1
+        }
+        $pluginName = $projectName.Substring($lastDotIdx + 1)
+    }
+
+    $pluginsRoot =    [io.Path]::Combine($virtualRadarDir, "Plugins")
+    $pluginDir =      [io.Path]::Combine($pluginsRoot, $pluginName)
+    $pluginDll =      [io.Path]::Combine($projectDir, "bin", $configurationName, ($targetName + '.dll'))
+    $pluginManifest = [io.Path]::Combine($projectDir, "bin", $configurationName, ($targetName + '.xml'))
+
+    Delete-Folder $pluginDir
+
+    Copy-File $pluginDll $pluginDir
+    Copy-File $pluginManifest $pluginDir
+
+    if(![string]::IsNullOrWhiteSpace($projectWebDir)) {
+        $webDir = [io.Path]::Combine($projectDir, $projectWebDir)
+        if([io.Directory]::Exists($webDir)) {
+            $pluginWebDir = [io.Path]::Combine($pluginDir, $destWebDir);
+            Copy-Folder $webDir $pluginWebDir -recursive
+        }
+    }
+}
+
+switch($projectName.ToLower()) {
+    'virtualradar.website'              { PostBuild-WebSite-Project }
+    'plugin.basestationdatabasewriter'  { PostBuild-Plugin }
 }
