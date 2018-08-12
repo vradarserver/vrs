@@ -40,9 +40,14 @@ function Copy-Folder
         Write-Host ('Deleting folder ' + $destFolder)
         [io.Directory]::Delete($destFolder, $true)
 
-        if([io.Directory]::Exists($destFolder)) {
-            Write-Host 'Could not remove folder'
-            Exit 1
+        $retryCounter = 0
+        while([io.Directory]::Exists($destFolder)) {
+            if($retryCounter -gt 3) {
+                Write-Host 'Could not remove folder'
+                Exit 1
+            }
+            ++$retryCounter
+            Start-Sleep -Milliseconds 500
         }
     }
 
@@ -54,14 +59,14 @@ function Copy-Folder
     }
 }
 
-function Checksum-Files
+function Checksum-Folder
 {
     param (
-        [string] $checksumRoot,
-        [string] $checksumOut
+        [string] $folder,
+        [string] $checksumFile
     )
-    Write-Host ('Generating checksums for ' + $checksumRoot)
-    Write-Host ('Saving checksums to ' + $checksumOut)
+    Write-Host ('Generating checksums for ' + $folder)
+    Write-Host ('Saving checksums to ' + $checksumFile)
 
     $checksumExe = [io.Path]::Combine($solutionDir, 'ThirdParty', 'ChecksumFiles', 'bin', $configurationName, 'ChecksumFiles.exe')
     if(![io.File]::Exists($checksumExe)) {
@@ -69,7 +74,7 @@ function Checksum-Files
         Exit 1
     }
 
-    & $checksumExe -root:"$checksumRoot" -out:"$checksumOut" -addContentChecksum
+    & $checksumExe -root:"$folder" -out:"$checksumFile" -addContentChecksum
     if($LASTEXITCODE -ne 0) {
         Write-Host ('The checksum utility failed with an exit code of ' + $LASTEXITCODE)
         Exit 1
@@ -83,7 +88,7 @@ function PostBuild-WebSite-Project
 
     # Checksum the web folder
     $checksumOut = [io.Path]::Combine($virtualRadarDir, 'Checksums.txt')
-    Checksum-Files -checksumRoot $webDir -checksumOut $checksumOut
+    Checksum-Folder -folder $webDir -checksumFile $checksumOut
 
     # The unit tests on the web site need to have the checksums file in a fixed location, i.e.
     # its folder should not include the configuration name
