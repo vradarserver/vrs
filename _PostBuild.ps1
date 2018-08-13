@@ -14,8 +14,13 @@ if([string]::IsNullOrWhiteSpace($projectName) -or [string]::IsNullOrWhiteSpace($
     Usage
 }
 
+$pathFromSolution = '';
+if($projectName.ToLower() -eq 'basestationimport') {
+    $pathFromSolution = 'Utilities'
+}
+
 $solutionDir = Split-Path -Parent $PSCommandPath
-$projectDir = [io.Path]::Combine($solutionDir, $projectName)
+$projectDir = [io.Path]::Combine($solutionDir, $pathFromSolution, $projectName)
 $virtualRadarDir = [io.Path]::Combine($solutionDir, 'VirtualRadar', 'bin', 'x86', $configurationName)
 
 Write-Host ('Running post-build steps for project ' + $projectName + ' (' + $configurationName + ' configuration)')
@@ -210,12 +215,41 @@ function PostBuild-Plugin
     Copy-Translations -buildFolder $pluginBuildDir
 }
 
+function PostBuild-VirtualRadar-Service
+{
+    if([string]::IsNullOrWhiteSpace($targetName)) {
+        Usage
+    }
+
+    $buildFolder = [io.Path]::Combine($projectDir, "bin", "x86", $configurationName)
+
+    Copy-File ([io.Path]::Combine($buildFolder, ($targetName + '.exe'))) $virtualRadarDir
+    Copy-File ([io.Path]::Combine($buildFolder, ($targetName + '.exe.config'))) $virtualRadarDir
+}
+
+function PostBuild-BaseStationImport
+{
+    if([string]::IsNullOrWhiteSpace($targetName)) {
+        Usage
+    }
+
+    $buildFolder = [io.Path]::Combine($projectDir, "bin", "x86", $configurationName)
+
+    Copy-File ([io.Path]::Combine($buildFolder, ($targetName + '.exe'))) $virtualRadarDir
+    Copy-File ([io.Path]::Combine($buildFolder, ($targetName + '.exe.config'))) $virtualRadarDir
+    Copy-File ([io.Path]::Combine($buildFolder, ($targetName + '.pdb'))) $virtualRadarDir
+}
+
 # Main switch
 $caselessProject = $projectName.ToLower()
 if($caselessProject -eq 'virtualradar.website') {
     PostBuild-WebSite-Project
 } elseif($caselessProject.StartsWith('plugin.')) {
     PostBuild-Plugin
+} elseif($caselessProject -eq 'virtualradar-service') {
+    PostBuild-VirtualRadar-Service
+} elseif($caselessProject -eq 'basestationimport') {
+    PostBuild-BaseStationImport
 } else {
     Write-Host ('Need to add code for ' + $projectName + ' to the _PostBuild.ps1 script')
 }
