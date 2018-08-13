@@ -217,8 +217,6 @@
     <None Include="Web\DatabaseEditor\utility.js.map">
       <DependentUpon>utility.ts</DependentUpon>
     </None>
-    <None Include="_PostBuild.bat" />
-    <None Include="_PostBuildCopyLanguage.bat" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DatabaseEditorStrings.nl-NL.resx" />
@@ -290,7 +288,7 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)\_PostBuild.bat" "$(SolutionDir)" "$(ConfigurationName)" "$(TargetDir)" $(TargetName) "DatabaseEditor"</PostBuildEvent>
+    <PostBuildEvent>PowerShell.exe -ExecutionPolicy Bypass "$(SolutionDir)_PostBuild.ps1" -projectName "$(ProjectName)"  -configurationName "$(ConfigurationName)" -targetName "$(TargetName)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -214,8 +214,6 @@
     <None Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <None Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.woff" />
-    <None Include="_PostBuild.bat" />
-    <None Include="_PostBuildCopyLanguage.bat" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="FeedFilterStrings.resx">
@@ -247,7 +245,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)\_PostBuild.bat" "$(SolutionDir)" "$(ConfigurationName)" "$(TargetDir)" $(TargetName) "FeedFilter"</PostBuildEvent>
+    <PostBuildEvent>PowerShell.exe -ExecutionPolicy Bypass "$(SolutionDir)_PostBuild.ps1" -projectName "$(ProjectName)"  -configurationName "$(ConfigurationName)" -targetName "$(TargetName)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

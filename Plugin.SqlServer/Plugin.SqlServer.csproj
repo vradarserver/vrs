@@ -149,8 +149,6 @@
     <Content Include="Web\WebAdmin\CustomContentPluginOptions.js.map">
       <DependentUpon>SqlServerPluginOptions.ts</DependentUpon>
     </Content>
-    <None Include="_PostBuild.bat" />
-    <None Include="_PostBuildCopyLanguage.bat" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\BaseStation\Procs\Aircraft_GetByCodes.sql" />
@@ -240,6 +238,6 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)\_PostBuild.bat" "$(SolutionDir)" "$(ConfigurationName)" "$(TargetDir)" $(TargetName) "SqlServer"</PostBuildEvent>
+    <PostBuildEvent>PowerShell.exe -ExecutionPolicy Bypass "$(SolutionDir)_PostBuild.ps1" -projectName "$(ProjectName)"  -configurationName "$(ConfigurationName)" -targetName "$(TargetName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

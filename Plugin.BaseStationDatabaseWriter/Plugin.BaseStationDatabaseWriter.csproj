@@ -142,8 +142,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Typings\Manager.ttinclude" />
-    <None Include="_PostBuildCopyLanguage.bat" />
-    <None Include="_PostBuild.bat" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web\WebAdmin\DatabaseWriterPluginOptions.js">
