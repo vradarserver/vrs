@@ -1002,14 +1002,6 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <PropertyGroup>
-    <PostBuildEvent Condition="'$(OS)' != 'Unix'">"$(ProjectDir)_PostBuild.bat" "$(ProjectDir)Site\Web" "$(SolutionDir)VirtualRadar\$(OutDir)Web"</PostBuildEvent>
-    <PostBuildEvent Condition="'$(OS)' == 'Unix'">/bin/sh "$(ProjectDir)_PostBuild.sh" "$(ProjectDir)Site\Web" "$(SolutionDir)VirtualRadar.Mac\$(OutDir)Web"</PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent Condition="'$(OS)' != 'Unix'">"$(SolutionDir)Dependencies\ChecksumFiles.exe" -root:"$(ProjectDir)Site\Web" -out:"$(ProjectDir)Site\Checksums.txt"</PreBuildEvent>
-    <PreBuildEvent Condition="'$(OS)' == 'Unix'">mono "$(SolutionDir)Dependencies\ChecksumFiles.exe" -root:"$(ProjectDir)Site\Web" -out:"$(ProjectDir)Site\Checksums.txt"</PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
     <PostBuildEvent>PowerShell.exe -ExecutionPolicy Bypass "$(SolutionDir)_PostBuild.ps1" -projectName "$(ProjectName)"  -configurationName "$(ConfigurationName)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
