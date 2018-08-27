@@ -91,6 +91,7 @@
     </Compile>
     <None Include="app.config" />
     <None Include="CreateAnyCPUBuild.bat" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
