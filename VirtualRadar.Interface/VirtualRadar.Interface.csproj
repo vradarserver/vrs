@@ -629,6 +629,7 @@
     <None Include="Database\_VirtualRadarInterfaceDatabase.cd" />
     <None Include="Owin\README.md" />
     <None Include="packages.config" />
+    <None Include="README.md" />
     <None Include="SQLite\_VirtualRadarInterfaceSQLite.cd" />
     <None Include="StandingData\_VirtualRadarInterfaceData.cd" />
     <None Include="FlightSimulatorX\_VirtualRadarInterfaceFlightSimulatorX.cd" />

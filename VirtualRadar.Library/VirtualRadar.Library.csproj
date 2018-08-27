@@ -245,6 +245,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="README.md" />
     <None Include="Web References\webservice.virtualradarserver.co.uk\ClientSupport.disco" />
     <None Include="Web References\webservice.virtualradarserver.co.uk\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
