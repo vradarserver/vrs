@@ -47,8 +47,11 @@ namespace VirtualRadar.Owin.StreamManipulator
                     mapJavascript = @"<script src=""script/jquiplugin/jquery.vrs.map-google.js"" type=""text/javascript""></script>";
                     break;
                 case MapProvider.Leaflet:
-                    mapStylesheet = @"<link rel=""stylesheet"" href=""css/leaflet/leaflet.css"" type=""text/css"" media=""screen"" />";
-                    mapJavascript =  @"<script src=""script/leaflet-src.js"" type=""text/javascript""></script>
+                    mapStylesheet = @"<link rel=""stylesheet"" href=""css/leaflet/leaflet.css"" type=""text/css"" media=""screen"" />
+                                      <link rel=""stylesheet"" href=""css/leaflet.markercluster/MarkerCluster.css"" type=""text/css"" media=""screen"" />
+                                      <link rel=""stylesheet"" href=""css/leaflet.markercluster/MarkerCluster.Default.css"" type=""text/css"" media=""screen"" />";
+                    mapJavascript = @"<script src=""script/leaflet-src.js"" type=""text/javascript""></script>
+                                      <script src=""script/leaflet.markercluster-src.js"" type=""text/javascript""></script>
                                       <script src=""script/jquiplugin/jquery.vrs.map-leaflet.js"" type=""text/javascript""></script>";
                     break;
                 default:

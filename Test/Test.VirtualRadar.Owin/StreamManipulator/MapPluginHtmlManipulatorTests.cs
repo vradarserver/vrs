@@ -31,9 +31,13 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
         private const string MapStylesheetMarker = "<!-- [[ MAP STYLESHEET ]] -->";
         private const string MapPluginMarker = "<!-- [[ MAP PLUGIN ]] -->";
         private const string ExpectedGoogleJavaScript = @"<script src=""script/jquiplugin/jquery.vrs.map-google.js"" type=""text/javascript""></script>";
-        private const string ExpectedLeafletStylesheet = @"<link rel=""stylesheet"" href=""css/leaflet/leaflet.css"" type=""text/css"" media=""screen"" />";
+        private const string ExpectedLeafletStylesheet =
+                                    @"<link rel=""stylesheet"" href=""css/leaflet/leaflet.css"" type=""text/css"" media=""screen"" />
+                                      <link rel=""stylesheet"" href=""css/leaflet.markercluster/MarkerCluster.css"" type=""text/css"" media=""screen"" />
+                                      <link rel=""stylesheet"" href=""css/leaflet.markercluster/MarkerCluster.Default.css"" type=""text/css"" media=""screen"" />";
         private const string ExpectedLeafletJavaScript =
                                     @"<script src=""script/leaflet-src.js"" type=""text/javascript""></script>
+                                      <script src=""script/leaflet.markercluster-src.js"" type=""text/javascript""></script>
                                       <script src=""script/jquiplugin/jquery.vrs.map-leaflet.js"" type=""text/javascript""></script>";
 
         public TestContext TestContext { get; set; }

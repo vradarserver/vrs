@@ -10,7 +10,6 @@
 // Note: as of the RFC 7946 version of GeoJSON, Coordinate Reference Systems
 // are no longer supported. (See https://tools.ietf.org/html/rfc7946#appendix-B)}
 
-//export as namespace GeoJSON;
 export as namespace geojson;
 
 /**
