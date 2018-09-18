@@ -316,8 +316,15 @@ MarkerLabel_.prototype.onAdd = function () {
  */
 MarkerLabel_.prototype.onRemove = function () {
   var i;
-  this.labelDiv_.parentNode.removeChild(this.labelDiv_);
-  this.eventDiv_.parentNode.removeChild(this.eventDiv_);
+
+  // In v3.34 the parentNode elements for labelDiv and eventDiv went missing. By the time I got around to fixing
+  // it Google put them back, but I figure I might as well add the guards anyway just in case they go AWOL again.
+  if(this.labelDiv_ && this.labelDiv_.parentNode) {
+    this.labelDiv_.parentNode.removeChild(this.labelDiv_);
+  }
+  if(this.eventDiv_ && this.eventDiv_.parentNode) {
+    this.eventDiv_.parentNode.removeChild(this.eventDiv_);
+  }
 
   // Remove event listeners:
   for (i = 0; i < this.listeners_.length; i++) {
