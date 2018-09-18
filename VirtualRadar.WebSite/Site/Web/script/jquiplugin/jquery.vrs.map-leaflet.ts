@@ -12,6 +12,7 @@
 /**
  * @fileoverview A jQuery UI plugin that wraps Leaflet maps.
  */
+
 namespace VRS
 {
     /*
@@ -214,6 +215,23 @@ namespace VRS
                 default:
                     return 'topright';
             }
+        }
+
+        toLeafletMapMarker(mapMarker: IMapMarker) : L.Marker
+        {
+            var wrapper = <MapMarker>mapMarker;
+            return wrapper ? wrapper.marker : null;
+        }
+
+        toLeafletMapMarkers(mapMarkers: IMapMarker[]) : L.Marker[]
+        {
+            var result : L.Marker[] = [];
+            var len = mapMarkers ? mapMarkers.length : 0;
+            for(var i = 0;i < len;++i) {
+                result.push(this.toLeafletMapMarker(mapMarkers[i]));
+            }
+
+            return result;
         }
     }
     export var leafletUtilities = new VRS.LeafletUtilities();
@@ -1211,6 +1229,118 @@ namespace VRS
     }
 
     /**
+     * A wrapper around the leaflet marker cluster plugin
+     */
+    class MapMarkerClusterer implements IMapMarkerClusterer
+    {
+        map:            L.Map;
+        clusterGroup:   L.MarkerClusterGroup;
+        maxZoom:        number;
+
+        constructor(nativeMap: L.Map, settings: IMapMarkerClustererSettings)
+        {
+            this.map = nativeMap;
+            this.maxZoom = settings.maxZoom;
+
+            this.createClusterGroup();
+        }
+
+        private createClusterGroup()
+        {
+            var mapMarkers : L.Layer[] = null;
+            if(this.clusterGroup) {
+                mapMarkers = this.clusterGroup.getLayers();
+                this.destroyClusterGroup();
+            }
+
+            var options : L.MarkerClusterGroupOptions = {
+                disableClusteringAtZoom:    this.maxZoom + 1,
+                spiderfyOnMaxZoom:          false,
+                showCoverageOnHover:        true
+            };
+            this.clusterGroup = L.markerClusterGroup(options);
+
+            if(mapMarkers && mapMarkers.length > 0) {
+                this.clusterGroup.addLayers(mapMarkers);
+            }
+
+            this.map.addLayer(this.clusterGroup);
+        }
+
+        private destroyClusterGroup()
+        {
+            if(this.clusterGroup) {
+                this.clusterGroup.removeLayers(this.clusterGroup.getLayers());
+                this.map.removeLayer(this.clusterGroup);
+                this.clusterGroup = null;
+            }
+        }
+
+        getNative() : any
+        {
+            return this.clusterGroup;
+        }
+
+        getNativeType()
+        {
+            return 'OpenStreetMap';
+        }
+
+        getMaxZoom() : number
+        {
+            return this.maxZoom;
+        }
+
+        setMaxZoom(maxZoom: number)
+        {
+            if(maxZoom !== this.maxZoom) {
+                this.maxZoom = maxZoom;
+                this.createClusterGroup();
+            }
+        }
+
+        addMarker(marker: IMapMarker, noRepaint?: boolean)
+        {
+            if(marker) {
+                var nativeMarker = VRS.leafletUtilities.toLeafletMapMarker(marker);
+                nativeMarker.remove();
+                this.clusterGroup.addLayer(nativeMarker);
+            }
+        }
+
+        addMarkers(markers: IMapMarker[], noRepaint?: boolean)
+        {
+            if(markers) {
+                var nativeMarkers = VRS.leafletUtilities.toLeafletMapMarkers(markers);
+                var len = nativeMarkers.length;
+                for(var i = 0;i < len;++i) {
+                    nativeMarkers[i].remove();
+                }
+                this.clusterGroup.addLayers(nativeMarkers);
+            }
+        }
+
+        removeMarker(marker: IMapMarker, noRepaint?: boolean)
+        {
+            if(marker) {
+                this.clusterGroup.removeLayer(VRS.leafletUtilities.toLeafletMapMarker(marker));
+            }
+        }
+
+        removeMarkers(markers: IMapMarker[], noRepaint?: boolean)
+        {
+            if(markers) {
+                this.clusterGroup.removeLayers(VRS.leafletUtilities.toLeafletMapMarkers(markers));
+            }
+        }
+
+        repaint()
+        {
+            this.clusterGroup.refreshClusters();
+        }
+    }
+
+    /**
      * The state held for every map plugin object.
      */
     class MapPluginState
@@ -1919,7 +2049,17 @@ namespace VRS
 
         createMapMarkerClusterer(settings?: IMapMarkerClustererSettings): IMapMarkerClusterer
         {
-            return null;
+            var result: MapMarkerClusterer = null;
+
+            var state = this._getState();
+            if(state.map) {
+                var options = $.extend(<IMapMarkerClustererSettings>{}, settings, {
+                });
+
+                result = new MapMarkerClusterer(state.map, options);
+            }
+
+            return result;
         }
 
         addPolyline(id: string | number, userOptions: IMapPolylineSettings): IMapPolyline

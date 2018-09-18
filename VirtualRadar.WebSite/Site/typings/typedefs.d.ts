@@ -477,17 +477,17 @@
      */
     export interface IMapMarkerClusterer
     {
-        getNative:              () => any;
-        getNativeType:          () => string;
+        getNative:              () => any;          // The native clusterer
+        getNativeType:          () => string;       // "GoogleMaps" if it's a Google map plugin clusterer, "OpenStreetMap" if it's the Leaflet plugin clusterer
 
-        addMarker:      (marker: IMapMarker, noRepaint?: boolean) => void;
-        addMarkers:     (markers: IMapMarker[], noRepaint?: boolean) => void;
-        removeMarker:   (marker: IMapMarker, noRepaint?: boolean) => void;
-        removeMarkers:  (markers: IMapMarker[], noRepaint?: boolean) => void;
-        repaint:        () => void;
+        addMarker:      (marker: IMapMarker, noRepaint?: boolean) => void;      // Adds a marker to the clusterer
+        addMarkers:     (markers: IMapMarker[], noRepaint?: boolean) => void;   // Adds an array of markers to the clusterer
+        removeMarker:   (marker: IMapMarker, noRepaint?: boolean) => void;      // Removes a marker from the clusterer
+        removeMarkers:  (markers: IMapMarker[], noRepaint?: boolean) => void;   // Removes an array of markers from the clusterer
+        repaint:        () => void;                                             // Repaints the cluster
 
-        getMaxZoom:     () => number;
-        setMaxZoom:     (maxZoom: number) => void;
+        getMaxZoom:     () => number;               // Gets the zoom level above which groups of markers are represented by a single cluster marker
+        setMaxZoom:     (maxZoom: number) => void;  // Sets the zoom level above which groups of markers are represented by a single cluster marker
     }
 
     /**

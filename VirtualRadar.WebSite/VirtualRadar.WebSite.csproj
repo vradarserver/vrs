@@ -189,6 +189,8 @@
     <Content Include="OldSite\jQuery\jQuery-1.6.4.js" />
     <Content Include="OldSite\jQuery\jQuery-1.6.4.min.js" />
     <Content Include="Site\Web\css\jquery-ui\images\ui-bg_flat_thick_40_eeeeee_40x40.png" />
+    <Content Include="Site\Web\css\leaflet.markercluster\MarkerCluster.css" />
+    <Content Include="Site\Web\css\leaflet.markercluster\MarkerCluster.Default.css" />
     <Content Include="Site\Web\css\leaflet\images\layers-2x.png" />
     <Content Include="Site\Web\css\leaflet\images\layers.png" />
     <Content Include="Site\Web\css\leaflet\images\marker-icon-2x.png" />
@@ -301,6 +303,7 @@
       <DependentUpon>jqueryuihelper.ts</DependentUpon>
     </Content>
     <Content Include="Site\Web\script\leaflet-src.js" />
+    <Content Include="Site\Web\script\leaflet.markercluster-src.js" />
     <Content Include="Site\Web\script\markercluster.js" />
     <Content Include="Site\Web\script\vrs\airportDataApi.js">
       <DependentUpon>airportDataApi.ts</DependentUpon>

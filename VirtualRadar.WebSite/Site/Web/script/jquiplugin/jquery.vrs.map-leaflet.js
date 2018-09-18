@@ -162,6 +162,18 @@ var VRS;
                     return 'topright';
             }
         };
+        LeafletUtilities.prototype.toLeafletMapMarker = function (mapMarker) {
+            var wrapper = mapMarker;
+            return wrapper ? wrapper.marker : null;
+        };
+        LeafletUtilities.prototype.toLeafletMapMarkers = function (mapMarkers) {
+            var result = [];
+            var len = mapMarkers ? mapMarkers.length : 0;
+            for (var i = 0; i < len; ++i) {
+                result.push(this.toLeafletMapMarker(mapMarkers[i]));
+            }
+            return result;
+        };
         return LeafletUtilities;
     }());
     VRS.LeafletUtilities = LeafletUtilities;
@@ -798,6 +810,83 @@ var VRS;
         };
         return MapInfoWindow;
     }());
+    var MapMarkerClusterer = (function () {
+        function MapMarkerClusterer(nativeMap, settings) {
+            this.map = nativeMap;
+            this.maxZoom = settings.maxZoom;
+            this.createClusterGroup();
+        }
+        MapMarkerClusterer.prototype.createClusterGroup = function () {
+            var mapMarkers = null;
+            if (this.clusterGroup) {
+                mapMarkers = this.clusterGroup.getLayers();
+                this.destroyClusterGroup();
+            }
+            var options = {
+                disableClusteringAtZoom: this.maxZoom + 1,
+                spiderfyOnMaxZoom: false,
+                showCoverageOnHover: true
+            };
+            this.clusterGroup = L.markerClusterGroup(options);
+            if (mapMarkers && mapMarkers.length > 0) {
+                this.clusterGroup.addLayers(mapMarkers);
+            }
+            this.map.addLayer(this.clusterGroup);
+        };
+        MapMarkerClusterer.prototype.destroyClusterGroup = function () {
+            if (this.clusterGroup) {
+                this.clusterGroup.removeLayers(this.clusterGroup.getLayers());
+                this.map.removeLayer(this.clusterGroup);
+                this.clusterGroup = null;
+            }
+        };
+        MapMarkerClusterer.prototype.getNative = function () {
+            return this.clusterGroup;
+        };
+        MapMarkerClusterer.prototype.getNativeType = function () {
+            return 'OpenStreetMap';
+        };
+        MapMarkerClusterer.prototype.getMaxZoom = function () {
+            return this.maxZoom;
+        };
+        MapMarkerClusterer.prototype.setMaxZoom = function (maxZoom) {
+            if (maxZoom !== this.maxZoom) {
+                this.maxZoom = maxZoom;
+                this.createClusterGroup();
+            }
+        };
+        MapMarkerClusterer.prototype.addMarker = function (marker, noRepaint) {
+            if (marker) {
+                var nativeMarker = VRS.leafletUtilities.toLeafletMapMarker(marker);
+                nativeMarker.remove();
+                this.clusterGroup.addLayer(nativeMarker);
+            }
+        };
+        MapMarkerClusterer.prototype.addMarkers = function (markers, noRepaint) {
+            if (markers) {
+                var nativeMarkers = VRS.leafletUtilities.toLeafletMapMarkers(markers);
+                var len = nativeMarkers.length;
+                for (var i = 0; i < len; ++i) {
+                    nativeMarkers[i].remove();
+                }
+                this.clusterGroup.addLayers(nativeMarkers);
+            }
+        };
+        MapMarkerClusterer.prototype.removeMarker = function (marker, noRepaint) {
+            if (marker) {
+                this.clusterGroup.removeLayer(VRS.leafletUtilities.toLeafletMapMarker(marker));
+            }
+        };
+        MapMarkerClusterer.prototype.removeMarkers = function (markers, noRepaint) {
+            if (markers) {
+                this.clusterGroup.removeLayers(VRS.leafletUtilities.toLeafletMapMarkers(markers));
+            }
+        };
+        MapMarkerClusterer.prototype.repaint = function () {
+            this.clusterGroup.refreshClusters();
+        };
+        return MapMarkerClusterer;
+    }());
     var MapPluginState = (function () {
         function MapPluginState() {
             this.mapContainer = undefined;
@@ -1315,7 +1404,13 @@ var VRS;
             }
         };
         MapPlugin.prototype.createMapMarkerClusterer = function (settings) {
-            return null;
+            var result = null;
+            var state = this._getState();
+            if (state.map) {
+                var options = $.extend({}, settings, {});
+                result = new MapMarkerClusterer(state.map, options);
+            }
+            return result;
         };
         MapPlugin.prototype.addPolyline = function (id, userOptions) {
             var result;
