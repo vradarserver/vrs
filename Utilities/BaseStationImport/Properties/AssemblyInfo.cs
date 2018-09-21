@@ -34,5 +34,10 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 
 // This needs to match VirtualRadar.exe otherwise the plugins might not load
-[assembly: AssemblyVersion("2.4.0.*")]
-[assembly: AssemblyFileVersion("2.4.0.0")]
+[assembly: AssemblyVersion("3.0.0.*")]
+[assembly: AssemblyFileVersion("3.0.0.0")]
+
+// If this is not a beta version then specify an empty string. Otherwise specify the
+// full release version that should be used when checking for updates followed by the
+// word beta (e.g. "1.2.3.4 beta");
+[assembly: AssemblyInformationalVersion("2.4.2.0 beta")]
