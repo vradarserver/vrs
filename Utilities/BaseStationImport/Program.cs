@@ -36,12 +36,13 @@ namespace BaseStationImport
                 VirtualRadar.Database.Implementations.Register(Factory.Singleton);
 
                 ProgramLifetime.InitialiseManagers();
-                LoadDatabasePlugins();
 
                 var appInfo = Factory.Resolve<IApplicationInformation>();
                 Console.WriteLine($"{appInfo.ApplicationName}, version {appInfo.ShortVersion}, built {appInfo.BuildDate} UTC");
                 Console.WriteLine(appInfo.Copyright);
                 Console.WriteLine();
+
+                LoadDatabasePlugins();
 
                 CommandRunner commandRunner = null;
                 var options = OptionsParser.Parse(args);
@@ -97,13 +98,18 @@ namespace BaseStationImport
             var pluginManager = Factory.ResolveSingleton<IPluginManager>();
             ProgramLifetime.LoadPlugins();
 
+            var countLoaded = 0;
             foreach(var plugin in pluginManager.LoadedPlugins) {
                 switch(plugin.Id) {
                     case "VirtualRadarServer.Plugin.SqlServer":
                         plugin.RegisterImplementations(Factory.Singleton);
+                        Console.WriteLine($"Plugin {plugin.Id} loaded");
+                        ++countLoaded;
                         break;
                 }
             }
+            Console.WriteLine($"{countLoaded:N0} plugin(s) loaded");
+            Console.WriteLine();
         }
     }
 }
