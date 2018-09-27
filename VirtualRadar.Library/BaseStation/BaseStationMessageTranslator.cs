@@ -14,6 +14,7 @@ using System.Text;
 using VirtualRadar.Interface.BaseStation;
 using System.Globalization;
 using System.Diagnostics;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.Library.BaseStation
 {
@@ -36,9 +37,9 @@ namespace VirtualRadar.Library.BaseStation
 
             if(!String.IsNullOrEmpty(text)) {
                 var isMlat = false;
-                string[] parts = text.Split(',');
-                for(int c = 0;c < parts.Length;c++) {
-                    string chunk = parts[c];
+                var parts = text.Split(',');
+                for(var c = 0;c < parts.Length;c++) {
+                    var chunk = parts[c];
                     try {
                         if(!String.IsNullOrEmpty(chunk)) {
                             switch(c) {
@@ -46,7 +47,7 @@ namespace VirtualRadar.Library.BaseStation
                                 case 1:     result.TransmissionType = result.MessageType == BaseStationMessageType.Transmission ? BaseStationMessageHelper.ConvertToBaseStationTransmissionType(chunk) : BaseStationTransmissionType.None; break;
                                 case 2:     result.SessionId = ParseInt(chunk); break;
                                 case 3:     result.AircraftId = ParseInt(chunk); break;
-                                case 4:     result.Icao24 = chunk == null ? null : chunk.ToUpperInvariant(); break;
+                                case 4:     result.Icao24 = chunk; break;
                                 case 5:     result.FlightId = ParseInt(chunk); break;
                                 case 6:     result.MessageGenerated = ParseDate(chunk); break;
                                 case 7:     result.MessageGenerated = ParseTime(result.MessageGenerated, chunk); break;
@@ -75,6 +76,11 @@ namespace VirtualRadar.Library.BaseStation
                         // up with this, which is not very nice but shows enough information in the unhandled exception handler to allow diagnosis of the problem.
                         throw new BaseStationTranslatorException($"{ex.Message} while translating \"{chunk}\" (chunk {c}) in \"{text}\"");
                     }
+                }
+
+                var icaoNumber = CustomConvert.Icao24(result.Icao24);
+                if(icaoNumber > -1) {
+                    result.Icao24 = icaoNumber.ToString("X6");
                 }
 
                 result.IsMlat = isMlat;

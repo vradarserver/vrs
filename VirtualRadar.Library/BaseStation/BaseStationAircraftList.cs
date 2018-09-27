@@ -447,8 +447,8 @@ namespace VirtualRadar.Library.BaseStation
         {
             try {
                 if(message.MessageType == BaseStationMessageType.Transmission) {
-                    var uniqueId = CustomConvert.Icao24(message.Icao24);
-                    if(uniqueId != -1) {
+                    var icaoNumber = CustomConvert.Icao24(message.Icao24);
+                    if(icaoNumber != -1) {
                         var now = _Clock.UtcNow;
 
                         var isInsane = false;
@@ -456,10 +456,10 @@ namespace VirtualRadar.Library.BaseStation
                         var altitudeCertainty = isOnGround ? Certainty.ProbablyRight : Certainty.Uncertain;
                         var positionCertainty = Certainty.Uncertain;
                         if(message.Altitude != null && !isOnGround) {
-                            isInsane = (altitudeCertainty = _SanityChecker.CheckAltitude(uniqueId, now, message.Altitude.Value)) == Certainty.CertainlyWrong;
+                            isInsane = (altitudeCertainty = _SanityChecker.CheckAltitude(icaoNumber, now, message.Altitude.Value)) == Certainty.CertainlyWrong;
                         }
                         if(!isInsane && message.Latitude != null && message.Longitude != null && (message.Latitude != 0.0 || message.Longitude != 0.0)) {
-                            isInsane = (positionCertainty = _SanityChecker.CheckPosition(uniqueId, now, message.Latitude.Value, message.Longitude.Value)) == Certainty.CertainlyWrong;
+                            isInsane = (positionCertainty = _SanityChecker.CheckPosition(icaoNumber, now, message.Latitude.Value, message.Longitude.Value)) == Certainty.CertainlyWrong;
                         }
 
                         if(!isInsane) {
@@ -467,10 +467,10 @@ namespace VirtualRadar.Library.BaseStation
 
                             var aircraftMap = _AircraftMap;
                             IAircraft aircraft;
-                            isNewAircraft = !aircraftMap.TryGetValue(uniqueId, out aircraft);
+                            isNewAircraft = !aircraftMap.TryGetValue(icaoNumber, out aircraft);
                             if(isNewAircraft) {
                                 aircraft = Factory.Resolve<IAircraft>();
-                                aircraft.UniqueId = uniqueId;
+                                aircraft.UniqueId = icaoNumber;
                             } else if(isOutOfBand) {
                                 if(aircraft.Latitude.GetValueOrDefault() != 0 || aircraft.Longitude.GetValueOrDefault() != 0) {
                                     if(!aircraft.PositionIsMlat.GetValueOrDefault() && aircraft.ReceiverId == aircraft.PositionReceiverId) {
@@ -480,21 +480,21 @@ namespace VirtualRadar.Library.BaseStation
                             }
 
                             if(aircraft != null) {
-                                ApplyMessageToAircraft(message, aircraft, isNewAircraft, isOutOfBand, isSatcomFeed);
+                                ApplyMessageToAircraft(icaoNumber, message, aircraft, isNewAircraft, isOutOfBand, isSatcomFeed);
                             }
 
                             if(!isOutOfBand && altitudeCertainty == Certainty.ProbablyRight && positionCertainty == Certainty.ProbablyRight) {
                                 if(PolarPlotter != null) {
-                                    PolarPlotter.AddCheckedCoordinate(uniqueId, isOnGround ? 0 : message.Altitude.Value, message.Latitude.Value, message.Longitude.Value);
+                                    PolarPlotter.AddCheckedCoordinate(icaoNumber, isOnGround ? 0 : message.Altitude.Value, message.Latitude.Value, message.Longitude.Value);
                                 }
                             }
 
                             if(isNewAircraft) {
                                 var added = false;
                                 lock(_AircraftListLock) {
-                                    if(!_AircraftMap.ContainsKey(uniqueId)) {
+                                    if(!_AircraftMap.ContainsKey(icaoNumber)) {
                                         var newMap = CollectionHelper.ShallowCopy(_AircraftMap);
-                                        newMap.Add(uniqueId, aircraft);
+                                        newMap.Add(icaoNumber, aircraft);
                                         _AircraftMap = newMap;
                                         added = true;
                                     }
@@ -512,7 +512,7 @@ namespace VirtualRadar.Library.BaseStation
             }
         }
 
-        private void ApplyMessageToAircraft(BaseStationMessage message, IAircraft aircraft, bool isNewAircraft, bool isOutOfBand, bool isSatcomFeed)
+        private void ApplyMessageToAircraft(int icaoNumber, BaseStationMessage message, IAircraft aircraft, bool isNewAircraft, bool isOutOfBand, bool isSatcomFeed)
         {
             var now = _Clock.UtcNow;
 
@@ -563,7 +563,9 @@ namespace VirtualRadar.Library.BaseStation
                     aircraft.SignalLevel = message.SignalLevel;
                     aircraft.IsTisb = message.IsTisb;
                     ++aircraft.CountMessagesReceived;
-                    if(aircraft.Icao24 == null) aircraft.Icao24 = message.Icao24;
+                    if(aircraft.Icao24 == null) {
+                        aircraft.Icao24 = icaoNumber.ToString("X6");
+                    }
 
                     if(!String.IsNullOrEmpty(message.Callsign)) aircraft.Callsign = message.Callsign;
                     if(message.GroundSpeed != null) aircraft.GroundSpeed = message.GroundSpeed;

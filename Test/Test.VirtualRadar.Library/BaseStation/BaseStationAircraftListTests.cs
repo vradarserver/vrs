@@ -859,6 +859,30 @@ namespace Test.VirtualRadar.Library.BaseStation
         }
 
         [TestMethod]
+        public void BaseStationAircraftList_MessageReceived_Pads_Short_Icaos_To_Six_Digits()
+        {
+            _AircraftList.Start();
+            _BaseStationMessage.Icao24 = "1";
+
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(1);
+            Assert.AreEqual("000001", aircraft.Icao24);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_MessageReceived_Converts_Icaos_To_UpperCase()
+        {
+            _AircraftList.Start();
+            _BaseStationMessage.Icao24 = "abcdef";
+
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(0xABCDEF);
+            Assert.AreEqual("ABCDEF", aircraft.Icao24);
+        }
+
+        [TestMethod]
         public void BaseStationAircraftList_MessageReceived_Updates_LastUpdate_Time()
         {
             var messageTime1 = new DateTime(2001, 1, 1, 10, 20, 21);
