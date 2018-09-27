@@ -55,5 +55,60 @@ namespace VirtualRadar.Interface
 
             return result;
         }
+
+        /// <summary>
+        /// Converts an ICAO24 string to an ICAO24 value. Returns -1 if the ICAO24 is invalid.
+        /// </summary>
+        /// <param name="icao24"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// In testing the standard Convert.ToInt32() conversion call takes about 67ms for a million
+        /// valid 6 digit hex codes and 20 seconds for a million invalid hex codes (it throws exceptions
+        /// which need to be caught). This version takes about 50ms for a million valid or invalid
+        /// 6 digt hex codes.
+        /// </remarks>
+        public static int Icao24(string icao24)
+        {
+            var result = -1;
+
+            if(icao24 != null && icao24.Length > 0 && icao24.Length < 7) {
+                result = 0;
+                for(var i = 0;i < icao24.Length;++i) {
+                    var digit = -1;
+                    switch(icao24[i]) {
+                        case '0':   digit = 0; break;
+                        case '1':   digit = 1; break;
+                        case '2':   digit = 2; break;
+                        case '3':   digit = 3; break;
+                        case '4':   digit = 4; break;
+                        case '5':   digit = 5; break;
+                        case '6':   digit = 6; break;
+                        case '7':   digit = 7; break;
+                        case '8':   digit = 8; break;
+                        case '9':   digit = 9; break;
+                        case 'a':
+                        case 'A':   digit = 10; break;
+                        case 'b':
+                        case 'B':   digit = 11; break;
+                        case 'c':
+                        case 'C':   digit = 12; break;
+                        case 'd':
+                        case 'D':   digit = 13; break;
+                        case 'e':
+                        case 'E':   digit = 14; break;
+                        case 'f':
+                        case 'F':   digit = 15; break;
+                    }
+                    if(digit == -1) {
+                        result = -1;
+                        break;
+                    }
+                    result = result << 4;
+                    result |= digit;
+                }
+            }
+
+            return result;
+        }
     }
 }

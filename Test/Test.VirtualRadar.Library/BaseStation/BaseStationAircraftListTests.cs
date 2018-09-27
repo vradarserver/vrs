@@ -653,11 +653,11 @@ namespace Test.VirtualRadar.Library.BaseStation
 
             var aircraft1 = _AircraftList.FindAircraft(7);
             Assert.IsNotNull(aircraft1);
-            Assert.AreEqual("7", aircraft1.Icao24);
+            Assert.AreEqual("000007", aircraft1.Icao24);
 
             var aircraft2 = _AircraftList.FindAircraft(5);
             Assert.IsNotNull(aircraft2);
-            Assert.AreEqual("5", aircraft2.Icao24);
+            Assert.AreEqual("000005", aircraft2.Icao24);
         }
 
         [TestMethod]
@@ -859,6 +859,30 @@ namespace Test.VirtualRadar.Library.BaseStation
         }
 
         [TestMethod]
+        public void BaseStationAircraftList_MessageReceived_Pads_Short_Icaos_To_Six_Digits()
+        {
+            _AircraftList.Start();
+            _BaseStationMessage.Icao24 = "1";
+
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(1);
+            Assert.AreEqual("000001", aircraft.Icao24);
+        }
+
+        [TestMethod]
+        public void BaseStationAircraftList_MessageReceived_Converts_Icaos_To_UpperCase()
+        {
+            _AircraftList.Start();
+            _BaseStationMessage.Icao24 = "abcdef";
+
+            _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
+
+            var aircraft = _AircraftList.FindAircraft(0xABCDEF);
+            Assert.AreEqual("ABCDEF", aircraft.Icao24);
+        }
+
+        [TestMethod]
         public void BaseStationAircraftList_MessageReceived_Updates_LastUpdate_Time()
         {
             var messageTime1 = new DateTime(2001, 1, 1, 10, 20, 21);
@@ -927,9 +951,11 @@ namespace Test.VirtualRadar.Library.BaseStation
             _Clock.UtcNowValue = now;
             _AircraftList.Start();
 
+            _BaseStationMessageEventArgs.Message.Icao24 = "1000000";
             _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
 
-            _SanityChecker.Verify(r => r.IsGoodAircraftIcao("4008F6"), Times.Once());
+            var aircraft = _AircraftList.TakeSnapshot(out var unused1, out var unused2);
+            Assert.AreEqual(0, aircraft.Count);
         }
 
         [TestMethod]
@@ -1966,8 +1992,8 @@ namespace Test.VirtualRadar.Library.BaseStation
             _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
 
             var aircraft = _AircraftList.FindAircraft(0x4008F6);
-            Assert.AreEqual("EGLL Heathrow, UK", aircraft.Origin);
-            Assert.AreEqual("KJFK, USA", aircraft.Destination);
+            Assert.AreEqual("LHR Heathrow, UK", aircraft.Origin);
+            Assert.AreEqual("JFK, USA", aircraft.Destination);
             Assert.AreEqual(1, aircraft.Stopovers.Count);
             Assert.AreEqual("HEL", aircraft.Stopovers.First());
         }
@@ -2021,7 +2047,7 @@ namespace Test.VirtualRadar.Library.BaseStation
             _Port30003Listener.Raise(m => m.Port30003MessageReceived += null, _BaseStationMessageEventArgs);
 
             var aircraft = _AircraftList.FindAircraft(0x4008F6);
-            Assert.AreEqual("EGLL Heathrow, UK", aircraft.Destination);
+            Assert.AreEqual("LHR Heathrow, UK", aircraft.Destination);
         }
 
         [TestMethod]
