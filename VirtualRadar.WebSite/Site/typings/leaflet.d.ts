@@ -12,7 +12,7 @@
 
 export as namespace L;
 
-import * as geojson from 'geojson';
+//import * as geojson from 'geojson';
 
 export class Class {
     static extend(props: any): any/* how to return constructor of self extended type ? */;
