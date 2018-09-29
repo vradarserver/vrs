@@ -136,7 +136,11 @@
     <Compile Include="Database\BaseStationFlightUpsert.cs" />
     <Compile Include="Database\IBaseStationDatabaseSQLite.cs" />
     <Compile Include="Database\IBaseStationDatabaseSqlServer.cs" />
+    <Compile Include="Database\ITrackHistoryDatabase.cs" />
     <Compile Include="Database\OrdinalAttribute.cs" />
+    <Compile Include="Database\TrackHistory.cs" />
+    <Compile Include="Database\TrackHistoryState.cs" />
+    <Compile Include="Database\TrackHistoryTruncateResult.cs" />
     <Compile Include="EventHelperException.cs" />
     <Compile Include="HttpContentHelper.cs" />
     <Compile Include="IAircraftOnlineLookupLog.cs" />
