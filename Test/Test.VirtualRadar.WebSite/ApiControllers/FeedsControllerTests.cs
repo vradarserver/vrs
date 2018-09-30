@@ -1583,6 +1583,30 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             Assert.IsFalse(aircraftList.ServerConfigChanged);
         }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Copes_With_Missing_Query_String_Segment_V2_POST()
+        {
+            var response = await _Server.HttpClient.PostAsync($"AircraftList.json?&ldv=1", _EmptyPostBody);
+            var jsonText = response.Content.ReadAsStringAsync().Result;
+            Assert.AreEqual("{\"Message\":\"The request is invalid.\"}", jsonText);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Copes_With_Missing_Query_String_Segment_V2_GET()
+        {
+            var response = await _Server.HttpClient.GetAsync($"AircraftList.json?&ldv=1");
+            var jsonText = response.Content.ReadAsStringAsync().Result;
+            Assert.AreEqual("{\"Message\":\"The request is invalid.\"}", jsonText);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Copes_With_Missing_Query_String_Segment_V3()
+        {
+            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list?&ldv=1", _EmptyPostBody);
+            var jsonText = response.Content.ReadAsStringAsync().Result;
+            Assert.AreEqual("{\"Message\":\"The request is invalid.\"}", jsonText);
+        }
         #endregion
     }
 }
