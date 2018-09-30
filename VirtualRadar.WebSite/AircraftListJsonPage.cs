@@ -223,7 +223,7 @@ namespace VirtualRadar.WebSite
             var result = new AircraftListJsonBuilderFilter();
 
             foreach(string name in args.QueryString) {
-                if(name.Length < 3) continue;
+                if(name == null || name.Length < 3) continue;
                 var caselessName = name.ToUpper();
                 var partialName = caselessName.Substring(0, 3);
                 switch(partialName.ToUpper()) {

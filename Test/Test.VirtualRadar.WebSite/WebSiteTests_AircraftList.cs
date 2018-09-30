@@ -2065,6 +2065,30 @@ namespace Test.VirtualRadar.WebSite
 
             Assert.AreEqual(2, result.Aircraft.Count);
         }
+
+        [TestMethod]
+        public void WebSite_BaseStationAircraftList_AircraftListFilter_Copes_With_Query_String_Without_QuestionMark()
+        {
+            _AircraftListAddress.Filter = _AircraftListFilter;
+
+            var address = BuildUrl(AircraftListPage, new Dictionary<string, string>());
+            address = $"{address}&ldv=1";
+            var actual = SendJsonRequest<AircraftListJson>(address);
+
+            Assert.IsNull(actual);
+        }
+
+        [TestMethod]
+        public void WebSite_BaseStationAircraftList_AircraftListFilter_Copes_With_Query_String_Without_Named_Value_QuestionMark()
+        {
+            _AircraftListAddress.Filter = _AircraftListFilter;
+
+            var address = BuildUrl(AircraftListPage, new Dictionary<string, string>());
+            address = $"{address}?&ldv=1";
+            var actual = SendJsonRequest<AircraftListJson>(address);
+
+            Assert.AreNotEqual(0, actual.ServerTime);
+        }
         #endregion
 
         #region Combinations of filters
