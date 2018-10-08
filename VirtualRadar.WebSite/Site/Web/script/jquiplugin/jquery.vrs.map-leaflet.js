@@ -1408,7 +1408,6 @@ var VRS;
             var state = this._getState();
             if (state.map) {
                 var options = $.extend({}, settings, {});
-                result = new MapMarkerClusterer(state.map, options);
             }
             return result;
         };

@@ -2056,7 +2056,16 @@ namespace VRS
                 var options = $.extend(<IMapMarkerClustererSettings>{}, settings, {
                 });
 
-                result = new MapMarkerClusterer(state.map, options);
+                // The clusterer as implemented does work but it has two problems:
+                //  1. The info window flickers when markers are moved. I think it may be related to this issue here:
+                //     https://github.com/Leaflet/Leaflet.markercluster/issues/774 [Using marker.setLatLng triggers paint flashing]
+                //  2. It will not cluster single aircraft without permanently modifying their icon.
+                //
+                // Unfortunately (1) is a show-stopper, it looks awful. I don't think leaflet.markercluster is going to work for
+                // VRS until the issue is resolved. I've left the code in place but commented out the create call, if you want to
+                // put the clusterer back then just uncomment this line:
+
+                // result = new MapMarkerClusterer(state.map, options);
             }
 
             return result;
