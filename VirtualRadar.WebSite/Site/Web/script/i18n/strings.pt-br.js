@@ -115,6 +115,7 @@
             case VRS.EngineType.Electric:   result += ' elétrico'; break;
             case VRS.EngineType.Jet:        result += ' jato'; break;
             case VRS.EngineType.Piston:     result += ' pistão'; break;
+            case VRS.EngineType.Rocket:     result += ' rocket'; break;
             case VRS.EngineType.Turbo:      result += ' turbo'; break;
         }
 

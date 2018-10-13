@@ -124,7 +124,8 @@ namespace VRS
             new VRS.ValueText({ value: VRS.EngineType.Piston,     textKey: 'Piston' }),
             new VRS.ValueText({ value: VRS.EngineType.Turbo,      textKey: 'Turbo' }),
             new VRS.ValueText({ value: VRS.EngineType.Electric,   textKey: 'Electric' }),
-            new VRS.ValueText({ value: VRS.EngineType.Jet,        textKey: 'Jet' })
+            new VRS.ValueText({ value: VRS.EngineType.Jet,        textKey: 'Jet' }),
+            new VRS.ValueText({ value: VRS.EngineType.Rocket,     textKey: 'Rocket' })
         ];},
         serverFilterName:   'fEgt'
     });
@@ -335,4 +336,3 @@ namespace VRS
      */
     export var aircraftFilterHelper = new VRS.AircraftFilterHelper();
 }
- 

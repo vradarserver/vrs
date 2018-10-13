@@ -3823,6 +3823,15 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rocket.
+        /// </summary>
+        public static string Rocket {
+            get {
+                return ResourceManager.GetString("Rocket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Route.
         /// </summary>
         public static string Route {

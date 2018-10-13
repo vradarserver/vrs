@@ -111,7 +111,8 @@ var VRS;
         Piston: 1,
         Turbo: 2,
         Jet: 3,
-        Electric: 4
+        Electric: 4,
+        Rocket: 5
     };
     VRS.EnginePlacement = {
         Unknown: 0,

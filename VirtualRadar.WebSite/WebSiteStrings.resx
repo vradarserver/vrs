@@ -1853,4 +1853,7 @@
   <data name="PositioningFlightShort" xml:space="preserve">
     <value>POSITION</value>
   </data>
+  <data name="Rocket" xml:space="preserve">
+    <value>Rocket</value>
+  </data>
 </root>

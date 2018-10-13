@@ -115,6 +115,7 @@
             case VRS.EngineType.Electric:   result += ' 电力引擎'; break;
             case VRS.EngineType.Jet:        result += ' 喷气引擎'; break;
             case VRS.EngineType.Piston:     result += ' 活塞引擎'; break;
+            case VRS.EngineType.Rocket:     result += ' rocket'; break;
             case VRS.EngineType.Turbo:      result += ' 涡轮增压引擎'; break;
         }
 

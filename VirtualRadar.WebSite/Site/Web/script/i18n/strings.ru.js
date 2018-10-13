@@ -115,6 +115,7 @@
             case VRS.EngineType.Electric:   result += ' электрический'; break;
             case VRS.EngineType.Jet:        result += ' реактивный'; break;
             case VRS.EngineType.Piston:     result += ' поршневой'; break;
+            case VRS.EngineType.Rocket:     result += ' rocket'; break;
             case VRS.EngineType.Turbo:      result += ' газотурбинный'; break;
         }
 
