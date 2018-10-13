@@ -426,6 +426,7 @@ declare namespace VRS
         Resume:                             string;
         Reversing:                          string;
         ReversingShort:                     string;
+        Rocket:                             string;
         Route:                              string;
         RouteFull:                          string;
         RouteNotKnown:                      string;
