@@ -115,6 +115,7 @@
             case VRS.EngineType.Electric:   result += ' Elektrisch'; break;
             case VRS.EngineType.Jet:        result += ' jet'; break;
             case VRS.EngineType.Piston:     result += ' Kolben'; break;
+            case VRS.EngineType.Rocket:     result += ' rocket'; break;
             case VRS.EngineType.Turbo:      result += ' turbo'; break;
         }
 

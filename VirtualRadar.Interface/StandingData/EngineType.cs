@@ -45,5 +45,10 @@ namespace VirtualRadar.Interface.StandingData
         /// Electric engine.
         /// </summary>
         Electric = 4,
+
+        /// <summary>
+        /// Rocket engine.
+        /// </summary>
+        Rocket = 5,
     }
 }
