@@ -368,14 +368,6 @@ namespace VRS
             if(VRS.AircraftAutoSelect) {
                 pageSettings.aircraftAutoSelect = new VRS.AircraftAutoSelect(pageSettings.aircraftList);
                 pageSettings.aircraftAutoSelect.loadAndApplyState();
-
-                if(purl) {
-                    var preselectIcao = $.url().param('icao');
-                    if(preselectIcao !== null && preselectIcao !== undefined && preselectIcao.length === 6) {
-                        pageSettings.aircraftAutoSelect.setSelectAircraftByIcao(preselectIcao.toUpperCase());
-                        pageSettings.aircraftAutoSelect.setAutoClearSelectAircraftByIcao(true);
-                    }
-                }
             }
 
             // Create the object that can filter the aircraft list
@@ -385,6 +377,26 @@ namespace VRS
                     unitDisplayPreferences: pageSettings.unitDisplayPreferences
                 });
                 pageSettings.aircraftListFilter.loadAndApplyState();
+            }
+
+            // Optionally preselect to an ICAO off the query string parameters
+            if(purl && pageSettings.aircraftAutoSelect) {
+                var preselectIcao = $.url().param('icao');
+                if(preselectIcao !== null && preselectIcao !== undefined && preselectIcao.length === 6) {
+                    pageSettings.aircraftAutoSelect.setSelectAircraftByIcao(preselectIcao.toUpperCase());
+                    pageSettings.aircraftAutoSelect.setAutoClearSelectAircraftByIcao(true);
+
+                    var filterToIcaoText = $.url().param('filter');
+                    if(filterToIcaoText !== null && filterToIcaoText !== undefined && pageSettings.aircraftListFilter) {
+                        pageSettings.aircraftListFilter.removeAllFilters();
+
+                        if(filterToIcaoText !== '0') {
+                            var filter = pageSettings.aircraftListFilter.addFilter(AircraftFilterProperty.Icao);
+                            filter.setValueCondition(new OneValueCondition(FilterCondition.Equals, false, preselectIcao));
+                            pageSettings.aircraftListFilter.setEnabled(true);
+                        }
+                    }
+                }
             }
 
             // Create the object that plots aircraft on the map

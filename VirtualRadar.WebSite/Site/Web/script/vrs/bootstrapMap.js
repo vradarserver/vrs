@@ -126,13 +126,6 @@ var VRS;
             if (VRS.AircraftAutoSelect) {
                 pageSettings.aircraftAutoSelect = new VRS.AircraftAutoSelect(pageSettings.aircraftList);
                 pageSettings.aircraftAutoSelect.loadAndApplyState();
-                if (purl) {
-                    var preselectIcao = $.url().param('icao');
-                    if (preselectIcao !== null && preselectIcao !== undefined && preselectIcao.length === 6) {
-                        pageSettings.aircraftAutoSelect.setSelectAircraftByIcao(preselectIcao.toUpperCase());
-                        pageSettings.aircraftAutoSelect.setAutoClearSelectAircraftByIcao(true);
-                    }
-                }
             }
             if (VRS.AircraftListFilter) {
                 pageSettings.aircraftListFilter = new VRS.AircraftListFilter({
@@ -140,6 +133,22 @@ var VRS;
                     unitDisplayPreferences: pageSettings.unitDisplayPreferences
                 });
                 pageSettings.aircraftListFilter.loadAndApplyState();
+            }
+            if (purl && pageSettings.aircraftAutoSelect) {
+                var preselectIcao = $.url().param('icao');
+                if (preselectIcao !== null && preselectIcao !== undefined && preselectIcao.length === 6) {
+                    pageSettings.aircraftAutoSelect.setSelectAircraftByIcao(preselectIcao.toUpperCase());
+                    pageSettings.aircraftAutoSelect.setAutoClearSelectAircraftByIcao(true);
+                    var filterToIcaoText = $.url().param('filter');
+                    if (filterToIcaoText !== null && filterToIcaoText !== undefined && pageSettings.aircraftListFilter) {
+                        pageSettings.aircraftListFilter.removeAllFilters();
+                        if (filterToIcaoText !== '0') {
+                            var filter = pageSettings.aircraftListFilter.addFilter(VRS.AircraftFilterProperty.Icao);
+                            filter.setValueCondition(new VRS.OneValueCondition(VRS.FilterCondition.Equals, false, preselectIcao));
+                            pageSettings.aircraftListFilter.setEnabled(true);
+                        }
+                    }
+                }
             }
             if (pageSettings.mapPlugin && VRS.AircraftPlotter) {
                 pageSettings.aircraftPlotterOptions = new VRS.AircraftPlotterOptions({

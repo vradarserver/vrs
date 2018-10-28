@@ -123,6 +123,10 @@ var VRS;
                 _this._Filters.splice(index, 1);
                 _this._Dispatcher.raise(_this._Events.filterChanged);
             };
+            this.removeAllFilters = function () {
+                _this._Filters = [];
+                _this._Dispatcher.raise(_this._Events.filterChanged);
+            };
             this.getFilterIndexForProperty = function (filterProperty) {
                 return VRS.aircraftFilterHelper.getIndexForFilterProperty(_this._Filters, filterProperty);
             };

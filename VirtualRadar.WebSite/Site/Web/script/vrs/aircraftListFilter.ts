@@ -275,6 +275,15 @@ namespace VRS
         }
 
         /**
+         * Removes all filters.
+         */
+        removeAllFilters = () =>
+        {
+            this._Filters = [];
+            this._Dispatcher.raise(this._Events.filterChanged);
+        }
+
+        /**
          * Returns the index of the filter for the filter property passed across or -1 if no such filter exists.
          */
         getFilterIndexForProperty = (filterProperty: AircraftFilterPropertyEnum) : number =>
