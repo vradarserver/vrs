@@ -191,7 +191,7 @@ namespace VirtualRadar.Interface.BaseStation
             result.AppendFormat(CultureInfo.InvariantCulture, "{0},", SquawkHasChanged == null ? "" : SquawkHasChanged.Value ? "-1" : "0");
             result.AppendFormat(CultureInfo.InvariantCulture, "{0},", Emergency == null ? "" : Emergency.Value ? "-1" : "0");
             result.AppendFormat(CultureInfo.InvariantCulture, "{0},", IdentActive == null ? "" : IdentActive.Value ? "-1" : "0");
-            result.AppendFormat(CultureInfo.InvariantCulture, "{0}", OnGround == null ? "" : OnGround.Value ? "-1" : "0");
+            result.AppendFormat(CultureInfo.InvariantCulture, "{0}", OnGround.GetValueOrDefault() ? "-1" : "0");        // Turns out BaseStation never emits a null OnGround value...
 
             return result.ToString();
         }
