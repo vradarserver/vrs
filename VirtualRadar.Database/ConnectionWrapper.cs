@@ -10,40 +10,74 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VirtualRadar.Interface.Database
+namespace VirtualRadar.Database
 {
     /// <summary>
-    /// Describes a track history recorded by <see cref="ITrackHistoryDatabase"/>.
+    /// A wrapper around connections that might not be open.
     /// </summary>
-    public class TrackHistory
+    class ConnectionWrapper : IDisposable
     {
         /// <summary>
-        /// Gets or sets the unique ID of the track history record. This will be 0 if the record has not been saved.
+        /// Gets the connection that has been wrapped. This can be null.
         /// </summary>
-        public long TrackHistoryID { get; set; }
+        public IDbConnection Connection { get; }
 
         /// <summary>
-        /// Gets or sets the aircraft's Mode-S ICAO identifier.
+        /// Gets or sets the transaction that has been wrapped. This can be null.
         /// </summary>
-        public string Icao { get; set; }
+        public IDbTransaction Transaction { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating that the track will not be automatically truncated or deleted.
+        /// Gets a value indicating that the connection will be disposed when the wrapper is disposed.
         /// </summary>
-        public bool IsPreserved { get; set; }
+        public bool ConnectionWillBeDisposed { get; }
 
         /// <summary>
-        /// Gets or sets the date and time at UTC that the record was created.
+        /// Creates a new object.
         /// </summary>
-        public DateTime CreatedUtc { get; set; }
+        /// <param name="connection">The connection to wrap.</param>
+        /// <param name="transaction"></param>
+        /// <param name="disposeOfConnection">True if the connection should be disposed when the wrapper is disposed.</param>
+        public ConnectionWrapper(IDbConnection connection, IDbTransaction transaction, bool disposeOfConnection = true)
+        {
+            Connection = connection;
+            Transaction = transaction;
+            ConnectionWillBeDisposed = disposeOfConnection;
+        }
 
         /// <summary>
-        /// Gets or sets the date and time at UTC that the record was created or last updated.
+        /// Finalises a connection wrapper.
         /// </summary>
-        public DateTime UpdatedUtc { get; set; }
+        ~ConnectionWrapper()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes of or finalises the object.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposing) {
+                if(ConnectionWillBeDisposed && Connection != null) {
+                    Connection.Dispose();
+                }
+            }
+        }
     }
 }

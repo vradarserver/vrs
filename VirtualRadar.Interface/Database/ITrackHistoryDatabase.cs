@@ -19,7 +19,7 @@ namespace VirtualRadar.Interface.Database
     /// <summary>
     /// The interface for objects that can record full track histories to a database.
     /// </summary>
-    public interface ITrackHistoryDatabase
+    public interface ITrackHistoryDatabase : ITransactionable
     {
         /// <summary>
         /// Returns the database version.
@@ -111,5 +111,11 @@ namespace VirtualRadar.Interface.Database
         /// </summary>
         /// <param name="trackHistoryState"></param>
         void TrackHistoryState_Save(TrackHistoryState trackHistoryState);
+
+        /// <summary>
+        /// Creates or updates many track history states at once.
+        /// </summary>
+        /// <param name="trackHistoryStates"></param>
+        void TrackHistoryState_SaveMany(IEnumerable<TrackHistoryState> trackHistoryStates);
     }
 }

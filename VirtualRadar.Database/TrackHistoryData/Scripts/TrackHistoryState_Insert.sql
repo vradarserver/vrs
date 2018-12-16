@@ -1,0 +1,48 @@
+﻿INSERT INTO [TrackHistoryState] (
+    [TrackHistoryID]
+   ,[TimestampUtc]
+   ,[SignalLevel]
+   ,[Callsign]
+   ,[IsCallsignSuspect]
+   ,[Latitude]
+   ,[Longitude]
+   ,[IsMlat]
+   ,[IsTisb]
+   ,[AltitudeFeet]
+   ,[AltitudeTypeID]
+   ,[TargetAltitudeFeet]
+   ,[AirPressureInHg]
+   ,[GroundSpeedKnots]
+   ,[SpeedTypeID]
+   ,[TrackDegrees]
+   ,[TargetTrack]
+   ,[TrackIsHeading]
+   ,[VerticalRateFeetMin]
+   ,[VerticalRateTypeID]
+   ,[SquawkOctal]
+   ,[IdentActive]
+) VALUES (
+    @TrackHistoryID
+   ,@TimestampUtc
+   ,@SignalLevel
+   ,@Callsign
+   ,@IsCallsignSuspect
+   ,@Latitude
+   ,@Longitude
+   ,@IsMlat
+   ,@IsTisb
+   ,@AltitudeFeet
+   ,@AltitudeTypeID
+   ,@TargetAltitudeFeet
+   ,@AirPressureInHg
+   ,@GroundSpeedKnots
+   ,@SpeedTypeID
+   ,@TrackDegrees
+   ,@TargetTrack
+   ,@TrackIsHeading
+   ,@VerticalRateFeetMin
+   ,@VerticalRateTypeID
+   ,@SquawkOctal
+   ,@IdentActive
+);
+SELECT [TrackHistoryStateID] FROM [TrackHistoryState] WHERE _ROWID_ = last_insert_rowid();

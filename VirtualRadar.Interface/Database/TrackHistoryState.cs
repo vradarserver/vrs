@@ -98,7 +98,7 @@ namespace VirtualRadar.Interface.Database
         /// <summary>
         /// Gets or sets the target altitude on the autopilot.
         /// </summary>
-        public int? TargetAltitude { get; set; }
+        public int? TargetAltitudeFeet { get; set; }
 
         /// <summary>
         /// Gets or sets the air pressure in inches of mercury at this point in time.

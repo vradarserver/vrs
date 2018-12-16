@@ -17,28 +17,19 @@ using System.Threading.Tasks;
 namespace VirtualRadar.Interface.Database
 {
     /// <summary>
-    /// Describes the result of a truncation or deletion of state history.
+    /// The SQLite extension of <see cref="ITrackHistoryDatabase"/>. 
     /// </summary>
-    public class TrackHistoryTruncateResult
+    public interface ITrackHistoryDatabaseSQLite : ITrackHistoryDatabase
     {
         /// <summary>
-        /// Gets or sets the total number of histories deleted / truncated.
+        /// Gets or sets the full path to the database file.
         /// </summary>
-        public long CountTrackHistories { get; set; }
+        string FileName { get; set; }
 
         /// <summary>
-        /// Gets or sets the total number of states deleted / truncated.
+        /// Creates a new instance of a database file.
         /// </summary>
-        public long CountTrackHistoryStates { get; set; }
-
-        /// <summary>
-        /// Gets or sets the date and time of the earliest history deleted / truncated.
-        /// </summary>
-        public DateTime EarliestHistoryUtc { get; set; }
-
-        /// <summary>
-        /// Gets or sets the date and time of the latest history deleted / truncated.
-        /// </summary>
-        public DateTime LatestHistoryUtc { get; set; }
+        /// <param name="fileName"></param>
+        void Create(string fileName);
     }
 }
