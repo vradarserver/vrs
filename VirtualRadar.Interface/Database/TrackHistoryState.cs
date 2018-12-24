@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,6 +50,16 @@ namespace VirtualRadar.Interface.Database
         /// Gets or sets the point in time that the state represents.
         /// </summary>
         public DateTime TimestampUtc { get; set; }
+
+        /// <summary>
+        /// Gets or sets the relative order of this state record in all state records for <see cref="TrackHistoryID"/>
+        /// </summary>
+        /// <remarks>
+        /// In principle sorting by <see cref="TimestampUtc"/> or this field should produce the same order. However, if
+        /// the clock is corrected while a sequence is being recorded then <see cref="TimestampUtc"/> can be out of order
+        /// whereas this field is always in order.
+        /// </remarks>
+        public int SequenceNumber { get; set; }
 
         /// <summary>
         /// Gets or sets the signal level at the time the state was saved. Note that this can be suppressed in options.
@@ -138,7 +149,7 @@ namespace VirtualRadar.Interface.Database
         /// <summary>
         /// Gets or sets whether the VSI is reported by an instrument that uses barometric pressure or measures the distance above the elipsoid.
         /// </summary>
-        public AltitudeType VerticalRateType { get; set; }
+        public AltitudeType? VerticalRateType { get; set; }
 
         /// <summary>
         /// Gets or sets the squawk as an octal code (e.g. squawk 1234 is recorded as integer 1234 not 668).
@@ -149,5 +160,51 @@ namespace VirtualRadar.Interface.Database
         /// Gets or sets a value indicating that ident was active when the state was recorded.
         /// </summary>
         public bool? IdentActive { get; set; }
+
+        /// <summary>
+        /// Applies each state in order to a start state(an empty state if <paramref name="intoState"/> is null) and returns the end state.
+        /// </summary>
+        /// <param name="states"></param>
+        /// <param name="intoState"></param>
+        /// <returns></returns>
+        public static TrackHistoryState MergeStates(IEnumerable<TrackHistoryState> states, TrackHistoryState intoState = null)
+        {
+            var result = intoState ?? new TrackHistoryState();
+
+            foreach(var state in states) {
+                if(state.TrackHistoryID != 0) {
+                    result.TrackHistoryID = state.TrackHistoryID;
+                }
+                if(state.SequenceNumber != 0) {
+                    result.SequenceNumber = state.SequenceNumber;
+                }
+                if(state.TimestampUtc != default(DateTime)) {
+                    result.TimestampUtc = state.TimestampUtc;
+                }
+
+                if(state.AirPressureInHg != null)       result.AirPressureInHg =        state.AirPressureInHg;
+                if(state.AltitudeFeet != null)          result.AltitudeFeet =           state.AltitudeFeet;
+                if(state.AltitudeType != null)          result.AltitudeType =           state.AltitudeType;
+                if(state.Callsign != null)              result.Callsign =               state.Callsign;
+                if(state.GroundSpeedKnots != null)      result.GroundSpeedKnots =       state.GroundSpeedKnots;
+                if(state.IdentActive != null)           result.IdentActive =            state.IdentActive;
+                if(state.IsCallsignSuspect != null)     result.IsCallsignSuspect =      state.IsCallsignSuspect;
+                if(state.IsMlat != null)                result.IsMlat =                 state.IsMlat;
+                if(state.IsTisb != null)                result.IsTisb =                 state.IsTisb;
+                if(state.Latitude != null)              result.Latitude =               state.Latitude;
+                if(state.Longitude != null)             result.Longitude =              state.Longitude;
+                if(state.SignalLevel != null)           result.SignalLevel =            state.SignalLevel;
+                if(state.SpeedType != null)             result.SpeedType =              state.SpeedType;
+                if(state.SquawkOctal != null)           result.SquawkOctal =            state.SquawkOctal;
+                if(state.TargetAltitudeFeet != null)    result.TargetAltitudeFeet =     state.TargetAltitudeFeet;
+                if(state.TargetTrack != null)           result.TargetTrack =            state.TargetTrack;
+                if(state.TrackDegrees != null)          result.TrackDegrees =           state.TrackDegrees;
+                if(state.TrackIsHeading != null)        result.TrackIsHeading =         state.TrackIsHeading;
+                if(state.VerticalRateFeetMin != null)   result.VerticalRateFeetMin =    state.VerticalRateFeetMin;
+                if(state.VerticalRateType != null)      result.VerticalRateType =       state.VerticalRateType;
+            }
+
+            return result;
+        }
     }
 }

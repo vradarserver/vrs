@@ -39,6 +39,8 @@ namespace VirtualRadar.Database
             factory.Register<IStandaloneAircraftOnlineLookupCache, AircraftOnlineLookupCache.StandaloneAircraftOnlineLookupCache>();
             factory.Register<IStandingDataManager, StandingData.StandingDataManager>();
             factory.Register<IStandingDataUpdater, StandingData.StandingDataUpdater>();
+            factory.Register<ITrackHistoryDatabase, TrackHistoryData.Database>();
+            factory.Register<ITrackHistoryDatabaseSQLite, TrackHistoryData.Database>();
             factory.Register<IUser, Users.User>();
             factory.Register<IUserManager, Users.UserManager>();
         }

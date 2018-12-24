@@ -1,6 +1,7 @@
 ﻿UPDATE [TrackHistoryState]
 SET    [TrackHistoryID] =      @TrackHistoryID
       ,[TimestampUtc] =        @TimestampUtc
+      ,[SequenceNumber] =      @SequenceNumber
       ,[SignalLevel] =         @SignalLevel
       ,[Callsign] =            @Callsign
       ,[IsCallsignSuspect] =   @IsCallsignSuspect
@@ -9,16 +10,16 @@ SET    [TrackHistoryID] =      @TrackHistoryID
       ,[IsMlat] =              @IsMlat
       ,[IsTisb] =              @IsTisb
       ,[AltitudeFeet] =        @AltitudeFeet
-      ,[AltitudeTypeID] =      @AltitudeTypeID
+      ,[AltitudeType] =        @AltitudeType
       ,[TargetAltitudeFeet] =  @TargetAltitudeFeet
       ,[AirPressureInHg] =     @AirPressureInHg
       ,[GroundSpeedKnots] =    @GroundSpeedKnots
-      ,[SpeedTypeID] =         @SpeedTypeID
+      ,[SpeedType] =           @SpeedType
       ,[TrackDegrees] =        @TrackDegrees
       ,[TargetTrack] =         @TargetTrack
       ,[TrackIsHeading] =      @TrackIsHeading
       ,[VerticalRateFeetMin] = @VerticalRateFeetMin
-      ,[VerticalRateTypeID] =  @VerticalRateTypeID
+      ,[VerticalRateType] =    @VerticalRateType
       ,[SquawkOctal] =         @SquawkOctal
       ,[IdentActive] =         @IdentActive
 WHERE  [TrackHistoryStateID] = @TrackHistoryStateID;

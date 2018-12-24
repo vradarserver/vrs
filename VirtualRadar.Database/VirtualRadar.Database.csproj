@@ -165,10 +165,16 @@
     <Content Include="Log\Scripts\Session_Insert.sql" />
     <Content Include="Log\Scripts\Session_Update.sql" />
     <Content Include="Log\Scripts\UpdateSchema.sql" />
+    <Content Include="TrackHistoryData\Scripts\TrackHistoryState_Delete.sql" />
+    <Content Include="TrackHistoryData\Scripts\TrackHistory_DeleteExpired.sql" />
+    <Content Include="TrackHistoryData\Scripts\TrackHistory_GetByDateRange.sql" />
+    <Content Include="TrackHistoryData\Scripts\TrackHistory_GetByIcao.sql" />
+    <Content Include="TrackHistoryData\Scripts\TrackHistory_Update.sql" />
+    <Content Include="TrackHistoryData\Scripts\TrackHistory_Insert.sql" />
     <Content Include="TrackHistoryData\Scripts\TrackHistory_Delete.sql" />
     <Content Include="TrackHistoryData\Scripts\TrackHistoryState_Update.sql" />
     <Content Include="TrackHistoryData\Scripts\TrackHistoryState_Insert.sql" />
-    <Content Include="TrackHistoryData\Scripts\UpdateSchema.sql" />
+    <Content Include="TrackHistoryData\Scripts\CreateSchema.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

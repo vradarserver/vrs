@@ -1,6 +1,7 @@
 ﻿INSERT INTO [TrackHistoryState] (
     [TrackHistoryID]
    ,[TimestampUtc]
+   ,[SequenceNumber]
    ,[SignalLevel]
    ,[Callsign]
    ,[IsCallsignSuspect]
@@ -9,21 +10,22 @@
    ,[IsMlat]
    ,[IsTisb]
    ,[AltitudeFeet]
-   ,[AltitudeTypeID]
+   ,[AltitudeType]
    ,[TargetAltitudeFeet]
    ,[AirPressureInHg]
    ,[GroundSpeedKnots]
-   ,[SpeedTypeID]
+   ,[SpeedType]
    ,[TrackDegrees]
    ,[TargetTrack]
    ,[TrackIsHeading]
    ,[VerticalRateFeetMin]
-   ,[VerticalRateTypeID]
+   ,[VerticalRateType]
    ,[SquawkOctal]
    ,[IdentActive]
 ) VALUES (
     @TrackHistoryID
    ,@TimestampUtc
+   ,@SequenceNumber
    ,@SignalLevel
    ,@Callsign
    ,@IsCallsignSuspect
@@ -32,16 +34,16 @@
    ,@IsMlat
    ,@IsTisb
    ,@AltitudeFeet
-   ,@AltitudeTypeID
+   ,@AltitudeType
    ,@TargetAltitudeFeet
    ,@AirPressureInHg
    ,@GroundSpeedKnots
-   ,@SpeedTypeID
+   ,@SpeedType
    ,@TrackDegrees
    ,@TargetTrack
    ,@TrackIsHeading
    ,@VerticalRateFeetMin
-   ,@VerticalRateTypeID
+   ,@VerticalRateType
    ,@SquawkOctal
    ,@IdentActive
 );

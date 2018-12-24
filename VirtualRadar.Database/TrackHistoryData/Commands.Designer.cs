@@ -61,23 +61,53 @@ namespace VirtualRadar.Database.TrackHistoryData {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DECLARE @countTrackHistories AS INTEGER;
-        ///DECLARE @countTrackHistoryStates AS INTEGER;
-        ///DECLARE @historyUtc AS DATETIME;
+        ///   Looks up a localized string similar to --
+        ///-- DatabaseVersion
+        ///--
+        ///CREATE TABLE IF NOT EXISTS [DatabaseVersion]
+        ///(
+        ///    [DatabaseVersionID] INTEGER PRIMARY KEY    -- There is only one of these and its ID is 1
+        ///   ,[Version]           INTEGER NOT NULL
+        ///);
+        ///INSERT OR IGNORE INTO [DatabaseVersion] ([DatabaseVersionID], [Version]) VALUES (1, 1);
+        ///
+        ///
+        ///--
+        ///-- TrackHistory
+        ///--
+        ///CREATE TABLE IF NOT EXISTS [TrackHistory]
+        ///(
+        ///    [TrackHistoryID]    INTEGER PRIMARY KEY AUTOINCREMENT
+        ///   ,[Icao]              VARCHAR(6) NOT NULL COLLATE NOCASE
+        ///   ,[IsPrese [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string CreateSchema {
+            get {
+                return ResourceManager.GetString("CreateSchema", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PRAGMA temp_store = MEMORY;
+        ///
+        ///CREATE TEMP TABLE _Result (
+        ///    [CountTrackHistories]       INTEGER
+        ///   ,[CountTrackHistoryStates]   INTEGER
+        ///   ,[EarliestHistoryUtc]        DATETIME
+        ///   ,[LatestHistoryUtc]          DATETIME
+        ///);
         ///
         ///DELETE FROM [TrackHistoryState]
         ///WHERE  [TrackHistoryID] = @trackHistoryID;
-        ///SET @countTrackHistoryStates = CHANGES();
         ///
-        ///SELECT @historyUtc = [CreatedUtc]
-        ///FROM   [TrackHistory]
-        ///WHERE  [TrackHistoryID] = @trackHistoryID;
+        ///INSERT INTO _Result (
+        ///    [CountTrackHistoryStates]
+        ///) VALUES (
+        ///    CHANGES()
+        ///);
         ///
-        ///DELETE FROM [TrackHistory]
-        ///WHERE  [TrackHistoryID] = @trackHistoryID;
-        ///SET @countTrackHistories = CHANGES();
-        ///
-        ///SELECT @countTrackHistories     AS [CountTrackHis [rest of string was truncated]&quot;;.
+        ///UPDATE _Result
+        ///SET    [EarliestHistoryUtc] = (SELECT [CreatedUtc] FROM [TrackHistory] WHERE  [TrackHistoryID] = @ [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string TrackHistory_Delete {
             get {
@@ -86,9 +116,136 @@ namespace VirtualRadar.Database.TrackHistoryData {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PRAGMA temp_store = MEMORY;
+        ///
+        ///CREATE TEMP TABLE _Result (
+        ///    [CountTrackHistories]       INTEGER
+        ///   ,[CountTrackHistoryStates]   INTEGER
+        ///   ,[EarliestHistoryUtc]        DATETIME
+        ///   ,[LatestHistoryUtc]          DATETIME
+        ///);
+        ///
+        ///DELETE FROM [TrackHistoryState]
+        ///WHERE  [TrackHistoryID] IN (
+        ///    SELECT [TrackHistoryID]
+        ///    FROM   [TrackHistory]
+        ///    WHERE  [CreatedUtc] &lt;= @threshold
+        ///    AND    [IsPreserved] = 0
+        ///);
+        ///
+        ///INSERT INTO _Result (
+        ///    [CountTrackHistoryStates]
+        ///) VALUES (
+        ///    CHANGES()
+        ///);
+        ///        /// [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string TrackHistory_DeleteExpired {
+            get {
+                return ResourceManager.GetString("TrackHistory_DeleteExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT   *
+        ///FROM     [TrackHistory]
+        ///WHERE    [CreatedUtc] BETWEEN IFNULL(@startTimeInclusive, &apos;1990-01-01&apos;) AND IFNULL(@endTimeInclusive, &apos;9999-12-31&apos;)
+        ///ORDER BY [CreatedUtc]
+        ///        ,[Icao];
+        ///.
+        /// </summary>
+        internal static string TrackHistory_GetByDateRange {
+            get {
+                return ResourceManager.GetString("TrackHistory_GetByDateRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT   *
+        ///FROM     [TrackHistory]
+        ///WHERE    [Icao] = @icao
+        ///AND      [CreatedUtc] BETWEEN IFNULL(@startTimeInclusive, &apos;1990-01-01&apos;) AND IFNULL(@endTimeInclusive, &apos;9999-12-31&apos;)
+        ///ORDER BY [CreatedUtc];
+        ///.
+        /// </summary>
+        internal static string TrackHistory_GetByIcao {
+            get {
+                return ResourceManager.GetString("TrackHistory_GetByIcao", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [TrackHistory] (
+        ///    [Icao]
+        ///   ,[IsPreserved]
+        ///   ,[CreatedUtc]
+        ///   ,[UpdatedUtc]
+        ///) VALUES (
+        ///    @Icao
+        ///   ,@IsPreserved
+        ///   ,@CreatedUtc
+        ///   ,@UpdatedUtc
+        ///);
+        ///SELECT [TrackHistoryID] FROM [TrackHistory] WHERE _ROWID_ = last_insert_rowid();
+        ///.
+        /// </summary>
+        internal static string TrackHistory_Insert {
+            get {
+                return ResourceManager.GetString("TrackHistory_Insert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UPDATE [TrackHistory]
+        ///SET    [Icao] =         @Icao
+        ///      ,[IsPreserved] =  @IsPreserved
+        ///      ,[UpdatedUtc] =   @UpdatedUtc
+        ///WHERE  [TrackHistoryID] = @TrackHistoryID;
+        ///
+        ///SELECT [CreatedUtc]
+        ///FROM   [TrackHistory]
+        ///WHERE  [TrackHistoryID] = @TrackHistoryID;
+        ///.
+        /// </summary>
+        internal static string TrackHistory_Update {
+            get {
+                return ResourceManager.GetString("TrackHistory_Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PRAGMA temp_store = MEMORY;
+        ///
+        ///CREATE TEMP TABLE _Result (
+        ///    [CountTrackHistories]       INTEGER
+        ///   ,[CountTrackHistoryStates]   INTEGER
+        ///   ,[EarliestHistoryUtc]        DATETIME
+        ///   ,[LatestHistoryUtc]          DATETIME
+        ///);
+        ///
+        ///DELETE FROM [TrackHistoryState]
+        ///WHERE  [TrackHistoryID] = @trackHistoryID;
+        ///
+        ///INSERT INTO _Result (
+        ///    [CountTrackHistoryStates]
+        ///) VALUES (
+        ///    CHANGES()
+        ///);
+        ///
+        ///UPDATE _Result
+        ///SET    [EarliestHistoryUtc] = (SELECT [CreatedUtc] FROM [TrackHistory] WHERE  [TrackHistoryID] = @ [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string TrackHistoryState_Delete {
+            get {
+                return ResourceManager.GetString("TrackHistoryState_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to INSERT INTO [TrackHistoryState] (
         ///    [TrackHistoryID]
         ///   ,[TimestampUtc]
+        ///   ,[SequenceNumber]
         ///   ,[SignalLevel]
         ///   ,[Callsign]
         ///   ,[IsCallsignSuspect]
@@ -97,20 +254,20 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///   ,[IsMlat]
         ///   ,[IsTisb]
         ///   ,[AltitudeFeet]
-        ///   ,[AltitudeTypeID]
+        ///   ,[AltitudeType]
         ///   ,[TargetAltitudeFeet]
         ///   ,[AirPressureInHg]
         ///   ,[GroundSpeedKnots]
-        ///   ,[SpeedTypeID]
+        ///   ,[SpeedType]
         ///   ,[TrackDegrees]
         ///   ,[TargetTrack]
         ///   ,[TrackIsHeading]
         ///   ,[VerticalRateFeetMin]
-        ///   ,[VerticalRateTypeID]
+        ///   ,[VerticalRateType]
         ///   ,[SquawkOctal]
         ///   ,[IdentActive]
         ///) VALUES (
-        ///    @TrackHistor [rest of string was truncated]&quot;;.
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string TrackHistoryState_Insert {
             get {
@@ -122,6 +279,7 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///   Looks up a localized string similar to UPDATE [TrackHistoryState]
         ///SET    [TrackHistoryID] =      @TrackHistoryID
         ///      ,[TimestampUtc] =        @TimestampUtc
+        ///      ,[SequenceNumber] =      @SequenceNumber
         ///      ,[SignalLevel] =         @SignalLevel
         ///      ,[Callsign] =            @Callsign
         ///      ,[IsCallsignSuspect] =   @IsCallsignSuspect
@@ -129,42 +287,11 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///      ,[Longitude] =           @Longitude
         ///      ,[IsMlat] =              @IsMlat
         ///      ,[IsTisb] =              @IsTisb
-        ///      ,[AltitudeFeet] =        @AltitudeFeet
-        ///      ,[AltitudeTypeID] =      @AltitudeT [rest of string was truncated]&quot;;.
+        ///      ,[AltitudeFeet] =        @Altitud [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string TrackHistoryState_Update {
             get {
                 return ResourceManager.GetString("TrackHistoryState_Update", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to --
-        ///-- DatabaseVersion
-        ///--
-        ///CREATE TABLE IF NOT EXISTS [DatabaseVersion]
-        ///(
-        ///    [Version] INTEGER NOT NULL
-        ///);
-        ///
-        ///
-        ///--
-        ///-- TrackHistory
-        ///--
-        ///CREATE TABLE IF NOT EXISTS [TrackHistory]
-        ///(
-        ///    [TrackHistoryID]    INTEGER PRIMARY KEY AUTOINCREMENT
-        ///   ,[Icao]              VARCHAR(6) NOT NULL COLLATE NOCASE
-        ///   ,[IsPreserved]       BIT NOT NULL
-        ///   ,[CreatedUtc]        DATETIME NOT NULL
-        ///   ,[UpdatedUtc]        DATETIME NOT NULL
-        ///);
-        ///
-        ///CREATE INDEX IF NOT EXISTS [IX_TrackHistory_Icao] ON [TrackHistory] ([Icao] [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string UpdateSchema {
-            get {
-                return ResourceManager.GetString("UpdateSchema", resourceCulture);
             }
         }
     }

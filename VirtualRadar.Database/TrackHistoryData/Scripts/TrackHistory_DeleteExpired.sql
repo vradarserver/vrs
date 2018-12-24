@@ -8,7 +8,12 @@ CREATE TEMP TABLE _Result (
 );
 
 DELETE FROM [TrackHistoryState]
-WHERE  [TrackHistoryID] = @TrackHistoryID;
+WHERE  [TrackHistoryID] IN (
+    SELECT [TrackHistoryID]
+    FROM   [TrackHistory]
+    WHERE  [CreatedUtc] <= @threshold
+    AND    [IsPreserved] = 0
+);
 
 INSERT INTO _Result (
     [CountTrackHistoryStates]
@@ -17,13 +22,13 @@ INSERT INTO _Result (
 );
 
 UPDATE _Result
-SET    [EarliestHistoryUtc] = (SELECT [CreatedUtc] FROM [TrackHistory] WHERE  [TrackHistoryID] = @TrackHistoryID);
-
-UPDATE _Result
-SET    [LatestHistoryUtc] = [EarliestHistoryUtc];
+SET    [EarliestHistoryUtc] = (SELECT MIN([CreatedUtc]) FROM [TrackHistory] WHERE [CreatedUtc] <= @threshold AND [IsPreserved] = 0)
+      ,[LatestHistoryUtc] =   (SELECT MAX([CreatedUtc]) FROM [TrackHistory] WHERE [CreatedUtc] <= @threshold AND [IsPreserved] = 0)
+;
 
 DELETE FROM [TrackHistory]
-WHERE  [TrackHistoryID] = @TrackHistoryID;
+WHERE  [CreatedUtc] <= @threshold
+AND    [IsPreserved] = 0;
 
 UPDATE _Result
 SET    [CountTrackHistories] = CHANGES();

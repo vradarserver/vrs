@@ -17,6 +17,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using InterfaceFactory;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.SQLite;
 
@@ -32,11 +33,6 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// This locks every operation to enforce single-threaded calls.
         /// </summary>
         private static object _SqlLiteSyncLock = new object();
-
-        /// <summary>
-        /// True if the schema is known to be up-to-date.
-        /// </summary>
-        private bool _SchemaUpdated;
 
         /// <summary>
         /// The object that helps when fulfilling the <see cref="ITransactionable"/> interface.
@@ -69,19 +65,36 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="fileName"></param>
         public void Create(string fileName)
         {
-            if(!String.IsNullOrEmpty(fileName)) {
-                var folder = Path.GetDirectoryName(fileName);
-                if(!Directory.Exists(folder)) {
-                    Directory.CreateDirectory(folder);
-                }
+            if(fileName == null) {
+                throw new ArgumentNullException(nameof(fileName));
+            } else if(fileName == "") {
+                throw new InvalidOperationException("Missing file name");
+            } else if(File.Exists(fileName)) {
+                throw new InvalidOperationException($"{fileName} already exists");
+            }
 
-                lock(_SqlLiteSyncLock) {
-                    using(var result = Factory.Resolve<ISQLiteConnectionProvider>().Create(BuildConnectionString(fileName))) {
-                        result.Open();
+            var folder = Path.GetDirectoryName(fileName);
+            if(!Directory.Exists(folder)) {
+                Directory.CreateDirectory(folder);
+            }
 
-                        UpdateSchema(result);
-                    }
+            lock(_SqlLiteSyncLock) {
+                using(var result = Factory.Resolve<ISQLiteConnectionProvider>().Create(BuildConnectionString(fileName))) {
+                    result.Open();
+
+                    CreateSchema(result);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Creates the schema.
+        /// </summary>
+        /// <param name="connection"></param>
+        private void CreateSchema(IDbConnection connection)
+        {
+            if(connection != null) {
+                connection.Execute(Commands.CreateSchema);
             }
         }
 
@@ -92,7 +105,11 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <returns></returns>
         public bool PerformInTransaction(Func<bool> action)
         {
-            using(var wrapper = CreateOpenConnection()) {
+            var wrapper = CreateOpenConnection();
+            try {
+                if(wrapper.ConnectionWillBeDisposed) {
+                    _TransactionConnection = wrapper.Connection;
+                }
                 return _TransactionHelper.PerformInTransaction(
                     wrapper.Connection,
                     wrapper.Transaction != null,
@@ -103,6 +120,11 @@ namespace VirtualRadar.Database.TrackHistoryData
                     },
                     action: action
                 );
+            } finally {
+                if(wrapper.ConnectionWillBeDisposed) {
+                    _TransactionConnection = null;
+                }
+                wrapper.Dispose();
             }
         }
 
@@ -131,13 +153,291 @@ namespace VirtualRadar.Database.TrackHistoryData
                 if(connection.Connection != null) {
                     lock(_SqlLiteSyncLock) {
                         connection.Connection.Execute(@"
-                            REPLACE INTO [DatabaseVersion] ([Version]) VALUES (@version)
+                            UPDATE [DatabaseVersion]
+                            SET    [Version] = @version
+                            WHERE  [Version] <> @version;
                         ", new {
                             version,
                         }, transaction: connection.Transaction);
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="trackHistory"></param>
+        /// <returns></returns>
+        public TrackHistoryTruncateResult TrackHistory_Delete(TrackHistory trackHistory)
+        {
+            TrackHistoryTruncateResult result = null;
+
+            // The TrackHistory_Delete script performs multiple delete operations, they need to
+            // always be performed within a transaction.
+            PerformInTransaction(() => {
+                using(var connection = CreateOpenConnection()) {
+                    if(connection.Connection != null) {
+                        lock(_SqlLiteSyncLock) {
+                            result = connection.Connection.QueryFirst<TrackHistoryTruncateResult>(
+                                Commands.TrackHistory_Delete,
+                                new {
+                                    trackHistory.TrackHistoryID,
+                                },
+                                transaction: connection.Transaction
+                            );
+                        }
+                    }
+                }
+                return true;
+            });
+
+            return result ?? new TrackHistoryTruncateResult();
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="deleteUpToUtc"></param>
+        /// <returns></returns>
+        public TrackHistoryTruncateResult TrackHistory_DeleteExpired(DateTime deleteUpToUtc)
+        {
+            TrackHistoryTruncateResult result = null;
+
+            // The TrackHistory_DeleteExpired script performs multiple delete operations, they need to
+            // always be performed within a transaction.
+            PerformInTransaction(() => {
+                using(var connection = CreateOpenConnection()) {
+                    if(connection.Connection != null) {
+                        lock(_SqlLiteSyncLock) {
+                            result = connection.Connection.QueryFirst<TrackHistoryTruncateResult>(
+                                Commands.TrackHistory_DeleteExpired,
+                                new {
+                                    threshold = deleteUpToUtc,
+                                },
+                                transaction: connection.Transaction
+                            );
+                        }
+                    }
+                }
+                return true;
+            });
+
+            return result ?? new TrackHistoryTruncateResult();
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="startTimeInclusive"></param>
+        /// <param name="endTimeInclusive"></param>
+        /// <returns></returns>
+        public IEnumerable<TrackHistory> TrackHistory_GetByDateRange(DateTime? startTimeInclusive, DateTime? endTimeInclusive)
+        {
+            TrackHistory[] result = null;
+
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    lock(_SqlLiteSyncLock) {
+                        result = connection.Connection.Query<TrackHistory>(
+                            Commands.TrackHistory_GetByDateRange,
+                            new {
+                                startTimeInclusive,
+                                endTimeInclusive,
+                            },
+                            transaction: connection.Transaction
+                        ).ToArray();
+                    }
+                }
+            }
+
+            return result ?? new TrackHistory[0];
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <param name="startTimeInclusive"></param>
+        /// <param name="endTimeInclusive"></param>
+        /// <returns></returns>
+        public IEnumerable<TrackHistory> TrackHistory_GetByIcao(string icao, DateTime? startTimeInclusive, DateTime? endTimeInclusive)
+        {
+            TrackHistory[] result = null;
+
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    lock(_SqlLiteSyncLock) {
+                        result = connection.Connection.Query<TrackHistory>(
+                            Commands.TrackHistory_GetByIcao,
+                            new {
+                                icao,
+                                startTimeInclusive,
+                                endTimeInclusive,
+                            },
+                            transaction: connection.Transaction
+                        ).ToArray();
+                    }
+                }
+            }
+
+            return result ?? new TrackHistory[0];
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public TrackHistory TrackHistory_GetByID(long id)
+        {
+            TrackHistory result = null;
+
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    lock(_SqlLiteSyncLock) {
+                        result = connection.Connection.QueryFirstOrDefault<TrackHistory>(
+                            "SELECT * FROM [TrackHistory] WHERE [TrackHistoryID] = @trackHistoryID",
+                            new {
+                                trackHistoryID = id,
+                            },
+                            transaction: connection.Transaction
+                        );
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns all track histories meeting various criteria. For internal use.
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="upToCreatedUtc"></param>
+        /// <param name="includePreserved"></param>
+        /// <param name="minimumHistoryStates"></param>
+        /// <returns></returns>
+        private IEnumerable<TrackHistory> TrackHistory_GetUpToCreatedUtc(ConnectionWrapper connection, DateTime upToCreatedUtc, bool includePreserved, int minimumHistoryStates)
+        {
+            return connection.Connection.Query<TrackHistory>(@"
+                SELECT *
+                FROM   [TrackHistory] AS [parent]
+                WHERE  [CreatedUtc] <= @upToCreatedUtc
+                AND    (@includePreserved = 1 OR [IsPreserved] = 0)
+                AND    (SELECT COUNT(*) FROM [TrackHistoryState] WHERE [parent].[TrackHistoryID] = [TrackHistoryID] LIMIT (@minimumHistoryStates + 1)) > @minimumHistoryStates",
+                new {
+                    upToCreatedUtc,
+                    includePreserved,
+                    minimumHistoryStates
+                },
+                transaction: connection.Transaction
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="trackHistory"></param>
+        public void TrackHistory_Save(TrackHistory trackHistory)
+        {
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    lock(_SqlLiteSyncLock) {
+                        if(trackHistory.TrackHistoryID != 0) {
+                            trackHistory.CreatedUtc = connection.Connection.Query<DateTime>(
+                                Commands.TrackHistory_Update,
+                                trackHistory,
+                                transaction: connection.Transaction
+                            ).First();
+                        } else {
+                            trackHistory.TrackHistoryID = connection.Connection.Query<long>(
+                                Commands.TrackHistory_Insert,
+                                trackHistory,
+                                transaction: connection.Transaction
+                            ).First();
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="trackHistory"></param>
+        /// <param name="newUpdatedUtc"></param>
+        /// <returns></returns>
+        public TrackHistoryTruncateResult TrackHistory_Truncate(TrackHistory trackHistory, DateTime newUpdatedUtc)
+        {
+            var result = new TrackHistoryTruncateResult();
+
+            if(!(trackHistory?.IsPreserved ?? true)) {
+                PerformInTransaction(() => {
+                    using(var connection = CreateOpenConnection()) {
+                        if(connection != null) {
+                            lock(_SqlLiteSyncLock) {
+                                TrackHistory_Truncate(connection, trackHistory, newUpdatedUtc, result);
+                            }
+                        }
+                    }
+
+                    return true;
+                });
+            }
+
+            return result;
+        }
+
+        private void TrackHistory_Truncate(ConnectionWrapper connection, TrackHistory trackHistory, DateTime newUpdatedUtc, TrackHistoryTruncateResult truncateResult)
+        {
+            if(!(trackHistory?.IsPreserved ?? true)) {
+                if(truncateResult.EarliestHistoryUtc == default(DateTime) || truncateResult.EarliestHistoryUtc > trackHistory.CreatedUtc) {
+                    truncateResult.EarliestHistoryUtc = trackHistory.CreatedUtc;
+                }
+                if(truncateResult.LatestHistoryUtc < trackHistory.CreatedUtc) {
+                    truncateResult.LatestHistoryUtc = trackHistory.CreatedUtc;
+                }
+                ++truncateResult.CountTrackHistories;
+
+                var states = TrackHistoryState_GetByTrackHistory(connection, trackHistory);
+                if(states.Length > 2) {
+                    var originalCountStates = states.Length;
+                    var mergedState = TrackHistoryState.MergeStates(states);
+                    TrackHistoryState_DeleteMany(connection, states.Skip(1));
+                    TrackHistoryState_Save(connection, mergedState);
+
+                    truncateResult.CountTrackHistoryStates += originalCountStates - 2;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="truncateUpToUtc"></param>
+        /// <param name="newUpdatedUtc"></param>
+        /// <returns></returns>
+        public TrackHistoryTruncateResult TrackHistory_TruncateExpired(DateTime truncateUpToUtc, DateTime newUpdatedUtc)
+        {
+            var result = new TrackHistoryTruncateResult();
+
+            PerformInTransaction(() => {
+                using(var connection = CreateOpenConnection()) {
+                    if(connection != null) {
+                        lock(_SqlLiteSyncLock) {
+                            foreach(var trackHistory in TrackHistory_GetUpToCreatedUtc(connection, truncateUpToUtc, includePreserved: false, minimumHistoryStates: 3)) {
+                                TrackHistory_Truncate(connection, trackHistory, newUpdatedUtc, result);
+                            }
+                        }
+                    }
+                }
+
+                return true;
+            });
+
+            return result;
         }
 
         /// <summary>
@@ -178,19 +478,25 @@ namespace VirtualRadar.Database.TrackHistoryData
             using(var connection = CreateOpenConnection()) {
                 if(connection.Connection != null) {
                     lock(_SqlLiteSyncLock) {
-                        result = connection.Connection.Query<TrackHistoryState>(@"
-                            SELECT *
-                            FROM   [TrackHistoryState]
-                            WHERE  [TrackHistoryID] = @trackHistoryID
-                        ", new {
-                            trackHistoryID = trackHistory.TrackHistoryID
-                        }, transaction: connection.Transaction)
-                        .ToArray();
+                        result = TrackHistoryState_GetByTrackHistory(connection, trackHistory);
                     }
                 }
             }
 
             return result ?? new TrackHistoryState[0];
+        }
+
+        private TrackHistoryState[] TrackHistoryState_GetByTrackHistory(ConnectionWrapper connection, TrackHistory trackHistory)
+        {
+            return connection.Connection.Query<TrackHistoryState>(@"
+                SELECT   *
+                FROM     [TrackHistoryState]
+                WHERE    [TrackHistoryID] = @trackHistoryID
+                ORDER BY [SequenceNumber]
+            ", new {
+                trackHistoryID = trackHistory.TrackHistoryID,
+            }, transaction: connection.Transaction)
+            .ToArray();
         }
 
         /// <summary>
@@ -202,21 +508,36 @@ namespace VirtualRadar.Database.TrackHistoryData
             using(var connection = CreateOpenConnection()) {
                 if(connection.Connection != null) {
                     lock(_SqlLiteSyncLock) {
-                        if(trackHistoryState.TrackHistoryStateID == 0) {
-                            trackHistoryState.TrackHistoryStateID = connection.Connection.ExecuteScalar<long>(
-                                Commands.TrackHistoryState_Insert,
-                                trackHistoryState,
-                                connection.Transaction
-                            );
-                        } else {
-                            connection.Connection.Execute(
-                                Commands.TrackHistoryState_Update,
-                                trackHistoryState,
-                                connection.Transaction
-                            );
-                        }
+                        TrackHistoryState_Save(connection, trackHistoryState);
                     }
                 }
+            }
+        }
+
+        private void TrackHistoryState_Save(ConnectionWrapper connection, TrackHistoryState trackHistoryState)
+        {
+            if(trackHistoryState.TrackHistoryID == 0) {
+                throw new ArgumentOutOfRangeException($"{nameof(trackHistoryState.TrackHistoryID)} must be filled in before saving state");
+            }
+            if(trackHistoryState.SequenceNumber == 0) {
+                throw new ArgumentOutOfRangeException($"{nameof(trackHistoryState.SequenceNumber)} must be filled in before saving state");
+            }
+            if(trackHistoryState.TimestampUtc == default(DateTime)) {
+                throw new ArgumentOutOfRangeException($"{nameof(trackHistoryState.TimestampUtc)} must be filled in before saving state");
+            }
+
+            if(trackHistoryState.TrackHistoryStateID != 0) {
+                connection.Connection.Execute(
+                    Commands.TrackHistoryState_Update,
+                    trackHistoryState,
+                    connection.Transaction
+                );
+            } else {
+                trackHistoryState.TrackHistoryStateID = connection.Connection.ExecuteScalar<long>(
+                    Commands.TrackHistoryState_Insert,
+                    trackHistoryState,
+                    connection.Transaction
+                );
             }
         }
 
@@ -232,64 +553,22 @@ namespace VirtualRadar.Database.TrackHistoryData
         }
 
         /// <summary>
-        /// See interface docs.
+        /// Deletes many state records. Assumes that the connection has been tested to be open and that a lock
+        /// has been acquired. Runs faster if you also have a transaction open.
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public TrackHistoryTruncateResult TrackHistory_Delete(long id)
+        /// <param name="connection"></param>
+        /// <param name="trackHistoryStates"></param>
+        private void TrackHistoryState_DeleteMany(ConnectionWrapper connection, IEnumerable<TrackHistoryState> trackHistoryStates)
         {
-            TrackHistoryTruncateResult result = null;
-
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        result = connection.Connection.QueryFirst<TrackHistoryTruncateResult>(
-                            Commands.TrackHistory_Delete,
-                            new {
-                                trackHistoryID = id,
-                            },
-                            transaction: connection.Transaction
-                        );
-                    }
-                }
+            foreach(var trackHistoryState in trackHistoryStates) {
+                connection.Connection.Execute(
+                    Commands.TrackHistoryState_Delete,
+                    new {
+                        trackHistoryState.TrackHistoryStateID,
+                    },
+                    transaction: connection.Transaction
+                );
             }
-
-            return result ?? new TrackHistoryTruncateResult();
-        }
-
-        public TrackHistoryTruncateResult TrackHistory_DeleteMany(int daysBack)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<TrackHistory> TrackHistory_GetByDateRange(DateTime? startTimeInclusive, DateTime? endTimeInclusive)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<TrackHistory> TrackHistory_GetByIcao(string icao, DateTime? startTimeInclusive, DateTime? endTimeInclusive)
-        {
-            throw new NotImplementedException();
-        }
-
-        public TrackHistory TrackHistory_GetByID(long id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void TrackHistory_Save(TrackHistory trackHistory)
-        {
-            throw new NotImplementedException();
-        }
-
-        public TrackHistoryTruncateResult TrackHistory_Truncate(long id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public TrackHistoryTruncateResult TrackHistory_TruncateMany(int daysBack)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -302,6 +581,8 @@ namespace VirtualRadar.Database.TrackHistoryData
             IDbTransaction transaction = null;
 
             var fileName = FileName;
+            var disposeOfConnection = false;
+
             if(!String.IsNullOrEmpty(fileName) && File.Exists(fileName)) {
                 lock(_SqlLiteSyncLock) {
                     connection = _TransactionConnection;
@@ -309,13 +590,13 @@ namespace VirtualRadar.Database.TrackHistoryData
 
                     if(connection == null) {
                         connection = Factory.Resolve<ISQLiteConnectionProvider>().Create(BuildConnectionString(FileName));
+                        disposeOfConnection = true;
                         connection.Open();
-                        UpdateSchema(connection);
                     }
                 }
             }
 
-            return new ConnectionWrapper(connection, transaction, disposeOfConnection: true);
+            return new ConnectionWrapper(connection, transaction, disposeOfConnection);
         }
 
         /// <summary>
@@ -333,30 +614,6 @@ namespace VirtualRadar.Database.TrackHistoryData
             builder.JournalMode = SQLiteJournalModeEnum.Persist;
 
             return builder.ConnectionString;
-        }
-
-        /// <summary>
-        /// Updates the schema.
-        /// </summary>
-        /// <param name="connection"></param>
-        private void UpdateSchema(IDbConnection connection)
-        {
-            if(!_SchemaUpdated) {
-                lock(_SqlLiteSyncLock) {
-                    if(!_SchemaUpdated) {
-                        _SchemaUpdated = true;
-                        connection.Execute(Commands.UpdateSchema);
-
-                        var currentVersion = 1;
-                        var databaseVersion = connection.ExecuteScalar<long?>("SELECT [Version] FROM [DatabaseVersion]");
-                        if(databaseVersion != currentVersion) {
-                            connection.Execute("REPLACE INTO [DatabaseVersion] ([Version]) VALUES (@currentVersion)", new {
-                                currentVersion,
-                            });
-                        }
-                    }
-                }
-            }
         }
     }
 }

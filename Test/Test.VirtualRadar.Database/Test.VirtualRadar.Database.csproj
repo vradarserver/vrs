@@ -79,6 +79,8 @@
     <Compile Include="SearchBaseStationCriteriaTests.cs" />
     <Compile Include="StandingDataManagerTests.cs" />
     <Compile Include="StandingDataUpdaterTests.cs" />
+    <Compile Include="TrackHistoryDatabaseTests.cs" />
+    <Compile Include="TrackHistoryDatabaseTests_SQLite.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\InterfaceFactory\InterfaceFactory.csproj">

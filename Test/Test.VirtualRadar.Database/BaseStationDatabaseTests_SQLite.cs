@@ -43,12 +43,12 @@ namespace Test.VirtualRadar.Database
             CommonTestInitialise<IBaseStationDatabaseSQLite>(() => {
                 _CreateDatabaseFileName = Path.Combine(TestContext.TestDeploymentDir, "CreatedDatabase.sqb");
                 if(File.Exists(_CreateDatabaseFileName)) {
-                    RetryAction(() => File.Delete(_CreateDatabaseFileName));
+                    TestUtilities.RetryFileIOAction(() => File.Delete(_CreateDatabaseFileName));
                 }
 
                 _EmptyDatabaseFileName = Path.Combine(TestContext.TestDeploymentDir, "TestCopyBaseStation.sqb");
                 if(File.Exists(_EmptyDatabaseFileName)) {
-                    RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+                    TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
                 }
                 File.Copy(Path.Combine(TestContext.TestDeploymentDir, "BaseStation.sqb"), _EmptyDatabaseFileName, true);
 
@@ -135,7 +135,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void SQLite_BaseStationDatabase_MaxParameters_Returns_Minus_One_When_Disconnected()
         {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
             Assert.AreEqual(-1, _Database.MaxParameters);
         }
 
@@ -226,7 +226,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void SQLite_BaseStationDatabase_TestConnection_Returns_False_If_File_Could_Not_Be_Opened()
         {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
             Assert.IsFalse(_Database.TestConnection());
         }
 
@@ -256,7 +256,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void SQLite_BaseStationDatabase_Connection_Does_Not_Create_File_If_Missing()
         {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
             _Database.GetAircraftByRegistration("G-ABCD");
             Assert.IsFalse(File.Exists(_EmptyDatabaseFileName));
         }
@@ -264,7 +264,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void SQLite_BaseStationDatabase_Connection_Does_Not_Try_To_Use_Zero_Length_Files()
         {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
             File.Create(_EmptyDatabaseFileName).Close();
 
             Assert.IsNull(_Database.GetAircraftByRegistration("G-ABCD"));
@@ -366,7 +366,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void SQLite_BaseStationDatabase_GetAircraftByRegistration_Returns_Null_If_Database_File_Does_Not_Exist()
         {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
             Assert.IsNull(_Database.GetAircraftByRegistration("REG"));
         }
 
@@ -402,7 +402,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void SQLite_BaseStationDatabase_GetAircraftByCode_Returns_Null_If_File_Does_Not_Exist()
         {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
             Assert.IsNull(_Database.GetAircraftByCode("ABC123"));
         }
 
@@ -437,7 +437,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void BaseStationDatabase_GetManyAircraftByCode_Returns_Empty_Collection_If_File_Does_Not_Exist()
         {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
             Assert.AreEqual(0, _Database.GetManyAircraftByCode(new string[] { "ABC123" }).Count);
         }
 
@@ -485,7 +485,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void SQLite_BaseStationDatabase_GetManyAircraftAndFlightsCountByCode_Returns_Empty_Collection_If_File_Does_Not_Exist()
         {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
             Assert.AreEqual(0, _Database.GetManyAircraftAndFlightsCountByCode(new string[] { "ABC123" }).Count);
         }
 
@@ -533,7 +533,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void SQLite_BaseStationDatabase_GetAircraftById_Returns_Null_If_File_Does_Not_Exist()
         {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
             Assert.IsNull(_Database.GetAircraftById(1));
         }
 
@@ -566,7 +566,7 @@ namespace Test.VirtualRadar.Database
         public void SQLite_BaseStationDatabase_InsertAircraft_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
 
             _Database.InsertAircraft(new BaseStationAircraft() { ModeS = "123456" });
             Assert.AreEqual(null, _Database.GetAircraftByCode("123456"));
@@ -632,7 +632,7 @@ namespace Test.VirtualRadar.Database
         public void SQLite_BaseStationDatabase_GetOrInsertAircraftByCode_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
 
             _Database.GetOrInsertAircraftByCode("123456", out var created);
             Assert.AreEqual(null, _Database.GetAircraftByCode("123456"));
@@ -697,7 +697,7 @@ namespace Test.VirtualRadar.Database
         public void SQLite_BaseStationDatabase_UpdateAircraft_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
 
             _Database.UpdateAircraft(new BaseStationAircraft() { ModeS = "X" });
             Assert.AreEqual(null, _Database.GetAircraftByCode("X"));
@@ -963,7 +963,7 @@ namespace Test.VirtualRadar.Database
         public void SQLite_BaseStationDatabase_DeleteAircraft_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
 
             _Database.DeleteAircraft(new BaseStationAircraft());
             Assert.IsFalse(File.Exists(_EmptyDatabaseFileName));
@@ -1260,7 +1260,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void SQLite_BaseStationDatabase_GetFlightById_Returns_Null_If_File_Does_Not_Exist()
         {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
             Assert.IsNull(_Database.GetFlightById(1));
         }
 
@@ -1292,7 +1292,7 @@ namespace Test.VirtualRadar.Database
         public void SQLite_BaseStationDatabase_InsertFlight_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
 
             _Database.InsertFlight(new BaseStationFlight());
             Assert.IsFalse(File.Exists(_EmptyDatabaseFileName));
@@ -1344,7 +1344,7 @@ namespace Test.VirtualRadar.Database
         public void SQLite_BaseStationDatabase_UpdateFlight_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
 
             _Database.UpdateFlight(new BaseStationFlight());
             Assert.IsFalse(File.Exists(_EmptyDatabaseFileName));
@@ -1394,7 +1394,7 @@ namespace Test.VirtualRadar.Database
         public void SQLite_BaseStationDatabase_DeleteFlight_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
 
             _Database.DeleteFlight(new BaseStationFlight());
             Assert.IsFalse(File.Exists(_EmptyDatabaseFileName));
@@ -1445,7 +1445,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void SQLite_BaseStationDatabase_GetDatabaseHistory_Returns_Empty_List_If_File_Does_Not_Exist()
         {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
             Assert.AreEqual(0, _Database.GetDatabaseHistory().Count);
         }
 
@@ -1467,7 +1467,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void SQLite_BaseStationDatabase_GetDatabaseVersion_Returns_Null_If_File_Does_Not_Exist()
         {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
             Assert.AreEqual(null, _Database.GetDatabaseVersion());
         }
 
@@ -1495,7 +1495,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void SQLite_BaseStationDatabase_GetSystemEvents_Returns_Empty_List_If_File_Does_Not_Exist()
         {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
             Assert.AreEqual(0, _Database.GetSystemEvents().Count);
         }
 
@@ -1525,7 +1525,7 @@ namespace Test.VirtualRadar.Database
         public void SQLite_BaseStationDatabase_InsertSystemEvents_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
 
             _Database.InsertSystemEvent(new BaseStationSystemEvents() { App = "A", Msg = "D", TimeStamp = DateTime.Now });
             Assert.AreEqual(0, _Database.GetSystemEvents().Count);
@@ -1566,7 +1566,7 @@ namespace Test.VirtualRadar.Database
         public void SQLite_BaseStationDatabase_UpdateSystemEvents_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
 
             _Database.UpdateSystemEvent(new BaseStationSystemEvents());
             Assert.AreEqual(0, _Database.GetSystemEvents().Count);
@@ -1607,7 +1607,7 @@ namespace Test.VirtualRadar.Database
         public void SQLite_BaseStationDatabase_DeleteSystemEvents_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
 
             _Database.DeleteSystemEvent(new BaseStationSystemEvents());
             Assert.AreEqual(0, _Database.GetSystemEvents().Count);
@@ -1634,7 +1634,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void SQLite_BaseStationDatabase_GetLocations_Returns_Empty_List_If_File_Does_Not_Exist()
         {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
             Assert.AreEqual(0, _Database.GetLocations().Count);
         }
 
@@ -1664,7 +1664,7 @@ namespace Test.VirtualRadar.Database
         public void SQLite_BaseStationDatabase_InsertLocation_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
 
             _Database.InsertLocation(new BaseStationLocation() { LocationName = "X" });
             Assert.AreEqual(0, _Database.GetLocations().Count);
@@ -1705,7 +1705,7 @@ namespace Test.VirtualRadar.Database
         public void SQLite_BaseStationDatabase_UpdateLocation_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
 
             _Database.UpdateLocation(new BaseStationLocation() { LocationName = "X" });
             Assert.AreEqual(0, _Database.GetLocations().Count);
@@ -1746,7 +1746,7 @@ namespace Test.VirtualRadar.Database
         public void SQLite_BaseStationDatabase_DeleteLocation_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
 
             _Database.DeleteLocation(new BaseStationLocation() { LocationName = "X" });
             Assert.AreEqual(0, _Database.GetLocations().Count);
@@ -1773,7 +1773,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void SQLite_BaseStationDatabase_GetSessions_Returns_Empty_List_If_File_Does_Not_Exist()
         {
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
             Assert.AreEqual(0, _Database.GetSessions().Count);
         }
 
@@ -1804,7 +1804,7 @@ namespace Test.VirtualRadar.Database
         public void SQLite_BaseStationDatabase_InsertSession_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
 
             _Database.InsertSession(new BaseStationSession());
             Assert.AreEqual(0, _Database.GetSessions().Count);
@@ -1851,7 +1851,7 @@ namespace Test.VirtualRadar.Database
         public void SQLite_BaseStationDatabase_UpdateSession_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
 
             _Database.UpdateSession(new BaseStationSession());
             Assert.AreEqual(0, _Database.GetSessions().Count);
@@ -1892,7 +1892,7 @@ namespace Test.VirtualRadar.Database
         public void SQLite_BaseStationDatabase_DeleteSession_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Database.WriteSupportEnabled = true;
-            RetryAction(() => File.Delete(_EmptyDatabaseFileName));
+            TestUtilities.RetryFileIOAction(() => File.Delete(_EmptyDatabaseFileName));
 
             _Database.DeleteSession(new BaseStationSession());
             Assert.AreEqual(0, _Database.GetSessions().Count);
@@ -1945,7 +1945,7 @@ namespace Test.VirtualRadar.Database
         public void SQLite_BaseStationDatabase_CreateDatabaseIfMissing_Creates_File_If_Missing()
         {
             if(File.Exists(_CreateDatabaseFileName)) {
-                RetryAction(() => File.Delete(_CreateDatabaseFileName));
+                TestUtilities.RetryFileIOAction(() => File.Delete(_CreateDatabaseFileName));
             }
 
             _Database.CreateDatabaseIfMissing(_CreateDatabaseFileName);

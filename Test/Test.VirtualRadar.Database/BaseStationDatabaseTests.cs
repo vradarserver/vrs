@@ -147,41 +147,6 @@ namespace Test.VirtualRadar.Database
 
         #region Helpers
         /// <summary>
-        /// Retries an action until it either stops giving IO errors or too many errors have occurred.
-        /// </summary>
-        /// <param name="action"></param>
-        /// <remarks>
-        /// On my W7 desktop with SSDs the tests occasionally failed because the file was still in use after
-        /// it had been disposed of. This function retries file operations until either they stop giving
-        /// exceptions or a counter expires.
-        /// </remarks>
-        protected void RetryAction(Action action)
-        {
-            const int retries = 20;
-            for(var i = 0;i < retries;++i) {
-                var pause = false;
-                var giveUp = i + 1 == retries;
-                try {
-                    action();
-                    break;
-                } catch(IOException) {
-                    if(giveUp) {
-                        throw;
-                    }
-                    pause = true;
-                } catch(UnauthorizedAccessException) {
-                    if(giveUp) {
-                        throw;
-                    }
-                    pause = true;
-                }
-                if(pause) {
-                    Thread.Sleep(250);
-                }
-            }
-        }
-
-        /// <summary>
         /// Removes the milliseconds from a date.
         /// </summary>
         /// <param name="date"></param>

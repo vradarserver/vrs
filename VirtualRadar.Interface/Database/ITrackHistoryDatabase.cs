@@ -22,18 +22,6 @@ namespace VirtualRadar.Interface.Database
     public interface ITrackHistoryDatabase : ITransactionable
     {
         /// <summary>
-        /// Returns the database version.
-        /// </summary>
-        /// <returns></returns>
-        int DatabaseVersion_Get();
-
-        /// <summary>
-        /// Sets the database version.
-        /// </summary>
-        /// <param name="version"></param>
-        void DatabaseVersion_Set(int version);
-
-        /// <summary>
         /// Returns all track histories within a date / time range.
         /// </summary>
         /// <param name="startTimeInclusive">The optional start time. If null then the search runs from the beginning of time.</param>
@@ -66,31 +54,33 @@ namespace VirtualRadar.Interface.Database
         /// <summary>
         /// Deletes the track history passed across. This will delete the history even if it is marked as preserved.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="trackHistory"></param>
         /// <returns></returns>
-        TrackHistoryTruncateResult TrackHistory_Delete(long id);
+        TrackHistoryTruncateResult TrackHistory_Delete(TrackHistory trackHistory);
 
         /// <summary>
-        /// Removes all track histories older than <paramref name="daysBack"/> days unless they are marked as preserved.
+        /// Removes all track histories older than or equal to <paramref name="deleteUpToUtc"/> unless they are marked as preserved.
         /// </summary>
-        /// <param name="daysBack"></param>
-        /// <returns>The number of track histories deleted.</returns>
-        TrackHistoryTruncateResult TrackHistory_DeleteMany(int daysBack);
+        /// <param name="deleteUpToUtc"></param>
+        /// <returns></returns>
+        TrackHistoryTruncateResult TrackHistory_DeleteExpired(DateTime deleteUpToUtc);
 
         /// <summary>
-        /// Truncates states from the track history passed across unless they are marked as preserved.
+        /// Truncates states from the track history passed across unless it is marked as preserved.
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="newUpdatedUtc"></param>
         /// <returns></returns>
-        TrackHistoryTruncateResult TrackHistory_Truncate(long id);
+        TrackHistoryTruncateResult TrackHistory_Truncate(TrackHistory trackHistory, DateTime newUpdatedUtc);
 
         /// <summary>
-        /// Removes all state except for the first and last records for all track histories older than <paramref name="daysBack"/> days
+        /// Removes all state except for the first and last records for all track histories older than or equal to <see cref="truncateUpToUtc"/>
         /// unless they are marked as preserved.
         /// </summary>
-        /// <param name="daysBack"></param>
-        /// <returns>The number of track histories truncated.</returns>
-        TrackHistoryTruncateResult TrackHistory_TruncateMany(int daysBack);
+        /// <param name="truncateUpToUtc"></param>
+        /// <param name="newUpdatedUtc"></param>
+        /// <returns></returns>
+        TrackHistoryTruncateResult TrackHistory_TruncateExpired(DateTime truncateUpToUtc, DateTime newUpdatedUtc);
 
         /// <summary>
         /// Returns the state record for the ID passed across or null if it does not exist.

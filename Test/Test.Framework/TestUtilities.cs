@@ -22,6 +22,7 @@ using System.Linq.Expressions;
 using InterfaceFactory;
 using VirtualRadar.Interface;
 using System.Collections.Specialized;
+using System.IO;
 
 namespace Test.Framework
 {
@@ -220,7 +221,7 @@ namespace Test.Framework
         }
         #endregion
 
-        #region TestSimpleEquals, TestSimpleGetHashCode
+        #region TestSimpleEquals, TestSimpleGetHashCode, TestObjectPropertiesAreEqual
         /// <summary>
         /// Tests that an object whose Equals method tests all of its public properties is behaving correctly. Only
         /// works with objects that have a simple constructor.
@@ -262,6 +263,56 @@ namespace Test.Framework
             }
 
             Assert.AreEqual(instance1.GetHashCode(), instance2.GetHashCode());
+        }
+
+        /// <summary>
+        /// Compares properties on two objects for equality.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expected"></param>
+        /// <param name="actual"></param>
+        /// <param name="ignoreProperty">Return true if a given property should be ignored.</param>
+        /// <param name="testProperty">Return true / false if the two values are equal or null if the default equality test should be applied.</param>
+        public static void TestObjectPropertiesAreEqual<T>(T expected, T actual, Func<string, bool> ignoreProperty = null, Func<string, Type, object, object, bool?> testProperty = null)
+        {
+            Assert.IsNotNull(expected);
+            Assert.IsNotNull(actual);
+
+            if(ignoreProperty == null) {
+                ignoreProperty = (propertyName) => false;
+            }
+            bool? defaultTestPropertyFunc(string propertyName, Type propertyType, object expectedValue, object actualValue) {
+                    return Object.Equals(expectedValue, actualValue);
+            };
+            if(testProperty == null) {
+                testProperty = defaultTestPropertyFunc;
+            }
+
+            if(!Object.ReferenceEquals(expected, actual)) {
+                var objType = typeof(T);
+                foreach(var propertyInfo in objType.GetProperties()) {
+                    var expectedValue = propertyInfo.GetValue(expected, null);
+                    var actualValue = propertyInfo.GetValue(actual, null);
+
+                    if(!ignoreProperty(propertyInfo.Name)) {
+                        var areEqual = testProperty(
+                            propertyInfo.Name,
+                            propertyInfo.PropertyType,
+                            expectedValue,
+                            actualValue
+                        );
+                        if(areEqual == null) {
+                            areEqual = defaultTestPropertyFunc(
+                                propertyInfo.Name,
+                                propertyInfo.PropertyType,
+                                expectedValue,
+                                actualValue
+                            );
+                        }
+                        Assert.IsTrue(areEqual.GetValueOrDefault(), $"Difference found in {propertyInfo.Name} property - expected {expectedValue}, actual was {actualValue}");
+                    }
+                }
+            }
         }
         #endregion
 
@@ -419,6 +470,44 @@ namespace Test.Framework
             where T: class
         {
             return new Mock<T> { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+        }
+        #endregion
+
+        #region FileSystemHelpers - RetryFileIOAction
+        /// <summary>
+        /// Retries an action until it either stops giving IO errors or too many errors have occurred.
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="retries">Numberof times to try, defaults to 20</param>
+        /// <param name="millisecondsBetweenAttempts">The number of MS to wait after a failed attempt. Defaults to 250.</param>
+        /// <remarks>
+        /// On my desktop with SSDs the tests occasionally failed because the file was still in use after
+        /// it had been disposed of. This function retries file operations until either they stop giving
+        /// exceptions or a counter expires.
+        /// </remarks>
+        public static void RetryFileIOAction(Action action, int retries = 20, int millisecondsBetweenAttempts = 250)
+        {
+            for(var i = 0;i < retries;++i) {
+                var pause = false;
+                var giveUp = i + 1 == retries;
+                try {
+                    action();
+                    break;
+                } catch(IOException) {
+                    if(giveUp) {
+                        throw;
+                    }
+                    pause = true;
+                } catch(UnauthorizedAccessException) {
+                    if(giveUp) {
+                        throw;
+                    }
+                    pause = true;
+                }
+                if(pause) {
+                    Thread.Sleep(millisecondsBetweenAttempts);
+                }
+            }
         }
         #endregion
     }
