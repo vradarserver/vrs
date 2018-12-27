@@ -93,6 +93,7 @@
       <DependentUpon>Commands.resx</DependentUpon>
     </Compile>
     <Compile Include="TrackHistoryData\Database.cs" />
+    <Compile Include="TrackHistoryData\TrackHistoryDatabaseSingleton.cs" />
     <Compile Include="TransactionHelper.cs" />
     <Compile Include="Users\Database.cs" />
     <Compile Include="Users\User.cs" />

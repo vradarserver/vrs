@@ -139,6 +139,7 @@
     <Compile Include="Database\IBaseStationDatabaseSQLite.cs" />
     <Compile Include="Database\IBaseStationDatabaseSqlServer.cs" />
     <Compile Include="Database\ITrackHistoryDatabase.cs" />
+    <Compile Include="Database\ITrackHistoryDatabaseSingleton.cs" />
     <Compile Include="Database\ITrackHistoryDatabaseSQLite.cs" />
     <Compile Include="Database\OrdinalAttribute.cs" />
     <Compile Include="Database\TrackHistory.cs" />
