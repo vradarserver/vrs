@@ -3,6 +3,7 @@ SET    [TrackHistoryID] =      @TrackHistoryID
       ,[TimestampUtc] =        @TimestampUtc
       ,[SequenceNumber] =      @SequenceNumber
       ,[SignalLevel] =         @SignalLevel
+      ,[ReceiverID] =          @ReceiverID
       ,[Callsign] =            @Callsign
       ,[IsCallsignSuspect] =   @IsCallsignSuspect
       ,[Latitude] =            @Latitude

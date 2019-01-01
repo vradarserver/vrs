@@ -28,11 +28,17 @@ namespace VirtualRadar.Database.TrackHistoryData
     /// </summary>
     class Database : ITrackHistoryDatabaseSQLite
     {
+        #region Fields, Properties and Events
         /// <summary>
         /// SQLite is single threaded and isn't always too happy about multi-threaded calls on the same database.
         /// This locks every operation to enforce single-threaded calls.
         /// </summary>
         private static object _SqlLiteSyncLock = new object();
+
+        /// <summary>
+        /// The object that supplies the time.
+        /// </summary>
+        private IClock _Clock;
 
         /// <summary>
         /// The object that helps when fulfilling the <see cref="ITransactionable"/> interface.
@@ -73,7 +79,98 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// See interface docs. Unused, the connection string is built from <see cref="FileName"/>.
         /// </summary>
         public string ConnectionString { get; set; }
+        #endregion
 
+        #region Ctors
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        public Database()
+        {
+            _Clock = Factory.Resolve<IClock>();
+        }
+        #endregion
+
+        #region CreateOpenConnection, BuildConnectionString
+        /// <summary>
+        /// Returns an open connection to the database or null if the file does not exist, has not been set etc.
+        /// </summary>
+        /// <returns></returns>
+        private ConnectionWrapper CreateOpenConnection()
+        {
+            IDbConnection connection = null;
+            IDbTransaction transaction = null;
+
+            var fileName = FileName;
+            var disposeOfConnection = false;
+
+            if(!String.IsNullOrEmpty(fileName) && File.Exists(fileName)) {
+                lock(_SqlLiteSyncLock) {
+                    connection = _TransactionConnection;
+                    transaction = _Transaction;
+
+                    if(connection == null) {
+                        connection = Factory.Resolve<ISQLiteConnectionProvider>().Create(BuildConnectionString(FileName));
+                        disposeOfConnection = true;
+                        connection.Open();
+                    }
+                }
+            }
+
+            return new ConnectionWrapper(connection, transaction, disposeOfConnection);
+        }
+
+        /// <summary>
+        /// Returns the connection string for the filename passed across.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        private static string BuildConnectionString(string fileName)
+        {
+            var builder = Factory.Resolve<ISQLiteConnectionStringBuilder>().Initialise();
+            builder.DataSource = fileName;
+            builder.DateTimeFormat = SQLiteDateFormats.ISO8601;
+            builder.FailIfMissing = false;
+            builder.ReadOnly = false;
+            builder.JournalMode = SQLiteJournalModeEnum.Persist;
+
+            return builder.ConnectionString;
+        }
+        #endregion
+
+        #region PerformInTransaction
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public bool PerformInTransaction(Func<bool> action)
+        {
+            var wrapper = CreateOpenConnection();
+            try {
+                if(wrapper.ConnectionWillBeDisposed) {
+                    _TransactionConnection = wrapper.Connection;
+                }
+                return _TransactionHelper.PerformInTransaction(
+                    wrapper.Connection,
+                    wrapper.Transaction != null,
+                    allowNestedTransaction: true,
+                    recordTransaction: r => {
+                        wrapper.Transaction = r;
+                        _Transaction = r;
+                    },
+                    action: action
+                );
+            } finally {
+                if(wrapper.ConnectionWillBeDisposed) {
+                    _TransactionConnection = null;
+                }
+                wrapper.Dispose();
+            }
+        }
+        #endregion
+
+        #region Create, CreateSchema
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -112,37 +209,9 @@ namespace VirtualRadar.Database.TrackHistoryData
                 connection.Execute(Commands.CreateSchema);
             }
         }
+        #endregion
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="action"></param>
-        /// <returns></returns>
-        public bool PerformInTransaction(Func<bool> action)
-        {
-            var wrapper = CreateOpenConnection();
-            try {
-                if(wrapper.ConnectionWillBeDisposed) {
-                    _TransactionConnection = wrapper.Connection;
-                }
-                return _TransactionHelper.PerformInTransaction(
-                    wrapper.Connection,
-                    wrapper.Transaction != null,
-                    allowNestedTransaction: true,
-                    recordTransaction: r => {
-                        wrapper.Transaction = r;
-                        _Transaction = r;
-                    },
-                    action: action
-                );
-            } finally {
-                if(wrapper.ConnectionWillBeDisposed) {
-                    _TransactionConnection = null;
-                }
-                wrapper.Dispose();
-            }
-        }
-
+        #region DatabaseVersion
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -178,7 +247,130 @@ namespace VirtualRadar.Database.TrackHistoryData
                 }
             }
         }
+        #endregion
 
+        #region Receiver
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public TrackHistoryReceiver Receiver_GetByID(long id)
+        {
+            TrackHistoryReceiver result = null;
+
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    lock(_SqlLiteSyncLock) {
+                        result = connection.Connection.QueryFirstOrDefault<TrackHistoryReceiver>(
+                            "SELECT * FROM [Receiver] WHERE [ReceiverID] = @id",
+                            new {
+                                id,
+                            },
+                            transaction: connection.Transaction
+                        );
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public TrackHistoryReceiver Receiver_GetByName(string name)
+        {
+            TrackHistoryReceiver result = null;
+
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    lock(_SqlLiteSyncLock) {
+                        result = Receiver_GetByName(connection, name);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private TrackHistoryReceiver Receiver_GetByName(ConnectionWrapper connection, string name)
+        {
+            return connection.Connection.QueryFirstOrDefault<TrackHistoryReceiver>(
+                "SELECT * FROM [Receiver] WHERE [Name] = @name",
+                new {
+                    name,
+                },
+                transaction: connection.Transaction
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public TrackHistoryReceiver Receiver_GetOrCreateByName(string name)
+        {
+            TrackHistoryReceiver result = null;
+
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    lock(_SqlLiteSyncLock) {
+                        result = Receiver_GetByName(connection, name);
+
+                        if(result == null) {
+                            var now = _Clock.UtcNow;
+                            result = new TrackHistoryReceiver() {
+                                Name =       name,
+                                CreatedUtc = now,
+                                UpdatedUtc = now,
+                            };
+                            Receiver_Insert(connection, result);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="receiver"></param>
+        public void Receiver_Save(TrackHistoryReceiver receiver)
+        {
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    lock(_SqlLiteSyncLock) {
+                        if(receiver.ReceiverID == 0) {
+                            Receiver_Insert(connection, receiver);
+                        } else {
+                            receiver.CreatedUtc = connection.Connection.Query<DateTime>(
+                                Commands.Receiver_Update,
+                                receiver,
+                                transaction: connection.Transaction
+                            ).First();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void Receiver_Insert(ConnectionWrapper connection, TrackHistoryReceiver receiver)
+        {
+            receiver.ReceiverID = connection.Connection.Query<int>(
+                Commands.Receiver_Insert,
+                receiver,
+                transaction: connection.Transaction
+            ).First();
+        }
+        #endregion
+
+        #region TrackHistory
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -454,7 +646,9 @@ namespace VirtualRadar.Database.TrackHistoryData
 
             return result;
         }
+        #endregion
 
+        #region TrackHistoryState
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -585,50 +779,6 @@ namespace VirtualRadar.Database.TrackHistoryData
                 );
             }
         }
-
-        /// <summary>
-        /// Returns an open connection to the database or null if the file does not exist, has not been set etc.
-        /// </summary>
-        /// <returns></returns>
-        private ConnectionWrapper CreateOpenConnection()
-        {
-            IDbConnection connection = null;
-            IDbTransaction transaction = null;
-
-            var fileName = FileName;
-            var disposeOfConnection = false;
-
-            if(!String.IsNullOrEmpty(fileName) && File.Exists(fileName)) {
-                lock(_SqlLiteSyncLock) {
-                    connection = _TransactionConnection;
-                    transaction = _Transaction;
-
-                    if(connection == null) {
-                        connection = Factory.Resolve<ISQLiteConnectionProvider>().Create(BuildConnectionString(FileName));
-                        disposeOfConnection = true;
-                        connection.Open();
-                    }
-                }
-            }
-
-            return new ConnectionWrapper(connection, transaction, disposeOfConnection);
-        }
-
-        /// <summary>
-        /// Returns the connection string for the filename passed across.
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        private static string BuildConnectionString(string fileName)
-        {
-            var builder = Factory.Resolve<ISQLiteConnectionStringBuilder>().Initialise();
-            builder.DataSource = fileName;
-            builder.DateTimeFormat = SQLiteDateFormats.ISO8601;
-            builder.FailIfMissing = false;
-            builder.ReadOnly = false;
-            builder.JournalMode = SQLiteJournalModeEnum.Persist;
-
-            return builder.ConnectionString;
-        }
+        #endregion
     }
 }

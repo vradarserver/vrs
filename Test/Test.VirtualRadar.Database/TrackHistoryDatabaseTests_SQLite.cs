@@ -105,6 +105,36 @@ namespace Test.VirtualRadar.Database
         }
 
         [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Receiver_Save_Creates_New_Records_Correctly()
+        {
+            Receiver_Save_Creates_New_Records_Correctly();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Receiver_Save_Updates_Existing_Records_Correctly()
+        {
+            Receiver_Save_Updates_Existing_Records_Correctly();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Receiver_GetByName_Fetches_By_Case_Insensitive_Name()
+        {
+            Receiver_GetByName_Fetches_By_Case_Insensitive_Name();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Receiver_GetOrCreateByName_Creates_New_Records_Correctly()
+        {
+            Receiver_GetOrCreateByName_Creates_New_Records_Correctly();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Receiver_GetOrCreateByName_Fetches_Existing_Records_Correctly()
+        {
+            Receiver_GetOrCreateByName_Fetches_Existing_Records_Correctly();
+        }
+
+        [TestMethod]
         public void TrackHistoryDatabase_SQLite_TrackHistory_Save_Creates_New_Records_Correctly()
         {
             TrackHistory_Save_Creates_New_Records_Correctly();

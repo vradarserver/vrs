@@ -3,6 +3,7 @@
    ,[TimestampUtc]
    ,[SequenceNumber]
    ,[SignalLevel]
+   ,[ReceiverID]
    ,[Callsign]
    ,[IsCallsignSuspect]
    ,[Latitude]
@@ -27,6 +28,7 @@
    ,@TimestampUtc
    ,@SequenceNumber
    ,@SignalLevel
+   ,@ReceiverID
    ,@Callsign
    ,@IsCallsignSuspect
    ,@Latitude

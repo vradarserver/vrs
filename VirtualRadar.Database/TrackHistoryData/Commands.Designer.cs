@@ -73,17 +73,53 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///
         ///
         ///--
-        ///-- TrackHistory
+        ///-- Receiver
         ///--
-        ///CREATE TABLE IF NOT EXISTS [TrackHistory]
+        ///CREATE TABLE IF NOT EXISTS [Receiver]
         ///(
-        ///    [TrackHistoryID]    INTEGER PRIMARY KEY AUTOINCREMENT
-        ///   ,[Icao]              VARCHAR(6) NOT NULL COLLATE NOCASE
-        ///   ,[IsPrese [rest of string was truncated]&quot;;.
+        ///    [ReceiverID]        INTEGER PRIMARY KEY AUTOINCREMENT
+        ///   ,[Name]              NVARCHAR(255) COLLATE NOCASE
+        ///   ,[CreatedUtc]        DA [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CreateSchema {
             get {
                 return ResourceManager.GetString("CreateSchema", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [Receiver] (
+        ///    [Name]
+        ///   ,[CreatedUtc]
+        ///   ,[UpdatedUtc]
+        ///) VALUES (
+        ///    @Name
+        ///   ,@CreatedUtc
+        ///   ,@UpdatedUtc
+        ///);
+        ///SELECT [ReceiverID] FROM [Receiver] WHERE _ROWID_ = last_insert_rowid();
+        ///.
+        /// </summary>
+        internal static string Receiver_Insert {
+            get {
+                return ResourceManager.GetString("Receiver_Insert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UPDATE [Receiver]
+        ///SET    [Name] =       @Name
+        ///      ,[UpdatedUtc] = @UpdatedUtc
+        ///WHERE  [ReceiverID] = @ReceiverID;
+        ///
+        ///SELECT [CreatedUtc]
+        ///FROM   [Receiver]
+        ///WHERE  [ReceiverID] = @ReceiverID;
+        ///.
+        /// </summary>
+        internal static string Receiver_Update {
+            get {
+                return ResourceManager.GetString("Receiver_Update", resourceCulture);
             }
         }
         
@@ -98,7 +134,7 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///);
         ///
         ///DELETE FROM [TrackHistoryState]
-        ///WHERE  [TrackHistoryID] = @trackHistoryID;
+        ///WHERE  [TrackHistoryID] = @TrackHistoryID;
         ///
         ///INSERT INTO _Result (
         ///    [CountTrackHistoryStates]
@@ -214,26 +250,9 @@ namespace VirtualRadar.Database.TrackHistoryData {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PRAGMA temp_store = MEMORY;
-        ///
-        ///CREATE TEMP TABLE _Result (
-        ///    [CountTrackHistories]       INTEGER
-        ///   ,[CountTrackHistoryStates]   INTEGER
-        ///   ,[EarliestHistoryUtc]        DATETIME
-        ///   ,[LatestHistoryUtc]          DATETIME
-        ///);
-        ///
-        ///DELETE FROM [TrackHistoryState]
-        ///WHERE  [TrackHistoryID] = @trackHistoryID;
-        ///
-        ///INSERT INTO _Result (
-        ///    [CountTrackHistoryStates]
-        ///) VALUES (
-        ///    CHANGES()
-        ///);
-        ///
-        ///UPDATE _Result
-        ///SET    [EarliestHistoryUtc] = (SELECT [CreatedUtc] FROM [TrackHistory] WHERE  [TrackHistoryID] = @ [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to DELETE FROM [TrackHistoryState]
+        ///WHERE  [TrackHistoryStateID] = @TrackHistoryStateID;
+        ///.
         /// </summary>
         internal static string TrackHistoryState_Delete {
             get {

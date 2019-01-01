@@ -66,6 +66,7 @@ namespace Test.VirtualRadar.Interface.Database
                                 nextValue = 3.4F;
                                 break;
                             case nameof(TrackHistoryState.AltitudeFeet):
+                            case nameof(TrackHistoryState.ReceiverID):
                             case nameof(TrackHistoryState.SequenceNumber):
                             case nameof(TrackHistoryState.SignalLevel):
                             case nameof(TrackHistoryState.SquawkOctal):

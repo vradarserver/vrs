@@ -117,6 +117,27 @@ namespace Test.Framework
         }
 
         /// <summary>
+        /// Flips the case of the string passed across.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string FlipCase(string text)
+        {
+            var result = text;
+
+            if(!String.IsNullOrEmpty(result)) {
+                var buffer = new StringBuilder(result);
+                for(var i = 0;i < buffer.Length;++i) {
+                    var ch = buffer[i];
+                    buffer[i] = Char.IsUpper(ch) ? Char.ToLower(ch) : Char.ToUpper(ch);
+                }
+                result = buffer.ToString();
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Asserts that the property passed across starts at a given value and can be changed to another value.
         /// </summary>
         /// <param name="obj"></param>

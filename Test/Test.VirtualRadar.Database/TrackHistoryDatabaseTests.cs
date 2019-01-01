@@ -32,12 +32,16 @@ namespace Test.VirtualRadar.Database
         protected Func<IDbConnection> _CreateConnection;
         protected Action<T> _InitialiseImplementation;
         protected string _SqlReturnNewIdentity;
+        protected ClockMock _Clock;
 
         protected IClassFactory _Snapshot;
 
         protected void CommonTestInitialise(Action initialiseDatabase, Func<IDbConnection> createConnection, Action<T> initialiseImplementation, string sqlReturnNewIdentity)
         {
             _Snapshot = Factory.TakeSnapshot();
+
+            _Clock = new ClockMock();
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
             initialiseDatabase?.Invoke();
             _CreateConnection = createConnection;
@@ -80,6 +84,115 @@ namespace Test.VirtualRadar.Database
             }
             _TestCleanup.Invoke(this, new object[0]);
         }
+
+        #region Receiver
+        public void Receiver_Save_Creates_New_Records_Correctly()
+        {
+            var created = DateTime.UtcNow;
+            var updated = created.AddMilliseconds(7);
+            foreach(var receiver in SampleReceivers(created, updated)) {
+                _Database.Receiver_Save(receiver);
+
+                Assert.AreNotEqual(0, receiver.ReceiverID);
+
+                var readBack = _Database.Receiver_GetByID(receiver.ReceiverID);
+                AssertReceiversAreEqual(receiver, readBack);
+            }
+        }
+
+        public void Receiver_Save_Updates_Existing_Records_Correctly()
+        {
+            var now = DateTime.UtcNow;
+
+            var createReceivers = SampleReceivers(now, now);
+            foreach(var receiver in createReceivers) {
+                _Database.Receiver_Save(receiver);
+            }
+
+            var updatedTime = now.AddSeconds(7);
+            var updateReceivers = SampleReceivers(now, updatedTime);
+            for(var i = 0;i < updateReceivers.Length;++i) {
+                var createReceiver = createReceivers[i];
+                var updateReceiver = updateReceivers[i];
+
+                var expectedName = new String(createReceiver.Name.Reverse().ToArray());
+
+                updateReceiver.ReceiverID = createReceiver.ReceiverID;
+                updateReceiver.Name = expectedName;
+
+                _Database.Receiver_Save(updateReceiver);
+
+                Assert.AreEqual(createReceiver.ReceiverID, updateReceiver.ReceiverID);
+                Assert.AreEqual(expectedName,              updateReceiver.Name);
+                Assert.AreEqual(createReceiver.CreatedUtc, updateReceiver.CreatedUtc);
+                Assert.AreEqual(updatedTime,               updateReceiver.UpdatedUtc);
+
+                var readBack = _Database.Receiver_GetByID(updateReceiver.ReceiverID);
+                AssertReceiversAreEqual(updateReceiver, readBack);
+            }
+        }
+
+        public void Receiver_GetByName_Fetches_By_Case_Insensitive_Name()
+        {
+            foreach(var receiver in SampleReceivers()) {
+                _Database.Receiver_Save(receiver);
+
+                var sameCaseReadBack = _Database.Receiver_GetByName(receiver.Name);
+                AssertReceiversAreEqual(receiver, sameCaseReadBack);
+
+                var flippedName = TestUtilities.FlipCase(receiver.Name);
+                var flippedCaseReadBack = _Database.Receiver_GetByName(flippedName);
+                AssertReceiversAreEqual(receiver, flippedCaseReadBack);
+            }
+        }
+
+        public void Receiver_GetOrCreateByName_Creates_New_Records_Correctly()
+        {
+            var now = DateTime.UtcNow.AddDays(-7);
+            _Clock.UtcNowValue = now;
+
+            foreach(var name in SampleReceivers().Select(r => r.Name)) {
+                var saved = _Database.Receiver_GetOrCreateByName(name);
+
+                Assert.AreNotEqual(0, saved.ReceiverID);
+                Assert.AreEqual(now, saved.CreatedUtc);
+                Assert.AreEqual(now, saved.UpdatedUtc);
+
+                var readBack = _Database.Receiver_GetByID(saved.ReceiverID);
+                AssertReceiversAreEqual(saved, readBack);
+            }
+        }
+
+        public void Receiver_GetOrCreateByName_Fetches_Existing_Records_Correctly()
+        {
+            foreach(var receiver in SampleReceivers()) {
+                _Database.Receiver_Save(receiver);
+
+                var sameCaseReadBack = _Database.Receiver_GetOrCreateByName(receiver.Name);
+                AssertReceiversAreEqual(receiver, sameCaseReadBack);
+
+                var flippedName = TestUtilities.FlipCase(receiver.Name);
+                var flippedCaseReadBack = _Database.Receiver_GetOrCreateByName(flippedName);
+                AssertReceiversAreEqual(receiver, flippedCaseReadBack);
+            }
+        }
+
+        private TrackHistoryReceiver[] SampleReceivers(DateTime? createdUtc = null, DateTime? updatedUtc = null)
+        {
+            var created = createdUtc ?? DateTime.UtcNow;
+            var updated = updatedUtc ?? DateTime.UtcNow;
+
+            return new TrackHistoryReceiver[] {
+                new TrackHistoryReceiver() { Name = "Strix", CreatedUtc = created, UpdatedUtc = updated, },
+                new TrackHistoryReceiver() { Name = "Diath", CreatedUtc = created, UpdatedUtc = updated, },
+            };
+        }
+
+        private void AssertReceiversAreEqual(TrackHistoryReceiver expected, TrackHistoryReceiver actual)
+        {
+            TestUtilities.TestObjectPropertiesAreEqual(expected, actual);
+        }
+        #endregion
 
         #region TrackHistory
         public void TrackHistory_Save_Creates_New_Records_Correctly()
@@ -607,9 +720,12 @@ namespace Test.VirtualRadar.Database
         {
             object value = null;
 
+            var receiver = _Database.Receiver_GetOrCreateByName(generateForCreate ? "Evelyn" : "Paulton");
+
             switch(property.Name) {
                 case nameof(TrackHistoryState.Callsign):    value = generateForCreate ? "BAW1" : "VIR25"; break;
                 case nameof(TrackHistoryState.SpeedType):   value = generateForCreate ? SpeedType.GroundSpeedReversing : SpeedType.IndicatedAirSpeed; break;
+                case nameof(TrackHistoryState.ReceiverID):  value = receiver.ReceiverID; break;
 
                 case nameof(TrackHistoryState.Latitude):
                 case nameof(TrackHistoryState.Longitude):

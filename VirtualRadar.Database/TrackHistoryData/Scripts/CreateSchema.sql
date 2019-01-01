@@ -10,6 +10,20 @@ INSERT OR IGNORE INTO [DatabaseVersion] ([DatabaseVersionID], [Version]) VALUES 
 
 
 --
+-- Receiver
+--
+CREATE TABLE IF NOT EXISTS [Receiver]
+(
+    [ReceiverID]        INTEGER PRIMARY KEY AUTOINCREMENT
+   ,[Name]              NVARCHAR(255) COLLATE NOCASE
+   ,[CreatedUtc]        DATETIME NOT NULL
+   ,[UpdatedUtc]        DATETIME NOT NULL
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS [IX_Receiver_Name] ON [Receiver] ([Name]);
+
+
+--
 -- TrackHistory
 --
 CREATE TABLE IF NOT EXISTS [TrackHistory]
@@ -66,6 +80,7 @@ CREATE TABLE IF NOT EXISTS [TrackHistoryState]
    ,[TrackHistoryID]        INTEGER NOT NULL CONSTRAINT [FK_TrackHistoryState_TrackHistory] REFERENCES [TrackHistory] ([TrackHistoryID])
    ,[TimestampUtc]          DATETIME NOT NULL
    ,[SequenceNumber]        INTEGER NOT NULL
+   ,[ReceiverID]            INTEGER NULL CONSTRAINT [FK_TrackHistoryState_Receiver] REFERENCES [Receiver] ([ReceiverID]) ON DELETE SET NULL
    ,[SignalLevel]           INTEGER NULL
    ,[Callsign]              VARCHAR(8) NULL
    ,[IsCallsignSuspect]     BIT NULL

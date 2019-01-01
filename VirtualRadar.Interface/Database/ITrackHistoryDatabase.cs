@@ -56,6 +56,34 @@ namespace VirtualRadar.Interface.Database
         void Create(string dataSource);
 
         /// <summary>
+        /// Gets the receiver for the ID passed across or null if no such receiver exists.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        TrackHistoryReceiver Receiver_GetByID(long id);
+
+        /// <summary>
+        /// Gets the receiver for the case insensitive name passed across or null if no such receiver exists.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        TrackHistoryReceiver Receiver_GetByName(string name);
+
+        /// <summary>
+        /// Gets the receiver for the case insensitive name passed across. If no such receiver exists then a new one is created
+        /// and returned.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        TrackHistoryReceiver Receiver_GetOrCreateByName(string name);
+
+        /// <summary>
+        /// Creates or updates the receiver passed across.
+        /// </summary>
+        /// <param name="receiver"></param>
+        void Receiver_Save(TrackHistoryReceiver receiver);
+
+        /// <summary>
         /// Returns all track histories within a date / time range.
         /// </summary>
         /// <param name="startTimeInclusive">The optional start time. If null then the search runs from the beginning of time.</param>

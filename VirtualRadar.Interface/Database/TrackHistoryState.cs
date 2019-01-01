@@ -67,6 +67,11 @@ namespace VirtualRadar.Interface.Database
         public int? SignalLevel { get; set; }
 
         /// <summary>
+        /// Gets or sets the ID of the receiver that was last tracking the aircraft.
+        /// </summary>
+        public int? ReceiverID { get; set; }
+
+        /// <summary>
         /// Gets or sets the aircraft's callsign at this point in time.
         /// </summary>
         public string Callsign { get; set; }
@@ -193,6 +198,7 @@ namespace VirtualRadar.Interface.Database
                 if(state.IsTisb != null)                result.IsTisb =                 state.IsTisb;
                 if(state.Latitude != null)              result.Latitude =               state.Latitude;
                 if(state.Longitude != null)             result.Longitude =              state.Longitude;
+                if(state.ReceiverID != null)            result.ReceiverID =             state.ReceiverID;
                 if(state.SignalLevel != null)           result.SignalLevel =            state.SignalLevel;
                 if(state.SpeedType != null)             result.SpeedType =              state.SpeedType;
                 if(state.SquawkOctal != null)           result.SquawkOctal =            state.SquawkOctal;
