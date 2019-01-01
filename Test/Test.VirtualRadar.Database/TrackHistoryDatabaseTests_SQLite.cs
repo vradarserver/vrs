@@ -55,6 +55,12 @@ namespace Test.VirtualRadar.Database
         }
 
         [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Requires_A_FileName()
+        {
+            Assert.IsTrue(_Database.FileNameRequired);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void TrackHistoryDatabase_SQLite_Create_Throws_If_Passed_Null()
         {

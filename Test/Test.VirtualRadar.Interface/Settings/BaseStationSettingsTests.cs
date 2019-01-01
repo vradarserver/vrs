@@ -27,13 +27,19 @@ namespace Test.VirtualRadar.Interface.Settings
     {
         private IClassFactory _OriginalFactory;
         private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
+        private Mock<IConfigurationStorage> _ConfigurationStorage;
         private BaseStationSettings _Implementation;
+        private string _ConfigFolder;
 
         [TestInitialize]
         public void TestInitialise()
         {
             _OriginalFactory = Factory.TakeSnapshot();
             _RuntimeEnvironment = TestUtilities.CreateMockSingleton<IRuntimeEnvironment>();
+            _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
+            _ConfigFolder = @"C:\config";
+            _ConfigurationStorage.SetupGet(r => r.Folder).Returns(() => _ConfigFolder);
+
             _Implementation = new BaseStationSettings();
         }
 
@@ -81,13 +87,15 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.LookupAircraftDetailsOnline, true);
             TestUtilities.TestProperty(settings, r => r.SatcomDisplayTimeoutMinutes, 60, 480);
             TestUtilities.TestProperty(settings, r => r.SatcomTrackingTimeoutMinutes, 120, 1440);
+            TestUtilities.TestProperty(settings, r => r.TrackHistoryDatabaseConnectionString, null, "Abc");
+            TestUtilities.TestProperty(settings, r => r.TrackHistoryDatabaseFileName, null, "Abc");
+            TestUtilities.TestProperty(settings, r => r.TrackHistoryRecordFlights, false);
         }
 
         [TestMethod]
         public void BaseStationSettings_Constructor_Initialises_To_Known_State_Under_Mono()
         {
             _RuntimeEnvironment.Setup(r => r.IsMono).Returns(true);
-
             _Implementation = new BaseStationSettings();
 
             TestUtilities.TestProperty(_Implementation, r => r.Address, "127.0.0.1", "Ab");

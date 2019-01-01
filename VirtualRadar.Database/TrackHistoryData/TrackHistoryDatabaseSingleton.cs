@@ -14,7 +14,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using InterfaceFactory;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Database;
+using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Database.TrackHistoryData
 {
@@ -29,12 +31,74 @@ namespace VirtualRadar.Database.TrackHistoryData
         private bool _Initialised;
 
         /// <summary>
+        /// The object that tracking the configuration for us.
+        /// </summary>
+        private ISharedConfiguration _SharedConfiguration;
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public ITrackHistoryDatabase Database { get; private set; }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IsRecordingEnabled { get; private set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event EventHandler ConfigurationChanging;
+
+        /// <summary>
+        /// Raises <see cref="ConfigurationChanging"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnConfigurationChanging(EventArgs args)
+        {
+            EventHelper.Raise(ConfigurationChanging, this, () => args);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event EventHandler ConfigurationChanged;
+
+        /// <summary>
+        /// Raises <see cref="ConfigurationChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnConfigurationChanged(EventArgs args)
+        {
+            EventHelper.Raise(ConfigurationChanged, this, () => args);
+        }
+
+        /// <summary>
+        /// Finalises the object.
+        /// </summary>
+        ~TrackHistoryDatabaseSingleton()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes of or finalises the object.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposing) {
+                Database = null;
+            }
         }
 
         /// <summary>
@@ -46,7 +110,55 @@ namespace VirtualRadar.Database.TrackHistoryData
                 _Initialised = true;
 
                 Database = Factory.Resolve<ITrackHistoryDatabase>();
+
+                _SharedConfiguration = Factory.ResolveSingleton<ISharedConfiguration>();
+                ApplyConfiguration(_SharedConfiguration.Get(), raiseEvents: false);
+                _SharedConfiguration.ConfigurationChanged += SharedConfiguration_ConfigurationChanged;
             }
+        }
+
+        /// <summary>
+        /// Applies the configuration passed across.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="raiseEvents"></param>
+        private void ApplyConfiguration(Configuration configuration, bool raiseEvents)
+        {
+            var database = Database;
+            if(database != null) {
+                var hasConfigChanged =
+                       (database.FileNameRequired && !String.Equals(database.FileName, configuration.BaseStationSettings.TrackHistoryDatabaseFileName))
+                    || (!database.FileNameRequired && !String.Equals(database.ConnectionString, configuration.BaseStationSettings.TrackHistoryDatabaseConnectionString))
+                    || IsRecordingEnabled != configuration.BaseStationSettings.TrackHistoryRecordFlights
+                ;
+
+                if(hasConfigChanged) {
+                    if(raiseEvents) {
+                        OnConfigurationChanging(EventArgs.Empty);
+                    }
+
+                    IsRecordingEnabled = configuration.BaseStationSettings.TrackHistoryRecordFlights;
+                    if(database.FileNameRequired) {
+                        database.FileName = configuration.BaseStationSettings.TrackHistoryDatabaseFileName;
+                    } else {
+                        database.ConnectionString = configuration.BaseStationSettings.TrackHistoryDatabaseConnectionString;
+                    }
+
+                    if(raiseEvents) {
+                        OnConfigurationChanged(EventArgs.Empty);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Raised when the configuration changes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SharedConfiguration_ConfigurationChanged(object sender, EventArgs e)
+        {
+            ApplyConfiguration(_SharedConfiguration.Get(), raiseEvents: true);
         }
     }
 }

@@ -34,6 +34,11 @@ namespace VirtualRadar.Interface.Database
         ITrackHistoryDatabase Database { get; }
 
         /// <summary>
+        /// Gets a value indicating that recording of flights has been enabled.
+        /// </summary>
+        bool IsRecordingEnabled { get; }
+
+        /// <summary>
         /// Raised before the configuration is changed.
         /// </summary>
         /// <remarks>

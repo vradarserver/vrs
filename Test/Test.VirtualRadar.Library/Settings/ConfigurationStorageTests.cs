@@ -262,6 +262,9 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(false, readBack.BaseStationSettings.DownloadGlobalAirPressureReadings);
                         Assert.AreEqual(300, readBack.BaseStationSettings.SatcomDisplayTimeoutMinutes);
                         Assert.AreEqual(400, readBack.BaseStationSettings.SatcomTrackingTimeoutMinutes);
+                        Assert.AreEqual("Dbc", readBack.BaseStationSettings.TrackHistoryDatabaseConnectionString);
+                        Assert.AreEqual("Fna", readBack.BaseStationSettings.TrackHistoryDatabaseFileName);
+                        Assert.AreEqual(true, readBack.BaseStationSettings.TrackHistoryRecordFlights);
                         break;
                     case nameof(Configuration.FlightRouteSettings):
                         Assert.AreEqual(true, readBack.FlightRouteSettings.AutoUpdateEnabled);
@@ -575,6 +578,9 @@ namespace Test.VirtualRadar.Library.Settings
                 DownloadGlobalAirPressureReadings = false,
                 SatcomDisplayTimeoutMinutes = 300,
                 SatcomTrackingTimeoutMinutes = 400,
+                TrackHistoryDatabaseConnectionString = "Dbc",
+                TrackHistoryDatabaseFileName = "Fna",
+                TrackHistoryRecordFlights = true,
             };
         }
 

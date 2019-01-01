@@ -27,6 +27,29 @@ namespace VirtualRadar.Interface.Database
     public interface ITrackHistoryDatabase : ITransactionable
     {
         /// <summary>
+        /// True if the database is stored in a single file whose name is expected to be in <see cref="FileName"/>, false if it
+        /// uses a connection string in <see cref="ConnectionString"/>.
+        /// </summary>
+        bool FileNameRequired { get; }
+
+        /// <summary>
+        /// Gets or sets the full path to the database file. Only used if <see cref="FileNameRequired"/> is true.
+        /// </summary>
+        string FileName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the connection string to the database. Only used if <see cref="FileNameRequired"/> is false.
+        /// </summary>
+        string ConnectionString { get; set; }
+
+        /// <summary>
+        /// Creates a new instance of a database. The meaning of <paramref name="dataSource"/> depends on whether
+        /// <see cref="FileNameRequired"/> is true or false.
+        /// </summary>
+        /// <param name="dataSource"></param>
+        void Create(string dataSource);
+
+        /// <summary>
         /// Returns all track histories within a date / time range.
         /// </summary>
         /// <param name="startTimeInclusive">The optional start time. If null then the search runs from the beginning of time.</param>

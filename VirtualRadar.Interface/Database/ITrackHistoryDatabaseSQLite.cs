@@ -21,15 +21,5 @@ namespace VirtualRadar.Interface.Database
     /// </summary>
     public interface ITrackHistoryDatabaseSQLite : ITrackHistoryDatabase
     {
-        /// <summary>
-        /// Gets or sets the full path to the database file.
-        /// </summary>
-        string FileName { get; set; }
-
-        /// <summary>
-        /// Creates a new instance of a database file.
-        /// </summary>
-        /// <param name="fileName"></param>
-        void Create(string fileName);
     }
 }

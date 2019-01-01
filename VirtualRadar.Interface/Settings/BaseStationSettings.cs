@@ -260,6 +260,42 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _DownloadGlobalAirPressureReadings, value, nameof(DownloadGlobalAirPressureReadings)); }
         }
 
+        private string _TrackHistoryDatabaseFileName;
+        /// <summary>
+        /// Gets or sets the track history database's filename.
+        /// </summary>
+        /// <remarks>
+        /// Only used by database engines that store their data in a file, e.g. SQLite.
+        /// </remarks>
+        public string TrackHistoryDatabaseFileName
+        {
+            get { return _TrackHistoryDatabaseFileName; }
+            set { SetField(ref _TrackHistoryDatabaseFileName, value, nameof(TrackHistoryDatabaseFileName)); }
+        }
+
+        private string _TrackHistoryDatabaseConnectionString;
+        /// <summary>
+        /// Gets or sets the connection string to the track history database.
+        /// </summary>
+        /// <remarks>
+        /// Only used by database engines that require a connection string, e.g. SQL Server.
+        /// </remarks>
+        public string TrackHistoryDatabaseConnectionString
+        {
+            get { return _TrackHistoryDatabaseConnectionString; }
+            set { SetField(ref _TrackHistoryDatabaseConnectionString, value, nameof(TrackHistoryDatabaseConnectionString)); }
+        }
+
+        private bool _TrackHistoryRecordFlights;
+        /// <summary>
+        /// Gets or sets a value indicating that this instance of VRS should record tracks in the track history database.
+        /// </summary>
+        public bool TrackHistoryRecordFlights
+        {
+            get { return _TrackHistoryRecordFlights; }
+            set { SetField(ref _TrackHistoryRecordFlights, value, nameof(TrackHistoryRecordFlights)); }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>

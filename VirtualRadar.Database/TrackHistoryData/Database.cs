@@ -49,6 +49,11 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// </summary>
         private IDbTransaction _Transaction;
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool FileNameRequired { get => true; }
+
         private string _FileName;
         /// <summary>
         /// See interface docs.
@@ -60,26 +65,31 @@ namespace VirtualRadar.Database.TrackHistoryData
         }
 
         /// <summary>
+        /// See interface docs. Unused, the connection string is built from <see cref="FileName"/>.
+        /// </summary>
+        public string ConnectionString { get; set; }
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="fileName"></param>
-        public void Create(string fileName)
+        /// <param name="dataSource"></param>
+        public void Create(string dataSource)
         {
-            if(fileName == null) {
-                throw new ArgumentNullException(nameof(fileName));
-            } else if(fileName == "") {
+            if(dataSource == null) {
+                throw new ArgumentNullException(nameof(dataSource));
+            } else if(dataSource == "") {
                 throw new InvalidOperationException("Missing file name");
-            } else if(File.Exists(fileName)) {
-                throw new InvalidOperationException($"{fileName} already exists");
+            } else if(File.Exists(dataSource)) {
+                throw new InvalidOperationException($"{dataSource} already exists");
             }
 
-            var folder = Path.GetDirectoryName(fileName);
+            var folder = Path.GetDirectoryName(dataSource);
             if(!Directory.Exists(folder)) {
                 Directory.CreateDirectory(folder);
             }
 
             lock(_SqlLiteSyncLock) {
-                using(var result = Factory.Resolve<ISQLiteConnectionProvider>().Create(BuildConnectionString(fileName))) {
+                using(var result = Factory.Resolve<ISQLiteConnectionProvider>().Create(BuildConnectionString(dataSource))) {
                     result.Open();
 
                     CreateSchema(result);
