@@ -17,8 +17,13 @@ using System.Threading.Tasks;
 namespace VirtualRadar.Interface.Database
 {
     /// <summary>
-    /// The interface for objects that can record full track histories to a database.
+    /// The interface for objects that can record full track histories to a database. Do not resolve
+    /// direct references to this in the application, use <see cref="ITrackHistoryDatabaseSingleton"/>
+    /// instead.
     /// </summary>
+    /// <remarks>
+    /// Implementations of the interface should fail gracefully if they have not yet been fully initialised.
+    /// </remarks>
     public interface ITrackHistoryDatabase : ITransactionable
     {
         /// <summary>

@@ -26,15 +26,29 @@ namespace VirtualRadar.Interface.Database
     {
         /// <summary>
         /// Gets the <see cref="ITrackHistoryDatabase"/> instance that everyone can use.
-        /// This can be null.
+        /// This will not be initialised until <see cref="Initialise"/> is called.
         /// </summary>
         /// <remarks>
-        /// This will be null if <see cref="Initialise"/> has not been called or if the
-        /// object has been disposed. The object itself is not guaranteed to have the same
-        /// lifetime of the singleton, DO NOT take a reference to <see cref="Database"/>
-        /// and then keep using it. Always get the latest object from here and use that.
+        /// The object will always have the same lifetime as the singleton.
         /// </remarks>
         ITrackHistoryDatabase Database { get; }
+
+        /// <summary>
+        /// Raised before the configuration is changed.
+        /// </summary>
+        /// <remarks>
+        /// If the configuration is about to be changed then objects that are maintaining
+        /// track history sessions should close those sessions and ensure that no new
+        /// sessions will be created until a corresponding <see cref="ConfigurationChanged"/>
+        /// event is raised.
+        /// </remarks>
+        event EventHandler ConfigurationChanging;
+
+        /// <summary>
+        /// Raised after the configuration has changed or <see cref="Database"/> has been
+        /// fully initialised.
+        /// </summary>
+        event EventHandler ConfigurationChanged;
 
         /// <summary>
         /// Initialises the properties, hooks events etc.

@@ -75,5 +75,14 @@ namespace Test.VirtualRadar.Database
             _Singleton.Initialise();
             Assert.AreSame(reference, _Singleton.Database);
         }
+
+        [TestMethod]
+        public void TrackHistoryDatabaseSingleton_Dispose_Nulls_Out_Database()
+        {
+            _Singleton.Initialise();
+            _Singleton.Dispose();
+
+            Assert.IsNull(_Singleton.Database);
+        }
     }
 }
