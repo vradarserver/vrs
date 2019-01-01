@@ -52,6 +52,11 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public bool IsDataSourceReadOnly { get => false; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public bool FileNameRequired { get => true; }
 
         private string _FileName;

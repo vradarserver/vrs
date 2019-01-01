@@ -55,6 +55,12 @@ namespace Test.VirtualRadar.Database
         }
 
         [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Accepts_Configuration()
+        {
+            Assert.IsFalse(_Database.IsDataSourceReadOnly);
+        }
+
+        [TestMethod]
         public void TrackHistoryDatabase_SQLite_Requires_A_FileName()
         {
             Assert.IsTrue(_Database.FileNameRequired);

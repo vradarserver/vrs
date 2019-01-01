@@ -35,6 +35,7 @@ namespace Test.VirtualRadar.Database
         private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
         private Mock<ITrackHistoryDatabase> _TrackHistoryDatabase;
         private bool _TrackHistoryRequiresFileName;
+        private bool _TrackHistoryNeedsConfiguration;
         private EventRecorder<EventArgs> _ConfigChangingRecorder;
         private EventRecorder<EventArgs> _ConfigChangedRecorder;
 
@@ -50,7 +51,9 @@ namespace Test.VirtualRadar.Database
 
             _TrackHistoryDatabase = TestUtilities.CreateMockImplementation<ITrackHistoryDatabase>();
             _TrackHistoryRequiresFileName = true;
+            _TrackHistoryNeedsConfiguration = true;
             _TrackHistoryDatabase.SetupGet(r => r.FileNameRequired).Returns(() => _TrackHistoryRequiresFileName);
+            _TrackHistoryDatabase.SetupGet(r => r.IsDataSourceReadOnly).Returns(() => !_TrackHistoryNeedsConfiguration);
 
             _Singleton = Factory.ResolveNewInstance<ITrackHistoryDatabaseSingleton>();
 
@@ -123,9 +126,25 @@ namespace Test.VirtualRadar.Database
         }
 
         [TestMethod]
-        public void TrackHistoryDatabaseSingleton_Events_Not_Raised_If_FileName_Changes_But_Is_Not_Required()
+        public void TrackHistoryDatabaseSingleton_Events_Not_Raised_If_FileName_Changes_For_ConnectionString_Database()
         {
             _TrackHistoryRequiresFileName = false;
+            AttachEventRecorders();
+
+            _Singleton.Initialise();
+
+            _Configuration.BaseStationSettings.TrackHistoryDatabaseFileName = "new-value";
+            _SharedConfiguration.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
+
+            Assert.AreEqual(0, _ConfigChangingRecorder.CallCount);
+            Assert.AreEqual(0, _ConfigChangedRecorder.CallCount);
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabaseSingleton_Events_Not_Raised_If_FileName_Changes_For_Unconfigurable_Database()
+        {
+            _TrackHistoryRequiresFileName = true;
+            _TrackHistoryNeedsConfiguration = false;
             AttachEventRecorders();
 
             _Singleton.Initialise();
@@ -158,9 +177,25 @@ namespace Test.VirtualRadar.Database
         }
 
         [TestMethod]
-        public void TrackHistoryDatabaseSingleton_Events_Not_Raised_If_ConnectionString_Changes_But_Is_Not_Required()
+        public void TrackHistoryDatabaseSingleton_Events_Not_Raised_If_ConnectionString_Changes_For_FileName_Database()
         {
             _TrackHistoryRequiresFileName = true;
+            AttachEventRecorders();
+
+            _Singleton.Initialise();
+
+            _Configuration.BaseStationSettings.TrackHistoryDatabaseConnectionString = "new-value";
+            _SharedConfiguration.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
+
+            Assert.AreEqual(0, _ConfigChangingRecorder.CallCount);
+            Assert.AreEqual(0, _ConfigChangedRecorder.CallCount);
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabaseSingleton_Events_Not_Raised_If_ConnectionString_Changes_For_Unconfigurable_Database()
+        {
+            _TrackHistoryRequiresFileName = false;
+            _TrackHistoryNeedsConfiguration = false;
             AttachEventRecorders();
 
             _Singleton.Initialise();
@@ -200,6 +235,22 @@ namespace Test.VirtualRadar.Database
             _Configuration.BaseStationSettings.TrackHistoryRecordFlights = false;
             _ConfigChangingRecorder.EventRaised += (sender, args) => Assert.AreEqual(true,  _Singleton.IsRecordingEnabled);
             _ConfigChangedRecorder.EventRaised  += (sender, args) => Assert.AreEqual(false, _Singleton.IsRecordingEnabled);
+            _SharedConfiguration.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
+
+            Assert.AreEqual(1, _ConfigChangingRecorder.CallCount);
+            Assert.AreEqual(1, _ConfigChangedRecorder.CallCount);
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabaseSingleton_Events_Raised_Even_If_Database_Is_Unconfigurable()
+        {
+            _Configuration.BaseStationSettings.TrackHistoryRecordFlights = false;
+            _TrackHistoryNeedsConfiguration = false;
+            AttachEventRecorders();
+
+            _Singleton.Initialise();
+
+            _Configuration.BaseStationSettings.TrackHistoryRecordFlights = true;
             _SharedConfiguration.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
             Assert.AreEqual(1, _ConfigChangingRecorder.CallCount);

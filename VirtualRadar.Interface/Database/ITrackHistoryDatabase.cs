@@ -27,6 +27,12 @@ namespace VirtualRadar.Interface.Database
     public interface ITrackHistoryDatabase : ITransactionable
     {
         /// <summary>
+        /// True if the <see cref="FileName"/> or <see cref="ConnectionString"/> is taken from some other source and the
+        /// implementation will ignore both properties. The configuration UI should not ask for a data source if this is set.
+        /// </summary>
+        bool IsDataSourceReadOnly { get; }
+
+        /// <summary>
         /// True if the database is stored in a single file whose name is expected to be in <see cref="FileName"/>, false if it
         /// uses a connection string in <see cref="ConnectionString"/>.
         /// </summary>

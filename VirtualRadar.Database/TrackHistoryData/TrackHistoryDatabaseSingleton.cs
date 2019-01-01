@@ -126,9 +126,12 @@ namespace VirtualRadar.Database.TrackHistoryData
         {
             var database = Database;
             if(database != null) {
+                var configFileName = configuration.BaseStationSettings.TrackHistoryDatabaseFileName;
+                var configConnectionString = configuration.BaseStationSettings.TrackHistoryDatabaseConnectionString;
+
                 var hasConfigChanged =
-                       (database.FileNameRequired && !String.Equals(database.FileName, configuration.BaseStationSettings.TrackHistoryDatabaseFileName))
-                    || (!database.FileNameRequired && !String.Equals(database.ConnectionString, configuration.BaseStationSettings.TrackHistoryDatabaseConnectionString))
+                       (!database.IsDataSourceReadOnly && database.FileNameRequired && !String.Equals(database.FileName, configFileName))
+                    || (!database.IsDataSourceReadOnly && !database.FileNameRequired && !String.Equals(database.ConnectionString, configConnectionString))
                     || IsRecordingEnabled != configuration.BaseStationSettings.TrackHistoryRecordFlights
                 ;
 
