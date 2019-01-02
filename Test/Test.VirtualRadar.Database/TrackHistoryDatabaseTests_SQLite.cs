@@ -104,6 +104,7 @@ namespace Test.VirtualRadar.Database
             }
         }
 
+        #region Aircraft
         [TestMethod]
         public void TrackHistoryDatabase_SQLite_Aircraft_Save_Creates_New_Aircraft_Correctly()
         {
@@ -127,7 +128,59 @@ namespace Test.VirtualRadar.Database
         {
             Aircraft_GetByIcao_Is_Case_Insensitive();
         }
+        #endregion
 
+        #region Country
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Country_Save_Creates_New_Records_Correctly()
+        {
+            Country_Save_Creates_New_Records_Correctly();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Country_Save_Updates_Existing_Records_Correctly()
+        {
+            Country_Save_Updates_Existing_Records_Correctly();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Country_GetByName_Fetches_By_Case_Insensitive_Name()
+        {
+            Country_GetByName_Fetches_By_Case_Insensitive_Name();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Country_GetOrCreateByName_Creates_New_Records_Correctly()
+        {
+            Country_GetOrCreateByName_Creates_New_Records_Correctly();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Country_GetOrCreateByName_Fetches_Existing_Records_Correctly()
+        {
+            Country_GetOrCreateByName_Fetches_Existing_Records_Correctly();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Country_Delete_Deletes_Countries()
+        {
+            Country_Delete_Deletes_Countries();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Country_Delete_Nulls_Out_References_To_Country()
+        {
+            Country_Delete_Nulls_Out_References_To_Country();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Country_Delete_Ignores_Deleted_Countries()
+        {
+            Country_Delete_Ignores_Deleted_Countries();
+        }
+        #endregion
+
+        #region Receiver
         [TestMethod]
         public void TrackHistoryDatabase_SQLite_Receiver_Save_Creates_New_Records_Correctly()
         {
@@ -175,7 +228,9 @@ namespace Test.VirtualRadar.Database
         {
             Receiver_Delete_Ignores_Deleted_Receivers();
         }
+        #endregion
 
+        #region TrackHistory
         [TestMethod]
         public void TrackHistoryDatabase_SQLite_TrackHistory_Save_Creates_New_Records_Correctly()
         {
@@ -241,7 +296,9 @@ namespace Test.VirtualRadar.Database
         {
             TrackHistory_TruncateExpired_Truncates_Histories();
         }
+        #endregion
 
+        #region TrackHistoryState
         [TestMethod]
         public void TrackHistoryDatabase_SQLite_TrackHistoryState_Save_Creates_New_Records_Correctly()
         {
@@ -298,5 +355,6 @@ namespace Test.VirtualRadar.Database
         {
             TrackHistoryState_GetByTrackHistory_Returns_Saved_IDs_In_Correct_Order();
         }
+        #endregion
     }
 }

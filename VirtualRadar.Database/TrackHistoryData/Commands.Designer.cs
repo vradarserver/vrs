@@ -115,6 +115,42 @@ namespace VirtualRadar.Database.TrackHistoryData {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [Country] (
+        ///    [Name]
+        ///   ,[CreatedUtc]
+        ///   ,[UpdatedUtc]
+        ///) VALUES (
+        ///    @Name
+        ///   ,@CreatedUtc
+        ///   ,@UpdatedUtc
+        ///);
+        ///SELECT [CountryID] FROM [Country] WHERE _ROWID_ = last_insert_rowid();
+        ///.
+        /// </summary>
+        internal static string Country_Insert {
+            get {
+                return ResourceManager.GetString("Country_Insert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UPDATE [Country]
+        ///SET    [Name] =       @Name
+        ///      ,[UpdatedUtc] = @UpdatedUtc
+        ///WHERE  [CountryID] = @CountryID;
+        ///
+        ///SELECT [CreatedUtc]
+        ///FROM   [Country]
+        ///WHERE  [CountryID] = @CountryID;
+        ///.
+        /// </summary>
+        internal static string Country_Update {
+            get {
+                return ResourceManager.GetString("Country_Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to --
         ///-- DatabaseVersion
         ///--

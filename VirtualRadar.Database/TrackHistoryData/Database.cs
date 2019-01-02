@@ -333,6 +333,144 @@ namespace VirtualRadar.Database.TrackHistoryData
         }
         #endregion
 
+        #region Country
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public TrackHistoryCountry Country_GetByID(int id)
+        {
+            TrackHistoryCountry result = null;
+
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    lock(_SqlLiteSyncLock) {
+                        result = connection.Connection.QueryFirstOrDefault<TrackHistoryCountry>(
+                            "SELECT * FROM [Country] WHERE [CountryID] = @id",
+                            new {
+                                id,
+                            },
+                            transaction: connection.Transaction
+                        );
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="country"></param>
+        public void Country_Save(TrackHistoryCountry country)
+        {
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    lock(_SqlLiteSyncLock) {
+                        if(country.CountryID == 0) {
+                            Country_Insert(connection, country);
+                        } else {
+                            country.CreatedUtc = connection.Connection.Query<DateTime>(
+                                Commands.Country_Update,
+                                country,
+                                transaction: connection.Transaction
+                            ).First();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void Country_Insert(ConnectionWrapper connection, TrackHistoryCountry country)
+        {
+            country.CountryID = connection.Connection.Query<int>(
+                Commands.Country_Insert,
+                country,
+                transaction: connection.Transaction
+            ).First();
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public TrackHistoryCountry Country_GetByName(string name)
+        {
+            TrackHistoryCountry result = null;
+
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    lock(_SqlLiteSyncLock) {
+                        result = Country_GetByName(connection, name);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private TrackHistoryCountry Country_GetByName(ConnectionWrapper connection, string name)
+        {
+            return connection.Connection.QueryFirstOrDefault<TrackHistoryCountry>(
+                "SELECT * FROM [Country] WHERE [Name] = @name",
+                new {
+                    name,
+                },
+                transaction: connection.Transaction
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public TrackHistoryCountry Country_GetOrCreateByName(string name)
+        {
+            TrackHistoryCountry result = null;
+
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    lock(_SqlLiteSyncLock) {
+                        result = Country_GetByName(connection, name);
+
+                        if(result == null) {
+                            var now = _Clock.UtcNow;
+                            result = new TrackHistoryCountry() {
+                                Name =       name,
+                                CreatedUtc = now,
+                                UpdatedUtc = now,
+                            };
+                            Country_Insert(connection, result);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="country"></param>
+        public void Country_Delete(TrackHistoryCountry country)
+        {
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    connection.Connection.Execute(
+                        "DELETE FROM [Country] WHERE [CountryID] = @CountryID",
+                        new { country.CountryID },
+                        transaction: connection.Transaction
+                    );
+                }
+            }
+        }
+        #endregion
+
         #region Receiver
         /// <summary>
         /// See interface docs.

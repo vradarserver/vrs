@@ -14,13 +14,27 @@ INSERT OR IGNORE INTO [DatabaseVersion] ([DatabaseVersionID], [Version]) VALUES 
 --
 CREATE TABLE IF NOT EXISTS [Receiver]
 (
-    [ReceiverID]        INTEGER PRIMARY KEY AUTOINCREMENT
-   ,[Name]              NVARCHAR(255) COLLATE NOCASE
-   ,[CreatedUtc]        DATETIME NOT NULL
-   ,[UpdatedUtc]        DATETIME NOT NULL
+    [ReceiverID]    INTEGER PRIMARY KEY AUTOINCREMENT
+   ,[Name]          NVARCHAR(255) COLLATE NOCASE
+   ,[CreatedUtc]    DATETIME NOT NULL
+   ,[UpdatedUtc]    DATETIME NOT NULL
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS [IX_Receiver_Name] ON [Receiver] ([Name]);
+
+
+--
+-- Country
+--
+CREATE TABLE IF NOT EXISTS [Country]
+(
+    [CountryID]     INTEGER PRIMARY KEY AUTOINCREMENT
+   ,[Name]          NVARCHAR(255) COLLATE NOCASE
+   ,[CreatedUtc]    DATETIME NOT NULL
+   ,[UpdatedUtc]    DATETIME NOT NULL
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS [IX_Country_Name] ON [Country] ([Name]);
 
 
 --
@@ -30,6 +44,7 @@ CREATE TABLE IF NOT EXISTS [Aircraft]
 (
     [AircraftID]            INTEGER PRIMARY KEY AUTOINCREMENT
    ,[Icao]                  VARCHAR(6) NOT NULL COLLATE NOCASE
+   ,[IcaoCountryID]         INTEGER NULL CONSTRAINT [FK_Aircraft_IcaoCountry] REFERENCES [Country] ([CountryID]) ON DELETE SET NULL
    ,[Registration]          VARCHAR(20) NULL COLLATE NOCASE
    ,[Serial]                NVARCHAR(200) NULL COLLATE NOCASE
    ,[YearBuilt]             INTEGER NULL

@@ -124,6 +124,12 @@
   <data name="Aircraft_Update" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>scripts\aircraft_update.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="Country_Insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>scripts\country_insert.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="Country_Update" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>scripts\country_update.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="CreateSchema" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>scripts\createschema.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>

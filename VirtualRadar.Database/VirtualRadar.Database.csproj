@@ -166,6 +166,8 @@
     <Content Include="Log\Scripts\Session_Insert.sql" />
     <Content Include="Log\Scripts\Session_Update.sql" />
     <Content Include="Log\Scripts\UpdateSchema.sql" />
+    <Content Include="TrackHistoryData\Scripts\Country_Insert.sql" />
+    <Content Include="TrackHistoryData\Scripts\Country_Update.sql" />
     <Content Include="TrackHistoryData\Scripts\TrackHistoryState_Delete.sql" />
     <Content Include="TrackHistoryData\Scripts\TrackHistory_DeleteExpired.sql" />
     <Content Include="TrackHistoryData\Scripts\TrackHistory_GetByDateRange.sql" />

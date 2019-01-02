@@ -56,14 +56,14 @@ namespace VirtualRadar.Interface.Database
         void Create(string dataSource);
 
         /// <summary>
-        /// Gets the aircraft record for the ID passed across or null if no such aircraft exists.
+        /// Returns the aircraft record for the ID passed across or null if no such aircraft exists.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         TrackHistoryAircraft Aircraft_GetByID(long id);
 
         /// <summary>
-        /// Gets the aircraft record for the ICAO passed across or null if no such aircraft exists.
+        /// Returns the aircraft record for the ICAO passed across or null if no such aircraft exists.
         /// </summary>
         /// <param name="icao"></param>
         /// <returns></returns>
@@ -76,21 +76,55 @@ namespace VirtualRadar.Interface.Database
         void Aircraft_Save(TrackHistoryAircraft aircraft);
 
         /// <summary>
-        /// Gets the receiver for the ID passed across or null if no such receiver exists.
+        /// Returns the country record for the ID passed across or null if no such country exists.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        TrackHistoryCountry Country_GetByID(int id);
+
+        /// <summary>
+        /// Returns the country for the case insensitive name passed across or null if no such country exists.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        TrackHistoryCountry Country_GetByName(string name);
+
+        /// <summary>
+        /// Returns the country for the case insensitive name passed across. If no such country exists then a new one is created
+        /// and returned.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        TrackHistoryCountry Country_GetOrCreateByName(string name);
+
+        /// <summary>
+        /// Creates or updates the country passed across.
+        /// </summary>
+        /// <param name="country"></param>
+        void Country_Save(TrackHistoryCountry country);
+
+        /// <summary>
+        /// Deletes the country passed across.
+        /// </summary>
+        /// <param name="country"></param>
+        void Country_Delete(TrackHistoryCountry country);
+
+        /// <summary>
+        /// Returns the receiver for the ID passed across or null if no such receiver exists.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         TrackHistoryReceiver Receiver_GetByID(int id);
 
         /// <summary>
-        /// Gets the receiver for the case insensitive name passed across or null if no such receiver exists.
+        /// Returns the receiver for the case insensitive name passed across or null if no such receiver exists.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         TrackHistoryReceiver Receiver_GetByName(string name);
 
         /// <summary>
-        /// Gets the receiver for the case insensitive name passed across. If no such receiver exists then a new one is created
+        /// Returns the receiver for the case insensitive name passed across. If no such receiver exists then a new one is created
         /// and returned.
         /// </summary>
         /// <param name="name"></param>

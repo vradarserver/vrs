@@ -175,10 +175,13 @@ namespace Test.VirtualRadar.Database
         {
             object value = null;
 
+            var countryName = generateForCreate ? "Faerûn" : "Tyr";
+
             switch(property.Name) {
-                case nameof(TrackHistoryAircraft.Notes):        value = generateForCreate ? new String('Ă', 2000) : new string('b', 2000); break;
-                case nameof(TrackHistoryAircraft.Registration): value = generateForCreate ? new String('A', 20)   : new string('b', 20); break;
-                case nameof(TrackHistoryAircraft.Serial):       value = generateForCreate ? new String('Ă', 200)  : new string('b', 200); break;
+                case nameof(TrackHistoryAircraft.IcaoCountryID):    value = _Database.Country_GetOrCreateByName(countryName).CountryID; break;
+                case nameof(TrackHistoryAircraft.Notes):            value = generateForCreate ? new String('Ă', 2000) : new string('b', 2000); break;
+                case nameof(TrackHistoryAircraft.Registration):     value = generateForCreate ? new String('A', 20)   : new string('b', 20); break;
+                case nameof(TrackHistoryAircraft.Serial):           value = generateForCreate ? new String('Ă', 200)  : new string('b', 200); break;
 
                 case nameof(TrackHistoryAircraft.LastLookupUtc):
                     value = generateForCreate ? new DateTime(2019, 2, 1, 17, 16, 15, 143) : new DateTime(2009, 8, 7, 6, 5, 4, 321);
@@ -206,6 +209,155 @@ namespace Test.VirtualRadar.Database
         }
 
         private void AssertAircraftAreEqual(TrackHistoryAircraft expected, TrackHistoryAircraft actual)
+        {
+            TestUtilities.TestObjectPropertiesAreEqual(expected, actual);
+        }
+        #endregion
+
+        #region Country
+        protected void Country_Save_Creates_New_Records_Correctly()
+        {
+            var created = DateTime.UtcNow;
+            var updated = created.AddMilliseconds(7);
+            foreach(var country in SampleCountries(created, updated)) {
+                _Database.Country_Save(country);
+
+                Assert.AreNotEqual(0, country.CountryID);
+
+                var readBack = _Database.Country_GetByID(country.CountryID);
+                AssertCountriesAreEqual(country, readBack);
+            }
+        }
+
+        protected void Country_Save_Updates_Existing_Records_Correctly()
+        {
+            var now = DateTime.UtcNow;
+
+            var createCountrys = SampleCountries(now, now);
+            foreach(var country in createCountrys) {
+                _Database.Country_Save(country);
+            }
+
+            var updatedTime = now.AddSeconds(7);
+            var updateCountrys = SampleCountries(now, updatedTime);
+            for(var i = 0;i < updateCountrys.Length;++i) {
+                var createCountry = createCountrys[i];
+                var updateCountry = updateCountrys[i];
+
+                var expectedName = new String(createCountry.Name.Reverse().ToArray());
+
+                updateCountry.CountryID = createCountry.CountryID;
+                updateCountry.Name = expectedName;
+
+                _Database.Country_Save(updateCountry);
+
+                Assert.AreEqual(createCountry.CountryID, updateCountry.CountryID);
+                Assert.AreEqual(expectedName,              updateCountry.Name);
+                Assert.AreEqual(createCountry.CreatedUtc, updateCountry.CreatedUtc);
+                Assert.AreEqual(updatedTime,               updateCountry.UpdatedUtc);
+
+                var readBack = _Database.Country_GetByID(updateCountry.CountryID);
+                AssertCountriesAreEqual(updateCountry, readBack);
+            }
+        }
+
+        protected void Country_GetByName_Fetches_By_Case_Insensitive_Name()
+        {
+            foreach(var country in SampleCountries()) {
+                _Database.Country_Save(country);
+
+                var sameCaseReadBack = _Database.Country_GetByName(country.Name);
+                AssertCountriesAreEqual(country, sameCaseReadBack);
+
+                var flippedName = TestUtilities.FlipCase(country.Name);
+                var flippedCaseReadBack = _Database.Country_GetByName(flippedName);
+                AssertCountriesAreEqual(country, flippedCaseReadBack);
+            }
+        }
+
+        protected void Country_GetOrCreateByName_Creates_New_Records_Correctly()
+        {
+            var now = DateTime.UtcNow.AddDays(-7);
+            _Clock.UtcNowValue = now;
+
+            foreach(var name in SampleCountries().Select(r => r.Name)) {
+                var saved = _Database.Country_GetOrCreateByName(name);
+
+                Assert.AreNotEqual(0, saved.CountryID);
+                Assert.AreEqual(now, saved.CreatedUtc);
+                Assert.AreEqual(now, saved.UpdatedUtc);
+
+                var readBack = _Database.Country_GetByID(saved.CountryID);
+                AssertCountriesAreEqual(saved, readBack);
+            }
+        }
+
+        protected void Country_GetOrCreateByName_Fetches_Existing_Records_Correctly()
+        {
+            foreach(var country in SampleCountries()) {
+                _Database.Country_Save(country);
+
+                var sameCaseReadBack = _Database.Country_GetOrCreateByName(country.Name);
+                AssertCountriesAreEqual(country, sameCaseReadBack);
+
+                var flippedName = TestUtilities.FlipCase(country.Name);
+                var flippedCaseReadBack = _Database.Country_GetOrCreateByName(flippedName);
+                AssertCountriesAreEqual(country, flippedCaseReadBack);
+            }
+        }
+
+        protected void Country_Delete_Deletes_Countries()
+        {
+            foreach(var country in SampleCountries()) {
+                _Database.Country_Save(country);
+
+                var id = country.CountryID;
+                _Database.Country_Delete(country);
+
+                var readBack = _Database.Country_GetByID(id);
+                Assert.IsNull(readBack);
+            }
+        }
+
+        protected void Country_Delete_Nulls_Out_References_To_Country()
+        {
+            var aircraft = SampleAircraft(true).First(r => r.IcaoCountryID != null);
+            _Database.Aircraft_Save(aircraft);
+
+            var country = _Database.Country_GetByID(aircraft.IcaoCountryID.Value);
+            Assert.IsNotNull(country);
+
+            _Database.Country_Delete(country);
+
+            var readBackAircraft = _Database.Aircraft_GetByID(aircraft.AircraftID);
+            Assert.IsNull(readBackAircraft.IcaoCountryID);
+        }
+
+        protected void Country_Delete_Ignores_Deleted_Countries()
+        {
+            var doesNotExist = new TrackHistoryCountry() {
+                CountryID =  1,
+                Name =       "sqrt(-1)",
+                CreatedUtc = DateTime.UtcNow,
+                UpdatedUtc = DateTime.UtcNow,
+            };
+
+            // This just needs to not throw an exception
+            _Database.Country_Delete(doesNotExist);
+        }
+
+        private TrackHistoryCountry[] SampleCountries(DateTime? createdUtc = null, DateTime? updatedUtc = null)
+        {
+            var created = createdUtc ?? DateTime.UtcNow;
+            var updated = updatedUtc ?? DateTime.UtcNow;
+
+            return new TrackHistoryCountry[] {
+                new TrackHistoryCountry() { Name = "Temperance Building", CreatedUtc = created, UpdatedUtc = updated, },
+                new TrackHistoryCountry() { Name = "Poacher's Hill",      CreatedUtc = created, UpdatedUtc = updated, },
+            };
+        }
+
+        private void AssertCountriesAreEqual(TrackHistoryCountry expected, TrackHistoryCountry actual)
         {
             TestUtilities.TestObjectPropertiesAreEqual(expected, actual);
         }

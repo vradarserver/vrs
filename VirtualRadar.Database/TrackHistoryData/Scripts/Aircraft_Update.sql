@@ -1,5 +1,6 @@
 ﻿UPDATE [Aircraft]
 SET    [Icao] =                 @Icao
+      ,[IcaoCountryID] =        @IcaoCountryID
       ,[Registration] =         @Registration
       ,[Serial] =               @Serial
       ,[YearBuilt] =            @YearBuilt

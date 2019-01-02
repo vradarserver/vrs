@@ -1,5 +1,6 @@
 ﻿INSERT INTO [Aircraft] (
     [Icao]
+   ,[IcaoCountryID]
    ,[Registration]
    ,[Serial]
    ,[YearBuilt]
@@ -12,6 +13,7 @@
    ,[UpdatedUtc]
 ) VALUES (
     @Icao
+   ,@IcaoCountryID
    ,@Registration
    ,@Serial
    ,@YearBuilt

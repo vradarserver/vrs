@@ -32,6 +32,11 @@ namespace VirtualRadar.Interface.Database
         public string Icao { get; set; }
 
         /// <summary>
+        /// Gets or sets the ID of the country of registration.
+        /// </summary>
+        public int? IcaoCountryID { get; set; }
+
+        /// <summary>
         /// Gets or sets the aircraft's registration.
         /// </summary>
         public string Registration { get; set; }
