@@ -135,6 +135,24 @@ namespace Test.VirtualRadar.Database
         }
 
         [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Receiver_Delete_Deletes_Receivers()
+        {
+            Receiver_Delete_Deletes_Receivers();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Receiver_Delete_Nulls_Out_References_To_Receiver()
+        {
+            Receiver_Delete_Nulls_Out_References_To_Receiver();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Receiver_Delete_Ignores_Deleted_Receivers()
+        {
+            Receiver_Delete_Ignores_Deleted_Receivers();
+        }
+
+        [TestMethod]
         public void TrackHistoryDatabase_SQLite_TrackHistory_Save_Creates_New_Records_Correctly()
         {
             TrackHistory_Save_Creates_New_Records_Correctly();

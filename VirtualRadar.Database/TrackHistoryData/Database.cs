@@ -113,6 +113,9 @@ namespace VirtualRadar.Database.TrackHistoryData
                         connection = Factory.Resolve<ISQLiteConnectionProvider>().Create(BuildConnectionString(FileName));
                         disposeOfConnection = true;
                         connection.Open();
+
+                        // Foreign key constraints are disabled by default, we want them enabled
+                        connection.Execute("PRAGMA foreign_keys = ON;");
                     }
                 }
             }
@@ -367,6 +370,23 @@ namespace VirtualRadar.Database.TrackHistoryData
                 receiver,
                 transaction: connection.Transaction
             ).First();
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="receiver"></param>
+        public void Receiver_Delete(TrackHistoryReceiver receiver)
+        {
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    connection.Connection.Execute(
+                        "DELETE FROM [Receiver] WHERE [ReceiverID] = @ReceiverID",
+                        new { receiver.ReceiverID },
+                        transaction: connection.Transaction
+                    );
+                }
+            }
         }
         #endregion
 

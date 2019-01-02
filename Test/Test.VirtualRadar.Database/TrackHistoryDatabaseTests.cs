@@ -177,6 +177,47 @@ namespace Test.VirtualRadar.Database
             }
         }
 
+        public void Receiver_Delete_Deletes_Receivers()
+        {
+            foreach(var receiver in SampleReceivers()) {
+                _Database.Receiver_Save(receiver);
+
+                var id = receiver.ReceiverID;
+                _Database.Receiver_Delete(receiver);
+
+                var readBack = _Database.Receiver_GetByID(id);
+                Assert.IsNull(readBack);
+            }
+        }
+
+        public void Receiver_Delete_Nulls_Out_References_To_Receiver()
+        {
+            var trackHistory = SampleTrackHistoryForHistoryStates();
+            var state = SampleTrackHistoryStates(trackHistory, generateForCreate: true).First(r => r.ReceiverID != null);
+            _Database.TrackHistoryState_Save(state);
+
+            var receiver = _Database.Receiver_GetByID(state.ReceiverID.Value);
+            Assert.IsNotNull(receiver);
+
+            _Database.Receiver_Delete(receiver);
+
+            var readBackState = _Database.TrackHistoryState_GetByID(state.TrackHistoryStateID);
+            Assert.IsNull(readBackState.ReceiverID);
+        }
+
+        public void Receiver_Delete_Ignores_Deleted_Receivers()
+        {
+            var doesNotExist = new TrackHistoryReceiver() {
+                ReceiverID = 1,
+                Name =       "sqrt(-1)",
+                CreatedUtc = DateTime.UtcNow,
+                UpdatedUtc = DateTime.UtcNow,
+            };
+
+            // This just needs to not throw an exception
+            _Database.Receiver_Delete(doesNotExist);
+        }
+
         private TrackHistoryReceiver[] SampleReceivers(DateTime? createdUtc = null, DateTime? updatedUtc = null)
         {
             var created = createdUtc ?? DateTime.UtcNow;

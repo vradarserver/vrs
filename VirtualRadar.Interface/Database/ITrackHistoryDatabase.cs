@@ -84,6 +84,19 @@ namespace VirtualRadar.Interface.Database
         void Receiver_Save(TrackHistoryReceiver receiver);
 
         /// <summary>
+        /// Deletes the receiver passed across.
+        /// </summary>
+        /// <param name="receiver"></param>
+        /// <remarks>
+        /// References to the receiver in track history states will be nulled out. If a track involves more than one receiver then
+        /// this could make it appear that parts of the track were attributable to the wrong receiver. For example if you have two
+        /// states, the first refers to receiver A and the second to receiver B, and then you delete receiver B then the receiver
+        /// entry in the second state will be nulled out, making it appear that the last non-null receiver in the state history (A)
+        /// continues to be valid for the state.
+        /// </remarks>
+        void Receiver_Delete(TrackHistoryReceiver receiver);
+
+        /// <summary>
         /// Returns all track histories within a date / time range.
         /// </summary>
         /// <param name="startTimeInclusive">The optional start time. If null then the search runs from the beginning of time.</param>
