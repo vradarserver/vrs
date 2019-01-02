@@ -63,6 +63,13 @@ namespace VirtualRadar.Interface.Database
         TrackHistoryAircraft Aircraft_GetByID(long id);
 
         /// <summary>
+        /// Gets the aircraft record for the ICAO passed across or null if no such aircraft exists.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <returns></returns>
+        TrackHistoryAircraft Aircraft_GetByIcao(string icao);
+
+        /// <summary>
         /// Creates or updates the aircraft record passed across.
         /// </summary>
         /// <param name="aircraft"></param>
@@ -125,13 +132,13 @@ namespace VirtualRadar.Interface.Database
         TrackHistory TrackHistory_GetByID(long id);
 
         /// <summary>
-        /// Returns all track histories for an ICAO, optionally constraining them to a date / time range.
+        /// Returns all track histories for an aircraft, optionally constraining them to a date / time range.
         /// </summary>
-        /// <param name="icao">The ICAO to search for.</param>
+        /// <param name="aircraftID">The aircraft ID to search for.</param>
         /// <param name="startTimeInclusive">The optional start time. If null then the search runs from the beginning of time.</param>
         /// <param name="endTimeInclusive">The optional end time. If null then the search runs to the end of time.</param>
         /// <returns></returns>
-        IEnumerable<TrackHistory> TrackHistory_GetByIcao(string icao, DateTime? startTimeInclusive, DateTime? endTimeInclusive);
+        IEnumerable<TrackHistory> TrackHistory_GetByAircraftID(long aircraftID, DateTime? startTimeInclusive, DateTime? endTimeInclusive);
 
         /// <summary>
         /// Creates or updates a track history record.

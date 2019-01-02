@@ -282,6 +282,32 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="icao"></param>
+        /// <returns></returns>
+        public TrackHistoryAircraft Aircraft_GetByIcao(string icao)
+        {
+            TrackHistoryAircraft result = null;
+
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    lock(_SqlLiteSyncLock) {
+                        result = connection.Connection.QueryFirstOrDefault<TrackHistoryAircraft>(
+                            "SELECT * FROM [Aircraft] WHERE [Icao] = @icao",
+                            new {
+                                icao
+                            },
+                            transaction: connection.Transaction
+                        );
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="aircraft"></param>
         public void Aircraft_Save(TrackHistoryAircraft aircraft)
         {
@@ -539,11 +565,11 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="icao"></param>
+        /// <param name="aircraftID"></param>
         /// <param name="startTimeInclusive"></param>
         /// <param name="endTimeInclusive"></param>
         /// <returns></returns>
-        public IEnumerable<TrackHistory> TrackHistory_GetByIcao(string icao, DateTime? startTimeInclusive, DateTime? endTimeInclusive)
+        public IEnumerable<TrackHistory> TrackHistory_GetByAircraftID(long aircraftID, DateTime? startTimeInclusive, DateTime? endTimeInclusive)
         {
             TrackHistory[] result = null;
 
@@ -551,9 +577,9 @@ namespace VirtualRadar.Database.TrackHistoryData
                 if(connection.Connection != null) {
                     lock(_SqlLiteSyncLock) {
                         result = connection.Connection.Query<TrackHistory>(
-                            Commands.TrackHistory_GetByIcao,
+                            Commands.TrackHistory_GetByAircraftID,
                             new {
-                                icao,
+                                aircraftID,
                                 startTimeInclusive,
                                 endTimeInclusive,
                             },

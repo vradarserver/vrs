@@ -148,11 +148,11 @@
   <data name="TrackHistory_DeleteExpired" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>scripts\trackhistory_deleteexpired.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="TrackHistory_GetByAircraftID" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>scripts\trackhistory_getbyaircraftid.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="TrackHistory_GetByDateRange" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>scripts\trackhistory_getbydaterange.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="TrackHistory_GetByIcao" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>scripts\trackhistory_getbyicao.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="TrackHistory_Insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>scripts\trackhistory_insert.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>

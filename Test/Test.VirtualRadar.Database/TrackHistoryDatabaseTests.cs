@@ -124,6 +124,28 @@ namespace Test.VirtualRadar.Database
             }
         }
 
+        protected void Aircraft_GetByIcao_Returns_Aircraft_For_Icao()
+        {
+            foreach(var aircraft in SampleAircraft(true)) {
+                _Database.Aircraft_Save(aircraft);
+
+                var readBack = _Database.Aircraft_GetByIcao(aircraft.Icao);
+                AssertAircraftAreEqual(aircraft, readBack);
+            }
+        }
+
+        protected void Aircraft_GetByIcao_Is_Case_Insensitive()
+        {
+            foreach(var aircraft in SampleAircraft(true)) {
+                _Database.Aircraft_Save(aircraft);
+
+                var flippedIcao = TestUtilities.FlipCase(aircraft.Icao);
+
+                var readBack = _Database.Aircraft_GetByIcao(flippedIcao);
+                AssertAircraftAreEqual(aircraft, readBack);
+            }
+        }
+
         private List<TrackHistoryAircraft> SampleAircraft(bool generateForCreate, DateTime? createdUtc = null, DateTime? updatedUtc = null)
         {
             var created = createdUtc ?? DateTime.UtcNow;
@@ -367,17 +389,19 @@ namespace Test.VirtualRadar.Database
                 var createHistory = createTrackHistories[i];
                 var updateHistory = updateTrackHistories[i];
 
-                var expectedIcao = new String(createHistory.Icao.Reverse().ToArray());
+                var originalAircraft = _Database.Aircraft_GetByID(createHistory.AircraftID);
+
+                var expectedAircraftID = AircraftIDForIcao(new String(originalAircraft.Icao.Reverse().ToArray()));
                 var expectedIsPreserved = !createHistory.IsPreserved;
 
                 updateHistory.TrackHistoryID = createHistory.TrackHistoryID;
-                updateHistory.Icao = expectedIcao;
+                updateHistory.AircraftID = expectedAircraftID;
                 updateHistory.IsPreserved = expectedIsPreserved;
 
                 _Database.TrackHistory_Save(updateHistory);
 
                 Assert.AreEqual(createHistory.TrackHistoryID, updateHistory.TrackHistoryID);
-                Assert.AreEqual(expectedIcao,                 updateHistory.Icao);
+                Assert.AreEqual(expectedAircraftID,           updateHistory.AircraftID);
                 Assert.AreEqual(expectedIsPreserved,          updateHistory.IsPreserved);
                 Assert.AreEqual(createHistory.CreatedUtc,     updateHistory.CreatedUtc);
                 Assert.AreEqual(updatedTime,                  updateHistory.UpdatedUtc);
@@ -387,7 +411,7 @@ namespace Test.VirtualRadar.Database
             }
         }
 
-        protected void TrackHistory_GetByIcao_With_No_Criteria_Returns_Correct_Records()
+        protected void TrackHistory_GetByAircraftID_With_No_Criteria_Returns_Correct_Records()
         {
             var today = DateTime.UtcNow;
             var tomorrow = today.AddDays(1);
@@ -401,8 +425,8 @@ namespace Test.VirtualRadar.Database
                     tomorrowHistories[historyIdx],
                 };
 
-                var icao = expected[0].Icao;
-                var readBack = _Database.TrackHistory_GetByIcao(icao, null, null).ToArray();
+                var aircraftID = expected[0].AircraftID;
+                var readBack = _Database.TrackHistory_GetByAircraftID(aircraftID, null, null).ToArray();
 
                 AssertTrackHistoriesAreEqual(expected, readBack);
             }
@@ -422,29 +446,23 @@ namespace Test.VirtualRadar.Database
             return result;
         }
 
-        protected void TrackHistory_GetByIcao_With_Criteria_Returns_Correct_Records()
+        protected void TrackHistory_GetByAircraftID_With_Criteria_Returns_Correct_Records()
         {
             var today = DateTime.UtcNow;
             var yesterday = today.AddDays(-1);
             var tomorrow = today.AddDays(1);
             var savedHistories = SaveTrackHistoriesForTimes(new DateTime[] { today, yesterday, tomorrow });
 
-            var icaos = savedHistories.Select(r => r.Icao).Distinct().ToArray();
+            var aircraftIDs = savedHistories.Select(r => r.AircraftID).Distinct().ToArray();
 
             foreach(var dateRange in SampleTrackHistoryDateRanges(yesterday, today, tomorrow)) {
-                foreach(var icao in icaos) {
+                foreach(var aircraftID in aircraftIDs) {
                     var from = dateRange.Item1;
                     var to =   dateRange.Item2;
-                    var expected = ExtractExpectedTrackHistoriesForDateTime(savedHistories, from, to, filterToIcao: true, icao: icao);
+                    var expected = ExtractExpectedTrackHistoriesForDateTime(savedHistories, from, to, filterToAircraftID: true, aircraftID: aircraftID);
 
-                    var actualCorrectCase = _Database.TrackHistory_GetByIcao(icao, from, to);
-                    AssertTrackHistoriesAreEqual(expected, actualCorrectCase);
-
-                    var actualLowerCase = _Database.TrackHistory_GetByIcao(icao.ToLower(), from, to);
-                    AssertTrackHistoriesAreEqual(expected, actualLowerCase);
-
-                    var actualUpperCase = _Database.TrackHistory_GetByIcao(icao.ToUpper(), from, to);
-                    AssertTrackHistoriesAreEqual(expected, actualUpperCase);
+                    var readbackHistories = _Database.TrackHistory_GetByAircraftID(aircraftID, from, to);
+                    AssertTrackHistoriesAreEqual(expected, readbackHistories);
                 }
             }
         }
@@ -456,10 +474,10 @@ namespace Test.VirtualRadar.Database
             var tomorrow = today.AddDays(1);
             var savedHistories = SaveTrackHistoriesForTimes(new DateTime[] { today, yesterday, tomorrow });
 
-            var icaos = savedHistories.Select(r => r.Icao).Distinct().ToArray();
+            var aircraftIDs = savedHistories.Select(r => r.AircraftID).Distinct().ToArray();
 
             foreach(var dateRange in SampleTrackHistoryDateRanges(yesterday, today, tomorrow)) {
-                foreach(var icao in icaos) {
+                foreach(var aircraftID in aircraftIDs) {
                     var from = dateRange.Item1;
                     var to =   dateRange.Item2;
                     var expected = ExtractExpectedTrackHistoriesForDateTime(savedHistories, from, to);
@@ -474,7 +492,7 @@ namespace Test.VirtualRadar.Database
         {
             foreach(var isPreserved in new bool[] { false, true }) {
                 var trackHistory = new TrackHistory() {
-                    Icao =        "123456",
+                    AircraftID =  AircraftIDForIcao("123456"),
                     IsPreserved = isPreserved,
                 };
                 _Database.TrackHistory_Save(trackHistory);
@@ -493,7 +511,9 @@ namespace Test.VirtualRadar.Database
 
         protected void TrackHistory_Delete_Can_Be_Called_Within_A_Transaction()
         {
-            var record = new TrackHistory() { Icao = "123456", };
+            var record = new TrackHistory() {
+                AircraftID = AircraftIDForIcao("123456"),
+            };
             _Database.TrackHistory_Save(record);
 
             _Database.PerformInTransaction(() => {
@@ -628,9 +648,24 @@ namespace Test.VirtualRadar.Database
             var coalescedUpdated = updatedUtc ?? DateTime.UtcNow;
 
             return new TrackHistory[] {
-                new TrackHistory() { Icao = "ABC123", IsPreserved = true,  CreatedUtc = coalescedCreated, UpdatedUtc = coalescedUpdated, },
-                new TrackHistory() { Icao = "987654", IsPreserved = false, CreatedUtc = coalescedCreated, UpdatedUtc = coalescedUpdated, },
+                new TrackHistory() { AircraftID = AircraftIDForIcao("ABC123"), IsPreserved = true,  CreatedUtc = coalescedCreated, UpdatedUtc = coalescedUpdated, },
+                new TrackHistory() { AircraftID = AircraftIDForIcao("987654"), IsPreserved = false, CreatedUtc = coalescedCreated, UpdatedUtc = coalescedUpdated, },
             };
+        }
+
+        private long AircraftIDForIcao(string icao)
+        {
+            var result = _Database.Aircraft_GetByIcao(icao);
+            if(result == null) {
+                result = new TrackHistoryAircraft() {
+                    Icao =          icao,
+                    CreatedUtc =    DateTime.UtcNow,
+                    UpdatedUtc =    DateTime.UtcNow,
+                };
+                _Database.Aircraft_Save(result);
+            }
+
+            return result.AircraftID;
         }
 
         private void AssertTrackHistoriesAreEqual(TrackHistory expected, TrackHistory actual)
@@ -649,15 +684,15 @@ namespace Test.VirtualRadar.Database
             }
         }
 
-        private TrackHistory[] ExtractExpectedTrackHistoriesForDateTime(IEnumerable<TrackHistory> histories, DateTime? from, DateTime? to, bool filterToIcao = false, string icao = null)
+        private TrackHistory[] ExtractExpectedTrackHistoriesForDateTime(IEnumerable<TrackHistory> histories, DateTime? from, DateTime? to, bool filterToAircraftID = false, long? aircraftID = null)
         {
             return histories.Where(r =>
                    r.CreatedUtc >= from.GetValueOrDefault()
                 && r.CreatedUtc <= (to ?? new DateTime(9999, 12, 31))
-                && (!filterToIcao || String.Equals(r.Icao, icao, StringComparison.OrdinalIgnoreCase))
+                && (!filterToAircraftID || r.AircraftID == aircraftID)
             )
             .OrderBy(r => r.CreatedUtc)
-            .ThenBy(r => r.Icao.ToLower())
+            .ThenBy(r => r.AircraftID)
             .ToArray();
         }
         #endregion
@@ -823,7 +858,7 @@ namespace Test.VirtualRadar.Database
             var now = utcNow ?? DateTime.UtcNow;
 
             var result = new TrackHistory() {
-                Icao = icao,
+                AircraftID = AircraftIDForIcao(icao),
                 IsPreserved = isPreserved,
                 CreatedUtc = now,
                 UpdatedUtc = now,

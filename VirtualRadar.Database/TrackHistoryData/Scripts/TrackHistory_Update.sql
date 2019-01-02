@@ -1,5 +1,5 @@
 ﻿UPDATE [TrackHistory]
-SET    [Icao] =         @Icao
+SET    [AircraftID] =   @AircraftID
       ,[IsPreserved] =  @IsPreserved
       ,[UpdatedUtc] =   @UpdatedUtc
 WHERE  [TrackHistoryID] = @TrackHistoryID;

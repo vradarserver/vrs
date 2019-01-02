@@ -27,9 +27,9 @@ namespace VirtualRadar.Interface.Database
         public long TrackHistoryID { get; set; }
 
         /// <summary>
-        /// Gets or sets the aircraft's Mode-S ICAO identifier.
+        /// Gets or sets the aircraft's identifier.
         /// </summary>
-        public string Icao { get; set; }
+        public long AircraftID { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating that the track will not be automatically truncated or deleted.

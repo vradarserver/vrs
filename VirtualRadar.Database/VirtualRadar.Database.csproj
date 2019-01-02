@@ -169,7 +169,7 @@
     <Content Include="TrackHistoryData\Scripts\TrackHistoryState_Delete.sql" />
     <Content Include="TrackHistoryData\Scripts\TrackHistory_DeleteExpired.sql" />
     <Content Include="TrackHistoryData\Scripts\TrackHistory_GetByDateRange.sql" />
-    <Content Include="TrackHistoryData\Scripts\TrackHistory_GetByIcao.sql" />
+    <Content Include="TrackHistoryData\Scripts\TrackHistory_GetByAircraftID.sql" />
     <Content Include="TrackHistoryData\Scripts\Receiver_Insert.sql" />
     <Content Include="TrackHistoryData\Scripts\Receiver_Update.sql" />
     <Content Include="TrackHistoryData\Scripts\Aircraft_Insert.sql" />

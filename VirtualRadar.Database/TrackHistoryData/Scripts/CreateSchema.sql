@@ -52,13 +52,13 @@ CREATE INDEX        IF NOT EXISTS [IX_Aircraft_Registration] ON [Aircraft] ([Reg
 CREATE TABLE IF NOT EXISTS [TrackHistory]
 (
     [TrackHistoryID]    INTEGER PRIMARY KEY AUTOINCREMENT
-   ,[Icao]              VARCHAR(6) NOT NULL COLLATE NOCASE
+   ,[AircraftID]        INTEGER NOT NULL CONSTRAINT [FK_TrackHistory_Aircraft] REFERENCES [Aircraft] ([AircraftID])
    ,[IsPreserved]       BIT NOT NULL
    ,[CreatedUtc]        DATETIME NOT NULL
    ,[UpdatedUtc]        DATETIME NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS [IX_TrackHistory_Icao]       ON [TrackHistory] ([Icao]);
+CREATE INDEX IF NOT EXISTS [IX_TrackHistory_Aircraft]   ON [TrackHistory] ([AircraftID]);
 CREATE INDEX IF NOT EXISTS [IX_TrackHistory_CreatedUtc] ON [TrackHistory] ([CreatedUtc]);
 CREATE INDEX IF NOT EXISTS [IX_TrackHistory_UpdatedUtc] ON [TrackHistory] ([UpdatedUtc]);
 

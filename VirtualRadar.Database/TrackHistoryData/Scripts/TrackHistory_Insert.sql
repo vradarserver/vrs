@@ -1,10 +1,10 @@
 ﻿INSERT INTO [TrackHistory] (
-    [Icao]
+    [AircraftID]
    ,[IsPreserved]
    ,[CreatedUtc]
    ,[UpdatedUtc]
 ) VALUES (
-    @Icao
+    @AircraftID
    ,@IsPreserved
    ,@CreatedUtc
    ,@UpdatedUtc

@@ -117,6 +117,18 @@ namespace Test.VirtualRadar.Database
         }
 
         [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Aircraft_GetByIcao_Returns_Aircraft_For_Icao()
+        {
+            Aircraft_GetByIcao_Returns_Aircraft_For_Icao();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Aircraft_GetByIcao_Is_Case_Insensitive()
+        {
+            Aircraft_GetByIcao_Is_Case_Insensitive();
+        }
+
+        [TestMethod]
         public void TrackHistoryDatabase_SQLite_Receiver_Save_Creates_New_Records_Correctly()
         {
             Receiver_Save_Creates_New_Records_Correctly();
@@ -177,15 +189,15 @@ namespace Test.VirtualRadar.Database
         }
 
         [TestMethod]
-        public void TrackHistoryDatabase_SQLite_TrackHistory_GetByIcao_With_No_Criteria_Returns_Correct_Records()
+        public void TrackHistoryDatabase_SQLite_TrackHistory_GetByAircraftID_With_No_Criteria_Returns_Correct_Records()
         {
-            TrackHistory_GetByIcao_With_No_Criteria_Returns_Correct_Records();
+            TrackHistory_GetByAircraftID_With_No_Criteria_Returns_Correct_Records();
         }
 
         [TestMethod]
-        public void TrackHistoryDatabase_SQLite_TrackHistory_GetByIcao_With_Criteria_Returns_Correct_Records()
+        public void TrackHistoryDatabase_SQLite_TrackHistory_GetByAircraftID_With_Criteria_Returns_Correct_Records()
         {
-            TrackHistory_GetByIcao_With_Criteria_Returns_Correct_Records();
+            TrackHistory_GetByAircraftID_With_Criteria_Returns_Correct_Records();
         }
 
         [TestMethod]

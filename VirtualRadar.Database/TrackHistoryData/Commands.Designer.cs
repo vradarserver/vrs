@@ -239,9 +239,23 @@ namespace VirtualRadar.Database.TrackHistoryData {
         /// <summary>
         ///   Looks up a localized string similar to SELECT   *
         ///FROM     [TrackHistory]
+        ///WHERE    [AircraftID] = @aircraftID
+        ///AND      [CreatedUtc] BETWEEN IFNULL(@startTimeInclusive, &apos;1990-01-01&apos;) AND IFNULL(@endTimeInclusive, &apos;9999-12-31&apos;)
+        ///ORDER BY [CreatedUtc];
+        ///.
+        /// </summary>
+        internal static string TrackHistory_GetByAircraftID {
+            get {
+                return ResourceManager.GetString("TrackHistory_GetByAircraftID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT   *
+        ///FROM     [TrackHistory]
         ///WHERE    [CreatedUtc] BETWEEN IFNULL(@startTimeInclusive, &apos;1990-01-01&apos;) AND IFNULL(@endTimeInclusive, &apos;9999-12-31&apos;)
         ///ORDER BY [CreatedUtc]
-        ///        ,[Icao];
+        ///        ,[AircraftID];
         ///.
         /// </summary>
         internal static string TrackHistory_GetByDateRange {
@@ -251,27 +265,13 @@ namespace VirtualRadar.Database.TrackHistoryData {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT   *
-        ///FROM     [TrackHistory]
-        ///WHERE    [Icao] = @icao
-        ///AND      [CreatedUtc] BETWEEN IFNULL(@startTimeInclusive, &apos;1990-01-01&apos;) AND IFNULL(@endTimeInclusive, &apos;9999-12-31&apos;)
-        ///ORDER BY [CreatedUtc];
-        ///.
-        /// </summary>
-        internal static string TrackHistory_GetByIcao {
-            get {
-                return ResourceManager.GetString("TrackHistory_GetByIcao", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to INSERT INTO [TrackHistory] (
-        ///    [Icao]
+        ///    [AircraftID]
         ///   ,[IsPreserved]
         ///   ,[CreatedUtc]
         ///   ,[UpdatedUtc]
         ///) VALUES (
-        ///    @Icao
+        ///    @AircraftID
         ///   ,@IsPreserved
         ///   ,@CreatedUtc
         ///   ,@UpdatedUtc
@@ -287,7 +287,7 @@ namespace VirtualRadar.Database.TrackHistoryData {
         
         /// <summary>
         ///   Looks up a localized string similar to UPDATE [TrackHistory]
-        ///SET    [Icao] =         @Icao
+        ///SET    [AircraftID] =   @AircraftID
         ///      ,[IsPreserved] =  @IsPreserved
         ///      ,[UpdatedUtc] =   @UpdatedUtc
         ///WHERE  [TrackHistoryID] = @TrackHistoryID;
