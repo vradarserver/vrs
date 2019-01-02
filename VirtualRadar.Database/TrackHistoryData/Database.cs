@@ -252,13 +252,68 @@ namespace VirtualRadar.Database.TrackHistoryData
         }
         #endregion
 
+        #region Aircraft
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public TrackHistoryAircraft Aircraft_GetByID(long id)
+        {
+            TrackHistoryAircraft result = null;
+
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    lock(_SqlLiteSyncLock) {
+                        result = connection.Connection.QueryFirstOrDefault<TrackHistoryAircraft>(
+                            "SELECT * FROM [Aircraft] WHERE [AircraftID] = @id",
+                            new {
+                                id
+                            },
+                            transaction: connection.Transaction
+                        );
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="aircraft"></param>
+        public void Aircraft_Save(TrackHistoryAircraft aircraft)
+        {
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    lock(_SqlLiteSyncLock) {
+                        if(aircraft.AircraftID == 0) {
+                            aircraft.AircraftID = connection.Connection.Query<int>(
+                                Commands.Aircraft_Insert,
+                                aircraft,
+                                transaction: connection.Transaction
+                            ).First();
+                        } else {
+                            aircraft.CreatedUtc = connection.Connection.Query<DateTime>(
+                                Commands.Aircraft_Update,
+                                aircraft,
+                                transaction: connection.Transaction
+                            ).First();
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
         #region Receiver
         /// <summary>
         /// See interface docs.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public TrackHistoryReceiver Receiver_GetByID(long id)
+        public TrackHistoryReceiver Receiver_GetByID(int id)
         {
             TrackHistoryReceiver result = null;
 
@@ -681,13 +736,13 @@ namespace VirtualRadar.Database.TrackHistoryData
             using(var connection = CreateOpenConnection()) {
                 if(connection.Connection != null) {
                     lock(_SqlLiteSyncLock) {
-                        result = connection.Connection.QueryFirstOrDefault<TrackHistoryState>(@"
-                            SELECT *
-                            FROM   [TrackHistoryState]
-                            WHERE  [TrackHistoryStateID] = @id
-                        ", new {
-                            id
-                        }, transaction: connection.Transaction);
+                        result = connection.Connection.QueryFirstOrDefault<TrackHistoryState>(
+                            "SELECT * FROM [TrackHistoryState] WHERE [TrackHistoryStateID] = @id",
+                            new {
+                                id
+                            },
+                            transaction: connection.Transaction
+                        );
                     }
                 }
             }

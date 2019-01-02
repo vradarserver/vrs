@@ -56,11 +56,24 @@ namespace VirtualRadar.Interface.Database
         void Create(string dataSource);
 
         /// <summary>
+        /// Gets the aircraft record for the ID passed across or null if no such aircraft exists.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        TrackHistoryAircraft Aircraft_GetByID(long id);
+
+        /// <summary>
+        /// Creates or updates the aircraft record passed across.
+        /// </summary>
+        /// <param name="aircraft"></param>
+        void Aircraft_Save(TrackHistoryAircraft aircraft);
+
+        /// <summary>
         /// Gets the receiver for the ID passed across or null if no such receiver exists.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        TrackHistoryReceiver Receiver_GetByID(long id);
+        TrackHistoryReceiver Receiver_GetByID(int id);
 
         /// <summary>
         /// Gets the receiver for the case insensitive name passed across or null if no such receiver exists.

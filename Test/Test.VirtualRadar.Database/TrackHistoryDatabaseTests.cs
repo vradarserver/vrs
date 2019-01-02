@@ -85,8 +85,112 @@ namespace Test.VirtualRadar.Database
             _TestCleanup.Invoke(this, new object[0]);
         }
 
+        #region Aircraft
+        protected void Aircraft_Save_Creates_New_Aircraft_Correctly()
+        {
+            var created = DateTime.UtcNow;
+            var updated = created.AddMilliseconds(7);
+            foreach(var aircraft in SampleAircraft(true, created, updated)) {
+                _Database.Aircraft_Save(aircraft);
+
+                Assert.AreNotEqual(0, aircraft.AircraftID);
+
+                var readBack = _Database.Aircraft_GetByID(aircraft.AircraftID);
+                AssertAircraftAreEqual(aircraft, readBack);
+            }
+        }
+
+        protected void Aircraft_Save_Updates_Existing_Records_Correctly()
+        {
+            var created = DateTime.UtcNow;
+            var updated = created.AddSeconds(9);
+
+            var allSavedAircraft =   SampleAircraft(generateForCreate: true,  createdUtc: created, updatedUtc: created);
+            var allUpdatedAircraft = SampleAircraft(generateForCreate: false, createdUtc: created, updatedUtc: updated);
+
+            foreach(var aircraft in allSavedAircraft) {
+                _Database.Aircraft_Save(aircraft);
+            }
+
+            for(var i = 0;i < allSavedAircraft.Count;++i) {
+                var savedAircraft = allSavedAircraft[i];
+                var updatedAircraft = allUpdatedAircraft[i];
+
+                updatedAircraft.AircraftID = savedAircraft.AircraftID;
+                _Database.Aircraft_Save(updatedAircraft);
+
+                var readBack = _Database.Aircraft_GetByID(savedAircraft.AircraftID);
+                AssertAircraftAreEqual(updatedAircraft, readBack);
+            }
+        }
+
+        private List<TrackHistoryAircraft> SampleAircraft(bool generateForCreate, DateTime? createdUtc = null, DateTime? updatedUtc = null)
+        {
+            var created = createdUtc ?? DateTime.UtcNow;
+            var updated = updatedUtc ?? DateTime.UtcNow;
+
+            var result = new List<TrackHistoryAircraft>();
+
+            var previousIcao = 0;
+            foreach(var property in typeof(TrackHistoryAircraft).GetProperties()) {
+                var aircraft = new TrackHistoryAircraft() {
+                    Icao =          (++previousIcao).ToString("X6"),
+                    CreatedUtc =    created,
+                    UpdatedUtc =    updated,
+                };
+
+                var propertyValue = GenerateAircraftPropertyValue(property, generateForCreate);
+                if(propertyValue != null) {
+                    property.SetValue(aircraft, propertyValue);
+                    result.Add(aircraft);
+                }
+            }
+
+            return result;
+        }
+
+        private object GenerateAircraftPropertyValue(PropertyInfo property, bool generateForCreate)
+        {
+            object value = null;
+
+            switch(property.Name) {
+                case nameof(TrackHistoryAircraft.Notes):        value = generateForCreate ? new String('Ă', 2000) : new string('b', 2000); break;
+                case nameof(TrackHistoryAircraft.Registration): value = generateForCreate ? new String('A', 20)   : new string('b', 20); break;
+                case nameof(TrackHistoryAircraft.Serial):       value = generateForCreate ? new String('Ă', 200)  : new string('b', 200); break;
+
+                case nameof(TrackHistoryAircraft.LastLookupUtc):
+                    value = generateForCreate ? new DateTime(2019, 2, 1, 17, 16, 15, 143) : new DateTime(2009, 8, 7, 6, 5, 4, 321);
+                    break;
+                case nameof(TrackHistoryAircraft.YearBuilt):
+                    value = generateForCreate ? 25 : 50;
+                    break;
+                case nameof(TrackHistoryAircraft.IsInteresting):
+                case nameof(TrackHistoryAircraft.IsMissingFromLookup):
+                case nameof(TrackHistoryAircraft.SuppressAutoUpdates):
+                    value = generateForCreate;
+                    break;
+
+                case nameof(TrackHistoryAircraft.AircraftID):
+                case nameof(TrackHistoryAircraft.CreatedUtc):
+                case nameof(TrackHistoryAircraft.Icao):
+                case nameof(TrackHistoryAircraft.UpdatedUtc):
+                    break;
+
+                default:
+                    throw new NotImplementedException($"Need code for {nameof(TrackHistoryAircraft)}.{property.Name}");
+            }
+
+            return value;
+        }
+
+        private void AssertAircraftAreEqual(TrackHistoryAircraft expected, TrackHistoryAircraft actual)
+        {
+            TestUtilities.TestObjectPropertiesAreEqual(expected, actual);
+        }
+        #endregion
+
         #region Receiver
-        public void Receiver_Save_Creates_New_Records_Correctly()
+        protected void Receiver_Save_Creates_New_Records_Correctly()
         {
             var created = DateTime.UtcNow;
             var updated = created.AddMilliseconds(7);
@@ -100,7 +204,7 @@ namespace Test.VirtualRadar.Database
             }
         }
 
-        public void Receiver_Save_Updates_Existing_Records_Correctly()
+        protected void Receiver_Save_Updates_Existing_Records_Correctly()
         {
             var now = DateTime.UtcNow;
 
@@ -132,7 +236,7 @@ namespace Test.VirtualRadar.Database
             }
         }
 
-        public void Receiver_GetByName_Fetches_By_Case_Insensitive_Name()
+        protected void Receiver_GetByName_Fetches_By_Case_Insensitive_Name()
         {
             foreach(var receiver in SampleReceivers()) {
                 _Database.Receiver_Save(receiver);
@@ -146,7 +250,7 @@ namespace Test.VirtualRadar.Database
             }
         }
 
-        public void Receiver_GetOrCreateByName_Creates_New_Records_Correctly()
+        protected void Receiver_GetOrCreateByName_Creates_New_Records_Correctly()
         {
             var now = DateTime.UtcNow.AddDays(-7);
             _Clock.UtcNowValue = now;
@@ -163,7 +267,7 @@ namespace Test.VirtualRadar.Database
             }
         }
 
-        public void Receiver_GetOrCreateByName_Fetches_Existing_Records_Correctly()
+        protected void Receiver_GetOrCreateByName_Fetches_Existing_Records_Correctly()
         {
             foreach(var receiver in SampleReceivers()) {
                 _Database.Receiver_Save(receiver);
@@ -177,7 +281,7 @@ namespace Test.VirtualRadar.Database
             }
         }
 
-        public void Receiver_Delete_Deletes_Receivers()
+        protected void Receiver_Delete_Deletes_Receivers()
         {
             foreach(var receiver in SampleReceivers()) {
                 _Database.Receiver_Save(receiver);
@@ -190,7 +294,7 @@ namespace Test.VirtualRadar.Database
             }
         }
 
-        public void Receiver_Delete_Nulls_Out_References_To_Receiver()
+        protected void Receiver_Delete_Nulls_Out_References_To_Receiver()
         {
             var trackHistory = SampleTrackHistoryForHistoryStates();
             var state = SampleTrackHistoryStates(trackHistory, generateForCreate: true).First(r => r.ReceiverID != null);
@@ -205,7 +309,7 @@ namespace Test.VirtualRadar.Database
             Assert.IsNull(readBackState.ReceiverID);
         }
 
-        public void Receiver_Delete_Ignores_Deleted_Receivers()
+        protected void Receiver_Delete_Ignores_Deleted_Receivers()
         {
             var doesNotExist = new TrackHistoryReceiver() {
                 ReceiverID = 1,
@@ -236,7 +340,7 @@ namespace Test.VirtualRadar.Database
         #endregion
 
         #region TrackHistory
-        public void TrackHistory_Save_Creates_New_Records_Correctly()
+        protected void TrackHistory_Save_Creates_New_Records_Correctly()
         {
             foreach(var trackHistory in SampleTrackHistories()) {
                 _Database.TrackHistory_Save(trackHistory);
@@ -248,7 +352,7 @@ namespace Test.VirtualRadar.Database
             }
         }
 
-        public void TrackHistory_Save_Updates_Existing_Records_Correctly()
+        protected void TrackHistory_Save_Updates_Existing_Records_Correctly()
         {
             var now = DateTime.UtcNow;
 
@@ -283,7 +387,7 @@ namespace Test.VirtualRadar.Database
             }
         }
 
-        public void TrackHistory_GetByIcao_With_No_Criteria_Returns_Correct_Records()
+        protected void TrackHistory_GetByIcao_With_No_Criteria_Returns_Correct_Records()
         {
             var today = DateTime.UtcNow;
             var tomorrow = today.AddDays(1);
@@ -318,7 +422,7 @@ namespace Test.VirtualRadar.Database
             return result;
         }
 
-        public void TrackHistory_GetByIcao_With_Criteria_Returns_Correct_Records()
+        protected void TrackHistory_GetByIcao_With_Criteria_Returns_Correct_Records()
         {
             var today = DateTime.UtcNow;
             var yesterday = today.AddDays(-1);
@@ -345,7 +449,7 @@ namespace Test.VirtualRadar.Database
             }
         }
 
-        public void TrackHistory_GetByDateRange_Returns_Correct_Records()
+        protected void TrackHistory_GetByDateRange_Returns_Correct_Records()
         {
             var today = DateTime.UtcNow;
             var yesterday = today.AddDays(-1);
@@ -366,7 +470,7 @@ namespace Test.VirtualRadar.Database
             }
         }
 
-        public void TrackHistory_Delete_Removes_TrackHistory_Records()
+        protected void TrackHistory_Delete_Removes_TrackHistory_Records()
         {
             foreach(var isPreserved in new bool[] { false, true }) {
                 var trackHistory = new TrackHistory() {
@@ -387,7 +491,7 @@ namespace Test.VirtualRadar.Database
             }
         }
 
-        public void TrackHistory_Delete_Can_Be_Called_Within_A_Transaction()
+        protected void TrackHistory_Delete_Can_Be_Called_Within_A_Transaction()
         {
             var record = new TrackHistory() { Icao = "123456", };
             _Database.TrackHistory_Save(record);
@@ -405,7 +509,7 @@ namespace Test.VirtualRadar.Database
             AssertTrackHistoriesAreEqual(record, readBack);
         }
 
-        public void TrackHistory_DeleteExpired_Deletes_Appropriate_Transactions()
+        protected void TrackHistory_DeleteExpired_Deletes_Appropriate_Transactions()
         {
             var today = DateTime.UtcNow;
             var yesterday = today.AddDays(-1);
@@ -421,7 +525,7 @@ namespace Test.VirtualRadar.Database
             Assert.AreEqual(expectDeleted.Select(r => r.CreatedUtc).Max(), deleted.LatestHistoryUtc);
         }
 
-        public void TrackHistory_Truncate_Removes_All_But_First_And_Last_States()
+        protected void TrackHistory_Truncate_Removes_All_But_First_And_Last_States()
         {
             var trackHistory = SampleTrackHistoryForHistoryStates();
             var allStates = SampleTrackHistoryStates(trackHistory, generateForCreate: true);
@@ -449,7 +553,7 @@ namespace Test.VirtualRadar.Database
             AssertTrackHistoryStatesAreEqual(expectedStates, readBackStates);
         }
 
-        public void TrackHistory_Truncate_Ignores_Preserved_Histories()
+        protected void TrackHistory_Truncate_Ignores_Preserved_Histories()
         {
             var trackHistory = SampleTrackHistoryForHistoryStates(isPreserved: true);
             var allStates = SampleTrackHistoryStates(trackHistory, generateForCreate: true);
@@ -467,7 +571,7 @@ namespace Test.VirtualRadar.Database
             AssertTrackHistoryStatesAreEqual(allStates, readBackStates);
         }
 
-        public void TrackHistory_TruncateExpired_Truncates_Histories()
+        protected void TrackHistory_TruncateExpired_Truncates_Histories()
         {
             var now = DateTime.UtcNow;
             var threshold = now.AddDays(-7);

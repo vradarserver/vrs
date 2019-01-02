@@ -172,6 +172,8 @@
     <Content Include="TrackHistoryData\Scripts\TrackHistory_GetByIcao.sql" />
     <Content Include="TrackHistoryData\Scripts\Receiver_Insert.sql" />
     <Content Include="TrackHistoryData\Scripts\Receiver_Update.sql" />
+    <Content Include="TrackHistoryData\Scripts\Aircraft_Insert.sql" />
+    <Content Include="TrackHistoryData\Scripts\Aircraft_Update.sql" />
     <Content Include="TrackHistoryData\Scripts\TrackHistory_Update.sql" />
     <Content Include="TrackHistoryData\Scripts\TrackHistory_Insert.sql" />
     <Content Include="TrackHistoryData\Scripts\TrackHistory_Delete.sql" />

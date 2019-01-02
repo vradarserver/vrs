@@ -24,6 +24,29 @@ CREATE UNIQUE INDEX IF NOT EXISTS [IX_Receiver_Name] ON [Receiver] ([Name]);
 
 
 --
+-- Aircraft
+--
+CREATE TABLE IF NOT EXISTS [Aircraft]
+(
+    [AircraftID]            INTEGER PRIMARY KEY AUTOINCREMENT
+   ,[Icao]                  VARCHAR(6) NOT NULL COLLATE NOCASE
+   ,[Registration]          VARCHAR(20) NULL COLLATE NOCASE
+   ,[Serial]                NVARCHAR(200) NULL COLLATE NOCASE
+   ,[YearBuilt]             INTEGER NULL
+   ,[IsInteresting]         BIT NOT NULL
+   ,[Notes]                 NVARCHAR(2000) NULL
+   ,[LastLookupUtc]         DATETIME NULL
+   ,[IsMissingFromLookup]   BIT NOT NULL
+   ,[SuppressAutoUpdates]   BIT NOT NULL
+   ,[CreatedUtc]            DATETIME NOT NULL
+   ,[UpdatedUtc]            DATETIME NOT NULL
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS [IX_Aircraft_Icao]         ON [Aircraft] ([Icao]);
+CREATE INDEX        IF NOT EXISTS [IX_Aircraft_Registration] ON [Aircraft] ([Registration]);
+
+
+--
 -- TrackHistory
 --
 CREATE TABLE IF NOT EXISTS [TrackHistory]

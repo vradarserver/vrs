@@ -105,6 +105,18 @@ namespace Test.VirtualRadar.Database
         }
 
         [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Aircraft_Save_Creates_New_Aircraft_Correctly()
+        {
+            Aircraft_Save_Creates_New_Aircraft_Correctly();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Aircraft_Save_Updates_Existing_Records_Correctly()
+        {
+            Aircraft_Save_Updates_Existing_Records_Correctly();
+        }
+
+        [TestMethod]
         public void TrackHistoryDatabase_SQLite_Receiver_Save_Creates_New_Records_Correctly()
         {
             Receiver_Save_Creates_New_Records_Correctly();

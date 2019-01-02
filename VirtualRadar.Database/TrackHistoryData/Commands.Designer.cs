@@ -61,6 +61,60 @@ namespace VirtualRadar.Database.TrackHistoryData {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [Aircraft] (
+        ///    [Icao]
+        ///   ,[Registration]
+        ///   ,[Serial]
+        ///   ,[YearBuilt]
+        ///   ,[IsInteresting]
+        ///   ,[Notes]
+        ///   ,[LastLookupUtc]
+        ///   ,[IsMissingFromLookup]
+        ///   ,[SuppressAutoUpdates]
+        ///   ,[CreatedUtc]
+        ///   ,[UpdatedUtc]
+        ///) VALUES (
+        ///    @Icao
+        ///   ,@Registration
+        ///   ,@Serial
+        ///   ,@YearBuilt
+        ///   ,@IsInteresting
+        ///   ,@Notes
+        ///   ,@LastLookupUtc
+        ///   ,@IsMissingFromLookup
+        ///   ,@SuppressAutoUpdates
+        ///   ,@CreatedUtc
+        ///   ,@UpdatedUtc
+        ///);
+        ///SELECT [AircraftID] FROM [Aircraft] WHERE _ROWID_ = last_insert_r [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Aircraft_Insert {
+            get {
+                return ResourceManager.GetString("Aircraft_Insert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UPDATE [Aircraft]
+        ///SET    [Icao] =                 @Icao
+        ///      ,[Registration] =         @Registration
+        ///      ,[Serial] =               @Serial
+        ///      ,[YearBuilt] =            @YearBuilt
+        ///      ,[IsInteresting] =        @IsInteresting
+        ///      ,[Notes] =                @Notes
+        ///      ,[LastLookupUtc] =        @LastLookupUtc
+        ///      ,[IsMissingFromLookup] =  @IsMissingFromLookup
+        ///      ,[SuppressAutoUpdates] =  @SuppressAutoUpdates
+        ///      ,[UpdatedUtc] =           @UpdatedUtc
+        ///WHERE  [AircraftID] = @AircraftID [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Aircraft_Update {
+            get {
+                return ResourceManager.GetString("Aircraft_Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to --
         ///-- DatabaseVersion
         ///--
@@ -266,6 +320,7 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///   ,[TimestampUtc]
         ///   ,[SequenceNumber]
         ///   ,[SignalLevel]
+        ///   ,[ReceiverID]
         ///   ,[Callsign]
         ///   ,[IsCallsignSuspect]
         ///   ,[Latitude]
@@ -284,9 +339,7 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///   ,[VerticalRateFeetMin]
         ///   ,[VerticalRateType]
         ///   ,[SquawkOctal]
-        ///   ,[IdentActive]
-        ///) VALUES (
-        /// [rest of string was truncated]&quot;;.
+        ///   ,[IdentAct [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string TrackHistoryState_Insert {
             get {
@@ -300,13 +353,13 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///      ,[TimestampUtc] =        @TimestampUtc
         ///      ,[SequenceNumber] =      @SequenceNumber
         ///      ,[SignalLevel] =         @SignalLevel
+        ///      ,[ReceiverID] =          @ReceiverID
         ///      ,[Callsign] =            @Callsign
         ///      ,[IsCallsignSuspect] =   @IsCallsignSuspect
         ///      ,[Latitude] =            @Latitude
         ///      ,[Longitude] =           @Longitude
         ///      ,[IsMlat] =              @IsMlat
-        ///      ,[IsTisb] =              @IsTisb
-        ///      ,[AltitudeFeet] =        @Altitud [rest of string was truncated]&quot;;.
+        ///      ,[IsTisb] =              @IsT [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string TrackHistoryState_Update {
             get {
