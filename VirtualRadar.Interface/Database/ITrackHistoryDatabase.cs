@@ -76,6 +76,15 @@ namespace VirtualRadar.Interface.Database
         void Aircraft_Save(TrackHistoryAircraft aircraft);
 
         /// <summary>
+        /// Deletes the aircraft passed across.
+        /// </summary>
+        /// <param name="aircraft"></param>
+        /// <remarks>
+        /// This automatically deletes all <see cref="TrackHistory"/> records attached to the aircraft.
+        /// </remarks>
+        void Aircraft_Delete(TrackHistoryAircraft aircraft);
+
+        /// <summary>
         /// Returns the country record for the ID passed across or null if no such country exists.
         /// </summary>
         /// <param name="id"></param>

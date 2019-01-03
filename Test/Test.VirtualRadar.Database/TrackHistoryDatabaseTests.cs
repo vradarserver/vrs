@@ -146,6 +146,43 @@ namespace Test.VirtualRadar.Database
             }
         }
 
+        protected void Aircraft_Delete_Deletes_Aircraft()
+        {
+            foreach(var aircraft in SampleAircraft(true)) {
+                _Database.Aircraft_Save(aircraft);
+
+                var id = aircraft.AircraftID;
+                _Database.Aircraft_Delete(aircraft);
+
+                var readBack = _Database.Aircraft_GetByID(id);
+                Assert.IsNull(readBack);
+            }
+        }
+
+        protected void Aircraft_Delete_Removes_Child_TrackHistories()
+        {
+            var trackHistory = SampleTrackHistories().First();
+            _Database.TrackHistory_Save(trackHistory);
+
+            // Check that states are removed as well as histories
+            var state = new TrackHistoryState() {
+                TrackHistoryID = trackHistory.TrackHistoryID,
+                TimestampUtc =   DateTime.UtcNow,
+                SequenceNumber = 1,
+            };
+            _Database.TrackHistoryState_Save(state);
+
+            var aircraftID = trackHistory.AircraftID;
+            var aircraft = _Database.Aircraft_GetByID(aircraftID);
+            _Database.Aircraft_Delete(aircraft);
+
+            var readBackState = _Database.TrackHistoryState_GetByID(state.TrackHistoryStateID);
+            Assert.IsNull(readBackState);
+
+            var readBackHistory = _Database.TrackHistory_GetByID(trackHistory.TrackHistoryID);
+            Assert.IsNull(readBackHistory);
+        }
+
         private List<TrackHistoryAircraft> SampleAircraft(bool generateForCreate, DateTime? createdUtc = null, DateTime? updatedUtc = null)
         {
             var created = createdUtc ?? DateTime.UtcNow;

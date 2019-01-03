@@ -67,7 +67,7 @@ CREATE INDEX        IF NOT EXISTS [IX_Aircraft_Registration] ON [Aircraft] ([Reg
 CREATE TABLE IF NOT EXISTS [TrackHistory]
 (
     [TrackHistoryID]    INTEGER PRIMARY KEY AUTOINCREMENT
-   ,[AircraftID]        INTEGER NOT NULL CONSTRAINT [FK_TrackHistory_Aircraft] REFERENCES [Aircraft] ([AircraftID])
+   ,[AircraftID]        INTEGER NOT NULL CONSTRAINT [FK_TrackHistory_Aircraft] REFERENCES [Aircraft] ([AircraftID]) ON DELETE CASCADE
    ,[IsPreserved]       BIT NOT NULL
    ,[CreatedUtc]        DATETIME NOT NULL
    ,[UpdatedUtc]        DATETIME NOT NULL
@@ -115,7 +115,7 @@ INSERT OR IGNORE INTO [SpeedType] ([SpeedTypeID], [Description]) VALUES (3, 'Tru
 CREATE TABLE IF NOT EXISTS [TrackHistoryState]
 (
     [TrackHistoryStateID]   INTEGER PRIMARY KEY AUTOINCREMENT
-   ,[TrackHistoryID]        INTEGER NOT NULL CONSTRAINT [FK_TrackHistoryState_TrackHistory] REFERENCES [TrackHistory] ([TrackHistoryID])
+   ,[TrackHistoryID]        INTEGER NOT NULL CONSTRAINT [FK_TrackHistoryState_TrackHistory] REFERENCES [TrackHistory] ([TrackHistoryID]) ON DELETE CASCADE
    ,[TimestampUtc]          DATETIME NOT NULL
    ,[SequenceNumber]        INTEGER NOT NULL
    ,[ReceiverID]            INTEGER NULL CONSTRAINT [FK_TrackHistoryState_Receiver] REFERENCES [Receiver] ([ReceiverID]) ON DELETE SET NULL

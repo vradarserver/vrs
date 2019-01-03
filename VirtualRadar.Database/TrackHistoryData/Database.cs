@@ -331,6 +331,23 @@ namespace VirtualRadar.Database.TrackHistoryData
                 }
             }
         }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="aircraft"></param>
+        public void Aircraft_Delete(TrackHistoryAircraft aircraft)
+        {
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    connection.Connection.Execute(
+                        "DELETE FROM [Aircraft] WHERE [AircraftID] = @AircraftID",
+                        new { aircraft.AircraftID },
+                        transaction: connection.Transaction
+                    );
+                }
+            }
+        }
         #endregion
 
         #region Country

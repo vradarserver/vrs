@@ -128,6 +128,18 @@ namespace Test.VirtualRadar.Database
         {
             Aircraft_GetByIcao_Is_Case_Insensitive();
         }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Aircraft_Delete_Deletes_Aircraft()
+        {
+            Aircraft_Delete_Deletes_Aircraft();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Aircraft_Delete_Removes_Child_TrackHistories()
+        {
+            Aircraft_Delete_Removes_Child_TrackHistories();
+        }
         #endregion
 
         #region Country
