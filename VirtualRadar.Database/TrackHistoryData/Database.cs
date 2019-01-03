@@ -214,6 +214,30 @@ namespace VirtualRadar.Database.TrackHistoryData
         }
         #endregion
 
+        #region Helper Methods
+        /// <summary>
+        /// Acquires a connection (either a new one or the current transaction's connection) and acquires the
+        /// lock before calling the action. If the database has not been configured then the action is not called.
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns>True if the connection was acquired and the action called, false if no connection could be made.</returns>
+        private bool RunWithinConnection(Action<ConnectionWrapper> action)
+        {
+            var actionPerformed = false;
+
+            using(var connection = CreateOpenConnection()) {
+                if(connection.Connection != null) {
+                    lock(_SqlLiteSyncLock) {
+                        action(connection);
+                        actionPerformed = true;
+                    }
+                }
+            }
+
+            return actionPerformed;
+        }
+        #endregion
+
         #region DatabaseVersion
         /// <summary>
         /// See interface docs.
@@ -221,13 +245,16 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <returns></returns>
         public int DatabaseVersion_Get()
         {
-            using(var connection = CreateOpenConnection()) {
-                lock(_SqlLiteSyncLock) {
-                    return connection.Connection?.Query<int>(@"
-                        SELECT [Version] FROM [DatabaseVersion]
-                    ", transaction: connection.Transaction).FirstOrDefault() ?? 0;
-                }
-            }
+            var result = 0;
+
+            RunWithinConnection((connection) => {
+                result = connection.Connection?.Query<int>(
+                    "SELECT [Version] FROM [DatabaseVersion]",
+                    transaction: connection.Transaction
+                ).FirstOrDefault() ?? 0;
+            });
+
+            return result;
         }
 
         /// <summary>
@@ -236,19 +263,15 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="version"></param>
         public void DatabaseVersion_Set(int version)
         {
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        connection.Connection.Execute(@"
-                            UPDATE [DatabaseVersion]
-                            SET    [Version] = @version
-                            WHERE  [Version] <> @version;
-                        ", new {
-                            version,
-                        }, transaction: connection.Transaction);
-                    }
-                }
-            }
+            RunWithinConnection((connection) => {
+                connection.Connection.Execute(@"
+                    UPDATE [DatabaseVersion]
+                    SET    [Version] = @version
+                    WHERE  [Version] <> @version;
+                ", new {
+                    version,
+                }, transaction: connection.Transaction);
+            });
         }
         #endregion
 
@@ -262,19 +285,15 @@ namespace VirtualRadar.Database.TrackHistoryData
         {
             TrackHistoryAircraft result = null;
 
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        result = connection.Connection.QueryFirstOrDefault<TrackHistoryAircraft>(
-                            "SELECT * FROM [Aircraft] WHERE [AircraftID] = @id",
-                            new {
-                                id
-                            },
-                            transaction: connection.Transaction
-                        );
-                    }
-                }
-            }
+            RunWithinConnection((connection) => {
+                result = connection.Connection.QueryFirstOrDefault<TrackHistoryAircraft>(
+                    "SELECT * FROM [Aircraft] WHERE [AircraftID] = @id",
+                    new {
+                        id
+                    },
+                    transaction: connection.Transaction
+                );
+            });
 
             return result;
         }
@@ -288,19 +307,15 @@ namespace VirtualRadar.Database.TrackHistoryData
         {
             TrackHistoryAircraft result = null;
 
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        result = connection.Connection.QueryFirstOrDefault<TrackHistoryAircraft>(
-                            "SELECT * FROM [Aircraft] WHERE [Icao] = @icao",
-                            new {
-                                icao
-                            },
-                            transaction: connection.Transaction
-                        );
-                    }
-                }
-            }
+            RunWithinConnection((connection) => {
+                result = connection.Connection.QueryFirstOrDefault<TrackHistoryAircraft>(
+                    "SELECT * FROM [Aircraft] WHERE [Icao] = @icao",
+                    new {
+                        icao
+                    },
+                    transaction: connection.Transaction
+                );
+            });
 
             return result;
         }
@@ -311,25 +326,21 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="aircraft"></param>
         public void Aircraft_Save(TrackHistoryAircraft aircraft)
         {
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        if(aircraft.AircraftID == 0) {
-                            aircraft.AircraftID = connection.Connection.Query<int>(
-                                Commands.Aircraft_Insert,
-                                aircraft,
-                                transaction: connection.Transaction
-                            ).First();
-                        } else {
-                            aircraft.CreatedUtc = connection.Connection.Query<DateTime>(
-                                Commands.Aircraft_Update,
-                                aircraft,
-                                transaction: connection.Transaction
-                            ).First();
-                        }
-                    }
+            RunWithinConnection((connection) => {
+                if(aircraft.AircraftID == 0) {
+                    aircraft.AircraftID = connection.Connection.Query<int>(
+                        Commands.Aircraft_Insert,
+                        aircraft,
+                        transaction: connection.Transaction
+                    ).First();
+                } else {
+                    aircraft.CreatedUtc = connection.Connection.Query<DateTime>(
+                        Commands.Aircraft_Update,
+                        aircraft,
+                        transaction: connection.Transaction
+                    ).First();
                 }
-            }
+            });
         }
 
         /// <summary>
@@ -338,15 +349,13 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="aircraft"></param>
         public void Aircraft_Delete(TrackHistoryAircraft aircraft)
         {
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    connection.Connection.Execute(
-                        "DELETE FROM [Aircraft] WHERE [AircraftID] = @AircraftID",
-                        new { aircraft.AircraftID },
-                        transaction: connection.Transaction
-                    );
-                }
-            }
+            RunWithinConnection((connection) => {
+                connection.Connection.Execute(
+                    "DELETE FROM [Aircraft] WHERE [AircraftID] = @AircraftID",
+                    new { aircraft.AircraftID },
+                    transaction: connection.Transaction
+                );
+            });
         }
         #endregion
 
@@ -360,19 +369,15 @@ namespace VirtualRadar.Database.TrackHistoryData
         {
             TrackHistoryCountry result = null;
 
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        result = connection.Connection.QueryFirstOrDefault<TrackHistoryCountry>(
-                            "SELECT * FROM [Country] WHERE [CountryID] = @id",
-                            new {
-                                id,
-                            },
-                            transaction: connection.Transaction
-                        );
-                    }
-                }
-            }
+            RunWithinConnection((connection) => {
+                result = connection.Connection.QueryFirstOrDefault<TrackHistoryCountry>(
+                    "SELECT * FROM [Country] WHERE [CountryID] = @id",
+                    new {
+                        id,
+                    },
+                    transaction: connection.Transaction
+                );
+            });
 
             return result;
         }
@@ -383,21 +388,17 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="country"></param>
         public void Country_Save(TrackHistoryCountry country)
         {
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        if(country.CountryID == 0) {
-                            Country_Insert(connection, country);
-                        } else {
-                            country.CreatedUtc = connection.Connection.Query<DateTime>(
-                                Commands.Country_Update,
-                                country,
-                                transaction: connection.Transaction
-                            ).First();
-                        }
-                    }
+            RunWithinConnection((connection) => {
+                if(country.CountryID == 0) {
+                    Country_Insert(connection, country);
+                } else {
+                    country.CreatedUtc = connection.Connection.Query<DateTime>(
+                        Commands.Country_Update,
+                        country,
+                        transaction: connection.Transaction
+                    ).First();
                 }
-            }
+            });
         }
 
         private void Country_Insert(ConnectionWrapper connection, TrackHistoryCountry country)
@@ -418,13 +419,9 @@ namespace VirtualRadar.Database.TrackHistoryData
         {
             TrackHistoryCountry result = null;
 
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        result = Country_GetByName(connection, name);
-                    }
-                }
-            }
+            RunWithinConnection((connection) => {
+                result = Country_GetByName(connection, name);
+            });
 
             return result;
         }
@@ -449,23 +446,19 @@ namespace VirtualRadar.Database.TrackHistoryData
         {
             TrackHistoryCountry result = null;
 
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        result = Country_GetByName(connection, name);
+            RunWithinConnection((connection) => {
+                result = Country_GetByName(connection, name);
 
-                        if(result == null) {
-                            var now = _Clock.UtcNow;
-                            result = new TrackHistoryCountry() {
-                                Name =       name,
-                                CreatedUtc = now,
-                                UpdatedUtc = now,
-                            };
-                            Country_Insert(connection, result);
-                        }
-                    }
+                if(result == null) {
+                    var now = _Clock.UtcNow;
+                    result = new TrackHistoryCountry() {
+                        Name =       name,
+                        CreatedUtc = now,
+                        UpdatedUtc = now,
+                    };
+                    Country_Insert(connection, result);
                 }
-            }
+            });
 
             return result;
         }
@@ -476,15 +469,13 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="country"></param>
         public void Country_Delete(TrackHistoryCountry country)
         {
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    connection.Connection.Execute(
-                        "DELETE FROM [Country] WHERE [CountryID] = @CountryID",
-                        new { country.CountryID },
-                        transaction: connection.Transaction
-                    );
-                }
-            }
+            RunWithinConnection((connection) => {
+                connection.Connection.Execute(
+                    "DELETE FROM [Country] WHERE [CountryID] = @CountryID",
+                    new { country.CountryID },
+                    transaction: connection.Transaction
+                );
+            });
         }
         #endregion
 
@@ -498,19 +489,15 @@ namespace VirtualRadar.Database.TrackHistoryData
         {
             TrackHistoryReceiver result = null;
 
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        result = connection.Connection.QueryFirstOrDefault<TrackHistoryReceiver>(
-                            "SELECT * FROM [Receiver] WHERE [ReceiverID] = @id",
-                            new {
-                                id,
-                            },
-                            transaction: connection.Transaction
-                        );
-                    }
-                }
-            }
+            RunWithinConnection((connection) => {
+                result = connection.Connection.QueryFirstOrDefault<TrackHistoryReceiver>(
+                    "SELECT * FROM [Receiver] WHERE [ReceiverID] = @id",
+                    new {
+                        id,
+                    },
+                    transaction: connection.Transaction
+                );
+            });
 
             return result;
         }
@@ -524,13 +511,9 @@ namespace VirtualRadar.Database.TrackHistoryData
         {
             TrackHistoryReceiver result = null;
 
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        result = Receiver_GetByName(connection, name);
-                    }
-                }
-            }
+            RunWithinConnection((connection) => {
+                result = Receiver_GetByName(connection, name);
+            });
 
             return result;
         }
@@ -555,23 +538,19 @@ namespace VirtualRadar.Database.TrackHistoryData
         {
             TrackHistoryReceiver result = null;
 
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        result = Receiver_GetByName(connection, name);
+            RunWithinConnection((connection) => {
+                result = Receiver_GetByName(connection, name);
 
-                        if(result == null) {
-                            var now = _Clock.UtcNow;
-                            result = new TrackHistoryReceiver() {
-                                Name =       name,
-                                CreatedUtc = now,
-                                UpdatedUtc = now,
-                            };
-                            Receiver_Insert(connection, result);
-                        }
-                    }
+                if(result == null) {
+                    var now = _Clock.UtcNow;
+                    result = new TrackHistoryReceiver() {
+                        Name =       name,
+                        CreatedUtc = now,
+                        UpdatedUtc = now,
+                    };
+                    Receiver_Insert(connection, result);
                 }
-            }
+            });
 
             return result;
         }
@@ -582,21 +561,17 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="receiver"></param>
         public void Receiver_Save(TrackHistoryReceiver receiver)
         {
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        if(receiver.ReceiverID == 0) {
-                            Receiver_Insert(connection, receiver);
-                        } else {
-                            receiver.CreatedUtc = connection.Connection.Query<DateTime>(
-                                Commands.Receiver_Update,
-                                receiver,
-                                transaction: connection.Transaction
-                            ).First();
-                        }
-                    }
+            RunWithinConnection((connection) => {
+                if(receiver.ReceiverID == 0) {
+                    Receiver_Insert(connection, receiver);
+                } else {
+                    receiver.CreatedUtc = connection.Connection.Query<DateTime>(
+                        Commands.Receiver_Update,
+                        receiver,
+                        transaction: connection.Transaction
+                    ).First();
                 }
-            }
+            });
         }
 
         private void Receiver_Insert(ConnectionWrapper connection, TrackHistoryReceiver receiver)
@@ -614,15 +589,13 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="receiver"></param>
         public void Receiver_Delete(TrackHistoryReceiver receiver)
         {
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    connection.Connection.Execute(
-                        "DELETE FROM [Receiver] WHERE [ReceiverID] = @ReceiverID",
-                        new { receiver.ReceiverID },
-                        transaction: connection.Transaction
-                    );
-                }
-            }
+            RunWithinConnection((connection) => {
+                connection.Connection.Execute(
+                    "DELETE FROM [Receiver] WHERE [ReceiverID] = @ReceiverID",
+                    new { receiver.ReceiverID },
+                    transaction: connection.Transaction
+                );
+            });
         }
         #endregion
 
@@ -639,19 +612,16 @@ namespace VirtualRadar.Database.TrackHistoryData
             // The TrackHistory_Delete script performs multiple delete operations, they need to
             // always be performed within a transaction.
             PerformInTransaction(() => {
-                using(var connection = CreateOpenConnection()) {
-                    if(connection.Connection != null) {
-                        lock(_SqlLiteSyncLock) {
-                            result = connection.Connection.QueryFirst<TrackHistoryTruncateResult>(
-                                Commands.TrackHistory_Delete,
-                                new {
-                                    trackHistory.TrackHistoryID,
-                                },
-                                transaction: connection.Transaction
-                            );
-                        }
-                    }
-                }
+                RunWithinConnection((connection) => {
+                    result = connection.Connection.QueryFirst<TrackHistoryTruncateResult>(
+                        Commands.TrackHistory_Delete,
+                        new {
+                            trackHistory.TrackHistoryID,
+                        },
+                        transaction: connection.Transaction
+                    );
+                });
+
                 return true;
             });
 
@@ -670,19 +640,16 @@ namespace VirtualRadar.Database.TrackHistoryData
             // The TrackHistory_DeleteExpired script performs multiple delete operations, they need to
             // always be performed within a transaction.
             PerformInTransaction(() => {
-                using(var connection = CreateOpenConnection()) {
-                    if(connection.Connection != null) {
-                        lock(_SqlLiteSyncLock) {
-                            result = connection.Connection.QueryFirst<TrackHistoryTruncateResult>(
-                                Commands.TrackHistory_DeleteExpired,
-                                new {
-                                    threshold = deleteUpToUtc,
-                                },
-                                transaction: connection.Transaction
-                            );
-                        }
-                    }
-                }
+                RunWithinConnection((connection) => {
+                    result = connection.Connection.QueryFirst<TrackHistoryTruncateResult>(
+                        Commands.TrackHistory_DeleteExpired,
+                        new {
+                            threshold = deleteUpToUtc,
+                        },
+                        transaction: connection.Transaction
+                    );
+                });
+
                 return true;
             });
 
@@ -699,20 +666,16 @@ namespace VirtualRadar.Database.TrackHistoryData
         {
             TrackHistory[] result = null;
 
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        result = connection.Connection.Query<TrackHistory>(
-                            Commands.TrackHistory_GetByDateRange,
-                            new {
-                                startTimeInclusive,
-                                endTimeInclusive,
-                            },
-                            transaction: connection.Transaction
-                        ).ToArray();
-                    }
-                }
-            }
+            RunWithinConnection((connection) => {
+                result = connection.Connection.Query<TrackHistory>(
+                    Commands.TrackHistory_GetByDateRange,
+                    new {
+                        startTimeInclusive,
+                        endTimeInclusive,
+                    },
+                    transaction: connection.Transaction
+                ).ToArray();
+            });
 
             return result ?? new TrackHistory[0];
         }
@@ -728,21 +691,17 @@ namespace VirtualRadar.Database.TrackHistoryData
         {
             TrackHistory[] result = null;
 
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        result = connection.Connection.Query<TrackHistory>(
-                            Commands.TrackHistory_GetByAircraftID,
-                            new {
-                                aircraftID,
-                                startTimeInclusive,
-                                endTimeInclusive,
-                            },
-                            transaction: connection.Transaction
-                        ).ToArray();
-                    }
-                }
-            }
+            RunWithinConnection((connection) => {
+                result = connection.Connection.Query<TrackHistory>(
+                    Commands.TrackHistory_GetByAircraftID,
+                    new {
+                        aircraftID,
+                        startTimeInclusive,
+                        endTimeInclusive,
+                    },
+                    transaction: connection.Transaction
+                ).ToArray();
+            });
 
             return result ?? new TrackHistory[0];
         }
@@ -756,19 +715,15 @@ namespace VirtualRadar.Database.TrackHistoryData
         {
             TrackHistory result = null;
 
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        result = connection.Connection.QueryFirstOrDefault<TrackHistory>(
-                            "SELECT * FROM [TrackHistory] WHERE [TrackHistoryID] = @trackHistoryID",
-                            new {
-                                trackHistoryID = id,
-                            },
-                            transaction: connection.Transaction
-                        );
-                    }
-                }
-            }
+            RunWithinConnection((connection) => {
+                result = connection.Connection.QueryFirstOrDefault<TrackHistory>(
+                    "SELECT * FROM [TrackHistory] WHERE [TrackHistoryID] = @trackHistoryID",
+                    new {
+                        trackHistoryID = id,
+                    },
+                    transaction: connection.Transaction
+                );
+            });
 
             return result;
         }
@@ -804,25 +759,21 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="trackHistory"></param>
         public void TrackHistory_Save(TrackHistory trackHistory)
         {
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        if(trackHistory.TrackHistoryID != 0) {
-                            trackHistory.CreatedUtc = connection.Connection.Query<DateTime>(
-                                Commands.TrackHistory_Update,
-                                trackHistory,
-                                transaction: connection.Transaction
-                            ).First();
-                        } else {
-                            trackHistory.TrackHistoryID = connection.Connection.Query<long>(
-                                Commands.TrackHistory_Insert,
-                                trackHistory,
-                                transaction: connection.Transaction
-                            ).First();
-                        }
-                    }
+            RunWithinConnection((connection) => {
+                if(trackHistory.TrackHistoryID != 0) {
+                    trackHistory.CreatedUtc = connection.Connection.Query<DateTime>(
+                        Commands.TrackHistory_Update,
+                        trackHistory,
+                        transaction: connection.Transaction
+                    ).First();
+                } else {
+                    trackHistory.TrackHistoryID = connection.Connection.Query<long>(
+                        Commands.TrackHistory_Insert,
+                        trackHistory,
+                        transaction: connection.Transaction
+                    ).First();
                 }
-            }
+            });
         }
 
         /// <summary>
@@ -837,13 +788,9 @@ namespace VirtualRadar.Database.TrackHistoryData
 
             if(!(trackHistory?.IsPreserved ?? true)) {
                 PerformInTransaction(() => {
-                    using(var connection = CreateOpenConnection()) {
-                        if(connection != null) {
-                            lock(_SqlLiteSyncLock) {
-                                TrackHistory_Truncate(connection, trackHistory, newUpdatedUtc, result);
-                            }
-                        }
-                    }
+                    RunWithinConnection((connection) => {
+                        TrackHistory_Truncate(connection, trackHistory, newUpdatedUtc, result);
+                    });
 
                     return true;
                 });
@@ -887,15 +834,11 @@ namespace VirtualRadar.Database.TrackHistoryData
             var result = new TrackHistoryTruncateResult();
 
             PerformInTransaction(() => {
-                using(var connection = CreateOpenConnection()) {
-                    if(connection != null) {
-                        lock(_SqlLiteSyncLock) {
-                            foreach(var trackHistory in TrackHistory_GetUpToCreatedUtc(connection, truncateUpToUtc, includePreserved: false, minimumHistoryStates: 3)) {
-                                TrackHistory_Truncate(connection, trackHistory, newUpdatedUtc, result);
-                            }
-                        }
+                RunWithinConnection((connection) => {
+                    foreach(var trackHistory in TrackHistory_GetUpToCreatedUtc(connection, truncateUpToUtc, includePreserved: false, minimumHistoryStates: 3)) {
+                        TrackHistory_Truncate(connection, trackHistory, newUpdatedUtc, result);
                     }
-                }
+                });
 
                 return true;
             });
@@ -914,19 +857,15 @@ namespace VirtualRadar.Database.TrackHistoryData
         {
             TrackHistoryState result = null;
 
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        result = connection.Connection.QueryFirstOrDefault<TrackHistoryState>(
-                            "SELECT * FROM [TrackHistoryState] WHERE [TrackHistoryStateID] = @id",
-                            new {
-                                id
-                            },
-                            transaction: connection.Transaction
-                        );
-                    }
-                }
-            }
+            RunWithinConnection((connection) => {
+                result = connection.Connection.QueryFirstOrDefault<TrackHistoryState>(
+                    "SELECT * FROM [TrackHistoryState] WHERE [TrackHistoryStateID] = @id",
+                    new {
+                        id
+                    },
+                    transaction: connection.Transaction
+                );
+            });
 
             return result;
         }
@@ -940,13 +879,9 @@ namespace VirtualRadar.Database.TrackHistoryData
         {
             TrackHistoryState[] result = null;
 
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        result = TrackHistoryState_GetByTrackHistory(connection, trackHistory);
-                    }
-                }
-            }
+            RunWithinConnection((connection) => {
+                result = TrackHistoryState_GetByTrackHistory(connection, trackHistory);
+            });
 
             return result ?? new TrackHistoryState[0];
         }
@@ -970,13 +905,9 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="trackHistoryState"></param>
         public void TrackHistoryState_Save(TrackHistoryState trackHistoryState)
         {
-            using(var connection = CreateOpenConnection()) {
-                if(connection.Connection != null) {
-                    lock(_SqlLiteSyncLock) {
-                        TrackHistoryState_Save(connection, trackHistoryState);
-                    }
-                }
-            }
+            RunWithinConnection((connection) => {
+                TrackHistoryState_Save(connection, trackHistoryState);
+            });
         }
 
         private void TrackHistoryState_Save(ConnectionWrapper connection, TrackHistoryState trackHistoryState)
