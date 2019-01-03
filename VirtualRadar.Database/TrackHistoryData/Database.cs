@@ -236,6 +236,209 @@ namespace VirtualRadar.Database.TrackHistoryData
 
             return actionPerformed;
         }
+
+        /// <summary>
+        /// Opens a connection or co-opts the transaction's connection and runs the SQL. Returns all rows.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="parameters"></param>
+        /// <param name="useConnection"></param>
+        /// <returns></returns>
+        private IEnumerable<T> Query<T>(string sql, object parameters, ConnectionWrapper useConnection = null)
+        {
+            var result = default(IEnumerable<T>);
+
+            if(useConnection != null) {
+                result = useConnection.Connection.Query<T>(
+                    sql,
+                    parameters,
+                    transaction: useConnection.Transaction
+                );
+            } else {
+                RunWithinConnection((connection) => {
+                    result = connection.Connection.Query<T>(
+                        sql,
+                        parameters,
+                        transaction: connection.Transaction
+                    );
+                });
+            }
+
+            return result ?? new T[0];
+        }
+
+        private T QueryFirstOrDefault<T>(string sql, object parameters, ConnectionWrapper useConnection = null)
+        {
+            return Query<T>(sql, parameters, useConnection).FirstOrDefault();
+        }
+
+        private T QueryFirst<T>(string sql, object parameters, ConnectionWrapper useConnection = null)
+        {
+            return Query<T>(sql, parameters, useConnection).First();
+        }
+
+        /// <summary>
+        /// Opens a connection or co-opts the transaction's connection and executes the SQL on it.
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="parameters"></param>
+        /// <param name="useConnection"></param>
+        private void Execute(string sql, object parameters, ConnectionWrapper useConnection = null)
+        {
+            if(useConnection != null) {
+                useConnection.Connection.Execute(
+                    sql,
+                    parameters,
+                    transaction: useConnection.Transaction
+                );
+            } else {
+                RunWithinConnection((connection) => {
+                    connection.Connection.Execute(
+                        sql,
+                        parameters,
+                        transaction: connection.Transaction
+                    );
+                });
+            }
+        }
+
+        /// <summary>
+        /// Opens a connection or co-opts the transaction's connection, executes the SQL on it and returns the
+        /// single scalar result.
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="parameters"></param>
+        /// <param name="useConnection"></param>
+        private T ExecuteScalar<T>(string sql, object parameters, ConnectionWrapper useConnection = null)
+        {
+            var result = default(T);
+
+            if(useConnection != null) {
+                result = useConnection.Connection.ExecuteScalar<T>(
+                    sql,
+                    parameters,
+                    transaction: useConnection.Transaction
+                );
+            } else {
+                RunWithinConnection((connection) => {
+                    result = connection.Connection.ExecuteScalar<T>(
+                        sql,
+                        parameters,
+                        transaction: connection.Transaction
+                    );
+                });
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Performs a standard save operation - if the ID is unassigned then calls the <paramref name="insertAction"/>, otherwise calls the <paramref name="updateAction"/>.
+        /// </summary>
+        /// <typeparam name="TRecord"></typeparam>
+        /// <param name="record"></param>
+        /// <param name="hasID"></param>
+        /// <param name="insertAction"></param>
+        /// <param name="updateAction"></param>
+        /// <param name="useConnection"></param>
+        private void Save<TRecord>(TRecord record, Func<bool> hasID, Action<ConnectionWrapper, TRecord> insertAction, Action<ConnectionWrapper, TRecord> updateAction, ConnectionWrapper useConnection = null)
+        {
+            if(useConnection != null) {
+                if(hasID()) {
+                    updateAction(useConnection, record);
+                } else {
+                    insertAction(useConnection, record);
+                }
+            } else {
+                RunWithinConnection((connection) => {
+                    if(hasID()) {
+                        updateAction(connection, record);
+                    } else {
+                        insertAction(connection, record);
+                    }
+                });
+            }
+        }
+
+        /// <summary>
+        /// Performs a standard insert operation. The SQL must return the ID as a single column in a single row, this is assigned to the object via the
+        /// <paramref name="assignID"/> callback.
+        /// </summary>
+        /// <typeparam name="TRecord"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="connection"></param>
+        /// <param name="record"></param>
+        /// <param name="sql"></param>
+        /// <param name="assignID"></param>
+        /// <param name="parameters"></param>
+        private void Insert<TRecord, TKey>(ConnectionWrapper connection, TRecord record, string sql, Action<TKey> assignID, object parameters = null)
+        {
+            var id = connection.Connection.Query<TKey>(
+                sql,
+                parameters ?? record,
+                transaction: connection.Transaction
+            ).First();
+
+            assignID(id);
+        }
+
+        /// <summary>
+        /// Performs a standard update operation for a timestamped record. The SQL must not change the Created timestamp, instead it must return it
+        /// and it must be forced onto the record that was updated via <paramref name="assignCreatedUtc"/>.
+        /// </summary>
+        /// <typeparam name="TRecord"></typeparam>
+        /// <param name="connection"></param>
+        /// <param name="record"></param>
+        /// <param name="sql"></param>
+        /// <param name="assignCreatedUtc"></param>
+        /// <param name="parameters"></param>
+        private void Update<TRecord>(ConnectionWrapper connection, TRecord record, string sql, Action<DateTime> assignCreatedUtc, object parameters = null)
+        {
+            var unchangedCreatedUtc = connection.Connection.Query<DateTime>(
+                sql,
+                parameters ?? record,
+                transaction: connection.Transaction
+            ).First();
+
+            assignCreatedUtc(unchangedCreatedUtc);
+        }
+
+        /// <summary>
+        /// Wraps the standard procedure for fetching a record by a unique key field and creating it if it does not already exist.
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="getByKey"></param>
+        /// <param name="insertAction"></param>
+        /// <param name="buildNewRecord"></param>
+        /// <param name="useConnection"></param>
+        /// <returns></returns>
+        private TResult GetOrCreateByKey<TResult, TKey>(TKey key, Func<ConnectionWrapper, TKey, TResult> getByKey, Action<ConnectionWrapper, TResult> insertAction, Func<DateTime, TResult> buildNewRecord, ConnectionWrapper useConnection = null)
+            where TResult: class
+        {
+            TResult result = null;
+
+            if(useConnection != null) {
+                result = getByKey(useConnection, key);
+
+                if(result == null) {
+                    result = buildNewRecord(_Clock.UtcNow);
+                    insertAction(useConnection, result);
+                }
+            } else {
+                RunWithinConnection((connection) => {
+                    result = getByKey(connection, key);
+
+                    if(result == null) {
+                        result = buildNewRecord(_Clock.UtcNow);
+                        insertAction(connection, result);
+                    }
+                });
+            }
+
+            return result;
+        }
         #endregion
 
         #region DatabaseVersion
@@ -245,16 +448,10 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <returns></returns>
         public int DatabaseVersion_Get()
         {
-            var result = 0;
-
-            RunWithinConnection((connection) => {
-                result = connection.Connection?.Query<int>(
-                    "SELECT [Version] FROM [DatabaseVersion]",
-                    transaction: connection.Transaction
-                ).FirstOrDefault() ?? 0;
-            });
-
-            return result;
+            return QueryFirst<int>(
+                "SELECT [Version] FROM [DatabaseVersion]",
+                null
+            );
         }
 
         /// <summary>
@@ -263,14 +460,12 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="version"></param>
         public void DatabaseVersion_Set(int version)
         {
-            RunWithinConnection((connection) => {
-                connection.Connection.Execute(@"
-                    UPDATE [DatabaseVersion]
-                    SET    [Version] = @version
-                    WHERE  [Version] <> @version;
-                ", new {
-                    version,
-                }, transaction: connection.Transaction);
+            Execute(@"
+                UPDATE [DatabaseVersion]
+                SET    [Version] = @version
+                WHERE  [Version] <> @version;
+            ", new {
+                version,
             });
         }
         #endregion
@@ -283,19 +478,10 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <returns></returns>
         public TrackHistoryAircraft Aircraft_GetByID(long id)
         {
-            TrackHistoryAircraft result = null;
-
-            RunWithinConnection((connection) => {
-                result = connection.Connection.QueryFirstOrDefault<TrackHistoryAircraft>(
-                    "SELECT * FROM [Aircraft] WHERE [AircraftID] = @id",
-                    new {
-                        id
-                    },
-                    transaction: connection.Transaction
-                );
-            });
-
-            return result;
+            return QueryFirstOrDefault<TrackHistoryAircraft>(
+                "SELECT * FROM [Aircraft] WHERE [AircraftID] = @id",
+                new { id }
+            );
         }
 
         /// <summary>
@@ -305,19 +491,10 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <returns></returns>
         public TrackHistoryAircraft Aircraft_GetByIcao(string icao)
         {
-            TrackHistoryAircraft result = null;
-
-            RunWithinConnection((connection) => {
-                result = connection.Connection.QueryFirstOrDefault<TrackHistoryAircraft>(
-                    "SELECT * FROM [Aircraft] WHERE [Icao] = @icao",
-                    new {
-                        icao
-                    },
-                    transaction: connection.Transaction
-                );
-            });
-
-            return result;
+            return QueryFirstOrDefault<TrackHistoryAircraft>(
+                "SELECT * FROM [Aircraft] WHERE [Icao] = @icao",
+                new { icao }
+            );
         }
 
         /// <summary>
@@ -326,21 +503,17 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="aircraft"></param>
         public void Aircraft_Save(TrackHistoryAircraft aircraft)
         {
-            RunWithinConnection((connection) => {
-                if(aircraft.AircraftID == 0) {
-                    aircraft.AircraftID = connection.Connection.Query<int>(
-                        Commands.Aircraft_Insert,
-                        aircraft,
-                        transaction: connection.Transaction
-                    ).First();
-                } else {
-                    aircraft.CreatedUtc = connection.Connection.Query<DateTime>(
-                        Commands.Aircraft_Update,
-                        aircraft,
-                        transaction: connection.Transaction
-                    ).First();
-                }
-            });
+            Save(aircraft, () => aircraft.AircraftID != 0, Aircraft_Insert, Aircraft_Update);
+        }
+
+        private void Aircraft_Insert(ConnectionWrapper connection, TrackHistoryAircraft aircraft)
+        {
+            Insert<TrackHistoryAircraft, long>(connection, aircraft, Commands.Aircraft_Insert, id => aircraft.AircraftID = id);
+        }
+
+        private void Aircraft_Update(ConnectionWrapper connection, TrackHistoryAircraft aircraft)
+        {
+            Update<TrackHistoryAircraft>(connection, aircraft, Commands.Aircraft_Update, createdUtc => aircraft.CreatedUtc = createdUtc);
         }
 
         /// <summary>
@@ -349,13 +522,10 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="aircraft"></param>
         public void Aircraft_Delete(TrackHistoryAircraft aircraft)
         {
-            RunWithinConnection((connection) => {
-                connection.Connection.Execute(
-                    "DELETE FROM [Aircraft] WHERE [AircraftID] = @AircraftID",
-                    new { aircraft.AircraftID },
-                    transaction: connection.Transaction
-                );
-            });
+            Execute(
+                "DELETE FROM [Aircraft] WHERE [AircraftID] = @AircraftID",
+                new { aircraft.AircraftID }
+            );
         }
         #endregion
 
@@ -367,47 +537,10 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <returns></returns>
         public TrackHistoryCountry Country_GetByID(int id)
         {
-            TrackHistoryCountry result = null;
-
-            RunWithinConnection((connection) => {
-                result = connection.Connection.QueryFirstOrDefault<TrackHistoryCountry>(
-                    "SELECT * FROM [Country] WHERE [CountryID] = @id",
-                    new {
-                        id,
-                    },
-                    transaction: connection.Transaction
-                );
-            });
-
-            return result;
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="country"></param>
-        public void Country_Save(TrackHistoryCountry country)
-        {
-            RunWithinConnection((connection) => {
-                if(country.CountryID == 0) {
-                    Country_Insert(connection, country);
-                } else {
-                    country.CreatedUtc = connection.Connection.Query<DateTime>(
-                        Commands.Country_Update,
-                        country,
-                        transaction: connection.Transaction
-                    ).First();
-                }
-            });
-        }
-
-        private void Country_Insert(ConnectionWrapper connection, TrackHistoryCountry country)
-        {
-            country.CountryID = connection.Connection.Query<int>(
-                Commands.Country_Insert,
-                country,
-                transaction: connection.Transaction
-            ).First();
+            return QueryFirstOrDefault<TrackHistoryCountry>(
+                "SELECT * FROM [Country] WHERE [CountryID] = @id",
+                new { id, }
+            );
         }
 
         /// <summary>
@@ -417,24 +550,35 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <returns></returns>
         public TrackHistoryCountry Country_GetByName(string name)
         {
-            TrackHistoryCountry result = null;
-
-            RunWithinConnection((connection) => {
-                result = Country_GetByName(connection, name);
-            });
-
-            return result;
+            return Country_GetByName(null, name);
         }
 
         private TrackHistoryCountry Country_GetByName(ConnectionWrapper connection, string name)
         {
-            return connection.Connection.QueryFirstOrDefault<TrackHistoryCountry>(
+            return QueryFirstOrDefault<TrackHistoryCountry>(
                 "SELECT * FROM [Country] WHERE [Name] = @name",
-                new {
-                    name,
-                },
-                transaction: connection.Transaction
+                new { name, },
+                connection
             );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="country"></param>
+        public void Country_Save(TrackHistoryCountry country)
+        {
+            Save(country, () => country.CountryID != 0, Country_Insert, Country_Update);
+        }
+
+        private void Country_Insert(ConnectionWrapper connection, TrackHistoryCountry country)
+        {
+            Insert<TrackHistoryCountry, int>(connection, country, Commands.Country_Insert, id => country.CountryID = id);
+        }
+
+        private void Country_Update(ConnectionWrapper connection, TrackHistoryCountry country)
+        {
+            Update<TrackHistoryCountry>(connection, country, Commands.Country_Update, created => country.CreatedUtc = created);
         }
 
         /// <summary>
@@ -444,23 +588,16 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <returns></returns>
         public TrackHistoryCountry Country_GetOrCreateByName(string name)
         {
-            TrackHistoryCountry result = null;
-
-            RunWithinConnection((connection) => {
-                result = Country_GetByName(connection, name);
-
-                if(result == null) {
-                    var now = _Clock.UtcNow;
-                    result = new TrackHistoryCountry() {
-                        Name =       name,
-                        CreatedUtc = now,
-                        UpdatedUtc = now,
-                    };
-                    Country_Insert(connection, result);
+            return GetOrCreateByKey<TrackHistoryCountry, string>(
+                name,
+                Country_GetByName,
+                Country_Insert,
+                now => new TrackHistoryCountry() {
+                    Name =       name,
+                    CreatedUtc = now,
+                    UpdatedUtc = now,
                 }
-            });
-
-            return result;
+            );
         }
 
         /// <summary>
@@ -469,13 +606,10 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="country"></param>
         public void Country_Delete(TrackHistoryCountry country)
         {
-            RunWithinConnection((connection) => {
-                connection.Connection.Execute(
-                    "DELETE FROM [Country] WHERE [CountryID] = @CountryID",
-                    new { country.CountryID },
-                    transaction: connection.Transaction
-                );
-            });
+            Execute(
+                "DELETE FROM [Country] WHERE [CountryID] = @CountryID",
+                new { country.CountryID }
+            );
         }
         #endregion
 
@@ -487,19 +621,10 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <returns></returns>
         public TrackHistoryReceiver Receiver_GetByID(int id)
         {
-            TrackHistoryReceiver result = null;
-
-            RunWithinConnection((connection) => {
-                result = connection.Connection.QueryFirstOrDefault<TrackHistoryReceiver>(
-                    "SELECT * FROM [Receiver] WHERE [ReceiverID] = @id",
-                    new {
-                        id,
-                    },
-                    transaction: connection.Transaction
-                );
-            });
-
-            return result;
+            return QueryFirstOrDefault<TrackHistoryReceiver>(
+                "SELECT * FROM [Receiver] WHERE [ReceiverID] = @id",
+                new { id, }
+            );
         }
 
         /// <summary>
@@ -509,23 +634,15 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <returns></returns>
         public TrackHistoryReceiver Receiver_GetByName(string name)
         {
-            TrackHistoryReceiver result = null;
-
-            RunWithinConnection((connection) => {
-                result = Receiver_GetByName(connection, name);
-            });
-
-            return result;
+            return Receiver_GetByName(null, name);
         }
 
         private TrackHistoryReceiver Receiver_GetByName(ConnectionWrapper connection, string name)
         {
-            return connection.Connection.QueryFirstOrDefault<TrackHistoryReceiver>(
+            return QueryFirstOrDefault<TrackHistoryReceiver>(
                 "SELECT * FROM [Receiver] WHERE [Name] = @name",
-                new {
-                    name,
-                },
-                transaction: connection.Transaction
+                new { name, },
+                connection
             );
         }
 
@@ -536,23 +653,16 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <returns></returns>
         public TrackHistoryReceiver Receiver_GetOrCreateByName(string name)
         {
-            TrackHistoryReceiver result = null;
-
-            RunWithinConnection((connection) => {
-                result = Receiver_GetByName(connection, name);
-
-                if(result == null) {
-                    var now = _Clock.UtcNow;
-                    result = new TrackHistoryReceiver() {
-                        Name =       name,
-                        CreatedUtc = now,
-                        UpdatedUtc = now,
-                    };
-                    Receiver_Insert(connection, result);
+            return GetOrCreateByKey<TrackHistoryReceiver, string>(
+                name,
+                Receiver_GetByName,
+                Receiver_Insert,
+                now => new TrackHistoryReceiver() {
+                    Name =       name,
+                    CreatedUtc = now,
+                    UpdatedUtc = now,
                 }
-            });
-
-            return result;
+            );
         }
 
         /// <summary>
@@ -576,11 +686,12 @@ namespace VirtualRadar.Database.TrackHistoryData
 
         private void Receiver_Insert(ConnectionWrapper connection, TrackHistoryReceiver receiver)
         {
-            receiver.ReceiverID = connection.Connection.Query<int>(
-                Commands.Receiver_Insert,
-                receiver,
-                transaction: connection.Transaction
-            ).First();
+            Insert<TrackHistoryReceiver, int>(connection, receiver, Commands.Receiver_Insert, id => receiver.ReceiverID = id);
+        }
+
+        private void Receiver_Update(ConnectionWrapper connection, TrackHistoryReceiver receiver)
+        {
+            Update<TrackHistoryReceiver>(connection, receiver, Commands.Receiver_Insert, created => receiver.CreatedUtc = created);
         }
 
         /// <summary>
@@ -589,13 +700,10 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="receiver"></param>
         public void Receiver_Delete(TrackHistoryReceiver receiver)
         {
-            RunWithinConnection((connection) => {
-                connection.Connection.Execute(
-                    "DELETE FROM [Receiver] WHERE [ReceiverID] = @ReceiverID",
-                    new { receiver.ReceiverID },
-                    transaction: connection.Transaction
-                );
-            });
+            Execute(
+                "DELETE FROM [Receiver] WHERE [ReceiverID] = @ReceiverID",
+                new { receiver.ReceiverID }
+            );
         }
         #endregion
 
@@ -612,15 +720,10 @@ namespace VirtualRadar.Database.TrackHistoryData
             // The TrackHistory_Delete script performs multiple delete operations, they need to
             // always be performed within a transaction.
             PerformInTransaction(() => {
-                RunWithinConnection((connection) => {
-                    result = connection.Connection.QueryFirst<TrackHistoryTruncateResult>(
-                        Commands.TrackHistory_Delete,
-                        new {
-                            trackHistory.TrackHistoryID,
-                        },
-                        transaction: connection.Transaction
-                    );
-                });
+                result = QueryFirst<TrackHistoryTruncateResult>(
+                    Commands.TrackHistory_Delete,
+                    new { trackHistory.TrackHistoryID, }
+                );
 
                 return true;
             });
@@ -640,15 +743,10 @@ namespace VirtualRadar.Database.TrackHistoryData
             // The TrackHistory_DeleteExpired script performs multiple delete operations, they need to
             // always be performed within a transaction.
             PerformInTransaction(() => {
-                RunWithinConnection((connection) => {
-                    result = connection.Connection.QueryFirst<TrackHistoryTruncateResult>(
-                        Commands.TrackHistory_DeleteExpired,
-                        new {
-                            threshold = deleteUpToUtc,
-                        },
-                        transaction: connection.Transaction
-                    );
-                });
+                result = QueryFirst<TrackHistoryTruncateResult>(
+                    Commands.TrackHistory_DeleteExpired,
+                    new { threshold = deleteUpToUtc, }
+                );
 
                 return true;
             });
@@ -667,13 +765,12 @@ namespace VirtualRadar.Database.TrackHistoryData
             TrackHistory[] result = null;
 
             RunWithinConnection((connection) => {
-                result = connection.Connection.Query<TrackHistory>(
+                result = Query<TrackHistory>(
                     Commands.TrackHistory_GetByDateRange,
                     new {
                         startTimeInclusive,
                         endTimeInclusive,
-                    },
-                    transaction: connection.Transaction
+                    }
                 ).ToArray();
             });
 
@@ -692,14 +789,13 @@ namespace VirtualRadar.Database.TrackHistoryData
             TrackHistory[] result = null;
 
             RunWithinConnection((connection) => {
-                result = connection.Connection.Query<TrackHistory>(
+                result = Query<TrackHistory>(
                     Commands.TrackHistory_GetByAircraftID,
                     new {
                         aircraftID,
                         startTimeInclusive,
                         endTimeInclusive,
-                    },
-                    transaction: connection.Transaction
+                    }
                 ).ToArray();
             });
 
@@ -716,12 +812,9 @@ namespace VirtualRadar.Database.TrackHistoryData
             TrackHistory result = null;
 
             RunWithinConnection((connection) => {
-                result = connection.Connection.QueryFirstOrDefault<TrackHistory>(
+                result = QueryFirstOrDefault<TrackHistory>(
                     "SELECT * FROM [TrackHistory] WHERE [TrackHistoryID] = @trackHistoryID",
-                    new {
-                        trackHistoryID = id,
-                    },
-                    transaction: connection.Transaction
+                    new { trackHistoryID = id, }
                 );
             });
 
@@ -738,7 +831,7 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <returns></returns>
         private IEnumerable<TrackHistory> TrackHistory_GetUpToCreatedUtc(ConnectionWrapper connection, DateTime upToCreatedUtc, bool includePreserved, int minimumHistoryStates)
         {
-            return connection.Connection.Query<TrackHistory>(@"
+            return Query<TrackHistory>(@"
                 SELECT *
                 FROM   [TrackHistory] AS [parent]
                 WHERE  [CreatedUtc] <= @upToCreatedUtc
@@ -749,7 +842,7 @@ namespace VirtualRadar.Database.TrackHistoryData
                     includePreserved,
                     minimumHistoryStates
                 },
-                transaction: connection.Transaction
+                connection
             );
         }
 
@@ -759,21 +852,17 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="trackHistory"></param>
         public void TrackHistory_Save(TrackHistory trackHistory)
         {
-            RunWithinConnection((connection) => {
-                if(trackHistory.TrackHistoryID != 0) {
-                    trackHistory.CreatedUtc = connection.Connection.Query<DateTime>(
-                        Commands.TrackHistory_Update,
-                        trackHistory,
-                        transaction: connection.Transaction
-                    ).First();
-                } else {
-                    trackHistory.TrackHistoryID = connection.Connection.Query<long>(
-                        Commands.TrackHistory_Insert,
-                        trackHistory,
-                        transaction: connection.Transaction
-                    ).First();
-                }
-            });
+            Save<TrackHistory>(trackHistory, () => trackHistory.TrackHistoryID != 0, TrackHistory_Insert, TrackHistory_Update);
+        }
+
+        private void TrackHistory_Insert(ConnectionWrapper connection, TrackHistory trackHistory)
+        {
+            Insert<TrackHistory, long>(connection, trackHistory, Commands.TrackHistory_Insert, id => trackHistory.TrackHistoryID = id);
+        }
+
+        private void TrackHistory_Update(ConnectionWrapper connection, TrackHistory trackHistory)
+        {
+            Update<TrackHistory>(connection, trackHistory, Commands.TrackHistory_Update, created => trackHistory.CreatedUtc = created);
         }
 
         /// <summary>
@@ -855,19 +944,10 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <returns></returns>
         public TrackHistoryState TrackHistoryState_GetByID(long id)
         {
-            TrackHistoryState result = null;
-
-            RunWithinConnection((connection) => {
-                result = connection.Connection.QueryFirstOrDefault<TrackHistoryState>(
-                    "SELECT * FROM [TrackHistoryState] WHERE [TrackHistoryStateID] = @id",
-                    new {
-                        id
-                    },
-                    transaction: connection.Transaction
-                );
-            });
-
-            return result;
+            return QueryFirstOrDefault<TrackHistoryState>(
+                "SELECT * FROM [TrackHistoryState] WHERE [TrackHistoryStateID] = @id",
+                new { id }
+            );
         }
 
         /// <summary>
@@ -877,26 +957,21 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <returns></returns>
         public IEnumerable<TrackHistoryState> TrackHistoryState_GetByTrackHistory(TrackHistory trackHistory)
         {
-            TrackHistoryState[] result = null;
-
-            RunWithinConnection((connection) => {
-                result = TrackHistoryState_GetByTrackHistory(connection, trackHistory);
-            });
-
-            return result ?? new TrackHistoryState[0];
+            return TrackHistoryState_GetByTrackHistory(null, trackHistory);
         }
 
         private TrackHistoryState[] TrackHistoryState_GetByTrackHistory(ConnectionWrapper connection, TrackHistory trackHistory)
         {
-            return connection.Connection.Query<TrackHistoryState>(@"
-                SELECT   *
-                FROM     [TrackHistoryState]
-                WHERE    [TrackHistoryID] = @trackHistoryID
-                ORDER BY [SequenceNumber]
-            ", new {
-                trackHistoryID = trackHistory.TrackHistoryID,
-            }, transaction: connection.Transaction)
-            .ToArray();
+            return Query<TrackHistoryState>(@"
+                    SELECT   *
+                    FROM     [TrackHistoryState]
+                    WHERE    [TrackHistoryID] = @trackHistoryID
+                    ORDER BY [SequenceNumber]
+                ", new {
+                    trackHistoryID = trackHistory.TrackHistoryID,
+                },
+                connection
+            ).ToArray();
         }
 
         /// <summary>
@@ -905,9 +980,7 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="trackHistoryState"></param>
         public void TrackHistoryState_Save(TrackHistoryState trackHistoryState)
         {
-            RunWithinConnection((connection) => {
-                TrackHistoryState_Save(connection, trackHistoryState);
-            });
+            TrackHistoryState_Save(null, trackHistoryState);
         }
 
         private void TrackHistoryState_Save(ConnectionWrapper connection, TrackHistoryState trackHistoryState)
@@ -923,16 +996,16 @@ namespace VirtualRadar.Database.TrackHistoryData
             }
 
             if(trackHistoryState.TrackHistoryStateID != 0) {
-                connection.Connection.Execute(
+                Execute(
                     Commands.TrackHistoryState_Update,
                     trackHistoryState,
-                    connection.Transaction
+                    connection
                 );
             } else {
-                trackHistoryState.TrackHistoryStateID = connection.Connection.ExecuteScalar<long>(
+                trackHistoryState.TrackHistoryStateID = ExecuteScalar<long>(
                     Commands.TrackHistoryState_Insert,
                     trackHistoryState,
-                    connection.Transaction
+                    connection
                 );
             }
         }
@@ -957,12 +1030,10 @@ namespace VirtualRadar.Database.TrackHistoryData
         private void TrackHistoryState_DeleteMany(ConnectionWrapper connection, IEnumerable<TrackHistoryState> trackHistoryStates)
         {
             foreach(var trackHistoryState in trackHistoryStates) {
-                connection.Connection.Execute(
+                Execute(
                     Commands.TrackHistoryState_Delete,
-                    new {
-                        trackHistoryState.TrackHistoryStateID,
-                    },
-                    transaction: connection.Transaction
+                    new { trackHistoryState.TrackHistoryStateID, },
+                    connection
                 );
             }
         }
