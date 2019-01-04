@@ -63,6 +63,7 @@ namespace VirtualRadar.Database.TrackHistoryData {
         /// <summary>
         ///   Looks up a localized string similar to INSERT INTO [Aircraft] (
         ///    [Icao]
+        ///   ,[IcaoCountryID]
         ///   ,[Registration]
         ///   ,[Serial]
         ///   ,[YearBuilt]
@@ -75,6 +76,7 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///   ,[UpdatedUtc]
         ///) VALUES (
         ///    @Icao
+        ///   ,@IcaoCountryID
         ///   ,@Registration
         ///   ,@Serial
         ///   ,@YearBuilt
@@ -86,7 +88,7 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///   ,@CreatedUtc
         ///   ,@UpdatedUtc
         ///);
-        ///SELECT [AircraftID] FROM [Aircraft] WHERE _ROWID_ = last_insert_r [rest of string was truncated]&quot;;.
+        ///SELECT [AircraftID] FROM [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Aircraft_Insert {
             get {
@@ -97,6 +99,7 @@ namespace VirtualRadar.Database.TrackHistoryData {
         /// <summary>
         ///   Looks up a localized string similar to UPDATE [Aircraft]
         ///SET    [Icao] =                 @Icao
+        ///      ,[IcaoCountryID] =        @IcaoCountryID
         ///      ,[Registration] =         @Registration
         ///      ,[Serial] =               @Serial
         ///      ,[YearBuilt] =            @YearBuilt
@@ -105,12 +108,63 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///      ,[LastLookupUtc] =        @LastLookupUtc
         ///      ,[IsMissingFromLookup] =  @IsMissingFromLookup
         ///      ,[SuppressAutoUpdates] =  @SuppressAutoUpdates
-        ///      ,[UpdatedUtc] =           @UpdatedUtc
-        ///WHERE  [AircraftID] = @AircraftID [rest of string was truncated]&quot;;.
+        ///      ,[UpdatedUtc] =          [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Aircraft_Update {
             get {
                 return ResourceManager.GetString("Aircraft_Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [AircraftType] (
+        ///    [Icao]
+        ///   ,[ManufacturerID]
+        ///   ,[ModelID]
+        ///   ,[EngineTypeID]
+        ///   ,[EnginePlacementID]
+        ///   ,[WakeTurbulenceCategoryID]
+        ///   ,[EngineCount]
+        ///   ,[CreatedUtc]
+        ///   ,[UpdatedUtc]
+        ///) VALUES (
+        ///    @Icao
+        ///   ,@ManufacturerID
+        ///   ,@ModelID
+        ///   ,@EngineTypeID
+        ///   ,@EnginePlacementID
+        ///   ,@WakeTurbulenceCategoryID
+        ///   ,@EngineCount
+        ///   ,@CreatedUtc
+        ///   ,@UpdatedUtc
+        ///);
+        ///SELECT [AircraftTypeID] FROM [AircraftType] WHERE _ROWID_ = last_insert_rowid();
+        ///.
+        /// </summary>
+        internal static string AircraftType_Insert {
+            get {
+                return ResourceManager.GetString("AircraftType_Insert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UPDATE [AircraftType]
+        ///SET    [Icao] =                     @Icao
+        ///      ,[ManufacturerID] =           @ManufacturerID
+        ///      ,[ModelID] =                  @ModelID
+        ///      ,[EngineTypeID] =             @EngineTypeID
+        ///      ,[EnginePlacementID] =        @EnginePlacementID
+        ///      ,[WakeTurbulenceCategoryID] = @WakeTurbulenceCategoryID
+        ///      ,[EngineCount] =              @EngineCount
+        ///      ,[UpdatedUtc] =               @UpdatedUtc
+        ///WHERE  [AircraftTypeID] = @AircraftTypeID;
+        ///
+        ///SELECT [CreatedUtc]
+        ///FROM   [Air [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string AircraftType_Update {
+            get {
+                return ResourceManager.GetString("AircraftType_Update", resourceCulture);
             }
         }
         
@@ -167,13 +221,85 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///--
         ///CREATE TABLE IF NOT EXISTS [Receiver]
         ///(
-        ///    [ReceiverID]        INTEGER PRIMARY KEY AUTOINCREMENT
-        ///   ,[Name]              NVARCHAR(255) COLLATE NOCASE
-        ///   ,[CreatedUtc]        DA [rest of string was truncated]&quot;;.
+        ///    [ReceiverID]    INTEGER PRIMARY KEY AUTOINCREMENT
+        ///   ,[Name]          NVARCHAR(255) COLLATE NOCASE
+        ///   ,[CreatedUtc]    DATETIME NOT N [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CreateSchema {
             get {
                 return ResourceManager.GetString("CreateSchema", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [Manufacturer] (
+        ///    [Name]
+        ///   ,[CreatedUtc]
+        ///   ,[UpdatedUtc]
+        ///) VALUES (
+        ///    @Name
+        ///   ,@CreatedUtc
+        ///   ,@UpdatedUtc
+        ///);
+        ///SELECT [ManufacturerID] FROM [Manufacturer] WHERE _ROWID_ = last_insert_rowid();
+        ///.
+        /// </summary>
+        internal static string Manufacturer_Insert {
+            get {
+                return ResourceManager.GetString("Manufacturer_Insert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UPDATE [Manufacturer]
+        ///SET    [Name] =       @Name
+        ///      ,[UpdatedUtc] = @UpdatedUtc
+        ///WHERE  [ManufacturerID] = @ManufacturerID;
+        ///
+        ///SELECT [CreatedUtc]
+        ///FROM   [Manufacturer]
+        ///WHERE  [ManufacturerID] = @ManufacturerID;
+        ///.
+        /// </summary>
+        internal static string Manufacturer_Update {
+            get {
+                return ResourceManager.GetString("Manufacturer_Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [Model] (
+        ///    [Name]
+        ///   ,[CreatedUtc]
+        ///   ,[UpdatedUtc]
+        ///) VALUES (
+        ///    @Name
+        ///   ,@CreatedUtc
+        ///   ,@UpdatedUtc
+        ///);
+        ///SELECT [ModelID] FROM [Model] WHERE _ROWID_ = last_insert_rowid();
+        ///.
+        /// </summary>
+        internal static string Model_Insert {
+            get {
+                return ResourceManager.GetString("Model_Insert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UPDATE [Model]
+        ///SET    [Name] =       @Name
+        ///      ,[UpdatedUtc] = @UpdatedUtc
+        ///WHERE  [ModelID] = @ModelID;
+        ///
+        ///SELECT [CreatedUtc]
+        ///FROM   [Model]
+        ///WHERE  [ModelID] = @ModelID;
+        ///.
+        /// </summary>
+        internal static string Model_Update {
+            get {
+                return ResourceManager.GetString("Model_Update", resourceCulture);
             }
         }
         

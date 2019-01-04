@@ -20,6 +20,7 @@ using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.SQLite;
+using VirtualRadar.Interface.StandingData;
 
 namespace VirtualRadar.Database.TrackHistoryData
 {
@@ -415,7 +416,7 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="useConnection"></param>
         /// <returns></returns>
         private TResult GetOrCreateByKey<TResult, TKey>(TKey key, Func<ConnectionWrapper, TKey, TResult> getByKey, Action<ConnectionWrapper, TResult> insertAction, Func<DateTime, TResult> buildNewRecord, ConnectionWrapper useConnection = null)
-            where TResult: class
+            where TResult : class
         {
             TResult result = null;
 
@@ -529,6 +530,40 @@ namespace VirtualRadar.Database.TrackHistoryData
         }
         #endregion
 
+        #region AircraftType
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public TrackHistoryAircraftType AircraftType_GetByID(int id)
+        {
+            return QueryFirstOrDefault<TrackHistoryAircraftType>(
+                "SELECT * FROM [AircraftType] WHERE [AircraftTypeID] = @id",
+                new { id }
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="aircraftType"></param>
+        public void AircraftType_Save(TrackHistoryAircraftType aircraftType)
+        {
+            Save(aircraftType, () => aircraftType.AircraftTypeID != 0, AircraftType_Insert, AircraftType_Update);
+        }
+
+        private void AircraftType_Insert(ConnectionWrapper connection, TrackHistoryAircraftType aircraftType)
+        {
+            Insert<TrackHistoryAircraftType, int>(connection, aircraftType, Commands.AircraftType_Insert, id => aircraftType.AircraftTypeID = id);
+        }
+
+        private void AircraftType_Update(ConnectionWrapper connection, TrackHistoryAircraftType aircraftType)
+        {
+            Update<TrackHistoryAircraftType>(connection, aircraftType, Commands.AircraftType_Update, created => aircraftType.CreatedUtc = created);
+        }
+        #endregion
+
         #region Country
         /// <summary>
         /// See interface docs.
@@ -593,7 +628,7 @@ namespace VirtualRadar.Database.TrackHistoryData
                 Country_GetByName,
                 Country_Insert,
                 now => new TrackHistoryCountry() {
-                    Name =       name,
+                    Name = name,
                     CreatedUtc = now,
                     UpdatedUtc = now,
                 }
@@ -609,6 +644,228 @@ namespace VirtualRadar.Database.TrackHistoryData
             Execute(
                 "DELETE FROM [Country] WHERE [CountryID] = @CountryID",
                 new { country.CountryID }
+            );
+        }
+        #endregion
+
+        #region EnginePlacement
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="enginePlacement"></param>
+        /// <returns></returns>
+        public TrackHistoryEnginePlacement EnginePlacement_GetByID(EnginePlacement enginePlacement)
+        {
+            return QueryFirstOrDefault<TrackHistoryEnginePlacement>(
+                "SELECT * FROM [EnginePlacement] WHERE [EnginePlacementID] = @EnginePlacementID",
+                new { EnginePlacementID = enginePlacement }
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<TrackHistoryEnginePlacement> EnginePlacement_GetAll()
+        {
+            return Query<TrackHistoryEnginePlacement>(
+                "SELECT * FROM [EnginePlacement]",
+                null
+            ).ToArray();
+        }
+        #endregion
+
+        #region EngineType
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="engineType"></param>
+        /// <returns></returns>
+        public TrackHistoryEngineType EngineType_GetByID(EngineType engineType)
+        {
+            return QueryFirstOrDefault<TrackHistoryEngineType>(
+                "SELECT * FROM [EngineType] WHERE [EngineTypeID] = @EngineTypeID",
+                new { EngineTypeID = engineType }
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<TrackHistoryEngineType> EngineType_GetAll()
+        {
+            return Query<TrackHistoryEngineType>(
+                "SELECT * FROM [EngineType]",
+                null
+            ).ToArray();
+        }
+        #endregion
+
+        #region Manufacturer
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public TrackHistoryManufacturer Manufacturer_GetByID(int id)
+        {
+            return QueryFirstOrDefault<TrackHistoryManufacturer>(
+                "SELECT * FROM [Manufacturer] WHERE [ManufacturerID] = @id",
+                new { id, }
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public TrackHistoryManufacturer Manufacturer_GetByName(string name)
+        {
+            return Manufacturer_GetByName(null, name);
+        }
+
+        private TrackHistoryManufacturer Manufacturer_GetByName(ConnectionWrapper connection, string name)
+        {
+            return QueryFirstOrDefault<TrackHistoryManufacturer>(
+                "SELECT * FROM [Manufacturer] WHERE [Name] = @name",
+                new { name, },
+                connection
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="manufacturer"></param>
+        public void Manufacturer_Save(TrackHistoryManufacturer manufacturer)
+        {
+            Save(manufacturer, () => manufacturer.ManufacturerID != 0, Manufacturer_Insert, Manufacturer_Update);
+        }
+
+        private void Manufacturer_Insert(ConnectionWrapper connection, TrackHistoryManufacturer manufacturer)
+        {
+            Insert<TrackHistoryManufacturer, int>(connection, manufacturer, Commands.Manufacturer_Insert, id => manufacturer.ManufacturerID = id);
+        }
+
+        private void Manufacturer_Update(ConnectionWrapper connection, TrackHistoryManufacturer manufacturer)
+        {
+            Update<TrackHistoryManufacturer>(connection, manufacturer, Commands.Manufacturer_Update, created => manufacturer.CreatedUtc = created);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public TrackHistoryManufacturer Manufacturer_GetOrCreateByName(string name)
+        {
+            return GetOrCreateByKey<TrackHistoryManufacturer, string>(
+                name,
+                Manufacturer_GetByName,
+                Manufacturer_Insert,
+                now => new TrackHistoryManufacturer() {
+                    Name = name,
+                    CreatedUtc = now,
+                    UpdatedUtc = now,
+                }
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="manufacturer"></param>
+        public void Manufacturer_Delete(TrackHistoryManufacturer manufacturer)
+        {
+            Execute(
+                "DELETE FROM [Manufacturer] WHERE [ManufacturerID] = @ManufacturerID",
+                new { manufacturer.ManufacturerID }
+            );
+        }
+        #endregion
+
+        #region Model
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public TrackHistoryModel Model_GetByID(int id)
+        {
+            return QueryFirstOrDefault<TrackHistoryModel>(
+                "SELECT * FROM [Model] WHERE [ModelID] = @id",
+                new { id, }
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public TrackHistoryModel Model_GetByName(string name)
+        {
+            return Model_GetByName(null, name);
+        }
+
+        private TrackHistoryModel Model_GetByName(ConnectionWrapper connection, string name)
+        {
+            return QueryFirstOrDefault<TrackHistoryModel>(
+                "SELECT * FROM [Model] WHERE [Name] = @name",
+                new { name, },
+                connection
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="model"></param>
+        public void Model_Save(TrackHistoryModel model)
+        {
+            Save(model, () => model.ModelID != 0, Model_Insert, Model_Update);
+        }
+
+        private void Model_Insert(ConnectionWrapper connection, TrackHistoryModel model)
+        {
+            Insert<TrackHistoryModel, int>(connection, model, Commands.Model_Insert, id => model.ModelID = id);
+        }
+
+        private void Model_Update(ConnectionWrapper connection, TrackHistoryModel model)
+        {
+            Update<TrackHistoryModel>(connection, model, Commands.Model_Update, created => model.CreatedUtc = created);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public TrackHistoryModel Model_GetOrCreateByName(string name)
+        {
+            return GetOrCreateByKey<TrackHistoryModel, string>(
+                name,
+                Model_GetByName,
+                Model_Insert,
+                now => new TrackHistoryModel() {
+                    Name = name,
+                    CreatedUtc = now,
+                    UpdatedUtc = now,
+                }
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="model"></param>
+        public void Model_Delete(TrackHistoryModel model)
+        {
+            Execute(
+                "DELETE FROM [Model] WHERE [ModelID] = @ModelID",
+                new { model.ModelID }
             );
         }
         #endregion
@@ -658,7 +915,7 @@ namespace VirtualRadar.Database.TrackHistoryData
                 Receiver_GetByName,
                 Receiver_Insert,
                 now => new TrackHistoryReceiver() {
-                    Name =       name,
+                    Name = name,
                     CreatedUtc = now,
                     UpdatedUtc = now,
                 }
@@ -704,6 +961,33 @@ namespace VirtualRadar.Database.TrackHistoryData
                 "DELETE FROM [Receiver] WHERE [ReceiverID] = @ReceiverID",
                 new { receiver.ReceiverID }
             );
+        }
+        #endregion
+
+        #region Species
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="species"></param>
+        /// <returns></returns>
+        public TrackHistorySpecies Species_GetByID(Species species)
+        {
+            return QueryFirstOrDefault<TrackHistorySpecies>(
+                "SELECT * FROM [Species] WHERE [SpeciesID] = @SpeciesID",
+                new { SpeciesID = species }
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<TrackHistorySpecies> Species_GetAll()
+        {
+            return Query<TrackHistorySpecies>(
+                "SELECT * FROM [Species]",
+                null
+            ).ToArray();
         }
         #endregion
 
@@ -1036,6 +1320,33 @@ namespace VirtualRadar.Database.TrackHistoryData
                     connection
                 );
             }
+        }
+        #endregion
+
+        #region WakeTurbulenceCategory
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="wakeTurbulenceCategory"></param>
+        /// <returns></returns>
+        public TrackHistoryWakeTurbulenceCategory WakeTurbulenceCategory_GetByID(WakeTurbulenceCategory wakeTurbulenceCategory)
+        {
+            return QueryFirstOrDefault<TrackHistoryWakeTurbulenceCategory>(
+                "SELECT * FROM [WakeTurbulenceCategory] WHERE [WakeTurbulenceCategoryID] = @WakeTurbulenceCategoryID",
+                new { WakeTurbulenceCategoryID = wakeTurbulenceCategory }
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<TrackHistoryWakeTurbulenceCategory> WakeTurbulenceCategory_GetAll()
+        {
+            return Query<TrackHistoryWakeTurbulenceCategory>(
+                "SELECT * FROM [WakeTurbulenceCategory]",
+                null
+            ).ToArray();
         }
         #endregion
     }

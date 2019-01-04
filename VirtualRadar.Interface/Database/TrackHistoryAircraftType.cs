@@ -13,83 +13,62 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VirtualRadar.Interface.StandingData;
 
 namespace VirtualRadar.Interface.Database
 {
     /// <summary>
-    /// Describes an aircraft in the track history database.
+    /// Describes an aircraft type record in the track history database.
     /// </summary>
-    public class TrackHistoryAircraft
+    public class TrackHistoryAircraftType
     {
         /// <summary>
-        /// Gets or sets the unique record ID.
+        /// Gets or sets the unique ID for the aircraft type record.
         /// </summary>
-        public long AircraftID { get; set; }
+        public int AircraftTypeID { get; set; }
 
         /// <summary>
-        /// Gets or sets the aircraft's ICAO code.
+        /// Gets or sets the ICAO code for the aircraft type.
         /// </summary>
         public string Icao { get; set; }
 
         /// <summary>
-        /// Gets or sets the ID of the country of registration.
+        /// Gets or sets the ID of the <see cref="TrackHistoryManufacturer"/> record associated with the aircraft type.
         /// </summary>
-        public int? IcaoCountryID { get; set; }
+        public int? ManufacturerID { get; set; }
 
         /// <summary>
-        /// Gets or sets the ID of the aircraft type details.
+        /// Gets or sets the ID of the <see cref="TrackHistoryModel"/> record associated with the aircraft type.
         /// </summary>
-        public int? AircraftTypeID { get; set; }
+        public int? ModelID { get; set; }
 
         /// <summary>
-        /// Gets or sets the aircraft's registration.
+        /// Gets or sets the ID of the <see cref="TrackHistoryEngineType"/> record associated with the aircraft type.
         /// </summary>
-        public string Registration { get; set; }
+        public EngineType? EngineTypeID { get; set; }
 
         /// <summary>
-        /// Gets or sets the aircraft's serial number.
+        /// Gets or sets the ID of the <see cref="TrackHistoryEnginePlacement"/> record associated with the aircraft type.
         /// </summary>
-        public string Serial { get; set; }
+        public EnginePlacement? EnginePlacementID { get; set; }
 
         /// <summary>
-        /// Gets or sets the year that the aircraft was manufactured.
+        /// Gets or sets the ID of the <see cref="TrackHistoryWakeTurbulenceCategory"/> record associated with the aircraft type.
         /// </summary>
-        public int? YearBuilt { get; set; }
+        public WakeTurbulenceCategory? WakeTurbulenceCategoryID { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating that the user finds the aircraft interesting.
+        /// Gets or sets the number of engines (note that this is a string, one of the offical engine counts is 'C').
         /// </summary>
-        public bool IsInteresting { get; set; }
+        public string EngineCount { get; set; }
 
         /// <summary>
-        /// Gets or sets notes that the user has associated with the aircraft.
-        /// </summary>
-        public string Notes { get; set; }
-
-        /// <summary>
-        /// Gets or sets the date that the last online lookup was performed for this aircraft.
-        /// </summary>
-        public DateTime? LastLookupUtc { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating that the online lookup has never found any details
-        /// for the aircraft.
-        /// </summary>
-        public bool IsMissingFromLookup { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating that the user is maintaining this record and that its
-        /// values should not be updated by online lookups.
-        /// </summary>
-        public bool SuppressAutoUpdates { get; set; }
-
-        /// <summary>
-        /// Gets or sets the date and time the aircraft record was created.
+        /// Gets or sets the time that the record was created.
         /// </summary>
         public DateTime CreatedUtc { get; set; }
 
         /// <summary>
-        /// Gets or sets the date and time the aircraft record was updated.
+        /// Gets or sets the time that the record was last updated.
         /// </summary>
         public DateTime UpdatedUtc { get; set; }
     }

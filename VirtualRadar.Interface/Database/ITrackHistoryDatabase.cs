@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VirtualRadar.Interface.StandingData;
 
 namespace VirtualRadar.Interface.Database
 {
@@ -26,6 +27,7 @@ namespace VirtualRadar.Interface.Database
     /// </remarks>
     public interface ITrackHistoryDatabase : ITransactionable
     {
+        #region Properties
         /// <summary>
         /// True if the <see cref="FileName"/> or <see cref="ConnectionString"/> is taken from some other source and the
         /// implementation will ignore both properties. The configuration UI should not ask for a data source if this is set.
@@ -47,14 +49,18 @@ namespace VirtualRadar.Interface.Database
         /// Gets or sets the connection string to the database. Only used if <see cref="FileNameRequired"/> is false.
         /// </summary>
         string ConnectionString { get; set; }
+        #endregion
 
+        #region Schema
         /// <summary>
         /// Creates a new instance of a database. The meaning of <paramref name="dataSource"/> depends on whether
         /// <see cref="FileNameRequired"/> is true or false.
         /// </summary>
         /// <param name="dataSource"></param>
         void Create(string dataSource);
+        #endregion
 
+        #region Aircraft
         /// <summary>
         /// Returns the aircraft record for the ID passed across or null if no such aircraft exists.
         /// </summary>
@@ -83,7 +89,24 @@ namespace VirtualRadar.Interface.Database
         /// This automatically deletes all <see cref="TrackHistory"/> records attached to the aircraft.
         /// </remarks>
         void Aircraft_Delete(TrackHistoryAircraft aircraft);
+        #endregion
 
+        #region AircraftType
+        /// <summary>
+        /// Returns the aircraft type for the ID passed across or null if no such record exists.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        TrackHistoryAircraftType AircraftType_GetByID(int id);
+
+        /// <summary>
+        /// Saves an aircraft type record.
+        /// </summary>
+        /// <param name="aircraftType"></param>
+        void AircraftType_Save(TrackHistoryAircraftType aircraftType);
+        #endregion
+
+        #region Country
         /// <summary>
         /// Returns the country record for the ID passed across or null if no such country exists.
         /// </summary>
@@ -117,7 +140,111 @@ namespace VirtualRadar.Interface.Database
         /// </summary>
         /// <param name="country"></param>
         void Country_Delete(TrackHistoryCountry country);
+        #endregion
 
+        #region EnginePlacement
+        /// <summary>
+        /// Returns the engine placement record for the standing data EnginePlacement passed across or null if no such record exists.
+        /// </summary>
+        /// <param name="enginePlacement"></param>
+        /// <returns></returns>
+        TrackHistoryEnginePlacement EnginePlacement_GetByID(EnginePlacement enginePlacement);
+
+        /// <summary>
+        /// Returns all of the engine placement records on the database.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<TrackHistoryEnginePlacement> EnginePlacement_GetAll();
+        #endregion
+
+        #region EngineType
+        /// <summary>
+        /// Returns the engine type record for the standing data EngineType passed across or null if no such record exists.
+        /// </summary>
+        /// <param name="engineType"></param>
+        /// <returns></returns>
+        TrackHistoryEngineType EngineType_GetByID(EngineType engineType);
+
+        /// <summary>
+        /// Returns all of the engine type records on the database.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<TrackHistoryEngineType> EngineType_GetAll();
+        #endregion
+
+        #region Manufacturer
+        /// <summary>
+        /// Returns the manufacturer record for the ID passed across or null if no such manufacturer exists.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        TrackHistoryManufacturer Manufacturer_GetByID(int id);
+
+        /// <summary>
+        /// Returns the manufacturer for the case insensitive name passed across or null if no such manufacturer exists.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        TrackHistoryManufacturer Manufacturer_GetByName(string name);
+
+        /// <summary>
+        /// Returns the manufacturer for the case insensitive name passed across. If no such manufacturer exists then a new one is created
+        /// and returned.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        TrackHistoryManufacturer Manufacturer_GetOrCreateByName(string name);
+
+        /// <summary>
+        /// Creates or updates the manufacturer passed across.
+        /// </summary>
+        /// <param name="manufacturer"></param>
+        void Manufacturer_Save(TrackHistoryManufacturer manufacturer);
+
+        /// <summary>
+        /// Deletes the manufacturer passed across.
+        /// </summary>
+        /// <param name="manufacturer"></param>
+        void Manufacturer_Delete(TrackHistoryManufacturer manufacturer);
+        #endregion
+
+        #region Model
+        /// <summary>
+        /// Returns the model record for the ID passed across or null if no such model exists.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        TrackHistoryModel Model_GetByID(int id);
+
+        /// <summary>
+        /// Returns the model for the case insensitive name passed across or null if no such model exists.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        TrackHistoryModel Model_GetByName(string name);
+
+        /// <summary>
+        /// Returns the model for the case insensitive name passed across. If no such model exists then a new one is created
+        /// and returned.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        TrackHistoryModel Model_GetOrCreateByName(string name);
+
+        /// <summary>
+        /// Creates or updates the model passed across.
+        /// </summary>
+        /// <param name="model"></param>
+        void Model_Save(TrackHistoryModel model);
+
+        /// <summary>
+        /// Deletes the model passed across.
+        /// </summary>
+        /// <param name="model"></param>
+        void Model_Delete(TrackHistoryModel model);
+        #endregion
+
+        #region Receiver
         /// <summary>
         /// Returns the receiver for the ID passed across or null if no such receiver exists.
         /// </summary>
@@ -158,7 +285,24 @@ namespace VirtualRadar.Interface.Database
         /// continues to be valid for the state.
         /// </remarks>
         void Receiver_Delete(TrackHistoryReceiver receiver);
+        #endregion
 
+        #region Species
+        /// <summary>
+        /// Returns the species record for the standing data species passed across or null if no such record exists.
+        /// </summary>
+        /// <param name="species"></param>
+        /// <returns></returns>
+        TrackHistorySpecies Species_GetByID(Species species);
+
+        /// <summary>
+        /// Returns all of the species records on the database.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<TrackHistorySpecies> Species_GetAll();
+        #endregion
+
+        #region TrackHistory
         /// <summary>
         /// Returns all track histories within a date / time range.
         /// </summary>
@@ -219,7 +363,9 @@ namespace VirtualRadar.Interface.Database
         /// <param name="newUpdatedUtc"></param>
         /// <returns></returns>
         TrackHistoryTruncateResult TrackHistory_TruncateExpired(DateTime truncateUpToUtc, DateTime newUpdatedUtc);
+        #endregion
 
+        #region TrackHistoryState
         /// <summary>
         /// Returns the state record for the ID passed across or null if it does not exist.
         /// </summary>
@@ -245,5 +391,22 @@ namespace VirtualRadar.Interface.Database
         /// </summary>
         /// <param name="trackHistoryStates"></param>
         void TrackHistoryState_SaveMany(IEnumerable<TrackHistoryState> trackHistoryStates);
+        #endregion
+
+        #region WakeTurbulenceCategory
+        /// <summary>
+        /// Returns the wake turbulence category record for the standing data WakeTurbulenceCategory passed across
+        /// or null if no such record exists.
+        /// </summary>
+        /// <param name="wakeTurbulenceCategory"></param>
+        /// <returns></returns>
+        TrackHistoryWakeTurbulenceCategory WakeTurbulenceCategory_GetByID(WakeTurbulenceCategory wakeTurbulenceCategory);
+
+        /// <summary>
+        /// Returns all of the wake turbulence category records on the database.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<TrackHistoryWakeTurbulenceCategory> WakeTurbulenceCategory_GetAll();
+        #endregion
     }
 }

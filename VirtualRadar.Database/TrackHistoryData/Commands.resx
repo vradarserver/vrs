@@ -118,6 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="AircraftType_Insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>scripts\aircrafttype_insert.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="AircraftType_Update" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>scripts\aircrafttype_update.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="Aircraft_Insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>scripts\aircraft_insert.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
@@ -132,6 +138,18 @@
   </data>
   <data name="CreateSchema" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>scripts\createschema.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="Manufacturer_Insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>scripts\manufacturer_insert.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="Manufacturer_Update" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>scripts\manufacturer_update.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="Model_Insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>scripts\model_insert.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="Model_Update" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>scripts\model_update.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="Receiver_Insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>scripts\receiver_insert.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>

@@ -166,6 +166,12 @@
     <Content Include="Log\Scripts\Session_Insert.sql" />
     <Content Include="Log\Scripts\Session_Update.sql" />
     <Content Include="Log\Scripts\UpdateSchema.sql" />
+    <Content Include="TrackHistoryData\Scripts\AircraftType_Insert.sql" />
+    <Content Include="TrackHistoryData\Scripts\AircraftType_Update.sql" />
+    <Content Include="TrackHistoryData\Scripts\Model_Update.sql" />
+    <Content Include="TrackHistoryData\Scripts\Model_Insert.sql" />
+    <Content Include="TrackHistoryData\Scripts\Manufacturer_Update.sql" />
+    <Content Include="TrackHistoryData\Scripts\Manufacturer_Insert.sql" />
     <Content Include="TrackHistoryData\Scripts\Country_Insert.sql" />
     <Content Include="TrackHistoryData\Scripts\Country_Update.sql" />
     <Content Include="TrackHistoryData\Scripts\TrackHistoryState_Delete.sql" />

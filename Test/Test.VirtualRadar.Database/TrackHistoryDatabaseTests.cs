@@ -20,6 +20,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Test.Framework;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Database;
+using VirtualRadar.Interface.StandingData;
 
 namespace Test.VirtualRadar.Database
 {
@@ -213,8 +214,15 @@ namespace Test.VirtualRadar.Database
             object value = null;
 
             var countryName = generateForCreate ? "Faerûn" : "Tyr";
+            var modelIcao = generateForCreate ? "A319" : "B744";
 
             switch(property.Name) {
+                case nameof(TrackHistoryAircraft.AircraftTypeID):
+                    // At time of writing I only have AircraftType_Save and _GetByID... when higher-level creation methods are added I can simplify this
+                    var aircraftType = new TrackHistoryAircraftType() { Icao = modelIcao, CreatedUtc = DateTime.UtcNow, UpdatedUtc = DateTime.UtcNow };
+                    _Database.AircraftType_Save(aircraftType);
+                    value = aircraftType.AircraftTypeID;
+                    break;
                 case nameof(TrackHistoryAircraft.IcaoCountryID):    value = _Database.Country_GetOrCreateByName(countryName).CountryID; break;
                 case nameof(TrackHistoryAircraft.Notes):            value = generateForCreate ? new String('Ă', 2000) : new string('b', 2000); break;
                 case nameof(TrackHistoryAircraft.Registration):     value = generateForCreate ? new String('A', 20)   : new string('b', 20); break;
@@ -246,6 +254,104 @@ namespace Test.VirtualRadar.Database
         }
 
         private void AssertAircraftAreEqual(TrackHistoryAircraft expected, TrackHistoryAircraft actual)
+        {
+            TestUtilities.TestObjectPropertiesAreEqual(expected, actual);
+        }
+        #endregion
+
+        #region AircraftType
+        protected void AircraftType_Save_Creates_New_Records_Correctly()
+        {
+            var created = DateTime.UtcNow;
+            var updated = created.AddMilliseconds(7);
+            foreach(var aircraftType in SampleAircraftTypes(true, created, updated)) {
+                _Database.AircraftType_Save(aircraftType);
+
+                Assert.AreNotEqual(0, aircraftType.AircraftTypeID);
+
+                var readBack = _Database.AircraftType_GetByID(aircraftType.AircraftTypeID);
+                AssertAircraftTypesAreEqual(aircraftType, readBack);
+            }
+        }
+
+        protected void AircraftType_Save_Updates_Existing_Records_Correctly()
+        {
+            var created = DateTime.UtcNow;
+            var updated = created.AddSeconds(9);
+
+            var allSavedAircraftTypes =   SampleAircraftTypes(generateForCreate: true,  createdUtc: created, updatedUtc: created);
+            var allUpdatedAircraftTypes = SampleAircraftTypes(generateForCreate: false, createdUtc: created, updatedUtc: updated);
+
+            foreach(var aircraftType in allSavedAircraftTypes) {
+                _Database.AircraftType_Save(aircraftType);
+            }
+
+            for(var i = 0;i < allSavedAircraftTypes.Count;++i) {
+                var savedAircraftType = allSavedAircraftTypes[i];
+                var updatedAircraftType = allUpdatedAircraftTypes[i];
+
+                updatedAircraftType.AircraftTypeID = savedAircraftType.AircraftTypeID;
+                _Database.AircraftType_Save(updatedAircraftType);
+
+                var readBack = _Database.AircraftType_GetByID(savedAircraftType.AircraftTypeID);
+                AssertAircraftTypesAreEqual(updatedAircraftType, readBack);
+            }
+        }
+
+        private List<TrackHistoryAircraftType> SampleAircraftTypes(bool generateForCreate, DateTime? createdUtc = null, DateTime? updatedUtc = null)
+        {
+            var created = createdUtc ?? DateTime.UtcNow;
+            var updated = updatedUtc ?? DateTime.UtcNow;
+
+            var result = new List<TrackHistoryAircraftType>();
+
+            var previousIcao = 0;
+            foreach(var property in typeof(TrackHistoryAircraftType).GetProperties()) {
+                var aircraftType = new TrackHistoryAircraftType() {
+                    Icao =          $"A{++previousIcao:X3}",
+                    CreatedUtc =    created,
+                    UpdatedUtc =    updated,
+                };
+
+                var propertyValue = GenerateAircraftTypePropertyValue(property, generateForCreate);
+                if(propertyValue != null) {
+                    property.SetValue(aircraftType, propertyValue);
+                    result.Add(aircraftType);
+                }
+            }
+
+            return result;
+        }
+
+        private object GenerateAircraftTypePropertyValue(PropertyInfo property, bool generateForCreate)
+        {
+            object value = null;
+
+            var manufacturerName = generateForCreate ? "Airbus" : "Boeing";
+            var modelName = generateForCreate ? "A320" : "B744";
+
+            switch(property.Name) {
+                case nameof(TrackHistoryAircraftType.EngineCount):              value = generateForCreate ? "2" : "4"; break;
+                case nameof(TrackHistoryAircraftType.EnginePlacementID):        value = generateForCreate ? EnginePlacement.AftMounted : EnginePlacement.FuselageBuried; break;
+                case nameof(TrackHistoryAircraftType.EngineTypeID):             value = generateForCreate ? EngineType.Electric : EngineType.Jet; break;
+                case nameof(TrackHistoryAircraftType.ManufacturerID):           value = _Database.Manufacturer_GetOrCreateByName(manufacturerName).ManufacturerID; break;
+                case nameof(TrackHistoryAircraftType.ModelID):                  value = _Database.Model_GetOrCreateByName(manufacturerName).ModelID; break;
+                case nameof(TrackHistoryAircraftType.WakeTurbulenceCategoryID): value = generateForCreate ? WakeTurbulenceCategory.Medium : WakeTurbulenceCategory.Heavy; break;
+
+                case nameof(TrackHistoryAircraftType.AircraftTypeID):
+                case nameof(TrackHistoryAircraftType.CreatedUtc):
+                case nameof(TrackHistoryAircraftType.Icao):
+                case nameof(TrackHistoryAircraftType.UpdatedUtc):
+                    break;
+
+                default:
+                    throw new NotImplementedException($"Need code for {nameof(TrackHistoryAircraftType)}.{property.Name}");
+            }
+
+            return value;
+        }
+
+        private void AssertAircraftTypesAreEqual(TrackHistoryAircraftType expected, TrackHistoryAircraftType actual)
         {
             TestUtilities.TestObjectPropertiesAreEqual(expected, actual);
         }
@@ -400,6 +506,400 @@ namespace Test.VirtualRadar.Database
         }
         #endregion
 
+        #region EnginePlacement
+        public void EnginePlacement_GetByID_Returns_Correct_EnginePlacement()
+        {
+            foreach(EnginePlacement enumEnginePlacement in Enum.GetValues(typeof(EnginePlacement))) {
+                var dbEnginePlacement = _Database.EnginePlacement_GetByID(enumEnginePlacement);
+                if(enumEnginePlacement == EnginePlacement.Unknown) {
+                    Assert.IsNull(dbEnginePlacement);
+                } else {
+                    AssertEnginePlacementIsCorrect(enumEnginePlacement, dbEnginePlacement);
+                }
+            }
+        }
+
+        public void EnginePlacement_GetAll_Returns_All_EnginePlacement()
+        {
+            var allEnginePlacement = Enum.GetValues(typeof(EnginePlacement))
+                .OfType<EnginePlacement>()
+                .Where(r => r != EnginePlacement.Unknown)
+                .ToArray();
+            var actual = _Database.EnginePlacement_GetAll().ToArray();
+            Assert.AreEqual(allEnginePlacement.Length, actual.Length);
+
+            foreach(EnginePlacement enumEnginePlacement in allEnginePlacement) {
+                AssertEnginePlacementIsCorrect(enumEnginePlacement, actual.Single(r => r.EnginePlacementID == enumEnginePlacement));
+            }
+        }
+
+        private static void AssertEnginePlacementIsCorrect(EnginePlacement enumEnginePlacement, TrackHistoryEnginePlacement dbEnginePlacement)
+        {
+            Assert.AreEqual(enumEnginePlacement, dbEnginePlacement.EnginePlacementID);
+
+            var expectedCode = "";
+            var expectedDesc = "";
+
+            switch(enumEnginePlacement) {
+                case EnginePlacement.AftMounted:        expectedCode = "AM"; expectedDesc = "Aft Mounted"; break;
+                case EnginePlacement.FuselageBuried:    expectedCode = "FB"; expectedDesc = "Fuselage Buried"; break;
+                case EnginePlacement.NoseMounted:       expectedCode = "NM"; expectedDesc = "Nose Mounted"; break;
+                case EnginePlacement.WingBuried:        expectedCode = "WB"; expectedDesc = "Wing Buried"; break;
+                case EnginePlacement.WingMounted:       expectedCode = "WM"; expectedDesc = "Wing Mounted"; break;
+                default: throw new NotImplementedException($"Need code for {enumEnginePlacement}");
+            }
+
+            Assert.AreEqual(expectedCode, dbEnginePlacement.Code);
+            Assert.AreEqual(expectedDesc, dbEnginePlacement.Description);
+        }
+        #endregion
+
+        #region EngineType
+        public void EngineType_GetByID_Returns_Correct_EngineType()
+        {
+            foreach(EngineType enumEngineType in Enum.GetValues(typeof(EngineType))) {
+                var dbEngineType = _Database.EngineType_GetByID(enumEngineType);
+                if(enumEngineType == EngineType.None) {
+                    Assert.IsNull(dbEngineType);
+                } else {
+                    AssertEngineTypeIsCorrect(enumEngineType, dbEngineType);
+                }
+            }
+        }
+
+        public void EngineType_GetAll_Returns_All_EngineType()
+        {
+            var allEngineType = Enum.GetValues(typeof(EngineType))
+                .OfType<EngineType>()
+                .Where(r => r != EngineType.None)
+                .ToArray();
+            var actual = _Database.EngineType_GetAll().ToArray();
+            Assert.AreEqual(allEngineType.Length, actual.Length);
+
+            foreach(EngineType enumEngineType in allEngineType) {
+                AssertEngineTypeIsCorrect(enumEngineType, actual.Single(r => r.EngineTypeID == enumEngineType));
+            }
+        }
+
+        private static void AssertEngineTypeIsCorrect(EngineType enumEngineType, TrackHistoryEngineType dbEngineType)
+        {
+            Assert.AreEqual(enumEngineType, dbEngineType.EngineTypeID);
+
+            var expectedCode = "";
+            var expectedDesc = "";
+
+            switch(enumEngineType) {
+                case EngineType.Electric:   expectedCode = "E"; expectedDesc = "Electric"; break;
+                case EngineType.Jet:        expectedCode = "J"; expectedDesc = "Jet"; break;
+                case EngineType.Piston:     expectedCode = "P"; expectedDesc = "Piston"; break;
+                case EngineType.Rocket:     expectedCode = "R"; expectedDesc = "Rocket"; break;
+                case EngineType.Turboprop:  expectedCode = "T"; expectedDesc = "Turboprop"; break;
+                default: throw new NotImplementedException($"Need code for {enumEngineType}");
+            }
+
+            Assert.AreEqual(expectedCode, dbEngineType.Code);
+            Assert.AreEqual(expectedDesc, dbEngineType.Description);
+        }
+        #endregion
+
+        #region Manufacturer
+        protected void Manufacturer_Save_Creates_New_Records_Correctly()
+        {
+            var created = DateTime.UtcNow;
+            var updated = created.AddMilliseconds(7);
+            foreach(var manufacturer in SampleManufacturers(created, updated)) {
+                _Database.Manufacturer_Save(manufacturer);
+
+                Assert.AreNotEqual(0, manufacturer.ManufacturerID);
+
+                var readBack = _Database.Manufacturer_GetByID(manufacturer.ManufacturerID);
+                AssertManufacturersAreEqual(manufacturer, readBack);
+            }
+        }
+
+        protected void Manufacturer_Save_Updates_Existing_Records_Correctly()
+        {
+            var now = DateTime.UtcNow;
+
+            var createManufacturers = SampleManufacturers(now, now);
+            foreach(var manufacturer in createManufacturers) {
+                _Database.Manufacturer_Save(manufacturer);
+            }
+
+            var updatedTime = now.AddSeconds(7);
+            var updateManufacturers = SampleManufacturers(now, updatedTime);
+            for(var i = 0;i < updateManufacturers.Length;++i) {
+                var createManufacturer = createManufacturers[i];
+                var updateManufacturer = updateManufacturers[i];
+
+                var expectedName = new String(createManufacturer.Name.Reverse().ToArray());
+
+                updateManufacturer.ManufacturerID = createManufacturer.ManufacturerID;
+                updateManufacturer.Name = expectedName;
+
+                _Database.Manufacturer_Save(updateManufacturer);
+
+                Assert.AreEqual(createManufacturer.ManufacturerID, updateManufacturer.ManufacturerID);
+                Assert.AreEqual(expectedName,              updateManufacturer.Name);
+                Assert.AreEqual(createManufacturer.CreatedUtc, updateManufacturer.CreatedUtc);
+                Assert.AreEqual(updatedTime,               updateManufacturer.UpdatedUtc);
+
+                var readBack = _Database.Manufacturer_GetByID(updateManufacturer.ManufacturerID);
+                AssertManufacturersAreEqual(updateManufacturer, readBack);
+            }
+        }
+
+        protected void Manufacturer_GetByName_Fetches_By_Case_Insensitive_Name()
+        {
+            foreach(var manufacturer in SampleManufacturers()) {
+                _Database.Manufacturer_Save(manufacturer);
+
+                var sameCaseReadBack = _Database.Manufacturer_GetByName(manufacturer.Name);
+                AssertManufacturersAreEqual(manufacturer, sameCaseReadBack);
+
+                var flippedName = TestUtilities.FlipCase(manufacturer.Name);
+                var flippedCaseReadBack = _Database.Manufacturer_GetByName(flippedName);
+                AssertManufacturersAreEqual(manufacturer, flippedCaseReadBack);
+            }
+        }
+
+        protected void Manufacturer_GetOrCreateByName_Creates_New_Records_Correctly()
+        {
+            var now = DateTime.UtcNow.AddDays(-7);
+            _Clock.UtcNowValue = now;
+
+            foreach(var name in SampleManufacturers().Select(r => r.Name)) {
+                var saved = _Database.Manufacturer_GetOrCreateByName(name);
+
+                Assert.AreNotEqual(0, saved.ManufacturerID);
+                Assert.AreEqual(now, saved.CreatedUtc);
+                Assert.AreEqual(now, saved.UpdatedUtc);
+
+                var readBack = _Database.Manufacturer_GetByID(saved.ManufacturerID);
+                AssertManufacturersAreEqual(saved, readBack);
+            }
+        }
+
+        protected void Manufacturer_GetOrCreateByName_Fetches_Existing_Records_Correctly()
+        {
+            foreach(var manufacturer in SampleManufacturers()) {
+                _Database.Manufacturer_Save(manufacturer);
+
+                var sameCaseReadBack = _Database.Manufacturer_GetOrCreateByName(manufacturer.Name);
+                AssertManufacturersAreEqual(manufacturer, sameCaseReadBack);
+
+                var flippedName = TestUtilities.FlipCase(manufacturer.Name);
+                var flippedCaseReadBack = _Database.Manufacturer_GetOrCreateByName(flippedName);
+                AssertManufacturersAreEqual(manufacturer, flippedCaseReadBack);
+            }
+        }
+
+        protected void Manufacturer_Delete_Deletes_Manufacturers()
+        {
+            foreach(var manufacturer in SampleManufacturers()) {
+                _Database.Manufacturer_Save(manufacturer);
+
+                var id = manufacturer.ManufacturerID;
+                _Database.Manufacturer_Delete(manufacturer);
+
+                var readBack = _Database.Manufacturer_GetByID(id);
+                Assert.IsNull(readBack);
+            }
+        }
+
+        protected void Manufacturer_Delete_Nulls_Out_References_To_Manufacturer()
+        {
+            var aircraftType = SampleAircraftTypes(true).First(r => r.ManufacturerID != null);
+            _Database.AircraftType_Save(aircraftType);
+        
+            var manufacturer = _Database.Manufacturer_GetByID(aircraftType.ManufacturerID.Value);
+            Assert.IsNotNull(manufacturer);
+        
+            _Database.Manufacturer_Delete(manufacturer);
+        
+            var readBackAircraftType = _Database.AircraftType_GetByID(aircraftType.AircraftTypeID);
+            Assert.IsNull(readBackAircraftType.ManufacturerID);
+        }
+
+        protected void Manufacturer_Delete_Ignores_Deleted_Manufacturers()
+        {
+            var doesNotExist = new TrackHistoryManufacturer() {
+                ManufacturerID =  1,
+                Name =       "sqrt(-1)",
+                CreatedUtc = DateTime.UtcNow,
+                UpdatedUtc = DateTime.UtcNow,
+            };
+
+            // This just needs to not throw an exception
+            _Database.Manufacturer_Delete(doesNotExist);
+        }
+
+        private TrackHistoryManufacturer[] SampleManufacturers(DateTime? createdUtc = null, DateTime? updatedUtc = null)
+        {
+            var created = createdUtc ?? DateTime.UtcNow;
+            var updated = updatedUtc ?? DateTime.UtcNow;
+
+            return new TrackHistoryManufacturer[] {
+                new TrackHistoryManufacturer() { Name = "Airbus", CreatedUtc = created, UpdatedUtc = updated, },
+                new TrackHistoryManufacturer() { Name = "Boeing", CreatedUtc = created, UpdatedUtc = updated, },
+            };
+        }
+
+        private void AssertManufacturersAreEqual(TrackHistoryManufacturer expected, TrackHistoryManufacturer actual)
+        {
+            TestUtilities.TestObjectPropertiesAreEqual(expected, actual);
+        }
+        #endregion
+
+        #region Model
+        protected void Model_Save_Creates_New_Records_Correctly()
+        {
+            var created = DateTime.UtcNow;
+            var updated = created.AddMilliseconds(7);
+            foreach(var model in SampleModels(created, updated)) {
+                _Database.Model_Save(model);
+
+                Assert.AreNotEqual(0, model.ModelID);
+
+                var readBack = _Database.Model_GetByID(model.ModelID);
+                AssertModelsAreEqual(model, readBack);
+            }
+        }
+
+        protected void Model_Save_Updates_Existing_Records_Correctly()
+        {
+            var now = DateTime.UtcNow;
+
+            var createModels = SampleModels(now, now);
+            foreach(var model in createModels) {
+                _Database.Model_Save(model);
+            }
+
+            var updatedTime = now.AddSeconds(7);
+            var updateModels = SampleModels(now, updatedTime);
+            for(var i = 0;i < updateModels.Length;++i) {
+                var createModel = createModels[i];
+                var updateModel = updateModels[i];
+
+                var expectedName = new String(createModel.Name.Reverse().ToArray());
+
+                updateModel.ModelID = createModel.ModelID;
+                updateModel.Name = expectedName;
+
+                _Database.Model_Save(updateModel);
+
+                Assert.AreEqual(createModel.ModelID, updateModel.ModelID);
+                Assert.AreEqual(expectedName,              updateModel.Name);
+                Assert.AreEqual(createModel.CreatedUtc, updateModel.CreatedUtc);
+                Assert.AreEqual(updatedTime,               updateModel.UpdatedUtc);
+
+                var readBack = _Database.Model_GetByID(updateModel.ModelID);
+                AssertModelsAreEqual(updateModel, readBack);
+            }
+        }
+
+        protected void Model_GetByName_Fetches_By_Case_Insensitive_Name()
+        {
+            foreach(var model in SampleModels()) {
+                _Database.Model_Save(model);
+
+                var sameCaseReadBack = _Database.Model_GetByName(model.Name);
+                AssertModelsAreEqual(model, sameCaseReadBack);
+
+                var flippedName = TestUtilities.FlipCase(model.Name);
+                var flippedCaseReadBack = _Database.Model_GetByName(flippedName);
+                AssertModelsAreEqual(model, flippedCaseReadBack);
+            }
+        }
+
+        protected void Model_GetOrCreateByName_Creates_New_Records_Correctly()
+        {
+            var now = DateTime.UtcNow.AddDays(-7);
+            _Clock.UtcNowValue = now;
+
+            foreach(var name in SampleModels().Select(r => r.Name)) {
+                var saved = _Database.Model_GetOrCreateByName(name);
+
+                Assert.AreNotEqual(0, saved.ModelID);
+                Assert.AreEqual(now, saved.CreatedUtc);
+                Assert.AreEqual(now, saved.UpdatedUtc);
+
+                var readBack = _Database.Model_GetByID(saved.ModelID);
+                AssertModelsAreEqual(saved, readBack);
+            }
+        }
+
+        protected void Model_GetOrCreateByName_Fetches_Existing_Records_Correctly()
+        {
+            foreach(var model in SampleModels()) {
+                _Database.Model_Save(model);
+
+                var sameCaseReadBack = _Database.Model_GetOrCreateByName(model.Name);
+                AssertModelsAreEqual(model, sameCaseReadBack);
+
+                var flippedName = TestUtilities.FlipCase(model.Name);
+                var flippedCaseReadBack = _Database.Model_GetOrCreateByName(flippedName);
+                AssertModelsAreEqual(model, flippedCaseReadBack);
+            }
+        }
+
+        protected void Model_Delete_Deletes_Models()
+        {
+            foreach(var model in SampleModels()) {
+                _Database.Model_Save(model);
+
+                var id = model.ModelID;
+                _Database.Model_Delete(model);
+
+                var readBack = _Database.Model_GetByID(id);
+                Assert.IsNull(readBack);
+            }
+        }
+
+        protected void Model_Delete_Nulls_Out_References_To_Model()
+        {
+            var aircraftType = SampleAircraftTypes(true).First(r => r.ModelID != null);
+            _Database.AircraftType_Save(aircraftType);
+        
+            var model = _Database.Model_GetByID(aircraftType.ModelID.Value);
+            Assert.IsNotNull(model);
+        
+            _Database.Model_Delete(model);
+        
+            var readBackAircraftType = _Database.AircraftType_GetByID(aircraftType.AircraftTypeID);
+            Assert.IsNull(readBackAircraftType.ModelID);
+        }
+
+        protected void Model_Delete_Ignores_Deleted_Models()
+        {
+            var doesNotExist = new TrackHistoryModel() {
+                ModelID =  1,
+                Name =       "sqrt(-1)",
+                CreatedUtc = DateTime.UtcNow,
+                UpdatedUtc = DateTime.UtcNow,
+            };
+
+            // This just needs to not throw an exception
+            _Database.Model_Delete(doesNotExist);
+        }
+
+        private TrackHistoryModel[] SampleModels(DateTime? createdUtc = null, DateTime? updatedUtc = null)
+        {
+            var created = createdUtc ?? DateTime.UtcNow;
+            var updated = updatedUtc ?? DateTime.UtcNow;
+
+            return new TrackHistoryModel[] {
+                new TrackHistoryModel() { Name = "Airbus", CreatedUtc = created, UpdatedUtc = updated, },
+                new TrackHistoryModel() { Name = "Boeing", CreatedUtc = created, UpdatedUtc = updated, },
+            };
+        }
+
+        private void AssertModelsAreEqual(TrackHistoryModel expected, TrackHistoryModel actual)
+        {
+            TestUtilities.TestObjectPropertiesAreEqual(expected, actual);
+        }
+        #endregion
+
         #region Receiver
         protected void Receiver_Save_Creates_New_Records_Correctly()
         {
@@ -547,6 +1047,59 @@ namespace Test.VirtualRadar.Database
         private void AssertReceiversAreEqual(TrackHistoryReceiver expected, TrackHistoryReceiver actual)
         {
             TestUtilities.TestObjectPropertiesAreEqual(expected, actual);
+        }
+        #endregion
+
+        #region Species
+        public void Species_GetByID_Returns_Correct_Species()
+        {
+            foreach(Species enumSpecies in Enum.GetValues(typeof(Species))) {
+                var dbSpecies = _Database.Species_GetByID(enumSpecies);
+                if(enumSpecies == Species.None) {
+                    Assert.IsNull(dbSpecies);
+                } else {
+                    AssertSpeciesIsCorrect(enumSpecies, dbSpecies);
+                }
+            }
+        }
+
+        public void Species_GetAll_Returns_All_Species()
+        {
+            var allSpecies = Enum.GetValues(typeof(Species))
+                .OfType<Species>()
+                .Where(r => r != Species.None)
+                .ToArray();
+            var actual = _Database.Species_GetAll().ToArray();
+            Assert.AreEqual(allSpecies.Length, actual.Length);
+
+            foreach(Species enumSpecies in allSpecies) {
+                AssertSpeciesIsCorrect(enumSpecies, actual.Single(r => r.SpeciesID == enumSpecies));
+            }
+        }
+
+        private static void AssertSpeciesIsCorrect(Species enumSpecies, TrackHistorySpecies dbSpecies)
+        {
+            Assert.AreEqual(enumSpecies, dbSpecies.SpeciesID);
+
+            var expectedCode = "";
+            var expectedDesc = "";
+            var isFake = false;
+
+            switch(enumSpecies) {
+                case Species.Amphibian:     expectedCode = "A";     expectedDesc = "Amphibian"; break;
+                case Species.GroundVehicle: expectedCode = "-GND";  expectedDesc = "Ground Vehicle"; isFake = true; break;
+                case Species.Gyrocopter:    expectedCode = "G";     expectedDesc = "Gyrocopter"; break;
+                case Species.Helicopter:    expectedCode = "H";     expectedDesc = "Helicopter"; break;
+                case Species.Landplane:     expectedCode = "L";     expectedDesc = "Landplane"; break;
+                case Species.Seaplane:      expectedCode = "S";     expectedDesc = "Seaplane"; break;
+                case Species.TiltWing:      expectedCode = "T";     expectedDesc = "Tiltwing"; break;
+                case Species.Tower:         expectedCode = "-TWR";  expectedDesc = "Radio Mast"; isFake = true; break;
+                default: throw new NotImplementedException($"Need code for {enumSpecies}");
+            }
+
+            Assert.AreEqual(expectedCode, dbSpecies.Code);
+            Assert.AreEqual(expectedDesc, dbSpecies.Description);
+            Assert.AreEqual(isFake, dbSpecies.IsFake);
         }
         #endregion
 
@@ -1152,6 +1705,52 @@ namespace Test.VirtualRadar.Database
             for(var i = 0;i < expectedArray.Length;++i) {
                 AssertTrackHistoryStatesAreEqual(expectedArray[i], actualArray[i]);
             }
+        }
+        #endregion
+
+        #region WakeTurbulenceCategory
+        public void WakeTurbulenceCategory_GetByID_Returns_Correct_WakeTurbulenceCategory()
+        {
+            foreach(WakeTurbulenceCategory enumWTC in Enum.GetValues(typeof(WakeTurbulenceCategory))) {
+                var dbWTC = _Database.WakeTurbulenceCategory_GetByID(enumWTC);
+                if(enumWTC == WakeTurbulenceCategory.None) {
+                    Assert.IsNull(dbWTC);
+                } else {
+                    AssertWakeTurbulenceCategoryIsCorrect(enumWTC, dbWTC);
+                }
+            }
+        }
+
+        public void WakeTurbulenceCategory_GetAll_Returns_All_WakeTurbulenceCategory()
+        {
+            var allWTC = Enum.GetValues(typeof(WakeTurbulenceCategory))
+                .OfType<WakeTurbulenceCategory>()
+                .Where(r => r != WakeTurbulenceCategory.None)
+                .ToArray();
+            var actual = _Database.WakeTurbulenceCategory_GetAll().ToArray();
+            Assert.AreEqual(allWTC.Length, actual.Length);
+
+            foreach(WakeTurbulenceCategory enumWakeTurbulenceCategory in allWTC) {
+                AssertWakeTurbulenceCategoryIsCorrect(enumWakeTurbulenceCategory, actual.Single(r => r.WakeTurbulenceCategoryID == enumWakeTurbulenceCategory));
+            }
+        }
+
+        private static void AssertWakeTurbulenceCategoryIsCorrect(WakeTurbulenceCategory enumWTC, TrackHistoryWakeTurbulenceCategory dbWTC)
+        {
+            Assert.AreEqual(enumWTC, dbWTC.WakeTurbulenceCategoryID);
+
+            var expectedCode = "";
+            var expectedDesc = "";
+
+            switch(enumWTC) {
+                case WakeTurbulenceCategory.Heavy:  expectedCode = "H"; expectedDesc = "Heavy"; break;
+                case WakeTurbulenceCategory.Light:  expectedCode = "L"; expectedDesc = "Light"; break;
+                case WakeTurbulenceCategory.Medium: expectedCode = "M"; expectedDesc = "Medium"; break;
+                default: throw new NotImplementedException($"Need code for {enumWTC}");
+            }
+
+            Assert.AreEqual(expectedCode, dbWTC.Code);
+            Assert.AreEqual(expectedDesc, dbWTC.Description);
         }
         #endregion
     }
