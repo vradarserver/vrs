@@ -64,6 +64,7 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///   Looks up a localized string similar to INSERT INTO [Aircraft] (
         ///    [Icao]
         ///   ,[IcaoCountryID]
+        ///   ,[AircraftTypeID]
         ///   ,[Registration]
         ///   ,[Serial]
         ///   ,[YearBuilt]
@@ -77,6 +78,7 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///) VALUES (
         ///    @Icao
         ///   ,@IcaoCountryID
+        ///   ,@AircraftTypeID
         ///   ,@Registration
         ///   ,@Serial
         ///   ,@YearBuilt
@@ -86,9 +88,7 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///   ,@IsMissingFromLookup
         ///   ,@SuppressAutoUpdates
         ///   ,@CreatedUtc
-        ///   ,@UpdatedUtc
-        ///);
-        ///SELECT [AircraftID] FROM [rest of string was truncated]&quot;;.
+        ///   [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Aircraft_Insert {
             get {
@@ -100,6 +100,7 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///   Looks up a localized string similar to UPDATE [Aircraft]
         ///SET    [Icao] =                 @Icao
         ///      ,[IcaoCountryID] =        @IcaoCountryID
+        ///      ,[AircraftTypeID] =       @AircraftTypeID
         ///      ,[Registration] =         @Registration
         ///      ,[Serial] =               @Serial
         ///      ,[YearBuilt] =            @YearBuilt
@@ -107,8 +108,7 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///      ,[Notes] =                @Notes
         ///      ,[LastLookupUtc] =        @LastLookupUtc
         ///      ,[IsMissingFromLookup] =  @IsMissingFromLookup
-        ///      ,[SuppressAutoUpdates] =  @SuppressAutoUpdates
-        ///      ,[UpdatedUtc] =          [rest of string was truncated]&quot;;.
+        ///      ,[SuppressAutoUpdates] =  @Su [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Aircraft_Update {
             get {
@@ -300,6 +300,45 @@ namespace VirtualRadar.Database.TrackHistoryData {
         internal static string Model_Update {
             get {
                 return ResourceManager.GetString("Model_Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [Operator] (
+        ///    [Icao]
+        ///   ,[Name]
+        ///   ,[CreatedUtc]
+        ///   ,[UpdatedUtc]
+        ///) VALUES (
+        ///    @Icao
+        ///   ,@Name
+        ///   ,@CreatedUtc
+        ///   ,@UpdatedUtc
+        ///);
+        ///SELECT [OperatorID] FROM [Operator] WHERE _ROWID_ = last_insert_rowid();
+        ///.
+        /// </summary>
+        internal static string Operator_Insert {
+            get {
+                return ResourceManager.GetString("Operator_Insert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UPDATE [Operator]
+        ///SET    [Icao] =       @Icao
+        ///      ,[Name] =       @Name
+        ///      ,[UpdatedUtc] = @UpdatedUtc
+        ///WHERE  [OperatorID] = @OperatorID;
+        ///
+        ///SELECT [CreatedUtc]
+        ///FROM   [Operator]
+        ///WHERE  [OperatorID] = @OperatorID;
+        ///.
+        /// </summary>
+        internal static string Operator_Update {
+            get {
+                return ResourceManager.GetString("Operator_Update", resourceCulture);
             }
         }
         

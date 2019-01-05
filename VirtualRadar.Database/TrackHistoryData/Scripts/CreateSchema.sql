@@ -172,6 +172,21 @@ CREATE INDEX IF NOT EXISTS [IX_AircraftType_Icao] ON [AircraftType] ([Icao]);
 
 
 --
+-- Operator
+--
+CREATE TABLE IF NOT EXISTS [Operator]
+(
+    [OperatorID]    INTEGER PRIMARY KEY AUTOINCREMENT
+   ,[Icao]          VARCHAR(10) NOT NULL COLLATE NOCASE
+   ,[Name]          NVARCHAR(255) NULL COLLATE NOCASE
+   ,[CreatedUtc]    DATETIME NOT NULL
+   ,[UpdatedUtc]    DATETIME NOT NULL
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS [IX_Operator_Icao_Name] ON [Operator] ([Icao], [Name]);
+
+
+--
 -- Aircraft
 --
 CREATE TABLE IF NOT EXISTS [Aircraft]

@@ -334,6 +334,38 @@ namespace Test.VirtualRadar.Database
         }
         #endregion
 
+        #region Operator
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Operator_Save_Creates_New_Records_Correctly()
+        {
+            Operator_Save_Creates_New_Records_Correctly();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Operator_Save_Updates_Existing_Records_Correctly()
+        {
+            Operator_Save_Updates_Existing_Records_Correctly();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Operator_GetByUniqueKey_Fetches_By_Case_Insensitive_Keys()
+        {
+            Operator_GetByUniqueKey_Fetches_By_Case_Insensitive_Keys();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Operator_GetOrCreateByUniqueKey_Creates_New_Records_Correctly()
+        {
+            Operator_GetOrCreateByUniqueKey_Creates_New_Records_Correctly();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Operator_GetOrCreateByUniqueKey_Fetches_Existing_Records_Correctly()
+        {
+            Operator_GetOrCreateByUniqueKey_Fetches_Existing_Records_Correctly();
+        }
+        #endregion
+
         #region Receiver
         [TestMethod]
         public void TrackHistoryDatabase_SQLite_Receiver_Save_Creates_New_Records_Correctly()

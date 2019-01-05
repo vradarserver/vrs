@@ -150,6 +150,7 @@
     <Compile Include="Database\TrackHistoryEngineType.cs" />
     <Compile Include="Database\TrackHistoryManufacturer.cs" />
     <Compile Include="Database\TrackHistoryModel.cs" />
+    <Compile Include="Database\TrackHistoryOperator.cs" />
     <Compile Include="Database\TrackHistoryReceiver.cs" />
     <Compile Include="Database\TrackHistorySpecies.cs" />
     <Compile Include="Database\TrackHistoryState.cs" />

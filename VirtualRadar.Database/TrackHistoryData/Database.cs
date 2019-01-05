@@ -418,10 +418,30 @@ namespace VirtualRadar.Database.TrackHistoryData
         private TResult GetOrCreateByKey<TResult, TKey>(TKey key, Func<ConnectionWrapper, TKey, TResult> getByKey, Action<ConnectionWrapper, TResult> insertAction, Func<DateTime, TResult> buildNewRecord, ConnectionWrapper useConnection = null)
             where TResult : class
         {
+            return GetOrCreateByCompositeKey<TResult>(
+                connection => getByKey(connection, key),
+                insertAction,
+                buildNewRecord,
+                useConnection
+            );
+        }
+
+        /// <summary>
+        /// Wraps the standard procedure for fetching a record by a unique set of composite key fields and creating it if it does not already exist.
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="getByKey"></param>
+        /// <param name="insertAction"></param>
+        /// <param name="buildNewRecord"></param>
+        /// <param name="useConnection"></param>
+        /// <returns></returns>
+        private TResult GetOrCreateByCompositeKey<TResult>(Func<ConnectionWrapper, TResult> getByKey, Action<ConnectionWrapper, TResult> insertAction, Func<DateTime, TResult> buildNewRecord, ConnectionWrapper useConnection = null)
+            where TResult : class
+        {
             TResult result = null;
 
             if(useConnection != null) {
-                result = getByKey(useConnection, key);
+                result = getByKey(useConnection);
 
                 if(result == null) {
                     result = buildNewRecord(_Clock.UtcNow);
@@ -429,7 +449,7 @@ namespace VirtualRadar.Database.TrackHistoryData
                 }
             } else {
                 RunWithinConnection((connection) => {
-                    result = getByKey(connection, key);
+                    result = getByKey(connection);
 
                     if(result == null) {
                         result = buildNewRecord(_Clock.UtcNow);
@@ -867,6 +887,80 @@ namespace VirtualRadar.Database.TrackHistoryData
                 "DELETE FROM [Model] WHERE [ModelID] = @ModelID",
                 new { model.ModelID }
             );
+        }
+        #endregion
+
+        #region Operator
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public TrackHistoryOperator Operator_GetByID(int id)
+        {
+            return QueryFirstOrDefault<TrackHistoryOperator>(
+                "SELECT * FROM [Operator] WHERE [OperatorID] = @id",
+                new { id }
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public TrackHistoryOperator Operator_GetByUniqueKey(string icao, string name)
+        {
+            return Operator_GetByUniqueKey(null, icao, name);
+        }
+
+        public TrackHistoryOperator Operator_GetByUniqueKey(ConnectionWrapper connection, string icao, string name)
+        {
+            return QueryFirstOrDefault<TrackHistoryOperator>(
+                "SELECT * FROM [Operator] WHERE [Icao] = @icao AND [Name] = @name",
+                new { icao, name },
+                connection
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public TrackHistoryOperator Operator_GetOrCreateByUniqueKey(string icao, string name)
+        {
+            return GetOrCreateByCompositeKey<TrackHistoryOperator>(
+                connection => Operator_GetByUniqueKey(connection, icao, name),
+                Operator_Insert,
+                now => new TrackHistoryOperator() {
+                    Icao =          icao,
+                    Name =          name,
+                    CreatedUtc =    now,
+                    UpdatedUtc =    now,
+                }
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="acOperator"></param>
+        public void Operator_Save(TrackHistoryOperator acOperator)
+        {
+            Save<TrackHistoryOperator>(acOperator, () => acOperator.OperatorID != 0, Operator_Insert, Operator_Update);
+        }
+
+        private void Operator_Insert(ConnectionWrapper connection, TrackHistoryOperator acOperator)
+        {
+            Insert<TrackHistoryOperator, int>(connection, acOperator, Commands.Operator_Insert, id => acOperator.OperatorID = id);
+        }
+
+        private void Operator_Update(ConnectionWrapper connection, TrackHistoryOperator acOperator)
+        {
+            Update<TrackHistoryOperator>(connection, acOperator, Commands.Operator_Update, created => acOperator.CreatedUtc = created);
         }
         #endregion
 

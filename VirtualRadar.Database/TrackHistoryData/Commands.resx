@@ -151,6 +151,12 @@
   <data name="Model_Update" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>scripts\model_update.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="Operator_Insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>scripts\operator_insert.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="Operator_Update" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>scripts\operator_update.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="Receiver_Insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>scripts\receiver_insert.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>

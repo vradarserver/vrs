@@ -244,6 +244,38 @@ namespace VirtualRadar.Interface.Database
         void Model_Delete(TrackHistoryModel model);
         #endregion
 
+        #region Operator
+        /// <summary>
+        /// Returns the operator for the ID passed across or null if no such operator exists.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        TrackHistoryOperator Operator_GetByID(int id);
+
+        /// <summary>
+        /// Returns the operator matching the unique key passed across or null if no such operator exists.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        TrackHistoryOperator Operator_GetByUniqueKey(string icao, string name);
+
+        /// <summary>
+        /// Returns the operator matching the unique key passed across or creates and returns the operator
+        /// if it does not already exist.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        TrackHistoryOperator Operator_GetOrCreateByUniqueKey(string icao, string name);
+
+        /// <summary>
+        /// Creates or updates the operator passed across.
+        /// </summary>
+        /// <param name="op"></param>
+        void Operator_Save(TrackHistoryOperator acOperator);
+        #endregion
+
         #region Receiver
         /// <summary>
         /// Returns the receiver for the ID passed across or null if no such receiver exists.

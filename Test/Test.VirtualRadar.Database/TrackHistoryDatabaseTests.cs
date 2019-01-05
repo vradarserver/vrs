@@ -900,6 +900,120 @@ namespace Test.VirtualRadar.Database
         }
         #endregion
 
+        #region Operator
+        protected void Operator_Save_Creates_New_Records_Correctly()
+        {
+            var created = DateTime.UtcNow;
+            var updated = created.AddMilliseconds(7);
+            foreach(var acOperator in SampleOperators(created, updated)) {
+                _Database.Operator_Save(acOperator);
+
+                Assert.AreNotEqual(0, acOperator.OperatorID);
+
+                var readBack = _Database.Operator_GetByID(acOperator.OperatorID);
+                AssertOperatorsAreEqual(acOperator, readBack);
+            }
+        }
+
+        protected void Operator_Save_Updates_Existing_Records_Correctly()
+        {
+            var now = DateTime.UtcNow;
+
+            var createOperators = SampleOperators(now, now);
+            foreach(var acOperator in createOperators) {
+                _Database.Operator_Save(acOperator);
+            }
+
+            var updatedTime = now.AddSeconds(7);
+            var updateOperators = SampleOperators(now, updatedTime);
+            for(var i = 0;i < updateOperators.Length;++i) {
+                var createOperator = createOperators[i];
+                var updateOperator = updateOperators[i];
+
+                var expectedIcao = new String(createOperator.Icao.Reverse().ToArray());
+                var expectedName = new String(createOperator.Name.Reverse().ToArray());
+
+                updateOperator.OperatorID = createOperator.OperatorID;
+                updateOperator.Icao = expectedIcao;
+                updateOperator.Name = expectedName;
+
+                _Database.Operator_Save(updateOperator);
+
+                Assert.AreEqual(createOperator.OperatorID, updateOperator.OperatorID);
+                Assert.AreEqual(expectedIcao,              updateOperator.Icao);
+                Assert.AreEqual(expectedName,              updateOperator.Name);
+                Assert.AreEqual(createOperator.CreatedUtc, updateOperator.CreatedUtc);
+                Assert.AreEqual(updatedTime,               updateOperator.UpdatedUtc);
+
+                var readBack = _Database.Operator_GetByID(updateOperator.OperatorID);
+                AssertOperatorsAreEqual(updateOperator, readBack);
+            }
+        }
+
+        protected void Operator_GetByUniqueKey_Fetches_By_Case_Insensitive_Keys()
+        {
+            foreach(var acOperator in SampleOperators()) {
+                _Database.Operator_Save(acOperator);
+
+                var sameCaseReadBack = _Database.Operator_GetByUniqueKey(acOperator.Icao, acOperator.Name);
+                AssertOperatorsAreEqual(acOperator, sameCaseReadBack);
+
+                var flippedIcao = TestUtilities.FlipCase(acOperator.Icao);
+                var flippedName = TestUtilities.FlipCase(acOperator.Name);
+                var flippedCaseReadBack = _Database.Operator_GetByUniqueKey(flippedIcao, flippedName);
+                AssertOperatorsAreEqual(acOperator, flippedCaseReadBack);
+            }
+        }
+
+        protected void Operator_GetOrCreateByUniqueKey_Creates_New_Records_Correctly()
+        {
+            var now = DateTime.UtcNow.AddDays(-7);
+            _Clock.UtcNowValue = now;
+
+            foreach(var uniqueKey in SampleOperators().Select(r => new { r.Icao, r.Name })) {
+                var saved = _Database.Operator_GetOrCreateByUniqueKey(uniqueKey.Icao, uniqueKey.Name);
+
+                Assert.AreNotEqual(0, saved.OperatorID);
+                Assert.AreEqual(now, saved.CreatedUtc);
+                Assert.AreEqual(now, saved.UpdatedUtc);
+
+                var readBack = _Database.Operator_GetByID(saved.OperatorID);
+                AssertOperatorsAreEqual(saved, readBack);
+            }
+        }
+
+        protected void Operator_GetOrCreateByUniqueKey_Fetches_Existing_Records_Correctly()
+        {
+            foreach(var acOperator in SampleOperators()) {
+                _Database.Operator_Save(acOperator);
+
+                var sameCaseReadBack = _Database.Operator_GetOrCreateByUniqueKey(acOperator.Icao, acOperator.Name);
+                AssertOperatorsAreEqual(acOperator, sameCaseReadBack);
+
+                var flippedIcao = TestUtilities.FlipCase(acOperator.Icao);
+                var flippedName = TestUtilities.FlipCase(acOperator.Name);
+                var flippedCaseReadBack = _Database.Operator_GetByUniqueKey(flippedIcao, flippedName);
+                AssertOperatorsAreEqual(acOperator, flippedCaseReadBack);
+            }
+        }
+
+        private TrackHistoryOperator[] SampleOperators(DateTime? createdUtc = null, DateTime? updatedUtc = null)
+        {
+            var created = createdUtc ?? DateTime.UtcNow;
+            var updated = updatedUtc ?? DateTime.UtcNow;
+
+            return new TrackHistoryOperator[] {
+                new TrackHistoryOperator() { Icao = "BAW", Name = "British Airways", CreatedUtc = created, UpdatedUtc = updated, },
+                new TrackHistoryOperator() { Icao = "VIR", Name = "Virgin",          CreatedUtc = created, UpdatedUtc = updated, },
+            };
+        }
+
+        private void AssertOperatorsAreEqual(TrackHistoryOperator expected, TrackHistoryOperator actual)
+        {
+            TestUtilities.TestObjectPropertiesAreEqual(expected, actual);
+        }
+        #endregion
+
         #region Receiver
         protected void Receiver_Save_Creates_New_Records_Correctly()
         {
