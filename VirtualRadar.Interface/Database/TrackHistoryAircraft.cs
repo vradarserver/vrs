@@ -67,6 +67,11 @@ namespace VirtualRadar.Interface.Database
         public bool IsInteresting { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating that the aircraft is operated by a military force.
+        /// </summary>
+        public bool IsMilitary { get; set; }
+
+        /// <summary>
         /// Gets or sets notes that the user has associated with the aircraft.
         /// </summary>
         public string Notes { get; set; }

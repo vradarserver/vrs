@@ -200,6 +200,7 @@ CREATE TABLE IF NOT EXISTS [Aircraft]
    ,[Serial]                NVARCHAR(200) NULL COLLATE NOCASE
    ,[YearBuilt]             INTEGER NULL
    ,[IsInteresting]         BIT NOT NULL
+   ,[IsMilitary]            BIT NOT NULL
    ,[Notes]                 NVARCHAR(2000) NULL
    ,[LastLookupUtc]         DATETIME NULL
    ,[IsMissingFromLookup]   BIT NOT NULL

@@ -7,6 +7,7 @@
    ,[Serial]
    ,[YearBuilt]
    ,[IsInteresting]
+   ,[IsMilitary]
    ,[Notes]
    ,[LastLookupUtc]
    ,[IsMissingFromLookup]
@@ -22,6 +23,7 @@
    ,@Serial
    ,@YearBuilt
    ,@IsInteresting
+   ,@IsMilitary
    ,@Notes
    ,@LastLookupUtc
    ,@IsMissingFromLookup

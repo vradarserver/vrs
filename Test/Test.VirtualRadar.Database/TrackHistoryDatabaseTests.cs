@@ -237,6 +237,7 @@ namespace Test.VirtualRadar.Database
                     value = generateForCreate ? 25 : 50;
                     break;
                 case nameof(TrackHistoryAircraft.IsInteresting):
+                case nameof(TrackHistoryAircraft.IsMilitary):
                 case nameof(TrackHistoryAircraft.IsMissingFromLookup):
                 case nameof(TrackHistoryAircraft.SuppressAutoUpdates):
                     value = generateForCreate;

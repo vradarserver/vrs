@@ -7,6 +7,7 @@ SET    [Icao] =                 @Icao
       ,[Serial] =               @Serial
       ,[YearBuilt] =            @YearBuilt
       ,[IsInteresting] =        @IsInteresting
+      ,[IsMilitary] =           @IsMilitary
       ,[Notes] =                @Notes
       ,[LastLookupUtc] =        @LastLookupUtc
       ,[IsMissingFromLookup] =  @IsMissingFromLookup
