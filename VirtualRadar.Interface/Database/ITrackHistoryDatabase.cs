@@ -258,7 +258,7 @@ namespace VirtualRadar.Interface.Database
         /// <param name="icao"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        TrackHistoryOperator Operator_GetByUniqueKey(string icao, string name);
+        TrackHistoryOperator Operator_GetByKey(string icao, string name);
 
         /// <summary>
         /// Returns the operator matching the unique key passed across or creates and returns the operator
@@ -267,7 +267,7 @@ namespace VirtualRadar.Interface.Database
         /// <param name="icao"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        TrackHistoryOperator Operator_GetOrCreateByUniqueKey(string icao, string name);
+        TrackHistoryOperator Operator_GetOrCreateByKey(string icao, string name);
 
         /// <summary>
         /// Creates or updates the operator passed across.

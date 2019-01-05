@@ -910,12 +910,12 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="icao"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public TrackHistoryOperator Operator_GetByUniqueKey(string icao, string name)
+        public TrackHistoryOperator Operator_GetByKey(string icao, string name)
         {
-            return Operator_GetByUniqueKey(null, icao, name);
+            return Operator_GetByKey(null, icao, name);
         }
 
-        public TrackHistoryOperator Operator_GetByUniqueKey(ConnectionWrapper connection, string icao, string name)
+        public TrackHistoryOperator Operator_GetByKey(ConnectionWrapper connection, string icao, string name)
         {
             return QueryFirstOrDefault<TrackHistoryOperator>(
                 "SELECT * FROM [Operator] WHERE [Icao] = @icao AND [Name] = @name",
@@ -930,10 +930,10 @@ namespace VirtualRadar.Database.TrackHistoryData
         /// <param name="icao"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public TrackHistoryOperator Operator_GetOrCreateByUniqueKey(string icao, string name)
+        public TrackHistoryOperator Operator_GetOrCreateByKey(string icao, string name)
         {
             return GetOrCreateByCompositeKey<TrackHistoryOperator>(
-                connection => Operator_GetByUniqueKey(connection, icao, name),
+                connection => Operator_GetByKey(connection, icao, name),
                 Operator_Insert,
                 now => new TrackHistoryOperator() {
                     Icao =          icao,

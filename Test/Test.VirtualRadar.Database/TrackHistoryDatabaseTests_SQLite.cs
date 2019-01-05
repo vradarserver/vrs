@@ -348,21 +348,21 @@ namespace Test.VirtualRadar.Database
         }
 
         [TestMethod]
-        public void TrackHistoryDatabase_SQLite_Operator_GetByUniqueKey_Fetches_By_Case_Insensitive_Keys()
+        public void TrackHistoryDatabase_SQLite_Operator_GetByKey_Fetches_By_Case_Insensitive_Keys()
         {
-            Operator_GetByUniqueKey_Fetches_By_Case_Insensitive_Keys();
+            Operator_GetByKey_Fetches_By_Case_Insensitive_Keys();
         }
 
         [TestMethod]
-        public void TrackHistoryDatabase_SQLite_Operator_GetOrCreateByUniqueKey_Creates_New_Records_Correctly()
+        public void TrackHistoryDatabase_SQLite_Operator_GetOrCreateByKey_Creates_New_Records_Correctly()
         {
-            Operator_GetOrCreateByUniqueKey_Creates_New_Records_Correctly();
+            Operator_GetOrCreateByKey_Creates_New_Records_Correctly();
         }
 
         [TestMethod]
-        public void TrackHistoryDatabase_SQLite_Operator_GetOrCreateByUniqueKey_Fetches_Existing_Records_Correctly()
+        public void TrackHistoryDatabase_SQLite_Operator_GetOrCreateByKey_Fetches_Existing_Records_Correctly()
         {
-            Operator_GetOrCreateByUniqueKey_Fetches_Existing_Records_Correctly();
+            Operator_GetOrCreateByKey_Fetches_Existing_Records_Correctly();
         }
         #endregion
 
