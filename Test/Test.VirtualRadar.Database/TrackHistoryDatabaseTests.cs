@@ -215,6 +215,7 @@ namespace Test.VirtualRadar.Database
 
             var countryName = generateForCreate ? "Faerûn" : "Tyr";
             var modelIcao = generateForCreate ? "A319" : "B744";
+            var operatorIcao = generateForCreate ? "BAW" : "VIR";
 
             switch(property.Name) {
                 case nameof(TrackHistoryAircraft.AircraftTypeID):
@@ -225,6 +226,7 @@ namespace Test.VirtualRadar.Database
                     break;
                 case nameof(TrackHistoryAircraft.IcaoCountryID):    value = _Database.Country_GetOrCreateByName(countryName).CountryID; break;
                 case nameof(TrackHistoryAircraft.Notes):            value = generateForCreate ? new String('Ă', 2000) : new string('b', 2000); break;
+                case nameof(TrackHistoryAircraft.OperatorID):       value = _Database.Operator_GetOrCreateByKey(operatorIcao, "An Airline").OperatorID; break;
                 case nameof(TrackHistoryAircraft.Registration):     value = generateForCreate ? new String('A', 20)   : new string('b', 20); break;
                 case nameof(TrackHistoryAircraft.Serial):           value = generateForCreate ? new String('Ă', 200)  : new string('b', 200); break;
 
@@ -296,6 +298,46 @@ namespace Test.VirtualRadar.Database
                 var readBack = _Database.AircraftType_GetByID(savedAircraftType.AircraftTypeID);
                 AssertAircraftTypesAreEqual(updatedAircraftType, readBack);
             }
+        }
+
+        protected void AircraftType_Delete_Deletes_AircraftTypes()
+        {
+            foreach(var aircraftType in SampleAircraftTypes(true)) {
+                _Database.AircraftType_Save(aircraftType);
+
+                var id = aircraftType.AircraftTypeID;
+                _Database.AircraftType_Delete(aircraftType);
+
+                var readBack = _Database.AircraftType_GetByID(id);
+                Assert.IsNull(readBack);
+            }
+        }
+
+        protected void AircraftType_Delete_Nulls_Out_References_To_AircraftType()
+        {
+            var aircraft = SampleAircraft(true).First(r => r.AircraftTypeID != null);
+            _Database.Aircraft_Save(aircraft);
+
+            var aircraftType = _Database.AircraftType_GetByID(aircraft.AircraftTypeID.Value);
+            Assert.IsNotNull(aircraftType);
+
+            _Database.AircraftType_Delete(aircraftType);
+
+            var readBackAircraft = _Database.Aircraft_GetByID(aircraft.AircraftID);
+            Assert.IsNull(readBackAircraft.AircraftTypeID);
+        }
+
+        protected void AircraftType_Delete_Ignores_Deleted_AircraftTypes()
+        {
+            var doesNotExist = new TrackHistoryAircraftType() {
+                AircraftTypeID =  1,
+                Icao =            "A123",
+                CreatedUtc =      DateTime.UtcNow,
+                UpdatedUtc =      DateTime.UtcNow,
+            };
+
+            // This just needs to not throw an exception
+            _Database.AircraftType_Delete(doesNotExist);
         }
 
         private List<TrackHistoryAircraftType> SampleAircraftTypes(bool generateForCreate, DateTime? createdUtc = null, DateTime? updatedUtc = null)
@@ -995,6 +1037,47 @@ namespace Test.VirtualRadar.Database
                 var flippedCaseReadBack = _Database.Operator_GetByKey(flippedIcao, flippedName);
                 AssertOperatorsAreEqual(acOperator, flippedCaseReadBack);
             }
+        }
+
+        protected void Operator_Delete_Deletes_Operators()
+        {
+            foreach(var acOperator in SampleOperators()) {
+                _Database.Operator_Save(acOperator);
+
+                var id = acOperator.OperatorID;
+                _Database.Operator_Delete(acOperator);
+
+                var readBack = _Database.Operator_GetByID(id);
+                Assert.IsNull(readBack);
+            }
+        }
+
+        protected void Operator_Delete_Nulls_Out_References_To_Operator()
+        {
+            var aircraft = SampleAircraft(true).First(r => r.OperatorID != null);
+            _Database.Aircraft_Save(aircraft);
+        
+            var acOperator = _Database.Operator_GetByID(aircraft.OperatorID.Value);
+            Assert.IsNotNull(acOperator);
+        
+            _Database.Operator_Delete(acOperator);
+        
+            var readBackAircraftType = _Database.Aircraft_GetByID(aircraft.AircraftID);
+            Assert.IsNull(readBackAircraftType.OperatorID);
+        }
+
+        protected void Operator_Delete_Ignores_Deleted_Operators()
+        {
+            var doesNotExist = new TrackHistoryOperator() {
+                OperatorID =  1,
+                Icao =       "ABC",
+                Name =       "sqrt(-1)",
+                CreatedUtc = DateTime.UtcNow,
+                UpdatedUtc = DateTime.UtcNow,
+            };
+
+            // This just needs to not throw an exception
+            _Database.Operator_Delete(doesNotExist);
         }
 
         private TrackHistoryOperator[] SampleOperators(DateTime? createdUtc = null, DateTime? updatedUtc = null)
@@ -1760,7 +1843,7 @@ namespace Test.VirtualRadar.Database
 
             switch(property.Name) {
                 case nameof(TrackHistoryState.Callsign):    value = generateForCreate ? "BAW1" : "VIR25"; break;
-                case nameof(TrackHistoryState.SpeedType):   value = generateForCreate ? SpeedType.GroundSpeedReversing : SpeedType.IndicatedAirSpeed; break;
+                case nameof(TrackHistoryState.SpeedTypeID): value = generateForCreate ? SpeedType.GroundSpeedReversing : SpeedType.IndicatedAirSpeed; break;
                 case nameof(TrackHistoryState.ReceiverID):  value = receiver.ReceiverID; break;
 
                 case nameof(TrackHistoryState.Latitude):
@@ -1787,8 +1870,8 @@ namespace Test.VirtualRadar.Database
                 case nameof(TrackHistoryState.TrackIsHeading):
                     value = generateForCreate;
                     break;
-                case nameof(TrackHistoryState.AltitudeType):
-                case nameof(TrackHistoryState.VerticalRateType):
+                case nameof(TrackHistoryState.AltitudeTypeID):
+                case nameof(TrackHistoryState.VerticalRateTypeID):
                     value = generateForCreate ? AltitudeType.Geometric : AltitudeType.Barometric;
                     break;
 

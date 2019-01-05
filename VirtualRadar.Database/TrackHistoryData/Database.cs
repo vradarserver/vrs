@@ -582,6 +582,18 @@ namespace VirtualRadar.Database.TrackHistoryData
         {
             Update<TrackHistoryAircraftType>(connection, aircraftType, Commands.AircraftType_Update, created => aircraftType.CreatedUtc = created);
         }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="aircraftType"></param>
+        public void AircraftType_Delete(TrackHistoryAircraftType aircraftType)
+        {
+            Execute(
+                "DELETE FROM [AircraftType] WHERE [AircraftTypeID] = @AircraftTypeID",
+                new { aircraftType.AircraftTypeID }
+            );
+        }
         #endregion
 
         #region Country
@@ -961,6 +973,18 @@ namespace VirtualRadar.Database.TrackHistoryData
         private void Operator_Update(ConnectionWrapper connection, TrackHistoryOperator acOperator)
         {
             Update<TrackHistoryOperator>(connection, acOperator, Commands.Operator_Update, created => acOperator.CreatedUtc = created);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="acOperator"></param>
+        public void Operator_Delete(TrackHistoryOperator acOperator)
+        {
+            Execute(
+                "DELETE FROM [Operator] WHERE [OperatorID] = @OperatorID",
+                new { acOperator.OperatorID }
+            );
         }
         #endregion
 
@@ -1409,7 +1433,7 @@ namespace VirtualRadar.Database.TrackHistoryData
         {
             foreach(var trackHistoryState in trackHistoryStates) {
                 Execute(
-                    Commands.TrackHistoryState_Delete,
+                    "DELETE FROM [TrackHistoryState] WHERE [TrackHistoryStateID] = @TrackHistoryStateID",
                     new { trackHistoryState.TrackHistoryStateID, },
                     connection
                 );

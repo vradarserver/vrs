@@ -163,9 +163,6 @@
   <data name="Receiver_Update" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>scripts\receiver_update.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="TrackHistoryState_Delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>scripts\trackhistorystate_delete.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
   <data name="TrackHistoryState_Insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>scripts\trackhistorystate_insert.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>

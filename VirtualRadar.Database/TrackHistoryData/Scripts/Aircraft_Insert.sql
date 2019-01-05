@@ -2,6 +2,7 @@
     [Icao]
    ,[IcaoCountryID]
    ,[AircraftTypeID]
+   ,[OperatorID]
    ,[Registration]
    ,[Serial]
    ,[YearBuilt]
@@ -16,6 +17,7 @@
     @Icao
    ,@IcaoCountryID
    ,@AircraftTypeID
+   ,@OperatorID
    ,@Registration
    ,@Serial
    ,@YearBuilt

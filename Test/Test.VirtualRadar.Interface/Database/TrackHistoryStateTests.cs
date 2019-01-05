@@ -49,7 +49,7 @@ namespace Test.VirtualRadar.Interface.Database
                                 initialValue = "BAW1";
                                 nextValue = "VIR1";
                                 break;
-                            case nameof(TrackHistoryState.SpeedType):
+                            case nameof(TrackHistoryState.SpeedTypeID):
                                 initialValue = SpeedType.GroundSpeed;
                                 nextValue = SpeedType.TrueAirSpeed;
                                 break;
@@ -83,8 +83,8 @@ namespace Test.VirtualRadar.Interface.Database
                                 initialValue = true;
                                 nextValue = false;
                                 break;
-                            case nameof(TrackHistoryState.AltitudeType):
-                            case nameof(TrackHistoryState.VerticalRateType):
+                            case nameof(TrackHistoryState.AltitudeTypeID):
+                            case nameof(TrackHistoryState.VerticalRateTypeID):
                                 initialValue = AltitudeType.Barometric;
                                 nextValue = AltitudeType.Geometric;
                                 break;

@@ -2,6 +2,7 @@
 SET    [Icao] =                 @Icao
       ,[IcaoCountryID] =        @IcaoCountryID
       ,[AircraftTypeID] =       @AircraftTypeID
+      ,[OperatorID] =           @OperatorID
       ,[Registration] =         @Registration
       ,[Serial] =               @Serial
       ,[YearBuilt] =            @YearBuilt

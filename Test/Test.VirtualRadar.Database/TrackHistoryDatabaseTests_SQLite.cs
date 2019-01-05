@@ -154,6 +154,24 @@ namespace Test.VirtualRadar.Database
         {
             AircraftType_Save_Updates_Existing_Records_Correctly();
         }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_AircraftType_Delete_Deletes_AircraftTypes()
+        {
+            AircraftType_Delete_Deletes_AircraftTypes();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_AircraftType_Delete_Nulls_Out_References_To_AircraftType()
+        {
+            AircraftType_Delete_Nulls_Out_References_To_AircraftType();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_AircraftType_Delete_Ignores_Deleted_AircraftTypes()
+        {
+            AircraftType_Delete_Ignores_Deleted_AircraftTypes();
+        }
         #endregion
 
         #region Country
@@ -363,6 +381,24 @@ namespace Test.VirtualRadar.Database
         public void TrackHistoryDatabase_SQLite_Operator_GetOrCreateByKey_Fetches_Existing_Records_Correctly()
         {
             Operator_GetOrCreateByKey_Fetches_Existing_Records_Correctly();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Operator_Delete_Deletes_Operators()
+        {
+            Operator_Delete_Deletes_Operators();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Operator_Delete_Nulls_Out_References_To_Operator()
+        {
+            Operator_Delete_Nulls_Out_References_To_Operator();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Operator_Delete_Ignores_Deleted_Operators()
+        {
+            Operator_Delete_Ignores_Deleted_Operators();
         }
         #endregion
 

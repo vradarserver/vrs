@@ -65,6 +65,7 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///    [Icao]
         ///   ,[IcaoCountryID]
         ///   ,[AircraftTypeID]
+        ///   ,[OperatorID]
         ///   ,[Registration]
         ///   ,[Serial]
         ///   ,[YearBuilt]
@@ -79,6 +80,7 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///    @Icao
         ///   ,@IcaoCountryID
         ///   ,@AircraftTypeID
+        ///   ,@OperatorID
         ///   ,@Registration
         ///   ,@Serial
         ///   ,@YearBuilt
@@ -86,9 +88,7 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///   ,@Notes
         ///   ,@LastLookupUtc
         ///   ,@IsMissingFromLookup
-        ///   ,@SuppressAutoUpdates
-        ///   ,@CreatedUtc
-        ///   [rest of string was truncated]&quot;;.
+        ///   ,@Suppr [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Aircraft_Insert {
             get {
@@ -101,14 +101,14 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///SET    [Icao] =                 @Icao
         ///      ,[IcaoCountryID] =        @IcaoCountryID
         ///      ,[AircraftTypeID] =       @AircraftTypeID
+        ///      ,[OperatorID] =           @OperatorID
         ///      ,[Registration] =         @Registration
         ///      ,[Serial] =               @Serial
         ///      ,[YearBuilt] =            @YearBuilt
         ///      ,[IsInteresting] =        @IsInteresting
         ///      ,[Notes] =                @Notes
         ///      ,[LastLookupUtc] =        @LastLookupUtc
-        ///      ,[IsMissingFromLookup] =  @IsMissingFromLookup
-        ///      ,[SuppressAutoUpdates] =  @Su [rest of string was truncated]&quot;;.
+        ///      ,[IsMissingFromLookup] =  @IsMissingFr [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Aircraft_Update {
             get {
@@ -501,17 +501,6 @@ namespace VirtualRadar.Database.TrackHistoryData {
         internal static string TrackHistory_Update {
             get {
                 return ResourceManager.GetString("TrackHistory_Update", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to DELETE FROM [TrackHistoryState]
-        ///WHERE  [TrackHistoryStateID] = @TrackHistoryStateID;
-        ///.
-        /// </summary>
-        internal static string TrackHistoryState_Delete {
-            get {
-                return ResourceManager.GetString("TrackHistoryState_Delete", resourceCulture);
             }
         }
         

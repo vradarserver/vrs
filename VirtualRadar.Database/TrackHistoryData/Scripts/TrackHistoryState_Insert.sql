@@ -11,16 +11,16 @@
    ,[IsMlat]
    ,[IsTisb]
    ,[AltitudeFeet]
-   ,[AltitudeType]
+   ,[AltitudeTypeID]
    ,[TargetAltitudeFeet]
    ,[AirPressureInHg]
    ,[GroundSpeedKnots]
-   ,[SpeedType]
+   ,[SpeedTypeID]
    ,[TrackDegrees]
    ,[TargetTrack]
    ,[TrackIsHeading]
    ,[VerticalRateFeetMin]
-   ,[VerticalRateType]
+   ,[VerticalRateTypeID]
    ,[SquawkOctal]
    ,[IdentActive]
 ) VALUES (
@@ -36,16 +36,16 @@
    ,@IsMlat
    ,@IsTisb
    ,@AltitudeFeet
-   ,@AltitudeType
+   ,@AltitudeTypeID
    ,@TargetAltitudeFeet
    ,@AirPressureInHg
    ,@GroundSpeedKnots
-   ,@SpeedType
+   ,@SpeedTypeID
    ,@TrackDegrees
    ,@TargetTrack
    ,@TrackIsHeading
    ,@VerticalRateFeetMin
-   ,@VerticalRateType
+   ,@VerticalRateTypeID
    ,@SquawkOctal
    ,@IdentActive
 );

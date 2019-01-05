@@ -194,7 +194,8 @@ CREATE TABLE IF NOT EXISTS [Aircraft]
     [AircraftID]            INTEGER PRIMARY KEY AUTOINCREMENT
    ,[Icao]                  VARCHAR(6) NOT NULL COLLATE NOCASE
    ,[IcaoCountryID]         INTEGER NULL CONSTRAINT [FK_Aircraft_IcaoCountry]  REFERENCES [Country]      ([CountryID])      ON DELETE SET NULL
-   ,[AircraftTypeID]        INTEGER NULL CONSTRAINT [FK_Aircraft_AircraftType] REFERENCES [AircraftType] ([AircraftTypeID])
+   ,[AircraftTypeID]        INTEGER NULL CONSTRAINT [FK_Aircraft_AircraftType] REFERENCES [AircraftType] ([AircraftTypeID]) ON DELETE SET NULL
+   ,[OperatorID]            INTEGER NULL CONSTRAINT [FK_Aircraft_Operator]     REFERENCES [Operator]     ([OperatorID])     ON DELETE SET NULL
    ,[Registration]          VARCHAR(20) NULL COLLATE NOCASE
    ,[Serial]                NVARCHAR(200) NULL COLLATE NOCASE
    ,[YearBuilt]             INTEGER NULL
@@ -208,7 +209,7 @@ CREATE TABLE IF NOT EXISTS [Aircraft]
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS [IX_Aircraft_Icao]         ON [Aircraft] ([Icao]);
-CREATE INDEX        IF NOT EXISTS [IX_Aircraft_Registration] ON [Aircraft] ([Registration]);
+CREATE INDEX        IF NOT EXISTS [IX_Aircraft_Registration] ON [Aircraft] ([Registration]) WHERE [Registration] IS NOT NULL;
 
 
 --
@@ -261,11 +262,6 @@ INSERT OR IGNORE INTO [SpeedType] ([SpeedTypeID], [Description]) VALUES
 --
 -- TrackHistoryState
 --
--- Ideally the enum columns (AltitudeType etc.) should have an ID suffix to match their foreign reference column.
--- However, to keep life simple with Dapper I'm going to keep a 1:1 relationship between column names here and
--- property names in the source DTO. Dapper can be given field maps but there's no (as of time of writing) attribute
--- support for column mapping and I cannot be arsed to make sure that Dapper gets initialised with a field map just
--- to keep the ID suffix on religous grounds.
 CREATE TABLE IF NOT EXISTS [TrackHistoryState]
 (
     [TrackHistoryStateID]   INTEGER PRIMARY KEY AUTOINCREMENT
@@ -281,16 +277,16 @@ CREATE TABLE IF NOT EXISTS [TrackHistoryState]
    ,[IsMlat]                BIT NULL
    ,[IsTisb]                BIT NULL
    ,[AltitudeFeet]          INTEGER NULL
-   ,[AltitudeType]          INTEGER NULL CONSTRAINT [FK_TrackHistoryState_AltitudeType] REFERENCES [AltitudeType] ([AltitudeTypeID])
+   ,[AltitudeTypeID]        INTEGER NULL CONSTRAINT [FK_TrackHistoryState_AltitudeType] REFERENCES [AltitudeType] ([AltitudeTypeID])
    ,[TargetAltitudeFeet]    INTEGER NULL
    ,[AirPressureInHg]       REAL NULL
    ,[GroundSpeedKnots]      REAL NULL
-   ,[SpeedType]             INTEGER NULL CONSTRAINT [FK_TrackHistoryState_SpeedType] REFERENCES [SpeedType] ([SpeedTypeID])
+   ,[SpeedTypeID]           INTEGER NULL CONSTRAINT [FK_TrackHistoryState_SpeedType] REFERENCES [SpeedType] ([SpeedTypeID])
    ,[TrackDegrees]          REAL NULL
    ,[TargetTrack]           REAL NULL
    ,[TrackIsHeading]        BIT NULL
    ,[VerticalRateFeetMin]   INTEGER NULL
-   ,[VerticalRateType]      INTEGER NULL CONSTRAINT [FK_TrackHistoryState_VerticalRateType] REFERENCES [AltitudeType] ([AltitudeTypeID])
+   ,[VerticalRateTypeID]    INTEGER NULL CONSTRAINT [FK_TrackHistoryState_VerticalRateType] REFERENCES [AltitudeType] ([AltitudeTypeID])
    ,[SquawkOctal]           INTEGER NULL
    ,[IdentActive]           BIT NULL
 );

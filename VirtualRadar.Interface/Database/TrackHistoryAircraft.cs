@@ -42,6 +42,11 @@ namespace VirtualRadar.Interface.Database
         public int? AircraftTypeID { get; set; }
 
         /// <summary>
+        /// Gets or sets the ID of the aircraft's operator.
+        /// </summary>
+        public int? OperatorID { get; set; }
+
+        /// <summary>
         /// Gets or sets the aircraft's registration.
         /// </summary>
         public string Registration { get; set; }

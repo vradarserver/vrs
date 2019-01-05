@@ -109,7 +109,7 @@ namespace VirtualRadar.Interface.Database
         /// <summary>
         /// Gets or sets the type of altitude that <see cref="AltitudeFeet"/> represents.
         /// </summary>
-        public AltitudeType? AltitudeType { get; set; }
+        public AltitudeType? AltitudeTypeID { get; set; }
 
         /// <summary>
         /// Gets or sets the target altitude on the autopilot.
@@ -129,7 +129,7 @@ namespace VirtualRadar.Interface.Database
         /// <summary>
         /// Gets or sets the type of ground speed that <see cref="GroundSpeedKnots"/> represents.
         /// </summary>
-        public SpeedType? SpeedType { get; set; }
+        public SpeedType? SpeedTypeID { get; set; }
 
         /// <summary>
         /// Gets or sets the track in degrees.
@@ -154,7 +154,7 @@ namespace VirtualRadar.Interface.Database
         /// <summary>
         /// Gets or sets whether the VSI is reported by an instrument that uses barometric pressure or measures the distance above the elipsoid.
         /// </summary>
-        public AltitudeType? VerticalRateType { get; set; }
+        public AltitudeType? VerticalRateTypeID { get; set; }
 
         /// <summary>
         /// Gets or sets the squawk as an octal code (e.g. squawk 1234 is recorded as integer 1234 not 668).
@@ -189,7 +189,7 @@ namespace VirtualRadar.Interface.Database
 
                 if(state.AirPressureInHg != null)       result.AirPressureInHg =        state.AirPressureInHg;
                 if(state.AltitudeFeet != null)          result.AltitudeFeet =           state.AltitudeFeet;
-                if(state.AltitudeType != null)          result.AltitudeType =           state.AltitudeType;
+                if(state.AltitudeTypeID != null)          result.AltitudeTypeID =           state.AltitudeTypeID;
                 if(state.Callsign != null)              result.Callsign =               state.Callsign;
                 if(state.GroundSpeedKnots != null)      result.GroundSpeedKnots =       state.GroundSpeedKnots;
                 if(state.IdentActive != null)           result.IdentActive =            state.IdentActive;
@@ -200,14 +200,14 @@ namespace VirtualRadar.Interface.Database
                 if(state.Longitude != null)             result.Longitude =              state.Longitude;
                 if(state.ReceiverID != null)            result.ReceiverID =             state.ReceiverID;
                 if(state.SignalLevel != null)           result.SignalLevel =            state.SignalLevel;
-                if(state.SpeedType != null)             result.SpeedType =              state.SpeedType;
+                if(state.SpeedTypeID != null)             result.SpeedTypeID =              state.SpeedTypeID;
                 if(state.SquawkOctal != null)           result.SquawkOctal =            state.SquawkOctal;
                 if(state.TargetAltitudeFeet != null)    result.TargetAltitudeFeet =     state.TargetAltitudeFeet;
                 if(state.TargetTrack != null)           result.TargetTrack =            state.TargetTrack;
                 if(state.TrackDegrees != null)          result.TrackDegrees =           state.TrackDegrees;
                 if(state.TrackIsHeading != null)        result.TrackIsHeading =         state.TrackIsHeading;
                 if(state.VerticalRateFeetMin != null)   result.VerticalRateFeetMin =    state.VerticalRateFeetMin;
-                if(state.VerticalRateType != null)      result.VerticalRateType =       state.VerticalRateType;
+                if(state.VerticalRateTypeID != null)      result.VerticalRateTypeID =       state.VerticalRateTypeID;
             }
 
             return result;

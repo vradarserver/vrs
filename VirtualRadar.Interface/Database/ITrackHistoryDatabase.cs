@@ -104,6 +104,12 @@ namespace VirtualRadar.Interface.Database
         /// </summary>
         /// <param name="aircraftType"></param>
         void AircraftType_Save(TrackHistoryAircraftType aircraftType);
+
+        /// <summary>
+        /// Deletes an existing aircraft type and nulls out references to it.
+        /// </summary>
+        /// <param name="aircraftType"></param>
+        void AircraftType_Delete(TrackHistoryAircraftType aircraftType);
         #endregion
 
         #region Country
@@ -274,6 +280,12 @@ namespace VirtualRadar.Interface.Database
         /// </summary>
         /// <param name="op"></param>
         void Operator_Save(TrackHistoryOperator acOperator);
+
+        /// <summary>
+        /// Deletes the operator passed across. References to the operator are nulled out.
+        /// </summary>
+        /// <param name="acOperator"></param>
+        void Operator_Delete(TrackHistoryOperator acOperator);
         #endregion
 
         #region Receiver
