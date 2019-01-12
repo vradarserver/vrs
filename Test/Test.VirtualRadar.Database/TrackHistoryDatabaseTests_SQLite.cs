@@ -174,6 +174,20 @@ namespace Test.VirtualRadar.Database
         }
         #endregion
 
+        #region Airport
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Airport_Save_Creates_New_Records_Correctly()
+        {
+            Airport_Save_Creates_New_Records_Correctly();
+        }
+
+        [TestMethod]
+        public void TrackHistoryDatabase_SQLite_Airport_Save_Updates_Existing_Records_Correctly()
+        {
+            Airport_Save_Updates_Existing_Records_Correctly();
+        }
+        #endregion
+
         #region Country
         [TestMethod]
         public void TrackHistoryDatabase_SQLite_Country_Save_Creates_New_Records_Correctly()

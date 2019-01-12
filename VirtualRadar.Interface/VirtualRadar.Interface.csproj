@@ -143,6 +143,7 @@
     <Compile Include="Database\ITrackHistoryDatabaseSQLite.cs" />
     <Compile Include="Database\OrdinalAttribute.cs" />
     <Compile Include="Database\TrackHistoryAircraftType.cs" />
+    <Compile Include="Database\TrackHistoryAirport.cs" />
     <Compile Include="Database\TrackHistoryCountry.cs" />
     <Compile Include="Database\TrackHistory.cs" />
     <Compile Include="Database\TrackHistoryAircraft.cs" />

@@ -214,6 +214,25 @@ CREATE INDEX        IF NOT EXISTS [IX_Aircraft_Registration] ON [Aircraft] ([Reg
 
 
 --
+-- Airport
+--
+CREATE TABLE IF NOT EXISTS [Airport]
+(
+    [AirportID]     INTEGER PRIMARY KEY AUTOINCREMENT
+   ,[Icao]          VARCHAR(4) NULL
+   ,[Iata]          VARCHAR(3) NULL
+   ,[Name]          NVARCHAR(255) NOT NULL
+   ,[Latitude]      REAL NULL
+   ,[Longitude]     REAL NULL
+   ,[CountryID]     INTEGER NULL CONSTRAINT [FK_Airport_Country] REFERENCES [Country] ([CountryID])
+   ,[CreatedUtc]    DATETIME NOT NULL
+   ,[UpdatedUtc]    DATETIME NOT NULL
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS [IX_Airport_Key] ON [Airport] ([Icao], [Iata], [Name]);
+
+
+--
 -- TrackHistory
 --
 CREATE TABLE IF NOT EXISTS [TrackHistory]

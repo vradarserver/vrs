@@ -168,6 +168,8 @@
     <Content Include="Log\Scripts\UpdateSchema.sql" />
     <Content Include="TrackHistoryData\Scripts\AircraftType_Insert.sql" />
     <Content Include="TrackHistoryData\Scripts\AircraftType_Update.sql" />
+    <Content Include="TrackHistoryData\Scripts\Airport_Update.sql" />
+    <Content Include="TrackHistoryData\Scripts\Airport_Insert.sql" />
     <Content Include="TrackHistoryData\Scripts\Operator_Update.sql" />
     <Content Include="TrackHistoryData\Scripts\Operator_Insert.sql" />
     <Content Include="TrackHistoryData\Scripts\Model_Update.sql" />

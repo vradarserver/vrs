@@ -70,6 +70,7 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///   ,[Serial]
         ///   ,[YearBuilt]
         ///   ,[IsInteresting]
+        ///   ,[IsMilitary]
         ///   ,[Notes]
         ///   ,[LastLookupUtc]
         ///   ,[IsMissingFromLookup]
@@ -85,10 +86,10 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///   ,@Serial
         ///   ,@YearBuilt
         ///   ,@IsInteresting
+        ///   ,@IsMilitary
         ///   ,@Notes
         ///   ,@LastLookupUtc
-        ///   ,@IsMissingFromLookup
-        ///   ,@Suppr [rest of string was truncated]&quot;;.
+        ///  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Aircraft_Insert {
             get {
@@ -106,9 +107,9 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///      ,[Serial] =               @Serial
         ///      ,[YearBuilt] =            @YearBuilt
         ///      ,[IsInteresting] =        @IsInteresting
+        ///      ,[IsMilitary] =           @IsMilitary
         ///      ,[Notes] =                @Notes
-        ///      ,[LastLookupUtc] =        @LastLookupUtc
-        ///      ,[IsMissingFromLookup] =  @IsMissingFr [rest of string was truncated]&quot;;.
+        ///      ,[LastLookupUtc] =        @LastLookupUtc        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Aircraft_Update {
             get {
@@ -165,6 +166,57 @@ namespace VirtualRadar.Database.TrackHistoryData {
         internal static string AircraftType_Update {
             get {
                 return ResourceManager.GetString("AircraftType_Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [Airport] (
+        ///    [Icao]
+        ///   ,[Iata]
+        ///   ,[Name]
+        ///   ,[Latitude]
+        ///   ,[Longitude]
+        ///   ,[CountryID]
+        ///   ,[CreatedUtc]
+        ///   ,[UpdatedUtc]
+        ///) VALUES (
+        ///    @Icao
+        ///   ,@Iata
+        ///   ,@Name
+        ///   ,@Latitude
+        ///   ,@Longitude
+        ///   ,@CountryID
+        ///   ,@CreatedUtc
+        ///   ,@UpdatedUtc
+        ///);
+        ///SELECT [AirportID] FROM [Airport] WHERE _ROWID_ = last_insert_rowid();
+        ///.
+        /// </summary>
+        internal static string Airport_Insert {
+            get {
+                return ResourceManager.GetString("Airport_Insert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UPDATE [Airport]
+        ///SET    [Icao] =         @Icao
+        ///      ,[Iata] =         @Iata
+        ///      ,[Name] =         @Name
+        ///      ,[Latitude] =     @Latitude
+        ///      ,[Longitude] =    @Longitude
+        ///      ,[CountryID] =    @CountryID
+        ///      ,[UpdatedUtc] =   @UpdatedUtc
+        ///WHERE  [AirportID] = @AirportID;
+        ///
+        ///SELECT [CreatedUtc]
+        ///FROM   [Airport]
+        ///WHERE  [AirportID] = @AirportID;
+        ///.
+        /// </summary>
+        internal static string Airport_Update {
+            get {
+                return ResourceManager.GetString("Airport_Update", resourceCulture);
             }
         }
         
@@ -518,18 +570,18 @@ namespace VirtualRadar.Database.TrackHistoryData {
         ///   ,[IsMlat]
         ///   ,[IsTisb]
         ///   ,[AltitudeFeet]
-        ///   ,[AltitudeType]
+        ///   ,[AltitudeTypeID]
         ///   ,[TargetAltitudeFeet]
         ///   ,[AirPressureInHg]
         ///   ,[GroundSpeedKnots]
-        ///   ,[SpeedType]
+        ///   ,[SpeedTypeID]
         ///   ,[TrackDegrees]
         ///   ,[TargetTrack]
         ///   ,[TrackIsHeading]
         ///   ,[VerticalRateFeetMin]
-        ///   ,[VerticalRateType]
+        ///   ,[VerticalRateTypeID]
         ///   ,[SquawkOctal]
-        ///   ,[IdentAct [rest of string was truncated]&quot;;.
+        ///   ,[Id [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string TrackHistoryState_Insert {
             get {

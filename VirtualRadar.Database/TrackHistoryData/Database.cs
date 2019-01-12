@@ -596,6 +596,40 @@ namespace VirtualRadar.Database.TrackHistoryData
         }
         #endregion
 
+        #region Airport
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public TrackHistoryAirport Airport_GetByID(int id)
+        {
+            return QueryFirstOrDefault<TrackHistoryAirport>(
+                "SELECT * FROM [Airport] WHERE [AirportID] = @id",
+                new { id }
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="airport"></param>
+        public void Airport_Save(TrackHistoryAirport airport)
+        {
+            Save<TrackHistoryAirport>(airport, () => airport.AirportID != 0, Airport_Insert, Airport_Update);
+        }
+
+        private void Airport_Insert(ConnectionWrapper connection, TrackHistoryAirport airport)
+        {
+            Insert<TrackHistoryAirport, int>(connection, airport, Commands.Airport_Insert, id => airport.AirportID = id);
+        }
+
+        private void Airport_Update(ConnectionWrapper connection, TrackHistoryAirport airport)
+        {
+            Update<TrackHistoryAirport>(connection, airport, Commands.Airport_Update, created => airport.CreatedUtc = created);
+        }
+        #endregion
+
         #region Country
         /// <summary>
         /// See interface docs.

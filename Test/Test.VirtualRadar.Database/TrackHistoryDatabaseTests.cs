@@ -400,6 +400,110 @@ namespace Test.VirtualRadar.Database
         }
         #endregion
 
+        #region Airport
+        protected void Airport_Save_Creates_New_Records_Correctly()
+        {
+            var created = DateTime.UtcNow;
+            var updated = created.AddMilliseconds(7);
+            foreach(var airport in SampleAirports(true, created, updated)) {
+                _Database.Airport_Save(airport);
+
+                Assert.AreNotEqual(0, airport.AirportID);
+
+                var readBack = _Database.Airport_GetByID(airport.AirportID);
+                AssertAirportsAreEqual(airport, readBack);
+            }
+        }
+
+        protected void Airport_Save_Updates_Existing_Records_Correctly()
+        {
+            var created = DateTime.UtcNow;
+            var updated = created.AddSeconds(9);
+
+            var allSavedAirports =   SampleAirports(generateForCreate: true,  createdUtc: created, updatedUtc: created);
+            var allUpdatedAirports = SampleAirports(generateForCreate: false, createdUtc: created, updatedUtc: updated);
+
+            foreach(var airport in allSavedAirports) {
+                _Database.Airport_Save(airport);
+            }
+
+            for(var i = 0;i < allSavedAirports.Count;++i) {
+                var savedAirport = allSavedAirports[i];
+                var updatedAirport = allUpdatedAirports[i];
+
+                updatedAirport.AirportID = savedAirport.AirportID;
+                _Database.Airport_Save(updatedAirport);
+
+                var readBack = _Database.Airport_GetByID(savedAirport.AirportID);
+                AssertAirportsAreEqual(updatedAirport, readBack);
+            }
+        }
+
+        private List<TrackHistoryAirport> SampleAirports(bool generateForCreate, DateTime? createdUtc = null, DateTime? updatedUtc = null)
+        {
+            var created = createdUtc ?? DateTime.UtcNow;
+            var updated = updatedUtc ?? DateTime.UtcNow;
+
+            var result = new List<TrackHistoryAirport>();
+
+            var previousIcao = 100;
+            var previousIata = 99;
+            foreach(var property in typeof(TrackHistoryAirport).GetProperties()) {
+                var airport = new TrackHistoryAirport() {
+                    Icao =          $"A{previousIcao:X3}",
+                    Iata =          $"A{previousIata:X2}",
+                    Name =          $"Name {previousIcao}-{previousIata}",
+                    CreatedUtc =    created,
+                    UpdatedUtc =    updated,
+                };
+                ++previousIcao;
+                --previousIata;
+
+                var propertyValue = GenerateAirportPropertyValue(property, generateForCreate);
+                if(propertyValue != null) {
+                    property.SetValue(airport, propertyValue);
+                    result.Add(airport);
+                }
+            }
+
+            return result;
+        }
+
+        private object GenerateAirportPropertyValue(PropertyInfo property, bool generateForCreate)
+        {
+            object value = null;
+
+            var countryName = generateForCreate ? "Germany" : "France";
+
+            switch(property.Name) {
+                case nameof(TrackHistoryAirport.CountryID):         value = _Database.Country_GetOrCreateByName(countryName).CountryID; break;
+
+                case nameof(TrackHistoryAirport.Latitude):
+                case nameof(TrackHistoryAirport.Longitude):
+                    value = generateForCreate ? 1.2 : 3.4;
+                    break;
+
+                case nameof(TrackHistoryAirport.AirportID):
+                case nameof(TrackHistoryAirport.Icao):
+                case nameof(TrackHistoryAirport.Iata):
+                case nameof(TrackHistoryAirport.Name):
+                case nameof(TrackHistoryAirport.CreatedUtc):
+                case nameof(TrackHistoryAirport.UpdatedUtc):
+                    break;
+
+                default:
+                    throw new NotImplementedException($"Need code for {nameof(TrackHistoryAircraftType)}.{property.Name}");
+            }
+
+            return value;
+        }
+
+        private void AssertAirportsAreEqual(TrackHistoryAirport expected, TrackHistoryAirport actual)
+        {
+            TestUtilities.TestObjectPropertiesAreEqual(expected, actual);
+        }
+        #endregion
+
         #region Country
         protected void Country_Save_Creates_New_Records_Correctly()
         {

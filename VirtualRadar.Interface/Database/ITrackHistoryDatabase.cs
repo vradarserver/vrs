@@ -112,6 +112,21 @@ namespace VirtualRadar.Interface.Database
         void AircraftType_Delete(TrackHistoryAircraftType aircraftType);
         #endregion
 
+        #region Airport
+        /// <summary>
+        /// Returns the airport corresponding to the ID passed across or null if no such airport exists.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        TrackHistoryAirport Airport_GetByID(int id);
+
+        /// <summary>
+        /// Creates or updates the airport passed across.
+        /// </summary>
+        /// <param name="airport"></param>
+        void Airport_Save(TrackHistoryAirport airport);
+        #endregion
+
         #region Country
         /// <summary>
         /// Returns the country record for the ID passed across or null if no such country exists.
