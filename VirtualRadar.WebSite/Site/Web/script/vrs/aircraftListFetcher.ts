@@ -58,7 +58,8 @@ namespace VRS
         });
         private _Events = {
             pausedChanged:                  'pausedChanged',
-            hideAircraftNotOnMapChanged:    'hideAircraftNotOnMapChanged'
+            hideAircraftNotOnMapChanged:    'hideAircraftNotOnMapChanged',
+            listFetched:                    'listFetched'
         };
         private _Settings: AircraftListFetcher_Settings;
 
@@ -300,6 +301,16 @@ namespace VRS
         hookHideAircraftNotOnMapChanged = (callback: () => void, forceThis?: Object) : IEventHandle =>
         {
             return this._Dispatcher.hook(this._Events.hideAircraftNotOnMapChanged, callback, forceThis);
+        }
+
+        /**
+         * Raised directly after the aircraft list has been fetched but before anything is done with it.
+         * Gets passed two parameters - the aircraft list that was fetched and a bool that is true if the
+         * fetch was for FSX data.
+         */
+        hookListFetched = (callback: () => void, forceThis?: Object) : IEventHandle =>
+        {
+            return this._Dispatcher.hook(this._Events.listFetched, callback, forceThis);
         }
 
         /**
@@ -545,6 +556,8 @@ namespace VRS
             this._TimeoutHandle = undefined;
 
             if(!this._Paused) {
+                this._Dispatcher.raise(this._Events.listFetched, [ data, this._Settings.fetchFsxList ]);
+
                 if(data.feeds) {
                     this._Feeds = data.feeds;
                     this._ActualFeedId = data.srcFeed;
