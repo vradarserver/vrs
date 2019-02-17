@@ -28,24 +28,24 @@ var VRS;
         LeafletUtilities.prototype.fromLeafletLatLng = function (latLng) {
             return latLng;
         };
-        LeafletUtilities.prototype.toLeafletLatLng = function (latLng) {
+        LeafletUtilities.prototype.toLeafletLatLng = function (latLng, map) {
             if (latLng instanceof L.LatLng) {
                 return latLng;
             }
             else if (latLng) {
-                return new L.LatLng(latLng.lat, latLng.lng);
+                return map ? map.wrapLatLng([latLng.lat, latLng.lng]) : new L.LatLng(latLng.lat, latLng.lng);
             }
             return null;
         };
         LeafletUtilities.prototype.fromLeafletLatLngArray = function (latLngArray) {
             return latLngArray;
         };
-        LeafletUtilities.prototype.toLeafletLatLngArray = function (latLngArray) {
+        LeafletUtilities.prototype.toLeafletLatLngArray = function (latLngArray, map) {
             latLngArray = latLngArray || [];
             var result = [];
             var len = latLngArray.length;
             for (var i = 0; i < len; ++i) {
-                result.push(this.toLeafletLatLng(latLngArray[i]));
+                result.push(this.toLeafletLatLng(latLngArray[i], map));
             }
             return result;
         };
@@ -60,11 +60,13 @@ var VRS;
                 brLng: bounds.getEast()
             };
         };
-        LeafletUtilities.prototype.toLeaftletLatLngBounds = function (bounds) {
+        LeafletUtilities.prototype.toLeaftletLatLngBounds = function (bounds, map) {
             if (!bounds) {
                 return null;
             }
-            return new L.LatLngBounds([bounds.brLat, bounds.tlLng], [bounds.tlLat, bounds.brLng]);
+            return map
+                ? map.wrapLatLngBounds(new L.LatLngBounds([bounds.brLat, bounds.tlLng], [bounds.tlLat, bounds.brLng]))
+                : new L.LatLngBounds([bounds.brLat, bounds.tlLng], [bounds.tlLat, bounds.brLng]);
         };
         LeafletUtilities.prototype.fromLeafletIcon = function (icon) {
             if (icon === null || icon === undefined) {
@@ -290,7 +292,7 @@ var VRS;
             return VRS.leafletUtilities.fromLeafletLatLng(this.marker.getLatLng());
         };
         MapMarker.prototype.setPosition = function (position) {
-            this.marker.setLatLng(VRS.leafletUtilities.toLeafletLatLng(position));
+            this.marker.setLatLng(VRS.leafletUtilities.toLeafletLatLng(position, this.map));
             if (this.labelTooltip) {
                 this.labelTooltip.setLatLng(this.marker.getLatLng());
             }
@@ -437,7 +439,7 @@ var VRS;
             return VRS.leafletUtilities.fromLeafletLatLngArray((this.polyline.getLatLngs()));
         };
         MapPolyline.prototype.setPath = function (path) {
-            this.polyline.setLatLngs(VRS.leafletUtilities.toLeafletLatLngArray(path));
+            this.polyline.setLatLngs(VRS.leafletUtilities.toLeafletLatLngArray(path, this.map));
         };
         MapPolyline.prototype.getFirstLatLng = function () {
             var result = null;
@@ -482,7 +484,7 @@ var VRS;
             return VRS.leafletUtilities.fromLeafletLatLng(this.circle.getLatLng());
         };
         MapCircle.prototype.setCenter = function (value) {
-            this.circle.setLatLng(VRS.leafletUtilities.toLeafletLatLng(value));
+            this.circle.setLatLng(VRS.leafletUtilities.toLeafletLatLng(value, this.map));
         };
         MapCircle.prototype.getDraggable = function () {
             return false;
@@ -770,7 +772,7 @@ var VRS;
             return VRS.leafletUtilities.fromLeafletLatLng(this.infoWindow.getLatLng());
         };
         MapInfoWindow.prototype.setPosition = function (value) {
-            this.infoWindow.setLatLng(VRS.leafletUtilities.toLeafletLatLng(value));
+            this.infoWindow.setLatLng(VRS.leafletUtilities.toLeafletLatLng(value, this.map));
         };
         MapInfoWindow.prototype.getZIndex = function () {
             return 1;
@@ -1041,7 +1043,7 @@ var VRS;
                 try {
                     state.settingCenter = latLng;
                     if (state.map)
-                        state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(latLng));
+                        state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(latLng, state.map));
                     else
                         this.options.center = latLng;
                 }
@@ -1199,7 +1201,7 @@ var VRS;
                 var leafletOptions = {
                     attributionControl: true,
                     zoom: mapOptions.zoom,
-                    center: VRS.leafletUtilities.toLeafletLatLng(mapOptions.center),
+                    center: VRS.leafletUtilities.toLeafletLatLng(mapOptions.center, null),
                     scrollWheelZoom: mapOptions.scrollwheel,
                     dragging: mapOptions.draggable,
                     zoomControl: mapOptions.scaleControl
@@ -1298,7 +1300,7 @@ var VRS;
                 try {
                     state.settingCenter = mapCenter;
                     if (state.map)
-                        state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(mapCenter));
+                        state.map.panTo(VRS.leafletUtilities.toLeafletLatLng(mapCenter, state.map));
                     else
                         this.options.center = mapCenter;
                 }
@@ -1310,7 +1312,7 @@ var VRS;
         MapPlugin.prototype.fitBounds = function (bounds) {
             var state = this._getState();
             if (state.map) {
-                state.map.fitBounds(VRS.leafletUtilities.toLeaftletLatLngBounds(bounds));
+                state.map.fitBounds(VRS.leafletUtilities.toLeaftletLatLngBounds(bounds, state.map));
             }
         };
         MapPlugin.prototype.saveState = function () {
@@ -1370,7 +1372,7 @@ var VRS;
                 if (userOptions.tooltip) {
                     leafletOptions.title = userOptions.tooltip;
                 }
-                var position = userOptions.position ? VRS.leafletUtilities.toLeafletLatLng(userOptions.position) : state.map.getCenter();
+                var position = userOptions.position ? VRS.leafletUtilities.toLeafletLatLng(userOptions.position, state.map) : state.map.getCenter();
                 this.destroyMarker(id);
                 var nativeMarker = L.marker(position, leafletOptions);
                 if (userOptions.visible) {
@@ -1427,7 +1429,7 @@ var VRS;
                     leafletOptions.weight = options.strokeWeight;
                 var path = [];
                 if (options.path)
-                    path = VRS.leafletUtilities.toLeafletLatLngArray(options.path);
+                    path = VRS.leafletUtilities.toLeafletLatLngArray(options.path, state.map);
                 this.destroyPolyline(id);
                 var polyline = L.polyline(path, leafletOptions);
                 if (options.visible) {
@@ -1494,11 +1496,12 @@ var VRS;
         MapPlugin.prototype.appendToPolyline = function (idOrPolyline, path, toStart) {
             var length = !path ? 0 : path.length;
             if (length > 0) {
+                var state = this._getState();
                 var polyline = this.getPolyline(idOrPolyline);
                 var points = polyline.polyline.getLatLngs();
                 var insertAt = toStart ? 0 : -1;
                 for (var i = 0; i < length; ++i) {
-                    var leafletPoint = VRS.leafletUtilities.toLeafletLatLng(path[i]);
+                    var leafletPoint = VRS.leafletUtilities.toLeafletLatLng(path[i], state.map);
                     if (toStart) {
                         points.splice(insertAt++, 0, leafletPoint);
                     }
@@ -1516,7 +1519,8 @@ var VRS;
             if (index === -1)
                 index = length - 1;
             if (index >= 0 && index < length) {
-                points.splice(index, 1, VRS.leafletUtilities.toLeafletLatLng(point));
+                var state = this._getState();
+                points.splice(index, 1, VRS.leafletUtilities.toLeafletLatLng(point, state.map));
                 polyline.polyline.setLatLngs(points);
             }
         };
@@ -1539,7 +1543,7 @@ var VRS;
                     leafletOptions.weight = options.strokeWeight;
                 var paths = [];
                 if (options.paths)
-                    paths = VRS.leafletUtilities.toLeafletLatLngArray(options.paths[0]);
+                    paths = VRS.leafletUtilities.toLeafletLatLngArray(options.paths[0], state.map);
                 this.destroyPolygon(id);
                 var polygon = new L.Polygon(paths, leafletOptions);
                 if (options.visible) {
@@ -1580,7 +1584,7 @@ var VRS;
                     weight: options.strokeWeight !== null && options.strokeWeight !== undefined ? options.strokeWeight : 1,
                     radius: options.radius || 0
                 };
-                var centre = VRS.leafletUtilities.toLeafletLatLng(options.center);
+                var centre = VRS.leafletUtilities.toLeafletLatLng(options.center, state.map);
                 this.destroyCircle(id);
                 var circle = L.circle(centre, leafletOptions);
                 if (options.visible) {
@@ -1635,7 +1639,7 @@ var VRS;
                 this.destroyInfoWindow(id);
                 var infoWindow = new L.Popup(leafletOptions);
                 if (options.position) {
-                    infoWindow.setLatLng(VRS.leafletUtilities.toLeafletLatLng(options.position));
+                    infoWindow.setLatLng(VRS.leafletUtilities.toLeafletLatLng(options.position, state.map));
                 }
                 if (options.content) {
                     infoWindow.setContent(options.content);
