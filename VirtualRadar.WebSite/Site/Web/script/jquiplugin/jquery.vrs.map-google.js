@@ -764,7 +764,7 @@ var VRS;
     VRS.jQueryUIHelper.getMapOptions = function (overrides) {
         return $.extend({
             key: null,
-            version: '3.34',
+            version: '3.36',
             sensor: false,
             libraries: [],
             loadMarkerWithLabel: false,
