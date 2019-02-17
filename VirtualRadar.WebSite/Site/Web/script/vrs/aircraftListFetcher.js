@@ -18,7 +18,8 @@ var VRS;
             });
             this._Events = {
                 pausedChanged: 'pausedChanged',
-                hideAircraftNotOnMapChanged: 'hideAircraftNotOnMapChanged'
+                hideAircraftNotOnMapChanged: 'hideAircraftNotOnMapChanged',
+                listFetched: 'listFetched'
             };
             this._ServerConfigChangedHook = null;
             this._SiteTimedOutHook = null;
@@ -155,6 +156,9 @@ var VRS;
             };
             this.hookHideAircraftNotOnMapChanged = function (callback, forceThis) {
                 return _this._Dispatcher.hook(_this._Events.hideAircraftNotOnMapChanged, callback, forceThis);
+            };
+            this.hookListFetched = function (callback, forceThis) {
+                return _this._Dispatcher.hook(_this._Events.listFetched, callback, forceThis);
             };
             this.unhook = function (hookResult) {
                 _this._Dispatcher.unhook(hookResult);
@@ -320,6 +324,7 @@ var VRS;
             this.fetchSuccess = function (data) {
                 _this._TimeoutHandle = undefined;
                 if (!_this._Paused) {
+                    _this._Dispatcher.raise(_this._Events.listFetched, [data, _this._Settings.fetchFsxList]);
                     if (data.feeds) {
                         _this._Feeds = data.feeds;
                         _this._ActualFeedId = data.srcFeed;
