@@ -80,25 +80,49 @@ namespace VirtualRadar.Library.Settings
                     if(!_Initialised) {
                         _Initialised = true;
                         _Storage = Factory.Singleton.Resolve<ITileServerSettingsStorage>().Singleton;
+                        var reportErrors = new StringBuilder();
 
-                        try {
+                        CatchErrorsDuringInitialise(reportErrors, "downloading tile server settings", () => {
                             if(!_Storage.DownloadedSettingsFileExists()) {
                                 DoDownloadTileServerSettings(InitialiseTimeoutSeconds);
                             }
-                        } catch(ThreadAbortException) {
-                            ;
-                        } catch(Exception ex) {
-                            var log = Factory.Singleton.Resolve<ILog>().Singleton;
-                            log.WriteLine("Caught exception while downloading tile server settings at startup: {0}", Describe.ExceptionMultiLine(ex));
-                        }
+                        });
 
-                        LoadTileServerSettings();
-                        _Storage.CreateReadme();
+                        CatchErrorsDuringInitialise(reportErrors, "loading tile server settings", () => {
+                            LoadTileServerSettings();
+                        });
+
+                        CatchErrorsDuringInitialise(reportErrors, "creating tile server settings readme", () => {
+                            _Storage.CreateReadme();
+                        });
+
+                        if(reportErrors.Length > 0) {
+                            var messageBox = Factory.Singleton.Resolve<IMessageBox>();
+                            messageBox.Show(reportErrors.ToString(), "Errors While Initialising Tile Server Settings Manager");
+                        }
 
                         var heartbeat = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
                         heartbeat.SlowTick += Heartbeat_SlowTick;
                     }
                 }
+            }
+        }
+
+        private void CatchErrorsDuringInitialise(StringBuilder messageBuffer, string describeAction, Action action)
+        {
+            try {
+                action();
+            } catch(ThreadAbortException) {
+                ;
+            } catch(Exception ex) {
+                var msg = $"Caught exception while {describeAction} at startup. See log for more details.";
+                if(messageBuffer.Length > 0) {
+                    messageBuffer.AppendLine();
+                }
+                messageBuffer.AppendLine(msg);
+
+                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                log.WriteLine($"Caught exception while {describeAction} at startup: {Describe.ExceptionMultiLine(ex)}");
             }
         }
 
@@ -264,12 +288,10 @@ namespace VirtualRadar.Library.Settings
                             usedNames.Add(name);
 
                             var otherSetting = providerSettings.FirstOrDefault(r => String.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase));
-                            if(otherSetting != null) {
-                                var buffer = new StringBuilder(setting.Attribution);
-                                buffer.Remove(match.Index, match.Length);
-                                buffer.Insert(match.Index, otherSetting.Attribution);
-                                setting.Attribution = buffer.ToString();
-                            }
+                            var buffer = new StringBuilder(setting.Attribution);
+                            buffer.Remove(match.Index, match.Length);
+                            buffer.Insert(match.Index, otherSetting?.Attribution ?? $"Unknown attribution ID {name}");
+                            setting.Attribution = buffer.ToString();
                         }
                     } while(!completed);
                 }
