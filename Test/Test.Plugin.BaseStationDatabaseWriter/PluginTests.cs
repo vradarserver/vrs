@@ -1538,6 +1538,45 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         }
 
         [TestMethod]
+        public void Plugin_Ignores_Icao_000000_Messages()
+        {
+            SetEnabledOption(true);
+            _Plugin.Startup(_StartupParameters);
+
+            var message = new BaseStationMessage() { AircraftId = 1, Icao24 = "000000", Callsign = "ABC123", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
+
+            _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Never());
+        }
+
+        [TestMethod]
+        public void Plugin_Ignores_Invalid_Hex_Icao_Messages()
+        {
+            SetEnabledOption(true);
+            _Plugin.Startup(_StartupParameters);
+
+            var message = new BaseStationMessage() { AircraftId = 1, Icao24 = "G00000", Callsign = "ABC123", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
+
+            _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Never());
+        }
+
+        [TestMethod]
+        public void Plugin_Ignores_25_Plus_Bit_Icao_Messages()
+        {
+            SetEnabledOption(true);
+            _Plugin.Startup(_StartupParameters);
+
+            var message = new BaseStationMessage() { AircraftId = 1, Icao24 = "1000000", Callsign = "ABC123", MessageType = BaseStationMessageType.Transmission, TransmissionType = BaseStationTransmissionType.AirToAir };
+            _Listener.Raise(r => r.Port30003MessageReceived += null, new BaseStationMessageEventArgs(message));
+            _HeartbeatService.Raise(r => r.SlowTick += null, EventArgs.Empty);
+
+            _BaseStationDatabase.Verify(d => d.InsertFlight(It.IsAny<BaseStationFlight>()), Times.Never());
+        }
+
+        [TestMethod]
         public void Plugin_Aircraft_And_Flight_Records_Inserted_Within_Transaction()
         {
             SetEnabledOption(true);
