@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 onwards, Andrew Whewell
+﻿// Copyright © 2019 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,34 +10,48 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Interface.Drawing;
+using System.Threading.Tasks;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.Interface.Drawing
 {
     /// <summary>
-    /// The interface for an object that can determine the dimensions of an image stored in an image file.
+    /// Handles the reading and writing of images on disk.
     /// </summary>
-    /// <remarks>
-    /// Implementations must be thread-safe.
-    /// </remarks>
-    public interface IImageDimensionsFetcher
+    public interface IImageFile
     {
         /// <summary>
-        /// Reads the dimensions of the image from the file, hopefully without actually loading the entire file.
+        /// Given a stream pointing at the start of an image file this will return the size of the image
+        /// represented by the stream.
         /// </summary>
-        /// <param name="fileName">Full path to the image file. The user must be able to open the file for reading.</param>
-        /// <returns></returns>
-        Size ReadDimensions(string fileName);
+        /// <param name="imageStream"></param>
+        /// <returns>
+        /// The pixel width and height of the image or null if the stream is null, the stream is empty or the
+        /// stream does not represent an image.
+        /// </returns>
+        Size LoadDimensions(Stream imageStream);
 
         /// <summary>
-        /// Reads the dimensions of the image from the stream, hopefully without actually loading the entire file.
+        /// Reads an image out of a file on disk.
         /// </summary>
-        /// <param name="stream">A stream of image bits. The stream must be positionable.</param>
+        /// <param name="fileName"></param>
         /// <returns></returns>
-        Size ReadDimensions(Stream stream);
+        IImage LoadFromFile(string fileName);
+
+        /// <summary>
+        /// Reads an image from a stream.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        IImage LoadFromStream(Stream stream);
+
+        /// <summary>
+        /// Reads an image from a byte array.
+        /// </summary>
+        /// <param name="array"></param>
+        /// <returns></returns>
+        IImage LoadFromByteArray(byte[] array);
     }
 }

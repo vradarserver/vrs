@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 onwards, Andrew Whewell
+﻿// Copyright © 2019 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,34 +10,67 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using SixLabors.ImageSharp;
 using VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.Library.Drawing
 {
     /// <summary>
-    /// The interface for an object that can determine the dimensions of an image stored in an image file.
+    /// ImageSharp implementation of <see cref="IImageFile"/>.
     /// </summary>
-    /// <remarks>
-    /// Implementations must be thread-safe.
-    /// </remarks>
-    public interface IImageDimensionsFetcher
+    class ImageFile : IImageFile
     {
         /// <summary>
-        /// Reads the dimensions of the image from the file, hopefully without actually loading the entire file.
+        /// See interface docs.
         /// </summary>
-        /// <param name="fileName">Full path to the image file. The user must be able to open the file for reading.</param>
+        /// <param name="imageStream"></param>
         /// <returns></returns>
-        Size ReadDimensions(string fileName);
+        public Size LoadDimensions(Stream imageStream)
+        {
+            Size result = null;
+
+            if(imageStream != null && imageStream.Length > 0) {
+                var imageInfo = Image.Identify(imageStream);
+                if(imageInfo != null) {
+                    result = new Size(imageInfo.Width, imageInfo.Height);
+                }
+            }
+
+            return result;
+        }
 
         /// <summary>
-        /// Reads the dimensions of the image from the stream, hopefully without actually loading the entire file.
+        /// See interface docs.
         /// </summary>
-        /// <param name="stream">A stream of image bits. The stream must be positionable.</param>
+        /// <param name="fileName"></param>
         /// <returns></returns>
-        Size ReadDimensions(Stream stream);
+        public Interface.Drawing.IImage LoadFromFile(string fileName)
+        {
+            return new ImageWrapper(Image.Load(fileName));
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public Interface.Drawing.IImage LoadFromStream(Stream stream)
+        {
+            return new ImageWrapper(Image.Load(stream));
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="array"></param>
+        /// <returns></returns>
+        public Interface.Drawing.IImage LoadFromByteArray(byte[] array)
+        {
+            return new ImageWrapper(Image.Load(array));
+        }
     }
 }

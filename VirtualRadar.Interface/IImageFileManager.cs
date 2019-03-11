@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using VirtualRadar.Interface.WebSite;
+using VirtualRadar.Interface.Drawing;
 
 namespace VirtualRadar.Interface
 {
@@ -27,7 +28,7 @@ namespace VirtualRadar.Interface
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        Image LoadFromFile(string fileName);
+        IImage LoadFromFile(string fileName);
 
         /// <summary>
         /// Attempts to figure out the dimensions of an image stored within a file as quickly as possible.
@@ -44,6 +45,6 @@ namespace VirtualRadar.Interface
         /// <param name="useImageCache"></param>
         /// <param name="owinEnvironment"></param>
         /// <returns></returns>
-        Image LoadFromStandardPipeline(string webPathAndFileName, bool useImageCache, IDictionary<string, object> owinEnvironment);
+        IImage LoadFromStandardPipeline(string webPathAndFileName, bool useImageCache, IDictionary<string, object> owinEnvironment);
     }
 }

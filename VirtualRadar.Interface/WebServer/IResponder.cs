@@ -12,8 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing;
-using System.Drawing.Imaging;
+using VirtualRadar.Interface.Drawing;
 
 namespace VirtualRadar.Interface.WebServer
 {
@@ -70,7 +69,7 @@ namespace VirtualRadar.Interface.WebServer
         /// <remarks>
         /// The supported image formats are PNG, GIF and BMP.
         /// </remarks>
-        void SendImage(IRequest request, IResponse response, Image image, ImageFormat format);
+        void SendImage(IRequest request, IResponse response, IImage image, ImageFormat format);
 
         /// <summary>
         /// Formats the object as a JSON object and sends it via the response to the browser.

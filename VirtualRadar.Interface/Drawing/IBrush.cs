@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 onwards, Andrew Whewell
+﻿// Copyright © 2019 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,34 +10,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Interface.Drawing;
+using System.Threading.Tasks;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.Interface.Drawing
 {
     /// <summary>
-    /// The interface for an object that can determine the dimensions of an image stored in an image file.
+    /// Represents a brush.
     /// </summary>
-    /// <remarks>
-    /// Implementations must be thread-safe.
-    /// </remarks>
-    public interface IImageDimensionsFetcher
+    public interface IBrush
     {
-        /// <summary>
-        /// Reads the dimensions of the image from the file, hopefully without actually loading the entire file.
-        /// </summary>
-        /// <param name="fileName">Full path to the image file. The user must be able to open the file for reading.</param>
-        /// <returns></returns>
-        Size ReadDimensions(string fileName);
-
-        /// <summary>
-        /// Reads the dimensions of the image from the stream, hopefully without actually loading the entire file.
-        /// </summary>
-        /// <param name="stream">A stream of image bits. The stream must be positionable.</param>
-        /// <returns></returns>
-        Size ReadDimensions(Stream stream);
     }
 }

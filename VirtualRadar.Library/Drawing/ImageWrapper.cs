@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 onwards, Andrew Whewell
+﻿// Copyright © 2019 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,51 +10,76 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
-using InterfaceFactory;
-using VirtualRadar.Interface;
-using VirtualRadar.Interface.Drawing;
+using System.Threading.Tasks;
+using SixLabors.ImageSharp;
 
-namespace VirtualRadar.Library
+namespace VirtualRadar.Library.Drawing
 {
     /// <summary>
-    /// See interface docs.
+    /// The ImageSharp implementation of IImage - wraps an ImageSharp image.
     /// </summary>
-    class ImageDimensionsFetcher : IImageDimensionsFetcher
+    class ImageWrapper : Interface.Drawing.IImage
     {
+        /// <summary>
+        /// Gets the image that's being wrapped.
+        /// </summary>
+        internal Image<SixLabors.ImageSharp.PixelFormats.Rgba32> NativeImage { get; }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        public Size ReadDimensions(string fileName)
-        {
-            if(fileName == null) throw new ArgumentNullException(nameof(fileName));
-            if(fileName == "") throw new ArgumentException("Filename cannot be empty", nameof(fileName));
-            if(!File.Exists(fileName)) throw new FileNotFoundException($"Image file {fileName} does not exist");
+        public Interface.Drawing.Size Size { get; }
 
-            using(var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                return ReadDimensions(stream);
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="nativeImage"></param>
+        public ImageWrapper(Image<SixLabors.ImageSharp.PixelFormats.Rgba32> nativeImage)
+        {
+            NativeImage = nativeImage;
+            Size = new Interface.Drawing.Size(nativeImage.Width, nativeImage.Height);
+        }
+
+        /// <summary>
+        /// Finalises the object.
+        /// </summary>
+        ~ImageWrapper()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes of or finalises the object.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposing) {
+                if(NativeImage != null) {
+                    NativeImage.Dispose();
+                }
             }
         }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="stream"></param>
         /// <returns></returns>
-        public Size ReadDimensions(Stream stream)
+        public Interface.Drawing.IImage Clone()
         {
-            if(stream.Position > 0) {
-                stream.Seek(0, SeekOrigin.Begin);
-            }
-
-            var imageFile = Factory.Resolve<IImageFile>();
-            var result = imageFile.LoadDimensions(stream);
-
-            return result ?? Size.Empty;
+            var clone = NativeImage.Clone();
+            return new ImageWrapper(clone);
         }
     }
 }

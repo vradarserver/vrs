@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using InterfaceFactory;
+using VirtualRadar.Interface.Drawing;
 
 namespace VirtualRadar.Interface
 {
@@ -55,6 +56,6 @@ namespace VirtualRadar.Interface
         /// <param name="icao24"></param>
         /// <param name="registration"></param>
         /// <returns></returns>
-        Image LoadPicture(IDirectoryCache directoryCache, string icao24, string registration);
+        IImage LoadPicture(IDirectoryCache directoryCache, string icao24, string registration);
     }
 }

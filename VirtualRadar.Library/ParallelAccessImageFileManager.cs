@@ -18,6 +18,7 @@ using VirtualRadar.Interface.WebSite;
 using InterfaceFactory;
 using System.IO;
 using VirtualRadar.Interface.Owin;
+using VirtualRadar.Interface.Drawing;
 
 namespace VirtualRadar.Library
 {
@@ -38,7 +39,7 @@ namespace VirtualRadar.Library
         {
             public string NormalisedFileName;
 
-            public Image Image;
+            public IImage Image;
 
             public DateTime LastFetchedUtc;
         }
@@ -92,12 +93,15 @@ namespace VirtualRadar.Library
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public Image LoadFromFile(string fileName)
+        public IImage LoadFromFile(string fileName)
         {
             Initialise();
 
-            Bitmap result = null;
-            if(!String.IsNullOrEmpty(fileName)) result = (Bitmap)Bitmap.FromFile(fileName);
+            IImage result = null;
+            if(!String.IsNullOrEmpty(fileName)) {
+                var imageFile = Factory.Resolve<IImageFile>();
+                result = imageFile.LoadFromFile(fileName);
+            }
 
             return result;
         }
@@ -131,14 +135,14 @@ namespace VirtualRadar.Library
         /// <param name="useImageCache"></param>
         /// <param name="owinEnvironment"></param>
         /// <returns></returns>
-        public Image LoadFromStandardPipeline(string webPathAndFileName, bool useImageCache, IDictionary<string, object> owinEnvironment)
+        public IImage LoadFromStandardPipeline(string webPathAndFileName, bool useImageCache, IDictionary<string, object> owinEnvironment)
         {
             return LoadFromSiteOrCache(webPathAndFileName, useImageCache, () => FetchFromOwinPipeline(webPathAndFileName, owinEnvironment));
         }
 
-        private Image LoadFromSiteOrCache(string webPathAndFileName, bool useImageCache, Func<Image> buildImage)
+        private IImage LoadFromSiteOrCache(string webPathAndFileName, bool useImageCache, Func<IImage> buildImage)
         {
-            Image result = null;
+            IImage result = null;
 
             Initialise();
             if(!useImageCache) {
@@ -150,7 +154,7 @@ namespace VirtualRadar.Library
                     _WebSiteImageCache.TryGetValue(normalisedName, out cacheEntry);
                     if(cacheEntry != null && cacheEntry.LastFetchedUtc >= _Clock.UtcNow.AddSeconds(-WebSiteCacheExpirySeconds)) {
                         if(cacheEntry.Image != null) {
-                            result = new Bitmap(cacheEntry.Image);
+                            result = cacheEntry.Image.Clone();
                         }
                     }
                 }
@@ -161,7 +165,7 @@ namespace VirtualRadar.Library
                     result = buildImage();
 
                     cacheEntry = new CacheEntry() {
-                        Image = result == null ? null : new Bitmap(result),
+                        Image = result,
                         LastFetchedUtc = _Clock.UtcNow,
                         NormalisedFileName = normalisedName,
                     };
@@ -189,21 +193,18 @@ namespace VirtualRadar.Library
         /// <param name="webPathAndFileName"></param>
         /// <param name="owinEnvironment"></param>
         /// <returns></returns>
-        private Image FetchFromOwinPipeline(string webPathAndFileName, IDictionary<string, object> owinEnvironment)
+        private IImage FetchFromOwinPipeline(string webPathAndFileName, IDictionary<string, object> owinEnvironment)
         {
             return ExtractFromSimpleContent(_LoopbackHost.SendSimpleRequest(webPathAndFileName, owinEnvironment));
         }
 
-        private Image ExtractFromSimpleContent(SimpleContent simpleContent)
+        private IImage ExtractFromSimpleContent(SimpleContent simpleContent)
         {
-            Image result = null;
+            IImage result = null;
 
             if(simpleContent != null && simpleContent.HttpStatusCode == System.Net.HttpStatusCode.OK) {
-                using(var memoryStream = new MemoryStream(simpleContent.Content)) {
-                    using(var image = Image.FromStream(memoryStream)) {
-                        result = new Bitmap(image);     // work around the problem that GDI+ has with images built from streams being accessed after the stream has been disposed
-                    }
-                }
+                var imageFile = Factory.Resolve<IImageFile>();
+                result = imageFile.LoadFromByteArray(simpleContent.Content);
             }
 
             return result;

@@ -47,7 +47,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
     <Reference Include="WindowsBase" />
@@ -147,10 +146,6 @@
     <ProjectReference Include="..\..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
       <Project>{FD3E36E1-35EA-46F3-A30B-65CEA7D92B7E}</Project>
       <Name>VirtualRadar.Localisation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\VirtualRadar\VirtualRadar.csproj">
-      <Project>{A3F353C9-0CD5-48BF-A788-EFA83790237A}</Project>
-      <Name>VirtualRadar</Name>
     </ProjectReference>
     <ProjectReference Include="..\Test.Framework\Test.Framework.csproj">
       <Project>{94F0A821-51BB-4381-9413-1A3FAD661D82}</Project>

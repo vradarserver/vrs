@@ -54,7 +54,6 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -137,6 +136,11 @@
     <Compile Include="Database\IBaseStationDatabaseSQLite.cs" />
     <Compile Include="Database\IBaseStationDatabaseSqlServer.cs" />
     <Compile Include="Database\OrdinalAttribute.cs" />
+    <Compile Include="Drawing\IBrush.cs" />
+    <Compile Include="Drawing\IImage.cs" />
+    <Compile Include="Drawing\IImageFile.cs" />
+    <Compile Include="Drawing\ImageFormat.cs" />
+    <Compile Include="Drawing\Size.cs" />
     <Compile Include="EventHelperException.cs" />
     <Compile Include="HttpContentHelper.cs" />
     <Compile Include="IAircraftOnlineLookupLog.cs" />
@@ -627,6 +631,7 @@
     <None Include="app.config" />
     <None Include="BaseStation\_VirtualRadarInterfaceBaseStation.cd" />
     <None Include="Database\_VirtualRadarInterfaceDatabase.cd" />
+    <None Include="Drawing\README.md" />
     <None Include="Owin\README.md" />
     <None Include="packages.config" />
     <None Include="README.md" />

@@ -19,6 +19,7 @@ using System.Text;
 using System.Threading.Tasks;
 using InterfaceFactory;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Drawing;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.WebServer;
@@ -199,8 +200,8 @@ namespace VirtualRadar.Owin.Middleware
             var result = imageRequest != null;
 
             if(result) {
-                Image stockImage = null;
-                Image tempImage = null;
+                IImage stockImage = null;
+                IImage tempImage = null;
 
                 try {
                     result = BuildInitialImage(context, imageRequest, ref stockImage, ref tempImage);
@@ -234,7 +235,7 @@ namespace VirtualRadar.Owin.Middleware
 
                         if(image != null) {
                             using(var stream = new MemoryStream()) {
-                                using(var copy = (Image)image.Clone()) {
+                                using(var copy = image.Clone()) {
                                     copy.Save(stream, imageRequest.ImageFormat);
                                     var bytes = stream.ToArray();
 
@@ -406,7 +407,7 @@ namespace VirtualRadar.Owin.Middleware
         /// <param name="stockImage"></param>
         /// <param name="tempImage"></param>
         /// <returns></returns>
-        private bool BuildInitialImage(PipelineContext context, ImageRequest imageRequest, ref Image stockImage, ref Image tempImage)
+        private bool BuildInitialImage(PipelineContext context, ImageRequest imageRequest, ref IImage stockImage, ref IImage tempImage)
         {
             var result = true;
 
@@ -497,9 +498,9 @@ namespace VirtualRadar.Owin.Middleware
         /// <param name="logo"></param>
         /// <param name="folder"></param>
         /// <returns></returns>
-        private Image CreateLogoImage(string logo, string folder)
+        private IImage CreateLogoImage(string logo, string folder)
         {
-            Image result = null;
+            IImage result = null;
 
             const int width = 85;
             const int height = 20;
@@ -533,9 +534,9 @@ namespace VirtualRadar.Owin.Middleware
         /// <param name="width"></param>
         /// <param name="height"></param>
         /// <returns></returns>
-        private Image CreateAirplanePicture(string airplaneId, StandardWebSiteImageSize standardSize, bool isInternetClient, int? width, int? height)
+        private IImage CreateAirplanePicture(string airplaneId, StandardWebSiteImageSize standardSize, bool isInternetClient, int? width, int? height)
         {
-            Bitmap result = null;
+            IImage result = null;
 
             var settings = _SharedConfiguration.Get();
 
@@ -547,7 +548,7 @@ namespace VirtualRadar.Owin.Middleware
                 if(registration != null && registration.Length == 0) registration = null;
                 if(icao != null && icao.Length == 0) icao = null;
 
-                result = (Bitmap)_AircraftPictureManager.LoadPicture(_AutoConfigPictureFolderCache.DirectoryCache, icao, registration);
+                result = _AircraftPictureManager.LoadPicture(_AutoConfigPictureFolderCache.DirectoryCache, icao, registration);
                 if(result != null) {
                     int newWidth = -1, newHeight = -1, minWidth = -1;
                     var resizeMode = ResizeImageMode.Stretch;
@@ -565,7 +566,7 @@ namespace VirtualRadar.Owin.Middleware
                     if((newWidth != -1 || newHeight != -1) && (minWidth == -1 || result.Width > newWidth)) {
                         if(newWidth == -1)          newWidth = (int)(((double)newHeight * ((double)result.Width / (double)result.Height)) + 0.5);
                         else if(newHeight == -1)    newHeight = (int)(((double)newWidth / ((double)result.Width / (double)result.Height)) + 0.5);
-                        result = (Bitmap)_Graphics.UseImage(result, _Graphics.ResizeBitmap(result, newWidth, newHeight, resizeMode, Brushes.Transparent, preferSpeed));
+                        result = _Graphics.UseImage(result, _Graphics.ResizeBitmap(result, newWidth, newHeight, resizeMode, Brushes.Transparent, preferSpeed));
                     }
                 }
             }

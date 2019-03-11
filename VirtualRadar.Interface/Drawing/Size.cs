@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 onwards, Andrew Whewell
+﻿// Copyright © 2019 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,34 +10,53 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Interface.Drawing;
+using System.Threading.Tasks;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.Interface.Drawing
 {
     /// <summary>
-    /// The interface for an object that can determine the dimensions of an image stored in an image file.
+    /// Describes a two dimensional image's size.
     /// </summary>
-    /// <remarks>
-    /// Implementations must be thread-safe.
-    /// </remarks>
-    public interface IImageDimensionsFetcher
+    public class Size
     {
         /// <summary>
-        /// Reads the dimensions of the image from the file, hopefully without actually loading the entire file.
+        /// An empty 
         /// </summary>
-        /// <param name="fileName">Full path to the image file. The user must be able to open the file for reading.</param>
-        /// <returns></returns>
-        Size ReadDimensions(string fileName);
+        public static Size Empty { get; } = new Size(0, 0);
 
         /// <summary>
-        /// Reads the dimensions of the image from the stream, hopefully without actually loading the entire file.
+        /// Gets or sets the pixel width of the image.
         /// </summary>
-        /// <param name="stream">A stream of image bits. The stream must be positionable.</param>
-        /// <returns></returns>
-        Size ReadDimensions(Stream stream);
+        public int Width { get; set; }
+
+        /// <summary>
+        /// Gets or sets the pixel height of the image.
+        /// </summary>
+        public int Height { get; set; }
+
+        /// <summary>
+        /// True if the width and height are both zero.
+        /// </summary>
+        public bool IsEmpty => Width == 0 && Height == 0;
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        public Size() : this(0, 0)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        public Size(int width, int height)
+        {
+            Width = width;
+            Height = height;
+        }
     }
 }
