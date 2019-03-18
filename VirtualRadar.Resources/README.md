@@ -9,5 +9,7 @@ compile binaries (including images).
 
 By the time version 3 came along this library only had images left in its RESX files. These
 had to be turned into embedded resources and then the API modified so that they returned
-the new image wrapper classes instead of System.Drawing images (which are supported in
-DNC 3 but are not cross platform, so we can't use them).
+the raw bytes for each image. The responsibility of turning the bytes into image objects has
+shifted to the consumer of the library.
+
+This may change.
