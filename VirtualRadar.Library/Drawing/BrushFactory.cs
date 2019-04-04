@@ -13,67 +13,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Interface.Drawing
+namespace VirtualRadar.Library.Drawing
 {
     /// <summary>
-    /// Describes a two dimensional image's size.
+    /// ImageSharp implementation of <see cref="IBrushFactory"/>.
     /// </summary>
-    public class Size
+    class BrushFactory : VrsDrawing.IBrushFactory
     {
         /// <summary>
-        /// An empty size.
+        /// See interface docs.
         /// </summary>
-        public static readonly Size Empty = new Size();
-
-        /// <summary>
-        /// Gets the pixel width of the image.
-        /// </summary>
-        public int Width { get; }
-
-        /// <summary>
-        /// Gets the pixel height of the image.
-        /// </summary>
-        public int Height { get; }
-
-        /// <summary>
-        /// True if the width and height are both zero.
-        /// </summary>
-        public bool IsEmpty => Width == 0 && Height == 0;
+        public VrsDrawing.IBrush Transparent { get; }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public Size()
+        public BrushFactory()
         {
-            ;
+            Transparent = new BrushWrapper(new SolidBrush<Rgba32>(Rgba32.Transparent));
         }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        public Size(int width, int height)
-        {
-            Width = width;
-            Height = height;
-        }
-
-        /// <summary>
-        /// Returns a new size with the width passed across. If the width is unchanged then the current
-        /// object is returned.
-        /// </summary>
-        /// <param name="width"></param>
-        /// <returns></returns>
-        public Size CloneNewWidth(int width) => width == Width ? this : new Size(width, Height);
-
-        /// <summary>
-        /// Returns a new size with the height passed across. If the height is unchanged then the current
-        /// object is returned.
-        /// </summary>
-        /// <param name="height"></param>
-        /// <returns></returns>
-        public Size CloneNewHeight(int height) => height == Height ? this : new Size(Width, height);
     }
 }

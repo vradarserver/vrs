@@ -17,63 +17,32 @@ using System.Threading.Tasks;
 namespace VirtualRadar.Interface.Drawing
 {
     /// <summary>
-    /// Describes a two dimensional image's size.
+    /// The interface for an object that can perform drawing operations on an image.
     /// </summary>
-    public class Size
+    public interface IDrawing
     {
         /// <summary>
-        /// An empty size.
+        /// Draws an image at the point passed across. The image is not resized.
         /// </summary>
-        public static readonly Size Empty = new Size();
+        /// <param name="image"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        void DrawImage(IImage image, int x, int y);
 
         /// <summary>
-        /// Gets the pixel width of the image.
+        /// Draws a line between two points using the supplied pen.
         /// </summary>
-        public int Width { get; }
+        /// <param name="pen"></param>
+        /// <param name="fromX"></param>
+        /// <param name="fromY"></param>
+        /// <param name="toX"></param>
+        /// <param name="toY"></param>
+        void DrawLine(IPen pen, int fromX, int fromY, int toX, int toY);
 
         /// <summary>
-        /// Gets the pixel height of the image.
+        /// Rotates the drawing N degrees clockwise around the centre point.
         /// </summary>
-        public int Height { get; }
-
-        /// <summary>
-        /// True if the width and height are both zero.
-        /// </summary>
-        public bool IsEmpty => Width == 0 && Height == 0;
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public Size()
-        {
-            ;
-        }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        public Size(int width, int height)
-        {
-            Width = width;
-            Height = height;
-        }
-
-        /// <summary>
-        /// Returns a new size with the width passed across. If the width is unchanged then the current
-        /// object is returned.
-        /// </summary>
-        /// <param name="width"></param>
-        /// <returns></returns>
-        public Size CloneNewWidth(int width) => width == Width ? this : new Size(width, Height);
-
-        /// <summary>
-        /// Returns a new size with the height passed across. If the height is unchanged then the current
-        /// object is returned.
-        /// </summary>
-        /// <param name="height"></param>
-        /// <returns></returns>
-        public Size CloneNewHeight(int height) => height == Height ? this : new Size(Width, height);
+        /// <param name="degrees"></param>
+        void RotateAroundCentre(float degrees);
     }
 }

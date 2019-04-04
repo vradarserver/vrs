@@ -108,7 +108,7 @@ namespace VirtualRadar.Owin.Configuration
         public ImageServerConfiguration()
         {
             _SharedConfiguration = Factory.ResolveSingleton<ISharedConfiguration>();
-            ImageFileManager = Factory.Resolve<IImageFileManager>();
+            ImageFileManager = Factory.ResolveSingleton<IImageFileManager>();
         }
     }
 }

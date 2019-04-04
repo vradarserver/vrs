@@ -13,51 +13,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Interface.Drawing
+namespace VirtualRadar.Library.Drawing
 {
     /// <summary>
-    /// Describes an image in memory.
+    /// Default implementation of <see cref="VrsDrawing.IPen"/>.
     /// </summary>
-    public interface IImage : IDisposable
+    class PenWrapper : VrsDrawing.IPen
     {
-        /// <summary>
-        /// Gets the dimensions of the image.
-        /// </summary>
-        Size Size { get; }
+        public IPen<Rgba32> NativePen { get; }
 
-        /// <summary>
-        /// Shorthand for <see cref="Size.Width"/>.
-        /// </summary>
-        int Width { get; }
-
-        /// <summary>
-        /// Shorthand for <see cref="Size.Height"/>.
-        /// </summary>
-        int Height { get; }
-
-        /// <summary>
-        /// Creates a copy of the image.
-        /// </summary>
-        /// <returns></returns>
-        IImage Clone();
-
-        /// <summary>
-        /// Returns the bytes representing the image formatted as per the parameter.
-        /// </summary>
-        /// <param name="imageFormat"></param>
-        /// <returns></returns>
-        byte[] GetImageBytes(ImageFormat imageFormat);
-
-        /// <summary>
-        /// Returns a clone of the image resized to the new size. Speed is preferred over quality.
-        /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="mode"></param>
-        /// <param name="zoomBackground"></param>
-        /// <param name="preferSpeedOverQuality"></param>
-        /// <returns></returns>
-        IImage Resize(int width, int height, ResizeMode mode = ResizeMode.Normal, IBrush zoomBackground = null, bool preferSpeedOverQuality = true);
+        public PenWrapper(IPen<Rgba32> pen)
+        {
+            NativePen = pen;
+        }
     }
 }

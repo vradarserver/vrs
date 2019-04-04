@@ -10,67 +10,38 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Drawing
 {
     /// <summary>
-    /// Handles the creation and storage of images.
+    /// An enumeration of the different resize modes supported by the drawing abstraction.
     /// </summary>
-    [Singleton]
-    public interface IImageFile
+    public enum ResizeMode
     {
         /// <summary>
-        /// Creates a drawing environment on a copy of the image passed across. Calls the <paramref name="drawAction"/>
-        /// method passing a drawing object that can be used to modify the clone. Returns the clone.
+        /// Image is drawn at top-left and is just large enough to fill the new space in both axis. One axis
+        /// may end up being clipped.
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="drawAction"></param>
-        /// <returns></returns>
-        IImage CloneAndDraw(IImage source, Action<IDrawing> drawAction);
+        Normal,
 
         /// <summary>
-        /// Returns a new empty 32-bit RGBA image with the pixel width and height passed across.
+        /// As per <see cref="Normal"/> but if an axis is clipped then the top or left is offset so that the centre is
+        /// still in the middle of the new stockImage.
         /// </summary>
-        /// <param name="pixelWidth"></param>
-        /// <param name="pixelHeight"></param>
-        /// <returns></returns>
-        IImage Create(int pixelWidth, int pixelHeight);
+        Centre,
 
         /// <summary>
-        /// Given a stream pointing at the start of an image file this will return the size of the image
-        /// represented by the stream.
+        /// Image is stretched to exactly fill the width and height of the new image.
         /// </summary>
-        /// <param name="imageStream"></param>
-        /// <returns>
-        /// The pixel width and height of the image or null if the stream is null, the stream is empty or the
-        /// stream does not represent an image.
-        /// </returns>
-        Size LoadDimensions(Stream imageStream);
+        Stretch,
 
         /// <summary>
-        /// Reads an image out of a file on disk.
+        /// Image is centred within new image, keeping the same aspect ratio as the original. One axis will be
+        /// the same as the new image, the other may be smaller. Unused space is filled with a brush.
         /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        IImage LoadFromFile(string fileName);
-
-        /// <summary>
-        /// Reads an image from a stream.
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <returns></returns>
-        IImage LoadFromStream(Stream stream);
-
-        /// <summary>
-        /// Reads an image from a byte array.
-        /// </summary>
-        /// <param name="array"></param>
-        /// <returns></returns>
-        IImage LoadFromByteArray(byte[] array);
+        Zoom,
     }
 }

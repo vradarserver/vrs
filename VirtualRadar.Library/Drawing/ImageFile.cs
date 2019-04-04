@@ -14,29 +14,64 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
 using SixLabors.ImageSharp;
-using VirtualRadar.Interface.Drawing;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
 namespace VirtualRadar.Library.Drawing
 {
     /// <summary>
     /// ImageSharp implementation of <see cref="IImageFile"/>.
     /// </summary>
-    class ImageFile : IImageFile
+    class ImageFile : VrsDrawing.IImageFile
     {
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="drawAction"></param>
+        /// <returns></returns>
+        public VrsDrawing.IImage CloneAndDraw(VrsDrawing.IImage source, Action<VrsDrawing.IDrawing> drawAction)
+        {
+            ImageWrapper result = null;
+
+            if(source is ImageWrapper sourceWrapper) {
+                result = new ImageWrapper(
+                    sourceWrapper.NativeImage.Clone(context => {
+                        drawAction(new Drawing(context));
+                    })
+                );
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Creates 
+        /// </summary>
+        /// <param name="pixelWidth"></param>
+        /// <param name="pixelHeight"></param>
+        /// <returns></returns>
+        public VrsDrawing.IImage Create(int pixelWidth, int pixelHeight)
+        {
+            return new ImageWrapper(new Image<Rgba32>(pixelWidth, pixelHeight));
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
         /// <param name="imageStream"></param>
         /// <returns></returns>
-        public Size LoadDimensions(Stream imageStream)
+        public VrsDrawing.Size LoadDimensions(Stream imageStream)
         {
-            Size result = null;
+            Interface.Drawing.Size result = null;
 
             if(imageStream != null && imageStream.Length > 0) {
                 var imageInfo = Image.Identify(imageStream);
                 if(imageInfo != null) {
-                    result = new Size(imageInfo.Width, imageInfo.Height);
+                    result = new VrsDrawing.Size(imageInfo.Width, imageInfo.Height);
                 }
             }
 
@@ -48,7 +83,7 @@ namespace VirtualRadar.Library.Drawing
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public Interface.Drawing.IImage LoadFromFile(string fileName)
+        public VrsDrawing.IImage LoadFromFile(string fileName)
         {
             return new ImageWrapper(Image.Load(fileName));
         }
@@ -56,9 +91,19 @@ namespace VirtualRadar.Library.Drawing
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public VrsDrawing.IImage LoadFromBytes(byte[] bytes)
+        {
+            return new ImageWrapper(Image.Load(bytes));
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
-        public Interface.Drawing.IImage LoadFromStream(Stream stream)
+        public VrsDrawing.IImage LoadFromStream(Stream stream)
         {
             return new ImageWrapper(Image.Load(stream));
         }
@@ -68,7 +113,7 @@ namespace VirtualRadar.Library.Drawing
         /// </summary>
         /// <param name="array"></param>
         /// <returns></returns>
-        public Interface.Drawing.IImage LoadFromByteArray(byte[] array)
+        public VrsDrawing.IImage LoadFromByteArray(byte[] array)
         {
             return new ImageWrapper(Image.Load(array));
         }

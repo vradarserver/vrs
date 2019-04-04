@@ -70,7 +70,7 @@ namespace VirtualRadar.Interface.WebSite
         /// <param name="zoomBackground"></param>
         /// <param name="preferSpeedOverQuality"></param>
         /// <returns></returns>
-        IImage ResizeBitmap(IImage original, int width, int height, ResizeImageMode mode, IBrush zoomBackground, bool preferSpeedOverQuality);
+        IImage ResizeBitmap(IImage original, int width, int height, ResizeMode mode, IBrush zoomBackground, bool preferSpeedOverQuality);
 
         /// <summary>
         /// Creates a fully-transparent image of the size specified.

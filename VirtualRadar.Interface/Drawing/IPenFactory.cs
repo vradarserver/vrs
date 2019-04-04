@@ -13,67 +13,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Drawing
 {
     /// <summary>
-    /// Describes a two dimensional image's size.
+    /// Creates pens.
     /// </summary>
-    public class Size
+    [Singleton]
+    public interface IPenFactory
     {
         /// <summary>
-        /// An empty size.
+        /// Returns the stock black pen.
         /// </summary>
-        public static readonly Size Empty = new Size();
+        IPen Black { get; }
 
         /// <summary>
-        /// Gets the pixel width of the image.
+        /// Returns the stock light grey pen.
         /// </summary>
-        public int Width { get; }
-
-        /// <summary>
-        /// Gets the pixel height of the image.
-        /// </summary>
-        public int Height { get; }
-
-        /// <summary>
-        /// True if the width and height are both zero.
-        /// </summary>
-        public bool IsEmpty => Width == 0 && Height == 0;
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public Size()
-        {
-            ;
-        }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        public Size(int width, int height)
-        {
-            Width = width;
-            Height = height;
-        }
-
-        /// <summary>
-        /// Returns a new size with the width passed across. If the width is unchanged then the current
-        /// object is returned.
-        /// </summary>
-        /// <param name="width"></param>
-        /// <returns></returns>
-        public Size CloneNewWidth(int width) => width == Width ? this : new Size(width, Height);
-
-        /// <summary>
-        /// Returns a new size with the height passed across. If the height is unchanged then the current
-        /// object is returned.
-        /// </summary>
-        /// <param name="height"></param>
-        /// <returns></returns>
-        public Size CloneNewHeight(int height) => height == Height ? this : new Size(Width, height);
+        IPen LightGray { get; }
     }
 }

@@ -51,7 +51,7 @@ namespace VirtualRadar.Library
                 stream.Seek(0, SeekOrigin.Begin);
             }
 
-            var imageFile = Factory.Resolve<IImageFile>();
+            var imageFile = Factory.ResolveSingleton<IImageFile>();
             var result = imageFile.LoadDimensions(stream);
 
             return result ?? Size.Empty;

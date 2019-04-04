@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 onwards, Andrew Whewell
+﻿// Copyright © 2019 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,35 +12,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.Primitives;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Interface.WebSite
+namespace VirtualRadar.Library.Drawing
 {
     /// <summary>
-    /// An enumeration of the different resize modes supported by the website graphics code.
+    /// Converts between ImageSharp primitives and VirtualRadar.Interface.Drawing primitives.
     /// </summary>
-    public enum ResizeImageMode
+    static class Convert
     {
-        /// <summary>
-        /// Image is drawn at top-left and is just large enough to fill the new space in both axis. One axis
-        /// may end up being clipped.
-        /// </summary>
-        Normal,
+        public static Size ToImageSharpSize(VrsDrawing.Size vrsSize) => new Size(vrsSize.Width, vrsSize.Height);
 
-        /// <summary>
-        /// As per <see cref="Normal"/> but if an axis is clipped then the top or left is offset so that the centre is
-        /// still in the middle of the new stockImage.
-        /// </summary>
-        Centre,
+        public static SizeF ToImageSharpSizeF(VrsDrawing.Size vrsSize) => new SizeF(vrsSize.Width, vrsSize.Height);
 
-        /// <summary>
-        /// Image is stretched to exactly fill the width and height of the new image.
-        /// </summary>
-        Stretch,
+        public static Point ToImageSharpPoint(VrsDrawing.Point vrsPoint) => new Point(vrsPoint.X, vrsPoint.Y);
 
-        /// <summary>
-        /// Image is centred within new image, keeping the same aspect ratio as the original. One axis will be
-        /// the same as the new image, the other may be smaller. Unused space is filled with a brush.
-        /// </summary>
-        Zoom,
+        public static PointF ToImageSharpPointF(VrsDrawing.Point vrsPoint) => new PointF(vrsPoint.X, vrsPoint.Y);
+
+        public static VrsDrawing.Point ToVrsPoint(Point isPoint) => new VrsDrawing.Point(isPoint.X, isPoint.Y);
+
+        public static VrsDrawing.Size ToVrsSize(Size isSize) => new VrsDrawing.Size(isSize.Width, isSize.Height);
     }
 }

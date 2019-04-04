@@ -127,8 +127,14 @@
     <Compile Include="DirectoryCache.cs" />
     <Compile Include="DotNetShutdownSignalHandler.cs" />
     <Compile Include="DotNetSpeechSynthesizerWrapper.cs" />
+    <Compile Include="Drawing\BrushFactory.cs" />
+    <Compile Include="Drawing\BrushWrapper.cs" />
+    <Compile Include="Drawing\Convert.cs" />
+    <Compile Include="Drawing\Drawing.cs" />
     <Compile Include="Drawing\ImageWrapper.cs" />
     <Compile Include="Drawing\ImageFile.cs" />
+    <Compile Include="Drawing\PenFactory.cs" />
+    <Compile Include="Drawing\PenWrapper.cs" />
     <Compile Include="ExceptionReporter.cs" />
     <Compile Include="FileSystemProvider.cs" />
     <Compile Include="FileSystemWatcherWrapper.cs" />

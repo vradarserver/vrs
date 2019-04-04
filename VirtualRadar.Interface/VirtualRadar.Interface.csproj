@@ -137,9 +137,15 @@
     <Compile Include="Database\IBaseStationDatabaseSqlServer.cs" />
     <Compile Include="Database\OrdinalAttribute.cs" />
     <Compile Include="Drawing\IBrush.cs" />
+    <Compile Include="Drawing\IBrushFactory.cs" />
+    <Compile Include="Drawing\IDrawing.cs" />
     <Compile Include="Drawing\IImage.cs" />
     <Compile Include="Drawing\IImageFile.cs" />
     <Compile Include="Drawing\ImageFormat.cs" />
+    <Compile Include="Drawing\IPen.cs" />
+    <Compile Include="Drawing\IPenFactory.cs" />
+    <Compile Include="Drawing\Point.cs" />
+    <Compile Include="Drawing\ResizeMode.cs" />
     <Compile Include="Drawing\Size.cs" />
     <Compile Include="EventHelperException.cs" />
     <Compile Include="HttpContentHelper.cs" />
@@ -607,7 +613,6 @@
     <Compile Include="WebSite\ReportFlightJson.cs" />
     <Compile Include="WebSite\ReportRouteJson.cs" />
     <Compile Include="WebSite\ReportRowsJson.cs" />
-    <Compile Include="WebSite\ResizeImageMode.cs" />
     <Compile Include="WebSite\ServerConfigJson.cs" />
     <Compile Include="WebSite\ServerReceiverJson.cs" />
     <Compile Include="WebSite\SimpleContent.cs" />

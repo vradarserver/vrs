@@ -13,67 +13,72 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.Primitives;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Interface.Drawing
+namespace VirtualRadar.Library.Drawing
 {
-    /// <summary>
-    /// Describes a two dimensional image's size.
-    /// </summary>
-    public class Size
+    class Drawing : VrsDrawing.IDrawing
     {
         /// <summary>
-        /// An empty size.
+        /// Gets the ImageSharp processing context that is wrapped by this object.
         /// </summary>
-        public static readonly Size Empty = new Size();
-
-        /// <summary>
-        /// Gets the pixel width of the image.
-        /// </summary>
-        public int Width { get; }
-
-        /// <summary>
-        /// Gets the pixel height of the image.
-        /// </summary>
-        public int Height { get; }
-
-        /// <summary>
-        /// True if the width and height are both zero.
-        /// </summary>
-        public bool IsEmpty => Width == 0 && Height == 0;
+        public IImageProcessingContext<Rgba32> NativeContext { get; }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public Size()
+        /// <param name="context"></param>
+        public Drawing(IImageProcessingContext<Rgba32> context)
         {
-            ;
+            NativeContext = context;
         }
 
         /// <summary>
-        /// Creates a new object.
+        /// See interface docs.
         /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        public Size(int width, int height)
+        /// <param name="image"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public void DrawImage(VrsDrawing.IImage image, int x, int y)
         {
-            Width = width;
-            Height = height;
+            if(image is ImageWrapper imageWrapper) {
+                NativeContext.DrawImage(
+                    imageWrapper.NativeImage,
+                    new Point(x, y),
+                    1.0F
+                );
+            }
         }
 
         /// <summary>
-        /// Returns a new size with the width passed across. If the width is unchanged then the current
-        /// object is returned.
+        /// See interface docs.
         /// </summary>
-        /// <param name="width"></param>
-        /// <returns></returns>
-        public Size CloneNewWidth(int width) => width == Width ? this : new Size(width, Height);
+        /// <param name="pen"></param>
+        /// <param name="fromX"></param>
+        /// <param name="fromY"></param>
+        /// <param name="toX"></param>
+        /// <param name="toY"></param>
+        public void DrawLine(VrsDrawing.IPen pen, int fromX, int fromY, int toX, int toY)
+        {
+            if(pen is PenWrapper penWrapper) {
+                NativeContext.DrawLines(
+                    penWrapper.NativePen,
+                    new PointF(fromX, fromY),
+                    new PointF(toX, toY)
+                );
+            }
+        }
 
         /// <summary>
-        /// Returns a new size with the height passed across. If the height is unchanged then the current
-        /// object is returned.
+        /// See interface docs.
         /// </summary>
-        /// <param name="height"></param>
-        /// <returns></returns>
-        public Size CloneNewHeight(int height) => height == Height ? this : new Size(Width, height);
+        /// <param name="degrees"></param>
+        public void RotateAroundCentre(float degrees)
+        {
+            NativeContext.Rotate(degrees);
+        }
     }
 }

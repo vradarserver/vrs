@@ -10,16 +10,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using InterfaceFactory;
-using VirtualRadar.Interface;
 using VirtualRadar.Interface.WebSite;
 using VirtualRadar.Resources;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
 namespace VirtualRadar.WebSite
 {
@@ -28,55 +24,30 @@ namespace VirtualRadar.WebSite
     /// </summary>
     class WebSiteGraphics : IWebSiteGraphics
     {
-        #region Fields
-        /// <summary>
-        /// The cache of known fonts.
-        /// </summary>
-        private static FontCache _FontCache = new FontCache();
+        private VrsDrawing.IImageFile   _ImageFile;
+        private VrsDrawing.IPenFactory  _PenFactory;
 
-        /// <summary>
-        /// True if we're running under Mono.
-        /// </summary>
-        private bool _IsMono;
-
-        /// <summary>
-        /// The object used to synchronise access to the Graphics object.
-        /// </summary>
-        private object _SyncLock = new object();
-        #endregion
-
-        #region Ctors
         /// <summary>
         /// Creates a new object.
         /// </summary>
         public WebSiteGraphics()
         {
-            _IsMono = Factory.ResolveSingleton<IRuntimeEnvironment>().IsMono;
+            _ImageFile = Factory.ResolveSingleton<VrsDrawing.IImageFile>();
+            _PenFactory = Factory.ResolveSingleton<VrsDrawing.IPenFactory>();
         }
-        #endregion
 
-        #region Basic image handling - RotateImage, WidenImage, HeightenImage, ResizeForHiDpi, ResizeBitmap
         /// <summary>
         /// See interface docs.
         /// </summary>
         /// <param name="original"></param>
         /// <param name="degrees"></param>
         /// <returns></returns>
-        public Image RotateImage(Image original, double degrees)
+        public VrsDrawing.IImage RotateImage(VrsDrawing.IImage original, double degrees)
         {
-            var result = new Bitmap(original.Width, original.Height, PixelFormat.Format32bppArgb);
-
-            lock(_SyncLock) {
-                using(Graphics graphics = Graphics.FromImage(result)) {
-                    float centreX = ((float)original.Width) / 2f;
-                    float centreY = ((float)original.Height) / 2f;
-                    graphics.TranslateTransform(centreX, centreY);
-                    graphics.RotateTransform((float)degrees);
-                    graphics.DrawImage(original, -centreX, -centreY, original.Width, original.Height);
-                }
-            }
-
-            return result;
+            return _ImageFile.CloneAndDraw(original, drawing => {
+                drawing.DrawImage(original, 0, 0);
+                drawing.RotateAroundCentre((float)degrees);
+            });
         }
 
         /// <summary>
@@ -86,18 +57,15 @@ namespace VirtualRadar.WebSite
         /// <param name="width"></param>
         /// <param name="centreHorizontally"></param>
         /// <returns></returns>
-        public Image WidenImage(Image original, int width, bool centreHorizontally)
+        public VrsDrawing.IImage WidenImage(VrsDrawing.IImage original, int width, bool centreHorizontally)
         {
-            var result = new Bitmap(width, original.Height, PixelFormat.Format32bppArgb);
-
-            lock(_SyncLock) {
-                using(Graphics graphics = Graphics.FromImage(result)) {
-                    int x = !centreHorizontally ? 0 : (width - original.Width) / 2;
-                    graphics.DrawImage(original, x, 0, original.Width, original.Height);
+            return _ImageFile.CloneAndDraw(
+                _ImageFile.Create(width, original.Height),
+                drawing => {
+                    var x = !centreHorizontally ? 0 : (width - original.Width) / 2;
+                    drawing.DrawImage(original, x, 0);
                 }
-            }
-
-            return result;
+            );
         }
 
         /// <summary>
@@ -107,18 +75,15 @@ namespace VirtualRadar.WebSite
         /// <param name="height"></param>
         /// <param name="centreVertically"></param>
         /// <returns></returns>
-        public Image HeightenImage(Image original, int height, bool centreVertically)
+        public VrsDrawing.IImage HeightenImage(VrsDrawing.IImage original, int height, bool centreVertically)
         {
-            var result = new Bitmap(original.Width, height, PixelFormat.Format32bppArgb);
-
-            lock(_SyncLock) {
-                using(Graphics graphics = Graphics.FromImage(result)) {
-                    int y = !centreVertically ? 0 : (height - original.Height) / 2;
-                    graphics.DrawImage(original, 0, y, original.Width, original.Height);
+            return _ImageFile.CloneAndDraw(
+                _ImageFile.Create(original.Width, height),
+                drawing => {
+                    var y = !centreVertically ? 0 : (height - original.Height) / 2;
+                    drawing.DrawImage(original, 0, y);
                 }
-            }
-
-            return result;
+            );
         }
 
         /// <summary>
@@ -126,20 +91,9 @@ namespace VirtualRadar.WebSite
         /// </summary>
         /// <param name="original"></param>
         /// <returns></returns>
-        public Image ResizeForHiDpi(Image original)
+        public VrsDrawing.IImage ResizeForHiDpi(VrsDrawing.IImage original)
         {
-            var result = new Bitmap(original.Width * 2, original.Height * 2, PixelFormat.Format32bppArgb);
-
-            lock(_SyncLock) {
-                using(var graphics = Graphics.FromImage(result)) {
-                    graphics.SmoothingMode = SmoothingMode.HighQuality;
-                    graphics.InterpolationMode = InterpolationMode.NearestNeighbor;     // <-- need this to preserve sharp edges on the doubled-up image
-                    graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    graphics.DrawImage(original, 0, 0, result.Width, result.Height);
-                }
-            }
-
-            return result;
+            return original.Resize(original.Width * 2, original.Height * 2, preferSpeedOverQuality: false);
         }
 
         /// <summary>
@@ -152,51 +106,11 @@ namespace VirtualRadar.WebSite
         /// <param name="zoomBackground"></param>
         /// <param name="preferSpeedOverQuality"></param>
         /// <returns></returns>
-        public Bitmap ResizeBitmap(Bitmap original, int width, int height, ResizeImageMode mode, Brush zoomBackground, bool preferSpeedOverQuality)
+        public VrsDrawing.IImage ResizeBitmap(VrsDrawing.IImage original, int width, int height, VrsDrawing.ResizeMode mode, VrsDrawing.IBrush zoomBackground, bool preferSpeedOverQuality)
         {
-            Bitmap result = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-
-            lock(_SyncLock) {
-                using(Graphics graphics = Graphics.FromImage(result)) {
-                    graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    graphics.InterpolationMode = preferSpeedOverQuality ? InterpolationMode.Bicubic : InterpolationMode.HighQualityBicubic;
-                    graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                    int newWidth = width, newHeight = height, left = 0, top = 0;
-                    if(mode != ResizeImageMode.Stretch) {
-                        double widthPercent = (double)newWidth / (double)original.Width;
-                        double heightPercent = (double)newHeight / (double)original.Height;
-
-                        switch(mode) {
-                            case ResizeImageMode.Zoom:
-                                // Resize the longest side by the smallest percentage
-                                graphics.FillRectangle(zoomBackground, 0, 0, result.Width, result.Height);
-                                if(widthPercent > heightPercent)        newWidth = Math.Min(newWidth, (int)(((double)original.Width * heightPercent) + 0.5));
-                                else if(heightPercent > widthPercent)   newHeight = Math.Min(newHeight, (int)(((double)original.Height * widthPercent) + 0.5));
-                                break;
-                            case ResizeImageMode.Normal:
-                            case ResizeImageMode.Centre:
-                                // Resize the smallest side by the largest percentage
-                                if(widthPercent > heightPercent)        newHeight = Math.Max(newHeight, (int)(((double)original.Height * widthPercent) + 0.5));
-                                else if(heightPercent > widthPercent)   newWidth = Math.Max(newWidth, (int)(((double)original.Width * heightPercent) + 0.5));
-                                break;
-                        }
-
-                        if(mode != ResizeImageMode.Normal) {
-                            left = (width - newWidth) / 2;
-                            top = (height - newHeight) / 2;
-                        }
-                    }
-
-                    graphics.DrawImage(original, left, top, newWidth, newHeight);
-                }
-            }
-
-            return result;
+            return original.Resize(width, height, mode, zoomBackground, preferSpeedOverQuality);
         }
-        #endregion
 
-        #region High level graphics - CreateIPhoneSplash, AddAltitudeStalk, AddTextLines
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -204,54 +118,54 @@ namespace VirtualRadar.WebSite
         /// <param name="isIPad"></param>
         /// <param name="pathParts"></param>
         /// <returns></returns>
-        public Image CreateIPhoneSplash(string webSiteAddress, bool isIPad, List<string> pathParts)
+        public VrsDrawing.IImage CreateIPhoneSplash(string webSiteAddress, bool isIPad, List<string> pathParts)
         {
-            if(!isIPad && pathParts.Where(pp => pp.Equals("file-ipad", StringComparison.OrdinalIgnoreCase)).Any()) isIPad = true;
+            if(!isIPad && pathParts.Where(pp => pp.Equals("file-ipad", StringComparison.OrdinalIgnoreCase)).Any()) {
+                isIPad = true;
+            }
 
-            Image result;
+            VrsDrawing.IImage result;
             float titleSize, addressSize, lineHeight;
             if(!isIPad) {
-                result = Images.Clone_IPhoneSplash();
+                result = _ImageFile.LoadFromByteArray(Images.IPhoneSplash);
                 titleSize = 24f;
                 addressSize = 12f;
                 lineHeight = 40f;
             } else {
-                result = Images.Clone_IPadSplash();
+                result = _ImageFile.LoadFromByteArray(Images.IPadSplash);
                 titleSize = 36f;
                 addressSize = 14f;
                 lineHeight = 50f;
             }
 
-            lock(_SyncLock) {
-                using(Graphics graphics = Graphics.FromImage(result)) {
-                    graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
-                    graphics.SmoothingMode = SmoothingMode.HighQuality;
+            using(Graphics graphics = Graphics.FromImage(result)) {
+                graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
 
-                    RectangleF titleBounds = new RectangleF(5, (result.Height - 5) - (lineHeight * 2f), result.Width - 10f, lineHeight);
-                    RectangleF addressBounds = new RectangleF(5, titleBounds.Bottom + 5, result.Width - 10f, lineHeight);
+                RectangleF titleBounds = new RectangleF(5, (result.Height - 5) - (lineHeight * 2f), result.Width - 10f, lineHeight);
+                RectangleF addressBounds = new RectangleF(5, titleBounds.Bottom + 5, result.Width - 10f, lineHeight);
 
-                    // It looks like we can occasionally have an issue here under Mono when Tahoma isn't installed and Mono
-                    // throws an exception instead of falling back to a default font. We don't really care too much about the
-                    // text on the splash image so if we get exceptions here just swallow them
-                    try {
-                        Font titleFont = _FontCache.BuildFont("Tahoma", titleSize);
-                        graphics.DrawString("Virtual Radar Server", titleFont, Brushes.White, titleBounds, new StringFormat() {
-                            Alignment = StringAlignment.Center,
-                            LineAlignment = StringAlignment.Far,
-                            FormatFlags = StringFormatFlags.NoWrap,
-                        });
+                // It looks like we can occasionally have an issue here under Mono when Tahoma isn't installed and Mono
+                // throws an exception instead of falling back to a default font. We don't really care too much about the
+                // text on the splash image so if we get exceptions here just swallow them
+                try {
+                    Font titleFont = _FontCache.BuildFont("Tahoma", titleSize);
+                    graphics.DrawString("Virtual Radar Server", titleFont, Brushes.White, titleBounds, new StringFormat() {
+                        Alignment = StringAlignment.Center,
+                        LineAlignment = StringAlignment.Far,
+                        FormatFlags = StringFormatFlags.NoWrap,
+                    });
 
-                        Font addressFont = GetFontForRectangle("Tahoma", FontStyle.Regular, addressSize, graphics, addressBounds.Width, addressBounds.Height, webSiteAddress);
-                        graphics.DrawString(webSiteAddress, addressFont, Brushes.LightGray, addressBounds, new StringFormat() {
-                            Alignment = StringAlignment.Center,
-                            LineAlignment = StringAlignment.Near,
-                            FormatFlags = StringFormatFlags.NoWrap,
-                            Trimming = StringTrimming.EllipsisCharacter,
-                        });
-                    } catch(Exception ex) {
-                        var log = Factory.ResolveSingleton<ILog>();
-                        log.WriteLine("Swallowed exception while generating {0} splash: {1}", isIPad ? "iPad" : "iPhone", ex.Message);
-                    }
+                    Font addressFont = GetFontForRectangle("Tahoma", FontStyle.Regular, addressSize, graphics, addressBounds.Width, addressBounds.Height, webSiteAddress);
+                    graphics.DrawString(webSiteAddress, addressFont, Brushes.LightGray, addressBounds, new StringFormat() {
+                        Alignment = StringAlignment.Center,
+                        LineAlignment = StringAlignment.Near,
+                        FormatFlags = StringFormatFlags.NoWrap,
+                        Trimming = StringTrimming.EllipsisCharacter,
+                    });
+                } catch(Exception ex) {
+                    var log = Factory.ResolveSingleton<ILog>();
+                    log.WriteLine("Swallowed exception while generating {0} splash: {1}", isIPad ? "iPad" : "iPhone", ex.Message);
                 }
             }
 
@@ -265,27 +179,36 @@ namespace VirtualRadar.WebSite
         /// <param name="height"></param>
         /// <param name="centreX"></param>
         /// <returns></returns>
-        public Image AddAltitudeStalk(Image original, int height, int centreX)
+        public VrsDrawing.IImage AddAltitudeStalk(VrsDrawing.IImage original, int height, int centreX)
         {
-            var result = new Bitmap(original.Width, height, PixelFormat.Format32bppArgb);
-
-            lock(_SyncLock) {
-                using(Graphics graphics = Graphics.FromImage(result)) {
-                    int startOfAltitudeLine = original.Height / 2;
+            return _ImageFile.CloneAndDraw(
+                _ImageFile.Create(original.Width, height),
+                drawing => {
+                    var startOfAltitudeLine = original.Height / 2;
 
                     // Draw the altitude line
-                    graphics.DrawLine(Pens.Black, new Point(centreX, startOfAltitudeLine), new Point(centreX, height - 3));
+                    drawing.DrawLine(
+                        _PenFactory.Black,
+                        centreX, startOfAltitudeLine,
+                        centreX, height - 3
+                    );
 
                     // Draw the X at the bottom of the altitude line
-                    graphics.DrawLine(Pens.Black, new Point(centreX - 2, height - 5), new Point(centreX + 3, height - 1));
-                    graphics.DrawLine(Pens.Black, new Point(centreX - 3, height - 1), new Point(centreX + 2, height - 5));
+                    drawing.DrawLine(
+                        _PenFactory.Black,
+                        centreX - 2, height - 5,
+                        centreX + 3, height - 1
+                    );
+                    drawing.DrawLine(
+                        _PenFactory.Black,
+                        centreX - 3, height - 1,
+                        centreX + 2, height - 5
+                    );
 
                     // Draw the original on top of all of the lines
-                    graphics.DrawImage(original, 0, 0, original.Width, original.Height);
+                    drawing.DrawImage(original, 0, 0);
                 }
-            }
-
-            return result;
+            );
         }
 
         /// <summary>
@@ -296,68 +219,40 @@ namespace VirtualRadar.WebSite
         /// <param name="centreText"></param>
         /// <param name="isHighDpi"></param>
         /// <returns></returns>
-        public Image AddTextLines(Image image, IEnumerable<string> textLines, bool centreText, bool isHighDpi)
+        public VrsDrawing.IImage AddTextLines(VrsDrawing.IImage image, IEnumerable<string> textLines, bool centreText, bool isHighDpi)
         {
-            var lines = textLines.Where(tl => tl != null).ToList();
-            var lineHeight = isHighDpi ? 24f : 12f;
-            var topOffset = 5f;
+            var lines =          textLines.Where(tl => tl != null).ToList();
+            var lineHeight =     isHighDpi ? 24f : 12f;
+            var topOffset =      5f;
             var startPointSize = isHighDpi ? 20f : 10f;
-            var haloMod = isHighDpi ? 8 : 4;
-            var haloTrans = isHighDpi ? 0.125f : 0.25f;
-            var left = 0f;
-            var top = (image.Height - topOffset) - (lines.Count * lineHeight);
+            var haloMod =        isHighDpi ? 6F : 4F;
+            var haloTrans =      (byte)220;
+            var left =           centreText ? ((float)image.Width / 2.0F) : haloMod / 2;
+            var top =            (image.Height - topOffset) - (lines.Count * lineHeight);
 
-            Image result = new Bitmap(image);
+            var options = new TextGraphicsOptions(enableAntialiasing: true) {
+                HorizontalAlignment = centreText ? HorizontalAlignment.Center : HorizontalAlignment.Left,
+                ApplyKerning = true,
+            };
 
-            lock(_SyncLock) {
-                using(Graphics graphics = Graphics.FromImage(result)) {
-                    // Note that this gets completely ignored by Mono...
-                    StringFormat stringFormat = new StringFormat() {
-                        Alignment = centreText ? StringAlignment.Center : StringAlignment.Near,
-                        LineAlignment = StringAlignment.Center,
-                        FormatFlags = StringFormatFlags.NoWrap,
-                    };
+            return image.Clone(context => {
 
-                    graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
+                var whiteBrush = new SolidBrush<Rgba32>(Rgba32.White);
+                var shadowPen =  new Pen<Rgba32>(new Rgba32(0, 0, 0, haloTrans), haloMod);
 
-                    using(GraphicsPath path = new GraphicsPath()) {
-                        float lineTop = top;
-                        foreach(string line in lines) {
-                            var fontName = _IsMono ? "Droid Sans" : "MS Sans Serif";
-                            Font font = GetFontForRectangle(fontName, FontStyle.Regular, startPointSize, graphics, (float)result.Width - left, lineHeight * 2f, line);
-                            path.AddString(line, font.FontFamily, (int)font.Style, font.Size, new RectangleF(0, lineTop, result.Width, lineHeight), stringFormat);
-                            lineTop += lineHeight;
-                        }
+                float lineTop = top;
+                foreach(string line in lines) {
+                    var fontAndText = GetFontForRectangle(fontFamily, fontStyle, startPointSize, Math.Max(0F, image.Width - haloMod), lineHeight * 2f, line);
+                    
+                    var text = fontAndText.Text.ToString();
+                    context.DrawText(options, text, fontAndText.Font, shadowPen, new PointF(left, lineTop));
+                    context.DrawText(options, text, fontAndText.Font, whiteBrush, new PointF(left, lineTop));
 
-                        int haloWidth = result.Width + (result.Width % haloMod);
-                        int haloHeight = result.Height + (result.Height % haloMod);
-                        using(Bitmap halo = new Bitmap(haloWidth / haloMod, haloHeight / haloMod)) {
-                            using(Graphics haloGraphics = Graphics.FromImage(halo)) {
-                                using(Matrix matrix = new Matrix(haloTrans, 0, 0, haloTrans, -haloTrans, -haloTrans)) {
-                                    haloGraphics.SmoothingMode = SmoothingMode.AntiAlias;
-                                    haloGraphics.Transform = matrix;
-                                    using(Pen pen = new Pen(Color.Gray, 1) { LineJoin = LineJoin.Round }) {
-                                        haloGraphics.DrawPath(pen, path);
-                                        haloGraphics.FillPath(Brushes.Black, path);
-                                    }
-                                }
-                            }
-
-                            graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                            graphics.DrawImage(halo, 1, 1, haloWidth, haloHeight);
-                            graphics.DrawPath(Pens.LightGray, path);
-                            graphics.FillPath(Brushes.White, path);
-                        }
-                    }
+                    lineTop += lineHeight;
                 }
-            }
-
-            return result;
+            });
         }
-        #endregion
 
-        #region Utility methods - CreateBlankImage, GetFontForRectangle, UseImage
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -409,6 +304,5 @@ namespace VirtualRadar.WebSite
             if(tempImage != null && !Object.ReferenceEquals(tempImage, newImage)) tempImage.Dispose();
             return newImage;
         }
-        #endregion
     }
 }

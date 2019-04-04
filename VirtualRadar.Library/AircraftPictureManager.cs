@@ -152,7 +152,7 @@ namespace VirtualRadar.Library
 
             if(!String.IsNullOrEmpty(fileName)) {
                 try {
-                    var imageFile = Factory.Resolve<IImageFile>();
+                    var imageFile = Factory.ResolveSingleton<IImageFile>();
                     result = imageFile.LoadFromFile(fileName);
                 } catch(Exception ex) {
                     if(_Log == null) _Log = Factory.ResolveSingleton<ILog>();

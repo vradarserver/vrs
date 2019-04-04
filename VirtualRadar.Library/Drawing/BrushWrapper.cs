@@ -13,51 +13,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Interface.Drawing
+namespace VirtualRadar.Library.Drawing
 {
-    /// <summary>
-    /// Describes an image in memory.
-    /// </summary>
-    public interface IImage : IDisposable
+    class BrushWrapper : VrsDrawing.IBrush
     {
-        /// <summary>
-        /// Gets the dimensions of the image.
-        /// </summary>
-        Size Size { get; }
+        public IBrush<Rgba32> NativeBrush { get; }
 
-        /// <summary>
-        /// Shorthand for <see cref="Size.Width"/>.
-        /// </summary>
-        int Width { get; }
-
-        /// <summary>
-        /// Shorthand for <see cref="Size.Height"/>.
-        /// </summary>
-        int Height { get; }
-
-        /// <summary>
-        /// Creates a copy of the image.
-        /// </summary>
-        /// <returns></returns>
-        IImage Clone();
-
-        /// <summary>
-        /// Returns the bytes representing the image formatted as per the parameter.
-        /// </summary>
-        /// <param name="imageFormat"></param>
-        /// <returns></returns>
-        byte[] GetImageBytes(ImageFormat imageFormat);
-
-        /// <summary>
-        /// Returns a clone of the image resized to the new size. Speed is preferred over quality.
-        /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="mode"></param>
-        /// <param name="zoomBackground"></param>
-        /// <param name="preferSpeedOverQuality"></param>
-        /// <returns></returns>
-        IImage Resize(int width, int height, ResizeMode mode = ResizeMode.Normal, IBrush zoomBackground = null, bool preferSpeedOverQuality = true);
+        public BrushWrapper(IBrush<Rgba32> brush)
+        {
+            NativeBrush = brush;
+        }
     }
 }

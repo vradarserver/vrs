@@ -99,7 +99,7 @@ namespace VirtualRadar.Library
 
             IImage result = null;
             if(!String.IsNullOrEmpty(fileName)) {
-                var imageFile = Factory.Resolve<IImageFile>();
+                var imageFile = Factory.ResolveSingleton<IImageFile>();
                 result = imageFile.LoadFromFile(fileName);
             }
 
@@ -203,7 +203,7 @@ namespace VirtualRadar.Library
             IImage result = null;
 
             if(simpleContent != null && simpleContent.HttpStatusCode == System.Net.HttpStatusCode.OK) {
-                var imageFile = Factory.Resolve<IImageFile>();
+                var imageFile = Factory.ResolveSingleton<IImageFile>();
                 result = imageFile.LoadFromByteArray(simpleContent.Content);
             }
 

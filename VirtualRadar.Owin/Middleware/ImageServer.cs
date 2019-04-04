@@ -10,8 +10,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -234,19 +232,14 @@ namespace VirtualRadar.Owin.Middleware
                         var image = tempImage ?? stockImage;
 
                         if(image != null) {
-                            using(var stream = new MemoryStream()) {
-                                using(var copy = image.Clone()) {
-                                    copy.Save(stream, imageRequest.ImageFormat);
-                                    var bytes = stream.ToArray();
+                            var bytes = image.GetImageBytes(imageRequest.ImageFormat);
 
-                                    context.Response.ContentLength = bytes.Length;
-                                    context.Response.ContentType = ImageMimeType(imageRequest.ImageFormat);
-                                    context.Response.Body.Write(bytes, 0, bytes.Length);
-                                    context.Response.StatusCode = 200;
+                            context.Response.ContentLength = bytes.Length;
+                            context.Response.ContentType = ImageMimeType(imageRequest.ImageFormat);
+                            context.Response.Body.Write(bytes, 0, bytes.Length);
+                            context.Response.StatusCode = 200;
 
-                                    handled = true;
-                                }
-                            }
+                            handled = true;
                         }
                     }
                 } finally {
@@ -416,35 +409,37 @@ namespace VirtualRadar.Owin.Middleware
             } else {
                 var request = context.Request;
 
+                var imageFile = Factory.ResolveSingleton<IImageFile>();
+
                 switch(imageRequest.ImageName) {
-                    case "AIRPLANE":                stockImage = Images.Clone_Marker_Airplane(); break;
-                    case "AIRPLANESELECTED":        stockImage = Images.Clone_Marker_AirplaneSelected(); break;
+                    case "AIRPLANE":                stockImage = imageFile.LoadFromByteArray(Images.Marker_Airplane); break;
+                    case "AIRPLANESELECTED":        stockImage = imageFile.LoadFromByteArray(Images.Marker_AirplaneSelected); break;
                     case "BLANK":                   tempImage  = _Graphics.CreateBlankImage(imageRequest.Width.GetValueOrDefault(), imageRequest.Height.GetValueOrDefault()); break;
-                    case "CHEVRONBLUECIRCLE":       stockImage = Images.Clone_ChevronBlueCircle(); break;
-                    case "CHEVRONGREENCIRCLE":      stockImage = Images.Clone_ChevronGreenCircle(); break;
-                    case "CHEVRONREDCIRCLE":        stockImage = Images.Clone_ChevronRedCircle(); break;
-                    case "CLOSESLIDER":             stockImage = Images.Clone_CloseSlider(); break;
-                    case "COMPASS":                 stockImage = Images.Clone_Compass(); break;
-                    case "CORNER-TL":               stockImage = Images.Clone_Corner_TopLeft(); break;
-                    case "CORNER-TR":               stockImage = Images.Clone_Corner_TopRight(); break;
-                    case "CORNER-BL":               stockImage = Images.Clone_Corner_BottomLeft(); break;
-                    case "CORNER-BR":               stockImage = Images.Clone_Corner_BottomRight(); break;
-                    case "CROSSHAIR":               stockImage = Images.Clone_Crosshair(); break;
-                    case "GOTOCURRENTLOCATION":     stockImage = Images.Clone_GotoCurrentLocation(); break;
-                    case "GROUNDVEHICLE":           stockImage = Images.Clone_FollowMe(); break;
-                    case "GROUNDVEHICLESELECTED":   stockImage = Images.Clone_FollowMe(); break;
-                    case "HEADING":                 stockImage = Images.Clone_SmallPlaneNorth(); break;
-                    case "HIDELIST":                stockImage = Images.Clone_HideList(); break;
-                    case "IPHONEBACKBUTTON":        stockImage = Images.Clone_IPhoneBackButton(); break;
-                    case "IPHONEBLUEBUTTON":        stockImage = Images.Clone_IPhoneBlueButton(); break;
-                    case "IPHONECHEVRON":           stockImage = Images.Clone_IPhoneChevron(); break;
-                    case "IPHONEGRAYBUTTON":        stockImage = Images.Clone_IPhoneGrayButton(); break;
-                    case "IPHONEICON":              stockImage = Images.Clone_IPhoneIcon(); break;
-                    case "IPHONELISTGROUP":         stockImage = Images.Clone_IPhoneListGroup(); break;
-                    case "IPHONEONOFF":             stockImage = Images.Clone_IPhoneOnOff(); break;
-                    case "IPHONEPINSTRIPES":        stockImage = Images.Clone_IPhonePinstripes(); break;
-                    case "IPHONESELECTEDTICK":      stockImage = Images.Clone_IPhoneSelectedTick(); break;
-                    case "IPHONESELECTION":         stockImage = Images.Clone_IPhoneSelection(); break;
+                    case "CHEVRONBLUECIRCLE":       stockImage = imageFile.LoadFromByteArray(Images.ChevronBlueCircle); break;
+                    case "CHEVRONGREENCIRCLE":      stockImage = imageFile.LoadFromByteArray(Images.ChevronGreenCircle); break;
+                    case "CHEVRONREDCIRCLE":        stockImage = imageFile.LoadFromByteArray(Images.ChevronRedCircle); break;
+                    case "CLOSESLIDER":             stockImage = imageFile.LoadFromByteArray(Images.CloseSlider); break;
+                    case "COMPASS":                 stockImage = imageFile.LoadFromByteArray(Images.Compass); break;
+                    case "CORNER-TL":               stockImage = imageFile.LoadFromByteArray(Images.Corner_TopLeft); break;
+                    case "CORNER-TR":               stockImage = imageFile.LoadFromByteArray(Images.Corner_TopRight); break;
+                    case "CORNER-BL":               stockImage = imageFile.LoadFromByteArray(Images.Corner_BottomLeft); break;
+                    case "CORNER-BR":               stockImage = imageFile.LoadFromByteArray(Images.Corner_BottomRight); break;
+                    case "CROSSHAIR":               stockImage = imageFile.LoadFromByteArray(Images.Crosshair); break;
+                    case "GOTOCURRENTLOCATION":     stockImage = imageFile.LoadFromByteArray(Images.GotoCurrentLocation); break;
+                    case "GROUNDVEHICLE":           stockImage = imageFile.LoadFromByteArray(Images.FollowMe); break;
+                    case "GROUNDVEHICLESELECTED":   stockImage = imageFile.LoadFromByteArray(Images.FollowMe); break;
+                    case "HEADING":                 stockImage = imageFile.LoadFromByteArray(Images.SmallPlaneNorth); break;
+                    case "HIDELIST":                stockImage = imageFile.LoadFromByteArray(Images.HideList); break;
+                    case "IPHONEBACKBUTTON":        stockImage = imageFile.LoadFromByteArray(Images.IPhoneBackButton); break;
+                    case "IPHONEBLUEBUTTON":        stockImage = imageFile.LoadFromByteArray(Images.IPhoneBlueButton); break;
+                    case "IPHONECHEVRON":           stockImage = imageFile.LoadFromByteArray(Images.IPhoneChevron); break;
+                    case "IPHONEGRAYBUTTON":        stockImage = imageFile.LoadFromByteArray(Images.IPhoneGrayButton); break;
+                    case "IPHONEICON":              stockImage = imageFile.LoadFromByteArray(Images.IPhoneIcon); break;
+                    case "IPHONELISTGROUP":         stockImage = imageFile.LoadFromByteArray(Images.IPhoneListGroup); break;
+                    case "IPHONEONOFF":             stockImage = imageFile.LoadFromByteArray(Images.IPhoneOnOff); break;
+                    case "IPHONEPINSTRIPES":        stockImage = imageFile.LoadFromByteArray(Images.IPhonePinstripes); break;
+                    case "IPHONESELECTEDTICK":      stockImage = imageFile.LoadFromByteArray(Images.IPhoneSelectedTick); break;
+                    case "IPHONESELECTION":         stockImage = imageFile.LoadFromByteArray(Images.IPhoneSelection); break;
                     case "IPHONESPLASH":
                         var webSiteAddress = new StringBuilder();
                         webSiteAddress.Append(String.IsNullOrEmpty(request.Scheme) ? "http" : request.Scheme);
@@ -453,34 +448,34 @@ namespace VirtualRadar.Owin.Middleware
                         webSiteAddress.Append(request.PathBase.Value);
                         tempImage  = _Graphics.CreateIPhoneSplash(webSiteAddress.ToString(), request.IsTabletUserAgentString, new List<string>(request.PathParts));
                         break;
-                    case "IPHONETOOLBAR":           stockImage = Images.Clone_IPhoneToolbar(); break;
-                    case "IPHONETOOLBUTTON":        stockImage = Images.Clone_IPhoneToolButton(); break;
-                    case "IPHONEWHITEBUTTON":       stockImage = Images.Clone_IPhoneWhiteButton(); break;
-                    case "MINUS":                   stockImage = Images.Clone_Collapse(); break;
-                    case "MOVINGMAPCHECKED":        stockImage = Images.Clone_MovingMapChecked(); break;
-                    case "MOVINGMAPUNCHECKED":      stockImage = Images.Clone_MovingMapUnchecked(); break;
-                    case "OPENSLIDER":              stockImage = Images.Clone_OpenSlider(); break;
+                    case "IPHONETOOLBAR":           stockImage = imageFile.LoadFromByteArray(Images.IPhoneToolbar); break;
+                    case "IPHONETOOLBUTTON":        stockImage = imageFile.LoadFromByteArray(Images.IPhoneToolButton); break;
+                    case "IPHONEWHITEBUTTON":       stockImage = imageFile.LoadFromByteArray(Images.IPhoneWhiteButton); break;
+                    case "MINUS":                   stockImage = imageFile.LoadFromByteArray(Images.Collapse); break;
+                    case "MOVINGMAPCHECKED":        stockImage = imageFile.LoadFromByteArray(Images.MovingMapChecked); break;
+                    case "MOVINGMAPUNCHECKED":      stockImage = imageFile.LoadFromByteArray(Images.MovingMapUnchecked); break;
+                    case "OPENSLIDER":              stockImage = imageFile.LoadFromByteArray(Images.OpenSlider); break;
                     case "OPFLAG":                  tempImage  = CreateLogoImage(imageRequest.File, _ImageServerConfiguration.OperatorFolder); break;
                     case "PICTURE":                 tempImage  = CreateAirplanePicture(imageRequest.File, imageRequest.Size, request.IsInternet, imageRequest.Width, imageRequest.Height); imageRequest.Width = imageRequest.Height = null; break;
-                    case "PLUS":                    stockImage = Images.Clone_Expand(); break;
-                    case "ROWHEADER":               stockImage = Images.Clone_RowHeader(); break;
-                    case "ROWHEADERSELECTED":       stockImage = Images.Clone_RowHeaderSelected(); break;
-                    case "SHOWLIST":                stockImage = Images.Clone_ShowList(); break;
-                    case "TESTSQUARE":              stockImage = Images.Clone_TestSquare(); break;
-                    case "TOWER":                   stockImage = Images.Clone_Tower(); break;
-                    case "TOWERSELECTED":           stockImage = Images.Clone_Tower(); break;
-                    case "TRANSPARENT-25":          stockImage = Images.Clone_Transparent_25(); break;
-                    case "TRANSPARENT-50":          stockImage = Images.Clone_Transparent_50(); break;
+                    case "PLUS":                    stockImage = imageFile.LoadFromByteArray(Images.Expand); break;
+                    case "ROWHEADER":               stockImage = imageFile.LoadFromByteArray(Images.RowHeader); break;
+                    case "ROWHEADERSELECTED":       stockImage = imageFile.LoadFromByteArray(Images.RowHeaderSelected); break;
+                    case "SHOWLIST":                stockImage = imageFile.LoadFromByteArray(Images.ShowList); break;
+                    case "TESTSQUARE":              stockImage = imageFile.LoadFromByteArray(Images.TestSquare); break;
+                    case "TOWER":                   stockImage = imageFile.LoadFromByteArray(Images.Tower); break;
+                    case "TOWERSELECTED":           stockImage = imageFile.LoadFromByteArray(Images.Tower); break;
+                    case "TRANSPARENT-25":          stockImage = imageFile.LoadFromByteArray(Images.Transparent_25); break;
+                    case "TRANSPARENT-50":          stockImage = imageFile.LoadFromByteArray(Images.Transparent_50); break;
                     case "TYPE":                    tempImage  = CreateLogoImage(imageRequest.File, _ImageServerConfiguration.SilhouettesFolder); break;
-                    case "VOLUME0":                 stockImage = Images.Clone_Volume0(); break;
-                    case "VOLUME25":                stockImage = Images.Clone_Volume25(); break;
-                    case "VOLUME50":                stockImage = Images.Clone_Volume50(); break;
-                    case "VOLUME75":                stockImage = Images.Clone_Volume75(); break;
-                    case "VOLUME100":               stockImage = Images.Clone_Volume100(); break;
-                    case "VOLUMEDOWN":              stockImage = Images.Clone_VolumeDown(); break;
-                    case "VOLUMEMUTE":              stockImage = Images.Clone_VolumeMute(); break;
-                    case "VOLUMEUP":                stockImage = Images.Clone_VolumeUp(); break;
-                    case "YOUAREHERE":              stockImage = Images.Clone_BlueBall(); break;
+                    case "VOLUME0":                 stockImage = imageFile.LoadFromByteArray(Images.Volume0); break;
+                    case "VOLUME25":                stockImage = imageFile.LoadFromByteArray(Images.Volume25); break;
+                    case "VOLUME50":                stockImage = imageFile.LoadFromByteArray(Images.Volume50); break;
+                    case "VOLUME75":                stockImage = imageFile.LoadFromByteArray(Images.Volume75); break;
+                    case "VOLUME100":               stockImage = imageFile.LoadFromByteArray(Images.Volume100); break;
+                    case "VOLUMEDOWN":              stockImage = imageFile.LoadFromByteArray(Images.VolumeDown); break;
+                    case "VOLUMEMUTE":              stockImage = imageFile.LoadFromByteArray(Images.VolumeMute); break;
+                    case "VOLUMEUP":                stockImage = imageFile.LoadFromByteArray(Images.VolumeUp); break;
+                    case "YOUAREHERE":              stockImage = imageFile.LoadFromByteArray(Images.BlueBall); break;
                     default:                        result = false; break;
                 }
             }
@@ -564,9 +559,14 @@ namespace VirtualRadar.Owin.Middleware
                     if(height != null) newHeight = height.Value;
 
                     if((newWidth != -1 || newHeight != -1) && (minWidth == -1 || result.Width > newWidth)) {
-                        if(newWidth == -1)          newWidth = (int)(((double)newHeight * ((double)result.Width / (double)result.Height)) + 0.5);
-                        else if(newHeight == -1)    newHeight = (int)(((double)newWidth / ((double)result.Width / (double)result.Height)) + 0.5);
-                        result = _Graphics.UseImage(result, _Graphics.ResizeBitmap(result, newWidth, newHeight, resizeMode, Brushes.Transparent, preferSpeed));
+                        if(newWidth == -1) {
+                            newWidth = (int)(((double)newHeight * ((double)result.Width / (double)result.Height)) + 0.5);
+                        } else if(newHeight == -1) {
+                            newHeight = (int)(((double)newWidth / ((double)result.Width / (double)result.Height)) + 0.5);
+                        }
+
+                        var transparentBrush = Factory.ResolveSingleton<IBrushFactory>().CreateTransparentBrush();
+                        result = _Graphics.UseImage(result, _Graphics.ResizeBitmap(result, newWidth, newHeight, resizeMode, transparentBrush, preferSpeed));
                     }
                 }
             }
