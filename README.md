@@ -1,19 +1,28 @@
 # Virtual Radar Server
 
-You will need Visual Studio 2017 to build the program. The free Community version of Visual Studio will work just
+You will need Visual Studio 2017 or 2019 to build the program. The free Community version of Visual Studio will work just
 fine. You can download the installer for it from here:
 
 * **Visual Studio Installer**: https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx
 
-**April 2019**: Visual Studio 2019 has been released. Unfortunately its installer does not offer up the TypeScript 2.3 SDK for installation, which makes it unsuitable for building VRS. The page linked above still lets you download and install Visual Studio 2017, I would stick with that for the time being.
-
 ## TypeScript
+
+## Visual Studio 2017
 
 When you install VS2017 (or upgrade it) be sure to select TypeScript 2.3 on the Individual Components tab.
 
 If you get TypeScript errors when compiling then go into the properties for VirtualRadar.WebSite and open the TypeScript tab.
 If it says that the version is "2.3 (unavailable)" then quit Visual Studio, run the installer, click More | Modify, go to
 Individual Components and install TypeScript 2.3.
+
+## Visual Studio 2019
+
+The VS2019 installer does not offer TypeScript 2.3 as an optional install. However, the projects now reference the TypeScript
+2.3.3 NuGet package so they should build correctly. The downside is that you'll see a lot of erroneous TypeScript errors coming out
+of Intellisense. This is because Intellisense is using a later version of TypeScript and TypeScript is not good at being backwards
+compatible.
+
+You can safely ignore the errors, the build will use 2.3 and it should be fine.
 
 ## Earlier versions of Visual Studio
 Virtual Radar Server targets .NET 4.6.1 and TypeScript 2.3. It also makes use of language features from C# 6.
