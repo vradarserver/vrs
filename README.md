@@ -5,6 +5,8 @@ fine. You can download the installer for it from here:
 
 * **Visual Studio Installer**: https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx
 
+**April 2019**: Visual Studio 2019 has been released. Unfortunately its installer does not offer up the TypeScript 2.3 SDK for installation, which makes it unsuitable for building VRS. The page linked above still lets you download and install Visual Studio 2017, I would stick with that for the time being.
+
 ## TypeScript
 
 When you install VS2017 (or upgrade it) be sure to select TypeScript 2.3 on the Individual Components tab.
