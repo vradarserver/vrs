@@ -18,12 +18,11 @@ using Moq;
 using System.IO;
 using Test.Framework;
 using System.Reflection;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Net;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using InterfaceFactory;
+using VirtualRadar.Interface.Drawing;
 
 namespace Test.VirtualRadar.WebServer
 {
@@ -50,7 +49,8 @@ namespace Test.VirtualRadar.WebServer
         private Mock<IRequest> _Request;
         private Mock<IResponse> _Response;
         private MemoryStream _OutputStream;
-        private Bitmap _Image;
+        private Mock<IImage> _Image;
+        private byte[] _ImageBytes;
 
         [TestInitialize]
         public void TestInitialise()
@@ -62,10 +62,9 @@ namespace Test.VirtualRadar.WebServer
             _OutputStream = new MemoryStream();
             _Response.Setup(m => m.OutputStream).Returns(_OutputStream);
 
-            _Image = new Bitmap(10, 10);
-            using(var graphics = Graphics.FromImage(_Image)) {
-                graphics.FillRectangle(Brushes.White, 0, 0, _Image.Width, _Image.Height);
-            }
+            _ImageBytes = new byte[] { 1, 2, 3, 4, 5 };
+            _Image = TestUtilities.CreateMockInstance<IImage>();
+            _Image.Setup(r => r.GetImageBytes(It.IsAny<ImageFormat>())).Returns(_ImageBytes);
         }
 
         [TestCleanup]
@@ -73,9 +72,6 @@ namespace Test.VirtualRadar.WebServer
         {
             if(_OutputStream != null) _OutputStream.Dispose();
             _OutputStream = null;
-
-            if(_Image != null) _Image.Dispose();
-            _Image = null;
         }
         #endregion
 
@@ -233,14 +229,14 @@ namespace Test.VirtualRadar.WebServer
         [ExpectedException(typeof(ArgumentNullException))]
         public void Responser_SendImage_Throws_If_Request_Is_Null()
         {
-            _Responder.SendImage(null, _Response.Object, _Image, ImageFormat.Png);
+            _Responder.SendImage(null, _Response.Object, _Image.Object, ImageFormat.Png);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Responser_SendImage_Throws_If_Response_Is_Null()
         {
-            _Responder.SendImage(_Request.Object, null, _Image, ImageFormat.Png);
+            _Responder.SendImage(_Request.Object, null, _Image.Object, ImageFormat.Png);
         }
 
         [TestMethod]
@@ -251,66 +247,30 @@ namespace Test.VirtualRadar.WebServer
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Responser_SendImage_Throws_If_ImageFormat_Is_Null()
-        {
-            _Responder.SendImage(_Request.Object, _Response.Object, _Image, null);
-        }
-
-        [TestMethod]
-        public void Responder_SendImage_Throws_If_ImageFormat_Is_Unsupported()
-        {
-            foreach(var property in typeof(ImageFormat).GetProperties().Where(p => p.Name != "Guid")) {
-                TestCleanup();
-                TestInitialise();
-
-                bool supported = false;
-                switch(property.Name) {
-                    case "Bmp":
-                    case "Gif":
-                    case "Png":
-                        supported = true;
-                        break;
-                }
-
-                bool seenException = false;
-                try {
-                    _Responder.SendImage(_Request.Object, _Response.Object, _Image, (ImageFormat)property.GetValue(null, null));
-                } catch(NotSupportedException) {
-                    seenException = true;
-                } catch(ArgumentNullException) { // <-- can be thrown for some formats if the image save went awry because we hadn't set up the save properly (which, in turn, is because it's not supported)
-                    ; 
-                }
-
-                Assert.AreEqual(!supported, seenException, property.Name);
-            }
-        }
-
-        [TestMethod]
         public void Responder_SendImage_Fills_Response_Correctly_For_Png_Images()
         {
-            _Responder.SendImage(_Request.Object, _Response.Object, _Image, ImageFormat.Png);
+            _Responder.SendImage(_Request.Object, _Response.Object, _Image.Object, ImageFormat.Png);
             AssertImageMatches(ImageFormat.Png, MimeType.PngImage);
         }
 
         [TestMethod]
         public void Responder_SendImage_Fills_Response_Correctly_For_Gif_Images()
         {
-            _Responder.SendImage(_Request.Object, _Response.Object, _Image, ImageFormat.Gif);
+            _Responder.SendImage(_Request.Object, _Response.Object, _Image.Object, ImageFormat.Gif);
             AssertImageMatches(ImageFormat.Gif, MimeType.GifImage);
         }
 
         [TestMethod]
         public void Responder_SendImage_Fills_Response_Correctly_For_Bmp_Images()
         {
-            _Responder.SendImage(_Request.Object, _Response.Object, _Image, ImageFormat.Bmp);
+            _Responder.SendImage(_Request.Object, _Response.Object, _Image.Object, ImageFormat.Bmp);
             AssertImageMatches(ImageFormat.Bmp, MimeType.BitmapImage);
         }
 
         [TestMethod]
         public void Responder_SendImage_Does_Not_Compress_Response()
         {
-            _Responder.SendImage(_Request.Object, _Response.Object, _Image, ImageFormat.Bmp);
+            _Responder.SendImage(_Request.Object, _Response.Object, _Image.Object, ImageFormat.Bmp);
             _Response.Verify(r => r.EnableCompression(_Request.Object), Times.Never());
         }
 
@@ -321,16 +281,8 @@ namespace Test.VirtualRadar.WebServer
             Assert.AreEqual(_OutputStream.Length, _Response.Object.ContentLength);
             _Response.Verify(r => r.AddHeader("Cache-Control", "max-age=21600"), Times.Once());
 
-            using(var image = (Bitmap)Image.FromStream(_OutputStream)) {
-                Assert.AreEqual(imageFormat, image.RawFormat);
-                Assert.AreEqual(_Image.Width, image.Width);
-                Assert.AreEqual(_Image.Height, image.Height);
-                for(int x = 0;x < _Image.Width;++x) {
-                    for(int y = 0;y < _Image.Height;++y) {
-                        Assert.AreEqual(_Image.GetPixel(x, y), image.GetPixel(x, y), "Pixel at {0}, {1}", x, y);
-                    }
-                }
-            }
+            var bytesSent = _OutputStream.ToArray();
+            Assert.IsTrue(_ImageBytes.SequenceEqual(bytesSent));
         }
         #endregion
 

@@ -266,8 +266,12 @@ namespace Test.VirtualRadar.Owin.Middleware
             var requestImageName = worksheet.String("RequestImageName");
             var stockImagePropertyName = worksheet.String("StockImage");
 
-            var cloneMethod = typeof(Images).GetMethod($"Clone_{stockImagePropertyName}", new Type[0]);
-            var expectedImage = (SysDrawing.Bitmap)cloneMethod.Invoke(null, new object[0]);
+            var getImageBytesProperty = typeof(Images).GetProperty($"{stockImagePropertyName}");
+            var imageBytes = (byte[])getImageBytesProperty.GetValue(null, null);
+            SysDrawing.Bitmap expectedImage;
+            using(var memoryStream = new MemoryStream(imageBytes)) {
+                expectedImage = (SysDrawing.Bitmap)SysDrawing.Bitmap.FromStream(memoryStream);
+            }
             try {
                 _Environment.RequestPath = $"/Images/{requestImageName}.png";
                 _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
