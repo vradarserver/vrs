@@ -13,9 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using InterfaceFactory;
+using VirtualRadar.Interface.Drawing;
 using VirtualRadar.Interface.WebSite;
 using VirtualRadar.Resources;
-using VrsDrawing = VirtualRadar.Interface.Drawing;
 
 namespace VirtualRadar.WebSite
 {
@@ -24,32 +24,35 @@ namespace VirtualRadar.WebSite
     /// </summary>
     class WebSiteGraphics : IWebSiteGraphics
     {
-        private VrsDrawing.IImageFile       _ImageFile;
-        private VrsDrawing.IPenFactory      _PenFactory;
-        private VrsDrawing.IBrushFactory    _BrushFactory;
-        private VrsDrawing.IFontFactory     _FontFactory;
+        private IImageFile      _ImageFile;
+        private IPenFactory     _PenFactory;
+        private IBrushFactory   _BrushFactory;
+        private IFontFactory    _FontFactory;
 
-        private VrsDrawing.FontStyle        _MarkerTextFontStyle = VrsDrawing.FontStyle.Bold;
-        private VrsDrawing.IFontFamily      _MarkerTextFontFamily;
-        private VrsDrawing.IPen             _MarkerTextOutlinePen;
-        private VrsDrawing.IPen             _MarkerTextOutlinePenHiDpi;
-        private VrsDrawing.IBrush           _MarkerTextFillBrush;
+        private FontStyle       _MarkerTextFontStyle = FontStyle.Bold;
+        private IFontFamily     _MarkerTextFontFamily;
+        private IPen            _MarkerTextOutlinePen;
+        private IPen            _MarkerTextOutlinePenHiDpi;
+        private IBrush          _MarkerTextFillBrush;
+
+        private FontStyle       _SplashFontStyle = FontStyle.Normal;
+        private IFontFamily     _SplashFontFamily;
+        private IBrush          _SplashFillBrush;
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
         public WebSiteGraphics()
         {
-            _ImageFile = Factory.ResolveSingleton<VrsDrawing.IImageFile>();
-            _PenFactory = Factory.ResolveSingleton<VrsDrawing.IPenFactory>();
-            _BrushFactory = Factory.ResolveSingleton<VrsDrawing.IBrushFactory>();
-            _FontFactory = Factory.ResolveSingleton<VrsDrawing.IFontFactory>();
+            _ImageFile = Factory.ResolveSingleton<IImageFile>();
+            _PenFactory = Factory.ResolveSingleton<IPenFactory>();
+            _BrushFactory = Factory.ResolveSingleton<IBrushFactory>();
+            _FontFactory = Factory.ResolveSingleton<IFontFactory>();
 
             _MarkerTextOutlinePen =      _PenFactory.CreatePen(0, 0, 0, 222, 4.0F);
             _MarkerTextOutlinePenHiDpi = _PenFactory.CreatePen(0, 0, 0, 222, 6.0F);
             _MarkerTextFillBrush =       _BrushFactory.CreateBrush(255, 255, 255, 255);
-
-            _MarkerTextFontFamily = _FontFactory.GetFontFamilyOrFallback(
+            _MarkerTextFontFamily =      _FontFactory.GetFontFamilyOrFallback(
                 _MarkerTextFontStyle,
                 "Microsoft Sans Serif",
                 "MS Reference Sans Serif",
@@ -62,6 +65,21 @@ namespace VirtualRadar.WebSite
                 "Sans Serif",
                 "Sans"
             );
+
+            _SplashFillBrush =  _BrushFactory.CreateBrush(255, 255, 255, 255);
+            _SplashFontFamily = _FontFactory.GetFontFamilyOrFallback(
+                _SplashFontStyle,
+                "Tahoma",
+                "Microsoft Sans Serif",
+                "MS Reference Sans Serif",
+                "Roboto",
+                "Droid Sans",
+                "MS Sans Serif",
+                "Verdana",
+                "Helvetica",
+                "Sans Serif",
+                "Sans"
+            );
         }
 
         /// <summary>
@@ -70,7 +88,7 @@ namespace VirtualRadar.WebSite
         /// <param name="original"></param>
         /// <param name="degrees"></param>
         /// <returns></returns>
-        public VrsDrawing.IImage RotateImage(VrsDrawing.IImage original, double degrees)
+        public IImage RotateImage(IImage original, double degrees)
         {
             return _ImageFile.CloneAndDraw(original, drawing => {
                 drawing.DrawImage(original, 0, 0);
@@ -85,7 +103,7 @@ namespace VirtualRadar.WebSite
         /// <param name="width"></param>
         /// <param name="centreHorizontally"></param>
         /// <returns></returns>
-        public VrsDrawing.IImage WidenImage(VrsDrawing.IImage original, int width, bool centreHorizontally)
+        public IImage WidenImage(IImage original, int width, bool centreHorizontally)
         {
             return _ImageFile.CloneAndDraw(
                 _ImageFile.Create(width, original.Height),
@@ -103,7 +121,7 @@ namespace VirtualRadar.WebSite
         /// <param name="height"></param>
         /// <param name="centreVertically"></param>
         /// <returns></returns>
-        public VrsDrawing.IImage HeightenImage(VrsDrawing.IImage original, int height, bool centreVertically)
+        public IImage HeightenImage(IImage original, int height, bool centreVertically)
         {
             return _ImageFile.CloneAndDraw(
                 _ImageFile.Create(original.Width, height),
@@ -119,7 +137,7 @@ namespace VirtualRadar.WebSite
         /// </summary>
         /// <param name="original"></param>
         /// <returns></returns>
-        public VrsDrawing.IImage ResizeForHiDpi(VrsDrawing.IImage original)
+        public IImage ResizeForHiDpi(IImage original)
         {
             return original.Resize(original.Width * 2, original.Height * 2, preferSpeedOverQuality: false);
         }
@@ -134,7 +152,7 @@ namespace VirtualRadar.WebSite
         /// <param name="zoomBackground"></param>
         /// <param name="preferSpeedOverQuality"></param>
         /// <returns></returns>
-        public VrsDrawing.IImage ResizeBitmap(VrsDrawing.IImage original, int width, int height, VrsDrawing.ResizeMode mode, VrsDrawing.IBrush zoomBackground, bool preferSpeedOverQuality)
+        public IImage ResizeBitmap(IImage original, int width, int height, ResizeMode mode, IBrush zoomBackground, bool preferSpeedOverQuality)
         {
             return original.Resize(width, height, mode, zoomBackground, preferSpeedOverQuality);
         }
@@ -146,58 +164,71 @@ namespace VirtualRadar.WebSite
         /// <param name="isIPad"></param>
         /// <param name="pathParts"></param>
         /// <returns></returns>
-        public VrsDrawing.IImage CreateIPhoneSplash(string webSiteAddress, bool isIPad, List<string> pathParts)
+        public IImage CreateIPhoneSplash(string webSiteAddress, bool isIPad, List<string> pathParts)
         {
             if(!isIPad && pathParts.Where(pp => pp.Equals("file-ipad", StringComparison.OrdinalIgnoreCase)).Any()) {
                 isIPad = true;
             }
 
-            VrsDrawing.IImage result;
+            IImage splashImage;
             float titleSize, addressSize, lineHeight;
             if(!isIPad) {
-                result = _ImageFile.LoadFromByteArray(Images.IPhoneSplash);
+                splashImage = _ImageFile.LoadFromByteArray(Images.IPhoneSplash);
                 titleSize = 24f;
                 addressSize = 12f;
                 lineHeight = 40f;
             } else {
-                result = _ImageFile.LoadFromByteArray(Images.IPadSplash);
+                splashImage = _ImageFile.LoadFromByteArray(Images.IPadSplash);
                 titleSize = 36f;
                 addressSize = 14f;
                 lineHeight = 50f;
             }
 
-            using(Graphics graphics = Graphics.FromImage(result)) {
-                graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
+            var titleBounds =   new RectangleF(5, (splashImage.Height - 5) - (lineHeight * 2f), splashImage.Width - 10f, lineHeight);
+            var addressBounds = new RectangleF(5, titleBounds.Bottom + 5, splashImage.Width - 10f, lineHeight);
+            const string title = "Virtual Radar Server";
 
-                RectangleF titleBounds = new RectangleF(5, (result.Height - 5) - (lineHeight * 2f), result.Width - 10f, lineHeight);
-                RectangleF addressBounds = new RectangleF(5, titleBounds.Bottom + 5, result.Width - 10f, lineHeight);
+            return _ImageFile.CloneAndDraw(splashImage, drawing => {
+                var titleFontAndText = _FontFactory.GetFontForRectangle(
+                    _SplashFontFamily,
+                    _SplashFontStyle,
+                    titleSize,
+                    6.0F,
+                    titleBounds.Width,
+                    titleBounds.Height,
+                    title
+                );
+                drawing.DrawText(
+                    titleFontAndText.Text,
+                    titleFontAndText.Font,
+                    _SplashFillBrush,
+                    null,
+                    titleBounds.Left + (titleBounds.Width / 2.0F),
+                    titleBounds.Top + lineHeight,
+                    HorizontalAlignment.Centre,
+                    preferSpeedOverQuality: false
+                );
 
-                // It looks like we can occasionally have an issue here under Mono when Tahoma isn't installed and Mono
-                // throws an exception instead of falling back to a default font. We don't really care too much about the
-                // text on the splash image so if we get exceptions here just swallow them
-                try {
-                    Font titleFont = _FontCache.BuildFont("Tahoma", titleSize);
-                    graphics.DrawString("Virtual Radar Server", titleFont, Brushes.White, titleBounds, new StringFormat() {
-                        Alignment = StringAlignment.Center,
-                        LineAlignment = StringAlignment.Far,
-                        FormatFlags = StringFormatFlags.NoWrap,
-                    });
-
-                    Font addressFont = GetFontForRectangle("Tahoma", FontStyle.Regular, addressSize, graphics, addressBounds.Width, addressBounds.Height, webSiteAddress);
-                    graphics.DrawString(webSiteAddress, addressFont, Brushes.LightGray, addressBounds, new StringFormat() {
-                        Alignment = StringAlignment.Center,
-                        LineAlignment = StringAlignment.Near,
-                        FormatFlags = StringFormatFlags.NoWrap,
-                        Trimming = StringTrimming.EllipsisCharacter,
-                    });
-                } catch(Exception ex) {
-                    var log = Factory.ResolveSingleton<ILog>();
-                    log.WriteLine("Swallowed exception while generating {0} splash: {1}", isIPad ? "iPad" : "iPhone", ex.Message);
-                }
-            }
-
-            return result;
+                var addressFontAndText = _FontFactory.GetFontForRectangle(
+                    _SplashFontFamily,
+                    _SplashFontStyle,
+                    addressSize,
+                    6.0F,
+                    addressBounds.Width,
+                    addressBounds.Height,
+                    webSiteAddress
+                );
+                drawing.DrawText(
+                    addressFontAndText.Text,
+                    addressFontAndText.Font,
+                    _SplashFillBrush,
+                    null,
+                    addressBounds.Left + (addressBounds.Width / 2.0F),
+                    addressBounds.Top + lineHeight,
+                    HorizontalAlignment.Centre,
+                    preferSpeedOverQuality: false
+                );
+            });
         }
 
         /// <summary>
@@ -207,7 +238,7 @@ namespace VirtualRadar.WebSite
         /// <param name="height"></param>
         /// <param name="centreX"></param>
         /// <returns></returns>
-        public VrsDrawing.IImage AddAltitudeStalk(VrsDrawing.IImage original, int height, int centreX)
+        public IImage AddAltitudeStalk(IImage original, int height, int centreX)
         {
             return _ImageFile.CloneAndDraw(
                 _ImageFile.Create(original.Width, height),
@@ -247,7 +278,7 @@ namespace VirtualRadar.WebSite
         /// <param name="centreText"></param>
         /// <param name="isHighDpi"></param>
         /// <returns></returns>
-        public VrsDrawing.IImage AddTextLines(VrsDrawing.IImage image, IEnumerable<string> textLines, bool centreText, bool isHighDpi)
+        public IImage AddTextLines(IImage image, IEnumerable<string> textLines, bool centreText, bool isHighDpi)
         {
             var lines =          textLines.Where(tl => tl != null).ToList();
             var lineHeight =     isHighDpi ? 24f : 12f;
@@ -272,7 +303,7 @@ namespace VirtualRadar.WebSite
                             _MarkerTextOutlinePen,
                             left,
                             lineTop,
-                            centreText ? VrsDrawing.HorizontalAlignment.Centre : VrsDrawing.HorizontalAlignment.Left,
+                            centreText ? HorizontalAlignment.Centre : HorizontalAlignment.Left,
                             preferSpeedOverQuality: false
                         );
 
@@ -288,36 +319,11 @@ namespace VirtualRadar.WebSite
         /// <param name="width"></param>
         /// <param name="height"></param>
         /// <returns></returns>
-        public Image CreateBlankImage(int width, int height)
+        public IImage CreateBlankImage(int width, int height)
         {
-            return width > 0 && height > 0 ? new Bitmap(width, height, PixelFormat.Format32bppArgb) : null;
-        }
-
-        /// <summary>
-        /// Returns the largest font that will fit all of the text passed across into the rectangle specified.
-        /// </summary>
-        /// <param name="fontFamily"></param>
-        /// <param name="fontStyle"></param>
-        /// <param name="startSize"></param>
-        /// <param name="graphics"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        private Font GetFontForRectangle(string fontFamily, FontStyle fontStyle, float startSize, Graphics graphics, float width, float height, string text)
-        {
-            Font result = null;
-
-            float pointSize = startSize;
-            bool fits = false;
-            do {
-                result = _FontCache.BuildFont(fontFamily, pointSize, fontStyle, GraphicsUnit.Point);
-                SizeF size = graphics.MeasureString(text, result, new PointF(0, 0), StringFormat.GenericTypographic);
-                fits = pointSize <= 4f || (size.Width <= width && size.Height <= height);
-                if(!fits) pointSize -= 0.25f;
-            } while(!fits);
-
-            return result;
+            return width > 0 && height > 0
+                ? _ImageFile.Create(width, height)
+                : null;
         }
 
         /// <summary>
@@ -328,9 +334,12 @@ namespace VirtualRadar.WebSite
         /// <param name="tempImage"></param>
         /// <param name="newImage"></param>
         /// <returns></returns>
-        public Image UseImage(Image tempImage, Image newImage)
+        public IImage UseImage(IImage tempImage, IImage newImage)
         {
-            if(tempImage != null && !Object.ReferenceEquals(tempImage, newImage)) tempImage.Dispose();
+            if(tempImage != null && !Object.ReferenceEquals(tempImage, newImage)) {
+                tempImage.Dispose();
+            }
+
             return newImage;
         }
     }

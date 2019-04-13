@@ -151,6 +151,7 @@
     <Compile Include="Drawing\IPen.cs" />
     <Compile Include="Drawing\IPenFactory.cs" />
     <Compile Include="Drawing\Point.cs" />
+    <Compile Include="Drawing\RectangleF.cs" />
     <Compile Include="Drawing\ResizeMode.cs" />
     <Compile Include="Drawing\Size.cs" />
     <Compile Include="EventHelperException.cs" />
