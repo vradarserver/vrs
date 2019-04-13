@@ -13,12 +13,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Drawing
 {
     /// <summary>
     /// Font handling methods.
     /// </summary>
+    [Singleton]
     public interface IFontFactory
     {
         /// <summary>

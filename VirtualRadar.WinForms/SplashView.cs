@@ -17,7 +17,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using VirtualRadar.Localisation;
-using VirtualRadar.Resources;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.Presenter;
 using InterfaceFactory;
@@ -169,8 +168,8 @@ namespace VirtualRadar.WinForms
             if(!DesignMode) {
                 Localise.Form(this);
 
-                pictureBoxLogo.Image = Images.Logo128x128;
-                Icon = Images.ApplicationIcon;
+                pictureBoxLogo.Image = ResourceImages.Logo128x128;
+                Icon = ResourceImages.ApplicationIcon;
                 labelApplicationTitle.Text = "";
                 labelApplicationVersion.Text = "";
                 labelProgressText.Text = "";

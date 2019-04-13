@@ -20,7 +20,6 @@ using System.Text;
 using System.Windows.Forms;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.View;
-using VirtualRadar.Resources;
 
 namespace VirtualRadar.WinForms.Controls
 {
@@ -307,9 +306,9 @@ namespace VirtualRadar.WinForms.Controls
                 buttonAdd.Left = buttonEdit.Left + gap;
                 buttonDelete.Left = buttonAdd.Left + gap;
 
-                buttonEdit.Image = Images.Edit16x16;
-                buttonAdd.Image = Images.Add16x16;
-                buttonDelete.Image = Images.Cancel16x16;
+                buttonEdit.Image = ResourceImages.Edit16x16;
+                buttonAdd.Image = ResourceImages.Add16x16;
+                buttonDelete.Image = ResourceImages.Cancel16x16;
                 buttonAdd.Text = buttonDelete.Text = "";
 
                 if(HideAllButList) {

@@ -546,13 +546,13 @@ namespace VirtualRadar.Owin.Middleware
                 result = _AircraftPictureManager.LoadPicture(_AutoConfigPictureFolderCache.DirectoryCache, icao, registration);
                 if(result != null) {
                     int newWidth = -1, newHeight = -1, minWidth = -1;
-                    var resizeMode = ResizeImageMode.Stretch;
+                    var resizeMode = ResizeMode.Stretch;
                     var preferSpeed = false;
                     switch(standardSize) {
                         case StandardWebSiteImageSize.IPadDetail:           newWidth = 680; break;
                         case StandardWebSiteImageSize.IPhoneDetail:         newWidth = 260; break;
                         case StandardWebSiteImageSize.PictureDetail:        newWidth = 350; minWidth = 350; break;
-                        case StandardWebSiteImageSize.PictureListThumbnail: newWidth = 60; newHeight = 40; resizeMode = ResizeImageMode.Centre; break;
+                        case StandardWebSiteImageSize.PictureListThumbnail: newWidth = 60; newHeight = 40; resizeMode = ResizeMode.Centre; break;
                         case StandardWebSiteImageSize.BaseStation:          newWidth = 200; newHeight = 133; break;
                     }
                     if(width != null) newWidth = width.Value;
@@ -565,7 +565,7 @@ namespace VirtualRadar.Owin.Middleware
                             newHeight = (int)(((double)newWidth / ((double)result.Width / (double)result.Height)) + 0.5);
                         }
 
-                        var transparentBrush = Factory.ResolveSingleton<IBrushFactory>().CreateTransparentBrush();
+                        var transparentBrush = Factory.ResolveSingleton<IBrushFactory>().Transparent;
                         result = _Graphics.UseImage(result, _Graphics.ResizeBitmap(result, newWidth, newHeight, resizeMode, transparentBrush, preferSpeed));
                     }
                 }

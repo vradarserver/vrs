@@ -17,7 +17,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using VirtualRadar.Localisation;
-using VirtualRadar.Resources;
 using VirtualRadar.Interface.View;
 using VirtualRadar.WinForms.PortableBinding;
 using VirtualRadar.Interface.Settings;
@@ -36,7 +35,7 @@ namespace VirtualRadar.WinForms.SettingPage
         /// </summary>
         public class Summary : PageSummary
         {
-            private static Image _PageIcon = Images.Gear16x16;
+            private static Image _PageIcon = ResourceImages.Gear16x16;
 
             /// <summary>
             /// See base docs.

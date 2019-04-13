@@ -24,10 +24,7 @@ using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
 using VirtualRadar.Interface;
 using VirtualRadar.WinForms.SettingPage;
-using VirtualRadar.Resources;
-using System.Collections.Specialized;
 using System.Collections;
-using System.Linq.Expressions;
 using VirtualRadar.Interface.PortableBinding;
 
 namespace VirtualRadar.WinForms
@@ -810,7 +807,7 @@ namespace VirtualRadar.WinForms
         {
             if(pageSummary.TreeNode != null) {
                 var title =     pageSummary.PageTitle ?? "";
-                var icon =      pageSummary.PageIcon ?? Images.Transparent_16x16;
+                var icon =      pageSummary.PageIcon ?? ResourceImages.Transparent_16x16;
                 var iconIndex = _ImageList.AddImage(icon);
                 var colour =    pageSummary.PageEnabled ? treeViewPagePicker.ForeColor : SystemColors.GrayText;
 

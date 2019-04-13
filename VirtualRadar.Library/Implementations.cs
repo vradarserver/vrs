@@ -33,6 +33,7 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.BaseStation.IBaseStationMessageCompressor, BaseStation.BaseStationMessageCompressor>();
             factory.Register<VirtualRadar.Interface.BaseStation.IBaseStationMessageTranslator, BaseStation.BaseStationMessageTranslator>();
             factory.Register<VirtualRadar.Interface.BaseStation.IRawMessageTranslator, BaseStation.RawMessageTranslator>();
+            factory.Register<VirtualRadar.Interface.Drawing.IBrushFactory, Drawing.BrushFactory>();
             factory.Register<VirtualRadar.Interface.Drawing.IFontFactory, Drawing.FontFactory>();
             factory.Register<VirtualRadar.Interface.Drawing.IImageFile, Drawing.ImageFile>();
             factory.Register<VirtualRadar.Interface.Drawing.IPenFactory, Drawing.PenFactory>();

@@ -259,6 +259,7 @@
     <Compile Include="PortableBinding\ValueBinder.cs" />
     <Compile Include="PortableBinding\TextBoxStringBinder.cs" />
     <Compile Include="PortableBinding\ValueFromListBinder.cs" />
+    <Compile Include="ResourceImages.cs" />
     <Compile Include="SettingPage\CombinedFeed.cs" />
     <Compile Include="SettingPage\Page.cs">
       <SubType>UserControl</SubType>

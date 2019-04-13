@@ -16,9 +16,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using VirtualRadar.Resources;
 using VirtualRadar.Interface.Settings;
-using VirtualRadar.WinForms.Controls;
 using VirtualRadar.Interface;
 using System.IO.Ports;
 using VirtualRadar.Interface.View;
@@ -40,7 +38,7 @@ namespace VirtualRadar.WinForms.SettingPage
         /// </summary>
         public class Summary : PageSummary
         {
-            private static Image _PageIcon = Images.Radio16x16;
+            private static Image _PageIcon = ResourceImages.Radio16x16;
 
             /// <summary>
             /// See base docs.
@@ -256,8 +254,8 @@ namespace VirtualRadar.WinForms.SettingPage
         protected override void OnLoad(EventArgs e)
         {
             if(!DesignMode) {
-                buttonWizard.Image = Images.Wizard16x16;
-                buttonTestConnection.Image = Images.Test16x16;
+                buttonWizard.Image = ResourceImages.Wizard16x16;
+                buttonTestConnection.Image = ResourceImages.Test16x16;
 
                 accessControl.AlignmentFieldLeftPosition = textBoxAddress.Left - 5;
 

@@ -22,7 +22,6 @@ using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 using System.Net.Sockets;
 using System.Net;
-using VirtualRadar.Resources;
 using VirtualRadar.Localisation;
 using VirtualRadar.Interface.View;
 
@@ -90,7 +89,7 @@ namespace VirtualRadar.WinForms
             if(!DesignMode) {
                 Localise.Form(this);
 
-                pictureBoxLogo.Image = Images.Radio48x48;
+                pictureBoxLogo.Image = ResourceImages.Radio48x48;
 
                 Answers = new ReceiverConfigurationWizardAnswers() {
                     ConnectionType =        ConnectionType.TCP,
