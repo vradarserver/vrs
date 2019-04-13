@@ -24,8 +24,16 @@ namespace VirtualRadar.WebSite
     /// </summary>
     class WebSiteGraphics : IWebSiteGraphics
     {
-        private VrsDrawing.IImageFile   _ImageFile;
-        private VrsDrawing.IPenFactory  _PenFactory;
+        private VrsDrawing.IImageFile       _ImageFile;
+        private VrsDrawing.IPenFactory      _PenFactory;
+        private VrsDrawing.IBrushFactory    _BrushFactory;
+        private VrsDrawing.IFontFactory     _FontFactory;
+
+        private VrsDrawing.FontStyle        _MarkerTextFontStyle = VrsDrawing.FontStyle.Bold;
+        private VrsDrawing.IFontFamily      _MarkerTextFontFamily;
+        private VrsDrawing.IPen             _MarkerTextOutlinePen;
+        private VrsDrawing.IPen             _MarkerTextOutlinePenHiDpi;
+        private VrsDrawing.IBrush           _MarkerTextFillBrush;
 
         /// <summary>
         /// Creates a new object.
@@ -34,6 +42,26 @@ namespace VirtualRadar.WebSite
         {
             _ImageFile = Factory.ResolveSingleton<VrsDrawing.IImageFile>();
             _PenFactory = Factory.ResolveSingleton<VrsDrawing.IPenFactory>();
+            _BrushFactory = Factory.ResolveSingleton<VrsDrawing.IBrushFactory>();
+            _FontFactory = Factory.ResolveSingleton<VrsDrawing.IFontFactory>();
+
+            _MarkerTextOutlinePen =      _PenFactory.CreatePen(0, 0, 0, 222, 4.0F);
+            _MarkerTextOutlinePenHiDpi = _PenFactory.CreatePen(0, 0, 0, 222, 6.0F);
+            _MarkerTextFillBrush =       _BrushFactory.CreateBrush(255, 255, 255, 255);
+
+            _MarkerTextFontFamily = _FontFactory.GetFontFamilyOrFallback(
+                _MarkerTextFontStyle,
+                "Microsoft Sans Serif",
+                "MS Reference Sans Serif",
+                "Verdana",
+                "Tahoma",
+                "Roboto",
+                "Droid Sans",
+                "MS Sans Serif",
+                "Helvetica",
+                "Sans Serif",
+                "Sans"
+            );
         }
 
         /// <summary>
@@ -225,32 +253,33 @@ namespace VirtualRadar.WebSite
             var lineHeight =     isHighDpi ? 24f : 12f;
             var topOffset =      5f;
             var startPointSize = isHighDpi ? 20f : 10f;
-            var haloMod =        isHighDpi ? 6F : 4F;
-            var haloTrans =      (byte)220;
-            var left =           centreText ? ((float)image.Width / 2.0F) : haloMod / 2;
+            var outlinePen =     isHighDpi ? _MarkerTextOutlinePenHiDpi : _MarkerTextOutlinePen;
+            var left =           centreText ? ((float)image.Width / 2.0F) : outlinePen.StrokeWidth / 2.0F;
             var top =            (image.Height - topOffset) - (lines.Count * lineHeight);
+            var width =          Math.Max(0F, image.Width - outlinePen.StrokeWidth);
 
-            var options = new TextGraphicsOptions(enableAntialiasing: true) {
-                HorizontalAlignment = centreText ? HorizontalAlignment.Center : HorizontalAlignment.Left,
-                ApplyKerning = true,
-            };
+            return _ImageFile.CloneAndDraw(
+                image,
+                drawing => {
+                    var lineTop = top;
+                    foreach(var line in lines) {
+                        var fontAndText = _FontFactory.GetFontForRectangle(_MarkerTextFontFamily, _MarkerTextFontStyle, startPointSize, 6.0F, width, lineHeight * 2F, line);
 
-            return image.Clone(context => {
+                        drawing.DrawText(
+                            fontAndText.Text,
+                            fontAndText.Font,
+                            _MarkerTextFillBrush,
+                            _MarkerTextOutlinePen,
+                            left,
+                            lineTop,
+                            centreText ? VrsDrawing.HorizontalAlignment.Centre : VrsDrawing.HorizontalAlignment.Left,
+                            preferSpeedOverQuality: false
+                        );
 
-                var whiteBrush = new SolidBrush<Rgba32>(Rgba32.White);
-                var shadowPen =  new Pen<Rgba32>(new Rgba32(0, 0, 0, haloTrans), haloMod);
-
-                float lineTop = top;
-                foreach(string line in lines) {
-                    var fontAndText = GetFontForRectangle(fontFamily, fontStyle, startPointSize, Math.Max(0F, image.Width - haloMod), lineHeight * 2f, line);
-                    
-                    var text = fontAndText.Text.ToString();
-                    context.DrawText(options, text, fontAndText.Font, shadowPen, new PointF(left, lineTop));
-                    context.DrawText(options, text, fontAndText.Font, whiteBrush, new PointF(left, lineTop));
-
-                    lineTop += lineHeight;
+                        lineTop += lineHeight;
+                    }
                 }
-            });
+            );
         }
 
         /// <summary>

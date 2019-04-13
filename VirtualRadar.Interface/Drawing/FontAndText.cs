@@ -13,24 +13,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
-using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Library.Drawing
+namespace VirtualRadar.Interface.Drawing
 {
     /// <summary>
-    /// Default implementation of <see cref="VrsDrawing.IPen"/>.
+    /// A font and some text.
     /// </summary>
-    class PenWrapper : VrsDrawing.IPen
+    public class FontAndText
     {
-        public IPen<Rgba32> NativePen { get; }
+        /// <summary>
+        /// Gets the font.
+        /// </summary>
+        public IFont Font { get; }
 
-        public float StrokeWidth => NativePen.StrokeWidth;
+        /// <summary>
+        /// Gets the text. If this is the result from a call to <see cref="IFontFactory.GetFontForRectangle"/> then
+        /// the text might be truncated.
+        /// </summary>
+        public string Text { get; }
 
-        public PenWrapper(IPen<Rgba32> pen)
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="font"></param>
+        /// <param name="text"></param>
+        public FontAndText(IFont font, string text)
         {
-            NativePen = pen;
+            Font = font;
+            Text = text;
         }
     }
 }

@@ -13,24 +13,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
-using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Library.Drawing
+namespace VirtualRadar.Interface.Drawing
 {
     /// <summary>
-    /// Default implementation of <see cref="VrsDrawing.IPen"/>.
+    /// An enumeration of horizontal alignments.
     /// </summary>
-    class PenWrapper : VrsDrawing.IPen
+    public enum HorizontalAlignment
     {
-        public IPen<Rgba32> NativePen { get; }
+        Left,
 
-        public float StrokeWidth => NativePen.StrokeWidth;
+        Centre,
 
-        public PenWrapper(IPen<Rgba32> pen)
-        {
-            NativePen = pen;
-        }
+        Right,
     }
 }

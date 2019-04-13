@@ -21,5 +21,9 @@ namespace VirtualRadar.Interface.Drawing
     /// </summary>
     public interface IPen
     {
+        /// <summary>
+        /// Gets the stroke width in pixels of the pen.
+        /// </summary>
+        float StrokeWidth { get; }
     }
 }

@@ -40,12 +40,12 @@ namespace VirtualRadar.Library.Drawing
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public int Width => Size?.Width ?? 0;
+        public int Width => Size.Width;
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public int Height => Size?.Height ?? 0;
+        public int Height => Size.Height;
 
         /// <summary>
         /// Creates a new object.

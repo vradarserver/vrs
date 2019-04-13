@@ -13,24 +13,49 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
+using SixLabors.Fonts;
 using VrsDrawing = VirtualRadar.Interface.Drawing;
 
 namespace VirtualRadar.Library.Drawing
 {
     /// <summary>
-    /// Default implementation of <see cref="VrsDrawing.IPen"/>.
+    /// ImageSharp implementation of <see cref="VrsDrawing.IFont"/>.
     /// </summary>
-    class PenWrapper : VrsDrawing.IPen
+    class FontWrapper : VrsDrawing.IFont
     {
-        public IPen<Rgba32> NativePen { get; }
+        /// <summary>
+        /// The ImageSharp font that's being wrapped.
+        /// </summary>
+        public Font NativeFont { get; }
 
-        public float StrokeWidth => NativePen.StrokeWidth;
-
-        public PenWrapper(IPen<Rgba32> pen)
+        private VrsDrawing.IFontFamily _FontFamily;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public VrsDrawing.IFontFamily FontFamily
         {
-            NativePen = pen;
+            get {
+                var result = _FontFamily;
+                if(result == null) {
+                    result = new FontFamilyWrapper(NativeFont.Family);
+                    _FontFamily = result;
+                }
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public float PointSize => NativeFont.Size;
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="font"></param>
+        public FontWrapper(Font font)
+        {
+            NativeFont = font;
         }
     }
 }

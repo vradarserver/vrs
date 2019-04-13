@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SixLabors.Fonts;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.Primitives;
 using VrsDrawing = VirtualRadar.Interface.Drawing;
@@ -24,15 +25,73 @@ namespace VirtualRadar.Library.Drawing
     /// </summary>
     static class Convert
     {
-        public static Size ToImageSharpSize(VrsDrawing.Size vrsSize) => new Size(vrsSize.Width, vrsSize.Height);
+        //----------------------------------------
+        // FONT STYLE
+        //----------------------------------------
 
-        public static SizeF ToImageSharpSizeF(VrsDrawing.Size vrsSize) => new SizeF(vrsSize.Width, vrsSize.Height);
+        public static FontStyle ToImageSharpFontStyle(VrsDrawing.FontStyle vrsFontStyle)
+        {
+            switch(vrsFontStyle) {
+                case VrsDrawing.FontStyle.Bold:         return FontStyle.Bold;
+                case VrsDrawing.FontStyle.BoldItalic:   return FontStyle.BoldItalic;
+                case VrsDrawing.FontStyle.Italic:       return FontStyle.Italic;
+                case VrsDrawing.FontStyle.Normal:       return FontStyle.Regular;
+                default:                                throw new NotImplementedException();
+            }
+        }
+
+        public static VrsDrawing.FontStyle ToVrsFontStyle(FontStyle isFontStyle)
+        {
+            switch(isFontStyle) {
+                case FontStyle.Bold:        return VrsDrawing.FontStyle.Bold;
+                case FontStyle.BoldItalic:  return VrsDrawing.FontStyle.BoldItalic;
+                case FontStyle.Italic:      return VrsDrawing.FontStyle.Italic;
+                case FontStyle.Regular:     return VrsDrawing.FontStyle.Normal;
+                default:                    throw new NotImplementedException();
+            }
+        }
+
+        //----------------------------------------
+        // HORIZONTAL ALIGNMENT
+        //----------------------------------------
+
+        public static HorizontalAlignment ToImageSharpHorizontalAlignment(VrsDrawing.HorizontalAlignment vrsHorizontalAlignment)
+        {
+            switch(vrsHorizontalAlignment) {
+                case VrsDrawing.HorizontalAlignment.Centre: return HorizontalAlignment.Center;
+                case VrsDrawing.HorizontalAlignment.Left:   return HorizontalAlignment.Left;
+                case VrsDrawing.HorizontalAlignment.Right:  return HorizontalAlignment.Right;
+                default:                                    throw new NotImplementedException();
+            }
+        }
+
+        public static VrsDrawing.HorizontalAlignment  ToVrsHorizontalAlignment(HorizontalAlignment isHorizontalAlignment)
+        {
+            switch(isHorizontalAlignment) {
+                case HorizontalAlignment.Center:    return VrsDrawing.HorizontalAlignment.Centre;
+                case HorizontalAlignment.Left:      return VrsDrawing.HorizontalAlignment.Left;
+                case HorizontalAlignment.Right:     return VrsDrawing.HorizontalAlignment.Right;
+                default:                            throw new NotImplementedException();
+            }
+        }
+
+        //----------------------------------------
+        // POINT
+        //----------------------------------------
 
         public static Point ToImageSharpPoint(VrsDrawing.Point vrsPoint) => new Point(vrsPoint.X, vrsPoint.Y);
 
         public static PointF ToImageSharpPointF(VrsDrawing.Point vrsPoint) => new PointF(vrsPoint.X, vrsPoint.Y);
 
         public static VrsDrawing.Point ToVrsPoint(Point isPoint) => new VrsDrawing.Point(isPoint.X, isPoint.Y);
+
+        //----------------------------------------
+        // SIZE
+        //----------------------------------------
+
+        public static Size ToImageSharpSize(VrsDrawing.Size vrsSize) => new Size(vrsSize.Width, vrsSize.Height);
+
+        public static SizeF ToImageSharpSizeF(VrsDrawing.Size vrsSize) => new SizeF(vrsSize.Width, vrsSize.Height);
 
         public static VrsDrawing.Size ToVrsSize(Size isSize) => new VrsDrawing.Size(isSize.Width, isSize.Height);
     }

@@ -80,5 +80,34 @@ namespace VirtualRadar.Library.Drawing
         {
             NativeContext.Rotate(degrees);
         }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="font"></param>
+        /// <param name="fillBrush"></param>
+        /// <param name="outlinePen"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="alignment"></param>
+        /// <param name="preferSpeedOverQuality"></param>
+        public void DrawText(string text, VrsDrawing.IFont font, VrsDrawing.IBrush fillBrush, VrsDrawing.IPen outlinePen, float x, float y, VrsDrawing.HorizontalAlignment alignment, bool preferSpeedOverQuality = true)
+        {
+            if(font is FontWrapper fontWrapper) {
+                var options = new TextGraphicsOptions(enableAntialiasing: !preferSpeedOverQuality) {
+                    HorizontalAlignment =   Convert.ToImageSharpHorizontalAlignment(alignment),
+                    ApplyKerning =          !preferSpeedOverQuality,
+                };
+                var location = new PointF(x, y);
+
+                if(outlinePen is PenWrapper outlinePenWrapper) {
+                    NativeContext.DrawText(options, text, fontWrapper.NativeFont, outlinePenWrapper.NativePen, location);
+                }
+                if(fillBrush is BrushWrapper fillBrushWrapper) {
+                    NativeContext.DrawText(options, text, fontWrapper.NativeFont, fillBrushWrapper.NativeBrush, location);
+                }
+            }
+        }
     }
 }

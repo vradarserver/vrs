@@ -136,9 +136,15 @@
     <Compile Include="Database\IBaseStationDatabaseSQLite.cs" />
     <Compile Include="Database\IBaseStationDatabaseSqlServer.cs" />
     <Compile Include="Database\OrdinalAttribute.cs" />
+    <Compile Include="Drawing\FontAndText.cs" />
+    <Compile Include="Drawing\FontStyle.cs" />
+    <Compile Include="Drawing\HorizontalAlignment.cs" />
     <Compile Include="Drawing\IBrush.cs" />
     <Compile Include="Drawing\IBrushFactory.cs" />
     <Compile Include="Drawing\IDrawing.cs" />
+    <Compile Include="Drawing\IFont.cs" />
+    <Compile Include="Drawing\IFontFactory.cs" />
+    <Compile Include="Drawing\IFontFamily.cs" />
     <Compile Include="Drawing\IImage.cs" />
     <Compile Include="Drawing\IImageFile.cs" />
     <Compile Include="Drawing\ImageFormat.cs" />

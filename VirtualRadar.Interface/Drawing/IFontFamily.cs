@@ -13,24 +13,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
-using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Library.Drawing
+namespace VirtualRadar.Interface.Drawing
 {
     /// <summary>
-    /// Default implementation of <see cref="VrsDrawing.IPen"/>.
+    /// Describes a font family.
     /// </summary>
-    class PenWrapper : VrsDrawing.IPen
+    public interface IFontFamily
     {
-        public IPen<Rgba32> NativePen { get; }
+        /// <summary>
+        /// Gets the name of the font family.
+        /// </summary>
+        string Name { get; }
 
-        public float StrokeWidth => NativePen.StrokeWidth;
-
-        public PenWrapper(IPen<Rgba32> pen)
-        {
-            NativePen = pen;
-        }
+        /// <summary>
+        /// Gets a collection of styles that the font family comes in.
+        /// </summary>
+        IEnumerable<FontStyle> AvailableStyles { get; }
     }
 }

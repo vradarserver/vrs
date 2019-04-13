@@ -36,5 +36,22 @@ namespace VirtualRadar.Library.Drawing
         {
             Transparent = new BrushWrapper(new SolidBrush<Rgba32>(Rgba32.Transparent));
         }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="red"></param>
+        /// <param name="green"></param>
+        /// <param name="blue"></param>
+        /// <param name="alpha"></param>
+        /// <returns></returns>
+        public VrsDrawing.IBrush CreateBrush(int red, int green, int blue, int alpha)
+        {
+            return new BrushWrapper(
+                new SolidBrush<Rgba32>(
+                    new Rgba32(red, green, blue, alpha)
+                )
+            );
+        }
     }
 }

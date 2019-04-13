@@ -17,45 +17,46 @@ using System.Threading.Tasks;
 namespace VirtualRadar.Interface.Drawing
 {
     /// <summary>
-    /// The interface for an object that can perform drawing operations on an image.
+    /// Font handling methods.
     /// </summary>
-    public interface IDrawing
+    public interface IFontFactory
     {
         /// <summary>
-        /// Draws an image at the point passed across. The image is not resized.
+        /// Returns a collection of every installed font.
         /// </summary>
-        /// <param name="image"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        void DrawImage(IImage image, int x, int y);
+        /// <returns></returns>
+        IEnumerable<IFontFamily> GetInstalledFonts();
 
         /// <summary>
-        /// Draws a line between two points using the supplied pen.
+        /// Returns the first font that matches the font style and family names passed across, with earlier
+        /// names preferred over later. If nothing matches then a font family is chosen at random.
         /// </summary>
-        /// <param name="pen"></param>
-        /// <param name="fromX"></param>
-        /// <param name="fromY"></param>
-        /// <param name="toX"></param>
-        /// <param name="toY"></param>
-        void DrawLine(IPen pen, int fromX, int fromY, int toX, int toY);
+        /// <param name="fontStyle"></param>
+        /// <param name="fontFamilyNames"></param>
+        /// <returns></returns>
+        IFontFamily GetFontFamilyOrFallback(FontStyle fontStyle, params string[] fontFamilyNames);
 
         /// <summary>
-        /// Rotates the drawing N degrees clockwise around the centre point.
+        /// Creates and returns a font matching the parameters passed across.
         /// </summary>
-        /// <param name="degrees"></param>
-        void RotateAroundCentre(float degrees);
+        /// <param name="fontFamily"></param>
+        /// <param name="pointSize"></param>
+        /// <param name="fontStyle"></param>
+        /// <returns></returns>
+        IFont CreateFont(IFontFamily fontFamily, float pointSize, FontStyle fontStyle);
 
         /// <summary>
-        /// Draws text onto the image.
+        /// Returns a font that is at most <paramref name="largestPointSize"/> points in size but has been sized to fit within
+        /// the boundaries passed across. If the text will not fit at the smallest allowable point size then it is truncated.
         /// </summary>
-        /// <param name="text">The text to draw.</param>
-        /// <param name="font">The font to use.</param>
-        /// <param name="fillBrush">The fill brush - pass null for no fill.</param>
-        /// <param name="outlinePen">The outline pen - pass null for no outline.</param>
-        /// <param name="x">Where to start drawing the text.</param>
-        /// <param name="y">Where to start drawing the text.</param>
-        /// <param name="alignment">How to align the text at the draw coordinate.</param>
-        /// <param name="preferSpeedOverQuality">A hint to the library as to whether speed should be preferred over quality.</param>
-        void DrawText(string text, IFont font, IBrush fillBrush, IPen outlinePen, float x, float y, HorizontalAlignment alignment, bool preferSpeedOverQuality = true);
+        /// <param name="fontFamily"></param>]
+        /// <param name="fontStyle"></param>
+        /// <param name="largestPointSize"></param>
+        /// <param name="smallestPointSize"></param>
+        /// <param name="constrainToWidth"></param>
+        /// <param name="constrainToHeight"></param>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        FontAndText GetFontForRectangle(IFontFamily fontFamily, FontStyle fontStyle, float largestPointSize, float smallestPointSize, float constrainToWidth, float constrainToHeight, string text);
     }
 }

@@ -27,5 +27,15 @@ namespace VirtualRadar.Interface.Drawing
         /// Gets a transparent brush.
         /// </summary>
         IBrush Transparent { get; }
+
+        /// <summary>
+        /// Creates a solid colour brush.
+        /// </summary>
+        /// <param name="red"></param>
+        /// <param name="green"></param>
+        /// <param name="blue"></param>
+        /// <param name="alpha"></param>
+        /// <returns></returns>
+        IBrush CreateBrush(int red, int green, int blue, int alpha);
     }
 }

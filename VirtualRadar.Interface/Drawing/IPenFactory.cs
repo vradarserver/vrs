@@ -32,5 +32,16 @@ namespace VirtualRadar.Interface.Drawing
         /// Returns the stock light grey pen.
         /// </summary>
         IPen LightGray { get; }
+
+        /// <summary>
+        /// Creates a solid colour pen.
+        /// </summary>
+        /// <param name="red"></param>
+        /// <param name="green"></param>
+        /// <param name="blue"></param>
+        /// <param name="alpha"></param>
+        /// <param name="strokeWidth"></param>
+        /// <returns></returns>
+        IPen CreatePen(int red, int green, int blue, int alpha, float strokeWidth);
     }
 }

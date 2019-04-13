@@ -32,5 +32,24 @@ namespace VirtualRadar.Library.Drawing
             Black =     new PenWrapper(new Pen<Rgba32>(new Rgba32(0,    0,      0),     1.0F));
             LightGray = new PenWrapper(new Pen<Rgba32>(new Rgba32(211,  211,    211),   1.0F));
         }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="red"></param>
+        /// <param name="green"></param>
+        /// <param name="blue"></param>
+        /// <param name="alpha"></param>
+        /// <param name="strokeWidth"></param>
+        /// <returns></returns>
+        public VrsDrawing.IPen CreatePen(int red, int green, int blue, int alpha, float strokeWidth)
+        {
+            return new PenWrapper(
+                new Pen<Rgba32>(
+                    new Rgba32(red, green, blue, alpha),
+                    strokeWidth
+                )
+            );
+        }
     }
 }
