@@ -165,9 +165,9 @@ namespace VirtualRadar.Library
                     result = buildImage();
 
                     cacheEntry = new CacheEntry() {
-                        Image = result.Clone(),
-                        LastFetchedUtc = _Clock.UtcNow,
-                        NormalisedFileName = normalisedName,
+                        Image =                 result?.Clone(),
+                        LastFetchedUtc =        _Clock.UtcNow,
+                        NormalisedFileName =    normalisedName,
                     };
 
                     lock(_SyncLock) {
