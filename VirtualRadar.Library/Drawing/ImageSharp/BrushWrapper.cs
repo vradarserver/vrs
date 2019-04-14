@@ -13,49 +13,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SixLabors.Fonts;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Library.Drawing
+namespace VirtualRadar.Library.Drawing.ImageSharp
 {
-    /// <summary>
-    /// Wrapper around an ImageSharp font family object that exposes it as a VRS font family.
-    /// </summary>
-    class FontFamilyWrapper : VrsDrawing.IFontFamily
+    class BrushWrapper : VrsDrawing.IBrush
     {
-        /// <summary>
-        /// The ImageSharp font family that's being wrapped.
-        /// </summary>
-        public FontFamily NativeFontFamily { get; }
+        public IBrush<Rgba32> NativeBrush { get; }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public string Name => NativeFontFamily.Name;
-
-        private VrsDrawing.FontStyle[] _AvailableStyles;
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public IEnumerable<VrsDrawing.FontStyle> AvailableStyles
+        public BrushWrapper(IBrush<Rgba32> brush)
         {
-            get {
-                var result = _AvailableStyles;
-                if(result == null) {
-                    result = NativeFontFamily.AvailableStyles.Select(r => Convert.ToVrsFontStyle(r)).ToArray();
-                    _AvailableStyles = result;
-                }
-                return result;
-            }
-        }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        /// <param name="fontFamily"></param>
-        public FontFamilyWrapper(FontFamily fontFamily)
-        {
-            NativeFontFamily = fontFamily;
+            NativeBrush = brush;
         }
     }
 }

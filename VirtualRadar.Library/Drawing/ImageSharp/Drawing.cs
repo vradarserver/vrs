@@ -18,7 +18,7 @@ using SixLabors.ImageSharp.Processing;
 using SixLabors.Primitives;
 using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Library.Drawing
+namespace VirtualRadar.Library.Drawing.ImageSharp
 {
     class Drawing : VrsDrawing.IDrawing
     {

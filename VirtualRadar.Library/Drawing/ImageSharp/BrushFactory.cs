@@ -13,49 +13,45 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SixLabors.Fonts;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Library.Drawing
+namespace VirtualRadar.Library.Drawing.ImageSharp
 {
     /// <summary>
-    /// ImageSharp implementation of <see cref="VrsDrawing.IFont"/>.
+    /// ImageSharp implementation of <see cref="IBrushFactory"/>.
     /// </summary>
-    class FontWrapper : VrsDrawing.IFont
+    class BrushFactory : VrsDrawing.IBrushFactory
     {
-        /// <summary>
-        /// The ImageSharp font that's being wrapped.
-        /// </summary>
-        public Font NativeFont { get; }
-
-        private VrsDrawing.IFontFamily _FontFamily;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public VrsDrawing.IFontFamily FontFamily
+        public VrsDrawing.IBrush Transparent { get; }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        public BrushFactory()
         {
-            get {
-                var result = _FontFamily;
-                if(result == null) {
-                    result = new FontFamilyWrapper(NativeFont.Family);
-                    _FontFamily = result;
-                }
-                return result;
-            }
+            Transparent = new BrushWrapper(new SolidBrush<Rgba32>(Rgba32.Transparent));
         }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public float PointSize => NativeFont.Size;
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        /// <param name="font"></param>
-        public FontWrapper(Font font)
+        /// <param name="red"></param>
+        /// <param name="green"></param>
+        /// <param name="blue"></param>
+        /// <param name="alpha"></param>
+        /// <returns></returns>
+        public VrsDrawing.IBrush CreateBrush(int red, int green, int blue, int alpha)
         {
-            NativeFont = font;
+            return new BrushWrapper(
+                new SolidBrush<Rgba32>(
+                    new Rgba32(red, green, blue, alpha)
+                )
+            );
         }
     }
 }

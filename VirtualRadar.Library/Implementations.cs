@@ -33,10 +33,10 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.BaseStation.IBaseStationMessageCompressor, BaseStation.BaseStationMessageCompressor>();
             factory.Register<VirtualRadar.Interface.BaseStation.IBaseStationMessageTranslator, BaseStation.BaseStationMessageTranslator>();
             factory.Register<VirtualRadar.Interface.BaseStation.IRawMessageTranslator, BaseStation.RawMessageTranslator>();
-            factory.Register<VirtualRadar.Interface.Drawing.IBrushFactory, Drawing.BrushFactory>();
-            factory.Register<VirtualRadar.Interface.Drawing.IFontFactory, Drawing.FontFactory>();
-            factory.Register<VirtualRadar.Interface.Drawing.IImageFile, Drawing.ImageFile>();
-            factory.Register<VirtualRadar.Interface.Drawing.IPenFactory, Drawing.PenFactory>();
+            factory.Register<VirtualRadar.Interface.Drawing.IBrushFactory, Drawing.ImageSharp.BrushFactory>();
+            factory.Register<VirtualRadar.Interface.Drawing.IFontFactory, Drawing.ImageSharp.FontFactory>();
+            factory.Register<VirtualRadar.Interface.Drawing.IImageFile, Drawing.ImageSharp.ImageFile>();
+            factory.Register<VirtualRadar.Interface.Drawing.IPenFactory, Drawing.ImageSharp.PenFactory>();
             factory.Register<VirtualRadar.Interface.FlightSimulatorX.IFlightSimulatorX, FlightSimulatorX.FlightSimulatorX>();
             factory.Register<VirtualRadar.Interface.Listener.IAircraftListJsonMessageBytesExtractor, Listener.AircraftListJsonMessageBytesExtractor>();
             factory.Register<VirtualRadar.Interface.Listener.IAircraftListJsonMessageConverter, Listener.AircraftListJsonMessageConverter>();

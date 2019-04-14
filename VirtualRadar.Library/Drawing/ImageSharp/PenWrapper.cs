@@ -17,15 +17,20 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Library.Drawing
+namespace VirtualRadar.Library.Drawing.ImageSharp
 {
-    class BrushWrapper : VrsDrawing.IBrush
+    /// <summary>
+    /// Default implementation of <see cref="VrsDrawing.IPen"/>.
+    /// </summary>
+    class PenWrapper : VrsDrawing.IPen
     {
-        public IBrush<Rgba32> NativeBrush { get; }
+        public IPen<Rgba32> NativePen { get; }
 
-        public BrushWrapper(IBrush<Rgba32> brush)
+        public float StrokeWidth => NativePen.StrokeWidth;
+
+        public PenWrapper(IPen<Rgba32> pen)
         {
-            NativeBrush = brush;
+            NativePen = pen;
         }
     }
 }

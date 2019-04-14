@@ -20,7 +20,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Library.Drawing
+namespace VirtualRadar.Library.Drawing.ImageSharp
 {
     /// <summary>
     /// ImageSharp implementation of <see cref="IImageFile"/>.

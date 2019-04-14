@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using SixLabors.Fonts;
 using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Library.Drawing
+namespace VirtualRadar.Library.Drawing.ImageSharp
 {
     /// <summary>
     /// The default ImageSharp implementation of <see cref="VrsDrawing.IFontFactory"/>.

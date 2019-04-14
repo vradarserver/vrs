@@ -13,45 +13,49 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
+using SixLabors.Fonts;
 using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Library.Drawing
+namespace VirtualRadar.Library.Drawing.ImageSharp
 {
     /// <summary>
-    /// ImageSharp implementation of <see cref="IBrushFactory"/>.
+    /// Wrapper around an ImageSharp font family object that exposes it as a VRS font family.
     /// </summary>
-    class BrushFactory : VrsDrawing.IBrushFactory
+    class FontFamilyWrapper : VrsDrawing.IFontFamily
     {
+        /// <summary>
+        /// The ImageSharp font family that's being wrapped.
+        /// </summary>
+        public FontFamily NativeFontFamily { get; }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public VrsDrawing.IBrush Transparent { get; }
+        public string Name => NativeFontFamily.Name;
+
+        private VrsDrawing.FontStyle[] _AvailableStyles;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public IEnumerable<VrsDrawing.FontStyle> AvailableStyles
+        {
+            get {
+                var result = _AvailableStyles;
+                if(result == null) {
+                    result = NativeFontFamily.AvailableStyles.Select(r => Convert.ToVrsFontStyle(r)).ToArray();
+                    _AvailableStyles = result;
+                }
+                return result;
+            }
+        }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public BrushFactory()
+        /// <param name="fontFamily"></param>
+        public FontFamilyWrapper(FontFamily fontFamily)
         {
-            Transparent = new BrushWrapper(new SolidBrush<Rgba32>(Rgba32.Transparent));
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="red"></param>
-        /// <param name="green"></param>
-        /// <param name="blue"></param>
-        /// <param name="alpha"></param>
-        /// <returns></returns>
-        public VrsDrawing.IBrush CreateBrush(int red, int green, int blue, int alpha)
-        {
-            return new BrushWrapper(
-                new SolidBrush<Rgba32>(
-                    new Rgba32(red, green, blue, alpha)
-                )
-            );
+            NativeFontFamily = fontFamily;
         }
     }
 }
