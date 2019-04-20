@@ -26,7 +26,5 @@ namespace VirtualRadar.Interface.Drawing
         Bold,
 
         Italic,
-
-        BoldItalic,
     }
 }

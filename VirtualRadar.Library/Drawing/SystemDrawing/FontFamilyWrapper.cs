@@ -10,33 +10,55 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Interface.Drawing
+namespace VirtualRadar.Library.Drawing.SystemDrawing
 {
     /// <summary>
-    /// Creates brushes.
+    /// Wrapper around an System.Drawing font family.
     /// </summary>
-    [Singleton]
-    public interface IBrushFactory
+    class FontFamilyWrapper : CommonFontFamilyWrapper<FontFamily>
     {
         /// <summary>
-        /// Gets a transparent brush.
+        /// See interface docs.
         /// </summary>
-        IBrush Transparent { get; }
+        public override string Name => NativeFontFamily.Name;
+
+        private VrsDrawing.FontStyle[] _AvailableStyles;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public override IEnumerable<VrsDrawing.FontStyle> AvailableStyles
+        {
+            get {
+                var result = _AvailableStyles;
+                if(result == null) {
+                    var availableStyles = new List<VrsDrawing.FontStyle>();
+                    foreach(VrsDrawing.FontStyle fontStyle in Enum.GetValues(typeof(VrsDrawing.FontStyle))) {
+                        if(NativeFontFamily.IsStyleAvailable(Convert.ToSystemDrawingFontStyle(fontStyle))) {
+                            availableStyles.Add(fontStyle);
+                        }
+                    }
+
+                    result = availableStyles.ToArray();
+                    _AvailableStyles = result;
+                }
+                return result;
+            }
+        }
 
         /// <summary>
-        /// Creates a solid colour brush.
+        /// Creates a new object.
         /// </summary>
-        /// <param name="red"></param>
-        /// <param name="green"></param>
-        /// <param name="blue"></param>
-        /// <param name="alpha"></param>
-        /// <param name="useCache">If true then the result is cached and can be returned in future calls.</param>
-        /// <returns></returns>
-        IBrush CreateBrush(int red, int green, int blue, int alpha, bool useCache);
+        /// <param name="nativeFontFamily"></param>
+        /// <param name="isCached"></param>
+        public FontFamilyWrapper(FontFamily nativeFontFamily, bool isCached) : base(nativeFontFamily, isCached)
+        {
+            ;
+        }
     }
 }

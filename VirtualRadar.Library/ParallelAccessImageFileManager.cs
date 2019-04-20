@@ -12,13 +12,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Interface;
-using System.Drawing;
-using VirtualRadar.Interface.WebSite;
 using InterfaceFactory;
-using System.IO;
-using VirtualRadar.Interface.Owin;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Drawing;
+using VirtualRadar.Interface.Owin;
+using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Library
 {
@@ -113,7 +111,7 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         public Size ImageFileDimensions(string fileName)
         {
-            Size result = Size.Empty;
+            var result = Size.Empty;
             Initialise();
 
             var image = LoadFromFile(fileName);

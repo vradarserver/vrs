@@ -19,7 +19,12 @@ namespace VirtualRadar.Interface.Drawing
     /// <summary>
     /// Represents a brush.
     /// </summary>
-    public interface IBrush
+    public interface IBrush : IDisposable
     {
+        /// <summary>
+        /// Gets a value indicating that the brush is cached. Cached brushes
+        /// cannot be disposed.
+        /// </summary>
+        bool IsCached { get; }
     }
 }

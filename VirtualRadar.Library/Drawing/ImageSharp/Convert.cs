@@ -33,7 +33,6 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
         {
             switch(vrsFontStyle) {
                 case VrsDrawing.FontStyle.Bold:         return FontStyle.Bold;
-                case VrsDrawing.FontStyle.BoldItalic:   return FontStyle.BoldItalic;
                 case VrsDrawing.FontStyle.Italic:       return FontStyle.Italic;
                 case VrsDrawing.FontStyle.Normal:       return FontStyle.Regular;
                 default:                                throw new NotImplementedException();
@@ -44,10 +43,9 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
         {
             switch(isFontStyle) {
                 case FontStyle.Bold:        return VrsDrawing.FontStyle.Bold;
-                case FontStyle.BoldItalic:  return VrsDrawing.FontStyle.BoldItalic;
                 case FontStyle.Italic:      return VrsDrawing.FontStyle.Italic;
                 case FontStyle.Regular:     return VrsDrawing.FontStyle.Normal;
-                default:                    throw new NotImplementedException();
+                default:                    return (VrsDrawing.FontStyle)0x7fffffff;  // there are more ImageSharp font styles than there are VRS font styles - throwing a NotImplemented exception will cause problems
             }
         }
 

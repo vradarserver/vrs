@@ -13,30 +13,67 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Interface.Drawing
+namespace VirtualRadar.Library.Drawing
 {
     /// <summary>
-    /// Creates brushes.
+    /// The base class for <see cref="VrsDrawing.IBrush"/> implementations.
     /// </summary>
-    [Singleton]
-    public interface IBrushFactory
+    /// <typeparam name="T"></typeparam>
+    abstract class CommonBrushWrapper<T> : VrsDrawing.IBrush
     {
         /// <summary>
-        /// Gets a transparent brush.
+        /// Gets the brush that is being wrapped.
         /// </summary>
-        IBrush Transparent { get; }
+        internal T NativeBrush { get; }
 
         /// <summary>
-        /// Creates a solid colour brush.
+        /// See interface.
         /// </summary>
-        /// <param name="red"></param>
-        /// <param name="green"></param>
-        /// <param name="blue"></param>
-        /// <param name="alpha"></param>
-        /// <param name="useCache">If true then the result is cached and can be returned in future calls.</param>
-        /// <returns></returns>
-        IBrush CreateBrush(int red, int green, int blue, int alpha, bool useCache);
+        public bool IsCached { get; }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="nativeBrush"></param>
+        /// <param name="isCached"></param>
+        protected CommonBrushWrapper(T nativeBrush, bool isCached)
+        {
+            NativeBrush = nativeBrush;
+            IsCached = isCached;
+        }
+
+        /// <summary>
+        /// Finalises the object.
+        /// </summary>
+        ~CommonBrushWrapper()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void Dispose()
+        {
+            if(!IsCached) {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+        }
+
+        /// <summary>
+        /// Disposes of or finalises the object.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposing && !IsCached) {
+                if(NativeBrush is IDisposable disposable) {
+                    disposable.Dispose();
+                }
+            }
+        }
     }
 }

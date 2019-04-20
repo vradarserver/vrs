@@ -10,33 +10,24 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Interface.Drawing
+namespace VirtualRadar.Library.Drawing.SystemDrawing
 {
     /// <summary>
-    /// Creates brushes.
+    /// The System.Drawing implementation of <see cref="VrsDrawing.IPen"/>.
     /// </summary>
-    [Singleton]
-    public interface IBrushFactory
+    class PenWrapper : CommonPenWrapper<Pen>
     {
-        /// <summary>
-        /// Gets a transparent brush.
-        /// </summary>
-        IBrush Transparent { get; }
+        public override float StrokeWidth => NativePen.Width;
 
-        /// <summary>
-        /// Creates a solid colour brush.
-        /// </summary>
-        /// <param name="red"></param>
-        /// <param name="green"></param>
-        /// <param name="blue"></param>
-        /// <param name="alpha"></param>
-        /// <param name="useCache">If true then the result is cached and can be returned in future calls.</param>
-        /// <returns></returns>
-        IBrush CreateBrush(int red, int green, int blue, int alpha, bool useCache);
+        public PenWrapper(Pen nativePen, bool isCached) : base(nativePen, isCached)
+        {
+            ;
+        }
     }
 }

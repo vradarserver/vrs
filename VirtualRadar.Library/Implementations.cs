@@ -33,10 +33,6 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.BaseStation.IBaseStationMessageCompressor, BaseStation.BaseStationMessageCompressor>();
             factory.Register<VirtualRadar.Interface.BaseStation.IBaseStationMessageTranslator, BaseStation.BaseStationMessageTranslator>();
             factory.Register<VirtualRadar.Interface.BaseStation.IRawMessageTranslator, BaseStation.RawMessageTranslator>();
-            factory.Register<VirtualRadar.Interface.Drawing.IBrushFactory, Drawing.ImageSharp.BrushFactory>();
-            factory.Register<VirtualRadar.Interface.Drawing.IFontFactory, Drawing.ImageSharp.FontFactory>();
-            factory.Register<VirtualRadar.Interface.Drawing.IImageFile, Drawing.ImageSharp.ImageFile>();
-            factory.Register<VirtualRadar.Interface.Drawing.IPenFactory, Drawing.ImageSharp.PenFactory>();
             factory.Register<VirtualRadar.Interface.FlightSimulatorX.IFlightSimulatorX, FlightSimulatorX.FlightSimulatorX>();
             factory.Register<VirtualRadar.Interface.Listener.IAircraftListJsonMessageBytesExtractor, Listener.AircraftListJsonMessageBytesExtractor>();
             factory.Register<VirtualRadar.Interface.Listener.IAircraftListJsonMessageConverter, Listener.AircraftListJsonMessageConverter>();
@@ -132,6 +128,18 @@ namespace VirtualRadar.Library
             factory.Register<IStatistics, Statistics>();
             factory.Register<ITimer, Timer>();
             factory.Register<IXmlSerialiser, XmlSerialiser>();
+
+            // ImageSharp graphics
+            factory.Register<VirtualRadar.Interface.Drawing.IBrushFactory,  Drawing.ImageSharp.BrushFactory>();
+            factory.Register<VirtualRadar.Interface.Drawing.IFontFactory,   Drawing.ImageSharp.FontFactory>();
+            factory.Register<VirtualRadar.Interface.Drawing.IImageFile,     Drawing.ImageSharp.ImageFile>();
+            factory.Register<VirtualRadar.Interface.Drawing.IPenFactory,    Drawing.ImageSharp.PenFactory>();
+
+            // System.Drawing graphics
+            // factory.Register<VirtualRadar.Interface.Drawing.IBrushFactory,  Drawing.SystemDrawing.BrushFactory>();
+            // factory.Register<VirtualRadar.Interface.Drawing.IFontFactory,   Drawing.SystemDrawing.FontFactory>();
+            // factory.Register<VirtualRadar.Interface.Drawing.IImageFile,     Drawing.SystemDrawing.ImageFile>();
+            // factory.Register<VirtualRadar.Interface.Drawing.IPenFactory,    Drawing.SystemDrawing.PenFactory>();
 
             factory.Register<IFlightSimulatorAircraftList, FlightSimulatorX.FlightSimulatorAircraftList>();
             if(Type.GetType("Mono.Runtime") == null) {

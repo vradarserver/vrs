@@ -44,21 +44,24 @@ namespace VirtualRadar.Interface.Drawing
         /// <param name="fontFamily"></param>
         /// <param name="pointSize"></param>
         /// <param name="fontStyle"></param>
+        /// <param name="useCache"></param>
         /// <returns></returns>
-        IFont CreateFont(IFontFamily fontFamily, float pointSize, FontStyle fontStyle);
+        IFont CreateFont(IFontFamily fontFamily, float pointSize, FontStyle fontStyle, bool useCache);
 
         /// <summary>
         /// Returns a font that is at most <paramref name="largestPointSize"/> points in size but has been sized to fit within
         /// the boundaries passed across. If the text will not fit at the smallest allowable point size then it is truncated.
         /// </summary>
-        /// <param name="fontFamily"></param>]
+        /// <param name="drawing"></param>
+        /// <param name="fontFamily"></param>
         /// <param name="fontStyle"></param>
         /// <param name="largestPointSize"></param>
         /// <param name="smallestPointSize"></param>
         /// <param name="constrainToWidth"></param>
         /// <param name="constrainToHeight"></param>
         /// <param name="text"></param>
+        /// <param name="useCache"></param>
         /// <returns></returns>
-        FontAndText GetFontForRectangle(IFontFamily fontFamily, FontStyle fontStyle, float largestPointSize, float smallestPointSize, float constrainToWidth, float constrainToHeight, string text);
+        FontAndText GetFontForRectangle(IDrawing drawing, IFontFamily fontFamily, FontStyle fontStyle, float largestPointSize, float smallestPointSize, float constrainToWidth, float constrainToHeight, string text, bool useCache);
     }
 }

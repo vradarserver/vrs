@@ -13,30 +13,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
 
-namespace VirtualRadar.Interface.Drawing
+namespace VirtualRadar.Library.Drawing
 {
     /// <summary>
-    /// Creates brushes.
+    /// Utility methods that can help when dealing with colours.
     /// </summary>
-    [Singleton]
-    public interface IBrushFactory
+    static class ColourHelper
     {
         /// <summary>
-        /// Gets a transparent brush.
-        /// </summary>
-        IBrush Transparent { get; }
-
-        /// <summary>
-        /// Creates a solid colour brush.
+        /// Packs single byte RGBA values into a Uint32.
         /// </summary>
         /// <param name="red"></param>
         /// <param name="green"></param>
         /// <param name="blue"></param>
         /// <param name="alpha"></param>
-        /// <param name="useCache">If true then the result is cached and can be returned in future calls.</param>
         /// <returns></returns>
-        IBrush CreateBrush(int red, int green, int blue, int alpha, bool useCache);
+        public static UInt32 PackColour(int red, int green, int blue, int alpha)
+        {
+            return ((UInt32)red   << 24)
+                 | ((UInt32)green << 16)
+                 | ((UInt32)blue  << 8)
+                 |  (UInt32)alpha;
+        }
     }
 }

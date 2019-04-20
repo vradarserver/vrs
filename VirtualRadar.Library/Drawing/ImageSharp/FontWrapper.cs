@@ -21,41 +21,34 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
     /// <summary>
     /// ImageSharp implementation of <see cref="VrsDrawing.IFont"/>.
     /// </summary>
-    class FontWrapper : VrsDrawing.IFont
+    class FontWrapper : CommonFontWrapper<Font>
     {
         /// <summary>
-        /// The ImageSharp font that's being wrapped.
-        /// </summary>
-        public Font NativeFont { get; }
-
-        private VrsDrawing.IFontFamily _FontFamily;
-        /// <summary>
         /// See interface docs.
         /// </summary>
-        public VrsDrawing.IFontFamily FontFamily
-        {
-            get {
-                var result = _FontFamily;
-                if(result == null) {
-                    result = new FontFamilyWrapper(NativeFont.Family);
-                    _FontFamily = result;
-                }
-                return result;
-            }
-        }
+        public override string FontFamilyName { get; }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public float PointSize => NativeFont.Size;
+        public override float PointSize => NativeFont.Size;
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public override VrsDrawing.FontStyle FontStyle { get; }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="font"></param>
-        public FontWrapper(Font font)
+        /// <param name="isCached"></param>
+        public FontWrapper(Font font, bool isCached) : base(font, isCached)
         {
-            NativeFont = font;
+            FontFamilyName = font.Family.Name;
+            FontStyle = font.Bold   ? VrsDrawing.FontStyle.Bold
+                      : font.Italic ? VrsDrawing.FontStyle.Italic
+                      :               VrsDrawing.FontStyle.Normal;
         }
     }
 }

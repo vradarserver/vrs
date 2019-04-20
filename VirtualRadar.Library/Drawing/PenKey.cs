@@ -13,30 +13,59 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
 
-namespace VirtualRadar.Interface.Drawing
+namespace VirtualRadar.Library.Drawing
 {
     /// <summary>
-    /// Creates brushes.
+    /// An immutable object that describes a pen.
     /// </summary>
-    [Singleton]
-    public interface IBrushFactory
+    class PenKey
     {
-        /// <summary>
-        /// Gets a transparent brush.
-        /// </summary>
-        IBrush Transparent { get; }
+        public int Red { get; }
+
+        public int Green { get; }
+
+        public int Blue { get; }
+
+        public int Alpha { get; }
+
+        public float StrokeWidth { get; }
+
+        public PenKey(int red, int green, int blue, int alpha, float strokeWidth)
+        {
+            Red = red;
+            Green = green;
+            Blue = blue;
+            Alpha = alpha;
+            StrokeWidth = strokeWidth;
+        }
 
         /// <summary>
-        /// Creates a solid colour brush.
+        /// See base docs.
         /// </summary>
-        /// <param name="red"></param>
-        /// <param name="green"></param>
-        /// <param name="blue"></param>
-        /// <param name="alpha"></param>
-        /// <param name="useCache">If true then the result is cached and can be returned in future calls.</param>
+        /// <param name="obj"></param>
         /// <returns></returns>
-        IBrush CreateBrush(int red, int green, int blue, int alpha, bool useCache);
+        public override bool Equals(object obj)
+        {
+            var result = Object.ReferenceEquals(this, obj);
+            if(!result && obj is PenKey other) {
+                result =    Red ==          other.Red
+                         && Green ==        other.Green
+                         && Blue ==         other.Blue
+                         && Alpha ==        other.Alpha
+                         && StrokeWidth ==  other.StrokeWidth;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return ColourHelper.PackColour(Red, Green, Blue, Alpha).GetHashCode();
+        }
     }
 }

@@ -19,13 +19,19 @@ using VrsDrawing = VirtualRadar.Interface.Drawing;
 
 namespace VirtualRadar.Library.Drawing.ImageSharp
 {
-    class BrushWrapper : VrsDrawing.IBrush
+    /// <summary>
+    /// The ImageSharp wrapper around a brush.
+    /// </summary>
+    class BrushWrapper : CommonBrushWrapper<IBrush<Rgba32>>
     {
-        public IBrush<Rgba32> NativeBrush { get; }
-
-        public BrushWrapper(IBrush<Rgba32> brush)
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="nativeBrush"></param>
+        /// <param name="isCached"></param>
+        public BrushWrapper(IBrush<Rgba32> nativeBrush, bool isCached) : base(nativeBrush, isCached)
         {
-            NativeBrush = brush;
+            ;
         }
     }
 }

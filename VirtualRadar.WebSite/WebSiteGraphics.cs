@@ -49,9 +49,9 @@ namespace VirtualRadar.WebSite
             _BrushFactory = Factory.ResolveSingleton<IBrushFactory>();
             _FontFactory = Factory.ResolveSingleton<IFontFactory>();
 
-            _MarkerTextOutlinePen =      _PenFactory.CreatePen(0, 0, 0, 222, 4.0F);
-            _MarkerTextOutlinePenHiDpi = _PenFactory.CreatePen(0, 0, 0, 222, 6.0F);
-            _MarkerTextFillBrush =       _BrushFactory.CreateBrush(255, 255, 255, 255);
+            _MarkerTextOutlinePen =      _PenFactory.CreatePen(0, 0, 0, 222, 4.0F, useCache: true);
+            _MarkerTextOutlinePenHiDpi = _PenFactory.CreatePen(0, 0, 0, 222, 6.0F, useCache: true);
+            _MarkerTextFillBrush =       _BrushFactory.CreateBrush(255, 255, 255, 255, useCache: true);
             _MarkerTextFontFamily =      _FontFactory.GetFontFamilyOrFallback(
                 _MarkerTextFontStyle,
                 "Microsoft Sans Serif",
@@ -66,7 +66,7 @@ namespace VirtualRadar.WebSite
                 "Sans"
             );
 
-            _SplashFillBrush =  _BrushFactory.CreateBrush(255, 255, 255, 255);
+            _SplashFillBrush =  _BrushFactory.CreateBrush(255, 255, 255, 255, useCache: true);
             _SplashFontFamily = _FontFactory.GetFontFamilyOrFallback(
                 _SplashFontStyle,
                 "Tahoma",
@@ -90,10 +90,7 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         public IImage RotateImage(IImage original, double degrees)
         {
-            return _ImageFile.CloneAndDraw(original, drawing => {
-                drawing.DrawImage(original, 0, 0);
-                drawing.RotateAroundCentre((float)degrees);
-            });
+            return original.Rotate((float)degrees);
         }
 
         /// <summary>
@@ -189,45 +186,51 @@ namespace VirtualRadar.WebSite
             const string title = "Virtual Radar Server";
 
             return _ImageFile.CloneAndDraw(splashImage, drawing => {
-                var titleFontAndText = _FontFactory.GetFontForRectangle(
+                using(var fontAndText = _FontFactory.GetFontForRectangle(
+                    drawing,
                     _SplashFontFamily,
                     _SplashFontStyle,
                     titleSize,
                     6.0F,
                     titleBounds.Width,
                     titleBounds.Height,
-                    title
-                );
-                drawing.DrawText(
-                    titleFontAndText.Text,
-                    titleFontAndText.Font,
-                    _SplashFillBrush,
-                    null,
-                    titleBounds.Left + (titleBounds.Width / 2.0F),
-                    titleBounds.Top + lineHeight,
-                    HorizontalAlignment.Centre,
-                    preferSpeedOverQuality: false
-                );
+                    title,
+                    useCache: true
+                )) {
+                    drawing.DrawText(
+                        fontAndText.Text,
+                        fontAndText.Font,
+                        _SplashFillBrush,
+                        null,
+                        titleBounds.Left + (titleBounds.Width / 2.0F),
+                        titleBounds.Top + lineHeight,
+                        HorizontalAlignment.Centre,
+                        preferSpeedOverQuality: false
+                    );
+                }
 
-                var addressFontAndText = _FontFactory.GetFontForRectangle(
+                using(var fontAndText = _FontFactory.GetFontForRectangle(
+                    drawing,
                     _SplashFontFamily,
                     _SplashFontStyle,
                     addressSize,
                     6.0F,
                     addressBounds.Width,
                     addressBounds.Height,
-                    webSiteAddress
-                );
-                drawing.DrawText(
-                    addressFontAndText.Text,
-                    addressFontAndText.Font,
-                    _SplashFillBrush,
-                    null,
-                    addressBounds.Left + (addressBounds.Width / 2.0F),
-                    addressBounds.Top + lineHeight,
-                    HorizontalAlignment.Centre,
-                    preferSpeedOverQuality: false
-                );
+                    webSiteAddress,
+                    useCache: true
+                )) {
+                    drawing.DrawText(
+                        fontAndText.Text,
+                        fontAndText.Font,
+                        _SplashFillBrush,
+                        null,
+                        addressBounds.Left + (addressBounds.Width / 2.0F),
+                        addressBounds.Top + lineHeight,
+                        HorizontalAlignment.Centre,
+                        preferSpeedOverQuality: false
+                    );
+                }
             });
         }
 
@@ -294,18 +297,18 @@ namespace VirtualRadar.WebSite
                 drawing => {
                     var lineTop = top;
                     foreach(var line in lines) {
-                        var fontAndText = _FontFactory.GetFontForRectangle(_MarkerTextFontFamily, _MarkerTextFontStyle, startPointSize, 6.0F, width, lineHeight * 2F, line);
-
-                        drawing.DrawText(
-                            fontAndText.Text,
-                            fontAndText.Font,
-                            _MarkerTextFillBrush,
-                            _MarkerTextOutlinePen,
-                            left,
-                            lineTop,
-                            centreText ? HorizontalAlignment.Centre : HorizontalAlignment.Left,
-                            preferSpeedOverQuality: false
-                        );
+                        using(var fontAndText = _FontFactory.GetFontForRectangle(drawing, _MarkerTextFontFamily, _MarkerTextFontStyle, startPointSize, 6.0F, width, lineHeight * 2F, line, useCache: true)) {
+                            drawing.DrawText(
+                                fontAndText.Text,
+                                fontAndText.Font,
+                                _MarkerTextFillBrush,
+                                _MarkerTextOutlinePen,
+                                left,
+                                lineTop,
+                                centreText ? HorizontalAlignment.Centre : HorizontalAlignment.Left,
+                                preferSpeedOverQuality: false
+                            );
+                        }
 
                         lineTop += lineHeight;
                     }

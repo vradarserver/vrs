@@ -10,29 +10,31 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
-using SixLabors.Primitives;
 using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Library.Drawing.ImageSharp
+namespace VirtualRadar.Library.Drawing.SystemDrawing
 {
-    class Drawing : CommonDrawing<IImageProcessingContext<Rgba32>>
+    /// <summary>
+    /// System.Drawing implementation of <see cref="VrsDrawing.IDrawing"/>.
+    /// </summary>
+    class Drawing : CommonDrawing<Graphics>
     {
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        /// <param name="context"></param>
-        public Drawing(IImageProcessingContext<Rgba32> context) : base(context)
+        /// <param name="nativeDrawingContext"></param>
+        public Drawing(Graphics nativeDrawingContext) : base(nativeDrawingContext)
         {
             ;
         }
 
         /// <summary>
-        /// See interface docs.
+        /// See base docs.
         /// </summary>
         /// <param name="image"></param>
         /// <param name="x"></param>
@@ -40,16 +42,17 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
         public override void DrawImage(VrsDrawing.IImage image, int x, int y)
         {
             if(image is ImageWrapper imageWrapper) {
-                NativeDrawingContext.DrawImage(
-                    imageWrapper.NativeImage,
-                    new Point(x, y),
-                    1.0F
-                );
+                GdiPlusLock.EnforceSingleThread(() => {
+                    NativeDrawingContext.DrawImage(
+                        imageWrapper.NativeImage,
+                        x, y
+                    );
+                });
             }
         }
 
         /// <summary>
-        /// See interface docs.
+        /// See base docs.
         /// </summary>
         /// <param name="pen"></param>
         /// <param name="fromX"></param>
@@ -59,16 +62,18 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
         public override void DrawLine(VrsDrawing.IPen pen, int fromX, int fromY, int toX, int toY)
         {
             if(pen is PenWrapper penWrapper) {
-                NativeDrawingContext.DrawLines(
-                    penWrapper.NativePen,
-                    new PointF(fromX, fromY),
-                    new PointF(toX, toY)
-                );
+                GdiPlusLock.EnforceSingleThread(() => {
+                    NativeDrawingContext.DrawLine(
+                        penWrapper.NativePen,
+                        fromX, fromY,
+                        toX,   toY
+                    );
+                });
             }
         }
 
         /// <summary>
-        /// See interface docs.
+        /// See base docs.
         /// </summary>
         /// <param name="text"></param>
         /// <param name="font"></param>
@@ -81,18 +86,37 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
         public override void DrawText(string text, VrsDrawing.IFont font, VrsDrawing.IBrush fillBrush, VrsDrawing.IPen outlinePen, float x, float y, VrsDrawing.HorizontalAlignment alignment, bool preferSpeedOverQuality = true)
         {
             if(font is FontWrapper fontWrapper) {
-                var options = new TextGraphicsOptions(enableAntialiasing: !preferSpeedOverQuality) {
-                    HorizontalAlignment =   Convert.ToImageSharpHorizontalAlignment(alignment),
-                    ApplyKerning =          !preferSpeedOverQuality,
-                };
-                var location = new PointF(x, y);
+                GdiPlusLock.EnforceSingleThread(() => {
+                    var location = new PointF(x, y);
 
-                if(outlinePen is PenWrapper outlinePenWrapper) {
-                    NativeDrawingContext.DrawText(options, text, fontWrapper.NativeFont, outlinePenWrapper.NativePen, location);
-                }
-                if(fillBrush is BrushWrapper fillBrushWrapper) {
-                    NativeDrawingContext.DrawText(options, text, fontWrapper.NativeFont, fillBrushWrapper.NativeBrush, location);
-                }
+                    // Mono ignores these flags...
+                    var stringFormat = new StringFormat() {
+                        Alignment =     Convert.ToSystemDrawingStringAlignment(alignment),
+                        LineAlignment = Convert.ToSystemDrawingStringAlignment(alignment),
+                        FormatFlags =   StringFormatFlags.NoWrap,
+                    };
+
+                    using(var graphicsPath = new GraphicsPath()) {
+                        graphicsPath.AddString(
+                            text,
+                            fontWrapper.NativeFont.FontFamily,
+                            (int)fontWrapper.NativeFont.Style,
+                            fontWrapper.NativeFont.Size,
+                            location,
+                            stringFormat
+                        );
+
+                        NativeDrawingContext.SmoothingMode =     SmoothingMode.AntiAlias;
+                        NativeDrawingContext.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
+                        if(outlinePen is PenWrapper outlinePenWrapper) {
+                            NativeDrawingContext.DrawPath(outlinePenWrapper.NativePen, graphicsPath);
+                        }
+                        if(fillBrush is BrushWrapper fillBrushWrapper) {
+                            NativeDrawingContext.FillPath(fillBrushWrapper.NativeBrush, graphicsPath);
+                        }
+                    }
+                });
             }
         }
     }

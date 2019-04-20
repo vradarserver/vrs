@@ -13,30 +13,66 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Interface.Drawing
+namespace VirtualRadar.Library.Drawing
 {
     /// <summary>
-    /// Creates brushes.
+    /// The base class for wrappers around pens.
     /// </summary>
-    [Singleton]
-    public interface IBrushFactory
+    abstract class CommonPenWrapper<T> : VrsDrawing.IPen
     {
         /// <summary>
-        /// Gets a transparent brush.
+        /// Gets the pen that is being wrapped.
         /// </summary>
-        IBrush Transparent { get; }
+        internal T NativePen { get; }
 
         /// <summary>
-        /// Creates a solid colour brush.
+        /// See interface docs.
         /// </summary>
-        /// <param name="red"></param>
-        /// <param name="green"></param>
-        /// <param name="blue"></param>
-        /// <param name="alpha"></param>
-        /// <param name="useCache">If true then the result is cached and can be returned in future calls.</param>
-        /// <returns></returns>
-        IBrush CreateBrush(int red, int green, int blue, int alpha, bool useCache);
+        public bool IsCached { get; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public abstract float StrokeWidth { get; }
+
+        protected CommonPenWrapper(T nativePen, bool isCached)
+        {
+            NativePen = nativePen;
+            IsCached = isCached;
+        }
+
+        /// <summary>
+        /// Finalises the object.
+        /// </summary>
+        ~CommonPenWrapper()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void Dispose()
+        {
+            if(!IsCached) {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+        }
+
+        /// <summary>
+        /// Disposes of or finalises the object.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposing && !IsCached) {
+                if(NativePen is IDisposable disposable) {
+                    disposable.Dispose();
+                }
+            }
+        }
     }
 }

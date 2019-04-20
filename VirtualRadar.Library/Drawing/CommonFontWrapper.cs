@@ -13,58 +13,82 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Interface.Drawing
+namespace VirtualRadar.Library.Drawing
 {
     /// <summary>
-    /// Describes an image in memory.
+    /// Common base for font wrappers that implement <see cref="VrsDrawing.IFont"/>.
     /// </summary>
-    public interface IImage : IDisposable
+    /// <typeparam name="T"></typeparam>
+    abstract class CommonFontWrapper<T> : VrsDrawing.IFont
     {
         /// <summary>
-        /// Gets the dimensions of the image.
+        /// Gets the font that is being wrapped.
         /// </summary>
-        Size Size { get; }
+        internal T NativeFont { get; }
 
         /// <summary>
-        /// Shorthand for <see cref="Size.Width"/>.
+        /// See interface docs.
         /// </summary>
-        int Width { get; }
+        public bool IsCached { get; }
 
         /// <summary>
-        /// Shorthand for <see cref="Size.Height"/>.
+        /// See interface docs.
         /// </summary>
-        int Height { get; }
+        public abstract string FontFamilyName { get; }
 
         /// <summary>
-        /// Creates a copy of the image.
+        /// Gets the size in points of the font.
         /// </summary>
-        /// <returns></returns>
-        IImage Clone();
+        public abstract float PointSize { get; }
 
         /// <summary>
-        /// Returns the bytes representing the image formatted as per the parameter.
+        /// Gets the style of font.
         /// </summary>
-        /// <param name="imageFormat"></param>
-        /// <returns></returns>
-        byte[] GetImageBytes(ImageFormat imageFormat);
+        public abstract VrsDrawing.FontStyle FontStyle { get; }
 
         /// <summary>
-        /// Returns a clone of the image resized to the new size. Speed is preferred over quality.
+        /// Creates a new object.
         /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="mode"></param>
-        /// <param name="zoomBackground"></param>
-        /// <param name="preferSpeedOverQuality"></param>
-        /// <returns></returns>
-        IImage Resize(int width, int height, ResizeMode mode = ResizeMode.Normal, IBrush zoomBackground = null, bool preferSpeedOverQuality = true);
+        /// <param name="nativeFont"></param>
+        /// <param name="isCached"></param>
+        protected CommonFontWrapper(T nativeFont, bool isCached)
+        {
+            NativeFont = nativeFont;
+            IsCached = isCached;
+        }
 
         /// <summary>
-        /// Returns a copy of the image rotated by the number of degrees specified.
+        /// Finalises the object.
         /// </summary>
-        /// <param name="degrees"></param>
-        /// <returns></returns>
-        IImage Rotate(float degrees);
+        ~CommonFontWrapper()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void Dispose()
+        {
+            if(!IsCached) {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+        }
+
+        /// <summary>
+        /// Disposes of or finalises the object.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposing && !IsCached) {
+                if(NativeFont is IDisposable disposable) {
+                    disposable.Dispose();
+                }
+            }
+        }
     }
 }

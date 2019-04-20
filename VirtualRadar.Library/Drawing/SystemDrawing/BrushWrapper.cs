@@ -10,33 +10,27 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Interface.Drawing
+namespace VirtualRadar.Library.Drawing.SystemDrawing
 {
     /// <summary>
-    /// Creates brushes.
+    /// Wraps a System.Drawing brush.
     /// </summary>
-    [Singleton]
-    public interface IBrushFactory
+    class BrushWrapper : CommonBrushWrapper<Brush>
     {
         /// <summary>
-        /// Gets a transparent brush.
+        /// Creates a new object.
         /// </summary>
-        IBrush Transparent { get; }
-
-        /// <summary>
-        /// Creates a solid colour brush.
-        /// </summary>
-        /// <param name="red"></param>
-        /// <param name="green"></param>
-        /// <param name="blue"></param>
-        /// <param name="alpha"></param>
-        /// <param name="useCache">If true then the result is cached and can be returned in future calls.</param>
-        /// <returns></returns>
-        IBrush CreateBrush(int red, int green, int blue, int alpha, bool useCache);
+        /// <param name="brush"></param>
+        /// <param name="isCached"></param>
+        public BrushWrapper(Brush brush, bool isCached) : base(brush, isCached)
+        {
+            ;
+        }
     }
 }

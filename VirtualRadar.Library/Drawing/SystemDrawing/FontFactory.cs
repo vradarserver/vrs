@@ -10,23 +10,24 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SixLabors.Fonts;
 using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Library.Drawing.ImageSharp
+namespace VirtualRadar.Library.Drawing.SystemDrawing
 {
     /// <summary>
-    /// The default ImageSharp implementation of <see cref="VrsDrawing.IFontFactory"/>.
+    /// The System.Drawing implementation of <see cref="IFontFactory"/>.
     /// </summary>
     class FontFactory : CommonFontFactory
     {
         /// <summary>
-        /// See interface docs.
+        /// See base docs.
         /// </summary>
-        protected override bool ImageLibraryDrawTextWillTruncate => false;
+        protected override bool ImageLibraryDrawTextWillTruncate => true;
 
         /// <summary>
         /// See base docs.
@@ -38,10 +39,34 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
         /// <returns></returns>
         protected override VrsDrawing.IFont CreateFontWrapper(VrsDrawing.IFontFamily fontFamily, float pointSize, VrsDrawing.FontStyle fontStyle, bool isCached)
         {
-            return new FontWrapper(
-                SystemFonts.CreateFont(fontFamily.Name, pointSize, Convert.ToImageSharpFontStyle(fontStyle)),
-                isCached
-            );
+            VrsDrawing.IFont result = null;
+
+            if(fontFamily is FontFamilyWrapper fontFamilyWrapper) {
+                result = new FontWrapper(
+                    new Font(
+                        fontFamilyWrapper.NativeFontFamily,
+                        pointSize,
+                        Convert.ToSystemDrawingFontStyle(fontStyle),
+                        GraphicsUnit.Point
+                    ),
+                    isCached
+                );
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <returns></returns>
+        public override IEnumerable<VrsDrawing.IFontFamily> GetInstalledFonts()
+        {
+            using(var fontCollection = new InstalledFontCollection()) {
+                foreach(var family in fontCollection.Families) {
+                    yield return new FontFamilyWrapper(family, isCached: false);
+                }
+            }
         }
 
         /// <summary>
@@ -57,21 +82,16 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
             width = 0F;
             height = 0F;
 
-            if(font is FontWrapper fontWrapper) {
-                var size = TextMeasurer.Measure(text, new RendererOptions(fontWrapper.NativeFont));
+            if(drawing is Drawing context && font is FontWrapper fontWrapper) {
+                var size = context.NativeDrawingContext.MeasureString(
+                    text,
+                    fontWrapper.NativeFont,
+                    new PointF(0, 0),
+                    StringFormat.GenericTypographic
+                );
+
                 width = size.Width;
                 height = size.Height;
-            }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <returns></returns>
-        public override IEnumerable<VrsDrawing.IFontFamily> GetInstalledFonts()
-        {
-            foreach(var family in SystemFonts.Families) {
-                yield return new FontFamilyWrapper(family, false);
             }
         }
     }

@@ -13,44 +13,97 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Interface.Drawing
+namespace VirtualRadar.Library.Drawing
 {
     /// <summary>
-    /// Describes an image in memory.
+    /// The base class for <see cref="VrsDrawing.IImage"/> image wrappers.
     /// </summary>
-    public interface IImage : IDisposable
+    /// <typeparam name="T"></typeparam>
+    abstract class CommonImageWrapper<T> : VrsDrawing.IImage
     {
         /// <summary>
-        /// Gets the dimensions of the image.
+        /// Gets the native image that's being wrapped by this object.
         /// </summary>
-        Size Size { get; }
+        internal T NativeImage { get; }
 
         /// <summary>
-        /// Shorthand for <see cref="Size.Width"/>.
+        /// See interface docs.
         /// </summary>
-        int Width { get; }
+        public VrsDrawing.Size Size { get; }
 
         /// <summary>
-        /// Shorthand for <see cref="Size.Height"/>.
+        /// See interface docs.
         /// </summary>
-        int Height { get; }
+        public int Width => Size.Width;
 
         /// <summary>
-        /// Creates a copy of the image.
+        /// See interface docs.
+        /// </summary>
+        public int Height => Size.Height;
+
+        /// <summary>
+        /// See interface docs.
         /// </summary>
         /// <returns></returns>
-        IImage Clone();
+        public abstract VrsDrawing.IImage Clone();
 
         /// <summary>
-        /// Returns the bytes representing the image formatted as per the parameter.
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="nativeImage"></param>
+        public CommonImageWrapper(T nativeImage)
+        {
+            NativeImage = nativeImage;
+            Size = ExtractSizeFromNativeImage();
+        }
+
+        /// <summary>
+        /// Finalises the object.
+        /// </summary>
+        ~CommonImageWrapper()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes of or finalises the object.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposing) {
+                if(NativeImage is IDisposable disposable) {
+                    disposable.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the size of <see cref="NativeImage"/>.
+        /// </summary>
+        /// <returns></returns>
+        protected abstract VrsDrawing.Size ExtractSizeFromNativeImage();
+
+        /// <summary>
+        /// See interface docs.
         /// </summary>
         /// <param name="imageFormat"></param>
         /// <returns></returns>
-        byte[] GetImageBytes(ImageFormat imageFormat);
+        public abstract byte[] GetImageBytes(VrsDrawing.ImageFormat imageFormat);
 
         /// <summary>
-        /// Returns a clone of the image resized to the new size. Speed is preferred over quality.
+        /// See interface docs.
         /// </summary>
         /// <param name="width"></param>
         /// <param name="height"></param>
@@ -58,13 +111,13 @@ namespace VirtualRadar.Interface.Drawing
         /// <param name="zoomBackground"></param>
         /// <param name="preferSpeedOverQuality"></param>
         /// <returns></returns>
-        IImage Resize(int width, int height, ResizeMode mode = ResizeMode.Normal, IBrush zoomBackground = null, bool preferSpeedOverQuality = true);
+        public abstract VrsDrawing.IImage Resize(int width, int height, VrsDrawing.ResizeMode mode = VrsDrawing.ResizeMode.Normal, VrsDrawing.IBrush zoomBackground = null, bool preferSpeedOverQuality = true);
 
         /// <summary>
-        /// Returns a copy of the image rotated by the number of degrees specified.
+        /// See interface docs.
         /// </summary>
         /// <param name="degrees"></param>
         /// <returns></returns>
-        IImage Rotate(float degrees);
+        public abstract VrsDrawing.IImage Rotate(float degrees);
     }
 }

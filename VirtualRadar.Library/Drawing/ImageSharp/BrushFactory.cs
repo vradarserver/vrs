@@ -22,21 +22,8 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
     /// <summary>
     /// ImageSharp implementation of <see cref="IBrushFactory"/>.
     /// </summary>
-    class BrushFactory : VrsDrawing.IBrushFactory
+    class BrushFactory : CommonBrushFactory
     {
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public VrsDrawing.IBrush Transparent { get; }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public BrushFactory()
-        {
-            Transparent = new BrushWrapper(new SolidBrush<Rgba32>(Rgba32.Transparent));
-        }
-
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -44,13 +31,15 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
         /// <param name="green"></param>
         /// <param name="blue"></param>
         /// <param name="alpha"></param>
+        /// <param name="isCached"></param>
         /// <returns></returns>
-        public VrsDrawing.IBrush CreateBrush(int red, int green, int blue, int alpha)
+        protected override VrsDrawing.IBrush CreateBrushWrapper(int red, int green, int blue, int alpha, bool isCached)
         {
             return new BrushWrapper(
                 new SolidBrush<Rgba32>(
-                    new Rgba32(red, green, blue, alpha)
-                )
+                    new Rgba32((byte)red, (byte)green, (byte)blue, (byte)alpha)
+                ),
+                isCached
             );
         }
     }

@@ -10,33 +10,43 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Interface.Drawing
+namespace VirtualRadar.Library.Drawing.SystemDrawing
 {
     /// <summary>
-    /// Creates brushes.
+    /// System.Drawing wrapper around a font object.
     /// </summary>
-    [Singleton]
-    public interface IBrushFactory
+    class FontWrapper : CommonFontWrapper<Font>
     {
         /// <summary>
-        /// Gets a transparent brush.
+        /// See interface docs.
         /// </summary>
-        IBrush Transparent { get; }
+        public override string FontFamilyName { get; }
 
         /// <summary>
-        /// Creates a solid colour brush.
+        /// See interface docs.
         /// </summary>
-        /// <param name="red"></param>
-        /// <param name="green"></param>
-        /// <param name="blue"></param>
-        /// <param name="alpha"></param>
-        /// <param name="useCache">If true then the result is cached and can be returned in future calls.</param>
-        /// <returns></returns>
-        IBrush CreateBrush(int red, int green, int blue, int alpha, bool useCache);
+        public override float PointSize => NativeFont.SizeInPoints;
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public override VrsDrawing.FontStyle FontStyle { get; }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="font"></param>
+        /// <param name="isCached"></param>
+        public FontWrapper(Font font, bool isCached) : base(font, isCached)
+        {
+            FontFamilyName = font.FontFamily.Name;
+            FontStyle = Convert.ToVrsFontStyle(font.Style);
+        }
     }
 }

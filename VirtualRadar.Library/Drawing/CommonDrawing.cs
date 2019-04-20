@@ -13,40 +13,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Interface.Drawing
+namespace VirtualRadar.Library.Drawing
 {
     /// <summary>
-    /// A font and some text.
+    /// The base class for <see cref="VrsDrawing.IDrawing"/> implementations.
     /// </summary>
-    public class FontAndText : IDisposable
+    abstract class CommonDrawing<T> : VrsDrawing.IDrawing
     {
         /// <summary>
-        /// Gets the font.
+        /// Gets the drawing context that this is wrapping.
         /// </summary>
-        public IFont Font { get; }
-
-        /// <summary>
-        /// Gets the text. If this is the result from a call to <see cref="IFontFactory.GetFontForRectangle"/> then
-        /// the text might be truncated.
-        /// </summary>
-        public string Text { get; }
+        internal T NativeDrawingContext { get; }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        /// <param name="font"></param>
-        /// <param name="text"></param>
-        public FontAndText(IFont font, string text)
+        /// <param name="nativeDrawingContext"></param>
+        public CommonDrawing(T nativeDrawingContext)
         {
-            Font = font;
-            Text = text;
+            NativeDrawingContext = nativeDrawingContext;
         }
 
         /// <summary>
         /// Finalises the object.
         /// </summary>
-        ~FontAndText()
+        ~CommonDrawing()
         {
             Dispose(false);
         }
@@ -67,8 +60,41 @@ namespace VirtualRadar.Interface.Drawing
         protected virtual void Dispose(bool disposing)
         {
             if(disposing) {
-                Font.Dispose();
+                if(NativeDrawingContext is IDisposable disposable) {
+                    disposable.Dispose();
+                }
             }
         }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public abstract void DrawImage(VrsDrawing.IImage image, int x, int y);
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="pen"></param>
+        /// <param name="fromX"></param>
+        /// <param name="fromY"></param>
+        /// <param name="toX"></param>
+        /// <param name="toY"></param>
+        public abstract void DrawLine(VrsDrawing.IPen pen, int fromX, int fromY, int toX, int toY);
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="font"></param>
+        /// <param name="fillBrush"></param>
+        /// <param name="outlinePen"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="alignment"></param>
+        /// <param name="preferSpeedOverQuality"></param>
+        public abstract void DrawText(string text, VrsDrawing.IFont font, VrsDrawing.IBrush fillBrush, VrsDrawing.IPen outlinePen, float x, float y, VrsDrawing.HorizontalAlignment alignment, bool preferSpeedOverQuality = true);
     }
 }

@@ -13,30 +13,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
 
-namespace VirtualRadar.Interface.Drawing
+namespace VirtualRadar.Library.Drawing.SystemDrawing
 {
     /// <summary>
-    /// Creates brushes.
+    /// All GDI+ operations need to be single-threaded. This object controls access to a lock that is used to manage
+    /// cooperative single threading for all GDI+ operations.
     /// </summary>
-    [Singleton]
-    public interface IBrushFactory
+    static class GdiPlusLock
     {
         /// <summary>
-        /// Gets a transparent brush.
+        /// The lock that is used to enforce single-threaded access to GDI+.
         /// </summary>
-        IBrush Transparent { get; }
+        private static object _SyncLock = new object();
 
         /// <summary>
-        /// Creates a solid colour brush.
+        /// Performs the action within a lock. Use this around the smallest block possible and
+        /// only perform GDI+ actions within the lock.
         /// </summary>
-        /// <param name="red"></param>
-        /// <param name="green"></param>
-        /// <param name="blue"></param>
-        /// <param name="alpha"></param>
-        /// <param name="useCache">If true then the result is cached and can be returned in future calls.</param>
-        /// <returns></returns>
-        IBrush CreateBrush(int red, int green, int blue, int alpha, bool useCache);
+        /// <param name="action"></param>
+        public static void EnforceSingleThread(Action action)
+        {
+            lock(_SyncLock) {
+                action();
+            }
+        }
     }
 }

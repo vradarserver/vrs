@@ -10,33 +10,40 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Interface.Drawing
+namespace VirtualRadar.Library.Drawing.SystemDrawing
 {
     /// <summary>
-    /// Creates brushes.
+    /// The System.Drawing implementation of <see cref="IBrushFactory"/>.
     /// </summary>
-    [Singleton]
-    public interface IBrushFactory
+    class BrushFactory : CommonBrushFactory
     {
         /// <summary>
-        /// Gets a transparent brush.
-        /// </summary>
-        IBrush Transparent { get; }
-
-        /// <summary>
-        /// Creates a solid colour brush.
+        /// See interface docs.
         /// </summary>
         /// <param name="red"></param>
         /// <param name="green"></param>
         /// <param name="blue"></param>
         /// <param name="alpha"></param>
-        /// <param name="useCache">If true then the result is cached and can be returned in future calls.</param>
+        /// <param name="isCached"></param>
         /// <returns></returns>
-        IBrush CreateBrush(int red, int green, int blue, int alpha, bool useCache);
+        protected override VrsDrawing.IBrush CreateBrushWrapper(int red, int green, int blue, int alpha, bool isCached)
+        {
+            VrsDrawing.IBrush result = null;
+
+            GdiPlusLock.EnforceSingleThread(() => {
+                result = new BrushWrapper(
+                    new SolidBrush(Color.FromArgb(alpha, red, green, blue)),
+                    isCached
+                );
+            });
+
+            return result;
+        }
     }
 }

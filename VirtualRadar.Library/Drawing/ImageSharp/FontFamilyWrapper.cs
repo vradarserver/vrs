@@ -21,23 +21,18 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
     /// <summary>
     /// Wrapper around an ImageSharp font family object that exposes it as a VRS font family.
     /// </summary>
-    class FontFamilyWrapper : VrsDrawing.IFontFamily
+    class FontFamilyWrapper : CommonFontFamilyWrapper<FontFamily>
     {
-        /// <summary>
-        /// The ImageSharp font family that's being wrapped.
-        /// </summary>
-        public FontFamily NativeFontFamily { get; }
-
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Name => NativeFontFamily.Name;
+        public override string Name => NativeFontFamily.Name;
 
         private VrsDrawing.FontStyle[] _AvailableStyles;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IEnumerable<VrsDrawing.FontStyle> AvailableStyles
+        public override IEnumerable<VrsDrawing.FontStyle> AvailableStyles
         {
             get {
                 var result = _AvailableStyles;
@@ -53,9 +48,10 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
         /// Creates a new object.
         /// </summary>
         /// <param name="fontFamily"></param>
-        public FontFamilyWrapper(FontFamily fontFamily)
+        /// <param name="isCached"></param>
+        public FontFamilyWrapper(FontFamily fontFamily, bool isCached) : base(fontFamily, isCached)
         {
-            NativeFontFamily = fontFamily;
+            ;
         }
     }
 }

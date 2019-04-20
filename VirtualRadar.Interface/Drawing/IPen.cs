@@ -19,8 +19,14 @@ namespace VirtualRadar.Interface.Drawing
     /// <summary>
     /// Represents a pen.
     /// </summary>
-    public interface IPen
+    public interface IPen : IDisposable
     {
+        /// <summary>
+        /// Gets a value indicating that the pen is cached. Cached pens
+        /// cannot be disposed.
+        /// </summary>
+        bool IsCached { get; }
+
         /// <summary>
         /// Gets the stroke width in pixels of the pen.
         /// </summary>

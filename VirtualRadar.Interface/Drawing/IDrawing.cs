@@ -19,7 +19,7 @@ namespace VirtualRadar.Interface.Drawing
     /// <summary>
     /// The interface for an object that can perform drawing operations on an image.
     /// </summary>
-    public interface IDrawing
+    public interface IDrawing : IDisposable
     {
         /// <summary>
         /// Draws an image at the point passed across. The image is not resized.
@@ -38,12 +38,6 @@ namespace VirtualRadar.Interface.Drawing
         /// <param name="toX"></param>
         /// <param name="toY"></param>
         void DrawLine(IPen pen, int fromX, int fromY, int toX, int toY);
-
-        /// <summary>
-        /// Rotates the drawing N degrees clockwise around the centre point.
-        /// </summary>
-        /// <param name="degrees"></param>
-        void RotateAroundCentre(float degrees);
 
         /// <summary>
         /// Draws text onto the image.

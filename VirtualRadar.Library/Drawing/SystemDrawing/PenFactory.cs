@@ -10,33 +10,44 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
-namespace VirtualRadar.Interface.Drawing
+namespace VirtualRadar.Library.Drawing.SystemDrawing
 {
     /// <summary>
-    /// Creates brushes.
+    /// System.Drawing implementation of <see cref="VrsDrawing.IPenFactory"/>.
     /// </summary>
-    [Singleton]
-    public interface IBrushFactory
+    class PenFactory : CommonPenFactory
     {
         /// <summary>
-        /// Gets a transparent brush.
-        /// </summary>
-        IBrush Transparent { get; }
-
-        /// <summary>
-        /// Creates a solid colour brush.
+        /// See interface docs.
         /// </summary>
         /// <param name="red"></param>
         /// <param name="green"></param>
         /// <param name="blue"></param>
         /// <param name="alpha"></param>
-        /// <param name="useCache">If true then the result is cached and can be returned in future calls.</param>
+        /// <param name="strokeWidth"></param>
+        /// <param name="isCached"></param>
         /// <returns></returns>
-        IBrush CreateBrush(int red, int green, int blue, int alpha, bool useCache);
+        protected override VrsDrawing.IPen CreatePenWrapper(int red, int green, int blue, int alpha, float strokeWidth, bool isCached)
+        {
+            VrsDrawing.IPen result = null;
+
+            GdiPlusLock.EnforceSingleThread(() => {
+                result = new PenWrapper(
+                    new Pen(
+                        Color.FromArgb(alpha, red, green, blue),
+                        strokeWidth
+                    ),
+                    isCached
+                );
+            });
+
+            return result;
+        }
     }
 }

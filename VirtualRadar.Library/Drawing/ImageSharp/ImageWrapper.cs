@@ -25,80 +25,38 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
     /// <summary>
     /// The ImageSharp implementation of IImage - wraps an ImageSharp image.
     /// </summary>
-    class ImageWrapper : VrsDrawing.IImage
+    class ImageWrapper : CommonImageWrapper<Image<Rgba32>>
     {
-        /// <summary>
-        /// Gets the image that's being wrapped.
-        /// </summary>
-        public Image<SixLabors.ImageSharp.PixelFormats.Rgba32> NativeImage { get; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public VrsDrawing.Size Size { get; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public int Width => Size.Width;
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public int Height => Size.Height;
-
         /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="nativeImage"></param>
-        public ImageWrapper(Image<SixLabors.ImageSharp.PixelFormats.Rgba32> nativeImage)
+        public ImageWrapper(Image<Rgba32> nativeImage) : base(nativeImage)
         {
-            NativeImage = nativeImage;
-            Size = new VrsDrawing.Size(nativeImage.Width, nativeImage.Height);
+            ;
         }
 
         /// <summary>
-        /// Finalises the object.
-        /// </summary>
-        ~ImageWrapper()
-        {
-            Dispose(false);
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Disposes of or finalises the object.
-        /// </summary>
-        /// <param name="disposing"></param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if(disposing) {
-                if(NativeImage != null) {
-                    NativeImage.Dispose();
-                }
-            }
-        }
-
-        /// <summary>
-        /// See interface docs.
+        /// See base docs.
         /// </summary>
         /// <returns></returns>
-        public Interface.Drawing.IImage Clone()
+        protected override VrsDrawing.Size ExtractSizeFromNativeImage()
+        {
+            return Convert.ToVrsSize(NativeImage.Size());
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <returns></returns>
+        public override Interface.Drawing.IImage Clone()
         {
             var clone = NativeImage.Clone();
             return new ImageWrapper(clone);
         }
 
         /// <summary>
-        /// See interface docs.
+        /// See base docs.
         /// </summary>
         /// <param name="width"></param>
         /// <param name="height"></param>
@@ -106,7 +64,7 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
         /// <param name="zoomBackground"></param>
         /// <param name="preferSpeedOverQuality"></param>
         /// <returns></returns>
-        public VrsDrawing.IImage Resize(int width, int height, VrsDrawing.ResizeMode mode = VrsDrawing.ResizeMode.Normal, VrsDrawing.IBrush zoomBackground = null, bool preferSpeedOverQuality = true)
+        public override VrsDrawing.IImage Resize(int width, int height, VrsDrawing.ResizeMode mode = VrsDrawing.ResizeMode.Normal, VrsDrawing.IBrush zoomBackground = null, bool preferSpeedOverQuality = true)
         {
             var resized = mode == VrsDrawing.ResizeMode.Zoom
                 ? ResizeZoom(width, height, zoomBackground)
@@ -184,11 +142,11 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
         }
 
         /// <summary>
-        /// See interface docs.
+        /// See base docs.
         /// </summary>
         /// <param name="imageFormat"></param>
         /// <returns></returns>
-        public byte[] GetImageBytes(VrsDrawing.ImageFormat imageFormat)
+        public override byte[] GetImageBytes(VrsDrawing.ImageFormat imageFormat)
         {
             using(var memoryStream = new MemoryStream()) {
                 switch(imageFormat) {
@@ -201,6 +159,20 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
 
                 return memoryStream.ToArray();
             }
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="degrees"></param>
+        /// <returns></returns>
+        public override VrsDrawing.IImage Rotate(float degrees)
+        {
+            var image = NativeImage.Clone(context => {
+                context.Rotate(degrees);
+            });
+
+            return new ImageWrapper(image);
         }
     }
 }

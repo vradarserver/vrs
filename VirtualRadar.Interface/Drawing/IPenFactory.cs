@@ -41,7 +41,8 @@ namespace VirtualRadar.Interface.Drawing
         /// <param name="blue"></param>
         /// <param name="alpha"></param>
         /// <param name="strokeWidth"></param>
+        /// <param name="useCache">True if a cached pen should be returned / created. Cached pens cannot be disposed.</param>
         /// <returns></returns>
-        IPen CreatePen(int red, int green, int blue, int alpha, float strokeWidth);
+        IPen CreatePen(int red, int green, int blue, int alpha, float strokeWidth, bool useCache);
     }
 }

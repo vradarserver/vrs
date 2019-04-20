@@ -20,17 +20,15 @@ using VrsDrawing = VirtualRadar.Interface.Drawing;
 namespace VirtualRadar.Library.Drawing.ImageSharp
 {
     /// <summary>
-    /// Default implementation of <see cref="VrsDrawing.IPen"/>.
+    /// ImageSharp implementation of <see cref="VrsDrawing.IPen"/>.
     /// </summary>
-    class PenWrapper : VrsDrawing.IPen
+    class PenWrapper : CommonPenWrapper<IPen<Rgba32>>
     {
-        public IPen<Rgba32> NativePen { get; }
+        public override float StrokeWidth => NativePen.StrokeWidth;
 
-        public float StrokeWidth => NativePen.StrokeWidth;
-
-        public PenWrapper(IPen<Rgba32> pen)
+        public PenWrapper(IPen<Rgba32> nativePen, bool isCached) : base(nativePen, isCached)
         {
-            NativePen = pen;
+            ;
         }
     }
 }

@@ -22,27 +22,8 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
     /// <summary>
     /// The singleton ImageSharp implementation of <see cref="Interface.Drawing.IPenFactory"/>.
     /// </summary>
-    class PenFactory : VrsDrawing.IPenFactory
+    class PenFactory : CommonPenFactory
     {
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public VrsDrawing.IPen Black { get; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public VrsDrawing.IPen LightGray { get; }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public PenFactory()
-        {
-            Black =     new PenWrapper(new Pen<Rgba32>(new Rgba32(0,    0,      0),     1.0F));
-            LightGray = new PenWrapper(new Pen<Rgba32>(new Rgba32(211,  211,    211),   1.0F));
-        }
-
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -51,14 +32,16 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
         /// <param name="blue"></param>
         /// <param name="alpha"></param>
         /// <param name="strokeWidth"></param>
+        /// <param name="isCached"></param>
         /// <returns></returns>
-        public VrsDrawing.IPen CreatePen(int red, int green, int blue, int alpha, float strokeWidth)
+        protected override VrsDrawing.IPen CreatePenWrapper(int red, int green, int blue, int alpha, float strokeWidth, bool isCached)
         {
             return new PenWrapper(
                 new Pen<Rgba32>(
                     new Rgba32(red, green, blue, alpha),
                     strokeWidth
-                )
+                ),
+                isCached
             );
         }
     }

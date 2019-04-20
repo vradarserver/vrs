@@ -19,15 +19,21 @@ namespace VirtualRadar.Interface.Drawing
     /// <summary>
     /// Describes a font family.
     /// </summary>
-    public interface IFontFamily
+    public interface IFontFamily : IDisposable
     {
+        /// <summary>
+        /// Gets a value indicating that the font family is cached. Cached font families
+        /// cannot be disposed.
+        /// </summary>
+        bool IsCached { get; }
+
         /// <summary>
         /// Gets the name of the font family.
         /// </summary>
         string Name { get; }
 
         /// <summary>
-        /// Gets a collection of styles that the font family comes in.
+        /// Gets a collection of styles installed for the font family.
         /// </summary>
         IEnumerable<FontStyle> AvailableStyles { get; }
     }
