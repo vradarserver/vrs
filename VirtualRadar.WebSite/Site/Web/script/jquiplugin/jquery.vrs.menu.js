@@ -201,9 +201,9 @@ var VRS;
                         .appendTo(listItem);
                     var text = self._buildMenuItemTextElement(state, menuItem)
                         .appendTo(link);
-                    var sliderElement = self._buildMenuItemSliderElement(state, menuItem);
-                    if (sliderElement) {
-                        sliderElement.appendTo(link);
+                    var sliderContainerAndElement = self._buildMenuItemSliderElement(state, menuItem);
+                    if (sliderContainerAndElement) {
+                        sliderContainerAndElement.container.appendTo(link);
                     }
                     if (isDisabled)
                         listItem.addClass('dl-disabled');
@@ -216,7 +216,7 @@ var VRS;
                         image: imageElement,
                         link: link,
                         text: text,
-                        slider: sliderElement
+                        slider: sliderContainerAndElement ? sliderContainerAndElement.element : null
                     };
                     previousListItem = listItem;
                 }
@@ -250,17 +250,28 @@ var VRS;
             return textElement;
         };
         MenuPlugin.prototype._buildMenuItemSliderElement = function (state, menuItem) {
-            var sliderElement = null;
+            var result = null;
             if (menuItem.showSlider()) {
-                sliderElement = $('<div></div>').slider({
+                var valueSpan = $('<span class="dl-menu-slider-value"></span>')
+                    .text(menuItem.getSliderInitialValue());
+                var sliderElement = $('<div></div>').slider({
                     min: menuItem.getSliderMinimum(),
                     max: menuItem.getSliderMaximum(),
                     step: menuItem.getSliderStep(),
                     value: menuItem.getSliderInitialValue(),
-                    change: function (event, ui) { return menuItem.callSliderCallback(ui.value); }
+                    change: function (event, ui) {
+                        valueSpan.text(ui.value);
+                        menuItem.callSliderCallback(ui.value);
+                    }
                 });
+                result = {
+                    container: $('<div></div>')
+                        .append(sliderElement)
+                        .append(valueSpan),
+                    element: sliderElement
+                };
             }
-            return sliderElement;
+            return result;
         };
         MenuPlugin.prototype._refreshMenuItem = function (state, menuItem) {
             var newImage = this._buildMenuItemImageElement(state, menuItem);

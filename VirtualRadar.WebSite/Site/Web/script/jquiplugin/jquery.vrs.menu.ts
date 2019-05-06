@@ -44,6 +44,15 @@ namespace VRS
     }
 
     /**
+     * Describes an HTML container to add to something and a JQuery UI element contained within.
+     */
+    interface IContainerAndElement
+    {
+        container:  JQuery;
+        element:    JQuery;
+    }
+
+    /**
      * Plugin state
      */
     class MenuPlugin_State
@@ -356,9 +365,9 @@ namespace VRS
                     var text = self._buildMenuItemTextElement(state, menuItem)
                         .appendTo(link);
 
-                    var sliderElement = self._buildMenuItemSliderElement(state, menuItem);
-                    if(sliderElement) {
-                        sliderElement.appendTo(link);
+                    var sliderContainerAndElement = self._buildMenuItemSliderElement(state, menuItem);
+                    if(sliderContainerAndElement) {
+                        sliderContainerAndElement.container.appendTo(link);
                     }
 
                     if(isDisabled) listItem.addClass('dl-disabled');
@@ -370,7 +379,7 @@ namespace VRS
                         image:      imageElement,
                         link:       link,
                         text:       text,
-                        slider:     sliderElement
+                        slider:     sliderContainerAndElement ? sliderContainerAndElement.element : null
                     };
                     previousListItem = listItem;
                 }
@@ -407,21 +416,35 @@ namespace VRS
             return textElement;
         }
 
-        private _buildMenuItemSliderElement(state: MenuPlugin_State, menuItem: MenuItem) : JQuery
+        private _buildMenuItemSliderElement(state: MenuPlugin_State, menuItem: MenuItem) : IContainerAndElement
         {
-            var sliderElement: JQuery = null;
+            var result: IContainerAndElement = null;
 
             if(menuItem.showSlider()) {
-                sliderElement = $('<div></div>').slider({
+                var valueSpan = $('<span class="dl-menu-slider-value"></span>')
+                    .text(menuItem.getSliderInitialValue());
+
+                var sliderElement = $('<div></div>').slider({
                     min: menuItem.getSliderMinimum(),
                     max: menuItem.getSliderMaximum(),
                     step: menuItem.getSliderStep(),
                     value: menuItem.getSliderInitialValue(),
-                    change: (event, ui) => menuItem.callSliderCallback(ui.value)
+                    change: (event, ui) => {
+                        valueSpan.text(ui.value);
+                        menuItem.callSliderCallback(ui.value);
+                    }
                 });
+
+                result = {
+                    container: $('<div></div>')
+                        .append(sliderElement)
+                        .append(valueSpan),
+
+                    element: sliderElement
+                };
             }
 
-            return sliderElement;
+            return result;
         }
 
         private _refreshMenuItem(state: MenuPlugin_State, menuItem: MenuItem)
