@@ -186,10 +186,15 @@
         getZoom: () => number;
         setZoom: (zoom: number) => void;
 
+        getCanSetMapBrightness: () => boolean;
+        getMapBrightness: () => number;
+        setMapBrightness: (value: number) => void;
+
         //
         // Map events
         unhook: (hookResult: IEventHandleJQueryUI) => void;
         hookBoundsChanged: (callback: (event?: Event) => void, forceThis?: Object) => IEventHandleJQueryUI;
+        hookBrightnessChanged: (callback: (event?: Event) => void, forceThis?: Object) => IEventHandleJQueryUI;
         hookCenterChanged: (callback: (event?: Event) => void, forceThis?: Object) => IEventHandleJQueryUI;
         hookClicked: (callback: (event?: Event, data?: IMapMouseEventArgs) => void, forceThis?: Object) => IEventHandleJQueryUI;
         hookDoubleClicked: (callback: (event?: Event, data?: IMapMouseEventArgs) => void, forceThis?: Object) => IEventHandleJQueryUI;
@@ -703,9 +708,11 @@
      */
     export interface IMapSaveState
     {
-        zoom:       number;
-        center:     ILatLng;
-        mapTypeId:  MapTypeEnum;
+        zoom:               number;
+        center:             ILatLng;
+        mapTypeId:          MapTypeEnum;
+        brightnessMapName:  string;
+        brightness:         number;
     }
 
     /**

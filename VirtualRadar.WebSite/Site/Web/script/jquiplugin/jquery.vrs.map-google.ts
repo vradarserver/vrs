@@ -1772,6 +1772,15 @@ namespace VRS
         }
 
         /**
+         * Unused - brightness is not supported on Google Maps.
+         */
+        hookBrightnessChanged(callback: (event?: Event) => void, forceThis?: Object) : IEventHandleJQueryUI
+        {
+            // Hook something so that the caller doesn't need to deal with null. It's just that the map plugin will not raise this event itself.
+            return VRS.globalDispatch.hookJQueryUIPluginEvent(this.element, this._EventPluginName, 'brightnessChanged', callback, forceThis);
+        }
+
+        /**
          * Raised when the map is moved.
          */
         hookCenterChanged(callback: (event?: Event) => void, forceThis?: Object) : IEventHandleJQueryUI
@@ -2161,9 +2170,11 @@ namespace VRS
             var center = this._getCenter(state);
 
             return {
-                zoom:       zoom,
-                mapTypeId:  mapTypeId,
-                center:     center
+                zoom:               zoom,
+                mapTypeId:          mapTypeId,
+                center:             center,
+                brightnessMapName:  'google',
+                brightness:         100
             };
         }
 
@@ -2711,7 +2722,27 @@ namespace VRS
         {
         }
 
-        
+
+        //
+        // BRIGHTNESS METHODS
+        //
+        // The Google Maps version of the plugin does not support configurable brightness.
+
+        getCanSetMapBrightness() : boolean
+        {
+            return false;
+        }
+
+        getMapBrightness() : number
+        {
+            return 100;
+        }
+
+        setMapBrightness(value: number)
+        {
+        }
+
+
         //
         // VRS EVENTS SUBSCRIBED
         //

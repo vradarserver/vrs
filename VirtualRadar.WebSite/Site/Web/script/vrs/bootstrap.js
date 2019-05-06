@@ -196,13 +196,29 @@ var VRS;
             if (pageSettings.showLayersMenu && VRS.serverConfig && VRS.mapLayerManager) {
                 var mapPlugin = VRS.jQueryUIHelper.getMapPlugin(pageSettings.mapJQ);
                 var layers = VRS.mapLayerManager.getMapLayerSettings();
-                if (mapPlugin && layers.length > 0) {
+                if (mapPlugin && layers.length > 0 || mapPlugin.getCanSetMapBrightness()) {
                     result = new VRS.MenuItem({
                         name: 'layers',
                         labelKey: 'MapLayers'
                     });
+                    if (mapPlugin.getCanSetMapBrightness()) {
+                        result.subItems.push(new VRS.MenuItem({
+                            name: 'map-brightness',
+                            labelKey: 'MapBrightness',
+                            showSlider: true,
+                            sliderMinimum: 10,
+                            sliderMaximum: 150,
+                            sliderStep: 10,
+                            sliderInitialValue: mapPlugin.getMapBrightness(),
+                            sliderCallback: function (value) { return mapPlugin.setMapBrightness(value); },
+                            noAutoClose: true
+                        }));
+                        if (layers.length > 0) {
+                            result.subItems.push(null);
+                        }
+                    }
                     $.each(layers, function (idx, layer) {
-                        var layerMenuItem = new VRS.MenuItem({
+                        result.subItems.push(new VRS.MenuItem({
                             name: 'layer-' + layer.Name,
                             labelKey: function () { return layer.Name; },
                             checked: function () { return layer.IsVisible; },
@@ -214,8 +230,7 @@ var VRS;
                             sliderInitialValue: layer.getMapOpacity(),
                             sliderCallback: function (value) { return layer.setMapOpacity(value); },
                             noAutoClose: true
-                        });
-                        result.subItems.push(layerMenuItem);
+                        }));
                     });
                 }
             }

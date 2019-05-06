@@ -2653,6 +2653,15 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Map Brightness.
+        /// </summary>
+        public static string MapBrightness {
+            get {
+                return ResourceManager.GetString("MapBrightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Map Layers.
         /// </summary>
         public static string MapLayers {

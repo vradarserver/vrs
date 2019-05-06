@@ -1822,4 +1822,7 @@
   <data name="MapLayers" xml:space="preserve">
     <value>Map Layers</value>
   </data>
+  <data name="MapBrightness" xml:space="preserve">
+    <value>Map Brightness</value>
+  </data>
 </root>

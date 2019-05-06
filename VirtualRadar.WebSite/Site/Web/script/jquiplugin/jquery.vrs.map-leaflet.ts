@@ -1389,6 +1389,11 @@ namespace VRS
         map: L.Map = undefined;
 
         /**
+         * The name of the current map's tile server settings.
+         */
+        mapName: string = undefined;
+
+        /**
          * The map tile layer.
          */
         tileLayer: L.TileLayer = undefined;
@@ -1433,6 +1438,16 @@ namespace VRS
          * while moving the map.
          */
         settingCenter: ILatLng = undefined;
+
+        /**
+         * The default brightness specified by the tile server settings.
+         */
+        defaultBrightness: number = undefined;
+
+        /**
+         * The map brightness where 100 = normal brightness and 150 is 50% extra bright.
+         */
+        brightness = 100;
     }
 
     /**
@@ -1689,6 +1704,15 @@ namespace VRS
             this._trigger('boundsChanged');
         }
 
+        hookBrightnessChanged(callback: (event?: Event) => void, forceThis?: Object) : IEventHandleJQueryUI
+        {
+            return VRS.globalDispatch.hookJQueryUIPluginEvent(this.element, this._EventPluginName, 'brightnessChanged', callback, forceThis);
+        }
+        private _raiseBrightnessChanged()
+        {
+            this._trigger('brightnessChanged');
+        }
+
         hookCenterChanged(callback: (event?: Event) => void, forceThis?: Object) : IEventHandleJQueryUI
         {
             return VRS.globalDispatch.hookJQueryUIPluginEvent(this.element, this._EventPluginName, 'centerChanged', callback, forceThis);
@@ -1825,11 +1849,16 @@ namespace VRS
                     mapControls:        this.options.mapControls
                 });
 
+                var overrideBrightness = tileServerSettings.DefaultBrightness;
                 if(this.options.useStateOnOpen) {
                     var settings = this.loadState();
                     mapOptions.zoom = settings.zoom;
                     mapOptions.center = settings.center;
                     mapOptions.mapTypeId = settings.mapTypeId;
+
+                    if(tileServerSettings.Name === settings.brightnessMapName && settings.brightness) {
+                        overrideBrightness = settings.brightness;
+                    }
                 }
 
                 mapOptions.zoom = this._normaliseZoom(mapOptions.zoom, tileServerSettings.MinZoom, tileServerSettings.MaxZoom);
@@ -1845,8 +1874,10 @@ namespace VRS
 
                 var state = this._getState();
                 state.map = L.map(state.mapContainer[0], leafletOptions);
+                state.mapName = tileServerSettings.Name;
+                state.defaultBrightness = tileServerSettings.DefaultBrightness;
 
-                var tileServerOptions = this._buildTileServerOptions(tileServerSettings);
+                var tileServerOptions = this._buildTileServerOptions(state, tileServerSettings, overrideBrightness);
                 state.tileLayer = L.tileLayer(tileServerSettings.Url, tileServerOptions);
                 state.tileLayer.addTo(state.map);
 
@@ -1869,7 +1900,7 @@ namespace VRS
             }
         }
 
-        private _buildTileServerOptions(settings: ITileServerSettings) : L.TileLayerOptions
+        private _buildTileServerOptions(state: MapPluginState, settings: ITileServerSettings, overrideBrightness: number) : L.TileLayerOptions
         {
             var result: L.TileLayerOptions = {
                 attribution:    this._attributionToHtml(settings.Attribution),
@@ -1880,12 +1911,14 @@ namespace VRS
             if(settings.ClassName) {
                 result.className = settings.ClassName;
             }
-            if(settings.DefaultBrightness > 0 && settings.DefaultBrightness < 100) {
-                result.className = result.className ? (result.className + ' ') : '';
-                result.className += 'vrs-brightness-' + (Math.floor(settings.DefaultBrightness / 10) * 10);
-            }
-            if(settings.DefaultOpacity > 0 && settings.DefaultOpacity < 100) {
-                result.opacity = settings.DefaultOpacity / 100;
+            if(!settings.IsLayer) {
+                var brightness = overrideBrightness && !isNaN(overrideBrightness) ? overrideBrightness : settings.DefaultBrightness;
+                result.className = this._setBrightnessClass(result.className, state.brightness, brightness);
+                state.brightness = brightness;
+            } else {
+                if(settings.DefaultOpacity > 0 && settings.DefaultOpacity < 100) {
+                    result.opacity = settings.DefaultOpacity / 100;
+                }
             }
             if(settings.MaxNativeZoom !== null && settings.MaxNativeZoom !== undefined) {
                 result.maxNativeZoom = settings.MaxNativeZoom;
@@ -2007,6 +2040,10 @@ namespace VRS
             if(config.center)                       this._setCenter(state, config.center);
             if(config.zoom || config.zoom === 0)    this._setZoom(state, config.zoom);
             if(config.mapTypeId)                    this._setMapType(state, config.mapTypeId);
+
+            if(state.mapName === config.brightnessMapName) {
+                this.setMapBrightness(config.brightness);
+            }
         };
 
         loadAndApplyState()
@@ -2022,14 +2059,13 @@ namespace VRS
         private _createSettings() : IMapSaveState
         {
             var state = this._getState();
-            var zoom = this._getZoom(state);
-            var mapTypeId = this._getMapType(state);
-            var center = this._getCenter(state);
 
             return {
-                zoom:       zoom,
-                mapTypeId:  mapTypeId,
-                center:     center
+                zoom:               this._getZoom(state),
+                mapTypeId:          this._getMapType(state),
+                center:             this._getCenter(state),
+                brightnessMapName:  state.mapName,
+                brightness:         state.brightness === state.defaultBrightness ? undefined : state.brightness
             };
         }
 
@@ -2450,7 +2486,7 @@ namespace VRS
             if(state.map && layerTileSettings && layerTileSettings.IsLayer && layerTileSettings.Name) {
                 var mapLayer = state.layers[layerTileSettings.Name];
                 if(!mapLayer) {
-                    var layerOptions = this._buildTileServerOptions(layerTileSettings);
+                    var layerOptions = this._buildTileServerOptions(state, layerTileSettings, 100);
 
                     if(opacity !== null && opacity !== undefined) {
                         layerOptions.opacity = Math.min(1.0, Math.max(0, opacity / 100.0));
@@ -2511,6 +2547,81 @@ namespace VRS
                     mapLayer.setOpacity(Math.min(1.0, Math.max(0.0, opacity / 100.0)));
                 }
             }
+        }
+
+
+        //
+        // BRIGHTNESS METHODS
+        //
+        getCanSetMapBrightness() : boolean
+        {
+            return true;
+        }
+
+        getMapBrightness() : number
+        {
+            var state = this._getState();
+            return state.brightness;
+        }
+
+        setMapBrightness(value: number)
+        {
+            var state = this._getState();
+            if(value && !isNaN(value) && state.brightness !== value) {
+                if(!state.map) {
+                    state.brightness = value;
+                } else {
+                    var container = state.tileLayer.getContainer();
+                    container.className = this._setBrightnessClass(
+                        container.className,
+                        state.brightness,
+                        value
+                    );
+                    state.brightness = value;
+                }
+
+                this.saveState();
+                this._raiseBrightnessChanged();
+            }
+        }
+
+        private _setBrightnessClass(currentClassName: string, currentBrightness: number, newBrightness: number) : string
+        {
+            var result = currentClassName;
+
+            if(currentBrightness !== newBrightness) {
+                if(!result) {
+                    result = '';
+                }
+
+                var currentBrightnessClass = this._classNameForMapBrightness(currentBrightness);
+                if(currentBrightnessClass !== '') {
+                    result = result
+                        .replace(currentBrightnessClass, '')
+                        .trim();
+                }
+
+                var newBrightnessClass = this._classNameForMapBrightness(newBrightness);
+                if(newBrightnessClass !== '') {
+                    if(result.length > 0) {
+                        result += ' ';
+                    }
+                    result += newBrightnessClass;
+                }
+            }
+
+            return result;
+        }
+
+        private _classNameForMapBrightness(brightness: number) : string
+        {
+            var result = '';
+
+            if(brightness && !isNaN(brightness) && brightness > 0 && brightness <= 150 && brightness !== 100 && brightness / 10 === Math.floor(brightness / 10)) {
+                result = 'vrs-brightness-' + brightness;
+            }
+
+            return result;
         }
 
 

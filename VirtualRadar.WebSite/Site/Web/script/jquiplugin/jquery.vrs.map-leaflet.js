@@ -910,6 +910,7 @@ var VRS;
         function MapPluginState() {
             this.mapContainer = undefined;
             this.map = undefined;
+            this.mapName = undefined;
             this.tileLayer = undefined;
             this.markers = {};
             this.polylines = {};
@@ -919,6 +920,8 @@ var VRS;
             this.layers = {};
             this.eventsHooked = false;
             this.settingCenter = undefined;
+            this.defaultBrightness = undefined;
+            this.brightness = 100;
         }
         return MapPluginState;
     }());
@@ -1115,6 +1118,12 @@ var VRS;
         MapPlugin.prototype._raiseBoundsChanged = function () {
             this._trigger('boundsChanged');
         };
+        MapPlugin.prototype.hookBrightnessChanged = function (callback, forceThis) {
+            return VRS.globalDispatch.hookJQueryUIPluginEvent(this.element, this._EventPluginName, 'brightnessChanged', callback, forceThis);
+        };
+        MapPlugin.prototype._raiseBrightnessChanged = function () {
+            this._trigger('brightnessChanged');
+        };
         MapPlugin.prototype.hookCenterChanged = function (callback, forceThis) {
             return VRS.globalDispatch.hookJQueryUIPluginEvent(this.element, this._EventPluginName, 'centerChanged', callback, forceThis);
         };
@@ -1209,11 +1218,15 @@ var VRS;
                     controlPosition: this.options.controlPosition,
                     mapControls: this.options.mapControls
                 });
+                var overrideBrightness = tileServerSettings.DefaultBrightness;
                 if (this.options.useStateOnOpen) {
                     var settings = this.loadState();
                     mapOptions.zoom = settings.zoom;
                     mapOptions.center = settings.center;
                     mapOptions.mapTypeId = settings.mapTypeId;
+                    if (tileServerSettings.Name === settings.brightnessMapName && settings.brightness) {
+                        overrideBrightness = settings.brightness;
+                    }
                 }
                 mapOptions.zoom = this._normaliseZoom(mapOptions.zoom, tileServerSettings.MinZoom, tileServerSettings.MaxZoom);
                 var leafletOptions = {
@@ -1226,7 +1239,9 @@ var VRS;
                 };
                 var state = this._getState();
                 state.map = L.map(state.mapContainer[0], leafletOptions);
-                var tileServerOptions = this._buildTileServerOptions(tileServerSettings);
+                state.mapName = tileServerSettings.Name;
+                state.defaultBrightness = tileServerSettings.DefaultBrightness;
+                var tileServerOptions = this._buildTileServerOptions(state, tileServerSettings, overrideBrightness);
                 state.tileLayer = L.tileLayer(tileServerSettings.Url, tileServerOptions);
                 state.tileLayer.addTo(state.map);
                 this._hookEvents(state, true);
@@ -1247,7 +1262,7 @@ var VRS;
                 waitUntilReady();
             }
         };
-        MapPlugin.prototype._buildTileServerOptions = function (settings) {
+        MapPlugin.prototype._buildTileServerOptions = function (state, settings, overrideBrightness) {
             var result = {
                 attribution: this._attributionToHtml(settings.Attribution),
                 detectRetina: settings.DetectRetina,
@@ -1256,12 +1271,15 @@ var VRS;
             if (settings.ClassName) {
                 result.className = settings.ClassName;
             }
-            if (settings.DefaultBrightness > 0 && settings.DefaultBrightness < 100) {
-                result.className = result.className ? (result.className + ' ') : '';
-                result.className += 'vrs-brightness-' + (Math.floor(settings.DefaultBrightness / 10) * 10);
+            if (!settings.IsLayer) {
+                var brightness = overrideBrightness && !isNaN(overrideBrightness) ? overrideBrightness : settings.DefaultBrightness;
+                result.className = this._setBrightnessClass(result.className, state.brightness, brightness);
+                state.brightness = brightness;
             }
-            if (settings.DefaultOpacity > 0 && settings.DefaultOpacity < 100) {
-                result.opacity = settings.DefaultOpacity / 100;
+            else {
+                if (settings.DefaultOpacity > 0 && settings.DefaultOpacity < 100) {
+                    result.opacity = settings.DefaultOpacity / 100;
+                }
             }
             if (settings.MaxNativeZoom !== null && settings.MaxNativeZoom !== undefined) {
                 result.maxNativeZoom = settings.MaxNativeZoom;
@@ -1363,6 +1381,9 @@ var VRS;
                 this._setZoom(state, config.zoom);
             if (config.mapTypeId)
                 this._setMapType(state, config.mapTypeId);
+            if (state.mapName === config.brightnessMapName) {
+                this.setMapBrightness(config.brightness);
+            }
         };
         ;
         MapPlugin.prototype.loadAndApplyState = function () {
@@ -1373,13 +1394,12 @@ var VRS;
         };
         MapPlugin.prototype._createSettings = function () {
             var state = this._getState();
-            var zoom = this._getZoom(state);
-            var mapTypeId = this._getMapType(state);
-            var center = this._getCenter(state);
             return {
-                zoom: zoom,
-                mapTypeId: mapTypeId,
-                center: center
+                zoom: this._getZoom(state),
+                mapTypeId: this._getMapType(state),
+                center: this._getCenter(state),
+                brightnessMapName: state.mapName,
+                brightness: state.brightness === state.defaultBrightness ? undefined : state.brightness
             };
         };
         MapPlugin.prototype.addMarker = function (id, userOptions) {
@@ -1722,7 +1742,7 @@ var VRS;
             if (state.map && layerTileSettings && layerTileSettings.IsLayer && layerTileSettings.Name) {
                 var mapLayer = state.layers[layerTileSettings.Name];
                 if (!mapLayer) {
-                    var layerOptions = this._buildTileServerOptions(layerTileSettings);
+                    var layerOptions = this._buildTileServerOptions(state, layerTileSettings, 100);
                     if (opacity !== null && opacity !== undefined) {
                         layerOptions.opacity = Math.min(1.0, Math.max(0, opacity / 100.0));
                     }
@@ -1770,6 +1790,57 @@ var VRS;
                     mapLayer.setOpacity(Math.min(1.0, Math.max(0.0, opacity / 100.0)));
                 }
             }
+        };
+        MapPlugin.prototype.getCanSetMapBrightness = function () {
+            return true;
+        };
+        MapPlugin.prototype.getMapBrightness = function () {
+            var state = this._getState();
+            return state.brightness;
+        };
+        MapPlugin.prototype.setMapBrightness = function (value) {
+            var state = this._getState();
+            if (value && !isNaN(value) && state.brightness !== value) {
+                if (!state.map) {
+                    state.brightness = value;
+                }
+                else {
+                    var container = state.tileLayer.getContainer();
+                    container.className = this._setBrightnessClass(container.className, state.brightness, value);
+                    state.brightness = value;
+                }
+                this.saveState();
+                this._raiseBrightnessChanged();
+            }
+        };
+        MapPlugin.prototype._setBrightnessClass = function (currentClassName, currentBrightness, newBrightness) {
+            var result = currentClassName;
+            if (currentBrightness !== newBrightness) {
+                if (!result) {
+                    result = '';
+                }
+                var currentBrightnessClass = this._classNameForMapBrightness(currentBrightness);
+                if (currentBrightnessClass !== '') {
+                    result = result
+                        .replace(currentBrightnessClass, '')
+                        .trim();
+                }
+                var newBrightnessClass = this._classNameForMapBrightness(newBrightness);
+                if (newBrightnessClass !== '') {
+                    if (result.length > 0) {
+                        result += ' ';
+                    }
+                    result += newBrightnessClass;
+                }
+            }
+            return result;
+        };
+        MapPlugin.prototype._classNameForMapBrightness = function (brightness) {
+            var result = '';
+            if (brightness && !isNaN(brightness) && brightness > 0 && brightness <= 150 && brightness !== 100 && brightness / 10 === Math.floor(brightness / 10)) {
+                result = 'vrs-brightness-' + brightness;
+            }
+            return result;
         };
         MapPlugin.prototype._targetResized = function () {
             var state = this._getState();

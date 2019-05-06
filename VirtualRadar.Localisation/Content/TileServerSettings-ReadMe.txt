@@ -125,8 +125,8 @@ BRIGHTNESS AND OPACITY
 ======================
 In the first version of the tile server settings brightness was implied by using
 classes. From version 2.4.5 onwards this is no longer the case, brightness has
-its own setting. Brightness values range from 0 (black) to 100 (full brightness)
-in steps of 10.
+its own setting. Brightness values range from 10 (dark) to 100 (full brightness)
+to 150 (50% extra bright) in steps of 10.
 
 Brightness only applies to maps, it does not get used for layers.
 
