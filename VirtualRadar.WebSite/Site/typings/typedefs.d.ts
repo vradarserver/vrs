@@ -187,6 +187,7 @@
         setZoom: (zoom: number) => void;
 
         getCanSetMapBrightness: () => boolean;
+        getDefaultMapBrightness: () => number;
         getMapBrightness: () => number;
         setMapBrightness: (value: number) => void;
 

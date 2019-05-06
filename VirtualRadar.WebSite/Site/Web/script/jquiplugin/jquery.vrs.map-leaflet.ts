@@ -2558,6 +2558,12 @@ namespace VRS
             return true;
         }
 
+        getDefaultMapBrightness() : number
+        {
+            var state = this._getState();
+            return state.defaultBrightness;
+        }
+
         getMapBrightness() : number
         {
             var state = this._getState();

@@ -86,6 +86,11 @@ namespace VRS
         sliderInitialValue?: number | VoidFuncReturning<number>;
 
         /**
+         * The default value for the slider. If this is not supplied then the reset button is not shown.
+         */
+        sliderDefaultValue?: number | VoidFuncReturning<number>;
+
+        /**
          * The function that is called when the slider value changes.
          */
         sliderCallback?: (value: number) => void;
@@ -137,6 +142,7 @@ namespace VRS
         private _SliderMaximum: number | VoidFuncReturning<number>;
         private _SliderStep: number | VoidFuncReturning<number>;
         private _SliderInitialValue: number | VoidFuncReturning<number>;
+        private _SliderDefaultValue: number | VoidFuncReturning<number>;
         private _SliderCallback: (value: number) => void;
         private _LabelImageUrl: string | VoidFuncReturning<string>;
         private _LabelImageClasses: string | VoidFuncReturning<string>;
@@ -170,6 +176,7 @@ namespace VRS
             this._SliderMaximum = settings.sliderMaximum;
             this._SliderStep = settings.sliderStep;
             this._SliderInitialValue = settings.sliderInitialValue;
+            this._SliderDefaultValue = settings.sliderDefaultValue;
             this._SliderCallback = settings.sliderCallback;
 
             this.name = settings.name;
@@ -290,6 +297,11 @@ namespace VRS
         getSliderInitialValue() : number
         {
             return this._SliderInitialValue !== undefined ? Utility.ValueOrFuncReturningValue(this._SliderInitialValue, this.getSliderMinimum()) : this.getSliderMinimum();
+        }
+
+        getSliderDefaultValue() : number
+        {
+            return this._SliderDefaultValue !== undefined ? Utility.ValueOrFuncReturningValue(this._SliderDefaultValue, this.getSliderMinimum()) : null;
         }
 
         callSliderCallback(value: number)

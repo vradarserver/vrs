@@ -1794,6 +1794,10 @@ var VRS;
         MapPlugin.prototype.getCanSetMapBrightness = function () {
             return true;
         };
+        MapPlugin.prototype.getDefaultMapBrightness = function () {
+            var state = this._getState();
+            return state.defaultBrightness;
+        };
         MapPlugin.prototype.getMapBrightness = function () {
             var state = this._getState();
             return state.brightness;

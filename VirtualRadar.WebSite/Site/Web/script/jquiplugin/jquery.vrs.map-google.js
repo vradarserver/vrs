@@ -1608,6 +1608,9 @@ var VRS;
         MapPlugin.prototype.getCanSetMapBrightness = function () {
             return false;
         };
+        MapPlugin.prototype.getDefaultMapBrightness = function () {
+            return 100;
+        };
         MapPlugin.prototype.getMapBrightness = function () {
             return 100;
         };

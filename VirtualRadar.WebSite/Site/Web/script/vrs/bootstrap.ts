@@ -409,7 +409,8 @@ namespace VRS
                             sliderMinimum:      10,
                             sliderMaximum:      150,
                             sliderStep:         10,
-                            sliderInitialValue: mapPlugin.getMapBrightness(),
+                            sliderInitialValue: () => mapPlugin.getMapBrightness(),
+                            sliderDefaultValue: () => mapPlugin.getDefaultMapBrightness(),
                             sliderCallback:     (value: number) => mapPlugin.setMapBrightness(value),
                             noAutoClose:        true
                         }));
@@ -429,7 +430,8 @@ namespace VRS
                             sliderMinimum:      10,
                             sliderMaximum:      100,
                             sliderStep:         10,
-                            sliderInitialValue: layer.getMapOpacity(),
+                            sliderInitialValue: () => layer.getMapOpacity(),
+                            sliderDefaultValue: () => layer.TileServerSettings.DefaultOpacity,
                             sliderCallback:     (value: number) => layer.setMapOpacity(value),
                             noAutoClose:        true
                         }));

@@ -252,7 +252,7 @@ var VRS;
         MenuPlugin.prototype._buildMenuItemSliderElement = function (state, menuItem) {
             var result = null;
             if (menuItem.showSlider()) {
-                var valueSpan = $('<span class="dl-menu-slider-value"></span>')
+                var valueSpan = $('<span></span>')
                     .text(menuItem.getSliderInitialValue());
                 var sliderElement = $('<div></div>').slider({
                     min: menuItem.getSliderMinimum(),
@@ -264,10 +264,19 @@ var VRS;
                         menuItem.callSliderCallback(ui.value);
                     }
                 });
+                var resetAndText = $('<div class="dl-menu-slider-value"></div>')
+                    .append(valueSpan);
+                if (menuItem.getSliderDefaultValue() !== null) {
+                    resetAndText.append($('<span class="vrsIcon vrsIconButton vrsIcon-close "></span>')
+                        .on('click', function (e) {
+                        sliderElement.slider('value', menuItem.getSliderDefaultValue());
+                        e.stopPropagation();
+                    }));
+                }
                 result = {
                     container: $('<div></div>')
                         .append(sliderElement)
-                        .append(valueSpan),
+                        .append(resetAndText),
                     element: sliderElement
                 };
             }

@@ -421,7 +421,7 @@ namespace VRS
             var result: IContainerAndElement = null;
 
             if(menuItem.showSlider()) {
-                var valueSpan = $('<span class="dl-menu-slider-value"></span>')
+                var valueSpan = $('<span></span>')
                     .text(menuItem.getSliderInitialValue());
 
                 var sliderElement = $('<div></div>').slider({
@@ -435,10 +435,23 @@ namespace VRS
                     }
                 });
 
+                var resetAndText = $('<div class="dl-menu-slider-value"></div>')
+                    .append(valueSpan);
+
+                if(menuItem.getSliderDefaultValue() !== null) {
+                    resetAndText.append(
+                        $('<span class="vrsIcon vrsIconButton vrsIcon-close "></span>')
+                        .on('click', (e: JQueryEventObject) => {
+                            sliderElement.slider('value', menuItem.getSliderDefaultValue());
+                            e.stopPropagation();
+                        })
+                    );
+                }
+
                 result = {
                     container: $('<div></div>')
                         .append(sliderElement)
-                        .append(valueSpan),
+                        .append(resetAndText),
 
                     element: sliderElement
                 };

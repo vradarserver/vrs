@@ -21,6 +21,7 @@ var VRS;
             this._SliderMaximum = settings.sliderMaximum;
             this._SliderStep = settings.sliderStep;
             this._SliderInitialValue = settings.sliderInitialValue;
+            this._SliderDefaultValue = settings.sliderDefaultValue;
             this._SliderCallback = settings.sliderCallback;
             this.name = settings.name;
             this.clickCallback = settings.clickCallback;
@@ -86,6 +87,9 @@ var VRS;
         };
         MenuItem.prototype.getSliderInitialValue = function () {
             return this._SliderInitialValue !== undefined ? VRS.Utility.ValueOrFuncReturningValue(this._SliderInitialValue, this.getSliderMinimum()) : this.getSliderMinimum();
+        };
+        MenuItem.prototype.getSliderDefaultValue = function () {
+            return this._SliderDefaultValue !== undefined ? VRS.Utility.ValueOrFuncReturningValue(this._SliderDefaultValue, this.getSliderMinimum()) : null;
         };
         MenuItem.prototype.callSliderCallback = function (value) {
             if (this._SliderCallback) {

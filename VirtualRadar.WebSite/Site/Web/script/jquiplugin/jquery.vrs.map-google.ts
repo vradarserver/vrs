@@ -2733,6 +2733,11 @@ namespace VRS
             return false;
         }
 
+        getDefaultMapBrightness() : number
+        {
+            return 100;
+        }
+
         getMapBrightness() : number
         {
             return 100;

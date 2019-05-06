@@ -209,7 +209,8 @@ var VRS;
                             sliderMinimum: 10,
                             sliderMaximum: 150,
                             sliderStep: 10,
-                            sliderInitialValue: mapPlugin.getMapBrightness(),
+                            sliderInitialValue: function () { return mapPlugin.getMapBrightness(); },
+                            sliderDefaultValue: function () { return mapPlugin.getDefaultMapBrightness(); },
                             sliderCallback: function (value) { return mapPlugin.setMapBrightness(value); },
                             noAutoClose: true
                         }));
@@ -227,7 +228,8 @@ var VRS;
                             sliderMinimum: 10,
                             sliderMaximum: 100,
                             sliderStep: 10,
-                            sliderInitialValue: layer.getMapOpacity(),
+                            sliderInitialValue: function () { return layer.getMapOpacity(); },
+                            sliderDefaultValue: function () { return layer.TileServerSettings.DefaultOpacity; },
                             sliderCallback: function (value) { return layer.setMapOpacity(value); },
                             noAutoClose: true
                         }));
