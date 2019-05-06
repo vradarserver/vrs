@@ -254,15 +254,17 @@ var VRS;
             if (menuItem.showSlider()) {
                 var valueSpan = $('<span></span>')
                     .text(menuItem.getSliderInitialValue());
+                var valueChanged = function (event, ui) {
+                    valueSpan.text(ui.value);
+                    menuItem.callSliderCallback(ui.value);
+                };
                 var sliderElement = $('<div></div>').slider({
                     min: menuItem.getSliderMinimum(),
                     max: menuItem.getSliderMaximum(),
                     step: menuItem.getSliderStep(),
                     value: menuItem.getSliderInitialValue(),
-                    change: function (event, ui) {
-                        valueSpan.text(ui.value);
-                        menuItem.callSliderCallback(ui.value);
-                    }
+                    change: valueChanged,
+                    slide: valueChanged,
                 });
                 var resetAndText = $('<div class="dl-menu-slider-value"></div>')
                     .append(valueSpan);

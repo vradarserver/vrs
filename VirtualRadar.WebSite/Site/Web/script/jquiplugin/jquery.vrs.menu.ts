@@ -424,15 +424,18 @@ namespace VRS
                 var valueSpan = $('<span></span>')
                     .text(menuItem.getSliderInitialValue());
 
+                var valueChanged = (event: Event, ui: JQueryUI.SliderUIParams) => {
+                    valueSpan.text(ui.value);
+                    menuItem.callSliderCallback(ui.value);
+                };
+
                 var sliderElement = $('<div></div>').slider({
                     min: menuItem.getSliderMinimum(),
                     max: menuItem.getSliderMaximum(),
                     step: menuItem.getSliderStep(),
                     value: menuItem.getSliderInitialValue(),
-                    change: (event, ui) => {
-                        valueSpan.text(ui.value);
-                        menuItem.callSliderCallback(ui.value);
-                    }
+                    change: valueChanged,
+                    slide: valueChanged,
                 });
 
                 var resetAndText = $('<div class="dl-menu-slider-value"></div>')
