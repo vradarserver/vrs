@@ -767,7 +767,7 @@ namespace VRS
                 name:       'audio',
                 labelKey:   'PaneAudio',
                 vrsIcon:    'volume-high',
-                suppress:   function() { return !pageSettings.audio.canPlayAudio(true); }
+                suppress:   function() { return !pageSettings.audio.canPlayAudio(true); },
             });
 
             audioMenuItem.subItems.push(new VRS.MenuItem({
@@ -776,22 +776,17 @@ namespace VRS
                 vrsIcon:        function() { return pageSettings.audio.getMuted() ? 'volume-medium' : 'volume-mute'; },
                 clickCallback:  function() { pageSettings.audio.setMuted(!pageSettings.audio.getMuted()); }
             }));
-            $.each([25, 50, 75, 100], function(idx, vol) {
-                audioMenuItem.subItems.push(new VRS.MenuItem({
-                    name:           'audio-vol' + vol,
-                    labelKey:       'Volume' + vol,
-                    disabled:       function() { return pageSettings.audio.getVolume() == vol/100; },
-                    clickCallback:  function() { pageSettings.audio.setVolume(vol/100); pageSettings.audio.saveState(); },
-                    vrsIcon:        function() {
-                        switch(vol) {
-                            case 25:    return 'volume-mute2';
-                            case 50:    return 'volume-low';
-                            case 75:    return 'volume-medium';
-                            default:    return 'volume-high';
-                        }
-                    }
-                }))
-            });
+            audioMenuItem.subItems.push(new VRS.MenuItem({
+                name:               'audio-volume',
+                labelKey:           'Volume',
+                vrsIcon:            'volume-low',
+                showSlider:         true,
+                sliderMinimum:      0,
+                sliderMaximum:      100,
+                sliderInitialValue: pageSettings.audio.getVolume() * 100,
+                sliderDefaultValue: 100,
+                sliderCallback:     (value: number) => pageSettings.audio.setVolume(value / 100)
+            }));
 
             return audioMenuItem;
         }

@@ -4966,38 +4966,11 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Volume 100%.
+        ///   Looks up a localized string similar to Volume.
         /// </summary>
-        public static string Volume100 {
+        public static string Volume {
             get {
-                return ResourceManager.GetString("Volume100", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Volume 25%.
-        /// </summary>
-        public static string Volume25 {
-            get {
-                return ResourceManager.GetString("Volume25", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Volume 50%.
-        /// </summary>
-        public static string Volume50 {
-            get {
-                return ResourceManager.GetString("Volume50", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Volume 75%.
-        /// </summary>
-        public static string Volume75 {
-            get {
-                return ResourceManager.GetString("Volume75", resourceCulture);
+                return ResourceManager.GetString("Volume", resourceCulture);
             }
         }
         
