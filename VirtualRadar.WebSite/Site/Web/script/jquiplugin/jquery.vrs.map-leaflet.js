@@ -1399,7 +1399,7 @@ var VRS;
                 mapTypeId: this._getMapType(state),
                 center: this._getCenter(state),
                 brightnessMapName: state.mapName,
-                brightness: state.brightness === state.defaultBrightness ? undefined : state.brightness
+                brightness: state.brightness === state.defaultBrightness ? 0 : state.brightness
             };
         };
         MapPlugin.prototype.addMarker = function (id, userOptions) {
