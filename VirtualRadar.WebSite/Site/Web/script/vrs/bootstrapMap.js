@@ -222,7 +222,8 @@ var VRS;
             if (pageSettings.showReportLinks && (!VRS.serverConfig || VRS.serverConfig.reportsEnabled())) {
                 menuItems.push(this.createReportsMenuEntry(pageSettings));
             }
-            var layerMenuItem = this.createLayersMenuEntry(pageSettings, true);
+            var mapWrapper = VRS.jQueryUIHelper.getMapPlugin(pageSettings.mapJQ);
+            var layerMenuItem = this.createLayersMenuEntry(pageSettings, mapWrapper, true);
             if (layerMenuItem) {
                 menuItems.push(null);
                 menuItems.push(layerMenuItem);

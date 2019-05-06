@@ -388,20 +388,19 @@ namespace VRS
             return pageSettings.mapButton;
         }
 
-        protected createLayersMenuEntry(pageSettings: PageSettings_Base, isLivePage: boolean) : MenuItem
+        protected createLayersMenuEntry(pageSettings: PageSettings_Base, mapWrapper: IMap, isLivePage: boolean) : MenuItem
         {
             var result: VRS.MenuItem = null;
 
             if(pageSettings.showLayersMenu && VRS.serverConfig && VRS.mapLayerManager) {
-                var mapPlugin = VRS.jQueryUIHelper.getMapPlugin(pageSettings.mapJQ);
                 var layers = VRS.mapLayerManager.getMapLayerSettings();
-                if(mapPlugin && layers.length > 0 || mapPlugin.getCanSetMapBrightness()) {
+                if(mapWrapper && layers.length > 0 || mapWrapper.getCanSetMapBrightness()) {
                     result = new VRS.MenuItem({
                         name: 'layers',
                         labelKey: 'MapLayers'
                     });
 
-                    if(mapPlugin.getCanSetMapBrightness()) {
+                    if(mapWrapper.getCanSetMapBrightness()) {
                         result.subItems.push(new VRS.MenuItem({
                             name:               'map-brightness',
                             labelKey:           'MapBrightness',
@@ -409,9 +408,9 @@ namespace VRS
                             sliderMinimum:      10,
                             sliderMaximum:      150,
                             sliderStep:         10,
-                            sliderInitialValue: () => mapPlugin.getMapBrightness(),
-                            sliderDefaultValue: () => mapPlugin.getDefaultMapBrightness(),
-                            sliderCallback:     (value: number) => mapPlugin.setMapBrightness(value),
+                            sliderInitialValue: () => mapWrapper.getMapBrightness(),
+                            sliderDefaultValue: () => mapWrapper.getDefaultMapBrightness(),
+                            sliderCallback:     (value: number) => mapWrapper.setMapBrightness(value),
                             noAutoClose:        true
                         }));
 

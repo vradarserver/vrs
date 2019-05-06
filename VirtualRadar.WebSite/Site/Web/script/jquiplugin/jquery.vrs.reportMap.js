@@ -102,6 +102,10 @@ var VRS;
             var state = this._getState();
             return state.mapPlugin && state.mapPlugin.isOpen();
         };
+        ReportMapPlugin.prototype.getMapWrapper = function () {
+            var state = this._getState();
+            return state.mapPlugin;
+        };
         ReportMapPlugin.prototype._createMap = function (state) {
             var options = this.options;
             if (options.report) {

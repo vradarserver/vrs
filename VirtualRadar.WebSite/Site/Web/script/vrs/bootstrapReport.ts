@@ -135,6 +135,7 @@ namespace VRS
                 showOptionsSetting:         true,
                 showLanguageSetting:        true,
                 showLayoutSetting:          true,
+                showLayersMenu:             true,
                 settingsMenu:               null,
                 splittersJQ:                null,
                 pagesJQ:                    null,
@@ -205,6 +206,11 @@ namespace VRS
          */
         private mapCreated(pageSettings: PageSettings_Report)
         {
+            // Initialise the map layers manager
+            if(VRS.mapLayerManager) {
+                VRS.mapLayerManager.registerMap(pageSettings.mapPlugin.getMapWrapper());
+            }
+
             // Create the report detail panel
             if(pageSettings.detailJQ) {
                 pageSettings.detailJQ.vrsReportDetail(VRS.jQueryUIHelper.getReportDetailOptions({
@@ -252,11 +258,19 @@ namespace VRS
                 menuItems.push(this.createLocaleMenuEntry(pageSettings));
             }
 
-            menuItems.push(null);
-            
             if(pageSettings.showLayoutSetting && pageSettings.layoutMenuItem) {
+                menuItems.push(null);
                 menuItems.push(pageSettings.layoutMenuItem);
             }
+
+            var mapWrapper = pageSettings.mapPlugin.getMapWrapper();
+            var mapLayersMenu = this.createLayersMenuEntry(pageSettings, mapWrapper, false);
+            if(mapLayersMenu) {
+                menuItems.push(null);
+                menuItems.push(mapLayersMenu);
+            }
+
+            menuItems.push(null);
         }
 
         /**

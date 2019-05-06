@@ -191,17 +191,16 @@ var VRS;
             }
             return pageSettings.mapButton;
         };
-        Bootstrap.prototype.createLayersMenuEntry = function (pageSettings, isLivePage) {
+        Bootstrap.prototype.createLayersMenuEntry = function (pageSettings, mapWrapper, isLivePage) {
             var result = null;
             if (pageSettings.showLayersMenu && VRS.serverConfig && VRS.mapLayerManager) {
-                var mapPlugin = VRS.jQueryUIHelper.getMapPlugin(pageSettings.mapJQ);
                 var layers = VRS.mapLayerManager.getMapLayerSettings();
-                if (mapPlugin && layers.length > 0 || mapPlugin.getCanSetMapBrightness()) {
+                if (mapWrapper && layers.length > 0 || mapWrapper.getCanSetMapBrightness()) {
                     result = new VRS.MenuItem({
                         name: 'layers',
                         labelKey: 'MapLayers'
                     });
-                    if (mapPlugin.getCanSetMapBrightness()) {
+                    if (mapWrapper.getCanSetMapBrightness()) {
                         result.subItems.push(new VRS.MenuItem({
                             name: 'map-brightness',
                             labelKey: 'MapBrightness',
@@ -209,9 +208,9 @@ var VRS;
                             sliderMinimum: 10,
                             sliderMaximum: 150,
                             sliderStep: 10,
-                            sliderInitialValue: function () { return mapPlugin.getMapBrightness(); },
-                            sliderDefaultValue: function () { return mapPlugin.getDefaultMapBrightness(); },
-                            sliderCallback: function (value) { return mapPlugin.setMapBrightness(value); },
+                            sliderInitialValue: function () { return mapWrapper.getMapBrightness(); },
+                            sliderDefaultValue: function () { return mapWrapper.getDefaultMapBrightness(); },
+                            sliderCallback: function (value) { return mapWrapper.setMapBrightness(value); },
                             noAutoClose: true
                         }));
                         if (layers.length > 0) {
