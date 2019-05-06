@@ -61,6 +61,36 @@ namespace VRS
         clickCallback?: (menuItem?: MenuItem) => void;
 
         /**
+         * A value indicating that the menu entry should be shown with a slider against it, or a function that returns a bool indicating the same.
+         */
+        showSlider?: boolean | VoidFuncReturning<boolean>;
+
+        /**
+         * The minimum value for the slider's range or a function that returns the minimum value.
+         */
+        sliderMinimum?: number | VoidFuncReturning<number>;
+
+        /**
+         * The maximum value for the slider's range or a function that returns the maximum value.
+         */
+        sliderMaximum?: number | VoidFuncReturning<number>;
+
+        /**
+         * The interval to jump when sliding the slider.
+         */
+        sliderStep?: number | VoidFuncReturning<number>;
+
+        /**
+         * The initial value for the slider. Defaults to sliderMinimum if not supplied.
+         */
+        sliderInitialValue?: number | VoidFuncReturning<number>;
+
+        /**
+         * The function that is called when the slider value changes.
+         */
+        sliderCallback?: (value: number) => void;
+
+        /**
          * An optional method called just before the menu item is used.
          */
         initialise?: () => void;
@@ -102,6 +132,12 @@ namespace VRS
         private _JqIcon: string | VoidFuncReturning<string>;
         private _VrsIcon: string | VoidFuncReturning<string>;
         private _Checked: boolean | VoidFuncReturning<boolean>;
+        private _ShowSlider: boolean | VoidFuncReturning<boolean>;
+        private _SliderMinimum: number | VoidFuncReturning<number>;
+        private _SliderMaximum: number | VoidFuncReturning<number>;
+        private _SliderStep: number | VoidFuncReturning<number>;
+        private _SliderInitialValue: number | VoidFuncReturning<number>;
+        private _SliderCallback: (value: number) => void;
         private _LabelImageUrl: string | VoidFuncReturning<string>;
         private _LabelImageClasses: string | VoidFuncReturning<string>;
 
@@ -128,6 +164,13 @@ namespace VRS
             this._Checked = settings.checked;
             this._LabelImageUrl = settings.labelImageUrl;
             this._LabelImageClasses = settings.labelImageClasses;
+
+            this._ShowSlider = settings.showSlider;
+            this._SliderMinimum = settings.sliderMinimum;
+            this._SliderMaximum = settings.sliderMaximum;
+            this._SliderStep = settings.sliderStep;
+            this._SliderInitialValue = settings.sliderInitialValue;
+            this._SliderCallback = settings.sliderCallback;
 
             this.name = settings.name;
             this.clickCallback = settings.clickCallback;
@@ -222,6 +265,38 @@ namespace VRS
             }
 
             return result;
+        }
+
+        showSlider() : boolean
+        {
+            return this._ShowSlider !== undefined && Utility.ValueOrFuncReturningValue(this._ShowSlider, false);
+        }
+
+        getSliderMinimum() : number
+        {
+            return this._SliderMinimum !== undefined ? Utility.ValueOrFuncReturningValue(this._SliderMinimum, 0) : 0;
+        }
+
+        getSliderMaximum() : number
+        {
+            return this._SliderMaximum !== undefined ? Utility.ValueOrFuncReturningValue(this._SliderMaximum, 100) : 100;
+        }
+
+        getSliderStep() : number
+        {
+            return this._SliderStep !== undefined ? Utility.ValueOrFuncReturningValue(this._SliderStep, 1) : 1;
+        }
+
+        getSliderInitialValue() : number
+        {
+            return this._SliderInitialValue !== undefined ? Utility.ValueOrFuncReturningValue(this._SliderInitialValue, this.getSliderMinimum()) : this.getSliderMinimum();
+        }
+
+        callSliderCallback(value: number)
+        {
+            if(this._SliderCallback) {
+                this._SliderCallback(value);
+            }
         }
     }
 

@@ -2685,6 +2685,34 @@ namespace VRS
 
 
         //
+        // MAP LAYER METHODS
+        //
+        // The Google Maps version of the plugin does not support layers.
+
+        addLayer(layerTileSettings: ITileServerSettings, opacity: number)
+        {
+        }
+
+        destroyLayer(layerName: string)
+        {
+        }
+
+        hasLayer(layerName: string) : boolean
+        {
+            return false;
+        }
+
+        getLayerOpacity(layerName: string) : number
+        {
+            return undefined;
+        }
+
+        setLayerOpacity(layerName: string, opacity: number)
+        {
+        }
+
+        
+        //
         // VRS EVENTS SUBSCRIBED
         //
 

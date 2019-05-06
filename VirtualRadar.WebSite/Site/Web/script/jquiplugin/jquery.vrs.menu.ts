@@ -30,6 +30,7 @@ namespace VRS
         image?:      JQuery;
         link:        JQuery;
         text:        JQuery;
+        slider?:     JQuery;
     }
 
     /**
@@ -261,8 +262,9 @@ namespace VRS
             if(state.menuContainer) {
                 var options = this.options;
 
-                $.each(state.menuItemElements, function(/** Number */ idx, /** VRS_MENU_ELEMENTS */ elements) {
-                    if(elements.link) elements.link.off();
+                $.each(state.menuItemElements, function(idx: number, element: IMenuItemElements) {
+                    if(element.slider) element.slider.slider('destroy');
+                    if(element.link) element.link.off();
                 });
                 state.menuItemElements = {};
 
@@ -354,6 +356,11 @@ namespace VRS
                     var text = self._buildMenuItemTextElement(state, menuItem)
                         .appendTo(link);
 
+                    var sliderElement = self._buildMenuItemSliderElement(state, menuItem);
+                    if(sliderElement) {
+                        sliderElement.appendTo(link);
+                    }
+
                     if(isDisabled) listItem.addClass('dl-disabled');
                     if(menuItem.clickCallback || menuItem.subItemsNormalised.length) link.click($.proxy(function(event) { self._menuItemClicked(event, menuItem); }, self));
                     if(menuItem.subItemsNormalised.length) self._createMenuItemElements(state, listItem, menuItem.subItemsNormalised);
@@ -362,7 +369,8 @@ namespace VRS
                         listItem:   listItem,
                         image:      imageElement,
                         link:       link,
-                        text:       text
+                        text:       text,
+                        slider:     sliderElement
                     };
                     previousListItem = listItem;
                 }
@@ -397,6 +405,23 @@ namespace VRS
                 .text(menuItem.getLabelText());
 
             return textElement;
+        }
+
+        private _buildMenuItemSliderElement(state: MenuPlugin_State, menuItem: MenuItem) : JQuery
+        {
+            var sliderElement: JQuery = null;
+
+            if(menuItem.showSlider()) {
+                sliderElement = $('<div></div>').slider({
+                    min: menuItem.getSliderMinimum(),
+                    max: menuItem.getSliderMaximum(),
+                    step: menuItem.getSliderStep(),
+                    value: menuItem.getSliderInitialValue(),
+                    change: (event, ui) => menuItem.callSliderCallback(ui.value)
+                });
+            }
+
+            return sliderElement;
         }
 
         private _refreshMenuItem(state: MenuPlugin_State, menuItem: MenuItem)

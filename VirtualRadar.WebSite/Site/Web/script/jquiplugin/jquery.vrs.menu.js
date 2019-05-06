@@ -116,9 +116,11 @@ var VRS;
         MenuPlugin.prototype._destroyMenu = function (state) {
             if (state.menuContainer) {
                 var options = this.options;
-                $.each(state.menuItemElements, function (idx, elements) {
-                    if (elements.link)
-                        elements.link.off();
+                $.each(state.menuItemElements, function (idx, element) {
+                    if (element.slider)
+                        element.slider.slider('destroy');
+                    if (element.link)
+                        element.link.off();
                 });
                 state.menuItemElements = {};
                 if (state.clickCatcher) {
@@ -199,6 +201,10 @@ var VRS;
                         .appendTo(listItem);
                     var text = self._buildMenuItemTextElement(state, menuItem)
                         .appendTo(link);
+                    var sliderElement = self._buildMenuItemSliderElement(state, menuItem);
+                    if (sliderElement) {
+                        sliderElement.appendTo(link);
+                    }
                     if (isDisabled)
                         listItem.addClass('dl-disabled');
                     if (menuItem.clickCallback || menuItem.subItemsNormalised.length)
@@ -209,7 +215,8 @@ var VRS;
                         listItem: listItem,
                         image: imageElement,
                         link: link,
-                        text: text
+                        text: text,
+                        slider: sliderElement
                     };
                     previousListItem = listItem;
                 }
@@ -241,6 +248,19 @@ var VRS;
             var textElement = $('<span/>')
                 .text(menuItem.getLabelText());
             return textElement;
+        };
+        MenuPlugin.prototype._buildMenuItemSliderElement = function (state, menuItem) {
+            var sliderElement = null;
+            if (menuItem.showSlider()) {
+                sliderElement = $('<div></div>').slider({
+                    min: menuItem.getSliderMinimum(),
+                    max: menuItem.getSliderMaximum(),
+                    step: menuItem.getSliderStep(),
+                    value: menuItem.getSliderInitialValue(),
+                    change: function (event, ui) { return menuItem.callSliderCallback(ui.value); }
+                });
+            }
+            return sliderElement;
         };
         MenuPlugin.prototype._refreshMenuItem = function (state, menuItem) {
             var newImage = this._buildMenuItemImageElement(state, menuItem);

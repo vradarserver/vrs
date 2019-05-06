@@ -1819,4 +1819,7 @@
   <data name="Rocket" xml:space="preserve">
     <value>Rocket</value>
   </data>
+  <data name="MapLayers" xml:space="preserve">
+    <value>Map Layers</value>
+  </data>
 </root>

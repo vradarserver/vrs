@@ -92,6 +92,11 @@ namespace VRS
         showSettingsButton?: boolean;
 
         /**
+         * True if the layers menu entry should be shown to the user.
+         */
+        showLayersMenu?: boolean;
+
+        /**
          * The element that is the parent for all of the page's splitters.
          */
         splittersJQ?: JQuery;
@@ -381,6 +386,43 @@ namespace VRS
             }
 
             return pageSettings.mapButton;
+        }
+
+        protected createLayersMenuEntry(pageSettings: PageSettings_Base, isLivePage: boolean) : MenuItem
+        {
+            var result: VRS.MenuItem = null;
+
+            if(pageSettings.showLayersMenu && VRS.serverConfig && VRS.mapLayerManager) {
+                var mapPlugin = VRS.jQueryUIHelper.getMapPlugin(pageSettings.mapJQ);
+                var layers = VRS.mapLayerManager.getMapLayerSettings();
+                if(mapPlugin && layers.length > 0) {
+                    result = new VRS.MenuItem({
+                        name: 'layers',
+                        labelKey: 'MapLayers'
+                    });
+
+
+                    $.each(layers, (idx: number, layer: MapLayerSetting) => {
+                        var layerMenuItem = new VRS.MenuItem({
+                            name:               'layer-' + layer.Name,
+                            labelKey:           () => layer.Name,
+                            checked:            () => layer.IsVisible,
+                            clickCallback:      () => layer.toggleVisible(),
+                            showSlider:         true,
+                            sliderMinimum:      10,
+                            sliderMaximum:      100,
+                            sliderStep:         10,
+                            sliderInitialValue: layer.getMapOpacity(),
+                            sliderCallback:     (value: number) => layer.setMapOpacity(value),
+                            noAutoClose:        true
+                        });
+
+                        result.subItems.push(layerMenuItem);
+                    });
+                }
+            }
+
+            return result;
         }
 
         /**

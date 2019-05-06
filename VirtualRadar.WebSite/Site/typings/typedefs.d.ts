@@ -261,6 +261,14 @@
         //
         // Map control methods
         addControl: (element: JQuery | HTMLElement, mapPosition: MapPositionEnum) => void;
+
+        //
+        // Map layer methods
+        addLayer: (layerTileSettings: ITileServerSettings, opacity: number) => void;
+        destroyLayer: (layerName: string) => void;
+        hasLayer: (layerName: string) => boolean;
+        getLayerOpacity: (layerName: string) => number;                     // 0 - 100
+        setLayerOpacity: (layerName: string, opacity: number) => void;      // 0 - 100
     }
 
     /**

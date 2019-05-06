@@ -191,6 +191,36 @@ var VRS;
             }
             return pageSettings.mapButton;
         };
+        Bootstrap.prototype.createLayersMenuEntry = function (pageSettings, isLivePage) {
+            var result = null;
+            if (pageSettings.showLayersMenu && VRS.serverConfig && VRS.mapLayerManager) {
+                var mapPlugin = VRS.jQueryUIHelper.getMapPlugin(pageSettings.mapJQ);
+                var layers = VRS.mapLayerManager.getMapLayerSettings();
+                if (mapPlugin && layers.length > 0) {
+                    result = new VRS.MenuItem({
+                        name: 'layers',
+                        labelKey: 'MapLayers'
+                    });
+                    $.each(layers, function (idx, layer) {
+                        var layerMenuItem = new VRS.MenuItem({
+                            name: 'layer-' + layer.Name,
+                            labelKey: function () { return layer.Name; },
+                            checked: function () { return layer.IsVisible; },
+                            clickCallback: function () { return layer.toggleVisible(); },
+                            showSlider: true,
+                            sliderMinimum: 10,
+                            sliderMaximum: 100,
+                            sliderStep: 10,
+                            sliderInitialValue: layer.getMapOpacity(),
+                            sliderCallback: function (value) { return layer.setMapOpacity(value); },
+                            noAutoClose: true
+                        });
+                        result.subItems.push(layerMenuItem);
+                    });
+                }
+            }
+            return result;
+        };
         Bootstrap.prototype.createHelpMenuEntry = function (relativeUrl) {
             return new VRS.MenuItem({
                 name: 'pageHelp',

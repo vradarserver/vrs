@@ -248,6 +248,7 @@ namespace VRS
                 mapJQ: null,
                 mapSettings: {},
                 showSettingsButton: true,
+                showLayersMenu: true,
                 settingsMenu: null,
                 aircraftDetailJQ: null,
                 aircraftListJQ: null,
@@ -308,6 +309,11 @@ namespace VRS
                 pageSettings.mapPlugin = null;
             }
             this.raiseMapLoaded(pageSettings);
+
+            // Initialise the map layers manager
+            if(VRS.mapLayerManager) {
+                VRS.mapLayerManager.registerMap(pageSettings.mapPlugin);
+            }
 
             // Set up the current location
             if(VRS.currentLocation) {
@@ -495,6 +501,12 @@ namespace VRS
 
             if(pageSettings.showReportLinks && (!VRS.serverConfig || VRS.serverConfig.reportsEnabled())) {
                 menuItems.push(this.createReportsMenuEntry(pageSettings));
+            }
+
+            var layerMenuItem = this.createLayersMenuEntry(pageSettings, true);
+            if(layerMenuItem) {
+                menuItems.push(null);
+                menuItems.push(layerMenuItem);
             }
         }
 

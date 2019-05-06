@@ -1588,6 +1588,18 @@ var VRS;
                     $.each(element, function () { controlsArray.push(this); });
             }
         };
+        MapPlugin.prototype.addLayer = function (layerTileSettings, opacity) {
+        };
+        MapPlugin.prototype.destroyLayer = function (layerName) {
+        };
+        MapPlugin.prototype.hasLayer = function (layerName) {
+            return false;
+        };
+        MapPlugin.prototype.getLayerOpacity = function (layerName) {
+            return undefined;
+        };
+        MapPlugin.prototype.setLayerOpacity = function (layerName, opacity) {
+        };
         MapPlugin.prototype._targetResized = function () {
             var state = this._getState();
             var center = this._getCenter(state);

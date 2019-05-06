@@ -146,8 +146,9 @@ var VRS;
                     }
                 };
                 return PageHandler;
-            })();
+            }());
             DatabaseWriterPluginOptions.PageHandler = PageHandler;
         })(DatabaseWriterPluginOptions = WebAdmin.DatabaseWriterPluginOptions || (WebAdmin.DatabaseWriterPluginOptions = {}));
     })(WebAdmin = VRS.WebAdmin || (VRS.WebAdmin = {}));
 })(VRS || (VRS = {}));
+//# sourceMappingURL=DatabaseWriterPluginOptions.js.map

@@ -236,7 +236,7 @@ namespace VRS
             return result;
         }
     }
-    export var leafletUtilities = new VRS.LeafletUtilities();
+    export var leafletUtilities = new LeafletUtilities();
 
     /*
      * jQueryUIHelper
@@ -1343,6 +1343,37 @@ namespace VRS
     }
 
     /**
+     * The state held for a layer.
+     */
+    class MapLayer
+    {
+        map: L.Map;
+        layer: L.TileLayer;
+
+        constructor(nativeMap: L.Map, nativeLayer: L.TileLayer)
+        {
+            this.map = nativeMap;
+            this.layer = nativeLayer;
+        }
+
+        destroy()
+        {
+            this.map = null;
+            this.layer = null;
+        }
+
+        getOpacity() : number
+        {
+            return this.layer.options.opacity;
+        }
+
+        setOpacity(value: number)
+        {
+            this.layer.setOpacity(value);
+        }
+    }
+
+    /**
      * The state held for every map plugin object.
      */
     class MapPluginState
@@ -1386,6 +1417,11 @@ namespace VRS
          * An associative array of info window IDs to info windows.
          */
         infoWindows: { [infoWindowId: string]: MapInfoWindow } = {};
+
+        /**
+         * An associative array of layer names to open layer objects.
+         */
+        layers: { [layerName: string]: MapLayer } = {};
 
         /**
          * True if the map's events have been hooked.
@@ -1844,6 +1880,13 @@ namespace VRS
             if(settings.ClassName) {
                 result.className = settings.ClassName;
             }
+            if(settings.DefaultBrightness > 0 && settings.DefaultBrightness < 100) {
+                result.className = result.className ? (result.className + ' ') : '';
+                result.className += 'vrs-brightness-' + (Math.floor(settings.DefaultBrightness / 10) * 10);
+            }
+            if(settings.DefaultOpacity > 0 && settings.DefaultOpacity < 100) {
+                result.opacity = settings.DefaultOpacity / 100;
+            }
             if(settings.MaxNativeZoom !== null && settings.MaxNativeZoom !== undefined) {
                 result.maxNativeZoom = settings.MaxNativeZoom;
             }
@@ -1861,6 +1904,12 @@ namespace VRS
             }
             if(settings.ZoomOffset !== null && settings.ZoomOffset !== undefined) {
                 result.zoomOffset = settings.ZoomOffset;
+            }
+            if(settings.IsTms) {
+                result.tms = true;
+            }
+            if(settings.ErrorTileUrl != null) {
+                result.errorTileUrl = settings.ErrorTileUrl;
             }
 
             var countExpandos = settings.ExpandoOptions === null || settings.ExpandoOptions === undefined ? 0 : settings.ExpandoOptions.length;
@@ -2390,6 +2439,79 @@ namespace VRS
             }
         }
 
+
+        //
+        // MAP LAYER METHODS
+        //
+
+        addLayer(layerTileSettings: ITileServerSettings, opacity: number)
+        {
+            var state = this._getState();
+            if(state.map && layerTileSettings && layerTileSettings.IsLayer && layerTileSettings.Name) {
+                var mapLayer = state.layers[layerTileSettings.Name];
+                if(!mapLayer) {
+                    var layerOptions = this._buildTileServerOptions(layerTileSettings);
+
+                    if(opacity !== null && opacity !== undefined) {
+                        layerOptions.opacity = Math.min(1.0, Math.max(0, opacity / 100.0));
+                    }
+                    $.extend({
+                        opacity: 1.0
+                    }, layerOptions);
+
+                    var tileLayer = L.tileLayer(layerTileSettings.Url, layerOptions);
+                    tileLayer.addTo(state.map);
+
+                    mapLayer = new MapLayer(state.map, tileLayer);
+                    state.layers[layerTileSettings.Name] = mapLayer;
+                }
+            }
+        }
+
+        destroyLayer(layerName: string)
+        {
+            var state = this._getState();
+            if(state.map && layerName) {
+                var mapLayer = state.layers[layerName];
+                if(mapLayer) {
+                    mapLayer.layer.removeFrom(state.map);
+                    mapLayer.destroy();
+                    delete state.layers[layerName];
+                }
+            }
+        }
+
+        hasLayer(layerName: string) : boolean
+        {
+            var state = this._getState();
+            return !!(state.map && layerName && state.layers[layerName]);
+        }
+
+        getLayerOpacity(layerName: string)
+        {
+            var result: number = undefined;
+
+            var state = this._getState();
+            if(state.map && layerName) {
+                var mapLayer = state.layers[layerName];
+                if(mapLayer) {
+                    result = mapLayer.getOpacity() * 100.0;
+                }
+            }
+
+            return result;
+        }
+
+        setLayerOpacity(layerName: string, opacity: number)
+        {
+            var state = this._getState();
+            if(state.map && layerName && !isNaN(opacity)) {
+                var mapLayer = state.layers[layerName];
+                if(mapLayer) {
+                    mapLayer.setOpacity(Math.min(1.0, Math.max(0.0, opacity / 100.0)));
+                }
+            }
+        }
 
 
         //

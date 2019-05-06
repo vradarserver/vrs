@@ -132,6 +132,12 @@ namespace VirtualRadar.WebSite
                     configuration.GoogleMapSettings.TileServerSettingName,
                     fallbackToDefaultIfMissing: true
                 );
+
+                var layers = tileServerSettingsManager
+                    .GetAllTileLayerSettings(configuration.GoogleMapSettings.MapProvider)
+                    .OrderBy(r => r.DisplayOrder)
+                    .ThenBy(r => r.Name);
+                _ServerConfigJson.TileServerLayers.AddRange(layers);
             }
         }
 

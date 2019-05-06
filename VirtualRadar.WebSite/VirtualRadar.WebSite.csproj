@@ -986,6 +986,7 @@
     <TypeScriptCompile Include="Site\Web\script\vrs\layoutManager.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\linksRenderer.ts" />
     <TypeScriptCompile Include="Site\Web\script\jquiplugin\jquery.vrs.map-common.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\mapLayerManager.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\menuUI.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\optionsUI.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\pageManager.ts" />

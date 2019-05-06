@@ -57,6 +57,13 @@ namespace VirtualRadar.Interface.Settings
         TileServerSettings[] GetAllTileServerSettings(MapProvider mapProvider);
 
         /// <summary>
+        /// Returns all of the tile server layer settings for the map provider passed across.
+        /// </summary>
+        /// <param name="mapProvider"></param>
+        /// <returns></returns>
+        TileServerSettings[] GetAllTileLayerSettings(MapProvider mapProvider);
+
+        /// <summary>
         /// Downloads the tile server settings from the mothership. Blocks until the download completes, times out or fails.
         /// </summary>
         void DownloadTileServerSettings();

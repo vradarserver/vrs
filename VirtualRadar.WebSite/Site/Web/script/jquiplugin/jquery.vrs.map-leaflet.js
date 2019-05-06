@@ -179,7 +179,7 @@ var VRS;
         return LeafletUtilities;
     }());
     VRS.LeafletUtilities = LeafletUtilities;
-    VRS.leafletUtilities = new VRS.LeafletUtilities();
+    VRS.leafletUtilities = new LeafletUtilities();
     VRS.jQueryUIHelper = VRS.jQueryUIHelper || {};
     VRS.jQueryUIHelper.getMapPlugin = function (jQueryElement) {
         return jQueryElement.data('vrsVrsMap');
@@ -889,6 +889,23 @@ var VRS;
         };
         return MapMarkerClusterer;
     }());
+    var MapLayer = (function () {
+        function MapLayer(nativeMap, nativeLayer) {
+            this.map = nativeMap;
+            this.layer = nativeLayer;
+        }
+        MapLayer.prototype.destroy = function () {
+            this.map = null;
+            this.layer = null;
+        };
+        MapLayer.prototype.getOpacity = function () {
+            return this.layer.options.opacity;
+        };
+        MapLayer.prototype.setOpacity = function (value) {
+            this.layer.setOpacity(value);
+        };
+        return MapLayer;
+    }());
     var MapPluginState = (function () {
         function MapPluginState() {
             this.mapContainer = undefined;
@@ -899,6 +916,7 @@ var VRS;
             this.circles = {};
             this.polygons = {};
             this.infoWindows = {};
+            this.layers = {};
             this.eventsHooked = false;
             this.settingCenter = undefined;
         }
@@ -1238,6 +1256,13 @@ var VRS;
             if (settings.ClassName) {
                 result.className = settings.ClassName;
             }
+            if (settings.DefaultBrightness > 0 && settings.DefaultBrightness < 100) {
+                result.className = result.className ? (result.className + ' ') : '';
+                result.className += 'vrs-brightness-' + (Math.floor(settings.DefaultBrightness / 10) * 10);
+            }
+            if (settings.DefaultOpacity > 0 && settings.DefaultOpacity < 100) {
+                result.opacity = settings.DefaultOpacity / 100;
+            }
             if (settings.MaxNativeZoom !== null && settings.MaxNativeZoom !== undefined) {
                 result.maxNativeZoom = settings.MaxNativeZoom;
             }
@@ -1255,6 +1280,12 @@ var VRS;
             }
             if (settings.ZoomOffset !== null && settings.ZoomOffset !== undefined) {
                 result.zoomOffset = settings.ZoomOffset;
+            }
+            if (settings.IsTms) {
+                result.tms = true;
+            }
+            if (settings.ErrorTileUrl != null) {
+                result.errorTileUrl = settings.ErrorTileUrl;
             }
             var countExpandos = settings.ExpandoOptions === null || settings.ExpandoOptions === undefined ? 0 : settings.ExpandoOptions.length;
             for (var i = 0; i < countExpandos; ++i) {
@@ -1684,6 +1715,60 @@ var VRS;
                 };
                 var control = new MapControl(element, controlOptions);
                 control.addTo(state.map);
+            }
+        };
+        MapPlugin.prototype.addLayer = function (layerTileSettings, opacity) {
+            var state = this._getState();
+            if (state.map && layerTileSettings && layerTileSettings.IsLayer && layerTileSettings.Name) {
+                var mapLayer = state.layers[layerTileSettings.Name];
+                if (!mapLayer) {
+                    var layerOptions = this._buildTileServerOptions(layerTileSettings);
+                    if (opacity !== null && opacity !== undefined) {
+                        layerOptions.opacity = Math.min(1.0, Math.max(0, opacity / 100.0));
+                    }
+                    $.extend({
+                        opacity: 1.0
+                    }, layerOptions);
+                    var tileLayer = L.tileLayer(layerTileSettings.Url, layerOptions);
+                    tileLayer.addTo(state.map);
+                    mapLayer = new MapLayer(state.map, tileLayer);
+                    state.layers[layerTileSettings.Name] = mapLayer;
+                }
+            }
+        };
+        MapPlugin.prototype.destroyLayer = function (layerName) {
+            var state = this._getState();
+            if (state.map && layerName) {
+                var mapLayer = state.layers[layerName];
+                if (mapLayer) {
+                    mapLayer.layer.removeFrom(state.map);
+                    mapLayer.destroy();
+                    delete state.layers[layerName];
+                }
+            }
+        };
+        MapPlugin.prototype.hasLayer = function (layerName) {
+            var state = this._getState();
+            return !!(state.map && layerName && state.layers[layerName]);
+        };
+        MapPlugin.prototype.getLayerOpacity = function (layerName) {
+            var result = undefined;
+            var state = this._getState();
+            if (state.map && layerName) {
+                var mapLayer = state.layers[layerName];
+                if (mapLayer) {
+                    result = mapLayer.getOpacity() * 100.0;
+                }
+            }
+            return result;
+        };
+        MapPlugin.prototype.setLayerOpacity = function (layerName, opacity) {
+            var state = this._getState();
+            if (state.map && layerName && !isNaN(opacity)) {
+                var mapLayer = state.layers[layerName];
+                if (mapLayer) {
+                    mapLayer.setOpacity(Math.min(1.0, Math.max(0.0, opacity / 100.0)));
+                }
             }
         };
         MapPlugin.prototype._targetResized = function () {

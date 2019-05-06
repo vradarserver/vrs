@@ -32,6 +32,7 @@ var VRS;
                 mapJQ: null,
                 mapSettings: {},
                 showSettingsButton: true,
+                showLayersMenu: true,
                 settingsMenu: null,
                 aircraftDetailJQ: null,
                 aircraftListJQ: null,
@@ -81,6 +82,9 @@ var VRS;
                 pageSettings.mapPlugin = null;
             }
             this.raiseMapLoaded(pageSettings);
+            if (VRS.mapLayerManager) {
+                VRS.mapLayerManager.registerMap(pageSettings.mapPlugin);
+            }
             if (VRS.currentLocation) {
                 if (pageSettings.mapJQ) {
                     VRS.currentLocation.setMapForApproximateLocation(pageSettings.mapJQ);
@@ -217,6 +221,11 @@ var VRS;
             }
             if (pageSettings.showReportLinks && (!VRS.serverConfig || VRS.serverConfig.reportsEnabled())) {
                 menuItems.push(this.createReportsMenuEntry(pageSettings));
+            }
+            var layerMenuItem = this.createLayersMenuEntry(pageSettings, true);
+            if (layerMenuItem) {
+                menuItems.push(null);
+                menuItems.push(layerMenuItem);
             }
         };
         BootstrapMap.prototype.createOptionsMenuEntry = function (pageSettings) {

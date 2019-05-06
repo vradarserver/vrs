@@ -50,7 +50,7 @@ namespace VirtualRadar.Interface.WebSite
         /// Gets a collection of receiver names.
         /// </summary>
         [DataMember]
-        public List<ServerReceiverJson> Receivers { get; private set; }
+        public List<ServerReceiverJson> Receivers { get; private set; } = new List<ServerReceiverJson>();
 
         /// <summary>
         /// Gets or sets a value indicating that the browser address is probably a local address.
@@ -172,16 +172,17 @@ namespace VirtualRadar.Interface.WebSite
         [DataMember]
         public string GoogleMapsApiKey { get; set; }
 
+        /// <summary>
+        /// Gets or sets the tile server settings selected by the user.
+        /// </summary>
         [DataMember]
         public TileServerSettings TileServerSettings { get; set; }
 
         /// <summary>
-        /// Creates a new object.
+        /// Gets or sets a list of layers that can be switched on and off by the user.
         /// </summary>
-        public ServerConfigJson()
-        {
-            Receivers = new List<ServerReceiverJson>();
-        }
+        [DataMember]
+        public List<TileServerSettings> TileServerLayers { get; private set; } = new List<TileServerSettings>();
 
         /// <summary>
         /// See interface.
@@ -189,33 +190,15 @@ namespace VirtualRadar.Interface.WebSite
         /// <returns></returns>
         public virtual object Clone()
         {
-            var result = (ServerConfigJson)Activator.CreateInstance(GetType());
+            var result = (ServerConfigJson)MemberwiseClone();
 
-            result.GoogleMapsApiKey = GoogleMapsApiKey;
-            result.InitialDistanceUnit = InitialDistanceUnit;
-            result.InitialHeightUnit = InitialHeightUnit;
-            result.InitialLatitude = InitialLatitude;
-            result.InitialLongitude = InitialLongitude;
-            result.InitialMapType = InitialMapType;
-            result.InitialSettings = InitialSettings;
-            result.InitialSpeedUnit = InitialSpeedUnit;
-            result.InitialZoom = InitialZoom;
-            result.InternetClientCanRunReports = InternetClientCanRunReports;
-            result.InternetClientCanShowPinText = InternetClientCanShowPinText;
-            result.InternetClientsCanPlayAudio = InternetClientsCanPlayAudio;
-            result.InternetClientsCanSubmitRoutes = InternetClientsCanSubmitRoutes;
-            result.InternetClientTimeoutMinutes = InternetClientTimeoutMinutes;
-            result.InternetClientsCanSeeAircraftPictures = InternetClientsCanSeeAircraftPictures;
-            result.InternetClientsCanSeePolarPlots = InternetClientsCanSeePolarPlots;
-            result.IsAudioEnabled = IsAudioEnabled;
-            result.IsLocalAddress = IsLocalAddress;
-            result.IsMono = IsMono;
-            result.MinimumRefreshSeconds = MinimumRefreshSeconds;
-            result.RefreshSeconds = RefreshSeconds;
+            result.Receivers = new List<ServerReceiverJson>();
             result.Receivers.AddRange(Receivers.Select(r => (ServerReceiverJson)r.Clone()));
-            result.TileServerSettings = TileServerSettings;
-            result.UseMarkerLabels = UseMarkerLabels;
-            result.VrsVersion = VrsVersion;
+
+            result.TileServerSettings = (TileServerSettings)TileServerSettings?.Clone();
+
+            result.TileServerLayers = new List<TileServerSettings>();
+            result.TileServerLayers.AddRange(TileServerLayers.Select(r => (TileServerSettings)r.Clone()));
 
             return result;
         }
