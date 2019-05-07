@@ -30,6 +30,7 @@ namespace VRS
         image?:      JQuery;
         link:        JQuery;
         text:        JQuery;
+        slider?:     JQuery;
     }
 
     /**
@@ -40,6 +41,15 @@ namespace VRS
         top:        number;
         bottom:     number;
         left:       number;
+    }
+
+    /**
+     * Describes an HTML container to add to something and a JQuery UI element contained within.
+     */
+    interface IContainerAndElement
+    {
+        container:  JQuery;
+        element:    JQuery;
     }
 
     /**
@@ -261,8 +271,9 @@ namespace VRS
             if(state.menuContainer) {
                 var options = this.options;
 
-                $.each(state.menuItemElements, function(/** Number */ idx, /** VRS_MENU_ELEMENTS */ elements) {
-                    if(elements.link) elements.link.off();
+                $.each(state.menuItemElements, function(idx: number, element: IMenuItemElements) {
+                    if(element.slider) element.slider.slider('destroy');
+                    if(element.link) element.link.off();
                 });
                 state.menuItemElements = {};
 
@@ -354,6 +365,11 @@ namespace VRS
                     var text = self._buildMenuItemTextElement(state, menuItem)
                         .appendTo(link);
 
+                    var sliderContainerAndElement = self._buildMenuItemSliderElement(state, menuItem);
+                    if(sliderContainerAndElement) {
+                        sliderContainerAndElement.container.appendTo(link);
+                    }
+
                     if(isDisabled) listItem.addClass('dl-disabled');
                     if(menuItem.clickCallback || menuItem.subItemsNormalised.length) link.click($.proxy(function(event) { self._menuItemClicked(event, menuItem); }, self));
                     if(menuItem.subItemsNormalised.length) self._createMenuItemElements(state, listItem, menuItem.subItemsNormalised);
@@ -362,7 +378,8 @@ namespace VRS
                         listItem:   listItem,
                         image:      imageElement,
                         link:       link,
-                        text:       text
+                        text:       text,
+                        slider:     sliderContainerAndElement ? sliderContainerAndElement.element : null
                     };
                     previousListItem = listItem;
                 }
@@ -397,6 +414,53 @@ namespace VRS
                 .text(menuItem.getLabelText());
 
             return textElement;
+        }
+
+        private _buildMenuItemSliderElement(state: MenuPlugin_State, menuItem: MenuItem) : IContainerAndElement
+        {
+            var result: IContainerAndElement = null;
+
+            if(menuItem.showSlider()) {
+                var valueSpan = $('<span></span>')
+                    .text(menuItem.getSliderInitialValue());
+
+                var valueChanged = (event: Event, ui: JQueryUI.SliderUIParams) => {
+                    valueSpan.text(ui.value);
+                    menuItem.callSliderCallback(ui.value);
+                };
+
+                var sliderElement = $('<div></div>').slider({
+                    min: menuItem.getSliderMinimum(),
+                    max: menuItem.getSliderMaximum(),
+                    step: menuItem.getSliderStep(),
+                    value: menuItem.getSliderInitialValue(),
+                    change: valueChanged,
+                    slide: valueChanged,
+                });
+
+                var resetAndText = $('<div class="dl-menu-slider-value"></div>')
+                    .append(valueSpan);
+
+                if(menuItem.getSliderDefaultValue() !== null) {
+                    resetAndText.append(
+                        $('<span class="vrsIcon vrsIconButton vrsIcon-close "></span>')
+                        .on('click', (e: JQueryEventObject) => {
+                            sliderElement.slider('value', menuItem.getSliderDefaultValue());
+                            e.stopPropagation();
+                        })
+                    );
+                }
+
+                result = {
+                    container: $('<div></div>')
+                        .append(sliderElement)
+                        .append(resetAndText),
+
+                    element: sliderElement
+                };
+            }
+
+            return result;
         }
 
         private _refreshMenuItem(state: MenuPlugin_State, menuItem: MenuItem)

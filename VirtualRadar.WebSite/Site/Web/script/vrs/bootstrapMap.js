@@ -32,6 +32,7 @@ var VRS;
                 mapJQ: null,
                 mapSettings: {},
                 showSettingsButton: true,
+                showLayersMenu: true,
                 settingsMenu: null,
                 aircraftDetailJQ: null,
                 aircraftListJQ: null,
@@ -81,6 +82,9 @@ var VRS;
                 pageSettings.mapPlugin = null;
             }
             this.raiseMapLoaded(pageSettings);
+            if (VRS.mapLayerManager) {
+                VRS.mapLayerManager.registerMap(pageSettings.mapPlugin);
+            }
             if (VRS.currentLocation) {
                 if (pageSettings.mapJQ) {
                     VRS.currentLocation.setMapForApproximateLocation(pageSettings.mapJQ);
@@ -239,6 +243,12 @@ var VRS;
             }
             if (pageSettings.showReportLinks && (!VRS.serverConfig || VRS.serverConfig.reportsEnabled())) {
                 menuItems.push(this.createReportsMenuEntry(pageSettings));
+            }
+            var mapWrapper = VRS.jQueryUIHelper.getMapPlugin(pageSettings.mapJQ);
+            var layerMenuItem = this.createLayersMenuEntry(pageSettings, mapWrapper, true);
+            if (layerMenuItem) {
+                menuItems.push(null);
+                menuItems.push(layerMenuItem);
             }
         };
         BootstrapMap.prototype.createOptionsMenuEntry = function (pageSettings) {
@@ -442,7 +452,7 @@ var VRS;
                 name: 'audio',
                 labelKey: 'PaneAudio',
                 vrsIcon: 'volume-high',
-                suppress: function () { return !pageSettings.audio.canPlayAudio(true); }
+                suppress: function () { return !pageSettings.audio.canPlayAudio(true); },
             });
             audioMenuItem.subItems.push(new VRS.MenuItem({
                 name: 'audio-mute',
@@ -450,22 +460,17 @@ var VRS;
                 vrsIcon: function () { return pageSettings.audio.getMuted() ? 'volume-medium' : 'volume-mute'; },
                 clickCallback: function () { pageSettings.audio.setMuted(!pageSettings.audio.getMuted()); }
             }));
-            $.each([25, 50, 75, 100], function (idx, vol) {
-                audioMenuItem.subItems.push(new VRS.MenuItem({
-                    name: 'audio-vol' + vol,
-                    labelKey: 'Volume' + vol,
-                    disabled: function () { return pageSettings.audio.getVolume() == vol / 100; },
-                    clickCallback: function () { pageSettings.audio.setVolume(vol / 100); pageSettings.audio.saveState(); },
-                    vrsIcon: function () {
-                        switch (vol) {
-                            case 25: return 'volume-mute2';
-                            case 50: return 'volume-low';
-                            case 75: return 'volume-medium';
-                            default: return 'volume-high';
-                        }
-                    }
-                }));
-            });
+            audioMenuItem.subItems.push(new VRS.MenuItem({
+                name: 'audio-volume',
+                labelKey: 'Volume',
+                vrsIcon: 'volume-low',
+                showSlider: true,
+                sliderMinimum: 0,
+                sliderMaximum: 100,
+                sliderInitialValue: pageSettings.audio.getVolume() * 100,
+                sliderDefaultValue: 100,
+                sliderCallback: function (value) { return pageSettings.audio.setVolume(value / 100); }
+            }));
             return audioMenuItem;
         };
         BootstrapMap.prototype.createReportsMenuEntry = function (pageSettings) {

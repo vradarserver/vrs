@@ -147,6 +147,7 @@
     <Compile Include="Settings\RebroadcastSettingsTests.cs" />
     <Compile Include="Settings\ReceiverLocationTests.cs" />
     <Compile Include="Settings\ReceiverTests.cs" />
+    <Compile Include="Settings\TileServerSettingsTests.cs" />
     <Compile Include="Settings\VersionCheckSettingsTests.cs" />
     <Compile Include="Settings\GoogleMapSettingsTests.cs" />
     <Compile Include="Settings\FlightRouteSettingsTests.cs" />

@@ -21,15 +21,15 @@ declare namespace VRS {
         private _TopLevel;
         private _GroupLanguage;
         constructor(locale: string, settings: CultureInfo_Settings);
-        locale: string;
-        cultureName: string;
-        language: string;
-        flagImage: string;
-        flagSize: ISize;
-        englishName: string;
-        nativeName: string;
-        topLevel: boolean;
-        groupLanguage: string;
+        readonly locale: string;
+        readonly cultureName: string;
+        readonly language: string;
+        readonly flagImage: string;
+        readonly flagSize: ISize;
+        readonly englishName: string;
+        readonly nativeName: string;
+        readonly topLevel: boolean;
+        readonly groupLanguage: string;
         getFlagImageHtml(): string;
     }
     interface Localise_SaveState {
@@ -343,6 +343,17 @@ interface JQuery {
     vrsAircraftPositonMap(methodName: string, param1?: any, param2?: any, param3?: any, param4?: any): any;
 }
 declare namespace VRS {
+    class MapIcon implements IMapIcon {
+        anchor: IPoint;
+        origin: IPoint;
+        scaledSize: ISize;
+        size: ISize;
+        url: string;
+        labelAnchor: IPoint;
+        constructor(url: string, size: ISize, anchor: IPoint, origin: IPoint, scaledSize?: ISize, labelAnchor?: IPoint);
+    }
+}
+declare namespace VRS {
     var globalOptions: GlobalOptions;
     class GoogleMapUtilities {
         private _HighContrastMapTypeName;
@@ -368,15 +379,16 @@ declare namespace VRS {
         toGoogleControlPosition(mapPosition: MapPositionEnum): google.maps.ControlPosition;
     }
     var googleMapUtilities: GoogleMapUtilities;
-    class MapIcon implements IMapIcon {
-        anchor: IPoint;
-        origin: IPoint;
-        scaledSize: ISize;
-        size: ISize;
-        url: string;
-        labelAnchor: IPoint;
-        constructor(url: string, size: ISize, anchor: IPoint, origin: IPoint, scaledSize?: ISize, labelAnchor?: IPoint);
-    }
+    var jQueryUIHelper: JQueryUIHelper;
+}
+interface JQuery {
+    vrsMap(): any;
+    vrsMap(options: VRS.IMapOptions): any;
+    vrsMap(methodName: string, param1?: any, param2?: any, param3?: any, param4?: any): any;
+}
+declare namespace VRS {
+    var globalOptions: GlobalOptions;
+    type LeafletControlPosition = 'topleft' | 'topright' | 'bottomleft' | 'bottomright';
     var jQueryUIHelper: JQueryUIHelper;
 }
 interface JQuery {
@@ -1466,7 +1478,7 @@ declare namespace VRS {
         private persistenceKey;
         private createSettings;
         createOptionPane: (displayOrder: number) => OptionPane[];
-        addFilter: (filterOrFilterProperty: AircraftFilter | string) => AircraftFilter;
+        addFilter: (filterOrFilterProperty: string | AircraftFilter) => AircraftFilter;
         private filterPaneRemoved;
         private removeFilterAt;
         closestAircraft: (aircraftList: AircraftList) => Aircraft;
@@ -1535,6 +1547,7 @@ declare namespace VRS {
         private _SelectedAircraft;
         getSelectedAircraft(): Aircraft;
         setSelectedAircraft(value: Aircraft, wasSelectedByUser: boolean): void;
+        hookAppliedJson(callback: (newAircraft: AircraftCollection, offRadar: AircraftCollection) => void, forceThis?: Object): IEventHandle;
         hookUpdated(callback: (newAircraft: AircraftCollection, offRadar: AircraftCollection) => void, forceThis?: Object): IEventHandle;
         hookSelectedAircraftChanged(callback: (wasSelected: Aircraft) => void, forceThis?: Object): IEventHandle;
         hookSelectedReselected(callback: () => void, forceThis?: Object): IEventHandle;
@@ -1600,6 +1613,7 @@ declare namespace VRS {
         setMapJQ: (value: JQuery) => void;
         hookPausedChanged: (callback: () => void, forceThis?: Object) => IEventHandle;
         hookHideAircraftNotOnMapChanged: (callback: () => void, forceThis?: Object) => IEventHandle;
+        hookListFetched: (callback: () => void, forceThis?: Object) => IEventHandle;
         unhook: (hookResult: IEventHandle) => void;
         dispose: () => void;
         saveState: () => void;
@@ -1769,6 +1783,7 @@ declare namespace VRS {
     var globalOptions: GlobalOptions;
     interface AircraftPlotterOptions_Settings {
         name?: string;
+        map?: VRS.IMap;
         showAltitudeStalk?: boolean;
         suppressAltitudeStalkWhenZoomed?: boolean;
         showPinText?: boolean;
@@ -1786,6 +1801,7 @@ declare namespace VRS {
         rangeCircleEvenColour?: string;
         rangeCircleEvenWeight?: number;
         onlyUsePre22Icons?: boolean;
+        aircraftMarkerClustererMaxZoom?: number;
     }
     interface AircraftPlotterOptions_SaveState {
         showAltitudeStalk: boolean;
@@ -1805,6 +1821,7 @@ declare namespace VRS {
         rangeCircleEvenColour: string;
         rangeCircleEvenWeight: number;
         onlyUsePre22Icons: boolean;
+        aircraftMarkerClustererMaxZoom: number;
     }
     class AircraftPlotterOptions implements ISelfPersist<AircraftPlotterOptions_SaveState> {
         private _Dispatcher;
@@ -1814,6 +1831,8 @@ declare namespace VRS {
         private _PinTexts;
         constructor(settings: AircraftPlotterOptions_Settings);
         getName: () => string;
+        getMap: () => IMap;
+        setMap: (map: IMap) => void;
         getShowAltitudeStalk: () => boolean;
         setShowAltitudeStalk: (value: boolean) => void;
         getSuppressAltitudeStalkWhenZoomedOut: () => boolean;
@@ -1849,6 +1868,10 @@ declare namespace VRS {
         setRangeCircleEvenWeight: (value: number) => void;
         getOnlyUsePre22Icons: () => boolean;
         setOnlyUsePre22Icons: (value: boolean) => void;
+        getAircraftMarkerClustererMaxZoom: () => number;
+        setAircraftMarkerClustererMaxZoom: (value: number) => void;
+        getCanSetAircraftMarkerClustererMaxZoomFromMap: () => boolean;
+        setAircraftMarkerClusterMaxZoomFromMap(): void;
         hookPropertyChanged: (callback: () => void, forceThis?: Object) => IEventHandle;
         private raisePropertyChanged();
         hookRangeCirclePropertyChanged: (callback: () => void, forceThis?: Object) => IEventHandle;
@@ -1900,6 +1923,7 @@ declare namespace VRS {
         private _RangeCircleCentre;
         private _RangeCircleCircles;
         private _MovingMap;
+        private _MapMarkerClusterer;
         private _PlotterOptionsPropertyChangedHook;
         private _PlotterOptionsRangeCirclePropertyChangedHook;
         private _AircraftListUpdatedHook;
@@ -1918,6 +1942,9 @@ declare namespace VRS {
         constructor(settings: AircraftPlotter_Settings);
         getName(): string;
         getMap(): IMap;
+        getMapMarkerClusterer(): IMapMarkerClusterer;
+        getHideTrailsAtMaxZoom(): boolean;
+        getHideTrailsMaxZoom(): number;
         getMovingMap(): boolean;
         setMovingMap(value: boolean): void;
         dispose(): void;
@@ -1943,7 +1970,7 @@ declare namespace VRS {
         private getPinTexts(aircraft);
         private haveLabelDetailsChanged(details);
         private createLabel(details);
-        private updateTrail(details, isAircraftSelected, forceRefresh);
+        private updateTrail(details, isAircraftSelected, mapZoomLevel, forceRefresh);
         private getMonochromeTrailColour(isAircraftSelected);
         private getCoordinateTrailColour(coordinate, trailType);
         private getTrailWidth(isAircraftSelected);
@@ -2156,6 +2183,7 @@ declare namespace VRS {
         settingsMenu?: Menu;
         showLayoutSetting?: boolean;
         showSettingsButton?: boolean;
+        showLayersMenu?: boolean;
         splittersJQ?: JQuery;
         unitDisplayPreferences?: UnitDisplayPreferences;
     }
@@ -2201,6 +2229,7 @@ declare namespace VRS {
         protected doStartInitialise(pageSettings: PageSettings_Base, successCallback: () => void): void;
         protected doEndInitialise(pageSettings: PageSettings_Base): void;
         protected createMapSettingsControl(pageSettings: PageSettings_Base): JQuery;
+        protected createLayersMenuEntry(pageSettings: PageSettings_Base, isLivePage: boolean): MenuItem;
         protected createHelpMenuEntry(relativeUrl: string): MenuItem;
         protected endLayoutInitialisation(pageSettings: PageSettings_Base): void;
         protected createLayoutMenuEntry(pageSettings: PageSettings_Base, separatorIds?: string[]): MenuItem;
@@ -2468,6 +2497,7 @@ declare namespace VRS {
         Species: string;
         Squawk: string;
         UserInterested: string;
+        UserTag: string;
         Wtc: string;
     };
     type AircraftListSortableFieldEnum = string;
@@ -2564,6 +2594,7 @@ declare namespace VRS {
         Turbo: number;
         Jet: number;
         Electric: number;
+        Rocket: number;
     };
     type EnginePlacementEnum = number;
     var EnginePlacement: {
@@ -2666,6 +2697,7 @@ declare namespace VRS {
     var Pressure: {
         InHg: string;
         Millibar: string;
+        MmHg: string;
     };
     type RenderPropertyEnum = string;
     var RenderProperty: {
@@ -3220,7 +3252,7 @@ declare namespace VRS {
         transponderTypeImageHtml(transponderType: TransponderTypeEnum): string;
         userInterested(userInterested: boolean): string;
         userTag(userTag: string): string;
-        verticalSpeed(verticalSpeed: number, verticalSpeedType: AltitudeTypeEnum, heightUnit: HeightEnum, perSecond: boolean, showUnit?: boolean, showType?: boolean): string;
+        verticalSpeed(verticalSpeed: number, isOnGround: boolean, verticalSpeedType: AltitudeTypeEnum, heightUnit: HeightEnum, perSecond: boolean, showUnit?: boolean, showType?: boolean): string;
         verticalSpeedType(verticalSpeedType: AltitudeTypeEnum): string;
         wakeTurbulenceCat(wtc: WakeTurbulenceCategoryEnum, ignoreNone: boolean, expandedDescription: boolean): string;
         yearBuilt(yearBuilt: string): string;
@@ -4122,6 +4154,7 @@ declare namespace VRS {
         IsAudioEnabled: boolean;
         MinimumRefreshSeconds: number;
         RefreshSeconds: number;
+        GoogleMapsApiKey: string;
         InitialSettings: string;
         InitialLatitude: number;
         InitialLongitude: number;
@@ -4137,6 +4170,33 @@ declare namespace VRS {
         InternetClientsCanSubmitRoutes: boolean;
         InternetClientsCanSeeAircraftPictures: boolean;
         InternetClientsCanSeePolarPlots: boolean;
+        TileServerSettings: ITileServerSettings;
+        TileServerLayers: ITileServerSettings[];
+    }
+    interface ITileServerSettings {
+        Name: string;
+        Url: string;
+        Subdomains: string;
+        Version: string;
+        MinZoom: number;
+        MaxZoom: number;
+        ZoomOffset: number;
+        MinNativeZoom: number;
+        MaxNativeZoom: number;
+        ZoomReverse: boolean;
+        DetectRetina: boolean;
+        ClassName: string;
+        Attribution: string;
+        ErrorTileUrl: string;
+        IsTms: boolean;
+        IsLayer: boolean;
+        DefaultBrightness: number;
+        DefaultOpacity: number;
+        ExpandoOptions: ITileServerSettingExpandoOption[];
+    }
+    interface ITileServerSettingExpandoOption {
+        Option: string;
+        Value: string;
     }
     interface IServerConfigReceiver {
         UniqueId: number;

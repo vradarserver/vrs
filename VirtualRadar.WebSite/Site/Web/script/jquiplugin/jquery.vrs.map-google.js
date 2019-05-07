@@ -1006,6 +1006,9 @@ var VRS;
         MapPlugin.prototype._raiseBoundsChanged = function () {
             this._trigger('boundsChanged');
         };
+        MapPlugin.prototype.hookBrightnessChanged = function (callback, forceThis) {
+            return VRS.globalDispatch.hookJQueryUIPluginEvent(this.element, this._EventPluginName, 'brightnessChanged', callback, forceThis);
+        };
         MapPlugin.prototype.hookCenterChanged = function (callback, forceThis) {
             return VRS.globalDispatch.hookJQueryUIPluginEvent(this.element, this._EventPluginName, 'centerChanged', callback, forceThis);
         };
@@ -1237,7 +1240,9 @@ var VRS;
             return {
                 zoom: zoom,
                 mapTypeId: mapTypeId,
-                center: center
+                center: center,
+                brightnessMapName: 'google',
+                brightness: 100
             };
         };
         MapPlugin.prototype.addMarker = function (id, userOptions) {
@@ -1587,6 +1592,29 @@ var VRS;
                 else
                     $.each(element, function () { controlsArray.push(this); });
             }
+        };
+        MapPlugin.prototype.addLayer = function (layerTileSettings, opacity) {
+        };
+        MapPlugin.prototype.destroyLayer = function (layerName) {
+        };
+        MapPlugin.prototype.hasLayer = function (layerName) {
+            return false;
+        };
+        MapPlugin.prototype.getLayerOpacity = function (layerName) {
+            return undefined;
+        };
+        MapPlugin.prototype.setLayerOpacity = function (layerName, opacity) {
+        };
+        MapPlugin.prototype.getCanSetMapBrightness = function () {
+            return false;
+        };
+        MapPlugin.prototype.getDefaultMapBrightness = function () {
+            return 100;
+        };
+        MapPlugin.prototype.getMapBrightness = function () {
+            return 100;
+        };
+        MapPlugin.prototype.setMapBrightness = function (value) {
         };
         MapPlugin.prototype._targetResized = function () {
             var state = this._getState();

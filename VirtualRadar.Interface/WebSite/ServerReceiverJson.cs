@@ -21,7 +21,7 @@ namespace VirtualRadar.Interface.WebSite
     /// The JSON object that describes a receiver that the server is listening to.
     /// </summary>
     [DataContract]
-    public class ServerReceiverJson
+    public class ServerReceiverJson : ICloneable
     {
         /// <summary>
         /// Gets or sets the unique ID of the receiver.
@@ -34,6 +34,20 @@ namespace VirtualRadar.Interface.WebSite
         /// </summary>
         [DataMember]
         public string Name { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public virtual object Clone()
+        {
+            var result = (ServerReceiverJson)Activator.CreateInstance(GetType());
+
+            result.UniqueId = UniqueId;
+            result.Name = Name;
+
+            return result;
+        }
 
         /// <summary>
         /// Returns a new object from a receiver.

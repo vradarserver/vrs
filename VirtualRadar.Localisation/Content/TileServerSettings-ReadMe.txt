@@ -2,16 +2,15 @@ HOW TO ADD YOUR OWN TILE SERVER SETTINGS
 ========================================
 
 It is a requirement for most free tile servers that the program does not hard
-code their address and that there is some way to remove support for a
-particular tile server if their operators request it.
+code their address and that there is some way to remove support for a tile
+server if their operators request it.
 
 To that end VRS downloads a copy of the tile server settings from the SDM site
 once a day. The downloaded settings are stored in a file called:
 
     TileServerSettings-Downloaded.json.
 
-DO NOT CHANGE THE SETTINGS IN THAT FILE. Your changes will be lost within 24
-hours.
+DO NOT CHANGE THE SETTINGS IN THAT FILE. Your changes will be overwritten.
 
 If you are running your own tile server, or you want to use a tile server that
 is not in the main set of downloaded tile server settings, then you can tell
@@ -40,7 +39,14 @@ the file you will need to paste everything between the //----- lines below:
     "ZoomReverse": false,
     "DetectRetina": false,
     "ClassName": null,
-    "ExpandoOptions": []
+    "ExpandoOptions": [],
+
+    /* New settings from version 2.4.5 onwards: */
+    "ErrorTileUrl": null,
+    "IsTms": false,
+    "IsLayer": false,
+    "DefaultBrightness": 100,
+    "DefaultOpacity": 100
   }
 ]
 //----- end of file: copy to the line above this one
@@ -62,11 +68,14 @@ value with quotes. String fields are:
   * Subdomains
   * ClassName
   * Attribution
-  
+  * ErrorTileUrl
+
 If you supply a boolean value then you must use either true or false. Boolean
 fields are:
   * ZoomReverse
   * DetectRetina
+  * IsTms
+  * IsLayer
 Examples are:
     "ZoomReverse": true,
     "DetectRetina": false,
@@ -78,6 +87,8 @@ Numeric fields are:
   * ZoomOffset
   * MinNativeZoom
   * MaxNativeZoom
+  * DefaultBrightness
+  * DefaultOpacity
 Examples are:
     "MinZoom": null,
     "MaxZoom": 19,
@@ -108,6 +119,20 @@ will be turned into HTML when the map is created:
 [a href=YOUR-HYPERLINK-ADDRESS-HERE]some text[/a] is transformed into a link
 [attribution NAME] is replaced with the attribution from the tile server
 setting called NAME
+
+
+BRIGHTNESS AND OPACITY
+======================
+In the first version of the tile server settings brightness was implied by using
+classes. From version 2.4.5 onwards this is no longer the case, brightness has
+its own setting. Brightness values range from 10 (dark) to 100 (full brightness)
+to 150 (50% extra bright) in steps of 10.
+
+Brightness only applies to maps, it does not get used for layers.
+
+Opacity is a new setting in version 2.4.5. It has a range of 0 (transparent) to
+100 (opaque) in steps of 10. Opacity is only applied to layers, it is not applied
+to maps.
 
 
 OTHER SETTINGS

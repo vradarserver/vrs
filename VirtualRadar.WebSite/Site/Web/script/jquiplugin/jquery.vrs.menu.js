@@ -116,9 +116,11 @@ var VRS;
         MenuPlugin.prototype._destroyMenu = function (state) {
             if (state.menuContainer) {
                 var options = this.options;
-                $.each(state.menuItemElements, function (idx, elements) {
-                    if (elements.link)
-                        elements.link.off();
+                $.each(state.menuItemElements, function (idx, element) {
+                    if (element.slider)
+                        element.slider.slider('destroy');
+                    if (element.link)
+                        element.link.off();
                 });
                 state.menuItemElements = {};
                 if (state.clickCatcher) {
@@ -199,6 +201,10 @@ var VRS;
                         .appendTo(listItem);
                     var text = self._buildMenuItemTextElement(state, menuItem)
                         .appendTo(link);
+                    var sliderContainerAndElement = self._buildMenuItemSliderElement(state, menuItem);
+                    if (sliderContainerAndElement) {
+                        sliderContainerAndElement.container.appendTo(link);
+                    }
                     if (isDisabled)
                         listItem.addClass('dl-disabled');
                     if (menuItem.clickCallback || menuItem.subItemsNormalised.length)
@@ -209,7 +215,8 @@ var VRS;
                         listItem: listItem,
                         image: imageElement,
                         link: link,
-                        text: text
+                        text: text,
+                        slider: sliderContainerAndElement ? sliderContainerAndElement.element : null
                     };
                     previousListItem = listItem;
                 }
@@ -241,6 +248,41 @@ var VRS;
             var textElement = $('<span/>')
                 .text(menuItem.getLabelText());
             return textElement;
+        };
+        MenuPlugin.prototype._buildMenuItemSliderElement = function (state, menuItem) {
+            var result = null;
+            if (menuItem.showSlider()) {
+                var valueSpan = $('<span></span>')
+                    .text(menuItem.getSliderInitialValue());
+                var valueChanged = function (event, ui) {
+                    valueSpan.text(ui.value);
+                    menuItem.callSliderCallback(ui.value);
+                };
+                var sliderElement = $('<div></div>').slider({
+                    min: menuItem.getSliderMinimum(),
+                    max: menuItem.getSliderMaximum(),
+                    step: menuItem.getSliderStep(),
+                    value: menuItem.getSliderInitialValue(),
+                    change: valueChanged,
+                    slide: valueChanged,
+                });
+                var resetAndText = $('<div class="dl-menu-slider-value"></div>')
+                    .append(valueSpan);
+                if (menuItem.getSliderDefaultValue() !== null) {
+                    resetAndText.append($('<span class="vrsIcon vrsIconButton vrsIcon-close "></span>')
+                        .on('click', function (e) {
+                        sliderElement.slider('value', menuItem.getSliderDefaultValue());
+                        e.stopPropagation();
+                    }));
+                }
+                result = {
+                    container: $('<div></div>')
+                        .append(sliderElement)
+                        .append(resetAndText),
+                    element: sliderElement
+                };
+            }
+            return result;
         };
         MenuPlugin.prototype._refreshMenuItem = function (state, menuItem) {
             var newImage = this._buildMenuItemImageElement(state, menuItem);

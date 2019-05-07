@@ -246,6 +246,12 @@ namespace VRS
             return state.mapPlugin && state.mapPlugin.isOpen();
         }
 
+        getMapWrapper() : IMap
+        {
+            var state = this._getState();
+            return state.mapPlugin;
+        }
+
         /**
          * Creates the map container and populates it with a map.
          */

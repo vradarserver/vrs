@@ -191,6 +191,52 @@ var VRS;
             }
             return pageSettings.mapButton;
         };
+        Bootstrap.prototype.createLayersMenuEntry = function (pageSettings, mapWrapper, isLivePage) {
+            var result = null;
+            if (pageSettings.showLayersMenu && VRS.serverConfig && VRS.mapLayerManager) {
+                var layers = VRS.mapLayerManager.getMapLayerSettings();
+                if (mapWrapper && layers.length > 0 || mapWrapper.getCanSetMapBrightness()) {
+                    result = new VRS.MenuItem({
+                        name: 'layers',
+                        labelKey: 'MapLayers'
+                    });
+                    if (mapWrapper.getCanSetMapBrightness()) {
+                        result.subItems.push(new VRS.MenuItem({
+                            name: 'map-brightness',
+                            labelKey: 'MapBrightness',
+                            showSlider: true,
+                            sliderMinimum: 10,
+                            sliderMaximum: 150,
+                            sliderStep: 10,
+                            sliderInitialValue: function () { return mapWrapper.getMapBrightness(); },
+                            sliderDefaultValue: function () { return mapWrapper.getDefaultMapBrightness(); },
+                            sliderCallback: function (value) { return mapWrapper.setMapBrightness(value); },
+                            noAutoClose: true
+                        }));
+                        if (layers.length > 0) {
+                            result.subItems.push(null);
+                        }
+                    }
+                    $.each(layers, function (idx, layer) {
+                        result.subItems.push(new VRS.MenuItem({
+                            name: 'layer-' + layer.Name,
+                            labelKey: function () { return layer.Name; },
+                            checked: function () { return layer.IsVisible; },
+                            clickCallback: function () { return layer.toggleVisible(); },
+                            showSlider: true,
+                            sliderMinimum: 10,
+                            sliderMaximum: 100,
+                            sliderStep: 10,
+                            sliderInitialValue: function () { return layer.getMapOpacity(); },
+                            sliderDefaultValue: function () { return layer.TileServerSettings.DefaultOpacity; },
+                            sliderCallback: function (value) { return layer.setMapOpacity(value); },
+                            noAutoClose: true
+                        }));
+                    });
+                }
+            }
+            return result;
+        };
         Bootstrap.prototype.createHelpMenuEntry = function (relativeUrl) {
             return new VRS.MenuItem({
                 name: 'pageHelp',

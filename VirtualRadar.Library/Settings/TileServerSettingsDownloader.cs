@@ -24,7 +24,7 @@ namespace VirtualRadar.Library.Settings
     /// </summary>
     class TileServerSettingsDownloader : ITileServerSettingsDownloader
     {
-        internal const string TileServerSettingsUrl = "http://sdm.virtualradarserver.co.uk/api/1.00/tile-servers";
+        internal const string TileServerSettingsUrl = "http://sdm.virtualradarserver.co.uk/api/1.01/tile-servers";
 
         /// <summary>
         /// See interface docs.

@@ -30,6 +30,7 @@ var VRS;
                 showOptionsSetting: true,
                 showLanguageSetting: true,
                 showLayoutSetting: true,
+                showLayersMenu: true,
                 settingsMenu: null,
                 splittersJQ: null,
                 pagesJQ: null,
@@ -82,6 +83,9 @@ var VRS;
             });
         };
         BootstrapReport.prototype.mapCreated = function (pageSettings) {
+            if (VRS.mapLayerManager) {
+                VRS.mapLayerManager.registerMap(pageSettings.mapPlugin.getMapWrapper());
+            }
             if (pageSettings.detailJQ) {
                 pageSettings.detailJQ.vrsReportDetail(VRS.jQueryUIHelper.getReportDetailOptions({
                     report: pageSettings.report,
@@ -114,10 +118,17 @@ var VRS;
             if (pageSettings.showLanguageSetting) {
                 menuItems.push(this.createLocaleMenuEntry(pageSettings));
             }
-            menuItems.push(null);
             if (pageSettings.showLayoutSetting && pageSettings.layoutMenuItem) {
+                menuItems.push(null);
                 menuItems.push(pageSettings.layoutMenuItem);
             }
+            var mapWrapper = pageSettings.mapPlugin.getMapWrapper();
+            var mapLayersMenu = this.createLayersMenuEntry(pageSettings, mapWrapper, false);
+            if (mapLayersMenu) {
+                menuItems.push(null);
+                menuItems.push(mapLayersMenu);
+            }
+            menuItems.push(null);
         };
         BootstrapReport.prototype.createCriteriaMenuEntry = function (pageSettings) {
             var _this = this;
