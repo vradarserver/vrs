@@ -277,17 +277,18 @@ namespace VRS
             var tileServerSettings = VRS.serverConfig.get().TileServerLayers;
             var len = tileServerSettings.length;
             for(var i = 0;i < len;++i) {
-                var mapLayerSetting = new MapLayerSetting(this._Map, tileServerSettings[i]);
+                var tileServerSetting = tileServerSettings[i];
+                var mapLayerSetting = VRS.arrayHelper.findFirst(this._MapLayerSettings, (r) => r.Name == tileServerSetting.Name);
+                if(!mapLayerSetting) {
+                    mapLayerSetting = new MapLayerSetting(this._Map, tileServerSetting);
+                    var hookHandles: HookHandles = {
+                        opacityOverrideChangedEventHandle:  mapLayerSetting.hookOpacityOverrideChanged(this.mapLayer_opacityChanged, this),
+                        visibilityChangedEventHandle:       mapLayerSetting.hookVisibilityChanged(this.mapLayer_visibilityChanged, this)
+                    };
+                    this._HookHandles[mapLayerSetting.Name] = hookHandles;
+                }
                 newMapLayerSettings.push(mapLayerSetting);
             }
-
-            $.each(VRS.arrayHelper.except(newMapLayerSettings, this._MapLayerSettings, (lhs, rhs) => lhs.Name === rhs.Name), (idx, newMapLayer) => {
-                var hookHandles: HookHandles = {
-                    opacityOverrideChangedEventHandle:  newMapLayer.hookOpacityOverrideChanged(this.mapLayer_opacityChanged, this),
-                    visibilityChangedEventHandle:       newMapLayer.hookVisibilityChanged(this.mapLayer_visibilityChanged, this)
-                };
-                this._HookHandles[newMapLayer.Name] = hookHandles;
-            });
 
             $.each(VRS.arrayHelper.except(this._MapLayerSettings, newMapLayerSettings, (lhs, rhs) => lhs.Name === rhs.Name), (idx, retiredMapLayer) => {
                 var hookHandles = this._HookHandles[retiredMapLayer.Name];
