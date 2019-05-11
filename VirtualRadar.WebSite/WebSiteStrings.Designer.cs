@@ -19,7 +19,7 @@ namespace VirtualRadar.WebSite {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class WebSiteStrings {
@@ -2716,6 +2716,24 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Map Brightness.
+        /// </summary>
+        public static string MapBrightness {
+            get {
+                return ResourceManager.GetString("MapBrightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Map Layers.
+        /// </summary>
+        public static string MapLayers {
+            get {
+                return ResourceManager.GetString("MapLayers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MaxTakeoffWeight.
         /// </summary>
         public static string MaxTakeoffWeight {
@@ -5047,38 +5065,11 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Volume 100%.
+        ///   Looks up a localized string similar to Volume.
         /// </summary>
-        public static string Volume100 {
+        public static string Volume {
             get {
-                return ResourceManager.GetString("Volume100", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Volume 25%.
-        /// </summary>
-        public static string Volume25 {
-            get {
-                return ResourceManager.GetString("Volume25", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Volume 50%.
-        /// </summary>
-        public static string Volume50 {
-            get {
-                return ResourceManager.GetString("Volume50", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Volume 75%.
-        /// </summary>
-        public static string Volume75 {
-            get {
-                return ResourceManager.GetString("Volume75", resourceCulture);
+                return ResourceManager.GetString("Volume", resourceCulture);
             }
         }
         

@@ -139,7 +139,7 @@ namespace VirtualRadar.Library.Settings
         public TileServerSettings GetDefaultTileServerSettings(MapProvider mapProvider)
         {
             var settings = _TileServerSettings;
-            return settings.FirstOrDefault(r => r.IsDefault && !r.IsCustom);
+            return settings.FirstOrDefault(r => r.IsDefault && !r.IsCustom && !r.IsLayer);
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace VirtualRadar.Library.Settings
         public TileServerSettings GetTileServerSettings(MapProvider mapProvider, string name, bool fallbackToDefaultIfMissing)
         {
             var settings = _TileServerSettings;
-            var result = settings.FirstOrDefault(r => r.MapProvider == mapProvider && String.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase));
+            var result = settings.FirstOrDefault(r => r.MapProvider == mapProvider && String.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase) && !r.IsLayer);
             if(result == null && fallbackToDefaultIfMissing) {
                 result = GetDefaultTileServerSettings(mapProvider);
             }
@@ -167,10 +167,25 @@ namespace VirtualRadar.Library.Settings
         /// <returns></returns>
         public TileServerSettings[] GetAllTileServerSettings(MapProvider mapProvider)
         {
+            return GetAllTileServerSettings(mapProvider, isLayer: false);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="mapProvider"></param>
+        /// <returns></returns>
+        public TileServerSettings[] GetAllTileLayerSettings(MapProvider mapProvider)
+        {
+            return GetAllTileServerSettings(mapProvider, isLayer: true);
+        }
+
+        private TileServerSettings[] GetAllTileServerSettings(MapProvider mapProvider, bool isLayer)
+        {
             var result = new List<TileServerSettings>();
 
             var settings = _TileServerSettings;
-            result.AddRange(settings.Where(r => r.MapProvider == mapProvider));
+            result.AddRange(settings.Where(r => r.MapProvider == mapProvider && r.IsLayer == isLayer));
 
             return result.ToArray();
         }

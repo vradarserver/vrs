@@ -20,13 +20,13 @@ namespace VirtualRadar.Interface.Settings
     /// Describes the settings for a map provider's tile server. Not all tile servers support all settings.
     /// </summary>
     [DataContract]
-    public class TileServerSettings
+    public class TileServerSettings : ICloneable
     {
         /// <summary>
         /// A single expando option.
         /// </summary>
         [DataContract]
-        public class ExpandoOption
+        public class ExpandoOption : ICloneable
         {
             /// <summary>
             /// Gets or sets the name of the option.
@@ -39,6 +39,15 @@ namespace VirtualRadar.Interface.Settings
             /// </summary>
             [DataMember(IsRequired = true)]
             public string Value { get; set; }
+
+            /// <summary>
+            /// See interface docs.
+            /// </summary>
+            /// <returns></returns>
+            public object Clone()
+            {
+                return MemberwiseClone();
+            }
         }
 
         /// <summary>
@@ -158,9 +167,57 @@ namespace VirtualRadar.Interface.Settings
         public string Attribution { get; set; }
 
         /// <summary>
+        /// The URL of the image to show if the tile server returns an error response when fetching a tile.
+        /// </summary>
+        [DataMember]
+        public string ErrorTileUrl { get; set; }
+
+        /// <summary>
+        /// True if the tile server is TMS.
+        /// </summary>
+        [DataMember]
+        public bool IsTms { get; set; }
+
+        /// <summary>
+        /// True if this is a tile layer rather than a map layer.
+        /// </summary>
+        [DataMember]
+        public bool IsLayer { get; set; }
+
+        /// <summary>
+        /// The default brightness where 100 is full brightness and 0 is full darkness.
+        /// </summary>
+        [DataMember]
+        public int DefaultBrightness { get; set; } = 100;
+
+        /// <summary>
+        /// The opacity of the tile where 100 is fully opaque and 0 is fully transparent.
+        /// </summary>
+        [DataMember]
+        public int DefaultOpacity { get; set; } = 100;
+
+        /// <summary>
         /// Gets or sets extra options.
         /// </summary>
         [DataMember]
         public List<ExpandoOption> ExpandoOptions { get; set; } = new List<ExpandoOption>();
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public virtual object Clone()
+        {
+            var result = (TileServerSettings)MemberwiseClone();
+
+            if(result.ExpandoOptions != null) {
+                result.ExpandoOptions = new List<ExpandoOption>();
+                foreach(var original in ExpandoOptions) {
+                    result.ExpandoOptions.Add((ExpandoOption)original.Clone());
+                }
+            }
+
+            return result;
+        }
     }
 }

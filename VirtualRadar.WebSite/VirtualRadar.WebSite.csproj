@@ -924,6 +924,7 @@
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftListFetcher.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftListFilter.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftListSorter.ts" />
+    <TypeScriptCompile Include="Site\Web\script\vrs\mapLayerManager.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\svgGenerator.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftPlotter.ts" />
     <TypeScriptCompile Include="Site\Web\script\vrs\aircraftRenderer.ts" />

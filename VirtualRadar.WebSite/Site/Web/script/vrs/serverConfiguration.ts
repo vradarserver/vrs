@@ -59,24 +59,30 @@ namespace VRS
         InternetClientsCanSeeAircraftPictures:  boolean;
         InternetClientsCanSeePolarPlots:        boolean;
         TileServerSettings:                     ITileServerSettings;
+        TileServerLayers:                       ITileServerSettings[];
     }
 
     export interface ITileServerSettings
     {
-        Name:           string;
-        Url:            string;
-        Subdomains:     string;
-        Version:        string;
-        MinZoom:        number;
-        MaxZoom:        number;
-        ZoomOffset:     number;
-        MinNativeZoom:  number;
-        MaxNativeZoom:  number;
-        ZoomReverse:    boolean;
-        DetectRetina:   boolean;
-        ClassName:      string;
-        Attribution:    string;
-        ExpandoOptions: ITileServerSettingExpandoOption[];
+        Name:               string;
+        Url:                string;
+        Subdomains:         string;
+        Version:            string;
+        MinZoom:            number;
+        MaxZoom:            number;
+        ZoomOffset:         number;
+        MinNativeZoom:      number;
+        MaxNativeZoom:      number;
+        ZoomReverse:        boolean;
+        DetectRetina:       boolean;
+        ClassName:          string;
+        Attribution:        string;
+        ErrorTileUrl:       string;
+        IsTms:              boolean;
+        IsLayer:            boolean;
+        DefaultBrightness:  number;
+        DefaultOpacity:     number;
+        ExpandoOptions:     ITileServerSettingExpandoOption[];
     }
 
     export interface ITileServerSettingExpandoOption

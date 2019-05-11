@@ -1587,18 +1587,6 @@
   <data name="VirtualRadar" xml:space="preserve">
     <value>Virtual Radar</value>
   </data>
-  <data name="Volume25" xml:space="preserve">
-    <value>Volume 25%</value>
-  </data>
-  <data name="Volume50" xml:space="preserve">
-    <value>Volume 50%</value>
-  </data>
-  <data name="Volume75" xml:space="preserve">
-    <value>Volume 75%</value>
-  </data>
-  <data name="Volume100" xml:space="preserve">
-    <value>Volume 100%</value>
-  </data>
   <data name="VrsVersion" xml:space="preserve">
     <value>Version {0}</value>
   </data>
@@ -1855,5 +1843,15 @@
   </data>
   <data name="Rocket" xml:space="preserve">
     <value>Rocket</value>
+  </data>
+  <data name="MapBrightness" xml:space="preserve">
+    <value>Map Brightness</value>
+  </data>
+  <data name="MapLayers" xml:space="preserve">
+    <value>Map Layers</value>
+  </data>
+  <data name="Volume" xml:space="preserve">
+    <value>Volume</value>
+    <comment>As in how loud a sound is</comment>
   </data>
 </root>

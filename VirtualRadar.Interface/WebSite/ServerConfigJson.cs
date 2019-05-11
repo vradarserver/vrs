@@ -23,7 +23,7 @@ namespace VirtualRadar.Interface.WebSite
     /// The JSON object that carries server settings to the site.
     /// </summary>
     [DataContract]
-    public class ServerConfigJson
+    public class ServerConfigJson : ICloneable
     {
         /// <summary>
         /// Gets or sets the version number of the server.
@@ -175,10 +175,16 @@ namespace VirtualRadar.Interface.WebSite
         public string GoogleMapsApiKey { get; set; }
 
         /// <summary>
-        /// Gets or sets the tile server settings to supply to map providers that use tile servers.
+        /// Gets or sets the tile server settings selected by the user.
         /// </summary>
         [DataMember]
         public TileServerSettings TileServerSettings { get; set; }
+
+        /// <summary>
+        /// Gets or sets a list of layers that can be switched on and off by the user.
+        /// </summary>
+        [DataMember]
+        public List<TileServerSettings> TileServerLayers { get; private set; } = new List<TileServerSettings>();
 
         /// <summary>
         /// Gets or sets a value indicating that SVG graphics should be used on desktop pages.
@@ -197,6 +203,25 @@ namespace VirtualRadar.Interface.WebSite
         /// </summary>
         [DataMember]
         public bool UseSvgGraphicsOnReports { get; set; }
+
+        /// <summary>
+        /// See interface.
+        /// </summary>
+        /// <returns></returns>
+        public virtual object Clone()
+        {
+            var result = (ServerConfigJson)MemberwiseClone();
+
+            result.Receivers = new List<ServerReceiverJson>();
+            result.Receivers.AddRange(Receivers.Select(r => (ServerReceiverJson)r.Clone()));
+
+            result.TileServerSettings = (TileServerSettings)TileServerSettings?.Clone();
+
+            result.TileServerLayers = new List<TileServerSettings>();
+            result.TileServerLayers.AddRange(TileServerLayers.Select(r => (TileServerSettings)r.Clone()));
+
+            return result;
+        }
 
         /// <summary>
         /// Returns a new model.
@@ -248,6 +273,12 @@ namespace VirtualRadar.Interface.WebSite
             };
             result.Receivers.AddRange(configuration.Receivers.Select(r => ServerReceiverJson.ToModel(r)).Where(r => r != null));
             result.Receivers.AddRange(configuration.MergedFeeds.Select(r => ServerReceiverJson.ToModel(r)).Where(r => r != null));
+            result.TileServerLayers.AddRange(
+                tileServerSettingsManager.GetAllTileLayerSettings(
+                    configuration.GoogleMapSettings.MapProvider
+                )
+                .OrderBy(r => r.DisplayOrder)
+            );
 
             if(!isLocalAddress || configuration.GoogleMapSettings.UseGoogleMapsAPIKeyWithLocalRequests) {
                 result.GoogleMapsApiKey = configuration.GoogleMapSettings.GoogleMapsApiKey;

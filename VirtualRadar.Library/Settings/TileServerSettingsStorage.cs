@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using InterfaceFactory;
 using Newtonsoft.Json;
@@ -113,6 +114,8 @@ namespace VirtualRadar.Library.Settings
                                 continue;
                             }
 
+                            PortBrightnessClasses(setting);
+
                             results.Add(setting);
                         }
                     }
@@ -125,6 +128,33 @@ namespace VirtualRadar.Library.Settings
                     var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine("Caught exception parsing {0}: {1}", fullPath, ex.ToString());
                 }
+            }
+        }
+
+        private static readonly Regex _BrightnessRegex = new Regex(@"\b(?<class>vrs-brightness-(?<brightness>10|20|30|40|50|60|70|80|90|100|110|120|130|140|150))\b");
+
+        /// <summary>
+        /// Converts version 1 brightness classes to default brightness values.
+        /// </summary>
+        /// <param name="setting"></param>
+        /// <remarks>
+        /// The first version of this used classes to infer brightness. Brightness is now configurable
+        /// and a default brightness can be assigned. If we're loading an old definition that still uses
+        /// classes for brightness then this removes the brightness classes and turns them into default
+        /// brightness values.
+        /// </remarks>
+        private void PortBrightnessClasses(TileServerSettings setting)
+        {
+            var match = _BrightnessRegex.Match(setting?.ClassName ?? "");
+            if(match.Success) {
+                var classGroup = match.Groups["class"];
+                var brightnessGroup = match.Groups["brightness"];
+
+                setting.ClassName = setting.ClassName
+                    .Remove(classGroup.Index, classGroup.Length)
+                    .Trim();
+
+                setting.DefaultBrightness = int.Parse(brightnessGroup.Value);
             }
         }
 

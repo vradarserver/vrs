@@ -189,10 +189,16 @@
         getZoom: () => number;
         setZoom: (zoom: number) => void;
 
+        getCanSetMapBrightness: () => boolean;
+        getDefaultMapBrightness: () => number;
+        getMapBrightness: () => number;
+        setMapBrightness: (value: number) => void;
+
         //
         // Map events
         unhook: (hookResult: IEventHandleJQueryUI) => void;
         hookBoundsChanged: (callback: (event?: Event) => void, forceThis?: Object) => IEventHandleJQueryUI;
+        hookBrightnessChanged: (callback: (event?: Event) => void, forceThis?: Object) => IEventHandleJQueryUI;
         hookCenterChanged: (callback: (event?: Event) => void, forceThis?: Object) => IEventHandleJQueryUI;
         hookClicked: (callback: (event?: Event, data?: IMapMouseEventArgs) => void, forceThis?: Object) => IEventHandleJQueryUI;
         hookDoubleClicked: (callback: (event?: Event, data?: IMapMouseEventArgs) => void, forceThis?: Object) => IEventHandleJQueryUI;
@@ -264,6 +270,14 @@
         //
         // Map control methods
         addControl: (element: JQuery | HTMLElement, mapPosition: MapPositionEnum) => void;
+
+        //
+        // Map layer methods
+        addLayer: (layerTileSettings: ITileServerSettings, opacity: number) => void;
+        destroyLayer: (layerName: string) => void;
+        hasLayer: (layerName: string) => boolean;
+        getLayerOpacity: (layerName: string) => number;                     // 0 - 100
+        setLayerOpacity: (layerName: string, opacity: number) => void;      // 0 - 100
     }
 
     /**
@@ -698,9 +712,11 @@
      */
     export interface IMapSaveState
     {
-        zoom:       number;
-        center:     ILatLng;
-        mapTypeId:  MapTypeEnum;
+        zoom:               number;
+        center:             ILatLng;
+        mapTypeId:          MapTypeEnum;
+        brightnessMapName:  string;
+        brightness:         number;
     }
 
     /**

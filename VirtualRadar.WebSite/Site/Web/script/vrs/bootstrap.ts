@@ -92,6 +92,11 @@ namespace VRS
         showSettingsButton?: boolean;
 
         /**
+         * True if the layers menu entry should be shown to the user.
+         */
+        showLayersMenu?: boolean;
+
+        /**
          * The element that is the parent for all of the page's splitters.
          */
         splittersJQ?: JQuery;
@@ -381,6 +386,59 @@ namespace VRS
             }
 
             return pageSettings.mapButton;
+        }
+
+        protected createLayersMenuEntry(pageSettings: PageSettings_Base, mapWrapper: IMap, isLivePage: boolean) : MenuItem
+        {
+            var result: VRS.MenuItem = null;
+
+            if(pageSettings.showLayersMenu && VRS.serverConfig && VRS.mapLayerManager) {
+                var layers = VRS.mapLayerManager.getMapLayerSettings();
+                if(mapWrapper && layers.length > 0 || mapWrapper.getCanSetMapBrightness()) {
+                    result = new VRS.MenuItem({
+                        name: 'layers',
+                        labelKey: 'MapLayers'
+                    });
+
+                    if(mapWrapper.getCanSetMapBrightness()) {
+                        result.subItems.push(new VRS.MenuItem({
+                            name:               'map-brightness',
+                            labelKey:           'MapBrightness',
+                            showSlider:         true,
+                            sliderMinimum:      10,
+                            sliderMaximum:      150,
+                            sliderStep:         10,
+                            sliderInitialValue: () => mapWrapper.getMapBrightness(),
+                            sliderDefaultValue: () => mapWrapper.getDefaultMapBrightness(),
+                            sliderCallback:     (value: number) => mapWrapper.setMapBrightness(value),
+                            noAutoClose:        true
+                        }));
+
+                        if(layers.length > 0) {
+                            result.subItems.push(null);
+                        }
+                    }
+
+                    $.each(layers, (idx: number, layer: MapLayerSetting) => {
+                        result.subItems.push(new VRS.MenuItem({
+                            name:               'layer-' + layer.Name,
+                            labelKey:           () => layer.Name,
+                            checked:            () => layer.IsVisible,
+                            clickCallback:      () => layer.toggleVisible(),
+                            showSlider:         true,
+                            sliderMinimum:      10,
+                            sliderMaximum:      100,
+                            sliderStep:         10,
+                            sliderInitialValue: () => layer.getMapOpacity(),
+                            sliderDefaultValue: () => layer.TileServerSettings.DefaultOpacity,
+                            sliderCallback:     (value: number) => layer.setMapOpacity(value),
+                            noAutoClose:        true
+                        }));
+                    });
+                }
+            }
+
+            return result;
         }
 
         /**
