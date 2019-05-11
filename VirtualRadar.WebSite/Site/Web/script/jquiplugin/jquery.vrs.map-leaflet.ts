@@ -36,6 +36,11 @@ namespace VRS
     VRS.globalOptions.mapShowPointsOfInterest = VRS.globalOptions.mapShowPointsOfInterest !== undefined ? VRS.globalOptions.mapShowPointsOfInterest : false;
     VRS.globalOptions.mapShowScaleControl = VRS.globalOptions.mapShowScaleControl !== undefined ? VRS.globalOptions.mapShowScaleControl : true;
 
+    /*
+     * These options are only used by Leaflet.
+     */
+    VRS.globalOptions.mapLeafletNoWrap = VRS.globalOptions.mapLeafletNoWrap !== undefined ? VRS.globalOptions.mapLeafletNoWrap : true;
+
     export type LeafletControlPosition = 'topleft' | 'topright' | 'bottomleft' | 'bottomright';
 
     export class LeafletUtilities
@@ -1907,6 +1912,10 @@ namespace VRS
                 detectRetina:   settings.DetectRetina,
                 zoomReverse:    settings.ZoomReverse,
             };
+
+            if(VRS.globalOptions.mapLeafletNoWrap) {
+                result.noWrap = true;
+            }
 
             if(settings.ClassName) {
                 result.className = settings.ClassName;

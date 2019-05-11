@@ -156,6 +156,7 @@
         mapGoogleMapHttpsUrl?: string;                              // The HTTPS URL to load Google Map JavaScript from.
         mapGoogleMapTimeout?: number;                               // The number of milliseconds that the site will wait for before it times out the fetch of Google Maps JavaScript.
         mapGoogleMapUseHttps?: boolean;                             // True if the Google Maps JavaScript should be fetched over HTTPS.
+        mapLeafletNoWrap?: boolean;                                 // True if Leaflet maps should have wrapping turned off.
         mapShowStreetView?: boolean;                                // True if the StreetView icon should be shown on the map.
         mapScrollWheelActive?: boolean;                             // True if the scroll wheel zooms the map. Overridden in some panels.
         mapDraggable?: boolean;                                     // True if the user can move the map. Overridden in some panels.
