@@ -167,6 +167,7 @@ namespace VRS
         private _ConfigurationChangedHook: IEventHandle;
         private _PersistenceKey = 'vrsMapLayerManager';
         private _ApplyingState = false;
+        private _CustomMapLayerSettings: ITileServerSettings[] = [];
 
         /**
          * Called once to register a map to draw layers on.
@@ -179,6 +180,24 @@ namespace VRS
             this.loadAndApplyState();
 
             this._ConfigurationChangedHook = VRS.globalDispatch.hook(VRS.globalEvent.serverConfigChanged, this.configurationChanged, this);
+        }
+
+        /**
+         * A method that lets custom content plugins register a layer settings directly instead
+         * of adding them to the custom tile server settings JSON file on the server.
+         * @param layerTileServerSettings
+         */
+        registerCustomMapLayerSetting(layerTileServerSettings: ITileServerSettings)
+        {
+            if(layerTileServerSettings && layerTileServerSettings.IsLayer && layerTileServerSettings.Name) {
+                if(!VRS.arrayHelper.findFirst(this._MapLayerSettings, (r) => r.Name === layerTileServerSettings.Name) &&
+                   !VRS.arrayHelper.findFirst(this._CustomMapLayerSettings, (r) => r.Name === layerTileServerSettings.Name)
+                ) {
+                    this._CustomMapLayerSettings.push(layerTileServerSettings);
+                    this.buildMapLayerSettings();
+                    this.loadAndApplyState();
+                }
+            }
         }
 
         /**
@@ -199,7 +218,7 @@ namespace VRS
         // State persistence methods
         saveState()
         {
-            if(!this._ApplyingState) {
+            if(!this._ApplyingState && this._Map) {
                 VRS.configStorage.save(this._PersistenceKey, this.createSettings());
             }
         }
@@ -212,7 +231,7 @@ namespace VRS
 
         applyState(settings: MapLayerManager_SaveState)
         {
-            if(!this._ApplyingState) {
+            if(!this._ApplyingState && this._Map) {
                 try {
                     this._ApplyingState = true;
 
@@ -272,36 +291,42 @@ namespace VRS
          */
         private buildMapLayerSettings()
         {
-            var newMapLayerSettings: MapLayerSetting[] = [];
+            if(this._Map) {
+                var newMapLayerSettings: MapLayerSetting[] = [];
 
-            var tileServerSettings = VRS.serverConfig.get().TileServerLayers;
-            var len = tileServerSettings.length;
-            for(var i = 0;i < len;++i) {
-                var tileServerSetting = tileServerSettings[i];
-                var mapLayerSetting = VRS.arrayHelper.findFirst(this._MapLayerSettings, (r) => r.Name == tileServerSetting.Name);
-                if(!mapLayerSetting) {
-                    mapLayerSetting = new MapLayerSetting(this._Map, tileServerSetting);
-                    var hookHandles: HookHandles = {
-                        opacityOverrideChangedEventHandle:  mapLayerSetting.hookOpacityOverrideChanged(this.mapLayer_opacityChanged, this),
-                        visibilityChangedEventHandle:       mapLayerSetting.hookVisibilityChanged(this.mapLayer_visibilityChanged, this)
-                    };
-                    this._HookHandles[mapLayerSetting.Name] = hookHandles;
+                var tileServerSettings = VRS.serverConfig.get().TileServerLayers;
+                $.each(this._CustomMapLayerSettings, (idx, customTileServerSettings) => {
+                    tileServerSettings.push(customTileServerSettings);
+                });
+
+                var len = tileServerSettings.length;
+                for(var i = 0;i < len;++i) {
+                    var tileServerSetting = tileServerSettings[i];
+                    var mapLayerSetting = VRS.arrayHelper.findFirst(this._MapLayerSettings, (r) => r.Name == tileServerSetting.Name);
+                    if(!mapLayerSetting) {
+                        mapLayerSetting = new MapLayerSetting(this._Map, tileServerSetting);
+                        var hookHandles: HookHandles = {
+                            opacityOverrideChangedEventHandle:  mapLayerSetting.hookOpacityOverrideChanged(this.mapLayer_opacityChanged, this),
+                            visibilityChangedEventHandle:       mapLayerSetting.hookVisibilityChanged(this.mapLayer_visibilityChanged, this)
+                        };
+                        this._HookHandles[mapLayerSetting.Name] = hookHandles;
+                    }
+                    newMapLayerSettings.push(mapLayerSetting);
                 }
-                newMapLayerSettings.push(mapLayerSetting);
+
+                $.each(VRS.arrayHelper.except(this._MapLayerSettings, newMapLayerSettings, (lhs, rhs) => lhs.Name === rhs.Name), (idx, retiredMapLayer) => {
+                    var hookHandles = this._HookHandles[retiredMapLayer.Name];
+                    if(hookHandles) {
+                        retiredMapLayer.unhook(hookHandles.opacityOverrideChangedEventHandle);
+                        retiredMapLayer.unhook(hookHandles.visibilityChangedEventHandle);
+                        delete this._HookHandles[retiredMapLayer.Name];
+                    }
+
+                    retiredMapLayer.hide();
+                });
+
+                this._MapLayerSettings = newMapLayerSettings;
             }
-
-            $.each(VRS.arrayHelper.except(this._MapLayerSettings, newMapLayerSettings, (lhs, rhs) => lhs.Name === rhs.Name), (idx, retiredMapLayer) => {
-                var hookHandles = this._HookHandles[retiredMapLayer.Name];
-                if(hookHandles) {
-                    retiredMapLayer.unhook(hookHandles.opacityOverrideChangedEventHandle);
-                    retiredMapLayer.unhook(hookHandles.visibilityChangedEventHandle);
-                    delete this._HookHandles[retiredMapLayer.Name];
-                }
-
-                retiredMapLayer.hide();
-            });
-
-            this._MapLayerSettings = newMapLayerSettings;
         }
 
         /**

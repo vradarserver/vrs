@@ -115,12 +115,23 @@ var VRS;
             this._HookHandles = {};
             this._PersistenceKey = 'vrsMapLayerManager';
             this._ApplyingState = false;
+            this._CustomMapLayerSettings = [];
         }
         MapLayerManager.prototype.registerMap = function (map) {
             this._Map = map;
             this.buildMapLayerSettings();
             this.loadAndApplyState();
             this._ConfigurationChangedHook = VRS.globalDispatch.hook(VRS.globalEvent.serverConfigChanged, this.configurationChanged, this);
+        };
+        MapLayerManager.prototype.registerCustomMapLayerSetting = function (layerTileServerSettings) {
+            if (layerTileServerSettings && layerTileServerSettings.IsLayer && layerTileServerSettings.Name) {
+                if (!VRS.arrayHelper.findFirst(this._MapLayerSettings, function (r) { return r.Name === layerTileServerSettings.Name; }) &&
+                    !VRS.arrayHelper.findFirst(this._CustomMapLayerSettings, function (r) { return r.Name === layerTileServerSettings.Name; })) {
+                    this._CustomMapLayerSettings.push(layerTileServerSettings);
+                    this.buildMapLayerSettings();
+                    this.loadAndApplyState();
+                }
+            }
         };
         MapLayerManager.prototype.getMapLayerSettings = function () {
             var result = [];
@@ -130,7 +141,7 @@ var VRS;
             return result;
         };
         MapLayerManager.prototype.saveState = function () {
-            if (!this._ApplyingState) {
+            if (!this._ApplyingState && this._Map) {
                 VRS.configStorage.save(this._PersistenceKey, this.createSettings());
             }
         };
@@ -140,7 +151,7 @@ var VRS;
         };
         MapLayerManager.prototype.applyState = function (settings) {
             var _this = this;
-            if (!this._ApplyingState) {
+            if (!this._ApplyingState && this._Map) {
                 try {
                     this._ApplyingState = true;
                     $.each(this._MapLayerSettings, function (idx, mapLayerSetting) {
@@ -182,32 +193,37 @@ var VRS;
         };
         MapLayerManager.prototype.buildMapLayerSettings = function () {
             var _this = this;
-            var newMapLayerSettings = [];
-            var tileServerSettings = VRS.serverConfig.get().TileServerLayers;
-            var len = tileServerSettings.length;
-            for (var i = 0; i < len; ++i) {
-                var tileServerSetting = tileServerSettings[i];
-                var mapLayerSetting = VRS.arrayHelper.findFirst(this._MapLayerSettings, function (r) { return r.Name == tileServerSetting.Name; });
-                if (!mapLayerSetting) {
-                    mapLayerSetting = new MapLayerSetting(this._Map, tileServerSetting);
-                    var hookHandles = {
-                        opacityOverrideChangedEventHandle: mapLayerSetting.hookOpacityOverrideChanged(this.mapLayer_opacityChanged, this),
-                        visibilityChangedEventHandle: mapLayerSetting.hookVisibilityChanged(this.mapLayer_visibilityChanged, this)
-                    };
-                    this._HookHandles[mapLayerSetting.Name] = hookHandles;
+            if (this._Map) {
+                var newMapLayerSettings = [];
+                var tileServerSettings = VRS.serverConfig.get().TileServerLayers;
+                $.each(this._CustomMapLayerSettings, function (idx, customTileServerSettings) {
+                    tileServerSettings.push(customTileServerSettings);
+                });
+                var len = tileServerSettings.length;
+                for (var i = 0; i < len; ++i) {
+                    var tileServerSetting = tileServerSettings[i];
+                    var mapLayerSetting = VRS.arrayHelper.findFirst(this._MapLayerSettings, function (r) { return r.Name == tileServerSetting.Name; });
+                    if (!mapLayerSetting) {
+                        mapLayerSetting = new MapLayerSetting(this._Map, tileServerSetting);
+                        var hookHandles = {
+                            opacityOverrideChangedEventHandle: mapLayerSetting.hookOpacityOverrideChanged(this.mapLayer_opacityChanged, this),
+                            visibilityChangedEventHandle: mapLayerSetting.hookVisibilityChanged(this.mapLayer_visibilityChanged, this)
+                        };
+                        this._HookHandles[mapLayerSetting.Name] = hookHandles;
+                    }
+                    newMapLayerSettings.push(mapLayerSetting);
                 }
-                newMapLayerSettings.push(mapLayerSetting);
+                $.each(VRS.arrayHelper.except(this._MapLayerSettings, newMapLayerSettings, function (lhs, rhs) { return lhs.Name === rhs.Name; }), function (idx, retiredMapLayer) {
+                    var hookHandles = _this._HookHandles[retiredMapLayer.Name];
+                    if (hookHandles) {
+                        retiredMapLayer.unhook(hookHandles.opacityOverrideChangedEventHandle);
+                        retiredMapLayer.unhook(hookHandles.visibilityChangedEventHandle);
+                        delete _this._HookHandles[retiredMapLayer.Name];
+                    }
+                    retiredMapLayer.hide();
+                });
+                this._MapLayerSettings = newMapLayerSettings;
             }
-            $.each(VRS.arrayHelper.except(this._MapLayerSettings, newMapLayerSettings, function (lhs, rhs) { return lhs.Name === rhs.Name; }), function (idx, retiredMapLayer) {
-                var hookHandles = _this._HookHandles[retiredMapLayer.Name];
-                if (hookHandles) {
-                    retiredMapLayer.unhook(hookHandles.opacityOverrideChangedEventHandle);
-                    retiredMapLayer.unhook(hookHandles.visibilityChangedEventHandle);
-                    delete _this._HookHandles[retiredMapLayer.Name];
-                }
-                retiredMapLayer.hide();
-            });
-            this._MapLayerSettings = newMapLayerSettings;
         };
         MapLayerManager.prototype.configurationChanged = function () {
             this.buildMapLayerSettings();
