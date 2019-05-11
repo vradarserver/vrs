@@ -22,6 +22,7 @@ var VRS;
     VRS.globalOptions.mapDraggable = VRS.globalOptions.mapDraggable !== undefined ? VRS.globalOptions.mapDraggable : true;
     VRS.globalOptions.mapShowPointsOfInterest = VRS.globalOptions.mapShowPointsOfInterest !== undefined ? VRS.globalOptions.mapShowPointsOfInterest : false;
     VRS.globalOptions.mapShowScaleControl = VRS.globalOptions.mapShowScaleControl !== undefined ? VRS.globalOptions.mapShowScaleControl : true;
+    VRS.globalOptions.mapLeafletNoWrap = VRS.globalOptions.mapLeafletNoWrap !== undefined ? VRS.globalOptions.mapLeafletNoWrap : true;
     var LeafletUtilities = (function () {
         function LeafletUtilities() {
         }
@@ -1268,6 +1269,9 @@ var VRS;
                 detectRetina: settings.DetectRetina,
                 zoomReverse: settings.ZoomReverse,
             };
+            if (VRS.globalOptions.mapLeafletNoWrap) {
+                result.noWrap = true;
+            }
             if (settings.ClassName) {
                 result.className = settings.ClassName;
             }
