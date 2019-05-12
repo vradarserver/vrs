@@ -53,7 +53,13 @@ namespace VirtualRadar.Library.Drawing.SystemDrawing
             VrsDrawing.IImage result = null;
 
             GdiPlusLock.EnforceSingleThread(() => {
-                result = new ImageWrapper((Image)NativeImage.Clone());
+                // GDI+ version of clone is a bit dodgy. We need to create a brand-new
+                // copy of the image instead.
+                if(NativeImage is Bitmap bitmap) {
+                    result = new ImageWrapper(new Bitmap(bitmap));
+                } else {
+                    throw new InvalidOperationException($"Cannot clone {NativeImage.GetType().FullName} image objects");
+                }
             });
 
             return result;

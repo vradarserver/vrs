@@ -110,9 +110,10 @@ namespace VirtualRadar.Library.Drawing.SystemDrawing
         /// <returns></returns>
         public VrsDrawing.IImage LoadFromStream(Stream stream)
         {
-            return new ImageWrapper(
-                Image.FromStream(stream)
-            );
+            using(var image = Image.FromStream(stream)) {
+                // Work around the problem that GDI+ has with images built from streams
+                return new ImageWrapper(new Bitmap(image));
+            }
         }
     }
 }
