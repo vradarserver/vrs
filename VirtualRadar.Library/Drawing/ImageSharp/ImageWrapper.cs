@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
@@ -27,6 +28,45 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
     /// </summary>
     class ImageWrapper : CommonImageWrapper<Image<Rgba32>>
     {
+        private static VrsDrawing.IImageFile    _ImageFile;
+        private static VrsDrawing.IPenFactory   _PenFactory;
+        private static VrsDrawing.IBrushFactory _BrushFactory;
+        private static VrsDrawing.IFontFactory  _FontFactory;
+
+        private static VrsDrawing.FontStyle     _MarkerTextFontStyle = VrsDrawing.FontStyle.Bold;
+        private static VrsDrawing.IFontFamily   _MarkerTextFontFamily;
+        private static VrsDrawing.IPen          _MarkerTextOutlinePen;
+        private static VrsDrawing.IPen          _MarkerTextOutlinePenHiDpi;
+        private static VrsDrawing.IBrush        _MarkerTextFillBrush;
+
+        /// <summary>
+        /// Static constructor.
+        /// </summary>
+        static ImageWrapper()
+        {
+            _ImageFile = Factory.ResolveSingleton<VrsDrawing.IImageFile>();
+            _PenFactory = Factory.ResolveSingleton<VrsDrawing.IPenFactory>();
+            _BrushFactory = Factory.ResolveSingleton<VrsDrawing.IBrushFactory>();
+            _FontFactory = Factory.ResolveSingleton<VrsDrawing.IFontFactory>();
+
+            _MarkerTextOutlinePen =      _PenFactory.CreatePen(0, 0, 0, 222, 4.0F, useCache: true);
+            _MarkerTextOutlinePenHiDpi = _PenFactory.CreatePen(0, 0, 0, 222, 6.0F, useCache: true);
+            _MarkerTextFillBrush =       _BrushFactory.CreateBrush(255, 255, 255, 255, useCache: true);
+            _MarkerTextFontFamily =      _FontFactory.GetFontFamilyOrFallback(
+                _MarkerTextFontStyle,
+                "Microsoft Sans Serif",
+                "MS Reference Sans Serif",
+                "Verdana",
+                "Tahoma",
+                "Roboto",
+                "Droid Sans",
+                "MS Sans Serif",
+                "Helvetica",
+                "Sans Serif",
+                "Sans"
+            );
+        }
+
         /// <summary>
         /// Creates a new object.
         /// </summary>
@@ -173,6 +213,48 @@ namespace VirtualRadar.Library.Drawing.ImageSharp
             });
 
             return new ImageWrapper(image);
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="textLines"></param>
+        /// <param name="centreText"></param>
+        /// <param name="isHighDpi"></param>
+        /// <returns></returns>
+        public override VrsDrawing.IImage AddTextLines(IEnumerable<string> textLines, bool centreText, bool isHighDpi)
+        {
+            return _ImageFile.CloneAndDraw(
+                this,
+                drawing => {
+                    var lines =          textLines.Where(tl => tl != null).ToList();
+                    var lineHeight =     isHighDpi ? 24f : 12f;
+                    var topOffset =      5f;
+                    var startPointSize = isHighDpi ? 20f : 10f;
+                    var outlinePen =     isHighDpi ? _MarkerTextOutlinePenHiDpi : _MarkerTextOutlinePen;
+                    var left =           centreText ? ((float)Width / 2.0F) : outlinePen.StrokeWidth / 2.0F;
+                    var top =            (Height - topOffset) - (lines.Count * lineHeight);
+                    var width =          Math.Max(0F, Width - outlinePen.StrokeWidth);
+
+                    var lineTop = top;
+                    foreach(var line in lines) {
+                        using(var fontAndText = _FontFactory.GetFontForRectangle(drawing, _MarkerTextFontFamily, _MarkerTextFontStyle, startPointSize, 6.0F, width, lineHeight * 2F, line, useCache: true)) {
+                            drawing.DrawText(
+                                fontAndText.Text,
+                                fontAndText.Font,
+                                _MarkerTextFillBrush,
+                                _MarkerTextOutlinePen,
+                                left,
+                                lineTop,
+                                centreText ? VrsDrawing.HorizontalAlignment.Centre : VrsDrawing.HorizontalAlignment.Left,
+                                preferSpeedOverQuality: false
+                            );
+                        }
+
+                        lineTop += lineHeight;
+                    }
+                }
+            );
         }
     }
 }

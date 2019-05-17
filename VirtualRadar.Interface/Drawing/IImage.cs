@@ -66,5 +66,14 @@ namespace VirtualRadar.Interface.Drawing
         /// <param name="degrees"></param>
         /// <returns></returns>
         IImage Rotate(float degrees);
+
+        /// <summary>
+        /// Returns a copy of the image with the text lines drawn onto the bottom of it. Used to draw pin text onto map markers.
+        /// </summary>
+        /// <param name="textLines"></param>
+        /// <param name="centreText"></param>
+        /// <param name="isHighDpi"></param>
+        /// <returns></returns>
+        IImage AddTextLines(IEnumerable<string> textLines, bool centreText, bool isHighDpi);
     }
 }

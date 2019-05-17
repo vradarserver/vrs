@@ -119,5 +119,14 @@ namespace VirtualRadar.Library.Drawing
         /// <param name="degrees"></param>
         /// <returns></returns>
         public abstract VrsDrawing.IImage Rotate(float degrees);
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="textLines"></param>
+        /// <param name="centreText"></param>
+        /// <param name="isHighDpi"></param>
+        /// <returns></returns>
+        public abstract VrsDrawing.IImage AddTextLines(IEnumerable<string> textLines, bool centreText, bool isHighDpi);
     }
 }

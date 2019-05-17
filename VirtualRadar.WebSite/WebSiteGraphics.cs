@@ -29,12 +29,6 @@ namespace VirtualRadar.WebSite
         private IBrushFactory   _BrushFactory;
         private IFontFactory    _FontFactory;
 
-        private FontStyle       _MarkerTextFontStyle = FontStyle.Bold;
-        private IFontFamily     _MarkerTextFontFamily;
-        private IPen            _MarkerTextOutlinePen;
-        private IPen            _MarkerTextOutlinePenHiDpi;
-        private IBrush          _MarkerTextFillBrush;
-
         private FontStyle       _SplashFontStyle = FontStyle.Normal;
         private IFontFamily     _SplashFontFamily;
         private IBrush          _SplashFillBrush;
@@ -48,23 +42,6 @@ namespace VirtualRadar.WebSite
             _PenFactory = Factory.ResolveSingleton<IPenFactory>();
             _BrushFactory = Factory.ResolveSingleton<IBrushFactory>();
             _FontFactory = Factory.ResolveSingleton<IFontFactory>();
-
-            _MarkerTextOutlinePen =      _PenFactory.CreatePen(0, 0, 0, 222, 4.0F, useCache: true);
-            _MarkerTextOutlinePenHiDpi = _PenFactory.CreatePen(0, 0, 0, 222, 6.0F, useCache: true);
-            _MarkerTextFillBrush =       _BrushFactory.CreateBrush(255, 255, 255, 255, useCache: true);
-            _MarkerTextFontFamily =      _FontFactory.GetFontFamilyOrFallback(
-                _MarkerTextFontStyle,
-                "Microsoft Sans Serif",
-                "MS Reference Sans Serif",
-                "Verdana",
-                "Tahoma",
-                "Roboto",
-                "Droid Sans",
-                "MS Sans Serif",
-                "Helvetica",
-                "Sans Serif",
-                "Sans"
-            );
 
             _SplashFillBrush =  _BrushFactory.CreateBrush(255, 255, 255, 255, useCache: true);
             _SplashFontFamily = _FontFactory.GetFontFamilyOrFallback(
@@ -283,37 +260,7 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         public IImage AddTextLines(IImage image, IEnumerable<string> textLines, bool centreText, bool isHighDpi)
         {
-            return _ImageFile.CloneAndDraw(
-                image,
-                drawing => {
-                    var lines =          textLines.Where(tl => tl != null).ToList();
-                    var lineHeight =     isHighDpi ? 24f : 12f;
-                    var topOffset =      5f;
-                    var startPointSize = isHighDpi ? 20f : 10f;
-                    var outlinePen =     isHighDpi ? _MarkerTextOutlinePenHiDpi : _MarkerTextOutlinePen;
-                    var left =           centreText ? ((float)image.Width / 2.0F) : outlinePen.StrokeWidth / 2.0F;
-                    var top =            (image.Height - topOffset) - (lines.Count * lineHeight);
-                    var width =          Math.Max(0F, image.Width - outlinePen.StrokeWidth);
-
-                    var lineTop = top;
-                    foreach(var line in lines) {
-                        using(var fontAndText = _FontFactory.GetFontForRectangle(drawing, _MarkerTextFontFamily, _MarkerTextFontStyle, startPointSize, 6.0F, width, lineHeight * 2F, line, useCache: true)) {
-                            drawing.DrawText(
-                                fontAndText.Text,
-                                fontAndText.Font,
-                                _MarkerTextFillBrush,
-                                _MarkerTextOutlinePen,
-                                left,
-                                lineTop,
-                                centreText ? HorizontalAlignment.Centre : HorizontalAlignment.Left,
-                                preferSpeedOverQuality: false
-                            );
-                        }
-
-                        lineTop += lineHeight;
-                    }
-                }
-            );
+            return image.AddTextLines(textLines, centreText, isHighDpi);
         }
 
         /// <summary>

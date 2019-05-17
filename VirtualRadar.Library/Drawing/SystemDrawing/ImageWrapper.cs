@@ -13,10 +13,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
 using VrsDrawing = VirtualRadar.Interface.Drawing;
 
 namespace VirtualRadar.Library.Drawing.SystemDrawing
@@ -26,6 +28,42 @@ namespace VirtualRadar.Library.Drawing.SystemDrawing
     /// </summary>
     class ImageWrapper : CommonImageWrapper<Image>
     {
+        /// <summary>
+        /// The font factory in use.
+        /// </summary>
+        private static VrsDrawing.IFontFactory _FontFactory;
+
+        /// <summary>
+        /// The font that is used to draw text.
+        /// </summary>
+        private static VrsDrawing.IFontFamily _PinTextFontFamily;
+
+        /// <summary>
+        /// The font style used on pin text.
+        /// </summary>
+        private const VrsDrawing.FontStyle _PinTextFontStyle = VrsDrawing.FontStyle.Normal;
+
+        /// <summary>
+        /// Static initialisation.
+        /// </summary>
+        static ImageWrapper()
+        {
+            _FontFactory = Factory.ResolveSingleton<VrsDrawing.IFontFactory>();
+            _PinTextFontFamily = _FontFactory.GetFontFamilyOrFallback(
+                _PinTextFontStyle,
+                "Droid Sans",
+                "MS Sans Serif",
+                "Microsoft Sans Serif",
+                "MS Reference Sans Serif",
+                "Verdana",
+                "Tahoma",
+                "Roboto",
+                "Helvetica",
+                "Sans Serif",
+                "Sans"
+            );
+        }
+
         /// <summary>
         /// Creates a new object.
         /// </summary>
@@ -169,6 +207,94 @@ namespace VirtualRadar.Library.Drawing.SystemDrawing
                         NativeImage.Width,
                         NativeImage.Height
                     );
+                }
+            });
+
+            return new ImageWrapper(result);
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="textLines"></param>
+        /// <param name="centreText"></param>
+        /// <param name="isHighDpi"></param>
+        /// <returns></returns>
+        public override VrsDrawing.IImage AddTextLines(IEnumerable<string> textLines, bool centreText, bool isHighDpi)
+        {
+            var lines = textLines.Where(tl => tl != null).ToList();
+            var lineHeight = isHighDpi ? 24f : 12f;
+            var topOffset = 5f;
+            var startPointSize = isHighDpi ? 20f : 10f;
+            var haloMod = isHighDpi ? 8 : 4;
+            var haloTrans = isHighDpi ? 0.125f : 0.25f;
+            var left = 0f;
+            var top = (NativeImage.Height - topOffset) - (lines.Count * lineHeight);
+
+            Image result = new Bitmap(NativeImage);
+
+            GdiPlusLock.EnforceSingleThread(() => {
+                using(var drawing = new Drawing(Graphics.FromImage(result))) {
+                    var graphics = drawing.NativeDrawingContext;
+
+                    var stringFormat = new StringFormat() {
+                        Alignment = centreText ? StringAlignment.Center : StringAlignment.Near,
+                        LineAlignment = StringAlignment.Center,
+                        FormatFlags = StringFormatFlags.NoWrap,
+                    };
+
+                    graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
+
+                    using(var path = new GraphicsPath()) {
+                        var lineTop = top;
+                        foreach(var line in lines) {
+                            var fontAndText = _FontFactory.GetFontForRectangle(
+                                drawing,
+                                _PinTextFontFamily,
+                                _PinTextFontStyle,
+                                startPointSize,
+                                4F,
+                                (float)result.Width - left,
+                                lineHeight * 2f,
+                                line,
+                                useCache: true
+                            );
+
+                            if(fontAndText.Font is FontWrapper fontWrapper) {
+                                path.AddString(
+                                    fontAndText.Text,
+                                    fontWrapper.NativeFont.FontFamily,
+                                    (int)fontWrapper.NativeFont.Style,
+                                    fontWrapper.NativeFont.Size,
+                                    new System.Drawing.RectangleF(0, lineTop, result.Width, lineHeight),
+                                    stringFormat
+                                );
+                            }
+
+                            lineTop += lineHeight;
+                        }
+
+                        var haloWidth = result.Width + (result.Width % haloMod);
+                        var haloHeight = result.Height + (result.Height % haloMod);
+                        using(var halo = new Bitmap(haloWidth / haloMod, haloHeight / haloMod)) {
+                            using(var haloGraphics = Graphics.FromImage(halo)) {
+                                using(var matrix = new Matrix(haloTrans, 0, 0, haloTrans, -haloTrans, -haloTrans)) {
+                                    haloGraphics.SmoothingMode = SmoothingMode.AntiAlias;
+                                    haloGraphics.Transform = matrix;
+                                    using(var pen = new Pen(Color.Gray, 1) { LineJoin = LineJoin.Round }) {
+                                        haloGraphics.DrawPath(pen, path);
+                                        haloGraphics.FillPath(Brushes.Black, path);
+                                    }
+                                }
+                            }
+
+                            graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                            graphics.DrawImage(halo, 1, 1, haloWidth, haloHeight);
+                            graphics.DrawPath(Pens.LightGray, path);
+                            graphics.FillPath(Brushes.White, path);
+                        }
+                    }
                 }
             });
 
