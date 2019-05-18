@@ -1,34 +1,33 @@
-# Virtual Radar Server
-
-You will need Visual Studio 2017 or 2019 to build the program. The free Community version of Visual Studio will work just
+# Virtual Radar Server .NET Core 3 Branch
+You will need Visual Studio 2019 to build the program. The free Community version of Visual Studio will work just
 fine. You can download the installer for it from here:
 
 * **Visual Studio Installer**: https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx
 
+You will need to have installed the latest .NET Core 3.0 preview from here:
+
+https://dotnet.microsoft.com/download/dotnet-core/3.0
+
+By default Visual Studio will not use preview versions of .NET core. You can fix this
+by going into **Tools | Options | Projects and Solutions | .NET Core** and ticking the
+````Use previews of the .NET Core SDK```` option.
+
+
+## Earlier versions of Visual Studio / Visual Studio Code
+.NET Core 3.0 projects cannot be built with versions of Visual Studio earlier than 2019.
+
+The intention is to support builds with Visual Studio Code but while this is a work-in-progress
+it is only being built with VS2019.
+
+
 ## TypeScript
 
-## Visual Studio 2017
-
-When you install VS2017 (or upgrade it) be sure to select TypeScript 2.3 on the Individual Components tab.
-
-If you get TypeScript errors when compiling then go into the properties for VirtualRadar.WebSite and open the TypeScript tab.
-If it says that the version is "2.3 (unavailable)" then quit Visual Studio, run the installer, click More | Modify, go to
-Individual Components and install TypeScript 2.3.
-
-## Visual Studio 2019
-
-The VS2019 installer does not offer TypeScript 2.3 as an optional install. However, the projects now reference the TypeScript
-2.3.3 NuGet package so they should build correctly. The downside is that you'll see a lot of erroneous TypeScript errors coming out
+The projects reference the TypeScript 2.3.3 NuGet package so they should build correctly. The downside is that you'll see a lot of erroneous TypeScript errors coming out
 of Intellisense. This is because Intellisense is using a later version of TypeScript and TypeScript is not good at being backwards
 compatible.
 
-You can safely ignore the errors, the build will use 2.3 and it should be fine.
+You can safely ignore the Intellisense errors, the build will be fine.
 
-## Earlier versions of Visual Studio
-Virtual Radar Server targets .NET 4.6.1 and TypeScript 2.3. It also makes use of language features from C# 6.
-
-You can probably use versions of Visual Studio 2015 as long as you install the .NET 4.6.1 targeting pack and TypeScript 2.3,
-but I haven't tried it.
 
 ## Overview
 * **InterfaceFactory**: Exposes a static class called *Factory* that can create new instances of classes that implement interfaces.
