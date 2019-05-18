@@ -529,8 +529,8 @@ namespace VirtualRadar.WinForms
                 toolStripDropDownButtonInvalidPluginCount.Visible = false;
                 toolStripDropDownButtonLaterVersionAvailable.Visible = false;
 
-                Localise.Form(this);
-                Localise.ToolStrip(contextMenuStripNotifyIcon);
+                FormsLocalise.Form(this);
+                FormsLocalise.ToolStrip(contextMenuStripNotifyIcon);
                 notifyIcon.Text = Strings.VirtualRadarServer;
 
                 _OnlineHelp = new OnlineHelpHelper(this, OnlineHelpAddress.WinFormsMainDialog);

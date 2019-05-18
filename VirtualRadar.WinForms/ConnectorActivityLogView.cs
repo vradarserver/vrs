@@ -182,7 +182,7 @@ namespace VirtualRadar.WinForms
             base.OnLoad(e);
 
             if(!DesignMode) {
-                Localise.Form(this);
+                FormsLocalise.Form(this);
                 _AllText = String.Format("<{0}>", Strings.AllCaps);
 
                 if(HideConnectorName) {

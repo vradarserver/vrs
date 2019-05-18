@@ -12,8 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Localisation;
 using System.Windows.Forms;
+using VirtualRadar.WinForms;
 
 namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
 {
@@ -25,7 +25,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// <summary>
         /// The object that's going to do all of the work.
         /// </summary>
-        private static Localiser _Localiser = new Localiser(typeof(PluginStrings));
+        private static FormsLocaliser _Localiser = new FormsLocaliser(typeof(PluginStrings));
 
         /// <summary>
         /// See <see cref="Localiser.Form"/>.

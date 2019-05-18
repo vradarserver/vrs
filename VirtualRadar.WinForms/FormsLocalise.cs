@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2019 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,15 +12,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using VirtualRadar.Localisation;
 
-namespace VirtualRadar.Localisation
+namespace VirtualRadar.WinForms
 {
     /// <summary>
-    /// A static wrapper around an instance of <see cref="Localiser"/> for the Virtual Radar Server's application
+    /// A static wrapper around an instance of <see cref="FormsLocaliser"/> for the Virtual Radar Server's application
     /// strings class.
     /// </summary>
-    public static class Localise
+    public static class FormsLocalise
     {
         /// <summary>
         /// The localised strings map for the application's strings.
@@ -30,7 +32,7 @@ namespace VirtualRadar.Localisation
         /// <summary>
         /// The object that's doing all of the work for us.
         /// </summary>
-        static Localiser _Localiser = new Localiser(VirtualRadarStrings);
+        static FormsLocaliser _Localiser = new FormsLocaliser(VirtualRadarStrings);
 
         /// <summary>
         /// See <see cref="Localiser.Lookup"/>.
@@ -40,6 +42,60 @@ namespace VirtualRadar.Localisation
         public static string Lookup(string name)
         {
             return _Localiser.Lookup(name);
+        }
+
+        /// <summary>
+        /// See <see cref="Localiser.Form"/>.
+        /// </summary>
+        /// <param name="form"></param>
+        public static void Form(Form form)
+        {
+            _Localiser.Form(form);
+        }
+
+        /// <summary>
+        /// See <see cref="Localiser.Control"/>.
+        /// </summary>
+        /// <param name="control"></param>
+        public static void Control(Control control)
+        {
+            _Localiser.Control(control);
+        }
+
+        /// <summary>
+        /// See <see cref="Localiser.ListViewColumns"/>.
+        /// </summary>
+        /// <param name="listView"></param>
+        public static void ListViewColumns(ListView listView)
+        {
+            _Localiser.ListViewColumns(listView);
+        }
+
+        /// <summary>
+        /// See <see cref="Localiser.ColumnHeader"/>.
+        /// </summary>
+        /// <param name="column"></param>
+        public static void ColumnHeader(ColumnHeader column)
+        {
+            _Localiser.ColumnHeader(column);
+        }
+
+        /// <summary>
+        /// See <see cref="Localiser.ToolStrip"/>.
+        /// </summary>
+        /// <param name="toolStrip"></param>
+        public static void ToolStrip(ToolStrip toolStrip)
+        {
+            _Localiser.ToolStrip(toolStrip);
+        }
+
+        /// <summary>
+        /// See <see cref="Localiser.ToolStripItem"/>.
+        /// </summary>
+        /// <param name="item"></param>
+        public static void ToolStripItem(ToolStripItem item)
+        {
+            _Localiser.ToolStripItem(item);
         }
 
         /// <summary>

@@ -87,7 +87,7 @@ namespace VirtualRadar.WinForms
             base.OnLoad(e);
 
             if(!DesignMode) {
-                Localise.Form(this);
+                FormsLocalise.Form(this);
 
                 pictureBoxLogo.Image = ResourceImages.Radio48x48;
 

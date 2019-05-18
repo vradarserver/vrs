@@ -152,7 +152,7 @@ namespace VirtualRadar.WinForms
             base.OnLoad(e);
 
             if(!DesignMode) {
-                Localise.Form(this);
+                FormsLocalise.Form(this);
                 logoPictureBox.Image = ResourceImages.HelpAbout;
 
                 _Presenter = Factory.Resolve<IAboutPresenter>();

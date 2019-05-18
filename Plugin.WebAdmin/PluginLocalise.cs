@@ -12,8 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Localisation;
 using System.Windows.Forms;
+using VirtualRadar.WinForms;
 
 namespace VirtualRadar.Plugin.WebAdmin
 {
@@ -25,14 +25,14 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <summary>
         /// The object that's going to do all of the work.
         /// </summary>
-        private static Localiser _Localiser;
+        private static FormsLocaliser _Localiser;
 
         /// <summary>
         /// Initialises the static object.
         /// </summary>
         static PluginLocalise()
         {
-            _Localiser = new Localiser(typeof(VirtualRadar.Localisation.Strings));
+            _Localiser = new FormsLocaliser(typeof(VirtualRadar.Localisation.Strings));
             _Localiser.AddResourceStrings(typeof(WebAdminStrings));
         }
 

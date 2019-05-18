@@ -231,7 +231,7 @@ namespace VirtualRadar.Plugin.CustomContent.WinForms
             base.OnLoad(e);
 
             if(!DesignMode) {
-                var localiser = new Localiser(typeof(CustomContentStrings));
+                var localiser = new FormsLocaliser(typeof(CustomContentStrings));
                 localiser.Form(this);
 
                 FillDropDownWithValues<At>(comboBoxInjectAt, new At[] { At.Start, At.End }, r => {

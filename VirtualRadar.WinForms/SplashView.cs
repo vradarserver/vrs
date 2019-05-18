@@ -166,7 +166,7 @@ namespace VirtualRadar.WinForms
             base.OnLoad(e);
 
             if(!DesignMode) {
-                Localise.Form(this);
+                FormsLocalise.Form(this);
 
                 pictureBoxLogo.Image = ResourceImages.Logo128x128;
                 Icon = ResourceImages.ApplicationIcon;

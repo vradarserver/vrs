@@ -77,7 +77,7 @@ namespace VirtualRadar.WinForms
             base.OnLoad(e);
 
             if(!DesignMode) {
-                Localise.Form(this);
+                FormsLocalise.Form(this);
 
                 _Presenter = Factory.Resolve<IConnectionClientLogPresenter>();
                 _Presenter.Initialise(this);

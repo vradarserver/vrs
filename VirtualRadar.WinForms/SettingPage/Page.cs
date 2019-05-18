@@ -128,7 +128,7 @@ namespace VirtualRadar.WinForms.SettingPage
             base.OnLoad(e);
 
             if(!DesignMode) {
-                Localise.Control(this);
+                FormsLocalise.Control(this);
             }
         }
         #endregion

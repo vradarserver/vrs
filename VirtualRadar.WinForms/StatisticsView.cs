@@ -413,7 +413,7 @@ namespace VirtualRadar.WinForms
         {
             base.OnLoad(e);
 
-            Localise.Form(this);
+            FormsLocalise.Form(this);
 
             _OnlineHelp = new OnlineHelpHelper(this, OnlineHelpAddress.WinFormsStatisticsDialog);
 

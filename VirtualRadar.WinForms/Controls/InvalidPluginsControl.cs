@@ -64,7 +64,7 @@ namespace VirtualRadar.WinForms.Controls
         {
             base.OnLoad(e);
 
-            if(!DesignMode) Localise.Control(this);
+            if(!DesignMode) FormsLocalise.Control(this);
         }
     }
 }

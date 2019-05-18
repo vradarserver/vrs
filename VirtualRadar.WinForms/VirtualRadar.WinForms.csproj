@@ -217,6 +217,8 @@
       <DependentUpon>FlightSimulatorXView.cs</DependentUpon>
     </Compile>
     <Compile Include="FontFactory.cs" />
+    <Compile Include="FormsLocalise.cs" />
+    <Compile Include="FormsLocaliser.cs" />
     <Compile Include="Implementations.cs" />
     <Compile Include="InvalidPluginsView.cs">
       <SubType>Form</SubType>

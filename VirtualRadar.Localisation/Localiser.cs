@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 
 namespace VirtualRadar.Localisation
 {
@@ -69,87 +68,6 @@ namespace VirtualRadar.Localisation
         public string Lookup(string name)
         {
             return _LocalisedStrings.GetLocalisedString(name);
-        }
-
-        /// <summary>
-        /// Localises a form's title and then recursively localises all of the controls on the form.
-        /// </summary>
-        /// <param name="form"></param>
-        public void Form(Form form)
-        {
-            Control(form);
-        }
-
-        /// <summary>
-        /// Localises an arbitrary control.
-        /// </summary>
-        /// <param name="control"></param>
-        public void Control(Control control)
-        {
-            var webBrowser = control as WebBrowser;
-            if(webBrowser == null) {
-                control.Text = GetLocalisedText(control.Text);
-
-                ListView listView = control as ListView;
-                if(listView != null) ListViewColumns(listView);
-                else {
-                    var toolStrip = control as ToolStrip;
-                    if(toolStrip != null) ToolStrip(toolStrip);
-                }
-
-                if(control.HasChildren) {
-                    foreach(Control child in control.Controls) {
-                        Control(child);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Localises the columns in a list view.
-        /// </summary>
-        /// <param name="listView"></param>
-        public void ListViewColumns(ListView listView)
-        {
-            foreach(ColumnHeader column in listView.Columns) {
-                ColumnHeader(column);
-            }
-        }
-
-        /// <summary>
-        /// Localises a column header.
-        /// </summary>
-        /// <param name="column"></param>
-        public void ColumnHeader(ColumnHeader column)
-        {
-            column.Text = GetLocalisedText(column.Text);
-        }
-
-        /// <summary>
-        /// Localises a toolstrip.
-        /// </summary>
-        /// <param name="toolStrip"></param>
-        public void ToolStrip(ToolStrip toolStrip)
-        {
-            foreach(ToolStripItem item in toolStrip.Items) {
-                ToolStripItem(item);
-            }
-        }
-
-        /// <summary>
-        /// Localises a toolstrip item.
-        /// </summary>
-        /// <param name="item"></param>
-        public void ToolStripItem(ToolStripItem item)
-        {
-            item.Text = GetLocalisedText(item.Text);
-
-            ToolStripMenuItem menuItem = item as ToolStripMenuItem;
-            if(menuItem != null && menuItem.HasDropDownItems) {
-                foreach(ToolStripItem childItem in menuItem.DropDownItems) {
-                    ToolStripItem(childItem);
-                }
-            }
         }
 
         /// <summary>

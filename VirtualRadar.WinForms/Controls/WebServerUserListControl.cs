@@ -87,7 +87,7 @@ namespace VirtualRadar.WinForms.Controls
         {
             base.OnLoad(e);
             if(!DesignMode) {
-                Localise.Control(this);
+                FormsLocalise.Control(this);
                 _Sorter.RefreshSortIndicators();
             }
         }

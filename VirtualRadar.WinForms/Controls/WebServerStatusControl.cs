@@ -394,7 +394,7 @@ namespace VirtualRadar.WinForms.Controls
             base.OnLoad(e);
 
             if(!DesignMode) {
-                Localise.Control(this);
+                FormsLocalise.Control(this);
 
                 comboBoxShowAddressType.Items.Add(Strings.ShowLocalAddress);
                 comboBoxShowAddressType.Items.Add(Strings.ShowNetworkAddress);

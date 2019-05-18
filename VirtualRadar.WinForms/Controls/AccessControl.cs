@@ -166,7 +166,7 @@ namespace VirtualRadar.WinForms.Controls
             base.OnLoad(e);
 
             if(!DesignMode) {
-                Localise.Control(this);
+                FormsLocalise.Control(this);
 
                 var defaultAccesses = Enum.GetValues(typeof(DefaultAccess)).OfType<DefaultAccess>().ToArray();
                 _DefaultAccessItems = new ItemDescriptionList<DefaultAccess>(defaultAccesses, r => Describe.DefaultAccess(r));
