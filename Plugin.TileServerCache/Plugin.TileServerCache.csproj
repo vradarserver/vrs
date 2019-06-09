@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{99D4BD27-48F5-492A-8EDD-FB4368F08692}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VirtualRadar.Plugin.TileServerCache</RootNamespace>
+    <AssemblyName>VirtualRadar.Plugin.TileServerCache</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CachedTile.cs" />
+    <Compile Include="FakeUrlEncodedValues.cs" />
+    <Compile Include="IOptionsView.cs" />
+    <Compile Include="Options.cs" />
+    <Compile Include="OptionsController.cs" />
+    <Compile Include="OptionsStorage.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="PluginLocalise.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RecentRequestsController.cs" />
+    <Compile Include="RequestOutcome.cs" />
+    <Compile Include="TileCache.cs" />
+    <Compile Include="TileServerCacheStrings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TileServerCacheStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="TileServerSettingsManagerWrapper.cs" />
+    <Compile Include="TileServerUrlTranslator.cs" />
+    <Compile Include="WebAdmin\IRecentRequestsView.cs" />
+    <Compile Include="WebAdmin\IOptionsView.cs" />
+    <Compile Include="WebAdmin\RecentRequestsModels.cs" />
+    <Compile Include="WebAdmin\OptionsModels.cs" />
+    <Compile Include="WebAdmin\OptionsView.cs" />
+    <Compile Include="WebAdmin\RecentRequestsView.cs" />
+    <Compile Include="WebRequestHandler.cs" />
+    <Compile Include="WebRequestOutcome.cs" />
+    <Compile Include="WebServerV2Interaction.cs" />
+    <Compile Include="WinForms\OptionsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\OptionsView.Designer.cs">
+      <DependentUpon>OptionsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\RecentRequestsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\RecentRequestsView.Designer.cs">
+      <DependentUpon>RecentRequestsView.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
+      <Project>{6ad23cd7-fb9f-448e-85ea-cb5aaa4e9fee}</Project>
+      <Name>InterfaceFactory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
+      <Project>{8ef81105-f45d-4edb-996c-de7d5644b1e7}</Project>
+      <Name>VirtualRadar.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
+      <Project>{fd3e36e1-35ea-46f3-a30b-65cea7d92b7e}</Project>
+      <Name>VirtualRadar.Localisation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.WinForms\VirtualRadar.WinForms.csproj">
+      <Project>{3a1330d8-1e7d-4c70-ba9a-39851389cfff}</Project>
+      <Name>VirtualRadar.WinForms</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TileServerCacheStrings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TileServerCacheStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\OptionsView.resx">
+      <DependentUpon>OptionsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\RecentRequestsView.resx">
+      <DependentUpon>RecentRequestsView.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Typings\translations-customcontentstrings.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>translations-customcontentstrings.d.ts</LastGenOutput>
+    </None>
+    <Content Include="VirtualRadar.Plugin.TileServerCache.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web\WebAdmin\AircraftDetailLookupLog.js">
+      <DependentUpon>TileServerCacheRecentRequests.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\TileServerCacheRecentRequests.html" />
+    <Content Include="Web\WebAdmin\TileServerCachePluginOptions.html" />
+    <Content Include="Web\WebAdmin\CustomContentPluginOptions.js">
+      <DependentUpon>TileServerCachePluginOptions.ts</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Web\WebAdmin\CustomContentPluginOptions.js.map">
+      <DependentUpon>TileServerCachePluginOptions.ts</DependentUpon>
+    </Content>
+    <None Include="Typings\WebAdminModels.tst" />
+    <Content Include="Web\WebAdmin\AircraftDetailLookupLog.js.map">
+      <DependentUpon>TileServerCacheRecentRequests.ts</DependentUpon>
+    </Content>
+    <None Include="_PostBuild.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Typings\RecentRequestsModels.ts">
+      <DependentUpon>WebAdminModels.tst</DependentUpon>
+      <CustomToolNamespace>WebAdmin\RecentRequestsModels.cs</CustomToolNamespace>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\OptionsModels.ts">
+      <DependentUpon>WebAdminModels.tst</DependentUpon>
+      <CustomToolNamespace>WebAdmin\OptionsModels.cs</CustomToolNamespace>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\translations-customcontentstrings.d.ts">
+      <DependentUpon>translations-customcontentstrings.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\webadmin.d.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\TileServerCacheRecentRequests.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\TileServerCachePluginOptions.ts" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>"$(ProjectDir)\_PostBuild.bat" "$(SolutionDir)" "$(ConfigurationName)" "$(TargetDir)" $(TargetName) "TileServerCache"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

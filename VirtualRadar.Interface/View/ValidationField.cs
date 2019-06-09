@@ -326,8 +326,13 @@ namespace VirtualRadar.Interface.View
         SendInterval,
 
         /// <summary>
-        /// 
+        /// The domains that can make CORS requests.
         /// </summary>
         AllowCorsDomains,
+
+        /// <summary>
+        /// The cache folder.
+        /// </summary>
+        CacheFolder,
     }
 }

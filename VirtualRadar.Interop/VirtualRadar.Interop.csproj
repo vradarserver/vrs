@@ -50,6 +50,7 @@
     <Compile Include="HDITEM.cs" />
     <Compile Include="TcpKeepAlive.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tls12Workaround.cs" />
     <Compile Include="Window.cs" />
   </ItemGroup>
   <ItemGroup>

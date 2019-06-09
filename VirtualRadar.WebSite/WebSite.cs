@@ -345,6 +345,9 @@ namespace VirtualRadar.WebSite
                 var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
                 configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
 
+                var tileServerManager = Factory.Singleton.Resolve<ITileServerSettingsManager>().Singleton;
+                tileServerManager.TileServerSettingsDownloaded += TileServerSettingsManager_TileServerSettingsDownloaded;
+
                 WebServer = server;
                 server.Root = "/VirtualRadar";
 
@@ -700,6 +703,19 @@ namespace VirtualRadar.WebSite
         /// <param name="sender"></param>
         /// <param name="args"></param>
         private void ConfigurationStorage_ConfigurationChanged(object sender, EventArgs args)
+        {
+            if(WebServer != null && LoadConfiguration()) {
+                WebServer.Online = false;
+                WebServer.Online = true;
+            }
+        }
+
+        /// <summary>
+        /// Handles changes to the tile server settings.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TileServerSettingsManager_TileServerSettingsDownloaded(object sender, EventArgs e)
         {
             if(WebServer != null && LoadConfiguration()) {
                 WebServer.Online = false;

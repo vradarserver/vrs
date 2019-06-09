@@ -73,6 +73,20 @@ namespace VirtualRadar.Library.Settings
         /// <summary>
         /// See interface docs.
         /// </summary>
+        public event EventHandler TileServerSettingsDownloaded;
+
+        /// <summary>
+        /// Raises <see cref="TileServerSettingsDownloaded"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnTileServerSettingsDownloaded(EventArgs args)
+        {
+            EventHelper.Raise<EventArgs>(TileServerSettingsDownloaded, this);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public void Initialise()
         {
             if(!_Initialised) {
@@ -160,13 +174,30 @@ namespace VirtualRadar.Library.Settings
         /// <returns></returns>
         public TileServerSettings GetTileServerSettings(MapProvider mapProvider, string name, bool fallbackToDefaultIfMissing)
         {
-            var settings = _TileServerSettings;
-            var result = settings.FirstOrDefault(r => r.MapProvider == mapProvider && String.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase) && !r.IsLayer);
+            var result = GetTileServerOrLayerSettings(mapProvider, name, includeTileServers: true, includeTileLayers: false);
             if(result == null && fallbackToDefaultIfMissing) {
                 result = GetDefaultTileServerSettings(mapProvider);
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="mapProvider"></param>
+        /// <param name="name"></param>
+        /// <param name="includeTileServers"></param>
+        /// <param name="includeTileLayers"></param>
+        /// <returns></returns>
+        public TileServerSettings GetTileServerOrLayerSettings(MapProvider mapProvider, string name, bool includeTileServers, bool includeTileLayers)
+        {
+            var settings = _TileServerSettings;
+            return settings.FirstOrDefault(r =>
+                   r.MapProvider == mapProvider
+                && String.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase)
+                && ((!r.IsLayer && includeTileServers) || (r.IsLayer &&  includeTileLayers))
+            );
         }
 
         /// <summary>
@@ -229,6 +260,8 @@ namespace VirtualRadar.Library.Settings
 
                 LoadTileServerSettings();
             }
+
+            OnTileServerSettingsDownloaded(EventArgs.Empty);
         }
 
         /// <summary>

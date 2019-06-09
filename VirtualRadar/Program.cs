@@ -109,6 +109,8 @@ namespace VirtualRadar
                 Factory.Singleton.Resolve<IMessageBox>().Show("Configuration Folder");
             }
 
+            Interop.Tls12Workaround.EnableTls12Support();
+
             var receiverFormatManager = Factory.Singleton.Resolve<IReceiverFormatManager>().Singleton;
             receiverFormatManager.Initialise();
 
