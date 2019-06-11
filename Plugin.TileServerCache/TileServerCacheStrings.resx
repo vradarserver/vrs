@@ -220,4 +220,13 @@
   <data name="WebAdminRecentRequestsName" xml:space="preserve">
     <value>Tile Server Cache Recent Requests</value>
   </data>
+  <data name="PluginDisabled" xml:space="preserve">
+    <value>Plugin disabled</value>
+  </data>
+  <data name="PluginEnabledAndOfflineModeOn" xml:space="preserve">
+    <value>Plugin and offline mode enabled</value>
+  </data>
+  <data name="TilesServedFromCache" xml:space="preserve">
+    <value>Tiles served from cache</value>
+  </data>
 </root>

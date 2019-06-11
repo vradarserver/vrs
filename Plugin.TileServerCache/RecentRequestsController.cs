@@ -19,11 +19,12 @@ namespace VirtualRadar.Plugin.TileServerCache
     {
         public RequestOutcome[] GetRecentRequestOutcomes()
         {
-            return Plugin
-                .Singleton?
-                .WebServerInteraction
-                .GetRecentRequestOutcomes()
-            ?? new RequestOutcome[0];
+            return WebRequestHandler
+                .RecentRequestOutcomes
+                .Snapshot()
+                .Select(r => (RequestOutcome)r.Clone())
+                .Reverse()
+                .ToArray();
         }
     }
 }

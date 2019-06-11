@@ -62,6 +62,7 @@ namespace VirtualRadar.Plugin.TileServerCache
             set {
                 lock(_SyncLock) {
                     _Options = value;
+                    RefreshStatusDescription();
                 }
             }
         }
@@ -188,7 +189,7 @@ namespace VirtualRadar.Plugin.TileServerCache
         {
             Singleton = this;
             lock(_SyncLock) {
-                _Options = OptionsStorage.Load();
+                Options = OptionsStorage.Load();
             }
 
             TileServerSettingsManagerWrapper = TileServerSettingsManagerWrapper.Initialise(classFactory);
@@ -230,6 +231,21 @@ namespace VirtualRadar.Plugin.TileServerCache
         /// </summary>
         public void Shutdown()
         {
+        }
+
+        /// <summary>
+        /// Updates the plugin status.
+        /// </summary>
+        internal void RefreshStatusDescription()
+        {
+            Status =
+                Options.IsPluginEnabled
+                    ? Options.IsOfflineModeEnabled
+                        ? TileServerCacheStrings.PluginEnabledAndOfflineModeOn
+                        : TileServerCacheStrings.PluginEnabled
+                    : TileServerCacheStrings.PluginDisabled;
+
+            StatusDescription = $"{TileServerCacheStrings.TilesServedFromCache}: {WebRequestHandler.CountServedFromCache:N0}";
         }
     }
 }

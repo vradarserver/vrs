@@ -223,11 +223,29 @@ namespace VirtualRadar.Plugin.TileServerCache {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Plugin disabled.
+        /// </summary>
+        public static string PluginDisabled {
+            get {
+                return ResourceManager.GetString("PluginDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Plugin enabled.
         /// </summary>
         public static string PluginEnabled {
             get {
                 return ResourceManager.GetString("PluginEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Plugin and offline mode enabled.
+        /// </summary>
+        public static string PluginEnabledAndOfflineModeOn {
+            get {
+                return ResourceManager.GetString("PluginEnabledAndOfflineModeOn", resourceCulture);
             }
         }
         
@@ -291,6 +309,15 @@ namespace VirtualRadar.Plugin.TileServerCache {
         public static string TileServerTimeoutSeconds {
             get {
                 return ResourceManager.GetString("TileServerTimeoutSeconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tiles served from cache.
+        /// </summary>
+        public static string TilesServedFromCache {
+            get {
+                return ResourceManager.GetString("TilesServedFromCache", resourceCulture);
             }
         }
         

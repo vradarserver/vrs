@@ -48,21 +48,6 @@ namespace VirtualRadar.Plugin.TileServerCache
         }
 
         /// <summary>
-        /// Returns a collection of recent outcomes.
-        /// </summary>
-        /// <returns></returns>
-        public RequestOutcome[] GetRecentRequestOutcomes()
-        {
-            return WebRequestHandler
-                .RecentRequestOutcomes
-                .Snapshot()
-                .Select(r => (RequestOutcome)r.Clone())
-                .Reverse()
-                .ToArray()
-                ;
-        }
-
-        /// <summary>
         /// Called after the main web site processes the incoming request. Handles the request
         /// if it's for a fake tile server URL.
         /// </summary>

@@ -54,6 +54,12 @@ namespace VirtualRadar.Plugin.TileServerCache
             millisecondsBetweenChecks:  5 * 1000
         );
 
+        private static long _CountServedFromCache;
+        /// <summary>
+        /// Gets how many tiles have been served from cache.
+        /// </summary>
+        public static long CountServedFromCache => _CountServedFromCache;
+
         /// <summary>
         /// Returns true if the path parts indicate a request for a cached tile.
         /// </summary>
@@ -95,6 +101,8 @@ namespace VirtualRadar.Plugin.TileServerCache
                     if(cachedContent != null) {
                         result.ImageBytes = cachedContent.Content;
                         displayOutcome.ServedFromCache = true;
+                        Interlocked.Increment(ref _CountServedFromCache);
+                        Plugin.Singleton?.RefreshStatusDescription();
                     } else {
                         if(options.IsOfflineModeEnabled) {
                             displayOutcome.MissingFromCache = true;
