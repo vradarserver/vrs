@@ -146,6 +146,7 @@
     <Compile Include="IConsole.cs" />
     <Compile Include="IFileSystemWatcher.cs" />
     <Compile Include="IFlightSimulatorAircraftList.cs" />
+    <Compile Include="IPlugin_V2.cs" />
     <Compile Include="IShutdownSignalHandler.cs" />
     <Compile Include="IPAddressHelper.cs" />
     <Compile Include="Listener\AirnavXRangeAircraftJson.cs" />

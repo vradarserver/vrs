@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
@@ -96,6 +97,15 @@ namespace VirtualRadar.Interface
         {
             Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+        }
+
+        /// <summary>
+        /// Configures the security protocols that Virtual Radar Server will negotiate when establishing HTTPS connections.
+        /// </summary>
+
+        public static void ConfigureSecurityProtocols()
+        {
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
         }
 
         /// <summary>

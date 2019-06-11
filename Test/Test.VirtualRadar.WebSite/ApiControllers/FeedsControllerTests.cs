@@ -26,6 +26,7 @@ using VirtualRadar.Interface;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Owin;
+using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StandingData;
 using VirtualRadar.Interface.WebSite;
 
@@ -45,6 +46,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         private bool? _ActualAircraftListJsonBuilderIgnoreInvisibleFeeds;
         private bool? _ActualAircraftListJsonBuilderFallbackToDefault;
         private Mock<IFlightSimulatorAircraftList> _FlightSimulatorAircraftList;
+        private Mock<ITileServerSettingsManager> _TileServerSettingsManager;
         private HttpContent _EmptyPostBody;
 
         protected override void ExtraInitialise()
@@ -60,6 +62,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _AircraftList.SetupGet(r => r.PolarPlotter).Returns(_PolarPlotter.Object);
 
             _FlightSimulatorAircraftList = TestUtilities.CreateMockImplementation<IFlightSimulatorAircraftList>();
+            _TileServerSettingsManager = TestUtilities.CreateMockSingleton<ITileServerSettingsManager>();
 
             _AircraftListJson = new AircraftListJson();
             _ActualAircraftListJsonBuilderArgs = null;
@@ -1521,6 +1524,23 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
+        public async Task FeedsController_AircraftList_Sets_ServerConfigChanged_If_Tile_Server_Settings_Downloaded_V2_GET()
+        {
+            var configLastLoaded = new DateTime(1, 7, 29);
+            var tileSettingsDownloaded = configLastLoaded.AddMilliseconds(1);
+            var configLastLoadedTicks = JavascriptHelper.ToJavascriptTicks(configLastLoaded);
+
+            _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
+            _TileServerSettingsManager.Setup(r => r.LastDownloadUtc).Returns(tileSettingsDownloaded);
+
+            var response = await _Server.HttpClient.GetAsync($"AircraftList.json?stm={configLastLoadedTicks}");
+            var jsonText = response.Content.ReadAsStringAsync().Result;
+            var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
+
+            Assert.IsTrue(aircraftList.ServerConfigChanged);
+        }
+
+        [TestMethod]
         public async Task FeedsController_AircraftList_Sets_ServerConfigChanged_If_Changed_V3()
         {
             var configLastLoaded = new DateTime(1, 7, 29);
@@ -1530,6 +1550,25 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
                 ServerTicks = configLastLoadedTicks - 1,
+            }));
+            var jsonText = response.Content.ReadAsStringAsync().Result;
+            var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
+
+            Assert.IsTrue(aircraftList.ServerConfigChanged);
+        }
+
+        [TestMethod]
+        public async Task FeedsController_AircraftList_Sets_ServerConfigChanged_If_Tile_Server_Settings_Downloaded_V3()
+        {
+            var configLastLoaded = new DateTime(1, 7, 29);
+            var tileSettingsDownloaded = configLastLoaded.AddMilliseconds(1);
+            var configLastLoadedTicks = JavascriptHelper.ToJavascriptTicks(configLastLoaded);
+
+            _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
+            _TileServerSettingsManager.Setup(r => r.LastDownloadUtc).Returns(tileSettingsDownloaded);
+
+            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                ServerTicks = configLastLoadedTicks,
             }));
             var jsonText = response.Content.ReadAsStringAsync().Result;
             var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);

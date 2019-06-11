@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2019 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,44 +12,49 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using InterfaceFactory;
+using VirtualRadar.Interface.Owin;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.Plugin.TileServerCache
 {
     /// <summary>
-    /// The interface for the object that manages plugins on behalf of the program.
+    /// Handles the interaction between the plugin's web request handler and the V3 web server.
     /// </summary>
-    [Singleton]
-    public interface IPluginManager
+    /// <remarks>
+    /// I want to keep as much of the code compatible (or easily convertible) as I can with V2.
+    /// The only major difference between V2 and V3 is the web server, at least as-of time of
+    /// writing, hence this class. V2 has a similar class for hooking into the V2 web server.
+    /// </remarks>
+    class WebServerV3Interaction
     {
         /// <summary>
-        /// Gets or sets the object that abstracts away the environment for testing.
+        /// Does whatever is required to get ourselves hooked into the V3 web server.
         /// </summary>
-        IPluginManagerProvider Provider { get; set; }
+        /// <remarks>
+        /// What's required is a callback gets registered with <see cref="IWebAppConfiguration"/>
+        /// which will be called every time an OWIN pipeline gets configured. The callback
+        /// registers middleware which will call <see cref="WebRequestHandler"/> to do its work.
+        /// </remarks>
+        public void Initialise()
+        {
+            var pipelineConfiguration = Factory.ResolveSingleton<IPipelineConfiguration>();
+            pipelineConfiguration.AddPipeline<WebServerV3Pipeline>();
+        }
 
         /// <summary>
-        /// Gets a list of every plugin that's been loaded into VRS.
+        /// Returns a collection of web request outcomes.
         /// </summary>
-        IList<IPlugin> LoadedPlugins { get; }
-
-        /// <summary>
-        /// Gets a map of the reason why a plugin was not loaded indexed by the full path and filename of the plugin DLL.
-        /// </summary>
-        IDictionary<string, string> IgnoredPlugins { get; }
-
-        /// <summary>
-        /// Loads the DLLs in the Plugins folder.
-        /// </summary>
-        void LoadPlugins();
-
-        /// <summary>
-        /// Calls the <see cref="IPlugin.RegisterImplementations"/> methods for all loaded plugins.
-        /// </summary>
-        void RegisterImplementations();
-
-        /// <summary>
-        /// Calls the <see cref="IPlugin_V2.RegisterWebPipelines"/> methods for all loaded plugins that implement <see cref="IPlugin_V2"/>.
-        /// </summary>
-        void RegisterWebPipelines();
+        /// <returns></returns>
+        public RequestOutcome[] GetRecentRequestOutcomes()
+        {
+            return WebRequestHandler
+                .RecentRequestOutcomes
+                .Snapshot()
+                .Select(r => (RequestOutcome)r.Clone())
+                .Reverse()
+                .ToArray()
+                ;
+        }
     }
 }

@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar", "VirtualRadar\VirtualRadar.csproj", "{11805B5F-027A-4ED6-9491-DC85A3B2462D}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -9,6 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar", "VirtualRada
 		{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E} = {17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}
 		{86248078-7A1C-486D-8D08-064CC14FDB70} = {86248078-7A1C-486D-8D08-064CC14FDB70}
 		{FE25F47B-7A81-4A04-8E00-99C36BCA8E03} = {FE25F47B-7A81-4A04-8E00-99C36BCA8E03}
+		{65C67D9E-42FF-467C-92C2-10F0B9481309} = {65C67D9E-42FF-467C-92C2-10F0B9481309}
 		{2BCFACA1-27D3-4D74-B528-3F702E17DC01} = {2BCFACA1-27D3-4D74-B528-3F702E17DC01}
 		{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB} = {DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}
 		{3465B4A9-2278-422D-B1D5-E2CDCB308D03} = {3465B4A9-2278-422D-B1D5-E2CDCB308D03}
@@ -125,6 +126,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{933CD81D-0867-426B-BF84-77517E59E0B3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseStationImport", "Utilities\BaseStationImport\BaseStationImport.csproj", "{C21751B3-11B0-41E0-8221-C1106F4D0A9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.TileServerCache", "Plugin.TileServerCache\Plugin.TileServerCache.csproj", "{65C67D9E-42FF-467C-92C2-10F0B9481309}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -588,6 +591,18 @@ Global
 		{C21751B3-11B0-41E0-8221-C1106F4D0A9E}.Release|Mixed Platforms.Build.0 = Release|x86
 		{C21751B3-11B0-41E0-8221-C1106F4D0A9E}.Release|x86.ActiveCfg = Release|x86
 		{C21751B3-11B0-41E0-8221-C1106F4D0A9E}.Release|x86.Build.0 = Release|x86
+		{65C67D9E-42FF-467C-92C2-10F0B9481309}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65C67D9E-42FF-467C-92C2-10F0B9481309}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65C67D9E-42FF-467C-92C2-10F0B9481309}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{65C67D9E-42FF-467C-92C2-10F0B9481309}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{65C67D9E-42FF-467C-92C2-10F0B9481309}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{65C67D9E-42FF-467C-92C2-10F0B9481309}.Debug|x86.Build.0 = Debug|Any CPU
+		{65C67D9E-42FF-467C-92C2-10F0B9481309}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65C67D9E-42FF-467C-92C2-10F0B9481309}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65C67D9E-42FF-467C-92C2-10F0B9481309}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{65C67D9E-42FF-467C-92C2-10F0B9481309}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{65C67D9E-42FF-467C-92C2-10F0B9481309}.Release|x86.ActiveCfg = Release|Any CPU
+		{65C67D9E-42FF-467C-92C2-10F0B9481309}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

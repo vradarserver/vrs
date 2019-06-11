@@ -94,7 +94,12 @@ namespace VirtualRadar.WebSite.ApiControllers
             var result = builder.Build(builderArgs, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
 
             var sharedConfiguration = Factory.ResolveSingleton<ISharedConfiguration>();
-            var configLastChanged = JavascriptHelper.ToJavascriptTicks(sharedConfiguration.GetConfigurationChangedUtc());
+            var tileServerSettingsManager = Factory.ResolveSingleton<ITileServerSettingsManager>();
+            var latestConfiguration = sharedConfiguration.GetConfigurationChangedUtc();
+            if(tileServerSettingsManager.LastDownloadUtc > latestConfiguration) {
+                latestConfiguration = tileServerSettingsManager.LastDownloadUtc;
+            }
+            var configLastChanged = JavascriptHelper.ToJavascriptTicks(latestConfiguration);
             if(configLastChanged > builderArgs.ServerTimeTicks) {
                 result.ServerConfigChanged = true;
             }

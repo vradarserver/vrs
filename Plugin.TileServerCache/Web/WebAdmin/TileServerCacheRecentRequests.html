@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>::WebAdminRecentRequestsName:: - ::WA_Title_WebAdmin::</title>
+    @head.html@
+    <!-- [[ BUNDLE END ]] -->
+    <script src="script/Strings.js"></script>
+    <script src="script/Strings.Server.js"></script>
+    <script src="script/Strings.TileServerCachePlugin.js"></script>
+    <script src="script/bootstrap-helper.js"></script>
+    <script src="TileServerCacheRecentRequests.js"></script>
+</head>
+    <body>
+        <div id="page-container">
+            <div id="content" class="container-fluid">
+                <div class="row row-offcanvas row-offcanvas-left">
+                    <div class="col-xs-12 col-sm-9">
+                        <div class="row">
+                            <div class="col-sm-12 page-header">
+                                <h1>
+                                    ::WebAdminRecentRequestsName::
+                                    <a class="btn btn-default pull-right" href="TileServerCachePluginOptions.html">
+                                        &laquo; ::OptionsDialogTitle::
+                                    </a>
+                                </h1>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>::ReceivedUTC::</th>
+                                        <th>::DurationMS::</th>
+                                        <th>::Name::</th>
+                                        <th>::Zoom::</th>
+                                        <th>::X::</th>
+                                        <th>::Y::</th>
+                                        <th>::HiRes::</th>
+                                        <th>::Outcome::</th>
+                                    </tr>
+                                </thead>
+                                <tbody data-bind="foreach: RecentRequests">
+                                    <tr>
+                                        <td data-bind="text: ReceivedUtc"></td>
+                                        <td data-bind="text: DurationMs"></td>
+                                        <td data-bind="text: TileServerName"></td>
+                                        <td data-bind="text: Zoom"></td>
+                                        <td data-bind="text: X"></td>
+                                        <td data-bind="text: Y"></td>
+                                        <td data-bind="text: Retina"></td>
+                                        <td data-bind="text: Outcome"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <hr />
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <small>::ExplainRecentRequestList::</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            $(document).on('ready', function() {
+                Bootstrap.Helper.decorateBootstrapElements();
+                window.pageHandler = new VRS.WebAdmin.TileServerCacheRecentRequests.PageHandler();
+            });
+        </script>
+    </body>
+</html>

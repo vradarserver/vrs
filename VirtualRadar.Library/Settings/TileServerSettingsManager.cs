@@ -41,11 +41,6 @@ namespace VirtualRadar.Library.Settings
         private bool _Initialised;
 
         /// <summary>
-        /// The date and time of the last successful download of settings from the mothership.
-        /// </summary>
-        private DateTime _LastSuccessfulDownloadUtc;
-
-        /// <summary>
         /// The date and time of the last download attempt.
         /// </summary>
         private DateTime _LastDownloadAttemptUtc;
@@ -60,6 +55,25 @@ namespace VirtualRadar.Library.Settings
         /// The singleton object that can store tile server settings locally.
         /// </summary>
         private ITileServerSettingsStorage _Storage;
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public DateTime LastDownloadUtc { get; private set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event EventHandler TileServerSettingsDownloaded;
+
+        /// <summary>
+        /// Raises <see cref="TileServerSettingsDownloaded"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnTileServerSettingsDownloaded(EventArgs args)
+        {
+            EventHelper.Raise<EventArgs>(TileServerSettingsDownloaded, this);
+        }
 
         /// <summary>
         /// See interface docs.
@@ -164,6 +178,24 @@ namespace VirtualRadar.Library.Settings
         /// See interface docs.
         /// </summary>
         /// <param name="mapProvider"></param>
+        /// <param name="name"></param>
+        /// <param name="includeTileServers"></param>
+        /// <param name="includeTileLayers"></param>
+        /// <returns></returns>
+        public TileServerSettings GetTileServerOrLayerSettings(MapProvider mapProvider, string name, bool includeTileServers, bool includeTileLayers)
+        {
+            var settings = _TileServerSettings;
+            return settings.FirstOrDefault(r =>
+                   r.MapProvider == mapProvider
+                && String.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase)
+                && ((!r.IsLayer && includeTileServers) || (r.IsLayer &&  includeTileLayers))
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="mapProvider"></param>
         /// <returns></returns>
         public TileServerSettings[] GetAllTileServerSettings(MapProvider mapProvider)
         {
@@ -207,7 +239,7 @@ namespace VirtualRadar.Library.Settings
                 try {
                     _LastDownloadAttemptUtc = DateTime.UtcNow;
                     settings = downloader.Download(timeoutSeconds);
-                    _LastSuccessfulDownloadUtc = DateTime.UtcNow;
+                    LastDownloadUtc = DateTime.UtcNow;
                 } catch(WebException ex) {
                     var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine("Caught exception downloading new tile server settings: {0}", Describe.ExceptionMultiLine(ex));
@@ -220,6 +252,8 @@ namespace VirtualRadar.Library.Settings
 
                 LoadTileServerSettings();
             }
+
+            OnTileServerSettingsDownloaded(EventArgs.Empty);
         }
 
         /// <summary>
@@ -311,9 +345,9 @@ namespace VirtualRadar.Library.Settings
         {
             var now = DateTime.UtcNow;
             var downloadThreshold = now.AddMinutes(-DownloadIntervalMinutes);
-            if(_LastSuccessfulDownloadUtc <= downloadThreshold) {
+            if(LastDownloadUtc <= downloadThreshold) {
                 lock(_SyncLock) {
-                    if(_LastSuccessfulDownloadUtc <= downloadThreshold && _LastDownloadAttemptUtc <= now.AddSeconds(-5)) {
+                    if(LastDownloadUtc <= downloadThreshold && _LastDownloadAttemptUtc <= now.AddSeconds(-5)) {
                         DownloadTileServerSettings();
                     }
                 }

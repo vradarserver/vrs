@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2019 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,44 +12,59 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using InterfaceFactory;
+using VirtualRadar.Interface.View;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.Plugin.TileServerCache
 {
     /// <summary>
-    /// The interface for the object that manages plugins on behalf of the program.
+    /// Describes an options view.
     /// </summary>
-    [Singleton]
-    public interface IPluginManager
+    interface IOptionsView : IDisposable, IValidateView
     {
         /// <summary>
-        /// Gets or sets the object that abstracts away the environment for testing.
+        /// See <see cref="Options.DataVersion"/>.
         /// </summary>
-        IPluginManagerProvider Provider { get; set; }
+        long DataVersion { get; set; }
 
         /// <summary>
-        /// Gets a list of every plugin that's been loaded into VRS.
+        /// See <see cref="Options.IsPluginEnabled"/>.
         /// </summary>
-        IList<IPlugin> LoadedPlugins { get; }
+        bool IsPluginEnabled { get; set; }
 
         /// <summary>
-        /// Gets a map of the reason why a plugin was not loaded indexed by the full path and filename of the plugin DLL.
+        /// See <see cref="Options.IsOfflineModeEnabled"/>.
         /// </summary>
-        IDictionary<string, string> IgnoredPlugins { get; }
+        bool IsOfflineModeEnabled { get; set; }
 
         /// <summary>
-        /// Loads the DLLs in the Plugins folder.
+        /// See <see cref="Options.CacheFolderOverride"/>.
         /// </summary>
-        void LoadPlugins();
+        string CacheFolderOverride { get; set; }
 
         /// <summary>
-        /// Calls the <see cref="IPlugin.RegisterImplementations"/> methods for all loaded plugins.
+        /// See <see cref="Options.UseDefaultCacheFolder"/>.
         /// </summary>
-        void RegisterImplementations();
+        bool UseDefaultCacheFolder { get; set; }
 
         /// <summary>
-        /// Calls the <see cref="IPlugin_V2.RegisterWebPipelines"/> methods for all loaded plugins that implement <see cref="IPlugin_V2"/>.
+        /// See <see cref="Options.TileServerTimeoutSeconds"/>.
         /// </summary>
-        void RegisterWebPipelines();
+        int TileServerTimeoutSeconds { get; set; }
+
+        /// <summary>
+        /// See <see cref="Options.CacheMapTiles"/>.
+        /// </summary>
+        bool CacheMapTiles { get; set; }
+
+        /// <summary>
+        /// See <see cref="Options.CacheLayerTiles"/>.
+        /// </summary>
+        bool CacheLayerTiles { get; set; }
+
+        /// <summary>
+        /// Displays the view and returns true if the user wants to save their changes.
+        /// </summary>
+        /// <returns></returns>
+        bool DisplayView();
     }
 }
