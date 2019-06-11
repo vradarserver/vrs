@@ -41,20 +41,5 @@ namespace VirtualRadar.Plugin.TileServerCache
             var pipelineConfiguration = Factory.ResolveSingleton<IPipelineConfiguration>();
             pipelineConfiguration.AddPipeline<WebServerV3Pipeline>();
         }
-
-        /// <summary>
-        /// Returns a collection of web request outcomes.
-        /// </summary>
-        /// <returns></returns>
-        public RequestOutcome[] GetRecentRequestOutcomes()
-        {
-            return WebRequestHandler
-                .RecentRequestOutcomes
-                .Snapshot()
-                .Select(r => (RequestOutcome)r.Clone())
-                .Reverse()
-                .ToArray()
-                ;
-        }
     }
 }
