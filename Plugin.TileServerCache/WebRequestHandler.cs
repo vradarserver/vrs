@@ -49,7 +49,7 @@ namespace VirtualRadar.Plugin.TileServerCache
         /// <summary>
         /// Gets a collection of recent requests and their outcomes.
         /// </summary>
-        public ExpiringList<RequestOutcome> RecentRequestOutcomes { get; } = new ExpiringList<RequestOutcome>(
+        public static ExpiringList<RequestOutcome> RecentRequestOutcomes { get; } = new ExpiringList<RequestOutcome>(
             expireMilliseconds:         10 * 60 * 1000,
             millisecondsBetweenChecks:  5 * 1000
         );

@@ -53,7 +53,7 @@ namespace VirtualRadar.Plugin.TileServerCache
         /// <returns></returns>
         public RequestOutcome[] GetRecentRequestOutcomes()
         {
-            return _WebRequestHandler
+            return WebRequestHandler
                 .RecentRequestOutcomes
                 .Snapshot()
                 .Select(r => (RequestOutcome)r.Clone())

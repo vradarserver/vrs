@@ -41,11 +41,6 @@ namespace VirtualRadar.Library.Settings
         private bool _Initialised;
 
         /// <summary>
-        /// The date and time of the last successful download of settings from the mothership.
-        /// </summary>
-        private DateTime _LastSuccessfulDownloadUtc;
-
-        /// <summary>
         /// The date and time of the last download attempt.
         /// </summary>
         private DateTime _LastDownloadAttemptUtc;
@@ -69,6 +64,11 @@ namespace VirtualRadar.Library.Settings
         {
             get { return _Singleton; }
         }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public DateTime LastDownloadUtc { get; private set; }
 
         /// <summary>
         /// See interface docs.
@@ -247,7 +247,7 @@ namespace VirtualRadar.Library.Settings
                 try {
                     _LastDownloadAttemptUtc = DateTime.UtcNow;
                     settings = downloader.Download(timeoutSeconds);
-                    _LastSuccessfulDownloadUtc = DateTime.UtcNow;
+                    LastDownloadUtc = DateTime.UtcNow;
                 } catch(WebException ex) {
                     var log = Factory.Singleton.Resolve<ILog>().Singleton;
                     log.WriteLine("Caught exception downloading new tile server settings: {0}", Describe.ExceptionMultiLine(ex));
@@ -353,9 +353,9 @@ namespace VirtualRadar.Library.Settings
         {
             var now = DateTime.UtcNow;
             var downloadThreshold = now.AddMinutes(-DownloadIntervalMinutes);
-            if(_LastSuccessfulDownloadUtc <= downloadThreshold) {
+            if(LastDownloadUtc <= downloadThreshold) {
                 lock(_SyncLock) {
-                    if(_LastSuccessfulDownloadUtc <= downloadThreshold && _LastDownloadAttemptUtc <= now.AddSeconds(-5)) {
+                    if(LastDownloadUtc <= downloadThreshold && _LastDownloadAttemptUtc <= now.AddSeconds(-5)) {
                         DownloadTileServerSettings();
                     }
                 }

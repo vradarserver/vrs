@@ -22,6 +22,11 @@ namespace VirtualRadar.Interface.Settings
     public interface ITileServerSettingsManager : ISingleton<ITileServerSettingsManager>
     {
         /// <summary>
+        /// Gets the date and time of the last download of settings.
+        /// </summary>
+        DateTime LastDownloadUtc { get; }
+
+        /// <summary>
         /// Raised when new settings have been downloaded.
         /// </summary>
         event EventHandler TileServerSettingsDownloaded;

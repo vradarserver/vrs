@@ -27,6 +27,11 @@ namespace VirtualRadar.Plugin.TileServerCache
         public ITileServerSettingsManager Singleton => _Singleton;
 
         /// <summary>
+        /// See interface.
+        /// </summary>
+        public DateTime LastDownloadUtc { get; private set; }
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public event EventHandler TileServerSettingsDownloaded;
@@ -37,6 +42,7 @@ namespace VirtualRadar.Plugin.TileServerCache
         /// <param name="args"></param>
         internal void RaiseTileServerSettingsDownloaded(EventArgs args)
         {
+            LastDownloadUtc = DateTime.UtcNow;
             EventHelper.Raise<EventArgs>(TileServerSettingsDownloaded, this, args);
         }
 
@@ -48,10 +54,10 @@ namespace VirtualRadar.Plugin.TileServerCache
         public static TileServerSettingsManagerWrapper Initialise(IClassFactory classFactory)
         {
             _DefaultImplementation = classFactory.Resolve<ITileServerSettingsManager>().Singleton;
-            classFactory.Register<ITileServerSettingsManager, TileServerSettingsManagerWrapper>();
 
             var singleton = new TileServerSettingsManagerWrapper();
             _Singleton = singleton;
+            classFactory.RegisterInstance<ITileServerSettingsManager>(singleton);
 
             _TileServerUrlTranslator = new TileServerUrlTranslator();
 
