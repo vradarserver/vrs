@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using VirtualRadar.Localisation;
+using VirtualRadar.WinForms;
 
 namespace VirtualRadar.Plugin.TileServerCache
 {
@@ -25,7 +26,12 @@ namespace VirtualRadar.Plugin.TileServerCache
         /// <summary>
         /// The object that's going to do all of the work.
         /// </summary>
-        private static readonly Localiser _Localiser = new Localiser(typeof(TileServerCacheStrings));
+        private static FormsLocaliser _Localiser;
+
+        static PluginLocalise()
+        {
+            _Localiser = new FormsLocaliser(typeof(TileServerCacheStrings));
+        }
 
         /// <summary>
         /// See <see cref="Localiser.Form"/>.
