@@ -339,5 +339,10 @@ namespace VirtualRadar.Interface.View
         /// The fetch interval.
         /// </summary>
         FetchInterval,
+
+        /// <summary>
+        /// The cache folder.
+        /// </summary>
+        CacheFolder,
     }
 }

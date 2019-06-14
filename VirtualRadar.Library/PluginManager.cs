@@ -33,26 +33,17 @@ namespace VirtualRadar.Library
         /// </summary>
         class DefaultProvider : IPluginManagerProvider
         {
-            public string ApplicationStartupPath { get { return Application.StartupPath; } }
+            public string ApplicationStartupPath => Application.StartupPath;
 
-            public IEnumerable<string> DirectoryGetFiles(string folder, string searchPattern)
-            {
-                return Directory.GetFiles(folder, searchPattern);
-            }
+            public IEnumerable<string> DirectoryGetFiles(string folder, string searchPattern) => Directory.GetFiles(folder, searchPattern);
 
-            public IEnumerable<string> DirectoryGetDirectories(string folder)
-            {
-                return Directory.GetDirectories(folder);
-            }
+            public IEnumerable<string> DirectoryGetDirectories(string folder) => Directory.GetDirectories(folder);
 
-            public bool DirectoryExists(string folder)
-            {
-                return Directory.Exists(folder);
-            }
+            public bool DirectoryExists(string folder) => Directory.Exists(folder);
 
             public IEnumerable<Type> LoadTypes(string fullPath)
             {
-                List<Type> result = new List<Type>();
+                var result = new List<Type>();
 
                 var assembly = Assembly.LoadFile(fullPath);
                 foreach(var module in assembly.GetModules(false)) {
@@ -62,46 +53,30 @@ namespace VirtualRadar.Library
                 return result;
             }
 
-            public IClassFactory ClassFactoryTakeSnapshot()
-            {
-                return Factory.TakeSnapshot();
-            }
+            public IClassFactory ClassFactoryTakeSnapshot() => Factory.TakeSnapshot();
 
-            public void ClassFactoryRestoreSnapshot(IClassFactory snapshot)
-            {
-                Factory.RestoreSnapshot(snapshot);
-            }
+            public void ClassFactoryRestoreSnapshot(IClassFactory snapshot) => Factory.RestoreSnapshot(snapshot);
         }
 
         /// <summary>
         /// A map of plugin IDs to the DLL filename.
         /// </summary>
-        private Dictionary<string, string> _PluginIDToFileNameMap = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _PluginIDToFileNameMap = new Dictionary<string, string>();
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IPluginManagerProvider Provider { get; set; }
+        public IPluginManagerProvider Provider { get; set; } = new DefaultProvider();
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IList<IPlugin> LoadedPlugins { get; private set; }
+        public IList<IPlugin> LoadedPlugins { get; private set; } = new List<IPlugin>();
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IDictionary<string, string> IgnoredPlugins { get; private set; }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public PluginManager()
-        {
-            Provider = new DefaultProvider();
-            LoadedPlugins = new List<IPlugin>();
-            IgnoredPlugins = new Dictionary<string, string>();
-        }
+        public IDictionary<string, string> IgnoredPlugins { get; private set; } = new Dictionary<string, string>();
 
         /// <summary>
         /// See interface docs.
@@ -134,8 +109,8 @@ namespace VirtualRadar.Library
                                 }
                             } catch(Exception ex) {
                                 var exceptionMessage = FormatException(ex);
-                                Debug.WriteLine(String.Format("PluginManager.LoadPlugins caught exception: {0}", exceptionMessage));
-                                log.WriteLine("Caught exception loading plugin {0}: {1}", dllFileName, exceptionMessage);
+                                Debug.WriteLine($"PluginManager.LoadPlugins caught exception: {exceptionMessage}");
+                                log.WriteLine($"Caught exception loading plugin {dllFileName}: {exceptionMessage}");
 
                                 IgnoredPlugins.Add(dllFileName, String.Format(Strings.PluginCannotBeLoaded, ex.Message));
                             }
@@ -169,6 +144,24 @@ namespace VirtualRadar.Library
         }
 
         /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void RegisterWebPipelines()
+        {
+            var log = Factory.ResolveSingleton<ILog>();
+
+            foreach(var plugin in LoadedPlugins.ToArray()) {
+                if(plugin is IPlugin_V2 v2Plugin) {
+                    try {
+                        v2Plugin.RegisterWebPipelines();
+                    } catch(Exception ex) {
+                        log.WriteLine($"Caught exception registering web pipelines for plugin {v2Plugin.Name}: {FormatException(ex)}");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Returns a string showing a recursive dump of the entire exception, inner exception and loader exceptions.
         /// </summary>
         /// <param name="ex"></param>
@@ -186,8 +179,7 @@ namespace VirtualRadar.Library
             buffer.AppendLine(String.Format("{0}: {1}", category, ex));
             if(ex.InnerException != null) FormatException(buffer, ex.InnerException, "<<INNER>>");
 
-            var reflectionException = ex as ReflectionTypeLoadException;
-            if(reflectionException != null && reflectionException.LoaderExceptions != null) {
+            if(ex is ReflectionTypeLoadException reflectionException && reflectionException.LoaderExceptions != null) {
                 foreach(var loadEx in reflectionException.LoaderExceptions) {
                     FormatException(buffer, loadEx, "<<LOADER EXCEPTION>>");
                 }
@@ -212,7 +204,7 @@ namespace VirtualRadar.Library
                 IgnoredPlugins.Add(dllFileName, String.Format(Strings.CouldNotParseManifest, ex.Message));
             }
 
-            bool result = manifest != null;
+            var result = manifest != null;
             if(result && !String.IsNullOrEmpty(manifest.MinimumVersion)) result = CompareManifestVersions(manifest.MinimumVersion, applicationVersion, dllFileName, true);
             if(result && !String.IsNullOrEmpty(manifest.MaximumVersion)) result = CompareManifestVersions(manifest.MaximumVersion, applicationVersion, dllFileName, false);
 
@@ -221,14 +213,26 @@ namespace VirtualRadar.Library
 
         private bool CompareManifestVersions(string manifestVersion, Version applicationVersion, string dllFileName, bool isMinimum)
         {
-            bool result = false;
+            var result = false;
 
             try {
-                int comparison = VersionComparer.Compare(manifestVersion, applicationVersion);
+                var comparison = VersionComparer.Compare(manifestVersion, applicationVersion);
                 result = isMinimum ? comparison <= 0 : comparison >= 0;
-                if(!result) IgnoredPlugins.Add(dllFileName, isMinimum ? String.Format(Strings.PluginMinimumVersionNotMet, manifestVersion) : String.Format(Strings.PluginMaximumVersionNotMet, manifestVersion));
+                if(!result) {
+                    IgnoredPlugins.Add(
+                        dllFileName,
+                        isMinimum
+                            ? String.Format(Strings.PluginMinimumVersionNotMet, manifestVersion)
+                            : String.Format(Strings.PluginMaximumVersionNotMet, manifestVersion)
+                    );
+                }
             } catch {
-                IgnoredPlugins.Add(dllFileName, isMinimum ? Strings.PluginMinumumVersionUnparseable : Strings.PluginMaximumVersionUnparseable);
+                IgnoredPlugins.Add(
+                    dllFileName,
+                    isMinimum
+                        ? Strings.PluginMinumumVersionUnparseable
+                        : Strings.PluginMaximumVersionUnparseable
+                );
             }
 
             return result;

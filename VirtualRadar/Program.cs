@@ -36,6 +36,7 @@ namespace VirtualRadar
         static void Main(string[] args)
         {
             ProgramLifetime.InitialiseUnhandledExceptionHandling();
+            ProgramLifetime.ConfigureSecurityProtocols();
             ProgramLifetime.PrepassCommandLineArgs(args);
 
             ApplicationInformation.SetHeadless(ProgramLifetime.Headless);

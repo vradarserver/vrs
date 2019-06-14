@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2019 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,45 +11,30 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
-using InterfaceFactory;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.Plugin.TileServerCache
 {
     /// <summary>
-    /// The interface for the object that manages plugins on behalf of the program.
+    /// The outcome of a request for a cached tile.
     /// </summary>
-    [Singleton]
-    public interface IPluginManager
+    class WebRequestOutcome
     {
         /// <summary>
-        /// Gets or sets the object that abstracts away the environment for testing.
+        /// Gets or sets the image bytes to return to the browser. This will be null
+        /// if there is no image to send back.
         /// </summary>
-        IPluginManagerProvider Provider { get; set; }
+        public byte[] ImageBytes { get; set; }
 
         /// <summary>
-        /// Gets a list of every plugin that's been loaded into VRS.
+        /// The image file's extension.
         /// </summary>
-        IList<IPlugin> LoadedPlugins { get; }
+        public string ImageExtension { get; set; }
 
         /// <summary>
-        /// Gets a map of the reason why a plugin was not loaded indexed by the full path and filename of the plugin DLL.
+        /// Gets or sets the status code to return to the browser.
         /// </summary>
-        IDictionary<string, string> IgnoredPlugins { get; }
-
-        /// <summary>
-        /// Loads the DLLs in the Plugins folder.
-        /// </summary>
-        void LoadPlugins();
-
-        /// <summary>
-        /// Calls the <see cref="IPlugin.RegisterImplementations"/> methods for all loaded plugins.
-        /// </summary>
-        void RegisterImplementations();
-
-        /// <summary>
-        /// Calls the <see cref="IPlugin_V2.RegisterWebPipelines"/> methods for all loaded plugins that implement <see cref="IPlugin_V2"/>.
-        /// </summary>
-        void RegisterWebPipelines();
+        public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.BadRequest;
     }
 }

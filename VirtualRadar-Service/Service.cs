@@ -125,6 +125,7 @@ namespace VirtualRadar
                 var args = (string[])state;
 
                 ProgramLifetime.InitialiseUnhandledExceptionHandling();
+                ProgramLifetime.ConfigureSecurityProtocols();
                 ProgramLifetime.PrepassCommandLineArgs(args);
                 ProgramLifetime.Headless = true;
 

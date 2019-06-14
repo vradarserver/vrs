@@ -28,6 +28,7 @@ namespace BaseStationImport
             try {
                 ProgramLifetime.Headless = true;
                 ProgramLifetime.InitialiseUnhandledExceptionHandling();
+                ProgramLifetime.ConfigureSecurityProtocols();
                 Factory.Register<IApplicationInformation, ApplicationInformation>();
 
                 VirtualRadar.SQLiteWrapper.Implementations.Register(Factory.Singleton);

@@ -66,7 +66,7 @@ namespace Test.VirtualRadar.Library
             public event EventHandler StatusChanged;
             #pragma warning restore 0067
 
-            private void IncrementCallCount(Dictionary<Type, int> dictionary)
+            protected void IncrementCallCount(Dictionary<Type, int> dictionary)
             {
                 var type = GetType();
                 if(!dictionary.ContainsKey(type)) dictionary[type] = 1;
@@ -100,6 +100,18 @@ namespace Test.VirtualRadar.Library
 
             public void ShowWinFormsOptionsUI()
             {
+            }
+        }
+
+        class Plugin_V2 : Plugin, IPlugin_V2
+        {
+            public static Dictionary<Type, int> _RegisterWebPipelinesCallCount = new Dictionary<Type,int>();
+            public static bool _RegisterWebPipelinesThrowsException;
+
+            public void RegisterWebPipelines()
+            {
+                IncrementCallCount(_RegisterWebPipelinesCallCount);
+                if(_RegisterWebPipelinesThrowsException) throw new NotImplementedException();
             }
         }
 
@@ -361,7 +373,7 @@ namespace Test.VirtualRadar.Library
 
             _PluginManager.LoadPlugins();
 
-            _Log.Verify(g => g.WriteLine(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once());
+            _Log.Verify(g => g.WriteLine(It.IsAny<string>()), Times.Once());
         }
 
         [TestMethod]
@@ -397,7 +409,7 @@ namespace Test.VirtualRadar.Library
 
             _PluginManager.LoadPlugins();
 
-            _Log.Verify(g => g.WriteLine(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once());
+            _Log.Verify(g => g.WriteLine(It.IsAny<string>()), Times.Once());
         }
 
         [TestMethod]
@@ -455,6 +467,16 @@ namespace Test.VirtualRadar.Library
             _PluginManager.LoadPlugins();
 
             Assert.AreEqual(0, Plugin._RegisterImplementationsCallCount.Count);
+        }
+
+        [TestMethod]
+        public void PluginManager_LoadPlugins_Does_Not_Call_RegisterWebPipelines_For_Each_V2_Plugin()
+        {
+            SetupProviderForPlugins(typeof(Plugin_V2));
+
+            _PluginManager.LoadPlugins();
+
+            Assert.AreEqual(0, Plugin_V2._RegisterWebPipelinesCallCount.Count);
         }
 
         [TestMethod]
@@ -530,6 +552,29 @@ namespace Test.VirtualRadar.Library
             _PluginManager.RegisterImplementations();
 
             _Provider.Verify(p => p.ClassFactoryRestoreSnapshot(snapshot), Times.Never());
+        }
+
+        [TestMethod]
+        public void PluginManager_RegisterWebPipelines_Calls_RegisterWebPipelines_On_V2_Plugins()
+        {
+            SetupProviderForPlugins(typeof(Plugin_V2));
+
+            _PluginManager.LoadPlugins();
+            _PluginManager.RegisterWebPipelines();
+
+            Assert.AreEqual(1, Plugin_V2._RegisterWebPipelinesCallCount[typeof(Plugin_V2)]);
+        }
+
+        [TestMethod]
+        public void PluginManager_Logs_Libraries_With_RegisterWebPipelines_That_Throws_Exception()
+        {
+            Plugin_V2._RegisterWebPipelinesThrowsException = true;
+            SetupProviderForPlugins(typeof(Plugin_V2));
+
+            _PluginManager.LoadPlugins();
+            _PluginManager.RegisterWebPipelines();
+
+            _Log.Verify(g => g.WriteLine(It.IsAny<string>()), Times.Once());
         }
         #endregion
     }

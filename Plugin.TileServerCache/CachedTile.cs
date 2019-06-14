@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2019 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,46 +10,30 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using InterfaceFactory;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.Plugin.TileServerCache
 {
     /// <summary>
-    /// The interface for the object that manages plugins on behalf of the program.
+    /// Describes a cached tile.
     /// </summary>
-    [Singleton]
-    public interface IPluginManager
+    class CachedTile
     {
         /// <summary>
-        /// Gets or sets the object that abstracts away the environment for testing.
+        /// Gets or sets the full path to the file.
         /// </summary>
-        IPluginManagerProvider Provider { get; set; }
+        public string FileName { get; set; }
 
         /// <summary>
-        /// Gets a list of every plugin that's been loaded into VRS.
+        /// Gets the file's extension.
         /// </summary>
-        IList<IPlugin> LoadedPlugins { get; }
+        public string Extension => FileName == null ? null : Path.GetExtension(FileName);
 
         /// <summary>
-        /// Gets a map of the reason why a plugin was not loaded indexed by the full path and filename of the plugin DLL.
+        /// Gets or sets the bytes from the file.
         /// </summary>
-        IDictionary<string, string> IgnoredPlugins { get; }
-
-        /// <summary>
-        /// Loads the DLLs in the Plugins folder.
-        /// </summary>
-        void LoadPlugins();
-
-        /// <summary>
-        /// Calls the <see cref="IPlugin.RegisterImplementations"/> methods for all loaded plugins.
-        /// </summary>
-        void RegisterImplementations();
-
-        /// <summary>
-        /// Calls the <see cref="IPlugin_V2.RegisterWebPipelines"/> methods for all loaded plugins that implement <see cref="IPlugin_V2"/>.
-        /// </summary>
-        void RegisterWebPipelines();
+        public byte[] Content { get; set; }
     }
 }

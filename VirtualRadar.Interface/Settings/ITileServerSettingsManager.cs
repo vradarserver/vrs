@@ -24,6 +24,16 @@ namespace VirtualRadar.Interface.Settings
     public interface ITileServerSettingsManager
     {
         /// <summary>
+        /// Gets the date and time of the last download of settings.
+        /// </summary>
+        DateTime LastDownloadUtc { get; }
+
+        /// <summary>
+        /// Raised when new settings have been downloaded.
+        /// </summary>
+        event EventHandler TileServerSettingsDownloaded;
+
+        /// <summary>
         /// Performs startup tasks.
         /// </summary>
         void Initialise();
@@ -43,6 +53,16 @@ namespace VirtualRadar.Interface.Settings
         /// <param name="fallbackToDefaultIfMissing"></param>
         /// <returns></returns>
         TileServerSettings GetTileServerSettings(MapProvider mapProvider, string name, bool fallbackToDefaultIfMissing);
+
+        /// <summary>
+        /// Returns the tile server or tile layer corresponding to the name passed across.
+        /// </summary>
+        /// <param name="mapProvider"></param>
+        /// <param name="name"></param>
+        /// <param name="includeTileServers"></param>
+        /// <param name="includeTileLayers"></param>
+        /// <returns></returns>
+        TileServerSettings GetTileServerOrLayerSettings(MapProvider mapProvider, string name, bool includeTileServers, bool includeTileLayers);
 
         /// <summary>
         /// Returns the default tile server settings to use for a map provider.
