@@ -1,32 +1,59 @@
-﻿param (
-    [string] $projectName,
-    [string] $configurationName,
-    [string] $targetName
+param (
+    [string] $solutionDir,    # e.g. c:\source\vrs\
+    [string] $targetPath      # e.g. c:\source\vrs\project\bin\build\alt.project.dll
 )
-function Usage
-{
-    Write-Host 'usage: _PostBuild.ps1 -projectName <project name> -configurationName <configuration name> [-targetName <targetName>]'
-    Write-Host 'The targetName parameter is not optional for plugins or projects with translation files'
-    Exit 1
+$dryRun = $false
+$dryRunDesc = ''
+if($dryRun) {
+    $dryRunDesc = ' [DRY RUN]'
 }
 
-if([string]::IsNullOrWhiteSpace($projectName) -or [string]::IsNullOrWhiteSpace($configurationName)) {
+function Usage
+{
+    Write-Host 'usage: _PostBuild.ps1 -solutionDir <solution directory> -targetPath <target path>'
+    exit 1
+}
+
+if([string]::IsNullOrWhiteSpace($solutionDir) -or [string]::IsNullOrWhiteSpace($targetPath)) {
     Usage
 }
 
-$pathFromSolution = '';
-if($projectName.ToLower() -eq 'basestationimport') {
-    $pathFromSolution = 'Utilities'
+$projBinIndex = $targetPath.IndexOf('/bin/', [System.StringComparison]::OrdinalIgnoreCase)
+if($projBinIndex -eq -1) {
+    $projBinIndex = $targetPath.IndexOf('\bin\', [System.StringComparison]::OrdinalIgnoreCase)
+}
+if($projBinIndex -eq -1) {
+    Write-Host ('Cannot find the bin folder in ' + $targetPath)
+    exit 1
 }
 
-$solutionDir = Split-Path -Parent $PSCommandPath
-$projectDir = [io.Path]::Combine($solutionDir, $pathFromSolution, $projectName)
-$virtualRadarDir = [io.Path]::Combine($solutionDir, 'VirtualRadar', 'bin', 'x86', $configurationName)
+$targetDir = [IO.Path]::GetDirectoryName($targetPath) + [IO.Path]::DirectorySeparatorChar   # e.g. c:\source\vrs\project\bin\build\
+$targetName = [IO.Path]::GetFileNameWithoutExtension($targetPath)                           # e.g. alt.project
+$projectDir = $targetPath.Substring(0, $projBinIndex)
+$projectName = [IO.Path]::GetFileName($projectDir)                                          # e.g. project
+$projectDir = $projectDir + [IO.Path]::DirectorySeparatorChar                               # e.g. c:\source\vrs\project\
+$outDir = [IO.Path]::GetDirectoryName($targetPath.Substring($projBinIndex + 1)) + [IO.Path]::DirectorySeparatorChar     # e.g. bin\build
+$configurationName = ''
+foreach($pathPart in $outDir.Split([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirectorySeparatorChar)) {
+    if($pathPart -eq 'debug' -or $pathPart -eq 'release') {
+        $configurationName = $pathPart
+        break
+    }
+}
 
-Write-Host ('Running post-build steps for project ' + $projectName + ' (' + $configurationName + ' configuration)')
-Write-Host ('Solution folder:           ' + $solutionDir)
-Write-Host ('Project folder:            ' + $projectDir)
-Write-Host ('VirtualRadar build folder: ' + $virtualRadarDir)
+$virtualRadarDir = [IO.Path]::Combine($solutionDir, 'VirtualRadar', 'bin', 'x86', $configurationName)
+
+Write-Host ('_PostBuild.ps1 variables:')
+Write-Host ('$configurationName: ' + $configurationName)
+Write-Host ('$dryRun:            ' + $dryRun)
+Write-Host ('$outDir:            ' + $outDir)
+Write-Host ('$projectDir:        ' + $projectDir)
+Write-Host ('$projectName:       ' + $projectName)
+Write-Host ('$solutionDir:       ' + $solutionDir)
+Write-Host ('$targetDir:         ' + $targetDir)
+Write-Host ('$targetName:        ' + $targetName)
+Write-Host ('$targetPath:        ' + $targetPath)
+Write-Host ('$virtualRadarDir:   ' + $virtualRadarDir)
 
 function Copy-File
 {
@@ -36,21 +63,25 @@ function Copy-File
         [switch] $ignoreIfMissing
     )
 
-    Write-Host ('Copying ' + $source + ' to ' + $destFolder)
+    Write-Host ('Copying ' + $source + ' to ' + $destFolder + $dryRunDesc)
 
-    if(![io.File]::Exists($source)) {
+    if(![IO.File]::Exists($source)) {
         if(!$ignoreIfMissing) {
             Write-Host ($source + ' does not exist')
             Write-Host 'Cannot copy missing file'
-            Exit 1
+            exit 1
         }
     } else {
-        if(![io.Directory]::Exists($destFolder)) {
-            Write-Host ('Creating folder ' + $destFolder)
-            $dirInfo = [io.Directory]::CreateDirectory($destFolder)
+        if(![IO.Directory]::Exists($destFolder)) {
+            Write-Host ('Creating folder ' + $destFolder + $dryRunDesc)
+            if(!$dryRun) {
+                $assigningToVariableStopsExtraneousOutput = [IO.Directory]::CreateDirectory($destFolder)
+            }
         }
 
-        Copy-Item $source $destFolder
+        if(!$dryRun) {
+            Copy-Item $source $destFolder
+        }
     }
 }
 
@@ -60,18 +91,26 @@ function Delete-Folder
         [string] $folder
     )
 
-    if([io.Directory]::Exists($folder)) {
-        Write-Host ('Deleting folder ' + $folder)
-        Remove-Item $folder -Recurse -Force
+    if([IO.Directory]::Exists($folder)) {
+        Write-Host ('Deleting folder ' + $folder + $dryRunDesc)
+        if(!$dryRun) {
+            Remove-Item $folder -Recurse -Force
+        }
 
-        $retryCounter = 0
-        while([io.Directory]::Exists($folder)) {
-            if($retryCounter -gt 3) {
-                Write-Host 'Could not remove folder'
-                Exit 1
+        if(!$dryRun) {
+            $retryCounter = 0
+            while([IO.Directory]::Exists($folder)) {
+                if($retryCounter -gt 3) {
+                    Write-Host 'Could not remove folder'
+                    exit 1
+                }
+                ++$retryCounter
+                Start-Sleep -Milliseconds 500
+
+                if([IO.Directory]::Exists($folder)) {
+                    Remove-Item $folder -Recurse -Force
+                }
             }
-            ++$retryCounter
-            Start-Sleep -Milliseconds 500
         }
     }
 }
@@ -89,11 +128,13 @@ function Copy-Folder
         Delete-Folder $destFolder
     }
 
-    Write-Host ("Copying " + $sourceFolder + " to " + $destFolder)
-    if(!$recursive) {
-        Copy-Item $sourceFolder $destFolder
-    } else {
-        Copy-Item $sourceFolder $destFolder -Recurse
+    Write-Host ("Copying " + $sourceFolder + " to " + $destFolder + $dryRunDesc)
+    if(!$dryRun) {
+        if(!$recursive) {
+            Copy-Item $sourceFolder $destFolder
+        } else {
+            Copy-Item $sourceFolder $destFolder -Recurse
+        }
     }
 }
 
@@ -104,18 +145,20 @@ function Checksum-Folder
         [string] $checksumFile
     )
     Write-Host ('Generating checksums for ' + $folder)
-    Write-Host ('Saving checksums to ' + $checksumFile)
+    Write-Host ('Saving checksums to ' + $checksumFile + $dryRunDesc)
 
-    $checksumExe = [io.Path]::Combine($solutionDir, 'ThirdParty', 'ChecksumFiles', 'bin', $configurationName, 'ChecksumFiles.exe')
-    if(![io.File]::Exists($checksumExe)) {
+    $checksumExe = [IO.Path]::Combine($solutionDir, 'ThirdParty', 'ChecksumFiles', 'bin', $configurationName, 'ChecksumFiles.exe')
+    if(![IO.File]::Exists($checksumExe)) {
         Write-Host ('The checksum utility ' + $checksumExe + ' has not been built. Add it as a dependency to the project and try again.')
-        Exit 1
+        exit 1
     }
 
-    & $checksumExe -root:"$folder" -out:"$checksumFile" -addContentChecksum
-    if($LASTEXITCODE -ne 0) {
-        Write-Host ('The checksum utility failed with an exit code of ' + $LASTEXITCODE)
-        Exit 1
+    if(!$dryRun) {
+        & $checksumExe -root:"$folder" -out:"$checksumFile" -addContentChecksum
+        if($LASTEXITCODE -ne 0) {
+            Write-Host ('The checksum utility failed with an exit code of ' + $LASTEXITCODE)
+            exit 1
+        }
     }
 }
 
@@ -127,9 +170,9 @@ function Copy-PluginWebFolder
     )
 
     if(![string]::IsNullOrWhiteSpace($projectWebDir)) {
-        $webDir = [io.Path]::Combine($projectDir, $projectWebDir)
-        if([io.Directory]::Exists($webDir)) {
-            $pluginWebDir = [io.Path]::Combine($pluginDir, $destWebDir);
+        $webDir = [IO.Path]::Combine($projectDir, $projectWebDir)
+        if([IO.Directory]::Exists($webDir)) {
+            $pluginWebDir = [IO.Path]::Combine($pluginDir, $destWebDir)
             Copy-Folder $webDir $pluginWebDir -recursive
         }
     }
@@ -137,35 +180,28 @@ function Copy-PluginWebFolder
 
 function Copy-Translations
 {
-    param (
-        [string] $buildFolder
-    )
-    if([string]::IsNullOrWhiteSpace($targetName)) {
-        Usage
-    }
-
-    Get-ChildItem $buildFolder -Directory |
+    Get-ChildItem $targetDir -Directory |
     Where-Object {
         $_.Name -match '[a-z]{2}\-[A-Z]{2}'
     } |
     ForEach-Object {
-        $sourceDll = [io.Path]::Combine($_.FullName, ($targetName + ".resources.dll"))
-        $targetDir = [io.Path]::Combine($virtualRadarDir, $_.Name)
+        $sourceDll = [IO.Path]::Combine($_.FullName, ($targetName + ".resources.dll"))
+        $destDir = [IO.Path]::Combine($virtualRadarDir, $_.Name)
 
         # Note that the file might not exist if no translations have been done for the plugin but
         # the plugin refers to a library that *does* have translations. The reference will create
         # the language folders but there won't be any resource DLLs for the plugin in them.
-        Copy-File $sourceDll $targetDir -ignoreIfMissing
+        Copy-File $sourceDll $destDir -ignoreIfMissing
     }
 }
 
 function PostBuild-WebSite-Project
 {
-    $siteDir = [io.Path]::Combine($projectDir, 'Site')
-    $webDir =  [io.Path]::Combine($siteDir, 'Web')
+    $siteDir = [IO.Path]::Combine($projectDir, 'Site')
+    $webDir =  [IO.Path]::Combine($siteDir, 'Web')
 
     # Checksum the web folder
-    $checksumOut = [io.Path]::Combine($virtualRadarDir, 'Checksums.txt')
+    $checksumOut = [IO.Path]::Combine($virtualRadarDir, 'Checksums.txt')
     Checksum-Folder -folder $webDir -checksumFile $checksumOut
 
     # The unit tests on the web site need to have the checksums file in a fixed location, i.e.
@@ -173,7 +209,7 @@ function PostBuild-WebSite-Project
     Copy-File $checksumOut $siteDir
 
     # Copy the web folder to the VRS build folder
-    $vrsWebDir = [io.Path]::Combine($virtualRadarDir, "Web")
+    $vrsWebDir = [IO.Path]::Combine($virtualRadarDir, "Web")
     Copy-Folder $webDir $vrsWebDir -deleteBeforeCopy -recursive
 }
 
@@ -186,58 +222,41 @@ function PostBuild-Plugin
         [string] $projectWebAdminDir = 'Web-WebAdmin',
         [string] $destWebAdminDir = 'Web-WebAdmin'
     )
-    if([string]::IsNullOrWhiteSpace($targetName)) {
-        Usage
-    }
     if([string]::IsNullOrWhiteSpace($pluginName)) {
         $lastDotIdx = $projectName.LastIndexOf('.')
         if($lastDotIdx -eq -1) {
-            Write-Host ("Cannot extract name of plugin from " + $projectName + ", use -pluginName parameter")
-            Exit 1
+            Write-Host("Cannot extract name of plugin from " + $projectName + ", use -pluginName parameter")
+            exit 1
         }
         $pluginName = $projectName.Substring($lastDotIdx + 1)
     }
 
-    $pluginsRoot =    [io.Path]::Combine($virtualRadarDir, "Plugins")
-    $pluginDir =      [io.Path]::Combine($pluginsRoot, $pluginName)
-    $pluginBuildDir = [io.Path]::Combine($projectDir, "bin", $configurationName)
-    $pluginDll =      [io.Path]::Combine($pluginBuildDir, ($targetName + '.dll'))
-    $pluginManifest = [io.Path]::Combine($pluginBuildDir, ($targetName + '.xml'))
+    $pluginsRoot =    [IO.Path]::Combine($virtualRadarDir, "Plugins")
+    $pluginDir =      [IO.Path]::Combine($pluginsRoot, $pluginName)
+    $pluginManifest = [IO.Path]::Combine($targetDir, ($targetName + '.xml'))
 
     Delete-Folder $pluginDir
 
-    Copy-File $pluginDll $pluginDir
-    Copy-File $pluginManifest $pluginDir
+    Copy-File $targetPath       $pluginDir
+    Copy-File $pluginManifest   $pluginDir
 
-    Copy-PluginWebFolder $projectWebDir $destWebDir
+    Copy-PluginWebFolder $projectWebDir      $destWebDir
     Copy-PluginWebFolder $projectWebAdminDir $destWebAdminDir
 
-    Copy-Translations -buildFolder $pluginBuildDir
+    Copy-Translations
 }
 
 function PostBuild-VirtualRadar-Service
 {
-    if([string]::IsNullOrWhiteSpace($targetName)) {
-        Usage
-    }
-
-    $buildFolder = [io.Path]::Combine($projectDir, "bin", "x86", $configurationName)
-
-    Copy-File ([io.Path]::Combine($buildFolder, ($targetName + '.exe'))) $virtualRadarDir
-    Copy-File ([io.Path]::Combine($buildFolder, ($targetName + '.exe.config'))) $virtualRadarDir
+    Copy-File $targetPath                                                     $virtualRadarDir
+    Copy-File ([IO.Path]::Combine($targetDir, ($targetName + '.exe.config'))) $virtualRadarDir
 }
 
 function PostBuild-BaseStationImport
 {
-    if([string]::IsNullOrWhiteSpace($targetName)) {
-        Usage
-    }
-
-    $buildFolder = [io.Path]::Combine($projectDir, "bin", "x86", $configurationName)
-
-    Copy-File ([io.Path]::Combine($buildFolder, ($targetName + '.exe'))) $virtualRadarDir
-    Copy-File ([io.Path]::Combine($buildFolder, ($targetName + '.exe.config'))) $virtualRadarDir
-    Copy-File ([io.Path]::Combine($buildFolder, ($targetName + '.pdb'))) $virtualRadarDir
+    Copy-File ([IO.Path]::Combine($targetDir, ($targetName + '.exe')))        $virtualRadarDir
+    Copy-File ([IO.Path]::Combine($targetDir, ($targetName + '.exe.config'))) $virtualRadarDir
+    Copy-File ([IO.Path]::Combine($targetDir, ($targetName + '.pdb')))        $virtualRadarDir
 }
 
 # Main switch
