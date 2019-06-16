@@ -1,267 +1,40 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.props" Condition="Exists('..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.props')" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VirtualRadar.Plugin.FeedFilter</RootNamespace>
-    <AssemblyName>VirtualRadar.Plugin.FeedFilter</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-    <TypeScriptTarget>ES5</TypeScriptTarget>
-    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
-    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
-    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
-    <TypeScriptModuleKind>None</TypeScriptModuleKind>
-    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
-    <TypeScriptOutFile />
-    <TypeScriptOutDir />
-    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
-    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
-    <TypeScriptSourceMap>True</TypeScriptSourceMap>
-    <TypeScriptMapRoot />
-    <TypeScriptSourceRoot />
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-    <TypeScriptTarget>ES5</TypeScriptTarget>
-    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
-    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
-    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
-    <TypeScriptModuleKind>None</TypeScriptModuleKind>
-    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
-    <TypeScriptOutFile />
-    <TypeScriptOutDir />
-    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
-    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
-    <TypeScriptSourceMap>True</TypeScriptSourceMap>
-    <TypeScriptMapRoot />
-    <TypeScriptSourceRoot />
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="FeedFilterStrings.fr-FR.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>FeedFilterStrings.fr-FR.resx</DependentUpon>
-    </Compile>
-    <Compile Include="FeedFilterStrings.ru-RU.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>FeedFilterStrings.ru-RU.resx</DependentUpon>
-    </Compile>
-    <Compile Include="FeedFilterStrings.zh-CN.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>FeedFilterStrings.zh-CN.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Filter.cs" />
-    <Compile Include="FeedFilterStrings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>FeedFilterStrings.resx</DependentUpon>
-    </Compile>
-    <Compile Include="FeedFilterStrings.de-DE.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>FeedFilterStrings.de-DE.resx</DependentUpon>
-    </Compile>
-    <Compile Include="FilterConfiguration.cs" />
-    <Compile Include="FilterConfigurationStorage.cs" />
-    <Compile Include="IcaoRange.cs" />
-    <Compile Include="IOptionsView.cs" />
-    <Compile Include="Json\FilterConfigurationJson.cs" />
-    <Compile Include="Json\ResponseJson.cs" />
-    <Compile Include="Json\SaveFilterConfigurationJson.cs" />
-    <Compile Include="ListenerWrapper.cs" />
-    <Compile Include="Options.cs" />
-    <Compile Include="OptionsStorage.cs" />
-    <Compile Include="OriginalImplementationFactory.cs" />
-    <Compile Include="Plugin.cs" />
-    <Compile Include="PluginLocalise.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FeedFilterStrings.pt-BR.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>FeedFilterStrings.pt-BR.resx</DependentUpon>
-    </Compile>
-    <Compile Include="WebAdmin\OptionsModels.cs" />
-    <Compile Include="WebAdmin\OptionsView.cs" />
-    <Compile Include="WinForms\OptionsView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\OptionsView.Designer.cs">
-      <DependentUpon>OptionsView.cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Typings\FeedFilterPluginModels.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>FeedFilterPluginModels.d.ts</LastGenOutput>
-    </None>
-    <None Include="Typings\translations-feedfilterstrings.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>translations-feedfilterstrings.d.ts</LastGenOutput>
-    </None>
-    <Content Include="VirtualRadar.Plugin.FeedFilter.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Web-WebAdmin\WebAdmin\FeedFilterPluginOptions.html" />
-    <Content Include="Web-WebAdmin\WebAdmin\FeedFilterPluginOptions.js">
-      <DependentUpon>FeedFilterPluginOptions.ts</DependentUpon>
-    </Content>
-    <Content Include="Web\css-FeedFilter\bootstrap\css\bootstrap-theme.css" />
-    <Content Include="Web\css-FeedFilter\bootstrap\css\bootstrap.css" />
-    <Content Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="Web\css-FeedFilter\feed-filter.css" />
-    <Content Include="Web\FeedFilter\index.html" />
-    <Content Include="Web\FeedFilter\index.js" />
-    <Content Include="Web\script-FeedFilter\bootstrap-collapsible-panel.js" />
-    <Content Include="Web\script-FeedFilter\bootstrap.js" />
-    <Content Include="Web\script-FeedFilter\knockout-extenders.js" />
-    <Content Include="Web\script-FeedFilter\knockout.js" />
-    <Content Include="Web\script-FeedFilter\knockout.mapping.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
-      <Project>{6ad23cd7-fb9f-448e-85ea-cb5aaa4e9fee}</Project>
-      <Name>InterfaceFactory</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
-      <Project>{8ef81105-f45d-4edb-996c-de7d5644b1e7}</Project>
-      <Name>VirtualRadar.Interface</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
-      <Project>{fd3e36e1-35ea-46f3-a30b-65cea7d92b7e}</Project>
-      <Name>VirtualRadar.Localisation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.WinForms\VirtualRadar.WinForms.csproj">
-      <Project>{3a1330d8-1e7d-4c70-ba9a-39851389cfff}</Project>
-      <Name>VirtualRadar.WinForms</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="FeedFilterStrings.de-DE.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>FeedFilterStrings.de-DE.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FeedFilterStrings.fr-FR.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>FeedFilterStrings.fr-FR.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FeedFilterStrings.nl-NL.resx" />
-    <EmbeddedResource Include="FeedFilterStrings.pt-BR.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>FeedFilterStrings.pt-BR.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FeedFilterStrings.ru-RU.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>FeedFilterStrings.ru-RU.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FeedFilterStrings.tr-TR.resx" />
-    <EmbeddedResource Include="FeedFilterStrings.zh-CN.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>FeedFilterStrings.zh-CN.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\OptionsView.resx">
-      <DependentUpon>OptionsView.cs</DependentUpon>
-    </EmbeddedResource>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-    <None Include="Typings\Manager.ttinclude" />
-    <None Include="Web-WebAdmin\WebAdmin\FeedFilterPluginOptions.js.map">
-      <DependentUpon>FeedFilterPluginOptions.ts</DependentUpon>
-    </None>
-    <None Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.eot" />
-    <None Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
-    <None Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.woff" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="FeedFilterStrings.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>FeedFilterStrings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="Typings\FeedFilterPluginEnums.ts">
-      <DependentUpon>FeedFilterPluginModels.tt</DependentUpon>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="Typings\FeedFilterPluginModels.d.ts">
-      <DependentUpon>FeedFilterPluginModels.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="Typings\knockout.mapping.d.ts" />
-    <TypeScriptCompile Include="Typings\translations-feedfilterstrings.d.ts">
-      <DependentUpon>translations-feedfilterstrings.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="Typings\webadmin.d.ts" />
-    <TypeScriptCompile Include="Web-WebAdmin\WebAdmin\FeedFilterPluginOptions.ts" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
-  <PropertyGroup>
-    <PostBuildEvent>PowerShell.exe -ExecutionPolicy Bypass "$(SolutionDir)_PostBuild.ps1" -solutionDir '$(SolutionDir)' -targetPath '$(TargetPath)'</PostBuildEvent>
-  </PropertyGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
     <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+        <AssemblyName>VirtualRadar.Plugin.FeedFilter</AssemblyName>
+        <OutputType>Library</OutputType>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <Version>3.0.0</Version>
+        <Authors>Andrew Whewell</Authors>
+        <Company>Andrew Whewell</Company>
+        <Description>A plugin to Virtual Radar Server that suppresses messages from aircraft matching criteria</Description>
+        <Copyright>Copyright © Andrew Whewell 2015 onwards</Copyright>
+        <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+        <PackageProjectUrl />
+        <AssemblyVersion>3.0.0.0</AssemblyVersion>
+        <FileVersion>3.0.0.0</FileVersion>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.targets'))" />
-  </Target>
-  <Import Project="..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.targets" Condition="Exists('..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+        <PackageReference Include="Microsoft.TypeScript.MSBuild" version="2.3.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj" />
+        <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj" />
+        <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj" />
+        <ProjectReference Include="..\VirtualRadar.WinForms\VirtualRadar.WinForms.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="VirtualRadar.Plugin.FeedFilter.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="PowerShell.exe -ExecutionPolicy Bypass &quot;$(SolutionDir)_PostBuild.ps1&quot; -solutionDir '$(SolutionDir)' -targetPath '$(TargetPath)'" />
+    </Target>
+
 </Project>
