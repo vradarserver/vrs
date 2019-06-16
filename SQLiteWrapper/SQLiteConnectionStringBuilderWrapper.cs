@@ -13,11 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
-#if DOTNET_BUILD
-    using System.Data.SQLite;
-#else
-    using Mono.Data.Sqlite;
-#endif
+using System.Data.SQLite;
 
 namespace VirtualRadar.SQLiteWrapper
 {
@@ -26,29 +22,17 @@ namespace VirtualRadar.SQLiteWrapper
     /// </summary>
     class SQLiteConnectionStringBuilderWrapper : VirtualRadar.Interface.SQLite.ISQLiteConnectionStringBuilder
     {
-        #if DOTNET_BUILD
-            private SQLiteConnectionStringBuilder _Wrapped;
-        #else
-            private SqliteConnectionStringBuilder _Wrapped;
-        #endif
+        private SQLiteConnectionStringBuilder _Wrapped;
 
         public Interface.SQLite.ISQLiteConnectionStringBuilder Initialise()
         {
-            #if DOTNET_BUILD
-                _Wrapped = new SQLiteConnectionStringBuilder();
-            #else
-                _Wrapped = new SqliteConnectionStringBuilder();
-            #endif
+            _Wrapped = new SQLiteConnectionStringBuilder();
             return this;
         }
 
         public Interface.SQLite.ISQLiteConnectionStringBuilder Initialise(string connectionString)
         {
-            #if DOTNET_BUILD
-                _Wrapped = new SQLiteConnectionStringBuilder(connectionString);
-            #else
-                _Wrapped = new SqliteConnectionStringBuilder(connectionString);
-            #endif
+            _Wrapped = new SQLiteConnectionStringBuilder(connectionString);
             return this;
         }
 
@@ -106,19 +90,11 @@ namespace VirtualRadar.SQLiteWrapper
             set { _Wrapped.FailIfMissing = value; }
         }
 
-        #if DOTNET_BUILD
         public bool ForeignKeys
         {
             get { return _Wrapped.ForeignKeys; }
             set { _Wrapped.ForeignKeys = value; }
         }
-        #else
-        public bool ForeignKeys
-        {
-            get { return false; }
-            set { ; }
-        }
-        #endif
 
         public Interface.SQLite.SQLiteJournalModeEnum JournalMode
         {

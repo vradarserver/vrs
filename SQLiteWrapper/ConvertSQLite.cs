@@ -13,11 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
-#if DOTNET_BUILD
-    using System.Data.SQLite;
-#else
-    using Mono.Data.Sqlite;
-#endif
+using System.Data.SQLite;
 
 namespace VirtualRadar.SQLiteWrapper
 {
@@ -26,18 +22,15 @@ namespace VirtualRadar.SQLiteWrapper
     /// </summary>
     static class ConvertSQLite
     {
-        #region SQLiteDateFormats
         public static SQLiteDateFormats ToSQLiteDateFormats(VirtualRadar.Interface.SQLite.SQLiteDateFormats value)
         {
             switch(value) {
                 case VirtualRadar.Interface.SQLite.SQLiteDateFormats.Ticks:             return SQLiteDateFormats.Ticks;
                 case VirtualRadar.Interface.SQLite.SQLiteDateFormats.ISO8601:           return SQLiteDateFormats.ISO8601;
                 case VirtualRadar.Interface.SQLite.SQLiteDateFormats.JulianDay:         return SQLiteDateFormats.JulianDay;
-                #if DOTNET_BUILD
                 case VirtualRadar.Interface.SQLite.SQLiteDateFormats.UnixEpoch:         return SQLiteDateFormats.UnixEpoch;
                 case VirtualRadar.Interface.SQLite.SQLiteDateFormats.InvariantCulture:  return SQLiteDateFormats.InvariantCulture;
                 case VirtualRadar.Interface.SQLite.SQLiteDateFormats.CurrentCulture:    return SQLiteDateFormats.CurrentCulture;
-                #endif
                 default:                                                                throw new NotImplementedException();
             }
         }
@@ -48,31 +41,23 @@ namespace VirtualRadar.SQLiteWrapper
                 case SQLiteDateFormats.Ticks:               return VirtualRadar.Interface.SQLite.SQLiteDateFormats.Ticks;
                 case SQLiteDateFormats.ISO8601:             return VirtualRadar.Interface.SQLite.SQLiteDateFormats.ISO8601;
                 case SQLiteDateFormats.JulianDay:           return VirtualRadar.Interface.SQLite.SQLiteDateFormats.JulianDay;
-                #if DOTNET_BUILD
                 case SQLiteDateFormats.UnixEpoch:           return VirtualRadar.Interface.SQLite.SQLiteDateFormats.UnixEpoch;
                 case SQLiteDateFormats.InvariantCulture:    return VirtualRadar.Interface.SQLite.SQLiteDateFormats.InvariantCulture;
                 case SQLiteDateFormats.CurrentCulture:      return VirtualRadar.Interface.SQLite.SQLiteDateFormats.CurrentCulture;
-                #endif
                 default:                                    throw new NotImplementedException();
             }
         }
-        #endregion
 
-        #region SQLiteJournalModeEnum
         public static SQLiteJournalModeEnum ToSQLiteJournalModeEnum(VirtualRadar.Interface.SQLite.SQLiteJournalModeEnum value)
         {
             switch(value) {
                 case VirtualRadar.Interface.SQLite.SQLiteJournalModeEnum.Delete:    return SQLiteJournalModeEnum.Delete;
                 case VirtualRadar.Interface.SQLite.SQLiteJournalModeEnum.Persist:   return SQLiteJournalModeEnum.Persist;
                 case VirtualRadar.Interface.SQLite.SQLiteJournalModeEnum.Off:       return SQLiteJournalModeEnum.Off;
-                #if DOTNET_BUILD
                 case VirtualRadar.Interface.SQLite.SQLiteJournalModeEnum.Default:   return SQLiteJournalModeEnum.Default;
                 case VirtualRadar.Interface.SQLite.SQLiteJournalModeEnum.Truncate:  return SQLiteJournalModeEnum.Truncate;
                 case VirtualRadar.Interface.SQLite.SQLiteJournalModeEnum.Memory:    return SQLiteJournalModeEnum.Memory;
                 case VirtualRadar.Interface.SQLite.SQLiteJournalModeEnum.Wal:       return SQLiteJournalModeEnum.Wal;
-                #else
-                case VirtualRadar.Interface.SQLite.SQLiteJournalModeEnum.Default:   return SQLiteJournalModeEnum.Delete;
-                #endif
                 default:                                                            throw new NotImplementedException();
             }
         }
@@ -83,18 +68,14 @@ namespace VirtualRadar.SQLiteWrapper
                 case SQLiteJournalModeEnum.Delete:      return VirtualRadar.Interface.SQLite.SQLiteJournalModeEnum.Delete;
                 case SQLiteJournalModeEnum.Persist:     return VirtualRadar.Interface.SQLite.SQLiteJournalModeEnum.Persist;
                 case SQLiteJournalModeEnum.Off:         return VirtualRadar.Interface.SQLite.SQLiteJournalModeEnum.Off;
-                #if DOTNET_BUILD
                 case SQLiteJournalModeEnum.Default:     return VirtualRadar.Interface.SQLite.SQLiteJournalModeEnum.Default;
                 case SQLiteJournalModeEnum.Truncate:    return VirtualRadar.Interface.SQLite.SQLiteJournalModeEnum.Truncate;
                 case SQLiteJournalModeEnum.Memory:      return VirtualRadar.Interface.SQLite.SQLiteJournalModeEnum.Memory;
                 case SQLiteJournalModeEnum.Wal:         return VirtualRadar.Interface.SQLite.SQLiteJournalModeEnum.Wal;
-                #endif
                 default:                                throw new NotImplementedException();
             }
         }
-        #endregion
 
-        #region SynchronizationModes
         internal static SynchronizationModes ToSynchronizationModes(VirtualRadar.Interface.SQLite.SynchronizationModes value)
         {
             switch(value) {
@@ -114,6 +95,5 @@ namespace VirtualRadar.SQLiteWrapper
                 default:                            throw new NotImplementedException();
             }
         }
-        #endregion
     }
 }

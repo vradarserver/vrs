@@ -1,4 +1,4 @@
-﻿// Copyright © 2013 onwards, Andrew Whewell
+﻿// Copyright © 2014 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,32 +12,59 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Data;
-#if DOTNET_BUILD
-    using System.Data.SQLite;
-#else
-    using Mono.Data.Sqlite;
-#endif
+using VirtualRadar.Interface.SQLite;
+using System.Data.SQLite;
 
 namespace VirtualRadar.SQLiteWrapper
 {
     /// <summary>
     /// See interface docs.
     /// </summary>
-    class SQLiteConnectionProvider : VirtualRadar.Interface.SQLite.ISQLiteConnectionProvider
+    class SQLiteExceptionWrapper : ISQLiteException
     {
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="connectionString"></param>
-        /// <returns></returns>
-        public IDbConnection Create(string connectionString)
+        public bool IsSQLiteException
         {
-            #if DOTNET_BUILD
-                return new SQLiteConnection(connectionString);
-            #else
-                return new SqliteConnection(connectionString);
-            #endif
+            get { return Exception != null; }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public VirtualRadar.Interface.SQLite.SQLiteErrorCode ErrorCode
+        {
+            get { 
+                return _Exception == null ? VirtualRadar.Interface.SQLite.SQLiteErrorCode.Ok
+                                          : (VirtualRadar.Interface.SQLite.SQLiteErrorCode)((int)_Exception.ErrorCode);
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IsLocked
+        {
+            get { return ErrorCode == Interface.SQLite.SQLiteErrorCode.Busy || ErrorCode == Interface.SQLite.SQLiteErrorCode.Locked; }
+        }
+
+        System.Data.SQLite.SQLiteException _Exception;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public Exception Exception
+        {
+            get { return _Exception; }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="ex"></param>
+        public void Initialise(Exception ex)
+        {
+            _Exception = ex as System.Data.SQLite.SQLiteException;
         }
     }
 }

@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <Version>3.0.0</Version>
+        <Authors>Andrew Whewell</Authors>
+        <Company>Andrew Whewell</Company>
+        <Description>Manages differences between SQLite libraries in different environments for Virtual Radar Server</Description>
+        <Copyright>Copyright © Andrew Whewell 2013 onwards</Copyright>
+        <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+        <PackageProjectUrl />
+        <AssemblyVersion>3.0.0.0</AssemblyVersion>
+        <FileVersion>3.0.0.0</FileVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="System.Data.SQLite.Core" Version="1.0.111" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj" />
+        <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj" />
+    </ItemGroup>
+
+</Project>

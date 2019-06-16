@@ -5,7 +5,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar", "VirtualRadar\VirtualRadar.csproj", "{11805B5F-027A-4ED6-9491-DC85A3B2462D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{8CDF8D3F-CA98-4027-ABC0-8AD12F91E93E} = {8CDF8D3F-CA98-4027-ABC0-8AD12F91E93E}
-		{336BA243-B238-4C73-97B5-ABACDFF4DB4F} = {336BA243-B238-4C73-97B5-ABACDFF4DB4F}
 		{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E} = {17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}
 		{86248078-7A1C-486D-8D08-064CC14FDB70} = {86248078-7A1C-486D-8D08-064CC14FDB70}
 		{FE25F47B-7A81-4A04-8E00-99C36BCA8E03} = {FE25F47B-7A81-4A04-8E00-99C36BCA8E03}
@@ -14,18 +13,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar", "VirtualRada
 		{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB} = {DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}
 		{3465B4A9-2278-422D-B1D5-E2CDCB308D03} = {3465B4A9-2278-422D-B1D5-E2CDCB308D03}
 		{C21751B3-11B0-41E0-8221-C1106F4D0A9E} = {C21751B3-11B0-41E0-8221-C1106F4D0A9E}
-		{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D} = {C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterfaceFactory", "InterfaceFactory\InterfaceFactory.csproj", "{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InterfaceFactory", "InterfaceFactory\InterfaceFactory.csproj", "{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLiteWrapper.DotNet", "SQLiteWrapper.DotNet\SQLiteWrapper.DotNet.csproj", "{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLiteWrapper.Mono", "SQLiteWrapper.Mono\SQLiteWrapper.Mono.csproj", "{336BA243-B238-4C73-97B5-ABACDFF4DB4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLiteWrapper", "SQLiteWrapper\SQLiteWrapper.csproj", "{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar.Interface", "VirtualRadar.Interface\VirtualRadar.Interface.csproj", "{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar.Localisation", "VirtualRadar.Localisation\VirtualRadar.Localisation.csproj", "{FD3E36E1-35EA-46F3-A30B-65CEA7D92B7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtualRadar.Localisation", "VirtualRadar.Localisation\VirtualRadar.Localisation.csproj", "{FD3E36E1-35EA-46F3-A30B-65CEA7D92B7E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar.Library", "VirtualRadar.Library\VirtualRadar.Library.csproj", "{4BC834F4-005B-4EF9-BDA4-078C3F1745D3}"
 EndProject
@@ -46,7 +42,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar.WinForms", "Vi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{3DD098CE-F3C7-4D95-8EDC-969A4F71D740}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Framework", "Test\Test.Framework\Test.Framework.csproj", "{94F0A821-51BB-4381-9413-1A3FAD661D82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Framework", "Test\Test.Framework\Test.Framework.csproj", "{94F0A821-51BB-4381-9413-1A3FAD661D82}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.InterfaceFactory", "Test\Test.InterfaceFactory\Test.InterfaceFactory.csproj", "{E40D47DD-37B4-4B3E-87E5-8C47CB16F46D}"
 EndProject
@@ -70,37 +66,35 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.VirtualRadar.WebServer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.VirtualRadar.WebSite", "Test\Test.VirtualRadar.WebSite\Test.VirtualRadar.WebSite.csproj", "{40F37767-C554-453F-8748-784EF41E0AFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.BaseStationDatabaseWriter", "Plugin.BaseStationDatabaseWriter\Plugin.BaseStationDatabaseWriter.csproj", "{FE25F47B-7A81-4A04-8E00-99C36BCA8E03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.BaseStationDatabaseWriter", "Plugin.BaseStationDatabaseWriter\Plugin.BaseStationDatabaseWriter.csproj", "{FE25F47B-7A81-4A04-8E00-99C36BCA8E03}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A81147B6-D3E8-42AE-A98F-21BA5C4BAE99} = {A81147B6-D3E8-42AE-A98F-21BA5C4BAE99}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.CustomContent", "Plugin.CustomContent\Plugin.CustomContent.csproj", "{86248078-7A1C-486D-8D08-064CC14FDB70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.CustomContent", "Plugin.CustomContent\Plugin.CustomContent.csproj", "{86248078-7A1C-486D-8D08-064CC14FDB70}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A81147B6-D3E8-42AE-A98F-21BA5C4BAE99} = {A81147B6-D3E8-42AE-A98F-21BA5C4BAE99}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Plugin.BaseStationDatabaseWriter", "Test\Test.Plugin.BaseStationDatabaseWriter\Test.Plugin.BaseStationDatabaseWriter.csproj", "{9E538513-A812-4A09-BD54-96734AD4A850}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Plugin.BaseStationDatabaseWriter", "Test\Test.Plugin.BaseStationDatabaseWriter\Test.Plugin.BaseStationDatabaseWriter.csproj", "{9E538513-A812-4A09-BD54-96734AD4A850}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.WebAdmin", "Plugin.WebAdmin\Plugin.WebAdmin.csproj", "{2BCFACA1-27D3-4D74-B528-3F702E17DC01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.WebAdmin", "Plugin.WebAdmin\Plugin.WebAdmin.csproj", "{2BCFACA1-27D3-4D74-B528-3F702E17DC01}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A81147B6-D3E8-42AE-A98F-21BA5C4BAE99} = {A81147B6-D3E8-42AE-A98F-21BA5C4BAE99}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar.Headless", "VirtualRadar.Headless\VirtualRadar.Headless.csproj", "{573DDCFE-821E-4F58-8E6F-89FA0C0CC879}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.DisableUPnP", "Plugin.DisableUPnP\Plugin.DisableUPnP.csproj", "{DA8BF2F4-C49F-46CD-AE74-C3ECAD6377C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.DisableUPnP", "Plugin.DisableUPnP\Plugin.DisableUPnP.csproj", "{DA8BF2F4-C49F-46CD-AE74-C3ECAD6377C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.DisableAudio", "Plugin.DisableAudio\Plugin.DisableAudio.csproj", "{9FE50C5D-76F9-4283-B9AD-893A8D5C6B69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.DisableAudio", "Plugin.DisableAudio\Plugin.DisableAudio.csproj", "{9FE50C5D-76F9-4283-B9AD-893A8D5C6B69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.DatabaseEditor", "Plugin.DatabaseEditor\Plugin.DatabaseEditor.csproj", "{3465B4A9-2278-422D-B1D5-E2CDCB308D03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.DatabaseEditor", "Plugin.DatabaseEditor\Plugin.DatabaseEditor.csproj", "{3465B4A9-2278-422D-B1D5-E2CDCB308D03}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A81147B6-D3E8-42AE-A98F-21BA5C4BAE99} = {A81147B6-D3E8-42AE-A98F-21BA5C4BAE99}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.FeedFilter", "Plugin.FeedFilter\Plugin.FeedFilter.csproj", "{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLiteWrapper.DotNet.AnyCPU", "SQLiteWrapper.DotNet.AnyCPU\SQLiteWrapper.DotNet.AnyCPU.csproj", "{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.FeedFilter", "Plugin.FeedFilter\Plugin.FeedFilter.csproj", "{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdParty", "ThirdParty", "{1D1FAF73-5B9E-4A66-B928-ED19AA5E3BD8}"
 	ProjectSection(SolutionItems) = preProject
@@ -121,7 +115,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar.Owin", "Virtua
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.VirtualRadar.Owin", "Test\Test.VirtualRadar.Owin\Test.VirtualRadar.Owin.csproj", "{123DBE76-0386-4A40-9164-1FA9759403D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.SqlServer", "Plugin.SqlServer\Plugin.SqlServer.csproj", "{8CDF8D3F-CA98-4027-ABC0-8AD12F91E93E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.SqlServer", "Plugin.SqlServer\Plugin.SqlServer.csproj", "{8CDF8D3F-CA98-4027-ABC0-8AD12F91E93E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{933CD81D-0867-426B-BF84-77517E59E0B3}"
 EndProject
@@ -129,7 +123,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseStationImport", "Utilit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.VirtualRadar.Resources", "Test\Test.VirtualRadar.Resources\Test.VirtualRadar.Resources.csproj", "{33D2AAD2-6254-4EC5-831A-ABF456BACCE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.TileServerCache", "Plugin.TileServerCache\Plugin.TileServerCache.csproj", "{65C67D9E-42FF-467C-92C2-10F0B9481309}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.TileServerCache", "Plugin.TileServerCache\Plugin.TileServerCache.csproj", "{65C67D9E-42FF-467C-92C2-10F0B9481309}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -163,28 +157,18 @@ Global
 		{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}.Release|x86.ActiveCfg = Release|Any CPU
 		{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}.Release|x86.Build.0 = Release|Any CPU
-		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Debug|x86.ActiveCfg = Debug|x86
-		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Debug|x86.Build.0 = Debug|x86
-		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Release|Any CPU.ActiveCfg = Release|x86
-		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Release|Mixed Platforms.Build.0 = Release|x86
-		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Release|x86.ActiveCfg = Release|x86
-		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Release|x86.Build.0 = Release|x86
-		{336BA243-B238-4C73-97B5-ABACDFF4DB4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{336BA243-B238-4C73-97B5-ABACDFF4DB4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{336BA243-B238-4C73-97B5-ABACDFF4DB4F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{336BA243-B238-4C73-97B5-ABACDFF4DB4F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{336BA243-B238-4C73-97B5-ABACDFF4DB4F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{336BA243-B238-4C73-97B5-ABACDFF4DB4F}.Debug|x86.Build.0 = Debug|Any CPU
-		{336BA243-B238-4C73-97B5-ABACDFF4DB4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{336BA243-B238-4C73-97B5-ABACDFF4DB4F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{336BA243-B238-4C73-97B5-ABACDFF4DB4F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{336BA243-B238-4C73-97B5-ABACDFF4DB4F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{336BA243-B238-4C73-97B5-ABACDFF4DB4F}.Release|x86.ActiveCfg = Release|Any CPU
-		{336BA243-B238-4C73-97B5-ABACDFF4DB4F}.Release|x86.Build.0 = Release|Any CPU
+		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Debug|x86.Build.0 = Debug|Any CPU
+		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Release|x86.ActiveCfg = Release|Any CPU
+		{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}.Release|x86.Build.0 = Release|Any CPU
 		{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -479,18 +463,6 @@ Global
 		{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}.Release|x86.ActiveCfg = Release|Any CPU
 		{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}.Release|x86.Build.0 = Release|Any CPU
-		{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}.Debug|x86.Build.0 = Debug|Any CPU
-		{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}.Release|x86.ActiveCfg = Release|Any CPU
-		{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}.Release|x86.Build.0 = Release|Any CPU
 		{A81147B6-D3E8-42AE-A98F-21BA5C4BAE99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A81147B6-D3E8-42AE-A98F-21BA5C4BAE99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A81147B6-D3E8-42AE-A98F-21BA5C4BAE99}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

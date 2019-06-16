@@ -1,4 +1,4 @@
-﻿// Copyright © 2014 onwards, Andrew Whewell
+﻿// Copyright © 2013 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,71 +12,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Interface.SQLite;
-#if DOTNET_BUILD
-    using System.Data.SQLite;
-#else
-    using Mono.Data.Sqlite;
-#endif
+using System.Data;
+using System.Data.SQLite;
 
 namespace VirtualRadar.SQLiteWrapper
 {
     /// <summary>
     /// See interface docs.
     /// </summary>
-    class SQLiteExceptionWrapper : ISQLiteException
+    class SQLiteConnectionProvider : VirtualRadar.Interface.SQLite.ISQLiteConnectionProvider
     {
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public bool IsSQLiteException
+        /// <param name="connectionString"></param>
+        /// <returns></returns>
+        public IDbConnection Create(string connectionString)
         {
-            get { return Exception != null; }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public VirtualRadar.Interface.SQLite.SQLiteErrorCode ErrorCode
-        {
-            get { 
-                return _Exception == null ? VirtualRadar.Interface.SQLite.SQLiteErrorCode.Ok
-                                          : (VirtualRadar.Interface.SQLite.SQLiteErrorCode)((int)_Exception.ErrorCode);
-            }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public bool IsLocked
-        {
-            get { return ErrorCode == Interface.SQLite.SQLiteErrorCode.Busy || ErrorCode == Interface.SQLite.SQLiteErrorCode.Locked; }
-        }
-
-        #if DOTNET_BUILD
-            System.Data.SQLite.SQLiteException _Exception;
-        #else
-            Mono.Data.Sqlite.SqliteException _Exception;
-        #endif
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public Exception Exception
-        {
-            get { return _Exception; }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="ex"></param>
-        public void Initialise(Exception ex)
-        {
-            #if DOTNET_BUILD
-                _Exception = ex as System.Data.SQLite.SQLiteException;
-            #else
-                _Exception = ex as Mono.Data.Sqlite.SqliteException;
-            #endif
+            return new SQLiteConnection(connectionString);
         }
     }
 }
