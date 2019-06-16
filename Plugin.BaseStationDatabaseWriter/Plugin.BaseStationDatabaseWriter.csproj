@@ -17,18 +17,13 @@
 
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+        <PackageReference Include="Microsoft.TypeScript.MSBuild" version="2.3.3" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj" />
-    </ItemGroup>
-    <ItemGroup>
         <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj" />
-    </ItemGroup>
-    <ItemGroup>
         <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj" />
-    </ItemGroup>
-    <ItemGroup>
         <ProjectReference Include="..\VirtualRadar.WinForms\VirtualRadar.WinForms.csproj" />
     </ItemGroup>
 
