@@ -26,8 +26,4 @@
       </None>
     </ItemGroup>
 
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="PowerShell.exe -ExecutionPolicy Bypass &quot;$(SolutionDir)_PostBuild.ps1&quot; -solutionDir '$(SolutionDir)' -targetPath '$(TargetPath)'" />
-    </Target>
-
 </Project>
