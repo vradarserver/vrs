@@ -1,180 +1,42 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.props" Condition="Exists('..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{65C67D9E-42FF-467C-92C2-10F0B9481309}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VirtualRadar.Plugin.TileServerCache</RootNamespace>
-    <AssemblyName>VirtualRadar.Plugin.TileServerCache</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
-      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="CachedTile.cs" />
-    <Compile Include="FakeUrlEncodedValues.cs" />
-    <Compile Include="IOptionsView.cs" />
-    <Compile Include="Options.cs" />
-    <Compile Include="OptionsController.cs" />
-    <Compile Include="OptionsStorage.cs" />
-    <Compile Include="Plugin.cs" />
-    <Compile Include="PluginLocalise.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RecentRequestsController.cs" />
-    <Compile Include="RequestOutcome.cs" />
-    <Compile Include="TileCache.cs" />
-    <Compile Include="TileServerCacheStrings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TileServerCacheStrings.resx</DependentUpon>
-    </Compile>
-    <Compile Include="TileServerSettingsManagerWrapper.cs" />
-    <Compile Include="TileServerUrlTranslator.cs" />
-    <Compile Include="WebAdmin\IOptionsView.cs" />
-    <Compile Include="WebAdmin\IRecentRequestsView.cs" />
-    <Compile Include="WebAdmin\OptionsModels.cs" />
-    <Compile Include="WebAdmin\OptionsView.cs" />
-    <Compile Include="WebAdmin\RecentRequestsModels.cs" />
-    <Compile Include="WebAdmin\RecentRequestsView.cs" />
-    <Compile Include="WebRequestHandler.cs" />
-    <Compile Include="WebRequestOutcome.cs" />
-    <Compile Include="WebServerV3Interaction.cs" />
-    <Compile Include="WebServerV3Pipeline.cs" />
-    <Compile Include="WinForms\OptionsView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\OptionsView.Designer.cs">
-      <DependentUpon>OptionsView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForms\RecentRequestsView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\RecentRequestsView.Designer.cs">
-      <DependentUpon>RecentRequestsView.cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-    <None Include="Typings\WebAdminModels.tst" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
-      <Project>{6ad23cd7-fb9f-448e-85ea-cb5aaa4e9fee}</Project>
-      <Name>InterfaceFactory</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
-      <Project>{8ef81105-f45d-4edb-996c-de7d5644b1e7}</Project>
-      <Name>VirtualRadar.Interface</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
-      <Project>{fd3e36e1-35ea-46f3-a30b-65cea7d92b7e}</Project>
-      <Name>VirtualRadar.Localisation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.WinForms\VirtualRadar.WinForms.csproj">
-      <Project>{3a1330d8-1e7d-4c70-ba9a-39851389cfff}</Project>
-      <Name>VirtualRadar.WinForms</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="TileServerCacheStrings.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>TileServerCacheStrings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\OptionsView.resx">
-      <DependentUpon>OptionsView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\RecentRequestsView.resx">
-      <DependentUpon>RecentRequestsView.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Typings\translations-customcontentstrings.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>translations-customcontentstrings.d.ts</LastGenOutput>
-    </Content>
-    <Content Include="VirtualRadar.Plugin.TileServerCache.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Web\WebAdmin\TileServerCachePluginOptions.html" />
-    <Content Include="Web\WebAdmin\TileServerCacheRecentRequests.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="Typings\OptionsModels.ts">
-      <DependentUpon>WebAdminModels.tst</DependentUpon>
-      <CustomToolNamespace>WebAdmin\OptionsModels.cs</CustomToolNamespace>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="Typings\RecentRequestsModels.ts">
-      <DependentUpon>WebAdminModels.tst</DependentUpon>
-      <CustomToolNamespace>WebAdmin\RecentRequestsModels.cs</CustomToolNamespace>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="Typings\translations-customcontentstrings.d.ts">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>translations-customcontentstrings.tt</DependentUpon>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="Typings\webadmin.d.ts" />
-    <TypeScriptCompile Include="Web\WebAdmin\TileServerCachePluginOptions.ts" />
-    <TypeScriptCompile Include="Web\WebAdmin\TileServerCacheRecentRequests.ts" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>PowerShell.exe -ExecutionPolicy Bypass "$(SolutionDir)_PostBuild.ps1" -solutionDir '$(SolutionDir)' -targetPath '$(TargetPath)'</PostBuildEvent>
-  </PropertyGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
     <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+        <AssemblyName>VirtualRadar.Plugin.TileServerCache</AssemblyName>
+        <OutputType>Library</OutputType>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <Version>3.0.0</Version>
+        <Authors>Andrew Whewell</Authors>
+        <Company>Andrew Whewell</Company>
+        <Description>A plugin to Virtual Radar Server that caches map tiles for offline use / reduced server load</Description>
+        <Copyright>Copyright © Andrew Whewell 2019 onwards</Copyright>
+        <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+        <PackageProjectUrl />
+        <AssemblyVersion>3.0.0.0</AssemblyVersion>
+        <FileVersion>3.0.0.0</FileVersion>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.targets'))" />
-  </Target>
-  <Import Project="..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.targets" Condition="Exists('..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.targets')" />
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+        <PackageReference Include="Microsoft.Owin" version="3.0.1" />
+        <PackageReference Include="Microsoft.TypeScript.MSBuild" version="2.3.3" />
+        <PackageReference Include="Owin" version="1.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj" />
+        <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj" />
+        <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj" />
+        <ProjectReference Include="..\VirtualRadar.WinForms\VirtualRadar.WinForms.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="VirtualRadar.Plugin.TileServerCache.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="PowerShell.exe -ExecutionPolicy Bypass &quot;$(SolutionDir)_PostBuild.ps1&quot; -solutionDir '$(SolutionDir)' -targetPath '$(TargetPath)'" />
+    </Target>
+
 </Project>
