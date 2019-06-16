@@ -1,254 +1,41 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.props" Condition="Exists('..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.props')" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8CDF8D3F-CA98-4027-ABC0-8AD12F91E93E}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VirtualRadar.Plugin.SqlServer</RootNamespace>
-    <AssemblyName>VirtualRadar.Plugin.SqlServer</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
-    <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TypeScriptTarget>ES5</TypeScriptTarget>
-    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
-    <TypeScriptModuleKind />
-    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
-    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
-    <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
-    <TypeScriptOutFile />
-    <TypeScriptOutDir />
-    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
-    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
-    <TypeScriptSourceMap>True</TypeScriptSourceMap>
-    <TypeScriptMapRoot />
-    <TypeScriptSourceRoot />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Dapper, Version=1.50.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dapper.1.50.4\lib\net451\Dapper.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="BaseStationDatabase.cs" />
-    <Compile Include="BaseStationDatabaseProvider.cs" />
-    <Compile Include="ConnectionWrapper.cs" />
-    <Compile Include="Models\ActionResult.cs" />
-    <Compile Include="Models\AircraftActionResult.cs" />
-    <Compile Include="Models\BaseStationAircraftUpsertUdtt.cs" />
-    <Compile Include="Models\BaseStationAircraftUpsertLookupUdtt.cs" />
-    <Compile Include="Models\BaseStationFlightUpsertUdtt.cs" />
-    <Compile Include="Models\FlightActionResult.cs" />
-    <Compile Include="Models\Icao24Udtt.cs" />
-    <Compile Include="Models\UdttProperty.cs" />
-    <Compile Include="Options.cs" />
-    <Compile Include="OptionsStorage.cs" />
-    <Compile Include="Plugin.cs" />
-    <Compile Include="PluginLocalise.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scripts\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="SqlServerHelper.cs" />
-    <Compile Include="SqlServerStrings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SqlServerStrings.resx</DependentUpon>
-    </Compile>
-    <Compile Include="WebAdmin\IOptionsView.cs" />
-    <Compile Include="WebAdmin\OptionsModels.cs" />
-    <Compile Include="WebAdmin\OptionsView.cs" />
-    <Compile Include="WinForms\OptionsPresenter.cs" />
-    <Compile Include="WinForms\OptionsView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForms\OptionsView.Designer.cs">
-      <DependentUpon>OptionsView.cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
-      <Project>{6ad23cd7-fb9f-448e-85ea-cb5aaa4e9fee}</Project>
-      <Name>InterfaceFactory</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.Database\VirtualRadar.Database.csproj">
-      <Project>{049a9a56-990e-4f99-99f7-cc09767508d9}</Project>
-      <Name>VirtualRadar.Database</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
-      <Project>{8ef81105-f45d-4edb-996c-de7d5644b1e7}</Project>
-      <Name>VirtualRadar.Interface</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
-      <Project>{fd3e36e1-35ea-46f3-a30b-65cea7d92b7e}</Project>
-      <Name>VirtualRadar.Localisation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.WinForms\VirtualRadar.WinForms.csproj">
-      <Project>{3a1330d8-1e7d-4c70-ba9a-39851389cfff}</Project>
-      <Name>VirtualRadar.WinForms</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Scripts\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SqlServerStrings.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>SqlServerStrings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForms\OptionsView.resx">
-      <DependentUpon>OptionsView.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-    <None Include="Scripts\BaseStation\README.md" />
-    <None Include="Typings\Manager.ttinclude" />
-    <None Include="Typings\SqlServerPluginModels.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SqlServerPluginModels.d.ts</LastGenOutput>
-    </None>
-    <None Include="Typings\translations-sqlserverstrings.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>translations-sqlserverstrings.d.ts</LastGenOutput>
-    </None>
-    <Content Include="Web\WebAdmin\CustomContentPluginOptions.js.map">
-      <DependentUpon>SqlServerPluginOptions.ts</DependentUpon>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Scripts\BaseStation\Procs\Aircraft_GetByCodes.sql" />
-    <Content Include="Scripts\BaseStation\Procs\AircraftAndFlightsCount_GetByCodes.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Aircraft_GetAll.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Aircraft_GetByID.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Aircraft_Upsert.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Aircraft_UpsertLookups.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Aircraft_GetOrCreate.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Aircraft_GetByRegistration.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Aircraft_GetByModeS.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Aircraft_MarkManyMissing.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Aircraft_Insert.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Aircraft_UpdateModeSCountry.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Aircraft_Update.sql" />
-    <Content Include="Scripts\BaseStation\Procs\DBHistory_GetAll.sql" />
-    <Content Include="Scripts\BaseStation\Procs\DBInfo_GetAll.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Flights_Delete.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Aircraft_Delete.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Flights_GetByID.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Flights_Insert.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Flights_Upsert.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Flights_Update.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Locations_Delete.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Locations_GetAll.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Locations_Insert.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Locations_Update.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Sessions_Delete.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Sessions_GetAll.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Sessions_Insert.sql" />
-    <Content Include="Scripts\BaseStation\Procs\Sessions_Update.sql" />
-    <Content Include="Scripts\BaseStation\Procs\SystemEvents_Delete.sql" />
-    <Content Include="Scripts\BaseStation\Procs\SystemEvents_GetAll.sql" />
-    <Content Include="Scripts\BaseStation\Procs\SystemEvents_Insert.sql" />
-    <Content Include="Scripts\BaseStation\Procs\SystemEvents_Update.sql" />
-    <Content Include="Scripts\BaseStation\Schema\BaseStation.sql" />
-    <Content Include="Scripts\BaseStation\Tables\Flights.sql" />
-    <Content Include="Scripts\BaseStation\Tables\SystemEvents.sql" />
-    <Content Include="Scripts\BaseStation\Tables\Sessions.sql" />
-    <Content Include="Scripts\BaseStation\Tables\Locations.sql" />
-    <Content Include="Scripts\BaseStation\Tables\DBInfo.sql" />
-    <Content Include="Scripts\BaseStation\Tables\DBHistory.sql" />
-    <Content Include="Scripts\BaseStation\Tables\Aircraft.sql" />
-    <Content Include="Scripts\BaseStation\Types\BaseStationAircraftUpsert.sql" />
-    <Content Include="Scripts\BaseStation\Types\BaseStationFlightUpsert.sql" />
-    <Content Include="Scripts\BaseStation\Types\BaseStationAircraftUpsertLookup.sql" />
-    <Content Include="Scripts\UpdateSchema.sql">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>UpdateSchema.tt</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scripts\UpdateSchema.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>UpdateSchema.sql</LastGenOutput>
-    </Content>
-    <Content Include="Scripts\VRS\Schema\VRS.sql" />
-    <Content Include="Scripts\VRS\Types\Icao24.sql" />
-    <Content Include="VirtualRadar.Plugin.SqlServer.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Web\WebAdmin\CustomContentPluginOptions.js">
-      <DependentUpon>SqlServerPluginOptions.ts</DependentUpon>
-    </Content>
-    <Content Include="Web\WebAdmin\SqlServerPluginOptions.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="Typings\SqlServerPluginEnums.ts">
-      <DependentUpon>SqlServerPluginModels.tt</DependentUpon>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="Typings\SqlServerPluginModels.d.ts">
-      <DependentUpon>SqlServerPluginModels.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="Typings\translations-sqlserverstrings.d.ts">
-      <DependentUpon>translations-sqlserverstrings.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="Typings\webadmin.d.ts" />
-    <TypeScriptCompile Include="Web\WebAdmin\SqlServerPluginOptions.ts" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
-  <PropertyGroup>
-    <PostBuildEvent>PowerShell.exe -ExecutionPolicy Bypass "$(SolutionDir)_PostBuild.ps1" -solutionDir '$(SolutionDir)' -targetPath '$(TargetPath)'</PostBuildEvent>
-  </PropertyGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
     <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+        <AssemblyName>VirtualRadar.Plugin.SqlServer</AssemblyName>
+        <OutputType>Library</OutputType>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <Version>3.0.0</Version>
+        <Authors>Andrew Whewell</Authors>
+        <Company>Andrew Whewell</Company>
+        <Description>A plugin to Virtual Radar Server that replaces some SQLite databases with SQL Server equivalents</Description>
+        <Copyright>Copyright © Andrew Whewell 2017 onwards</Copyright>
+        <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+        <PackageProjectUrl />
+        <AssemblyVersion>3.0.0.0</AssemblyVersion>
+        <FileVersion>3.0.0.0</FileVersion>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.targets'))" />
-  </Target>
-  <Import Project="..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.targets" Condition="Exists('..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.targets')" />
+
+    <ItemGroup>
+        <PackageReference Include="Dapper" Version="1.50.4" />
+        <PackageReference Include="Microsoft.TypeScript.MSBuild" version="2.3.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj" />
+        <ProjectReference Include="..\VirtualRadar.Database\VirtualRadar.Database.csproj" />
+        <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj" />
+        <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj" />
+        <ProjectReference Include="..\VirtualRadar.WinForms\VirtualRadar.WinForms.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="VirtualRadar.Plugin.SqlServer.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="PowerShell.exe -ExecutionPolicy Bypass &quot;$(SolutionDir)_PostBuild.ps1&quot; -solutionDir '$(SolutionDir)' -targetPath '$(TargetPath)'" />
+    </Target>
+
 </Project>
