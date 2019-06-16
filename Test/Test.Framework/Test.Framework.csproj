@@ -1,116 +1,25 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{94F0A821-51BB-4381-9413-1A3FAD661D82}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Test.Framework</RootNamespace>
-    <AssemblyName>Test.Framework</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>bin\x86\Release\Test.Framework.XML</DocumentationFile>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Moq">
-      <HintPath>..\..\Dependencies\Moq.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AircraftTestHelper.cs" />
-    <Compile Include="ClockMock.cs" />
-    <Compile Include="EventRecorder.cs" />
-    <Compile Include="ExcelWorksheetData.cs" />
-    <Compile Include="MockFileSystemProvider.cs" />
-    <Compile Include="NamespaceDoc.cs" />
-    <Compile Include="OwinConstants.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FeedHelper.cs" />
-    <Compile Include="RequestReceivedEventArgsHelper.cs" />
-    <Compile Include="SpreadsheetFieldValue.cs" />
-    <Compile Include="StatisticsHelper.cs" />
-    <Compile Include="TestUtilities.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\InterfaceFactory\InterfaceFactory.csproj">
-      <Project>{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}</Project>
-      <Name>InterfaceFactory</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
-      <Project>{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}</Project>
-      <Name>VirtualRadar.Interface</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="TestFiles\AircraftTests.xls" />
-    <None Include="TestFiles\BaseStation.sqb" />
-    <None Include="TestFiles\BaseStationTests.xls" />
-    <None Include="TestFiles\GillhamAltitudeTable.csv" />
-    <None Include="TestFiles\RawDecodingTests.xls" />
-    <None Include="TestFiles\PluginBaseStationDatabaseWriterTests.xls" />
-    <None Include="TestFiles\LibraryTests.xls" />
-    <None Include="TestFiles\StandingDataTest\AircraftTypes.csv" />
-    <None Include="TestFiles\StandingDataTest\Airlines.csv" />
-    <None Include="TestFiles\StandingDataTest\Airports.csv" />
-    <None Include="TestFiles\StandingDataTest\Countries.dat" />
-    <None Include="TestFiles\StandingDataTest\FlightNumberCoverage.csv" />
-    <None Include="TestFiles\StandingDataTest\FlightNumberVotes.csv" />
-    <None Include="TestFiles\StandingDataTest\StandingData.sqb" />
-    <None Include="TestFiles\OwinTests.xls" />
-    <None Include="TestFiles\WebSiteTests.xls" />
-    <None Include="TestFiles\WebServerTests.xls" />
-    <None Include="TestFiles\DataTests.xls" />
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <EmbeddedResource Include="TestFiles\favicon.ico" />
-    <Content Include="TestFiles\SampleMessages.txt" />
-    <Content Include="TestFiles\SubFolder\VIR.bmp" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
+        <Version>3.0.0</Version>
+        <Authors>Andrew Whewell</Authors>
+        <Company>Andrew Whewell</Company>
+        <Description>Helper classes and methods for VRS unit tests</Description>
+        <Copyright>Copyright © Andrew Whewell 2009 onwards</Copyright>
+        <AssemblyVersion>3.0.0.0</AssemblyVersion>
+        <FileVersion>3.0.0.0</FileVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Moq" Version="4.11.0" />
+        <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\InterfaceFactory\InterfaceFactory.csproj" />
+        <ProjectReference Include="..\..\VirtualRadar.Interface\VirtualRadar.Interface.csproj" />
+    </ItemGroup>
+
 </Project>

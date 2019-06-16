@@ -126,7 +126,13 @@ namespace Test.Framework
         /// <returns></returns>
         public string this[string index]
         {
-            get { return Convert.ToString(_TestContext.DataRow[index]); }
+            get {
+                #if NETFRAMEWORK
+                    return Convert.ToString(_TestContext.DataRow[index]);
+                #else
+                    throw new NotImplementedException("Microsoft have not yet implemented the DataRow and DataSource attributes for the DNC version of MSTest. See https://github.com/Microsoft/testfx/issues/233");
+                #endif
+            }
         }
 
         /// <summary>
@@ -136,7 +142,13 @@ namespace Test.Framework
         /// <returns></returns>
         public string this[int ordinal]
         {
-            get { return Convert.ToString(_TestContext.DataRow[ordinal]); }
+            get {
+                #if NETFRAMEWORK
+                    return Convert.ToString(_TestContext.DataRow[ordinal]);
+                #else
+                    throw new NotImplementedException("Microsoft have not yet implemented the DataRow and DataSource attributes for the DNC version of MSTest. See https://github.com/Microsoft/testfx/issues/233");
+                #endif
+            }
         }
         #endregion
 
@@ -162,7 +174,11 @@ namespace Test.Framework
         /// <returns></returns>
         public bool ColumnExists(string columnName)
         {
-            return _TestContext.DataRow.Table.Columns.Contains(columnName);
+            #if NETFRAMEWORK
+                return _TestContext.DataRow.Table.Columns.Contains(columnName);
+            #else
+                throw new NotImplementedException("Microsoft have not yet implemented the DataRow and DataSource attributes for the DNC version of MSTest. See https://github.com/Microsoft/testfx/issues/233");
+            #endif
         }
         #endregion
 
