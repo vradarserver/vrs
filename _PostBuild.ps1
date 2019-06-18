@@ -60,7 +60,8 @@ function Copy-File
     param (
         [string] $source,
         [string] $destFolder,
-        [switch] $ignoreIfMissing
+        [switch] $ignoreIfMissing,
+        [parameter(mandatory=$false)][string] $destFileName
     )
 
     Write-Host ('Copying ' + $source + ' to ' + $destFolder + $dryRunDesc)
@@ -79,8 +80,13 @@ function Copy-File
             }
         }
 
+        $destination = $destFolder
+        if(!String.IsNullOrWhiteSpace($destFileName)) {
+            $destination = [IO.Path]::Combine($destFolder, $destFilename)
+        }
+
         if(!$dryRun) {
-            Copy-Item $source $destFolder
+            Copy-Item $source $destination
         }
     }
 }
@@ -255,7 +261,8 @@ function PostBuild-VirtualRadar-Service
 function PostBuild-BaseStationImport
 {
     Copy-File ([IO.Path]::Combine($targetDir, ($targetName + '.exe')))        $virtualRadarDir
-    Copy-File ([IO.Path]::Combine($targetDir, ($targetName + '.exe.config'))) $virtualRadarDir
+    Copy-File ([IO.Path]::Combine($targetDir, ($targetName + '.dll')))        $virtualRadarDir
+    Copy-File ([IO.Path]::Combine($targetDir, ($targetName + '.dll.config'))) $virtualRadarDir -destFileName ($targetName + '.exe.config')
     Copy-File ([IO.Path]::Combine($targetDir, ($targetName + '.pdb')))        $virtualRadarDir
 }
 

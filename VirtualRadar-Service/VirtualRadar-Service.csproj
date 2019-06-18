@@ -86,7 +86,7 @@
       <Project>{6ad23cd7-fb9f-448e-85ea-cb5aaa4e9fee}</Project>
       <Name>InterfaceFactory</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SQLiteWrapper.DotNet\SQLiteWrapper.DotNet.csproj">
+    <ProjectReference Include="..\SQLiteWrapper\SQLiteWrapper.csproj">
       <Project>{ddf2a51a-4ab8-4338-94ae-6320637ae3d7}</Project>
       <Name>SQLiteWrapper.DotNet</Name>
     </ProjectReference>
