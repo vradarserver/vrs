@@ -259,12 +259,17 @@ namespace VirtualRadar.Interface
             if(runtimeEnvironment.IsMono) {
                 result = new Mutex(false, _SingleInstanceMutexName);
             } else {
-                var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
-                var securitySettings = new MutexSecurity();
-                securitySettings.AddAccessRule(allowEveryoneRule);
+                #if NETFRAMEWORK
+                    var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
+                    var securitySettings = new MutexSecurity();
+                    securitySettings.AddAccessRule(allowEveryoneRule);
 
-                bool createdNew;
-                result = new Mutex(false, _SingleInstanceMutexName, out createdNew, securitySettings);
+                    bool createdNew;
+                    result = new Mutex(false, _SingleInstanceMutexName, out createdNew, securitySettings);
+                #elif NETCOREAPP
+                    // There is no MutexAccessRule in dotnet core - not sure this will work? But for now I just want it to compile.
+                    result = new Mutex(false, _SingleInstanceMutexName, out bool createdNew);
+                #endif
 
                 if(!allowMultipleInstances) {
                     try {
