@@ -1,23 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>3.0.0</Version>
-    <Authors>Andrew Whewell</Authors>
-    <Company>Andrew Whewell</Company>
-    <Description>Localisation routines and text for Virtual Radar Server</Description>
-    <Copyright>Copyright © Andrew Whewell 2011 onwards</Copyright>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-    <PackageProjectUrl />
-    <AssemblyVersion>3.0.0.0</AssemblyVersion>
-    <FileVersion>3.0.0.0</FileVersion>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\LICENSE.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <Version>3.0.0</Version>
+        <Authors>Andrew Whewell</Authors>
+        <Company>Andrew Whewell</Company>
+        <Description>Localisation routines and text for Virtual Radar Server</Description>
+        <Copyright>Copyright © Andrew Whewell 2011 onwards</Copyright>
+        <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+        <PackageProjectUrl />
+        <AssemblyVersion>3.0.0.0</AssemblyVersion>
+        <FileVersion>3.0.0.0</FileVersion>
+    </PropertyGroup>
 
 </Project>

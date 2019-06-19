@@ -1,166 +1,27 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{049A9A56-990E-4F99-99F7-CC09767508D9}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VirtualRadar.Database</RootNamespace>
-    <AssemblyName>VirtualRadar.Database</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <ReleaseVersion>2.0.2</ReleaseVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>bin\x86\Release\VirtualRadar.Database.XML</DocumentationFile>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Dapper, Version=1.50.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dapper.1.50.4\lib\net451\Dapper.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.EnterpriseServices" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Web.Services" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AircraftOnlineLookupCache\Commands.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Commands.resx</DependentUpon>
-    </Compile>
-    <Compile Include="AircraftOnlineLookupCache\StandaloneAircraftOnlineLookupCache.cs" />
-    <Compile Include="BaseStation\AutoConfigBaseStationDatabase.cs" />
-    <Compile Include="BaseStation\Commands.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Commands.resx</DependentUpon>
-    </Compile>
-    <Compile Include="BaseStation\DynamicSql.cs" />
-    <Compile Include="BaseStation\ParameterBuilder.cs" />
-    <Compile Include="CriteriaAndProperties.cs" />
-    <Compile Include="BaseStation\Database.cs" />
-    <Compile Include="DynamicSqlBuilder.cs" />
-    <Compile Include="Log\Commands.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Commands.resx</DependentUpon>
-    </Compile>
-    <Compile Include="NamespaceDoc.cs" />
-    <Compile Include="SQLiteDateHelper.cs" />
-    <Compile Include="Implementations.cs" />
-    <Compile Include="Log\Database.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sql.cs" />
-    <Compile Include="SQLiteExecute.cs" />
-    <Compile Include="SqlPreparedCommand.cs" />
-    <Compile Include="StandingData\BackgroundDataDownloader.cs" />
-    <Compile Include="StandingData\CallsignRouteFetcher.cs" />
-    <Compile Include="StandingData\RouteStopViewModel.cs" />
-    <Compile Include="StandingData\RouteViewModel.cs" />
-    <Compile Include="StandingData\StandingDataManager.cs" />
-    <Compile Include="StandingData\StandingDataUpdater.cs" />
-    <Compile Include="Table.cs" />
-    <Compile Include="TransactionHelper.cs" />
-    <Compile Include="Users\Database.cs" />
-    <Compile Include="Users\User.cs" />
-    <Compile Include="Users\UserManager.cs" />
-    <Compile Include="Users\UserTable.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
-      <Project>{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}</Project>
-      <Name>InterfaceFactory</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
-      <Project>{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}</Project>
-      <Name>VirtualRadar.Interface</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
-      <Project>{FD3E36E1-35EA-46F3-A30B-65CEA7D92B7E}</Project>
-      <Name>VirtualRadar.Localisation</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-    <None Include="README.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="AircraftOnlineLookupCache\Commands.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Commands.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="BaseStation\Commands.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Commands.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Log\Commands.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Commands.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="AircraftOnlineLookupCache\Scripts\AircraftDetail_Insert.sql" />
-    <Content Include="AircraftOnlineLookupCache\Scripts\AircraftDetail_InsertMissing.sql" />
-    <Content Include="AircraftOnlineLookupCache\Scripts\AircraftDetail_Update.sql" />
-    <Content Include="AircraftOnlineLookupCache\Scripts\AircraftDetail_UpdateMissing.sql" />
-    <Content Include="BaseStation\Scripts\Aircraft_GetAircraftAndFlightsCountByIcao.sql" />
-    <Content Include="BaseStation\Scripts\Aircraft_Insert.sql" />
-    <Content Include="BaseStation\Scripts\Aircraft_Update.sql" />
-    <Content Include="BaseStation\Scripts\Flights_Update.sql" />
-    <Content Include="BaseStation\Scripts\Flights_Insert.sql" />
-    <Content Include="BaseStation\Scripts\Locations_Insert.sql" />
-    <Content Include="AircraftOnlineLookupCache\Scripts\UpdateSchema.sql" />
-    <Content Include="BaseStation\Scripts\DBHistory_Insert.sql" />
-    <Content Include="BaseStation\Scripts\DBInfo_Insert.sql" />
-    <Content Include="BaseStation\Scripts\Locations_Update.sql" />
-    <Content Include="BaseStation\Scripts\Sessions_Insert.sql" />
-    <Content Include="BaseStation\Scripts\Sessions_Update.sql" />
-    <Content Include="BaseStation\Scripts\SystemEvents_Insert.sql" />
-    <Content Include="BaseStation\Scripts\SystemEvents_Update.sql" />
-    <Content Include="BaseStation\Scripts\UpdateSchema.sql" />
-    <Content Include="Log\Scripts\Client_Insert.sql" />
-    <Content Include="Log\Scripts\Client_Update.sql" />
-    <Content Include="Log\Scripts\Session_GetByDateRange.sql" />
-    <Content Include="Log\Scripts\Session_Insert.sql" />
-    <Content Include="Log\Scripts\Session_Update.sql" />
-    <Content Include="Log\Scripts\UpdateSchema.sql" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <Version>3.0.0</Version>
+        <Authors>Andrew Whewell</Authors>
+        <Company>Andrew Whewell</Company>
+        <Description>Database handling for Virtual Radar Server</Description>
+        <Copyright>Copyright © Andrew Whewell 2010 onwards</Copyright>
+        <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+        <PackageProjectUrl />
+        <AssemblyVersion>3.0.0.0</AssemblyVersion>
+        <FileVersion>3.0.0.0</FileVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj" />
+        <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj" />
+        <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Dapper" Version="1.50.4" />
+    </ItemGroup>
+
 </Project>
