@@ -12,7 +12,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if !__MonoCS__ && !NETCOREAPP
 using Microsoft.FlightSimulator.SimConnect;
+#endif
 using VirtualRadar.Interface.FlightSimulatorX;
 using System.Threading;
 using System.Diagnostics;
@@ -25,15 +27,17 @@ namespace VirtualRadar.Library.FlightSimulatorX
     /// </summary>
     sealed class DotNetSimConnectWrapper : ISimConnectWrapper
     {
-        #region Fields
         /// <summary>
         /// The SimConnect object that the provider wraps access to.
         /// </summary>
+        #if !__MonoCS__ && !NETCOREAPP
         SimConnect _SimConnect;
-        #endregion
+        #endif
 
-        #region Properties
+        #if !__MonoCS__ && !NETCOREAPP
         private bool? _IsInstalled;
+        #endif
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -41,6 +45,9 @@ namespace VirtualRadar.Library.FlightSimulatorX
         {
             get
             {
+                #if __MonoCS__ || NETCOREAPP
+                return false;
+                #else
                 if(_IsInstalled == null) {
                     try {
                         _IsInstalled = false;
@@ -53,16 +60,24 @@ namespace VirtualRadar.Library.FlightSimulatorX
                 }
 
                 return _IsInstalled.Value;
+                #endif
             }
         }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public uint UnusedValue { get { return SimConnect.SIMCONNECT_UNUSED; } }
-        #endregion
+        public uint UnusedValue
+        {
+            get {
+                #if !__MonoCS__ && !NETCOREAPP
+                return SimConnect.SIMCONNECT_UNUSED;
+                #else
+                return 0xffffffff;
+                #endif
+            }
+        }
 
-        #region Events exposed - EventObserved, ExceptionRaised, ObjectReceived, UserHasQuit
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -118,9 +133,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
         {
             EventHelper.Raise(UserHasQuit, this, args);
         }
-        #endregion
 
-        #region Constructors / finaliser
         /// <summary>
         /// Finalises the object.
         /// </summary>
@@ -128,9 +141,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
         {
             Dispose(false);
         }
-        #endregion
 
-        #region Dispose
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -159,23 +170,27 @@ namespace VirtualRadar.Library.FlightSimulatorX
         private void DoDispose(bool disposing)
         {
             if(disposing) {
-                if(_SimConnect != null) _SimConnect.Dispose();
+                #if !__MonoCS__ && !NETCOREAPP
+                if(_SimConnect != null) {
+                    _SimConnect.Dispose();
+                }
                 _SimConnect = null;
+                #endif
             }
         }
-        #endregion
 
-        #region NullCall
         /// <summary>
         /// A call that does nothing but references SimConnect, which in turn will cause the .NET framework to try to load it.
         /// </summary>
         private void NullCall()
         {
-            if(_SimConnect != null) _SimConnect.GetType();
+            #if !__MonoCS__ && !NETCOREAPP
+            if(_SimConnect != null) {
+                _SimConnect.GetType();
+            }
+            #endif
         }
-        #endregion
 
-        #region AddClientEventToNotificationGroup, AddToDataDefinition, CreateSimConnect, MapClientEventToSimEvent, RegisterDataDefineStruct, SubscribeToSystemEvent
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -184,7 +199,9 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="maskable"></param>
         public void AddClientEventToNotificationGroup(Enum groupId, Enum eventId, bool maskable)
         {
+            #if !__MonoCS__ && !NETCOREAPP
             _SimConnect.AddClientEventToNotificationGroup(groupId, eventId, maskable);
+            #endif
         }
 
         /// <summary>
@@ -198,7 +215,9 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="dataId"></param>
         public void AddToDataDefinition(Enum defineId, string fieldName, string unitsName, int dataType, float epsilon, uint dataId)
         {
+            #if !__MonoCS__ && !NETCOREAPP
             _SimConnect.AddToDataDefinition(defineId, fieldName, unitsName, (SIMCONNECT_DATATYPE)dataType, epsilon, dataId);
+            #endif
         }
 
         /// <summary>
@@ -211,11 +230,13 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="configurationIndex"></param>
         public void CreateSimConnect(string name, IntPtr windowHandle, uint userEventWin32, WaitHandle eventHandle, uint configurationIndex)
         {
+            #if !__MonoCS__ && !NETCOREAPP
             _SimConnect = new SimConnect("Virtual Radar Server", windowHandle, userEventWin32, eventHandle, configurationIndex);
             _SimConnect.OnRecvEvent += SimConnect_RecvEvent;
             _SimConnect.OnRecvException += SimConnect_RecvException;
             _SimConnect.OnRecvQuit += SimConnect_RecvQuit;
             _SimConnect.OnRecvSimobjectDataBytype += SimConnect_RecvSimobjectDataBytype;
+            #endif
         }
 
         /// <summary>
@@ -225,7 +246,9 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="eventName"></param>
         public void MapClientEventToSimEvent(Enum eventId, string eventName)
         {
+            #if !__MonoCS__ && !NETCOREAPP
             _SimConnect.MapClientEventToSimEvent(eventId, eventName);
+            #endif
         }
 
         /// <summary>
@@ -233,7 +256,9 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// </summary>
         public void ReceiveMessage()
         {
+            #if !__MonoCS__ && !NETCOREAPP
             _SimConnect.ReceiveMessage();
+            #endif
         }
 
         /// <summary>
@@ -243,7 +268,9 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="definitionId"></param>
         public void RegisterDataDefineStruct<T>(Enum definitionId)
         {
+            #if !__MonoCS__ && !NETCOREAPP
             _SimConnect.RegisterDataDefineStruct<T>(definitionId);
+            #endif
         }
 
         /// <summary>
@@ -255,7 +282,9 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="objectType"></param>
         public void RequestDataOnSimObjectType(Enum requestId, Enum definitionId, uint radius, int objectType)
         {
+            #if !__MonoCS__ && !NETCOREAPP
             _SimConnect.RequestDataOnSimObjectType(requestId, definitionId, radius, (SIMCONNECT_SIMOBJECT_TYPE)objectType);
+            #endif
         }
 
         /// <summary>
@@ -267,7 +296,9 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="data"></param>
         public void SetDataOnSimObject(Enum defineID, uint objectID, int flags, object data)
         {
+            #if !__MonoCS__ && !NETCOREAPP
             _SimConnect.SetDataOnSimObject(defineID, objectID, (SIMCONNECT_DATA_SET_FLAG)flags, data);
+            #endif
         }
 
         /// <summary>
@@ -277,7 +308,9 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="on"></param>
         public void SetSystemEventState(Enum eventId, bool on)
         {
+            #if !__MonoCS__ && !NETCOREAPP
             _SimConnect.SetSystemEventState(eventId, on ? SIMCONNECT_STATE.ON : SIMCONNECT_STATE.OFF);
+            #endif
         }
 
         /// <summary>
@@ -287,7 +320,9 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="eventName"></param>
         public void SubscribeToSystemEvent(Enum eventId, string eventName)
         {
+            #if !__MonoCS__ && !NETCOREAPP
             _SimConnect.SubscribeToSystemEvent(eventId, eventName);
+            #endif
         }
 
         /// <summary>
@@ -300,16 +335,17 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// <param name="flags"></param>
         public void TransmitClientEvent(uint objectId, Enum eventId, uint value, Enum groupId, int flags)
         {
+            #if !__MonoCS__ && !NETCOREAPP
             _SimConnect.TransmitClientEvent(objectId, eventId, value, groupId, (SIMCONNECT_EVENT_FLAG)flags);
+            #endif
         }
-        #endregion
 
-        #region Events subscribed
         /// <summary>
         /// Called when SimConnect observes an event taking place.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="data"></param>
+        #if !__MonoCS__ && !NETCOREAPP
         private void SimConnect_RecvEvent(SimConnect sender, SIMCONNECT_RECV_EVENT data)
         {
             var args = new SimConnectEventObservedEventArgs() {
@@ -321,12 +357,14 @@ namespace VirtualRadar.Library.FlightSimulatorX
 
             OnEventObserved(args);
         }
+        #endif
 
         /// <summary>
         /// Called when SimConnect throws an exception.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="data"></param>
+        #if !__MonoCS__ && !NETCOREAPP
         private void SimConnect_RecvException(SimConnect sender, SIMCONNECT_RECV_EXCEPTION data)
         {
             var args = new SimConnectExceptionRaisedEventArgs() {
@@ -339,12 +377,14 @@ namespace VirtualRadar.Library.FlightSimulatorX
 
             OnExceptionRaised(args);
         }
+        #endif
 
         /// <summary>
         /// Called when SimConnect sends data for an object.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="data"></param>
+        #if !__MonoCS__ && !NETCOREAPP
         private void SimConnect_RecvSimobjectDataBytype(SimConnect sender, SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE data)
         {
             var args = new SimConnectObjectReceivedEventArgs() {
@@ -360,16 +400,18 @@ namespace VirtualRadar.Library.FlightSimulatorX
 
             OnObjectReceived(args);
         }
+        #endif
 
         /// <summary>
         /// Called when SimConnect detects that the user has quit FSX.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="data"></param>
+        #if !__MonoCS__ && !NETCOREAPP
         private void SimConnect_RecvQuit(SimConnect sender, SIMCONNECT_RECV data)
         {
             OnUserHasQuit(EventArgs.Empty);
         }
-        #endregion
+        #endif
     }
 }

@@ -15,8 +15,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using InterfaceFactory;
+#if !NETCOREAPP
 using Mono.Unix;
 using Mono.Unix.Native;
+#endif
 using VirtualRadar.Interface;
 
 namespace VirtualRadar.Library
@@ -49,6 +51,7 @@ namespace VirtualRadar.Library
             if(_ShutdownSignalHandlerThread == null) {
                 _ShutdownSignalHandlerThread = new Thread(() => {
                     try {
+                        #if !__MonoCS__ && !NETCOREAPP
                         var signals = new UnixSignal[] {
                             new UnixSignal(Signum.SIGINT),
                         };
@@ -58,6 +61,7 @@ namespace VirtualRadar.Library
                                 ProgramLifetime.MainView?.CloseView();
                             }
                         }
+                        #endif
                     } catch(ThreadAbortException) {
                         ;   // these get rethrown automatically, I just don't want them logged
                     } catch(Exception ex) {

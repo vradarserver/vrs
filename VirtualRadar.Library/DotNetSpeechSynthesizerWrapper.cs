@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VirtualRadar.Interface;
-#if !__MonoCS__
+#if !__MonoCS__ && !NETCOREAPP
 using System.Speech.Synthesis;
 #endif
 
@@ -27,7 +27,7 @@ namespace VirtualRadar.Library
         /// <summary>
         /// The speech synthesizer that this class wraps.
         /// </summary>
-        #if !__MonoCS__
+        #if !__MonoCS__ && !NETCOREAPP
         private SpeechSynthesizer _SpeechSynthesizer;
         #else
         private IDisposable _SpeechSynthesizer;
@@ -38,7 +38,7 @@ namespace VirtualRadar.Library
         /// </summary>
         public string DefaultVoiceName
         {
-            #if !__MonoCS__
+            #if !__MonoCS__ && !NETCOREAPP
             get { return _SpeechSynthesizer != null ? _SpeechSynthesizer.Voice.Name : ""; }
             #else
             get { return "SpeechSynthesisNotSupported"; }
@@ -50,7 +50,7 @@ namespace VirtualRadar.Library
         /// </summary>
         public int Rate
         {
-            #if !__MonoCS__
+            #if !__MonoCS__ && !NETCOREAPP
             get { return _SpeechSynthesizer != null ? _SpeechSynthesizer.Rate : 0; }
             set { if(_SpeechSynthesizer != null) _SpeechSynthesizer.Rate = value; }
             #else
@@ -64,7 +64,7 @@ namespace VirtualRadar.Library
         /// </summary>
         public DotNetSpeechSynthesizerWrapper()
         {
-            #if !__MonoCS__
+            #if !__MonoCS__ && !NETCOREAPP
             try {
                 _SpeechSynthesizer = new SpeechSynthesizer();
             } catch {
@@ -109,7 +109,7 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         public IEnumerable<string> GetInstalledVoiceNames()
         {
-            #if !__MonoCS__
+            #if !__MonoCS__ && !NETCOREAPP
             return _SpeechSynthesizer == null ? new string[0] : _SpeechSynthesizer.GetInstalledVoices().Where(s => s.Enabled).Select(v => v.VoiceInfo.Name);
             #else
             return new string[]{};
@@ -122,7 +122,7 @@ namespace VirtualRadar.Library
         /// <param name="name"></param>
         public void SelectVoice(string name)
         {
-            #if !__MonoCS__
+            #if !__MonoCS__ && !NETCOREAPP
             if(_SpeechSynthesizer != null) _SpeechSynthesizer.SelectVoice(name);
             #endif
         }
@@ -132,7 +132,7 @@ namespace VirtualRadar.Library
         /// </summary>
         public void SetOutputToDefaultAudioDevice()
         {
-            #if !__MonoCS__
+            #if !__MonoCS__ && !NETCOREAPP
             if(_SpeechSynthesizer != null) _SpeechSynthesizer.SetOutputToDefaultAudioDevice();
             #endif
         }
@@ -143,7 +143,7 @@ namespace VirtualRadar.Library
         /// <param name="text"></param>
         public void SpeakAsync(string text)
         {
-            #if !__MonoCS__
+            #if !__MonoCS__ && !NETCOREAPP
             if(_SpeechSynthesizer != null) _SpeechSynthesizer.SpeakAsync(text);
             #endif
         }

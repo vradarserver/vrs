@@ -17,7 +17,7 @@ using System.IO;
 using VirtualRadar.Interface.Settings;
 using InterfaceFactory;
 using System.Diagnostics;
-#if !__MonoCS__
+#if !__MonoCS__ && !NETCOREAPP
 using System.Speech.Synthesis;
 using System.Speech.AudioFormat;
 #endif
@@ -29,13 +29,17 @@ namespace VirtualRadar.Library
     /// </summary>
     class Audio : IAudio
     {
+        const bool _IsSupported =
+        #if !__MonoCS__ && !NETCOREAPP
+        true;
+        #else
+        false;
+        #endif
+
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public bool IsSupported
-        {
-            get { return !Factory.ResolveSingleton<IRuntimeEnvironment>().IsMono; }
-        }
+        public bool IsSupported => _IsSupported;
 
         /// <summary>
         /// See interface docs.
@@ -44,31 +48,31 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         public byte[] SpeechToWavBytes(string speechText)
         {
-            if(speechText == null) throw new ArgumentNullException("speechText");
-            byte[] result = new byte[] {};
+            if(speechText == null) {
+                throw new ArgumentNullException("speechText");
+            }
+            var result = new byte[] {};
 
-            #if !__MonoCS__
-            if(IsSupported) {
-                using(MemoryStream memoryStream = new MemoryStream()) {
-                    using(SpeechSynthesizer speechSynthesizer = new SpeechSynthesizer() { Rate = -3 }) {
-                        var configuration = Factory.ResolveSingleton<IConfigurationStorage>().Load();
+            #if !__MonoCS__ && !NETCOREAPP
+            using(var memoryStream = new MemoryStream()) {
+                using(var speechSynthesizer = new SpeechSynthesizer() { Rate = -3 }) {
+                    var configuration = Factory.ResolveSingleton<IConfigurationStorage>().Load();
 
-                        speechSynthesizer.Rate = configuration.AudioSettings.VoiceRate;
-                        string defaultVoice = speechSynthesizer.Voice.Name;
-                        try {
-                            speechSynthesizer.SelectVoice(configuration.AudioSettings.VoiceName);
-                        } catch(Exception ex) {
-                            Debug.WriteLine(String.Format("Audio.SpeechToWavBytes caught exception {0}", ex.ToString()));
-                            speechSynthesizer.SelectVoice(defaultVoice);
-                        }
-
-                        speechSynthesizer.SetOutputToWaveStream(memoryStream);
-                        speechSynthesizer.Speak(speechText);
+                    speechSynthesizer.Rate = configuration.AudioSettings.VoiceRate;
+                    var defaultVoice = speechSynthesizer.Voice.Name;
+                    try {
+                        speechSynthesizer.SelectVoice(configuration.AudioSettings.VoiceName);
+                    } catch(Exception ex) {
+                        Debug.WriteLine(String.Format("Audio.SpeechToWavBytes caught exception {0}", ex.ToString()));
+                        speechSynthesizer.SelectVoice(defaultVoice);
                     }
 
-                    memoryStream.Flush();
-                    result = memoryStream.ToArray();
+                    speechSynthesizer.SetOutputToWaveStream(memoryStream);
+                    speechSynthesizer.Speak(speechText);
                 }
+
+                memoryStream.Flush();
+                result = memoryStream.ToArray();
             }
             #endif
 

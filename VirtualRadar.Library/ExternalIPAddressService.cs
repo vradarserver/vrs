@@ -13,8 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VirtualRadar.Interface;
-using VirtualRadar.Library.webservice.virtualradarserver.co.uk;
 using InterfaceFactory;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace VirtualRadar.Library
 {
@@ -28,9 +29,19 @@ namespace VirtualRadar.Library
         /// </summary>
         class DefaultProvider : IExternalIPAddressServiceProvider
         {
+            private static readonly HttpClient _HttpClient = new HttpClient() { BaseAddress = new Uri("http://sdm.virtualradarserver.co.uk/") };
+
+            class ExternalIPAddressResult
+            {
+                public string ExternalIPAddress { get; set; }
+            }
+
             public string ExternalIpAddress()
             {
-                return new ClientSupport().ExternalIpAddress();
+                var jsonText = _HttpClient.GetStringAsync("api/1.00/site/anonymous/external-ip-address").Result;
+                var jsonObj = JsonConvert.DeserializeObject<ExternalIPAddressResult>(jsonText);
+
+                return jsonObj.ExternalIPAddress;
             }
         }
 

@@ -14,7 +14,9 @@ using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.FlightSimulatorX;
 using VirtualRadar.Localisation;
+#if !__MonoCS__ && !NETCOREAPP
 using Microsoft.FlightSimulator.SimConnect;
+#endif
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Threading;
@@ -85,6 +87,9 @@ namespace VirtualRadar.Library.FlightSimulatorX
         /// </summary>
         public string ConnectionStatus { get; private set; }
 
+        #if __MonoCS__ || NETCOREAPP
+        public bool IsFrozen { get; set; }
+        #else
         private bool _IsFrozen;
         /// <summary>
         /// See interface docs.
@@ -105,7 +110,11 @@ namespace VirtualRadar.Library.FlightSimulatorX
                 }
             }
         }
+        #endif
 
+        #if __MonoCS__ || NETCOREAPP
+        public bool IsSlewing { get; set; }
+        #else
         private bool _IsSlewing;
         /// <summary>
         /// See interface docs.
@@ -130,6 +139,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
                 }
             }
         }
+        #endif
 
         /// <summary>
         /// See interface docs.
@@ -280,6 +290,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
                 if(Connected) throw new InvalidOperationException("Already connected to FSX");
 
                 try {
+                    #if !__MonoCS__ && !NETCOREAPP
                     _SimConnect.CreateSimConnect("Virtual Radar Server", windowHandle, SimConnect_UserMessageId, null, 0);
 
                     _SimConnect.MapClientEventToSimEvent(FlightSimulatorXEventId.SlewModeOn, "SLEW_ON");
@@ -335,6 +346,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
 
                     Connected = true;
                     ConnectionStatus = Strings.Connected;
+                    #endif
                 } catch(COMException ex) {
                     Debug.WriteLine(String.Format("FlightSimulatorX.Connect caught exception: {0}", ex.ToString()));
                     Connected = false;
@@ -405,7 +417,9 @@ namespace VirtualRadar.Library.FlightSimulatorX
         public void RequestAircraftInformation()
         {
             if(_SimConnect.IsInstalled) {
+                #if !__MonoCS__ && !NETCOREAPP
                 _SimConnect.RequestDataOnSimObjectType(RequestId.ReadAircraftInformation, DefinitionId.ReadAircraftInformation, 0, (int)SIMCONNECT_SIMOBJECT_TYPE.USER);
+                #endif
             }
         }
         #endregion
@@ -418,7 +432,9 @@ namespace VirtualRadar.Library.FlightSimulatorX
         public void MoveAircraft(WriteAircraftInformation aircraftInformation)
         {
             if(Connected && _SimConnect.IsInstalled) {
+                #if !__MonoCS__ && !NETCOREAPP
                 _SimConnect.SetDataOnSimObject(DefinitionId.WriteAircraftInformation, (uint)SIMCONNECT_SIMOBJECT_TYPE.USER, (int)SIMCONNECT_DATA_SET_FLAG.DEFAULT, aircraftInformation);
+                #endif
             }
         }
         #endregion

@@ -10,16 +10,6 @@ files, these get written to a text file that is then added to the DLL's resource
 to check at run-time that the files have not been modified.
 
 
-KdTreeLib
-=========
-Home page: https://github.com/codeandcats/KdTree
-Backported from .NET 4 to .NET 3.5, otherwise unchanged.
-
-This is shipped with VRS, VirtualRadar.Library uses it to store the air pressures reported
-from weather stations. It's used to search for the weather station closest to an aircraft's
-position.
-
-
 TypeLite.Net35
 ==============
 Home page: http://type.litesolutions.net/
