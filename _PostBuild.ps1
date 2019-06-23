@@ -14,7 +14,7 @@ function Usage
     exit 1
 }
 
-if([string]::IsNullOrWhiteSpace($solutionDir) -or [string]::IsNullOrWhiteSpace($targetPath)) {
+if([String]::IsNullOrWhiteSpace($solutionDir) -or [String]::IsNullOrWhiteSpace($targetPath)) {
     Usage
 }
 
@@ -41,7 +41,7 @@ foreach($pathPart in $outDir.Split([IO.Path]::DirectorySeparatorChar, [IO.Path]:
     }
 }
 
-$virtualRadarDir = [IO.Path]::Combine($solutionDir, 'VirtualRadar', 'bin', 'x86', $configurationName)
+$virtualRadarDir = [IO.Path]::Combine($solutionDir, 'VirtualRadar', 'bin', $configurationName, 'netcoreapp3.0')
 
 Write-Host ('_PostBuild.ps1 variables:')
 Write-Host ('$configurationName: ' + $configurationName)
@@ -81,7 +81,7 @@ function Copy-File
         }
 
         $destination = $destFolder
-        if(!String.IsNullOrWhiteSpace($destFileName)) {
+        if(![String]::IsNullOrWhiteSpace($destFileName)) {
             $destination = [IO.Path]::Combine($destFolder, $destFilename)
         }
 
@@ -175,7 +175,7 @@ function Copy-PluginWebFolder
         [string] $destWebDir
     )
 
-    if(![string]::IsNullOrWhiteSpace($projectWebDir)) {
+    if(![String]::IsNullOrWhiteSpace($projectWebDir)) {
         $webDir = [IO.Path]::Combine($projectDir, $projectWebDir)
         if([IO.Directory]::Exists($webDir)) {
             $pluginWebDir = [IO.Path]::Combine($pluginDir, $destWebDir)
@@ -228,7 +228,7 @@ function PostBuild-Plugin
         [string] $projectWebAdminDir = 'Web-WebAdmin',
         [string] $destWebAdminDir = 'Web-WebAdmin'
     )
-    if([string]::IsNullOrWhiteSpace($pluginName)) {
+    if([String]::IsNullOrWhiteSpace($pluginName)) {
         $lastDotIdx = $projectName.LastIndexOf('.')
         if($lastDotIdx -eq -1) {
             Write-Host("Cannot extract name of plugin from " + $projectName + ", use -pluginName parameter")
