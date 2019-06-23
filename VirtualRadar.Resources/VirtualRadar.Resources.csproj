@@ -14,4 +14,8 @@
         <FileVersion>3.0.0.0</FileVersion>
     </PropertyGroup>
 
+    <ItemGroup>
+        <EmbeddedResource Include="Images\*.*" />
+    </ItemGroup>
+    
 </Project>

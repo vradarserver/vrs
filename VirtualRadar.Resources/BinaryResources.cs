@@ -47,7 +47,12 @@ namespace VirtualRadar.Resources
             var fullPath = $"VirtualRadar.Resources.{name}";
             var assembly = Assembly.GetExecutingAssembly();
 
-            return assembly.GetManifestResourceStream(fullPath);
+            var result = assembly.GetManifestResourceStream(fullPath);
+            if(result == null) {
+                throw new InvalidOperationException($"There is no resource called {fullPath} in {assembly.FullName}");
+            }
+
+            return result;
         }
     }
 }
