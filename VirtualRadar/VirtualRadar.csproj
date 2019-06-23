@@ -1,186 +1,34 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{11805B5F-027A-4ED6-9491-DC85A3B2462D}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VirtualRadar</RootNamespace>
-    <AssemblyName>VirtualRadar</AssemblyName>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <ApplicationIcon>application.ico</ApplicationIcon>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <DocumentationFile>
-    </DocumentationFile>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <DocumentationFile>bin\x86\Release\VirtualRadar.XML</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup />
-  <ItemGroup>
-    <Reference Include="Microsoft.FlightSimulator.SimConnect, Version=10.0.61259.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dependencies\Microsoft.FlightSimulator.SimConnect.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel.Web" />
-    <Reference Include="System.Speech" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="application.ico" />
-    <Compile Include="ApplicationInformation.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <None Include="app.config" />
-    <None Include="CreateAnyCPUBuild.bat" />
-    <None Include="README.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
-      <Project>{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}</Project>
-      <Name>InterfaceFactory</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SQLiteWrapper\SQLiteWrapper.csproj">
-      <Project>{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}</Project>
-      <Name>SQLiteWrapper.DotNet</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.Database\VirtualRadar.Database.csproj">
-      <Project>{049A9A56-990E-4F99-99F7-CC09767508D9}</Project>
-      <Name>VirtualRadar.Database</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.Headless\VirtualRadar.Headless.csproj">
-      <Project>{573ddcfe-821e-4f58-8e6f-89fa0c0cc879}</Project>
-      <Name>VirtualRadar.Headless</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
-      <Project>{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}</Project>
-      <Name>VirtualRadar.Interface</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.Interop\VirtualRadar.Interop.csproj">
-      <Project>{801d6f1c-21a1-4336-9f32-16d5c16b3c81}</Project>
-      <Name>VirtualRadar.Interop</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.Library\VirtualRadar.Library.csproj">
-      <Project>{4BC834F4-005B-4EF9-BDA4-078C3F1745D3}</Project>
-      <Name>VirtualRadar.Library</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
-      <Project>{FD3E36E1-35EA-46F3-A30B-65CEA7D92B7E}</Project>
-      <Name>VirtualRadar.Localisation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.Owin\VirtualRadar.Owin.csproj">
-      <Project>{a91617bc-3503-4e70-8c66-f5a9a9ff6ae0}</Project>
-      <Name>VirtualRadar.Owin</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.Resources\VirtualRadar.Resources.csproj">
-      <Project>{B74413AC-8898-45DA-B4BD-82E4F9F58D72}</Project>
-      <Name>VirtualRadar.Resources</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.WebServer.HttpListener\VirtualRadar.WebServer.HttpListener.csproj">
-      <Project>{09b103a9-e186-403d-9744-da6144fcd88e}</Project>
-      <Name>VirtualRadar.WebServer.HttpListener</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.WebServer\VirtualRadar.WebServer.csproj">
-      <Project>{368D365B-D45A-439E-B649-0512C395351F}</Project>
-      <Name>VirtualRadar.WebServer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.WebSite\VirtualRadar.WebSite.csproj">
-      <Project>{EACC3459-9586-4977-A664-AE5827699B30}</Project>
-      <Name>VirtualRadar.WebSite</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VirtualRadar.WinForms\VirtualRadar.WinForms.csproj">
-      <Project>{3A1330D8-1E7D-4C70-BA9A-39851389CFFF}</Project>
-      <Name>VirtualRadar.WinForms</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)\CreateAnyCPUBuild.bat" "$(SolutionDir)" "$(ProjectDir)" "$(ConfigurationName)" "$(TargetDir)"</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <Version>3.0.0</Version>
+        <Authors>Andrew Whewell</Authors>
+        <Company>Andrew Whewell</Company>
+        <Description>Virtual Radar Server</Description>
+        <Copyright>Copyright © Andrew Whewell 2009 onwards</Copyright>
+        <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+        <PackageProjectUrl />
+        <AssemblyVersion>3.0.0.0</AssemblyVersion>
+        <FileVersion>3.0.0.0</FileVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj" />
+        <ProjectReference Include="..\SQLiteWrapper\SQLiteWrapper.csproj" />
+        <ProjectReference Include="..\VirtualRadar.Database\VirtualRadar.Database.csproj" />
+        <ProjectReference Include="..\VirtualRadar.Headless\VirtualRadar.Headless.csproj" />
+        <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj" />
+        <ProjectReference Include="..\VirtualRadar.Interop\VirtualRadar.Interop.csproj" />
+        <ProjectReference Include="..\VirtualRadar.Library\VirtualRadar.Library.csproj" />
+        <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj" />
+        <ProjectReference Include="..\VirtualRadar.Owin\VirtualRadar.Owin.csproj" />
+        <ProjectReference Include="..\VirtualRadar.Resources\VirtualRadar.Resources.csproj" />
+        <ProjectReference Include="..\VirtualRadar.WebServer.HttpListener\VirtualRadar.WebServer.HttpListener.csproj" />
+        <ProjectReference Include="..\VirtualRadar.WebServer\VirtualRadar.WebServer.csproj" />
+        <ProjectReference Include="..\VirtualRadar.WebSite\VirtualRadar.WebSite.csproj" />
+        <ProjectReference Include="..\VirtualRadar.WinForms\VirtualRadar.WinForms.csproj" />
+    </ItemGroup>
+
 </Project>
