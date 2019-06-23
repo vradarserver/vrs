@@ -13,7 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.WebServer;
+#if !NETCOREAPP
 using NATUPNPLib;
+#endif
 
 namespace VirtualRadar.WebServer
 {
@@ -22,36 +24,64 @@ namespace VirtualRadar.WebServer
     /// </summary>
     class PortMapping : IPortMapping
     {
+        #if !NETCOREAPP
         /// <summary>
         /// The port mapping object that this object is wrapping.
         /// </summary>
         private IStaticPortMapping _StaticPortMapping;
+        #endif
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Description { get { return _StaticPortMapping.Description; } }
+        public string Description =>
+        #if !NETCOREAPP
+        _StaticPortMapping.Description;
+        #else
+        "";
+        #endif
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public int ExternalPort { get { return _StaticPortMapping.ExternalPort; } }
+        public int ExternalPort =>
+        #if !NETCOREAPP
+        _StaticPortMapping.ExternalPort;
+        #else
+        0;
+        #endif
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string InternalClient { get { return _StaticPortMapping.InternalClient; } }
+        public string InternalClient =>
+        #if !NETCOREAPP
+        _StaticPortMapping.InternalClient;
+        #else
+        "";
+        #endif
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public int InternalPort { get { return _StaticPortMapping.InternalPort; } }
+        public int InternalPort =>
+        #if !NETCOREAPP
+        _StaticPortMapping.InternalPort;
+        #else
+        0;
+        #endif
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Protocol { get { return _StaticPortMapping.Protocol; } }
+        public string Protocol =>
+        #if !NETCOREAPP
+        _StaticPortMapping.Protocol;
+        #else
+        "";
+        #endif
 
+        #if !NETCOREAPP
         /// <summary>
         /// Creates a new object.
         /// </summary>
@@ -60,5 +90,6 @@ namespace VirtualRadar.WebServer
         {
             _StaticPortMapping = staticPortMapping;
         }
+        #endif
     }
 }

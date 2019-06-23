@@ -13,7 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.WebServer;
+#if !NETCOREAPP
 using NATUPNPLib;
+#endif
 using InterfaceFactory;
 using VirtualRadar.Interface.Settings;
 using System.Diagnostics;
@@ -26,7 +28,6 @@ namespace VirtualRadar.WebServer
     /// </summary>
     sealed class DotNetUniversalPlugAndPlayManager : IUniversalPlugAndPlayManager
     {
-        #region Private class - DefaultProvider
         /// <summary>
         /// The default implementation of the provider that abstracts away the environment.
         /// </summary>
@@ -35,14 +36,18 @@ namespace VirtualRadar.WebServer
             /// <summary>
             /// The COM component that this object wraps.
             /// </summary>
+            #if !NETCOREAPP
             private IUPnPNAT _UPnPNAT;
+            #endif
 
             /// <summary>
             /// See interface docs.
             /// </summary>
             public void CreateUPnPComComponent()
             {
+                #if !NETCOREAPP
                 _UPnPNAT = new UPnPNATClass();
+                #endif
             }
 
             /// <summary>
@@ -52,12 +57,14 @@ namespace VirtualRadar.WebServer
             public List<IPortMapping> GetPortMappings()
             {
                 List<IPortMapping> result = null;
+                #if !NETCOREAPP
                 if(_UPnPNAT != null && _UPnPNAT.StaticPortMappingCollection != null) {
                     result = new List<IPortMapping>();
                     foreach(var portMapping in _UPnPNAT.StaticPortMappingCollection.OfType<IStaticPortMapping>()) {
                         result.Add(new PortMapping(portMapping));
                     }
                 }
+                #endif
 
                 return result;
             }
@@ -73,9 +80,11 @@ namespace VirtualRadar.WebServer
             /// <param name="description"></param>
             public void AddMapping(int externalPort, string protocol, int internalPort, string internalClient, bool startEnabled, string description)
             {
+                #if !NETCOREAPP
                 if(_UPnPNAT != null) {
                     _UPnPNAT.StaticPortMappingCollection.Add(externalPort, protocol, internalPort, internalClient, startEnabled, description);
                 }
+                #endif
             }
 
             /// <summary>
@@ -85,12 +94,14 @@ namespace VirtualRadar.WebServer
             /// <param name="protocol"></param>
             public void RemoveMapping(int externalPort, string protocol)
             {
-                if(_UPnPNAT != null) _UPnPNAT.StaticPortMappingCollection.Remove(externalPort, protocol);
+                #if !NETCOREAPP
+                if(_UPnPNAT != null) {
+                    _UPnPNAT.StaticPortMappingCollection.Remove(externalPort, protocol);
+                }
+                #endif
             }
         }
-        #endregion
 
-        #region Fields
         /// <summary>
         /// Gets the description that is used against every port mapping configured by the application.
         /// </summary>
@@ -105,9 +116,7 @@ namespace VirtualRadar.WebServer
         /// The external port that has been read from the configuration.
         /// </summary>
         private int _ExternalPort;
-        #endregion
 
-        #region Properties
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -137,9 +146,7 @@ namespace VirtualRadar.WebServer
         /// See interface docs.
         /// </summary>
         public bool PortForwardingPresent { get; private set; }
-        #endregion
 
-        #region Events exposed
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -153,9 +160,7 @@ namespace VirtualRadar.WebServer
         {
             EventHelper.Raise(StateChanged, this, args);
         }
-        #endregion
 
-        #region Constructor and finaliser
         /// <summary>
         /// Creates a new object.
         /// </summary>
@@ -174,9 +179,7 @@ namespace VirtualRadar.WebServer
         {
             Dispose(false);
         }
-        #endregion
 
-        #region Dispose
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -196,9 +199,7 @@ namespace VirtualRadar.WebServer
                 if(_Initialised) TakeServerOffInternet();
             }
         }
-        #endregion
 
-        #region LoadConfiguration
         /// <summary>
         /// Reads properties from the configuration.
         /// </summary>
@@ -216,9 +217,7 @@ namespace VirtualRadar.WebServer
 
             return result;
         }
-        #endregion
 
-        #region Initialise, PutServerOntoInternet, TakeServerFromInternet
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -319,9 +318,7 @@ namespace VirtualRadar.WebServer
                                                          m.InternalPort == WebServer.Port &&
                                                          m.Protocol == "TCP").Any();
         }
-        #endregion
 
-        #region Events subscribed
         /// <summary>
         /// Called when the configuration changes.
         /// </summary>
@@ -349,6 +346,5 @@ namespace VirtualRadar.WebServer
                 }
             }
         }
-        #endregion
     }
 }
