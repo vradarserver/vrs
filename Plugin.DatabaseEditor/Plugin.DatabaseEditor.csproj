@@ -33,13 +33,28 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="VirtualRadar.Plugin.DatabaseEditor.xml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+        <None Update="VirtualRadar.Plugin.DatabaseEditor.xml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Exec Command="PowerShell.exe -ExecutionPolicy Bypass &quot;$(SolutionDir)_PostBuild.ps1&quot; -solutionDir '$(SolutionDir)' -targetPath '$(TargetPath)'" />
     </Target>
+
+    <ItemGroup>
+        <Compile Update="DatabaseEditorStrings.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>DatabaseEditorStrings.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Update="DatabaseEditorStrings.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>DatabaseEditorStrings.Designer.cs</LastGenOutput>
+            <CustomToolNamespace>VirtualRadar.Plugin.DatabaseEditor</CustomToolNamespace>
+        </EmbeddedResource>
+    </ItemGroup>
 
 </Project>

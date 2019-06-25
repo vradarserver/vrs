@@ -39,4 +39,19 @@
         <Exec Command="PowerShell.exe -ExecutionPolicy Bypass &quot;$(SolutionDir)_PostBuild.ps1&quot; -solutionDir '$(SolutionDir)' -targetPath '$(TargetPath)'" />
     </Target>
 
+    <ItemGroup>
+        <Compile Update="WebAdminStrings.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>WebAdminStrings.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Update="WebAdminStrings.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>WebAdminStrings.Designer.cs</LastGenOutput>
+            <CustomToolNamespace>VirtualRadar.Plugin.WebAdmin</CustomToolNamespace>
+        </EmbeddedResource>
+    </ItemGroup>
+
 </Project>

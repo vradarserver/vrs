@@ -38,4 +38,19 @@
         <Exec Command="PowerShell.exe -ExecutionPolicy Bypass &quot;$(SolutionDir)_PostBuild.ps1&quot; -solutionDir '$(SolutionDir)' -targetPath '$(TargetPath)'" />
     </Target>
 
+    <ItemGroup>
+        <Compile Update="SqlServerStrings.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>SqlServerStrings.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Update="SqlServerStrings.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>SqlServerStrings.Designer.cs</LastGenOutput>
+            <CustomToolNamespace>VirtualRadar.Plugin.SqlServer</CustomToolNamespace>
+        </EmbeddedResource>
+    </ItemGroup>
+
 </Project>

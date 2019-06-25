@@ -19,7 +19,7 @@ namespace VirtualRadar.Localisation {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Strings {
@@ -6873,15 +6873,15 @@ namespace VirtualRadar.Localisation {
         ///========================================
         ///
         ///It is a requirement for most free tile servers that the program does not hard
-        ///code their address and that there is some way to remove support for a
-        ///particular tile server if their operators request it.
+        ///code their address and that there is some way to remove support for a tile
+        ///server if their operators request it.
         ///
         ///To that end VRS downloads a copy of the tile server settings from the SDM site
         ///once a day. The downloaded settings are stored in a file called:
         ///
         ///    TileServerSettings-Downloaded.json.
         ///
-        ///DO NOT CHANGE THE SETTINGS I [rest of string was truncated]&quot;;.
+        ///DO NOT CHANGE THE SETTINGS IN THAT FILE [rest of string was truncated]&quot;;.
         /// </summary>
         public static string TileServerSettings_ReadMe {
             get {

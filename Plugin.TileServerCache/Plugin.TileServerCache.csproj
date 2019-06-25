@@ -39,4 +39,19 @@
         <Exec Command="PowerShell.exe -ExecutionPolicy Bypass &quot;$(SolutionDir)_PostBuild.ps1&quot; -solutionDir '$(SolutionDir)' -targetPath '$(TargetPath)'" />
     </Target>
 
+    <ItemGroup>
+        <Compile Update="TileServerCacheStrings.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>TileServerCacheStrings.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Update="TileServerCacheStrings.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>TileServerCacheStrings.Designer.cs</LastGenOutput>
+            <CustomToolNamespace>VirtualRadar.Plugin.TileServerCache</CustomToolNamespace>
+        </EmbeddedResource>
+    </ItemGroup>
+
 </Project>

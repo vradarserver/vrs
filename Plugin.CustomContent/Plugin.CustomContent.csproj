@@ -37,4 +37,19 @@
         <Exec Command="PowerShell.exe -ExecutionPolicy Bypass &quot;$(SolutionDir)_PostBuild.ps1&quot; -solutionDir '$(SolutionDir)' -targetPath '$(TargetPath)'" />
     </Target>
 
+    <ItemGroup>
+        <Compile Update="CustomContentStrings.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>CustomContentStrings.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Update="CustomContentStrings.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>CustomContentStrings.Designer.cs</LastGenOutput>
+            <CustomToolNamespace>VirtualRadar.Plugin.CustomContent</CustomToolNamespace>
+        </EmbeddedResource>
+    </ItemGroup>
+
 </Project>

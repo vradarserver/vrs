@@ -39,7 +39,7 @@ namespace VirtualRadar.Plugin.TileServerCache {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("VirtualRadar.Plugin.TileServerCache.TileServerCacheStrings", typeof(TileServerCacheStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Plugin.TileServerCache.TileServerCacheStrings", typeof(TileServerCacheStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
