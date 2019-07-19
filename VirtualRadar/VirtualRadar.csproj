@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <TargetFrameworks>netcoreapp3.0;net461</TargetFrameworks>
         <Version>3.0.0</Version>
         <Authors>Andrew Whewell</Authors>
         <Company>Andrew Whewell</Company>
