@@ -41,7 +41,7 @@ the file you will need to paste everything between the //----- lines below:
     "ClassName": null,
     "ExpandoOptions": [],
 
-    /* New settings from version 2.4.5 onwards: */
+    /* New settings from version 2.4.3 onwards: */
     "ErrorTileUrl": null,
     "IsTms": false,
     "IsLayer": false,
@@ -124,13 +124,13 @@ setting called NAME
 BRIGHTNESS AND OPACITY
 ======================
 In the first version of the tile server settings brightness was implied by using
-classes. From version 2.4.5 onwards this is no longer the case, brightness has
+classes. From version 2.4.3 onwards this is no longer the case, brightness has
 its own setting. Brightness values range from 10 (dark) to 100 (full brightness)
 to 150 (50% extra bright) in steps of 10.
 
 Brightness only applies to maps, it does not get used for layers.
 
-Opacity is a new setting in version 2.4.5. It has a range of 0 (transparent) to
+Opacity is a new setting in version 2.4.3. It has a range of 0 (transparent) to
 100 (opaque) in steps of 10. Opacity is only applied to layers, it is not applied
 to maps.
 
