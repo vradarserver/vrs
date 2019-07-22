@@ -31,6 +31,7 @@ namespace VRS
         private _Opacity: number;
         private _Map: IMap;
         private _DisplayOrder: number;      // The ticks when the map was made visible. These can be compared to work out the order in which layers were made visible.
+        private _IsSuppressed: boolean;       // True if this has been suppressed from display for some reason.
 
         //
         // Properties
@@ -55,6 +56,16 @@ namespace VRS
             if(newOpacity !== this._Opacity) {
                 this._Opacity = newOpacity;
                 this.raiseOpacityOverrideChanged();
+            }
+        }
+
+        get IsSuppressed() : boolean { return this._IsSuppressed; }
+        set IsSuppressed(value: boolean) {
+            if(this._IsSuppressed != !!value) {
+                this._IsSuppressed = !!value;
+                if(this.IsSuppressed && this.IsVisible) {
+                    this.hide();
+                }
             }
         }
 
@@ -98,7 +109,7 @@ namespace VRS
         // Visibility methods
         show()
         {
-            if(!this.IsVisible && this._Map) {
+            if(!this.IsVisible && this._Map && !this.IsSuppressed) {
                 this._DisplayOrder = new Date().getTime();
                 this._Map.addLayer(this.TileServerSettings, this.OpacityOverride);
                 this.raiseVisibilityChanged();
@@ -168,6 +179,7 @@ namespace VRS
         private _PersistenceKey = 'vrsMapLayerManager';
         private _ApplyingState = false;
         private _CustomMapLayerSettings: ITileServerSettings[] = [];
+        private _SuppressedMapLayers: string[] = [];
 
         /**
          * Called once to register a map to draw layers on.
@@ -196,6 +208,24 @@ namespace VRS
                     this._CustomMapLayerSettings.push(layerTileServerSettings);
                     this.buildMapLayerSettings();
                     this.loadAndApplyState();
+                }
+            }
+        }
+
+        /**
+         * Suppresses the use / display of a standard layer.
+         * @param layerName
+         */
+        suppressStandardLayer(layerName: string)
+        {
+            if(layerName) {
+                if(VRS.arrayHelper.indexOf(this._SuppressedMapLayers, layerName) === -1) {
+                    this._SuppressedMapLayers.push(layerName);
+
+                    var layerTileServerSettings = VRS.arrayHelper.findFirst(this._MapLayerSettings, (r) => r.Name == layerName);
+                    if(layerTileServerSettings) {
+                        layerTileServerSettings.IsSuppressed = true;
+                    }
                 }
             }
         }
@@ -240,6 +270,14 @@ namespace VRS
                         var opacityOverride = settings.opacityOverrides[mapLayerSetting.Name];
                         if(opacityOverride !== null && opacityOverride !== undefined && !isNaN(opacityOverride) && mapLayerSetting.OpacityOverride !== opacityOverride) {
                             mapLayerSetting.OpacityOverride = opacityOverride;
+                        }
+                    });
+
+                    // Ensure all suppressed layers are flagged as suppressed before showing anything
+                    $.each(this._SuppressedMapLayers, (idx, suppressedMapLayerName) => {
+                        var mapLayer = VRS.arrayHelper.findFirst(this._MapLayerSettings, r => r.Name == suppressedMapLayerName);
+                        if(mapLayer && !mapLayer.IsSuppressed) {
+                            mapLayer.IsSuppressed = true;
                         }
                     });
 

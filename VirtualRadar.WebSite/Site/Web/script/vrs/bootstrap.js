@@ -218,20 +218,22 @@ var VRS;
                         }
                     }
                     $.each(layers, function (idx, layer) {
-                        result.subItems.push(new VRS.MenuItem({
-                            name: 'layer-' + layer.Name,
-                            labelKey: function () { return layer.Name; },
-                            checked: function () { return layer.IsVisible; },
-                            clickCallback: function () { return layer.toggleVisible(); },
-                            showSlider: true,
-                            sliderMinimum: 10,
-                            sliderMaximum: 100,
-                            sliderStep: 10,
-                            sliderInitialValue: function () { return layer.getMapOpacity(); },
-                            sliderDefaultValue: function () { return layer.TileServerSettings.DefaultOpacity; },
-                            sliderCallback: function (value) { return layer.setMapOpacity(value); },
-                            noAutoClose: true
-                        }));
+                        if (!layer.IsSuppressed) {
+                            result.subItems.push(new VRS.MenuItem({
+                                name: 'layer-' + layer.Name,
+                                labelKey: function () { return layer.Name; },
+                                checked: function () { return layer.IsVisible; },
+                                clickCallback: function () { return layer.toggleVisible(); },
+                                showSlider: true,
+                                sliderMinimum: 10,
+                                sliderMaximum: 100,
+                                sliderStep: 10,
+                                sliderInitialValue: function () { return layer.getMapOpacity(); },
+                                sliderDefaultValue: function () { return layer.TileServerSettings.DefaultOpacity; },
+                                sliderCallback: function (value) { return layer.setMapOpacity(value); },
+                                noAutoClose: true
+                            }));
+                        }
                     });
                 }
             }
