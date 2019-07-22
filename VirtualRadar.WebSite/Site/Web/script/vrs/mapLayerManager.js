@@ -56,6 +56,19 @@ var VRS;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(MapLayerSetting.prototype, "IsSuppressed", {
+            get: function () { return this._IsSuppressed; },
+            set: function (value) {
+                if (this._IsSuppressed != !!value) {
+                    this._IsSuppressed = !!value;
+                    if (this.IsSuppressed && this.IsVisible) {
+                        this.hide();
+                    }
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
         MapLayerSetting.prototype.hookVisibilityChanged = function (callback, forceThis) {
             return this._Dispatcher.hook(this._Events.visibilityChanged, callback, forceThis);
         };
@@ -72,7 +85,7 @@ var VRS;
             this._Dispatcher.unhook(hookResult);
         };
         MapLayerSetting.prototype.show = function () {
-            if (!this.IsVisible && this._Map) {
+            if (!this.IsVisible && this._Map && !this.IsSuppressed) {
                 this._DisplayOrder = new Date().getTime();
                 this._Map.addLayer(this.TileServerSettings, this.OpacityOverride);
                 this.raiseVisibilityChanged();
@@ -116,6 +129,7 @@ var VRS;
             this._PersistenceKey = 'vrsMapLayerManager';
             this._ApplyingState = false;
             this._CustomMapLayerSettings = [];
+            this._SuppressedMapLayers = [];
         }
         MapLayerManager.prototype.registerMap = function (map) {
             this._Map = map;
@@ -130,6 +144,17 @@ var VRS;
                     this._CustomMapLayerSettings.push(layerTileServerSettings);
                     this.buildMapLayerSettings();
                     this.loadAndApplyState();
+                }
+            }
+        };
+        MapLayerManager.prototype.suppressStandardLayer = function (layerName) {
+            if (layerName) {
+                if (VRS.arrayHelper.indexOf(this._SuppressedMapLayers, layerName) === -1) {
+                    this._SuppressedMapLayers.push(layerName);
+                    var layerTileServerSettings = VRS.arrayHelper.findFirst(this._MapLayerSettings, function (r) { return r.Name == layerName; });
+                    if (layerTileServerSettings) {
+                        layerTileServerSettings.IsSuppressed = true;
+                    }
                 }
             }
         };
@@ -158,6 +183,12 @@ var VRS;
                         var opacityOverride = settings.opacityOverrides[mapLayerSetting.Name];
                         if (opacityOverride !== null && opacityOverride !== undefined && !isNaN(opacityOverride) && mapLayerSetting.OpacityOverride !== opacityOverride) {
                             mapLayerSetting.OpacityOverride = opacityOverride;
+                        }
+                    });
+                    $.each(this._SuppressedMapLayers, function (idx, suppressedMapLayerName) {
+                        var mapLayer = VRS.arrayHelper.findFirst(_this._MapLayerSettings, function (r) { return r.Name == suppressedMapLayerName; });
+                        if (mapLayer && !mapLayer.IsSuppressed) {
+                            mapLayer.IsSuppressed = true;
                         }
                     });
                     $.each(settings.visibleLayouts, function (idx, visibleLayoutName) {

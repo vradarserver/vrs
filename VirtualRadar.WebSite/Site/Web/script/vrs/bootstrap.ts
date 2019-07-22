@@ -420,20 +420,22 @@ namespace VRS
                     }
 
                     $.each(layers, (idx: number, layer: MapLayerSetting) => {
-                        result.subItems.push(new VRS.MenuItem({
-                            name:               'layer-' + layer.Name,
-                            labelKey:           () => layer.Name,
-                            checked:            () => layer.IsVisible,
-                            clickCallback:      () => layer.toggleVisible(),
-                            showSlider:         true,
-                            sliderMinimum:      10,
-                            sliderMaximum:      100,
-                            sliderStep:         10,
-                            sliderInitialValue: () => layer.getMapOpacity(),
-                            sliderDefaultValue: () => layer.TileServerSettings.DefaultOpacity,
-                            sliderCallback:     (value: number) => layer.setMapOpacity(value),
-                            noAutoClose:        true
-                        }));
+                        if(!layer.IsSuppressed) {
+                            result.subItems.push(new VRS.MenuItem({
+                                name:               'layer-' + layer.Name,
+                                labelKey:           () => layer.Name,
+                                checked:            () => layer.IsVisible,
+                                clickCallback:      () => layer.toggleVisible(),
+                                showSlider:         true,
+                                sliderMinimum:      10,
+                                sliderMaximum:      100,
+                                sliderStep:         10,
+                                sliderInitialValue: () => layer.getMapOpacity(),
+                                sliderDefaultValue: () => layer.TileServerSettings.DefaultOpacity,
+                                sliderCallback:     (value: number) => layer.setMapOpacity(value),
+                                noAutoClose:        true
+                            }));
+                        }
                     });
                 }
             }
