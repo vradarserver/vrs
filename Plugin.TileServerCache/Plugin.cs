@@ -85,7 +85,7 @@ namespace VirtualRadar.Plugin.TileServerCache
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Version => "2.4.0";
+        public string Version => "2.4.3";
 
         private string _Status;
         /// <summary>
