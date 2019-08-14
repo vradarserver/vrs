@@ -83,7 +83,7 @@ var VRS;
             });
         };
         BootstrapReport.prototype.mapCreated = function (pageSettings) {
-            if (VRS.mapLayerManager) {
+            if (VRS.mapLayerManager && pageSettings.mapPlugin) {
                 VRS.mapLayerManager.registerMap(pageSettings.mapPlugin.getMapWrapper());
             }
             if (pageSettings.detailJQ) {
@@ -122,11 +122,13 @@ var VRS;
                 menuItems.push(null);
                 menuItems.push(pageSettings.layoutMenuItem);
             }
-            var mapWrapper = pageSettings.mapPlugin.getMapWrapper();
-            var mapLayersMenu = this.createLayersMenuEntry(pageSettings, mapWrapper, false);
-            if (mapLayersMenu) {
-                menuItems.push(null);
-                menuItems.push(mapLayersMenu);
+            if (pageSettings.mapPlugin) {
+                var mapWrapper = pageSettings.mapPlugin.getMapWrapper();
+                var mapLayersMenu = this.createLayersMenuEntry(pageSettings, mapWrapper, false);
+                if (mapLayersMenu) {
+                    menuItems.push(null);
+                    menuItems.push(mapLayersMenu);
+                }
             }
             menuItems.push(null);
         };

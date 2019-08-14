@@ -207,7 +207,7 @@ namespace VRS
         private mapCreated(pageSettings: PageSettings_Report)
         {
             // Initialise the map layers manager
-            if(VRS.mapLayerManager) {
+            if(VRS.mapLayerManager && pageSettings.mapPlugin) {
                 VRS.mapLayerManager.registerMap(pageSettings.mapPlugin.getMapWrapper());
             }
 
@@ -263,11 +263,13 @@ namespace VRS
                 menuItems.push(pageSettings.layoutMenuItem);
             }
 
-            var mapWrapper = pageSettings.mapPlugin.getMapWrapper();
-            var mapLayersMenu = this.createLayersMenuEntry(pageSettings, mapWrapper, false);
-            if(mapLayersMenu) {
-                menuItems.push(null);
-                menuItems.push(mapLayersMenu);
+            if(pageSettings.mapPlugin) {
+                var mapWrapper = pageSettings.mapPlugin.getMapWrapper();
+                var mapLayersMenu = this.createLayersMenuEntry(pageSettings, mapWrapper, false);
+                if(mapLayersMenu) {
+                    menuItems.push(null);
+                    menuItems.push(mapLayersMenu);
+                }
             }
 
             menuItems.push(null);
