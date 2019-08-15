@@ -198,25 +198,25 @@ var VRS;
             normalFileName: 'WTC-Medium-2-Turbo.png',
             selectedFileName: 'WTC-Medium-2-Turbo-Selected.png',
             size: { width: 40, height: 40 },
-            matches: function (aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Medium && aircraft.countEngines.val !== '4'; }
-        }),
-        new VRS.AircraftMarker({
-            normalFileName: 'WTC-Heavy-4-Jet.png',
-            selectedFileName: 'WTC-Heavy-4-Jet-Selected.png',
-            size: { width: 60, height: 60 },
-            matches: function (aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Heavy && aircraft.countEngines.val === '4'; }
-        }),
-        new VRS.AircraftMarker({
-            normalFileName: 'WTC-Heavy-2-Jet.png',
-            selectedFileName: 'WTC-Heavy-2-Jet-Selected.png',
-            size: { width: 57, height: 57 },
-            matches: function (aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Heavy && aircraft.countEngines.val !== '4'; }
+            matches: function (aircraft) { return (aircraft.countEngines.val < 4 || isNaN(aircraft.countEngines.val)) && aircraft.engineType.val === VRS.EngineType.Turbo; }
         }),
         new VRS.AircraftMarker({
             normalFileName: '4-TurboProp.png',
             selectedFileName: '4-TurboPropSelected.png',
             size: { width: 40, height: 40 },
-            matches: function (aircraft) { return aircraft.countEngines.val === '4' && aircraft.engineType.val === VRS.EngineType.Turbo; }
+            matches: function (aircraft) { return aircraft.engineType.val === VRS.EngineType.Turbo; }
+        }),
+        new VRS.AircraftMarker({
+            normalFileName: 'WTC-Heavy-2-Jet.png',
+            selectedFileName: 'WTC-Heavy-2-Jet-Selected.png',
+            size: { width: 57, height: 57 },
+            matches: function (aircraft) { return (aircraft.countEngines.val < 4 || isNaN(aircraft.countEngines.val)) && aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Heavy; }
+        }),
+        new VRS.AircraftMarker({
+            normalFileName: 'WTC-Heavy-4-Jet.png',
+            selectedFileName: 'WTC-Heavy-4-Jet-Selected.png',
+            size: { width: 60, height: 60 },
+            matches: function (aircraft) { return aircraft.wakeTurbulenceCat.val === VRS.WakeTurbulenceCategory.Heavy; }
         }),
         new VRS.AircraftMarker({
             normalFileName: 'Airplane.png',
