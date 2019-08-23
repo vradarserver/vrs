@@ -42,6 +42,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="InterfaceFactory, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWhewell.InterfaceFactory.4.0.0\lib\net35\InterfaceFactory.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.FlightSimulator.SimConnect">
       <HintPath>..\Dependencies\Microsoft.FlightSimulator.SimConnect.dll</HintPath>
       <Private>True</Private>
@@ -200,10 +203,6 @@
     <Compile Include="XmlSerialiser.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
-      <Project>{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}</Project>
-      <Name>InterfaceFactory</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ThirdParty\KdTreeLib\KdTreeLib.csproj">
       <Project>{68c8066d-7844-41c2-993d-3160798164d1}</Project>
       <Name>KdTreeLib</Name>
@@ -222,6 +221,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

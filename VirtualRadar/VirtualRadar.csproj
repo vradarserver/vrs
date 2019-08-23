@@ -60,6 +60,9 @@
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
+    <Reference Include="InterfaceFactory, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWhewell.InterfaceFactory.4.0.0\lib\net35\InterfaceFactory.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.FlightSimulator.SimConnect, Version=10.0.61259.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Dependencies\Microsoft.FlightSimulator.SimConnect.dll</HintPath>
@@ -94,12 +97,9 @@
     </Compile>
     <None Include="app.config" />
     <None Include="CreateAnyCPUBuild.bat" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
-      <Project>{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}</Project>
-      <Name>InterfaceFactory</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SQLiteWrapper.DotNet\SQLiteWrapper.DotNet.csproj">
       <Project>{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}</Project>
       <Name>SQLiteWrapper.DotNet</Name>
