@@ -40,6 +40,9 @@
     <ApplicationIcon>application.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="InterfaceFactory, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWhewell.InterfaceFactory.4.0.0\lib\net40\InterfaceFactory.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
@@ -77,15 +80,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="application.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
-      <Project>{6ad23cd7-fb9f-448e-85ea-cb5aaa4e9fee}</Project>
-      <Name>InterfaceFactory</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SQLiteWrapper.DotNet\SQLiteWrapper.DotNet.csproj">
       <Project>{ddf2a51a-4ab8-4338-94ae-6320637ae3d7}</Project>
       <Name>SQLiteWrapper.DotNet</Name>

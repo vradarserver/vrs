@@ -39,6 +39,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="InterfaceFactory, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWhewell.InterfaceFactory.4.0.0\lib\net40\InterfaceFactory.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -139,10 +142,6 @@
     <TypeScriptCompile Include="Web\WebAdmin\Statistics.ts" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
-      <Project>{6ad23cd7-fb9f-448e-85ea-cb5aaa4e9fee}</Project>
-      <Name>InterfaceFactory</Name>
-    </ProjectReference>
     <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
       <Project>{8ef81105-f45d-4edb-996c-de7d5644b1e7}</Project>
       <Name>VirtualRadar.Interface</Name>

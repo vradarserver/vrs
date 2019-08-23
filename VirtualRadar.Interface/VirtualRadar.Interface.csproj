@@ -39,6 +39,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="InterfaceFactory, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWhewell.InterfaceFactory.4.0.0\lib\net40\InterfaceFactory.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
       <Private>True</Private>
@@ -614,10 +617,6 @@
     <Compile Include="WebSite\TrailType.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
-      <Project>{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}</Project>
-      <Name>InterfaceFactory</Name>
-    </ProjectReference>
     <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
       <Project>{FD3E36E1-35EA-46F3-A30B-65CEA7D92B7E}</Project>
       <Name>VirtualRadar.Localisation</Name>

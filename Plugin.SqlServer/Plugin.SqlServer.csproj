@@ -51,6 +51,9 @@
     <Reference Include="Dapper, Version=1.50.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.1.50.4\lib\net451\Dapper.dll</HintPath>
     </Reference>
+    <Reference Include="InterfaceFactory, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWhewell.InterfaceFactory.4.0.0\lib\net40\InterfaceFactory.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -102,10 +105,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
-      <Project>{6ad23cd7-fb9f-448e-85ea-cb5aaa4e9fee}</Project>
-      <Name>InterfaceFactory</Name>
-    </ProjectReference>
     <ProjectReference Include="..\VirtualRadar.Database\VirtualRadar.Database.csproj">
       <Project>{049a9a56-990e-4f99-99f7-cc09767508d9}</Project>
       <Name>VirtualRadar.Database</Name>

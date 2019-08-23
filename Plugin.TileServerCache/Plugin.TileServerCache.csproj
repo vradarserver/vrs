@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="InterfaceFactory, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWhewell.InterfaceFactory.4.0.0\lib\net40\InterfaceFactory.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
@@ -104,10 +107,6 @@
     <None Include="Typings\WebAdminModels.tst" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
-      <Project>{6ad23cd7-fb9f-448e-85ea-cb5aaa4e9fee}</Project>
-      <Name>InterfaceFactory</Name>
-    </ProjectReference>
     <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
       <Project>{8ef81105-f45d-4edb-996c-de7d5644b1e7}</Project>
       <Name>VirtualRadar.Interface</Name>

@@ -34,6 +34,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="InterfaceFactory, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWhewell.InterfaceFactory.4.0.0\lib\net40\InterfaceFactory.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Data.Sqlite">
       <HintPath>..\Dependencies\MonoBuilds\Mono.Data.Sqlite.dll</HintPath>
     </Reference>
@@ -63,10 +66,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InterfaceFactory\InterfaceFactory.csproj">
-      <Project>{6AD23CD7-FB9F-448E-85EA-CB5AAA4E9FEE}</Project>
-      <Name>InterfaceFactory</Name>
-    </ProjectReference>
     <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
       <Project>{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}</Project>
       <Name>VirtualRadar.Interface</Name>
@@ -74,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
