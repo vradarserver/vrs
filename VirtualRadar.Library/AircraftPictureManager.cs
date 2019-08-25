@@ -157,7 +157,7 @@ namespace VirtualRadar.Library
                 try {
                     result = Image.FromFile(fileName);
                 } catch(Exception ex) {
-                    if(_Log == null) _Log = Factory.Resolve<ILog>().Singleton;
+                    if(_Log == null) _Log = Factory.ResolveSingleton<ILog>();
                     _Log.WriteLine("AircraftPictureManager caught an exception while loading {0}: {1}", fileName, ex.ToString());
                 }
             }

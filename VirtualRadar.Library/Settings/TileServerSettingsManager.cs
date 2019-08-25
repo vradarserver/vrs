@@ -135,7 +135,7 @@ namespace VirtualRadar.Library.Settings
                 }
                 messageBuffer.AppendLine(msg);
 
-                var log = Factory.Resolve<ILog>().Singleton;
+                var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine($"Caught exception while {describeAction} at startup: {Describe.ExceptionMultiLine(ex)}");
             }
         }
@@ -249,7 +249,7 @@ namespace VirtualRadar.Library.Settings
                     settings = downloader.Download(timeoutSeconds);
                     LastDownloadUtc = DateTime.UtcNow;
                 } catch(WebException ex) {
-                    var log = Factory.Resolve<ILog>().Singleton;
+                    var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine("Caught exception downloading new tile server settings: {0}", Describe.ExceptionMultiLine(ex));
                     settings = null;
                 }

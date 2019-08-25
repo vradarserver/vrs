@@ -430,7 +430,7 @@ namespace VirtualRadar.Library
             } catch(ThreadAbortException) {
                 // Gets rethrown
             } catch(Exception ex) {
-                var log = Factory.Resolve<ILog>().Singleton;
+                var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception during application of online lookup aircraft: {0}", ex.ToString());
             }
         }
@@ -454,7 +454,7 @@ namespace VirtualRadar.Library
             } catch(ThreadAbortException) {
                 // Will automatically get re-thrown - we don't want these logged
             } catch(Exception ex) {
-                var log = Factory.Resolve<ILog>().Singleton;
+                var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception during refresh of aircraft database detail: {0}", ex.ToString());
             }
         }
@@ -471,7 +471,7 @@ namespace VirtualRadar.Library
             } catch(ThreadAbortException) {
                 // Will automatically get re-thrown - we don't want these logged
             } catch(Exception ex) {
-                var log = Factory.Resolve<ILog>().Singleton;
+                var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception during refresh of aircraft database detail: {0}", ex.ToString());
             }
         }
@@ -488,7 +488,7 @@ namespace VirtualRadar.Library
             } catch(ThreadAbortException) {
                 // Will automatically get re-thrown - we don't want these logged
             } catch(Exception ex) {
-                var log = Factory.Resolve<ILog>().Singleton;
+                var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception during refresh of aircraft database detail: {0}", ex.ToString());
             }
         }
@@ -506,7 +506,7 @@ namespace VirtualRadar.Library
             } catch(ThreadAbortException) {
                 // Will automatically get re-thrown - we don't want these logged
             } catch(Exception ex) {
-                var log = Factory.Resolve<ILog>().Singleton;
+                var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception during refresh of aircraft pictures: {0}", ex.ToString());
             }
         }
@@ -531,7 +531,7 @@ namespace VirtualRadar.Library
             } catch(ThreadAbortException) {
                 // Will automatically get re-thrown - we don't want these logged
             } catch(Exception ex) {
-                var log = Factory.Resolve<ILog>().Singleton;
+                var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception during refetch of aircraft type codes: {0}", ex.ToString());
             }
         }
@@ -558,7 +558,7 @@ namespace VirtualRadar.Library
             if(!_LoggedPictureLookupException) {
                 lock(_PictureLookupResultsSyncLock) {
                     if(!_LoggedPictureLookupException) {
-                        var log = Factory.Resolve<ILog>().Singleton;
+                        var log = Factory.ResolveSingleton<ILog>();
                         if(log != null) {
                             _LoggedPictureLookupException = true;
                             log.WriteLine("Caught exception during fetch of aircraft picture: {0}", ex.ToString());

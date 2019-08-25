@@ -325,7 +325,7 @@ namespace VirtualRadar.Library.Presenter
                     }
                 } catch(ThreadAbortException) {
                 } catch(Exception ex) {
-                    var log = Factory.Resolve<ILog>().Singleton;
+                    var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine("Caught exception while fetching online lookup provider details: {0}", ex);
                 }
             } catch {

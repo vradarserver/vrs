@@ -309,41 +309,32 @@ namespace Test.Framework
 
         #region Moq helpers
         /// <summary>
-        /// Creates a Moq mock object for a type that implements <see cref="ISingleton{T}"/>.
+        /// Creates a Moq mock object for a type that implements <see cref="ISingleton{T}"/> or the Singleton attribute.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        /// <remarks><para>
-        /// The application has adopted the idea that singletons are denoted by the <see cref="ISingleton{T}"/> interface. This
-        /// declares a property which returns the same singleton reference regardless of the instance that it's called from. We
-        /// need to make sure that any tests will pick up the accidental use of a private instance of the class. For example we
-        /// want to make sure that if the user does this:
-        /// </para><code>
-        /// var log = Factory.Resolve&lt;ILog&gt;();
-        /// log.DoSomething();
-        /// </code><para>
-        /// instead of this:
-        /// </para><code>
-        /// var log = Factory.Resolve&lt;ILog&gt;().Singleton;
-        /// log.DoSomething();
-        /// </code><para>
-        /// then the test will throw an exception. We do this by creating a strict mock that only has Singleton setup for it, so any
-        /// call on it other than to read Singleton will cause the mock to throw an exception and fail the test. This strict mock is
-        /// then registered with the class factory.
-        /// </para><para>
-        /// The Singleton property of the strict mock is then set up to return a friendly mock, and it is this mock that gets returned
-        /// by the method. The test can configure this mock with the correct behaviour and rest assured that the code under test
-        /// could only get a reference to this mock by asking the class factory to resolve the interface and then reading the Singleton
-        /// property of the object that the class factory dished up.
-        /// </para>
-        /// </remarks>
         public static Mock<T> CreateMockSingleton<T>()
             where T: class
         {
-            if(!typeof(ISingleton<T>).IsAssignableFrom(typeof(T))) throw new InvalidOperationException(String.Format("{0} does not implement {1}", typeof(T).Name, typeof(ISingleton<>).Name));
+            if(typeof(T).GetCustomAttributes(typeof(SingletonAttribute), inherit: false).Length > 0) {
+                return CreateMockSingletonAttribute<T>();
+            } else if(typeof(ISingleton<T>).IsAssignableFrom(typeof(T))) {
+                return CreateMockSingletonInterface<T>();
+            } else {
+                throw new InvalidOperationException($"{nameof(T)} neither implements ISingleton<> or is tagged as a Singleton");
+            }
+        }
 
-            Mock<T> result = new Mock<T>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
-            Mock<T> strict = new Mock<T>(MockBehavior.Strict);
+        private static Mock<T> CreateMockSingletonInterface<T>()
+            where T: class
+        {
+            #pragma warning disable 0618
+            if(!typeof(ISingleton<T>).IsAssignableFrom(typeof(T))) {
+                throw new InvalidOperationException($"{typeof(T).Name} does not implement {typeof(ISingleton<>).Name}");
+            }
+
+            var result = new Mock<T>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+            var strict = new Mock<T>(MockBehavior.Strict);
 
             var parameter = Expression.Parameter(typeof(ISingleton<T>));
             var body = Expression.Property(parameter, "Singleton");
@@ -351,6 +342,16 @@ namespace Test.Framework
             strict.Setup(lambda).Returns(result.Object);
 
             Factory.RegisterInstance(typeof(T), strict.Object);
+            #pragma warning restore
+
+            return result;
+        }
+
+        private static Mock<T> CreateMockSingletonAttribute<T>()
+            where T: class
+        {
+            var result = CreateMockInstance<T>();
+            Factory.RegisterInstance<T>(result.Object);
 
             return result;
         }

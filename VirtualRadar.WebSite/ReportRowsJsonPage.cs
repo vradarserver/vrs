@@ -211,7 +211,7 @@ namespace VirtualRadar.WebSite
                     if(json != null) json.GroupBy = parameters.SortField1 ?? parameters.SortField2 ?? "";
                 } catch(Exception ex) {
                     Debug.WriteLine(String.Format("ReportRowsJsonPage.DoHandleRequest caught exception {0}", ex.ToString()));
-                    ILog log = Factory.Resolve<ILog>().Singleton;
+                    ILog log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine("An exception was encountered during the processing of a report: {0}", ex.ToString());
                     if(json == null) json = (ReportRowsJson)Activator.CreateInstance(expectedJsonType);
                     json.ErrorText = String.Format("An exception was encounted during the processing of the report, see log for full details: {0}", ex.Message);
@@ -534,7 +534,7 @@ namespace VirtualRadar.WebSite
                     }
                 } catch(Exception ex) {
                     try {
-                        var log = Factory.Resolve<ILog>().Singleton;
+                        var log = Factory.ResolveSingleton<ILog>();
                         log.WriteLine("Caught exception when fetching picture for {0}/{1} for a report: {2}", aircraft.ModeS, aircraft.Registration, ex.ToString());
                     } catch {
                     }

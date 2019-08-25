@@ -250,7 +250,7 @@ namespace VirtualRadar
                         try {
                             plugin.GuiThreadStartup();
                         } catch(Exception ex) {
-                            var log = Factory.Resolve<ILog>().Singleton;
+                            var log = Factory.ResolveSingleton<ILog>();
                             log.WriteLine("Caught exception in {0} plugin while calling GuiThreadStartup: {1}", plugin.Name, ex);
                         }
                     }
@@ -305,7 +305,7 @@ namespace VirtualRadar
         {
             if(_MainView != null) _MainView.BubbleExceptionToGui(args.Value);
             else {
-                var log = Factory.Resolve<ILog>().Singleton;
+                var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("Unhandled exception caught in BaseStationAircraftList before GUI available to show to user: {0}", args.Value.ToString());
             }
         }
@@ -324,7 +324,7 @@ namespace VirtualRadar
 
                 ILog log = null;
                 try {
-                    log = Factory.Resolve<ILog>().Singleton;
+                    log = Factory.ResolveSingleton<ILog>();
                     if(log != null) log.WriteLine(message);
                 } catch { }
 

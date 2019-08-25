@@ -193,7 +193,7 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.SplashScreenInitialisingLog);
 
-            var log = Factory.Resolve<ILog>().Singleton;
+            var log = Factory.ResolveSingleton<ILog>();
             var applicationInformation = Factory.Resolve<IApplicationInformation>();
             log.Truncate(100);
             log.WriteLine("Program started, version {0}, build date {1} UTC", applicationInformation.FullVersion, applicationInformation.BuildDate);
@@ -300,7 +300,7 @@ namespace VirtualRadar.Library.Presenter
                 var standingDataManager = Factory.Resolve<IStandingDataManager>().Singleton;
                 standingDataManager.Load();
             } catch(Exception ex) {
-                var log = Factory.Resolve<ILog>().Singleton;
+                var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("Exception caught during load of standing data: {0}", ex.ToString());
             }
 
@@ -374,7 +374,7 @@ namespace VirtualRadar.Library.Presenter
 
         private void ReportWebServerStartupFailure(IWebServer webServer, Exception ex)
         {
-            Factory.Resolve<ILog>().Singleton.WriteLine("Caught exception when starting web server: {0}", ex.ToString());
+            Factory.ResolveSingleton<ILog>().WriteLine("Caught exception when starting web server: {0}", ex.ToString());
             _View.ReportProblem(String.Format(Strings.CannotStartWebServerFull, webServer.Port), Strings.CannotStartWebServerTitle, false);
             _View.ReportProblem(Strings.SuggestUseDifferentPortFull, Strings.SuggestUseDifferentPortTitle, false);
         }
@@ -438,7 +438,7 @@ namespace VirtualRadar.Library.Presenter
                     }
                 } catch(Exception ex) {
                     Debug.WriteLine(String.Format("MainPresenter.StartPlugins caught exception: {0}", ex.ToString()));
-                    Factory.Resolve<ILog>().Singleton.WriteLine("Caught exception when starting {0}: {1}", plugin.Name, ex.ToString());
+                    Factory.ResolveSingleton<ILog>().WriteLine("Caught exception when starting {0}: {1}", plugin.Name, ex.ToString());
                     _View.ReportProblem(String.Format(Strings.PluginThrewExceptionFull, plugin.Name, ex.Message), Strings.PluginThrewExceptionTitle, false);
                 }
             }

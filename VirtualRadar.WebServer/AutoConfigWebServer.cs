@@ -168,7 +168,7 @@ namespace VirtualRadar.WebServer
                     }
                 } catch(Exception ex) {
                     Debug.WriteLine(String.Format("AutoConfigWebServer.Heartbeat_SlowTick caught exception {0}", ex.ToString()));
-                    var log = Factory.Resolve<ILog>().Singleton;
+                    var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine("Exception caught during fetch of external IP address: {0}", ex.ToString());
                 }
             }

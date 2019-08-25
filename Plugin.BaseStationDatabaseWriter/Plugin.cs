@@ -445,7 +445,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                         } catch(Exception ex) {
                             AbandonSession(ex, PluginStrings.ExceptionCaughtWhenStartingSession);
                             Debug.WriteLine(String.Format("BaseStationDatabaseWriter.Plugin.StartSession caught exception {0}", ex.ToString()));
-                            Factory.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on starting session: {0}", ex.ToString());
+                            Factory.ResolveSingleton<ILog>().WriteLine("Database writer plugin caught exception on starting session: {0}", ex.ToString());
                         }
                     }
                 }
@@ -471,7 +471,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                     } catch(Exception ex) {
                         AbandonSession(ex, PluginStrings.ExceptionCaughtWhenClosingSession, Status);
                         Debug.WriteLine(String.Format("BaseStationDatabaseWriter.Plugin.EndSession caught exception {0}", ex.ToString()));
-                        Factory.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on closing session: {0}", ex.ToString());
+                        Factory.ResolveSingleton<ILog>().WriteLine("Database writer plugin caught exception on closing session: {0}", ex.ToString());
                     } finally {
                         _Session = null;
                         _OnlineLookupCache.Enabled = false;
@@ -913,7 +913,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
             } catch(Exception ex) {
                 AbandonSession(ex, PluginStrings.ExceptionCaughtWhenProcessingMessage);
                 Debug.WriteLine(String.Format("BaseStationDatabaseWriter.Plugin.MessageRelay_MessageReceived caught exception {0}", ex.ToString()));
-                Factory.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on message processing: {0}", ex.ToString());
+                Factory.ResolveSingleton<ILog>().WriteLine("Database writer plugin caught exception on message processing: {0}", ex.ToString());
             }
         }
 
@@ -944,7 +944,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                     StatusDescription = PluginStrings.DatabaseLocked;
                 } else {
                     Debug.WriteLine(String.Format("BaseStationDatabaseWriter.Plugin.Heartbeat_SlowTick caught exception {0}", ex.ToString()));
-                    Factory.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on flushing old flights: {0}", ex.ToString());
+                    Factory.ResolveSingleton<ILog>().WriteLine("Database writer plugin caught exception on flushing old flights: {0}", ex.ToString());
                     StatusDescription = String.Format(PluginStrings.ExceptionCaught, ex.Message);
                 }
             }

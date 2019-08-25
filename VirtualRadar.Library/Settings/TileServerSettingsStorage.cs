@@ -134,7 +134,7 @@ namespace VirtualRadar.Library.Settings
                     if(!isCustom) {
                         throw;
                     }
-                    var log = Factory.Resolve<ILog>().Singleton;
+                    var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine("Caught exception parsing {0}: {1}", fullPath, ex.ToString());
                 }
             }

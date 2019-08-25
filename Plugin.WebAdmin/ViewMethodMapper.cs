@@ -345,7 +345,7 @@ namespace VirtualRadar.Plugin.WebAdmin
                             }
                         } catch(Exception ex) {
                             try {
-                                var log = Factory.Resolve<ILog>().Singleton;
+                                var log = Factory.ResolveSingleton<ILog>();
                                 log.WriteLine("Caught exception during processing of request for {0}: {1}", args.Request.RawUrl, ex);
                             } catch {}
                             response.Exception = ex.Message;
@@ -386,7 +386,7 @@ namespace VirtualRadar.Plugin.WebAdmin
                         response.Response = deferredMethod.ExposedMethod.MethodInfo.Invoke(deferredMethod.MappedView.View, deferredMethod.Parameters);
                     } catch(Exception ex) {
                         try {
-                            var log = Factory.Resolve<ILog>().Singleton;
+                            var log = Factory.ResolveSingleton<ILog>();
                             log.WriteLine("Caught exception during processing of deferred request for {0}.{1}: {2}",
                                 deferredMethod.MappedView.View.GetType().Name,
                                 deferredMethod.ExposedMethod.MethodInfo.Name,
@@ -572,7 +572,7 @@ namespace VirtualRadar.Plugin.WebAdmin
                     System.Diagnostics.Debug.WriteLine(String.Format("View {0} terminated", mappedView.ViewId));
                 } catch {
                     try {
-                        var log = Factory.Resolve<ILog>().Singleton;
+                        var log = Factory.ResolveSingleton<ILog>();
                         log.WriteLine("Caught exception while disposing of multi-instance view {0}", mappedView.View.GetType().Name);
                     } catch {
                     }
@@ -627,7 +627,7 @@ namespace VirtualRadar.Plugin.WebAdmin
             var threshold = DateTime.UtcNow.AddMinutes(-CleanUpDeferredExecutionsIntervalMinutes);
             var removeList = _DeferredMethods.Where(r => r.Value.CreatedUtc <= threshold).Select(r => r.Key).ToArray();
             if(removeList.Length > 0) {
-                var log = Factory.Resolve<ILog>().Singleton;
+                var log = Factory.ResolveSingleton<ILog>();
 
                 foreach(var removeKey in removeList) {
                     var value = _DeferredMethods[removeKey];

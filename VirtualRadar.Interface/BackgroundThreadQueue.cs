@@ -317,7 +317,7 @@ namespace VirtualRadar.Interface
             } catch(ThreadAbortException) {
             } catch(Exception ex) {
                 try {
-                    var log = Factory.Resolve<ILog>().Singleton;
+                    var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine("Caught exception in BackgroundThreadMethod for queue {0}: {1}", _QueueName, ex);
                 } catch {
                 }
@@ -466,7 +466,7 @@ namespace VirtualRadar.Interface
             } catch(ThreadAbortException) {
             } catch(Exception ex) {
                 try {
-                    var log = Factory.Resolve<ILog>().Singleton;
+                    var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine("Caught exception in CallProcessObjectFromThreadPool for queue {0}: {1}", _QueueName, ex);
                 } catch {
                 }

@@ -116,7 +116,7 @@ namespace VirtualRadar.Library
         /// </summary>
         public void LoadPlugins()
         {
-            var log = Factory.Resolve<ILog>().Singleton;
+            var log = Factory.ResolveSingleton<ILog>();
             var manifestStorage = Factory.Resolve<IPluginManifestStorage>();
             var applicationVersion = Factory.Resolve<IApplicationInformation>().Version;
 

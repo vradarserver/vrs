@@ -123,7 +123,7 @@ namespace VirtualRadar.Library.Presenter
                     canSave = false;
                 } catch(Exception ex) {
                     Debug.WriteLine(String.Format("ConnectionClientLogPresenter.LookupReverseDNS caught exception: {0}", ex.ToString()));
-                    var log = Factory.Resolve<ILog>().Singleton;
+                    var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine("{0}: {1}", Strings.CaughtExceptionInReverseDNS, ex.ToString());
                     canSave = false;
                 }

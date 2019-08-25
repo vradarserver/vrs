@@ -82,11 +82,10 @@ namespace VirtualRadar.Library
         /// </summary>
         public ILogProvider Provider { get; set; }
 
-        private static readonly ILog _Singleton = new Log();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public ILog Singleton { get { return _Singleton; } }
+        public ILog Singleton => Factory.ResolveSingleton<ILog>();
 
         private string _FileName;
         /// <summary>

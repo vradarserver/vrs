@@ -66,17 +66,6 @@ namespace Test.VirtualRadar.Library
 
         #region Constructors and properties
         [TestMethod]
-        public void Log_Singleton_Returns_Constant_Instance()
-        {
-            var log1 = Factory.Resolve<ILog>();
-            var log2 = Factory.Resolve<ILog>();
-
-            Assert.AreNotSame(log1, log2);
-            Assert.IsNotNull(log1.Singleton);
-            Assert.AreSame(log1.Singleton, log2.Singleton);
-        }
-
-        [TestMethod]
         public void Log_FileName_Contains_Correct_String()
         {
             Assert.AreEqual(_FullPath, _Log.FileName, true);

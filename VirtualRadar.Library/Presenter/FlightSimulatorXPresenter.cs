@@ -428,7 +428,7 @@ namespace VirtualRadar.Library.Presenter
                 _TimeLastFsxExceptionRaised = now;
                 throw args.Value;
             } else {
-                var log = Factory.Resolve<ILog>().Singleton;
+                var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("FSX exception seen within 20 seconds of the last one: {0}", args.Value.Message);
             }
         }

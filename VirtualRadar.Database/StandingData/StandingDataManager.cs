@@ -290,7 +290,7 @@ namespace VirtualRadar.Database.StandingData
         private void LoadOverrides()
         {
             var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
-            var log = Factory.Resolve<ILog>().Singleton;
+            var log = Factory.ResolveSingleton<ILog>();
 
             var codeBlocksFileName = Path.Combine(configurationStorage.Folder, "LocalAircraft.txt");
             if(Provider.FileExists(codeBlocksFileName)) LoadCodeBlocksOverrides(codeBlocksFileName, log);

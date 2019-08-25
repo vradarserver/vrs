@@ -28,7 +28,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         public string[] LogLines
         {
             get {
-                var log = Factory.Resolve<ILog>().Singleton;
+                var log = Factory.ResolveSingleton<ILog>();
                 return log.GetContent(0);
             }
         }

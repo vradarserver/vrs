@@ -275,7 +275,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// <returns></returns>
         private string LogException(Exception ex, string logMessage)
         {
-            var log = Factory.Resolve<ILog>().Singleton;
+            var log = Factory.ResolveSingleton<ILog>();
             log.WriteLine(logMessage);
 
             return ex.Message;

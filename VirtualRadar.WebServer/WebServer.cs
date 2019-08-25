@@ -667,7 +667,7 @@ namespace VirtualRadar.WebServer
                         OnRequestFinished(new EventArgs<long>(requestReceivedEventArgsId));
                     }
                 } catch(Exception ex) {
-                    var log = Factory.Resolve<ILog>().Singleton;
+                    var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine("Caught exception in RequestFinished event handler: {0}", ex);
                 }
             }

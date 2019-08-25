@@ -149,7 +149,7 @@ namespace VirtualRadar.Library.Presenter
         {
             if(view == null) throw new ArgumentNullException("view");
             View = view;
-            View.LogFileName = Factory.Resolve<ILog>().Singleton.FileName;
+            View.LogFileName = Factory.ResolveSingleton<ILog>().FileName;
             View.InvalidPluginCount = Factory.Resolve<IPluginManager>().Singleton.IgnoredPlugins.Count;
 
             var heartbeatService = Factory.Resolve<IHeartbeatService>().Singleton;
@@ -233,7 +233,7 @@ namespace VirtualRadar.Library.Presenter
         {
             var configuration = _SharedConfiguration.Get();
             var now = _Clock.UtcNow;
-            var log = Factory.Resolve<ILog>().Singleton;
+            var log = Factory.ResolveSingleton<ILog>();
 
             try {
                 PerformVersionCheck(configuration, now);

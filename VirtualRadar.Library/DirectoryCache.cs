@@ -309,7 +309,7 @@ namespace VirtualRadar.Library
         protected virtual void OnCacheChanged(EventArgs args)
         {
             EventHelper.Raise(CacheChanged, this, args, ex => {
-                var log = Factory.Resolve<ILog>().Singleton;
+                var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception in CacheChanged event handler (folder is {0}): {1}", Folder, ex.ToString());
             });
         }
@@ -507,7 +507,7 @@ namespace VirtualRadar.Library
 
                     newCacheState.LastFetchTime = _Clock.UtcNow;
                 } catch(Exception ex) {
-                    Factory.Resolve<ILog>().Singleton.WriteLine("Caught exception while reading filenames from {0}: {1}", folder, ex.ToString());
+                    Factory.ResolveSingleton<ILog>().WriteLine("Caught exception while reading filenames from {0}: {1}", folder, ex.ToString());
                 } finally {
                     lock(_SyncLock) {
                         _Cache = newCache;

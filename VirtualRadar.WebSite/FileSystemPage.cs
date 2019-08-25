@@ -307,7 +307,7 @@ namespace VirtualRadar.WebSite
                     var isHtml = ".html".Equals(extension, StringComparison.OrdinalIgnoreCase) || ".htm".Equals(extension, StringComparison.OrdinalIgnoreCase);
 
                     if(isProtected && !requestFile.Root.TestChecksum(checksumEntry, requestFile.FileName)) {
-                        Factory.Resolve<ILog>().Singleton.WriteLine("Will not serve {0}, it has failed the checksum test", args.PathAndFile);
+                        Factory.ResolveSingleton<ILog>().WriteLine("Will not serve {0}, it has failed the checksum test", args.PathAndFile);
                         if(!isHtml) {
                             args.Response.StatusCode = HttpStatusCode.BadRequest;
                         } else {

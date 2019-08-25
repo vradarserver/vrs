@@ -329,7 +329,7 @@ namespace VirtualRadar.Library
                         missingIcaos.Clear();
                         fetchFailed = false;
 
-                        var log = Factory.Resolve<ILog>().Singleton;
+                        var log = Factory.ResolveSingleton<ILog>();
                         log.WriteLine("AircraftOnlineLookup caught exception: {0}", ex.ToString());
                     }
 

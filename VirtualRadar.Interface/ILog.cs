@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
@@ -28,6 +29,7 @@ namespace VirtualRadar.Interface
     /// log.WriteLine("This will be written to the program log");
     /// </code>
     /// </example>
+    [Singleton]
     public interface ILog : ISingleton<ILog>
     {
         /// <summary>

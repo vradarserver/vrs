@@ -158,7 +158,7 @@ namespace VirtualRadar.Library
             } catch(ThreadAbortException) {
             } catch(Exception ex) {
                 try {
-                    var log = Factory.Resolve<ILog>().Singleton;
+                    var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine("Caught exception in DownloadAirPressuresOnBackgroundThread: {0}", ex.ToString());
                 } catch {
                 }
