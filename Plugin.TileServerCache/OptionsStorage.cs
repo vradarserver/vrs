@@ -35,7 +35,7 @@ namespace VirtualRadar.Plugin.TileServerCache
         /// <returns></returns>
         public static Options Load()
         {
-            var storage = Factory.Resolve<IPluginSettingsStorage>().Singleton;
+            var storage = Factory.ResolveSingleton<IPluginSettingsStorage>();
             var pluginSettings = storage.Load();
             var jsonText = pluginSettings.ReadString(Plugin.Singleton, Key);
 
@@ -54,7 +54,7 @@ namespace VirtualRadar.Plugin.TileServerCache
             }
             ++options.DataVersion;
 
-            var storage = Factory.Resolve<IPluginSettingsStorage>().Singleton;
+            var storage = Factory.ResolveSingleton<IPluginSettingsStorage>();
             var pluginSettings = storage.Load();
             pluginSettings.Write(Plugin.Singleton, Key, JsonConvert.SerializeObject(options));
             storage.Save(pluginSettings);

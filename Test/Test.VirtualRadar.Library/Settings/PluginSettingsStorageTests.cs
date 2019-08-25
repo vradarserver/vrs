@@ -68,17 +68,6 @@ namespace Test.VirtualRadar.Library.Settings
             Assert.IsNotNull(storage.Provider);
             TestUtilities.TestProperty(storage, "Provider", storage.Provider, _Provider.Object);
         }
-
-        [TestMethod]
-        public void PluginSettingsStorage_Singleton_Returns_Same_Reference_For_All_Instances()
-        {
-            var obj1 = Factory.Resolve<IPluginSettingsStorage>();
-            var obj2 = Factory.Resolve<IPluginSettingsStorage>();
-
-            Assert.AreNotSame(obj1, obj2);
-            Assert.IsNotNull(obj1.Singleton);
-            Assert.AreSame(obj1.Singleton, obj2.Singleton);
-        }
         #endregion
 
         #region Load

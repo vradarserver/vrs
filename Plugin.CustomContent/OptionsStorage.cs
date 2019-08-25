@@ -32,7 +32,7 @@ namespace VirtualRadar.Plugin.CustomContent
         /// <returns></returns>
         public static Options Load(Plugin plugin)
         {
-            var pluginStorage = Factory.Resolve<IPluginSettingsStorage>().Singleton;
+            var pluginStorage = Factory.ResolveSingleton<IPluginSettingsStorage>();
             var pluginSettings = pluginStorage.Load();
             var serialisedOptions = pluginSettings.ReadString(plugin, Key);
 
@@ -68,7 +68,7 @@ namespace VirtualRadar.Plugin.CustomContent
                 var serialiser = new XmlSerializer(typeof(Options));
                 serialiser.Serialize(stream, options);
 
-                var pluginStorage = Factory.Resolve<IPluginSettingsStorage>().Singleton;
+                var pluginStorage = Factory.ResolveSingleton<IPluginSettingsStorage>();
                 var pluginSettings = pluginStorage.Load();
                 pluginSettings.Write(plugin, Key, Encoding.UTF8.GetString(stream.ToArray()));
                 pluginStorage.Save(pluginSettings);
