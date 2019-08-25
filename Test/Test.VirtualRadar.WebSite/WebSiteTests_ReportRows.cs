@@ -1729,6 +1729,10 @@ namespace Test.VirtualRadar.WebSite
             var airport3 = new Airport() { IcaoCode = "ICAO3", IataCode = "IATA3", Name = "A3", };
             var airport4 = new Airport() { IcaoCode = "ICAO4", Name = "A4", };
 
+            // Current default is to prefer IATA when both codes exist, when this
+            // report was written the default was to prefer ICAO.
+            _Configuration.GoogleMapSettings.PreferIataAirportCodes = false;
+
             var route1 = new Route() { From = airport1 };
             var route2 = new Route() { From = airport2, To = airport1, Stopovers = { airport3, airport4 }, };
 

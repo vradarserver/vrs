@@ -386,6 +386,20 @@ namespace Test.VirtualRadar.WebSite
             var actualContent = File.ReadAllBytes(Path.Combine(TestContext.TestDeploymentDir, fileName));
             Assert.IsTrue(expectedContent.SequenceEqual(actualContent), message);
         }
+
+        private bool ChecksumIsForHtmlFileContainingMapStylesheet(ChecksumFileEntry checksum)
+        {
+            switch((checksum.FileName ?? "").ToLower()) {
+                case @"\desktop.html":
+                case @"\desktopreport.html":
+                case @"\fsx.html":
+                case @"\mobile.html":
+                case @"\mobilereport.html":
+                    return true;
+            }
+
+            return false;
+        }
         #endregion
 
         #region Helper Methods - AddBlankDatabaseFlights
@@ -613,6 +627,11 @@ namespace Test.VirtualRadar.WebSite
                     continue;
                 }
 
+                // We need to skip HTML files that include map stylesheets, these always have substitutions in the response
+                if(ChecksumIsForHtmlFileContainingMapStylesheet(checksum)) {
+                    continue;
+                }
+
                 _WebServer.Raise(r => r.RequestReceived += null, args);
 
                 Assert.AreEqual(true, args.Handled, checksum.FileName);
@@ -670,9 +689,10 @@ namespace Test.VirtualRadar.WebSite
 
             var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
             if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
-            var checksum = checksums.First(r =>
-                Path.GetExtension(r.FileName) == ".html" &&
-                File.ReadAllText(r.GetFullPathFromRoot(_WebRoot)).Contains("<!-- [[ JS BUNDLE START ]] -->")
+            var checksum = checksums.First(chk =>
+                   Path.GetExtension(chk.FileName) == ".html"
+                && !ChecksumIsForHtmlFileContainingMapStylesheet(chk)
+                && File.ReadAllText(chk.GetFullPathFromRoot(_WebRoot)).Contains("<!-- [[ JS BUNDLE START ]] -->")
             );
             var pathAndFile = checksum.FileName.Replace("\\", "/");
             var htmlContent = File.ReadAllText(checksum.GetFullPathFromRoot(_WebRoot));
@@ -1704,6 +1724,11 @@ namespace Test.VirtualRadar.WebSite
                     continue;
                 }
 
+                // Need to skip HTML files that have map stylesheets
+                if(ChecksumIsForHtmlFileContainingMapStylesheet(checksum)) {
+                    continue;
+                }
+
                 _WebSite.RequestContent(args);
 
                 Assert.AreEqual(true, args.Handled, checksum.FileName);
@@ -1738,6 +1763,11 @@ namespace Test.VirtualRadar.WebSite
                 // We need to skip the strings.*.js files - the string injection code doesn't work when the running
                 // executable is the Visual Studio test runner
                 if(checksum.FileName.StartsWith("\\script\\i18n\\strings.")) {
+                    continue;
+                }
+
+                // Need to skip HTML files that have map stylesheets
+                if(ChecksumIsForHtmlFileContainingMapStylesheet(checksum)) {
                     continue;
                 }
 
