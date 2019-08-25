@@ -523,7 +523,7 @@ namespace VirtualRadar.Library.Presenter
         /// </summary>
         private void UpdateReceiverLocationsFromBaseStationDatabase()
         {
-            var database = Factory.Resolve<IAutoConfigBaseStationDatabase>().Singleton.Database;
+            var database = Factory.ResolveSingleton<IAutoConfigBaseStationDatabase>().Database;
             var databaseLocations = database.GetLocations().Select(r => new ReceiverLocation() {
                 Name = r.LocationName,
                 Latitude = r.Latitude,

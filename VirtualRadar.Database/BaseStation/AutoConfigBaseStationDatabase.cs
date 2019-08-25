@@ -23,11 +23,10 @@ namespace VirtualRadar.Database.BaseStation
     /// </summary>
     sealed class AutoConfigBaseStationDatabase : IAutoConfigBaseStationDatabase
     {
-        private static readonly IAutoConfigBaseStationDatabase _Singleton = new AutoConfigBaseStationDatabase();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Interface retained for backwards compatability.
         /// </summary>
-        public IAutoConfigBaseStationDatabase Singleton { get { return _Singleton; } }
+        public IAutoConfigBaseStationDatabase Singleton => Factory.ResolveSingleton<IAutoConfigBaseStationDatabase>();
 
         /// <summary>
         /// See interface docs.

@@ -63,17 +63,6 @@ namespace Test.VirtualRadar.Database
         {
             Assert.IsNull(_AutoConfigDatabase.Database);
         }
-
-        [TestMethod]
-        public void AutoConfigBaseStationDatabase_Singleton_Returns_Same_Instance_For_All_References()
-        {
-            var instance1 = Factory.Resolve<IAutoConfigBaseStationDatabase>();
-            var instance2 = Factory.Resolve<IAutoConfigBaseStationDatabase>();
-
-            Assert.IsNotNull(instance1.Singleton);
-            Assert.AreNotSame(instance1, instance2);
-            Assert.AreSame(instance1.Singleton, instance2.Singleton);
-        }
         #endregion
 
         #region Initialise
