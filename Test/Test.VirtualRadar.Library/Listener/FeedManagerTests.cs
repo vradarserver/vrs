@@ -51,7 +51,7 @@ namespace Test.VirtualRadar.Library.Listener
         {
             _SnapshotFactory = Factory.TakeSnapshot();
 
-            _Manager = Factory.Resolve<IFeedManager>();
+            _Manager = Factory.ResolveNewInstance<IFeedManager>();
 
             _Receiver1 = new Receiver() { UniqueId = 1, Name = "First", DataSource = DataSource.Port30003, ConnectionType = ConnectionType.TCP, Address = "127.0.0.1", Port = 30003 };
             _Receiver2 = new Receiver() { UniqueId = 2, Name = "Second", DataSource = DataSource.Beast, ConnectionType = ConnectionType.COM, ComPort = "COM1", BaudRate = 19200, DataBits = 8, StopBits = StopBits.One };

@@ -38,11 +38,10 @@ namespace VirtualRadar.Library.Listener
         #endregion
 
         #region Properties
-        private static readonly IFeedManager _Singleton = new FeedManager();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public IFeedManager Singleton { get { return _Singleton; } }
+        public IFeedManager Singleton => Factory.ResolveSingleton<IFeedManager>();
 
         private IFeed[] _Feeds;
         /// <summary>
