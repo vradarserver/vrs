@@ -90,7 +90,7 @@ namespace VirtualRadar.Library.Presenter
         private void ShutdownAircraftOnlineLookupManager()
         {
             _View.ReportProgress(Strings.ShuttingDownOnlineLookupManager);
-            Factory.Resolve<IAircraftOnlineLookupManager>().Singleton.Dispose();
+            Factory.ResolveSingleton<IAircraftOnlineLookupManager>().Dispose();
         }
 
         private void ShutdownAirPressureManager()

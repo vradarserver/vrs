@@ -58,11 +58,10 @@ namespace VirtualRadar.Library
         /// </summary>
         private IClock _Clock;
 
-        private static IAircraftOnlineLookupManager _Singleton = new AircraftOnlineLookupManager();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public IAircraftOnlineLookupManager Singleton { get { return _Singleton; } }
+        public IAircraftOnlineLookupManager Singleton => Factory.ResolveSingleton<IAircraftOnlineLookupManager>();
 
         /// <summary>
         /// See interface docs.

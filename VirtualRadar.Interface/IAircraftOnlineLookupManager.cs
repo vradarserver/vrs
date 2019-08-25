@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 using VirtualRadar.Interface.Database;
 
 namespace VirtualRadar.Interface
@@ -20,6 +21,7 @@ namespace VirtualRadar.Interface
     /// Brings together the online lookup and the online lookup cache. If you want something from
     /// the online aircraft lookup then talk to this object.
     /// </summary>
+    [Singleton]
     public interface IAircraftOnlineLookupManager : ISingleton<IAircraftOnlineLookupManager>, IDisposable
     {
         /// <summary>

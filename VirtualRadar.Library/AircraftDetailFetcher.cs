@@ -172,7 +172,7 @@ namespace VirtualRadar.Library
             _AutoConfigDatabase.Database.AircraftUpdated += BaseStationDatabase_AircraftUpdated;
             _AutoConfigDatabase.Database.FileNameChanged += BaseStationDatabase_FileNameChanged;
 
-            _AircraftOnlineLookupManager = Factory.Resolve<IAircraftOnlineLookupManager>().Singleton;
+            _AircraftOnlineLookupManager = Factory.ResolveSingleton<IAircraftOnlineLookupManager>();
             _AircraftOnlineLookupManager.AircraftFetched += AircraftOnlineLookupManager_AircraftFetched;
 
             _PictureManager = Factory.Resolve<IAircraftPictureManager>().Singleton;

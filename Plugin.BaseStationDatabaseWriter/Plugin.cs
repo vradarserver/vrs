@@ -267,7 +267,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 _OnlineLookupCache.EnabledChanged += OnlineLookupCache_EnabledChanged;
                 StartSession();
 
-                var onlineLookupManager = Factory.Resolve<IAircraftOnlineLookupManager>().Singleton;
+                var onlineLookupManager = Factory.ResolveSingleton<IAircraftOnlineLookupManager>();
                 onlineLookupManager.RegisterCache(_OnlineLookupCache, 100, letManagerControlLifetime: false);
 
                 // If we process messages on the same thread as the listener raises the message received event on then we
