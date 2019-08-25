@@ -12,13 +12,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Interface.Database;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Listener
 {
     /// <summary>
     /// The interface for objects that can collect together a <see cref="IFeed"/> for each receiver and merged feed configured in settings.
     /// </summary>
+    [Singleton]
     public interface IFeedManager : ISingleton<IFeedManager>, IBackgroundThreadExceptionCatcher, IDisposable
     {
         /// <summary>

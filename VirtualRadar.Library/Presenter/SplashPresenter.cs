@@ -327,7 +327,7 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.SplashScreenConnectingToBaseStation);
 
-            var feedManager = Factory.Resolve<IFeedManager>().Singleton;
+            var feedManager = Factory.ResolveSingleton<IFeedManager>();
             if(BackgroundThreadExceptionHandler != null) {
                 feedManager.ExceptionCaught += BackgroundThreadExceptionHandler;
             }

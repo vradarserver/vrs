@@ -133,17 +133,6 @@ namespace Test.VirtualRadar.Library.Listener
             Assert.AreEqual(0, _Manager.Feeds.Length);
             Assert.AreEqual(0, _Manager.VisibleFeeds.Length);
         }
-
-        [TestMethod]
-        public void FeedManager_Singleton_Returns_Same_Reference_For_Different_Instances()
-        {
-            var instance1 = Factory.Resolve<IFeedManager>();
-            var instance2 = Factory.Resolve<IFeedManager>();
-
-            Assert.AreNotSame(instance1, instance2);
-            Assert.IsNotNull(instance1.Singleton);
-            Assert.AreSame(instance1.Singleton, instance2.Singleton);
-        }
         #endregion
 
         #region Initialise

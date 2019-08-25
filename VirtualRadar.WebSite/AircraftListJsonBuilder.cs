@@ -141,7 +141,7 @@ namespace VirtualRadar.WebSite
             Provider = provider;
 
             _SharedConfiguration = Factory.Resolve<ISharedConfiguration>().Singleton;
-            _FeedManager = Factory.Resolve<IFeedManager>().Singleton;
+            _FeedManager = Factory.ResolveSingleton<IFeedManager>();
             _EmptyAircraftList = Factory.Resolve<ISimpleAircraftList>();
         }
 

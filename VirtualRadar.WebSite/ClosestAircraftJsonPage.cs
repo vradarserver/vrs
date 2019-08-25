@@ -61,7 +61,7 @@ namespace VirtualRadar.WebSite
         protected override void DoLoadConfiguration(Configuration configuration)
         {
             base.DoLoadConfiguration(configuration);
-            _ReceiverManager = Factory.Resolve<IFeedManager>().Singleton;
+            _ReceiverManager = Factory.ResolveSingleton<IFeedManager>();
             _InternetClientCanRequestClosestAircraft = configuration.InternetClientSettings.AllowInternetProximityGadgets;
             _ReceiverId = configuration.GoogleMapSettings.ClosestAircraftReceiverId;
         }

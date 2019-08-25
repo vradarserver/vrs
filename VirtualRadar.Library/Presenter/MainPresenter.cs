@@ -159,7 +159,7 @@ namespace VirtualRadar.Library.Presenter
             var newVersionChecker = Factory.Resolve<INewVersionChecker>().Singleton;
             newVersionChecker.NewVersionAvailable += NewVersionChecker_NewVersionAvailable;
 
-            _FeedManager = Factory.Resolve<IFeedManager>().Singleton;
+            _FeedManager = Factory.ResolveSingleton<IFeedManager>();
             _FeedManager.ConnectionStateChanged += FeedManager_ConnectionStateChanged;
             _FeedManager.FeedsChanged += FeedManager_FeedsChanged;
             UpdateFeedCounters();
@@ -205,7 +205,7 @@ namespace VirtualRadar.Library.Presenter
         /// <returns></returns>
         public IFeed[] GetReceiverFeeds()
         {
-            return Factory.Resolve<IFeedManager>().Singleton.Feeds.Where(r => !(r.Listener is IMergedFeedListener)).ToArray();
+            return Factory.ResolveSingleton<IFeedManager>().Feeds.Where(r => !(r.Listener is IMergedFeedListener)).ToArray();
         }
 
         /// <summary>

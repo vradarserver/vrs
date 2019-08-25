@@ -47,7 +47,7 @@ namespace VirtualRadar.WebSite
         /// <param name="webSite"></param>
         public DirectoryEntryJsonPage(WebSite webSite) : base(webSite)
         {
-            _FeedManager = Factory.Resolve<IFeedManager>().Singleton;
+            _FeedManager = Factory.ResolveSingleton<IFeedManager>();
             _ApplicationInformation = Factory.Resolve<IApplicationInformation>();
         }
 
