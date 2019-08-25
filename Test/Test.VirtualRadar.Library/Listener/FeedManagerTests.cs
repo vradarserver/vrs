@@ -51,7 +51,7 @@ namespace Test.VirtualRadar.Library.Listener
         {
             _SnapshotFactory = Factory.TakeSnapshot();
 
-            _Manager = Factory.Singleton.Resolve<IFeedManager>();
+            _Manager = Factory.Resolve<IFeedManager>();
 
             _Receiver1 = new Receiver() { UniqueId = 1, Name = "First", DataSource = DataSource.Port30003, ConnectionType = ConnectionType.TCP, Address = "127.0.0.1", Port = 30003 };
             _Receiver2 = new Receiver() { UniqueId = 2, Name = "Second", DataSource = DataSource.Beast, ConnectionType = ConnectionType.COM, ComPort = "COM1", BaudRate = 19200, DataBits = 8, StopBits = StopBits.One };
@@ -69,7 +69,7 @@ namespace Test.VirtualRadar.Library.Listener
             _CreatedListeners = new List<Mock<IListener>>();
             _CreatedFeeds = new List<Mock<IFeed>>();
             _MergedFeedFeeds = new Dictionary<MergedFeed,List<IFeed>>();
-            Factory.Singleton.Register<IFeed>(() => {
+            Factory.Register<IFeed>(() => {
                 var feed = TestUtilities.CreateMockInstance<IFeed>();
                 var listener = TestUtilities.CreateMockInstance<IListener>();
                 _CreatedListeners.Add(listener);
@@ -128,7 +128,7 @@ namespace Test.VirtualRadar.Library.Listener
         public void FeedManager_Constructor_Initialises_To_Known_Value_And_Properties_Work()
         {
             _Manager.Dispose();
-            _Manager = Factory.Singleton.Resolve<IFeedManager>();
+            _Manager = Factory.Resolve<IFeedManager>();
 
             Assert.AreEqual(0, _Manager.Feeds.Length);
             Assert.AreEqual(0, _Manager.VisibleFeeds.Length);
@@ -137,8 +137,8 @@ namespace Test.VirtualRadar.Library.Listener
         [TestMethod]
         public void FeedManager_Singleton_Returns_Same_Reference_For_Different_Instances()
         {
-            var instance1 = Factory.Singleton.Resolve<IFeedManager>();
-            var instance2 = Factory.Singleton.Resolve<IFeedManager>();
+            var instance1 = Factory.Resolve<IFeedManager>();
+            var instance2 = Factory.Resolve<IFeedManager>();
 
             Assert.AreNotSame(instance1, instance2);
             Assert.IsNotNull(instance1.Singleton);

@@ -64,7 +64,7 @@ namespace Test.VirtualRadar.Library.Network
 
             _Compressor = TestUtilities.CreateMockImplementation<IBaseStationMessageCompressor>();
 
-            _Server = Factory.Singleton.Resolve<IRebroadcastServer>();
+            _Server = Factory.Resolve<IRebroadcastServer>();
 
             _Feed = TestUtilities.CreateMockInstance<IFeed>();
             _Listener = TestUtilities.CreateMockInstance<IListener>();
@@ -145,7 +145,7 @@ namespace Test.VirtualRadar.Library.Network
         [TestMethod]
         public void RebroadcastServer_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            var server = Factory.Singleton.Resolve<IRebroadcastServer>();
+            var server = Factory.Resolve<IRebroadcastServer>();
             TestUtilities.TestProperty(server, r => r.Connector, null, _Connector.Object);
             TestUtilities.TestProperty(server, r => r.Format, null, RebroadcastFormat.Port30003);
             TestUtilities.TestProperty(server, r => r.Feed, null, _Feed.Object);

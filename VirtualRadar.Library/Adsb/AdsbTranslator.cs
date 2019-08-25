@@ -70,7 +70,7 @@ namespace VirtualRadar.Library.Adsb
         /// </summary>
         public AdsbTranslator()
         {
-            _BitStream = Factory.Singleton.Resolve<IBitStream>();
+            _BitStream = Factory.Resolve<IBitStream>();
         }
 
         /// <summary>

@@ -102,7 +102,7 @@ namespace VirtualRadar.Library
             ListSyncLock = new object();
             Source = AircraftListSource.FakeAircraftList;
             Aircraft = new List<IAircraft>();
-            _Clock = Factory.Singleton.Resolve<IClock>();
+            _Clock = Factory.Resolve<IClock>();
         }
 
         /// <summary>

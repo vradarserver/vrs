@@ -59,7 +59,7 @@ namespace VirtualRadar.WebSite
         {
             if(disposing) {
                 if(_HookedConfigurationStorage) {
-                    var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                    var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
                     configurationStorage.ConfigurationChanged -= ConfigurationStorage_ConfigurationChanged;
                     _HookedConfigurationStorage = false;
                 }
@@ -74,7 +74,7 @@ namespace VirtualRadar.WebSite
             if(!_Initialised) {
                 _Initialised = true;
 
-                var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
                 configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
                 _HookedConfigurationStorage = true;
                 LoadConfiguration(configurationStorage);

@@ -232,20 +232,20 @@ namespace VirtualRadar.Library
                     if(!_Initialised) {
                         _Initialised = true;
                         QueueRepository.AddQueue(this);
-                        _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
-                        _Clock = Factory.Singleton.Resolve<IClock>();
-                        _IsRunningUnderTestEnvironment = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsTest;
+                        _SharedConfiguration = Factory.Resolve<ISharedConfiguration>().Singleton;
+                        _Clock = Factory.Resolve<IClock>();
+                        _IsRunningUnderTestEnvironment = Factory.Resolve<IRuntimeEnvironment>().Singleton.IsTest;
 
                         // Give plugins two ways to set the provider - either they can fetch the singleton for this
                         // object and set the provider to their own implementation or they can register their provider
                         // as the default implementation for IAircraftOnlineLookupProvider.
                         if(Provider == null) {
-                            Provider = Factory.Singleton.Resolve<IAircraftOnlineLookupProvider>();
+                            Provider = Factory.Resolve<IAircraftOnlineLookupProvider>();
                             CheckProviderSanity();
                         }
                         _SecondsToNextLookup = Provider.MinSecondsBetweenRequests;
 
-                        var heartbeatService = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
+                        var heartbeatService = Factory.Resolve<IHeartbeatService>().Singleton;
                         heartbeatService.FastTick += Heartbeat_FastTick;
                     }
                 }
@@ -329,7 +329,7 @@ namespace VirtualRadar.Library
                         missingIcaos.Clear();
                         fetchFailed = false;
 
-                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        var log = Factory.Resolve<ILog>().Singleton;
                         log.WriteLine("AircraftOnlineLookup caught exception: {0}", ex.ToString());
                     }
 

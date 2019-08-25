@@ -153,15 +153,15 @@ namespace VirtualRadar.Database.Log
         private void CreateConnection()
         {
             if(_Connection == null) {
-                IConfigurationStorage configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                IConfigurationStorage configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
 
-                var builder = Factory.Singleton.Resolve<ISQLiteConnectionStringBuilder>().Initialise();
+                var builder = Factory.Resolve<ISQLiteConnectionStringBuilder>().Initialise();
                 builder.DataSource = Path.Combine(configurationStorage.Folder, "ConnectionLog.sqb");
                 builder.DateTimeFormat = SQLiteDateFormats.JulianDay;
                 builder.ReadOnly = false;
                 builder.FailIfMissing = false;
                 builder.JournalMode = SQLiteJournalModeEnum.Persist;
-                var connection = Factory.Singleton.Resolve<ISQLiteConnectionProvider>().Create(builder.ConnectionString);
+                var connection = Factory.Resolve<ISQLiteConnectionProvider>().Create(builder.ConnectionString);
                 _Connection = connection;
                 _Connection.Open();
 

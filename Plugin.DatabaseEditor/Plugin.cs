@@ -182,14 +182,14 @@ namespace VirtualRadar.Plugin.DatabaseEditor
             Singleton = this;
             var options = OptionsStorage.Load(this);
 
-            _HtmlLocaliser = Factory.Singleton.Resolve<IHtmlLocaliser>();
+            _HtmlLocaliser = Factory.Resolve<IHtmlLocaliser>();
             _HtmlLocaliser.Initialise();
             _HtmlLocaliser.AddResourceStrings(typeof(DatabaseEditorStrings));
 
-            _BaseStationDatabase = Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>().Singleton.Database;
+            _BaseStationDatabase = Factory.Resolve<IAutoConfigBaseStationDatabase>().Singleton.Database;
             _BaseStationDatabase.WriteSupportEnabled = true;
 
-            _WebSiteExtender = Factory.Singleton.Resolve<IWebSiteExtender>();
+            _WebSiteExtender = Factory.Resolve<IWebSiteExtender>();
             _WebSiteExtender.Enabled = false;
             _WebSiteExtender.WebRootSubFolder = "Web";
             _WebSiteExtender.InjectContent = @"<script src=""script-DatabaseEditor/inject.js"" type=""text/javascript"">";
@@ -210,7 +210,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// </summary>
         public void GuiThreadStartup()
         {
-            var webAdminViewManager = Factory.Singleton.Resolve<IWebAdminViewManager>().Singleton;
+            var webAdminViewManager = Factory.Resolve<IWebAdminViewManager>().Singleton;
             webAdminViewManager.RegisterTranslations(typeof(DatabaseEditorStrings), "DatabaseEditorPlugin");
             webAdminViewManager.AddWebAdminView(new WebAdminView("/WebAdmin/", "DatabaseEditorPluginOptions.html", DatabaseEditorStrings.WebAdminMenuName, () => new WebAdmin.OptionsView(), typeof(DatabaseEditorStrings)) {
                 Plugin = this,
@@ -247,7 +247,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// <returns></returns>
         internal string GetIndexPageAddress()
         {
-            var webServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+            var webServer = Factory.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
             return String.Format("{0}/{1}", webServer.LocalAddress, "DatabaseEditor/index.html");
         }
         #endregion
@@ -359,7 +359,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// <returns></returns>
         private string LogException(Exception ex, string logMessage)
         {
-            var log = Factory.Singleton.Resolve<ILog>().Singleton;
+            var log = Factory.Resolve<ILog>().Singleton;
             log.WriteLine(logMessage);
 
             return ex.Message;
@@ -387,7 +387,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         private void SendJsonResponse<T>(RequestReceivedEventArgs args, T json)
         {
             var jsonText = JsonConvert.SerializeObject(json);
-            var responder = Factory.Singleton.Resolve<IResponder>();
+            var responder = Factory.Resolve<IResponder>();
             responder.SendText(args.Request, args.Response, jsonText, Encoding.UTF8, MimeType.Json);
             args.Handled = true;
         }

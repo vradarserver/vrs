@@ -164,8 +164,8 @@ namespace VirtualRadar.Library.Network
             _LastIdleCheck = DateTime.UtcNow;
             _LastEstablishedCheck = _LastIdleCheck;
 
-            _TcpConnectionService = Factory.Singleton.Resolve<ITcpConnectionStateService>();
-            _HeartbeatService = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
+            _TcpConnectionService = Factory.Resolve<ITcpConnectionStateService>();
+            _HeartbeatService = Factory.Resolve<IHeartbeatService>().Singleton;
             _HeartbeatService.FastTick += HeartbeatService_FastTick ;
         }
         #endregion
@@ -392,7 +392,7 @@ namespace VirtualRadar.Library.Network
                 ConnectionStatus = ConnectionStatus.Connecting;
 
                 var access = Access;
-                _AccessFilter = access == null ? null : Factory.Singleton.Resolve<IAccessFilter>();
+                _AccessFilter = access == null ? null : Factory.Resolve<IAccessFilter>();
                 if(_AccessFilter != null) {
                     _AccessFilter.Initialise(access);
                 }

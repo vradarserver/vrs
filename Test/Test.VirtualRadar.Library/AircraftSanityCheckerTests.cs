@@ -41,7 +41,7 @@ namespace Test.VirtualRadar.Library
             _Configuration = new Configuration();
             _SharedConfiguration.Setup(r => r.Get()).Returns(_Configuration);
 
-            _Checker = Factory.Singleton.Resolve<IAircraftSanityChecker>();
+            _Checker = Factory.Resolve<IAircraftSanityChecker>();
         }
 
         [TestCleanup]

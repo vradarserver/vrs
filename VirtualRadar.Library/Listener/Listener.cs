@@ -318,16 +318,16 @@ namespace VirtualRadar.Library.Listener
         /// </summary>
         public Listener()
         {
-            _Clock = Factory.Singleton.Resolve<IClock>();
-            Statistics = Factory.Singleton.Resolve<IStatistics>();
+            _Clock = Factory.Resolve<IClock>();
+            Statistics = Factory.Resolve<IStatistics>();
             Statistics.Initialise();
 
-            _Port30003MessageTranslator = Factory.Singleton.Resolve<IBaseStationMessageTranslator>();
-            _ModeSMessageTranslator = Factory.Singleton.Resolve<IModeSTranslator>();
-            _AdsbMessageTranslator = Factory.Singleton.Resolve<IAdsbTranslator>();
-            _ModeSParity = Factory.Singleton.Resolve<IModeSParity>();
-            _Compressor = Factory.Singleton.Resolve<IBaseStationMessageCompressor>();
-            _AircraftListJsonMessageConverter = Factory.Singleton.Resolve<IAircraftListJsonMessageConverter>();
+            _Port30003MessageTranslator = Factory.Resolve<IBaseStationMessageTranslator>();
+            _ModeSMessageTranslator = Factory.Resolve<IModeSTranslator>();
+            _AdsbMessageTranslator = Factory.Resolve<IAdsbTranslator>();
+            _ModeSParity = Factory.Resolve<IModeSParity>();
+            _Compressor = Factory.Resolve<IBaseStationMessageCompressor>();
+            _AircraftListJsonMessageConverter = Factory.Resolve<IAircraftListJsonMessageConverter>();
 
             _ModeSMessageTranslator.Statistics = Statistics;
             _AdsbMessageTranslator.Statistics = Statistics;

@@ -262,12 +262,12 @@ namespace VirtualRadar.Database.BaseStation
         private void Initialise()
         {
             if(_ConfigurationStorage == null) {
-                _ConfigurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                _ConfigurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
                 _ConfigurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
             }
 
             if(_Clock == null) {
-                _Clock = Factory.Singleton.Resolve<IClock>();
+                _Clock = Factory.Resolve<IClock>();
             }
         }
 
@@ -302,13 +302,13 @@ namespace VirtualRadar.Database.BaseStation
                     bool zeroLength = fileExists && new FileInfo(fileName).Length == 0;
 
                     if(!String.IsNullOrEmpty(fileName) && fileExists && (inCreateMode || !zeroLength)) {
-                        var builder = Factory.Singleton.Resolve<ISQLiteConnectionStringBuilder>().Initialise();
+                        var builder = Factory.Resolve<ISQLiteConnectionStringBuilder>().Initialise();
                         builder.DataSource = fileName;
                         builder.ReadOnly = !writeSupportEnabled.Value;
                         builder.FailIfMissing = true;
                         builder.DateTimeFormat = SQLiteDateFormats.ISO8601;
                         builder.JournalMode = SQLiteJournalModeEnum.Default;  // <-- Persist causes problems with SBSPopulate
-                        var connection = Factory.Singleton.Resolve<ISQLiteConnectionProvider>().Create(builder.ConnectionString);
+                        var connection = Factory.Resolve<ISQLiteConnectionProvider>().Create(builder.ConnectionString);
                         _Connection = connection;
                         _Connection.Open();
 
@@ -364,7 +364,7 @@ namespace VirtualRadar.Database.BaseStation
                 bool fileMissing = !File.Exists(fileName);
                 bool fileEmpty = fileMissing || new FileInfo(fileName).Length == 0;
                 if(fileMissing || fileEmpty) {
-                    var configuration = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Load();
+                    var configuration = Factory.Resolve<IConfigurationStorage>().Singleton.Load();
 
                     var folder = Path.GetDirectoryName(fileName);
                     if(!Directory.Exists(folder)) Directory.CreateDirectory(folder);
@@ -407,7 +407,7 @@ namespace VirtualRadar.Database.BaseStation
         {
             bool result = false;
 
-            var sqliteException = Factory.Singleton.Resolve<ISQLiteException>();
+            var sqliteException = Factory.Resolve<ISQLiteException>();
             sqliteException.Initialise(errorException);
             if(sqliteException.IsSQLiteException) {
                 switch(sqliteException.ErrorCode) {
@@ -1526,7 +1526,7 @@ namespace VirtualRadar.Database.BaseStation
         private void GetAlternateCallsignCriteria(StringBuilder command, DynamicParameters parameters, FilterString criteria, string callsignField)
         {
             if(criteria != null && !String.IsNullOrEmpty(criteria.Value)) {
-                if(_CallsignParser == null) _CallsignParser = Factory.Singleton.Resolve<ICallsignParser>();
+                if(_CallsignParser == null) _CallsignParser = Factory.Resolve<ICallsignParser>();
                 var alternates = _CallsignParser.GetAllAlternateCallsigns(criteria.Value);
                 for(var i = 0;i < alternates.Count;++i) {
                     var isFirst = i == 0;
@@ -1948,7 +1948,7 @@ namespace VirtualRadar.Database.BaseStation
         /// <param name="args"></param>
         private void ConfigurationStorage_ConfigurationChanged(object sender, EventArgs args)
         {
-            var configuration = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Load();
+            var configuration = Factory.Resolve<IConfigurationStorage>().Singleton.Load();
             if(configuration.BaseStationSettings.DatabaseFileName != FileName) {
                 OnFileNameChanging(EventArgs.Empty);
                 OnFileNameChanged(EventArgs.Empty);

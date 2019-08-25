@@ -46,7 +46,7 @@ namespace VirtualRadar.Library.Settings
         /// </summary>
         public void Save()
         {
-            var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+            var feedManager = Factory.Resolve<IFeedManager>().Singleton;
             var feeds = feedManager.Feeds.ToArray();
 
             foreach(var feed in feeds) {
@@ -107,7 +107,7 @@ namespace VirtualRadar.Library.Settings
         /// <returns></returns>
         private string GetFolder()
         {
-            var result = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Folder;
+            var result = Factory.Resolve<IConfigurationStorage>().Singleton.Folder;
             result = Path.Combine(result, SavedPlotsFolder);
 
             return result;

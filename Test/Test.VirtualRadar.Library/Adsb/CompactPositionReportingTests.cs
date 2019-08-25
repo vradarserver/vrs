@@ -30,7 +30,7 @@ namespace Test.VirtualRadar.Library.Adsb
         [TestInitialize]
         public void TestInitialise()
         {
-            _Cpr = Factory.Singleton.Resolve<ICompactPositionReporting>();
+            _Cpr = Factory.Resolve<ICompactPositionReporting>();
         }
         #endregion
 

@@ -75,9 +75,9 @@ namespace Test.VirtualRadar.Library.Presenter
             // This version of ILog should cause code that catches & logs exceptions to throw on the log write. Without this
             // the Asserts can go unnoticed.
             var uncallableLog = new Mock<ILog>(MockBehavior.Strict);
-            Factory.Singleton.RegisterInstance<ILog>(uncallableLog.Object);
+            Factory.RegisterInstance<ILog>(uncallableLog.Object);
 
-            _Presenter = Factory.Singleton.Resolve<IShutdownPresenter>();
+            _Presenter = Factory.Resolve<IShutdownPresenter>();
             _View = new Mock<IShutdownView>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
         }
 

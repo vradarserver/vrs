@@ -51,7 +51,7 @@ namespace VirtualRadar.Library.Listener
         /// <returns></returns>
         public IMessageBytesExtractor CreateMessageBytesExtractor()
         {
-            return Factory.Singleton.Resolve<IBeastMessageBytesExtractor>();
+            return Factory.Resolve<IBeastMessageBytesExtractor>();
         }
 
         /// <summary>

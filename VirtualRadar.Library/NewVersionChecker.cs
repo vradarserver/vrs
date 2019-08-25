@@ -104,7 +104,7 @@ namespace VirtualRadar.Library
 
             string content = Provider.DownloadFileContent("http://www.virtualradarserver.co.uk/LatestVersion.txt");
             if(!String.IsNullOrEmpty(content)) {
-                Version thisVersion = Factory.Singleton.Resolve<IApplicationInformation>().Version;
+                Version thisVersion = Factory.Resolve<IApplicationInformation>().Version;
                 result = VersionComparer.Compare(content, thisVersion) > 0;
 
                 IsNewVersionAvailable = result;

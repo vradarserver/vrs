@@ -38,7 +38,7 @@ namespace VirtualRadar.Library.ModeS
         /// </summary>
         public ModeSTranslator()
         {
-            _BitStream = Factory.Singleton.Resolve<IBitStream>();
+            _BitStream = Factory.Resolve<IBitStream>();
         }
 
         /// <summary>

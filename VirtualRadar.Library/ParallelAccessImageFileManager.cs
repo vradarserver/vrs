@@ -67,7 +67,7 @@ namespace VirtualRadar.Library
         /// </summary>
         public ParallelAccessImageFileManager()
         {
-            _Clock = Factory.Singleton.Resolve<IClock>();
+            _Clock = Factory.Resolve<IClock>();
         }
 
         /// <summary>

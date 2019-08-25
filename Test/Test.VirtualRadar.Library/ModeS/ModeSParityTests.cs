@@ -29,7 +29,7 @@ namespace Test.VirtualRadar.Library.ModeS
         [TestInitialize]
         public void TestInitialise()
         {
-            _ModeSParity = Factory.Singleton.Resolve<IModeSParity>();
+            _ModeSParity = Factory.Resolve<IModeSParity>();
         }
 
         [TestMethod]

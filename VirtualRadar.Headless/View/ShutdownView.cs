@@ -45,7 +45,7 @@ namespace VirtualRadar.Headless.View
         /// <returns></returns>
         public DialogResult ShowView()
         {
-            var presenter = Factory.Singleton.Resolve<IShutdownPresenter>();
+            var presenter = Factory.Resolve<IShutdownPresenter>();
             presenter.UPnpManager = _UPnpManager;
             presenter.Initialise(this);
             presenter.ShutdownApplication();

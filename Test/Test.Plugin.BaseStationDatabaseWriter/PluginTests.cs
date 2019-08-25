@@ -95,7 +95,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             SetDBHistory(true);
 
             _HeartbeatService = TestUtilities.CreateMockInstance<IHeartbeatService>();
-            Factory.Singleton.RegisterInstance(typeof(IHeartbeatService), _HeartbeatService.Object);
+            Factory.RegisterInstance(typeof(IHeartbeatService), _HeartbeatService.Object);
 
             _StandingDataManager = TestUtilities.CreateMockSingleton<IStandingDataManager>();
             _Log = TestUtilities.CreateMockSingleton<ILog>();

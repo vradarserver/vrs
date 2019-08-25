@@ -95,7 +95,7 @@ namespace Test.VirtualRadar.Library.BaseStation
 
             _Clock = new ClockMock();
             _Clock.UtcNowValue = new DateTime(99L);
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
             _Port30003Listener = new Mock<IListener>().SetupAllProperties();
 
@@ -135,7 +135,7 @@ namespace Test.VirtualRadar.Library.BaseStation
             _CountChangedEvent = new EventRecorder<EventArgs>();
             _TrackingStateChangedEvent = new EventRecorder<EventArgs>();
 
-            _AircraftList = Factory.Singleton.Resolve<IBaseStationAircraftList>();
+            _AircraftList = Factory.Resolve<IBaseStationAircraftList>();
             _AircraftList.ExceptionCaught += AircraftListExceptionCaughtHandler;
             _AircraftList.Listener = _Port30003Listener.Object;
             _AircraftList.StandingDataManager = _StandingDataManager.Object;
@@ -183,7 +183,7 @@ namespace Test.VirtualRadar.Library.BaseStation
         public void BaseStationAircraftList_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
             _AircraftList.Dispose();
-            _AircraftList = Factory.Singleton.Resolve<IBaseStationAircraftList>();
+            _AircraftList = Factory.Resolve<IBaseStationAircraftList>();
 
             TestUtilities.TestProperty(_AircraftList, r => r.Listener, null, _Port30003Listener.Object);
             TestUtilities.TestProperty(_AircraftList, r => r.StandingDataManager, null, _StandingDataManager.Object);

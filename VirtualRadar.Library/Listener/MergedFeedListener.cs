@@ -283,7 +283,7 @@ namespace VirtualRadar.Library.Listener
         /// </summary>
         public MergedFeedListener()
         {
-            _Clock = Factory.Singleton.Resolve<IClock>();
+            _Clock = Factory.Resolve<IClock>();
             Listeners = new ReadOnlyCollection<IMergedFeedComponentListener>(_Listeners);
             IcaoTimeout = 5000;
             ConnectionStatus = ConnectionStatus.Connected;
@@ -292,7 +292,7 @@ namespace VirtualRadar.Library.Listener
             _MessageProcessingQueue = new BackgroundThreadQueue<MessageReceived>(messageQueueName, 200000);
             _MessageProcessingQueue.StartBackgroundThread(ProcessReceivedMessage, HandleMessageProcessingException);
 
-            var heartbeatService = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
+            var heartbeatService = Factory.Resolve<IHeartbeatService>().Singleton;
             heartbeatService.SlowTick += HeartbeatService_SlowTick;
             _HookedSlowTick = true;
         }
@@ -325,7 +325,7 @@ namespace VirtualRadar.Library.Listener
             if(disposing) {
                 if(_HookedSlowTick) {
                     _HookedSlowTick = false;
-                    var heartbeatService = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
+                    var heartbeatService = Factory.Resolve<IHeartbeatService>().Singleton;
                     heartbeatService.SlowTick -= HeartbeatService_SlowTick;
                 }
 

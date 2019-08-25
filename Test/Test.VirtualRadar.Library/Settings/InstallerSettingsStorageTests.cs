@@ -38,7 +38,7 @@ namespace Test.VirtualRadar.Library.Settings
         public void TestInitialise()
         {
             _Provider = new TestProvider() { Folder = TestContext.TestDeploymentDir };
-            _Implementation = Factory.Singleton.Resolve<IInstallerSettingsStorage>();
+            _Implementation = Factory.Resolve<IInstallerSettingsStorage>();
             _Implementation.Provider = _Provider;
             _FullPath = Path.Combine(_Provider.Folder, _FileName);
             if(File.Exists(_FullPath)) File.Delete(_FullPath);
@@ -47,7 +47,7 @@ namespace Test.VirtualRadar.Library.Settings
         [TestMethod]
         public void InstallerSettingsStorage_Initialises_To_Known_State_And_Properties_Work()
         {
-            _Implementation = Factory.Singleton.Resolve<IInstallerSettingsStorage>();
+            _Implementation = Factory.Resolve<IInstallerSettingsStorage>();
             Assert.IsNotNull(_Implementation.Provider);
             Assert.AreNotSame(_Provider, _Implementation.Provider);
             _Implementation.Provider = _Provider;

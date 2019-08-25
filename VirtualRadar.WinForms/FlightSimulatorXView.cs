@@ -280,7 +280,7 @@ namespace VirtualRadar.WinForms
 
                 _OnlineHelp = new OnlineHelpHelper(this, OnlineHelpAddress.WinFormsFlightSimulatorXDialog);
 
-                _Presenter = Factory.Singleton.Resolve<IFlightSimulatorXPresenter>();
+                _Presenter = Factory.Resolve<IFlightSimulatorXPresenter>();
                 _Presenter.FlightSimulatorAircraftList = _FlightSimulatorAircraftList;
                 _Presenter.WebServer = _WebServer;
                 _Presenter.Initialise(this);

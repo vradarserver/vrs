@@ -154,7 +154,7 @@ namespace VirtualRadar.Plugin.TileServerCache
         /// </summary>
         public void GuiThreadStartup()
         {
-            var webAdminViewManager = Factory.Singleton.Resolve<IWebAdminViewManager>().Singleton;
+            var webAdminViewManager = Factory.Resolve<IWebAdminViewManager>().Singleton;
             webAdminViewManager.RegisterTranslations(typeof(TileServerCacheStrings), "TileServerCachePlugin");
             webAdminViewManager.AddWebAdminView(
                 new WebAdminView(

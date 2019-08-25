@@ -177,7 +177,7 @@ namespace VirtualRadar.WebSite
             }
 
             if(PageHandlers.Count > 0) {
-                _WebServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+                _WebServer = Factory.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
                 _WebServer.BeforeRequestReceived += WebServer_BeforeRequestReceived;
 
                 foreach(var pageHandler in PageHandlers) {
@@ -244,7 +244,7 @@ namespace VirtualRadar.WebSite
         {
             folder = (folder ?? "").Replace('\\', '/');
 
-            var webServer = _WebServer ?? Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+            var webServer = _WebServer ?? Factory.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
             webServer.AddAdministratorPath(folder);
         }
 
@@ -256,7 +256,7 @@ namespace VirtualRadar.WebSite
         {
             folder = (folder ?? "").Replace('\\', '/');
 
-            var webServer = _WebServer ?? Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+            var webServer = _WebServer ?? Factory.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
             webServer.RemoveAdministratorPath(folder);
         }
 
@@ -269,7 +269,7 @@ namespace VirtualRadar.WebSite
         {
             folder = (folder ?? "").Replace('\\', '/');
 
-            var webServer = _WebServer ?? Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+            var webServer = _WebServer ?? Factory.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
             webServer.SetRestrictedPath(folder, access);
         }
         #endregion

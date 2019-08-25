@@ -44,7 +44,7 @@ namespace VirtualRadar.WebSite
         /// <param name="webSite"></param>
         public PolarPlotJsonPage(WebSite webSite) : base(webSite)
         {
-            _FeedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+            _FeedManager = Factory.Resolve<IFeedManager>().Singleton;
         }
         #endregion
 

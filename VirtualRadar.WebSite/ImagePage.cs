@@ -172,7 +172,7 @@ namespace VirtualRadar.WebSite
         {
             get
             {
-                if(_ImageFileManager == null) _ImageFileManager = Factory.Singleton.Resolve<IImageFileManager>();
+                if(_ImageFileManager == null) _ImageFileManager = Factory.Resolve<IImageFileManager>();
                 return _ImageFileManager;
             }
         }
@@ -184,9 +184,9 @@ namespace VirtualRadar.WebSite
         /// </summary>
         public ImagePage(WebSite webSite) : base(webSite)
         {
-            _Graphics = Factory.Singleton.Resolve<IWebSiteGraphics>().Singleton;
-            _PictureManager = Factory.Singleton.Resolve<IAircraftPictureManager>().Singleton;
-            _PictureFolderCache = Factory.Singleton.Resolve<IAutoConfigPictureFolderCache>().Singleton.DirectoryCache;
+            _Graphics = Factory.Resolve<IWebSiteGraphics>().Singleton;
+            _PictureManager = Factory.Resolve<IAircraftPictureManager>().Singleton;
+            _PictureFolderCache = Factory.Resolve<IAutoConfigPictureFolderCache>().Singleton.DirectoryCache;
         }
         #endregion
 

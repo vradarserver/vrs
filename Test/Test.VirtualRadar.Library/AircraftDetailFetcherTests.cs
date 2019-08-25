@@ -68,9 +68,9 @@ namespace Test.VirtualRadar.Library
             _RuntimeEnvironment.Setup(r => r.IsTest).Returns(true);
 
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
-            _Fetcher = Factory.Singleton.Resolve<IAircraftDetailFetcher>();
+            _Fetcher = Factory.Resolve<IAircraftDetailFetcher>();
             _FetchedHandler = new EventRecorder<EventArgs<AircraftDetail>>();
             _Fetcher.Fetched += _FetchedHandler.Handler;
 
@@ -81,7 +81,7 @@ namespace Test.VirtualRadar.Library
             // the TestUtilities don't support creating non-singleton instances of ISingletons, do we
             // have to do it manually.
             _Heartbeat = TestUtilities.CreateMockInstance<IHeartbeatService>();
-            Factory.Singleton.RegisterInstance<IHeartbeatService>(_Heartbeat.Object);
+            Factory.RegisterInstance<IHeartbeatService>(_Heartbeat.Object);
 
             _AutoConfigDatabase = TestUtilities.CreateMockSingleton<IAutoConfigBaseStationDatabase>();
             _Database = TestUtilities.CreateMockInstance<IBaseStationDatabase>();
@@ -141,8 +141,8 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void AircraftDetailFetcher_Singleton_Returns_Same_Instance_For_All_References()
         {
-            var instance1 = Factory.Singleton.Resolve<IAircraftDetailFetcher>();
-            var instance2 = Factory.Singleton.Resolve<IAircraftDetailFetcher>();
+            var instance1 = Factory.Resolve<IAircraftDetailFetcher>();
+            var instance2 = Factory.Resolve<IAircraftDetailFetcher>();
 
             Assert.IsNotNull(instance1.Singleton);
             Assert.AreNotSame(instance1, instance2);

@@ -101,15 +101,15 @@ namespace VirtualRadar.Database.Users
         private void OpenConnection()
         {
             if(_Connection == null) {
-                var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
 
-                var builder = Factory.Singleton.Resolve<ISQLiteConnectionStringBuilder>().Initialise();
+                var builder = Factory.Resolve<ISQLiteConnectionStringBuilder>().Initialise();
                 builder.DataSource = Path.Combine(configurationStorage.Folder, "Users.sqb");
                 builder.DateTimeFormat = SQLiteDateFormats.JulianDay;
                 builder.ReadOnly = false;
                 builder.FailIfMissing = false;
                 builder.JournalMode = SQLiteJournalModeEnum.Persist;
-                _Connection = Factory.Singleton.Resolve<ISQLiteConnectionProvider>().Create(builder.ConnectionString);
+                _Connection = Factory.Resolve<ISQLiteConnectionProvider>().Create(builder.ConnectionString);
                 _Connection.Open();
 
                 _TransactionHelper = new TransactionHelper();

@@ -19,7 +19,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public DialogResult ShowView()
         {
-            _Presenter = Factory.Singleton.Resolve<IBackgroundThreadQueuesPresenter>();
+            _Presenter = Factory.Resolve<IBackgroundThreadQueuesPresenter>();
             _Presenter.Initialise(this);
 
             return DialogResult.OK;

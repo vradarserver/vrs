@@ -95,7 +95,7 @@ namespace VirtualRadar.Library.Presenter
             _View = view;
 
             _View.ApplicationName = Strings.VirtualRadarServer;
-            _View.ApplicationVersion = Factory.Singleton.Resolve<IApplicationInformation>().ShortVersion;
+            _View.ApplicationVersion = Factory.Resolve<IApplicationInformation>().ShortVersion;
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace VirtualRadar.Library.Presenter
         /// </summary>
         public void StartApplication()
         {
-            var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+            var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
 
             ParseCommandLineParameters(configurationStorage);
             InitialiseLog(configurationStorage);
@@ -114,7 +114,7 @@ namespace VirtualRadar.Library.Presenter
 
             var configuration = LoadConfiguration(configurationStorage);
             FixConfigurationErrors(configurationStorage, configuration);
-            Factory.Singleton.Resolve<IHeartbeatService>().Singleton.Start();
+            Factory.Resolve<IHeartbeatService>().Singleton.Start();
             LoadPictureFolderCache();
             TestBaseStationDatabaseConnection();
             LoadStandingData();
@@ -167,7 +167,7 @@ namespace VirtualRadar.Library.Presenter
 
         private void CreateAdminUser(IConfigurationStorage configurationStorage, string createAdminName, string password)
         {
-            var userManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+            var userManager = Factory.Resolve<IUserManager>().Singleton;
 
             if(String.IsNullOrEmpty(password)) {
                 _View.ReportProblem(Strings.PasswordMissingOnCommandLine, Strings.PasswordMissingTitle, true);
@@ -177,7 +177,7 @@ namespace VirtualRadar.Library.Presenter
             }
 
             var hash = new Hash(password);
-            var user = Factory.Singleton.Resolve<IUser>();
+            var user = Factory.Resolve<IUser>();
             user.Enabled = true;
             user.LoginName = createAdminName;
             user.Name = createAdminName;
@@ -193,8 +193,8 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.SplashScreenInitialisingLog);
 
-            var log = Factory.Singleton.Resolve<ILog>().Singleton;
-            var applicationInformation = Factory.Singleton.Resolve<IApplicationInformation>();
+            var log = Factory.Resolve<ILog>().Singleton;
+            var applicationInformation = Factory.Resolve<IApplicationInformation>();
             log.Truncate(100);
             log.WriteLine("Program started, version {0}, build date {1} UTC", applicationInformation.FullVersion, applicationInformation.BuildDate);
             log.WriteLine("Working folder {0}", configurationStorage.Folder);
@@ -224,7 +224,7 @@ namespace VirtualRadar.Library.Presenter
         {
             var saveConfiguration = false;
 
-            var receiverFormatManager = Factory.Singleton.Resolve<IReceiverFormatManager>().Singleton;
+            var receiverFormatManager = Factory.Resolve<IReceiverFormatManager>().Singleton;
             foreach(var receiver in configuration.Receivers.Where(r => r.Enabled)) {
                 if(receiverFormatManager.GetProvider(receiver.DataSource) == null) {
                     receiver.Enabled = false;
@@ -232,7 +232,7 @@ namespace VirtualRadar.Library.Presenter
                 }
             }
 
-            var rebroadcastFormatManager = Factory.Singleton.Resolve<IRebroadcastFormatManager>().Singleton;
+            var rebroadcastFormatManager = Factory.Resolve<IRebroadcastFormatManager>().Singleton;
             foreach(var server in configuration.RebroadcastSettings.Where(r => r.Enabled)) {
                 if(rebroadcastFormatManager.GetProvider(server.Format) == null) {
                     server.Enabled = false;
@@ -248,21 +248,21 @@ namespace VirtualRadar.Library.Presenter
         private void InitialiseUserManager()
         {
             _View.ReportProgress(Strings.SplashScreenInitialisingUserManager);
-            var userManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+            var userManager = Factory.Resolve<IUserManager>().Singleton;
             userManager.Initialise();
         }
 
         private void LoadPictureFolderCache()
         {
             _View.ReportProgress(Strings.SplashScreenStartingPictureFolderCache);
-            Factory.Singleton.Resolve<IAutoConfigPictureFolderCache>().Singleton.Initialise();
+            Factory.Resolve<IAutoConfigPictureFolderCache>().Singleton.Initialise();
         }
 
         private void TestBaseStationDatabaseConnection()
         {
             _View.ReportProgress(Strings.SplashScreenOpeningBaseStationDatabase);
 
-            var autoConfigDatabase = Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>().Singleton;
+            var autoConfigDatabase = Factory.Resolve<IAutoConfigBaseStationDatabase>().Singleton;
             autoConfigDatabase.Initialise();
 
             var baseStationDatabase = autoConfigDatabase.Database;
@@ -297,21 +297,21 @@ namespace VirtualRadar.Library.Presenter
             _View.ReportProgress(Strings.SplashScreenLoadingStandingData);
 
             try {
-                var standingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
+                var standingDataManager = Factory.Resolve<IStandingDataManager>().Singleton;
                 standingDataManager.Load();
             } catch(Exception ex) {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Resolve<ILog>().Singleton;
                 log.WriteLine("Exception caught during load of standing data: {0}", ex.ToString());
             }
 
-            Factory.Singleton.Resolve<IBackgroundDataDownloader>().Singleton.Start();
+            Factory.Resolve<IBackgroundDataDownloader>().Singleton.Start();
         }
 
         private void StartTileServerSettingsManager()
         {
             _View.ReportProgress(Strings.SplashScreenInitialisingTileServerSettingsManager);
 
-            var manager = Factory.Singleton.Resolve<ITileServerSettingsManager>().Singleton;
+            var manager = Factory.Resolve<ITileServerSettingsManager>().Singleton;
             manager.Initialise();
         }
 
@@ -319,7 +319,7 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.SplashScreenInitialisingAirPressureManager);
 
-            var airPressureManager = Factory.Singleton.Resolve<IAirPressureManager>().Singleton;
+            var airPressureManager = Factory.Resolve<IAirPressureManager>().Singleton;
             airPressureManager.Start();
         }
 
@@ -327,7 +327,7 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.SplashScreenConnectingToBaseStation);
 
-            var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+            var feedManager = Factory.Resolve<IFeedManager>().Singleton;
             if(BackgroundThreadExceptionHandler != null) {
                 feedManager.ExceptionCaught += BackgroundThreadExceptionHandler;
             }
@@ -339,22 +339,22 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.SplashScreenStartingWebServer);
 
-            var autoConfigWebServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton;
+            var autoConfigWebServer = Factory.Resolve<IAutoConfigWebServer>().Singleton;
             autoConfigWebServer.Initialise();
 
             var webServer = autoConfigWebServer.WebServer;
             if(BackgroundThreadExceptionHandler != null) webServer.ExceptionCaught += BackgroundThreadExceptionHandler;
 
-            var connectionLogger = Factory.Singleton.Resolve<IConnectionLogger>().Singleton;
-            connectionLogger.LogDatabase = Factory.Singleton.Resolve<ILogDatabase>().Singleton;
+            var connectionLogger = Factory.Resolve<IConnectionLogger>().Singleton;
+            connectionLogger.LogDatabase = Factory.Resolve<ILogDatabase>().Singleton;
             connectionLogger.WebServer = webServer;
             if(BackgroundThreadExceptionHandler != null) connectionLogger.ExceptionCaught += BackgroundThreadExceptionHandler;
             connectionLogger.Start();
 
-            var webSite = Factory.Singleton.Resolve<IWebSite>();
-            webSite.BaseStationDatabase = Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>().Singleton.Database;
-            webSite.FlightSimulatorAircraftList = Factory.Singleton.Resolve<ISimpleAircraftList>();
-            webSite.StandingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
+            var webSite = Factory.Resolve<IWebSite>();
+            webSite.BaseStationDatabase = Factory.Resolve<IAutoConfigBaseStationDatabase>().Singleton.Database;
+            webSite.FlightSimulatorAircraftList = Factory.Resolve<ISimpleAircraftList>();
+            webSite.StandingDataManager = Factory.Resolve<IStandingDataManager>().Singleton;
 
             webSite.AttachSiteToServer(webServer);
             try {
@@ -374,7 +374,7 @@ namespace VirtualRadar.Library.Presenter
 
         private void ReportWebServerStartupFailure(IWebServer webServer, Exception ex)
         {
-            Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Caught exception when starting web server: {0}", ex.ToString());
+            Factory.Resolve<ILog>().Singleton.WriteLine("Caught exception when starting web server: {0}", ex.ToString());
             _View.ReportProblem(String.Format(Strings.CannotStartWebServerFull, webServer.Port), Strings.CannotStartWebServerTitle, false);
             _View.ReportProblem(Strings.SuggestUseDifferentPortFull, Strings.SuggestUseDifferentPortTitle, false);
         }
@@ -383,7 +383,7 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.SplashScreenStartingRebroadcastServers);
 
-            var manager = Factory.Singleton.Resolve<IRebroadcastServerManager>().Singleton;
+            var manager = Factory.Resolve<IRebroadcastServerManager>().Singleton;
             if(BackgroundThreadExceptionHandler != null) manager.ExceptionCaught += BackgroundThreadExceptionHandler;
             manager.Initialise();
             manager.Online = true;
@@ -393,8 +393,8 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.SplashScreenInitialisingUPnPManager);
 
-            var manager = Factory.Singleton.Resolve<IUniversalPlugAndPlayManager>();
-            manager.WebServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+            var manager = Factory.Resolve<IUniversalPlugAndPlayManager>();
+            manager.WebServer = Factory.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
             manager.Initialise();
 
             if(configuration.WebServerSettings.AutoStartUPnP) {
@@ -409,12 +409,12 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.SplashScreenStartingOnlineLookupManager);
 
-            var manager = Factory.Singleton.Resolve<IAircraftOnlineLookupManager>().Singleton;
-            var standaloneCache = Factory.Singleton.Resolve<IStandaloneAircraftOnlineLookupCache>();
+            var manager = Factory.Resolve<IAircraftOnlineLookupManager>().Singleton;
+            var standaloneCache = Factory.Resolve<IStandaloneAircraftOnlineLookupCache>();
 
             manager.RegisterCache(standaloneCache, 0, true);
 
-            var log = Factory.Singleton.Resolve<IAircraftOnlineLookupLog>().Singleton;
+            var log = Factory.Resolve<IAircraftOnlineLookupLog>().Singleton;
             log.Initialise();
         }
 
@@ -422,7 +422,7 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.SplashScreenStartingPlugins);
 
-            foreach(var plugin in Factory.Singleton.Resolve<IPluginManager>().Singleton.LoadedPlugins) {
+            foreach(var plugin in Factory.Resolve<IPluginManager>().Singleton.LoadedPlugins) {
                 try {
                     var parameters = new PluginStartupParameters(
                         _View.FlightSimulatorXAircraftList,
@@ -438,7 +438,7 @@ namespace VirtualRadar.Library.Presenter
                     }
                 } catch(Exception ex) {
                     Debug.WriteLine(String.Format("MainPresenter.StartPlugins caught exception: {0}", ex.ToString()));
-                    Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Caught exception when starting {0}: {1}", plugin.Name, ex.ToString());
+                    Factory.Resolve<ILog>().Singleton.WriteLine("Caught exception when starting {0}: {1}", plugin.Name, ex.ToString());
                     _View.ReportProblem(String.Format(Strings.PluginThrewExceptionFull, plugin.Name, ex.Message), Strings.PluginThrewExceptionTitle, false);
                 }
             }

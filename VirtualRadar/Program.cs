@@ -88,8 +88,8 @@ namespace VirtualRadar
                 Application.SetCompatibleTextRenderingDefault(false);
             }
 
-            Factory.Singleton.Register<IApplicationInformation, ApplicationInformation>();
-            Factory.Singleton.Register<IExceptionReporter, ExceptionReporter>();
+            Factory.Register<IApplicationInformation, ApplicationInformation>();
+            Factory.Register<IExceptionReporter, ExceptionReporter>();
             SQLiteWrapper.Implementations.Register(Factory.Singleton);
             VirtualRadar.Library.Implementations.Register(Factory.Singleton);
             VirtualRadar.Database.Implementations.Register(Factory.Singleton);
@@ -103,21 +103,21 @@ namespace VirtualRadar
             }
 
             if(args.Contains("-showConfigFolder")) {
-                var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
                 var folderMessage = String.Format("Configuration folder: {0}", configurationStorage.Folder);
                 Console.WriteLine(folderMessage);
-                Factory.Singleton.Resolve<IMessageBox>().Show("Configuration Folder");
+                Factory.Resolve<IMessageBox>().Show("Configuration Folder");
             }
 
             Interop.Tls12Workaround.EnableTls12Support();
 
-            var receiverFormatManager = Factory.Singleton.Resolve<IReceiverFormatManager>().Singleton;
+            var receiverFormatManager = Factory.Resolve<IReceiverFormatManager>().Singleton;
             receiverFormatManager.Initialise();
 
-            var rebroadcastFormatManager = Factory.Singleton.Resolve<IRebroadcastFormatManager>().Singleton;
+            var rebroadcastFormatManager = Factory.Resolve<IRebroadcastFormatManager>().Singleton;
             rebroadcastFormatManager.Initialise();
 
-            var pluginManager = Factory.Singleton.Resolve<IPluginManager>().Singleton;
+            var pluginManager = Factory.Resolve<IPluginManager>().Singleton;
             pluginManager.LoadPlugins();
 
             bool mutexAcquired;
@@ -156,7 +156,7 @@ namespace VirtualRadar
             mutexAcquired = false;
             var result = new Mutex(false, _SingleInstanceMutexName);
 
-            var runtimeEnvironment = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton;
+            var runtimeEnvironment = Factory.Resolve<IRuntimeEnvironment>().Singleton;
             if(!runtimeEnvironment.IsMono) {
                 var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
                 var securitySettings = new MutexSecurity();
@@ -167,7 +167,7 @@ namespace VirtualRadar
                     try {
                         mutexAcquired = result.WaitOne(1000, false);
                         if(!mutexAcquired) {
-                            Factory.Singleton.Resolve<IMessageBox>().Show(Strings.AnotherInstanceRunningFull, Strings.AnotherInstanceRunningTitle);
+                            Factory.Resolve<IMessageBox>().Show(Strings.AnotherInstanceRunningFull, Strings.AnotherInstanceRunningTitle);
                             Environment.Exit(1);
                         }
                     } catch(AbandonedMutexException) { }
@@ -183,7 +183,7 @@ namespace VirtualRadar
         private static void CheckForHttpListenerSupport()
         {
             if(!HttpListener.IsSupported) {
-                Factory.Singleton.Resolve<IMessageBox>().Show(Strings.WindowsVersionTooLowFull, Strings.WindowsVersionTooLowTitle);
+                Factory.Resolve<IMessageBox>().Show(Strings.WindowsVersionTooLowFull, Strings.WindowsVersionTooLowTitle);
                 Environment.Exit(1);
             }
         }
@@ -193,12 +193,12 @@ namespace VirtualRadar
         /// </summary>
         private static void CheckForDotNetThreePointFive()
         {
-            var runtimeEnvironment = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton;
+            var runtimeEnvironment = Factory.Resolve<IRuntimeEnvironment>().Singleton;
             if(!runtimeEnvironment.IsMono) {
                 try {
                     TestCanLoadThreePointFiveObject();
                 } catch(FileNotFoundException) {
-                    if(Factory.Singleton.Resolve<IMessageBox>().Show(Strings.DotNetVersionTooLowFull, Strings.DotNetVersionTooLowTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.Yes) {
+                    if(Factory.Resolve<IMessageBox>().Show(Strings.DotNetVersionTooLowFull, Strings.DotNetVersionTooLowTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.Yes) {
                         Process.Start("http://www.microsoft.com/downloads/details.aspx?FamilyID=ab99342f-5d1a-413d-8319-81da479ab0d7&displaylang=en");
                     }
                     Environment.Exit(1);
@@ -213,7 +213,7 @@ namespace VirtualRadar
         private static void TestCanLoadThreePointFiveObject()
         {
             // This will only work in 3.0 and above, and then only the full version of 3.5 (not the client profile)
-            var speech = Factory.Singleton.Resolve<ISpeechSynthesizerWrapper>();
+            var speech = Factory.Resolve<ISpeechSynthesizerWrapper>();
             speech.Dispose();
 
             // This will only work in 3.5 and above
@@ -233,7 +233,7 @@ namespace VirtualRadar
             ISimpleAircraftList flightSimulatorXAircraftList = null;
             bool loadSucceded = false;
 
-            using(var splashScreen = Factory.Singleton.Resolve<ISplashView>()) {
+            using(var splashScreen = Factory.Resolve<ISplashView>()) {
                 splashScreen.Initialise(args, BackgroundThread_ExceptionCaught);
                 splashScreen.ShowView();
 
@@ -245,24 +245,24 @@ namespace VirtualRadar
 
             try {
                 if(loadSucceded) {
-                    var pluginManager = Factory.Singleton.Resolve<IPluginManager>().Singleton;
+                    var pluginManager = Factory.Resolve<IPluginManager>().Singleton;
                     foreach(var plugin in pluginManager.LoadedPlugins) {
                         try {
                             plugin.GuiThreadStartup();
                         } catch(Exception ex) {
-                            var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                            var log = Factory.Resolve<ILog>().Singleton;
                             log.WriteLine("Caught exception in {0} plugin while calling GuiThreadStartup: {1}", plugin.Name, ex);
                         }
                     }
 
-                    using(var mainWindow = Factory.Singleton.Resolve<IMainView>()) {
+                    using(var mainWindow = Factory.Resolve<IMainView>()) {
                         _MainView = mainWindow;
                         mainWindow.Initialise(uPnpManager, flightSimulatorXAircraftList);
                         mainWindow.ShowView();
                     }
                 }
             } finally {
-                using(var shutdownWindow = Factory.Singleton.Resolve<IShutdownView>()) {
+                using(var shutdownWindow = Factory.Resolve<IShutdownView>()) {
                     shutdownWindow.Initialise(uPnpManager, baseStationAircraftList);
                     shutdownWindow.ShowView();
                     Thread.Sleep(1000);
@@ -282,7 +282,7 @@ namespace VirtualRadar
             // Don't translate, I don't want to hide errors if the translation throws exceptions
             Exception ex = e.ExceptionObject as Exception;
             if(ex != null) ShowException(ex);
-            else Factory.Singleton.Resolve<IMessageBox>().Show(String.Format("An exception that was not of type Exception was caught.\r\n{0}", e.ExceptionObject), "Unknown Exception Caught");
+            else Factory.Resolve<IMessageBox>().Show(String.Format("An exception that was not of type Exception was caught.\r\n{0}", e.ExceptionObject), "Unknown Exception Caught");
         }
 
         /// <summary>
@@ -305,7 +305,7 @@ namespace VirtualRadar
         {
             if(_MainView != null) _MainView.BubbleExceptionToGui(args.Value);
             else {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Resolve<ILog>().Singleton;
                 log.WriteLine("Unhandled exception caught in BaseStationAircraftList before GUI available to show to user: {0}", args.Value.ToString());
             }
         }
@@ -324,12 +324,12 @@ namespace VirtualRadar
 
                 ILog log = null;
                 try {
-                    log = Factory.Singleton.Resolve<ILog>().Singleton;
+                    log = Factory.Resolve<ILog>().Singleton;
                     if(log != null) log.WriteLine(message);
                 } catch { }
 
                 try {
-                    Factory.Singleton.Resolve<IMessageBox>().Show(message, "Unhandled Exception Caught");
+                    Factory.Resolve<IMessageBox>().Show(message, "Unhandled Exception Caught");
                 } catch(Exception doubleEx) {
                     Debug.WriteLine(String.Format("Program.ShowException caught double-exception: {0} when trying to display / log {1}", doubleEx.ToString(), ex.ToString()));
                     try {

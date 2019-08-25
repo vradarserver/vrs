@@ -140,9 +140,9 @@ namespace VirtualRadar.WebSite
             if(provider == null) throw new ArgumentNullException("provider");
             Provider = provider;
 
-            _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
-            _FeedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
-            _EmptyAircraftList = Factory.Singleton.Resolve<ISimpleAircraftList>();
+            _SharedConfiguration = Factory.Resolve<ISharedConfiguration>().Singleton;
+            _FeedManager = Factory.Resolve<IFeedManager>().Singleton;
+            _EmptyAircraftList = Factory.Resolve<ISimpleAircraftList>();
         }
 
         /// <summary>
@@ -258,7 +258,7 @@ namespace VirtualRadar.WebSite
         private void SortAircraft(List<IAircraft> aircraftListSnapshot, AircraftListJsonBuilderArgs args, Dictionary<int, double?> distances)
         {
             if(args.SortBy.Count > 0) {
-                IAircraftComparer comparer = Factory.Singleton.Resolve<IAircraftComparer>();
+                IAircraftComparer comparer = Factory.Resolve<IAircraftComparer>();
                 comparer.BrowserLocation = args.BrowserLatitude == null || args.BrowserLongitude == null ? null : new Coordinate((float)args.BrowserLatitude, (float)args.BrowserLongitude);
                 foreach(var sortBy in args.SortBy) {
                     comparer.SortBy.Add(sortBy);

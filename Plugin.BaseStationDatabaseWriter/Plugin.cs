@@ -251,14 +251,14 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 var optionsStorage = new OptionsStorage();
                 _Options = optionsStorage.Load();
 
-                _Database = Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>().Singleton.Database;
+                _Database = Factory.Resolve<IAutoConfigBaseStationDatabase>().Singleton.Database;
                 _Database.FileNameChanging += BaseStationDatabase_FileNameChanging;
                 _Database.FileNameChanged += BaseStationDatabase_FileNameChanged;
 
-                _StandingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
+                _StandingDataManager = Factory.Resolve<IStandingDataManager>().Singleton;
                 _StandingDataManager.LoadCompleted += StandingDataManager_LoadCompleted;
 
-                var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+                var feedManager = Factory.Resolve<IFeedManager>().Singleton;
                 feedManager.FeedsChanged += FeedManager_FeedsChanged;
 
                 _OnlineLookupCache = Provider.CreateOnlineLookupCache();
@@ -267,7 +267,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 _OnlineLookupCache.EnabledChanged += OnlineLookupCache_EnabledChanged;
                 StartSession();
 
-                var onlineLookupManager = Factory.Singleton.Resolve<IAircraftOnlineLookupManager>().Singleton;
+                var onlineLookupManager = Factory.Resolve<IAircraftOnlineLookupManager>().Singleton;
                 onlineLookupManager.RegisterCache(_OnlineLookupCache, 100, letManagerControlLifetime: false);
 
                 // If we process messages on the same thread as the listener raises the message received event on then we
@@ -279,7 +279,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
 
                 HookFeed();
 
-                _HeartbeatService = Factory.Singleton.Resolve<IHeartbeatService>();
+                _HeartbeatService = Factory.Resolve<IHeartbeatService>();
                 _HeartbeatService.SlowTick += Heartbeat_SlowTick;
                 _HeartbeatService.Start();
             }
@@ -292,7 +292,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// </summary>
         public void GuiThreadStartup()
         {
-            var webAdminViewManager = Factory.Singleton.Resolve<IWebAdminViewManager>().Singleton;
+            var webAdminViewManager = Factory.Resolve<IWebAdminViewManager>().Singleton;
             webAdminViewManager.RegisterTranslations(typeof(PluginStrings), "DatabaseWriterPlugin");
             webAdminViewManager.AddWebAdminView(new WebAdminView("/WebAdmin/", "DatabaseWriterPluginOptions.html", PluginStrings.WebAdminMenuName, () => new WebAdmin.OptionsView(), typeof(PluginStrings)) {
                 Plugin = this,
@@ -363,7 +363,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         private void HookFeed()
         {
             lock(_SyncLock) {
-                var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+                var feedManager = Factory.Resolve<IFeedManager>().Singleton;
                 var feed = feedManager.GetByUniqueId(_Options.ReceiverId, ignoreInvisibleFeeds: false);
                 if(feed != _Feed) {
                     if(feed != null) {
@@ -382,7 +382,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         private void UnhookFeed()
         {
             lock(_SyncLock) {
-                var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+                var feedManager = Factory.Resolve<IFeedManager>().Singleton;
                 var feed = feedManager.GetByUniqueId(_Options.ReceiverId, ignoreInvisibleFeeds: false);
                 if(feed != _Feed) {
                     if(_Feed != null && _Feed.Listener != null) {
@@ -402,7 +402,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// </summary>
         private void StartSession()
         {
-            var feedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
+            var feedManager = Factory.Resolve<IFeedManager>().Singleton;
 
             lock(_SyncLock) {
                 if(_Session == null) {
@@ -445,7 +445,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                         } catch(Exception ex) {
                             AbandonSession(ex, PluginStrings.ExceptionCaughtWhenStartingSession);
                             Debug.WriteLine(String.Format("BaseStationDatabaseWriter.Plugin.StartSession caught exception {0}", ex.ToString()));
-                            Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on starting session: {0}", ex.ToString());
+                            Factory.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on starting session: {0}", ex.ToString());
                         }
                     }
                 }
@@ -471,7 +471,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                     } catch(Exception ex) {
                         AbandonSession(ex, PluginStrings.ExceptionCaughtWhenClosingSession, Status);
                         Debug.WriteLine(String.Format("BaseStationDatabaseWriter.Plugin.EndSession caught exception {0}", ex.ToString()));
-                        Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on closing session: {0}", ex.ToString());
+                        Factory.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on closing session: {0}", ex.ToString());
                     } finally {
                         _Session = null;
                         _OnlineLookupCache.Enabled = false;
@@ -489,7 +489,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             var result = false;
 
-            var sqliteExceptionWrapper = Factory.Singleton.Resolve<ISQLiteException>();
+            var sqliteExceptionWrapper = Factory.Resolve<ISQLiteException>();
             sqliteExceptionWrapper.Initialise(ex);
             result = sqliteExceptionWrapper.IsLocked;
 
@@ -718,7 +718,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             lock(_SyncLock) {
                 if(_Session != null) {
-                    var standingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
+                    var standingDataManager = Factory.Resolve<IStandingDataManager>().Singleton;
 
                     foreach(var flightRecord in _FlightMap.Values) {
                         var codeBlock = standingDataManager.FindCodeBlock(flightRecord.Aircraft.ModeS);
@@ -913,7 +913,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
             } catch(Exception ex) {
                 AbandonSession(ex, PluginStrings.ExceptionCaughtWhenProcessingMessage);
                 Debug.WriteLine(String.Format("BaseStationDatabaseWriter.Plugin.MessageRelay_MessageReceived caught exception {0}", ex.ToString()));
-                Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on message processing: {0}", ex.ToString());
+                Factory.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on message processing: {0}", ex.ToString());
             }
         }
 
@@ -944,7 +944,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                     StatusDescription = PluginStrings.DatabaseLocked;
                 } else {
                     Debug.WriteLine(String.Format("BaseStationDatabaseWriter.Plugin.Heartbeat_SlowTick caught exception {0}", ex.ToString()));
-                    Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on flushing old flights: {0}", ex.ToString());
+                    Factory.Resolve<ILog>().Singleton.WriteLine("Database writer plugin caught exception on flushing old flights: {0}", ex.ToString());
                     StatusDescription = String.Format(PluginStrings.ExceptionCaught, ex.Message);
                 }
             }

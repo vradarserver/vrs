@@ -64,7 +64,7 @@ namespace VirtualRadar.WebSite
                         var text = args.QueryString["line"];
                         if(text != null) {
                             result = true;
-                            IAudio audio = Factory.Singleton.Resolve<IAudio>();
+                            IAudio audio = Factory.Resolve<IAudio>();
                             Responder.SendAudio(args.Request, args.Response, audio.SpeechToWavBytes(text), MimeType.WaveAudio);
                             args.Classification = ContentClassification.Audio;
                         }

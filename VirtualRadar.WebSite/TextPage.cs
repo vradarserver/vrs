@@ -49,7 +49,7 @@ namespace VirtualRadar.WebSite
         /// </summary>
         public TextPage(WebSite webSite) : base(webSite)
         {
-            _IsMono = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
+            _IsMono = Factory.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
             RegisterStaticPages();
         }
 
@@ -168,7 +168,7 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         private string SubstituteConfigurationOptions(string text, Configuration configuration)
         {
-            var vrsVersion = Factory.Singleton.Resolve<IApplicationInformation>().ShortVersion;
+            var vrsVersion = Factory.Resolve<IApplicationInformation>().ShortVersion;
             return text.Replace("__INITIAL_LATITUDE",                   configuration.GoogleMapSettings.InitialMapLatitude.ToString(CultureInfo.InvariantCulture))
                        .Replace("__INITIAL_LONGITUDE",                  configuration.GoogleMapSettings.InitialMapLongitude.ToString(CultureInfo.InvariantCulture))
                        .Replace("__INITIAL_MAPTYPE",                    configuration.GoogleMapSettings.InitialMapType)

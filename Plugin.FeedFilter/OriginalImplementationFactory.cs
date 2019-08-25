@@ -36,7 +36,7 @@ namespace VirtualRadar.Plugin.FeedFilter
             var type = typeof(T);
             if(!type.IsInterface) throw new InvalidOperationException(String.Format("{0} is not an interface", type.Name));
 
-            var instance = Factory.Singleton.Resolve(type);
+            var instance = Factory.Resolve(type);
             var currentImplementation = instance.GetType();
             if(_OriginalImplementationMap.ContainsKey(type)) _OriginalImplementationMap[type] = currentImplementation;
             else                                             _OriginalImplementationMap.Add(type, currentImplementation);

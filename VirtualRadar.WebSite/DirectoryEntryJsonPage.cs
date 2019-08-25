@@ -47,8 +47,8 @@ namespace VirtualRadar.WebSite
         /// <param name="webSite"></param>
         public DirectoryEntryJsonPage(WebSite webSite) : base(webSite)
         {
-            _FeedManager = Factory.Singleton.Resolve<IFeedManager>().Singleton;
-            _ApplicationInformation = Factory.Singleton.Resolve<IApplicationInformation>();
+            _FeedManager = Factory.Resolve<IFeedManager>().Singleton;
+            _ApplicationInformation = Factory.Resolve<IApplicationInformation>();
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         private DirectoryEntryJson BuildDirectoryEntry()
         {
-            var configuration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+            var configuration = Factory.Resolve<ISharedConfiguration>().Singleton;
 
             var feeds = _FeedManager.VisibleFeeds.Where(r => r.AircraftList != null).ToArray();
             var maxAircraft = feeds.Select(r => {

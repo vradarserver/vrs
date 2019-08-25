@@ -58,11 +58,11 @@ namespace VirtualRadar.Library
         public void Initialise()
         {
             if(DirectoryCache == null) {
-                DirectoryCache = Factory.Singleton.Resolve<IDirectoryCache>();
+                DirectoryCache = Factory.Resolve<IDirectoryCache>();
 
                 LoadConfiguration();
 
-                var configStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                var configStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
                 configStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
             }
         }
@@ -72,7 +72,7 @@ namespace VirtualRadar.Library
         /// </summary>
         private void LoadConfiguration()
         {
-            var configStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+            var configStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
             var config = configStorage.Load();
 
             // On testing over a slow VPN link it was found that this would cause the options screen to appear to hang -
@@ -88,7 +88,7 @@ namespace VirtualRadar.Library
                     var refreshTriggered = DirectoryCache.SetConfiguration(config.BaseStationSettings.PicturesFolder, config.BaseStationSettings.SearchPictureSubFolders);
                     if(refreshTriggered) OnCacheConfigurationChanged(EventArgs.Empty);
                 } catch(Exception ex) {
-                    var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                    var log = Factory.Resolve<ILog>().Singleton;
                     log.WriteLine("Caught exception while trying to set the directory cache properties: {0}", ex.ToString());
                 }
             })) {

@@ -50,7 +50,7 @@ namespace Test.VirtualRadar.WebServer
             _ConfigurationStorage.Setup(c => c.Load()).Returns(_Configuration);
 
             _PortMappings = new List<IPortMapping>();
-            _Manager = Factory.Singleton.Resolve<IUniversalPlugAndPlayManager>();
+            _Manager = Factory.Resolve<IUniversalPlugAndPlayManager>();
             _Provider = new Mock<IUniversalPlugAndPlayManagerProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Provider.Setup(p => p.GetPortMappings()).Returns(_PortMappings);
             _Manager.Provider = _Provider.Object;
@@ -84,7 +84,7 @@ namespace Test.VirtualRadar.WebServer
         [TestMethod]
         public void UniversalPlugAndPlayManager_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            var manager = Factory.Singleton.Resolve<IUniversalPlugAndPlayManager>();
+            var manager = Factory.Resolve<IUniversalPlugAndPlayManager>();
             Assert.IsNotNull(manager.Provider);
             TestUtilities.TestProperty(manager, "Provider", manager.Provider, _Provider.Object);
 

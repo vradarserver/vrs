@@ -181,8 +181,8 @@ namespace VirtualRadar.Library
             if(_AircraftOnlineLookup == null) {
                 lock(_SyncLock) {
                     if(_AircraftOnlineLookup == null) {
-                        _Clock = Factory.Singleton.Resolve<IClock>();
-                        _AircraftOnlineLookup = Factory.Singleton.Resolve<IAircraftOnlineLookup>().Singleton;
+                        _Clock = Factory.Resolve<IClock>();
+                        _AircraftOnlineLookup = Factory.Resolve<IAircraftOnlineLookup>().Singleton;
                         _AircraftOnlineLookup.AircraftFetched += AircraftOnlineLookup_AircraftFetched;
                     }
                 }
@@ -348,7 +348,7 @@ namespace VirtualRadar.Library
                 OnAircraftFetched(args);
             } catch(ThreadAbortException) {
             } catch(Exception ex) {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Resolve<ILog>().Singleton;
                 log.WriteLine("Caught exception in AircraftOnlineLookupManager during AircraftFetched: {0}", ex);
             }
         }

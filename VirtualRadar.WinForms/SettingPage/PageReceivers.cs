@@ -115,7 +115,7 @@ namespace VirtualRadar.WinForms.SettingPage
             base.CreateBindings();
 
             var combinedFeeds = SettingsView.CombinedFeed;
-            var receiverFormatManager = Factory.Singleton.Resolve<IReceiverFormatManager>().Singleton;
+            var receiverFormatManager = Factory.Resolve<IReceiverFormatManager>().Singleton;
             var settings = SettingsView.Configuration.GoogleMapSettings;
             AddControlBinder(new ComboBoxBinder<GoogleMapSettings, CombinedFeed, int>(settings, comboBoxWebSiteReceiverId,         combinedFeeds,   r => r.WebSiteReceiverId,           (r,v) => r.WebSiteReceiverId = v)           { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId, SortList = true, });
             AddControlBinder(new ComboBoxBinder<GoogleMapSettings, CombinedFeed, int>(settings, comboBoxClosestAircraftReceiverId, combinedFeeds,   r => r.ClosestAircraftReceiverId,   (r,v) => r.ClosestAircraftReceiverId = v)   { GetListItemDescription = r => r.Name, GetListItemValue = r => r.UniqueId, SortList = true, });

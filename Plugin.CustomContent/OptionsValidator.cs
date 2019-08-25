@@ -43,7 +43,7 @@ namespace VirtualRadar.Plugin.CustomContent
                     message = String.Format(CustomContentStrings.FileDoesNotExist, injectSettings.File);
                 }
             } catch(Exception ex) {
-                Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Caught exception while checking injection file: {0}", ex.ToString());
+                Factory.Resolve<ILog>().Singleton.WriteLine("Caught exception while checking injection file: {0}", ex.ToString());
                 message = String.Format(CustomContentStrings.ErrorCheckingFileName, ex.Message);
             }
 
@@ -89,7 +89,7 @@ namespace VirtualRadar.Plugin.CustomContent
                             }
                         }
                     } catch(Exception ex) {
-                        Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Caught exception while checking custom content site root folder: {0}", ex.ToString());
+                        Factory.Resolve<ILog>().Singleton.WriteLine("Caught exception while checking custom content site root folder: {0}", ex.ToString());
                         message = String.Format(CustomContentStrings.ErrorCheckingFolder, ex.Message);
                     }
 
@@ -123,7 +123,7 @@ namespace VirtualRadar.Plugin.CustomContent
                          message = String.Format(CustomContentStrings.DirectoryDoesNotExist, optionalFolder);
                     }
                 } catch(Exception ex) {
-                    Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Caught exception while checking custom content folder: {0}", ex.ToString());
+                    Factory.Resolve<ILog>().Singleton.WriteLine("Caught exception while checking custom content folder: {0}", ex.ToString());
                     message = String.Format(CustomContentStrings.ErrorCheckingFolder, ex.Message);
                 }
 

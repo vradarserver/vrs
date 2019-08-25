@@ -174,7 +174,7 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             base.CreateBindings();
 
-            var receiverFormatManager = Factory.Singleton.Resolve<IReceiverFormatManager>().Singleton;
+            var receiverFormatManager = Factory.Resolve<IReceiverFormatManager>().Singleton;
             var receiverFormats = receiverFormatManager.GetRegisteredFormats();
 
             AddControlBinder(new CheckBoxBoolBinder<Receiver>   (Receiver, checkBoxEnabled,         r => r.Enabled,         (r,v) => r.Enabled = v)         { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });

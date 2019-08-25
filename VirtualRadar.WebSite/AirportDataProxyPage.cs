@@ -35,7 +35,7 @@ namespace VirtualRadar.WebSite
         /// </summary>
         public AirportDataProxyPage(WebSite webSite) : base(webSite)
         {
-            _AirportDataApi = Factory.Singleton.Resolve<IAirportDataDotCom>();
+            _AirportDataApi = Factory.Resolve<IAirportDataDotCom>();
         }
         #endregion
 

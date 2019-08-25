@@ -109,20 +109,20 @@ namespace VirtualRadar.Library
         {
             if(!_Started) {
                 _Started = true;
-                _Clock = Factory.Singleton.Resolve<IClock>();
-                Downloader = Factory.Singleton.Resolve<IAirPressureDownloader>();
-                Lookup = Factory.Singleton.Resolve<IAirPressureLookup>();
+                _Clock = Factory.Resolve<IClock>();
+                Downloader = Factory.Resolve<IAirPressureDownloader>();
+                Lookup = Factory.Resolve<IAirPressureLookup>();
 
-                _SharedConfiguration = Factory.Singleton.Resolve<ISharedConfiguration>().Singleton;
+                _SharedConfiguration = Factory.Resolve<ISharedConfiguration>().Singleton;
                 Enabled = _SharedConfiguration.Get().BaseStationSettings.DownloadGlobalAirPressureReadings;
                 _SharedConfiguration.ConfigurationChanged += SharedConfiguration_ConfigurationChanged;
 
                 if(_BackgroundWorker == null) {
-                    _BackgroundWorker = Factory.Singleton.Resolve<IBackgroundWorker>();
+                    _BackgroundWorker = Factory.Resolve<IBackgroundWorker>();
                     _BackgroundWorker.DoWork += BackgroundWorker_DoWork;
                 }
 
-                _HeartbeatService = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
+                _HeartbeatService = Factory.Resolve<IHeartbeatService>().Singleton;
                 _HeartbeatService.SlowTick += HeartbeatService_SlowTick;
             }
         }
@@ -158,7 +158,7 @@ namespace VirtualRadar.Library
             } catch(ThreadAbortException) {
             } catch(Exception ex) {
                 try {
-                    var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                    var log = Factory.Resolve<ILog>().Singleton;
                     log.WriteLine("Caught exception in DownloadAirPressuresOnBackgroundThread: {0}", ex.ToString());
                 } catch {
                 }

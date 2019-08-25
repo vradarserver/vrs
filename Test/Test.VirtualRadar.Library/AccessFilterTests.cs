@@ -30,7 +30,7 @@ namespace Test.VirtualRadar.Library
         [TestInitialize]
         public void TestInitialise()
         {
-            _Filter = Factory.Singleton.Resolve<IAccessFilter>();
+            _Filter = Factory.Resolve<IAccessFilter>();
             _Access = new Access();
         }
 

@@ -190,7 +190,7 @@ namespace VirtualRadar.WinForms
                     columnHeaderMessage.Width += columnHeaderConnector.Width;
                 }
 
-                _Presenter = Factory.Singleton.Resolve<IConnectorActivityLogPresenter>();
+                _Presenter = Factory.Resolve<IConnectorActivityLogPresenter>();
                 _Presenter.Initialise(this);
                 _Sorter.RefreshSortIndicators();
             }

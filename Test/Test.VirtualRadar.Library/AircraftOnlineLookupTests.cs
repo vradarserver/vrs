@@ -50,7 +50,7 @@ namespace Test.VirtualRadar.Library
             _RuntimeEnvironment = TestUtilities.CreateMockSingleton<IRuntimeEnvironment>();
             _RuntimeEnvironment.Setup(r => r.IsTest).Returns(true);
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
             _Heartbeat = TestUtilities.CreateMockSingleton<IHeartbeatService>();
             _SharedConfiguration = TestUtilities.CreateMockSingleton<ISharedConfiguration>();
             _Configuration = new Configuration();
@@ -81,7 +81,7 @@ namespace Test.VirtualRadar.Library
 
             _FetchedRecorder = new EventRecorder<AircraftOnlineLookupEventArgs>();
 
-            _Lookup = Factory.Singleton.Resolve<IAircraftOnlineLookup>();
+            _Lookup = Factory.Resolve<IAircraftOnlineLookup>();
         }
 
         [TestCleanup]
@@ -95,8 +95,8 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void AircraftOnlineLookup_Singleton_Always_Returns_Same_Object()
         {
-            var first = Factory.Singleton.Resolve<IAircraftOnlineLookup>().Singleton;
-            var second = Factory.Singleton.Resolve<IAircraftOnlineLookup>().Singleton;
+            var first = Factory.Resolve<IAircraftOnlineLookup>().Singleton;
+            var second = Factory.Resolve<IAircraftOnlineLookup>().Singleton;
             Assert.AreSame(first, second);
         }
         #endregion
@@ -105,7 +105,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void AircraftOnlineLookup_Provider_Is_Initially_Null()
         {
-            var lookup = Factory.Singleton.Resolve<IAircraftOnlineLookup>();
+            var lookup = Factory.Resolve<IAircraftOnlineLookup>();
             Assert.IsNull(lookup.Provider);
         }
 

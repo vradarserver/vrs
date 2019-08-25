@@ -56,7 +56,7 @@ namespace VirtualRadar.WinForms
             if(!DesignMode) {
                 Localise.Form(this);
 
-                var presenter = Factory.Singleton.Resolve<IInvalidPluginsPresenter>();
+                var presenter = Factory.Resolve<IInvalidPluginsPresenter>();
                 presenter.Initialise(this);
             }
         }

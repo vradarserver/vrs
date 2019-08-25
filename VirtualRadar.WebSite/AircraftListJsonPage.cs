@@ -100,7 +100,7 @@ namespace VirtualRadar.WebSite
         private bool HandleAircraftListJson(RequestReceivedEventArgs args, int feedId, IAircraftList aircraftList, bool isFlightSimulator)
         {
             if(_Builder == null) {
-                _Builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
+                _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
                 _Builder.Initialise(Provider);
             }
 

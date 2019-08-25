@@ -42,7 +42,7 @@ namespace VirtualRadar.Interface
     /// <example>
     /// This is the normal pattern for accessing an interface that implements ISingleton:
     /// <code>
-    /// ILog log = Factory.Singleton.Resolve&lt;ILog&gt;().Singleton;
+    /// ILog log = Factory.Resolve&lt;ILog&gt;().Singleton;
     /// log.WriteLine("This will appear in the log");
     /// </code>
     /// This is the normal pattern for creating the singleton object in an implementation:

@@ -53,9 +53,9 @@ namespace Test.VirtualRadar.Library
             _ExceptionCaughtEvent = new EventRecorder<EventArgs<Exception>>();
 
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
-            _ConnectionLogger = Factory.Singleton.Resolve<IConnectionLogger>();
+            _ConnectionLogger = Factory.Resolve<IConnectionLogger>();
             _ConnectionLogger.WebServer = _WebServer.Object;
             _ConnectionLogger.LogDatabase = _LogDatabase.Object;
         }
@@ -112,7 +112,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void ConnectionLogger_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            _ConnectionLogger = Factory.Singleton.Resolve<IConnectionLogger>();
+            _ConnectionLogger = Factory.Resolve<IConnectionLogger>();
 
             TestUtilities.TestProperty(_ConnectionLogger, "LogDatabase", null, _LogDatabase.Object);
             TestUtilities.TestProperty(_ConnectionLogger, "WebServer", null, _WebServer.Object);
@@ -121,8 +121,8 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void ConnectionLogger_Singleton_Returns_Same_Reference_For_All_Instances()
         {
-            var instance1 = Factory.Singleton.Resolve<IConnectionLogger>();
-            var instance2 = Factory.Singleton.Resolve<IConnectionLogger>();
+            var instance1 = Factory.Resolve<IConnectionLogger>();
+            var instance2 = Factory.Resolve<IConnectionLogger>();
 
             Assert.AreNotSame(instance1, instance2);
             Assert.IsNotNull(instance1.Singleton);

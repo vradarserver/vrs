@@ -41,7 +41,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _PluginManager = TestUtilities.CreateMockSingleton<IPluginManager>();
             _View = new Mock<IPluginsView>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
 
-            _Presenter = Factory.Singleton.Resolve<IPluginsPresenter>();
+            _Presenter = Factory.Resolve<IPluginsPresenter>();
         }
 
         [TestCleanup]

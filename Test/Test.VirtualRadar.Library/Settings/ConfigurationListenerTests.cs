@@ -35,7 +35,7 @@ namespace Test.VirtualRadar.Library.Settings
         public void TestInitialise()
         {
             _Configuration = new Configuration();
-            _Listener = Factory.Singleton.Resolve<IConfigurationListener>();
+            _Listener = Factory.Resolve<IConfigurationListener>();
 
             _PropertyChanged = new EventRecorder<ConfigurationListenerEventArgs>();
             _Listener.PropertyChanged += _PropertyChanged.Handler;

@@ -244,7 +244,7 @@ namespace Test.VirtualRadar.Library
         [TestInitialize]
         public void TestInitialise()
         {
-            _Serialiser = Factory.Singleton.Resolve<IXmlSerialiser>();
+            _Serialiser = Factory.Resolve<IXmlSerialiser>();
             _Streams = new List<MemoryStream>();
             _TextWriters = new Dictionary<TextWriter,StringBuilder>();
         }

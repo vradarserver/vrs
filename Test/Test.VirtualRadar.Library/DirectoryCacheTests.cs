@@ -66,7 +66,7 @@ namespace Test.VirtualRadar.Library
             _ClassFactorySnapshot = Factory.TakeSnapshot();
 
             _Clock = new ClockMock() { UtcNowValue = _StandardDate };
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
             CreateBackgroundWorkerMock();
             _HeartbeatService = TestUtilities.CreateMockSingleton<IHeartbeatService>();
@@ -108,7 +108,7 @@ namespace Test.VirtualRadar.Library
                 return result;
             });
 
-            _DirectoryCache = Factory.Singleton.Resolve<IDirectoryCache>();
+            _DirectoryCache = Factory.Resolve<IDirectoryCache>();
             _DirectoryCache.Provider = _Provider.Object;
         }
 
@@ -201,7 +201,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void DirectoryCache_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            var cache = Factory.Singleton.Resolve<IDirectoryCache>();
+            var cache = Factory.Resolve<IDirectoryCache>();
             Assert.IsNotNull(cache.Provider);
             TestUtilities.TestProperty(cache, r => r.Provider, cache.Provider, _Provider.Object);
             TestUtilities.TestProperty(cache, r => r.Folder, null, "Abc");

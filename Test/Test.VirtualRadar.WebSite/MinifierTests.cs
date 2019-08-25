@@ -41,7 +41,7 @@ namespace Test.VirtualRadar.WebSite
             _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
             _ConfigurationStorage.Setup(r => r.Load()).Returns(_Configuration);
 
-            _Minifier = Factory.Singleton.Resolve<IMinifier>();
+            _Minifier = Factory.Resolve<IMinifier>();
         }
 
         [TestCleanup]

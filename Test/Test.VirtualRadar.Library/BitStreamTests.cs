@@ -30,7 +30,7 @@ namespace Test.VirtualRadar.Library
         [TestInitialize]
         public void TestInitialise()
         {
-            _BitStream = Factory.Singleton.Resolve<IBitStream>();
+            _BitStream = Factory.Resolve<IBitStream>();
         }
 
         private byte[] ParseBinary(string binary)

@@ -38,7 +38,7 @@ namespace VirtualRadar.Plugin.TileServerCache
         /// </summary>
         public static void Initialise()
         {
-            var configStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+            var configStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
             _ConfigurationFolder = configStorage.Folder;
             _DefaultCacheRootFolder = Path.Combine(_ConfigurationFolder, "TileServerCache");
         }

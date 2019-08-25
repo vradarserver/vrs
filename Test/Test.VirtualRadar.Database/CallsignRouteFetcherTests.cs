@@ -49,9 +49,9 @@ namespace Test.VirtualRadar.Database
             _OriginalFactory = Factory.TakeSnapshot();
 
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
-            _Fetcher = Factory.Singleton.Resolve<ICallsignRouteFetcher>();
+            _Fetcher = Factory.Resolve<ICallsignRouteFetcher>();
             _FetchedHandler = new EventRecorder<EventArgs<CallsignRouteDetail>>();
             _Fetcher.Fetched += _FetchedHandler.Handler;
 
@@ -76,7 +76,7 @@ namespace Test.VirtualRadar.Database
             // the TestUtilities don't support creating non-singleton instances of ISingletons, do we
             // have to do it manually.
             _Heartbeat = TestUtilities.CreateMockInstance<IHeartbeatService>();
-            Factory.Singleton.RegisterInstance<IHeartbeatService>(_Heartbeat.Object);
+            Factory.RegisterInstance<IHeartbeatService>(_Heartbeat.Object);
 
             _StandingDataManager = TestUtilities.CreateMockSingleton<IStandingDataManager>();
             _Route = null;
@@ -96,8 +96,8 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void CallsignRouteFetcher_Singleton_Returns_Same_Instance_For_All_References()
         {
-            var instance1 = Factory.Singleton.Resolve<ICallsignRouteFetcher>();
-            var instance2 = Factory.Singleton.Resolve<ICallsignRouteFetcher>();
+            var instance1 = Factory.Resolve<ICallsignRouteFetcher>();
+            var instance2 = Factory.Resolve<ICallsignRouteFetcher>();
 
             Assert.IsNotNull(instance1.Singleton);
             Assert.AreNotSame(instance1, instance2);

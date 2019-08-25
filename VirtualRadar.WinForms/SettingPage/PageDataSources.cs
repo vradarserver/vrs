@@ -82,7 +82,7 @@ namespace VirtualRadar.WinForms.SettingPage
         /// </summary>
         public PageDataSources() : base()
         {
-            _TileServerSettingsManager = Factory.Singleton.Resolve<ITileServerSettingsManager>().Singleton;
+            _TileServerSettingsManager = Factory.Resolve<ITileServerSettingsManager>().Singleton;
             InitializeComponent();
         }
 

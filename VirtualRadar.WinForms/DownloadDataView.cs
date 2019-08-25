@@ -77,7 +77,7 @@ namespace VirtualRadar.WinForms
 
                 Status = "";
 
-                _Presenter = Factory.Singleton.Resolve<IDownloadDataPresenter>();
+                _Presenter = Factory.Resolve<IDownloadDataPresenter>();
                 _Presenter.Initialise(this);
             }
         }

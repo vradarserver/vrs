@@ -45,7 +45,7 @@ namespace Test.VirtualRadar.Library
                 return codeResult;
             });
 
-            _CallsignParser = Factory.Singleton.Resolve<ICallsignParser>();
+            _CallsignParser = Factory.Resolve<ICallsignParser>();
         }
 
         [TestCleanup]

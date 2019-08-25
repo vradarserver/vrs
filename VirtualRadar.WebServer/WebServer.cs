@@ -109,7 +109,7 @@ namespace VirtualRadar.WebServer
             public IPAddress[] GetHostAddresses()
             {
                 if(_LocalIpAddresses == null) {
-                    if(!Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton.IsMono) {
+                    if(!Factory.Resolve<IRuntimeEnvironment>().Singleton.IsMono) {
                         _LocalIpAddresses = Dns.GetHostAddresses("");
                     } else {
                         // Ugh...
@@ -667,7 +667,7 @@ namespace VirtualRadar.WebServer
                         OnRequestFinished(new EventArgs<long>(requestReceivedEventArgsId));
                     }
                 } catch(Exception ex) {
-                    var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                    var log = Factory.Resolve<ILog>().Singleton;
                     log.WriteLine("Caught exception in RequestFinished event handler: {0}", ex);
                 }
             }
@@ -865,7 +865,7 @@ namespace VirtualRadar.WebServer
                     if(restrictedPath != null) {
                         restrictedPath.Filter.Initialise(access);
                     } else {
-                        var filter = Factory.Singleton.Resolve<IAccessFilter>();
+                        var filter = Factory.Resolve<IAccessFilter>();
                         filter.Initialise(access);
 
                         restrictedPath = new RestrictedPath() {

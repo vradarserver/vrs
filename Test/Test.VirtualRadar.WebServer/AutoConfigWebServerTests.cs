@@ -48,7 +48,7 @@ namespace Test.VirtualRadar.WebServer
             _ClassFactorySnapshot = Factory.TakeSnapshot();
 
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
             _WebServer = TestUtilities.CreateMockImplementation<IWebServer>();
             _WebServerProvider = TestUtilities.CreateMockImplementation<IWebServerProvider>();
@@ -64,7 +64,7 @@ namespace Test.VirtualRadar.WebServer
             _InstallerSettings = new InstallerSettings();
             _InstallerSettingsStorage.Setup(s => s.Load()).Returns(_InstallerSettings);
 
-            _AutoConfigWebServer = Factory.Singleton.Resolve<IAutoConfigWebServer>();
+            _AutoConfigWebServer = Factory.Resolve<IAutoConfigWebServer>();
         }
 
         [TestCleanup]
@@ -84,8 +84,8 @@ namespace Test.VirtualRadar.WebServer
         [TestMethod]
         public void AutoConfigWebServer_Singleton_Returns_Same_Instance_For_All_References()
         {
-            var instance1 = Factory.Singleton.Resolve<IAutoConfigWebServer>();
-            var instance2 = Factory.Singleton.Resolve<IAutoConfigWebServer>();
+            var instance1 = Factory.Resolve<IAutoConfigWebServer>();
+            var instance2 = Factory.Resolve<IAutoConfigWebServer>();
 
             Assert.AreNotSame(instance1, instance2);
             Assert.IsNotNull(instance1.Singleton);

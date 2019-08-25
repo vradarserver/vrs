@@ -150,11 +150,11 @@ namespace VirtualRadar.Plugin.FeedFilter
         {
             var options = OptionsStorage.Load(this);
 
-            _HtmlLocaliser = Factory.Singleton.Resolve<IHtmlLocaliser>();
+            _HtmlLocaliser = Factory.Resolve<IHtmlLocaliser>();
             _HtmlLocaliser.Initialise();
             _HtmlLocaliser.AddResourceStrings(typeof(FeedFilterStrings));
 
-            _WebSiteExtender = Factory.Singleton.Resolve<IWebSiteExtender>();
+            _WebSiteExtender = Factory.Resolve<IWebSiteExtender>();
             _WebSiteExtender.Enabled = false;
             _WebSiteExtender.WebRootSubFolder = "Web";
             _WebSiteExtender.PageHandlers.Add(String.Format("/{0}/FetchFilterConfiguration.json", ProtectedFolder), FetchFilterConfiguration);
@@ -187,7 +187,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         public void ShowWinFormsOptionsUI()
         {
             using(var dialog = new WinForms.OptionsView()) {
-                var webServer = Factory.Singleton.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+                var webServer = Factory.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
 
                 dialog.Options = OptionsStorage.Load(this);
                 dialog.FilterSettingsUrl = String.Format("{0}/FeedFilter/index.html", webServer.LocalAddress);
@@ -275,7 +275,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// <returns></returns>
         private string LogException(Exception ex, string logMessage)
         {
-            var log = Factory.Singleton.Resolve<ILog>().Singleton;
+            var log = Factory.Resolve<ILog>().Singleton;
             log.WriteLine(logMessage);
 
             return ex.Message;
@@ -303,7 +303,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         private void SendJsonResponse<T>(RequestReceivedEventArgs args, T json)
         {
             var jsonText = JsonConvert.SerializeObject(json);
-            var responder = Factory.Singleton.Resolve<IResponder>();
+            var responder = Factory.Resolve<IResponder>();
             responder.SendText(args.Request, args.Response, jsonText, Encoding.UTF8, MimeType.Json);
             args.Handled = true;
         }

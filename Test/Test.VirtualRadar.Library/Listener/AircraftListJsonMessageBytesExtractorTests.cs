@@ -28,7 +28,7 @@ namespace Test.VirtualRadar.Library.Listener
         [TestInitialize]
         public void TestInitialise()
         {
-            _Extractor = Factory.Singleton.Resolve<IAircraftListJsonMessageBytesExtractor>();
+            _Extractor = Factory.Resolve<IAircraftListJsonMessageBytesExtractor>();
             _CommonTests = new CommonMessageBytesExtractorTests(TestContext, _Extractor, ExtractedBytesFormat.AircraftListJson);
         }
 

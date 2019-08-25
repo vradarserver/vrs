@@ -78,7 +78,7 @@ namespace VirtualRadar.Headless.View
         /// <returns></returns>
         public DialogResult ShowView()
         {
-            var presenter = Factory.Singleton.Resolve<ISplashPresenter>();
+            var presenter = Factory.Resolve<ISplashPresenter>();
             presenter.CommandLineArgs = _CommandLineArgs;
             presenter.BackgroundThreadExceptionHandler = _BackgroundThreadExceptionHandler;
             presenter.Initialise(this);
@@ -95,13 +95,13 @@ namespace VirtualRadar.Headless.View
 
         public void ReportProblem(string message, string title, bool quitApplication)
         {
-            Factory.Singleton.Resolve<IMessageBox>().Show(message, title);
+            Factory.Resolve<IMessageBox>().Show(message, title);
             if(quitApplication) Environment.Exit(1);
         }
 
         public bool YesNoPrompt(string message, string title, bool defaultYes)
         {
-            var result = Factory.Singleton.Resolve<IMessageBox>().Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question, defaultYes ? MessageBoxDefaultButton.Button1 : MessageBoxDefaultButton.Button2);
+            var result = Factory.Resolve<IMessageBox>().Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question, defaultYes ? MessageBoxDefaultButton.Button1 : MessageBoxDefaultButton.Button2);
             return result == DialogResult.Yes;
         }
     }

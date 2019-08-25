@@ -47,7 +47,7 @@ namespace VirtualRadar.Library.Settings
         /// </summary>
         public string Folder
         {
-            get { return _Folder ?? Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Folder; }
+            get { return _Folder ?? Factory.Resolve<IConfigurationStorage>().Singleton.Folder; }
             set { _Folder = value; }
         }
 
@@ -134,7 +134,7 @@ namespace VirtualRadar.Library.Settings
                     if(!isCustom) {
                         throw;
                     }
-                    var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                    var log = Factory.Resolve<ILog>().Singleton;
                     log.WriteLine("Caught exception parsing {0}: {1}", fullPath, ex.ToString());
                 }
             }

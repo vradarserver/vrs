@@ -41,7 +41,7 @@ namespace Test.VirtualRadar.Library.Settings
             _FileContent = "";
             _FileExists = true;
 
-            _Storage = Factory.Singleton.Resolve<IPluginManifestStorage>();
+            _Storage = Factory.Resolve<IPluginManifestStorage>();
             _Storage.Provider = _Provider.Object;
         }
         #endregion
@@ -50,7 +50,7 @@ namespace Test.VirtualRadar.Library.Settings
         [TestMethod]
         public void PluginManifestStorage_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            var storage = Factory.Singleton.Resolve<IPluginManifestStorage>();
+            var storage = Factory.Resolve<IPluginManifestStorage>();
             Assert.IsNotNull(storage.Provider);
             TestUtilities.TestProperty(storage, "Provider", storage.Provider, _Provider.Object);
         }

@@ -106,7 +106,7 @@ namespace VirtualRadar.Library.Network
             }
 
             if(_Compressor == null) {
-                _Compressor = Factory.Singleton.Resolve<IBaseStationMessageCompressor>();
+                _Compressor = Factory.Resolve<IBaseStationMessageCompressor>();
             }
 
             _Listener = RebroadcastServer.Feed.Listener;

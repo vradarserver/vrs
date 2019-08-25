@@ -24,8 +24,8 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void RuntimeEnvironment_Singleton_Returns_Same_Reference_For_All_Instances()
         {
-            var instance1 = Factory.Singleton.Resolve<IRuntimeEnvironment>();
-            var instance2 = Factory.Singleton.Resolve<IRuntimeEnvironment>();
+            var instance1 = Factory.Resolve<IRuntimeEnvironment>();
+            var instance2 = Factory.Resolve<IRuntimeEnvironment>();
 
             Assert.AreNotSame(instance1, instance2);
             Assert.IsNotNull(instance1.Singleton);
@@ -35,7 +35,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void RuntimeEnvironment_IsTest_Always_Returns_False()
         {
-            var runtimeEnvironment = Factory.Singleton.Resolve<IRuntimeEnvironment>();
+            var runtimeEnvironment = Factory.Resolve<IRuntimeEnvironment>();
             Assert.IsFalse(runtimeEnvironment.IsTest);
 
             runtimeEnvironment.IsTest = true;

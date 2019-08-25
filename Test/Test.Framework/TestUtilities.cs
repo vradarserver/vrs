@@ -319,12 +319,12 @@ namespace Test.Framework
         /// need to make sure that any tests will pick up the accidental use of a private instance of the class. For example we
         /// want to make sure that if the user does this:
         /// </para><code>
-        /// var log = Factory.Singleton.Resolve&lt;ILog&gt;();
+        /// var log = Factory.Resolve&lt;ILog&gt;();
         /// log.DoSomething();
         /// </code><para>
         /// instead of this:
         /// </para><code>
-        /// var log = Factory.Singleton.Resolve&lt;ILog&gt;().Singleton;
+        /// var log = Factory.Resolve&lt;ILog&gt;().Singleton;
         /// log.DoSomething();
         /// </code><para>
         /// then the test will throw an exception. We do this by creating a strict mock that only has Singleton setup for it, so any
@@ -350,7 +350,7 @@ namespace Test.Framework
             var lambda = Expression.Lambda<Func<T, T>>(body, parameter);
             strict.Setup(lambda).Returns(result.Object);
 
-            Factory.Singleton.RegisterInstance(typeof(T), strict.Object);
+            Factory.RegisterInstance(typeof(T), strict.Object);
 
             return result;
         }
@@ -366,7 +366,7 @@ namespace Test.Framework
             if(typeof(ISingleton<T>).IsAssignableFrom(typeof(T))) throw new InvalidOperationException(String.Format("{0} implements {1}, use CreateMockSingleton instead", typeof(T).Name, typeof(ISingleton<>).Name));
 
             Mock<T> result = CreateMockInstance<T>();
-            Factory.Singleton.RegisterInstance(typeof(T), result.Object);
+            Factory.RegisterInstance(typeof(T), result.Object);
 
             return result;
         }

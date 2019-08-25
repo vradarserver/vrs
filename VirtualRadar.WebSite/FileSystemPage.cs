@@ -176,7 +176,7 @@ namespace VirtualRadar.WebSite
             get
             {
                 if(_DefaultRootFolder == null) {
-                    var runtime = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton;
+                    var runtime = Factory.Resolve<IRuntimeEnvironment>().Singleton;
                     _DefaultRootFolder = Path.Combine(runtime.ExecutablePath, "Web");
                 }
                 return _DefaultRootFolder;
@@ -190,7 +190,7 @@ namespace VirtualRadar.WebSite
         /// </summary>
         public FileSystemPage(WebSite webSite) : base(webSite)
         {
-            var runtime = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton;
+            var runtime = Factory.Resolve<IRuntimeEnvironment>().Singleton;
             var defaultSiteRoot = new SiteRoot() {
                 Folder = String.Format("{0}{1}", Path.Combine(runtime.ExecutablePath, "Web"), Path.DirectorySeparatorChar),
                 Priority = 0,
@@ -307,7 +307,7 @@ namespace VirtualRadar.WebSite
                     var isHtml = ".html".Equals(extension, StringComparison.OrdinalIgnoreCase) || ".htm".Equals(extension, StringComparison.OrdinalIgnoreCase);
 
                     if(isProtected && !requestFile.Root.TestChecksum(checksumEntry, requestFile.FileName)) {
-                        Factory.Singleton.Resolve<ILog>().Singleton.WriteLine("Will not serve {0}, it has failed the checksum test", args.PathAndFile);
+                        Factory.Resolve<ILog>().Singleton.WriteLine("Will not serve {0}, it has failed the checksum test", args.PathAndFile);
                         if(!isHtml) {
                             args.Response.StatusCode = HttpStatusCode.BadRequest;
                         } else {

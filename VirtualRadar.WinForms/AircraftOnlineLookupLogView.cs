@@ -197,7 +197,7 @@ namespace VirtualRadar.WinForms
             if(!DesignMode) {
                 Localise.Form(this);
 
-                _Presenter = Factory.Singleton.Resolve<IAircraftOnlineLookupLogPresenter>();
+                _Presenter = Factory.Resolve<IAircraftOnlineLookupLogPresenter>();
                 _Presenter.Initialise(this);
             }
         }

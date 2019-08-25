@@ -32,7 +32,7 @@ namespace VirtualRadar.Interop
             try {
                 ServicePointManager.SecurityProtocol |= Tls12;
             } catch(Exception ex) {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Resolve<ILog>().Singleton;
                 log.WriteLine($"Cannot switch TLS 1.2 support on: {ex.Message}");
             }
         }

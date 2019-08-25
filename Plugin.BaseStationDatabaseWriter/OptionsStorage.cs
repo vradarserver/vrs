@@ -38,7 +38,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// <returns></returns>
         public Options Load()
         {
-            var storage = Factory.Singleton.Resolve<IPluginSettingsStorage>().Singleton;
+            var storage = Factory.Resolve<IPluginSettingsStorage>().Singleton;
             var pluginSettings = storage.Load();
 
             var jsonText = pluginSettings.ReadString(Plugin.Singleton, OptionsField);
@@ -68,7 +68,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
             }
             ++options.DataVersion;
 
-            var storage = Factory.Singleton.Resolve<IPluginSettingsStorage>().Singleton;
+            var storage = Factory.Resolve<IPluginSettingsStorage>().Singleton;
 
             var pluginSettings = storage.Load();
             pluginSettings.Write(Plugin.Singleton, OptionsField, JsonConvert.SerializeObject(options));

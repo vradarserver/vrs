@@ -63,7 +63,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
             var optionsStorage = new OptionsStorage();
             _Options = optionsStorage.Load();
 
-            var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+            var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
             _Configuration = configurationStorage.Load();
 
             _View.CombinedFeeds.Clear();
@@ -110,7 +110,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// <param name="args"></param>
         private void View_UseDefaultFileNameClicked(object sender, EventArgs args)
         {
-            var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+            var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
             _View.DatabaseFileName = Path.Combine(configurationStorage.Folder, "BaseStation.sqb");
         }
 
@@ -129,7 +129,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 if(fileExists && !zeroLength) {
                     _View.ShowCreateDatabaseOutcome(PluginStrings.DatabaseFileAlreadyExists, PluginStrings.CannotCreateDatabaseFileTitle);
                 } else {
-                    var databaseService = Factory.Singleton.Resolve<IBaseStationDatabase>();
+                    var databaseService = Factory.Resolve<IBaseStationDatabase>();
                     databaseService.CreateDatabaseIfMissing(_View.DatabaseFileName);
 
                     _View.ShowCreateDatabaseOutcome(String.Format(PluginStrings.CreatedDatabaseFile, databaseFileName), PluginStrings.CreatedDatabaseFile);
@@ -150,7 +150,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Options.SaveDownloadedAircraftDetails =    _View.SaveDownloadedAircraftDetails;
             _Options.RefreshOutOfDateAircraft =         _View.RefreshOutOfDateAircraft;
 
-            var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+            var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
             _Configuration.BaseStationSettings.DatabaseFileName = _View.DatabaseFileName;
             configurationStorage.Save(_Configuration);
 

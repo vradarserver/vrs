@@ -53,7 +53,7 @@ namespace Test.VirtualRadar.Database
             _Configuration.FlightRouteSettings.AutoUpdateEnabled = true;
             _ConfigurationStorage.Setup(c => c.Load()).Returns(_Configuration);
 
-            _BackgroundDataDownloader = Factory.Singleton.Resolve<IBackgroundDataDownloader>();
+            _BackgroundDataDownloader = Factory.Resolve<IBackgroundDataDownloader>();
             _Provider = new Mock<IBackgroundDataDownloaderProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _BackgroundDataDownloader.Provider = _Provider.Object;
         }
@@ -73,7 +73,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void BackgroundDataDownloader_Constructor_Initialises_To_Known_Values_And_Properties_Work()
         {
-            var downloader = Factory.Singleton.Resolve<IBackgroundDataDownloader>();
+            var downloader = Factory.Resolve<IBackgroundDataDownloader>();
 
             Assert.IsNotNull(downloader.Provider);
             TestUtilities.TestProperty(downloader, "Provider", downloader.Provider, _Provider.Object);
@@ -82,8 +82,8 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void BackgroundDataDownloader_Singleton_Returns_Same_Reference_For_All_Instances()
         {
-            var instance1 = Factory.Singleton.Resolve<IBackgroundDataDownloader>();
-            var instance2 = Factory.Singleton.Resolve<IBackgroundDataDownloader>();
+            var instance1 = Factory.Resolve<IBackgroundDataDownloader>();
+            var instance2 = Factory.Resolve<IBackgroundDataDownloader>();
 
             Assert.AreNotSame(instance1, instance2);
             Assert.IsNotNull(instance1.Singleton);

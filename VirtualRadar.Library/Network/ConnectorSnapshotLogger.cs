@@ -75,9 +75,9 @@ namespace VirtualRadar.Library.Network
             lock(_SyncLock) {
                 if(_HeartbeatService == null) {
                     _NextSnapshot = DateTime.UtcNow.AddSeconds(SnapshotInterval);
-                    FullPath = Path.Combine(Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Folder, FileName);
+                    FullPath = Path.Combine(Factory.Resolve<IConfigurationStorage>().Singleton.Folder, FileName);
 
-                    _HeartbeatService = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
+                    _HeartbeatService = Factory.Resolve<IHeartbeatService>().Singleton;
                     _HeartbeatService.SlowTick += HeartbeatService_SlowTick;
                 }
             }
@@ -114,7 +114,7 @@ namespace VirtualRadar.Library.Network
             var buffer = new StringBuilder();
             var seperator = "===============================================================================";
                 
-            var connectors = Factory.Singleton.Resolve<IConnectorActivityLog>().Singleton.GetActiveConnectors();
+            var connectors = Factory.Resolve<IConnectorActivityLog>().Singleton.GetActiveConnectors();
             AppendFormatLine(buffer, seperator);
             AppendFormatLine(buffer, "{0:G}   {1:N0} active connectors", DateTime.Now, connectors.Length);
             foreach(var connector in connectors) {

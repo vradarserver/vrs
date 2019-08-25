@@ -168,7 +168,7 @@ namespace VirtualRadar.Database.StandingData
         /// <returns></returns>
         public bool DataIsOld()
         {
-            var folder = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Folder;
+            var folder = Factory.Resolve<IConfigurationStorage>().Singleton.Folder;
             var stateFilename = Path.Combine(folder, StateFileName);
 
             bool result = !Provider.FileExists(stateFilename);
@@ -193,7 +193,7 @@ namespace VirtualRadar.Database.StandingData
                 lock(_UpdateLock) {
                     _UpdateRunning = true;
                     try {
-                        var folder = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Folder;
+                        var folder = Factory.Resolve<IConfigurationStorage>().Singleton.Folder;
                         var stateFileName = Path.Combine(folder, StateFileName);
                         var stateTempName = Path.Combine(folder, StateTempName);
                         var databaseFileName = Path.Combine(folder, DatabaseFileName);
@@ -210,7 +210,7 @@ namespace VirtualRadar.Database.StandingData
                             updateState = true;
                             Provider.DownloadAndDecompressFile(DatabaseUrl, databaseTempName);
 
-                            var standingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
+                            var standingDataManager = Factory.Resolve<IStandingDataManager>().Singleton;
                             lock(standingDataManager.Lock) {
                                 Provider.MoveFile(databaseTempName, databaseFileName);
                             }

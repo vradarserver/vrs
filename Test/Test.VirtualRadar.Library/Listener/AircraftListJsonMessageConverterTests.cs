@@ -33,7 +33,7 @@ namespace Test.VirtualRadar.Library.Listener
         [TestInitialize]
         public void TestInitialise()
         {
-            _Converter = Factory.Singleton.Resolve<IAircraftListJsonMessageConverter>();
+            _Converter = Factory.Resolve<IAircraftListJsonMessageConverter>();
             _AircraftListJson = new AircraftListJson();
         }
 
@@ -192,7 +192,7 @@ namespace Test.VirtualRadar.Library.Listener
             _AircraftListJson.Aircraft.Add(new AircraftJson() { Icao24 = "ABCDEF", Altitude = 100 });
             var eventArgs = _Converter.ConvertIntoBaseStationMessageEventArgs(_AircraftListJson).Single();
 
-            var compressor = Factory.Singleton.Resolve<IBaseStationMessageCompressor>();
+            var compressor = Factory.Resolve<IBaseStationMessageCompressor>();
             var compressedMessage = compressor.Compress(eventArgs.Message);
             Assert.IsNotNull(compressedMessage);
             Assert.AreNotEqual(0, compressedMessage.Length);

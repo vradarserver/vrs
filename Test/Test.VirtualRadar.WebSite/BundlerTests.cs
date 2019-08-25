@@ -52,7 +52,7 @@ namespace Test.VirtualRadar.WebSite
             _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
             _ConfigurationStorage.Setup(r => r.Load()).Returns(_Configuration);
 
-            _Bundler = Factory.Singleton.Resolve<IBundler>();
+            _Bundler = Factory.Resolve<IBundler>();
 
             _Minifier = TestUtilities.CreateMockImplementation<IMinifier>();
             _Minifier.Setup(r => r.MinifyJavaScript(It.IsAny<string>())).Returns((string js) => js);

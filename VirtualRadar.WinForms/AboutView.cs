@@ -155,7 +155,7 @@ namespace VirtualRadar.WinForms
                 Localise.Form(this);
                 logoPictureBox.Image = Resources.Images.HelpAbout;
 
-                _Presenter = Factory.Singleton.Resolve<IAboutPresenter>();
+                _Presenter = Factory.Resolve<IAboutPresenter>();
                 _Presenter.Initialise(this);
 
                 _OnlineHelp = new OnlineHelpHelper(this, OnlineHelpAddress.WinFormsAboutDialog);

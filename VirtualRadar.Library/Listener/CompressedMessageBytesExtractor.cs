@@ -57,7 +57,7 @@ namespace VirtualRadar.Library.Listener
         /// </summary>
         public CompressedMessageBytesExtractor()
         {
-            _Compressor = Factory.Singleton.Resolve<IBaseStationMessageCompressor>();
+            _Compressor = Factory.Resolve<IBaseStationMessageCompressor>();
         }
 
         /// <summary>

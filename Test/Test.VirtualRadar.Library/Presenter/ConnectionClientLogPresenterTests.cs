@@ -46,7 +46,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _ClassFactorySnapshot = Factory.TakeSnapshot();
 
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
             _LogClients = new List<LogClient>();
             _LogSessions = new Dictionary<long, IList<LogSession>>();
@@ -58,7 +58,7 @@ namespace Test.VirtualRadar.Library.Presenter
 
             _Log = TestUtilities.CreateMockSingleton<ILog>();
 
-            _Presenter = Factory.Singleton.Resolve<IConnectionClientLogPresenter>();
+            _Presenter = Factory.Resolve<IConnectionClientLogPresenter>();
 
             _Provider = new Mock<IConnectionClientLogPresenterProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Provider.Setup(p => p.InvokeOnBackgroundThread(It.IsAny<Action<IList<LogClient>>>(), It.IsAny<IList<LogClient>>())).Callback((Action<IList<LogClient>> callback, IList<LogClient> clients) => {
@@ -78,7 +78,7 @@ namespace Test.VirtualRadar.Library.Presenter
         [TestMethod]
         public void ConnectionClientLogPresenter_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            var presenter = Factory.Singleton.Resolve<IConnectionClientLogPresenter>();
+            var presenter = Factory.Resolve<IConnectionClientLogPresenter>();
             Assert.IsNotNull(presenter.Provider);
             TestUtilities.TestProperty(presenter, "Provider", presenter.Provider, _Provider.Object);
         }

@@ -45,9 +45,9 @@ namespace Test.VirtualRadar.Library.Presenter
             _HeartbeatService = TestUtilities.CreateMockSingleton<IHeartbeatService>();
 
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
-            _Presenter = Factory.Singleton.Resolve<IStatisticsPresenter>();
+            _Presenter = Factory.Resolve<IStatisticsPresenter>();
             _View = TestUtilities.CreateMockInstance<IStatisticsView>();
 
             _View.Setup(r => r.Statistics).Returns(_Statistics.Object);

@@ -28,7 +28,7 @@ namespace Test.VirtualRadar.Library.Listener
         [TestInitialize]
         public void TestInitialise()
         {
-            _Extractor = Factory.Singleton.Resolve<IPort30003MessageBytesExtractor>();
+            _Extractor = Factory.Resolve<IPort30003MessageBytesExtractor>();
             _CommonTests = new CommonMessageBytesExtractorTests(TestContext, _Extractor, ExtractedBytesFormat.Port30003);
         }
 

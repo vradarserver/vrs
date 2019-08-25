@@ -78,8 +78,8 @@ namespace VirtualRadar.WebSite
         {
             base.DoLoadConfiguration(configuration);
 
-            var applicationInformation = Factory.Singleton.Resolve<IApplicationInformation>();
-            var runtimeEnvironment = Factory.Singleton.Resolve<IRuntimeEnvironment>().Singleton;
+            var applicationInformation = Factory.Resolve<IApplicationInformation>();
+            var runtimeEnvironment = Factory.Resolve<IRuntimeEnvironment>().Singleton;
             var isMono = runtimeEnvironment.IsMono;
 
             lock(_SyncLock) {
@@ -126,7 +126,7 @@ namespace VirtualRadar.WebSite
                     });
                 }
 
-                var tileServerSettingsManager = Factory.Singleton.Resolve<ITileServerSettingsManager>().Singleton;
+                var tileServerSettingsManager = Factory.Resolve<ITileServerSettingsManager>().Singleton;
                 _ServerConfigJson.TileServerSettings = tileServerSettingsManager.GetTileServerSettings(
                     configuration.GoogleMapSettings.MapProvider,
                     configuration.GoogleMapSettings.TileServerSettingName,

@@ -61,7 +61,7 @@ namespace Test.VirtualRadar.WebSite
             _SharedConfiguration.Setup(r => r.Get()).Returns(_Configuration);
             _Configuration.GoogleMapSettings.WebSiteReceiverId = 1;
 
-            _Builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
+            _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
             _Args = new AircraftListJsonBuilderArgs();
             _Filter = new AircraftListJsonBuilderFilter();
 
@@ -124,7 +124,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void AircraftListJsonBuilder_Provider_Is_Null_After_Construction()
         {
-            _Builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
+            _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
             Assert.IsNull(_Builder.Provider);
         }
         #endregion
@@ -141,7 +141,7 @@ namespace Test.VirtualRadar.WebSite
         [ExpectedException(typeof(ArgumentNullException))]
         public void AircraftListJsonBuilder_Initialise_Throws_If_Provider_Is_Null()
         {
-            _Builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
+            _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
             _Builder.Initialise(null);
         }
         #endregion
@@ -159,7 +159,7 @@ namespace Test.VirtualRadar.WebSite
         public void AircraftListJsonBuilder_Returns_Empty_Json_When_There_Are_No_Feeds()
         {
             _ReceiverManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
-            _Builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
+            _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
             _Builder.Initialise(_Provider.Object);
 
             var json = _Builder.Build(_Args);
@@ -173,7 +173,7 @@ namespace Test.VirtualRadar.WebSite
         public void AircraftListJsonBuilder_Returns_Requested_SourceFeedId_When_There_Are_No_Feeds()
         {
             _ReceiverManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
-            _Builder = Factory.Singleton.Resolve<IAircraftListJsonBuilder>();
+            _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
             _Builder.Initialise(_Provider.Object);
 
             _Args.SourceFeedId = 9;

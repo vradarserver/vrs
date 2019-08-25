@@ -77,7 +77,7 @@ namespace VirtualRadar.WebSite
                     _Minifier = null;
                 }
                 if(_ConfigurationStorageHooked) {
-                    var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                    var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
                     configurationStorage.ConfigurationChanged -= ConfigurationChanged;
                     _ConfigurationStorageHooked = false;
                 }
@@ -104,7 +104,7 @@ namespace VirtualRadar.WebSite
             }
 
             if(_Minifier == null) {
-                _Minifier = Factory.Singleton.Resolve<IMinifier>();
+                _Minifier = Factory.Resolve<IMinifier>();
                 _Minifier.Initialise();
             }
 
@@ -115,7 +115,7 @@ namespace VirtualRadar.WebSite
             _WebServerHooked = true;
 
             if(!_ConfigurationStorageHooked) {
-                var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
                 configurationStorage.ConfigurationChanged += ConfigurationChanged;
                 _ConfigurationStorageHooked = true;
                 LoadConfiguration(configurationStorage);

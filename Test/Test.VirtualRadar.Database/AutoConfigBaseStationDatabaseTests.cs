@@ -47,7 +47,7 @@ namespace Test.VirtualRadar.Database
             _Configuration = new Configuration();
             _ConfigurationStorage.Setup(s => s.Load()).Returns(_Configuration);
 
-            _AutoConfigDatabase = Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>();
+            _AutoConfigDatabase = Factory.Resolve<IAutoConfigBaseStationDatabase>();
         }
 
         [TestCleanup]
@@ -67,8 +67,8 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void AutoConfigBaseStationDatabase_Singleton_Returns_Same_Instance_For_All_References()
         {
-            var instance1 = Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>();
-            var instance2 = Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>();
+            var instance1 = Factory.Resolve<IAutoConfigBaseStationDatabase>();
+            var instance2 = Factory.Resolve<IAutoConfigBaseStationDatabase>();
 
             Assert.IsNotNull(instance1.Singleton);
             Assert.AreNotSame(instance1, instance2);

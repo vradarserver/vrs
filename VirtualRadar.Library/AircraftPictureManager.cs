@@ -51,7 +51,7 @@ namespace VirtualRadar.Library
             if(!String.IsNullOrEmpty(fileName)) {
                 var fileInfo = new FileInfo(fileName);
                 if(fileInfo != null) {
-                    var imageDimensionsFetcher = Factory.Singleton.Resolve<IImageDimensionsFetcher>();
+                    var imageDimensionsFetcher = Factory.Resolve<IImageDimensionsFetcher>();
                     var size = imageDimensionsFetcher.ReadDimensions(fileName);
 
                     result = new PictureDetail() {
@@ -157,7 +157,7 @@ namespace VirtualRadar.Library
                 try {
                     result = Image.FromFile(fileName);
                 } catch(Exception ex) {
-                    if(_Log == null) _Log = Factory.Singleton.Resolve<ILog>().Singleton;
+                    if(_Log == null) _Log = Factory.Resolve<ILog>().Singleton;
                     _Log.WriteLine("AircraftPictureManager caught an exception while loading {0}: {1}", fileName, ex.ToString());
                 }
             }

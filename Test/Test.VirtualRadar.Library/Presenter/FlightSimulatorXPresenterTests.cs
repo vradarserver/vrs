@@ -66,7 +66,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _FlightSimulatorX.Setup(fsx => fsx.IsInstalled).Returns(true);
 
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
             _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
             _Configuration = new Configuration();
@@ -74,7 +74,7 @@ namespace Test.VirtualRadar.Library.Presenter
 
             _Log = TestUtilities.CreateMockSingleton<ILog>();
 
-            _Presenter = Factory.Singleton.Resolve<IFlightSimulatorXPresenter>();
+            _Presenter = Factory.Resolve<IFlightSimulatorXPresenter>();
 
             _Provider = new Mock<IFlightSimulatorXPresenterProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _LimitTimedInvokeCallbacks = 1;
@@ -123,7 +123,7 @@ namespace Test.VirtualRadar.Library.Presenter
         [TestMethod]
         public void FlightSimulatorXPresenter_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            _Presenter = Factory.Singleton.Resolve<IFlightSimulatorXPresenter>();
+            _Presenter = Factory.Resolve<IFlightSimulatorXPresenter>();
 
             Assert.IsNotNull(_Presenter.Provider);
             TestUtilities.TestProperty(_Presenter, r => r.Provider, _Presenter.Provider, _Provider.Object);

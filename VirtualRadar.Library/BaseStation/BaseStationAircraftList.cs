@@ -304,7 +304,7 @@ namespace VirtualRadar.Library.BaseStation
         /// </summary>
         public BaseStationAircraftList()
         {
-            _Clock = Factory.Singleton.Resolve<IClock>();
+            _Clock = Factory.Resolve<IClock>();
         }
 
         /// <summary>
@@ -353,19 +353,19 @@ namespace VirtualRadar.Library.BaseStation
 
                 LoadConfiguration();
 
-                var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
                 configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
 
-                _SanityChecker = Factory.Singleton.Resolve<IAircraftSanityChecker>();
+                _SanityChecker = Factory.Resolve<IAircraftSanityChecker>();
 
-                Factory.Singleton.Resolve<IHeartbeatService>().Singleton.SlowTick += Heartbeat_SlowTick;
-                Factory.Singleton.Resolve<IStandingDataManager>().Singleton.LoadCompleted += StandingDataManager_LoadCompleted;
+                Factory.Resolve<IHeartbeatService>().Singleton.SlowTick += Heartbeat_SlowTick;
+                Factory.Resolve<IStandingDataManager>().Singleton.LoadCompleted += StandingDataManager_LoadCompleted;
 
-                _AircraftDetailFetcher = Factory.Singleton.Resolve<IAircraftDetailFetcher>().Singleton;
+                _AircraftDetailFetcher = Factory.Resolve<IAircraftDetailFetcher>().Singleton;
                 _AircraftDetailFetcher.Fetched += AircraftDetailFetcher_Fetched;
-                _CallsignRouteFetcher = Factory.Singleton.Resolve<ICallsignRouteFetcher>().Singleton;
+                _CallsignRouteFetcher = Factory.Resolve<ICallsignRouteFetcher>().Singleton;
                 _CallsignRouteFetcher.Fetched += CallsignRouteFetcher_Fetched;
-                _AirPressureManager = Factory.Singleton.Resolve<IAirPressureManager>().Singleton;
+                _AirPressureManager = Factory.Resolve<IAirPressureManager>().Singleton;
 
                 _Started = true;
             }
@@ -422,7 +422,7 @@ namespace VirtualRadar.Library.BaseStation
         /// </summary>
         private void LoadConfiguration()
         {
-            var configuration = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Load();
+            var configuration = Factory.Resolve<IConfigurationStorage>().Singleton.Load();
 
             lock(_ConfigurationLock) {
                 _ShortTrailLengthSeconds = configuration.GoogleMapSettings.ShortTrailLengthSeconds;
@@ -469,7 +469,7 @@ namespace VirtualRadar.Library.BaseStation
                             IAircraft aircraft;
                             isNewAircraft = !aircraftMap.TryGetValue(icaoNumber, out aircraft);
                             if(isNewAircraft) {
-                                aircraft = Factory.Singleton.Resolve<IAircraft>();
+                                aircraft = Factory.Resolve<IAircraft>();
                                 aircraft.UniqueId = icaoNumber;
                             } else if(isOutOfBand) {
                                 if(aircraft.Latitude.GetValueOrDefault() != 0 || aircraft.Longitude.GetValueOrDefault() != 0) {
@@ -935,7 +935,7 @@ namespace VirtualRadar.Library.BaseStation
         /// </summary>
         private void RefreshCodeBlocks()
         {
-            var standingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
+            var standingDataManager = Factory.Resolve<IStandingDataManager>().Singleton;
 
             var aircraftMap = _AircraftMap;
             foreach(var aircraft in aircraftMap.Values) {

@@ -72,7 +72,7 @@ namespace Test.VirtualRadar.Database
             _StandingDataManagerLock = new object();
             _StandingDataManager.Setup(r => r.Lock).Returns(_StandingDataManagerLock);
 
-            _Implementation = Factory.Singleton.Resolve<IStandingDataUpdater>();
+            _Implementation = Factory.Resolve<IStandingDataUpdater>();
             _Provider = new Mock<IStandingDataUpdaterProvider>();
             _Implementation.Provider = _Provider.Object;
 
@@ -167,7 +167,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void StandingDataUpdater_Constructor_Initialises_Provider()
         {
-            var implementation = Factory.Singleton.Resolve<IStandingDataUpdater>();
+            var implementation = Factory.Resolve<IStandingDataUpdater>();
             Assert.IsNotNull(implementation.Provider);
             TestUtilities.TestProperty(implementation, "Provider", implementation.Provider, _Provider.Object);
         }

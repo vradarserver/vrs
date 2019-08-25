@@ -51,13 +51,13 @@ namespace Test.VirtualRadar.Library.Listener
             _OriginalFactory = Factory.TakeSnapshot();
 
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
             _HeartbeatService = TestUtilities.CreateMockSingleton<IHeartbeatService>();
             _RuntimeEnvironment = TestUtilities.CreateMockSingleton<IRuntimeEnvironment>();
             _RuntimeEnvironment.Setup(r => r.IsTest).Returns(true);
 
-            _MergedFeed = Factory.Singleton.Resolve<IMergedFeedListener>();
+            _MergedFeed = Factory.Resolve<IMergedFeedListener>();
 
             _Listener1 = TestUtilities.CreateMockInstance<IListener>();
             _Listener1.Setup(r => r.ReceiverId).Returns(1);

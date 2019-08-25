@@ -57,7 +57,7 @@ namespace VirtualRadar.Interop
         {
             List<FindFileData> result = new List<FindFileData>();
 
-            if(Factory.Singleton.Resolve<IRuntimeEnvironment>().IsMono) MonoGetFiles(result, path);
+            if(Factory.Resolve<IRuntimeEnvironment>().IsMono) MonoGetFiles(result, path);
             else                                                        Win32GetFiles(result, path);
 
             return result;

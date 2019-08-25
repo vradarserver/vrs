@@ -24,7 +24,7 @@ namespace VirtualRadar.Interface
     /// </remarks>
     /// <example>
     /// <code>
-    /// ILog log = Factory.Singleton.Resolve&lt;ILog&gt;().Singleton;
+    /// ILog log = Factory.Resolve&lt;ILog&gt;().Singleton;
     /// log.WriteLine("This will be written to the program log");
     /// </code>
     /// </example>

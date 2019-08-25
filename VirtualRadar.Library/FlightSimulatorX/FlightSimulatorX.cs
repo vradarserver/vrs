@@ -230,7 +230,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
         public FlightSimulatorX()
         {
             ConnectionStatus = Strings.Disconnected;
-            _SimConnect = Factory.Singleton.Resolve<ISimConnectWrapper>();
+            _SimConnect = Factory.Resolve<ISimConnectWrapper>();
             _SimConnect.ExceptionRaised += SimConnect_ExceptionRaised;
             _SimConnect.UserHasQuit += SimConnect_UserHasQuit;
             _SimConnect.ObjectReceived += SimConnect_ObjectReceived;
@@ -369,7 +369,7 @@ namespace VirtualRadar.Library.FlightSimulatorX
 
                 _SimConnect.Dispose();
 
-                _SimConnect = Factory.Singleton.Resolve<ISimConnectWrapper>();
+                _SimConnect = Factory.Resolve<ISimConnectWrapper>();
                 _SimConnect.EventObserved += SimConnect_EventObserved;
                 _SimConnect.ExceptionRaised += SimConnect_ExceptionRaised;
                 _SimConnect.ObjectReceived += SimConnect_ObjectReceived;

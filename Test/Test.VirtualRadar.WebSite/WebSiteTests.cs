@@ -258,7 +258,7 @@ namespace Test.VirtualRadar.WebSite
             });
 
             // Initialise this last, just in case the constructor uses any of the mocks
-            _WebSite = Factory.Singleton.Resolve<IWebSite>();
+            _WebSite = Factory.Resolve<IWebSite>();
             _WebSite.FlightSimulatorAircraftList = _FlightSimulatorAircraftList.Object;
             _WebSite.BaseStationDatabase = _BaseStationDatabase.Object;
             _WebSite.StandingDataManager = _StandingDataManager.Object;
@@ -456,7 +456,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            _WebSite = Factory.Singleton.Resolve<IWebSite>();
+            _WebSite = Factory.Resolve<IWebSite>();
             Assert.IsNull(_WebSite.WebServer);
             Assert.IsNotNull(_WebSite.Provider);
 

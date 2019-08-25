@@ -71,7 +71,7 @@ namespace VirtualRadar.Library.Settings
         protected virtual void OnConfigurationChanged(EventArgs args)
         {
             EventHelper.Raise(ConfigurationChanged, this, args, ex => {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Resolve<ILog>().Singleton;
                 log.WriteLine("Caught exception in shared ConfigurationChanged handler: {0}", ex.ToString());
             });
         }
@@ -102,10 +102,10 @@ namespace VirtualRadar.Library.Settings
             lock(_SyncLock) {
                 if(forceLoad || _Configuration == null) {
                     if(_ConfigurationStorage == null) {
-                        _ConfigurationListener = Factory.Singleton.Resolve<IConfigurationListener>();
+                        _ConfigurationListener = Factory.Resolve<IConfigurationListener>();
                         _ConfigurationListener.PropertyChanged += ConfigurationListener_PropertyChanged;
 
-                        _ConfigurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                        _ConfigurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
                         _ConfigurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
                     }
 

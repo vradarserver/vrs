@@ -47,13 +47,13 @@ namespace Test.VirtualRadar.Library
             _FullPath = Path.Combine(_ConfigurationStorage.Object.Folder, _FileName);
 
             _Clock = new ClockMock() { UtcNowValue = new DateTime(2001, 2, 3, 4, 5, 6, 789) };
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
 
             _Provider = new Mock<ILogProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Provider.Setup(p => p.FileExists(It.IsAny<string>())).Returns(true);
             _Provider.Setup(p => p.FolderExists(It.IsAny<string>())).Returns(true);
 
-            _Log = Factory.Singleton.Resolve<ILog>();
+            _Log = Factory.Resolve<ILog>();
             _Log.Provider = _Provider.Object;
         }
 
@@ -68,8 +68,8 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void Log_Singleton_Returns_Constant_Instance()
         {
-            var log1 = Factory.Singleton.Resolve<ILog>();
-            var log2 = Factory.Singleton.Resolve<ILog>();
+            var log1 = Factory.Resolve<ILog>();
+            var log2 = Factory.Resolve<ILog>();
 
             Assert.AreNotSame(log1, log2);
             Assert.IsNotNull(log1.Singleton);

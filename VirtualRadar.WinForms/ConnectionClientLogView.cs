@@ -79,7 +79,7 @@ namespace VirtualRadar.WinForms
             if(!DesignMode) {
                 Localise.Form(this);
 
-                _Presenter = Factory.Singleton.Resolve<IConnectionClientLogPresenter>();
+                _Presenter = Factory.Resolve<IConnectionClientLogPresenter>();
                 _Presenter.Initialise(this);
 
                 _OnlineHelp = new OnlineHelpHelper(this, OnlineHelpAddress.WinFormsConnectionClientLogDialog);

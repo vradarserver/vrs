@@ -155,7 +155,7 @@ namespace VirtualRadar.Library
                     _AutoConfigDatabase.Database.AircraftUpdated -= BaseStationDatabase_AircraftUpdated;
                     _AutoConfigDatabase.Database.FileNameChanged -= BaseStationDatabase_FileNameChanged;
                 }
-                if(_PictureFolderCache != null) Factory.Singleton.Resolve<IAutoConfigPictureFolderCache>().Singleton.CacheConfigurationChanged -= AutoConfigPictureFolderCache_CacheConfigurationChanged;
+                if(_PictureFolderCache != null) Factory.Resolve<IAutoConfigPictureFolderCache>().Singleton.CacheConfigurationChanged -= AutoConfigPictureFolderCache_CacheConfigurationChanged;
                 if(_StandingDataManager != null) _StandingDataManager.LoadCompleted -= StandingDataManager_LoadCompleted;
             }
             base.Dispose(disposing);
@@ -168,19 +168,19 @@ namespace VirtualRadar.Library
         /// </summary>
         protected override void DoInitialise()
         {
-            _AutoConfigDatabase = Factory.Singleton.Resolve<IAutoConfigBaseStationDatabase>().Singleton;
+            _AutoConfigDatabase = Factory.Resolve<IAutoConfigBaseStationDatabase>().Singleton;
             _AutoConfigDatabase.Database.AircraftUpdated += BaseStationDatabase_AircraftUpdated;
             _AutoConfigDatabase.Database.FileNameChanged += BaseStationDatabase_FileNameChanged;
 
-            _AircraftOnlineLookupManager = Factory.Singleton.Resolve<IAircraftOnlineLookupManager>().Singleton;
+            _AircraftOnlineLookupManager = Factory.Resolve<IAircraftOnlineLookupManager>().Singleton;
             _AircraftOnlineLookupManager.AircraftFetched += AircraftOnlineLookupManager_AircraftFetched;
 
-            _PictureManager = Factory.Singleton.Resolve<IAircraftPictureManager>().Singleton;
-            var autoConfigurationPictureFolderCache = Factory.Singleton.Resolve<IAutoConfigPictureFolderCache>().Singleton;
+            _PictureManager = Factory.Resolve<IAircraftPictureManager>().Singleton;
+            var autoConfigurationPictureFolderCache = Factory.Resolve<IAutoConfigPictureFolderCache>().Singleton;
             _PictureFolderCache = autoConfigurationPictureFolderCache.DirectoryCache;
             autoConfigurationPictureFolderCache.CacheConfigurationChanged += AutoConfigPictureFolderCache_CacheConfigurationChanged;
 
-            _StandingDataManager = Factory.Singleton.Resolve<IStandingDataManager>().Singleton;
+            _StandingDataManager = Factory.Resolve<IStandingDataManager>().Singleton;
             _StandingDataManager.LoadCompleted += StandingDataManager_LoadCompleted;
 
             if(_PictureLookupThread == null) {
@@ -430,7 +430,7 @@ namespace VirtualRadar.Library
             } catch(ThreadAbortException) {
                 // Gets rethrown
             } catch(Exception ex) {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Resolve<ILog>().Singleton;
                 log.WriteLine("Caught exception during application of online lookup aircraft: {0}", ex.ToString());
             }
         }
@@ -454,7 +454,7 @@ namespace VirtualRadar.Library
             } catch(ThreadAbortException) {
                 // Will automatically get re-thrown - we don't want these logged
             } catch(Exception ex) {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Resolve<ILog>().Singleton;
                 log.WriteLine("Caught exception during refresh of aircraft database detail: {0}", ex.ToString());
             }
         }
@@ -471,7 +471,7 @@ namespace VirtualRadar.Library
             } catch(ThreadAbortException) {
                 // Will automatically get re-thrown - we don't want these logged
             } catch(Exception ex) {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Resolve<ILog>().Singleton;
                 log.WriteLine("Caught exception during refresh of aircraft database detail: {0}", ex.ToString());
             }
         }
@@ -488,7 +488,7 @@ namespace VirtualRadar.Library
             } catch(ThreadAbortException) {
                 // Will automatically get re-thrown - we don't want these logged
             } catch(Exception ex) {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Resolve<ILog>().Singleton;
                 log.WriteLine("Caught exception during refresh of aircraft database detail: {0}", ex.ToString());
             }
         }
@@ -506,7 +506,7 @@ namespace VirtualRadar.Library
             } catch(ThreadAbortException) {
                 // Will automatically get re-thrown - we don't want these logged
             } catch(Exception ex) {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Resolve<ILog>().Singleton;
                 log.WriteLine("Caught exception during refresh of aircraft pictures: {0}", ex.ToString());
             }
         }
@@ -531,7 +531,7 @@ namespace VirtualRadar.Library
             } catch(ThreadAbortException) {
                 // Will automatically get re-thrown - we don't want these logged
             } catch(Exception ex) {
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Resolve<ILog>().Singleton;
                 log.WriteLine("Caught exception during refetch of aircraft type codes: {0}", ex.ToString());
             }
         }
@@ -558,7 +558,7 @@ namespace VirtualRadar.Library
             if(!_LoggedPictureLookupException) {
                 lock(_PictureLookupResultsSyncLock) {
                     if(!_LoggedPictureLookupException) {
-                        var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                        var log = Factory.Resolve<ILog>().Singleton;
                         if(log != null) {
                             _LoggedPictureLookupException = true;
                             log.WriteLine("Caught exception during fetch of aircraft picture: {0}", ex.ToString());

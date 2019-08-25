@@ -59,14 +59,14 @@ namespace Test.VirtualRadar.WebServer
             _OriginalFactory = Factory.TakeSnapshot();
 
             _Clock = new ClockMock();
-            Factory.Singleton.RegisterInstance<IClock>(_Clock.Object);
+            Factory.RegisterInstance<IClock>(_Clock.Object);
             _Heartbeat = TestUtilities.CreateMockSingleton<IHeartbeatService>();
             _AccessFilter = TestUtilities.CreateMockImplementation<IAccessFilter>();
             _AccessFilter.Setup(r => r.Initialise(It.IsAny<Access>())).Callback((Access r) => {
                 _AccessFilter.SetupGet(i => i.Access).Returns(r);
             });
 
-            _WebServer = Factory.Singleton.Resolve<IWebServer>();
+            _WebServer = Factory.Resolve<IWebServer>();
 
             _Now = DateTime.UtcNow;
             _Provider = new Mock<IWebServerProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
@@ -193,7 +193,7 @@ namespace Test.VirtualRadar.WebServer
         [TestMethod]
         public void WebServer_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            _WebServer = Factory.Singleton.Resolve<IWebServer>();
+            _WebServer = Factory.Resolve<IWebServer>();
             Assert.IsNotNull(_WebServer.Provider);
             Assert.AreNotSame(_Provider.Object, _WebServer.Provider);
 

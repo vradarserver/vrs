@@ -318,7 +318,7 @@ namespace VirtualRadar.WebSite
         /// </summary>
         public WebSite()
         {
-            Provider = Factory.Singleton.Resolve<IWebSiteProvider>();
+            Provider = Factory.Resolve<IWebSiteProvider>();
 
             _AircraftListJsonPage = new AircraftListJsonPage(this);
             _ClosestAircraftJsonPage = new ClosestAircraftJsonPage(this);
@@ -340,29 +340,29 @@ namespace VirtualRadar.WebSite
             if(WebServer != server) {
                 if(WebServer != null) throw new InvalidOperationException("The web site can only be attached to one server");
 
-                _UserManager = Factory.Singleton.Resolve<IUserManager>().Singleton;
+                _UserManager = Factory.Resolve<IUserManager>().Singleton;
 
-                var configurationStorage = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton;
+                var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
                 configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
 
-                var tileServerManager = Factory.Singleton.Resolve<ITileServerSettingsManager>().Singleton;
+                var tileServerManager = Factory.Resolve<ITileServerSettingsManager>().Singleton;
                 tileServerManager.TileServerSettingsDownloaded += TileServerSettingsManager_TileServerSettingsDownloaded;
 
                 WebServer = server;
                 server.Root = "/VirtualRadar";
 
-                var installerSettingsStorage = Factory.Singleton.Resolve<IInstallerSettingsStorage>();
+                var installerSettingsStorage = Factory.Resolve<IInstallerSettingsStorage>();
                 var installerSettings = installerSettingsStorage.Load();
                 server.Port = installerSettings.WebServerPort;
 
                 server.AuthenticationRequired += Server_AuthenticationRequired;
 
-                _Bundler = Factory.Singleton.Resolve<IBundler>();
+                _Bundler = Factory.Resolve<IBundler>();
                 _Bundler.AttachToWebSite(this);
 
                 _HtmlModifier = new HtmlModifier();
 
-                _Minifier = Factory.Singleton.Resolve<IMinifier>();
+                _Minifier = Factory.Resolve<IMinifier>();
                 _Minifier.Initialise();
 
                 _Pages.Add(_CorsPreflightPage);
@@ -397,7 +397,7 @@ namespace VirtualRadar.WebSite
         /// <returns>True if the server should be restarted because of changes to the configuration.</returns>
         private bool LoadConfiguration()
         {
-            var configuration = Factory.Singleton.Resolve<IConfigurationStorage>().Singleton.Load();
+            var configuration = Factory.Resolve<IConfigurationStorage>().Singleton.Load();
 
             bool result = false;
             lock(_AuthenticationSyncLock) {

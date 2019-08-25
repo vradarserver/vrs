@@ -44,7 +44,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
             _RuntimeEnvironment = TestUtilities.CreateMockSingleton<IRuntimeEnvironment>();
 
-            _Presenter = Factory.Singleton.Resolve<IAboutPresenter>();
+            _Presenter = Factory.Resolve<IAboutPresenter>();
         }
 
         [TestCleanup]

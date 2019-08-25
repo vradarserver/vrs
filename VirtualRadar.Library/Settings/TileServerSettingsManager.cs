@@ -93,7 +93,7 @@ namespace VirtualRadar.Library.Settings
                 lock(_SyncLock) {
                     if(!_Initialised) {
                         _Initialised = true;
-                        _Storage = Factory.Singleton.Resolve<ITileServerSettingsStorage>().Singleton;
+                        _Storage = Factory.Resolve<ITileServerSettingsStorage>().Singleton;
                         var reportErrors = new StringBuilder();
 
                         CatchErrorsDuringInitialise(reportErrors, "downloading tile server settings", () => {
@@ -111,11 +111,11 @@ namespace VirtualRadar.Library.Settings
                         });
 
                         if(reportErrors.Length > 0) {
-                            var messageBox = Factory.Singleton.Resolve<IMessageBox>();
+                            var messageBox = Factory.Resolve<IMessageBox>();
                             messageBox.Show(reportErrors.ToString(), "Errors While Initialising Tile Server Settings Manager");
                         }
 
-                        var heartbeat = Factory.Singleton.Resolve<IHeartbeatService>().Singleton;
+                        var heartbeat = Factory.Resolve<IHeartbeatService>().Singleton;
                         heartbeat.SlowTick += Heartbeat_SlowTick;
                     }
                 }
@@ -135,7 +135,7 @@ namespace VirtualRadar.Library.Settings
                 }
                 messageBuffer.AppendLine(msg);
 
-                var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                var log = Factory.Resolve<ILog>().Singleton;
                 log.WriteLine($"Caught exception while {describeAction} at startup: {Describe.ExceptionMultiLine(ex)}");
             }
         }
@@ -243,13 +243,13 @@ namespace VirtualRadar.Library.Settings
             lock(_SyncLock) {
                 TileServerSettings[] settings = null;
 
-                var downloader = Factory.Singleton.Resolve<ITileServerSettingsDownloader>();
+                var downloader = Factory.Resolve<ITileServerSettingsDownloader>();
                 try {
                     _LastDownloadAttemptUtc = DateTime.UtcNow;
                     settings = downloader.Download(timeoutSeconds);
                     LastDownloadUtc = DateTime.UtcNow;
                 } catch(WebException ex) {
-                    var log = Factory.Singleton.Resolve<ILog>().Singleton;
+                    var log = Factory.Resolve<ILog>().Singleton;
                     log.WriteLine("Caught exception downloading new tile server settings: {0}", Describe.ExceptionMultiLine(ex));
                     settings = null;
                 }

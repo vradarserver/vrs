@@ -81,7 +81,7 @@ namespace VirtualRadar.Library.Network
             lock(_SyncLock) {
                 if(!_InitialisedSnapshotLogger) {
                     _InitialisedSnapshotLogger = true;
-                    Factory.Singleton.Resolve<IConnectorSnapshotLogger>().Singleton.Initialise();
+                    Factory.Resolve<IConnectorSnapshotLogger>().Singleton.Initialise();
                 }
 
                 if(!_Connectors.Contains(connector)) {
