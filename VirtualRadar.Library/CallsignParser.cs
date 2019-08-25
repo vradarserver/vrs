@@ -81,7 +81,7 @@ namespace VirtualRadar.Library
         /// </summary>
         private void Initialise()
         {
-            if(_StandingDataManager == null) _StandingDataManager = Factory.Resolve<IStandingDataManager>().Singleton;
+            if(_StandingDataManager == null) _StandingDataManager = Factory.ResolveSingleton<IStandingDataManager>();
         }
 
         /// <summary>

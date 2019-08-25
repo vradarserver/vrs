@@ -113,19 +113,6 @@ namespace Test.VirtualRadar.Database
         }
         #endregion
 
-        #region Singleton
-        [TestMethod]
-        public void StandingDataManager_Singleton_Returns_Same_Object_For_All_Instances()
-        {
-            var object1 = Factory.Resolve<IStandingDataManager>();
-            var object2 = Factory.Resolve<IStandingDataManager>();
-
-            Assert.AreNotSame(object1, object2);
-            Assert.IsNotNull(object1.Singleton);
-            Assert.AreSame(object1.Singleton, object2.Singleton);
-        }
-        #endregion
-
         #region Load / RouteStatus
         private const string RouteFilesMissingMessage = "Some route files are missing";
         [TestMethod]

@@ -359,7 +359,7 @@ namespace VirtualRadar.Library.BaseStation
                 _SanityChecker = Factory.Resolve<IAircraftSanityChecker>();
 
                 Factory.ResolveSingleton<IHeartbeatService>().SlowTick += Heartbeat_SlowTick;
-                Factory.Resolve<IStandingDataManager>().Singleton.LoadCompleted += StandingDataManager_LoadCompleted;
+                Factory.ResolveSingleton<IStandingDataManager>().LoadCompleted += StandingDataManager_LoadCompleted;
 
                 _AircraftDetailFetcher = Factory.Resolve<IAircraftDetailFetcher>().Singleton;
                 _AircraftDetailFetcher.Fetched += AircraftDetailFetcher_Fetched;
@@ -935,7 +935,7 @@ namespace VirtualRadar.Library.BaseStation
         /// </summary>
         private void RefreshCodeBlocks()
         {
-            var standingDataManager = Factory.Resolve<IStandingDataManager>().Singleton;
+            var standingDataManager = Factory.ResolveSingleton<IStandingDataManager>();
 
             var aircraftMap = _AircraftMap;
             foreach(var aircraft in aircraftMap.Values) {

@@ -104,18 +104,10 @@ namespace VirtualRadar.Database.StandingData
         #endregion
 
         #region Properties
-        private static StandingDataManager _StandingDataManager;
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public IStandingDataManager Singleton
-        {
-            get
-            {
-                if(_StandingDataManager == null) _StandingDataManager = new StandingDataManager();
-                return _StandingDataManager;
-            }
-        }
+        public IStandingDataManager Singleton => Factory.ResolveSingleton<IStandingDataManager>();
 
         /// <summary>
         /// See interface docs.

@@ -180,7 +180,7 @@ namespace VirtualRadar.Library
             _PictureFolderCache = autoConfigurationPictureFolderCache.DirectoryCache;
             autoConfigurationPictureFolderCache.CacheConfigurationChanged += AutoConfigPictureFolderCache_CacheConfigurationChanged;
 
-            _StandingDataManager = Factory.Resolve<IStandingDataManager>().Singleton;
+            _StandingDataManager = Factory.ResolveSingleton<IStandingDataManager>();
             _StandingDataManager.LoadCompleted += StandingDataManager_LoadCompleted;
 
             if(_PictureLookupThread == null) {

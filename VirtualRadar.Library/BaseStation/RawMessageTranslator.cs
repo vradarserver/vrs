@@ -328,7 +328,7 @@ namespace VirtualRadar.Library.BaseStation
         /// </summary>
         public RawMessageTranslator()
         {
-            _StandingDataManager = Factory.Resolve<IStandingDataManager>().Singleton;
+            _StandingDataManager = Factory.ResolveSingleton<IStandingDataManager>();
             _Clock = Factory.Resolve<IClock>();
 
             GlobalDecodeAirborneThresholdMilliseconds = 10000;

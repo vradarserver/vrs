@@ -255,7 +255,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 _Database.FileNameChanging += BaseStationDatabase_FileNameChanging;
                 _Database.FileNameChanged += BaseStationDatabase_FileNameChanged;
 
-                _StandingDataManager = Factory.Resolve<IStandingDataManager>().Singleton;
+                _StandingDataManager = Factory.ResolveSingleton<IStandingDataManager>();
                 _StandingDataManager.LoadCompleted += StandingDataManager_LoadCompleted;
 
                 var feedManager = Factory.Resolve<IFeedManager>().Singleton;
@@ -718,7 +718,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         {
             lock(_SyncLock) {
                 if(_Session != null) {
-                    var standingDataManager = Factory.Resolve<IStandingDataManager>().Singleton;
+                    var standingDataManager = Factory.ResolveSingleton<IStandingDataManager>();
 
                     foreach(var flightRecord in _FlightMap.Values) {
                         var codeBlock = standingDataManager.FindCodeBlock(flightRecord.Aircraft.ModeS);
