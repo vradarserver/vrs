@@ -88,17 +88,6 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationStorage_Singleton_Returns_Same_Object_Across_All_Instances()
-        {
-            var obj1 = Factory.Resolve<IConfigurationStorage>();
-            var obj2 = Factory.Resolve<IConfigurationStorage>();
-
-            Assert.AreNotSame(obj1, obj2);
-            Assert.IsNotNull(obj1.Singleton);
-            Assert.AreSame(obj1.Singleton, obj2.Singleton);
-        }
-
-        [TestMethod]
         public void ConfigurationStorage_SetFolder_Stores_Folder()
         {
             _Implementation.Folder = "xX";

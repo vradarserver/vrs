@@ -164,7 +164,7 @@ namespace VirtualRadar.Database.StandingData
             Provider = new DefaultProvider();
             RouteStatus = Strings.NotLoaded;
 
-            var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
+            var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
             _DatabaseFileName = Path.Combine(configurationStorage.Folder, "StandingData.sqb");
             _StateFileName = Path.Combine(configurationStorage.Folder, "FlightNumberCoverage.csv");
         }
@@ -289,7 +289,7 @@ namespace VirtualRadar.Database.StandingData
 
         private void LoadOverrides()
         {
-            var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
+            var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
             var log = Factory.ResolveSingleton<ILog>();
 
             var codeBlocksFileName = Path.Combine(configurationStorage.Folder, "LocalAircraft.txt");

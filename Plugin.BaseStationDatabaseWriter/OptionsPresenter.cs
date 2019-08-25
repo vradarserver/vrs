@@ -63,7 +63,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
             var optionsStorage = new OptionsStorage();
             _Options = optionsStorage.Load();
 
-            var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
+            var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
             _Configuration = configurationStorage.Load();
 
             _View.CombinedFeeds.Clear();
@@ -110,7 +110,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
         /// <param name="args"></param>
         private void View_UseDefaultFileNameClicked(object sender, EventArgs args)
         {
-            var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
+            var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
             _View.DatabaseFileName = Path.Combine(configurationStorage.Folder, "BaseStation.sqb");
         }
 
@@ -150,7 +150,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
             _Options.SaveDownloadedAircraftDetails =    _View.SaveDownloadedAircraftDetails;
             _Options.RefreshOutOfDateAircraft =         _View.RefreshOutOfDateAircraft;
 
-            var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
+            var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
             _Configuration.BaseStationSettings.DatabaseFileName = _View.DatabaseFileName;
             configurationStorage.Save(_Configuration);
 

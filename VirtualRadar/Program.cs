@@ -103,7 +103,7 @@ namespace VirtualRadar
             }
 
             if(args.Contains("-showConfigFolder")) {
-                var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
+                var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
                 var folderMessage = String.Format("Configuration folder: {0}", configurationStorage.Folder);
                 Console.WriteLine(folderMessage);
                 Factory.Resolve<IMessageBox>().Show("Configuration Folder");

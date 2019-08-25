@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Settings
 {
@@ -44,6 +45,7 @@ namespace VirtualRadar.Interface.Settings
     /// }
     /// </code>
     /// </example>
+    [Singleton]
     public interface IConfigurationStorage : ISingleton<IConfigurationStorage>
     {
         /// <summary>

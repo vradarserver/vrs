@@ -51,7 +51,7 @@ namespace VirtualRadar.Library
             if(IsSupported) {
                 using(MemoryStream memoryStream = new MemoryStream()) {
                     using(SpeechSynthesizer speechSynthesizer = new SpeechSynthesizer() { Rate = -3 }) {
-                        var configuration = Factory.Resolve<IConfigurationStorage>().Singleton.Load();
+                        var configuration = Factory.ResolveSingleton<IConfigurationStorage>().Load();
 
                         speechSynthesizer.Rate = configuration.AudioSettings.VoiceRate;
                         string defaultVoice = speechSynthesizer.Voice.Name;

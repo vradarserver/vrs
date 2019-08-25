@@ -262,7 +262,7 @@ namespace VirtualRadar.Database.BaseStation
         private void Initialise()
         {
             if(_ConfigurationStorage == null) {
-                _ConfigurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
+                _ConfigurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
                 _ConfigurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
             }
 
@@ -364,7 +364,7 @@ namespace VirtualRadar.Database.BaseStation
                 bool fileMissing = !File.Exists(fileName);
                 bool fileEmpty = fileMissing || new FileInfo(fileName).Length == 0;
                 if(fileMissing || fileEmpty) {
-                    var configuration = Factory.Resolve<IConfigurationStorage>().Singleton.Load();
+                    var configuration = Factory.ResolveSingleton<IConfigurationStorage>().Load();
 
                     var folder = Path.GetDirectoryName(fileName);
                     if(!Directory.Exists(folder)) Directory.CreateDirectory(folder);
@@ -1948,7 +1948,7 @@ namespace VirtualRadar.Database.BaseStation
         /// <param name="args"></param>
         private void ConfigurationStorage_ConfigurationChanged(object sender, EventArgs args)
         {
-            var configuration = Factory.Resolve<IConfigurationStorage>().Singleton.Load();
+            var configuration = Factory.ResolveSingleton<IConfigurationStorage>().Load();
             if(configuration.BaseStationSettings.DatabaseFileName != FileName) {
                 OnFileNameChanging(EventArgs.Empty);
                 OnFileNameChanged(EventArgs.Empty);

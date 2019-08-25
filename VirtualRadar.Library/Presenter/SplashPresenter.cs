@@ -103,7 +103,7 @@ namespace VirtualRadar.Library.Presenter
         /// </summary>
         public void StartApplication()
         {
-            var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
+            var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
 
             ParseCommandLineParameters(configurationStorage);
             InitialiseLog(configurationStorage);

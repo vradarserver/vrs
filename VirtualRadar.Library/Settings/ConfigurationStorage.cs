@@ -60,11 +60,10 @@ namespace VirtualRadar.Library.Settings
         /// </summary>
         public IConfigurationStorageProvider Provider { get; set; }
 
-        private static readonly IConfigurationStorage _Singleton = new ConfigurationStorage();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatibility.
         /// </summary>
-        public IConfigurationStorage Singleton { get { return _Singleton; } }
+        public IConfigurationStorage Singleton => Factory.ResolveSingleton<IConfigurationStorage>();
 
         /// <summary>
         /// See interface docs.

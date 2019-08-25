@@ -85,7 +85,7 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
             if(_FileName == null) {
                 lock(_SyncLock) {
                     if(_FileName == null) {
-                        var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
+                        var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
                         _FileName = Path.Combine(configurationStorage.Folder, "AircraftOnlineLookupCache.sqb");
                     }
                 }

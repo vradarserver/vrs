@@ -156,7 +156,7 @@ namespace VirtualRadar.Library.Listener
         protected virtual void Dispose(bool disposing)
         {
             if(disposing) {
-                var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
+                var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
                 configurationStorage.ConfigurationChanged -= ConfigurationStorage_ConfigurationChanged;
 
                 foreach(var feed in Feeds) {
@@ -176,7 +176,7 @@ namespace VirtualRadar.Library.Listener
         {
             if(_Initialised) throw new InvalidOperationException("The feed manager has already been initialised");
 
-            var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
+            var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
             var configuration = configurationStorage.Load();
             configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
 

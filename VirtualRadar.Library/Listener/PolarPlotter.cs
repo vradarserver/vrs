@@ -187,7 +187,7 @@ namespace VirtualRadar.Library.Listener
         /// </summary>
         private void LoadConfiguration()
         {
-            var configurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
+            var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
             var configuration = configurationStorage.Load();
 
             var receiverRange = configuration.RawDecodingSettings.ReceiverRange;

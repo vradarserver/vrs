@@ -28,7 +28,7 @@ namespace VirtualRadar.Library.Settings
         /// </summary>
         class DefaultProvider : IInstallerSettingsStorageProvider
         {
-            public string Folder { get { return Factory.Resolve<IConfigurationStorage>().Singleton.Folder; } }
+            public string Folder { get { return Factory.ResolveSingleton<IConfigurationStorage>().Folder; } }
         }
 
         /// <summary>

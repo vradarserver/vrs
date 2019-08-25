@@ -168,7 +168,7 @@ namespace VirtualRadar.Database.StandingData
         /// <returns></returns>
         public bool DataIsOld()
         {
-            var folder = Factory.Resolve<IConfigurationStorage>().Singleton.Folder;
+            var folder = Factory.ResolveSingleton<IConfigurationStorage>().Folder;
             var stateFilename = Path.Combine(folder, StateFileName);
 
             bool result = !Provider.FileExists(stateFilename);
@@ -193,7 +193,7 @@ namespace VirtualRadar.Database.StandingData
                 lock(_UpdateLock) {
                     _UpdateRunning = true;
                     try {
-                        var folder = Factory.Resolve<IConfigurationStorage>().Singleton.Folder;
+                        var folder = Factory.ResolveSingleton<IConfigurationStorage>().Folder;
                         var stateFileName = Path.Combine(folder, StateFileName);
                         var stateTempName = Path.Combine(folder, StateTempName);
                         var databaseFileName = Path.Combine(folder, DatabaseFileName);

@@ -72,7 +72,7 @@ namespace VirtualRadar.Database.StandingData
         /// <param name="args"></param>
         private void Heartbeat_SlowTick(object sender, EventArgs args)
         {
-            if(Factory.Resolve<IConfigurationStorage>().Singleton.Load().FlightRouteSettings.AutoUpdateEnabled) {
+            if(Factory.ResolveSingleton<IConfigurationStorage>().Load().FlightRouteSettings.AutoUpdateEnabled) {
                 if(_LastUpdateTime.AddHours(1) <= Provider.UtcNow) {
                     try {
                         _LastUpdateTime = Provider.UtcNow;

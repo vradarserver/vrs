@@ -105,7 +105,7 @@ namespace VirtualRadar.Library.Settings
                         _ConfigurationListener = Factory.Resolve<IConfigurationListener>();
                         _ConfigurationListener.PropertyChanged += ConfigurationListener_PropertyChanged;
 
-                        _ConfigurationStorage = Factory.Resolve<IConfigurationStorage>().Singleton;
+                        _ConfigurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
                         _ConfigurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
                     }
 

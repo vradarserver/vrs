@@ -47,7 +47,7 @@ namespace VirtualRadar.Library.Settings
         /// </summary>
         public string Folder
         {
-            get { return _Folder ?? Factory.Resolve<IConfigurationStorage>().Singleton.Folder; }
+            get { return _Folder ?? Factory.ResolveSingleton<IConfigurationStorage>().Folder; }
             set { _Folder = value; }
         }
 
