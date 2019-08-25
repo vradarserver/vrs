@@ -44,7 +44,7 @@ namespace Test.VirtualRadar.Library.Settings
             _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
             _ConfigurationStorage.Setup(c => c.Folder).Returns("configFolder");
 
-            _Storage = Factory.Resolve<IPluginSettingsStorage>();
+            _Storage = Factory.ResolveNewInstance<IPluginSettingsStorage>();
             _Provider = new Mock<IPluginSettingsStorageProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Provider.Setup(p => p.FileExists(It.IsAny<string>())).Returns(true);
             _Storage.Provider = _Provider.Object;
@@ -63,7 +63,7 @@ namespace Test.VirtualRadar.Library.Settings
         [TestMethod]
         public void PluginSettingsStorage_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            var storage = Factory.Resolve<IPluginSettingsStorage>();
+            var storage = Factory.ResolveNewInstance<IPluginSettingsStorage>();
 
             Assert.IsNotNull(storage.Provider);
             TestUtilities.TestProperty(storage, "Provider", storage.Provider, _Provider.Object);
