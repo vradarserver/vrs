@@ -358,7 +358,7 @@ namespace VirtualRadar.Library.BaseStation
 
                 _SanityChecker = Factory.Resolve<IAircraftSanityChecker>();
 
-                Factory.Resolve<IHeartbeatService>().Singleton.SlowTick += Heartbeat_SlowTick;
+                Factory.ResolveSingleton<IHeartbeatService>().SlowTick += Heartbeat_SlowTick;
                 Factory.Resolve<IStandingDataManager>().Singleton.LoadCompleted += StandingDataManager_LoadCompleted;
 
                 _AircraftDetailFetcher = Factory.Resolve<IAircraftDetailFetcher>().Singleton;

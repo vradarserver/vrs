@@ -67,7 +67,7 @@ namespace VirtualRadar.Library.Presenter
         {
             base.Initialise(view);
 
-            var heartbeatService = Factory.Resolve<IHeartbeatService>().Singleton;
+            var heartbeatService = Factory.ResolveSingleton<IHeartbeatService>();
             heartbeatService.FastTick += HeartbeatService_FastTick;
             _HeartbeatService = heartbeatService;
 

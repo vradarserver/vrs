@@ -58,7 +58,7 @@ namespace VirtualRadar.Library.Presenter
             _View.CloseClicked += View_CloseClicked;
             _View.UpdateCounters();
 
-            Factory.Resolve<IHeartbeatService>().Singleton.FastTick += HeartbeatService_FastTick;
+            Factory.ResolveSingleton<IHeartbeatService>().FastTick += HeartbeatService_FastTick;
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.CloseClicked -= View_CloseClicked;
             _View.ResetCountersClicked -= View_ResetCountersClicked;
-            Factory.Resolve<IHeartbeatService>().Singleton.FastTick -= HeartbeatService_FastTick;
+            Factory.ResolveSingleton<IHeartbeatService>().FastTick -= HeartbeatService_FastTick;
         }
 
         /// <summary>

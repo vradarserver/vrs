@@ -153,7 +153,7 @@ namespace VirtualRadar.Library
             if(LogDatabase == null) throw new InvalidOperationException("The database must be supplied before the connection logger can be used");
 
             WebServer.ResponseSent += WebServer_ResponseSent;
-            Factory.Resolve<IHeartbeatService>().Singleton.SlowTick += Heartbeat_SlowTick;
+            Factory.ResolveSingleton<IHeartbeatService>().SlowTick += Heartbeat_SlowTick;
         }
         #endregion
 

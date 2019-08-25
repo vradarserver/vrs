@@ -122,7 +122,7 @@ namespace VirtualRadar.Library
                     _BackgroundWorker.DoWork += BackgroundWorker_DoWork;
                 }
 
-                _HeartbeatService = Factory.Resolve<IHeartbeatService>().Singleton;
+                _HeartbeatService = Factory.ResolveSingleton<IHeartbeatService>();
                 _HeartbeatService.SlowTick += HeartbeatService_SlowTick;
             }
         }

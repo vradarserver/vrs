@@ -77,7 +77,7 @@ namespace VirtualRadar.Library.Network
                     _NextSnapshot = DateTime.UtcNow.AddSeconds(SnapshotInterval);
                     FullPath = Path.Combine(Factory.Resolve<IConfigurationStorage>().Singleton.Folder, FileName);
 
-                    _HeartbeatService = Factory.Resolve<IHeartbeatService>().Singleton;
+                    _HeartbeatService = Factory.ResolveSingleton<IHeartbeatService>();
                     _HeartbeatService.SlowTick += HeartbeatService_SlowTick;
                 }
             }

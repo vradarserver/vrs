@@ -165,7 +165,7 @@ namespace VirtualRadar.Library.Network
             _LastEstablishedCheck = _LastIdleCheck;
 
             _TcpConnectionService = Factory.Resolve<ITcpConnectionStateService>();
-            _HeartbeatService = Factory.Resolve<IHeartbeatService>().Singleton;
+            _HeartbeatService = Factory.ResolveSingleton<IHeartbeatService>();
             _HeartbeatService.FastTick += HeartbeatService_FastTick ;
         }
         #endregion

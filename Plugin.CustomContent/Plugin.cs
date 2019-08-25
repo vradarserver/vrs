@@ -200,7 +200,7 @@ namespace VirtualRadar.Plugin.CustomContent
             var options = OptionsStorage.Load(this);
             ApplyOptions(options);
 
-            var heartbeat = Factory.Resolve<IHeartbeatService>().Singleton;
+            var heartbeat = Factory.ResolveSingleton<IHeartbeatService>();
             heartbeat.SlowTick += Heartbeat_SlowTick;
         }
         #endregion

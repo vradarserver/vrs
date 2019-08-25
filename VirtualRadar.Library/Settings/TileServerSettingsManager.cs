@@ -115,7 +115,7 @@ namespace VirtualRadar.Library.Settings
                             messageBox.Show(reportErrors.ToString(), "Errors While Initialising Tile Server Settings Manager");
                         }
 
-                        var heartbeat = Factory.Resolve<IHeartbeatService>().Singleton;
+                        var heartbeat = Factory.ResolveSingleton<IHeartbeatService>();
                         heartbeat.SlowTick += Heartbeat_SlowTick;
                     }
                 }

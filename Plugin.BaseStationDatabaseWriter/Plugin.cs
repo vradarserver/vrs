@@ -279,7 +279,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
 
                 HookFeed();
 
-                _HeartbeatService = Factory.Resolve<IHeartbeatService>();
+                _HeartbeatService = Factory.ResolveSingleton<IHeartbeatService>();
                 _HeartbeatService.SlowTick += Heartbeat_SlowTick;
                 _HeartbeatService.Start();
             }

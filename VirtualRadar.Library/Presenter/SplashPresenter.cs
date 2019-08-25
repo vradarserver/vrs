@@ -114,7 +114,7 @@ namespace VirtualRadar.Library.Presenter
 
             var configuration = LoadConfiguration(configurationStorage);
             FixConfigurationErrors(configurationStorage, configuration);
-            Factory.Resolve<IHeartbeatService>().Singleton.Start();
+            Factory.ResolveSingleton<IHeartbeatService>().Start();
             LoadPictureFolderCache();
             TestBaseStationDatabaseConnection();
             LoadStandingData();

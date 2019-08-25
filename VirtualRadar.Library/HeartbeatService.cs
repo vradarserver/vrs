@@ -44,11 +44,10 @@ namespace VirtualRadar.Library
         /// </summary>
         private System.Timers.Timer _FastTickTimer;
 
-        private static readonly IHeartbeatService _Singleton = new HeartbeatService();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatibility.
         /// </summary>
-        public IHeartbeatService Singleton { get { return _Singleton; } }
+        public IHeartbeatService Singleton => Factory.ResolveSingleton<IHeartbeatService>();
 
         /// <summary>
         /// See interface docs.

@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
@@ -34,13 +35,8 @@ namespace VirtualRadar.Interface
     /// periodic work before the requisite period of real time has elapsed.
     /// </para><para>
     /// Exceptions raised on the event handlers are currently logged but not pushed up to the GUI.
-    /// </para><para>
-    /// The Singleton version of the heartbeat service is started by the splash screen and is available
-    /// to plugins in their Startup method. However if plugins want to maintain use their own instance
-    /// of the heartbeat service they are welcome to do so - by doing this they can avoid blocking
-    /// other objects that use the service. However if timely background processing is an issue for a
-    /// plugin then perhaps the heartbeat service is not the best way of implementing it.
     /// </para></remarks>
+    [Singleton]
     public interface IHeartbeatService : ISingleton<IHeartbeatService>, IDisposable
     {
         /// <summary>
