@@ -176,7 +176,7 @@ namespace VirtualRadar.WebSite
             get
             {
                 if(_DefaultRootFolder == null) {
-                    var runtime = Factory.Resolve<IRuntimeEnvironment>().Singleton;
+                    var runtime = Factory.ResolveSingleton<IRuntimeEnvironment>();
                     _DefaultRootFolder = Path.Combine(runtime.ExecutablePath, "Web");
                 }
                 return _DefaultRootFolder;
@@ -190,7 +190,7 @@ namespace VirtualRadar.WebSite
         /// </summary>
         public FileSystemPage(WebSite webSite) : base(webSite)
         {
-            var runtime = Factory.Resolve<IRuntimeEnvironment>().Singleton;
+            var runtime = Factory.ResolveSingleton<IRuntimeEnvironment>();
             var defaultSiteRoot = new SiteRoot() {
                 Folder = String.Format("{0}{1}", Path.Combine(runtime.ExecutablePath, "Web"), Path.DirectorySeparatorChar),
                 Priority = 0,

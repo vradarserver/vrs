@@ -166,7 +166,7 @@ namespace VirtualRadar.Interface
         /// <param name="maxQueuedItems"></param>
         public BackgroundThreadQueue(string queueName, BackgroundThreadQueueMechanism mechanism, int maxQueuedItems = int.MaxValue)
         {
-            var runtimeEnvironment = Factory.Resolve<IRuntimeEnvironment>().Singleton;
+            var runtimeEnvironment = Factory.ResolveSingleton<IRuntimeEnvironment>();
 
             if(mechanism == BackgroundThreadQueueMechanism.QueueWithNoBlock) {
                 if(runtimeEnvironment.IsMono) mechanism = BackgroundThreadQueueMechanism.Queue;

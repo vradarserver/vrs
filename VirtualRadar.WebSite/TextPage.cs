@@ -49,7 +49,7 @@ namespace VirtualRadar.WebSite
         /// </summary>
         public TextPage(WebSite webSite) : base(webSite)
         {
-            _IsMono = Factory.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
+            _IsMono = Factory.ResolveSingleton<IRuntimeEnvironment>().IsMono;
             RegisterStaticPages();
         }
 

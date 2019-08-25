@@ -79,7 +79,7 @@ namespace VirtualRadar.WebSite
             base.DoLoadConfiguration(configuration);
 
             var applicationInformation = Factory.Resolve<IApplicationInformation>();
-            var runtimeEnvironment = Factory.Resolve<IRuntimeEnvironment>().Singleton;
+            var runtimeEnvironment = Factory.ResolveSingleton<IRuntimeEnvironment>();
             var isMono = runtimeEnvironment.IsMono;
 
             lock(_SyncLock) {

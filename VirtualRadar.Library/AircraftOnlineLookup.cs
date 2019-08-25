@@ -234,7 +234,7 @@ namespace VirtualRadar.Library
                         QueueRepository.AddQueue(this);
                         _SharedConfiguration = Factory.Resolve<ISharedConfiguration>().Singleton;
                         _Clock = Factory.Resolve<IClock>();
-                        _IsRunningUnderTestEnvironment = Factory.Resolve<IRuntimeEnvironment>().Singleton.IsTest;
+                        _IsRunningUnderTestEnvironment = Factory.ResolveSingleton<IRuntimeEnvironment>().IsTest;
 
                         // Give plugins two ways to set the provider - either they can fetch the singleton for this
                         // object and set the provider to their own implementation or they can register their provider

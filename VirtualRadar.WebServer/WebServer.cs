@@ -109,7 +109,7 @@ namespace VirtualRadar.WebServer
             public IPAddress[] GetHostAddresses()
             {
                 if(_LocalIpAddresses == null) {
-                    if(!Factory.Resolve<IRuntimeEnvironment>().Singleton.IsMono) {
+                    if(!Factory.ResolveSingleton<IRuntimeEnvironment>().IsMono) {
                         _LocalIpAddresses = Dns.GetHostAddresses("");
                     } else {
                         // Ugh...

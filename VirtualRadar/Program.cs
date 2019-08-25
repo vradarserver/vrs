@@ -156,7 +156,7 @@ namespace VirtualRadar
             mutexAcquired = false;
             var result = new Mutex(false, _SingleInstanceMutexName);
 
-            var runtimeEnvironment = Factory.Resolve<IRuntimeEnvironment>().Singleton;
+            var runtimeEnvironment = Factory.ResolveSingleton<IRuntimeEnvironment>();
             if(!runtimeEnvironment.IsMono) {
                 var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
                 var securitySettings = new MutexSecurity();
@@ -193,7 +193,7 @@ namespace VirtualRadar
         /// </summary>
         private static void CheckForDotNetThreePointFive()
         {
-            var runtimeEnvironment = Factory.Resolve<IRuntimeEnvironment>().Singleton;
+            var runtimeEnvironment = Factory.ResolveSingleton<IRuntimeEnvironment>();
             if(!runtimeEnvironment.IsMono) {
                 try {
                     TestCanLoadThreePointFiveObject();

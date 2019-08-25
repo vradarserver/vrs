@@ -13,12 +13,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
     /// <summary>
     /// The interface for singleton objects that can tell the program about the environment it's running under.
     /// </summary>
+    [Singleton]
     public interface IRuntimeEnvironment : ISingleton<IRuntimeEnvironment>
     {
         /// <summary>

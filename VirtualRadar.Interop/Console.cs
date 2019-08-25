@@ -56,7 +56,7 @@ namespace VirtualRadar.Interop
         {
             if(!_Initialised) {
                 _Initialised = true;
-                var runtimeEnvironment = Factory.Resolve<IRuntimeEnvironment>().Singleton;
+                var runtimeEnvironment = Factory.ResolveSingleton<IRuntimeEnvironment>();
                 _IsMono = runtimeEnvironment.IsMono;
             }
         }

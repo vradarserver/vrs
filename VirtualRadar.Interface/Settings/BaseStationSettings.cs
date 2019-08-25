@@ -300,7 +300,7 @@ namespace VirtualRadar.Interface.Settings
         /// </summary>
         public BaseStationSettings()
         {
-            var isMono = Factory.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
+            var isMono = Factory.ResolveSingleton<IRuntimeEnvironment>().IsMono;
 
             Address = "127.0.0.1";
             Port = 30003;

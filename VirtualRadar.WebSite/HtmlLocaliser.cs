@@ -50,7 +50,7 @@ namespace VirtualRadar.WebSite
         public void Initialise(Type resourceStringsType)
         {
             LocalisedStringsMap = new Localisation.LocalisedStringsMap(resourceStringsType);
-            _MainThreadCultureInfo = Factory.Resolve<IRuntimeEnvironment>().Singleton.MainThreadCultureInfo;
+            _MainThreadCultureInfo = Factory.ResolveSingleton<IRuntimeEnvironment>().MainThreadCultureInfo;
         }
 
         /// <summary>

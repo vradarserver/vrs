@@ -53,7 +53,7 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         public TcpConnectionStateService()
         {
-            _IsMono = Factory.Resolve<IRuntimeEnvironment>().Singleton.IsMono;
+            _IsMono = Factory.ResolveSingleton<IRuntimeEnvironment>().IsMono;
             RefreshTcpConnectionStates();
         }
 

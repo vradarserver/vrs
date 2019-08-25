@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using InterfaceFactory;
 using VirtualRadar.Interface;
 
 namespace VirtualRadar.Library
@@ -24,11 +25,10 @@ namespace VirtualRadar.Library
     /// </summary>
     class RuntimeEnvironment : IRuntimeEnvironment
     {
-        private static readonly IRuntimeEnvironment _Singleton = new RuntimeEnvironment();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatibility.
         /// </summary>
-        public IRuntimeEnvironment Singleton { get { return _Singleton; } }
+        public IRuntimeEnvironment Singleton => Factory.ResolveSingleton<IRuntimeEnvironment>();
 
         /// <summary>
         /// See interface docs.
