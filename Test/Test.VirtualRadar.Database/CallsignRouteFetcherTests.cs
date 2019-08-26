@@ -30,6 +30,7 @@ namespace Test.VirtualRadar.Database
         private const int AutoDeregisterInterval = 90000;
 
         private IClassFactory _OriginalFactory;
+        private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
         private ICallsignRouteFetcher _Fetcher;
         private EventRecorder<EventArgs<CallsignRouteDetail>> _FetchedHandler;
         private Mock<IAircraft> _Aircraft;
@@ -47,6 +48,9 @@ namespace Test.VirtualRadar.Database
         public void TestInitialise()
         {
             _OriginalFactory = Factory.TakeSnapshot();
+
+            _RuntimeEnvironment = TestUtilities.CreateMockSingleton<IRuntimeEnvironment>();
+            _RuntimeEnvironment.Setup(r => r.IsTest).Returns(true);
 
             _Clock = new ClockMock();
             Factory.RegisterInstance<IClock>(_Clock.Object);
@@ -72,10 +76,10 @@ namespace Test.VirtualRadar.Database
                 { "BAW1", new List<string>() { "BAW1" } }
             };
 
-            // The fetcher uses a private heartbeat service to avoid slowing the GUI down. Unfortunately
-            // the TestUtilities don't support creating non-singleton instances of ISingletons, do we
-            // have to do it manually.
-            _Heartbeat = TestUtilities.CreateMockInstance<IHeartbeatService>();
+            // The fetcher uses a private heartbeat service to avoid slowing the GUI down but this
+            // is hard to test with the singleton attribute, so under test environment it'll use the
+            // singleton instead.
+            _Heartbeat = TestUtilities.CreateMockSingleton<IHeartbeatService>();
             Factory.RegisterInstance<IHeartbeatService>(_Heartbeat.Object);
 
             _StandingDataManager = TestUtilities.CreateMockSingleton<IStandingDataManager>();
