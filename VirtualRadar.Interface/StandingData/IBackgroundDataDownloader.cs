@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.StandingData
 {
@@ -19,6 +20,7 @@ namespace VirtualRadar.Interface.StandingData
     /// The interface for the object that downloads updates to the data in the background
     /// once a day (configuration permitting).
     /// </summary>
+    [Singleton]
     public interface IBackgroundDataDownloader : ISingleton<IBackgroundDataDownloader>
     {
         /// <summary>

@@ -43,11 +43,10 @@ namespace VirtualRadar.Database.StandingData
         /// </summary>
         public IBackgroundDataDownloaderProvider Provider { get; set; }
 
-        private static readonly IBackgroundDataDownloader _Singleton = new BackgroundDataDownloader();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public IBackgroundDataDownloader Singleton { get { return _Singleton; } }
+        public IBackgroundDataDownloader Singleton => Factory.ResolveSingleton<IBackgroundDataDownloader>();
 
         /// <summary>
         /// Creates a new object.

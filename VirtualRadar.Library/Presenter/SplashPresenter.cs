@@ -304,7 +304,7 @@ namespace VirtualRadar.Library.Presenter
                 log.WriteLine("Exception caught during load of standing data: {0}", ex.ToString());
             }
 
-            Factory.Resolve<IBackgroundDataDownloader>().Singleton.Start();
+            Factory.ResolveSingleton<IBackgroundDataDownloader>().Start();
         }
 
         private void StartTileServerSettingsManager()
