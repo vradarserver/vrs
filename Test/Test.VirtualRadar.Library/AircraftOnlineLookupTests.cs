@@ -81,7 +81,7 @@ namespace Test.VirtualRadar.Library
 
             _FetchedRecorder = new EventRecorder<AircraftOnlineLookupEventArgs>();
 
-            _Lookup = Factory.Resolve<IAircraftOnlineLookup>();
+            _Lookup = Factory.ResolveNewInstance<IAircraftOnlineLookup>();
         }
 
         [TestCleanup]
@@ -91,21 +91,11 @@ namespace Test.VirtualRadar.Library
         }
         #endregion
 
-        #region Ctor and properties
-        [TestMethod]
-        public void AircraftOnlineLookup_Singleton_Always_Returns_Same_Object()
-        {
-            var first = Factory.Resolve<IAircraftOnlineLookup>().Singleton;
-            var second = Factory.Resolve<IAircraftOnlineLookup>().Singleton;
-            Assert.AreSame(first, second);
-        }
-        #endregion
-
         #region Provider
         [TestMethod]
         public void AircraftOnlineLookup_Provider_Is_Initially_Null()
         {
-            var lookup = Factory.Resolve<IAircraftOnlineLookup>();
+            var lookup = Factory.ResolveNewInstance<IAircraftOnlineLookup>();
             Assert.IsNull(lookup.Provider);
         }
 

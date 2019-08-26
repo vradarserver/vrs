@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
@@ -25,6 +26,7 @@ namespace VirtualRadar.Interface
     /// Implementations must honour the lookup aircraft details setting
     /// (<see cref="VirtualRadar.Interface.Settings.BaseStationSettings"/>.LookupAircraftDetailsOnline).
     /// </para></remarks>
+    [Singleton]
     public interface IAircraftOnlineLookup : ISingleton<IAircraftOnlineLookup>
     {
         /// <summary>

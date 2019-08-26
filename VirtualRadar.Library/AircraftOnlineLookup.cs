@@ -102,11 +102,10 @@ namespace VirtualRadar.Library
         /// </summary>
         private bool _IsRunningUnderTestEnvironment;
 
-        private static IAircraftOnlineLookup _Singleton = new AircraftOnlineLookup();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public IAircraftOnlineLookup Singleton { get { return _Singleton; } }
+        public IAircraftOnlineLookup Singleton => Factory.ResolveSingleton<IAircraftOnlineLookup>();
 
         /// <summary>
         /// See interface docs.

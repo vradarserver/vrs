@@ -181,7 +181,7 @@ namespace VirtualRadar.Library
                 lock(_SyncLock) {
                     if(_AircraftOnlineLookup == null) {
                         _Clock = Factory.Resolve<IClock>();
-                        _AircraftOnlineLookup = Factory.Resolve<IAircraftOnlineLookup>().Singleton;
+                        _AircraftOnlineLookup = Factory.ResolveSingleton<IAircraftOnlineLookup>();
                         _AircraftOnlineLookup.AircraftFetched += AircraftOnlineLookup_AircraftFetched;
                     }
                 }
