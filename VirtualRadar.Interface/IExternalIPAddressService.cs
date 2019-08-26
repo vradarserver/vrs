@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
@@ -24,6 +25,7 @@ namespace VirtualRadar.Interface
     /// computer then hook <see cref="AddressUpdated"/> on the singleton in your Startup
     /// method and it will eventually be called some time after the main screen fires up.
     /// </remarks>
+    [Singleton]
     public interface IExternalIPAddressService : ISingleton<IExternalIPAddressService>
     {
         /// <summary>

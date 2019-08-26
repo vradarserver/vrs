@@ -39,11 +39,10 @@ namespace VirtualRadar.Library
         /// </summary>
         public IExternalIPAddressServiceProvider Provider { get; set; }
 
-        private static readonly IExternalIPAddressService _Singleton = new ExternalIPAddressService();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public IExternalIPAddressService Singleton { get { return _Singleton; } }
+        public IExternalIPAddressService Singleton => Factory.ResolveSingleton<IExternalIPAddressService>();
 
         /// <summary>
         /// See interface docs.

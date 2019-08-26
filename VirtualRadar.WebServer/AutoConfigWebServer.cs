@@ -94,7 +94,7 @@ namespace VirtualRadar.WebServer
             WebServer.Port = Factory.Resolve<IInstallerSettingsStorage>().Load().WebServerPort;
 
             Factory.ResolveSingleton<IConfigurationStorage>().ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
-            Factory.Resolve<IExternalIPAddressService>().Singleton.AddressUpdated += ExternalIPAddressService_AddressUpdated;
+            Factory.ResolveSingleton<IExternalIPAddressService>().AddressUpdated += ExternalIPAddressService_AddressUpdated;
 
             LoadConfiguration();
             LoadExternalIPAddress();
@@ -122,7 +122,7 @@ namespace VirtualRadar.WebServer
         /// </summary>
         private void LoadExternalIPAddress()
         {
-            var service = Factory.Resolve<IExternalIPAddressService>().Singleton;
+            var service = Factory.ResolveSingleton<IExternalIPAddressService>();
 
             WebServer.ExternalIPAddress = service.Address;
         }
@@ -162,7 +162,7 @@ namespace VirtualRadar.WebServer
                     var threshold = _LastFetchAttempt.AddMinutes(MinutesBetweenExternalAddressAttempts);
                     if(clock.UtcNow >= threshold) {
                         _LastFetchAttempt = clock.UtcNow;
-                        Factory.Resolve<IExternalIPAddressService>().Singleton.GetExternalIPAddress();
+                        Factory.ResolveSingleton<IExternalIPAddressService>().GetExternalIPAddress();
                         _FetchedExternalIPAddress = true;
                     }
                 } catch(Exception ex) {
