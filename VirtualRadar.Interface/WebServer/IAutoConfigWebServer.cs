@@ -12,12 +12,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.WebServer
 {
     /// <summary>
     /// The interface for a singleton object that automatically applies configuration settings to an <see cref="IWebServer"/>.
     /// </summary>
+    [Singleton]
     public interface IAutoConfigWebServer : ISingleton<IAutoConfigWebServer>, IDisposable
     {
         /// <summary>

@@ -1219,7 +1219,7 @@ namespace VirtualRadar.Library.Presenter
 
                 // Port cannot clash with the web server port
                 ConditionIsTrue(server, r => {
-                    var autoConfigWebServer = Factory.Resolve<IAutoConfigWebServer>().Singleton;
+                    var autoConfigWebServer = Factory.ResolveSingleton<IAutoConfigWebServer>();
                     return r.IsTransmitter || r.Port != autoConfigWebServer.WebServer.Port;
                 }, new Validation(ValidationField.RebroadcastServerPort, defaults) {
                     Format = Strings.PortIsUsedByWebServer,
@@ -1367,7 +1367,7 @@ namespace VirtualRadar.Library.Presenter
 
                     // Port cannot clash with the web server port
                     ConditionIsTrue(receiver, r => {
-                        var autoConfigWebServer = Factory.Resolve<IAutoConfigWebServer>().Singleton;
+                        var autoConfigWebServer = Factory.ResolveSingleton<IAutoConfigWebServer>();
                         return r.Port != autoConfigWebServer.WebServer.Port;
                     }, new Validation(ValidationField.BaseStationPort, defaults) {
                         Format = Strings.PortIsUsedByWebServer,

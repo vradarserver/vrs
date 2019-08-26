@@ -147,7 +147,7 @@ namespace VirtualRadar.Library.Presenter
         private void ShutdownWebServer()
         {
             _View.ReportProgress(Strings.ShuttingDownWebServer);
-            Factory.Resolve<IAutoConfigWebServer>().Singleton.Dispose();
+            Factory.ResolveSingleton<IAutoConfigWebServer>().Dispose();
         }
 
         private void ShutdownBaseStationDatabase()

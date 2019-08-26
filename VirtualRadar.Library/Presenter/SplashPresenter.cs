@@ -339,7 +339,7 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.SplashScreenStartingWebServer);
 
-            var autoConfigWebServer = Factory.Resolve<IAutoConfigWebServer>().Singleton;
+            var autoConfigWebServer = Factory.ResolveSingleton<IAutoConfigWebServer>();
             autoConfigWebServer.Initialise();
 
             var webServer = autoConfigWebServer.WebServer;
@@ -394,7 +394,7 @@ namespace VirtualRadar.Library.Presenter
             _View.ReportProgress(Strings.SplashScreenInitialisingUPnPManager);
 
             var manager = Factory.Resolve<IUniversalPlugAndPlayManager>();
-            manager.WebServer = Factory.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+            manager.WebServer = Factory.ResolveSingleton<IAutoConfigWebServer>().WebServer;
             manager.Initialise();
 
             if(configuration.WebServerSettings.AutoStartUPnP) {

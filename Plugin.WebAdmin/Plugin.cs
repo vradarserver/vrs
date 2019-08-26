@@ -210,7 +210,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         public void ShowWinFormsOptionsUI()
         {
             using(var dialog = new WinForms.OptionsView()) {
-                var webServer = Factory.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+                var webServer = Factory.ResolveSingleton<IAutoConfigWebServer>().WebServer;
                 dialog.IndexPageAddress = String.Format("{0}/{1}", webServer.LocalAddress, "WebAdmin/Index.html");
                 dialog.Options = OptionsStorage.Load();
 

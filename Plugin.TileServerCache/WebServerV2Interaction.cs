@@ -41,7 +41,7 @@ namespace VirtualRadar.Plugin.TileServerCache
         {
             _Responder = Factory.Resolve<IResponder>();
 
-            var configWebServer = Factory.Resolve<IAutoConfigWebServer>().Singleton;
+            var configWebServer = Factory.ResolveSingleton<IAutoConfigWebServer>();
             var webServer = configWebServer.WebServer;
 
             webServer.AfterRequestReceived += WebServer_AfterRequestReceived;

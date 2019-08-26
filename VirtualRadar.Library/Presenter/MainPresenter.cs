@@ -165,7 +165,7 @@ namespace VirtualRadar.Library.Presenter
             UpdateFeedCounters();
             View.ShowFeeds(GetFeedCounters());
 
-            _WebServer = Factory.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+            _WebServer = Factory.ResolveSingleton<IAutoConfigWebServer>().WebServer;
             _WebServer.ExternalAddressChanged += WebServer_ExternalAddressChanged;
             _WebServer.OnlineChanged += WebServer_OnlineChanged;
             _WebServer.ResponseSent += WebServer_ResponseSent;

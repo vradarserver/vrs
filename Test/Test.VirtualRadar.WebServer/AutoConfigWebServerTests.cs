@@ -64,7 +64,7 @@ namespace Test.VirtualRadar.WebServer
             _InstallerSettings = new InstallerSettings();
             _InstallerSettingsStorage.Setup(s => s.Load()).Returns(_InstallerSettings);
 
-            _AutoConfigWebServer = Factory.Resolve<IAutoConfigWebServer>();
+            _AutoConfigWebServer = Factory.ResolveNewInstance<IAutoConfigWebServer>();
         }
 
         [TestCleanup]
@@ -79,17 +79,6 @@ namespace Test.VirtualRadar.WebServer
         public void AutoConfigWebServer_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
             Assert.IsNull(_AutoConfigWebServer.WebServer);
-        }
-
-        [TestMethod]
-        public void AutoConfigWebServer_Singleton_Returns_Same_Instance_For_All_References()
-        {
-            var instance1 = Factory.Resolve<IAutoConfigWebServer>();
-            var instance2 = Factory.Resolve<IAutoConfigWebServer>();
-
-            Assert.AreNotSame(instance1, instance2);
-            Assert.IsNotNull(instance1.Singleton);
-            Assert.AreSame(instance1.Singleton, instance2.Singleton);
         }
         #endregion
 

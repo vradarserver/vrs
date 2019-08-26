@@ -247,7 +247,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// <returns></returns>
         internal string GetIndexPageAddress()
         {
-            var webServer = Factory.Resolve<IAutoConfigWebServer>().Singleton.WebServer;
+            var webServer = Factory.ResolveSingleton<IAutoConfigWebServer>().WebServer;
             return String.Format("{0}/{1}", webServer.LocalAddress, "DatabaseEditor/index.html");
         }
         #endregion
