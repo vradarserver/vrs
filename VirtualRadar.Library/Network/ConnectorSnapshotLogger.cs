@@ -56,11 +56,10 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         private DateTime _NextSnapshot;
 
-        private static ConnectorSnapshotLogger _Singleton = new ConnectorSnapshotLogger();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public IConnectorSnapshotLogger Singleton { get { return _Singleton; } }
+        public IConnectorSnapshotLogger Singleton => Factory.ResolveSingleton<IConnectorSnapshotLogger>();
 
         /// <summary>
         /// See interface docs.
