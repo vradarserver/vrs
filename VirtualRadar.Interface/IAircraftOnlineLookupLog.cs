@@ -12,12 +12,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
     /// <summary>
     /// Records the online aircraft detail lookup requests and responses over the past so-many minutes.
     /// </summary>
+    [Singleton]
     public interface IAircraftOnlineLookupLog : ISingleton<IAircraftOnlineLookupLog>, IDisposable
     {
         /// <summary>

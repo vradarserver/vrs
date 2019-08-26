@@ -38,19 +38,10 @@ namespace VirtualRadar.Library
         /// </summary>
         private bool _Initialised;
 
-        private static IAircraftOnlineLookupLog _Singleton;
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public IAircraftOnlineLookupLog Singleton
-        {
-            get {
-                if(_Singleton == null) {
-                    _Singleton = new AircraftOnlineLookupLog();
-                }
-                return _Singleton;
-            }
-        }
+        public IAircraftOnlineLookupLog Singleton => Factory.ResolveSingleton<IAircraftOnlineLookupLog>();
 
         /// <summary>
         /// See interface docs.

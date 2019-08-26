@@ -414,7 +414,7 @@ namespace VirtualRadar.Library.Presenter
 
             manager.RegisterCache(standaloneCache, 0, true);
 
-            var log = Factory.Resolve<IAircraftOnlineLookupLog>().Singleton;
+            var log = Factory.ResolveSingleton<IAircraftOnlineLookupLog>();
             log.Initialise();
         }
 
