@@ -70,7 +70,7 @@ namespace Test.VirtualRadar.Library
             _Clock = new ClockMock();
             Factory.RegisterInstance<IClock>(_Clock.Object);
 
-            _Fetcher = Factory.Resolve<IAircraftDetailFetcher>();
+            _Fetcher = Factory.ResolveNewInstance<IAircraftDetailFetcher>();
             _FetchedHandler = new EventRecorder<EventArgs<AircraftDetail>>();
             _Fetcher.Fetched += _FetchedHandler.Handler;
 
@@ -134,19 +134,6 @@ namespace Test.VirtualRadar.Library
         public void TestCleanup()
         {
             Factory.RestoreSnapshot(_OriginalFactory);
-        }
-        #endregion
-
-        #region Constructor and properties
-        [TestMethod]
-        public void AircraftDetailFetcher_Singleton_Returns_Same_Instance_For_All_References()
-        {
-            var instance1 = Factory.Resolve<IAircraftDetailFetcher>();
-            var instance2 = Factory.Resolve<IAircraftDetailFetcher>();
-
-            Assert.IsNotNull(instance1.Singleton);
-            Assert.AreNotSame(instance1, instance2);
-            Assert.AreSame(instance1.Singleton, instance2.Singleton);
         }
         #endregion
 

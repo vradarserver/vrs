@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
@@ -28,6 +29,7 @@ namespace VirtualRadar.Interface
     /// If an event handler raises an exception then it will be logged and it will not be
     /// shown to the user. Event handlers should avoid throwing exceptions.
     /// </para></remarks>
+    [Singleton]
     public interface IAircraftDetailFetcher : ISingleton<IAircraftDetailFetcher>
     {
         /// <summary>
