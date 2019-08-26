@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Database
 {
@@ -22,6 +23,7 @@ namespace VirtualRadar.Interface.Database
     /// The log database is an SQLite database that Virtual Radar Server maintains for itself in its configuration folder. It holds
     /// information about the connections that have been made to the web server.
     /// </remarks>
+    [Singleton]
     public interface ILogDatabase : ISingleton<ILogDatabase>, ITransactionable, IDisposable
     {
         /// <summary>

@@ -65,7 +65,7 @@ namespace VirtualRadar.Library.Presenter
         private void View_ShowSessionClicked(object sender, EventArgs args)
         {
             if(ValidateView()) {
-                var logDatabase = Factory.Resolve<ILogDatabase>().Singleton;
+                var logDatabase = Factory.ResolveSingleton<ILogDatabase>();
                 var clients = new List<LogClient>();
                 var sessions = new List<LogSession>();
                 logDatabase.FetchSessions(clients, sessions, _View.StartDate, _View.EndDate.AddDays(1).AddMilliseconds(-1));

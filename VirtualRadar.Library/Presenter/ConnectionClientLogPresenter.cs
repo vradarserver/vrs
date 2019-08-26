@@ -92,7 +92,7 @@ namespace VirtualRadar.Library.Presenter
 
             var clients = new List<LogClient>();
             Dictionary<long, IList<LogSession>> sessionMap = new Dictionary<long,IList<LogSession>>();
-            var logDatabase = Factory.Resolve<ILogDatabase>().Singleton;
+            var logDatabase = Factory.ResolveSingleton<ILogDatabase>();
             logDatabase.FetchAll(clients, sessionMap);
             _View.ShowClientsAndSessions(clients, sessionMap);
 
@@ -107,7 +107,7 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="lookupClients"></param>
         private void LookupReverseDNS(IList<LogClient> lookupClients)
         {
-            var database = Factory.Resolve<ILogDatabase>().Singleton;
+            var database = Factory.ResolveSingleton<ILogDatabase>();
 
             foreach(var client in lookupClients) {
                 string reverseDns = null;

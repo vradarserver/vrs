@@ -63,11 +63,10 @@ namespace VirtualRadar.Database.Log
         /// </summary>
         public ILogDatabaseProvider Provider { get; set; }
 
-        private static readonly ILogDatabase _Singleton = new Database();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public ILogDatabase Singleton { get { return _Singleton; } }
+        public ILogDatabase Singleton => Factory.ResolveSingleton<ILogDatabase>();
         #endregion
 
         #region Constructor and Finaliser

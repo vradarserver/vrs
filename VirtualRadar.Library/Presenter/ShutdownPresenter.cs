@@ -165,7 +165,7 @@ namespace VirtualRadar.Library.Presenter
         private void ShutdownLogDatabase()
         {
             _View.ReportProgress(Strings.ShuttingDownLogDatabase);
-            Factory.Resolve<ILogDatabase>().Singleton.Dispose();
+            Factory.ResolveSingleton<ILogDatabase>().Dispose();
         }
     }
 }

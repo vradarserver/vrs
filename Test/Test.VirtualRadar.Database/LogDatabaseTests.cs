@@ -47,7 +47,7 @@ namespace Test.VirtualRadar.Database
 
             _FullPath = Path.Combine(_ConfigurationStorage.Object.Folder, _FileName);
 
-            _LogDatabase = Factory.Resolve<ILogDatabase>();
+            _LogDatabase = Factory.ResolveNewInstance<ILogDatabase>();
 
             _Provider = new Mock<ILogDatabaseProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Provider.Setup(m => m.UtcNow).Returns(() => { return DateTime.UtcNow; });
@@ -70,21 +70,10 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void LogDatabase_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            Assert.IsNotNull(_LogDatabase.Singleton);
-
             _LogDatabase.Dispose();
-            _LogDatabase = Factory.Resolve<ILogDatabase>();
+            _LogDatabase = Factory.ResolveNewInstance<ILogDatabase>();
             Assert.IsNotNull(_LogDatabase.Provider);
             TestUtilities.TestProperty(_LogDatabase, "Provider", _LogDatabase.Provider, _Provider.Object);
-        }
-
-        [TestMethod]
-        public void LogDatabase_Singleton_Returns_Single_Instance_Of_Database()
-        {
-            var firstInstance = _LogDatabase.Singleton;
-            using(var innerDatabase = Factory.Resolve<ILogDatabase>()) {
-                Assert.AreSame(firstInstance, innerDatabase.Singleton);
-            }
         }
         #endregion
 
@@ -279,7 +268,7 @@ namespace Test.VirtualRadar.Database
         public void LogDatabase_UpdateSession_Throws_If_Database_Not_Open()
         {
             LogSession session;
-            using(var otherConnection = Factory.Resolve<ILogDatabase>()) {
+            using(var otherConnection = Factory.ResolveNewInstance<ILogDatabase>()) {
                 session = otherConnection.EstablishSession("1.2.3.4", null);
             }
 
@@ -402,7 +391,7 @@ namespace Test.VirtualRadar.Database
         public void LogDatabase_UpdateClient_Throws_If_Database_Is_Not_Open()
         {
             LogClient client;
-            using(var otherConnection = Factory.Resolve<ILogDatabase>()) {
+            using(var otherConnection = Factory.ResolveNewInstance<ILogDatabase>()) {
                 otherConnection.EstablishSession("1.2.3.4", null);
                 var clients = new List<LogClient>();
                 var sessionMap = new Dictionary<long, IList<LogSession>>();
