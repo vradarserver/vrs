@@ -58,7 +58,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View
 
         public DialogResult ShowView()
         {
-            _ConnectorActivityLog = Factory.Resolve<IConnectorActivityLog>().Singleton;
+            _ConnectorActivityLog = Factory.ResolveSingleton<IConnectorActivityLog>();
             _Presenter = Factory.Resolve<IConnectorActivityLogPresenter>();
             _Presenter.Initialise(this);
 

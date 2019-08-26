@@ -371,7 +371,7 @@ namespace VirtualRadar.Library.Network
             Created = DateTime.UtcNow;
             _IsMono = Factory.ResolveSingleton<IRuntimeEnvironment>().IsMono;
 
-            _ActivityLog = Factory.Resolve<IConnectorActivityLog>().Singleton;
+            _ActivityLog = Factory.ResolveSingleton<IConnectorActivityLog>();
             _ActivityLog.RecordConnectorCreated(this);
         }
 

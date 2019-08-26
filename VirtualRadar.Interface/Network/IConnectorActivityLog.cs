@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Network
 {
@@ -19,6 +20,7 @@ namespace VirtualRadar.Interface.Network
     /// The interface for a singleton object that records activity across every connector
     /// created by the application.
     /// </summary>
+    [Singleton]
     public interface IConnectorActivityLog : ISingleton<IConnectorActivityLog>
     {
         /// <summary>

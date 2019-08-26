@@ -48,11 +48,10 @@ namespace VirtualRadar.Library.Network
         #endregion
 
         #region Properties
-        private static readonly IConnectorActivityLog _Singleton = new ConnectorActivityLog();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public IConnectorActivityLog Singleton { get { return _Singleton; } }
+        public IConnectorActivityLog Singleton => Factory.ResolveSingleton<IConnectorActivityLog>();
         #endregion
 
         #region Events
