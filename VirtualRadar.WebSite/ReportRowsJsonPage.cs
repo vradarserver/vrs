@@ -151,7 +151,7 @@ namespace VirtualRadar.WebSite
         public ReportRowsJsonPage(WebSite webSite) : base(webSite)
         {
             _PictureManager = Factory.ResolveSingleton<IAircraftPictureManager>();
-            _PictureFolderCache = Factory.Resolve<IAutoConfigPictureFolderCache>().Singleton.DirectoryCache;
+            _PictureFolderCache = Factory.ResolveSingleton<IAutoConfigPictureFolderCache>().DirectoryCache;
             _CallsignParser = Factory.Resolve<ICallsignParser>();
         }
         #endregion

@@ -57,7 +57,7 @@ namespace Test.VirtualRadar.Library
             _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
             _ConfigurationStorage.Setup(s => s.Load()).Returns(_Configuration);
 
-            _AutoConfig = Factory.Resolve<IAutoConfigPictureFolderCache>();
+            _AutoConfig = Factory.ResolveNewInstance<IAutoConfigPictureFolderCache>();
 
             _ConfigurationChangedHandler = new EventRecorder<EventArgs>();
             _AutoConfig.CacheConfigurationChanged += _ConfigurationChangedHandler.Handler;
@@ -73,17 +73,6 @@ namespace Test.VirtualRadar.Library
         public void AutoConfigPictureFolderCache_Constructor_Initialises_To_Known_State()
         {
             Assert.AreEqual(null, _AutoConfig.DirectoryCache);
-        }
-
-        [TestMethod]
-        public void AutoConfigPictureFolderCache_Singleton_Returns_Same_Reference_For_All_Instances()
-        {
-            var instance1 = Factory.Resolve<IAutoConfigPictureFolderCache>();
-            var instance2 = Factory.Resolve<IAutoConfigPictureFolderCache>();
-
-            Assert.AreNotSame(instance1, instance2);
-            Assert.IsNotNull(instance1.Singleton);
-            Assert.AreSame(instance1.Singleton, instance2.Singleton);
         }
 
         [TestMethod]
