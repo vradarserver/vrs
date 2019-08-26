@@ -319,7 +319,7 @@ namespace VirtualRadar.Library.Listener
         private void SaveCurrentPolarPlot()
         {
             try {
-                var storage = Factory.Resolve<ISavedPolarPlotStorage>().Singleton;
+                var storage = Factory.ResolveSingleton<ISavedPolarPlotStorage>();
                 storage.Save(this);
             } catch(Exception ex) {
                 var log = Factory.ResolveSingleton<ILog>();
@@ -333,7 +333,7 @@ namespace VirtualRadar.Library.Listener
         private void LoadCurrentPolarPlot()
         {
             try {
-                var storage = Factory.Resolve<ISavedPolarPlotStorage>().Singleton;
+                var storage = Factory.ResolveSingleton<ISavedPolarPlotStorage>();
                 var savedPolarPlot = storage.Load(this);
 
                 if(savedPolarPlot != null && savedPolarPlot.IsForSameFeed(this)) {

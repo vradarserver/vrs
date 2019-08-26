@@ -108,7 +108,7 @@ namespace VirtualRadar.Library.Presenter
         private void SavePolarPlots()
         {
             _View.ReportProgress(Strings.SavingPolarPlots);
-            Factory.Resolve<ISavedPolarPlotStorage>().Singleton.Save();
+            Factory.ResolveSingleton<ISavedPolarPlotStorage>().Save();
         }
 
         private void ShutdownListeners()

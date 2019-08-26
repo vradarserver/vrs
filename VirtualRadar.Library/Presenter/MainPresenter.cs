@@ -272,7 +272,7 @@ namespace VirtualRadar.Library.Presenter
                 if((now - _LastAutoSavePolarPlots).TotalMinutes >= configuration.BaseStationSettings.AutoSavePolarPlotsMinutes) {
                     _LastAutoSavePolarPlots = now;
 
-                    var storage = Factory.Resolve<ISavedPolarPlotStorage>().Singleton;
+                    var storage = Factory.ResolveSingleton<ISavedPolarPlotStorage>();
                     storage.Save();
                 }
             }
