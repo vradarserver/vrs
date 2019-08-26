@@ -53,7 +53,7 @@ namespace Test.VirtualRadar.Library
             _Provider.Setup(p => p.FileExists(It.IsAny<string>())).Returns(true);
             _Provider.Setup(p => p.FolderExists(It.IsAny<string>())).Returns(true);
 
-            _Log = Factory.Resolve<ILog>();
+            _Log = Factory.ResolveNewInstance<ILog>();
             _Log.Provider = _Provider.Object;
         }
 

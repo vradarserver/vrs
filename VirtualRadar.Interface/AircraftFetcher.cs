@@ -198,7 +198,7 @@ namespace VirtualRadar.Interface
         protected virtual void DoInitialise()
         {
             _Clock = Factory.Resolve<IClock>();
-            _PrivateHeartbeat = Factory.Resolve<IHeartbeatService>();
+            _PrivateHeartbeat = Factory.ResolveNewInstance<IHeartbeatService>();
             _PrivateHeartbeat.FastTick += Heartbeat_FastTimerTicked;
             _PrivateHeartbeat.SlowTick += Heartbeat_SlowTimerTicked;
             _PrivateHeartbeat.Start();

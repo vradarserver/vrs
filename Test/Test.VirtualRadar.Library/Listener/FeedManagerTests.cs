@@ -128,7 +128,7 @@ namespace Test.VirtualRadar.Library.Listener
         public void FeedManager_Constructor_Initialises_To_Known_Value_And_Properties_Work()
         {
             _Manager.Dispose();
-            _Manager = Factory.Resolve<IFeedManager>();
+            _Manager = Factory.ResolveNewInstance<IFeedManager>();
 
             Assert.AreEqual(0, _Manager.Feeds.Length);
             Assert.AreEqual(0, _Manager.VisibleFeeds.Length);

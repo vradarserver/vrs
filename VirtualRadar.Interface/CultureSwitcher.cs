@@ -35,7 +35,7 @@ namespace VirtualRadar.Interface
         {
             get {
                 if(_MainThreadCulture == null) {
-                    _MainThreadCulture = Factory.Resolve<IRuntimeEnvironment>().MainThreadCultureInfo;
+                    _MainThreadCulture = Factory.ResolveSingleton<IRuntimeEnvironment>().MainThreadCultureInfo;
                 }
                 return _MainThreadCulture;
             }

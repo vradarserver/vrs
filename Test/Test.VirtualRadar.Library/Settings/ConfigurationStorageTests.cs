@@ -54,7 +54,7 @@ namespace Test.VirtualRadar.Library.Settings
 
             _Provider = new TestProvider();
             _Provider.Folder = TestContext.TestDeploymentDir;
-            _Implementation = Factory.Resolve<IConfigurationStorage>();
+            _Implementation = Factory.ResolveNewInstance<IConfigurationStorage>();
             _Implementation.Provider = _Provider;
 
             _ConfigurationChangedEvent = new EventRecorder<EventArgs>();
@@ -80,7 +80,7 @@ namespace Test.VirtualRadar.Library.Settings
         [TestMethod]
         public void ConfigurationStorage_Initialises_To_Known_State_And_Properties_Work()
         {
-            _Implementation = Factory.Resolve<IConfigurationStorage>();
+            _Implementation = Factory.ResolveNewInstance<IConfigurationStorage>();
             Assert.IsNotNull(_Implementation.Provider);
             Assert.AreNotSame(_Provider, _Implementation.Provider);
             _Implementation.Provider = _Provider;
@@ -753,7 +753,7 @@ namespace Test.VirtualRadar.Library.Settings
             xmlSerialiser.Setup(r => r.Deserialise<Configuration>(It.IsAny<Stream>())).Returns(config);
             xmlSerialiser.Setup(r => r.Deserialise<Configuration>(It.IsAny<TextReader>())).Returns(config);
 
-            _Implementation = Factory.Resolve<IConfigurationStorage>();
+            _Implementation = Factory.ResolveNewInstance<IConfigurationStorage>();
             _Implementation.Load();
 
             Assert.AreEqual(true, xmlSerialiser.Object.UseDefaultEnumValueIfUnknown);

@@ -24,7 +24,7 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void RuntimeEnvironment_IsTest_Always_Returns_False()
         {
-            var runtimeEnvironment = Factory.Resolve<IRuntimeEnvironment>();
+            var runtimeEnvironment = Factory.ResolveNewInstance<IRuntimeEnvironment>();
             Assert.IsFalse(runtimeEnvironment.IsTest);
 
             runtimeEnvironment.IsTest = true;
