@@ -12,12 +12,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
     /// <summary>
     /// The interface that objects that manage the downloading of air pressure readings has to implement.
     /// </summary>
+    [Singleton]
     public interface IAirPressureManager : ISingleton<IAirPressureManager>
     {
         /// <summary>

@@ -96,7 +96,7 @@ namespace VirtualRadar.Library.Presenter
         private void ShutdownAirPressureManager()
         {
             _View.ReportProgress(Strings.ShuttingDownAirPressureManager);
-            Factory.Resolve<IAirPressureManager>().Singleton.Stop();
+            Factory.ResolveSingleton<IAirPressureManager>().Stop();
         }
 
         private void ShutdownRebroadcastServers()

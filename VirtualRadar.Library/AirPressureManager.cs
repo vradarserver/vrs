@@ -59,19 +59,10 @@ namespace VirtualRadar.Library
         /// </summary>
         private IBackgroundWorker _BackgroundWorker;
 
-        private static IAirPressureManager _Singleton;
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public IAirPressureManager Singleton
-        {
-            get {
-                if(_Singleton == null) {
-                    _Singleton = new AirPressureManager();
-                }
-                return _Singleton;
-            }
-        }
+        public IAirPressureManager Singleton => Factory.ResolveSingleton<IAirPressureManager>();
 
         /// <summary>
         /// See interface docs.

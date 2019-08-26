@@ -319,7 +319,7 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.SplashScreenInitialisingAirPressureManager);
 
-            var airPressureManager = Factory.Resolve<IAirPressureManager>().Singleton;
+            var airPressureManager = Factory.ResolveSingleton<IAirPressureManager>();
             airPressureManager.Start();
         }
 
