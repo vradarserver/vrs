@@ -77,10 +77,9 @@ namespace Test.VirtualRadar.Library
             _Aircraft = TestUtilities.CreateMockInstance<IAircraft>();
             _Aircraft.Setup(r => r.Icao24).Returns("ABC123");
 
-            // The fetcher uses a private heartbeat service to avoid slowing the GUI down. Unfortunately
-            // the TestUtilities don't support creating non-singleton instances of ISingletons, do we
-            // have to do it manually.
-            _Heartbeat = TestUtilities.CreateMockInstance<IHeartbeatService>();
+            // The production code actually has a private heartbeat object but under test
+            // it will use the singleton one to make life easier.
+            _Heartbeat = TestUtilities.CreateMockSingleton<IHeartbeatService>();
             Factory.RegisterInstance<IHeartbeatService>(_Heartbeat.Object);
 
             _AutoConfigDatabase = TestUtilities.CreateMockSingleton<IAutoConfigBaseStationDatabase>();

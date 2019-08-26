@@ -198,7 +198,14 @@ namespace VirtualRadar.Interface
         protected virtual void DoInitialise()
         {
             _Clock = Factory.Resolve<IClock>();
-            _PrivateHeartbeat = Factory.ResolveNewInstance<IHeartbeatService>();
+            // In real-life we want a private instance but it's hard to test this, so under test
+            // conditions we will go with the singleton
+            var runtimeEnvironment = Factory.ResolveSingleton<IRuntimeEnvironment>();
+            if(!runtimeEnvironment.IsTest) {
+                _PrivateHeartbeat = Factory.ResolveNewInstance<IHeartbeatService>();
+            } else {
+                _PrivateHeartbeat = Factory.ResolveSingleton<IHeartbeatService>();
+            }
             _PrivateHeartbeat.FastTick += Heartbeat_FastTimerTicked;
             _PrivateHeartbeat.SlowTick += Heartbeat_SlowTimerTicked;
             _PrivateHeartbeat.Start();
