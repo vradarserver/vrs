@@ -156,7 +156,7 @@ namespace VirtualRadar.Library.Presenter
             heartbeatService.SlowTick += HeartbeatService_SlowTick;
             heartbeatService.FastTick += HeartbeatService_FastTick;
 
-            var newVersionChecker = Factory.Resolve<INewVersionChecker>().Singleton;
+            var newVersionChecker = Factory.ResolveSingleton<INewVersionChecker>();
             newVersionChecker.NewVersionAvailable += NewVersionChecker_NewVersionAvailable;
 
             _FeedManager = Factory.ResolveSingleton<IFeedManager>();
@@ -260,7 +260,7 @@ namespace VirtualRadar.Library.Presenter
                 if((now - _LastVersionCheck).TotalDays >= configuration.VersionCheckSettings.CheckPeriodDays) {
                     _LastVersionCheck = now;
 
-                    var newVersionChecker = Factory.Resolve<INewVersionChecker>().Singleton;
+                    var newVersionChecker = Factory.ResolveSingleton<INewVersionChecker>();
                     newVersionChecker.CheckForNewVersion();
                 }
             }
@@ -289,7 +289,7 @@ namespace VirtualRadar.Library.Presenter
 
             var previousState = View.ShowBusy(true, null);
             try {
-                var versionChecker = Factory.Resolve<INewVersionChecker>().Singleton;
+                var versionChecker = Factory.ResolveSingleton<INewVersionChecker>();
                 newVersionAvailable = versionChecker.CheckForNewVersion();
             } finally {
                 View.ShowBusy(false, previousState);
