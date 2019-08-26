@@ -38,11 +38,10 @@ namespace VirtualRadar.Library.Network
         #endregion
 
         #region Properties
-        private static readonly IRebroadcastServerManager _Singleton = new RebroadcastServerManager();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public IRebroadcastServerManager Singleton { get { return _Singleton; } }
+        public IRebroadcastServerManager Singleton => Factory.ResolveSingleton<IRebroadcastServerManager>();
 
         /// <summary>
         /// See interface docs.
