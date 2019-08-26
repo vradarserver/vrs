@@ -32,14 +32,10 @@ namespace VirtualRadar.Library.Settings
         internal const string CustomTileServerSettingsFileName =     "TileServerSettings-Custom.json";
         internal const string ReadMeFileName =                       "TileServerSettings-ReadMe.txt";
 
-        private static ITileServerSettingsStorage _Singleton = new TileServerSettingsStorage();
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public ITileServerSettingsStorage Singleton
-        {
-            get { return _Singleton; }
-        }
+        public ITileServerSettingsStorage Singleton => Factory.ResolveSingleton<ITileServerSettingsStorage>();
 
         private string _Folder;
         /// <summary>

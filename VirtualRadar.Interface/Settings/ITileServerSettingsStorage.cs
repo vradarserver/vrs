@@ -12,12 +12,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
     /// The interface for classes that can load tile server settings.
     /// </summary>
+    [Singleton]
     public interface ITileServerSettingsStorage : ISingleton<ITileServerSettingsStorage>
     {
         /// <summary>

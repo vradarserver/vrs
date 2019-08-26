@@ -89,7 +89,7 @@ namespace VirtualRadar.Library.Settings
                 lock(_SyncLock) {
                     if(!_Initialised) {
                         _Initialised = true;
-                        _Storage = Factory.Resolve<ITileServerSettingsStorage>().Singleton;
+                        _Storage = Factory.ResolveSingleton<ITileServerSettingsStorage>();
                         var reportErrors = new StringBuilder();
 
                         CatchErrorsDuringInitialise(reportErrors, "downloading tile server settings", () => {
