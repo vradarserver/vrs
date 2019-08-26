@@ -91,7 +91,7 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             base.CreateBindings();
 
-            var rebroadcastFormatManager = Factory.Resolve<IRebroadcastFormatManager>().Singleton;
+            var rebroadcastFormatManager = Factory.ResolveSingleton<IRebroadcastFormatManager>();
 
             AddControlBinder(new MasterListToListBinder<Configuration, RebroadcastSettings>(SettingsView.Configuration, listRebroadcastServers, r => r.RebroadcastSettings) {
                 FetchColumns = (rebroadcastServer, e) => {

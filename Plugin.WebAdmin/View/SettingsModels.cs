@@ -82,7 +82,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             Configuration = new ConfigurationModel();
 
             var receiverFormatManager = Factory.Resolve<IReceiverFormatManager>().Singleton;
-            var rebroadcastFormatManager = Factory.Resolve<IRebroadcastFormatManager>().Singleton;
+            var rebroadcastFormatManager = Factory.ResolveSingleton<IRebroadcastFormatManager>();
 
             ConnectionTypes =       EnumModel.CreateFromEnum<ConnectionType>(r => Describe.ConnectionType(r));
             DataSources =           receiverFormatManager.GetRegisteredFormats();

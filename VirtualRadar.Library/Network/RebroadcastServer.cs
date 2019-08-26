@@ -178,7 +178,7 @@ namespace VirtualRadar.Library.Network
             Connector.Name = Name;
             Connector.EstablishConnection();
 
-            var providerManager = Factory.Resolve<IRebroadcastFormatManager>().Singleton;
+            var providerManager = Factory.ResolveSingleton<IRebroadcastFormatManager>();
             _Provider = providerManager.CreateProvider(Format);
             if(_Provider == null) throw new InvalidOperationException(String.Format("There is no rebroadcast format registered with a unique ID of {0}", Format));
 

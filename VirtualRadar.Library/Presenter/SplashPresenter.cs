@@ -232,7 +232,7 @@ namespace VirtualRadar.Library.Presenter
                 }
             }
 
-            var rebroadcastFormatManager = Factory.Resolve<IRebroadcastFormatManager>().Singleton;
+            var rebroadcastFormatManager = Factory.ResolveSingleton<IRebroadcastFormatManager>();
             foreach(var server in configuration.RebroadcastSettings.Where(r => r.Enabled)) {
                 if(rebroadcastFormatManager.GetProvider(server.Format) == null) {
                     server.Enabled = false;

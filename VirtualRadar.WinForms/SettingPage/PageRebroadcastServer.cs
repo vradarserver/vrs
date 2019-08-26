@@ -149,7 +149,7 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             base.CreateBindings();
 
-            var rebroadcastFormatManager = Factory.Resolve<IRebroadcastFormatManager>().Singleton;
+            var rebroadcastFormatManager = Factory.ResolveSingleton<IRebroadcastFormatManager>();
             var rebroadcastFormats = rebroadcastFormatManager.GetRegisteredFormats();
 
             AddControlBinder(new CheckBoxBoolBinder<RebroadcastSettings>(RebroadcastSettings, checkBoxEnabled,          r => r.Enabled,         (r,v) => r.Enabled = v) { UpdateMode = DataSourceUpdateMode.OnPropertyChanged });

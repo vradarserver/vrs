@@ -114,7 +114,7 @@ namespace VirtualRadar
             var receiverFormatManager = Factory.Resolve<IReceiverFormatManager>().Singleton;
             receiverFormatManager.Initialise();
 
-            var rebroadcastFormatManager = Factory.Resolve<IRebroadcastFormatManager>().Singleton;
+            var rebroadcastFormatManager = Factory.ResolveSingleton<IRebroadcastFormatManager>();
             rebroadcastFormatManager.Initialise();
 
             var pluginManager = Factory.ResolveSingleton<IPluginManager>();
