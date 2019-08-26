@@ -51,7 +51,7 @@ namespace Test.VirtualRadar.Database
             _Clock = new ClockMock();
             Factory.RegisterInstance<IClock>(_Clock.Object);
 
-            _Fetcher = Factory.Resolve<ICallsignRouteFetcher>();
+            _Fetcher = Factory.ResolveNewInstance<ICallsignRouteFetcher>();
             _FetchedHandler = new EventRecorder<EventArgs<CallsignRouteDetail>>();
             _Fetcher.Fetched += _FetchedHandler.Handler;
 
@@ -89,19 +89,6 @@ namespace Test.VirtualRadar.Database
         public void TestCleanup()
         {
             Factory.RestoreSnapshot(_OriginalFactory);
-        }
-        #endregion
-
-        #region Constructor and properties
-        [TestMethod]
-        public void CallsignRouteFetcher_Singleton_Returns_Same_Instance_For_All_References()
-        {
-            var instance1 = Factory.Resolve<ICallsignRouteFetcher>();
-            var instance2 = Factory.Resolve<ICallsignRouteFetcher>();
-
-            Assert.IsNotNull(instance1.Singleton);
-            Assert.AreNotSame(instance1, instance2);
-            Assert.AreSame(instance1.Singleton, instance2.Singleton);
         }
         #endregion
 

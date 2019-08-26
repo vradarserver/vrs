@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.StandingData
 {
@@ -20,6 +21,7 @@ namespace VirtualRadar.Interface.StandingData
     /// across many aircraft lists (or potentially anything that needs to find callsigns from
     /// routes).
     /// </summary>
+    [Singleton]
     public interface ICallsignRouteFetcher : ISingleton<ICallsignRouteFetcher>
     {
         /// <summary>

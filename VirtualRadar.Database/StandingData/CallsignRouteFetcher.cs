@@ -77,14 +77,10 @@ namespace VirtualRadar.Database.StandingData
         #endregion
 
         #region Properties
-        private static readonly ICallsignRouteFetcher _Singleton = new CallsignRouteFetcher();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public ICallsignRouteFetcher Singleton
-        {
-            get { return _Singleton; }
-        }
+        public ICallsignRouteFetcher Singleton => Factory.ResolveSingleton<ICallsignRouteFetcher>();
 
         /// <summary>
         /// See interface docs.

@@ -363,7 +363,7 @@ namespace VirtualRadar.Library.BaseStation
 
                 _AircraftDetailFetcher = Factory.ResolveSingleton<IAircraftDetailFetcher>();
                 _AircraftDetailFetcher.Fetched += AircraftDetailFetcher_Fetched;
-                _CallsignRouteFetcher = Factory.Resolve<ICallsignRouteFetcher>().Singleton;
+                _CallsignRouteFetcher = Factory.ResolveSingleton<ICallsignRouteFetcher>();
                 _CallsignRouteFetcher.Fetched += CallsignRouteFetcher_Fetched;
                 _AirPressureManager = Factory.ResolveSingleton<IAirPressureManager>();
 
