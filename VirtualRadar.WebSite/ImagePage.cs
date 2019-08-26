@@ -185,7 +185,7 @@ namespace VirtualRadar.WebSite
         public ImagePage(WebSite webSite) : base(webSite)
         {
             _Graphics = Factory.Resolve<IWebSiteGraphics>().Singleton;
-            _PictureManager = Factory.Resolve<IAircraftPictureManager>().Singleton;
+            _PictureManager = Factory.ResolveSingleton<IAircraftPictureManager>();
             _PictureFolderCache = Factory.Resolve<IAutoConfigPictureFolderCache>().Singleton.DirectoryCache;
         }
         #endregion

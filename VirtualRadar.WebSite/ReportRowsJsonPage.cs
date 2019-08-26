@@ -150,7 +150,7 @@ namespace VirtualRadar.WebSite
         /// </summary>
         public ReportRowsJsonPage(WebSite webSite) : base(webSite)
         {
-            _PictureManager = Factory.Resolve<IAircraftPictureManager>().Singleton;
+            _PictureManager = Factory.ResolveSingleton<IAircraftPictureManager>();
             _PictureFolderCache = Factory.Resolve<IAutoConfigPictureFolderCache>().Singleton.DirectoryCache;
             _CallsignParser = Factory.Resolve<ICallsignParser>();
         }
