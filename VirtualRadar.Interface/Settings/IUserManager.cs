@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 using VirtualRadar.Interface.View;
 
 namespace VirtualRadar.Interface.Settings
@@ -19,6 +20,7 @@ namespace VirtualRadar.Interface.Settings
     /// <summary>
     /// The interface for the object that manages lists of users.
     /// </summary>
+    [Singleton]
     public interface IUserManager : ISingleton<IUserManager>
     {
         /// <summary>

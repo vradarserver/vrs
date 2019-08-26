@@ -340,7 +340,7 @@ namespace VirtualRadar.WebSite
             if(WebServer != server) {
                 if(WebServer != null) throw new InvalidOperationException("The web site can only be attached to one server");
 
-                _UserManager = Factory.Resolve<IUserManager>().Singleton;
+                _UserManager = Factory.ResolveSingleton<IUserManager>();
 
                 var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
                 configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Localisation;
@@ -39,18 +40,10 @@ namespace VirtualRadar.Database.Users
         #endregion
 
         #region Properties
-        private static IUserManager _Singleton;
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public IUserManager Singleton
-        {
-            get
-            {
-                if(_Singleton == null) _Singleton = new UserManager();
-                return _Singleton;
-            }
-        }
+        public IUserManager Singleton => Factory.ResolveSingleton<IUserManager>();
 
         /// <summary>
         /// See interface docs.

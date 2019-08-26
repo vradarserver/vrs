@@ -159,7 +159,7 @@ namespace VirtualRadar.Library.Presenter
         private void ShutdownUserManager()
         {
             _View.ReportProgress(Strings.ShuttingDownUserManager);
-            Factory.Resolve<IUserManager>().Singleton.Shutdown();
+            Factory.ResolveSingleton<IUserManager>().Shutdown();
         }
 
         private void ShutdownLogDatabase()
