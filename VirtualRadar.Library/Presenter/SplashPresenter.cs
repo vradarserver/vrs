@@ -345,7 +345,7 @@ namespace VirtualRadar.Library.Presenter
             var webServer = autoConfigWebServer.WebServer;
             if(BackgroundThreadExceptionHandler != null) webServer.ExceptionCaught += BackgroundThreadExceptionHandler;
 
-            var connectionLogger = Factory.Resolve<IConnectionLogger>().Singleton;
+            var connectionLogger = Factory.ResolveSingleton<IConnectionLogger>();
             connectionLogger.LogDatabase = Factory.Resolve<ILogDatabase>().Singleton;
             connectionLogger.WebServer = webServer;
             if(BackgroundThreadExceptionHandler != null) connectionLogger.ExceptionCaught += BackgroundThreadExceptionHandler;

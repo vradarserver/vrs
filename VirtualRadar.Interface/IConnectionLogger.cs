@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.Database;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
@@ -21,6 +22,7 @@ namespace VirtualRadar.Interface
     /// The interface for objects that listen to a web server, track connections to it and periodically
     /// record details of those connections in a local database.
     /// </summary>
+    [Singleton]
     public interface IConnectionLogger : ISingleton<IConnectionLogger>, IBackgroundThreadExceptionCatcher, IDisposable
     {
         /// <summary>

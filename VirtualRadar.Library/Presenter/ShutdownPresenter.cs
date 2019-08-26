@@ -141,7 +141,7 @@ namespace VirtualRadar.Library.Presenter
         private void ShutdownConnectionLogger()
         {
             _View.ReportProgress(Strings.ShuttingDownConnectionLogger);
-            Factory.Resolve<IConnectionLogger>().Singleton.Dispose();
+            Factory.ResolveSingleton<IConnectionLogger>().Dispose();
         }
 
         private void ShutdownWebServer()

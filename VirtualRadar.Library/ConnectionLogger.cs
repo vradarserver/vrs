@@ -70,11 +70,10 @@ namespace VirtualRadar.Library
         #endregion
 
         #region Properties
-        private static readonly IConnectionLogger _Singleton = new ConnectionLogger();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability/
         /// </summary>
-        public IConnectionLogger Singleton { get { return _Singleton; } }
+        public IConnectionLogger Singleton => Factory.ResolveSingleton<IConnectionLogger>();
 
         /// <summary>
         /// See interface docs.
