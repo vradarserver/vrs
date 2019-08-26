@@ -101,14 +101,10 @@ namespace VirtualRadar.Library
         #endregion
 
         #region Properties
-        private static readonly IAircraftDetailFetcher _Singleton = new AircraftDetailFetcher();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public IAircraftDetailFetcher Singleton
-        {
-            get { return _Singleton; }
-        }
+        public IAircraftDetailFetcher Singleton => Factory.ResolveSingleton<IAircraftDetailFetcher>();
 
         /// <summary>
         /// See base docs.
