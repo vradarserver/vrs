@@ -31,16 +31,9 @@ namespace Test.VirtualRadar.Library
         [TestInitialize]
         public void TestInitialise()
         {
-            _Lookup = Factory.Resolve<IAirPressureLookup>();
+            _Lookup = Factory.ResolveNewInstance<IAirPressureLookup>();
             _AirPressures = new List<AirPressure>();
             _Now = DateTime.UtcNow;
-        }
-
-        [TestMethod]
-        public void AirPressureLookup_Singleton_Returns_Same_Instance()
-        {
-            var anotherLookup = Factory.Resolve<IAirPressureLookup>();
-            Assert.AreSame(_Lookup.Singleton, anotherLookup.Singleton);
         }
 
         [TestMethod]

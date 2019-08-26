@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 using KdTree;
 using KdTree.Math;
 using VirtualRadar.Interface;
@@ -47,19 +48,10 @@ namespace VirtualRadar.Library
         /// </summary>
         public int CountAirPressuresLoaded { get; private set; }
 
-        private static IAirPressureLookup _Singleton;
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public IAirPressureLookup Singleton
-        {
-            get {
-                if(_Singleton == null) {
-                    _Singleton = new AirPressureLookup();
-                }
-                return _Singleton;
-            }
-        }
+        public IAirPressureLookup Singleton => Factory.ResolveSingleton<IAirPressureLookup>();
 
         /// <summary>
         /// See interface docs.

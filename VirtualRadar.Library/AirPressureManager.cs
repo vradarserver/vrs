@@ -111,7 +111,7 @@ namespace VirtualRadar.Library
                 _Started = true;
                 _Clock = Factory.Resolve<IClock>();
                 Downloader = Factory.Resolve<IAirPressureDownloader>();
-                Lookup = Factory.Resolve<IAirPressureLookup>();
+                Lookup = Factory.ResolveSingleton<IAirPressureLookup>();
 
                 _SharedConfiguration = Factory.Resolve<ISharedConfiguration>().Singleton;
                 Enabled = _SharedConfiguration.Get().BaseStationSettings.DownloadGlobalAirPressureReadings;

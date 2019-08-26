@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
@@ -22,6 +23,7 @@ namespace VirtualRadar.Interface
     /// <remarks>
     /// Implementations must be thread-safe.
     /// </remarks>
+    [Singleton]
     public interface IAirPressureLookup : ISingleton<IAirPressureLookup>
     {
         /// <summary>
