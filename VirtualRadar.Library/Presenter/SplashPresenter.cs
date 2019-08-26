@@ -224,7 +224,7 @@ namespace VirtualRadar.Library.Presenter
         {
             var saveConfiguration = false;
 
-            var receiverFormatManager = Factory.Resolve<IReceiverFormatManager>().Singleton;
+            var receiverFormatManager = Factory.ResolveSingleton<IReceiverFormatManager>();
             foreach(var receiver in configuration.Receivers.Where(r => r.Enabled)) {
                 if(receiverFormatManager.GetProvider(receiver.DataSource) == null) {
                     receiver.Enabled = false;

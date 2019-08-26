@@ -111,7 +111,7 @@ namespace VirtualRadar
 
             Interop.Tls12Workaround.EnableTls12Support();
 
-            var receiverFormatManager = Factory.Resolve<IReceiverFormatManager>().Singleton;
+            var receiverFormatManager = Factory.ResolveSingleton<IReceiverFormatManager>();
             receiverFormatManager.Initialise();
 
             var rebroadcastFormatManager = Factory.ResolveSingleton<IRebroadcastFormatManager>();

@@ -267,7 +267,7 @@ namespace VirtualRadar.Library.Presenter
             var configStorage = Factory.ResolveSingleton<IConfigurationStorage>();
             var config = configStorage.Load();
 
-            _ReceiverFormatManager = Factory.Resolve<IReceiverFormatManager>().Singleton;
+            _ReceiverFormatManager = Factory.ResolveSingleton<IReceiverFormatManager>();
             _RebroadcastFormatManager = Factory.ResolveSingleton<IRebroadcastFormatManager>();
             _UserManager = Factory.Resolve<IUserManager>().Singleton;
             _View.UserManager = _UserManager.Name;

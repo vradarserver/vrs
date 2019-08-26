@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Localisation;
@@ -34,19 +35,10 @@ namespace VirtualRadar.Library.Listener
         /// </summary>
         private object _SyncLock;
 
-        private static IReceiverFormatManager _Singleton;
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public IReceiverFormatManager Singleton
-        {
-            get {
-                if(_Singleton == null) {
-                    _Singleton = new ReceiverFormatManager();
-                }
-                return _Singleton;
-            }
-        }
+        public IReceiverFormatManager Singleton => Factory.ResolveSingleton<IReceiverFormatManager>();
 
         /// <summary>
         /// See interface docs.

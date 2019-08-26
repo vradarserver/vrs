@@ -68,7 +68,7 @@ namespace VirtualRadar.Library.Network
         /// <returns></returns>
         public bool CanRebroadcastReceiver(Receiver receiver)
         {
-            var receiverFormatManager = Factory.Resolve<IReceiverFormatManager>().Singleton;
+            var receiverFormatManager = Factory.ResolveSingleton<IReceiverFormatManager>();
             var receiverFormatProvider = receiverFormatManager.GetProvider(receiver.DataSource);
             return receiverFormatProvider.IsRawFormat;
         }
