@@ -48,15 +48,9 @@ namespace VirtualRadar.WebSite
         #region Properties
         private static WebSiteGraphics _Singleton;
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public IWebSiteGraphics Singleton
-        {
-            get {
-                if(_Singleton == null) _Singleton = new WebSiteGraphics();
-                return _Singleton;
-            }
-        }
+        public IWebSiteGraphics Singleton => Factory.ResolveSingleton<IWebSiteGraphics>();
         #endregion
 
         #region Ctors

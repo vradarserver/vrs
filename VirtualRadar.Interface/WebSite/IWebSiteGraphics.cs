@@ -13,12 +13,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.WebSite
 {
     /// <summary>
     /// The interface for objects that handle graphics manipulation for the web site.
     /// </summary>
+    [Singleton]
     public interface IWebSiteGraphics : ISingleton<IWebSiteGraphics>
     {
         /// <summary>
