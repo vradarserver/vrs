@@ -117,7 +117,7 @@ namespace VirtualRadar
             var rebroadcastFormatManager = Factory.Resolve<IRebroadcastFormatManager>().Singleton;
             rebroadcastFormatManager.Initialise();
 
-            var pluginManager = Factory.Resolve<IPluginManager>().Singleton;
+            var pluginManager = Factory.ResolveSingleton<IPluginManager>();
             pluginManager.LoadPlugins();
 
             bool mutexAcquired;
@@ -245,7 +245,7 @@ namespace VirtualRadar
 
             try {
                 if(loadSucceded) {
-                    var pluginManager = Factory.Resolve<IPluginManager>().Singleton;
+                    var pluginManager = Factory.ResolveSingleton<IPluginManager>();
                     foreach(var plugin in pluginManager.LoadedPlugins) {
                         try {
                             plugin.GuiThreadStartup();

@@ -30,7 +30,7 @@ namespace VirtualRadar.Library.Presenter
         /// <param name="view"></param>
         public void Initialise(IPluginsView view)
         {
-            var pluginManager = Factory.Resolve<IPluginManager>().Singleton;
+            var pluginManager = Factory.ResolveSingleton<IPluginManager>();
             view.InvalidPluginsCount = pluginManager.IgnoredPlugins.Count;
             view.ShowPlugins(pluginManager.LoadedPlugins);
         }

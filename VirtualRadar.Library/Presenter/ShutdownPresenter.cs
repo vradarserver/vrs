@@ -119,7 +119,7 @@ namespace VirtualRadar.Library.Presenter
 
         private void ShutdownPlugins()
         {
-            var plugins = Factory.Resolve<IPluginManager>().Singleton.LoadedPlugins;
+            var plugins = Factory.ResolveSingleton<IPluginManager>().LoadedPlugins;
             foreach(var plugin in plugins) {
                 _View.ReportProgress(String.Format(Strings.ShuttingDownPlugin, plugin.Name));
 

@@ -422,7 +422,7 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.SplashScreenStartingPlugins);
 
-            foreach(var plugin in Factory.Resolve<IPluginManager>().Singleton.LoadedPlugins) {
+            foreach(var plugin in Factory.ResolveSingleton<IPluginManager>().LoadedPlugins) {
                 try {
                     var parameters = new PluginStartupParameters(
                         _View.FlightSimulatorXAircraftList,
