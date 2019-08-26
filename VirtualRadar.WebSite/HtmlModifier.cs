@@ -58,7 +58,7 @@ namespace VirtualRadar.WebSite
 
         public HtmlModifier()
         {
-            _SharedConfiguration = Factory.Resolve<ISharedConfiguration>().Singleton;
+            _SharedConfiguration = Factory.ResolveSingleton<ISharedConfiguration>();
         }
 
         public string ModifyHtml(string requestPathAndFile, string htmlContent)

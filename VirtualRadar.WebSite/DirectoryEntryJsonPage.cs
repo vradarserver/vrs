@@ -86,7 +86,7 @@ namespace VirtualRadar.WebSite
         /// <returns></returns>
         private DirectoryEntryJson BuildDirectoryEntry()
         {
-            var configuration = Factory.Resolve<ISharedConfiguration>().Singleton;
+            var configuration = Factory.ResolveSingleton<ISharedConfiguration>();
 
             var feeds = _FeedManager.VisibleFeeds.Where(r => r.AircraftList != null).ToArray();
             var maxAircraft = feeds.Select(r => {

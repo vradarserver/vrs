@@ -49,6 +49,7 @@ namespace VirtualRadar.Interface.Settings
     /// against bugs introduced by this kind of behaviour the object listens for
     /// changes to the configuration and throws an exception when they're detected.
     /// </para></remarks>
+    [Singleton]
     public interface ISharedConfiguration : ISingleton<ISharedConfiguration>
     {
         /// <summary>

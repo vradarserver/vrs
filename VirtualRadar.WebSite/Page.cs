@@ -51,7 +51,7 @@ namespace VirtualRadar.WebSite
         protected ISharedConfiguration SharedConfiguration
         {
             get {
-                if(_SharedConfiguration == null) _SharedConfiguration = Factory.Resolve<ISharedConfiguration>().Singleton;
+                if(_SharedConfiguration == null) _SharedConfiguration = Factory.ResolveSingleton<ISharedConfiguration>();
                 return _SharedConfiguration;
             }
         }

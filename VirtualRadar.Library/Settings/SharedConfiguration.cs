@@ -47,14 +47,10 @@ namespace VirtualRadar.Library.Settings
         #endregion
 
         #region Properties
-        private static ISharedConfiguration _Singleton = new SharedConfiguration();
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public ISharedConfiguration Singleton
-        {
-            get { return _Singleton; }
-        }
+        public ISharedConfiguration Singleton => Factory.ResolveSingleton<ISharedConfiguration>();
         #endregion
 
         #region Events exposed
