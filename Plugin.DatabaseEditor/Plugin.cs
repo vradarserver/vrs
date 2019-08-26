@@ -210,7 +210,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// </summary>
         public void GuiThreadStartup()
         {
-            var webAdminViewManager = Factory.Resolve<IWebAdminViewManager>().Singleton;
+            var webAdminViewManager = Factory.ResolveSingleton<IWebAdminViewManager>();
             webAdminViewManager.RegisterTranslations(typeof(DatabaseEditorStrings), "DatabaseEditorPlugin");
             webAdminViewManager.AddWebAdminView(new WebAdminView("/WebAdmin/", "DatabaseEditorPluginOptions.html", DatabaseEditorStrings.WebAdminMenuName, () => new WebAdmin.OptionsView(), typeof(DatabaseEditorStrings)) {
                 Plugin = this,

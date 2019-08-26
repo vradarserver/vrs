@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.WebSite;
 
@@ -24,10 +25,7 @@ namespace VirtualRadar.WebSite
     /// </summary>
     class WebAdminViewManagerStub : IWebAdminViewManager
     {
-        public IWebAdminViewManager Singleton
-        {
-            get { return this; }
-        }
+        public IWebAdminViewManager Singleton => Factory.ResolveSingleton<IWebAdminViewManager>();
 
         public bool WebAdminPluginInstalled
         {

@@ -211,7 +211,7 @@ namespace VirtualRadar.Plugin.CustomContent
         /// </summary>
         public void GuiThreadStartup()
         {
-            var webAdminViewManager = Factory.Resolve<IWebAdminViewManager>().Singleton;
+            var webAdminViewManager = Factory.ResolveSingleton<IWebAdminViewManager>();
             webAdminViewManager.RegisterTranslations(typeof(CustomContentStrings), "CustomContentPlugin");
             webAdminViewManager.AddWebAdminView(new WebAdminView("/WebAdmin/", "CustomContentPluginOptions.html", CustomContentStrings.WebAdminMenuName, () => new WebAdmin.OptionsView(), typeof(CustomContentStrings)) {
                 Plugin = this,

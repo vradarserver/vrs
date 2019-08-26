@@ -81,19 +81,10 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// </summary>
         private object _SyncLock = new object();
 
-        private static WebAdminViewManager _Singleton;
         /// <summary>
-        /// See interface docs.
+        /// See interface docs. Retained for backwards compatability.
         /// </summary>
-        public IWebAdminViewManager Singleton
-        {
-            get {
-                if(_Singleton == null) {
-                    _Singleton = new WebAdminViewManager();
-                }
-                return _Singleton;
-            }
-        }
+        public IWebAdminViewManager Singleton => Factory.ResolveSingleton<IWebAdminViewManager>();
 
         /// <summary>
         /// Gets an object that can be used to respond to requests.
