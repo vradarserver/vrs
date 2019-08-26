@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Settings
 {
@@ -19,6 +20,7 @@ namespace VirtualRadar.Interface.Settings
     /// The interface for singleton objects that can fetch tile server settings from the mothership
     /// and offer them up to the rest of the program.
     /// </summary>
+    [Singleton]
     public interface ITileServerSettingsManager : ISingleton<ITileServerSettingsManager>
     {
         /// <summary>

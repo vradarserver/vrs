@@ -345,7 +345,7 @@ namespace VirtualRadar.WebSite
                 var configurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
                 configurationStorage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
 
-                var tileServerManager = Factory.Resolve<ITileServerSettingsManager>().Singleton;
+                var tileServerManager = Factory.ResolveSingleton<ITileServerSettingsManager>();
                 tileServerManager.TileServerSettingsDownloaded += TileServerSettingsManager_TileServerSettingsDownloaded;
 
                 WebServer = server;

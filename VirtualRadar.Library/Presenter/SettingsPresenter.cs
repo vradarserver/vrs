@@ -359,7 +359,7 @@ namespace VirtualRadar.Library.Presenter
         /// <returns></returns>
         public IEnumerable<string> GetTileServerSettingNames()
         {
-            var manager = Factory.Resolve<ITileServerSettingsManager>().Singleton;
+            var manager = Factory.ResolveSingleton<ITileServerSettingsManager>();
             var result = manager.GetAllTileServerSettings(MapProvider.Leaflet)
                 .OrderBy(r => r.IsDefault && !r.IsCustom ? 0 : 1)
                 .ThenBy(r => !r.IsCustom ? 0 : 1)

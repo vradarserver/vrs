@@ -56,14 +56,10 @@ namespace VirtualRadar.Library.Settings
         /// </summary>
         private ITileServerSettingsStorage _Storage;
 
-        private static ITileServerSettingsManager _Singleton = new TileServerSettingsManager();
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public ITileServerSettingsManager Singleton
-        {
-            get { return _Singleton; }
-        }
+        public ITileServerSettingsManager Singleton => Factory.ResolveSingleton<ITileServerSettingsManager>();
 
         /// <summary>
         /// See interface docs.

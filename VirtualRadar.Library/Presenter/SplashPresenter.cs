@@ -311,7 +311,7 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.SplashScreenInitialisingTileServerSettingsManager);
 
-            var manager = Factory.Resolve<ITileServerSettingsManager>().Singleton;
+            var manager = Factory.ResolveSingleton<ITileServerSettingsManager>();
             manager.Initialise();
         }
 

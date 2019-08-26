@@ -20,11 +20,10 @@ namespace VirtualRadar.Plugin.TileServerCache
         /// </summary>
         private static TileServerUrlTranslator _TileServerUrlTranslator;
 
-        private static TileServerSettingsManagerWrapper _Singleton;
         /// <summary>
-        /// See interface.
+        /// See interface. Retained for backwards compatability.
         /// </summary>
-        public ITileServerSettingsManager Singleton => _Singleton;
+        public ITileServerSettingsManager Singleton => Factory.ResolveSingleton<ITileServerSettingsManager>();
 
         /// <summary>
         /// See interface.
@@ -53,10 +52,9 @@ namespace VirtualRadar.Plugin.TileServerCache
         /// <returns></returns>
         public static TileServerSettingsManagerWrapper Initialise(IClassFactory classFactory)
         {
-            _DefaultImplementation = classFactory.Resolve<ITileServerSettingsManager>().Singleton;
+            _DefaultImplementation = classFactory.ResolveSingleton<ITileServerSettingsManager>();
 
             var singleton = new TileServerSettingsManagerWrapper();
-            _Singleton = singleton;
             classFactory.RegisterInstance<ITileServerSettingsManager>(singleton);
 
             _TileServerUrlTranslator = new TileServerUrlTranslator();

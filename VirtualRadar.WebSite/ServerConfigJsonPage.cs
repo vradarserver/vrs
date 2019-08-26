@@ -126,7 +126,7 @@ namespace VirtualRadar.WebSite
                     });
                 }
 
-                var tileServerSettingsManager = Factory.Resolve<ITileServerSettingsManager>().Singleton;
+                var tileServerSettingsManager = Factory.ResolveSingleton<ITileServerSettingsManager>();
                 _ServerConfigJson.TileServerSettings = tileServerSettingsManager.GetTileServerSettings(
                     configuration.GoogleMapSettings.MapProvider,
                     configuration.GoogleMapSettings.TileServerSettingName,
