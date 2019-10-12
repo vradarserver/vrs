@@ -500,6 +500,7 @@ namespace VirtualRadar.Library.Network
                     } catch(Exception ex) {
                         abandonConnection = true;
                         OnExceptionCaught(new EventArgs<Exception>(ex));
+                        RecordMiscellaneousActivity("Abandoning incoming passive connection due to previous exception");
                     }
                 }
 

@@ -12,9 +12,12 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using InterfaceFactory;
 using VirtualRadar.Interface;
 
 namespace VirtualRadar.Library
@@ -24,10 +27,23 @@ namespace VirtualRadar.Library
     /// </summary>
     class RuntimeEnvironment : IRuntimeEnvironment
     {
+        private static bool _IsMono;
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public bool IsMono { get { return Type.GetType("Mono.Runtime") != null; } }
+        public bool IsMono => _IsMono;
+
+        private static string _MonoVersionText;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string MonoVersionText => _MonoVersionText;
+
+        private static Version _MonoVersion;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public Version MonoVersion => _MonoVersion;
 
         private bool? _Is64BitProcess;
         /// <summary>
@@ -68,6 +84,36 @@ namespace VirtualRadar.Library
             // The assumption here is that the very first time this is called will be on the main thread,
             // so we just copy the current thread's culture info.
             _MainThreadCultureInfo = Thread.CurrentThread.CurrentCulture;
+
+            ExtractMonoInformation();
+        }
+
+        private static void ExtractMonoInformation()
+        {
+            var monoRuntimeType = Type.GetType("Mono.Runtime");
+            _IsMono = monoRuntimeType != null;
+
+            if(_IsMono) {
+                _MonoVersion = new Version(0, 0, 0, 0);
+
+                try {
+                    var getDisplayName = monoRuntimeType == null ? null : monoRuntimeType.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
+                    _MonoVersionText = getDisplayName.Invoke(null, null) as string;
+                } catch(Exception ex) {
+                    var log = Factory.ResolveSingleton<ILog>();
+                    log.WriteLine($"Attempting to call Mono.Runtime.GetDisplayName() via reflection threw exception: {ex}");
+                    _MonoVersionText = "";
+                }
+
+                var regex = new Regex(@"\b(?<version>\d+\.\d+.\d+)\b");
+                var match = regex.Match(_MonoVersionText);
+                if(match.Success) {
+                    var versionText = match.Groups["version"].Value;
+                    if(Version.TryParse(versionText, out var version)) {
+                        _MonoVersion = version;
+                    }
+                }
+            }
         }
     }
 }

@@ -29,6 +29,20 @@ namespace VirtualRadar.Interface
         bool IsMono { get; }
 
         /// <summary>
+        /// Gets the Mono runtime version - but only major.minor.build, no revision. This returns null if <see cref="IsMono"/> is false.
+        /// </summary>
+        /// <remarks>
+        /// Bear in mind that if you compare a version of 1.2.3 against a version of 1.2.3.0 then they are not equal. You need to
+        /// create the version that you want to compare against without a revision number if you want to compare for equality.
+        /// </remarks>
+        Version MonoVersion { get; }
+
+        /// <summary>
+        /// Gets the raw text that was parsed into <see cref="MonoVersion"/>. This returns null if <see cref="IsMono"/> is false.
+        /// </summary>
+        string MonoVersionText { get; }
+
+        /// <summary>
         /// Gets a value indicating that the program is running as a 64-bit process.
         /// </summary>
         bool Is64BitProcess { get; }

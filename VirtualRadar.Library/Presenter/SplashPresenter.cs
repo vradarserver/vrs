@@ -203,6 +203,14 @@ namespace VirtualRadar.Library.Presenter
             log.Truncate(100);
             log.WriteLine("Program started, version {0}, build date {1} UTC", version, applicationInformation.BuildDate);
             log.WriteLine("Working folder {0}", configurationStorage.Folder);
+
+            var runtimeEnvironment = Factory.Resolve<IRuntimeEnvironment>();
+            if(!runtimeEnvironment.IsMono) {
+                log.WriteLine($"Running under .NET Framework CLR version {System.Environment.Version}");
+            } else {
+                log.WriteLine($"Running under Mono runtime version {runtimeEnvironment.MonoVersion}, CLR version {System.Environment.Version}");
+                log.WriteLine($"Mono display name: {runtimeEnvironment.MonoVersionText}");
+            }
         }
 
         private Configuration LoadConfiguration(IConfigurationStorage configurationStorage)

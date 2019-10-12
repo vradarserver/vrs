@@ -41,6 +41,11 @@ namespace VirtualRadar.Library.Network
         private bool _NotSupported;
 
         /// <summary>
+        /// True if we're running under mono and it appears to be compliant with the .NET version.
+        /// </summary>
+        private bool _IsCompliant;
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public int CountConnections
@@ -53,7 +58,14 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         public TcpConnectionStateService()
         {
-            _IsMono = Factory.ResolveSingleton<IRuntimeEnvironment>().IsMono;
+            var runtimeEnvironment = Factory.ResolveSingleton<IRuntimeEnvironment>();
+            _IsMono = runtimeEnvironment.IsMono;
+
+            // Early flavours of Mono throw a not-implemented exception when calling GetIPGlobalProperties.
+            // Later flavours prior to Mono v6 will return CLOSED states (1) instead of ESTABLISHED (5).
+            // Mono 6.0 onwards follows .Net Framework behaviour (see https://github.com/mono/mono/pull/12310, introduced in v6.0.0.176 - the first v6 release).
+            _IsCompliant = _IsMono && runtimeEnvironment.MonoVersion >= new Version(6, 0, 0);   // Note that MonoVersion does not return revision numbers.
+
             RefreshTcpConnectionStates();
         }
 
@@ -62,8 +74,6 @@ namespace VirtualRadar.Library.Network
         /// </summary>
         public void RefreshTcpConnectionStates()
         {
-            // On some flavours of mono this actually throws a not-implemented exception. Some flavours work.
-            // but don't report connection states consistently with the .NET version.
             try {
                 if(!_NotSupported) {
                     var properties = IPGlobalProperties.GetIPGlobalProperties();
@@ -83,7 +93,17 @@ namespace VirtualRadar.Library.Network
         public bool IsRemoteConnectionEstablished(IPEndPoint localEndPoint, IPEndPoint remoteEndPoint)
         {
             var connection = GetRemoteConnection(localEndPoint, remoteEndPoint);
-            return connection == null ? true : !_IsMono ? connection.State == TcpState.Established : (int)connection.State == 1;
+            var result = connection == null;
+
+            if(!result) {
+                if(_IsMono && !_IsCompliant) {
+                    result = (int)connection.State == 1;    // See earlier comments, old monos would return (1) closed instead of (5) established
+                } else {
+                    result = connection.State == TcpState.Established;
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
