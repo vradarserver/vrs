@@ -156,6 +156,7 @@
     <Compile Include="Settings\MergedFeedReceiver.cs" />
     <Compile Include="Settings\ReceiverUsage.cs" />
     <Compile Include="StandingData\EnginePlacement.cs" />
+    <Compile Include="VersionExtensions.cs" />
     <Compile Include="View\IAircraftOnlineLookupLogView.cs" />
     <Compile Include="View\IBackgroundThreadQueuesView.cs" />
     <Compile Include="View\ValidationModelField.cs" />
