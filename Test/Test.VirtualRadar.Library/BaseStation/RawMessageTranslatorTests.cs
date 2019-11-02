@@ -826,35 +826,53 @@ namespace Test.VirtualRadar.Library.BaseStation
         {
             foreach(ControlField controlField in Enum.GetValues(typeof(ControlField))) {
                 foreach(var imfValue in new byte?[] { null, 0, 1 }) {
-                    TestCleanup();
-                    TestInitialise();
+                    foreach(var assumeDF18CF1IsIcao in new bool[] { false, true }) {
+                        TestCleanup();
+                        TestInitialise();
 
-                    var icao24 = CreateRandomIcao24();
-                    _ModeSMessage.DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder;
-                    _ModeSMessage.ControlField = controlField;
-                    _ModeSMessage.Icao24 = icao24;
+                        var icao24 = CreateRandomIcao24();
+                        _ModeSMessage.DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder;
+                        _ModeSMessage.ControlField = controlField;
+                        _ModeSMessage.Icao24 = icao24;
+                        _ModeSMessage.NonIcao24Address = null;
 
-                    _AdsbMessage.TisbIcaoModeAFlag = imfValue;
+                        if(controlField == ControlField.AdsbDeviceNotTransmittingIcao24) {
+                            if(!assumeDF18CF1IsIcao) {      // <-- listener will set Icao24 when assuming DF18CF1 is ICAO, otherwise NonIcao24Address is set
+                                _ModeSMessage.Icao24 = 0;
+                                _ModeSMessage.NonIcao24Address = icao24;
+                            }
+                        }
 
-                    var message = _Translator.Translate(_NowUtc, _ModeSMessage, _AdsbMessage);
-                    switch(controlField) {
-                        case ControlField.AdsbDeviceTransmittingIcao24:
-                        case ControlField.AdsbRebroadcastOfExtendedSquitter:
-                            Assert.IsNotNull(message);
-                            Assert.AreEqual(FormatIcao24(icao24), message.Icao24);
-                            break;
-                        case ControlField.FineFormatTisb:
-                        case ControlField.CoarseFormatTisb:
-                            if(imfValue == 0) {         // AA field on Mode-S is valid ICAO24
+                        _AdsbMessage.TisbIcaoModeAFlag = imfValue;
+
+                        var message = _Translator.Translate(_NowUtc, _ModeSMessage, _AdsbMessage);
+                        switch(controlField) {
+                            case ControlField.AdsbDeviceTransmittingIcao24:
+                            case ControlField.AdsbRebroadcastOfExtendedSquitter:
                                 Assert.IsNotNull(message);
                                 Assert.AreEqual(FormatIcao24(icao24), message.Icao24);
-                            } else {                        // IMF = null: not decoded correctly, IMF = 1: AA field is squawk and tracking number
+                                break;
+                            case ControlField.AdsbDeviceNotTransmittingIcao24:
+                                if(!assumeDF18CF1IsIcao) {
+                                    Assert.IsNull(message);
+                                } else {
+                                    Assert.IsNotNull(message);
+                                    Assert.AreEqual(FormatIcao24(icao24), message.Icao24);
+                                }
+                                break;
+                            case ControlField.FineFormatTisb:
+                            case ControlField.CoarseFormatTisb:
+                                if(imfValue == 0) {         // AA field on Mode-S is valid ICAO24
+                                    Assert.IsNotNull(message);
+                                    Assert.AreEqual(FormatIcao24(icao24), message.Icao24);
+                                } else {                        // IMF = null: not decoded correctly, IMF = 1: AA field is squawk and tracking number
+                                    Assert.IsNull(message);
+                                }
+                                break;
+                            default:
                                 Assert.IsNull(message);
-                            }
-                            break;
-                        default:
-                            Assert.IsNull(message);
-                            break;
+                                break;
+                        }
                     }
                 }
             }
@@ -873,6 +891,11 @@ namespace Test.VirtualRadar.Library.BaseStation
                     _ModeSMessage.ControlField = controlField;
                     _ModeSMessage.Icao24 = icao24;
                     _ModeSMessage.ParityInterrogatorIdentifier = badParity ? 1 : 0;
+
+                    if(controlField == ControlField.AdsbDeviceNotTransmittingIcao24) {
+                        _ModeSMessage.NonIcao24Address = _ModeSMessage.Icao24;
+                        _ModeSMessage.Icao24 = 0;
+                    }
 
                     var message = _Translator.Translate(_NowUtc, _ModeSMessage, null);
 
@@ -893,6 +916,12 @@ namespace Test.VirtualRadar.Library.BaseStation
                 _ModeSMessage.DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder;
                 _ModeSMessage.ControlField = controlField;
                 _ModeSMessage.Icao24 = icao24;
+
+                if(controlField == ControlField.AdsbDeviceNotTransmittingIcao24) {
+                    _ModeSMessage.NonIcao24Address = _ModeSMessage.Icao24;
+                    _ModeSMessage.Icao24 = 0;
+                }
+
                 _Translator.Translate(_NowUtc, _ModeSMessage, null);
 
                 foreach(var parityIcao24ModeSMessage in CreateModeSMessagesWithNoPIField()) {
@@ -1158,6 +1187,45 @@ namespace Test.VirtualRadar.Library.BaseStation
                     Assert.AreEqual(FormatIcao24(icao24), message.Icao24);
                 }
             }
+        }
+
+        [TestMethod]
+        public void RawMessageTranslator_Translate_Accepts_DF18CF1_If_NonIcao24Address_Is_Null()
+        {
+            // Normally CF1 (ADSB not transmitting ICAO24) will have a zero Icao24 field and
+            // non-null NonIcaoAddress field. However, there is an option to force the use of
+            // CF1 addresses, when that is employed the Icao24 and NonIcaoAddress fields are
+            // swapped. When this happens we need to treat CF1 messages as valid.
+
+            var modeSMessage = new ModeSMessage() {
+                DownlinkFormat =                DownlinkFormat.ExtendedSquitterNonTransponder,
+                ControlField =                  ControlField.AdsbDeviceNotTransmittingIcao24,
+                ParityInterrogatorIdentifier =  0,
+            };
+            var icao24 = CreateRandomIcao24();
+            modeSMessage.Icao24 = icao24;
+            modeSMessage.NonIcao24Address = null;
+
+            var message = _Translator.Translate(_NowUtc, modeSMessage, null);
+            Assert.AreEqual(FormatIcao24(icao24), message.Icao24);
+        }
+
+        [TestMethod]
+        public void RawMessageTranslator_Translate_Rejects_DF18CF1_If_NonIcao24Address_Is_Not_Null()
+        {
+            // See comments above
+
+            var modeSMessage = new ModeSMessage() {
+                DownlinkFormat =                DownlinkFormat.ExtendedSquitterNonTransponder,
+                ControlField =                  ControlField.AdsbDeviceNotTransmittingIcao24,
+                ParityInterrogatorIdentifier =  0,
+            };
+            var icao24 = CreateRandomIcao24();
+            modeSMessage.Icao24 = 0;
+            modeSMessage.NonIcao24Address = icao24;
+
+            var message = _Translator.Translate(_NowUtc, modeSMessage, null);
+            Assert.IsNull(message);
         }
         #endregion
 

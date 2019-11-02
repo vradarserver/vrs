@@ -176,6 +176,7 @@ namespace VirtualRadar.Library.Listener
             Listener = mergedFeedListener;
             Listener.ExceptionCaught += Listener_ExceptionCaught;
             Listener.IgnoreBadMessages = true;
+            Listener.AssumeDF18CF1IsIcao = false;
             mergedFeedListener.IcaoTimeout = mergedFeed.IcaoTimeout;
             mergedFeedListener.IgnoreAircraftWithNoPosition = mergedFeed.IgnoreAircraftWithNoPosition;
             mergedFeedListener.SetListeners(mergedListeners);
@@ -276,6 +277,7 @@ namespace VirtualRadar.Library.Listener
 
             Listener.ReceiverName = receiver.Name;
             Listener.IsSatcomFeed = receiver.IsSatcomFeed;
+            Listener.AssumeDF18CF1IsIcao = configuration.RawDecodingSettings.AssumeDF18CF1IsIcao;
 
             SetIsVisible(receiver.ReceiverUsage);
         }

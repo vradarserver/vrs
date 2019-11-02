@@ -26,14 +26,11 @@ namespace VirtualRadar.Plugin.FeedFilter
     /// </summary>
     sealed class ListenerWrapper : IListener
     {
-        #region Fields
         /// <summary>
         /// An instance of the original listener that was in place before we took it over.
         /// </summary>
         private IListener _Original;
-        #endregion
 
-        #region Ctor, finaliser
         /// <summary>
         /// Creates a new object.
         /// </summary>
@@ -58,9 +55,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         {
             Dispose(false);
         }
-        #endregion
 
-        #region Dispose
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -85,9 +80,7 @@ namespace VirtualRadar.Plugin.FeedFilter
                 }
             }
         }
-        #endregion
 
-        #region Wrapped Properties
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -179,9 +172,16 @@ namespace VirtualRadar.Plugin.FeedFilter
             get { return _Original.IgnoreBadMessages; }
             set { _Original.IgnoreBadMessages = value; }
         }
-        #endregion
 
-        #region Wrapped Events
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool AssumeDF18CF1IsIcao
+        {
+            get => _Original.AssumeDF18CF1IsIcao;
+            set => _Original.AssumeDF18CF1IsIcao = value;
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -289,9 +289,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         {
             EventHelper.Raise(ExceptionCaught, this, args);
         }
-        #endregion
 
-        #region Wrapped Methods
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -318,9 +316,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         {
             _Original.Disconnect();
         }
-        #endregion
 
-        #region Events Subscribed
         /// <summary>
         /// Passes through events from the original <see cref="RawBytesReceived"/>.
         /// </summary>
@@ -406,6 +402,5 @@ namespace VirtualRadar.Plugin.FeedFilter
         {
             OnExceptionCaught(args);
         }
-        #endregion
     }
 }

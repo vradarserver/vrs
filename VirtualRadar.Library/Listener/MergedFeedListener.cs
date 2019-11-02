@@ -217,6 +217,11 @@ namespace VirtualRadar.Library.Listener
         /// See interface docs.
         /// </summary>
         public bool IgnoreBadMessages { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool AssumeDF18CF1IsIcao { get; set; }
         #endregion
 
         #region Events exposed

@@ -157,6 +157,7 @@ namespace Test.VirtualRadar.Library.Listener
             _RawDecodingSettings = new RawDecodingSettings();
 
             _Configuration = new Configuration();
+            _Configuration.RawDecodingSettings.AssumeDF18CF1IsIcao = true;
             _Configuration.Receivers.Clear();
             _Configuration.Receivers.Add(_Receiver);
             _Configuration.ReceiverLocations.Clear();
@@ -343,6 +344,7 @@ namespace Test.VirtualRadar.Library.Listener
             Assert.IsTrue(_Feed.Listener.IgnoreBadMessages);
             Assert.AreEqual("A", _Feed.Listener.ReceiverName);
             Assert.AreEqual(true, _Feed.Listener.IsSatcomFeed);
+            Assert.AreEqual(true, _Feed.Listener.AssumeDF18CF1IsIcao);
         }
 
         [TestMethod]
@@ -758,6 +760,7 @@ namespace Test.VirtualRadar.Library.Listener
             Assert.AreEqual(9988, _MergedFeedListener.Object.ReceiverId);
             Assert.AreEqual("M1", _MergedFeedListener.Object.ReceiverName);
             Assert.AreEqual(false, _MergedFeedListener.Object.IsSatcomFeed);
+            Assert.AreEqual(false, _MergedFeedListener.Object.AssumeDF18CF1IsIcao);
         }
 
         [TestMethod]
@@ -970,6 +973,18 @@ namespace Test.VirtualRadar.Library.Listener
             _Feed.ApplyConfiguration(_Receiver, _Configuration);
 
             Assert.AreEqual(false, _Feed.Listener.IsSatcomFeed);
+        }
+
+        [TestMethod]
+        public void Feed_ApplyConfiguration_Picks_Up_AssumeDF18CF1IsIcao_Change()
+        {
+            _Feed.Initialise(_Receiver, _Configuration);
+            Assert.AreEqual(true, _Feed.Listener.AssumeDF18CF1IsIcao);
+
+            _Configuration.RawDecodingSettings.AssumeDF18CF1IsIcao = false;
+            _Feed.ApplyConfiguration(_Receiver, _Configuration);
+
+            Assert.AreEqual(false, _Feed.Listener.AssumeDF18CF1IsIcao);
         }
 
         [TestMethod]
