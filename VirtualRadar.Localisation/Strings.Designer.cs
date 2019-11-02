@@ -19,7 +19,7 @@ namespace VirtualRadar.Localisation {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Strings {
@@ -446,6 +446,15 @@ namespace VirtualRadar.Localisation {
         public static string ApplicationDescription {
             get {
                 return ResourceManager.GetString("ApplicationDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Treat DF18 CF1 identifiers as ICAO.
+        /// </summary>
+        public static string AssumeDF18CF1IsIcao {
+            get {
+                return ResourceManager.GetString("AssumeDF18CF1IsIcao", resourceCulture);
             }
         }
         
@@ -4059,6 +4068,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CF1 indicates that a ground vehicle is transmitting a non-standard ID instead of an ICAO ID. Some ground vehicles send CF1 even when they are using a real ICAO address. This option lets VRS track such vehicles at the expense of possibly mixing non-standard addresses in with valid ICAO..
+        /// </summary>
+        public static string OptionsDescribeRawFeedAssumeDF18CF1IsIcao {
+            get {
+                return ResourceManager.GetString("OptionsDescribeRawFeedAssumeDF18CF1IsIcao", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The number of seconds that can elapse between odd/even format surface position messages in global decoding for vehicles travelling over 25 knots. ICAO recommend 25 seconds. High values can cause vehicles to initially appear several hundred miles from their true location..
         /// </summary>
         public static string OptionsDescribeRawFeedFastSurfaceGlobalPositionLimit {
@@ -6819,15 +6837,15 @@ namespace VirtualRadar.Localisation {
         ///========================================
         ///
         ///It is a requirement for most free tile servers that the program does not hard
-        ///code their address and that there is some way to remove support for a
-        ///particular tile server if their operators request it.
+        ///code their address and that there is some way to remove support for a tile
+        ///server if their operators request it.
         ///
         ///To that end VRS downloads a copy of the tile server settings from the SDM site
         ///once a day. The downloaded settings are stored in a file called:
         ///
         ///    TileServerSettings-Downloaded.json.
         ///
-        ///DO NOT CHANGE THE SETTINGS I [rest of string was truncated]&quot;;.
+        ///DO NOT CHANGE THE SETTINGS IN THAT FILE [rest of string was truncated]&quot;;.
         /// </summary>
         public static string TileServerSettings_ReadMe {
             get {

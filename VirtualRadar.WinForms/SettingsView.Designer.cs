@@ -96,7 +96,7 @@
             this.panelContent.Location = new System.Drawing.Point(12, 30);
             this.panelContent.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
             this.panelContent.Name = "panelContent";
-            this.panelContent.Size = new System.Drawing.Size(860, 584);
+            this.panelContent.Size = new System.Drawing.Size(860, 608);
             this.panelContent.TabIndex = 3;
             // 
             // splitContainerPagePicker
@@ -112,7 +112,7 @@
             // splitContainerPagePicker.Panel2
             // 
             this.splitContainerPagePicker.Panel2.Controls.Add(this.splitContainerPageContent);
-            this.splitContainerPagePicker.Size = new System.Drawing.Size(860, 584);
+            this.splitContainerPagePicker.Size = new System.Drawing.Size(860, 608);
             this.splitContainerPagePicker.SplitterDistance = 210;
             this.splitContainerPagePicker.TabIndex = 0;
             // 
@@ -124,7 +124,7 @@
             this.treeViewPagePicker.Location = new System.Drawing.Point(0, 0);
             this.treeViewPagePicker.Name = "treeViewPagePicker";
             this.treeViewPagePicker.ShowRootLines = false;
-            this.treeViewPagePicker.Size = new System.Drawing.Size(210, 584);
+            this.treeViewPagePicker.Size = new System.Drawing.Size(210, 608);
             this.treeViewPagePicker.TabIndex = 0;
             this.treeViewPagePicker.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewPagePicker_AfterSelect);
             // 
@@ -143,8 +143,8 @@
             // splitContainerPageContent.Panel2
             // 
             this.splitContainerPageContent.Panel2.Controls.Add(this.panelInlineHelpBorder);
-            this.splitContainerPageContent.Size = new System.Drawing.Size(646, 584);
-            this.splitContainerPageContent.SplitterDistance = 505;
+            this.splitContainerPageContent.Size = new System.Drawing.Size(646, 608);
+            this.splitContainerPageContent.SplitterDistance = 529;
             this.splitContainerPageContent.TabIndex = 0;
             // 
             // panelPageContentBorder
@@ -154,7 +154,7 @@
             this.panelPageContentBorder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelPageContentBorder.Location = new System.Drawing.Point(0, 0);
             this.panelPageContentBorder.Name = "panelPageContentBorder";
-            this.panelPageContentBorder.Size = new System.Drawing.Size(646, 505);
+            this.panelPageContentBorder.Size = new System.Drawing.Size(646, 529);
             this.panelPageContentBorder.TabIndex = 0;
             // 
             // panelPageContent
@@ -166,7 +166,7 @@
             this.panelPageContent.BackColor = System.Drawing.SystemColors.Control;
             this.panelPageContent.Location = new System.Drawing.Point(1, 1);
             this.panelPageContent.Name = "panelPageContent";
-            this.panelPageContent.Size = new System.Drawing.Size(644, 503);
+            this.panelPageContent.Size = new System.Drawing.Size(644, 527);
             this.panelPageContent.TabIndex = 0;
             // 
             // panelInlineHelpBorder
@@ -219,7 +219,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(797, 627);
+            this.buttonCancel.Location = new System.Drawing.Point(797, 651);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 5;
@@ -229,7 +229,7 @@
             // buttonOK
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOK.Location = new System.Drawing.Point(716, 627);
+            this.buttonOK.Location = new System.Drawing.Point(716, 651);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 4;
@@ -254,7 +254,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(884, 662);
+            this.ClientSize = new System.Drawing.Size(884, 686);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.panelContent);

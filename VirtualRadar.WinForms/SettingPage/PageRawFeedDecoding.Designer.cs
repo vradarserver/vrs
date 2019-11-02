@@ -58,6 +58,7 @@
             this.label20 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.checkBoxSuppressTisbMessages = new System.Windows.Forms.CheckBox();
             this.checkBoxSuppressIcao0 = new System.Windows.Forms.CheckBox();
             this.label17 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
@@ -71,7 +72,7 @@
             this.numericAirborneGlobalPositionLimit = new System.Windows.Forms.NumericUpDown();
             this.checkBoxIgnoreMilitaryExtendedSquitter = new System.Windows.Forms.CheckBox();
             this.linkLabelUseRecommendedSettings = new System.Windows.Forms.LinkLabel();
-            this.checkBoxSuppressTisbMessages = new System.Windows.Forms.CheckBox();
+            this.checkBoxAssumeDF18CF1IsIcao = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericReceiverRange)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericAcceptIcaoInNonPISeconds)).BeginInit();
@@ -410,6 +411,7 @@
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.checkBoxAssumeDF18CF1IsIcao);
             this.groupBox3.Controls.Add(this.checkBoxIgnoreBadCodeblockNonPI0);
             this.groupBox3.Controls.Add(this.checkBoxIgnoreBadCodeblockPI0);
             this.groupBox3.Controls.Add(this.label11);
@@ -425,7 +427,7 @@
             this.groupBox3.Controls.Add(this.numericAcceptIcaoInPI0Count);
             this.groupBox3.Location = new System.Drawing.Point(0, 398);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(636, 96);
+            this.groupBox3.Size = new System.Drawing.Size(636, 119);
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "::OptionsRawFeedAcceptIcaoAsValidCategory::";
@@ -528,6 +530,16 @@
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "::OptionsRawFeedDecoderParametersCategory::";
+            // 
+            // checkBoxSuppressTisbMessages
+            // 
+            this.checkBoxSuppressTisbMessages.AutoSize = true;
+            this.checkBoxSuppressTisbMessages.Location = new System.Drawing.Point(200, 267);
+            this.checkBoxSuppressTisbMessages.Name = "checkBoxSuppressTisbMessages";
+            this.checkBoxSuppressTisbMessages.Size = new System.Drawing.Size(150, 17);
+            this.checkBoxSuppressTisbMessages.TabIndex = 22;
+            this.checkBoxSuppressTisbMessages.Text = "::SuppressTisbMessages::";
+            this.checkBoxSuppressTisbMessages.UseVisualStyleBackColor = true;
             // 
             // checkBoxSuppressIcao0
             // 
@@ -679,15 +691,15 @@
             this.linkLabelUseRecommendedSettings.Text = "::UseRecommendedSettings::";
             this.linkLabelUseRecommendedSettings.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelUseRecommendedSettings_LinkClicked);
             // 
-            // checkBoxSuppressTisbMessages
+            // checkBoxAssumeDF18CF1IsIcao
             // 
-            this.checkBoxSuppressTisbMessages.AutoSize = true;
-            this.checkBoxSuppressTisbMessages.Location = new System.Drawing.Point(200, 267);
-            this.checkBoxSuppressTisbMessages.Name = "checkBoxSuppressTisbMessages";
-            this.checkBoxSuppressTisbMessages.Size = new System.Drawing.Size(150, 17);
-            this.checkBoxSuppressTisbMessages.TabIndex = 22;
-            this.checkBoxSuppressTisbMessages.Text = "::SuppressTisbMessages::";
-            this.checkBoxSuppressTisbMessages.UseVisualStyleBackColor = true;
+            this.checkBoxAssumeDF18CF1IsIcao.AutoSize = true;
+            this.checkBoxAssumeDF18CF1IsIcao.Location = new System.Drawing.Point(200, 95);
+            this.checkBoxAssumeDF18CF1IsIcao.Name = "checkBoxAssumeDF18CF1IsIcao";
+            this.checkBoxAssumeDF18CF1IsIcao.Size = new System.Drawing.Size(149, 17);
+            this.checkBoxAssumeDF18CF1IsIcao.TabIndex = 15;
+            this.checkBoxAssumeDF18CF1IsIcao.Text = "::AssumeDF18CF1IsIcao::";
+            this.checkBoxAssumeDF18CF1IsIcao.UseVisualStyleBackColor = true;
             // 
             // PageRawFeedDecoding
             // 
@@ -698,7 +710,7 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.linkLabelUseRecommendedSettings);
             this.Name = "PageRawFeedDecoding";
-            this.Size = new System.Drawing.Size(636, 497);
+            this.Size = new System.Drawing.Size(636, 520);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericReceiverRange)).EndInit();
@@ -768,5 +780,6 @@
         private System.Windows.Forms.CheckBox checkBoxIgnoreBadCodeblockPI0;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckBox checkBoxSuppressTisbMessages;
+        private System.Windows.Forms.CheckBox checkBoxAssumeDF18CF1IsIcao;
     }
 }

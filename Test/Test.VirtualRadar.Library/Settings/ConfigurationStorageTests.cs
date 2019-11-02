@@ -286,6 +286,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(42, readBack.RawDecodingSettings.AcceptIcaoInPI0Seconds);
                         Assert.AreEqual(false, readBack.RawDecodingSettings.SuppressIcao0);
                         Assert.AreEqual(true, readBack.RawDecodingSettings.SuppressTisbDecoding);
+                        Assert.AreEqual(false, readBack.RawDecodingSettings.AssumeDF18CF1IsIcao);
                         break;
                     case "ReceiverLocations":
                         Assert.AreEqual(2, readBack.ReceiverLocations.Count);
@@ -570,6 +571,7 @@ namespace Test.VirtualRadar.Library.Settings
                                                         AcceptIcaoInPI0Seconds = 42,
                                                         SuppressIcao0 = false,
                                                         SuppressTisbDecoding = true,
+                                                        AssumeDF18CF1IsIcao = false,
                                                     }; break;
                     case "ReceiverLocations":       result.ReceiverLocations.Clear();
                                                     result.ReceiverLocations.AddRange(new ReceiverLocation[] {

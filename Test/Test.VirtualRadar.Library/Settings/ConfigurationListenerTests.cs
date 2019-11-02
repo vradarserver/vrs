@@ -399,6 +399,7 @@ namespace Test.VirtualRadar.Library.Settings
                     { r => r.SuppressReceiverRangeCheck,                r => r.SuppressReceiverRangeCheck = !r.SuppressReceiverRangeCheck },
                     { r => r.SuppressTisbDecoding,                      r => r.SuppressTisbDecoding = !r.SuppressTisbDecoding },
                     { r => r.UseLocalDecodeForInitialPosition,          r => r.UseLocalDecodeForInitialPosition = !r.UseLocalDecodeForInitialPosition },
+                    { r => r.AssumeDF18CF1IsIcao,                       r => r.AssumeDF18CF1IsIcao = !r.AssumeDF18CF1IsIcao },
                 }, silentPropertyMap: new Dictionary<Expression<Func<RawDecodingSettings,object>>,Action<RawDecodingSettings>>() {
                     { r => r.ReceiverLocationId,                    r => r.ReceiverLocationId += 1 },
                 });

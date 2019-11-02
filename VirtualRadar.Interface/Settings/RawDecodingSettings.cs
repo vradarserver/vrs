@@ -231,6 +231,24 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _SuppressTisbDecoding, value, () => SuppressTisbDecoding); }
         }
 
+        private bool _AssumeDF18CF1IsIcao;
+        /// <summary>
+        /// Gets or sets a value indicating whether TIS-B messages should be used or ignored.
+        /// </summary>
+        /// <remarks>
+        /// DF18 is the non-transponder extended squitter (i.e. messages from things that are not aircraft).
+        /// The control field has two common values. CF0 indicates an ADSB message where the 3 byte AA ICAO ID
+        /// is a valid ICAO ID, CF1 indicates same but the ID is not valid ICAO, it is meaningful only to the
+        /// operator of the vehicle. However, some airports have been seen operating a fleet of ground vehicles
+        /// where all of them are allocated ICAOs from a small range of valid IDs but some transmit CF0 and
+        /// some CF1. This flag tells VRS to assume that CF1 IDs are valid ICAO and use them.
+        /// </remarks>
+        public bool AssumeDF18CF1IsIcao
+        {
+            get { return _AssumeDF18CF1IsIcao; }
+            set { SetField(ref _AssumeDF18CF1IsIcao, value, () => AssumeDF18CF1IsIcao); }
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -286,6 +304,7 @@ namespace VirtualRadar.Interface.Settings
             SuppressIcao0 = true;
             IgnoreInvalidCodeBlockInParityMessages = false;
             IgnoreInvalidCodeBlockInOtherMessages = true;
+            AssumeDF18CF1IsIcao = true;
         }
     }
 }
