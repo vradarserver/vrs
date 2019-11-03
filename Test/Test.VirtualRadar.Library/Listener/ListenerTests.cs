@@ -51,6 +51,7 @@ namespace Test.VirtualRadar.Library.Listener
 
             // Aircraft list translators
             AircraftListJson,
+            AirnavXRangeJson,
         }
         #endregion
 
@@ -80,6 +81,7 @@ namespace Test.VirtualRadar.Library.Listener
         private Mock<IStatistics> _Statistics;
         private Mock<IBaseStationMessageCompressor> _Compressor;
         private Mock<IAircraftListJsonMessageConverter> _JsonConverter;
+        private Mock<IAirnavXRangeMessageConverter> _AirnavXRangeConverter;
 
         [TestInitialize]
         public void TestInitialise()
@@ -101,6 +103,7 @@ namespace Test.VirtualRadar.Library.Listener
             _ModeSParity = TestUtilities.CreateMockImplementation<IModeSParity>();
             _Compressor = TestUtilities.CreateMockImplementation<IBaseStationMessageCompressor>();
             _JsonConverter = TestUtilities.CreateMockImplementation<IAircraftListJsonMessageConverter>();
+            _AirnavXRangeConverter = TestUtilities.CreateMockImplementation<IAirnavXRangeMessageConverter>();
 
             _ModeSMessage = new ModeSMessage();
             _AdsbMessage = new AdsbMessage(_ModeSMessage);
@@ -190,6 +193,7 @@ namespace Test.VirtualRadar.Library.Listener
                     case ExtractedBytesFormat.ModeS:            translators = new TranslatorType[] { TranslatorType.ModeS, TranslatorType.Adsb, TranslatorType.Raw }; break;
                     case ExtractedBytesFormat.Compressed:       translators = new TranslatorType[] { TranslatorType.Compressed }; break;
                     case ExtractedBytesFormat.AircraftListJson: translators = new TranslatorType[] { TranslatorType.AircraftListJson }; break;
+                    case ExtractedBytesFormat.AirnavXRange:     translators = new TranslatorType[] { TranslatorType.AirnavXRangeJson }; break;
                     case ExtractedBytesFormat.None:             continue;
                     default:                                    throw new NotImplementedException();
                 }
@@ -214,6 +218,7 @@ namespace Test.VirtualRadar.Library.Listener
                 case TranslatorType.Raw:                _RawMessageTranslator.Setup(r => r.Translate(It.IsAny<DateTime>(), It.IsAny<ModeSMessage>(), It.IsAny<AdsbMessage>())).Throws(exception); break;
                 case TranslatorType.Compressed:         _Compressor.Setup(r => r.Decompress(It.IsAny<byte[]>())).Throws(exception); break;
                 case TranslatorType.AircraftListJson:   _JsonConverter.Setup(r => r.ConvertIntoBaseStationMessageEventArgs(It.IsAny<AircraftListJson>())).Throws(exception); break;
+                case TranslatorType.AirnavXRangeJson:   _AirnavXRangeConverter.Setup(r => r.ConvertIntoBaseStationMessageEventArgs(It.IsAny<AirnavXRangeJson>())).Throws(exception); break;
                 default:
                     throw new NotImplementedException();
             }
@@ -230,6 +235,7 @@ namespace Test.VirtualRadar.Library.Listener
                 case TranslatorType.Port30003:
                 case TranslatorType.Compressed:
                 case TranslatorType.AircraftListJson:
+                case TranslatorType.AirnavXRangeJson:
                 case TranslatorType.Raw:        _Port30003MessageReceivedEvent.EventRaised += (s, a) => { throw exception; }; break;
                 default:
                     throw new NotImplementedException();
@@ -1089,6 +1095,69 @@ namespace Test.VirtualRadar.Library.Listener
 
             Assert.AreEqual(0xABCDEF, _ModeSMessage.NonIcao24Address);
             Assert.AreEqual(0, _ModeSMessage.Icao24);
+        }
+
+        [TestMethod]
+        public void Listener_Connect_Moves_NonIcao24Address_To_Icao24_If_AssumeDF18CF1IsIcao_Set_For_DF18CF1()
+        {
+            _Clock.UtcNowValue = new DateTime(2007, 8, 9, 10, 11, 12, 13);
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
+            _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, 7);
+
+            _ModeSMessage.DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder;
+            _ModeSMessage.ControlField = ControlField.AdsbDeviceNotTransmittingIcao24;
+            _ModeSMessage.Icao24 = 0;
+            _ModeSMessage.NonIcao24Address = 0xABCDEF;
+
+            _Listener.AssumeDF18CF1IsIcao = true;
+
+            ChangeSourceAndConnect();
+
+            Assert.AreEqual(0xABCDEF, _ModeSMessage.Icao24);
+            Assert.AreEqual(null, _ModeSMessage.NonIcao24Address);
+        }
+
+        [TestMethod]
+        public void Listener_Connect_Ignores_DF18CF1_If_AssumeDF18CF1IsIcao_Clear()
+        {
+            _Clock.UtcNowValue = new DateTime(2007, 8, 9, 10, 11, 12, 13);
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
+            _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, 7);
+
+            _ModeSMessage.DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder;
+            _ModeSMessage.ControlField = ControlField.AdsbDeviceNotTransmittingIcao24;
+            _ModeSMessage.Icao24 = 0;
+            _ModeSMessage.NonIcao24Address = 0xABCDEF;
+
+            _Listener.AssumeDF18CF1IsIcao = false;
+
+            ChangeSourceAndConnect();
+
+            Assert.AreEqual(0xABCDEF, _ModeSMessage.NonIcao24Address);
+            Assert.AreEqual(0, _ModeSMessage.Icao24);
+        }
+
+        [TestMethod]
+        public void Listener_Connect_Ignores_AssumeDF18CF1IsIcao_For_DF18CF0()
+        {
+            _Clock.UtcNowValue = new DateTime(2007, 8, 9, 10, 11, 12, 13);
+            _Connector.ConfigureForConnect();
+            _Connector.ConfigureForReadStream("a");
+            _BytesExtractor.AddExtractedBytes(ExtractedBytesFormat.ModeS, 7);
+
+            _ModeSMessage.DownlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder;
+            _ModeSMessage.ControlField = ControlField.AdsbDeviceTransmittingIcao24;
+            _ModeSMessage.Icao24 = 0xABCDEF;
+            _ModeSMessage.NonIcao24Address = null;
+
+            _Listener.AssumeDF18CF1IsIcao = true;
+
+            ChangeSourceAndConnect();
+
+            Assert.AreEqual(0xABCDEF, _ModeSMessage.Icao24);
+            Assert.AreEqual(null, _ModeSMessage.NonIcao24Address);
         }
 
         [TestMethod]

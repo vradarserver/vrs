@@ -117,6 +117,7 @@ namespace VirtualRadar.WinForms.SettingPage
             AddControlBinder(new CheckBoxBoolBinder<RawDecodingSettings>(settings, checkBoxSuppressTisbMessages,                r => r.SuppressTisbDecoding,                    (r,v) => r.SuppressTisbDecoding = v));
             AddControlBinder(new CheckBoxBoolBinder<RawDecodingSettings>(settings, checkBoxIgnoreBadCodeblockPI0,               r => r.IgnoreInvalidCodeBlockInParityMessages,  (r,v) => r.IgnoreInvalidCodeBlockInParityMessages = v));
             AddControlBinder(new CheckBoxBoolBinder<RawDecodingSettings>(settings, checkBoxIgnoreBadCodeblockNonPI0,            r => r.IgnoreInvalidCodeBlockInOtherMessages,   (r,v) => r.IgnoreInvalidCodeBlockInOtherMessages = v));
+            AddControlBinder(new CheckBoxBoolBinder<RawDecodingSettings>(settings, checkBoxAssumeDF18CF1IsIcao,                 r => r.AssumeDF18CF1IsIcao,                     (r,v) => r.AssumeDF18CF1IsIcao = v));
         }
 
         /// <summary>
@@ -144,6 +145,7 @@ namespace VirtualRadar.WinForms.SettingPage
             SetInlineHelp(numericAcceptIcaoInNonPISeconds,               Strings.AcceptIcaoInNonPISeconds,              Strings.OptionsDescribeRawFeedAcceptIcaoInNonPISeconds);
             SetInlineHelp(checkBoxIgnoreBadCodeblockPI0,                 Strings.InPI0Messages,                         Strings.OptionsDescribeRawFeedAcceptIgnoreBadCodeblockPI0);
             SetInlineHelp(checkBoxIgnoreBadCodeblockPI0,                 Strings.InNonPI0Messages,                      Strings.OptionsDescribeRawFeedAcceptIgnoreBadCodeblockNonPI0);
+            SetInlineHelp(checkBoxAssumeDF18CF1IsIcao,                   Strings.AssumeDF18CF1IsIcao,                   Strings.OptionsDescribeRawFeedAssumeDF18CF1IsIcao);
         }
 
         private void linkLabelUseIcaoSettings_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

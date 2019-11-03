@@ -26,6 +26,7 @@ namespace Test.VirtualRadar.Library.Listener
             TestUtilities.TestProperty(listener, r => r.IgnoreBadMessages, false);
             TestUtilities.TestProperty(listener, r => r.ReceiverId, 0, 12345);
             TestUtilities.TestProperty(listener, r => r.ReceiverName, null, "Abc");
+            TestUtilities.TestProperty(listener, r => r.AssumeDF18CF1IsIcao, false);
 
             Assert.AreEqual(null, listener.BytesExtractor);
             Assert.AreEqual(null, listener.Connector);

@@ -254,10 +254,12 @@ namespace Test.VirtualRadar.Library.Settings
                     { r => r.InitialRefreshSeconds,                 r => r.InitialRefreshSeconds += 1 },
                     { r => r.InitialSettings,                       r => r.InitialSettings = "TEST" },
                     { r => r.InitialSpeedUnit,                      r => r.InitialSpeedUnit = SpeedUnit.MilesPerHour },
+                    { r => r.MapProvider,                           r => r.MapProvider = r.MapProvider == MapProvider.GoogleMaps ? MapProvider.Leaflet : MapProvider.GoogleMaps },
                     { r => r.MinimumRefreshSeconds,                 r => r.MinimumRefreshSeconds += 1 },
                     { r => r.PreferIataAirportCodes,                r => r.PreferIataAirportCodes = !r.PreferIataAirportCodes },
                     { r => r.ProxyType,                             r => r.ProxyType = ProxyType.Forward },
                     { r => r.ShortTrailLengthSeconds,               r => r.ShortTrailLengthSeconds += 1 },
+                    { r => r.TileServerSettingName,                 r => r.TileServerSettingName = "TEST" },
                     { r => r.UseGoogleMapsAPIKeyWithLocalRequests,  r => r.UseGoogleMapsAPIKeyWithLocalRequests = !r.UseGoogleMapsAPIKeyWithLocalRequests },
                     { r => r.UseSvgGraphicsOnDesktop,               r => r.UseSvgGraphicsOnDesktop = !r.UseSvgGraphicsOnDesktop },
                     { r => r.UseSvgGraphicsOnMobile,                r => r.UseSvgGraphicsOnMobile = !r.UseSvgGraphicsOnMobile },
@@ -400,6 +402,7 @@ namespace Test.VirtualRadar.Library.Settings
                     { r => r.SuppressReceiverRangeCheck,                r => r.SuppressReceiverRangeCheck = !r.SuppressReceiverRangeCheck },
                     { r => r.SuppressTisbDecoding,                      r => r.SuppressTisbDecoding = !r.SuppressTisbDecoding },
                     { r => r.UseLocalDecodeForInitialPosition,          r => r.UseLocalDecodeForInitialPosition = !r.UseLocalDecodeForInitialPosition },
+                    { r => r.AssumeDF18CF1IsIcao,                       r => r.AssumeDF18CF1IsIcao = !r.AssumeDF18CF1IsIcao },
                 }, silentPropertyMap: new Dictionary<Expression<Func<RawDecodingSettings,object>>,Action<RawDecodingSettings>>() {
                     { r => r.ReceiverLocationId,                    r => r.ReceiverLocationId += 1 },
                 });

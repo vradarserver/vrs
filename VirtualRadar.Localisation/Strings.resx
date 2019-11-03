@@ -2791,4 +2791,10 @@ Show this message.</value>
     <value>Beta</value>
     <comment>As in the preview version of a program</comment>
   </data>
+  <data name="AssumeDF18CF1IsIcao" xml:space="preserve">
+    <value>Treat DF18 CF1 identifiers as ICAO</value>
+  </data>
+  <data name="OptionsDescribeRawFeedAssumeDF18CF1IsIcao" xml:space="preserve">
+    <value>CF1 indicates that a ground vehicle is transmitting a non-standard ID instead of an ICAO ID. Some ground vehicles send CF1 even when they are using a real ICAO address. This option lets VRS track such vehicles at the expense of possibly mixing non-standard addresses in with valid ICAO.</value>
+  </data>
 </root>

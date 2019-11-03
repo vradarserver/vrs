@@ -87,6 +87,11 @@ namespace VirtualRadar.Interface.Listener
         bool IgnoreBadMessages { get; set; }
 
         /// <summary>
+        /// Gets or sets a value that indicates that the listener should treat ICAOs on DF18 CF1 messages as valid.
+        /// </summary>
+        bool AssumeDF18CF1IsIcao { get; set; }
+
+        /// <summary>
         /// Raised when bytes have been received from the data source. This may not be on the same thread that started
         /// the listener - however all messages are guaranteed to be transmitted in the order in which they were received.
         /// </summary>

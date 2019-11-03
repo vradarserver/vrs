@@ -439,6 +439,14 @@ namespace VirtualRadar.Library.BaseStation
                             case ControlField.AdsbRebroadcastOfExtendedSquitter:
                                 isValidMessage = IsValidParityInterrogatorIdentifierMessage(modeSMessage, messageReceivedUtc);
                                 break;
+                            case ControlField.AdsbDeviceNotTransmittingIcao24:
+                                // Normally these are ignored. However, if the user sets options to treat DF18 CF1 addresses as
+                                // ICAOs then the listener will have set the Icao24 and nulled the NonIca24Address fields on
+                                // the Mode-S message. We need to accept those as valid.
+                                if(modeSMessage.NonIcao24Address == null) {
+                                    isValidMessage = IsValidParityInterrogatorIdentifierMessage(modeSMessage, messageReceivedUtc);
+                                }
+                                break;
                             case ControlField.FineFormatTisb:
                             case ControlField.CoarseFormatTisb:
                                 if(!SuppressTisbDecoding && adsbMessage != null && adsbMessage.TisbIcaoModeAFlag == 0) {

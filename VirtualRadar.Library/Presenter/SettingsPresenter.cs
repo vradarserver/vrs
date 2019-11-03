@@ -569,6 +569,7 @@ namespace VirtualRadar.Library.Presenter
             settings.AcceptableAirSurfaceTransitionSpeed = 4.63;
             settings.AcceptableSurfaceSpeed = 1.389;
             settings.AirborneGlobalPositionLimit = 10;
+            settings.AssumeDF18CF1IsIcao = false;
             settings.FastSurfaceGlobalPositionLimit = 25;
             settings.SlowSurfaceGlobalPositionLimit = 50;
             settings.SuppressReceiverRangeCheck = false;
@@ -586,6 +587,7 @@ namespace VirtualRadar.Library.Presenter
             settings.AcceptableAirSurfaceTransitionSpeed = defaults.AcceptableAirSurfaceTransitionSpeed;
             settings.AcceptableSurfaceSpeed = defaults.AcceptableSurfaceSpeed;
             settings.AirborneGlobalPositionLimit = defaults.AirborneGlobalPositionLimit;
+            settings.AssumeDF18CF1IsIcao = defaults.AssumeDF18CF1IsIcao;
             settings.FastSurfaceGlobalPositionLimit = defaults.FastSurfaceGlobalPositionLimit;
             settings.SlowSurfaceGlobalPositionLimit = defaults.SlowSurfaceGlobalPositionLimit;
             settings.SuppressReceiverRangeCheck = true;

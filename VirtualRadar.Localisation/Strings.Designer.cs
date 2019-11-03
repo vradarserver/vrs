@@ -459,6 +459,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Treat DF18 CF1 identifiers as ICAO.
+        /// </summary>
+        public static string AssumeDF18CF1IsIcao {
+            get {
+                return ResourceManager.GetString("AssumeDF18CF1IsIcao", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Audio.
         /// </summary>
         public static string Audio {
@@ -4058,6 +4067,15 @@ namespace VirtualRadar.Localisation {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to CF1 indicates that a ground vehicle is transmitting a non-standard ID instead of an ICAO ID. Some ground vehicles send CF1 even when they are using a real ICAO address. This option lets VRS track such vehicles at the expense of possibly mixing non-standard addresses in with valid ICAO..
+        /// </summary>
+        public static string OptionsDescribeRawFeedAssumeDF18CF1IsIcao {
+            get {
+                return ResourceManager.GetString("OptionsDescribeRawFeedAssumeDF18CF1IsIcao", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The number of seconds that can elapse between odd/even format surface position messages in global decoding for vehicles travelling over 25 knots. ICAO recommend 25 seconds. High values can cause vehicles to initially appear several hundred miles from their true location..
         /// </summary>

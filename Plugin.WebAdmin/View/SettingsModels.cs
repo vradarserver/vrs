@@ -851,6 +851,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public bool SuppressTisbDecoding { get; set; }
 
+        public bool AssumeDF18CF1IsIcao { get; set; }
+
         public RawDecodingSettingModel()
         {
         }
@@ -881,6 +883,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             IgnoreInvalidCodeBlockInParityMessages =    settings.IgnoreInvalidCodeBlockInParityMessages;
             IgnoreInvalidCodeBlockInOtherMessages =     settings.IgnoreInvalidCodeBlockInOtherMessages;
             SuppressTisbDecoding =                      settings.SuppressTisbDecoding;
+            AssumeDF18CF1IsIcao =                       settings.AssumeDF18CF1IsIcao;
         }
 
         public RawDecodingSettings CopyToSettings(RawDecodingSettings settings)
@@ -904,6 +907,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
             settings.IgnoreInvalidCodeBlockInParityMessages =   IgnoreInvalidCodeBlockInParityMessages;
             settings.IgnoreInvalidCodeBlockInOtherMessages =    IgnoreInvalidCodeBlockInOtherMessages;
             settings.SuppressTisbDecoding =                     SuppressTisbDecoding;
+            settings.AssumeDF18CF1IsIcao =                      AssumeDF18CF1IsIcao;
 
             return settings;
         }

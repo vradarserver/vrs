@@ -205,6 +205,11 @@ namespace VirtualRadar.Library.Listener
         /// See interface docs.
         /// </summary>
         public bool IgnoreBadMessages { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool AssumeDF18CF1IsIcao { get; set; }
         #endregion
 
         #region Events
@@ -727,14 +732,21 @@ namespace VirtualRadar.Library.Listener
                         }
 
                         if(adsbMessage != null && modeSMessage.DownlinkFormat == DownlinkFormat.ExtendedSquitterNonTransponder) {
-                            if(adsbMessage.TisbIcaoModeAFlag == 0) {
-                                switch(modeSMessage.ControlField) {
-                                    case ControlField.CoarseFormatTisb:
-                                    case ControlField.FineFormatTisb:
-                                        modeSMessage.Icao24 = modeSMessage.NonIcao24Address.GetValueOrDefault();
-                                        modeSMessage.NonIcao24Address = null;
-                                        break;
-                                }
+                            var useNonIcao24Address = false;
+
+                            switch(modeSMessage.ControlField) {
+                                case ControlField.CoarseFormatTisb:
+                                case ControlField.FineFormatTisb:
+                                    useNonIcao24Address = adsbMessage.TisbIcaoModeAFlag == 0;
+                                    break;
+                                case ControlField.AdsbDeviceNotTransmittingIcao24:
+                                    useNonIcao24Address = AssumeDF18CF1IsIcao;
+                                    break;
+                            }
+
+                            if(useNonIcao24Address) {
+                                modeSMessage.Icao24 = modeSMessage.NonIcao24Address.GetValueOrDefault();
+                                modeSMessage.NonIcao24Address = null;
                             }
                         }
 

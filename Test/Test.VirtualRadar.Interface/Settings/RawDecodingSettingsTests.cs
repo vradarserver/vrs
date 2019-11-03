@@ -49,6 +49,7 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.AcceptIcaoInNonPICount, 0, 20);
             TestUtilities.TestProperty(settings, r => r.AcceptIcaoInNonPISeconds, 5, 42);
             TestUtilities.TestProperty(settings, r => r.SuppressIcao0, true);
+            TestUtilities.TestProperty(settings, r => r.AssumeDF18CF1IsIcao, true);
         }
     }
 }
