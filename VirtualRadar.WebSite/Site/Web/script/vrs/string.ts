@@ -118,13 +118,14 @@ namespace VRS
          * The aim of this function is to make the text HTML-safe in one pass - it is not to convert
          * every possible HTML character to escape codes.
          */
-        htmlEscape(text: string) : string
+        htmlEscape(text: string, newlineToLineBreak: boolean = false) : string
         {
             return this.filterReplace(text, function(ch) {
                 switch(ch) {
                     case '&':   return '&amp;';
                     case '<':   return '&lt;';
                     case '>':   return '&gt;';
+                    case '\n':  return newlineToLineBreak ? '<br />' : ch;
                     default:    return ch;
                 }
             });

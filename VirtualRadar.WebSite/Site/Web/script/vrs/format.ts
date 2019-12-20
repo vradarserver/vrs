@@ -538,14 +538,6 @@ namespace VRS
         }
 
         /**
-         * Formats the notes for display.
-         */
-        notes(notes: string) : string
-        {
-            return notes || '';
-        }
-
-        /**
          * Formats the aircraft's operator as a string.
          */
         operator(operator: string) : string
@@ -1108,6 +1100,22 @@ namespace VRS
         userInterested(userInterested: boolean) : string
         {
             return userInterested === undefined || userInterested === null ? '' : userInterested ? VRS.$$.Yes : VRS.$$.No;
+        }
+
+        /**
+         * Returns the user notes formatted as a string.
+         */
+        userNotes(userNotes: string) : string
+        {
+            return userNotes || '';
+        }
+
+        /**
+         * Returns the user notes formatted as HTML with line breaks.
+         */
+        userNotesMultiline(userNotes: string) : string
+        {
+            return VRS.stringUtility.htmlEscape(userNotes || '', true);
         }
 
         /**

@@ -202,6 +202,7 @@ var VRS;
             this.countFlights = new NumberValue();
             this.countMessages = new NumberValue();
             this.isOnGround = new BoolValue();
+            this.userNotes = new StringValue();
             this.userTag = new StringValue();
             this.userInterested = new BoolValue();
             this.signalLevel = new NumberValue();
@@ -270,6 +271,7 @@ var VRS;
             this.setValue(this.countMessages, aircraftJson.CMsgs);
             this.setValue(this.isOnGround, aircraftJson.Gnd);
             this.setValue(this.userTag, aircraftJson.Tag);
+            this.setValue(this.userNotes, aircraftJson.Notes);
             this.setValue(this.userInterested, aircraftJson.Interested);
             this.setValue(this.transponderType, aircraftJson.Trt);
             this.setRouteArray(this.via, aircraftJson.Stops);
@@ -694,6 +696,12 @@ var VRS;
         };
         Aircraft.prototype.formatUserInterested = function () {
             return VRS.format.userInterested(this.userInterested.val);
+        };
+        Aircraft.prototype.formatUserNotes = function () {
+            return VRS.format.userNotes(this.userNotes.val);
+        };
+        Aircraft.prototype.formatUserNotesMultiline = function () {
+            return VRS.format.userNotesMultiline(this.userNotes.val);
         };
         Aircraft.prototype.formatUserTag = function () {
             return VRS.format.userTag(this.userTag.val);

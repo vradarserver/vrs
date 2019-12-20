@@ -2581,6 +2581,15 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Notes.
+        /// </summary>
+        public static string ListUserNotes {
+            get {
+                return ResourceManager.GetString("ListUserNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tag.
         /// </summary>
         public static string ListUserTag {

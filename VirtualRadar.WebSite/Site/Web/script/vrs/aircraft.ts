@@ -413,6 +413,7 @@ namespace VRS
         countFlights:           NumberValue =                       new NumberValue();
         countMessages:          NumberValue =                       new NumberValue();
         isOnGround:             BoolValue =                         new BoolValue();
+        userNotes:              StringValue =                       new StringValue();
         userTag:                StringValue =                       new StringValue();
         userInterested:         BoolValue =                         new BoolValue();
         signalLevel:            NumberValue =                       new NumberValue();
@@ -488,6 +489,7 @@ namespace VRS
             this.setValue(this.countMessages,        aircraftJson.CMsgs);
             this.setValue(this.isOnGround,           aircraftJson.Gnd);
             this.setValue(this.userTag,              aircraftJson.Tag);
+            this.setValue(this.userNotes,            aircraftJson.Notes);
             this.setValue(this.userInterested,       aircraftJson.Interested);
             this.setValue(this.transponderType,      aircraftJson.Trt);
             this.setRouteArray(this.via,             aircraftJson.Stops);
@@ -1302,6 +1304,22 @@ namespace VRS
         formatUserInterested() : string
         {
             return VRS.format.userInterested(this.userInterested.val);
+        }
+
+        /**
+         * Returns the user notes formatted as a string.
+         */
+        formatUserNotes() : string
+        {
+            return VRS.format.userNotes(this.userNotes.val);
+        }
+
+        /**
+         * Returns the user notes formatted as HTML with line breaks.
+         */
+        formatUserNotesMultiline() : string
+        {
+            return VRS.format.userNotesMultiline(this.userNotes.val);
         }
 
         /**

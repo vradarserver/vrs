@@ -1215,6 +1215,18 @@ namespace VRS
         tooltipCallback:        function(aircraft) { return aircraft.formatTransponderType(); }
     });
 
+    VRS.renderPropertyHandlers[VRS.RenderProperty.UserNotes] = new VRS.RenderPropertyHandler({
+        property:               VRS.RenderProperty.UserNotes,
+        surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.InfoWindow,
+        headingKey:             'ListNotes',
+        labelKey:               'Notes',
+        isMultiLine:            true,
+        hasChangedCallback:     function(aircraft) { return aircraft.userNotes.chg; },
+        useHtmlRendering:       function(aircraft, options, surface) { return surface === VRS.RenderSurface.DetailBody || surface === VRS.RenderSurface.InfoWindow; },
+        contentCallback:        function(aircraft) { return aircraft.formatUserNotes(); },
+        renderCallback:         function(aircraft) { return aircraft.formatUserNotesMultiline(); }
+    });
+
     VRS.renderPropertyHandlers[VRS.RenderProperty.UserTag] = new VRS.RenderPropertyHandler({
         property:               VRS.RenderProperty.UserTag,
         surfaces:               VRS.RenderSurface.List + VRS.RenderSurface.DetailBody + VRS.RenderSurface.InfoWindow + VRS.RenderSurface.Marker,

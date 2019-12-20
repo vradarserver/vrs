@@ -78,6 +78,7 @@ namespace Test.VirtualRadar.Interface.WebSite
             TestUtilities.TestProperty(aircraftJson, r => r.TransponderType, null, 0);
             TestUtilities.TestProperty(aircraftJson, r => r.Type, null, "B747");
             TestUtilities.TestProperty(aircraftJson, r => r.UniqueId, 0, 12);
+            TestUtilities.TestProperty(aircraftJson, r => r.UserNotes, null, "Abc");
             TestUtilities.TestProperty(aircraftJson, r => r.UserTag, null, "Abc");
             TestUtilities.TestProperty(aircraftJson, r => r.VerticalRate, null, -239);
             TestUtilities.TestProperty(aircraftJson, r => r.VerticalRateType, null, 1);

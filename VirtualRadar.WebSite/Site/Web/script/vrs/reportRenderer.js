@@ -198,8 +198,14 @@ var VRS;
         property: VRS.ReportAircraftProperty.Notes,
         headingKey: 'ListNotes',
         labelKey: 'Notes',
+        isMultiLine: true,
         hasValue: function (json) { return !!json.notes; },
-        contentCallback: function (json) { return VRS.format.notes(json.notes); }
+        renderCallback: function (json, options, surface) {
+            switch (surface) {
+                case VRS.ReportSurface.DetailBody: return VRS.format.userNotesMultiline(json.notes);
+                default: return VRS.stringUtility.htmlEscape(VRS.format.userNotes(json.notes));
+            }
+        }
     });
     VRS.reportPropertyHandlers[VRS.ReportAircraftProperty.Operator] = new VRS.ReportPropertyHandler({
         property: VRS.ReportAircraftProperty.Operator,
@@ -664,6 +670,13 @@ var VRS;
         contentCallback: function (json, options) { return VRS.format.startDateTime(json.start, false, options.justShowStartTime); },
         sortColumn: VRS.ReportSortColumn.Date,
         groupValue: function (json) { return json.start ? Globalize.format(json.start, 'dddd d MMM yyyy') : null; }
+    });
+    VRS.reportPropertyHandlers[VRS.ReportAircraftProperty.UserTag] = new VRS.ReportPropertyHandler({
+        property: VRS.ReportAircraftProperty.UserTag,
+        headingKey: 'ListUserTag',
+        labelKey: 'UserTag',
+        hasValue: function (json) { return !!json.tag; },
+        contentCallback: function (json) { return VRS.format.userTag(json.tag); }
     });
     var ReportPropertyHandlerHelper = (function () {
         function ReportPropertyHandlerHelper() {
