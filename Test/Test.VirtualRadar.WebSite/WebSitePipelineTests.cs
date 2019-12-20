@@ -21,6 +21,7 @@ using Moq;
 using Owin;
 using Test.Framework;
 using VirtualRadar.Interface.Owin;
+using VirtualRadar.Interface.Settings;
 using VirtualRadar.WebSite;
 
 namespace Test.VirtualRadar.WebSite
@@ -74,6 +75,7 @@ namespace Test.VirtualRadar.WebSite
         private Mock<IJavascriptManipulator> _JavascriptManipulator;
 
         private Mock<IHtmlManipulatorConfiguration> _HtmlManipulatorConfiguration;
+        private Mock<IUserManager> _UserManager;
 
         [TestInitialize]
         public void TestInitialise()
@@ -94,6 +96,7 @@ namespace Test.VirtualRadar.WebSite
             _AudioServer =                      CreateMockMiddleware<IAudioServer>(nameof(IAudioServer.HandleRequest));
 
             _HtmlManipulatorConfiguration = TestUtilities.CreateMockImplementation<IHtmlManipulatorConfiguration>();
+            _UserManager =                  TestUtilities.CreateMockImplementation<IUserManager>();
             _ExpectedStreamManipulators =   new List<IStreamManipulator>();
             _JavascriptManipulator =        CreateMockStreamManipulator<IJavascriptManipulator>();
             _HtmlManipulator =              CreateMockStreamManipulator<IHtmlManipulator>();

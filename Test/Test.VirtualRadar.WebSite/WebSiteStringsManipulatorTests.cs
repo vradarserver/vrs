@@ -76,7 +76,11 @@ namespace Test.VirtualRadar.WebSite
                 ConfigureRequestPath($"/script/i18n/{stringsFileName}");
                 _TextContent.Content = _JavascriptWithMarkers;
 
-                _Manipulator.ManipulateTextResponse(_Environment, _TextContent);
+                try {
+                    _Manipulator.ManipulateTextResponse(_Environment, _TextContent);
+                } catch(Exception ex) {
+                    throw new InvalidOperationException($"Caught exception using web site strings from {stringsFileName}: {ex.Message}", ex);
+                }
 
                 string expected = null;
                 var stringsLanguage = GetWebsiteStringLanguage(stringsFileName);

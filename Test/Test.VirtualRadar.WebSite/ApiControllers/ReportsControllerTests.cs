@@ -1680,6 +1680,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
         private void Do_ReportRows_Report_Fills_Routes_And_Aircraft_Tables(string report, ReportJsonClass reportClass)
         {
+            _Configuration.GoogleMapSettings.PreferIataAirportCodes = false;
             _ReportRowsAddress.Report = report;
             _ReportRowsAddress.Icao24 = _ReportRowsAddress.Registration = new StringFilter("not null", FilterCondition.Equals, false);
 

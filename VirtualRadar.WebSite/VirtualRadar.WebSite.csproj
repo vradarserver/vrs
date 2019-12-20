@@ -228,7 +228,6 @@
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.tr.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.tr-TR.js" />
     <Content Include="Site\Web\script\i18n\strings.de.js" />
-    <Content Include="Site\Web\script\i18n\strings.nl.js" />
     <Content Include="Site\Web\script\i18n\strings.tr.js" />
     <Content Include="Site\Web\script\i18n\strings.pt-br.js" />
     <Content Include="Site\Web\script\i18n\globalize\globalize.culture.fi-FI.js" />
@@ -829,7 +828,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WebSiteStrings.fr-FR.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="WebSiteStrings.nl-NL.resx" />
     <EmbeddedResource Include="WebSiteStrings.pt-BR.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WebSiteStrings.pt-BR.Designer.cs</LastGenOutput>

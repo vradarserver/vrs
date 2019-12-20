@@ -653,11 +653,11 @@ namespace Test.VirtualRadar.Library.BaseStation
 
             var aircraft1 = _AircraftList.FindAircraft(7);
             Assert.IsNotNull(aircraft1);
-            Assert.AreEqual("7", aircraft1.Icao24);
+            Assert.AreEqual("000007", aircraft1.Icao24);
 
             var aircraft2 = _AircraftList.FindAircraft(5);
             Assert.IsNotNull(aircraft2);
-            Assert.AreEqual("5", aircraft2.Icao24);
+            Assert.AreEqual("000005", aircraft2.Icao24);
         }
 
         [TestMethod]
@@ -1970,6 +1970,7 @@ namespace Test.VirtualRadar.Library.BaseStation
         [TestMethod]
         public void BaseStationAircraftList_MessageReceived_Fetches_Route_For_Aircraft()
         {
+            _Configuration.GoogleMapSettings.PreferIataAirportCodes = false;
             _AircraftList.Start();
 
             _BaseStationMessage.Callsign = "CALL123";
@@ -2057,6 +2058,7 @@ namespace Test.VirtualRadar.Library.BaseStation
         [TestMethod]
         public void BaseStationAircraftList_MessageReceived_Updates_Route_When_Callsign_Changes()
         {
+            _Configuration.GoogleMapSettings.PreferIataAirportCodes = false;
             _AircraftList.Start();
 
             var routeOut = new Route() { From = _Heathrow, To = _JohnFKennedy };

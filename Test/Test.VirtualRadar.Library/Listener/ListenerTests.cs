@@ -114,6 +114,7 @@ namespace Test.VirtualRadar.Library.Listener
             _RawMessageTranslator.Setup(r => r.Translate(It.IsAny<DateTime>(), It.IsAny<ModeSMessage>(), It.IsAny<AdsbMessage>())).Returns(_Port30003Message);
             _Compressor.Setup(r => r.Decompress(It.IsAny<byte[]>())).Returns(_Port30003Message);
             _JsonConverter.Setup(r => r.ConvertIntoBaseStationMessageEventArgs(It.IsAny<AircraftListJson>())).Returns(new List<BaseStationMessageEventArgs>() { new BaseStationMessageEventArgs(_Port30003Message) });
+            _AirnavXRangeConverter.Setup(r => r.ConvertIntoBaseStationMessageEventArgs(It.IsAny<AirnavXRangeJson>())).Returns(new List<BaseStationMessageEventArgs>() { new BaseStationMessageEventArgs(_Port30003Message) });
 
             _Listener = Factory.Resolve<IListener>();
             _Connector = new MockConnector<IConnector, IConnection>();
