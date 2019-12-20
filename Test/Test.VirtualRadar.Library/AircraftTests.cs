@@ -100,6 +100,7 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(0, _Aircraft.TrackIsHeadingChanged);
             Assert.AreEqual(0, _Aircraft.TransponderTypeChanged);
             Assert.AreEqual(0, _Aircraft.TypeChanged);
+            Assert.AreEqual(0, _Aircraft.UserNotesChanged);
             Assert.AreEqual(0, _Aircraft.UserTagChanged);
             Assert.AreEqual(0, _Aircraft.VerticalRateChanged);
             Assert.AreEqual(0, _Aircraft.VerticalRateTypeChanged);
@@ -171,6 +172,7 @@ namespace Test.VirtualRadar.Library
             TestUtilities.TestProperty(_Aircraft, r => r.TrackIsHeading, false);
             TestUtilities.TestProperty(_Aircraft, r => r.TransponderType, TransponderType.Unknown, TransponderType.Adsb2);
             TestUtilities.TestProperty(_Aircraft, r => r.Type, null, "9JH");
+            TestUtilities.TestProperty(_Aircraft, r => r.UserNotes, null, "ABC");
             TestUtilities.TestProperty(_Aircraft, r => r.UserTag, null, "ABC");
             TestUtilities.TestProperty(_Aircraft, r => r.UniqueId, 0, 12);
             TestUtilities.TestProperty(_Aircraft, r => r.VerticalRate, null, -120);
@@ -406,6 +408,8 @@ namespace Test.VirtualRadar.Library
                             case nameof(IAircraft.SpeedTypeChanged):                value = _Aircraft.SpeedTypeChanged; break;
                             case nameof(IAircraft.UserTag):                         value = _Aircraft.UserTag = stringValue; break;
                             case nameof(IAircraft.UserTagChanged):                  value = _Aircraft.UserTagChanged; break;
+                            case nameof(IAircraft.UserNotes):                       value = _Aircraft.UserNotes = stringValue; break;
+                            case nameof(IAircraft.UserNotesChanged):                value = _Aircraft.UserNotesChanged; break;
                             case nameof(IAircraft.ReceiverId):                      value = _Aircraft.ReceiverId = intValue; break;
                             case nameof(IAircraft.ReceiverIdChanged):               value = _Aircraft.ReceiverIdChanged; break;
                             case nameof(IAircraft.PictureWidth):                    value = _Aircraft.PictureWidth = intValue; break;

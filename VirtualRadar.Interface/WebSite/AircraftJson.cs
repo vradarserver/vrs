@@ -393,6 +393,13 @@ namespace VirtualRadar.Interface.WebSite
         public string UserTag { get; set; }
 
         /// <summary>
+        /// Gets or sets the user notes from the aircraft's database record.
+        /// </summary>
+        [DataMember(Name="Notes", IsRequired=false, EmitDefaultValue=false)]
+        public string UserNotes { get; set; }
+
+
+        /// <summary>
         /// Gets or sets a value indicating that the server wants all trails for the aircraft to be reset.
         /// </summary>
         [DataMember(IsRequired=false, EmitDefaultValue=false)]

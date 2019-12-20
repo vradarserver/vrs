@@ -51,12 +51,14 @@ var VRS;
             }
             return result;
         };
-        StringUtility.prototype.htmlEscape = function (text) {
+        StringUtility.prototype.htmlEscape = function (text, newlineToLineBreak) {
+            if (newlineToLineBreak === void 0) { newlineToLineBreak = false; }
             return this.filterReplace(text, function (ch) {
                 switch (ch) {
                     case '&': return '&amp;';
                     case '<': return '&lt;';
                     case '>': return '&gt;';
+                    case '\n': return newlineToLineBreak ? '<br />' : ch;
                     default: return ch;
                 }
             });

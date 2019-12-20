@@ -80,6 +80,7 @@
         CMsgs:              number;
         Gnd:                boolean;
         Tag:                string;
+        Notes:              string;
         Interested:         boolean;
         Stops:              string[];
         TT:                 string;
@@ -808,6 +809,7 @@
         pictureUrl3:     string;
         totalHours:      string;
         notes:           string;
+        tag:             string;
         yearBuilt:       string;
         hasPic:          boolean;
         picX:            number;

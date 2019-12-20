@@ -297,9 +297,6 @@ var VRS;
         Format.prototype.modeSCountry = function (modeSCountry) {
             return modeSCountry ? VRS.$$.translateCountry(modeSCountry) : '';
         };
-        Format.prototype.notes = function (notes) {
-            return notes || '';
-        };
         Format.prototype.operator = function (operator) {
             return operator ? operator : '';
         };
@@ -729,6 +726,12 @@ var VRS;
         };
         Format.prototype.userInterested = function (userInterested) {
             return userInterested === undefined || userInterested === null ? '' : userInterested ? VRS.$$.Yes : VRS.$$.No;
+        };
+        Format.prototype.userNotes = function (userNotes) {
+            return userNotes || '';
+        };
+        Format.prototype.userNotesMultiline = function (userNotes) {
+            return VRS.stringUtility.htmlEscape(userNotes || '', true);
         };
         Format.prototype.userTag = function (userTag) {
             return userTag || '';

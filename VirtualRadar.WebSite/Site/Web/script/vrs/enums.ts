@@ -404,6 +404,7 @@ namespace VRS
         Tisb:                           'tsb',
         TransponderType:                'trt',
         TransponderTypeFlag:            'trf',
+        UserNotes:                      'not',
         UserTag:                        'tag',
         VerticalSpeed:                  'vsi',
         VerticalSpeedType:              'vty',
@@ -461,6 +462,7 @@ namespace VRS
         Species:                'spc',
         Status:                 'sta',
         TotalHours:             'thr',
+        UserTag:                'tag',
         WakeTurbulenceCategory: 'wtc',
         YearBuilt:              'yrb'
     };

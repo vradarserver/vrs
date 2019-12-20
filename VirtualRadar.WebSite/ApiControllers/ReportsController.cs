@@ -359,6 +359,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 TotalHours =        aircraft.TotalHours,
                 Type =              aircraft.Type,
                 Notes =             aircraft.UserNotes,
+                UserTag =           aircraft.UserTag,
                 YearBuilt =         aircraft.YearBuilt,
             };
 

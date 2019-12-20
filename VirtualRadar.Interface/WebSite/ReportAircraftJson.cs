@@ -252,6 +252,12 @@ namespace VirtualRadar.Interface.WebSite
         public string Notes { get; set; }
 
         /// <summary>
+        /// Gets or sets the user tag on the aircraft.
+        /// </summary>
+        [DataMember(Name="tag", EmitDefaultValue=false)]
+        public string UserTag { get; set; }
+
+        /// <summary>
         /// Gets or sets the year the aircraft was manufactured.
         /// </summary>
         [DataMember(Name="yearBuilt", EmitDefaultValue=false)]

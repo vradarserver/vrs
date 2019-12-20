@@ -709,6 +709,7 @@ namespace VirtualRadar.Library.BaseStation
             aircraft.Operator =             aircraftDetail.OperatorName;
             aircraft.OperatorIcao =         aircraftDetail.OperatorIcao;
             aircraft.IsInteresting =        baseStationAircraft.Interested;
+            aircraft.UserNotes =            baseStationAircraft.UserNotes;
             aircraft.UserTag =              baseStationAircraft.UserTag;
             aircraft.FlightsCount =         aircraftDetail.FlightsCount;
 

@@ -758,6 +758,17 @@ namespace VirtualRadar.Library
         /// See interface docs.
         /// </summary>
         public long UserTagChanged { get; set; }
+
+        private string _UserNotes { get; set; }
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string UserNotes { get { return _UserNotes; } set { if(value != _UserNotes) { _UserNotes = value; UserNotesChanged = DataVersion; } } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long UserNotesChanged { get; set; }
         #endregion
 
         #region Constructors
@@ -849,6 +860,7 @@ namespace VirtualRadar.Library
                 result.TransponderType = TransponderType;
                 result.Type = Type;
                 result.UniqueId = UniqueId;
+                result.UserNotes = UserNotes;
                 result.UserTag = UserTag;
                 result.VerticalRate = VerticalRate;
                 result.VerticalRateType = VerticalRateType;
@@ -911,6 +923,7 @@ namespace VirtualRadar.Library
                 result.TrackIsHeadingChanged = TrackIsHeadingChanged;
                 result.TransponderTypeChanged = TransponderTypeChanged;
                 result.TypeChanged = TypeChanged;
+                result.UserNotesChanged = UserNotesChanged;
                 result.UserTagChanged = UserTagChanged;
                 result.VerticalRateChanged = VerticalRateChanged;
                 result.VerticalRateTypeChanged = VerticalRateTypeChanged;

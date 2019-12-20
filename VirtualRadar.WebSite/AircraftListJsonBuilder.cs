@@ -390,6 +390,7 @@ namespace VirtualRadar.WebSite
                     if(firstTimeSeen || aircraftSnapshot.RegistrationChanged > args.PreviousDataVersion)                aircraftJson.Registration = aircraftSnapshot.Registration;
                     if(firstTimeSeen || aircraftSnapshot.SpeciesChanged > args.PreviousDataVersion)                     aircraftJson.Species = (int)aircraftSnapshot.Species;
                     if(firstTimeSeen || aircraftSnapshot.TypeChanged > args.PreviousDataVersion)                        aircraftJson.Type = aircraftSnapshot.Type;
+                    if(firstTimeSeen || aircraftSnapshot.UserNotesChanged > args.PreviousDataVersion)                   aircraftJson.UserNotes = aircraftSnapshot.UserNotes;
                     if(firstTimeSeen || aircraftSnapshot.UserTagChanged > args.PreviousDataVersion)                     aircraftJson.UserTag = aircraftSnapshot.UserTag;
                     if(firstTimeSeen || aircraftSnapshot.WakeTurbulenceCategoryChanged > args.PreviousDataVersion)      aircraftJson.WakeTurbulenceCategory = (int)aircraftSnapshot.WakeTurbulenceCategory;
                     if(firstTimeSeen || aircraftSnapshot.YearBuiltChanged > args.PreviousDataVersion)                   aircraftJson.YearBuilt = aircraftSnapshot.YearBuilt;

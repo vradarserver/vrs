@@ -19,7 +19,6 @@ namespace VirtualRadar.Interface
     /// </summary>
     public interface IAircraft : ICloneable
     {
-        #region Properties
         /// <summary>
         /// Gets or sets the unique identifier of the aircraft.
         /// </summary>
@@ -679,6 +678,16 @@ namespace VirtualRadar.Interface
         long CallsignIsSuspectChanged { get; set; }
 
         /// <summary>
+        /// Gets the <see cref="UserNotes"/> from the aircraft's database record.
+        /// </summary>
+        string UserNotes { get; set; }
+
+        /// <summary>
+        /// Gets the <see cref="DataVersion"/> that was current when <see cref="UserNotes"/> was last changed.
+        /// </summary>
+        long UserNotesChanged { get; set; }
+
+        /// <summary>
         /// Gets the <see cref="UserTag"/> from the aircraft's database record.
         /// </summary>
         string UserTag { get; set; }
@@ -687,9 +696,7 @@ namespace VirtualRadar.Interface
         /// Gets the <see cref="DataVersion"/> that was current when <see cref="UserTag"/> was last changed.
         /// </summary>
         long UserTagChanged { get; set; }
-        #endregion
 
-        #region Methods
         /// <summary>
         /// Removes all coordinates from the aircraft's coordinates lists.
         /// </summary>
@@ -710,6 +717,5 @@ namespace VirtualRadar.Interface
         /// all done in an effort to keep the lists down to a reasonable length.
         /// </remarks>
         void UpdateCoordinates(DateTime utcNow, int shortCoordinateSeconds);
-        #endregion
     }
 }
