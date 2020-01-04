@@ -12,8 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AWhewell.Owin.Utility;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.WebSite;
@@ -82,8 +81,8 @@ namespace VirtualRadar.WebSite
         /// <param name="textContent"></param>
         public void ManipulateTextResponse(IDictionary<string, object> environment, TextContent textContent)
         {
-            var context = PipelineContext.GetOrCreate(environment);
-            var pathAndFile = context.Request.FlattenedPath;
+            var context = OwinContext.Create(environment);
+            var pathAndFile = context.RequestPathFlattened;
 
             var allInjectors = _HtmlContentInjectors;
             var injectors = allInjectors .Where(r =>
