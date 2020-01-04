@@ -12,8 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
+using AWhewell.Owin.Utility;
 using InterfaceFactory;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.Settings;
@@ -59,15 +59,14 @@ namespace VirtualRadar.Owin.Middleware
         private bool AddCorsHeaders(IDictionary<string, object> environment)
         {
             var result = true;
-            var context = PipelineContext.GetOrCreate(environment);
-            var request = context.Request;
+            var context = OwinContext.Create(environment);
 
-            var origin = (request.Headers["Origin"] ?? "").ToLowerInvariant();
-            if(String.Equals(request.Method, "OPTIONS", StringComparison.OrdinalIgnoreCase)) {
+            var origin = (context.RequestHeadersDictionary["Origin"] ?? "").ToLowerInvariant();
+            if(context.RequestHttpMethod == HttpMethod.Options) {
                 result = false;
-                HandlePreflight(context, request, origin);
+                HandlePreflight(context, origin);
             } else {
-                HandleSimpleRequest(context, request, origin);
+                HandleSimpleRequest(context, origin);
             }
 
             return result;
@@ -77,47 +76,42 @@ namespace VirtualRadar.Owin.Middleware
         /// Handles pre-flight requests.
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="request"></param>
         /// <param name="origin"></param>
-        private void HandlePreflight(PipelineContext context, PipelineRequest request, string origin)
+        private void HandlePreflight(OwinContext context, string origin)
         {
-            var response = context.Response;
             var forbidden = true;
 
             if(OriginIsAllowed(origin)) {
-                var requestMethod = (request.Headers["Access-Control-Request-Method"] ?? "").Trim().ToUpperInvariant();
+                var requestMethod = (context.RequestHeadersDictionary["Access-Control-Request-Method"] ?? "").Trim().ToUpperInvariant();
                 if(requestMethod != "") {
                     forbidden = false;
 
-                    response.Headers.Add("Access-Control-Allow-Origin", new string[] { origin });
-                    response.Headers.Add("Access-Control-Allow-Methods", _DefaultAllowableMethods);
+                    context.ResponseHeadersDictionary["Access-Control-Allow-Origin"] = origin;
+                    context.ResponseHeadersDictionary.SetValues("Access-Control-Allow-Methods", _DefaultAllowableMethods);
 
                     if(!_DefaultAllowableMethods.Contains(requestMethod)) {
-                        response.Headers.Append("Access-Control-Allow-Methods", requestMethod);
+                        context.ResponseHeadersDictionary.Append("Access-Control-Allow-Methods", requestMethod);
                     }
 
-                    var requestHeaders = request.Headers.GetCommaSeparatedValues("Access-Control-Request-Headers");
+                    var requestHeaders = context.RequestHeadersDictionary["Access-Control-Request-Headers"];
                     if(requestHeaders != null) {
-                        response.Headers.Add("Access-Control-Allow-Headers", requestHeaders.ToArray());
+                        context.ResponseHeadersDictionary["Access-Control-Allow-Headers"] = requestHeaders;
                     }
                 }
             }
 
-            response.StatusCode = forbidden ? (int)HttpStatusCode.Forbidden : (int)HttpStatusCode.OK;
+            context.ResponseHttpStatusCode = forbidden ? HttpStatusCode.Forbidden : HttpStatusCode.OK;
         }
 
         /// <summary>
         /// Adds Allow-Origin headers to simple requests that match the origin.
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="request"></param>
         /// <param name="origin"></param>
-        private void HandleSimpleRequest(PipelineContext context, PipelineRequest request, string origin)
+        private void HandleSimpleRequest(OwinContext context, string origin)
         {
-            var response = context.Response;
-
             if(OriginIsAllowed(origin)) {
-                response.Headers.Add("Access-Control-Allow-Origin", new string[] { origin });
+                context.ResponseHeadersDictionary["Access-Control-Allow-Origin"] = origin;
             }
         }
 

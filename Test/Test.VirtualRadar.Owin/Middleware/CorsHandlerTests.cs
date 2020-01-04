@@ -9,13 +9,8 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using InterfaceFactory;
-using Microsoft.Owin;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Test.Framework;
@@ -65,62 +60,65 @@ namespace Test.VirtualRadar.Owin.Middleware
 
         private void ConfigurePreflightRequest(string origin, string requestPath = "/", string requestMethod = null, string[] requestHeaders = null)
         {
-            _Environment.Request.Method = "OPTIONS";
+            _Environment.RequestMethod = "OPTIONS";
             _Environment.RequestPath = requestPath;
-            _Environment.Request.Headers.Add("Origin", new string[] { origin });
+            _Environment.RequestHeaders["Origin"] = origin;
 
             if(requestMethod != "") {
-                _Environment.Request.Headers.Add("Access-Control-Request-Method", new string[] { requestMethod ?? "POST" });
+                _Environment.RequestHeaders["Access-Control-Request-Method"] = requestMethod ?? "POST";
             }
 
             if(requestHeaders != null) {
-                _Environment.Request.Headers.Add("Access-Control-Request-Headers", requestHeaders);
+                _Environment.RequestHeaders.SetValues("Access-Control-Request-Headers", requestHeaders);
             }
         }
 
         private void AssertPreflightAccepted(string allowedOrigin, string[] additionalMethods = null)
         {
-            var allowOrigin = _Environment.Response.Headers["Access-Control-Allow-Origin"];
+            var allowOrigin = _Environment.ResponseHeaders["Access-Control-Allow-Origin"];
             Assert.AreEqual(allowedOrigin, allowOrigin);
 
-            var allowMethods = _Environment.Response.Headers.GetCommaSeparatedValues("Access-Control-Allow-Methods");
+            var allowMethods = _Environment.ResponseHeaders.GetCommaSeparatedValues("Access-Control-Allow-Methods");
             Assert.AreEqual(3 + (additionalMethods?.Length ?? 0), allowMethods.Count);
             foreach(var method in new string[] { "POST", "GET", "OPTIONS", }.Concat(additionalMethods ?? new string[0])) {
                 Assert.AreNotEqual(-1, allowMethods.Contains(method, StringComparer.OrdinalIgnoreCase));
             }
 
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
-            Assert.AreEqual(200, _Environment.Response.StatusCode);
+            Assert.AreEqual(200, _Environment.ResponseStatusCode);
         }
 
         private void AssertPreflightRejected()
         {
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
-            Assert.AreEqual(0, _Environment.Response.Headers.Count);
-            Assert.AreEqual(403, _Environment.Response.StatusCode);
+            Assert.AreEqual(0, _Environment.ResponseHeaders.Count);
+            Assert.AreEqual(403, _Environment.ResponseStatusCode);
         }
 
         private void ConfigureSimpleRequest(string origin, string path = "/", string method = null, string[] headers = null)
         {
-            _Environment.Request.Method = method ?? "GET";
+            _Environment.RequestMethod = method ?? "GET";
             _Environment.RequestPath = path;
-            _Environment.Request.Headers.Add("Origin", new string[] { origin });
+            _Environment.RequestHeaders["Origin"] = origin;
         }
 
         private void AssertSimpleAccepted(string allowedOrigin)
         {
-            var allowOrigin = _Environment.Response.Headers["Access-Control-Allow-Origin"];
+            var allowOrigin = _Environment.ResponseHeaders["Access-Control-Allow-Origin"];
             Assert.AreEqual(allowedOrigin, allowOrigin);
 
             Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
-            Assert.AreEqual(200, _Environment.Response.StatusCode);
+            Assert.IsTrue(
+                   _Environment.Context.ResponseStatusCode == null  //  null and 200 are equivalent, if the status code remains
+                || _Environment.Context.ResponseStatusCode == 200   //  at zero then eventually the runtime will set it to 200
+            );
         }
 
         private void AssertSimpleRejected()
         {
             Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
-            Assert.AreEqual(0, _Environment.Response.Headers.Count);
-            Assert.AreEqual(200, _Environment.Response.StatusCode);
+            Assert.AreEqual(0, _Environment.ResponseHeaders.Count);
+            Assert.AreEqual(200, _Environment.ResponseStatusCode);
         }
 
         #region Preflight
@@ -173,12 +171,12 @@ namespace Test.VirtualRadar.Owin.Middleware
 
                 ConfigureCorsSupport("*");
                 ConfigurePreflightRequest("http://www.allowed.com");
-                _Environment.Request.Method = method;
+                _Environment.RequestMethod = method;
 
                 _Pipeline.CallMiddleware(_Handler.HandleRequest, _Environment.Environment);
 
                 Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
-                var allowMethods = _Environment.Response.Headers["Access-Control-Allow-Methods"];
+                var allowMethods = _Environment.ResponseHeaders["Access-Control-Allow-Methods"];
                 Assert.IsNull(allowMethods, $"Failed for {method}");
             }
         }
@@ -211,7 +209,7 @@ namespace Test.VirtualRadar.Owin.Middleware
 
                 _Pipeline.CallMiddleware(_Handler.HandleRequest, _Environment.Environment);
 
-                var headers = _Environment.Response.Headers.GetCommaSeparatedValues("Access-Control-Allow-Methods");
+                var headers = _Environment.ResponseHeaders.GetCommaSeparatedValues("Access-Control-Allow-Methods");
                 Assert.AreEqual(1, headers.Count(r => String.Equals(r, method, StringComparison.OrdinalIgnoreCase)), $"Failed for method {method}");
             }
         }
@@ -236,7 +234,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Pipeline.CallMiddleware(_Handler.HandleRequest, _Environment.Environment);
 
             AssertPreflightAccepted("http://www.allowed.com");
-            var headers = _Environment.Response.Headers.GetCommaSeparatedValues("Access-Control-Allow-Headers");
+            var headers = _Environment.ResponseHeaders.GetCommaSeparatedValues("Access-Control-Allow-Headers");
             Assert.AreEqual(1, headers.Count(r => r == "Header-1"));
             Assert.AreEqual(1, headers.Count(r => r == "Header-2"));
         }

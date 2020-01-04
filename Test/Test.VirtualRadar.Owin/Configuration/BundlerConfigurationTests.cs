@@ -218,7 +218,7 @@ namespace Test.VirtualRadar.Owin.Configuration
             _Config.RegisterJavascriptBundle(_HtmlEnv.Environment, 0, new List<string>() { "1" });
 
             _BndlEnv.RequestPath = "/index-0-bundle.js";
-            _BndlEnv.Environment.Add(EnvironmentKey.SuppressJavascriptBundles, true);
+            _BndlEnv.Environment.Add(VrsEnvironmentKey.SuppressJavascriptBundles, true);
 
             Assert.IsNull(_Config.GetJavascriptBundle(_BndlEnv.Environment));
         }
@@ -231,7 +231,7 @@ namespace Test.VirtualRadar.Owin.Configuration
             _Config.RegisterJavascriptBundle(_HtmlEnv.Environment, 0, new List<string>() { "1" });
 
             _BndlEnv.RequestPath = "/index-0-bundle.js";
-            _BndlEnv.Environment.Add(EnvironmentKey.SuppressJavascriptBundles, false);
+            _BndlEnv.Environment.Add(VrsEnvironmentKey.SuppressJavascriptBundles, false);
 
             Assert.IsNotNull(_Config.GetJavascriptBundle(_BndlEnv.Environment));
         }
@@ -242,7 +242,7 @@ namespace Test.VirtualRadar.Owin.Configuration
             _LoopbackHost.Setup(r => r.SendSimpleRequest(It.IsAny<string>(), It.IsAny<IDictionary<string, object>>())).Returns((string r, IDictionary<string, object> env) => {
                 Assert.AreSame(_BndlEnv.Environment, env);
                 _LoopbackHost.Object.ModifyEnvironmentAction(_BndlEnv.Environment);
-                Assert.AreEqual(true, (bool)_BndlEnv.Environment[EnvironmentKey.SuppressJavascriptBundles]);
+                Assert.AreEqual(true, (bool)_BndlEnv.Environment[VrsEnvironmentKey.SuppressJavascriptBundles]);
 
                 return new SimpleContent() { Content = Encoding.UTF8.GetBytes("a"), HttpStatusCode = HttpStatusCode.OK, };
             });
@@ -273,7 +273,7 @@ namespace Test.VirtualRadar.Owin.Configuration
             _LoopbackHost.Setup(r => r.SendSimpleRequest(It.IsAny<string>(), It.IsAny<IDictionary<string, object>>())).Returns((string r, IDictionary<string, object> env) => {
                 Assert.AreSame(_BndlEnv.Environment, env);
                 _LoopbackHost.Object.ModifyEnvironmentAction(_BndlEnv.Environment);
-                Assert.IsFalse(_BndlEnv.Environment.ContainsKey(EnvironmentKey.SuppressJavascriptMinification));
+                Assert.IsFalse(_BndlEnv.Environment.ContainsKey(VrsEnvironmentKey.SuppressJavascriptMinification));
 
                 return new SimpleContent() { Content = Encoding.UTF8.GetBytes("a"), HttpStatusCode = HttpStatusCode.OK, };
             });

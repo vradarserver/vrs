@@ -9,7 +9,7 @@ namespace VirtualRadar.Interface.Owin
     /// <summary>
     /// A static collection of Virtual Radar Server custom OWIN environment keys.
     /// </summary>
-    public static class EnvironmentKey
+    public static class VrsEnvironmentKey
     {
         /// <summary>
         /// The IP address of the machine that originally requested the page from the server.

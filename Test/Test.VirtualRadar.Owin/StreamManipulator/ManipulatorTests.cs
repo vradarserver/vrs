@@ -10,10 +10,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VirtualRadar.Interface;
@@ -81,10 +78,10 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             var preamble = !addPreamble ? new byte[0] : encoding.GetPreamble();
             var bodyBytes = encoding.GetBytes(body);
 
-            _Environment.Response.ContentType = mimeType;
-            _Environment.Response.ContentLength = preamble.Length + bodyBytes.Length;
-            _Environment.Response.Body.Write(preamble, 0, preamble.Length);
-            _Environment.Response.Body.Write(bodyBytes, 0, bodyBytes.Length);
+            _Environment.ResponseHeaders.ContentType = mimeType;
+            _Environment.ResponseHeaders.ContentLength = preamble.Length + bodyBytes.Length;
+            _Environment.ResponseBody.Write(preamble, 0, preamble.Length);
+            _Environment.ResponseBody.Write(bodyBytes, 0, bodyBytes.Length);
         }
 
         protected TextContent GetResponseContent()

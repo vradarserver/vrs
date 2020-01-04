@@ -10,8 +10,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using InterfaceFactory;
 using Microsoft.Owin;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -91,12 +89,12 @@ namespace Test.VirtualRadar.Owin.Middleware
                 host = $"{host}:{port}";
             }
 
-            _Environment.Request.Scheme =       scheme;
-            _Environment.Request.Host =         new HostString(host);
-            _Environment.Request.LocalPort =    port;
-            _Environment.Request.PathBase =     new PathString(pathBase);
-            _Environment.Request.Path =         new PathString(path);
-            _Environment.Request.QueryString =  new QueryString(queryString);
+            _Environment.RequestScheme =       scheme;
+            _Environment.RequestHost =         host;
+            _Environment.ServerLocalPort =     port.GetValueOrDefault();
+            _Environment.RequestPathBase =     pathBase;
+            _Environment.RequestPath =         path;
+            _Environment.RequestQueryString =  queryString;
         }
 
         private void ConfigureRedirection(string fromPath, string toPath, bool isMobile = false)
@@ -117,18 +115,21 @@ namespace Test.VirtualRadar.Owin.Middleware
         private void AssertPassedThrough()
         {
             Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
-            Assert.AreEqual(200, _Environment.Response.StatusCode);
+            Assert.IsTrue(
+                   _Environment.Context.ResponseStatusCode == null  //  null and 200 are equivalent, if the status code remains
+                || _Environment.Context.ResponseStatusCode == 200   //  at zero then eventually the runtime will set it to 200
+            );
         }
 
         private void AssertRedirectedTo(string fullPath, int status = 302)
         {
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
 
-            var location = _Environment.Response.Headers["Location"];
+            var location = _Environment.ResponseHeaders["Location"];
             Assert.IsNotNull(location);
             Assert.AreEqual(fullPath, location);
 
-            Assert.AreEqual(status, _Environment.Response.StatusCode);
+            Assert.AreEqual(status, _Environment.ResponseStatusCode);
         }
 
         [TestMethod]
@@ -221,11 +222,11 @@ namespace Test.VirtualRadar.Owin.Middleware
 
             ConfigureRedirection("/", "/not-mobile.html", isMobile: false);
             ConfigureRedirection("/", "/mobile.html", isMobile: true);
-            _Environment.Request.Headers["User-Agent"] = userAgent;
+            _Environment.RequestHeaders["User-Agent"] = userAgent;
 
             _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
 
-            var location = _Environment.Response.Headers["Location"];
+            var location = _Environment.ResponseHeaders["Location"];
             Assert.IsTrue(location.EndsWith("/mobile.html"), $"{userAgent} not recognised as mobile user agent");
         }
 
@@ -247,11 +248,11 @@ namespace Test.VirtualRadar.Owin.Middleware
 
             ConfigureRedirection("/", "/not-mobile.html", isMobile: false);
             ConfigureRedirection("/", "/mobile.html", isMobile: true);
-            _Environment.Request.Headers["User-Agent"] = userAgent;
+            _Environment.RequestHeaders["User-Agent"] = userAgent;
 
             _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
 
-            var location = _Environment.Response.Headers["Location"];
+            var location = _Environment.ResponseHeaders["Location"];
             Assert.IsTrue(location.EndsWith("/not-mobile.html"), $"{userAgent} not recognised as desktop user agent");
         }
     }

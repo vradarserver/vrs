@@ -15,8 +15,10 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using AWhewell.Owin.Utility;
 using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
@@ -173,9 +175,9 @@ namespace VirtualRadar.Owin.Middleware
         {
             AppFunc appFunc = async(IDictionary<string, object> environment) => {
                 var handled = false;
-                var context = PipelineContext.GetOrCreate(environment);
+                var context = OwinContext.Create(environment);
 
-                if(context.Request.PathNormalised.Value.StartsWith("/images/", StringComparison.OrdinalIgnoreCase)) {
+                if(context.RequestPathNormalised.StartsWith("/images/", StringComparison.OrdinalIgnoreCase)) {
                     handled = ServeImage(context);
                 }
 
@@ -192,10 +194,10 @@ namespace VirtualRadar.Owin.Middleware
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        private bool ServeImage(PipelineContext context)
+        private bool ServeImage(OwinContext context)
         {
             var handled = false;
-            var imageRequest = ExtractImageRequest(context.Request);
+            var imageRequest = ExtractImageRequest(context);
             var result = imageRequest != null;
 
             if(result) {
@@ -223,7 +225,7 @@ namespace VirtualRadar.Owin.Middleware
                             tempImage = _Graphics.UseImage(tempImage, _Graphics.HeightenImage(tempImage ?? stockImage, imageRequest.Height.Value, imageRequest.CentreImageVertically));
                         }
 
-                        var addTextLines = imageRequest.HasTextLines && (!context.Request.IsInternet || configuration.InternetClientSettings.CanShowPinText);
+                        var addTextLines = imageRequest.HasTextLines && (!context.IsInternet || configuration.InternetClientSettings.CanShowPinText);
                         if(addTextLines) {
                             tempImage = _Graphics.UseImage(tempImage, _Graphics.AddTextLines(tempImage ?? stockImage, imageRequest.TextLines, centreText: true, isHighDpi: imageRequest.IsHighDpi));
                         }
@@ -238,10 +240,11 @@ namespace VirtualRadar.Owin.Middleware
                                     copy.Save(stream, imageRequest.ImageFormat);
                                     var bytes = stream.ToArray();
 
-                                    context.Response.ContentLength = bytes.Length;
-                                    context.Response.ContentType = ImageMimeType(imageRequest.ImageFormat);
-                                    context.Response.Body.Write(bytes, 0, bytes.Length);
-                                    context.Response.StatusCode = 200;
+                                    context.ResponseHttpStatusCode = HttpStatusCode.OK;
+                                    context.ReturnBytes(
+                                        ImageMimeType(imageRequest.ImageFormat),
+                                        bytes
+                                    );
 
                                     handled = true;
                                 }
@@ -273,11 +276,11 @@ namespace VirtualRadar.Owin.Middleware
         /// <summary>
         /// Extracts information about the required image from the request.
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
-        private ImageRequest ExtractImageRequest(PipelineRequest request)
+        private ImageRequest ExtractImageRequest(OwinContext context)
         {
-            var requestFileName = request.FileName;
+            var requestFileName = context.RequestPathFileName;
             ImageRequest result = new ImageRequest() {
                 ImageName = Path.GetFileNameWithoutExtension(requestFileName).ToUpper(),
             };
@@ -289,15 +292,15 @@ namespace VirtualRadar.Owin.Middleware
             }
 
             if(result != null) {
-                result = ParsePathParts(result, request);
+                result = ParsePathParts(result, context);
             }
 
             return result;
         }
 
-        private ImageRequest ParsePathParts(ImageRequest result, PipelineRequest request)
+        private ImageRequest ParsePathParts(ImageRequest result, OwinContext context)
         {
-            foreach(var pathPart in request.PathParts) {
+            foreach(var pathPart in context.RequestPathParts) {
                 var caselessPart = pathPart.ToUpper();
 
                 if(caselessPart.StartsWith("ALT-")) {
@@ -323,7 +326,7 @@ namespace VirtualRadar.Owin.Middleware
                 } else if(caselessPart == "TOP") {
                     result.CentreImageVertically = false;
                 } else if(caselessPart == "NO-CACHE") {
-                    result.NoCache = !request.IsInternet;
+                    result.NoCache = !context.IsInternet;
                 } else if(caselessPart.StartsWith("WEB")) {
                     var pathAndFileName = new StringBuilder("/images/");
                     var hyphenPosn = pathPart.IndexOf('-');
@@ -333,7 +336,7 @@ namespace VirtualRadar.Owin.Middleware
                             pathAndFileName.AppendFormat("{0}{1}", folder, folder[folder.Length - 1] == '/' ? "" : "/");
                         }
                     }
-                    pathAndFileName.Append(Path.GetFileName(request.FileName));
+                    pathAndFileName.Append(Path.GetFileName(context.RequestPathFileName));
                     result.WebSiteFileName = pathAndFileName.ToString();
                 } else if(caselessPart.StartsWith("PL")) {
                     var hyphenPosn = caselessPart.IndexOf('-');
@@ -406,15 +409,13 @@ namespace VirtualRadar.Owin.Middleware
         /// <param name="stockImage"></param>
         /// <param name="tempImage"></param>
         /// <returns></returns>
-        private bool BuildInitialImage(PipelineContext context, ImageRequest imageRequest, ref Image stockImage, ref Image tempImage)
+        private bool BuildInitialImage(OwinContext context, ImageRequest imageRequest, ref Image stockImage, ref Image tempImage)
         {
             var result = true;
 
             if(imageRequest.WebSiteFileName != null) {
                 stockImage = _ImageServerConfiguration.ImageFileManager.LoadFromStandardPipeline(imageRequest.WebSiteFileName, !imageRequest.NoCache, context.Environment);
             } else {
-                var request = context.Request;
-
                 switch(imageRequest.ImageName) {
                     case "AIRPLANE":                stockImage = Images.Clone_Marker_Airplane(); break;
                     case "AIRPLANESELECTED":        stockImage = Images.Clone_Marker_AirplaneSelected(); break;
@@ -446,11 +447,15 @@ namespace VirtualRadar.Owin.Middleware
                     case "IPHONESELECTION":         stockImage = Images.Clone_IPhoneSelection(); break;
                     case "IPHONESPLASH":
                         var webSiteAddress = new StringBuilder();
-                        webSiteAddress.Append(String.IsNullOrEmpty(request.Scheme) ? "http" : request.Scheme);
+                        webSiteAddress.Append(String.IsNullOrEmpty(context.RequestScheme) ? "http" : context.RequestScheme);
                         webSiteAddress.Append("://");
-                        webSiteAddress.Append(String.IsNullOrEmpty(request.Host.Value) ? "127.0.0.1" : request.Host.Value);
-                        webSiteAddress.Append(request.PathBase.Value);
-                        tempImage  = _Graphics.CreateIPhoneSplash(webSiteAddress.ToString(), request.IsTabletUserAgentString, new List<string>(request.PathParts));
+                        webSiteAddress.Append(String.IsNullOrEmpty(context.RequestHost) ? "127.0.0.1" : context.RequestHost);
+                        webSiteAddress.Append(context.RequestPathBase);
+                        tempImage  = _Graphics.CreateIPhoneSplash(
+                            webSiteAddress.ToString(),
+                            context.RequestHeadersDictionary.UserAgentValue.IsTabletUserAgentString,
+                            new List<string>(context.RequestPathParts)
+                        );
                         break;
                     case "IPHONETOOLBAR":           stockImage = Images.Clone_IPhoneToolbar(); break;
                     case "IPHONETOOLBUTTON":        stockImage = Images.Clone_IPhoneToolButton(); break;
@@ -460,7 +465,16 @@ namespace VirtualRadar.Owin.Middleware
                     case "MOVINGMAPUNCHECKED":      stockImage = Images.Clone_MovingMapUnchecked(); break;
                     case "OPENSLIDER":              stockImage = Images.Clone_OpenSlider(); break;
                     case "OPFLAG":                  tempImage  = CreateLogoImage(imageRequest.File, _ImageServerConfiguration.OperatorFolder); break;
-                    case "PICTURE":                 tempImage  = CreateAirplanePicture(imageRequest.File, imageRequest.Size, request.IsInternet, imageRequest.Width, imageRequest.Height); imageRequest.Width = imageRequest.Height = null; break;
+                    case "PICTURE":
+                        tempImage  = CreateAirplanePicture(
+                            imageRequest.File,
+                            imageRequest.Size,
+                            context.IsInternet,
+                            imageRequest.Width,
+                            imageRequest.Height
+                        );
+                        imageRequest.Width = imageRequest.Height = null;
+                        break;
                     case "PLUS":                    stockImage = Images.Clone_Expand(); break;
                     case "ROWHEADER":               stockImage = Images.Clone_RowHeader(); break;
                     case "ROWHEADERSELECTED":       stockImage = Images.Clone_RowHeaderSelected(); break;

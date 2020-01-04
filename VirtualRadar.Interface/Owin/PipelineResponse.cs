@@ -10,33 +10,25 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AWhewell.Owin.Utility;
 using Microsoft.Owin;
-using VirtualRadar.Interface.WebServer;
 
 namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
     /// Wraps an OwinResponse response object.
     /// </summary>
-    public class PipelineResponse : OwinResponse
+    [Obsolete("Use AWhewell.Owin.Utility.OwinContext")]
+    public class PipelineResponse
     {
+        private AWhewell.Owin.Utility.OwinContext _Context;
+
         /// <summary>
         /// Gets a value indicating that the response content type is a Javascript MIME type.
         /// </summary>
-        public bool IsJavascriptContentType
-        {
+        public bool IsJavascriptContentType {
             get {
-                switch((ContentType ?? "").ToLower()) {
-                    case "application/javascript":
-                    case "application/ecmascript":
-                    case "text/javascript":
-                    case "text/ecmascript":
-                        return true;
-                }
-                return false;
+                return _Context.ResponseHeadersDictionary.ContentTypeValue.MediaTypeParsed == MediaType.JavaScript;
             }
         }
 
@@ -46,40 +38,25 @@ namespace VirtualRadar.Interface.Owin
         public bool IsHtmlContentType
         {
             get {
-                switch((ContentType ?? "").ToLower()) {
-                    case "text/html":
-                    case "application/xhtml+xml":
-                        return true;
-                }
-                return false;
+                return _Context.ResponseHeadersDictionary.ContentTypeValue.MediaTypeParsed == MediaType.Html;
             }
         }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public PipelineResponse() : base()
+        public PipelineResponse()
         {
+            _Context = new AWhewell.Owin.Utility.OwinContext();
         }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="environment"></param>
-        public PipelineResponse(IDictionary<string, object> environment) : base(environment)
+        public PipelineResponse(IDictionary<string, object> environment)
         {
-        }
-
-        /// <summary>
-        /// See <see cref="PipelineContext.GetOrSet{T}(IDictionary{string, object}, string, Func{T})"/>.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="key"></param>
-        /// <param name="buildFunc"></param>
-        /// <returns></returns>
-        protected virtual T GetOrSet<T>(string key, Func<T> buildFunc)
-        {
-            return PipelineContext.GetOrSet<T>(Environment, key, buildFunc);
+            _Context = AWhewell.Owin.Utility.OwinContext.Create(environment);
         }
     }
 }

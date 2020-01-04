@@ -10,9 +10,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using AWhewell.Owin.Utility;
 using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
@@ -38,9 +37,9 @@ namespace VirtualRadar.Owin.Middleware
                     await next.Invoke(environment);
                 } catch(Exception ex) {
                     try {
-                        var context = PipelineContext.GetOrCreate(environment);
+                        var context = OwinContext.Create(environment);
                         var log = Factory.ResolveSingleton<ILog>();
-                        log.WriteLine($"Exception caught during handling of request {context.Request.Uri}: {ex}");
+                        log.WriteLine($"Exception caught during handling of request {context.RequestUrl}: {ex}");
                     } catch {
                     }
 

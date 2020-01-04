@@ -8,11 +8,8 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -82,7 +79,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
 
             var textContent = GetResponseContent();
             Assert.AreEqual("b", textContent.Content);
-            Assert.AreNotEqual(0, _Environment.Response.Body.Position);    // MemoryStream will throw an exception if you read this after it's been disposed
+            Assert.AreNotEqual(0, _Environment.ResponseBody.Position);    // MemoryStream will throw an exception if you read this after it's been disposed
         }
 
         [TestMethod]
@@ -115,7 +112,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
         public void JavascriptManipulator_ManipulateResponseStream_Does_Not_Minify_Javascript_If_Suppress_Key_Present_In_Environment()
         {
             SetResponseContent(MimeType.Javascript, "a");
-            _Environment.Environment.Add(EnvironmentKey.SuppressJavascriptMinification, true);
+            _Environment.Environment.Add(VrsEnvironmentKey.SuppressJavascriptMinification, true);
 
             _Manipulator.ManipulateResponseStream(_Environment.Environment);
 
@@ -126,7 +123,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
         public void JavascriptManipulator_ManipulateResponseStream_Minifies_Javascript_If_Suppress_Key_Is_False()
         {
             SetResponseContent(MimeType.Javascript, "a");
-            _Environment.Environment.Add(EnvironmentKey.SuppressJavascriptMinification, false);
+            _Environment.Environment.Add(VrsEnvironmentKey.SuppressJavascriptMinification, false);
 
             _Manipulator.ManipulateResponseStream(_Environment.Environment);
 
@@ -151,7 +148,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
 
             var textContent = GetResponseContent();
             Assert.AreEqual("z", textContent.Content);
-            Assert.AreNotEqual(0, _Environment.Response.Body.Position);    // MemoryStream will throw an exception if you read this after it's been disposed
+            Assert.AreNotEqual(0, _Environment.ResponseBody.Position);    // MemoryStream will throw an exception if you read this after it's been disposed
         }
 
         [TestMethod]
@@ -177,7 +174,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             Assert.AreEqual("z", textContent.Content);
             Assert.AreEqual(Encoding.Unicode.EncodingName, textContent.Encoding.EncodingName);
             Assert.IsTrue(textContent.HadPreamble);
-            Assert.AreEqual(Encoding.Unicode.GetPreamble().Length + 2, _Environment.Response.Body.Length);
+            Assert.AreEqual(Encoding.Unicode.GetPreamble().Length + 2, _Environment.ResponseBody.Length);
         }
     }
 }

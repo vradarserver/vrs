@@ -10,10 +10,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using AWhewell.Owin.Utility;
 using InterfaceFactory;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.WebServer;
@@ -58,17 +58,18 @@ namespace VirtualRadar.Owin.Middleware
         {
             var result = false;
 
-            var context = PipelineContext.GetOrCreate(environment);
+            var context = OwinContext.Create(environment);
             var javaScript = _Configuration.GetJavascriptBundle(environment);
             result = javaScript != null;
 
             if(result) {
                 var bytes = Encoding.UTF8.GetBytes(javaScript);
-                context.Response.ContentLength = bytes.Length;
-                context.Response.ContentType = MimeType.Javascript;
-                context.Response.StatusCode = (int)HttpStatusCode.OK;
-                context.Set(EnvironmentKey.SuppressJavascriptMinification, true);
-                context.Response.Body.Write(bytes, 0, bytes.Length);
+                context.Environment[VrsEnvironmentKey.SuppressJavascriptMinification] = true;
+                context.ResponseHttpStatusCode = HttpStatusCode.OK;
+                context.ReturnBytes(
+                    MimeType.Javascript,
+                    bytes
+                );
             }
 
             return result;

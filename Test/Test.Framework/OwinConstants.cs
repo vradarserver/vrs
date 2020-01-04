@@ -60,8 +60,6 @@ namespace Test.Framework
 
         // http://owin.org/spec/CommonKeys.html
 
-        internal static class CommonKeys
-        {
             public const string ClientCertificate = "ssl.ClientCertificate";
             public const string RemoteIpAddress = "server.RemoteIpAddress";
             public const string RemotePort = "server.RemotePort";
@@ -78,7 +76,6 @@ namespace Test.Framework
             public const string Host = "host";
             public const string Port = "port";
             public const string Path = "path";
-        }
 
         #endregion
 

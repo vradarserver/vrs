@@ -16,8 +16,8 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http;
+using AWhewell.Owin.Interface.WebApi;
+using AWhewell.Owin.Utility.Formatters;
 using InterfaceFactory;
 using Newtonsoft.Json;
 using VirtualRadar.Interface;
@@ -34,62 +34,52 @@ namespace VirtualRadar.WebSite.ApiControllers
     /// <summary>
     /// Serves results of report requests.
     /// </summary>
-    public class ReportsController : PipelineApiController
+    public class ReportsController : BaseApiController
     {
         [HttpGet]
-        [Route("ReportRows.json")]                      // V2 route
-        public HttpResponseMessage ReportRowsV2()
+        [Route("ReportRows.json", NullStatusCode = (int)HttpStatusCode.Forbidden)]  // V2 route
+        [UseFormatter(typeof(DateTime_MicrosoftJson_Formatter))]
+        public ReportRowsJson ReportRowsV2()
         {
-            HttpResponseMessage result = null;
+            ReportRowsJson result = null;
 
+            var context = Context;
             var config = SharedState.SharedConfiguration.Get();
-            if(PipelineRequest.IsLocalOrLan || config.InternetClientSettings.CanRunReports) {
-                ReportRowsJson jsonObj = null;
+            if(context.IsLocalOrLan || config.InternetClientSettings.CanRunReports) {
                 var expectedJsonType = ExpectedJsonType();
                 var startTime = SharedState.Clock.UtcNow;
 
                 try {
                     var parameters = ExtractV2Parameters();
-                    LimitDatesWhenNoStrongCriteriaPresent(parameters, PipelineRequest.IsInternet);
+                    LimitDatesWhenNoStrongCriteriaPresent(parameters, context.IsInternet);
                     if(parameters?.Date?.UpperValue?.Year < 9999) {
                         parameters.Date.UpperValue = parameters.Date.UpperValue.Value.AddDays(1).AddMilliseconds(-1);
                     }
 
                     switch(parameters.ReportType) {
-                        case "DATE":    jsonObj = CreateManyAircraftReport(parameters, config); break;
-                        case "ICAO":    jsonObj = CreateSingleAircraftReport(parameters, config, findByIcao: true); break;
-                        case "REG":     jsonObj = CreateSingleAircraftReport(parameters, config, findByIcao: false); break;
+                        case "DATE":    result = CreateManyAircraftReport(parameters, config); break;
+                        case "ICAO":    result = CreateSingleAircraftReport(parameters, config, findByIcao: true); break;
+                        case "REG":     result = CreateSingleAircraftReport(parameters, config, findByIcao: false); break;
                         default:        throw new NotImplementedException();
                     }
 
-                    if(jsonObj != null) {
-                        jsonObj.GroupBy = parameters.SortField1 ?? parameters.SortField2 ?? "";
+                    if(result != null) {
+                        result.GroupBy = parameters.SortField1 ?? parameters.SortField2 ?? "";
                     };
                 } catch(Exception ex) {
                     var log = Factory.ResolveSingleton<ILog>();
                     log.WriteLine($"An exception was encountered during the processing of a report: {ex}");
-                    jsonObj = EnsureJsonObjExists(jsonObj, expectedJsonType);
-                    jsonObj.ErrorText = $"An exception was encounted during the processing of the report, see log for full details: {ex.Message}";
+                    result = EnsureJsonObjExists(result, expectedJsonType);
+                    result.ErrorText = $"An exception was encounted during the processing of the report, see log for full details: {ex.Message}";
                 }
 
-                jsonObj = EnsureJsonObjExists(jsonObj, expectedJsonType);
-                jsonObj.ProcessingTime = String.Format("{0:N3}", (SharedState.Clock.UtcNow - startTime).TotalSeconds);
-                jsonObj.OperatorFlagsAvailable = ImagesFolderAvailable(SharedState.FileSystem, config.BaseStationSettings.OperatorFlagsFolder);
-                jsonObj.SilhouettesAvailable = ImagesFolderAvailable(SharedState.FileSystem, config.BaseStationSettings.SilhouettesFolder);
-
-                var jsonText = JsonConvert.SerializeObject(jsonObj, Version2JsonSerialiserSettings);
-                result = new HttpResponseMessage(HttpStatusCode.OK) {
-                    Content = new StringContent(jsonText, Encoding.UTF8, MimeType.Json),
-                };
-                result.Headers.CacheControl = new CacheControlHeaderValue() {
-                    MaxAge = TimeSpan.Zero,
-                    NoCache = true,
-                    NoStore = true,
-                    MustRevalidate = true,
-                };
+                result = EnsureJsonObjExists(result, expectedJsonType);
+                result.ProcessingTime = String.Format("{0:N3}", (SharedState.Clock.UtcNow - startTime).TotalSeconds);
+                result.OperatorFlagsAvailable = ImagesFolderAvailable(SharedState.FileSystem, config.BaseStationSettings.OperatorFlagsFolder);
+                result.SilhouettesAvailable = ImagesFolderAvailable(SharedState.FileSystem, config.BaseStationSettings.SilhouettesFolder);
             }
 
-            return result ?? new HttpResponseMessage(HttpStatusCode.Forbidden);
+            return result;
         }
 
         /// <summary>
@@ -101,7 +91,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         {
             var result = typeof(AircraftReportJson);
 
-            var reportType = PipelineRequest.Query["rep"];
+            var reportType = RequestQueryString["rep"];
             switch((reportType ?? "").ToUpper()) {
                 case "DATE":    result = typeof(FlightReportJson); break;
             }
@@ -363,7 +353,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 YearBuilt =         aircraft.YearBuilt,
             };
 
-            if(PipelineRequest.IsLocalOrLan || config.InternetClientSettings.CanShowPictures) {
+            if(Context.IsLocalOrLan || config.InternetClientSettings.CanShowPictures) {
                 try {
                     var pictureDetails = SharedState.AircraftPictureManager.FindPicture(SharedState.PictureFolderCache, aircraft.ModeS, aircraft.Registration);
                     if(pictureDetails != null) {
@@ -432,9 +422,9 @@ namespace VirtualRadar.WebSite.ApiControllers
                 UseAlternateCallsigns = QueryBool("altCall", false),
             };
 
-            foreach(var kvp in PipelineContext.Request.Query) {
+            foreach(var kvp in RequestQueryString) {
                 var name = (kvp.Key ?? "").ToUpper();
-                var value = kvp.Value == null || kvp.Value.Length < 1 ? "" : kvp.Value[0] ?? "";
+                var value = kvp.Value ?? "";
 
                 if(name.StartsWith("CALL-"))        result.Callsign =               DecodeStringFilter(name, value);
                 else if(name.StartsWith("COU-"))    result.Country =                DecodeStringFilter(name, value);
@@ -464,7 +454,7 @@ namespace VirtualRadar.WebSite.ApiControllers
 
         private int QueryInt(string key, int defaultValue)
         {
-            if(!int.TryParse(PipelineRequest.Query[key], out int result)) {
+            if(!int.TryParse(RequestQueryString[key], out int result)) {
                 result = defaultValue;
             }
 
@@ -473,7 +463,7 @@ namespace VirtualRadar.WebSite.ApiControllers
 
         private string QueryString(string key, bool toUpperCase = false)
         {
-            var result = PipelineRequest.Query[key];
+            var result = RequestQueryString[key];
             if(toUpperCase) {
                 result = result?.ToUpper();
             }

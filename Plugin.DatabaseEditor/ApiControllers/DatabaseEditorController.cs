@@ -13,7 +13,7 @@ using VirtualRadar.Plugin.DatabaseEditor.Models;
 namespace VirtualRadar.Plugin.DatabaseEditor.ApiControllers
 {
     [Authorize(Roles = Roles.Admin)]
-    public class DatabaseEditorController : PipelineApiController
+    public class DatabaseEditorController : BaseApiController
     {
         [HttpGet]
         [Route("DatabaseEditor/SingleAircraftSearch.json")]         // Historical route

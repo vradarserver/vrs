@@ -15,6 +15,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+using AWhewell.Owin.Utility;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -301,8 +302,8 @@ namespace Test.VirtualRadar.WebSite
             ConfigureRequestObject(root, "/index.html", dns: "example.com", localPort: 1234);
             using(ConfigureResponseObject()) {
                 _WebSite.RequestContent(new RequestReceivedEventArgs(_Request.Object, _Response.Object, root));
-                var context = PipelineContext.GetOrCreate(_LoopbackEnvironment);
-                Assert.AreEqual("example.com:1234", context.Request.Host.Value);
+                var context = OwinContext.Create(_LoopbackEnvironment);
+                Assert.AreEqual("example.com:1234", context.RequestHost);
             }
         }
 

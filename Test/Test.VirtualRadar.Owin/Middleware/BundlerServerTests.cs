@@ -8,11 +8,10 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using AWhewell.Owin.Utility;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -55,17 +54,17 @@ namespace Test.VirtualRadar.Owin.Middleware
         {
             var bytes = Encoding.UTF8.GetBytes(text);
 
-            Assert.AreEqual(bytes.Length, _Environment.Response.ContentLength);
-            Assert.AreEqual(MimeType.Javascript, _Environment.Response.ContentType);
+            Assert.AreEqual(bytes.Length, _Environment.ResponseHeaders.ContentLength);
+            Assert.AreEqual(MimeType.Javascript, _Environment.ResponseHeaders.ContentType);
             Assert.IsTrue(bytes.SequenceEqual(_Environment.ResponseBodyBytes));
-            Assert.AreEqual(200, _Environment.Response.StatusCode);
+            Assert.AreEqual(200, _Environment.ResponseStatusCode);
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
         }
 
         private void AssertBundleNotReturned()
         {
-            Assert.AreEqual(null, _Environment.Response.ContentLength);
-            Assert.AreEqual(null, _Environment.Response.ContentType);
+            Assert.AreEqual(null, _Environment.ResponseHeaders.ContentLength);
+            Assert.AreEqual(null, _Environment.ResponseHeaders.ContentType);
             Assert.AreEqual(0, _Environment.ResponseBodyBytes.Length);
             Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
         }
@@ -75,8 +74,8 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Configuration
                 .Setup(r => r.GetJavascriptBundle(It.IsAny<IDictionary<string, object>>()))
                 .Returns((IDictionary<string, object> env) => {
-                    var context = PipelineContext.GetOrCreate(env);
-                    return context.Request.FlattenedPath == pathFromRoot ? bundleContent : null;
+                    var context = OwinContext.Create(env);
+                    return context.RequestPathFlattened == pathFromRoot ? bundleContent : null;
                 }
             );
         }
@@ -111,7 +110,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Environment.RequestPath = "/bundle.js";
             _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
 
-            Assert.AreEqual(true, (bool)_Environment.Environment[EnvironmentKey.SuppressJavascriptMinification]);
+            Assert.AreEqual(true, (bool)_Environment.Environment[VrsEnvironmentKey.SuppressJavascriptMinification]);
         }
     }
 }

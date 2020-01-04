@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using AWhewell.Owin.Utility;
 using HtmlAgilityPack;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -68,8 +68,8 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
 
             _BundlerConfiguration.Setup(r => r.RegisterJavascriptBundle(It.IsAny<IDictionary<string, object>>(), It.IsAny<int>(), It.IsAny<IEnumerable<string>>()))
                 .Returns((IDictionary<string, object> htmlEnvironment, int bundleIndex, IEnumerable<string> javascriptLinks) => {
-                    var context = PipelineContext.GetOrCreate(htmlEnvironment);
-                    _LastHtmlPath = context.Request.Path.Value;
+                    var context = OwinContext.Create(htmlEnvironment);
+                    _LastHtmlPath = context.RequestPath;
                     _AllHtmlPaths.Add(_LastHtmlPath);
 
                     _LastBundleIndex = bundleIndex;

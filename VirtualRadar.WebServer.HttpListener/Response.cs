@@ -8,16 +8,12 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VirtualRadar.Interface.WebServer;
-using System.Net;
 using System.IO;
-using System.IO.Compression;
-using Microsoft.Owin;
+using System.Net;
+using System.Text;
+using AWhewell.Owin.Utility;
 using VirtualRadar.Interface.Owin;
+using VirtualRadar.Interface.WebServer;
 
 namespace VirtualRadar.WebServer.HttpListener
 {
@@ -27,31 +23,17 @@ namespace VirtualRadar.WebServer.HttpListener
     class Response : IResponse
     {
         /// <summary>
-        /// The response object that we are wrapping.
+        /// The context that we are wrapping.
         /// </summary>
-        private PipelineResponse _Response;
+        private OwinContext _Context;
 
         /// <summary>
         /// See interface docs.
         /// </summary>
         public long ContentLength
         {
-            get { return _Response.ContentLength.GetValueOrDefault(); }
-            set { _Response.ContentLength = value; }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public CookieCollection Cookies { get; set; } = new CookieCollection();
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="cookie"></param>
-        public void SetCookie(Cookie cookie)
-        {
-            Cookies.Add(cookie);
+            get => _Context.ResponseHeadersDictionary.ContentLength.GetValueOrDefault();
+            set => _Context.ResponseHeadersDictionary.ContentLength = value;
         }
 
         /// <summary>
@@ -59,42 +41,54 @@ namespace VirtualRadar.WebServer.HttpListener
         /// </summary>
         public string MimeType
         {
-            get { return _Response.ContentType; }
-            set { _Response.ContentType = value; }
+            get => _Context.ResponseHeadersDictionary.ContentTypeValue.MediaType;
+            set {
+                var currentValues = _Context.ResponseHeadersDictionary.ContentTypeValue;
+                _Context.ResponseHeadersDictionary.ContentTypeValue = new ContentTypeValue(
+                    value,
+                    currentValues.Charset,
+                    currentValues.Boundary
+                );
+            }
         }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public Stream OutputStream
-        {
-            get { return _Response.Body; }
-        }
+        public Stream OutputStream => _Context.ResponseBody;
 
         /// <summary>
         /// See interface docs.
         /// </summary>
         public HttpStatusCode StatusCode
         {
-            get { return (HttpStatusCode)_Response.StatusCode; }
-            set { _Response.StatusCode = (int)value; }
+            get => _Context.ResponseHttpStatusCode.GetValueOrDefault();
+            set => _Context.ResponseHttpStatusCode = value;
         }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <remarks>
-        /// The HttpListenerResponse is just a property...
-        /// </remarks>
-        public Encoding ContentEncoding { get; set; }
+        public Encoding ContentEncoding
+        {
+            get => _Context.ResponseHeadersDictionary.ContentTypeValue.Encoding;
+            set {
+                var currentValues = _Context.ResponseHeadersDictionary.ContentTypeValue;
+                _Context.ResponseHeadersDictionary.ContentTypeValue = new ContentTypeValue(
+                    currentValues.MediaType,
+                    value.WebName,
+                    currentValues.Boundary
+                );
+            }
+        }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        /// <param name="pipelineResponse"></param>
-        public Response(PipelineResponse pipelineResponse)
+        /// <param name="context"></param>
+        public Response(OwinContext context)
         {
-            _Response = pipelineResponse;
+            _Context = context;
         }
 
         /// <summary>
@@ -131,7 +125,7 @@ namespace VirtualRadar.WebServer.HttpListener
         /// <param name="value"></param>
         public void AddHeader(string name, string value)
         {
-            _Response.Headers.Add(name, new string[] { value });
+            _Context.ResponseHeadersDictionary[name] = value;
         }
 
         /// <summary>
@@ -140,7 +134,7 @@ namespace VirtualRadar.WebServer.HttpListener
         /// <param name="url"></param>
         public void Redirect(string url)
         {
-            _Response.Redirect(url);
+            _Context.Redirect(url);
         }
 
         /// <summary>
@@ -149,11 +143,7 @@ namespace VirtualRadar.WebServer.HttpListener
         /// <param name="request"></param>
         public void EnableCompression(IRequest request)
         {
-            // I'm leaving compression alone for now. These IRequest and IResponse implementations are only
-            // here for the shim's sake, once everything has been moved over to OWIN I will be deleting them.
-            // Any implementation of compression needs to be a pure OWIN implementation and not a part of the
-            // shim.
-            ;
+            // I'm leaving compression alone for now.
         }
 
         /// <summary>

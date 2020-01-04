@@ -8,11 +8,7 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -53,7 +49,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Server = Factory.Resolve<IAudioServer>();
 
             _Environment = new MockOwinEnvironment();
-            _Environment.Request.RemoteIpAddress = "127.0.0.1";
+            _Environment.ServerRemoteIpAddress = "127.0.0.1";
             _Pipeline = new MockOwinPipeline();
         }
 
@@ -65,16 +61,16 @@ namespace Test.VirtualRadar.Owin.Middleware
 
         private void AssertAudioReturned(string mimeType, byte[] content)
         {
-            Assert.AreEqual(content.Length, _Environment.Response.ContentLength);
-            Assert.AreEqual(mimeType, _Environment.Response.ContentType);
+            Assert.AreEqual(content.Length, _Environment.ResponseHeaders.ContentLength);
+            Assert.AreEqual(mimeType, _Environment.ResponseHeaders.ContentType);
             Assert.IsTrue(content.SequenceEqual(_Environment.ResponseBodyBytes));
-            Assert.AreEqual(200, _Environment.Response.StatusCode);
+            Assert.AreEqual(200, _Environment.ResponseStatusCode);
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
         }
 
         private void AssertAudioNotReturned()
         {
-            Assert.IsNull(_Environment.Response.ContentLength);
+            Assert.IsNull(_Environment.ResponseHeaders.ContentLength);
             Assert.AreEqual(0, _Environment.ResponseBodyBytes.Length);
             Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
         }
@@ -176,7 +172,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                         { "line", "Permissions" },
                     });
 
-                    _Environment.Request.RemoteIpAddress = isInternetRequest ? "1.2.3.4" : "127.0.0.1";
+                    _Environment.ServerRemoteIpAddress = isInternetRequest ? "1.2.3.4" : "127.0.0.1";
                     _Configuration.InternetClientSettings.CanPlayAudio = internetAudioAllowed;
 
                     _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);

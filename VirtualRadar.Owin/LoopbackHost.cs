@@ -11,14 +11,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
+using AWhewell.Owin.Utility;
 using InterfaceFactory;
-using Microsoft.Owin;
 using Microsoft.Owin.Builder;
 using Owin;
 using VirtualRadar.Interface;
@@ -116,42 +113,42 @@ namespace VirtualRadar.Owin
 
             justPathAndFile = UriHelper.FlattenPath(justPathAndFile);
 
+            var environmentContext = OwinContext.Create(environment);
+
             var result = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase) {
-                ["owin.CallCancelled"] = new CancellationToken(),
-                ["owin.Version"] = "1.0.0",
+                [EnvironmentKey.CallCancelled] =    new CancellationToken(),
+                [EnvironmentKey.Version] =          "1.0.0",
 
-                ["owin.RequestBody"] = Stream.Null,
-                ["owin.RequestHeaders"] = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase),
-                ["owin.RequestMethod"] = "GET",
-                ["owin.RequestProtocol"] = "HTTP/1.1",
-                ["owin.RequestScheme"] = "http",
-                ["owin.RequestPathBase"] = "/VirtualRadar",
-                ["owin.RequestPath"] = justPathAndFile,
-                ["owin.RequestQueryString"] = queryString,
+                [EnvironmentKey.RequestBody] =          Stream.Null,
+                [EnvironmentKey.RequestHeaders] =       new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase) {
+                                                            ["User-Agent"] = new string[] {
+                                                                environmentContext.RequestHeadersDictionary?.UserAgent ?? "FAKE REQUEST"
+                                                            },
+                                                        },
+                [EnvironmentKey.RequestMethod] =        "GET",
+                [EnvironmentKey.RequestProtocol] =      "HTTP/1.1",
+                [EnvironmentKey.RequestScheme] =        "http",
+                [EnvironmentKey.RequestPathBase] =      "/VirtualRadar",
+                [EnvironmentKey.RequestPath] =          justPathAndFile,
+                [EnvironmentKey.RequestQueryString] =   queryString,
 
-                ["owin.ResponseBody"] = responseStream,
-                ["owin.ResponseHeaders"] = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase),
-                ["owin.ResponseStatusCode"] = 200,              // I would prefer 404, and AppBuilder supplies a default of 404... but the spec says the default is 200
+                [EnvironmentKey.ResponseBody] =         responseStream,
+                [EnvironmentKey.ResponseHeaders] =      new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase),
+                [EnvironmentKey.ResponseStatusCode] =   200,
 
-                ["server.RemoteIpAddress"] = "127.0.0.1",
+                [EnvironmentKey.ServerRemoteIpAddress] = "127.0.0.1",
 
-                [EnvironmentKey.IsLoopbackRequest] = true,
+                [VrsEnvironmentKey.IsLoopbackRequest] = true,
             };
 
-            var environmentContext = environment == null ? null : PipelineContext.GetOrCreate(environment);
-            var context = PipelineContext.GetOrCreate(result);
+            var context = OwinContext.Create(result);
 
-            context.Request.UserAgent = environmentContext?.Request.UserAgent ?? "FAKE REQUEST";
-            if(environmentContext != null) {
-                context.Request.RemoteIpAddress = environmentContext.Request.RemoteIpAddress;
-                context.Request.RemotePort = environmentContext.Request.RemotePort;
+            if(environment != null) {
+                context.Environment[EnvironmentKey.ServerRemoteIpAddress] = environmentContext.ServerRemoteIpAddress;
+                context.Environment[EnvironmentKey.ServerRemotePort] =      environmentContext.ServerRemotePort;
 
-                foreach(var header in environmentContext.Request.Headers) {
-                    if(context.Request.Headers[header.Key] != null) {
-                        context.Request.Headers.Remove(header.Key);
-                    }
-
-                    context.Request.Headers.Add(header.Key, header.Value);
+                foreach(var header in environmentContext.RequestHeaders) {
+                    context.RequestHeaders[header.Key] = header.Value;
                 }
             }
 

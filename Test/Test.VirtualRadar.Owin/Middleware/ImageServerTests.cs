@@ -14,8 +14,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -86,7 +84,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Server = Factory.Resolve<IImageServer>();
 
             _Environment = new MockOwinEnvironment();
-            _Environment.Request.RemoteIpAddress = "127.0.0.1";
+            _Environment.ServerRemoteIpAddress = "127.0.0.1";
             _Pipeline = new MockOwinPipeline();
         }
 
@@ -289,11 +287,11 @@ namespace Test.VirtualRadar.Owin.Middleware
         [TestMethod]
         public void ImageServer_Returns_Correct_Status_For_Resource_Images()
         {
-            _Environment.Response.StatusCode = 404;
+            _Environment.ResponseStatusCode = 404;
             _Environment.RequestPath = $"/Images/TestSquare.png";
             _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
 
-            Assert.AreEqual(200, _Environment.Response.StatusCode);
+            Assert.AreEqual(200, _Environment.ResponseStatusCode);
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
         }
 
@@ -323,11 +321,11 @@ namespace Test.VirtualRadar.Owin.Middleware
         [TestMethod]
         public void ImageServer_Returns_Correct_Status_For_Dynamic_Images()
         {
-            _Environment.Response.StatusCode = 404;
+            _Environment.ResponseStatusCode = 404;
             _Environment.RequestPath = $"/Images/Wdth-700/Hght-250/Blank.png";
             _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
 
-            Assert.AreEqual(200, _Environment.Response.StatusCode);
+            Assert.AreEqual(200, _Environment.ResponseStatusCode);
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
         }
 
@@ -483,7 +481,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Environment.Reset();
             _ProgramConfiguration.InternetClientSettings.CanShowPinText = true;
             _Environment.RequestPath = "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png";
-            _Environment.Request.RemoteIpAddress = "1.2.3.4";
+            _Environment.ServerRemoteIpAddress = "1.2.3.4";
             _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
             byte[] internetWithText = _Environment.ResponseBodyBytes;
             Assert.IsFalse(imageWithoutText.SequenceEqual(internetWithText));
@@ -492,7 +490,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Environment.Reset();
             _ProgramConfiguration.InternetClientSettings.CanShowPinText = false;
             _Environment.RequestPath = "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png";
-            _Environment.Request.RemoteIpAddress = "1.2.3.4";
+            _Environment.ServerRemoteIpAddress = "1.2.3.4";
             _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
             byte[] internetWithoutText = _Environment.ResponseBodyBytes;
             Assert.IsTrue(imageWithoutText.SequenceEqual(internetWithoutText));
@@ -501,7 +499,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Environment.Reset();
             _ProgramConfiguration.InternetClientSettings.CanShowPinText = true;
             _Environment.RequestPath = "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png";
-            _Environment.Request.RemoteIpAddress = "192.168.2.3";
+            _Environment.ServerRemoteIpAddress = "192.168.2.3";
             _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
             byte[] lanWithText = _Environment.ResponseBodyBytes;
             Assert.IsFalse(imageWithoutText.SequenceEqual(lanWithText));
@@ -510,7 +508,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Environment.Reset();
             _ProgramConfiguration.InternetClientSettings.CanShowPinText = false;
             _Environment.RequestPath = "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png";
-            _Environment.Request.RemoteIpAddress = "192.168.2.3";
+            _Environment.ServerRemoteIpAddress = "192.168.2.3";
             _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
             byte[] lanWithoutText = _Environment.ResponseBodyBytes;
             Assert.IsFalse(imageWithoutText.SequenceEqual(lanWithoutText));
@@ -834,7 +832,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         public void ImageServer_Can_Return_IPad_Splash_Screen_Via_UserAgent_String()
         {
             // See notes on iPhone version
-            _Environment.Request.UserAgent = "(iPad;something)";
+            _Environment.RequestHeaders["User-Agent"] = "(iPad;something)";
             _Environment.RequestPath = "/Images/IPhoneSplash.png";
             _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
 
@@ -1005,7 +1003,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         [TestMethod]
         public void ImageServer_Internet_Cannot_Request_Uncached_Images()
         {
-            _Environment.Request.RemoteIpAddress = "1.2.3.4";
+            _Environment.ServerRemoteIpAddress = "1.2.3.4";
             _Environment.RequestPath = $"/Images/Web/no-cache/File.bmp";
             _ImageFileManager.Setup(r => r.LoadFromStandardPipeline("/images/File.bmp", true, _Environment.Environment)).Returns((Image)TestImages.DLH_bmp.Clone());
 

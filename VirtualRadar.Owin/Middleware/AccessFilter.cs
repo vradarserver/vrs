@@ -10,10 +10,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
+using AWhewell.Owin.Utility;
 using InterfaceFactory;
 using VirtualRadar.Interface.Owin;
 
@@ -62,11 +61,11 @@ namespace VirtualRadar.Owin.Middleware
         /// <returns></returns>
         private bool AllowAccess(IDictionary<string, object> environment)
         {
-            var context = PipelineContext.GetOrCreate(environment);
-            var result = _AccessConfiguration.IsPathAccessible(context.Request.FlattenedPath, context.Request.ClientIpAddressParsed);
+            var context = OwinContext.Create(environment);
+            var result = _AccessConfiguration.IsPathAccessible(context.RequestPathFlattened, context.ClientIpAddressParsed);
 
             if(!result) {
-                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                context.ResponseHttpStatusCode = HttpStatusCode.Forbidden;
             }
 
             return result;

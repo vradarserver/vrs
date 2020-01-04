@@ -11,13 +11,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Test.Framework;
 using VirtualRadar.Interface.Owin;
 
 namespace Test.VirtualRadar.Owin.Middleware
@@ -98,10 +93,10 @@ namespace Test.VirtualRadar.Owin.Middleware
             InitialiseWrapper();
 
             using(var originalStream = new MemoryStream()) {
-                _Environment.Response.Body = originalStream;
+                _Environment.ResponseBody = originalStream;
 
                 _Manipulator.ManipulateCallback = () => {
-                    var actualStream = _Environment.Response.Body;
+                    var actualStream = _Environment.ResponseBody;
 
                     Assert.IsNotNull(actualStream);
                     Assert.AreNotSame(originalStream, actualStream);
@@ -120,10 +115,10 @@ namespace Test.VirtualRadar.Owin.Middleware
             InitialiseWrapper();
 
             using(var originalStream = new MemoryStream()) {
-                _Environment.Response.Body = originalStream;
+                _Environment.ResponseBody = originalStream;
 
                 _Manipulator.ManipulateCallback = () => {
-                    var actualStream = _Environment.Response.Body;
+                    var actualStream = _Environment.ResponseBody;
                     actualStream.WriteByte(123);
                 };
 
@@ -141,16 +136,16 @@ namespace Test.VirtualRadar.Owin.Middleware
             InitialiseWrapper();
 
             using(var originalStream = new MemoryStream()) {
-                _Environment.Response.Body = originalStream;
+                _Environment.ResponseBody = originalStream;
 
                 _Manipulator.ManipulateCallback = () => {
-                    var actualStream = _Environment.Response.Body;
+                    var actualStream = _Environment.ResponseBody;
                     actualStream.WriteByte(123);
                 };
 
                 _Pipeline.CallMiddleware(_Wrapper.WrapResponseStream, _Environment.Environment);
 
-                Assert.AreEqual(1, _Environment.Response.ContentLength);
+                Assert.AreEqual(1, _Environment.ResponseHeaders.ContentLength);
             }
         }
 
@@ -160,11 +155,11 @@ namespace Test.VirtualRadar.Owin.Middleware
             InitialiseWrapper();
 
             using(var originalStream = new MemoryStream()) {
-                _Environment.Response.Body = originalStream;
+                _Environment.ResponseBody = originalStream;
 
                 _Pipeline.CallMiddleware(_Wrapper.WrapResponseStream, _Environment.Environment);
 
-                Assert.AreSame(originalStream, _Environment.Response.Body);
+                Assert.AreSame(originalStream, _Environment.ResponseBody);
             }
         }
 
@@ -176,7 +171,7 @@ namespace Test.VirtualRadar.Owin.Middleware
 
             Stream actualStream = null;
             _Manipulator.ManipulateCallback = () => {
-                actualStream = _Environment.Response.Body;
+                actualStream = _Environment.ResponseBody;
             };
 
             _Pipeline.CallMiddleware(_Wrapper.WrapResponseStream, _Environment.Environment);

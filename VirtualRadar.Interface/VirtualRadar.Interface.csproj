@@ -39,6 +39,21 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AWhewell.Owin, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWhewell.Owin.1.0.0-alpha15\lib\net45\AWhewell.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="AWhewell.Owin.Interface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWhewell.Owin.1.0.0-alpha15\lib\net45\AWhewell.Owin.Interface.dll</HintPath>
+    </Reference>
+    <Reference Include="AWhewell.Owin.Interface.WebApi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWhewell.Owin.WebApi.1.0.0-alpha15\lib\net45\AWhewell.Owin.Interface.WebApi.dll</HintPath>
+    </Reference>
+    <Reference Include="AWhewell.Owin.Utility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWhewell.Owin.Utility.1.0.0-alpha15\lib\net45\AWhewell.Owin.Utility.dll</HintPath>
+    </Reference>
+    <Reference Include="AWhewell.Owin.WebApi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWhewell.Owin.WebApi.1.0.0-alpha15\lib\net45\AWhewell.Owin.WebApi.dll</HintPath>
+    </Reference>
     <Reference Include="InterfaceFactory, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AWhewell.InterfaceFactory.4.0.0\lib\net40\InterfaceFactory.dll</HintPath>
     </Reference>
@@ -165,7 +180,7 @@
     <Compile Include="Network\IRebroadcastFormatManager.cs" />
     <Compile Include="Network\IRebroadcastFormatProvider.cs" />
     <Compile Include="Network\RebroadcastFormatName.cs" />
-    <Compile Include="Owin\EnvironmentKey.cs" />
+    <Compile Include="Owin\VrsEnvironmentKey.cs" />
     <Compile Include="Owin\IAccessConfiguration.cs" />
     <Compile Include="Owin\IAccessFilter.cs" />
     <Compile Include="Owin\IAudioServer.cs" />
@@ -196,7 +211,7 @@
     <Compile Include="Owin\IStandardPipeline.cs" />
     <Compile Include="Owin\IStreamManipulator.cs" />
     <Compile Include="Owin\ITextResponseManipulator.cs" />
-    <Compile Include="Owin\PipelineApiController.cs" />
+    <Compile Include="Owin\BaseApiController.cs" />
     <Compile Include="Owin\PipelineContext.cs" />
     <Compile Include="Owin\PipelineRequest.cs" />
     <Compile Include="Owin\PipelineResponse.cs" />

@@ -99,9 +99,6 @@
     <Compile Include="HttpContentHelperTests.cs" />
     <Compile Include="IPAddressHelperTests.cs" />
     <Compile Include="Listener\AirnavXRangeAircraftJsonTests.cs" />
-    <Compile Include="Owin\PipelineContextTests.cs" />
-    <Compile Include="Owin\PipelineRequestTests.cs" />
-    <Compile Include="Owin\PipelineResponseTests.cs" />
     <Compile Include="PortableBinding\NotifyListTests.cs" />
     <Compile Include="CidrTests.cs" />
     <Compile Include="Listener\PolarPlotSliceTests.cs" />

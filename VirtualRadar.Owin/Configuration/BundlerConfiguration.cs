@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
+using AWhewell.Owin.Utility;
 using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
@@ -62,8 +62,8 @@ namespace VirtualRadar.Owin.Configuration
                 throw new ArgumentNullException(nameof(htmlRequestEnvironment));
             }
 
-            var context = PipelineContext.GetOrCreate(htmlRequestEnvironment);
-            var htmlPath = context.Request.FlattenedPath;
+            var context = OwinContext.Create(htmlRequestEnvironment);
+            var htmlPath = context.RequestPathFlattened;
 
             string result = null;
             if(htmlPath.Length > 0 && htmlPath[0] == '/') {
@@ -97,9 +97,9 @@ namespace VirtualRadar.Owin.Configuration
         {
             var bundles = _Bundles;
 
-            var context = PipelineContext.GetOrCreate(bundleRequestEnvironment);
-            if(bundles.TryGetValue(context.Request.FlattenedPath, out IEnumerable<string> javascriptLinkPaths)) {
-                if(context.Get<bool>(EnvironmentKey.SuppressJavascriptBundles)) {
+            var context = OwinContext.Create(bundleRequestEnvironment);
+            if(bundles.TryGetValue(context.RequestPathFlattened, out IEnumerable<string> javascriptLinkPaths)) {
+                if((bool?)context.Environment[VrsEnvironmentKey.SuppressJavascriptBundles] == true) {
                     javascriptLinkPaths = null;
                 }
             }
@@ -162,10 +162,10 @@ namespace VirtualRadar.Owin.Configuration
                 var loopbackHost = Factory.Resolve<ILoopbackHost>();
                 loopbackHost.ConfigureStandardPipeline();
                 loopbackHost.ModifyEnvironmentAction = r => {
-                    if(r.ContainsKey(EnvironmentKey.SuppressJavascriptBundles)) {
-                        r[EnvironmentKey.SuppressJavascriptBundles] = true;
+                    if(r.ContainsKey(VrsEnvironmentKey.SuppressJavascriptBundles)) {
+                        r[VrsEnvironmentKey.SuppressJavascriptBundles] = true;
                     } else {
-                        r.Add(EnvironmentKey.SuppressJavascriptBundles, true);
+                        r.Add(VrsEnvironmentKey.SuppressJavascriptBundles, true);
                     }
                 };
 

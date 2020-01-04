@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using AWhewell.Owin.Utility;
 using HtmlAgilityPack;
 using InterfaceFactory;
 using VirtualRadar.Interface;
@@ -46,12 +46,11 @@ namespace VirtualRadar.Owin.StreamManipulator
             }
 
             if(configuration.Get().GoogleMapSettings.EnableBundling) {
-                var context = PipelineContext.GetOrCreate(environment);
                 var htmlDocument = new HtmlDocument();
                 htmlDocument.LoadHtml(textContent.Content);
                 var parserErrors = new List<string>();
 
-                if(ReplaceScriptLinksWithLinkToBundle(context, htmlDocument, parserErrors)) {
+                if(ReplaceScriptLinksWithLinkToBundle(environment, htmlDocument, parserErrors)) {
                     if(parserErrors.Count != 0) {
                         htmlDocument.LoadHtml(textContent.Content);
 
@@ -70,7 +69,7 @@ namespace VirtualRadar.Owin.StreamManipulator
             }
         }
 
-        private bool ReplaceScriptLinksWithLinkToBundle(PipelineContext context, HtmlDocument htmlDocument, List<string> parserErrors)
+        private bool ReplaceScriptLinksWithLinkToBundle(IDictionary<string, object> environment, HtmlDocument htmlDocument, List<string> parserErrors)
         {
             var htmlChanged = false;
 
@@ -114,7 +113,7 @@ namespace VirtualRadar.Owin.StreamManipulator
                         finished = true;
                     } else {
                         var bundleConfig = Factory.ResolveSingleton<IBundlerConfiguration>();
-                        var bundlePath = bundleConfig.RegisterJavascriptBundle(context.Environment, bundleIndex++, pathsAndFiles);
+                        var bundlePath = bundleConfig.RegisterJavascriptBundle(environment, bundleIndex++, pathsAndFiles);
 
                         var bundleNode = HtmlNode.CreateNode($@"<script src=""{bundlePath}"" type=""text/javascript""></script>");
                         bundleStart.ParentNode.InsertBefore(bundleNode, bundleStart);

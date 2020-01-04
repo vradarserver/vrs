@@ -8,13 +8,10 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -98,10 +95,10 @@ namespace Test.VirtualRadar.Owin.Middleware
         {
             var filePath = Path.Combine(TestContext.TestDeploymentDir, "FileSystemServerTests");
 
-            Assert.AreEqual(content.Length, _Environment.Response.ContentLength);
-            Assert.AreEqual(mimeType, _Environment.Response.ContentType);
+            Assert.AreEqual(content.Length, _Environment.ResponseHeaders.ContentLength);
+            Assert.AreEqual(mimeType, _Environment.ResponseHeaders.ContentType);
             Assert.IsTrue(content.SequenceEqual(_Environment.ResponseBodyBytes));
-            Assert.AreEqual(200, _Environment.Response.StatusCode);
+            Assert.AreEqual(200, _Environment.ResponseStatusCode);
         }
 
         private void AssertFileReturned(string mimeType, string content)
@@ -111,8 +108,8 @@ namespace Test.VirtualRadar.Owin.Middleware
 
         private void AssertNoFileReturned()
         {
-            Assert.IsNull(_Environment.Response.ContentLength);
-            Assert.IsNull(_Environment.Response.ContentType);
+            Assert.IsNull(_Environment.ResponseHeaders.ContentLength);
+            Assert.IsNull(_Environment.ResponseHeaders.ContentType);
             Assert.AreEqual(0, _Environment.ResponseBodyBytes.Length);
         }
 
@@ -274,7 +271,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigureRequest("/file.txt");
             _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
 
-            Assert.AreEqual(400, _Environment.Response.StatusCode);
+            Assert.AreEqual(400, _Environment.ResponseStatusCode);
             Assert.AreEqual(0, _Environment.ResponseBodyBytes.Length);
         }
 
@@ -290,7 +287,7 @@ namespace Test.VirtualRadar.Owin.Middleware
 
             var expectedResponse = "<HTML><HEAD><TITLE>No</TITLE></HEAD><BODY>VRS will not serve content that has been tampered with. Install the custom content plugin if you want to alter the site's files.</BODY></HTML>";
             var expectedBytes = Encoding.UTF8.GetBytes(expectedResponse);
-            Assert.AreEqual(200, _Environment.Response.StatusCode);
+            Assert.AreEqual(200, _Environment.ResponseStatusCode);
             Assert.IsTrue(_Environment.ResponseBodyBytes.SequenceEqual(expectedBytes));
         }
 
@@ -318,7 +315,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigureRequest("/subfolder/../file.txt");
             _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
 
-            Assert.AreEqual(400, _Environment.Response.StatusCode);
+            Assert.AreEqual(400, _Environment.ResponseStatusCode);
             Assert.AreEqual(0, _Environment.ResponseBodyBytes.Length);
         }
 

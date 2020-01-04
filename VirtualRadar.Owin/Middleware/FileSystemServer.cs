@@ -15,6 +15,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using AWhewell.Owin.Utility;
 using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
@@ -73,7 +74,7 @@ namespace VirtualRadar.Owin.Middleware
         public AppFunc HandleRequest(AppFunc next)
         {
             AppFunc appFunc = async(IDictionary<string, object> environment) => {
-                var context = PipelineContext.GetOrCreate(environment);
+                var context = OwinContext.Create(environment);
                 if(!ServeFromFileSystem(environment)) {
                     await next.Invoke(environment);
                 }
@@ -91,11 +92,9 @@ namespace VirtualRadar.Owin.Middleware
         {
             var result = false;
 
-            var context = PipelineContext.GetOrCreate(environment);
-            var request = context.Request;
-            var response = context.Response;
+            var context = OwinContext.Create(environment);
 
-            var relativePath = ConvertRequestPathToRelativeFilePath(request.FlattenedPath);
+            var relativePath = ConvertRequestPathToRelativeFilePath(context.RequestPathFlattened);
             relativePath = RejectInvalidCharacters(relativePath);
             if(!String.IsNullOrEmpty(relativePath)) {
                 foreach(var siteRoot in _Configuration.GetSiteRootFolders()) {
@@ -106,15 +105,15 @@ namespace VirtualRadar.Owin.Middleware
                         var mimeType = MimeType.GetForExtension(extension) ?? "application/octet-stream";
                         var content = FileSystemProvider.FileReadAllBytes(fullPath);
 
-                        if(_Configuration.IsFileUnmodified(siteRoot, request.FlattenedPath, content)) {
-                            content = RaiseTextLoadedFromFile(request, content, mimeType);
-                            SendContent(response, content, mimeType);
+                        if(_Configuration.IsFileUnmodified(siteRoot, context.RequestPathFlattened, content)) {
+                            content = RaiseTextLoadedFromFile(context, content, mimeType);
+                            SendContent(context, content, mimeType);
                         } else {
                             if(mimeType != MimeType.Html) {
-                                response.StatusCode = (int)HttpStatusCode.BadRequest;
+                                context.ResponseHttpStatusCode = HttpStatusCode.BadRequest;
                             } else {
                                 content = Encoding.UTF8.GetBytes("<HTML><HEAD><TITLE>No</TITLE></HEAD><BODY>VRS will not serve content that has been tampered with. Install the custom content plugin if you want to alter the site's files.</BODY></HTML>");
-                                SendContent(response, content, mimeType);
+                                SendContent(context, content, mimeType);
                             }
                         }
 
@@ -131,11 +130,11 @@ namespace VirtualRadar.Owin.Middleware
         /// Raises the TextLoadedFromFile event on the singleton configuration object if the mime type indicates
         /// that it's a recognised text file.
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="context"></param>
         /// <param name="content"></param>
         /// <param name="mimeType"></param>
         /// <returns></returns>
-        private byte[] RaiseTextLoadedFromFile(PipelineRequest request, byte[] content, string mimeType)
+        private byte[] RaiseTextLoadedFromFile(OwinContext context, byte[] content, string mimeType)
         {
             if(mimeType == MimeType.Css ||
                mimeType == MimeType.Html ||
@@ -143,7 +142,7 @@ namespace VirtualRadar.Owin.Middleware
                mimeType == MimeType.Text) {
                 var textContent = TextContent.Load(content);
                 var args = new TextContentEventArgs(
-                    request.FlattenedPath,
+                    context.RequestPathFlattened,
                     textContent.Content,
                     textContent.Encoding,
                     mimeType
@@ -160,15 +159,16 @@ namespace VirtualRadar.Owin.Middleware
         /// <summary>
         /// Sends content back to the caller.
         /// </summary>
-        /// <param name="response"></param>
+        /// <param name="context"></param>
         /// <param name="content"></param>
         /// <param name="mimeType"></param>
-        private static void SendContent(PipelineResponse response, byte[] content, string mimeType)
+        private static void SendContent(OwinContext context, byte[] content, string mimeType)
         {
-            response.ContentType = mimeType;
-            response.StatusCode = (int)HttpStatusCode.OK;
-            response.ContentLength = content.Length;
-            response.Body.Write(content, 0, content.Length);
+            context.ResponseHttpStatusCode = HttpStatusCode.OK;
+            context.ReturnBytes(
+                mimeType,
+                content
+            );
         }
 
         /// <summary>

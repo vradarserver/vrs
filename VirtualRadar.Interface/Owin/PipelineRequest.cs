@@ -12,42 +12,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Owin;
-using VirtualRadar.Interface;
 
 namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
     /// Extends an OwinRequest object.
     /// </summary>
-    public class PipelineRequest : OwinRequest
+    [Obsolete("Use AWhewell.Owin.Utility.OwinContext")]
+    public class PipelineRequest
     {
+        private AWhewell.Owin.Utility.OwinContext _Context;
+
         /// <summary>
         /// As per the OwinRequest.Path except an empty string path is returned as /.
         /// </summary>
-        public PathString PathNormalised
-        {
-            get {
-                var result = Path;
-                if(result.Value == "") {
-                    result = new PathString("/");
-                }
-                return result;
-            }
-        }
+        public PathString PathNormalised => new PathString(_Context.RequestPathNormalised);
 
         /// <summary>
         /// As per OwinRequest.Path except a string is returned, directory traversal characters are parsed out and
         /// an empty or null path is returned as /.
         /// </summary>
-        public string FlattenedPath
-        {
-            get {
-                return UriHelper.FlattenPath(PathNormalised.Value ?? "");
-            }
-        }
+        public string FlattenedPath => _Context.RequestPathFlattened;
 
         /// <summary>
         /// The filename portion of the request URL. If no filename has been specified then an empty string is returned.
@@ -69,107 +55,27 @@ namespace VirtualRadar.Interface.Owin
         /// For example, if the URL is '/folder/filename' then this will return an array of one string containing 'folder'. However,
         /// if the URL is '/folder/subfolder/' then you will get two strings back - 'folder' and 'subfolder'.
         /// </remarks>
-        public string[] PathParts
-        {
-            get {
-                var result = new List<string>();
-                var path = PathNormalised.Value;
-
-                var startPart = -1;
-                for(var i = 0;i < path.Length;++i) {
-                    if(path[i] == '/') {
-                        if(startPart > -1) {
-                            result.Add(path.Substring(startPart, i - startPart));
-                            startPart = -1;
-                        }
-                    } else if(startPart == -1) {
-                        startPart = i;
-                    }
-                }
-
-                return result.ToArray();
-            }
-        }
+        public string[] PathParts => _Context.RequestPathParts;
 
         /// <summary>
         /// Gets a value derived from the user-agent which indicates that the request MIGHT be from a mobile device.
         /// </summary>
-        public bool IsMobileUserAgentString
-        {
-            get {
-                return GetOrSetTranslation<string, bool>(
-                    null,
-                    EnvironmentKey.IsMobileUserAgentString,
-                    UserAgent,
-                    () => {
-                        var result = false;
-                        var userAgent = UserAgent;
-                        if(!String.IsNullOrEmpty(userAgent)) {
-                            var tokens = userAgent.Split(' ', '/', '(', ')', ';');
-                            result = tokens.Any(r => 
-                                String.Equals("mobile", r, StringComparison.OrdinalIgnoreCase) ||
-                                String.Equals("iemobile", r, StringComparison.OrdinalIgnoreCase) ||
-                                String.Equals("android", r, StringComparison.OrdinalIgnoreCase) ||
-                                String.Equals("playstation", r, StringComparison.OrdinalIgnoreCase) ||
-                                String.Equals("nintendo", r, StringComparison.OrdinalIgnoreCase) ||
-                                r.StartsWith("appletv", StringComparison.OrdinalIgnoreCase)
-                            );
-                        }
-                        return result;
-                    }
-                );
-            }
-        }
+        public bool IsMobileUserAgentString => _Context.RequestHeadersDictionary.UserAgentValue.IsMobileUserAgentString;
 
         /// <summary>
         /// Gets a value derived from the user-agent which indicates that the request MIGHT be from a tablet.
         /// </summary>
-        public bool IsTabletUserAgentString
-        {
-            get {
-                return GetOrSetTranslation<string, bool>(
-                    null,
-                    EnvironmentKey.IsTabletUserAgentString,
-                    UserAgent,
-                    () => {
-                        var result = false;
-                        var userAgent = UserAgent;
-                        if(!String.IsNullOrEmpty(userAgent)) {
-                            var tokens = userAgent.Split(' ', '/', '(', ')', ';');
-                            result = tokens.Any(r => String.Equals("ipad", r, StringComparison.OrdinalIgnoreCase));
-                        }
-                        return result;
-                    }
-                );
-            }
-        }
+        public bool IsTabletUserAgentString => _Context.RequestHeadersDictionary.UserAgentValue.IsTabletUserAgentString;
 
         /// <summary>
         /// Gets a value indicating that the request came from the LAN or was local.
         /// </summary>
-        public bool IsLocalOrLan
-        {
-            get {
-                return GetOrSetTranslation<string, bool>(
-                    null,
-                    EnvironmentKey.IsLocalOrLan,
-                    ClientIpAddress,
-                    () => {
-                        return IPEndPointHelper.IsLocalOrLanAddress(ClientIpEndPoint);
-                    }
-                );
-            }
-        }
+        public bool IsLocalOrLan => _Context.IsLocalOrLan;
 
         /// <summary>
         /// Gets a value indicating that the request came from the Internet. Shorthand for !IsLocalOrLan.
         /// </summary>
-        public bool IsInternet
-        {
-            get {
-                return !IsLocalOrLan;
-            }
-        }
+        public bool IsInternet => _Context.IsInternet;
 
         /// <summary>
         /// Gets the IP address of the machine that made the request on the server. If the request
@@ -177,157 +83,38 @@ namespace VirtualRadar.Interface.Owin
         /// the proxy server, as opposed to RequestIpAddress which would be the address of the proxy
         /// server.
         /// </summary>
-        public string ClientIpAddress
-        {
-            get {
-                DetermineClientAndProxyAddresses();
-                return Get<string>(EnvironmentKey.ClientIpAddress);
-            }
-        }
+        public string ClientIpAddress => _Context.ClientIpAddress;
 
         /// <summary>
         /// Gets the <see cref="ClientIpAddress"/> parsed into a System.Net IPAddress.
         /// </summary>
-        public IPAddress ClientIpAddressParsed
-        {
-            get {
-                return GetOrSetTranslation<string, IPAddress>(
-                    null,
-                    EnvironmentKey.ClientIpAddressParsed,
-                    ClientIpAddress,
-                    () => {
-                        return ParseIpAddress(ClientIpAddress);
-                    }
-                );
-            }
-        }
-
-        /// <summary>
-        /// Gets the <see cref="ClientIpAddress"/> and <see cref="RemotePort"/> parsed and joined together into an end point.
-        /// </summary>
-        public IPEndPoint ClientIpEndPoint
-        {
-            get {
-                return GetOrSetTranslation<string, IPEndPoint>(
-                    null,
-                    EnvironmentKey.ClientIpEndPoint,
-                    String.Format("{0}:{1}", ClientIpAddress, RemotePort),
-                    () => {
-                        return new IPEndPoint(ClientIpAddressParsed, RemotePort.GetValueOrDefault());
-                    }
-                );
-            }
-        }
+        public IPAddress ClientIpAddressParsed => _Context.ClientIpAddressParsed;
 
         /// <summary>
         /// Gets the address of the reverse proxy that the request came through, if known.
         /// </summary>
-        public string ProxyIpAddress
-        {
-            get {
-                DetermineClientAndProxyAddresses();
-                return Get<string>(EnvironmentKey.ProxyIpAddress);
-            }
-        }
+        public string ProxyIpAddress => _Context.ProxyIpAddress;
 
         /// <summary>
         /// Gets or sets the user agent from the request.
         /// </summary>
-        public string UserAgent
-        {
-            get { return Headers["User-Agent"]; }
-            set { Headers.Set("User-Agent", value); }
-        }
+        public string UserAgent => _Context.RequestHeadersDictionary.UserAgent;
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
         public PipelineRequest() : base()
         {
+            _Context = new AWhewell.Owin.Utility.OwinContext();
         }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="environment"></param>
-        public PipelineRequest(IDictionary<string, object> environment) : base(environment)
+        public PipelineRequest(IDictionary<string, object> environment)
         {
-        }
-
-        /// <summary>
-        /// See <see cref="PipelineContext.GetOrSet{T}(IDictionary{string, object}, string, Func{T})"/>.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="key"></param>
-        /// <param name="buildFunc"></param>
-        /// <returns></returns>
-        protected virtual T GetOrSet<T>(string key, Func<T> buildFunc)
-        {
-            return PipelineContext.GetOrSet<T>(Environment, key, buildFunc);
-        }
-
-        /// <summary>
-        /// See <see cref="PipelineContext.GetOrSetTranslation{TOriginal, TTranslation}(IDictionary{string, object}, string, string, TOriginal, Func{TTranslation})"/>.
-        /// </summary>
-        /// <typeparam name="TOriginal"></typeparam>
-        /// <typeparam name="TTranslation"></typeparam>
-        /// <param name="originalKey"></param>
-        /// <param name="translationKey"></param>
-        /// <param name="currentValue"></param>
-        /// <param name="buildTranslation"></param>
-        /// <returns></returns>
-        protected virtual TTranslation GetOrSetTranslation<TOriginal, TTranslation>(string originalKey, string translationKey, TOriginal currentValue, Func<TTranslation> buildTranslation)
-        {
-            return PipelineContext.GetOrSetTranslation<TOriginal, TTranslation>(Environment, originalKey, translationKey, currentValue, buildTranslation);
-        }
-
-        /// <summary>
-        /// Parses an IP address. If the address is unparseable then IPAddress.None is returned.
-        /// </summary>
-        /// <param name="ipAddress"></param>
-        /// <returns></returns>
-        private IPAddress ParseIpAddress(string ipAddress)
-        {
-            var result = IPAddress.None;
-
-            if(!String.IsNullOrEmpty(ipAddress)) {
-                if(!IPAddress.TryParse(ipAddress, out result)) {
-                    result = IPAddress.None;
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Tries to determine the true IP address of the client and the address of the proxy, if any. If the
-        /// values have already been calculated and aren't going to change then this does nothing.
-        /// </summary>
-        private void DetermineClientAndProxyAddresses()
-        {
-            var translationBasis = String.Format("{0}-{1}", RemoteIpAddress, Headers["X-Forwarded-For"]);
-            if(!String.Equals(translationBasis, Get<string>(EnvironmentKey.ClientIpAddressBasis))) {
-                Set<string>(EnvironmentKey.ClientIpAddressBasis, translationBasis);
-
-                var localOrLanRequest = IPEndPointHelper.IsLocalOrLanAddress(new IPEndPoint(ParseIpAddress(RemoteIpAddress), RemotePort.GetValueOrDefault()));
-                var xff = localOrLanRequest ? Headers["X-Forwarded-For"] : null;
-
-                if(!String.IsNullOrEmpty(xff)) {
-                    xff = xff.Split(',').Last().Trim();
-                    IPAddress ipAddress;
-                    if(!IPAddress.TryParse(xff, out ipAddress)) {
-                        xff = null;
-                    }
-                }
-
-                if(String.IsNullOrEmpty(xff)) {
-                    Set<string>(EnvironmentKey.ClientIpAddress, RemoteIpAddress);
-                    Set<string>(EnvironmentKey.ProxyIpAddress, null);
-                } else {
-                    Set<string>(EnvironmentKey.ClientIpAddress, xff);
-                    Set<string>(EnvironmentKey.ProxyIpAddress, RemoteIpAddress);
-                }
-            }
+            _Context = AWhewell.Owin.Utility.OwinContext.Create(environment);
         }
     }
 }

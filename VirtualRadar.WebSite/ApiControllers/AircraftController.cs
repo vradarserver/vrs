@@ -9,15 +9,10 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http;
+using AWhewell.Owin.Interface.WebApi;
+using AWhewell.Owin.Utility;
 using InterfaceFactory;
-using Newtonsoft.Json;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Owin;
@@ -30,7 +25,7 @@ namespace VirtualRadar.WebSite.ApiControllers
     /// <summary>
     /// Handles requests for aircraft data.
     /// </summary>
-    public class AircraftController : PipelineApiController
+    public class AircraftController : BaseApiController
     {
         /// <summary>
         /// Returns a collection of AirportData.com thumbnails for an aircraft.
@@ -53,12 +48,18 @@ namespace VirtualRadar.WebSite.ApiControllers
                     var airportDataDotCom = Factory.Resolve<IAirportDataDotCom>();
                     var outcome = airportDataDotCom.GetThumbnails((icao ?? "").ToUpper(), (reg ?? "").ToUpper(), numThumbs);
                     if(outcome.Result == null) {
-                        result = new AirportDataThumbnailsJson() { Status = (int)outcome.HttpStatusCode, Error = "Could not retrieve thumbnails" };
+                        result = new AirportDataThumbnailsJson() {
+                            Status = (int)outcome.HttpStatusCode,
+                            Error =  "Could not retrieve thumbnails"
+                        };
                     } else {
                         result = outcome.Result;
                     }
                 } catch(Exception ex) {
-                    result = new AirportDataThumbnailsJson() { Status = (int)HttpStatusCode.InternalServerError, Error = $"Exception caught while fetching thumbnails: {ex.Message}" };
+                    result = new AirportDataThumbnailsJson() {
+                        Status = (int)HttpStatusCode.InternalServerError,
+                        Error =  $"Exception caught while fetching thumbnails: {ex.Message}"
+                    };
                 }
             }
 
@@ -77,27 +78,22 @@ namespace VirtualRadar.WebSite.ApiControllers
         /// normally be integers or floating point numbers are returned as strings and 2) the result
         /// is always JSON, regardless of the type requested, and the JSON is always sent with a mime
         /// type of text rather than JSON.
-        /// </para><para>
-        /// Windows 7 was the last version of Windows to support desktop gadgets. Sooner or later this
-        /// API and the proximity gadget are going to be tied up in a sack and thrown off a bridge.
         /// </para></remarks>
         [HttpGet]
         [Route("api/3.00/aircraft/closest")]
         [Route("ClosestAircraft.json")]             // pre-version 3 route
-        public HttpResponseMessage GetClosest(double? lat = null, double? lng = null)
+        public void GetClosest(double? lat = null, double? lng = null)
         {
             ProximityGadgetAircraftJson result = null;
 
-            var context = PipelineContext;
+            var context = Context;
             var config = Factory.ResolveSingleton<ISharedConfiguration>().Get();
-            if(!context.Request.IsInternet || config.InternetClientSettings.AllowInternetProximityGadgets) {
+            if(!context.IsInternet || config.InternetClientSettings.AllowInternetProximityGadgets) {
                 var feedManager = Factory.ResolveSingleton<IFeedManager>();
                 var feed = feedManager.GetByUniqueId(config.GoogleMapSettings.ClosestAircraftReceiverId, ignoreInvisibleFeeds: true);
 
                 if(feed?.AircraftList != null) {
-                    long unused1, unused2;
-                    var aircraftList = feed.AircraftList.TakeSnapshot(out unused1, out unused2);
-
+                    var aircraftList = feed.AircraftList.TakeSnapshot(out var unused1, out var unused2);
                     result = ProximityGadgetAircraftJson.ToModel(aircraftList, lat, lng);
                 }
 
@@ -108,11 +104,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 }
             }
 
-            var json = JsonConvert.SerializeObject(result);
-            var response = new HttpResponseMessage(HttpStatusCode.OK);
-            response.Content = new StringContent(json, Encoding.UTF8, MimeType.Text);
-
-            return response;
+            _WebApiResponder.ReturnJsonObject(context, result, null, null, MimeType.Text);
         }
     }
 }

@@ -10,10 +10,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
+using AWhewell.Owin.Utility;
 using InterfaceFactory;
 using VirtualRadar.Interface.Owin;
 
@@ -60,19 +59,17 @@ namespace VirtualRadar.Owin.Middleware
         /// <returns></returns>
         private bool Redirect(IDictionary<string, object> environment)
         {
-            var context = PipelineContext.GetOrCreate(environment);
-            var request = context.Request;
-            var response = context.Response;
+            var context = OwinContext.Create(environment);
 
             var redirectionRequestContext = new RedirectionRequestContext() {
-                IsMobile = request.IsMobileUserAgentString,
+                IsMobile = context.RequestHeadersDictionary.UserAgentValue.IsMobileUserAgentString,
             };
 
-            var newPath = _RedirectionConfiguration.RedirectToPathFromRoot(request.PathNormalised.Value, redirectionRequestContext);
+            var newPath = _RedirectionConfiguration.RedirectToPathFromRoot(context.RequestPathNormalised, redirectionRequestContext);
             var result = newPath != null;
             if(result) {
-                response.StatusCode = (int)HttpStatusCode.Redirect;
-                response.Headers.Add("Location", new string[] { BuildNewPath(request, newPath) });
+                context.ResponseHttpStatusCode = HttpStatusCode.Redirect;
+                context.ResponseHeadersDictionary["Location"] = BuildNewPath(context, newPath);
             }
 
             return result;
@@ -81,27 +78,27 @@ namespace VirtualRadar.Owin.Middleware
         /// <summary>
         /// Constructs the URL to jump to.
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="context"></param>
         /// <param name="newPath"></param>
         /// <returns></returns>
-        private string BuildNewPath(PipelineRequest request, string newPath)
+        private string BuildNewPath(OwinContext context, string newPath)
         {
-            var isHttp = String.Equals(request.Scheme, "http", StringComparison.OrdinalIgnoreCase);
-            var isHttps = !isHttp && String.Equals(request.Scheme, "https", StringComparison.OrdinalIgnoreCase);
+            var isHttp = String.Equals(context.RequestScheme, "http", StringComparison.OrdinalIgnoreCase);
+            var isHttps = !isHttp && String.Equals(context.RequestScheme, "https", StringComparison.OrdinalIgnoreCase);
 
-            var host = request.Host.Value ?? "";
+            var host = context.RequestHost ?? "";
             if(isHttp && host.EndsWith(":80")) {
                 host = host.Substring(0, host.Length - 3);
             } else if(isHttps && host.EndsWith(":443")) {
                 host = host.Substring(0, host.Length - 4);
             }
 
-            return PipelineContext.ConstructUrl(
-                request.Scheme,
+            return OwinPath.ConstructUrl(
+                context.RequestScheme,
                 host,
-                request.PathBase.Value,
+                context.RequestPathBase,
                 newPath,
-                request.QueryString.Value
+                context.RequestQueryString
             );
         }
     }

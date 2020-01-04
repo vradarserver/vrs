@@ -17,6 +17,7 @@ using System.Net;
 using System.Net.Security;
 using System.Text;
 using System.Threading;
+using AWhewell.Owin.Utility;
 using VirtualRadar.Interface;
 
 namespace VirtualRadar.Plugin.TileServerCache
@@ -80,9 +81,8 @@ namespace VirtualRadar.Plugin.TileServerCache
         /// <param name="fileName">The filename from the request.</param>
         /// <param name="clientEndpoint"></param>
         /// <param name="headers">The request headers.</param>
-        /// <param name="userAgent"></param>
         /// <returns></returns>
-        public WebRequestOutcome ProcessRequest(Options options, IEnumerable<string> pathParts, string fileName, IPAddress clientEndpoint, Microsoft.Owin.IHeaderDictionary headers, string userAgent)
+        public WebRequestOutcome ProcessRequest(Options options, IEnumerable<string> pathParts, string fileName, IPAddress clientEndpoint, RequestHeadersDictionary headers)
         {
             var result = new WebRequestOutcome();
             var displayOutcome = new RequestOutcome() {
@@ -108,7 +108,7 @@ namespace VirtualRadar.Plugin.TileServerCache
                             displayOutcome.MissingFromCache = true;
                             result.StatusCode = HttpStatusCode.NotFound;
                         } else {
-                            FetchTileServerImage(options, urlValues, clientEndpoint, headers, userAgent, result, displayOutcome);
+                            FetchTileServerImage(options, urlValues, clientEndpoint, headers, result, displayOutcome);
 
                             if(result.ImageBytes?.Length > 0) {
                                 TileCache.SaveTile(urlValues, result.ImageBytes);
@@ -145,11 +145,10 @@ namespace VirtualRadar.Plugin.TileServerCache
         /// <param name="urlValues"></param>
         /// <param name="clientEndpoint"></param>
         /// <param name="headers"></param>
-        /// <param name="userAgent"></param>
         /// <param name="outcome"></param>
         /// <param name="displayOutcome"></param>
         /// <returns></returns>
-        private void FetchTileServerImage(Options options, FakeUrlEncodedValues urlValues, IPAddress clientEndpoint, Microsoft.Owin.IHeaderDictionary headers, string userAgent, WebRequestOutcome outcome, RequestOutcome displayOutcome)
+        private void FetchTileServerImage(Options options, FakeUrlEncodedValues urlValues, IPAddress clientEndpoint, HeadersDictionary headers, WebRequestOutcome outcome, RequestOutcome displayOutcome)
         {
             var tileServerSettings = Plugin.TileServerSettingsManagerWrapper.GetRealTileServerSettings(
                 urlValues.MapProvider,
@@ -202,10 +201,6 @@ namespace VirtualRadar.Plugin.TileServerCache
                     foreach(Cookie cookie in cookies) {
                         request.CookieContainer.Add(cookie);
                     }
-                }
-
-                if(!String.IsNullOrEmpty(userAgent)) {
-                    request.UserAgent = userAgent;
                 }
 
                 var forwarded = request.Headers["Forwarded"] ?? "";

@@ -8,58 +8,70 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net.Http;
-using System.Web.Http;
-using System.Net;
-using Newtonsoft.Json;
+using AWhewell.Owin.Interface.WebApi;
+using AWhewell.Owin.Utility;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Owin
 {
     /// <summary>
-    /// The base controller for all WebAPI 2 controllers in the application.
+    /// The base controller for all non-static web API controllers in the application.
     /// </summary>
-    public class PipelineApiController : ApiController
+    public abstract class BaseApiController : IApiController
     {
         /// <summary>
-        /// The format settings to use when serialising version 2 API results.
+        /// A responder that can be used to set up the <see cref="OwinEnvironment"/> with responses.
         /// </summary>
-        public static readonly JsonSerializerSettings Version2JsonSerialiserSettings = new JsonSerializerSettings() {
-            DateFormatHandling = DateFormatHandling.MicrosoftDateFormat,
-        };
+        protected static IWebApiResponder _WebApiResponder;
 
         /// <summary>
-        /// Gets the VRS / OWIN context for the request.
+        /// Initialises static fields.
         /// </summary>
-        public PipelineContext PipelineContext
+        static BaseApiController()
+        {
+            _WebApiResponder = Factory.Resolve<IWebApiResponder>();
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public IDictionary<string, object> OwinEnvironment { get; set; }
+
+        private OwinContext _Context;
+        /// <summary>
+        /// Gets a <see cref="OwinContext"/> around the <see cref="OwinEnvironment"/>.
+        /// </summary>
+        protected OwinContext Context
         {
             get {
-                return PipelineContext.GetOrCreate(Request.GetOwinEnvironment());
+                if(_Context == null) {
+                    _Context = OwinContext.Create(OwinEnvironment);
+                }
+                return _Context;
+            }
+        }
+
+        private bool _ReadRoute;
+        private Route _Route;
+        /// <summary>
+        /// Gets the <see cref="Route"/> representing the executing method.
+        /// </summary>
+        protected Route Route
+        {
+            get {
+                if(!_ReadRoute) {
+                    _ReadRoute = true;
+                    _Route = OwinEnvironment[WebApiEnvironmentKey.Route] as Route;
+                }
+                return _Route;
             }
         }
 
         /// <summary>
-        /// Gets the VRS / OWIN request.
+        /// Gets the query string with case insensitive keys.
         /// </summary>
-        public PipelineRequest PipelineRequest
-        {
-            get {
-                return PipelineContext.Request;
-            }
-        }
-
-        /// <summary>
-        /// Gets the VRS / OWIN response.
-        /// </summary>
-        public PipelineResponse PipelineResponse
-        {
-            get {
-                return PipelineContext.Response;
-            }
-        }
+        protected QueryStringDictionary RequestQueryString => Context.RequestQueryStringDictionary(caseSensitiveKeys: false);
     }
 }

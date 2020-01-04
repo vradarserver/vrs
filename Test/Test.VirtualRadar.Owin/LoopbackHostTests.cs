@@ -9,13 +9,13 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AWhewell.Owin.Utility;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -228,8 +228,8 @@ namespace Test.VirtualRadar.Owin
         public void LoopbackHost_SendSimpleRequest_Returns_Status_To_Caller()
         {
             AddCallback((IDictionary<string, object> environment) => {
-                var context = PipelineContext.GetOrCreate(environment);
-                context.Response.StatusCode = 123;
+                var context = OwinContext.Create(environment);
+                context.ResponseStatusCode = 123;
                 return false;
             });
             _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
@@ -244,8 +244,8 @@ namespace Test.VirtualRadar.Owin
         {
             var bodyBytes = Encoding.UTF8.GetBytes("Up at the Lake");
             AddCallback((IDictionary<string, object> environment) => {
-                var context = PipelineContext.GetOrCreate(environment);
-                context.Response.Body.Write(bodyBytes, 0, bodyBytes.Length);
+                var context = OwinContext.Create(environment);
+                context.ResponseBody.Write(bodyBytes, 0, bodyBytes.Length);
                 return false;
             });
             _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
@@ -276,20 +276,8 @@ namespace Test.VirtualRadar.Owin
 
             _LoopbackHost.SendSimpleRequest("/");
 
-            var context = PipelineContext.GetOrCreate(_LoopbackEnvironment);
-            Assert.AreEqual("FAKE REQUEST", context.Request.UserAgent);
-        }
-
-        [TestMethod]
-        public void LoopbackHost_SendSimpleRequest_Cookies_Defaulted_As_Per_Docs()
-        {
-            RecordEnvironment();
-            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
-
-            _LoopbackHost.SendSimpleRequest("/");
-
-            var context = PipelineContext.GetOrCreate(_LoopbackEnvironment);
-            Assert.AreEqual(0, context.Request.Cookies.Count());
+            var context = OwinContext.Create(_LoopbackEnvironment);
+            Assert.AreEqual("FAKE REQUEST", context.RequestHeadersDictionary.UserAgent);
         }
 
         [TestMethod]
@@ -298,15 +286,15 @@ namespace Test.VirtualRadar.Owin
             RecordEnvironment();
             _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
 
-            _Environment.Request.Headers["Authorization"] = "Basic Hello&=1;2";
-            _Environment.Request.Headers["Cookie"] = "abc=123";
-            _Environment.Request.Headers["Custom"] = "foo;bar";
+            _Environment.RequestHeaders["Authorization"] = "Basic Hello&=1;2";
+            _Environment.RequestHeaders["Cookie"] = "abc=123";
+            _Environment.RequestHeaders["Custom"] = "foo;bar";
             _LoopbackHost.SendSimpleRequest("/", _Environment.Environment);
 
-            var context = PipelineContext.GetOrCreate(_LoopbackEnvironment);
-            Assert.AreEqual("Basic Hello&=1;2", context.Request.Headers["Authorization"]);
-            Assert.AreEqual("abc=123", context.Request.Headers["Cookie"]);
-            Assert.AreEqual("foo;bar", context.Request.Headers["Custom"]);
+            var context = OwinContext.Create(_LoopbackEnvironment);
+            Assert.AreEqual("Basic Hello&=1;2", context.RequestHeadersDictionary["Authorization"]);
+            Assert.AreEqual("abc=123", context.RequestHeadersDictionary["Cookie"]);
+            Assert.AreEqual("foo;bar", context.RequestHeadersDictionary["Custom"]);
         }
 
         [TestMethod]
@@ -315,11 +303,11 @@ namespace Test.VirtualRadar.Owin
             RecordEnvironment();
             _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
 
-            _Environment.Request.UserAgent = "My User Agent";
+            _Environment.RequestHeaders["User-Agent"] = "My User Agent";
             _LoopbackHost.SendSimpleRequest("/", _Environment.Environment);
 
-            var context = PipelineContext.GetOrCreate(_LoopbackEnvironment);
-            Assert.AreEqual("My User Agent", context.Request.UserAgent);
+            var context = OwinContext.Create(_LoopbackEnvironment);
+            Assert.AreEqual("My User Agent", context.RequestHeadersDictionary.UserAgent);
         }
 
         [TestMethod]
@@ -328,13 +316,13 @@ namespace Test.VirtualRadar.Owin
             RecordEnvironment();
             _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
 
-            _Environment.Request.RemoteIpAddress = "1.2.3.4";
-            _Environment.Request.RemotePort = 54321;
+            _Environment.ServerRemoteIpAddress = "1.2.3.4";
+            _Environment.ServerRemotePort = 54321;
             _LoopbackHost.SendSimpleRequest("/", _Environment.Environment);
 
-            var context = PipelineContext.GetOrCreate(_LoopbackEnvironment);
-            Assert.AreEqual("1.2.3.4", context.Request.RemoteIpAddress);
-            Assert.AreEqual(54321, context.Request.RemotePort);
+            var context = OwinContext.Create(_LoopbackEnvironment);
+            Assert.AreEqual("1.2.3.4", context.ServerRemoteIpAddress);
+            Assert.AreEqual(54321, context.ServerRemotePortNumber);
         }
 
         [TestMethod]
@@ -345,7 +333,7 @@ namespace Test.VirtualRadar.Owin
 
             _LoopbackHost.SendSimpleRequest("/");
 
-            Assert.IsTrue((bool)_LoopbackEnvironment[EnvironmentKey.IsLoopbackRequest]);
+            Assert.IsTrue((bool)_LoopbackEnvironment[VrsEnvironmentKey.IsLoopbackRequest]);
         }
     }
 }

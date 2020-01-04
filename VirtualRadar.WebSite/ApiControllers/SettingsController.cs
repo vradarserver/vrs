@@ -25,7 +25,7 @@ namespace VirtualRadar.WebSite.ApiControllers
     /// <summary>
     /// Handles requests for configuration settings.
     /// </summary>
-    public class SettingsController : PipelineApiController
+    public class SettingsController : BaseApiController
     {
         /// <summary>
         /// Returns the server's configuration.
@@ -36,7 +36,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         [Route("ServerConfig.json")]                // pre version 3 route
         public ServerConfigJson GetServerConfig()
         {
-            return ServerConfigJson.ToModel(PipelineRequest.IsLocalOrLan);
+            return ServerConfigJson.ToModel(Context.IsLocalOrLan);
         }
     }
 }

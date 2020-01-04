@@ -12,11 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http;
-using System.Web.Http.Description;
+using AWhewell.Owin.Interface.WebApi;
+using AWhewell.Owin.Utility;
 using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Listener;
@@ -29,7 +26,7 @@ namespace VirtualRadar.WebSite.ApiControllers
     /// <summary>
     /// Handles requests for public directory information.
     /// </summary>
-    public class DirectoryEntryController : PipelineApiController
+    public class DirectoryEntryController : BaseApiController
     {
         /// <summary>
         /// Responds to requests from the VRS mothership for public directory information.
@@ -47,13 +44,21 @@ namespace VirtualRadar.WebSite.ApiControllers
         [HttpGet]
         [Route("api/3.00/directory-entry/{key}")]
         [Route("DirectoryEntry.json")]                  // Pre-version 3 path
-        [ResponseType(typeof(DirectoryEntryJson))]
-        public IHttpActionResult GetDirectoryEntry(string key = null)
+        public void GetDirectoryEntry(string key = null)
         {
             var configuration = Factory.ResolveSingleton<ISharedConfiguration>().Get();
             var keyInvalid = String.IsNullOrEmpty(key) || !String.Equals(key, configuration.GoogleMapSettings.DirectoryEntryKey, StringComparison.OrdinalIgnoreCase);
 
-            return keyInvalid ? (IHttpActionResult)NotFound() : Content(HttpStatusCode.OK, BuildDirectoryEntry());
+            var context = Context;
+            if(keyInvalid) {
+                context.ResponseStatusCode = (int)HttpStatusCode.NotFound;
+            } else {
+                context.ResponseStatusCode = (int)HttpStatusCode.OK;
+                _WebApiResponder.ReturnJsonObject(
+                    context,
+                    BuildDirectoryEntry()
+                );
+            }
         }
 
         /// <summary>
@@ -64,8 +69,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         {
             var feeds = Factory.ResolveSingleton<IFeedManager>().VisibleFeeds.Where(r => r.AircraftList != null).ToArray();
             var maxAircraft = feeds.Select(r => {
-                long unused1, unused2;
-                var aircraftList = r?.AircraftList.TakeSnapshot(out unused1, out unused2);
+                var aircraftList = r?.AircraftList.TakeSnapshot(out var unused1, out var unused2);
                 return aircraftList.Count;
             }).DefaultIfEmpty(0).Max();
 

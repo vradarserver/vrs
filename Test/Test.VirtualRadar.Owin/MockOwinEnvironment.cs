@@ -10,17 +10,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
+using System.Globalization;
 using System.IO;
-using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
-using Microsoft.Owin;
-using Owin;
+using AWhewell.Owin.Utility;
 using Test.Framework;
-using VirtualRadar.Interface.Owin;
 
 namespace Test.VirtualRadar.Owin
 {
@@ -30,19 +27,15 @@ namespace Test.VirtualRadar.Owin
     public class MockOwinEnvironment
     {
         /// <summary>
-        /// Gets the environment.
+        /// Gets the environment. Note that this is a bog-standard dictionary, if you want the one
+        /// that accepts a non-existent index then use Context.Environment.
         /// </summary>
-        public IDictionary<string, object> Environment { get; private set; } = new Dictionary<string, object>();
+        public IDictionary<string, object> Environment { get; } = new Dictionary<string, object>();
 
         /// <summary>
-        /// Gets a request object that has been mapped to the environment.
+        /// Gets an OwinContext that wraps the <see cref="Environment"/>.
         /// </summary>
-        public PipelineRequest Request { get; private set; }
-
-        /// <summary>
-        /// Gets a response object that has been mapped to the environment.
-        /// </summary>
-        public PipelineResponse Response { get; private set; }
+        public OwinContext Context { get; }
 
         private CancellationToken _CallCancelled = CancellationToken.None;
         /// <summary>
@@ -50,9 +43,8 @@ namespace Test.VirtualRadar.Owin
         /// </summary>
         public CancellationToken CallCancelled
         {
-            get { return _CallCancelled; }
-            set
-            {
+            get => _CallCancelled;
+            set {
                 _CallCancelled = value;
                 Set(OwinConstants.CallCancelled, _CallCancelled);
             }
@@ -63,8 +55,63 @@ namespace Test.VirtualRadar.Owin
         /// </summary>
         public string RequestAuthorizationHeader
         {
-            get { return Request.Headers["Authorization"]; }
-            set { Request.Headers["Authorization"] = value; }
+            get => Context.RequestHeadersDictionary.Authorization;
+            set => Context.RequestHeadersDictionary["Authorization"] = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the request HTTP method.
+        /// </summary>
+        public string RequestMethod
+        {
+            get => Context.RequestMethod;
+            set => Context.Environment[OwinConstants.RequestMethod] = value;
+        }
+
+        /// <summary>
+        /// Gets the request headers.
+        /// </summary>
+        public RequestHeadersDictionary RequestHeaders => Context.RequestHeadersDictionary;
+
+        /// <summary>
+        /// Gets the response headers.
+        /// </summary>
+        public ResponseHeadersDictionary ResponseHeaders => Context.ResponseHeadersDictionary;
+
+        /// <summary>
+        /// Gets or sets the protocol used when making the request.
+        /// </summary>
+        public string RequestProtocol
+        {
+            get => Context.RequestProtocol;
+            set => Context.Environment[OwinConstants.RequestProtocol] = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the scheme used when making the request.
+        /// </summary>
+        public string RequestScheme
+        {
+            get => Context.RequestScheme;
+            set => Context.Environment[OwinConstants.RequestScheme] = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the host used when making the request.
+        /// </summary>
+        public string RequestHost
+        {
+            get => Context.RequestHost;
+            set => Context.RequestHeadersDictionary["Host"] = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the request's path base.
+        /// </summary>
+        public string RequestPathBase
+        {
+            get => Context.RequestPathBase;
+            set => Context.Environment[OwinConstants.RequestPathBase] = value;
         }
 
         /// <summary>
@@ -72,17 +119,95 @@ namespace Test.VirtualRadar.Owin
         /// </summary>
         public string RequestPath
         {
-            get { return Request.Path.Value; }
-            set { Request.Path = new PathString(value); }
+            get => Context.RequestPath;
+            set => Context.Environment[OwinConstants.RequestPath] = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the request's query string (without the leading ?).
+        /// </summary>
+        public string RequestQueryString
+        {
+            get => Context.RequestQueryString;
+            set => Context.Environment[OwinConstants.RequestQueryString] = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the request body stream.
+        /// </summary>
+        public Stream RequestBody
+        {
+            get => Context.RequestBody;
+            set => Context.Environment[OwinConstants.RequestBody] = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the user that the request is running as.
+        /// </summary>
+        public IPrincipal User
+        {
+            get => Context.RequestPrincipal;
+            set => Context.Environment[CustomEnvironmentKey.Principal] = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the local IP address.
+        /// </summary>
+        public string ServerLocalIpAddress
+        {
+            get => Context.ServerLocalIpAddress;
+            set => Context.Environment[OwinConstants.LocalIpAddress] = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the local port.
+        /// </summary>
+        public int ServerLocalPort
+        {
+            get => Context.ServerLocalPortNumber.GetValueOrDefault();
+            set => Context.Environment[OwinConstants.LocalPort] = value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Gets or sets the remote IP address.
+        /// </summary>
+        public string ServerRemoteIpAddress
+        {
+            get => Context.ServerRemoteIpAddress;
+            set => Context.Environment[OwinConstants.RemoteIpAddress] = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the remote port.
+        /// </summary>
+        public int ServerRemotePort
+        {
+            get => Context.ServerRemotePortNumber.GetValueOrDefault();
+            set => Context.Environment[OwinConstants.RemotePort] = value.ToString(CultureInfo.InvariantCulture);
         }
 
         private MemoryStream _ResponseBodyStream = new MemoryStream();
         /// <summary>
         /// Gets a byte array that represents the content of the response body.
         /// </summary>
-        public byte[] ResponseBodyBytes
+        public byte[] ResponseBodyBytes => _ResponseBodyStream.ToArray();
+
+        /// <summary>
+        /// Gets or the response status code.
+        /// </summary>
+        public int ResponseStatusCode
         {
-            get { return _ResponseBodyStream.ToArray(); }
+            get => Context.ResponseStatusCode.GetValueOrDefault();
+            set => Context.Environment[OwinConstants.ResponseStatusCode] = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the response body stream.
+        /// </summary>
+        public Stream ResponseBody
+        {
+            get => Context.ResponseBody;
+            set => Context.Environment[OwinConstants.ResponseBody] = value;
         }
 
         /// <summary>
@@ -90,9 +215,7 @@ namespace Test.VirtualRadar.Owin
         /// </summary>
         public MockOwinEnvironment()
         {
-            Request = new PipelineRequest(Environment);
-            Response = new PipelineResponse(Environment);
-
+            Context = new OwinContext(Environment);
             AddRequiredFields();
         }
 
@@ -150,21 +273,13 @@ namespace Test.VirtualRadar.Owin
             Stream body = null
         )
         {
-            Request.PathBase = new PathString(pathBase);
-            Request.Path =     new PathString(path);
-            Request.Protocol = protocol;
-            Request.QueryString = new QueryString(queryString);
-            Request.Scheme = requestScheme;
-
-            if(headers == null) {
-                headers = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
-            }
-            Set(OwinConstants.RequestHeaders, headers);
-
-            if(body == null) {
-                body = Stream.Null;
-            }
-            Request.Body = body;
+            Context.Environment[OwinConstants.RequestPathBase] =    pathBase;
+            Context.Environment[OwinConstants.RequestPath] =        path;
+            Context.Environment[OwinConstants.RequestProtocol] =    protocol;
+            Context.Environment[OwinConstants.RequestQueryString] = queryString;
+            Context.Environment[OwinConstants.RequestScheme] =      requestScheme;
+            Context.Environment[OwinConstants.RequestHeaders] =     headers ?? new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
+            Context.Environment[OwinConstants.RequestBody] =        body ?? Stream.Null;
         }
 
         /// <summary>
@@ -174,15 +289,8 @@ namespace Test.VirtualRadar.Owin
         /// <param name="headers"></param>
         public void AddResponseEnvironment(Stream body = null, IDictionary<string, string[]> headers = null)
         {
-            if(body == null) {
-                body = Stream.Null;
-            }
-            Response.Body = body;
-
-            if(headers == null) {
-                headers = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
-            }
-            Set(OwinConstants.ResponseHeaders, headers);
+            Context.Environment[OwinConstants.ResponseBody] =    body ?? Stream.Null;
+            Context.Environment[OwinConstants.ResponseHeaders] = headers ?? new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -230,7 +338,7 @@ namespace Test.VirtualRadar.Owin
                     }
                 }
 
-                Request.QueryString = new QueryString(buffer.ToString());
+                RequestQueryString = buffer.ToString();
             }
         }
 
@@ -252,23 +360,6 @@ namespace Test.VirtualRadar.Owin
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        private void Set(string key, object value)
-        {
-            if(Environment.ContainsKey(key)) {
-                Environment[key] = value;
-            } else {
-                Environment.Add(key, value);
-            }
-        }
-
-        /// <summary>
-        /// Adds a cookie to the request.
-        /// </summary>
-        /// <param name="cookie"></param>
-        /// <param name="value"></param>
-        public void AddCookie(string cookie, string value)
-        {
-            Request.Headers.Append("Cookie", $"{HttpUtility.UrlEncode(cookie)}={HttpUtility.UrlEncode(value)}");
-        }
+        private void Set(string key, object value) => Context.Environment[key] = value;
     }
 }

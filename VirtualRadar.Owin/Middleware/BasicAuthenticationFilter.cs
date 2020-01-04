@@ -10,13 +10,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Security.Principal;
-using System.Text;
 using System.Threading.Tasks;
+using AWhewell.Owin.Utility;
 using InterfaceFactory;
-using Microsoft.Owin;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.Settings;
 
@@ -82,10 +79,9 @@ namespace VirtualRadar.Owin.Middleware
             var result = true;
 
             var sharedConfig = _SharedConfiguration.Get();
-            var context = PipelineContext.GetOrCreate(environment);
-            var request = context.Request;
+            var context = OwinContext.Create(environment);
 
-            var isAdminOnlyPath = _AuthenticationConfiguration.IsAdministratorPath(request.PathNormalised.Value);
+            var isAdminOnlyPath = _AuthenticationConfiguration.IsAdministratorPath(context.RequestPathNormalised);
             var isGlobalAuthenticationEnabled = sharedConfig.WebServerSettings.AuthenticationScheme == AuthenticationSchemes.Basic;
 
             if(isAdminOnlyPath || isGlobalAuthenticationEnabled) {
@@ -93,19 +89,19 @@ namespace VirtualRadar.Owin.Middleware
 
                 string userName = null;
                 string password = null;
-                if(ExtractCredentials(request, ref userName, ref password)) {
+                if(ExtractCredentials(context, ref userName, ref password)) {
                     var cachedUser = _BasicAuthentication.GetCachedUser(userName);
                     var cachedUserTag = _BasicAuthentication.GetCachedUserTag(cachedUser);
                     var isPasswordValid = _BasicAuthentication.IsPasswordValid(cachedUser, cachedUserTag, password);
 
                     result = isPasswordValid && (!isAdminOnlyPath || cachedUser.IsAdministrator);
                     if(result) {
-                        request.User = _BasicAuthentication.CreatePrincipal(cachedUser, cachedUserTag);
+                        context.RequestPrincipal = _BasicAuthentication.CreatePrincipal(cachedUser, cachedUserTag);
                     }
                 }
 
                 if(!result) {
-                    SendNeedsAuthenticationResponse(environment);
+                    SendNeedsAuthenticationResponse(context);
                 }
             }
 
@@ -116,25 +112,24 @@ namespace VirtualRadar.Owin.Middleware
         /// Extracts the username and password from a basic Authorize header. Returns false if the header
         /// is missing or badly formatted.
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="context"></param>
         /// <param name="userName"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        private bool ExtractCredentials(OwinRequest request, ref string userName, ref string password)
+        private bool ExtractCredentials(OwinContext context, ref string userName, ref string password)
         {
-            var authorizationMime64 = request.Headers["Authorization"] ?? "";
+            var authorizationMime64 = context.RequestHeadersDictionary["Authorization"] ?? "";
             return _BasicAuthentication.ExtractCredentials(authorizationMime64, ref userName, ref password);
         }
 
         /// <summary>
         /// Responds with a request for authentication details.
         /// </summary>
-        /// <param name="environment"></param>
-        private void SendNeedsAuthenticationResponse(IDictionary<string, object> environment)
+        /// <param name="context"></param>
+        private void SendNeedsAuthenticationResponse(OwinContext context)
         {
-            var response = new OwinResponse(environment);
-            response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            response.Headers.Add("WWW-Authenticate", new string[] { "Basic Realm=\"Virtual Radar Server\", charset=\"UTF-8\"" });
+            context.ResponseHttpStatusCode = HttpStatusCode.Unauthorized;
+            context.ResponseHeadersDictionary["WWW-Authenticate"] = "Basic Realm=\"Virtual Radar Server\", charset=\"UTF-8\"";
         }
     }
 }

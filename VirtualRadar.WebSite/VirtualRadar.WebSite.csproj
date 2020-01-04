@@ -44,6 +44,21 @@
     <Reference Include="AjaxMin, Version=4.12.4057.21792, Culture=neutral, PublicKeyToken=24297a69a7eae424, processorArchitecture=MSIL">
       <HintPath>..\packages\AjaxMin.4.12.4057.21792\lib\AjaxMin.dll</HintPath>
     </Reference>
+    <Reference Include="AWhewell.Owin, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWhewell.Owin.1.0.0-alpha15\lib\net45\AWhewell.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="AWhewell.Owin.Interface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWhewell.Owin.1.0.0-alpha15\lib\net45\AWhewell.Owin.Interface.dll</HintPath>
+    </Reference>
+    <Reference Include="AWhewell.Owin.Interface.WebApi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWhewell.Owin.WebApi.1.0.0-alpha15\lib\net45\AWhewell.Owin.Interface.WebApi.dll</HintPath>
+    </Reference>
+    <Reference Include="AWhewell.Owin.Utility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWhewell.Owin.Utility.1.0.0-alpha15\lib\net45\AWhewell.Owin.Utility.dll</HintPath>
+    </Reference>
+    <Reference Include="AWhewell.Owin.WebApi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWhewell.Owin.WebApi.1.0.0-alpha15\lib\net45\AWhewell.Owin.WebApi.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.4.6\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>

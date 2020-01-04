@@ -10,10 +10,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
+using AWhewell.Owin.Utility;
 using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
@@ -50,7 +49,7 @@ namespace VirtualRadar.Owin.Middleware
         public AppFunc HandleRequest(AppFunc next)
         {
             AppFunc appFunc = async(IDictionary<string, object> environment) => {
-                var context = PipelineContext.GetOrCreate(environment);
+                var context = OwinContext.Create(environment);
                 if(!ServeAudio(context)) {
                     await next.Invoke(environment);
                 }
@@ -59,28 +58,29 @@ namespace VirtualRadar.Owin.Middleware
             return appFunc;
         }
 
-        private bool ServeAudio(PipelineContext context)
+        private bool ServeAudio(OwinContext context)
         {
-            var result = String.Equals(context.Request.PathNormalised.Value, "/Audio", StringComparison.OrdinalIgnoreCase);
+            var result = String.Equals(context.RequestPathNormalised, "/Audio", StringComparison.OrdinalIgnoreCase);
             if(result) {
-                result = context.Request.IsLocalOrLan || _SharedConfiguration.Get().InternetClientSettings.CanPlayAudio;
+                result = context.IsLocalOrLan || _SharedConfiguration.Get().InternetClientSettings.CanPlayAudio;
             }
 
             if(result) {
-                switch(context.Request.Query["cmd"]?.ToLower()) {
+                var queryString = context.RequestQueryStringDictionary(caseSensitiveKeys: false);
+                switch(queryString["cmd"]?.ToLower()) {
                     case "say":
-                        var text = context.Request.Query["line"];
+                        var text = queryString["line"];
                         if(text == null) {
                             result = false;
                         } else {
                             var audio = Factory.Resolve<IAudio>();
                             var audioBytes = audio.SpeechToWavBytes(text);
 
-                            var response = context.Response;
-                            response.ContentType = MimeType.WaveAudio;
-                            response.ContentLength = audioBytes.Length;
-                            response.StatusCode = (int)HttpStatusCode.OK;
-                            response.Body.Write(audioBytes, 0, audioBytes.Length);
+                            context.ResponseHttpStatusCode = HttpStatusCode.OK;
+                            context.ReturnBytes(
+                                MimeType.WaveAudio,
+                                audioBytes
+                            );
                         }
                         break;
                     default:

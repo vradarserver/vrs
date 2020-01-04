@@ -29,6 +29,7 @@ using VirtualRadar.Interface.Owin;
 using System.Web;
 using Microsoft.Owin;
 using System.Threading;
+using AWhewell.Owin.Utility;
 
 namespace VirtualRadar.WebSite
 {
@@ -354,26 +355,30 @@ namespace VirtualRadar.WebSite
         private IDictionary<string, object> ConvertEventArgsIntoOwinEnvironment(RequestReceivedEventArgs args)
         {
             var result = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-            var context = PipelineContext.GetOrCreate(result);
-            result["owin.CallCancelled"] = new CancellationToken();
-            result["owin.Version"] = "1.0.0";
 
-            var request = context.Request;
-            result["owin.RequestHeaders"] = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
-            request.Body = Stream.Null;
-            request.Method = "GET";
-            request.Scheme = "http";
-            request.Headers["Host"] = args.Request.Url.Authority;
-            request.Path = new Microsoft.Owin.PathString(args.PathAndFile);
-            request.PathBase = new Microsoft.Owin.PathString(args.Root);
-            request.Protocol = "HTTP/1.1";
-            request.QueryString = QueryString.FromUriComponent(args.Request.Url);
-            request.RemoteIpAddress = args.Request.RemoteEndPoint.Address.ToString();
-            request.RemotePort = args.Request.RemoteEndPoint.Port;
+            var queryString = args.Request.Url?.Query;
+            if(queryString?.Length > 0) {
+                queryString = queryString.Substring(1);
+            }
 
-            var response = context.Response;
-            result["owin.ResponseHeaders"] = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
-            response.Body = new MemoryStream();
+            var context = AWhewell.Owin.Utility.OwinContext.Create(result);
+            context.CallCancelled =         new CancellationToken();
+            context.Version =               "1.0.0";
+            context.RequestHeaders =        new RequestHeadersDictionary() {
+                                                ["Host"] = args.Request.Url.Authority,
+                                            };
+            context.RequestBody =           Stream.Null;
+            context.RequestMethod =         "GET";
+            context.RequestScheme =         "http";
+            context.RequestPath =           args.PathAndFile;
+            context.RequestPathBase =       args.Root;
+            context.RequestProtocol =       Formatter.FormatHttpProtocol(HttpProtocol.Http1_1);
+            context.RequestQueryString =    queryString;
+            context.ServerRemoteIpAddress = args.Request.RemoteEndPoint.Address.ToString();
+            context.ServerRemotePort =      args.Request.RemoteEndPoint.Port.ToString();
+
+            context.ResponseHeaders =       new ResponseHeadersDictionary();
+            context.ResponseBody =          new MemoryStream();
 
             return result;
         }

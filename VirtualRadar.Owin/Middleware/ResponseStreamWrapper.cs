@@ -12,9 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
+using AWhewell.Owin.Utility;
 using VirtualRadar.Interface.Owin;
 
 namespace VirtualRadar.Owin.Middleware
@@ -45,11 +44,11 @@ namespace VirtualRadar.Owin.Middleware
         public Func<IDictionary<string, object>, Task> WrapResponseStream(Func<IDictionary<string, object>, Task> next)
         {
             AppFunc appFunc = async(IDictionary<string, object> environment) => {
-                var context = PipelineContext.GetOrCreate(environment);
-                var originalStream = context.Response.Body;
+                var context = OwinContext.Create(environment);
+                var originalStream = context.ResponseBody;
 
                 using(var wrapperStream = new MemoryStream()) {
-                    context.Response.Body = wrapperStream;
+                    context.Environment[EnvironmentKey.ResponseBody] = wrapperStream;
 
                     await next.Invoke(environment);
 
@@ -58,12 +57,12 @@ namespace VirtualRadar.Owin.Middleware
                     }
 
                     if(originalStream != Stream.Null && wrapperStream != Stream.Null && wrapperStream.Length > 0) {
-                        context.Response.ContentLength = wrapperStream.Length;
+                        context.ResponseHeadersDictionary.ContentLength = wrapperStream.Length;
                         wrapperStream.Position = 0;
                         wrapperStream.CopyTo(originalStream);
                     }
 
-                    context.Response.Body = originalStream;
+                    context.Environment[EnvironmentKey.ResponseBody] = originalStream;
                 }
             };
 

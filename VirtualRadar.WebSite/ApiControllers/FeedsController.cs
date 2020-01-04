@@ -13,8 +13,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using InterfaceFactory;
@@ -30,7 +28,7 @@ namespace VirtualRadar.WebSite.ApiControllers
     /// <summary>
     /// API methods that deal with aircraft data feeds.
     /// </summary>
-    public class FeedsController : PipelineApiController
+    public class FeedsController : BaseApiController
     {
         /// <summary>
         /// Returns a list of every public facing feed.
@@ -69,7 +67,7 @@ namespace VirtualRadar.WebSite.ApiControllers
             var feed = feedManager.GetByUniqueId(feedId, ignoreInvisibleFeeds: true);
             var plotter = feed?.AircraftList?.PolarPlotter;
 
-            if(plotter != null && PipelineRequest.IsInternet) {
+            if(plotter != null && Context.IsInternet) {
                 var configuration = Factory.ResolveSingleton<ISharedConfiguration>().Get();
                 if(!configuration.InternetClientSettings.CanShowPolarPlots) {
                     plotter = null;
@@ -87,7 +85,7 @@ namespace VirtualRadar.WebSite.ApiControllers
                 builderArgs.AircraftList = Factory.ResolveSingleton<IFlightSimulatorAircraftList>();
                 builderArgs.SourceFeedId = -1;
             }
-            builderArgs.IsInternetClient = PipelineRequest.IsInternet;
+            builderArgs.IsInternetClient = Context.IsInternet;
 
             //TODO: Stop creating builders, share one between all instances of the controller
             var builder = Factory.Resolve<IAircraftListJsonBuilder>();
@@ -314,9 +312,9 @@ namespace VirtualRadar.WebSite.ApiControllers
         [HttpGet]
         [Route("AircraftList.json")]            // pre-version 3 route
         [Route("FlightSimList.json")]           // pre-version 3 route
-        public AircraftListJson AircraftListV2Get([FromUri] int feed = -1, double? lat = null, double? lng = null, long ldv = -1, long stm = -1, byte refreshTrails = 0, int selAc = -1, string trFmt = null)
+        public AircraftListJson AircraftListV2Get(int feed = -1, double? lat = null, double? lng = null, long ldv = -1, long stm = -1, byte refreshTrails = 0, int selAc = -1, string trFmt = null)
         {
-            var isFlightSimList = RequestContext.RouteData.Route.RouteTemplate == "FlightSimList.json";
+            var isFlightSimList = Route?.RouteAttribute.Route == "FlightSimList.json";
             var args = new AircraftListJsonBuilderArgs() {
                 BrowserLatitude =       lat,
                 BrowserLongitude =      lng,
@@ -337,7 +335,7 @@ namespace VirtualRadar.WebSite.ApiControllers
 
         private void PreviousAircraftFromHeader(AircraftListJsonBuilderArgs args)
         {
-            var previousAircraftIds = PipelineRequest.Headers["X-VirtualRadarServer-AircraftIds"];
+            var previousAircraftIds = Context.RequestHeadersDictionary["X-VirtualRadarServer-AircraftIds"];
             if(!String.IsNullOrEmpty(previousAircraftIds)) {
                 var decodedPreviousAircraftIds = HttpUtility.UrlDecode(previousAircraftIds);
                 foreach(var chunk in decodedPreviousAircraftIds.Split(',')) {
@@ -363,9 +361,9 @@ namespace VirtualRadar.WebSite.ApiControllers
         [HttpPost]
         [Route("AircraftList.json")]            // pre-version 3 route
         [Route("FlightSimList.json")]           // pre-version 3 route
-        public AircraftListJson AircraftListV2Post([FromUri] int feed = -1, double? lat = null, double? lng = null, long ldv = -1, long stm = -1, byte refreshTrails = 0, int selAc = -1, string trFmt = null)
+        public AircraftListJson AircraftListV2Post(int feed = -1, double? lat = null, double? lng = null, long ldv = -1, long stm = -1, byte refreshTrails = 0, int selAc = -1, string trFmt = null)
         {
-            var isFlightSimList = RequestContext.RouteData.Route.RouteTemplate == "FlightSimList.json";
+            var isFlightSimList = Route?.RouteAttribute.Route == "FlightSimList.json";
             var args = new AircraftListJsonBuilderArgs() {
                 BrowserLatitude =       lat,
                 BrowserLongitude =      lng,
@@ -386,7 +384,7 @@ namespace VirtualRadar.WebSite.ApiControllers
 
         private void PreviousAircraftFromPostBody(AircraftListJsonBuilderArgs args)
         {
-            var bodyStream = PipelineContext.Request.Body;
+            var bodyStream = Context.RequestBody;
             if(bodyStream != null && bodyStream != Stream.Null) {
                 using(var reader = new StreamReader(bodyStream)) {
                     var content = reader.ReadToEnd()?.Trim();
@@ -427,7 +425,7 @@ namespace VirtualRadar.WebSite.ApiControllers
 
         private void SortByFromQueryString(AircraftListJsonBuilderArgs args)
         {
-            var query = PipelineContext.Request.Query;
+            var query = RequestQueryString;
 
             var sortBy1 = (query["sortBy1"] ?? "").ToUpper();
             if(sortBy1 == "") {
@@ -453,10 +451,10 @@ namespace VirtualRadar.WebSite.ApiControllers
         {
             AircraftListJsonBuilderFilter result = null;
 
-            var query = PipelineContext.Request.Query;
+            var query = RequestQueryString;
             foreach(var kvp in query.Where(r => r.Key.Length > 3 && (r.Key[0] == 'f' || r.Key[0] == 'F'))) {
                 var key = kvp.Key.ToUpper();
-                var value = kvp.Value == null || kvp.Value.Length < 1 ? "" : kvp.Value[0] ?? "";
+                var value = kvp.Value;
                 switch(key.Substring(0, 3)) {
                     case "FAI":     result = DecodeStringFilter     ("FAIR",    key, value, result, (f,v) => f.Airport = v); break;
                     case "FCA":     result = DecodeStringFilter     ("FCALL",   key, value, result, (f,v) => f.Callsign = v); break;

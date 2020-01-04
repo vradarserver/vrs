@@ -10,10 +10,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using InterfaceFactory;
+using AWhewell.Owin.Utility;
 using Owin;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.WebServer;
@@ -48,7 +46,7 @@ namespace VirtualRadar.Plugin.TileServerCache
         private AppFunc HandleRequest(AppFunc next)
         {
             AppFunc appFunc = async(IDictionary<string, object> environment) => {
-                var context = PipelineContext.GetOrCreate(environment);
+                var context = OwinContext.Create(environment);
                 if(!ProcessRequest(context)) {
                     await next.Invoke(environment);
                 }
@@ -57,32 +55,30 @@ namespace VirtualRadar.Plugin.TileServerCache
             return appFunc;
         }
 
-        private bool ProcessRequest(PipelineContext context)
+        private bool ProcessRequest(OwinContext context)
         {
             var options = Plugin.Singleton?.Options;
-            var result = options != null && _WebRequestHandler.IsTileServerCacheRequest(context.Request.PathParts);
+            var result = options != null && _WebRequestHandler.IsTileServerCacheRequest(context.RequestPathParts);
 
             if(result) {
                 var outcome = _WebRequestHandler.ProcessRequest(
                     options,
-                    context.Request.PathParts,
-                    context.Request.FileName,
-                    context.Request.ClientIpAddressParsed,
-                    context.Request.Headers,
-                    context.Request.UserAgent
+                    context.RequestPathParts,
+                    context.RequestPathFileName,
+                    context.ClientIpAddressParsed,
+                    context.RequestHeadersDictionary
                 );
 
-                var response = context.Response;
-                response.StatusCode = (int)outcome.StatusCode;
+                context.ResponseStatusCode = (int)outcome.StatusCode;
                 if(outcome.ImageBytes != null) {
+                    var mimeType = "";
                     switch((outcome.ImageExtension ?? "").ToLower()) {
-                        case ".bmp":    response.ContentType = MimeType.BitmapImage; break;
-                        case ".gif":    response.ContentType = MimeType.GifImage; break;
-                        case ".jpg":    response.ContentType = MimeType.JpegImage; break;
-                        case ".png":    response.ContentType = MimeType.PngImage; break;
+                        case ".bmp":    mimeType = MimeType.BitmapImage; break;
+                        case ".gif":    mimeType = MimeType.GifImage; break;
+                        case ".jpg":    mimeType = MimeType.JpegImage; break;
+                        case ".png":    mimeType = MimeType.PngImage; break;
                     }
-                    response.ContentLength = outcome.ImageBytes.Length;
-                    response.Body.Write(outcome.ImageBytes, 0, outcome.ImageBytes.Length);
+                    context.ReturnBytes(mimeType, outcome.ImageBytes);
                 }
             }
 

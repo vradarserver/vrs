@@ -9,16 +9,14 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VirtualRadar.Interface.WebServer;
-using System.Net;
-using System.IO;
 using System.Collections.Specialized;
+using System.IO;
+using System.Net;
+using System.Text;
 using System.Web;
-using Microsoft.Owin;
+using AWhewell.Owin.Utility;
 using VirtualRadar.Interface.Owin;
+using VirtualRadar.Interface.WebServer;
 
 namespace VirtualRadar.WebServer.HttpListener
 {
@@ -28,28 +26,9 @@ namespace VirtualRadar.WebServer.HttpListener
     class Request : IRequest
     {
         /// <summary>
-        /// The underlying request object that we're wrapping.
+        /// The underlying context we're wrapping.
         /// </summary>
-        private PipelineRequest _Request;
-
-        private CookieCollection _Cookies;
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public CookieCollection Cookies
-        {
-            get {
-                if(_Cookies == null) {
-                    var cookies = new CookieCollection();
-                    foreach(var cookie in _Request.Cookies) {
-                        cookies.Add(new Cookie(cookie.Key, cookie.Value));
-                    }
-                    _Cookies = cookies;
-                }
-
-                return _Cookies;
-            }
-        }
+        private OwinContext _Context;
 
         private NameValueCollection _FormValues;
         /// <summary>
@@ -80,8 +59,9 @@ namespace VirtualRadar.WebServer.HttpListener
             get {
                 if(_Headers == null) {
                     var headers = new NameValueCollection();
-                    foreach(var headerKey in _Request.Headers.Keys) {
-                        headers.Add(headerKey, _Request.Headers[headerKey]);
+                    var owinHeaders = _Context.RequestHeadersDictionary;
+                    foreach(var headerKey in owinHeaders.Keys) {
+                        headers.Add(headerKey, owinHeaders[headerKey]);
                     }
                     _Headers = headers;
                 }
@@ -93,66 +73,22 @@ namespace VirtualRadar.WebServer.HttpListener
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string HttpMethod
-        {
-            get { return _Request.Method; }
-        }
+        public string HttpMethod => _Context.RequestMethod;
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public Stream InputStream
-        {
-            get { return _Request.Body; }
-        }
+        public Stream InputStream => _Context.RequestBody;
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public bool IsLocal
-        {
-            get {
-                // Ported from HttpRequest source
-                var remoteAddress = _Request.RemoteIpAddress;
-
-                if(String.IsNullOrEmpty(remoteAddress)) {
-                    return false;
-                }
-
-                if(remoteAddress == "127.0.0.1" || remoteAddress == "::1") {
-                    return true;
-                }
-
-                if(remoteAddress == _Request.LocalIpAddress) {
-                    return true;
-                }
-
-                return false;
-            }
-        }
+        public bool IsLocal => _Context.ServerIsLocal.GetValueOrDefault();
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string RawUrl
-        {
-            get {
-                // Working off the "URI reconstruction algorithm" from OWIN.ORG (http://owin.org/html/owin.html#53-paths):
-                var requestPathBase = (string)_Request.Environment["owin.RequestPathBase"];
-                var requestPath =     (string)_Request.Environment["owin.RequestPath"];
-                var queryString =     (string)_Request.Environment["owin.RequestQueryString"];
-
-                var result = new StringBuilder();
-                result.Append(requestPathBase);
-                result.Append(requestPath);
-                if(!String.IsNullOrEmpty(queryString)) {
-                    result.Append('?');
-                    result.Append(queryString);
-                }
-
-                return result.ToString();
-            }
-        }
+        public string RawUrl => _Context.RequestUrl;
 
         private IPEndPoint _RemoteEndPoint;
         /// <summary>
@@ -162,7 +98,7 @@ namespace VirtualRadar.WebServer.HttpListener
         {
             get {
                 if(_RemoteEndPoint == null) {
-                    var remoteEndPoint = new IPEndPoint(IPAddress.Parse(_Request.RemoteIpAddress), _Request.RemotePort.GetValueOrDefault());
+                    var remoteEndPoint = new IPEndPoint(IPAddress.Parse(_Context.ServerRemoteIpAddress), _Context.ServerRemotePortNumber.GetValueOrDefault());
                     _RemoteEndPoint = remoteEndPoint;
                 }
 
@@ -178,7 +114,7 @@ namespace VirtualRadar.WebServer.HttpListener
         {
             get {
                 if(_LocalEndPoint == null) {
-                    var localEndPoint = new IPEndPoint(IPAddress.Parse(_Request.LocalIpAddress), _Request.LocalPort.GetValueOrDefault());
+                    var localEndPoint = new IPEndPoint(IPAddress.Parse(_Context.ServerLocalIpAddress), _Context.ServerLocalPortNumber.GetValueOrDefault());
                     _LocalEndPoint = localEndPoint;
                 }
 
@@ -186,12 +122,18 @@ namespace VirtualRadar.WebServer.HttpListener
             }
         }
 
+        private Uri _Url;
         /// <summary>
         /// See interface docs.
         /// </summary>
         public Uri Url
         {
-            get { return _Request.Uri; }
+            get {
+                if(_Url == null) {
+                    _Url = new Uri(_Context.RequestUrl);
+                }
+                return _Url;
+            }
         }
 
         /// <summary>
@@ -199,7 +141,7 @@ namespace VirtualRadar.WebServer.HttpListener
         /// </summary>
         public string UserAgent
         {
-            get { return _Request.UserAgent; }
+            get { return _Context.RequestHeadersDictionary.UserAgent; }
         }
 
         /// <summary>
@@ -207,7 +149,7 @@ namespace VirtualRadar.WebServer.HttpListener
         /// </summary>
         public string UserHostName
         {
-            get { return _Request.Host.Value; }
+            get { return _Context.RequestHost; }
         }
 
         /// <summary>
@@ -220,16 +162,16 @@ namespace VirtualRadar.WebServer.HttpListener
         /// </summary>
         public string CorsOrigin
         {
-            get { return (_Request.Headers["Origin"] ?? "").Trim(); }
+            get { return (_Context.RequestHeadersDictionary["Origin"] ?? "").Trim(); }
         }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        /// <param name="pipelineRequest"></param>
-        public Request(PipelineRequest pipelineRequest)
+        /// <param name="context"></param>
+        public Request(OwinContext context)
         {
-            _Request = pipelineRequest;
+            _Context = context;
             MaximumPostBodySize = 4 * 1024 * 1024;
         }
 
@@ -238,47 +180,14 @@ namespace VirtualRadar.WebServer.HttpListener
         /// </summary>
         private void ExtractFormValues()
         {
-            var contentType = _Request.ContentType ?? "";
-            var parameterIndex = contentType.IndexOf(';');
-            var parameter = parameterIndex == -1 ? "" : contentType.Substring(parameterIndex + 1).Trim();
-            if(parameterIndex != -1) contentType = contentType.Substring(0, parameterIndex).Trim();
-
-            if(HttpMethod == "POST" && contentType == "application/x-www-form-urlencoded") {
-                var charset = Encoding.UTF8;
-                if(parameter.StartsWith("charset=")) charset = ParseEncoding(parameter.Substring(8).Trim());
-
-                string content = ReadBodyAsString(charset);
-                if(!String.IsNullOrEmpty(content)) {
-                    for(int start = 0, end = 0;start < content.Length;start = end + 1) {
-                        end = content.IndexOf('&', start);
-                        if(end == -1) end = content.Length;
-                        var nameValue = content.Substring(start, end - start);
-
-                        var separator = nameValue.IndexOf('=');
-                        var name = separator == -1 ? nameValue : nameValue.Substring(0, separator).Trim();
-                        var value = separator == -1 ? "" : nameValue.Substring(separator + 1);
-                        value = HttpUtility.UrlDecode(value);
-                        if(!String.IsNullOrEmpty(name)) {
-                            _FormValues[name] = value;
-                        }
+            if(_Context.RequestHttpMethod == AWhewell.Owin.Utility.HttpMethod.Post) {
+                if(_Context.RequestHeadersDictionary.ContentTypeValue.MediaTypeParsed == MediaType.UrlEncodedForm) {
+                    var form = _Context.RequestBodyForm(caseSensitiveKeys: false);
+                    foreach(var key in form.Keys) {
+                        _FormValues[key] = form[key];
                     }
                 }
             }
-        }
-
-        private Encoding ParseEncoding(string charsetName)
-        {
-            var result = Encoding.UTF8;
-            switch(charsetName.ToUpper()) {
-                case "US-ASCII":    result = Encoding.ASCII; break;
-                case "UTF-7":       result = Encoding.UTF7; break;
-                case "UTF-16BE":    result = Encoding.BigEndianUnicode; break;
-                case "UTF-16LE":    result = Encoding.Unicode; break;
-                case "UTF-32LE":    result = Encoding.UTF32; break;
-                default:            break;
-            }
-
-            return result;
         }
 
         /// <summary>

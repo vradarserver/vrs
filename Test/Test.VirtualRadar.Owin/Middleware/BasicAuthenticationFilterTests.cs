@@ -113,8 +113,8 @@ namespace Test.VirtualRadar.Owin.Middleware
         private void AssertSendCredentialsSent()
         {
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
-            Assert.AreEqual((int)HttpStatusCode.Unauthorized, _Environment.Response.StatusCode);
-            var authoriseHeader = _Environment.Response.Headers["WWW-Authenticate"];
+            Assert.AreEqual((int)HttpStatusCode.Unauthorized, _Environment.ResponseStatusCode);
+            var authoriseHeader = _Environment.ResponseHeaders["WWW-Authenticate"];
             Assert.IsTrue((authoriseHeader ?? "").StartsWith("Basic Realm=\""));
             Assert.IsTrue(authoriseHeader.EndsWith(", charset=\"UTF-8\""));
         }
@@ -122,8 +122,11 @@ namespace Test.VirtualRadar.Owin.Middleware
         private void AssertRequestAllowed()
         {
             Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
-            Assert.IsNull(_Environment.Response.Headers["WWW-Authenticate"]);
-            Assert.AreEqual(200, _Environment.Response.StatusCode);
+            Assert.IsNull(_Environment.ResponseHeaders["WWW-Authenticate"]);
+            Assert.IsTrue(
+                   _Environment.Context.ResponseStatusCode == null  //  null and 200 are equivalent, if the status code remains
+                || _Environment.Context.ResponseStatusCode == 200   //  at zero then eventually the runtime will set it to 200
+            );
         }
 
         [TestMethod]
@@ -189,7 +192,7 @@ namespace Test.VirtualRadar.Owin.Middleware
 
             _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
 
-            var principal = _Environment.Request.User;
+            var principal = _Environment.User;
             Assert.IsNotNull(principal);
             Assert.AreEqual("user", principal.Identity.Name);
             Assert.IsTrue(principal.Identity.IsAuthenticated);
@@ -206,7 +209,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
 
             AssertSendCredentialsSent();
-            Assert.IsNull(_Environment.Request.User);
+            Assert.IsNull(_Environment.User);
         }
 
         [TestMethod]
@@ -217,7 +220,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
 
             AssertSendCredentialsSent();
-            Assert.IsNull(_Environment.Request.User);
+            Assert.IsNull(_Environment.User);
         }
 
         [TestMethod]
@@ -230,7 +233,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
 
             AssertRequestAllowed();
-            Assert.IsNull(_Environment.Request.User);
+            Assert.IsNull(_Environment.User);
         }
 
         [TestMethod]
@@ -242,7 +245,7 @@ namespace Test.VirtualRadar.Owin.Middleware
 
             _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
 
-            var principal = _Environment.Request.User;
+            var principal = _Environment.User;
             Assert.IsNotNull(principal);
             Assert.IsTrue(principal.IsInRole(Roles.User));
             Assert.IsFalse(principal.IsInRole(Roles.Admin));
@@ -257,7 +260,7 @@ namespace Test.VirtualRadar.Owin.Middleware
 
             _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
 
-            var principal = _Environment.Request.User;
+            var principal = _Environment.User;
             Assert.IsNotNull(principal);
             Assert.IsTrue(principal.IsInRole(Roles.User));
             Assert.IsTrue(principal.IsInRole(Roles.Admin));
@@ -320,7 +323,7 @@ namespace Test.VirtualRadar.Owin.Middleware
 
             _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
 
-            Assert.IsNotNull(_Environment.Request.User);
+            Assert.IsNotNull(_Environment.User);
         }
 
         [TestMethod]
@@ -346,7 +349,7 @@ namespace Test.VirtualRadar.Owin.Middleware
 
             _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
 
-            Assert.IsNull(_Environment.Request.User);
+            Assert.IsNull(_Environment.User);
         }
 
         [TestMethod]

@@ -24,11 +24,6 @@ namespace VirtualRadar.Interface.WebServer
     public interface IRequest
     {
         /// <summary>
-        /// Gets the cookies on the request.
-        /// </summary>
-        CookieCollection Cookies { get; }
-
-        /// <summary>
         /// Gets the values sent in the body of a POST request.
         /// </summary>
         NameValueCollection FormValues { get; }
