@@ -11,7 +11,6 @@
 using System;
 using System.Collections.Generic;
 using InterfaceFactory;
-using Microsoft.Owin;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Test.Framework;

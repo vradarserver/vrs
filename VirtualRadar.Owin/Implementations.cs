@@ -41,7 +41,6 @@ namespace VirtualRadar.Owin
             factory.Register<Interface.Owin.IAudioServer, Middleware.AudioServer>();
             factory.Register<Interface.Owin.IBundlerServer, Middleware.BundlerServer>();
             factory.Register<Interface.Owin.IBasicAuthenticationFilter, Middleware.BasicAuthenticationFilter>();
-            factory.Register<Interface.Owin.IBasicAuthenticationWebApiMessageHandler, Middleware.BasicAuthenticationWebApiMessageHandler>();
             factory.Register<Interface.Owin.ICorsHandler, Middleware.CorsHandler>();
             factory.Register<Interface.Owin.IExceptionHandler, Middleware.ExceptionHandler>();
             factory.Register<Interface.Owin.IFileSystemServer, Middleware.FileSystemServer>();
@@ -54,6 +53,9 @@ namespace VirtualRadar.Owin
             factory.Register<Interface.Owin.IMapPluginHtmlManipulator, StreamManipulator.MapPluginHtmlManipulator>();
 
             factory.Register<Interface.Owin.ILoopbackHost, LoopbackHost>();
+
+            AWhewell.Owin.Implementations.Register(factory);
+            AWhewell.Owin.WebApi.Implementations.Register(factory);
         }
     }
 }

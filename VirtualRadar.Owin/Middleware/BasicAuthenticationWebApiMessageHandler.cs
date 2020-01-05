@@ -28,7 +28,8 @@ namespace VirtualRadar.Owin.Middleware
     /// message handlers is that they derive from a base class so we need to expose the class
     /// rather than an interface.
     /// </remarks>
-    class BasicAuthenticationWebApiMessageHandler : System.Net.Http.DelegatingHandler, IBasicAuthenticationWebApiMessageHandler
+    [Obsolete("Not required - Authorize should be picking up the credentials established by the OWIN middleware that runs before the API middleware runs")]
+    class BasicAuthenticationWebApiMessageHandler //: System.Net.Http.DelegatingHandler, IBasicAuthenticationWebApiMessageHandler
     {
         /// <summary>
         /// The object that holds all of the common code for basic authentication.
@@ -49,25 +50,25 @@ namespace VirtualRadar.Owin.Middleware
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            var requestContext = request.GetRequestContext();
-            if(requestContext.Principal == null) {
-                string userName = null;
-                string password = null;
-                if(ExtractCredentials(request, ref userName, ref password)) {
-                    var cachedUser = _BasicAuthentication.GetCachedUser(userName);
-                    var cachedUserTag = _BasicAuthentication.GetCachedUserTag(cachedUser);
-                    var isPasswordValid = _BasicAuthentication.IsPasswordValid(cachedUser, cachedUserTag, password);
-
-                    if(isPasswordValid) {
-                        requestContext.Principal = _BasicAuthentication.CreatePrincipal(cachedUser, cachedUserTag);
-                    }
-                }
-            }
-
-            return base.SendAsync(request, cancellationToken);
-        }
+        //protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        //{
+        //    var requestContext = request.GetRequestContext();
+        //    if(requestContext.Principal == null) {
+        //        string userName = null;
+        //        string password = null;
+        //        if(ExtractCredentials(request, ref userName, ref password)) {
+        //            var cachedUser = _BasicAuthentication.GetCachedUser(userName);
+        //            var cachedUserTag = _BasicAuthentication.GetCachedUserTag(cachedUser);
+        //            var isPasswordValid = _BasicAuthentication.IsPasswordValid(cachedUser, cachedUserTag, password);
+        //
+        //            if(isPasswordValid) {
+        //                requestContext.Principal = _BasicAuthentication.CreatePrincipal(cachedUser, cachedUserTag);
+        //            }
+        //        }
+        //    }
+        //
+        //    return base.SendAsync(request, cancellationToken);
+        //}
 
         /// <summary>
         /// Extracts the credentials from the request.
@@ -76,9 +77,9 @@ namespace VirtualRadar.Owin.Middleware
         /// <param name="userName"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        private bool ExtractCredentials(HttpRequestMessage request, ref string userName, ref string password)
-        {
-            return _BasicAuthentication.ExtractCredentials(request.Headers.Authorization?.ToString(), ref userName, ref password);
-        }
+        //private bool ExtractCredentials(HttpRequestMessage request, ref string userName, ref string password)
+        //{
+        //    return _BasicAuthentication.ExtractCredentials(request.Headers.Authorization?.ToString(), ref userName, ref password);
+        //}
     }
 }

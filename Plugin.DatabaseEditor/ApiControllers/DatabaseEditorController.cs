@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http;
+using AWhewell.Owin.Interface.WebApi;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.Owin;
@@ -43,7 +38,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor.ApiControllers
         [HttpPost]
         [Route("DatabaseEditor/SingleAircraftSave.json")]           // Historical route
         [Route("api/1.00/DatabaseEditor")]
-        public SingleAircraftSaveResultsJson Save([FromBody] BaseStationAircraft aircraft)
+        public SingleAircraftSaveResultsJson Save(BaseStationAircraft aircraft)
         {
             var result = new SingleAircraftSaveResultsJson();
             var plugin = Plugin.Singleton;

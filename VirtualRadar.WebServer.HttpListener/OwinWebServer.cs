@@ -13,9 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using AWhewell.Owin.Interface;
+using AWhewell.Owin.Interface.Host.HttpListener;
 using InterfaceFactory;
-using Microsoft.Owin.Hosting;
-using Owin;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.Settings;
@@ -41,9 +40,9 @@ namespace VirtualRadar.WebServer.HttpListener
         private IMiddlewareBuilderCallbackHandle _BuilderCallbackHandle;
 
         /// <summary>
-        /// The handle to the OWIN web application.
+        /// The OWIN host.
         /// </summary>
-        private IDisposable _WebApp;
+        private IHostHttpListener _Host;
 
         /// <summary>
         /// A reference to the singleton <see cref="IAuthenticationConfiguration"/>.
@@ -330,13 +329,21 @@ namespace VirtualRadar.WebServer.HttpListener
 
         private void StartHosting()
         {
-            if(_WebApp == null) {
+            if(_Host == null) {
                 HookHeartbeat();
                 RegisterConfigureCallback();
 
-                var startOptions = new StartOptions() {
-                };
-                startOptions.Urls.Add(Prefix);
+                _Host = Factory.Resolve<IHostHttpListener>();
+                _Host.Port = Port;
+                _Host.Root = Root;
+                _Host.UseStrongWildcard = false;
+
+                var pipelineBuilder = Factory.ResolveSingleton<IWebSitePipelineBuilder>()
+                    .PipelineBuilder;
+                var builderEnvironment = Factory.Resolve<IPipelineBuilderEnvironment>();
+                _Host.Initialise(pipelineBuilder, builderEnvironment);
+
+                _Host.Start();
 
                 _Online = true;
                 OnOnlineChanged(EventArgs.Empty);
@@ -345,11 +352,11 @@ namespace VirtualRadar.WebServer.HttpListener
 
         private void StopHosting()
         {
-            if(_WebApp != null) {
+            if(_Host != null) {
                 try {
-                    _WebApp.Dispose();
+                    _Host.Dispose();
                 } finally {
-                    _WebApp = null;
+                    _Host = null;
                     _Online = false;
                     OnOnlineChanged(EventArgs.Empty);
                 }

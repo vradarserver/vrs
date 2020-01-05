@@ -13,6 +13,7 @@ namespace VirtualRadar.Interface.Owin
     /// <remarks>
     /// This must be cast to a System.Net.Http.DelegatingHandler before use.
     /// </remarks>
+    [Obsolete("Not required, principal should be getting set up by OWIN pipeline not a message handler")]
     public interface IBasicAuthenticationWebApiMessageHandler
     {
     }

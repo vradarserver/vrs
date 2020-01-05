@@ -17,16 +17,12 @@ using System.Threading.Tasks;
 using AWhewell.Owin.Interface;
 using AWhewell.Owin.Utility;
 using InterfaceFactory;
-using Microsoft.Owin.Builder;
-using Owin;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Owin
 {
-    using AppFunc = Func<IDictionary<string, object>, Task>;
-
     /// <summary>
     /// Default implementation of <see cref="ILoopbackHost"/>.
     /// </summary>
