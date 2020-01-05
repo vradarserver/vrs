@@ -11,9 +11,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AWhewell.Owin.Interface;
 using AWhewell.Owin.Utility;
-using Owin;
-using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.WebServer;
 
 namespace VirtualRadar.Plugin.TileServerCache
@@ -23,27 +22,17 @@ namespace VirtualRadar.Plugin.TileServerCache
     /// <summary>
     /// Registers the plugin's OWIN middleware as a part of VRS's web request pipeline.
     /// </summary>
-    class WebServerV3Pipeline : IPipeline
+    class WebServerV3Middleware
     {
         // The object that does all of the web request handling work for us.
-        private WebRequestHandler _WebRequestHandler = new WebRequestHandler();
+        private readonly WebRequestHandler _WebRequestHandler = new WebRequestHandler();
 
         /// <summary>
-        /// See interface docs.
+        /// Creates the OWIN AppFunc.
         /// </summary>
-        /// <param name="webAppConfiguration"></param>
-        public void Register(IWebAppConfiguration webAppConfiguration)
-        {
-            webAppConfiguration.AddCallback(UseWebRequestMiddleware, StandardPipelinePriority.HighestVrsContentMiddlewarePriority + 1000);
-        }
-
-        private void UseWebRequestMiddleware(IAppBuilder app)
-        {
-            var middleware = new Func<AppFunc, AppFunc>(HandleRequest);
-            app.Use(middleware);
-        }
-
-        private AppFunc HandleRequest(AppFunc next)
+        /// <param name="next"></param>
+        /// <returns></returns>
+        public AppFunc CreateAppFunc(AppFunc next)
         {
             AppFunc appFunc = async(IDictionary<string, object> environment) => {
                 var context = OwinContext.Create(environment);

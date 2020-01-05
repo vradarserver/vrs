@@ -12,8 +12,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AWhewell.Owin.Interface;
 using InterfaceFactory;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Plugin.TileServerCache
@@ -32,11 +34,6 @@ namespace VirtualRadar.Plugin.TileServerCache
         /// The single instance of the tile server settings manager that is wrapping the property manager.
         /// </summary>
         internal static TileServerSettingsManagerWrapper TileServerSettingsManagerWrapper { get; private set; }
-
-        /// <summary>
-        /// The object that hooks us into the web server.
-        /// </summary>
-        internal WebServerV3Interaction WebServerInteraction;
 
         /// <summary>
         /// Provides multi-threaded write protection for the <see cref="_Options"/> reference (but not the
@@ -196,10 +193,19 @@ namespace VirtualRadar.Plugin.TileServerCache
         /// <summary>
         /// See V2 interface docs.
         /// </summary>
-        public void RegisterWebPipelines()
+        public void RegisterOwinMiddleware()
         {
-            WebServerInteraction = new WebServerV3Interaction();
-            WebServerInteraction.Initialise();
+            Factory.ResolveSingleton<IWebSitePipelineBuilder>()
+            .PipelineBuilder
+            .RegisterMiddlewareBuilder(
+                (IPipelineBuilderEnvironment builderEnv) => {
+                    var middleware = new WebServerV3Middleware();
+                    builderEnv.UseMiddleware(
+                        middleware.CreateAppFunc
+                    );
+                },
+                StandardPipelinePriority.HighestVrsContentMiddlewarePriority + 1000
+            );
         }
 
         /// <summary>

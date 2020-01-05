@@ -105,13 +105,15 @@ namespace Test.VirtualRadar.Library
 
         class Plugin_V2 : Plugin, IPlugin_V2
         {
-            public static Dictionary<Type, int> _RegisterWebPipelinesCallCount = new Dictionary<Type,int>();
-            public static bool _RegisterWebPipelinesThrowsException;
+            public static Dictionary<Type, int> _RegisterOwinMiddlewareCallCount = new Dictionary<Type,int>();
+            public static bool _RegisterOwinMiddlewareThrowsException;
 
-            public void RegisterWebPipelines()
+            public void RegisterOwinMiddleware()
             {
-                IncrementCallCount(_RegisterWebPipelinesCallCount);
-                if(_RegisterWebPipelinesThrowsException) throw new NotImplementedException();
+                IncrementCallCount(_RegisterOwinMiddlewareCallCount);
+                if(_RegisterOwinMiddlewareThrowsException) {
+                    throw new NotImplementedException();
+                }
             }
         }
 
@@ -470,13 +472,13 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void PluginManager_LoadPlugins_Does_Not_Call_RegisterWebPipelines_For_Each_V2_Plugin()
+        public void PluginManager_LoadPlugins_Does_Not_Call_RegisterOwinMiddleware_For_Each_V2_Plugin()
         {
             SetupProviderForPlugins(typeof(Plugin_V2));
 
             _PluginManager.LoadPlugins();
 
-            Assert.AreEqual(0, Plugin_V2._RegisterWebPipelinesCallCount.Count);
+            Assert.AreEqual(0, Plugin_V2._RegisterOwinMiddlewareCallCount.Count);
         }
 
         [TestMethod]
@@ -555,24 +557,24 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void PluginManager_RegisterWebPipelines_Calls_RegisterWebPipelines_On_V2_Plugins()
+        public void PluginManager_RegisterOwinMiddleware_Calls_RegisterOwinMiddleware_On_V2_Plugins()
         {
             SetupProviderForPlugins(typeof(Plugin_V2));
 
             _PluginManager.LoadPlugins();
-            _PluginManager.RegisterWebPipelines();
+            _PluginManager.RegisterOwinMiddleware();
 
-            Assert.AreEqual(1, Plugin_V2._RegisterWebPipelinesCallCount[typeof(Plugin_V2)]);
+            Assert.AreEqual(1, Plugin_V2._RegisterOwinMiddlewareCallCount[typeof(Plugin_V2)]);
         }
 
         [TestMethod]
-        public void PluginManager_Logs_Libraries_With_RegisterWebPipelines_That_Throws_Exception()
+        public void PluginManager_Logs_Libraries_With_RegisterOwinMiddleware_That_Throws_Exception()
         {
-            Plugin_V2._RegisterWebPipelinesThrowsException = true;
+            Plugin_V2._RegisterOwinMiddlewareThrowsException = true;
             SetupProviderForPlugins(typeof(Plugin_V2));
 
             _PluginManager.LoadPlugins();
-            _PluginManager.RegisterWebPipelines();
+            _PluginManager.RegisterOwinMiddleware();
 
             _Log.Verify(g => g.WriteLine(It.IsAny<string>()), Times.Once());
         }

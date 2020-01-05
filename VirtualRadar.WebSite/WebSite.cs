@@ -225,7 +225,7 @@ namespace VirtualRadar.WebSite
                 owinPipelineConfig.AddPipeline<WebSitePipeline>();
 
                 var pluginManager = Factory.ResolveSingleton<IPluginManager>();
-                pluginManager.RegisterWebPipelines();
+                pluginManager.RegisterOwinMiddleware();
 
                 var sharedConfig = Factory.ResolveSingleton<ISharedConfiguration>();
                 sharedConfig.ConfigurationChanged += SharedConfiguration_ConfigurationChanged;

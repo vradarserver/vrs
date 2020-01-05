@@ -20,6 +20,7 @@ namespace VirtualRadar.Interface.Owin
     /// The interface for objects that, after being registered with <see cref="IPipelineConfiguration"/>, are
     /// instantiated and called every time <see cref="IStandardPipeline"/> is used to create a new pipeline for the application.
     /// </summary>
+    [Obsolete("IPipeline is going away, use IPipelineBuilder")]
     public interface IPipeline
     {
         /// <summary>

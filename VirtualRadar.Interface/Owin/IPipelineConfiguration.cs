@@ -22,6 +22,7 @@ namespace VirtualRadar.Interface.Owin
     /// create the application's OWIN pipeline.
     /// </summary>
     [Singleton]
+    [Obsolete("IPipelineConfiguration is going away, use IPipelineBuilder")]
     public interface IPipelineConfiguration
     {
         /// <summary>

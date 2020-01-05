@@ -146,14 +146,14 @@ namespace VirtualRadar.Library
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public void RegisterWebPipelines()
+        public void RegisterOwinMiddleware()
         {
             var log = Factory.ResolveSingleton<ILog>();
 
             foreach(var plugin in LoadedPlugins.ToArray()) {
                 if(plugin is IPlugin_V2 v2Plugin) {
                     try {
-                        v2Plugin.RegisterWebPipelines();
+                        v2Plugin.RegisterOwinMiddleware();
                     } catch(Exception ex) {
                         log.WriteLine($"Caught exception registering web pipelines for plugin {v2Plugin.Name}: {FormatException(ex)}");
                     }

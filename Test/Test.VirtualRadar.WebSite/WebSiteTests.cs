@@ -183,7 +183,7 @@ namespace Test.VirtualRadar.WebSite
         public void WebSite_AttachSiteToServer_Registers_Plugin_Pipelines()
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
-            _PluginManager.Verify(r => r.RegisterWebPipelines(), Times.Once());
+            _PluginManager.Verify(r => r.RegisterOwinMiddleware(), Times.Once());
         }
 
         [TestMethod]

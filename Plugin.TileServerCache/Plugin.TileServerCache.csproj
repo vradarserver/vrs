@@ -95,8 +95,7 @@
     <Compile Include="WebAdmin\RecentRequestsView.cs" />
     <Compile Include="WebRequestHandler.cs" />
     <Compile Include="WebRequestOutcome.cs" />
-    <Compile Include="WebServerV3Interaction.cs" />
-    <Compile Include="WebServerV3Pipeline.cs" />
+    <Compile Include="WebServerV3Middleware.cs" />
     <Compile Include="WinForms\OptionsView.cs">
       <SubType>Form</SubType>
     </Compile>

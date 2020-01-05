@@ -48,8 +48,9 @@ namespace VirtualRadar.Interface
         void RegisterImplementations();
 
         /// <summary>
-        /// Calls the <see cref="IPlugin_V2.RegisterWebPipelines"/> methods for all loaded plugins that implement <see cref="IPlugin_V2"/>.
+        /// Calls the <see cref="IPlugin_V2.RegisterOwinMiddleware"/> methods for all loaded plugins that
+        /// implement <see cref="IPlugin_V2"/>.
         /// </summary>
-        void RegisterWebPipelines();
+        void RegisterOwinMiddleware();
     }
 }

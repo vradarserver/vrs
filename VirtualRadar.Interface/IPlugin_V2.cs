@@ -17,14 +17,14 @@ using System.Threading.Tasks;
 namespace VirtualRadar.Interface
 {
     /// <summary>
-    /// Extends the plugin interface to add <see cref="RegisterWebPipelines"/>.
+    /// Extends the plugin interface to add <see cref="RegisterOwinMiddleware"/>.
     /// </summary>
     public interface IPlugin_V2 : IPlugin
     {
         /// <summary>
-        /// Called during the startup of the web site. Gives the plugin an opportunity to add its own middleware into the
-        /// web request processing chain.
+        /// Called during the startup of the web site. Gives the plugin an opportunity to add its own
+        /// middleware into the web request processing chain.
         /// </summary>
-        void RegisterWebPipelines();
+        void RegisterOwinMiddleware();
     }
 }
