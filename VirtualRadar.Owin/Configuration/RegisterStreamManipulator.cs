@@ -21,12 +21,13 @@ namespace VirtualRadar.Owin.Configuration
     /// Records an instance of an <see cref="IStreamManipulator"/> that will be used when configuring
     /// an OWIN pipeline.
     /// </summary>
+    [Obsolete("This can go away")]
     class RegisterStreamManipulator
     {
         /// <summary>
         /// Gets the manipulator.
         /// </summary>
-        public IStreamManipulator StreamManipulator { get; private set; }
+        public object StreamManipulator { get; private set; }
 
         /// <summary>
         /// Gets a value indicating the order in which manipulators are called, lowest first.
@@ -38,7 +39,7 @@ namespace VirtualRadar.Owin.Configuration
         /// </summary>
         /// <param name="streamManipulator"></param>
         /// <param name="priority"></param>
-        public RegisterStreamManipulator(IStreamManipulator streamManipulator, int priority)
+        public RegisterStreamManipulator(object streamManipulator, int priority)
         {
             StreamManipulator = streamManipulator;
             Priority = priority;

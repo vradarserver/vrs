@@ -16,10 +16,18 @@ using System.Threading.Tasks;
 
 namespace VirtualRadar.Interface.Owin
 {
+    using AppFunc = Func<IDictionary<string, object>, Task>;
+
     /// <summary>
     /// The interface for objects that manipulate HTML responses.
     /// </summary>
-    public interface IHtmlManipulator : IStreamManipulator
+    public interface IHtmlManipulator
     {
+        /// <summary>
+        /// Creates the middleware.
+        /// </summary>
+        /// <param name="next"></param>
+        /// <returns></returns>
+        AppFunc CreateMiddleware(AppFunc next);
     }
 }

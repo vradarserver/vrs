@@ -36,6 +36,7 @@ namespace VirtualRadar.WebSite
             factory.Register<IWebSite, WebSite>();
             factory.Register<IWebSiteExtender, WebSiteExtender>();
             factory.Register<IWebSiteGraphics, WebSiteGraphics>();
+            factory.Register<IWebSitePipelineBuilder, WebSitePipelineBuilder>();
         }
     }
 }

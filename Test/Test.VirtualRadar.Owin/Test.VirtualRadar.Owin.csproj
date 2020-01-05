@@ -135,7 +135,6 @@
     <Compile Include="Middleware\FileSystemServerTests.cs" />
     <Compile Include="Middleware\ImageServerTests.cs" />
     <Compile Include="Middleware\RedirectionFilterTests.cs" />
-    <Compile Include="Middleware\ResponseStreamWrapperTests.cs" />
     <Compile Include="MockConfigureCallback.cs" />
     <Compile Include="MockOwinEnvironment.cs" />
     <Compile Include="MockOwinPipeline.cs" />

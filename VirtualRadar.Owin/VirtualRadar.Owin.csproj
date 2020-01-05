@@ -115,7 +115,6 @@
     <Compile Include="Middleware\FileSystemServer.cs" />
     <Compile Include="Middleware\ImageServer.cs" />
     <Compile Include="Middleware\RedirectionFilter.cs" />
-    <Compile Include="Middleware\ResponseStreamWrapper.cs" />
     <Compile Include="StandardPipeline.cs" />
     <Compile Include="Configuration\WebAppConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

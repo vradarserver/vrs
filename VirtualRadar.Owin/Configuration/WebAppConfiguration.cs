@@ -102,7 +102,7 @@ namespace VirtualRadar.Owin.Configuration
         /// </summary>
         /// <param name="streamManipulator"></param>
         /// <param name="priority"></param>
-        public void AddStreamManipulator(IStreamManipulator streamManipulator, int priority)
+        public void AddStreamManipulator(object streamManipulator, int priority)
         {
             if(streamManipulator == null) {
                 throw new ArgumentNullException(nameof(streamManipulator));
@@ -117,7 +117,7 @@ namespace VirtualRadar.Owin.Configuration
         /// See interface docs.
         /// </summary>
         /// <param name="streamManipulator"></param>
-        public void RemoveStreamManipulator(IStreamManipulator streamManipulator)
+        public void RemoveStreamManipulator(object streamManipulator)
         {
             _StreamManipulators.Remove(_StreamManipulators.FirstOrDefault(r => Object.Equals(r.StreamManipulator, streamManipulator)));
         }
@@ -126,7 +126,7 @@ namespace VirtualRadar.Owin.Configuration
         /// See interface docs.
         /// </summary>
         /// <returns></returns>
-        public IStreamManipulator[] GetStreamManipulators()
+        public object[] GetStreamManipulators()
         {
             return _StreamManipulators.OrderBy(r => r.Priority).Select(r => r.StreamManipulator).ToArray();
         }

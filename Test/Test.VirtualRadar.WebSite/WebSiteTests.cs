@@ -49,7 +49,6 @@ namespace Test.VirtualRadar.WebSite
         private Mock<IBaseStationDatabase> _BaseStationDatabase;
         private Mock<IAutoConfigBaseStationDatabase> _AutoConfigBaseStationDatabase;
         private Mock<IStandingDataManager> _StandingDataManager;
-        private MockOwinPipelineConfiguration _PipelineConfiguration;
         private Mock<ILoopbackHost> _LoopbackHost;
         private string _LoopbackPathAndFile;
         private IDictionary<string, object> _LoopbackEnvironment;
@@ -90,9 +89,6 @@ namespace Test.VirtualRadar.WebSite
 
             _StandingDataManager = TestUtilities.CreateMockSingleton<IStandingDataManager>();
             _UserManager = TestUtilities.CreateMockSingleton<IUserManager>();
-
-            _PipelineConfiguration = new MockOwinPipelineConfiguration();
-            Factory.RegisterInstance<IPipelineConfiguration>(_PipelineConfiguration);
 
             _LoopbackHost = TestUtilities.CreateMockImplementation<ILoopbackHost>();
             _LoopbackEnvironment = null;
@@ -170,13 +166,6 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
             _WebSite.AttachSiteToServer(new Mock<IWebServer>().Object);
-        }
-
-        [TestMethod]
-        public void WebSite_AttachSiteToServer_Registers_Standard_OWIN_Pipeline()
-        {
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            Assert.AreEqual(1, _PipelineConfiguration.AddPipelineCallCount);
         }
 
         [TestMethod]

@@ -29,6 +29,8 @@ namespace Test.VirtualRadar.WebSite
             global::VirtualRadar.Library.Implementations.Register(Factory.Singleton);   // <-- need IAircraftComparer defined for sort tests.
             global::VirtualRadar.Owin.Implementations.Register(Factory.Singleton);      // <-- need most of this for web API controller tests.
             global::VirtualRadar.WebServer.Implementations.Register(Factory.Singleton); // <-- need IResponder defined for response content tests.
+
+            AWhewell.Owin.Implementations.Register(Factory.Singleton);  // <-- need Owin library registered for middleware tests
         }
     }
 }

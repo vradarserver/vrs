@@ -28,5 +28,11 @@ namespace VirtualRadar.Interface.WebSite
         /// Gets the pipeline builder that the web site will use.
         /// </summary>
         IPipelineBuilder PipelineBuilder { get; }
+
+        /// <summary>
+        /// Called once by the site initialisation code to add standard pipeline middleware to
+        /// <see cref="PipelineBuilder"/>.
+        /// </summary>
+        void AddStandardPipelineMiddleware();
     }
 }

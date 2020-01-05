@@ -22,26 +22,29 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
     public class HtmlManipulatorTests : ManipulatorTests
     {
         private Mock<IHtmlManipulatorConfiguration> _Config;
-        private IHtmlManipulator _Manipulator;
-        private List<ITextResponseManipulator> _Manipulators;
+        private IHtmlManipulator _HtmlManipulator;
+        private List<ITextResponseManipulator> _TextManipulators;
+        private MockOwinPipeline _Pipeline;
 
         protected override void ExtraInitialise()
         {
             _Config = TestUtilities.CreateMockImplementation<IHtmlManipulatorConfiguration>();
-            _Manipulators = new List<ITextResponseManipulator>();
-            _Config.Setup(r => r.GetTextResponseManipulators()).Returns(() => _Manipulators);
+            _TextManipulators = new List<ITextResponseManipulator>();
+            _Config.Setup(r => r.GetTextResponseManipulators()).Returns(() => _TextManipulators);
 
-            _Manipulator = Factory.Resolve<IHtmlManipulator>();
+            _Pipeline = new MockOwinPipeline();
+
+            _HtmlManipulator = Factory.Resolve<IHtmlManipulator>();
         }
 
         [TestMethod]
         public void HtmlManipulator_ManipulateResponseStream_Calls_Any_Registered_Manipulators()
         {
             var manipulator = new TextManipulator();
-            _Manipulators.Add(manipulator);
+            _TextManipulators.Add(manipulator);
 
             SetResponseContent(MimeType.Html, "a");
-            _Manipulator.ManipulateResponseStream(_Environment.Environment);
+            _Pipeline.CallMiddleware(_HtmlManipulator.CreateMiddleware, _Environment.Environment);
 
             Assert.AreEqual(1, manipulator.CallCount);
             Assert.AreSame(_Environment.Environment, manipulator.Environment);
@@ -52,10 +55,10 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
         public void HtmlManipulator_Initialises_TextContent_IsDirty_To_False()
         {
             var manipulator = new TextManipulator();
-            _Manipulators.Add(manipulator);
+            _TextManipulators.Add(manipulator);
 
             SetResponseContent(MimeType.Html, "a");
-            _Manipulator.ManipulateResponseStream(_Environment.Environment);
+            _Pipeline.CallMiddleware(_HtmlManipulator.CreateMiddleware, _Environment.Environment);
 
             Assert.IsFalse(manipulator.TextContent.IsDirty);
         }
@@ -66,10 +69,10 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             var manipulator = new TextManipulator {
                 Callback = (env, content) => content.Content = "b"
             };
-            _Manipulators.Add(manipulator);
+            _TextManipulators.Add(manipulator);
 
             SetResponseContent(MimeType.Html, "a");
-            _Manipulator.ManipulateResponseStream(_Environment.Environment);
+            _Pipeline.CallMiddleware(_HtmlManipulator.CreateMiddleware, _Environment.Environment);
 
             var textContent = GetResponseContent();
             Assert.AreEqual("b", textContent.Content);
@@ -85,10 +88,10 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
                     content.IsDirty = false;
                 }
             };
-            _Manipulators.Add(manipulator);
+            _TextManipulators.Add(manipulator);
 
             SetResponseContent(MimeType.Html, "a");
-            _Manipulator.ManipulateResponseStream(_Environment.Environment);
+            _Pipeline.CallMiddleware(_HtmlManipulator.CreateMiddleware, _Environment.Environment);
 
             var textContent = GetResponseContent();
             Assert.AreEqual("a", textContent.Content);

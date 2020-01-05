@@ -221,9 +221,6 @@ namespace VirtualRadar.WebSite
                     throw new InvalidOperationException("The web site can only be attached to one server");
                 }
 
-                var owinPipelineConfig = Factory.ResolveSingleton<IPipelineConfiguration>();
-                owinPipelineConfig.AddPipeline<WebSitePipeline>();
-
                 var pluginManager = Factory.ResolveSingleton<IPluginManager>();
                 pluginManager.RegisterOwinMiddleware();
 
