@@ -54,7 +54,6 @@ namespace Test.VirtualRadar.WebSite
         private IDictionary<string, object> _LoopbackEnvironment;
         private SimpleContent _LoopbackResponse;
         private Mock<IFileSystemServerConfiguration> _FileSystemServerConfiguration;
-        private Mock<IPluginManager> _PluginManager;
 
         // Other mocks required to get IWebSite implementation running
         private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
@@ -104,7 +103,6 @@ namespace Test.VirtualRadar.WebSite
             });
 
             _FileSystemServerConfiguration = TestUtilities.CreateMockSingleton<IFileSystemServerConfiguration>();
-            _PluginManager = TestUtilities.CreateMockSingleton<IPluginManager>();
 
             _WebSite = Factory.Resolve<IWebSite>();
         }
@@ -166,13 +164,6 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
             _WebSite.AttachSiteToServer(new Mock<IWebServer>().Object);
-        }
-
-        [TestMethod]
-        public void WebSite_AttachSiteToServer_Registers_Plugin_Pipelines()
-        {
-            _WebSite.AttachSiteToServer(_WebServer.Object);
-            _PluginManager.Verify(r => r.RegisterOwinMiddleware(), Times.Once());
         }
 
         [TestMethod]

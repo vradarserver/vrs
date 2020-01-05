@@ -36,7 +36,6 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         protected Mock<ISharedConfiguration> _SharedConfiguration;
         protected Configuration _Configuration;
 
-        protected IWebAppConfiguration _WebAppConfiguration;
         protected MockAccessFilter _AccessFilter;
         protected MockBasicAuthenticationFilter _BasicAuthenticationFilter;
         protected MockRedirectionFilter _RedirectionFilter;
@@ -58,16 +57,20 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _BasicAuthenticationFilter = MockBasicAuthenticationFilter.CreateAndRegister();
             _RedirectionFilter = MockRedirectionFilter.CreateAndRegister();
 
+            /*
             _WebAppConfiguration = Factory.Resolve<IWebAppConfiguration>();
             _WebAppConfiguration.AddCallback(UsetTestEnvironmentSetup,   StandardPipelinePriority.Access - 1);
             _WebAppConfiguration.AddCallback(ConfigureHttpConfiguration, StandardPipelinePriority.WebApiConfiguration);
             _WebAppConfiguration.AddCallback(UseWebApi,                  StandardPipelinePriority.WebApi);
+            */
 
             ExtraInitialise();
 
+            /*
             _Server = TestServer.Create(app => {
                 _WebAppConfiguration.Configure(app);
             });
+            */
         }
 
         protected virtual void ExtraInitialise()
@@ -95,19 +98,19 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
         private void ConfigureHttpConfiguration(IAppBuilder app)
         {
-            var configuration = _WebAppConfiguration.GetHttpConfiguration();
-            configuration.MapHttpAttributeRoutes();
-            configuration.Routes.MapHttpRoute(
-                name:           "DefaultApi",
-                routeTemplate:  "api/{controller}/{id}",
-                defaults:       new { id = RouteParameter.Optional }
-            );
+            //var configuration = _WebAppConfiguration.GetHttpConfiguration();
+            //configuration.MapHttpAttributeRoutes();
+            //configuration.Routes.MapHttpRoute(
+            //    name:           "DefaultApi",
+            //    routeTemplate:  "api/{controller}/{id}",
+            //    defaults:       new { id = RouteParameter.Optional }
+            //);
         }
 
         private void UseWebApi(IAppBuilder app)
         {
-            var configuration = _WebAppConfiguration.GetHttpConfiguration();
-            app.UseWebApi(configuration);
+            //var configuration = _WebAppConfiguration.GetHttpConfiguration();
+            //app.UseWebApi(configuration);
         }
 
         void UsetTestEnvironmentSetup(IAppBuilder app)

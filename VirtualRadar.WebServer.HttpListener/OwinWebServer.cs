@@ -11,10 +11,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
+using AWhewell.Owin.Interface;
 using InterfaceFactory;
 using Microsoft.Owin.Hosting;
 using Owin;
@@ -22,6 +20,7 @@ using VirtualRadar.Interface;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.WebServer;
+using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.WebServer.HttpListener
 {
@@ -37,24 +36,14 @@ namespace VirtualRadar.WebServer.HttpListener
         private WebServerShim _OldServerShim;
 
         /// <summary>
-        /// The handle for the callback we have registered with <see cref="IWebAppConfiguration"/>.
+        /// The handle for the callback we have registered with the standard pipeline builder.
         /// </summary>
-        private IWebAppConfigurationCallbackHandle _ConfigureCallbackHandle;
+        private IMiddlewareBuilderCallbackHandle _BuilderCallbackHandle;
 
         /// <summary>
         /// The handle to the OWIN web application.
         /// </summary>
         private IDisposable _WebApp;
-
-        /// <summary>
-        /// The <see cref="IWebAppConfiguration"/> that can be used to configure OWIN web apps.
-        /// </summary>
-        private IWebAppConfiguration _WebAppConfiguration;
-
-        /// <summary>
-        /// True when the standard pipeline has been added to <see cref="_WebAppConfiguration"/>.
-        /// </summary>
-        private bool _PipelineConfigured;
 
         /// <summary>
         /// A reference to the singleton <see cref="IAuthenticationConfiguration"/>.
@@ -282,7 +271,6 @@ namespace VirtualRadar.WebServer.HttpListener
 
         public OwinWebServer()
         {
-            _WebAppConfiguration = Factory.Resolve<IWebAppConfiguration>();
             _AuthenticationConfiguration = Factory.ResolveSingleton<IAuthenticationConfiguration>();
             _AccessConfiguration = Factory.ResolveSingleton<IAccessConfiguration>();
         }
@@ -321,18 +309,22 @@ namespace VirtualRadar.WebServer.HttpListener
 
         private void RegisterConfigureCallback()
         {
-            if(_ConfigureCallbackHandle == null) {
-                _ConfigureCallbackHandle = _WebAppConfiguration.AddCallback(AddShimMiddleware, StandardPipelinePriority.ShimServerPriority);
+            if(_BuilderCallbackHandle == null) {
+                _BuilderCallbackHandle = Factory.ResolveSingleton<IWebSitePipelineBuilder>()
+                    .PipelineBuilder
+                    .RegisterMiddlewareBuilder(AddShimMiddleware, StandardPipelinePriority.ShimServerPriority);
             }
         }
 
         private void DeregisterConfigureCallback()
         {
-            if(_ConfigureCallbackHandle != null) {
-                var handle = _ConfigureCallbackHandle;
-                _ConfigureCallbackHandle = null;
+            if(_BuilderCallbackHandle != null) {
+                var handle = _BuilderCallbackHandle;
+                _BuilderCallbackHandle = null;
 
-                _WebAppConfiguration.RemoveCallback(handle);
+                Factory.ResolveSingleton<IWebSitePipelineBuilder>()
+                    .PipelineBuilder
+                    .DeregisterMiddlewareBuilder(handle);
             }
         }
 
@@ -346,13 +338,6 @@ namespace VirtualRadar.WebServer.HttpListener
                 };
                 startOptions.Urls.Add(Prefix);
 
-                if(!_PipelineConfigured) {
-                    _PipelineConfigured = true;
-                    var standardPipeline = Factory.Resolve<IStandardPipeline>();
-                    standardPipeline.Register(_WebAppConfiguration);
-                }
-
-                _WebApp = WebApp.Start(startOptions, _WebAppConfiguration.Configure);
                 _Online = true;
                 OnOnlineChanged(EventArgs.Empty);
             }
@@ -371,10 +356,10 @@ namespace VirtualRadar.WebServer.HttpListener
             }
         }
 
-        private void AddShimMiddleware(IAppBuilder appBuilder)
+        private void AddShimMiddleware(IPipelineBuilderEnvironment builderEnv)
         {
             _OldServerShim = new WebServerShim(this);
-            _OldServerShim.Configure(appBuilder);
+            builderEnv.UseMiddleware(_OldServerShim.ShimMiddleware);
         }
 
         private void HookHeartbeat()

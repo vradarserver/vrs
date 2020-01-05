@@ -221,9 +221,6 @@ namespace VirtualRadar.WebSite
                     throw new InvalidOperationException("The web site can only be attached to one server");
                 }
 
-                var pluginManager = Factory.ResolveSingleton<IPluginManager>();
-                pluginManager.RegisterOwinMiddleware();
-
                 var sharedConfig = Factory.ResolveSingleton<ISharedConfiguration>();
                 sharedConfig.ConfigurationChanged += SharedConfiguration_ConfigurationChanged;
 

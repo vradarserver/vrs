@@ -352,6 +352,12 @@ namespace VirtualRadar.Library.Presenter
         {
             _View.ReportProgress(Strings.SplashScreenStartingWebServer);
 
+            var webSitePipelineBuilder = Factory.ResolveSingleton<IWebSitePipelineBuilder>();
+            webSitePipelineBuilder.AddStandardPipelineMiddleware();
+
+            var pluginManager = Factory.ResolveSingleton<IPluginManager>();
+            pluginManager.RegisterOwinMiddleware();
+
             var autoConfigWebServer = Factory.ResolveSingleton<IAutoConfigWebServer>();
             autoConfigWebServer.Initialise();
 

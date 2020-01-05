@@ -71,16 +71,6 @@ namespace VirtualRadar.WebServer.HttpListener
         }
 
         /// <summary>
-        /// Configures the app builder for OWIN operations.
-        /// </summary>
-        /// <param name="app"></param>
-        public void Configure(IAppBuilder app)
-        {
-            var shimMiddleware = new Func<AppFunc, AppFunc>(ShimMiddleware);
-            app.Use(shimMiddleware);
-        }
-
-        /// <summary>
         /// The shim's OWIN middleware.
         /// </summary>
         /// <param name="next"></param>

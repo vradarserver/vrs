@@ -203,11 +203,8 @@
     <Compile Include="Owin\IImageServerConfiguration.cs" />
     <Compile Include="Owin\IJavascriptManipulator.cs" />
     <Compile Include="Owin\IMapPluginHtmlManipulator.cs" />
-    <Compile Include="Owin\IPipeline.cs" />
-    <Compile Include="Owin\IPipelineConfiguration.cs" />
     <Compile Include="Owin\IRedirectionFilter.cs" />
     <Compile Include="Owin\IRedirectionConfiguration.cs" />
-    <Compile Include="Owin\IStandardPipeline.cs" />
     <Compile Include="Owin\ITextResponseManipulator.cs" />
     <Compile Include="Owin\BaseApiController.cs" />
     <Compile Include="Owin\RedirectionContext.cs" />
@@ -259,8 +256,6 @@
     <Compile Include="View\ValidationModelFieldAttribute.cs" />
     <Compile Include="View\ValidationModelHelper.cs" />
     <Compile Include="View\EnumModel.cs" />
-    <Compile Include="Owin\IWebAppConfigurationCallbackHandle.cs" />
-    <Compile Include="Owin\IWebAppConfiguration.cs" />
     <Compile Include="WebSite\GetAircraftListFilter.cs" />
     <Compile Include="WebSite\GetAircraftListFilterField.cs" />
     <Compile Include="WebSite\GetAircraftListModel.cs" />

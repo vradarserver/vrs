@@ -54,6 +54,7 @@ namespace Test.VirtualRadar.Library.Presenter
         private Mock<IWebServer> _WebServer;
         private Mock<IAutoConfigWebServer> _AutoConfigWebServer;
         private Mock<IWebSite> _WebSite;
+        private Mock<IWebSitePipelineBuilder> _WebSitePipelineBuilder;
         private Mock<IFlightSimulatorAircraftList> _FlightSimulatorXAircraftList;
         private Mock<IUniversalPlugAndPlayManager> _UniversalPlugAndPlayManager;
         private Mock<IConnectionLogger> _ConnectionLogger;
@@ -94,6 +95,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _WebServer = new Mock<IWebServer>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _AutoConfigWebServer.Setup(s => s.WebServer).Returns(_WebServer.Object);
             _WebSite = TestUtilities.CreateMockImplementation<IWebSite>();
+            _WebSitePipelineBuilder = TestUtilities.CreateMockSingleton<IWebSitePipelineBuilder>();
             _FlightSimulatorXAircraftList = TestUtilities.CreateMockImplementation<IFlightSimulatorAircraftList>();
             _UniversalPlugAndPlayManager = TestUtilities.CreateMockImplementation<IUniversalPlugAndPlayManager>();
             _ConnectionLogger = TestUtilities.CreateMockSingleton<IConnectionLogger>();
@@ -911,6 +913,24 @@ namespace Test.VirtualRadar.Library.Presenter
 
             _Presenter.Initialise(_View.Object);
             _Presenter.StartApplication();
+        }
+
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Configures_WebSitePipelineBuilder()
+        {
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            _WebSitePipelineBuilder.Verify(r => r.AddStandardPipelineMiddleware(), Times.Once());
+        }
+
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Calls_PluginManager_RegisterOwinMiddleware()
+        {
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            _PluginManager.Verify(r => r.RegisterOwinMiddleware(), Times.Once());
         }
 
         [TestMethod]

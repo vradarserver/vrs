@@ -127,7 +127,6 @@
     <Compile Include="ApiControllers\DirectoryEntryControllerTests.cs" />
     <Compile Include="ApiControllers\FeedsControllerTests.cs" />
     <Compile Include="HtmlManipulatorTests.cs" />
-    <Compile Include="MockOwinPipelineConfiguration.cs" />
     <Compile Include="WebSitePipelineBuilder_Tests.cs" />
     <Compile Include="TestHelpers\BoolFilter.cs" />
     <Compile Include="TestHelpers\DateFilter.cs" />
