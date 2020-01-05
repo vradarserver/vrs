@@ -14,6 +14,7 @@ using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using AWhewell.Owin.Interface;
 using AWhewell.Owin.Utility;
 using InterfaceFactory;
 using Microsoft.Owin.Builder;
@@ -32,14 +33,9 @@ namespace VirtualRadar.Owin
     class LoopbackHost : ILoopbackHost
     {
         /// <summary>
-        /// The app builder used to create the host.
+        /// The pipeline that will be used to process messages.
         /// </summary>
-        private IAppBuilder _AppBuilder = new AppBuilder();
-
-        /// <summary>
-        /// The middleware chain that was built by <see cref="_AppBuilder"/>.
-        /// </summary>
-        private AppFunc _MiddlewareChain = null;
+        private AWhewell.Owin.Interface.IPipeline _Pipeline;
 
         /// <summary>
         /// See interface docs.
@@ -51,29 +47,26 @@ namespace VirtualRadar.Owin
         /// </summary>
         public void ConfigureStandardPipeline()
         {
-            if(_MiddlewareChain != null) {
+            if(_Pipeline != null) {
                 throw new InvalidOperationException($"You cannot configure an {nameof(ILoopbackHost)} more than once");
             }
 
-            var webAppConfiguration = Factory.Resolve<IWebAppConfiguration>();
-            var standardPipeline = Factory.Resolve<IStandardPipeline>();
-
-            standardPipeline.Register(webAppConfiguration);
-            ConfigureCustomPipeline(webAppConfiguration);
+            var webSitePipelineBuilder = Factory.ResolveSingleton<IWebSitePipelineBuilder>();
+            ConfigureCustomPipeline(webSitePipelineBuilder.PipelineBuilder);
         }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="webAppConfiguration"></param>
-        public void ConfigureCustomPipeline(IWebAppConfiguration webAppConfiguration)
+        /// <param name="pipelineBuilder"></param>
+        public void ConfigureCustomPipeline(IPipelineBuilder pipelineBuilder)
         {
-            if(_MiddlewareChain != null) {
+            if(_Pipeline != null) {
                 throw new InvalidOperationException($"You cannot configure an {nameof(ILoopbackHost)} more than once");
             }
 
-            webAppConfiguration.Configure(_AppBuilder);
-            _MiddlewareChain = _AppBuilder.Build<AppFunc>();
+            var environment = Factory.Resolve<IPipelineBuilderEnvironment>();
+            _Pipeline = pipelineBuilder.CreatePipeline(environment);
         }
 
         /// <summary>
@@ -84,7 +77,7 @@ namespace VirtualRadar.Owin
         /// <returns></returns>
         public SimpleContent SendSimpleRequest(string pathAndFile, IDictionary<string, object> environment = null)
         {
-            if(_MiddlewareChain == null) {
+            if(_Pipeline == null) {
                 throw new InvalidOperationException($"{nameof(ILoopbackHost)} needs to be configured before use");
             }
 
@@ -92,7 +85,8 @@ namespace VirtualRadar.Owin
                 var fakeEnvironment = CreateCompliantOwinEnvironment(pathAndFile, responseStream, environment);
                 ModifyEnvironmentAction?.Invoke(fakeEnvironment);
 
-                _MiddlewareChain.Invoke(fakeEnvironment);
+                var task = _Pipeline.ProcessRequest(fakeEnvironment);
+                task.Wait();
 
                 return new SimpleContent() {
                     HttpStatusCode = (HttpStatusCode)fakeEnvironment["owin.ResponseStatusCode"],

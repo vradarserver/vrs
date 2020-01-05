@@ -15,13 +15,14 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AWhewell.Owin.Interface;
 using AWhewell.Owin.Utility;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Owin;
 using Test.Framework;
 using VirtualRadar.Interface.Owin;
+using VirtualRadar.Interface.WebSite;
 
 namespace Test.VirtualRadar.Owin
 {
@@ -34,45 +35,46 @@ namespace Test.VirtualRadar.Owin
         private IClassFactory _Snapshot;
 
         private ILoopbackHost _LoopbackHost;
-        private Mock<IStandardPipeline> _StandardPipeline;
-        private IWebAppConfiguration _WebAppConfiguration;
+        private Mock<IWebSitePipelineBuilder> _WebSitePipelineBuilder;
+        private Mock<IPipelineBuilder> _StandardPipelineBuilder;
+        private Mock<IPipelineBuilder> _CustomPipelineBuilder;
+        private Mock<AWhewell.Owin.Interface.IPipeline> _Pipeline;
+        private Mock<IPipelineBuilderEnvironment> _PipelineBuilderEnvironment;
         private IDictionary<string, object> _LoopbackEnvironment;
         private MockOwinEnvironment _Environment;
+        private Action<IDictionary<string, object>> _ProcessRequestAction;
 
         [TestInitialize]
         public void TestInitialise()
         {
             _Snapshot = Factory.TakeSnapshot();
 
-            _StandardPipeline = TestUtilities.CreateMockImplementation<IStandardPipeline>();
-            _WebAppConfiguration = Factory.Resolve<IWebAppConfiguration>();
+            _Pipeline = TestUtilities.CreateMockImplementation<AWhewell.Owin.Interface.IPipeline>();
+            _ProcessRequestAction = null;
+            _Pipeline
+                .Setup(r => r.ProcessRequest(It.IsAny<IDictionary<string, object>>()))
+                .Callback((IDictionary<string, object> environment) => {
+                    _LoopbackEnvironment = environment;
+                    _ProcessRequestAction?.Invoke(environment);
+                });
+
+            _PipelineBuilderEnvironment = TestUtilities.CreateMockImplementation<IPipelineBuilderEnvironment>();
+
+            // Standard pipeline builder
+            _WebSitePipelineBuilder = TestUtilities.CreateMockImplementation<IWebSitePipelineBuilder>();
+            _StandardPipelineBuilder = TestUtilities.CreateMockImplementation<IPipelineBuilder>();
+            _WebSitePipelineBuilder.SetupGet(r => r.PipelineBuilder).Returns(_StandardPipelineBuilder.Object);
+
+            // Custom pipeline builder
+            _CustomPipelineBuilder = TestUtilities.CreateMockImplementation<IPipelineBuilder>();
+
+            _StandardPipelineBuilder.Setup(r => r.CreatePipeline(It.IsAny<IPipelineBuilderEnvironment>())).Returns(() => _Pipeline.Object);
+            _CustomPipelineBuilder.Setup  (r => r.CreatePipeline(It.IsAny<IPipelineBuilderEnvironment>())).Returns(() => _Pipeline.Object);
+
             _LoopbackEnvironment = null;
             _Environment = new MockOwinEnvironment();
 
             _LoopbackHost = Factory.Resolve<ILoopbackHost>();
-        }
-
-        private void AddCallback(Func<IDictionary<string, object>, bool> callNextMiddleware)
-        {
-            _WebAppConfiguration.AddCallback((IAppBuilder app) => {
-                var middleware = new Func<AppFunc, AppFunc>((AppFunc next) => {
-                    AppFunc result = async(IDictionary<string, object> env) => {
-                        if(callNextMiddleware(env)) {
-                            await next.Invoke(env);
-                        }
-                    };
-                    return result;
-                });
-                app.Use(middleware);
-            }, 0);
-        }
-
-        private void RecordEnvironment()
-        {
-            AddCallback((IDictionary<string, object> environment) => {
-                _LoopbackEnvironment = environment;
-                return true;
-            });
         }
 
         [TestCleanup]
@@ -82,14 +84,12 @@ namespace Test.VirtualRadar.Owin
         }
 
         [TestMethod]
-        public void LoopbackHost_ConfigureStandardPipeline_Adds_Standard_Middleware()
+        public void LoopbackHost_ConfigureStandardPipeline_Uses_Web_Site_Pipeline()
         {
-            var mockWebAppConfig = TestUtilities.CreateMockImplementation<IWebAppConfiguration>();
-
             _LoopbackHost.ConfigureStandardPipeline();
 
-            _StandardPipeline.Verify(r => r.Register(mockWebAppConfig.Object), Times.Once());
-            mockWebAppConfig.Verify(r => r.Configure(It.IsAny<IAppBuilder>()), Times.Once());
+            _StandardPipelineBuilder.Verify(r => r.CreatePipeline(It.IsAny<IPipelineBuilderEnvironment>()), Times.Once());
+            _CustomPipelineBuilder.Verify(r => r.CreatePipeline(It.IsAny<IPipelineBuilderEnvironment>()), Times.Never());
         }
 
         [TestMethod]
@@ -100,23 +100,20 @@ namespace Test.VirtualRadar.Owin
             _LoopbackHost.ConfigureStandardPipeline();
         }
 
-        [TestMethod]
-        public void LoopbackHost_ConfigureCustomPipeline_Builds_IApp_From_Configuration()
+        public void LoopbackHost_ConfigureCustomPipeline_Builds_Pipeline_From_Builder_Supplied()
         {
-            var mockWebAppConfig = TestUtilities.CreateMockImplementation<IWebAppConfiguration>();
+            _LoopbackHost.ConfigureCustomPipeline(_CustomPipelineBuilder.Object);
 
-            _LoopbackHost.ConfigureCustomPipeline(mockWebAppConfig.Object);
-
-            _StandardPipeline.Verify(r => r.Register(It.IsAny<IWebAppConfiguration>()), Times.Never());
-            mockWebAppConfig.Verify(r => r.Configure(It.IsAny<IAppBuilder>()), Times.Once());
+            _CustomPipelineBuilder.Verify(r => r.CreatePipeline(It.IsAny<IPipelineBuilderEnvironment>()), Times.Once());
+            _StandardPipelineBuilder.Verify(r => r.CreatePipeline(It.IsAny<IPipelineBuilderEnvironment>()), Times.Never());
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void LoopbackHost_ConfigureCustomPipeline_Throws_If_Already_Configured()
         {
-            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
-            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+            _LoopbackHost.ConfigureCustomPipeline(_CustomPipelineBuilder.Object);
+            _LoopbackHost.ConfigureCustomPipeline(_CustomPipelineBuilder.Object);
         }
 
         [TestMethod]
@@ -129,9 +126,7 @@ namespace Test.VirtualRadar.Owin
         [TestMethod]
         public void LoopbackHost_SendSimpleRequest_Uses_Owin_Compliant_Environment()
         {
-            RecordEnvironment();
-
-            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+            _LoopbackHost.ConfigureStandardPipeline();
             _LoopbackHost.SendSimpleRequest("/file.txt?a=1&amp;b=2");
 
             Assert.IsNotNull(_LoopbackEnvironment);
@@ -164,8 +159,7 @@ namespace Test.VirtualRadar.Owin
         [TestMethod]
         public void LoopbackHost_SendSimpleRequest_Calls_ModifyEnvironmentAction_Before_Sending_Request()
         {
-            RecordEnvironment();
-            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+            _LoopbackHost.ConfigureStandardPipeline();
             _LoopbackHost.ModifyEnvironmentAction += environment => {
                 environment.Add("customKey", "customValue");
             };
@@ -178,8 +172,7 @@ namespace Test.VirtualRadar.Owin
         [TestMethod]
         public void LoopbackHost_SendSimpleRequest_Forces_Leading_Slash_On_PathAndFile()
         {
-            RecordEnvironment();
-            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+            _LoopbackHost.ConfigureStandardPipeline();
 
             _LoopbackHost.SendSimpleRequest("file.txt");
             Assert.AreEqual("/file.txt", _LoopbackEnvironment["owin.requestpath"]);
@@ -188,8 +181,7 @@ namespace Test.VirtualRadar.Owin
         [TestMethod]
         public void LoopbackHost_SendSimpleRequest_Flattens_PathAndFile()
         {
-            RecordEnvironment();
-            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+            _LoopbackHost.ConfigureStandardPipeline();
 
             _LoopbackHost.SendSimpleRequest("/folder/subfolder/../othersub/minor/.././../file.txt");
             Assert.AreEqual("/folder/file.txt", _LoopbackEnvironment["owin.requestpath"]);
@@ -198,8 +190,7 @@ namespace Test.VirtualRadar.Owin
         [TestMethod]
         public void LoopbackHost_SendSimpleRequest_Sets_Correct_PathAndFile_For_Empty_String()
         {
-            RecordEnvironment();
-            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+            _LoopbackHost.ConfigureStandardPipeline();
 
             _LoopbackHost.SendSimpleRequest("");
             Assert.AreEqual("/", _LoopbackEnvironment["owin.requestpath"]);
@@ -209,15 +200,14 @@ namespace Test.VirtualRadar.Owin
         [ExpectedException(typeof(ArgumentNullException))]
         public void LoopbackHost_SendSimpleRequest_Rejects_Requests_For_Null_PathAndFile()
         {
-            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+            _LoopbackHost.ConfigureStandardPipeline();
             _LoopbackHost.SendSimpleRequest(null);
         }
 
         [TestMethod]
         public void LoopbackHost_SendSimpleRequest_Uses_Empty_String_When_Request_Has_No_Query_String()
         {
-            RecordEnvironment();
-            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+            _LoopbackHost.ConfigureStandardPipeline();
 
             _LoopbackHost.SendSimpleRequest("/file.txt");
             Assert.AreEqual("/file.txt", _LoopbackEnvironment["owin.requestpath"]);
@@ -227,12 +217,11 @@ namespace Test.VirtualRadar.Owin
         [TestMethod]
         public void LoopbackHost_SendSimpleRequest_Returns_Status_To_Caller()
         {
-            AddCallback((IDictionary<string, object> environment) => {
-                var context = OwinContext.Create(environment);
+            _ProcessRequestAction = (env) => {
+                var context = OwinContext.Create(env);
                 context.ResponseStatusCode = 123;
-                return false;
-            });
-            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+            };
+            _LoopbackHost.ConfigureStandardPipeline();
 
             var result = _LoopbackHost.SendSimpleRequest("/test");
 
@@ -243,12 +232,11 @@ namespace Test.VirtualRadar.Owin
         public void LoopbackHost_SendSimpleRequest_Returns_Response_Stream_Content_To_Caller()
         {
             var bodyBytes = Encoding.UTF8.GetBytes("Up at the Lake");
-            AddCallback((IDictionary<string, object> environment) => {
-                var context = OwinContext.Create(environment);
+            _ProcessRequestAction = (env) => {
+                var context = OwinContext.Create(env);
                 context.ResponseBody.Write(bodyBytes, 0, bodyBytes.Length);
-                return false;
-            });
-            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+            };
+            _LoopbackHost.ConfigureStandardPipeline();
 
             var result = _LoopbackHost.SendSimpleRequest("/test");
 
@@ -258,10 +246,7 @@ namespace Test.VirtualRadar.Owin
         [TestMethod]
         public void LoopbackHost_SendSimpleRequest_Returns_Empty_Content_Array_When_Response_Has_No_Body()
         {
-            AddCallback((IDictionary<string, object> environment) => {
-                return false;
-            });
-            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+            _LoopbackHost.ConfigureStandardPipeline();
 
             var result = _LoopbackHost.SendSimpleRequest("/test");
 
@@ -271,8 +256,7 @@ namespace Test.VirtualRadar.Owin
         [TestMethod]
         public void LoopbackHost_SendSimpleRequest_UserAgent_Defaults_As_Per_Docs()
         {
-            RecordEnvironment();
-            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+            _LoopbackHost.ConfigureStandardPipeline();
 
             _LoopbackHost.SendSimpleRequest("/");
 
@@ -283,8 +267,7 @@ namespace Test.VirtualRadar.Owin
         [TestMethod]
         public void LoopbackHost_SendSimpleRequest_Copies_Headers_From_Environment()
         {
-            RecordEnvironment();
-            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+            _LoopbackHost.ConfigureStandardPipeline();
 
             _Environment.RequestHeaders["Authorization"] = "Basic Hello&=1;2";
             _Environment.RequestHeaders["Cookie"] = "abc=123";
@@ -300,8 +283,7 @@ namespace Test.VirtualRadar.Owin
         [TestMethod]
         public void LoopbackHost_SendSimpleRequest_Copes_When_Environment_Supplies_Headers_That_Are_Defaulted()
         {
-            RecordEnvironment();
-            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+            _LoopbackHost.ConfigureStandardPipeline();
 
             _Environment.RequestHeaders["User-Agent"] = "My User Agent";
             _LoopbackHost.SendSimpleRequest("/", _Environment.Environment);
@@ -313,8 +295,7 @@ namespace Test.VirtualRadar.Owin
         [TestMethod]
         public void LoopbackHost_SendSimpleRequest_Copies_Client_IP_Address_From_Environment()
         {
-            RecordEnvironment();
-            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+            _LoopbackHost.ConfigureStandardPipeline();
 
             _Environment.ServerRemoteIpAddress = "1.2.3.4";
             _Environment.ServerRemotePort = 54321;
@@ -328,8 +309,7 @@ namespace Test.VirtualRadar.Owin
         [TestMethod]
         public void LoopbackHost_SendSimpleRequest_Sets_IsLoopbackRequest_Environment_Key()
         {
-            RecordEnvironment();
-            _LoopbackHost.ConfigureCustomPipeline(_WebAppConfiguration);
+            _LoopbackHost.ConfigureStandardPipeline();
 
             _LoopbackHost.SendSimpleRequest("/");
 

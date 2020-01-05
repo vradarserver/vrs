@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 onwards, Andrew Whewell
+﻿// Copyright © 2020 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,14 +13,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AWhewell.Owin.Interface;
+using InterfaceFactory;
 
-namespace VirtualRadar.Interface.Owin
+namespace VirtualRadar.Interface.WebSite
 {
     /// <summary>
-    /// The interface for objects that represent a callback that is called when an OWIN web app is configured.
+    /// The singleton interface for the pipeline builder that the web site uses for its OWIN pipeline.
     /// </summary>
-    [Obsolete("Will be deleted with IWebApiConfiguration is deleted")]
-    public interface IWebAppConfigurationCallbackHandle
+    [Singleton]
+    public interface IWebSitePipelineBuilder
     {
+        /// <summary>
+        /// Gets the pipeline builder that the web site will use.
+        /// </summary>
+        IPipelineBuilder PipelineBuilder { get; }
     }
 }

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AWhewell.Owin.Interface;
 using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Interface.Owin
@@ -33,15 +34,15 @@ namespace VirtualRadar.Interface.Owin
         Action<IDictionary<string, object>> ModifyEnvironmentAction { get; set; }
 
         /// <summary>
-        /// Configures the pipeline using the standard web site middleware.
+        /// Configures the web site pipeline.
         /// </summary>
         void ConfigureStandardPipeline();
 
         /// <summary>
-        /// Configures the pipeline using the web app configuration passed across.
+        /// Configures the pipeline using the builder passed across.
         /// </summary>
-        /// <param name="webAppConfiguration"></param>
-        void ConfigureCustomPipeline(IWebAppConfiguration webAppConfiguration);
+        /// <param name="pipelineBuilder"></param>
+        void ConfigureCustomPipeline(IPipelineBuilder pipelineBuilder);
 
         /// <summary>
         /// Sends an anonymous GET request from the local loopback:10000 to loopback:10001 through the pipeline.

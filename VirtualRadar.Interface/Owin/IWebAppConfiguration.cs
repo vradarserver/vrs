@@ -21,6 +21,7 @@ namespace VirtualRadar.Interface.Owin
     /// <summary>
     /// The interface for an object that handles the configuration of the OWIN pipeline for the application.
     /// </summary>
+    [Obsolete("Do not use IWebAppConfiguration - use IWebSitePipelineBuilder")]
     public interface IWebAppConfiguration
     {
         /// <summary>
