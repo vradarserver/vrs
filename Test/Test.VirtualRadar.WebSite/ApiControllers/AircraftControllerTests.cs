@@ -209,6 +209,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         public void AircraftController_GetClosest_Returns_Warning_If_Position_Not_Supplied()
         {
+            SetupSnapshot(SetupClosestAircraftList(10), CreateAircraft(icao: 0x400f86, latitude: 1, longitude: 2));
             var json = Get("/api/3.00/aircraft/closest").Json<ProximityGadgetAircraftJson>();
 
             Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
@@ -276,6 +277,8 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         public void AircraftController_GetClosest_Can_Accept_Requests_From_Internet()
         {
+            SetupSnapshot(SetupClosestAircraftList(10), CreateAircraft(icao: 0x400f86, latitude: 1, longitude: 2));
+
             _Configuration.InternetClientSettings.AllowInternetProximityGadgets = true;
             _RemoteIpAddress = "1.2.3.4";
 
