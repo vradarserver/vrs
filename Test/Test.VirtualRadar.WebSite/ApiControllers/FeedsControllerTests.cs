@@ -10,14 +10,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
-using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Newtonsoft.Json;
@@ -25,7 +20,6 @@ using Test.Framework;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Listener;
-using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StandingData;
 using VirtualRadar.Interface.WebSite;
@@ -47,7 +41,6 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         private bool? _ActualAircraftListJsonBuilderFallbackToDefault;
         private Mock<IFlightSimulatorAircraftList> _FlightSimulatorAircraftList;
         private Mock<ITileServerSettingsManager> _TileServerSettingsManager;
-        private HttpContent _EmptyPostBody;
 
         protected override void ExtraInitialise()
         {
@@ -83,8 +76,6 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _FeedManager.SetupGet(r => r.VisibleFeeds).Returns(() => {
                 return _VisibleFeeds.Select(r => r.Object).ToArray();
             });
-
-            _EmptyPostBody = new ByteArrayContent(new byte[0]);
         }
 
         private Mock<IFeed> CreateFeed(int uniqueId = 1, string name = "My Feed", bool hasPlotter = true, bool isVisible = true, bool hasDistinctAircraftList = false)
@@ -277,16 +268,14 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
         #region GetFeeds
         [TestMethod]
-        public async Task FeedsController_GetFeeds_Returns_All_Visible_Feeds()
+        public void FeedsController_GetFeeds_Returns_All_Visible_Feeds()
         {
             _VisibleFeeds.Add(CreateFeed(uniqueId: 1, name: "First", hasPlotter: true, hasDistinctAircraftList: true));
             _VisibleFeeds.Add(CreateFeed(uniqueId: 2, name: "Second", hasPlotter: false, hasDistinctAircraftList: true));
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds");
-            var content = await response.Content.ReadAsStringAsync();
-            var feeds = JsonConvert.DeserializeObject<FeedJson[]>(content);
+            var feeds = Get("/api/3.00/feeds").Json<FeedJson[]>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.AreEqual(2, feeds.Length);
 
             var feed1 = feeds.Single(r => r.UniqueId == 1);
@@ -299,100 +288,86 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_GetFeeds_Returns_Empty_Array_If_All_Feeds_Are_Invisible()
+        public void FeedsController_GetFeeds_Returns_Empty_Array_If_All_Feeds_Are_Invisible()
         {
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds");
-            var content = await response.Content.ReadAsStringAsync();
-            var feeds = JsonConvert.DeserializeObject<FeedJson[]>(content);
+            var feeds = Get("/api/3.00/feeds").Json<FeedJson[]>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.AreEqual(0, feeds.Length);
         }
         #endregion
 
         #region GetFeed
         [TestMethod]
-        public async Task FeedsController_GetFeed_Returns_Feed_If_Known()
+        public void FeedsController_GetFeed_Returns_Feed_If_Known()
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 1, name: "Feed", hasPlotter: true, isVisible: true));
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/1");
-            var content = await response.Content.ReadAsStringAsync();
-            var feed = JsonConvert.DeserializeObject<FeedJson>(content);
+            var feed = Get("/api/3.00/feeds/1").Json<FeedJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.AreEqual(1, feed.UniqueId);
             Assert.AreEqual("Feed", feed.Name);
             Assert.AreEqual(true, feed.HasPolarPlot);
         }
 
         [TestMethod]
-        public async Task FeedsController_GetFeed_Returns_Null_If_ID_Is_Unknown()
+        public void FeedsController_GetFeed_Returns_Null_If_ID_Is_Unknown()
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 1));
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/2");
-            var content = await response.Content.ReadAsStringAsync();
-            var feed = JsonConvert.DeserializeObject<FeedJson>(content);
+            var feed = Get("/api/3.00/feeds/2").Json<FeedJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.IsNull(feed);
         }
 
         [TestMethod]
-        public async Task FeedsController_GetFeed_Returns_Null_If_Feed_Is_Invisible()
+        public void FeedsController_GetFeed_Returns_Null_If_Feed_Is_Invisible()
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 1, isVisible: false));
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/1");
-            var content = await response.Content.ReadAsStringAsync();
-            var feed = JsonConvert.DeserializeObject<FeedJson>(content);
+            var feed = Get("/api/3.00/feeds/1").Json<FeedJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.IsNull(feed);
         }
         #endregion
 
         #region GetPolarPlot
         [TestMethod]
-        public async Task FeedsController_GetPolarPlot_Returns_Object()
+        public void FeedsController_GetPolarPlot_Returns_Object()
         {
             ConfigureGetFeedById(CreateFeed());
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/polar-plot/1");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
+            var json = Get("/api/3.00/feeds/polar-plot/1").Json<PolarPlotsJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.IsNotNull(json);
             Assert.AreEqual(1, json.FeedId);
             Assert.IsNotNull(json.Slices);
         }
 
         [TestMethod]
-        public async Task FeedsController_GetPolarPlot_Returns_Object_For_Version_2_Route()
+        public void FeedsController_GetPolarPlot_Returns_Object_For_Version_2_Route()
         {
             ConfigureGetFeedById(CreateFeed());
 
-            var response = await _Server.HttpClient.GetAsync("/PolarPlot.json?feedId=1");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
+            var json = Get("/PolarPlot.json?feedId=1").Json<PolarPlotsJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.IsNotNull(json);
             Assert.AreEqual(1, json.FeedId);
             Assert.IsNotNull(json.Slices);
         }
 
         [TestMethod]
-        public async Task FeedsController_GetPolarPlot_Returns_Slices()
+        public void FeedsController_GetPolarPlot_Returns_Slices()
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 2));
             _Slices.Add(CreatePolarPlotSlice(100, 199, new PolarPlot() { Angle = 1, Altitude = 150, Distance = 7, Latitude = 10.1, Longitude = 11.2 }));
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/polar-plot/2");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
+            var json = Get("/api/3.00/feeds/polar-plot/2").Json<PolarPlotsJson>();
 
             Assert.AreEqual(2, json.FeedId);
             Assert.AreEqual(1, json.Slices.Count);
@@ -406,65 +381,57 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_GetPolarPlot_Returns_No_Slices_If_Invalid_ID_Supplied()
+        public void FeedsController_GetPolarPlot_Returns_No_Slices_If_Invalid_ID_Supplied()
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 2));
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/polar-plot/1");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
+            var json = Get("/api/3.00/feeds/polar-plot/1").Json<PolarPlotsJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.AreEqual(1, json.FeedId);
             Assert.AreEqual(0, json.Slices.Count);
         }
 
         [TestMethod]
-        public async Task FeedsController_GetPolarPlot_Returns_No_Slices_If_Feed_Is_Invisible()
+        public void FeedsController_GetPolarPlot_Returns_No_Slices_If_Feed_Is_Invisible()
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 1, isVisible: false));
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/polar-plot/1");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
+            var json = Get("/api/3.00/feeds/polar-plot/1").Json<PolarPlotsJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.AreEqual(1, json.FeedId);
             Assert.AreEqual(0, json.Slices.Count);
         }
 
         [TestMethod]
-        public async Task FeedsController_GetPolarPlot_Returns_No_Slices_If_Feed_Has_No_Aircraft_List()
+        public void FeedsController_GetPolarPlot_Returns_No_Slices_If_Feed_Has_No_Aircraft_List()
         {
             var feed = CreateFeed(uniqueId: 1);
             feed.SetupGet(r => r.AircraftList).Returns((IBaseStationAircraftList)null);
             ConfigureGetFeedById(feed);
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/polar-plot/1");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
+            var json = Get("/api/3.00/feeds/polar-plot/1").Json<PolarPlotsJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.AreEqual(1, json.FeedId);
             Assert.AreEqual(0, json.Slices.Count);
         }
 
         [TestMethod]
-        public async Task FeedsController_GetPolarPlot_Returns_No_Slices_If_Feed_Has_No_Plotter()
+        public void FeedsController_GetPolarPlot_Returns_No_Slices_If_Feed_Has_No_Plotter()
         {
             ConfigureGetFeedById(CreateFeed(uniqueId: 1, hasPlotter: false));
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/polar-plot/1");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
+            var json = Get("/api/3.00/feeds/polar-plot/1").Json<PolarPlotsJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.AreEqual(1, json.FeedId);
             Assert.AreEqual(0, json.Slices.Count);
         }
 
         [TestMethod]
-        public async Task FeedsController_GetPolarPlot_Returns_No_Slices_If_Prohibited_By_Configuration()
+        public void FeedsController_GetPolarPlot_Returns_No_Slices_If_Prohibited_By_Configuration()
         {
             _Configuration.InternetClientSettings.CanShowPolarPlots = false;
             _RemoteIpAddress = "1.2.3.4";
@@ -472,17 +439,15 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             ConfigureGetFeedById(CreateFeed(uniqueId: 1));
             _Slices.Add(CreatePolarPlotSlice(100, 199, new PolarPlot() { Angle = 1, Altitude = 150, Distance = 7, Latitude = 10.1, Longitude = 11.2 }));
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/polar-plot/1");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
+            var json = Get("/api/3.00/feeds/polar-plot/1").Json<PolarPlotsJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.AreEqual(1, json.FeedId);
             Assert.AreEqual(0, json.Slices.Count);
         }
 
         [TestMethod]
-        public async Task FeedsController_GetPolarPlot_Returns_Slices_If_Prohibited_By_Configuration_But_Accessed_Locally()
+        public void FeedsController_GetPolarPlot_Returns_Slices_If_Prohibited_By_Configuration_But_Accessed_Locally()
         {
             _Configuration.InternetClientSettings.CanShowPolarPlots = false;
             _RemoteIpAddress = "192.168.0.1";
@@ -490,11 +455,9 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             ConfigureGetFeedById(CreateFeed(uniqueId: 1));
             _Slices.Add(CreatePolarPlotSlice(100, 199, new PolarPlot() { Angle = 1, Altitude = 150, Distance = 7, Latitude = 10.1, Longitude = 11.2 }));
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/feeds/polar-plot/1");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<PolarPlotsJson>(content);
+            var json = Get("/api/3.00/feeds/polar-plot/1").Json<PolarPlotsJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.AreEqual(1, json.FeedId);
             Assert.AreEqual(1, json.Slices.Count);
         }
@@ -502,303 +465,303 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
         #region AircraftList
         [TestMethod]
-        public async Task FeedsController_AircraftList_Returns_Default_Aircraft_List_V2_POST()
+        public void FeedsController_AircraftList_Returns_Default_Aircraft_List_V2_POST()
         {
-            var response = await _Server.HttpClient.PostAsync("AircraftList.json", _EmptyPostBody);
+            Post("AircraftList.json");
 
             var expected = ExpectedAircraftListJsonBuilderArgs();
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Returns_Default_Aircraft_List_V2_GET()
+        public void FeedsController_AircraftList_Returns_Default_Aircraft_List_V2_GET()
         {
-            var response = await _Server.HttpClient.GetAsync("AircraftList.json");
+            Get("AircraftList.json");
 
             var expected = ExpectedAircraftListJsonBuilderArgs();
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Returns_Default_Aircraft_List_V3()
+        public void FeedsController_AircraftList_Returns_Default_Aircraft_List_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", _EmptyPostBody);
+            Post("/api/3.00/feeds/aircraft-list");
 
             var expected = ExpectedAircraftListJsonBuilderArgs();
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Feed_V2_POST()
+        public void FeedsController_AircraftList_Can_Specify_Feed_V2_POST()
         {
-            var response = await _Server.HttpClient.PostAsync("AircraftList.json?feed=7", _EmptyPostBody);
+            Post("AircraftList.json?feed=7");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(feedId: 7);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Feed_V2_GET()
+        public void FeedsController_AircraftList_Can_Specify_Feed_V2_GET()
         {
-            var response = await _Server.HttpClient.GetAsync("AircraftList.json?feed=7");
+            Get("AircraftList.json?feed=7");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(feedId: 7);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Feed_V3()
+        public void FeedsController_AircraftList_Can_Specify_Feed_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list/7", _EmptyPostBody);
+            Post("/api/3.00/feeds/aircraft-list/7");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(feedId: 7);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Browser_Location_V2_POST()
+        public void FeedsController_AircraftList_Can_Specify_Browser_Location_V2_POST()
         {
-            var response = await _Server.HttpClient.PostAsync("AircraftList.json?lat=1.2&lng=3.4", _EmptyPostBody);
+            Post("AircraftList.json?lat=1.2&lng=3.4");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(latitude: 1.2, longitude: 3.4);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Browser_Location_V2_GET()
+        public void FeedsController_AircraftList_Can_Specify_Browser_Location_V2_GET()
         {
-            var response = await _Server.HttpClient.GetAsync("AircraftList.json?lat=1.2&lng=3.4");
+            Get("AircraftList.json?lat=1.2&lng=3.4");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(latitude: 1.2, longitude: 3.4);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Browser_Location_V3()
+        public void FeedsController_AircraftList_Can_Specify_Browser_Location_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.FormUrlEncoded(new [,] {
+            PostForm("/api/3.00/feeds/aircraft-list", new [,] {
                 { "Latitude",  "1.2" },
                 { "Longitude", "3.4" },
-            }));
+            });
 
             var expected = ExpectedAircraftListJsonBuilderArgs(latitude: 1.2, longitude: 3.4);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Identifies_Internet_Clients_V2_POST()
+        public void FeedsController_AircraftList_Identifies_Internet_Clients_V2_POST()
         {
             _RemoteIpAddress = "127.0.0.1";
-            await _Server.HttpClient.PostAsync("AircraftList.json", _EmptyPostBody);
+            Post("AircraftList.json");
             Assert.AreEqual(false, _ActualAircraftListJsonBuilderArgs.IsInternetClient);
 
             TestCleanup();
             TestInitialise();
 
             _RemoteIpAddress = "1.2.3.4";
-            await _Server.HttpClient.PostAsync("AircraftList.json", _EmptyPostBody);
+            Post("AircraftList.json");
             Assert.AreEqual(true, _ActualAircraftListJsonBuilderArgs.IsInternetClient);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Identifies_Internet_Clients_V2_GET()
+        public void FeedsController_AircraftList_Identifies_Internet_Clients_V2_GET()
         {
             _RemoteIpAddress = "127.0.0.1";
-            await _Server.HttpClient.GetAsync("AircraftList.json");
+            Get("AircraftList.json");
             Assert.AreEqual(false, _ActualAircraftListJsonBuilderArgs.IsInternetClient);
 
             TestCleanup();
             TestInitialise();
 
             _RemoteIpAddress = "1.2.3.4";
-            await _Server.HttpClient.GetAsync("AircraftList.json");
+            Get("AircraftList.json");
             Assert.AreEqual(true, _ActualAircraftListJsonBuilderArgs.IsInternetClient);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Identifies_Internet_Clients_V3()
+        public void FeedsController_AircraftList_Identifies_Internet_Clients_V3()
         {
             _RemoteIpAddress = "127.0.0.1";
-            await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", _EmptyPostBody);
+            Post("/api/3.00/feeds/aircraft-list");
             Assert.AreEqual(false, _ActualAircraftListJsonBuilderArgs.IsInternetClient);
 
             TestCleanup();
             TestInitialise();
 
             _RemoteIpAddress = "1.2.3.4";
-            await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", _EmptyPostBody);
+            Post("/api/3.00/feeds/aircraft-list");
             Assert.AreEqual(true, _ActualAircraftListJsonBuilderArgs.IsInternetClient);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Last_DataVersion_V2_POST()
+        public void FeedsController_AircraftList_Can_Specify_Last_DataVersion_V2_POST()
         {
-            var response = await _Server.HttpClient.PostAsync("AircraftList.json?ldv=12", _EmptyPostBody);
+            Post("AircraftList.json?ldv=12");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(previousDataVersion: 12);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Last_DataVersion_V2_GET()
+        public void FeedsController_AircraftList_Can_Specify_Last_DataVersion_V2_GET()
         {
-            var response = await _Server.HttpClient.GetAsync("AircraftList.json?ldv=12");
+            Get("AircraftList.json?ldv=12");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(previousDataVersion: 12);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Last_DataVersion_V3()
+        public void FeedsController_AircraftList_Can_Specify_Last_DataVersion_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.FormUrlEncoded(new [,] {
+            PostForm("/api/3.00/feeds/aircraft-list", new [,] {
                 { "LastDataVersion", "12" },
-            }));
+            });
 
             var expected = ExpectedAircraftListJsonBuilderArgs(previousDataVersion: 12);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_ServerTimeTicks_V2_POST()
+        public void FeedsController_AircraftList_Can_Specify_ServerTimeTicks_V2_POST()
         {
-            var response = await _Server.HttpClient.PostAsync("AircraftList.json?stm=12", _EmptyPostBody);
+            Post("AircraftList.json?stm=12");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(serverTimeTicks: 12);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_ServerTimeTicks_V2_GET()
+        public void FeedsController_AircraftList_Can_Specify_ServerTimeTicks_V2_GET()
         {
-            var response = await _Server.HttpClient.GetAsync("AircraftList.json?stm=12");
+            Get("AircraftList.json?stm=12");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(serverTimeTicks: 12);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_ServerTimeTicks_V3()
+        public void FeedsController_AircraftList_Can_Specify_ServerTimeTicks_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.FormUrlEncoded(new [,] {
+            PostForm("/api/3.00/feeds/aircraft-list", new [,] {
                 { "ServerTicks", "12" },
-            }));
+            });
 
             var expected = ExpectedAircraftListJsonBuilderArgs(serverTimeTicks: 12);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Force_Resend_Of_Trails_V2_POST()
+        public void FeedsController_AircraftList_Can_Force_Resend_Of_Trails_V2_POST()
         {
-            var response = await _Server.HttpClient.PostAsync("AircraftList.json?refreshTrails=1", _EmptyPostBody);
+            Post("AircraftList.json?refreshTrails=1");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(resendTrails: true);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Force_Resend_Of_Trails_V2_GET()
+        public void FeedsController_AircraftList_Can_Force_Resend_Of_Trails_V2_GET()
         {
-            var response = await _Server.HttpClient.GetAsync("AircraftList.json?refreshTrails=1");
+            Get("AircraftList.json?refreshTrails=1");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(resendTrails: true);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Force_Resend_Of_Trails_V3()
+        public void FeedsController_AircraftList_Can_Force_Resend_Of_Trails_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.FormUrlEncoded(new [,] {
+            PostForm("/api/3.00/feeds/aircraft-list", new [,] {
                 { "ResendTrails", "true" },
-            }));
+            });
 
             var expected = ExpectedAircraftListJsonBuilderArgs(resendTrails: true);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_SelectedAircraft_V2_POST()
+        public void FeedsController_AircraftList_Can_Specify_SelectedAircraft_V2_POST()
         {
-            var response = await _Server.HttpClient.PostAsync("AircraftList.json?selAc=8", _EmptyPostBody);
+            Post("AircraftList.json?selAc=8");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(selectedAircraftID: 8);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_SelectedAircraft_V2_GET()
+        public void FeedsController_AircraftList_Can_Specify_SelectedAircraft_V2_GET()
         {
-            var response = await _Server.HttpClient.GetAsync("AircraftList.json?selAc=8");
+            Get("AircraftList.json?selAc=8");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(selectedAircraftID: 8);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_SelectedAircraft_V3()
+        public void FeedsController_AircraftList_Can_Specify_SelectedAircraft_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.FormUrlEncoded(new [,] {
+            PostForm("/api/3.00/feeds/aircraft-list", new [,] {
                 { "SelectedAircraft", "8" },
-            }));
+            });
 
             var expected = ExpectedAircraftListJsonBuilderArgs(selectedAircraftID: 8);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_FSX_AircraftList_V2_POST()
+        public void FeedsController_AircraftList_Can_Specify_FSX_AircraftList_V2_POST()
         {
-            var response = await _Server.HttpClient.PostAsync("flightsimlist.json", _EmptyPostBody);
+            Post("flightsimlist.json");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(isFlightSimulator: true);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_FSX_AircraftList_V2_GET()
+        public void FeedsController_AircraftList_Can_Specify_FSX_AircraftList_V2_GET()
         {
-            var response = await _Server.HttpClient.GetAsync("flightsimlist.json");
+            Get("flightsimlist.json");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(isFlightSimulator: true);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_FSX_AircraftList_V3()
+        public void FeedsController_AircraftList_Can_Specify_FSX_AircraftList_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.FormUrlEncoded(new [,] {
+            PostForm("/api/3.00/feeds/aircraft-list", new [,] {
                 { "FlightSimulator", "true" },
-            }));
+            });
 
             var expected = ExpectedAircraftListJsonBuilderArgs(isFlightSimulator: true);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Ignores_Feed_For_FSX_V2_POST()
+        public void FeedsController_AircraftList_Ignores_Feed_For_FSX_V2_POST()
         {
-            var response = await _Server.HttpClient.PostAsync("FLIGHTSimList.json?feed=7", _EmptyPostBody);
+            Post("FLIGHTSimList.json?feed=7");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(isFlightSimulator: true, feedId: -1);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Ignores_Feed_For_FSX_V2_GET()
+        public void FeedsController_AircraftList_Ignores_Feed_For_FSX_V2_GET()
         {
-            var response = await _Server.HttpClient.GetAsync("FLIGHTSimList.json?feed=7");
+            Get("FLIGHTSimList.json?feed=7");
 
             var expected = ExpectedAircraftListJsonBuilderArgs(isFlightSimulator: true, feedId: -1);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Ignores_Feed_For_FSX_V3()
+        public void FeedsController_AircraftList_Ignores_Feed_For_FSX_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list/7", HttpContentHelper.FormUrlEncoded(new [,] {
+            PostForm("/api/3.00/feeds/aircraft-list/7", new [,] {
                 { "FlightSimulator", "true" },
-            }));
+            });
 
             var expected = ExpectedAircraftListJsonBuilderArgs(isFlightSimulator: true, feedId: -1);
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
@@ -807,7 +770,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "AircraftListFilter$")]
-        public async Task FeedsController_AircraftList_Accepts_Filter_Requests_V2_POST()
+        public void FeedsController_AircraftList_Accepts_Filter_Requests_V2_POST()
         {
             var worksheet = new ExcelWorksheetData(TestContext);
 
@@ -816,14 +779,14 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             if(!String.IsNullOrEmpty(key)) {
                 var queryString = $"{key}={value}";
-                await FeedsController_AircraftList_Accepts_Filter_Requests_Worker(worksheet, $"AircraftList.json?{queryString}", _EmptyPostBody, useGet: false);
+                FeedsController_AircraftList_Accepts_Filter_Requests_Worker(worksheet, $"AircraftList.json?{queryString}", useGet: false);
             }
         }
 
         [TestMethod]
         [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "AircraftListFilter$")]
-        public async Task FeedsController_AircraftList_Accepts_Filter_Requests_V2_GET()
+        public void FeedsController_AircraftList_Accepts_Filter_Requests_V2_GET()
         {
             var worksheet = new ExcelWorksheetData(TestContext);
 
@@ -832,36 +795,35 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             if(!String.IsNullOrEmpty(key)) {
                 var queryString = $"{key}={value}";
-                await FeedsController_AircraftList_Accepts_Filter_Requests_Worker(worksheet, $"AircraftList.json?{queryString}", null, useGet: true);
+                FeedsController_AircraftList_Accepts_Filter_Requests_Worker(worksheet, $"AircraftList.json?{queryString}", useGet: true);
             }
         }
 
         [TestMethod]
         [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "AircraftListFilter$")]
-        public async Task FeedsController_AircraftList_Accepts_Filter_Requests_V3()
+        public void FeedsController_AircraftList_Accepts_Filter_Requests_V3()
         {
             var worksheet = new ExcelWorksheetData(TestContext);
 
             var filterJson = worksheet.String("V3Json");
 
             if(!String.IsNullOrEmpty(filterJson)) {
-                var deserialisedJson = JsonConvert.DeserializeObject<GetAircraftListFilter>(filterJson);
-                await FeedsController_AircraftList_Accepts_Filter_Requests_Worker(worksheet, "/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                JsonBody(new {
                     Filters = new GetAircraftListFilter[] {
-                        deserialisedJson
+                        JsonConvert.DeserializeObject<GetAircraftListFilter>(filterJson)
                     }
-                }), useGet: false);
+                });
+                FeedsController_AircraftList_Accepts_Filter_Requests_Worker(worksheet, "/api/3.00/feeds/aircraft-list", useGet: false);
             }
         }
 
-        private async Task FeedsController_AircraftList_Accepts_Filter_Requests_Worker(ExcelWorksheetData worksheet, string url, HttpContent postBody, bool useGet)
+        private void FeedsController_AircraftList_Accepts_Filter_Requests_Worker(ExcelWorksheetData worksheet, string url, bool useGet)
         {
-            HttpResponseMessage response;
             if(useGet) {
-                response = await _Server.HttpClient.GetAsync(url);
+                Get(url);
             } else {
-                response = await _Server.HttpClient.PostAsync(url, postBody);
+                Post(url);
             }
 
             AircraftListJsonBuilderFilter jsonFilter = null;
@@ -905,22 +867,22 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "AircraftListFilterName$")]
-        public async Task FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V2_POST()
+        public void FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V2_POST()
         {
             var worksheet = new ExcelWorksheetData(TestContext);
-            await Test_FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V2(worksheet, useGet: false);
+            Test_FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V2(worksheet, useGet: false);
         }
 
         [TestMethod]
         [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "AircraftListFilterName$")]
-        public async Task FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V2_GET()
+        public void FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V2_GET()
         {
             var worksheet = new ExcelWorksheetData(TestContext);
-            await Test_FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V2(worksheet, useGet: true);
+            Test_FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V2(worksheet, useGet: true);
         }
 
-        private async Task Test_FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V2(ExcelWorksheetData worksheet, bool useGet)
+        private void Test_FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V2(ExcelWorksheetData worksheet, bool useGet)
         {
             var propertyName = HttpUtility.UrlEncode(worksheet.String("FilterProperty"));
             var queryStringKey = HttpUtility.UrlEncode(worksheet.EString("QueryStringKey"));
@@ -960,11 +922,10 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                     case "QN":  conditionIsValid = isStringFilter | isBoolFilter | isEnumFilter; break;
                 }
 
-                HttpResponseMessage response;
                 if(useGet) {
-                    response = await _Server.HttpClient.GetAsync($"AircraftList.json?{queryString}");
+                    Get($"AircraftList.json?{queryString}");
                 } else {
-                    response = await _Server.HttpClient.PostAsync($"AircraftList.json?{queryString}", _EmptyPostBody);
+                    Post($"AircraftList.json?{queryString}");
                 }
                 var filterUsed = _ActualAircraftListJsonBuilderArgs.Filter;
                 var actualFilter = filterUsed == null ? null : property.GetValue(_ActualAircraftListJsonBuilderArgs.Filter, null);
@@ -980,7 +941,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestMethod]
         [DataSource("Data Source='WebSiteTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "AircraftListFilterName$")]
-        public async Task FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V3()
+        public void FeedsController_AircraftList_Filters_Ignore_Invalid_Conditions_V3()
         {
             var worksheet = new ExcelWorksheetData(TestContext);
 
@@ -1019,11 +980,11 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                     case FilterCondition.Missing:       conditionIsValid = isIntRangeFilter || isDoubleRangeFilter || isEnumFilter || isBoolFilter; break;
                 }
 
-                var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                PostJson("/api/3.00/feeds/aircraft-list", new {
                     Filters = new GetAircraftListFilter[] {
                         filter
                     }
-                }));
+                });
                 var filterUsed = _ActualAircraftListJsonBuilderArgs.Filter;
                 var actualFilter = filterUsed == null ? null : property.GetValue(_ActualAircraftListJsonBuilderArgs.Filter, null);
 
@@ -1036,9 +997,9 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Filters_Accept_Full_Set_Of_Bounds_V2_POST()
+        public void FeedsController_AircraftList_Filters_Accept_Full_Set_Of_Bounds_V2_POST()
         {
-            var response = await _Server.HttpClient.PostAsync($"AircraftList.json?FNBnd=1.2&FSBnd=3.4&FWBnd=5.6&FEBnd=7.8", _EmptyPostBody);
+            Post($"AircraftList.json?FNBnd=1.2&FSBnd=3.4&FWBnd=5.6&FEBnd=7.8");
 
             Assert.AreEqual(1.2, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.First.Latitude);
             Assert.AreEqual(5.6, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.First.Longitude);
@@ -1047,9 +1008,9 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Filters_Accept_Full_Set_Of_Bounds_V2_GET()
+        public void FeedsController_AircraftList_Filters_Accept_Full_Set_Of_Bounds_V2_GET()
         {
-            var response = await _Server.HttpClient.GetAsync($"AircraftList.json?FNBnd=1.2&FSBnd=3.4&FWBnd=5.6&FEBnd=7.8");
+            Get($"AircraftList.json?FNBnd=1.2&FSBnd=3.4&FWBnd=5.6&FEBnd=7.8");
 
             Assert.AreEqual(1.2, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.First.Latitude);
             Assert.AreEqual(5.6, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.First.Longitude);
@@ -1058,7 +1019,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Filters_Accept_Full_Set_Of_Bounds_V3()
+        public void FeedsController_AircraftList_Filters_Accept_Full_Set_Of_Bounds_V3()
         {
             var filter = new GetAircraftListFilter() {
                 Field = GetAircraftListFilterField.PositionBounds,
@@ -1067,11 +1028,11 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                 West = 5.6,
                 East = 7.8,
             };
-            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+            PostJson("/api/3.00/feeds/aircraft-list", new {
                 Filters = new GetAircraftListFilter[] {
                     filter
                 }
-            }));
+            });
 
             Assert.AreEqual(1.2, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.First.Latitude);
             Assert.AreEqual(5.6, _ActualAircraftListJsonBuilderArgs.Filter.PositionWithin.First.Longitude);
@@ -1080,40 +1041,39 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Filters_Ignore_Partial_Set_Of_Bounds_V2_POST()
+        public void FeedsController_AircraftList_Filters_Ignore_Partial_Set_Of_Bounds_V2_POST()
         {
-            var response = await _Server.HttpClient.PostAsync($"AircraftList.json?FNBnd=1.2&FWBnd=5.6", _EmptyPostBody);
+            Post($"AircraftList.json?FNBnd=1.2&FWBnd=5.6");
 
             Assert.IsNull(_ActualAircraftListJsonBuilderArgs.Filter);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Filters_Ignore_Partial_Set_Of_Bounds_V2_GET()
+        public void FeedsController_AircraftList_Filters_Ignore_Partial_Set_Of_Bounds_V2_GET()
         {
-            var response = await _Server.HttpClient.GetAsync($"AircraftList.json?FNBnd=1.2&FWBnd=5.6");
+            Get($"AircraftList.json?FNBnd=1.2&FWBnd=5.6");
 
             Assert.IsNull(_ActualAircraftListJsonBuilderArgs.Filter);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Filters_Ignore_Partial_Set_Of_Bounds_V3()
+        public void FeedsController_AircraftList_Filters_Ignore_Partial_Set_Of_Bounds_V3()
         {
-            var filter = new GetAircraftListFilter() {
-                Field = GetAircraftListFilterField.PositionBounds,
-                North = 1.2,
-                West = 5.6,
-            };
-            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+            PostJson("/api/3.00/feeds/aircraft-list", new {
                 Filters = new GetAircraftListFilter[] {
-                    filter
+                    new GetAircraftListFilter() {
+                        Field = GetAircraftListFilterField.PositionBounds,
+                        North = 1.2,
+                        West = 5.6,
+                    }
                 }
-            }));
+            });
 
             Assert.IsNull(_ActualAircraftListJsonBuilderArgs.Filter);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Trail_Format_V2_POST()
+        public void FeedsController_AircraftList_Can_Specify_Trail_Format_V2_POST()
         {
             foreach(var queryStringValue in new string[] { "F", "FA", "FS", "S", "SA", "SS" }) {
                 TestCleanup();
@@ -1130,14 +1090,14 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                 }
 
                 var expected = ExpectedAircraftListJsonBuilderArgs(trailType: trailType);
-                var response = await _Server.HttpClient.PostAsync($"AircraftList.json?trFmt={queryStringValue}", _EmptyPostBody);
+                Post($"AircraftList.json?trFmt={queryStringValue}");
 
                 AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
             }
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Trail_Format_V2_GET()
+        public void FeedsController_AircraftList_Can_Specify_Trail_Format_V2_GET()
         {
             foreach(var queryStringValue in new string[] { "F", "FA", "FS", "S", "SA", "SS" }) {
                 TestCleanup();
@@ -1154,14 +1114,14 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                 }
 
                 var expected = ExpectedAircraftListJsonBuilderArgs(trailType: trailType);
-                var response = await _Server.HttpClient.GetAsync($"AircraftList.json?trFmt={queryStringValue}");
+                Get($"AircraftList.json?trFmt={queryStringValue}");
 
                 AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
             }
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Trail_Format_Is_Case_Insensitive_V2_POST()
+        public void FeedsController_AircraftList_Trail_Format_Is_Case_Insensitive_V2_POST()
         {
             foreach(var upperCase in new bool[] { true, false }) {
                 TestCleanup();
@@ -1173,14 +1133,14 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                 }
 
                 var expected = ExpectedAircraftListJsonBuilderArgs(trailType: TrailType.FullAltitude);
-                var response = await _Server.HttpClient.PostAsync($"AircraftList.json?{queryString}", _EmptyPostBody);
+                Post($"AircraftList.json?{queryString}");
 
                 AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
             }
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Trail_Format_Is_Case_Insensitive_V2_GET()
+        public void FeedsController_AircraftList_Trail_Format_Is_Case_Insensitive_V2_GET()
         {
             foreach(var upperCase in new bool[] { true, false }) {
                 TestCleanup();
@@ -1192,30 +1152,30 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                 }
 
                 var expected = ExpectedAircraftListJsonBuilderArgs(trailType: TrailType.FullAltitude);
-                var response = await _Server.HttpClient.GetAsync($"AircraftList.json?{queryString}");
+                Get($"AircraftList.json?{queryString}");
 
                 AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
             }
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Trail_Format_V3()
+        public void FeedsController_AircraftList_Can_Specify_Trail_Format_V3()
         {
             foreach(TrailType trailType in Enum.GetValues(typeof(TrailType))) {
                 TestCleanup();
                 TestInitialise();
 
                 var expected = ExpectedAircraftListJsonBuilderArgs(trailType: trailType);
-                var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                PostJson("/api/3.00/feeds/aircraft-list", new {
                     TrailType = trailType,
-                }));
+                });
 
                 AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
             }
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Single_Sort_Column_V2_POST()
+        public void FeedsController_AircraftList_Can_Specify_Single_Sort_Column_V2_POST()
         {
             foreach(var aircraftComparerColumn in AircraftComparerColumns()) {
                 foreach(var sortOrder in new string[] { "asc", "desc" }) {
@@ -1226,7 +1186,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                         sortColumn1: aircraftComparerColumn,
                         sortAscending1: sortOrder == "asc"
                     );
-                    var response = await _Server.HttpClient.PostAsync($"AircraftList.json?sortBy1={aircraftComparerColumn}&sortOrder1={sortOrder}", _EmptyPostBody);
+                    Post($"AircraftList.json?sortBy1={aircraftComparerColumn}&sortOrder1={sortOrder}");
 
                     AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
                 }
@@ -1234,7 +1194,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Single_Sort_Column_V2_GET()
+        public void FeedsController_AircraftList_Can_Specify_Single_Sort_Column_V2_GET()
         {
             foreach(var aircraftComparerColumn in AircraftComparerColumns()) {
                 foreach(var sortOrder in new string[] { "asc", "desc" }) {
@@ -1245,7 +1205,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                         sortColumn1: aircraftComparerColumn,
                         sortAscending1: sortOrder == "asc"
                     );
-                    var response = await _Server.HttpClient.GetAsync($"AircraftList.json?sortBy1={aircraftComparerColumn}&sortOrder1={sortOrder}");
+                    Get($"AircraftList.json?sortBy1={aircraftComparerColumn}&sortOrder1={sortOrder}");
 
                     AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
                 }
@@ -1253,7 +1213,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Single_Sort_Column_V3()
+        public void FeedsController_AircraftList_Can_Specify_Single_Sort_Column_V3()
         {
             foreach(var aircraftComparerColumn in AircraftComparerColumns()) {
                 foreach(var ascending in new bool[] { true, false }) {
@@ -1264,11 +1224,11 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                         sortColumn1: aircraftComparerColumn,
                         sortAscending1: ascending
                     );
-                    var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                    PostJson("/api/3.00/feeds/aircraft-list", new {
                         SortBy = new object [] {
                             new { Col = aircraftComparerColumn, Asc = ascending },
                         }
-                    }));
+                    });
 
                     AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
                 }
@@ -1276,7 +1236,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Two_Sort_Columns_V2_POST()
+        public void FeedsController_AircraftList_Can_Specify_Two_Sort_Columns_V2_POST()
         {
             foreach(var aircraftComparerColumn in AircraftComparerColumns()) {
                 foreach(var sortOrder in new string[] { "asc", "desc" }) {
@@ -1290,9 +1250,9 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                         sortColumn2: aircraftComparerColumn,
                         sortAscending2: sortOrder == "asc"
                     );
-                    var response = await _Server.HttpClient.PostAsync($"AircraftList.json?sortBy1={AircraftComparerColumn.Altitude}&sortOrder1=ASC" +
-                        $"&sortBy2={aircraftComparerColumn}&sortOrder2={sortOrder}",
-                    _EmptyPostBody);
+                    Post($"AircraftList.json?sortBy1={AircraftComparerColumn.Altitude}&sortOrder1=ASC" +
+                         $"&sortBy2={aircraftComparerColumn}&sortOrder2={sortOrder}"
+                    );
 
                     AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
                 }
@@ -1300,7 +1260,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Two_Sort_Columns_V2_GET()
+        public void FeedsController_AircraftList_Can_Specify_Two_Sort_Columns_V2_GET()
         {
             foreach(var aircraftComparerColumn in AircraftComparerColumns()) {
                 foreach(var sortOrder in new string[] { "asc", "desc" }) {
@@ -1314,7 +1274,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                         sortColumn2: aircraftComparerColumn,
                         sortAscending2: sortOrder == "asc"
                     );
-                    var response = await _Server.HttpClient.GetAsync($"AircraftList.json?sortBy1={AircraftComparerColumn.Altitude}&sortOrder1=ASC" +
+                    Get($"AircraftList.json?sortBy1={AircraftComparerColumn.Altitude}&sortOrder1=ASC" +
                         $"&sortBy2={aircraftComparerColumn}&sortOrder2={sortOrder}"
                     );
 
@@ -1324,7 +1284,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Two_Sort_Columns_V3()
+        public void FeedsController_AircraftList_Can_Specify_Two_Sort_Columns_V3()
         {
             foreach(var aircraftComparerColumn in AircraftComparerColumns()) {
                 foreach(var ascending in new bool[] { true, false }) {
@@ -1338,12 +1298,12 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                         sortColumn2: aircraftComparerColumn,
                         sortAscending2: ascending
                     );
-                    var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+                    PostJson("/api/3.00/feeds/aircraft-list", new {
                         SortBy = new object [] {
                             new { Col = AircraftComparerColumn.Altitude },
                             new { Col = aircraftComparerColumn, Asc = ascending },
                         }
-                    }));
+                    });
 
                     AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
                 }
@@ -1351,180 +1311,173 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Single_Known_Aircraft_V2_POST()
+        public void FeedsController_AircraftList_Can_Specify_Single_Known_Aircraft_V2_POST()
         {
             var expected = ExpectedAircraftListJsonBuilderArgs(previousAircraft: new int[] {
                 0x4008f6,
             });
 
-            var response = await _Server.HttpClient.PostAsync($"AircraftList.json", HttpContentHelper.FormUrlEncoded(new string[,] {
+            PostForm($"AircraftList.json", new string[,] {
                 { "icaos", "4008f6" }
-            }));
+            });
 
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Single_Known_Aircraft_V2_GET()
+        public void FeedsController_AircraftList_Can_Specify_Single_Known_Aircraft_V2_GET()
         {
             var expected = ExpectedAircraftListJsonBuilderArgs(previousAircraft: new int[] {
                 0x4008f6,
             });
 
-            var message = new HttpRequestMessage(HttpMethod.Get, $"AircraftList.json");
-            message.Headers.Add("X-VirtualRadarServer-AircraftIds", "4196598");
-            var response = await _Server.HttpClient.SendAsync(message);
+            _Context.RequestHeadersDictionary["X-VirtualRadarServer-AircraftIds"] = "4196598";
+            Get($"AircraftList.json");
 
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Single_Known_Aircraft_V3()
+        public void FeedsController_AircraftList_Can_Specify_Single_Known_Aircraft_V3()
         {
             var expected = ExpectedAircraftListJsonBuilderArgs(previousAircraft: new int[] {
                 0x4008f6,
             });
 
-            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+            PostJson("/api/3.00/feeds/aircraft-list", new {
                 PreviousAircraft = new string [] {
                     "4008f6",
                 }
-            }));
+            });
 
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Many_Known_Aircraft_V2_POST()
+        public void FeedsController_AircraftList_Can_Specify_Many_Known_Aircraft_V2_POST()
         {
             var expected = ExpectedAircraftListJsonBuilderArgs(previousAircraft: new int[] {
                 0x4008f6,
                 0xA88CC0,
             });
 
-            var response = await _Server.HttpClient.PostAsync($"AircraftList.json", HttpContentHelper.FormUrlEncoded(new string[,] {
+            PostForm($"AircraftList.json", new string[,] {
                 { "icaos", "4008f6-A88CC0" }
-            }));
+            });
 
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Many_Known_Aircraft_V2_GET()
+        public void FeedsController_AircraftList_Can_Specify_Many_Known_Aircraft_V2_GET()
         {
             var expected = ExpectedAircraftListJsonBuilderArgs(previousAircraft: new int[] {
                 0x4008f6,
                 0xA88CC0,
             });
 
-            var message = new HttpRequestMessage(HttpMethod.Get, $"AircraftList.json");
-            message.Headers.Add("X-VirtualRadarServer-AircraftIds",$"4196598,11046080");
-            var response = await _Server.HttpClient.SendAsync(message);
+            _Context.RequestHeadersDictionary["X-VirtualRadarServer-AircraftIds"] = "4196598,11046080";
+            Get($"AircraftList.json");
 
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Specify_Many_Known_Aircraft_V3()
+        public void FeedsController_AircraftList_Can_Specify_Many_Known_Aircraft_V3()
         {
             var expected = ExpectedAircraftListJsonBuilderArgs(previousAircraft: new int[] {
                 0x4008f6,
                 0xA88CC0,
             });
 
-            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+            PostJson("/api/3.00/feeds/aircraft-list", new {
                 PreviousAircraft = new string [] {
                     "4008f6", "A88CC0",
                 }
-            }));
+            });
 
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Ignores_Invalid_Known_Aircraft_V2_POST()
+        public void FeedsController_AircraftList_Can_Ignores_Invalid_Known_Aircraft_V2_POST()
         {
             var expected = ExpectedAircraftListJsonBuilderArgs();
 
-            var response = await _Server.HttpClient.PostAsync($"AircraftList.json", HttpContentHelper.FormUrlEncoded(new string[,] {
+            PostForm($"AircraftList.json", new string[,] {
                 { "icaos", "ANDREW" }
-            }));
+            });
 
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Ignores_Invalid_Known_Aircraft_V2_GET()
+        public void FeedsController_AircraftList_Can_Ignores_Invalid_Known_Aircraft_V2_GET()
         {
             var expected = ExpectedAircraftListJsonBuilderArgs();
 
-            var message = new HttpRequestMessage(HttpMethod.Get, $"AircraftList.json");
-            message.Headers.Add("X-VirtualRadarServer-AircraftIds",$"ANDREW");
-            var response = await _Server.HttpClient.SendAsync(message);
+            _Context.RequestHeadersDictionary["X-VirtualRadarServer-AircraftIds"] = $"ANDREW";
+            Get($"AircraftList.json");
 
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Can_Ignores_Invalid_Known_Aircraft_V3()
+        public void FeedsController_AircraftList_Can_Ignores_Invalid_Known_Aircraft_V3()
         {
             var expected = ExpectedAircraftListJsonBuilderArgs();
 
-            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+            PostJson("/api/3.00/feeds/aircraft-list", new {
                 PreviousAircraft = new string [] {
                     "ANDREW",
                 }
-            }));
+            });
 
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_V2_POST_Can_Post_Known_Aircraft_And_QueryString_Values()
+        public void FeedsController_AircraftList_V2_POST_Can_Post_Known_Aircraft_And_QueryString_Values()
         {
             var expected = ExpectedAircraftListJsonBuilderArgs(previousAircraft: new int[] {
                 0x4008f6,
             }, serverTimeTicks: 12);
 
-            var response = await _Server.HttpClient.PostAsync($"AircraftList.json?stm=12", HttpContentHelper.FormUrlEncoded(new string[,] {
+            PostForm($"AircraftList.json?stm=12", new string[,] {
                 { "icaos", "4008f6" }
-            }));
+            });
 
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Sets_ServerConfigChanged_If_Changed_V2_POST()
+        public void FeedsController_AircraftList_Sets_ServerConfigChanged_If_Changed_V2_POST()
         {
             var configLastLoaded = new DateTime(1, 7, 29);
             var configLastLoadedTicks = JavascriptHelper.ToJavascriptTicks(configLastLoaded);
 
             _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
 
-            var response = await _Server.HttpClient.PostAsync($"AircraftList.json?stm={configLastLoadedTicks - 1}", _EmptyPostBody);
-            var jsonText = response.Content.ReadAsStringAsync().Result;
-            var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
+            var aircraftList = Post($"AircraftList.json?stm={configLastLoadedTicks - 1}").Json<AircraftListJson>();
 
             Assert.IsTrue(aircraftList.ServerConfigChanged);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Sets_ServerConfigChanged_If_Changed_V2_GET()
+        public void FeedsController_AircraftList_Sets_ServerConfigChanged_If_Changed_V2_GET()
         {
             var configLastLoaded = new DateTime(1, 7, 29);
             var configLastLoadedTicks = JavascriptHelper.ToJavascriptTicks(configLastLoaded);
 
             _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
 
-            var response = await _Server.HttpClient.GetAsync($"AircraftList.json?stm={configLastLoadedTicks - 1}");
-            var jsonText = response.Content.ReadAsStringAsync().Result;
-            var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
+            var aircraftList = Get($"AircraftList.json?stm={configLastLoadedTicks - 1}").Json<AircraftListJson>();
 
             Assert.IsTrue(aircraftList.ServerConfigChanged);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Sets_ServerConfigChanged_If_Tile_Server_Settings_Downloaded_V2_GET()
+        public void FeedsController_AircraftList_Sets_ServerConfigChanged_If_Tile_Server_Settings_Downloaded_V2_GET()
         {
             var configLastLoaded = new DateTime(1, 7, 29);
             var tileSettingsDownloaded = configLastLoaded.AddMilliseconds(1);
@@ -1533,32 +1486,29 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
             _TileServerSettingsManager.Setup(r => r.LastDownloadUtc).Returns(tileSettingsDownloaded);
 
-            var response = await _Server.HttpClient.GetAsync($"AircraftList.json?stm={configLastLoadedTicks}");
-            var jsonText = response.Content.ReadAsStringAsync().Result;
-            var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
+            var aircraftList = Get($"AircraftList.json?stm={configLastLoadedTicks}").Json<AircraftListJson>();
 
             Assert.IsTrue(aircraftList.ServerConfigChanged);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Sets_ServerConfigChanged_If_Changed_V3()
+        public void FeedsController_AircraftList_Sets_ServerConfigChanged_If_Changed_V3()
         {
             var configLastLoaded = new DateTime(1, 7, 29);
             var configLastLoadedTicks = JavascriptHelper.ToJavascriptTicks(configLastLoaded);
 
             _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
 
-            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+            var aircraftList = PostJson("/api/3.00/feeds/aircraft-list", new {
                 ServerTicks = configLastLoadedTicks - 1,
-            }));
-            var jsonText = response.Content.ReadAsStringAsync().Result;
-            var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
+            })
+            .Json<AircraftListJson>();
 
             Assert.IsTrue(aircraftList.ServerConfigChanged);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Sets_ServerConfigChanged_If_Tile_Server_Settings_Downloaded_V3()
+        public void FeedsController_AircraftList_Sets_ServerConfigChanged_If_Tile_Server_Settings_Downloaded_V3()
         {
             var configLastLoaded = new DateTime(1, 7, 29);
             var tileSettingsDownloaded = configLastLoaded.AddMilliseconds(1);
@@ -1567,83 +1517,77 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
             _TileServerSettingsManager.Setup(r => r.LastDownloadUtc).Returns(tileSettingsDownloaded);
 
-            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+            var aircraftList = PostJson("/api/3.00/feeds/aircraft-list", new {
                 ServerTicks = configLastLoadedTicks,
-            }));
-            var jsonText = response.Content.ReadAsStringAsync().Result;
-            var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
+            })
+            .Json<AircraftListJson>();
 
             Assert.IsTrue(aircraftList.ServerConfigChanged);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Clears_ServerConfigChanged_If_Not_Changed_V2_POST()
+        public void FeedsController_AircraftList_Clears_ServerConfigChanged_If_Not_Changed_V2_POST()
         {
             var configLastLoaded = new DateTime(1, 7, 29);
             var configLastLoadedTicks = JavascriptHelper.ToJavascriptTicks(configLastLoaded);
 
             _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
 
-            var response = await _Server.HttpClient.PostAsync($"AircraftList.json?stm={configLastLoadedTicks + 1}", _EmptyPostBody);
-            var jsonText = response.Content.ReadAsStringAsync().Result;
-            var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
+            var aircraftList = Post($"AircraftList.json?stm={configLastLoadedTicks + 1}").Json<AircraftListJson>();
 
             Assert.IsFalse(aircraftList.ServerConfigChanged);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Clears_ServerConfigChanged_If_Not_Changed_V2_GET()
+        public void FeedsController_AircraftList_Clears_ServerConfigChanged_If_Not_Changed_V2_GET()
         {
             var configLastLoaded = new DateTime(1, 7, 29);
             var configLastLoadedTicks = JavascriptHelper.ToJavascriptTicks(configLastLoaded);
 
             _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
 
-            var response = await _Server.HttpClient.GetAsync($"AircraftList.json?stm={configLastLoadedTicks + 1}");
-            var jsonText = response.Content.ReadAsStringAsync().Result;
-            var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
+            var aircraftList = Get($"AircraftList.json?stm={configLastLoadedTicks + 1}").Json<AircraftListJson>();
 
             Assert.IsFalse(aircraftList.ServerConfigChanged);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Clears_ServerConfigChanged_If_Not_Changed_V3()
+        public void FeedsController_AircraftList_Clears_ServerConfigChanged_If_Not_Changed_V3()
         {
             var configLastLoaded = new DateTime(1, 7, 29);
             var configLastLoadedTicks = JavascriptHelper.ToJavascriptTicks(configLastLoaded);
 
             _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(configLastLoaded);
 
-            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list", HttpContentHelper.StringContentJson(new {
+            var aircraftList = PostJson("/api/3.00/feeds/aircraft-list", new {
                 ServerTicks = configLastLoadedTicks + 1,
-            }));
-            var jsonText = response.Content.ReadAsStringAsync().Result;
-            var aircraftList = JsonConvert.DeserializeObject<AircraftListJson>(jsonText);
+            })
+            .Json<AircraftListJson>();
 
             Assert.IsFalse(aircraftList.ServerConfigChanged);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Copes_With_Missing_Query_String_Segment_V2_POST()
+        public void FeedsController_AircraftList_Copes_With_Missing_Query_String_Segment_V2_POST()
         {
-            var response = await _Server.HttpClient.PostAsync($"AircraftList.json?&ldv=1", _EmptyPostBody);
-            var jsonText = response.Content.ReadAsStringAsync().Result;
+            var jsonText = Post($"AircraftList.json?&ldv=1").Text();
+
             Assert.AreEqual("{\"Message\":\"The request is invalid.\"}", jsonText);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Copes_With_Missing_Query_String_Segment_V2_GET()
+        public void FeedsController_AircraftList_Copes_With_Missing_Query_String_Segment_V2_GET()
         {
-            var response = await _Server.HttpClient.GetAsync($"AircraftList.json?&ldv=1");
-            var jsonText = response.Content.ReadAsStringAsync().Result;
+            var jsonText = Get($"AircraftList.json?&ldv=1").Text();
+
             Assert.AreEqual("{\"Message\":\"The request is invalid.\"}", jsonText);
         }
 
         [TestMethod]
-        public async Task FeedsController_AircraftList_Copes_With_Missing_Query_String_Segment_V3()
+        public void FeedsController_AircraftList_Copes_With_Missing_Query_String_Segment_V3()
         {
-            var response = await _Server.HttpClient.PostAsync("/api/3.00/feeds/aircraft-list?&ldv=1", _EmptyPostBody);
-            var jsonText = response.Content.ReadAsStringAsync().Result;
+            var jsonText = Post("/api/3.00/feeds/aircraft-list?&ldv=1").Text();
+
             Assert.AreEqual("{\"Message\":\"The request is invalid.\"}", jsonText);
         }
         #endregion

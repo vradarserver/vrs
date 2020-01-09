@@ -15,7 +15,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Newtonsoft.Json;
 using Test.Framework;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
@@ -36,35 +35,32 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task SettingsController_GetServerConfig_Returns_Environment_For_Correct_Route_And_Local_Address()
+        public void SettingsController_GetServerConfig_Returns_Environment_For_Correct_Route_And_Local_Address()
         {
             _RemoteIpAddress = "127.0.0.1";
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/settings/server");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<ServerConfigJson>(content);
+            var json = Get("/api/3.00/settings/server")
+            .Json<ServerConfigJson>();
 
             Assert.AreEqual(true, json.IsLocalAddress);
         }
 
         [TestMethod]
-        public async Task SettingsController_GetServerConfig_Returns_Environment_For_Correct_Route_And_Internet_Address()
+        public void SettingsController_GetServerConfig_Returns_Environment_For_Correct_Route_And_Internet_Address()
         {
             _RemoteIpAddress = "1.2.3.4";
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/settings/server");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<ServerConfigJson>(content);
+            var json = Get("/api/3.00/settings/server")
+            .Json<ServerConfigJson>();
 
             Assert.AreEqual(false, json.IsLocalAddress);
         }
 
         [TestMethod]
-        public async Task SettingsController_GetServerConfig_Returns_Environment_For_Legacy_Route()
+        public void SettingsController_GetServerConfig_Returns_Environment_For_Legacy_Route()
         {
-            var response = await _Server.HttpClient.GetAsync("/ServerConfig.json");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<ServerConfigJson>(content);
+            var json = Get("/ServerConfig.json")
+            .Json<ServerConfigJson>();
 
             Assert.IsNotNull(json);
         }

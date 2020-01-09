@@ -12,12 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Newtonsoft.Json;
 using Test.Framework;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.BaseStation;
@@ -88,7 +84,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
         #region GetAircraftDataDotComThumbnails
         [TestMethod]
-        public async Task AircraftController_GetAddcThumbnails_Returned_AirportDataApi_Json()
+        public void AircraftController_GetAddcThumbnails_Returned_AirportDataApi_Json()
         {
             SetupAirportDataDotCom("4008F6", "G-VROS", 2, HttpStatusCode.OK, new AirportDataThumbnailsJson() {
                 Error = "none",
@@ -99,11 +95,9 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                 }
             });
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/4008F6/airport-data-thumbnails?reg=G%2DVROS&numThumbs=2");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<AirportDataThumbnailsJson>(content);
+            var json = Get("/api/3.00/aircraft/4008F6/airport-data-thumbnails?reg=G%2DVROS&numThumbs=2").Json<AirportDataThumbnailsJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.AreEqual(200, json.Status);
             Assert.AreEqual("none", json.Error);
             Assert.AreEqual(2, json.Thumbnails.Count);
@@ -116,7 +110,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task AircraftController_GetAddcThumbnails_Responds_To_Version_2_Route()
+        public void AircraftController_GetAddcThumbnails_Responds_To_Version_2_Route()
         {
             SetupAirportDataDotCom("4008F6", "G-VROS", 1, HttpStatusCode.OK, new AirportDataThumbnailsJson() {
                 Error = "none",
@@ -127,57 +121,47 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
                 }
             });
 
-            var response = await _Server.HttpClient.GetAsync("/AirportDataThumbnails.json?icao=4008F6&reg=G%2DVROS&numThumbs=1");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<AirportDataThumbnailsJson>(content);
+            var json = Get("/AirportDataThumbnails.json?icao=4008F6&reg=G%2DVROS&numThumbs=1").Json<AirportDataThumbnailsJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.AreEqual("none", json.Error);
             Assert.AreEqual(2, json.Thumbnails.Count);
         }
 
         [TestMethod]
-        public async Task AircraftController_GetAddcThumbnails_Converts_Icao_And_Reg_To_UpperCase()
+        public void AircraftController_GetAddcThumbnails_Converts_Icao_And_Reg_To_UpperCase()
         {
             SetupAirportDataDotCom("4008F6", "G-VROS", 1, HttpStatusCode.OK, new AirportDataThumbnailsJson() { Status = 200 });
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/4008f6/airport-data-thumbnails?reg=g%2dvros&numThumbs=1");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<AirportDataThumbnailsJson>(content);
+            var json = Get("/api/3.00/aircraft/4008f6/airport-data-thumbnails?reg=g%2dvros&numThumbs=1").Json<AirportDataThumbnailsJson>();
 
             Assert.AreEqual(200, json.Status);
         }
 
         [TestMethod]
-        public async Task AircraftController_GetAddcThumbnails_Defaults_Registration_To_Null()
+        public void AircraftController_GetAddcThumbnails_Defaults_Registration_To_Null()
         {
             SetupAirportDataDotCom("4008F6", null, 1, HttpStatusCode.OK, new AirportDataThumbnailsJson() { Status = 200 });
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/4008f6/airport-data-thumbnails?numThumbs=1");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<AirportDataThumbnailsJson>(content);
+            var json = Get("/api/3.00/aircraft/4008f6/airport-data-thumbnails?numThumbs=1").Json<AirportDataThumbnailsJson>();
 
             Assert.AreEqual(200, json.Status);
         }
 
         [TestMethod]
-        public async Task AircraftController_GetAddcThumbnails_Defaults_Number_Of_Thumbnails_To_One()
+        public void AircraftController_GetAddcThumbnails_Defaults_Number_Of_Thumbnails_To_One()
         {
             SetupAirportDataDotCom("4008F6", "G-VROS", 1, HttpStatusCode.OK, new AirportDataThumbnailsJson() { Status = 200 });
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/4008f6/airport-data-thumbnails?reg=G%2DVROS");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<AirportDataThumbnailsJson>(content);
+            var json = Get("/api/3.00/aircraft/4008f6/airport-data-thumbnails?reg=G%2DVROS").Json<AirportDataThumbnailsJson>();
 
             Assert.AreEqual(200, json.Status);
         }
 
         [TestMethod]
-        public async Task AircraftController_GetAddcThumbnails_Returns_Error_If_Icao_Is_Missing()
+        public void AircraftController_GetAddcThumbnails_Returns_Error_If_Icao_Is_Missing()
         {
-            var response = await _Server.HttpClient.GetAsync("/AirportDataThumbnails.json?icao=&reg=G%2DVROS&numThumbs=1");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<AirportDataThumbnailsJson>(content);
+            var json = Get("/AirportDataThumbnails.json?icao=&reg=G%2DVROS&numThumbs=1").Json<AirportDataThumbnailsJson>();
 
             Assert.AreEqual(0, json.Status);
             Assert.AreEqual(0, json.Thumbnails.Count);
@@ -185,11 +169,9 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task AircraftController_GetAddcThumbnails_Returns_Error_If_Icao_Is_Garbage()
+        public void AircraftController_GetAddcThumbnails_Returns_Error_If_Icao_Is_Garbage()
         {
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/garbage/airport-data-thumbnails?reg=g%2dvros&numThumbs=1");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<AirportDataThumbnailsJson>(content);
+            var json = Get("/api/3.00/aircraft/garbage/airport-data-thumbnails?reg=g%2dvros&numThumbs=1").Json<AirportDataThumbnailsJson>();
 
             Assert.AreEqual(0, json.Status);
             Assert.AreEqual(0, json.Thumbnails.Count);
@@ -197,30 +179,26 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task AircraftController_GetAddcThumbnails_Passes_Through_Status_Code_If_AirportDataDotCom_Returns_Error()
+        public void AircraftController_GetAddcThumbnails_Passes_Through_Status_Code_If_AirportDataDotCom_Returns_Error()
         {
             SetupAirportDataDotCom("4008F6", "G-VROS", 1, HttpStatusCode.BadRequest, null);
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/4008F6/airport-data-thumbnails?reg=G%2DVROS&numThumbs=1");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<AirportDataThumbnailsJson>(content);
+            var json = Get("/api/3.00/aircraft/4008F6/airport-data-thumbnails?reg=G%2DVROS&numThumbs=1").Json<AirportDataThumbnailsJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.AreEqual(400, json.Status);
             Assert.AreEqual("Could not retrieve thumbnails", json.Error);
             Assert.AreEqual(0, json.Thumbnails.Count);
         }
 
         [TestMethod]
-        public async Task AircraftController_GetAddcThumbnails_Copes_If_AirportDataDotCom_Throws_Exception()
+        public void AircraftController_GetAddcThumbnails_Copes_If_AirportDataDotCom_Throws_Exception()
         {
             _AirportDataDotCom.Setup(r => r.GetThumbnails("4008F6", "G-VROS", 1)).Callback(() => {
                 throw new InvalidOperationException();
             });
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/4008F6/airport-data-thumbnails?reg=G%2DVROS&numThumbs=1");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<AirportDataThumbnailsJson>(content);
+            var json = Get("/api/3.00/aircraft/4008F6/airport-data-thumbnails?reg=G%2DVROS&numThumbs=1").Json<AirportDataThumbnailsJson>();
 
             Assert.AreEqual(500, json.Status);
             Assert.IsTrue(json.Error.StartsWith("Exception caught while fetching thumbnails:"));
@@ -229,97 +207,85 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
         #region GetClosest
         [TestMethod]
-        public async Task AircraftController_GetClosest_Returns_Warning_If_Position_Not_Supplied()
+        public void AircraftController_GetClosest_Returns_Warning_If_Position_Not_Supplied()
         {
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/closest");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<ProximityGadgetAircraftJson>(content);
+            var json = Get("/api/3.00/aircraft/closest").Json<ProximityGadgetAircraftJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.AreEqual("Position not supplied", json.WarningMessage);
             Assert.IsNull(json.ClosestAircraft);
             Assert.AreEqual(0, json.EmergencyAircraft.Count);
         }
 
         [TestMethod]
-        public async Task AircraftController_GetClosest_Uses_Configured_Aircraft_List()
+        public void AircraftController_GetClosest_Uses_Configured_Aircraft_List()
         {
             SetupSnapshot(SetupClosestAircraftList(10), CreateAircraft(icao: 0x400f86, latitude: 1, longitude: 2));
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/closest?lat=7&lng=8");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<ProximityGadgetAircraftJson>(content);
+            var json = Get("/api/3.00/aircraft/closest?lat=7&lng=8").Json<ProximityGadgetAircraftJson>();
 
             Assert.IsNotNull(json);
             Assert.IsNotNull(json.ClosestAircraft);
         }
 
         [TestMethod]
-        public async Task AircraftController_GetClosest_Responds_To_PreVersion3_Route()
+        public void AircraftController_GetClosest_Responds_To_PreVersion3_Route()
         {
             SetupSnapshot(SetupClosestAircraftList(10), CreateAircraft(icao: 0x400f86, latitude: 1, longitude: 2));
 
-            var response = await _Server.HttpClient.GetAsync("/ClosestAircraft.json?lat=1&lng=2");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<ProximityGadgetAircraftJson>(content);
+            var json = Get("/ClosestAircraft.json?lat=1&lng=2").Json<ProximityGadgetAircraftJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.IsNotNull(json.ClosestAircraft);
         }
 
         [TestMethod]
-        public async Task AircraftController_GetClosest_Returns_Correct_Response_If_Receiver_Is_Not_Visible()
+        public void AircraftController_GetClosest_Returns_Correct_Response_If_Receiver_Is_Not_Visible()
         {
             SetupSnapshot(SetupClosestAircraftList(10), CreateAircraft(icao: 0x400f86, latitude: 1, longitude: 2));
             _FeedManager.Setup(r => r.GetByUniqueId(10, true)).Returns((IFeed)null);
             _FeedManager.Setup(r => r.GetByUniqueId(10, false)).Returns(_Feed.Object);
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/closest?lat=7&lng=8");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<ProximityGadgetAircraftJson>(content);
+            var json = Get("/api/3.00/aircraft/closest?lat=7&lng=8").Json<ProximityGadgetAircraftJson>();
 
             Assert.AreEqual("Receiver is offline", json.WarningMessage);
         }
 
         [TestMethod]
-        public async Task AircraftController_GetClosest_Returns_Correct_Response_If_Receiver_Has_No_Aircraft_List()
+        public void AircraftController_GetClosest_Returns_Correct_Response_If_Receiver_Has_No_Aircraft_List()
         {
             SetupSnapshot(SetupClosestAircraftList(10), CreateAircraft(icao: 0x400f86, latitude: 1, longitude: 2));
             _Feed.SetupGet(r => r.AircraftList).Returns((IBaseStationAircraftList)null);
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/closest?lat=7&lng=8");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<ProximityGadgetAircraftJson>(content);
+            var json = Get("/api/3.00/aircraft/closest?lat=7&lng=8").Json<ProximityGadgetAircraftJson>();
 
             Assert.AreEqual("Receiver is offline", json.WarningMessage);
         }
 
         [TestMethod]
-        public async Task AircraftController_GetClosest_Can_Reject_Requests_From_Internet()
+        public void AircraftController_GetClosest_Can_Reject_Requests_From_Internet()
         {
             _Configuration.InternetClientSettings.AllowInternetProximityGadgets = false;
-
             _RemoteIpAddress = "1.2.3.4";
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/closest?lat=7&lng=8");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<ProximityGadgetAircraftJson>(content);
+
+            var json = Get("/api/3.00/aircraft/closest?lat=7&lng=8").Json<ProximityGadgetAircraftJson>();
+
             Assert.IsNull(json);
         }
 
         [TestMethod]
-        public async Task AircraftController_GetClosest_Can_Accept_Requests_From_Internet()
+        public void AircraftController_GetClosest_Can_Accept_Requests_From_Internet()
         {
             _Configuration.InternetClientSettings.AllowInternetProximityGadgets = true;
-
             _RemoteIpAddress = "1.2.3.4";
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/closest?lat=7&lng=8");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<ProximityGadgetAircraftJson>(content);
+
+            var json = Get("/api/3.00/aircraft/closest?lat=7&lng=8").Json<ProximityGadgetAircraftJson>();
+
             Assert.IsNotNull(json);
         }
 
         [TestMethod]
-        public async Task AircraftController_GetClosest_Sends_JSON_As_Text()
+        public void AircraftController_GetClosest_Sends_JSON_As_Text()
         {
             // The version of jQuery used in the proximity gadget leaked when it parsed JSON so traditionally it has been
             // sent as text and parsed with another library. VRS would always send JSON as text so there was no distinction
@@ -329,9 +295,9 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             SetupSnapshot(SetupClosestAircraftList(10), CreateAircraft(icao: 0x400f86, latitude: 1, longitude: 2));
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/aircraft/closest?lat=7&lng=8");
+            Get("/api/3.00/aircraft/closest?lat=7&lng=8");
 
-            Assert.IsTrue(response.Content.Headers.ContentType.ToString().StartsWith(MimeType.Text));
+            Assert.AreEqual(MimeType.Text, _Context.ResponseHeadersDictionary.ContentTypeValue.MediaType);
         }
         #endregion
     }

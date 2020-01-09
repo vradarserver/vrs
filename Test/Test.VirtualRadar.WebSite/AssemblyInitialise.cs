@@ -30,7 +30,8 @@ namespace Test.VirtualRadar.WebSite
             global::VirtualRadar.Owin.Implementations.Register(Factory.Singleton);      // <-- need most of this for web API controller tests.
             global::VirtualRadar.WebServer.Implementations.Register(Factory.Singleton); // <-- need IResponder defined for response content tests.
 
-            AWhewell.Owin.Implementations.Register(Factory.Singleton);  // <-- need Owin library registered for middleware tests
+            AWhewell.Owin.Implementations.Register(Factory.Singleton);              // <-- need Owin library registered for middleware tests
+            AWhewell.Owin.Host.Ram.Implementations.Register(Factory.Singleton);     // <-- need RAM host library registered for controller tests
         }
     }
 }

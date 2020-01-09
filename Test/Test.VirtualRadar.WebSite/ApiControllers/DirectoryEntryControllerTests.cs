@@ -12,11 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Newtonsoft.Json;
 using Test.Framework;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.BaseStation;
@@ -83,77 +80,67 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public async Task DirectoryEntryController_GetDirectoryEntry_Responds_With_Entry_Information()
+        public void DirectoryEntryController_GetDirectoryEntry_Responds_With_Entry_Information()
         {
             var key = Guid.NewGuid();
             SetKey(key);
 
-            var response = await _Server.HttpClient.GetAsync($"/api/3.00/directory-entry/{key}");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<DirectoryEntryJson>(content);
+            var json = Get($"/api/3.00/directory-entry/{key}").Json<DirectoryEntryJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.IsNotNull(json);
         }
 
         [TestMethod]
-        public async Task DirectoryEntryController_GetDirectoryEntry_Responds_To_Legacy_Path()
+        public void DirectoryEntryController_GetDirectoryEntry_Responds_To_Legacy_Path()
         {
             var key = Guid.NewGuid();
             SetKey(key);
 
-            var response = await _Server.HttpClient.GetAsync($"/DirectoryEntry.json?key={key}");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<DirectoryEntryJson>(content);
+            var json = Get($"/DirectoryEntry.json?key={key}").Json<DirectoryEntryJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.IsNotNull(json);
         }
 
         [TestMethod]
-        public async Task DirectoryEntryController_GetDirectoryEntry_Is_Not_Case_Sensitive()
+        public void DirectoryEntryController_GetDirectoryEntry_Is_Not_Case_Sensitive()
         {
             var key = Guid.NewGuid();
             SetKey(key, ensureUppercase: true);
 
-            var response = await _Server.HttpClient.GetAsync($"/api/3.00/directory-entry/{key.ToString().ToLower()}");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<DirectoryEntryJson>(content);
+            var json = Get($"/api/3.00/directory-entry/{key.ToString().ToLower()}").Json<DirectoryEntryJson>();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.IsNotNull(json);
         }
 
         [TestMethod]
-        public async Task DirectoryEntryController_GetDirectoryEntry_Shows_Short_Version_Number()
+        public void DirectoryEntryController_GetDirectoryEntry_Shows_Short_Version_Number()
         {
             var key = Guid.NewGuid();
             SetKey(key);
             SetVersionNumber("1.2.3");
 
-            var response = await _Server.HttpClient.GetAsync($"/api/3.00/directory-entry/{key}");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<DirectoryEntryJson>(content);
+            var json = Get($"/api/3.00/directory-entry/{key}").Json<DirectoryEntryJson>();
 
             Assert.AreEqual("1.2.3", json.Version);
         }
 
         [TestMethod]
-        public async Task DirectoryEntryController_GetDirectoryEntry_Shows_Number_Of_Visible_Feeds()
+        public void DirectoryEntryController_GetDirectoryEntry_Shows_Number_Of_Visible_Feeds()
         {
             var key = Guid.NewGuid();
             SetKey(key);
             SetCountVisibleFeeds(2);
 
-            var response = await _Server.HttpClient.GetAsync($"/api/3.00/directory-entry/{key}");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<DirectoryEntryJson>(content);
+            var json = Get($"/api/3.00/directory-entry/{key}").Json<DirectoryEntryJson>();
 
             Assert.AreEqual(2, json.NumberOfFeeds);
         }
 
         [TestMethod]
-        public async Task DirectoryEntryController_GetDirectoryEntry_Does_Not_Include_Visible_Feeds_With_No_Aircraft_List()
+        public void DirectoryEntryController_GetDirectoryEntry_Does_Not_Include_Visible_Feeds_With_No_Aircraft_List()
         {
             var key = Guid.NewGuid();
             SetKey(key);
@@ -161,67 +148,54 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             feedMocks[1].SetupGet(r => r.AircraftList).Returns((IBaseStationAircraftList)null);
 
-            var response = await _Server.HttpClient.GetAsync($"/api/3.00/directory-entry/{key}");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<DirectoryEntryJson>(content);
+            var json = Get($"/api/3.00/directory-entry/{key}").Json<DirectoryEntryJson>();
 
             Assert.AreEqual(3, json.NumberOfFeeds);
         }
 
         [TestMethod]
-        public async Task DirectoryEntryController_GetDirectoryEntry_Shows_Number_Of_Aircraft_On_Display_On_Largest_Feed()
+        public void DirectoryEntryController_GetDirectoryEntry_Shows_Number_Of_Aircraft_On_Display_On_Largest_Feed()
         {
             var key = Guid.NewGuid();
             SetKey(key);
             SetAircraftListCounts(7, 42, 28);
 
-            var response = await _Server.HttpClient.GetAsync($"/api/3.00/directory-entry/{key}");
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonConvert.DeserializeObject<DirectoryEntryJson>(content);
+            var json = Get($"/api/3.00/directory-entry/{key}").Json<DirectoryEntryJson>();
 
             Assert.AreEqual(42, json.NumberOfAircraft);
         }
 
         [TestMethod]
-        public async Task DirectoryEntryController_GetDirectoryEntry_Responds_With_404_When_Key_Missing()
+        public void DirectoryEntryController_GetDirectoryEntry_Responds_With_404_When_Key_Missing()
         {
             SetKey(Guid.NewGuid());
 
-            var response = await _Server.HttpClient.GetAsync("/api/3.00/directory-entry");
-            var content = await response.Content.ReadAsByteArrayAsync();
-
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+            Get("/api/3.00/directory-entry");
+            Assert.AreEqual(HttpStatusCode.NotFound, _Context.ResponseHttpStatusCode);
             //Assert.AreEqual(0, content.Length);       web api returns a route not found message in the body because {key} is part of the route
 
-            response = await _Server.HttpClient.GetAsync("/api/3.00/directory-entry/");
-            content = await response.Content.ReadAsByteArrayAsync();
-
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+            Get("/api/3.00/directory-entry/");
+            Assert.AreEqual(HttpStatusCode.NotFound, _Context.ResponseHttpStatusCode);
             //Assert.AreEqual(0, content.Length);       web api returns a route not found message in the body because {key} is part of the route
 
-            response = await _Server.HttpClient.GetAsync("/DirectoryEntry.json");
-            content = await response.Content.ReadAsByteArrayAsync();
+            Get("/DirectoryEntry.json");
+            Assert.AreEqual(HttpStatusCode.NotFound, _Context.ResponseHttpStatusCode);
+            Assert.AreEqual(0, _Context.ResponseBody.Length);
 
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-            Assert.AreEqual(0, content.Length);
-
-            response = await _Server.HttpClient.GetAsync("/DirectoryEntry.json?key=");
-            content = await response.Content.ReadAsByteArrayAsync();
-
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-            Assert.AreEqual(0, content.Length);
+            Get("/DirectoryEntry.json?key=");
+            Assert.AreEqual(HttpStatusCode.NotFound, _Context.ResponseHttpStatusCode);
+            Assert.AreEqual(0, _Context.ResponseBody.Length);
         }
 
         [TestMethod]
-        public async Task DirectoryEntryController_GetDirectoryEntry_Responds_With_404_When_Key_Is_Wrong()
+        public void DirectoryEntryController_GetDirectoryEntry_Responds_With_404_When_Key_Is_Wrong()
         {
             SetKey(Guid.NewGuid());
         
-            var response = await _Server.HttpClient.GetAsync($"/api/3.00/directory-entry/{Guid.NewGuid()}");
-            var content = await response.Content.ReadAsByteArrayAsync();
-        
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-            Assert.AreEqual(0, content.Length);
+            Get($"/api/3.00/directory-entry/{Guid.NewGuid()}");
+
+            Assert.AreEqual(HttpStatusCode.NotFound, _Context.ResponseHttpStatusCode);
+            Assert.AreEqual(0, _Context.ResponseBody.Length);
         }
     }
 }

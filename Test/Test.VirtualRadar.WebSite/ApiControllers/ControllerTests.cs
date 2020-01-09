@@ -10,26 +10,30 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using AWhewell.Owin.Interface;
+using AWhewell.Owin.Interface.Host.Ram;
+using AWhewell.Owin.Interface.WebApi;
+using AWhewell.Owin.Utility;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Newtonsoft.Json;
 using Test.Framework;
 using Test.VirtualRadar.WebSite.MockOwinMiddleware;
+using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.Settings;
 
 namespace Test.VirtualRadar.WebSite.ApiControllers
 {
+    using AppFunc = Func<IDictionary<string, object>, Task>;
+
     [TestClass]
     public abstract class ControllerTests
     {
-        protected class GarbageServer
-        {
-            // Just a bunch of dumb crap to get the tests compiling. I will sort out the controller tests later.
-
-            public System.Net.Http.HttpClient HttpClient { get; }
-        }
-
         public TestContext TestContext { get; set; }
 
         protected IClassFactory _Snapshot;
@@ -42,7 +46,14 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         protected MockRedirectionFilter _RedirectionFilter;
         protected string _RemoteIpAddress;
 
-        protected GarbageServer _Server;
+        protected IHostRam _RamHost;
+        protected IPipelineBuilder _PipelineBuilder;
+        protected IPipelineBuilderEnvironment _PipelineBuilderEnvironment;
+        protected IWebApiMiddleware _WebApiMiddleware;
+
+        protected OwinContext _Context;
+        protected MemoryStream _RequestStream;
+        protected MemoryStream _ResponseStream;
 
         [TestInitialize]
         public void TestInitialise()
@@ -58,20 +69,36 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _BasicAuthenticationFilter = MockBasicAuthenticationFilter.CreateAndRegister();
             _RedirectionFilter = MockRedirectionFilter.CreateAndRegister();
 
-            /*
-            _WebAppConfiguration = Factory.Resolve<IWebAppConfiguration>();
-            _WebAppConfiguration.AddCallback(UsetTestEnvironmentSetup,   StandardPipelinePriority.Access - 1);
-            _WebAppConfiguration.AddCallback(ConfigureHttpConfiguration, StandardPipelinePriority.WebApiConfiguration);
-            _WebAppConfiguration.AddCallback(UseWebApi,                  StandardPipelinePriority.WebApi);
-            */
+            _RamHost = Factory.Resolve<IHostRam>();
+            _PipelineBuilder = Factory.Resolve<IPipelineBuilder>();
+            _PipelineBuilderEnvironment = Factory.Resolve<IPipelineBuilderEnvironment>();
+            _WebApiMiddleware = Factory.Resolve<IWebApiMiddleware>();
+
+            _PipelineBuilder.RegisterMiddlewareBuilder(UseSetupTestEnvironment, StandardPipelinePriority.Access - 1);
+            _PipelineBuilder.RegisterMiddlewareBuilder(UseWebApi,               StandardPipelinePriority.WebApi);
+
+            _Context = new OwinContext();
+            _Context.RequestHeaders = new HeadersDictionary();
+            _Context.ResponseHeaders = new HeadersDictionary();
+
+            _RequestStream = new MemoryStream();
+            _ResponseStream = new MemoryStream();
+            _Context.RequestBody = _RequestStream;
+            _Context.ResponseBody = _ResponseStream;
+
+            _Context.CallCancelled =            new CancellationToken();
+            _Context.Version =                  "1.0.0";
+            _Context.RequestHost =              "127.0.0.1:80";
+            _Context.RequestProtocol =          Formatter.FormatHttpProtocol(HttpProtocol.Http1_1);
+            _Context.RequestScheme =            Formatter.FormatHttpScheme(HttpScheme.Http);
+            _Context.RequestPathBase =          "/VirtualRadar";
+            _Context.ServerLocalIpAddress =     "1.2.3.4";
+            _Context.ServerLocalPortNumber =    80;
 
             ExtraInitialise();
 
-            /*
-            _Server = TestServer.Create(app => {
-                _WebAppConfiguration.Configure(app);
-            });
-            */
+            _RamHost.Initialise(_PipelineBuilder, _PipelineBuilderEnvironment);
+            _RamHost.Start();
         }
 
         protected virtual void ExtraInitialise()
@@ -82,10 +109,18 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         [TestCleanup]
         public void TestCleanup()
         {
-            //if(_Server != null) {
-            //    _Server.Dispose();
-            //    _Server = null;
-            //}
+            if(_RequestStream != null) {
+                _RequestStream.Dispose();
+                _RequestStream = null;
+            }
+            if(_ResponseStream != null) {
+                _ResponseStream.Dispose();
+                _ResponseStream = null;
+            }
+            if(_RamHost != null) {
+                _RamHost.Dispose();
+                _RamHost = null;
+            }
 
             ExtraCleanup();
 
@@ -97,46 +132,145 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             ;
         }
 
-        //private void ConfigureHttpConfiguration(IAppBuilder app)
-        //{
-        //    var configuration = _WebAppConfiguration.GetHttpConfiguration();
-        //    configuration.MapHttpAttributeRoutes();
-        //    configuration.Routes.MapHttpRoute(
-        //        name:           "DefaultApi",
-        //        routeTemplate:  "api/{controller}/{id}",
-        //        defaults:       new { id = RouteParameter.Optional }
-        //    );
-        //}
+        void UseSetupTestEnvironment(IPipelineBuilderEnvironment builderEnv)
+        {
+            // The intention is for this to get called at the start of the pipeline
+            Func<AppFunc, AppFunc> middleware = (Func<IDictionary<string, object>, Task> next) =>
+            {
+                return async(IDictionary<string, object> environment) => {
+                    environment["server.RemoteIpAddress"] = _RemoteIpAddress;
+                    await next.Invoke(environment);
+                };
+            };
 
-        //private void UseWebApi(IAppBuilder app)
-        //{
-        //    var configuration = _WebAppConfiguration.GetHttpConfiguration();
-        //    app.UseWebApi(configuration);
-        //}
+            builderEnv.UseMiddleware(middleware);
+        }
 
-        //void UsetTestEnvironmentSetup(IAppBuilder app)
-        //{
-        //    // The intention is for this to get called at the start of the pipeline
-        //    Func<Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task>> middleware = 
-        //    (Func<IDictionary<string, object>, Task> next) => {
-        //        Func<IDictionary<string, object>, Task> appFunc = async(IDictionary<string, object> environment) => {
-        //            SetEnvironmentValue(environment, "server.RemoteIpAddress", _RemoteIpAddress);
+        void UseWebApi(IPipelineBuilderEnvironment builderEnv)
+        {
+            _WebApiMiddleware.AreFormNamesCaseSensitive = false;
+            _WebApiMiddleware.AreQueryStringNamesCaseSensitive = false;
 
-        //            await next.Invoke(environment);
-        //        };
+            builderEnv.UseMiddleware(_WebApiMiddleware.CreateMiddleware);
+        }
 
-        //        return appFunc;
-        //    };
-        //    app.Use(middleware);
-        //}
+        public void SetPathAndQueryString(string pathAndQueryString)
+        {
+            if(pathAndQueryString.Length > 0 && pathAndQueryString[0] != '/') {
+                pathAndQueryString = "/" + pathAndQueryString;
+            }
 
-        //void SetEnvironmentValue<T>(IDictionary<string, object> environment, string key, T value)
-        //{
-        //    if(!environment.ContainsKey(key)) {
-        //        environment.Add(key, value);
-        //    } else {
-        //        environment[key] = value;
-        //    }
-        //}
+            var separatorIdx = pathAndQueryString.IndexOf('?');
+            if(separatorIdx == -1) {
+                _Context.Environment[OwinConstants.RequestPath] = pathAndQueryString;
+            } else {
+                _Context.Environment[OwinConstants.RequestPath] =        pathAndQueryString.Substring(0, separatorIdx);
+                _Context.Environment[OwinConstants.RequestQueryString] = pathAndQueryString.Substring(separatorIdx + 1);
+            }
+        }
+
+        public byte[] Bytes() => _ResponseStream.ToArray();
+
+        public string Text()
+        {
+            var encoding = _Context.ResponseHeadersDictionary.ContentTypeValue.Encoding;
+            var bytes = _ResponseStream.ToArray();
+
+            return encoding.GetString(bytes);
+        }
+
+        public T Json<T>() => JsonConvert.DeserializeObject<T>(Text());
+
+        public object Json(Type jsonType) => JsonConvert.DeserializeObject(Text(), jsonType);
+
+        public ControllerTests Get(string pathAndQueryString)
+        {
+            SetPathAndQueryString(pathAndQueryString);
+            _ResponseStream.SetLength(0);
+            _Context.RequestMethod = "GET";
+            _RamHost.ProcessRequest(_Context.Environment);
+
+            return this;
+        }
+
+        public ControllerTests Post(string pathAndQueryString)
+        {
+            SetPathAndQueryString(pathAndQueryString);
+            _ResponseStream.SetLength(0);
+            _Context.RequestMethod = "POST";
+            _RamHost.ProcessRequest(_Context.Environment);
+
+            return this;
+        }
+
+        public ControllerTests PostForm(string pathAndQueryString, string[,] keyValues)
+        {
+            FormBody(keyValues);
+
+            SetPathAndQueryString(pathAndQueryString);
+            _ResponseStream.SetLength(0);
+            _Context.RequestMethod = "POST";
+            _RamHost.ProcessRequest(_Context.Environment);
+
+            return this;
+        }
+
+        public ControllerTests PostJson(string pathAndQueryString, object obj)
+        {
+            JsonBody(obj);
+
+            SetPathAndQueryString(pathAndQueryString);
+            _ResponseStream.SetLength(0);
+            _Context.RequestMethod = "POST";
+            _RamHost.ProcessRequest(_Context.Environment);
+
+            return this;
+        }
+
+        public ControllerTests FormBody(string[,] keyValues)
+        {
+            if(keyValues == null) {
+                throw new ArgumentNullException(nameof(keyValues));
+            }
+            if(keyValues.GetLength(1) != 2) {
+                throw new ArgumentOutOfRangeException($"You must pass a two dimensional array to {nameof(FormBody)}");
+            }
+
+            _Context.RequestHeadersDictionary["Content-Type"] = new ContentTypeValue(
+                Formatter.FormatMediaType(MediaType.UrlEncodedForm),
+                charset: "utf-8"
+            ).ToString();
+
+            _Context.RequestBody.SetLength(0);
+            for(var i = 0;i < keyValues.GetLength(0);++i) {
+                var key = keyValues[i,0];
+                var value = keyValues[i,1];
+                var prefix = _Context.RequestBody.Length != 0 ? "&" : "";
+                var formValue = $"{prefix}{Uri.EscapeDataString(key)}={Uri.EscapeDataString(value)}";
+                var bytes = Encoding.UTF8.GetBytes(formValue);
+                _Context.RequestBody.Write(bytes, 0, bytes.Length);
+            }
+
+            return this;
+        }
+
+        public ControllerTests JsonBody(object obj)
+        {
+            if(obj == null) {
+                throw new ArgumentNullException(nameof(obj));
+            }
+
+            var jsonText = JsonConvert.SerializeObject(obj);
+            var bytes = Encoding.UTF8.GetBytes(jsonText);
+            _Context.RequestBody.SetLength(0);
+            _Context.RequestBody.Write(bytes, 0, bytes.Length);
+
+            _Context.RequestHeadersDictionary["Content-Type"] = new ContentTypeValue(
+                Formatter.FormatMediaType(MediaType.Json),
+                charset: "utf-8"
+            ).ToString();
+
+            return this;
+        }
     }
 }

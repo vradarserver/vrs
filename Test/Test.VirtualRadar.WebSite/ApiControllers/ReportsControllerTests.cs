@@ -10,23 +10,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Newtonsoft.Json;
 using Test.Framework;
 using Test.VirtualRadar.WebSite.TestHelpers;
-using VRSInterface = VirtualRadar.Interface;
 using VirtualRadar.Interface.Database;
-using VirtualRadar.Interface.WebSite;
 using VirtualRadar.Interface.StandingData;
+using VirtualRadar.Interface.WebSite;
 using VirtualRadar.WebSite.ApiControllers;
-using System.Globalization;
-using System.Web;
+using VRSInterface = VirtualRadar.Interface;
 
 namespace Test.VirtualRadar.WebSite.ApiControllers
 {
@@ -169,28 +164,24 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             }
         }
 
-        private object SendJsonRequest(Type jsonType, string pathAndFile, bool isInternetClient = false, Action<HttpResponseMessage> httpResponseAction = null)
+        private object SendJsonRequest(Type jsonType, string pathAndFile, bool isInternetClient = false, Action afterGetAction = null)
         {
             _RemoteIpAddress = isInternetClient ? "1.2.3.4" : "127.0.0.1";
 
-            var response = _Server.HttpClient.GetAsync(pathAndFile).Result;
-            httpResponseAction?.Invoke(response);
+            Get(pathAndFile);
+            afterGetAction?.Invoke();
 
-            var content = response.Content.ReadAsStringAsync().Result;
-
-            return JsonConvert.DeserializeObject(content, jsonType);
+            return Json(jsonType);
         }
 
-        private T SendJsonRequest<T>(string pathAndFile, bool isInternetClient = false, Action<HttpResponseMessage> httpResponseAction = null)
+        private T SendJsonRequest<T>(string pathAndFile, bool isInternetClient = false, Action afterGetAction = null)
         {
             _RemoteIpAddress = isInternetClient ? "1.2.3.4" : "127.0.0.1";
 
-            var response = _Server.HttpClient.GetAsync(pathAndFile).Result;
-            httpResponseAction?.Invoke(response);
+            Get(pathAndFile);
+            afterGetAction?.Invoke();
 
-            var content = response.Content.ReadAsStringAsync().Result;
-
-            return JsonConvert.DeserializeObject<T>(content);
+            return Json<T>();
         }
 
         #region Date report tests
@@ -439,10 +430,9 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _DatabaseFlights[0].StartTime = new DateTime(2007, 8, 9, 10, 11, 12, 134, DateTimeKind.Utc);    // the dates aren't really UTC but I don't want locale to affect the test
 
             _RemoteIpAddress = "127.0.0.1";
-            var response = _Server.HttpClient.GetAsync(_ReportRowsAddress.Address).Result;
-            var content = response.Content.ReadAsStringAsync().Result;
+            var content = Get(_ReportRowsAddress.Address).Text();
 
-            Assert.IsTrue(content.Contains(@"""\/Date(1186654272134)\/"""));
+            Assert.IsTrue(content.Contains(@"/Date(1186654272134)/"));
         }
 
         [TestMethod]
@@ -1261,9 +1251,10 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         {
             _ReportRowsAddress.Report = report;
 
-            SendJsonRequest(ReportJsonType(reportClass), _ReportRowsAddress.Address, httpResponseAction: response => {
-                var cacheControl = response.Headers.CacheControl;
-                Assert.AreEqual(0, cacheControl.MaxAge.Value.TotalSeconds);
+            SendJsonRequest(ReportJsonType(reportClass), _ReportRowsAddress.Address, afterGetAction: () => {
+                var cacheControl = _Context.ResponseHeadersDictionary.CacheControlValue;
+
+                Assert.AreEqual(0, cacheControl.MaxAgeSeconds);
                 Assert.IsTrue(cacheControl.NoCache);
                 Assert.IsTrue(cacheControl.NoStore);
                 Assert.IsTrue(cacheControl.MustRevalidate);
