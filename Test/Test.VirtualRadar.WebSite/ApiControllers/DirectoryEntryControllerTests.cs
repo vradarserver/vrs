@@ -46,6 +46,13 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             for(var i = 0;i < feeds.Length;++i) {
                 var feed = TestUtilities.CreateMockInstance<IFeed>();
                 feeds[i] = feed;
+
+                var aircraftList = TestUtilities.CreateMockInstance<IBaseStationAircraftList>();
+                feed.SetupGet(r => r.AircraftList).Returns(aircraftList.Object);
+
+                var snapshotList = new List<IAircraft>(new IAircraft[0]);
+                long unused1, unused2;
+                aircraftList.Setup(r => r.TakeSnapshot(out unused1, out unused2)).Returns(snapshotList);
             }
 
             _FeedManager.SetupGet(r => r.VisibleFeeds).Returns(feeds.Select(r => r.Object).ToArray());
