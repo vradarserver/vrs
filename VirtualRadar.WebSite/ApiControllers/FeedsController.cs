@@ -361,7 +361,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         [HttpPost]
         [Route("AircraftList.json")]            // pre-version 3 route
         [Route("FlightSimList.json")]           // pre-version 3 route
-        public AircraftListJson AircraftListV2Post(int feed = -1, double? lat = null, double? lng = null, long ldv = -1, long stm = -1, byte refreshTrails = 0, int selAc = -1, string trFmt = null)
+        public AircraftListJson AircraftListV2Post(string icaos = null, int feed = -1, double? lat = null, double? lng = null, long ldv = -1, long stm = -1, byte refreshTrails = 0, int selAc = -1, string trFmt = null)
         {
             var isFlightSimList = Route?.RouteAttribute.Route == "FlightSimList.json";
             var args = new AircraftListJsonBuilderArgs() {
@@ -377,29 +377,18 @@ namespace VirtualRadar.WebSite.ApiControllers
                 TrailType =             TrailTypeFromCode(trFmt),
             };
             SortByFromQueryString(args);
-            PreviousAircraftFromPostBody(args);
+            ExtractPreviousAircraftFromBody(args, icaos);
 
             return BuildAircraftList(args);
         }
 
-        private void PreviousAircraftFromPostBody(AircraftListJsonBuilderArgs args)
+        private void ExtractPreviousAircraftFromBody(AircraftListJsonBuilderArgs args, string icaos)
         {
-            var bodyStream = Context.RequestBody;
-            if(bodyStream != null && bodyStream != Stream.Null) {
-                using(var reader = new StreamReader(bodyStream)) {
-                    var content = reader.ReadToEnd()?.Trim();
-                    if(!String.IsNullOrEmpty(content)) {
-                        var icaosIdx = content.IndexOf("icaos=", StringComparison.OrdinalIgnoreCase);
-                        var icaos = icaosIdx == -1 ? "" : content.Substring(icaosIdx + 6).Trim();
-
-                        if(!String.IsNullOrEmpty(icaos)) {
-                            foreach(var icao in icaos.Split('-')) {
-                                var id = CustomConvert.Icao24(icao);
-                                if(id != -1) {
-                                    args.PreviousAircraft.Add(id);
-                                }
-                            }
-                        }
+            if(!String.IsNullOrEmpty(icaos)) {
+                foreach(var icao in icaos.Split('-')) {
+                    var id = CustomConvert.Icao24(icao);
+                    if(id != -1) {
+                        args.PreviousAircraft.Add(id);
                     }
                 }
             }

@@ -339,6 +339,15 @@ namespace Test.Framework
         }
         #endregion
 
+        #region TestContextDataRow
+        /// <summary>
+        /// Returns the Data Row number of the current iteration in a TestContext data source.
+        /// </summary>
+        /// <param name="testContext"></param>
+        /// <returns></returns>
+        public static int DataRowNumber(TestContext testContext) => testContext.DataRow.Table.Rows.IndexOf(testContext.DataRow);
+        #endregion
+
         #region Moq helpers
         /// <summary>
         /// Creates a Moq mock object for a type that implements <see cref="ISingleton{T}"/>.

@@ -1566,30 +1566,6 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             Assert.IsFalse(aircraftList.ServerConfigChanged);
         }
-
-        [TestMethod]
-        public void FeedsController_AircraftList_Copes_With_Missing_Query_String_Segment_V2_POST()
-        {
-            var jsonText = Post($"AircraftList.json?&ldv=1").Text();
-
-            Assert.AreEqual("{\"Message\":\"The request is invalid.\"}", jsonText);
-        }
-
-        [TestMethod]
-        public void FeedsController_AircraftList_Copes_With_Missing_Query_String_Segment_V2_GET()
-        {
-            var jsonText = Get($"AircraftList.json?&ldv=1").Text();
-
-            Assert.AreEqual("{\"Message\":\"The request is invalid.\"}", jsonText);
-        }
-
-        [TestMethod]
-        public void FeedsController_AircraftList_Copes_With_Missing_Query_String_Segment_V3()
-        {
-            var jsonText = Post("/api/3.00/feeds/aircraft-list?&ldv=1").Text();
-
-            Assert.AreEqual("{\"Message\":\"The request is invalid.\"}", jsonText);
-        }
         #endregion
     }
 }
