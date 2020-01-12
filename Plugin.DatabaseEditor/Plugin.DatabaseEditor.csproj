@@ -54,13 +54,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AWhewell.Owin.Interface.WebApi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AWhewell.Owin.WebApi.1.0.0-beta03\lib\net45\AWhewell.Owin.Interface.WebApi.dll</HintPath>
+      <HintPath>..\packages\AWhewell.Owin.WebApi.1.0.0-beta04\lib\net45\AWhewell.Owin.Interface.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="AWhewell.Owin.Utility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AWhewell.Owin.Utility.1.0.0-beta03\lib\net45\AWhewell.Owin.Utility.dll</HintPath>
+      <HintPath>..\packages\AWhewell.Owin.Utility.1.0.0-beta04\lib\net45\AWhewell.Owin.Utility.dll</HintPath>
     </Reference>
     <Reference Include="AWhewell.Owin.WebApi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AWhewell.Owin.WebApi.1.0.0-beta03\lib\net45\AWhewell.Owin.WebApi.dll</HintPath>
+      <HintPath>..\packages\AWhewell.Owin.WebApi.1.0.0-beta04\lib\net45\AWhewell.Owin.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="InterfaceFactory, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AWhewell.InterfaceFactory.4.0.0\lib\net40\InterfaceFactory.dll</HintPath>
