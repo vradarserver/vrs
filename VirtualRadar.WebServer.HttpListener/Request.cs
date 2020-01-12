@@ -88,7 +88,7 @@ namespace VirtualRadar.WebServer.HttpListener
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string RawUrl => _Context.RequestUrl;
+        public string RawUrl => _Context.RequestUrlFromRoot;
 
         private IPEndPoint _RemoteEndPoint;
         /// <summary>
