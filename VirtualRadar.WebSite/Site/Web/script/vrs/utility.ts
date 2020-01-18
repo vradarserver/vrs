@@ -687,6 +687,11 @@ namespace VRS
         {
             return json.replace(/\"\\\/Date\(([\d\+\-]+)\)\\\/\"/g, 'new Date($1)');
         }
+
+        convertIso8601Dates(json: string) : Date
+        {
+            return json === null || json === undefined || json === '' ? null : new Date(json);
+        }
     }
 
     /**

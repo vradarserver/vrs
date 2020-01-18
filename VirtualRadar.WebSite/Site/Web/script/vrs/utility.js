@@ -458,6 +458,9 @@ var VRS;
         JsonHelper.prototype.convertMicrosoftDates = function (json) {
             return json.replace(/\"\\\/Date\(([\d\+\-]+)\)\\\/\"/g, 'new Date($1)');
         };
+        JsonHelper.prototype.convertIso8601Dates = function (json) {
+            return json === null || json === undefined || json === '' ? null : new Date(json);
+        };
         return JsonHelper;
     }());
     VRS.JsonHelper = JsonHelper;

@@ -596,7 +596,7 @@ namespace VRS
 
                 $.ajax({
                     url:        VRS.globalOptions.reportUrl,
-                    dataType:   'text',     // It's always text - it contains Microsoft formatted dates, they need munging before we can use them
+                    dataType:   'json',
                     data:       parameters,
                     success:    $.proxy(this.pageFetched, this),
                     error:      $.proxy(this.fetchFailed, this),
@@ -608,14 +608,19 @@ namespace VRS
         /**
          * Called with the result of the fetch from the server.
          */
-        private pageFetched(rawData: string)
+        private pageFetched(rawData: any)
         {
             if(this._Settings.showFetchUI) {
                 VRS.pageHelper.showModalWaitAnimation(false);
             }
 
-            var json = VRS.jsonHelper.convertMicrosoftDates(rawData);
-            this._LastFetchResult = eval('(' + json + ')');
+            this._LastFetchResult = rawData;
+            if(this._LastFetchResult) {
+                $.each(this._LastFetchResult.flights, (idx, flight) => {
+                    flight.start = VRS.jsonHelper.convertIso8601Dates(<any>flight.start);
+                    flight.end =   VRS.jsonHelper.convertIso8601Dates(<any>flight.end);
+                });
+            }
 
             this.fixupRoutesAndAirports();
 
@@ -759,4 +764,3 @@ namespace VRS
         };
     }
 }
- 

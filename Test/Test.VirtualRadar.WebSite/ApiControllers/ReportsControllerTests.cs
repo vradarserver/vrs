@@ -423,7 +423,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public void ReportRows_DateReport_Json_Dates_Are_In_Microsoft_Format()
+        public void ReportRows_DateReport_Json_Dates_Are_In_Iso8601_Format()
         {
             _ReportRowsAddress.Report = "date";
             AddBlankDatabaseFlights(1);
@@ -432,7 +432,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _RemoteIpAddress = "127.0.0.1";
             var content = Get(_ReportRowsAddress.Address).Text();
 
-            Assert.IsTrue(content.Contains(@"/Date(1186654272134)/"));
+            Assert.IsTrue(content.Contains(@"2007-08-09T10:11:12.134Z"));
         }
 
         [TestMethod]

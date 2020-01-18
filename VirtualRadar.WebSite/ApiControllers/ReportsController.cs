@@ -38,7 +38,6 @@ namespace VirtualRadar.WebSite.ApiControllers
     {
         [HttpGet]
         [Route("ReportRows.json", NullStatusCode = (int)HttpStatusCode.Forbidden)]  // V2 route
-        [UseFormatter(typeof(DateTime_MicrosoftJson_Formatter))]
         public ReportRowsJson ReportRowsV2()
         {
             ReportRowsJson result = null;

@@ -351,7 +351,7 @@ var VRS;
                 }
                 $.ajax({
                     url: VRS.globalOptions.reportUrl,
-                    dataType: 'text',
+                    dataType: 'json',
                     data: parameters,
                     success: $.proxy(this.pageFetched, this),
                     error: $.proxy(this.fetchFailed, this),
@@ -363,8 +363,13 @@ var VRS;
             if (this._Settings.showFetchUI) {
                 VRS.pageHelper.showModalWaitAnimation(false);
             }
-            var json = VRS.jsonHelper.convertMicrosoftDates(rawData);
-            this._LastFetchResult = eval('(' + json + ')');
+            this._LastFetchResult = rawData;
+            if (this._LastFetchResult) {
+                $.each(this._LastFetchResult.flights, function (idx, flight) {
+                    flight.start = VRS.jsonHelper.convertIso8601Dates(flight.start);
+                    flight.end = VRS.jsonHelper.convertIso8601Dates(flight.end);
+                });
+            }
             this.fixupRoutesAndAirports();
             this.setSelectedFlight(null);
             this._Dispatcher.raise(this._Events.rowsFetched, [this]);
