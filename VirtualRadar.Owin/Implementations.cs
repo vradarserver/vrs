@@ -42,7 +42,6 @@ namespace VirtualRadar.Owin
             factory.Register<Interface.Owin.IBundlerServer, Middleware.BundlerServer>();
             factory.Register<Interface.Owin.IBasicAuthenticationFilter, Middleware.BasicAuthenticationFilter>();
             factory.Register<Interface.Owin.ICorsHandler, Middleware.CorsHandler>();
-            factory.Register<Interface.Owin.IExceptionHandler, Middleware.ExceptionHandler>();
             factory.Register<Interface.Owin.IFileSystemServer, Middleware.FileSystemServer>();
             factory.Register<Interface.Owin.IImageServer, Middleware.ImageServer>();
             factory.Register<Interface.Owin.IRedirectionFilter, Middleware.RedirectionFilter>();

@@ -84,7 +84,6 @@
     <Compile Include="Middleware\BasicAuthenticationWebApiMessageHandler.cs" />
     <Compile Include="Middleware\BundlerServer.cs" />
     <Compile Include="Middleware\CorsHandler.cs" />
-    <Compile Include="Middleware\ExceptionHandler.cs" />
     <Compile Include="Middleware\FileSystemServer.cs" />
     <Compile Include="Middleware\ImageServer.cs" />
     <Compile Include="Middleware\RedirectionFilter.cs" />

@@ -170,7 +170,6 @@
     <Compile Include="Owin\IBundlerHtmlManipulator.cs" />
     <Compile Include="Owin\IBundlerServer.cs" />
     <Compile Include="Owin\ICorsHandler.cs" />
-    <Compile Include="Owin\IExceptionHandler.cs" />
     <Compile Include="Owin\IHtmlManipulator.cs" />
     <Compile Include="Owin\IHtmlManipulatorConfiguration.cs" />
     <Compile Include="Owin\IJavascriptManipulatorConfiguration.cs" />
