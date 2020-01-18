@@ -27,5 +27,13 @@ namespace VirtualRadar.WebSite
                 log.WriteLine($"Caught exception while processing OWIN request: {ex.ToString()}");
             }
         }
+
+        public void LogException(string requestUrl, Exception ex)
+        {
+            if(ex != null) {
+                var log = Factory.ResolveSingleton<ILog>();
+                log.WriteLine($"Caught exception while processing {requestUrl}: {ex.ToString()}");
+            }
+        }
     }
 }

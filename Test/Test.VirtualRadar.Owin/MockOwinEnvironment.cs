@@ -147,7 +147,7 @@ namespace Test.VirtualRadar.Owin
         public IPrincipal User
         {
             get => Context.RequestPrincipal;
-            set => Context.Environment[CustomEnvironmentKey.Principal] = value;
+            set => Context.Environment[OwinConstants.Security.User] = value;
         }
 
         /// <summary>

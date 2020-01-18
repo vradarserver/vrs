@@ -46,7 +46,7 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
-        public void LogException_Logs_Exceptions()
+        public void LogException_No_Url_Logs_Exceptions()
         {
             var exception = new InvalidOperationException();
 
@@ -56,9 +56,27 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
-        public void LogException_Ignores_Null_Exception()
+        public void LogException_No_Url_Ignores_Null_Exception()
         {
             _Logger.LogException(null);
+
+            _Log.Verify(r => r.WriteLine(It.IsAny<string>()), Times.Never());
+        }
+
+        [TestMethod]
+        public void LogException_With_Url_Logs_Exceptions()
+        {
+            var exception = new InvalidOperationException();
+
+            _Logger.LogException("url", exception);
+
+            _Log.Verify(r => r.WriteLine(It.IsAny<string>()), Times.Once());
+        }
+
+        [TestMethod]
+        public void LogException_With_Url_Ignores_Null_Exception()
+        {
+            _Logger.LogException("url", null);
 
             _Log.Verify(r => r.WriteLine(It.IsAny<string>()), Times.Never());
         }

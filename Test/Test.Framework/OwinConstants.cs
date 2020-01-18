@@ -156,7 +156,7 @@ namespace Test.Framework
 
         // http://owin.org/extensions/owin-Security-Extension-v0.1.0.htm
 
-        internal static class Security
+        public static class Security
         {
             // 3.2. Per Request
 
