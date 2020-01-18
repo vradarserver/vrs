@@ -170,9 +170,10 @@ namespace VirtualRadar.WebServer.HttpListener
                 lock(_SyncLock) {
                     finishedWebRequest = _FinishedWebRequests.First?.Value;
                     loop = finishedWebRequest?.RaiseEventTimeUtc <= now;
-                    if(loop) {
+                    if(!loop) {
+                        finishedWebRequest = null;
+                    } else {
                         _FinishedWebRequests.RemoveFirst();
-                        loop = _FinishedWebRequests.First?.Value.RaiseEventTimeUtc <= now;
                     }
                 }
 
