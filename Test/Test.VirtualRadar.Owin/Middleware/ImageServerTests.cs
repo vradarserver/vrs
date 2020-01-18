@@ -272,7 +272,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             var expectedImage = (Bitmap)cloneMethod.Invoke(null, new object[0]);
             try {
                 _Environment.RequestPath = $"/Images/{requestImageName}.png";
-                _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+                _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
                 using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                     using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -289,7 +289,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         {
             _Environment.ResponseStatusCode = 404;
             _Environment.RequestPath = $"/Images/TestSquare.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             Assert.AreEqual(200, _Environment.ResponseStatusCode);
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
@@ -303,7 +303,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             ExcelWorksheetData worksheet = new ExcelWorksheetData(TestContext);
 
             _Environment.RequestPath = worksheet.String("PathAndFile");
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             if(worksheet.String("Width") == null) {
                 Assert.AreEqual(0, _Environment.ResponseBodyBytes.Length);
@@ -323,7 +323,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         {
             _Environment.ResponseStatusCode = 404;
             _Environment.RequestPath = $"/Images/Wdth-700/Hght-250/Blank.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             Assert.AreEqual(200, _Environment.ResponseStatusCode);
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
@@ -337,7 +337,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 TestInitialise();
 
                 _Environment.RequestPath = $"/Images/Rotate-{rotateDegrees}/TestSquare.png";
-                _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+                _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
                 using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                     using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -366,7 +366,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         public void ImageServer_Can_Dynamically_Widen_Images()
         {
             _Environment.RequestPath = "/Images/Wdth-11/TestSquare.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -392,7 +392,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         public void ImageServer_Can_Dynamically_Change_Height_Of_Images()
         {
             _Environment.RequestPath = "/Images/Hght-11/TestSquare.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -418,7 +418,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         public void ImageServer_Dynamically_Resizes_For_HighDpi_Devices()
         {
             _Environment.RequestPath = "/Images/hiDpi/TestSquare.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -432,7 +432,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         public void ImageServer_Can_Dynamically_Add_Altitude_Stalk()
         {
             _Environment.RequestPath = "/Images/Hght-15/CenX-4/Alt-/TestSquare.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -454,7 +454,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Server = Factory.Resolve<IImageServer>();
 
             _Environment.RequestPath = "/Images/PL1-Hello/PL2-There/TestSquare.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             webSiteGraphics.Verify(r => r.AddTextLines(It.IsAny<Image>(), It.IsAny<IEnumerable<string>>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Once());
             Assert.AreEqual(2, textLines.Count);
@@ -474,7 +474,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         {
             // Get an image without text to start with
             _Environment.RequestPath = "/Images/Hght-200/Wdth-60/Airplane.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
             byte[] imageWithoutText = _Environment.ResponseBodyBytes;
 
             // Ask for the same image from the Internet but with a line of text 
@@ -482,7 +482,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ProgramConfiguration.InternetClientSettings.CanShowPinText = true;
             _Environment.RequestPath = "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png";
             _Environment.ServerRemoteIpAddress = "1.2.3.4";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
             byte[] internetWithText = _Environment.ResponseBodyBytes;
             Assert.IsFalse(imageWithoutText.SequenceEqual(internetWithText));
 
@@ -491,7 +491,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ProgramConfiguration.InternetClientSettings.CanShowPinText = false;
             _Environment.RequestPath = "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png";
             _Environment.ServerRemoteIpAddress = "1.2.3.4";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
             byte[] internetWithoutText = _Environment.ResponseBodyBytes;
             Assert.IsTrue(imageWithoutText.SequenceEqual(internetWithoutText));
 
@@ -500,7 +500,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ProgramConfiguration.InternetClientSettings.CanShowPinText = true;
             _Environment.RequestPath = "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png";
             _Environment.ServerRemoteIpAddress = "192.168.2.3";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
             byte[] lanWithText = _Environment.ResponseBodyBytes;
             Assert.IsFalse(imageWithoutText.SequenceEqual(lanWithText));
 
@@ -509,7 +509,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ProgramConfiguration.InternetClientSettings.CanShowPinText = false;
             _Environment.RequestPath = "/Images/PL1-X/Hght-200/Wdth-60/Airplane.png";
             _Environment.ServerRemoteIpAddress = "192.168.2.3";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
             byte[] lanWithoutText = _Environment.ResponseBodyBytes;
             Assert.IsFalse(imageWithoutText.SequenceEqual(lanWithoutText));
         }
@@ -522,7 +522,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\DLH.bmp")).Returns(TestImages.DLH_bmp);
 
             _Environment.RequestPath = "/Images/File-DLH/OpFlag.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -539,7 +539,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\DLH.bmp")).Returns(TestImages.DLH_bmp);
 
             _Environment.RequestPath = "/Images/File-DLH/Type.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -556,7 +556,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\DLH.bmp")).Returns(TestImages.DLH_bmp);
 
             _Environment.RequestPath = "/Images/File-DOESNOTEXIST|DLH/OpFlag.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -573,7 +573,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\DLH.bmp")).Returns(TestImages.DLH_bmp);
 
             _Environment.RequestPath = "/Images/File-DOESNOTEXIST|DLH/Type.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -590,7 +590,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\TestSquare.bmp")).Returns(TestImages.TestSquare_bmp);
 
             _Environment.RequestPath = "/Images/File-TestSquare/OpFlag.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -613,7 +613,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\TestSquare.bmp")).Returns(TestImages.TestSquare_bmp);
 
             _Environment.RequestPath = "/Images/File-TestSquare/Type.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -636,7 +636,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\OversizeLogo.bmp")).Returns(TestImages.OversizedLogo_bmp);
 
             _Environment.RequestPath = "/Images/File-OversizeLogo/OpFlag.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -662,7 +662,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\OversizeLogo.bmp")).Returns(TestImages.OversizedLogo_bmp);
 
             _Environment.RequestPath = "/Images/File-OversizeLogo/Type.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -685,7 +685,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         {
             _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns((string)null);
             _Environment.RequestPath = "/Images/File-BA/OpFlag.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -699,7 +699,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         {
             _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns((string)null);
             _Environment.RequestPath = "/Images/File-BA/Type.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -713,7 +713,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         {
             _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns(@"c:\flags");
             _Environment.RequestPath = "/Images/File-DLH/OpFlag.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -727,7 +727,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         {
             _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns(@"c:\types");
             _Environment.RequestPath = "/Images/File-DLH/Type.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -745,7 +745,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 var fileName = "BA" + badChar;
                 _Environment.Reset();
                 _Environment.RequestPath = String.Format("/Images/File-{0}/OpFlag.png", HttpUtility.UrlEncode(fileName));
-                _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+                _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
                 using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                     using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -764,7 +764,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 var fileName = "A380" + badChar;
                 _Environment.Reset();
                 _Environment.RequestPath = String.Format("/Images/File-{0}/Type.png", HttpUtility.UrlEncode(fileName));
-                _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+                _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
                 using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                     using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -783,7 +783,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\DLH.bmp")).Returns(TestImages.DLH_bmp);
 
             _Environment.RequestPath = "/Images/File-..\\DLH/OpFlag.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -801,7 +801,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\DLH.bmp")).Returns(TestImages.DLH_bmp);
 
             _Environment.RequestPath = "/Images/File-..\\DLH/Type.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -817,7 +817,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             // slightly different results. So this test just checks that if you ask for a splash screen then you get something back that's the
             // right size and has what looks to be the correct colour background.
             _Environment.RequestPath = "/Images/IPhoneSplash.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -834,7 +834,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             // See notes on iPhone version
             _Environment.RequestHeaders["User-Agent"] = "(iPad;something)";
             _Environment.RequestPath = "/Images/IPhoneSplash.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -851,7 +851,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             // See notes on iPhone version
 
             _Environment.RequestPath = "/Images/File-IPad/IPhoneSplash.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -869,7 +869,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigurePictureManagerForFile(@"c:\pictures\AnAircraftPicture.png", 10, 10, "112233", "G-ABCD");
 
             _Environment.RequestPath = "/Images/Size-Full/File-G-ABCD 112233/Picture.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -882,7 +882,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         public void ImageServer_Calls_Aircraft_Manager_Correctly_When_Registration_Is_Missing()
         {
             _Environment.RequestPath = "/Images/Size-Full/File- 112233/Picture.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             _AircraftPictureManager.Verify(m => m.LoadPicture(_AircraftPictureCache.Object, "112233", null), Times.Once());
         }
@@ -891,7 +891,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         public void ImageServer_Calls_Aircraft_Manager_Correctly_When_Icao_Is_Missing()
         {
             _Environment.RequestPath = "/Images/Size-Full/File-G-ABCD /Picture.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             _AircraftPictureManager.Verify(m => m.LoadPicture(_AircraftPictureCache.Object, null, "G-ABCD"), Times.Once());
         }
@@ -900,7 +900,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         public void ImageServer_Copes_If_Aircraft_Picture_Does_Not_Exist()
         {
             _Environment.RequestPath = "/Images/Size-Full/File-G-ABCD 112233/Picture.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
         }
@@ -921,7 +921,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigurePictureManagerForFile(@"c:\web\ImageRenderSize.png", originalWidth, originalHeight, "ICAO", "REG");
 
             _Environment.RequestPath = $"/Images/Size-{size}/File-REG ICAO/Picture.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -938,7 +938,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigurePictureManagerForFile(@"c:\pictures\Picture-700x400.png", 700, 400, icao24: "Picture-700x400", registration: null);
 
             _Environment.RequestPath = "/Images/Size-Full/File-Picture-700x400/Picture.png";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
@@ -960,7 +960,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 _Environment.Reset();
 
                 _Environment.RequestPath = $"/Images/Size-{size}/File-REG ICAO/Picture.png";
-                _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+                _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
                 Assert.AreEqual(0, _Environment.ResponseBodyBytes.Length);
                 Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
@@ -973,7 +973,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Environment.RequestPath = $"/Images/Web/File.bmp";
             _ImageFileManager.Setup(r => r.LoadFromStandardPipeline("/images/File.bmp", true, _Environment.Environment)).Returns((Image)TestImages.DLH_bmp.Clone());
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             _ImageFileManager.Verify(r => r.LoadFromStandardPipeline("/images/File.bmp", true, _Environment.Environment), Times.Once());
         }
@@ -984,7 +984,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Environment.RequestPath = $"/Images/Web-SubFolder\\ChildFolder/File.bmp";
             _ImageFileManager.Setup(r => r.LoadFromStandardPipeline("/images/SubFolder/ChildFolder/File.bmp", true, _Environment.Environment)).Returns((Image)TestImages.DLH_bmp.Clone());
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             _ImageFileManager.Verify(r => r.LoadFromStandardPipeline("/images/SubFolder/ChildFolder/File.bmp", true, _Environment.Environment), Times.Once());
         }
@@ -995,7 +995,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Environment.RequestPath = $"/Images/Web/no-cache/File.bmp";
             _ImageFileManager.Setup(r => r.LoadFromStandardPipeline("/images/File.bmp", false, _Environment.Environment)).Returns((Image)TestImages.DLH_bmp.Clone());
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             _ImageFileManager.Verify(r => r.LoadFromStandardPipeline("/images/File.bmp", false, _Environment.Environment), Times.Once());
         }
@@ -1007,7 +1007,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Environment.RequestPath = $"/Images/Web/no-cache/File.bmp";
             _ImageFileManager.Setup(r => r.LoadFromStandardPipeline("/images/File.bmp", true, _Environment.Environment)).Returns((Image)TestImages.DLH_bmp.Clone());
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             _ImageFileManager.Verify(r => r.LoadFromStandardPipeline("/images/File.bmp", true, _Environment.Environment), Times.Once());
         }

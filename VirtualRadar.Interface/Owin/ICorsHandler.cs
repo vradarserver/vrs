@@ -24,10 +24,10 @@ namespace VirtualRadar.Interface.Owin
     public interface ICorsHandler
     {
         /// <summary>
-        /// Handles CORS-related requests.
+        /// Returns an AppFunc that, when called, will handles CORS-related requests.
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>
-        AppFunc HandleRequest(AppFunc next);
+        AppFunc AppFuncBuilder(AppFunc next);
     }
 }

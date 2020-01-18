@@ -29,10 +29,10 @@ namespace VirtualRadar.Interface.Owin
         IFileSystemProvider FileSystemProvider { get; set; }
 
         /// <summary>
-        /// Handles the request.
+        /// Returns an AppFunc that, when called, handles requests for files stored on the file system.
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>
-        AppFunc HandleRequest(AppFunc next);
+        AppFunc AppFuncBuilder(AppFunc next);
     }
 }

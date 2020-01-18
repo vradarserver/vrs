@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 onwards, Andrew Whewell
+﻿// Copyright © 2020 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,21 +13,54 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InterfaceFactory;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using Test.Framework;
+using VirtualRadar.Interface;
+using VirtualRadar.WebSite;
 
-namespace VirtualRadar.Interface.Owin
+namespace Test.VirtualRadar.WebSite
 {
-    using AppFunc = Func<IDictionary<string, object>, Task>;
-
-    /// <summary>
-    /// The interface for OWIN middleware that records exceptions that are thrown in the pipeline.
-    /// </summary>
-    public interface IExceptionHandler
+    [TestClass]
+    public class OwinExceptionLogger_Tests
     {
-        /// <summary>
-        /// Returns an AppFunc that, when called, will log exceptions thrown further on down the chain.
-        /// </summary>
-        /// <param name="next"></param>
-        /// <returns></returns>
-        AppFunc AppFuncBuilder(AppFunc next);
+        private IClassFactory _Snapshot;
+
+        private Mock<ILog> _Log;
+        private OwinExceptionLogger _Logger;
+
+        [TestInitialize]
+        public void TestInitialise()
+        {
+            _Snapshot = Factory.TakeSnapshot();
+            _Log = TestUtilities.CreateMockSingleton<ILog>();
+
+            _Logger = new OwinExceptionLogger();
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            Factory.RestoreSnapshot(_Snapshot);
+        }
+
+        [TestMethod]
+        public void LogException_Logs_Exceptions()
+        {
+            var exception = new InvalidOperationException();
+
+            _Logger.LogException(exception);
+
+            _Log.Verify(r => r.WriteLine(It.IsAny<string>()), Times.Once());
+        }
+
+        [TestMethod]
+        public void LogException_Ignores_Null_Exception()
+        {
+            _Logger.LogException(null);
+
+            _Log.Verify(r => r.WriteLine(It.IsAny<string>()), Times.Never());
+        }
     }
 }

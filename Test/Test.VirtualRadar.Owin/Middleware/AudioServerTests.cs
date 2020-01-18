@@ -84,7 +84,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 { "line", "Hello" },
             });
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             AssertAudioReturned(MimeType.WaveAudio, _SomeBytes);
         }
@@ -98,7 +98,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 { "line", "Hello" },
             });
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             AssertAudioReturned(MimeType.WaveAudio, _SomeBytes);
         }
@@ -112,7 +112,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 { "line", "Hello" },
             });
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             AssertAudioNotReturned();
         }
@@ -125,7 +125,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 { "line", "Hello" },
             });
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             AssertAudioNotReturned();
         }
@@ -139,7 +139,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 { "line", "Hello" },
             });
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             AssertAudioNotReturned();
         }
@@ -153,7 +153,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 { "cmd",  "say" },
             });
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             AssertAudioNotReturned();
         }
@@ -175,7 +175,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                     _Environment.ServerRemoteIpAddress = isInternetRequest ? "1.2.3.4" : "127.0.0.1";
                     _Configuration.InternetClientSettings.CanPlayAudio = internetAudioAllowed;
 
-                    _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+                    _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
                     var expectedResult = !isInternetRequest || internetAudioAllowed;
                     var actualResult = _Environment.ResponseBodyBytes.Length > 0;

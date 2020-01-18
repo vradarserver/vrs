@@ -46,16 +46,14 @@ namespace VirtualRadar.Owin.Middleware
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>
-        public AppFunc HandleRequest(AppFunc next)
+        public AppFunc AppFuncBuilder(AppFunc next)
         {
-            AppFunc appFunc = async(IDictionary<string, object> environment) => {
+            return async(IDictionary<string, object> environment) => {
                 var context = OwinContext.Create(environment);
                 if(!ServeAudio(context)) {
-                    await next.Invoke(environment);
+                    await next(environment);
                 }
             };
-
-            return appFunc;
         }
 
         private bool ServeAudio(OwinContext context)

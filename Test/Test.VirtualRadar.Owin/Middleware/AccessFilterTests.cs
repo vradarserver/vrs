@@ -69,7 +69,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         {
             Configure_Acceptable_Request();
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment.Environment);
 
             Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
         }
@@ -79,7 +79,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         {
             Configure_Unacceptable_Request();
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment.Environment);
 
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
         }
@@ -93,7 +93,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Environment.RequestPath = "/file.txt";
             _Environment.ServerRemoteIpAddress = "192.168.0.1";
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment.Environment);
 
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
         }
@@ -108,7 +108,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Environment.ServerRemoteIpAddress = "192.168.0.1";
             _Environment.RequestHeaders["X-Forwarded-For"] = "1.2.3.4";        // This should put 1.2.3.4 into the client IP address on the request
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment.Environment);
 
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
         }
@@ -118,7 +118,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         {
             Configure_Unacceptable_Request();
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment.Environment);
 
             Assert.AreEqual((int)HttpStatusCode.Forbidden, _Environment.Context.ResponseStatusCode);
         }
@@ -128,7 +128,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         {
             Configure_Acceptable_Request();
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment.Environment);
 
             Assert.AreNotEqual((int)HttpStatusCode.Forbidden, _Environment.Context.ResponseStatusCode);
         }
@@ -142,7 +142,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Environment.RequestPath = "";
             _Environment.ServerRemoteIpAddress = "192.168.0.1";
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment.Environment);
 
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
         }
@@ -156,7 +156,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Environment.RequestPath = "/./protected";
             _Environment.ServerRemoteIpAddress = "192.168.0.1";
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment.Environment);
 
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
         }
@@ -171,7 +171,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _Environment.RequestPath = "/allowed/../protected";
             _Environment.ServerRemoteIpAddress = "192.168.0.1";
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment.Environment);
 
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
         }

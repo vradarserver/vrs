@@ -37,7 +37,7 @@ namespace VirtualRadar.WebServer.HttpListener
         /// <summary>
         /// The handle for the callback we have registered with the standard pipeline builder.
         /// </summary>
-        private IMiddlewareBuilderCallbackHandle _BuilderCallbackHandle;
+        private IPipelineBuilderCallbackHandle _BuilderCallbackHandle;
 
         /// <summary>
         /// The OWIN host.
@@ -311,7 +311,7 @@ namespace VirtualRadar.WebServer.HttpListener
             if(_BuilderCallbackHandle == null) {
                 _BuilderCallbackHandle = Factory.ResolveSingleton<IWebSitePipelineBuilder>()
                     .PipelineBuilder
-                    .RegisterMiddlewareBuilder(AddShimMiddleware, StandardPipelinePriority.ShimServerPriority);
+                    .RegisterCallback(UseShimAppFuncBuilder, StandardPipelinePriority.ShimServerPriority);
             }
         }
 
@@ -323,7 +323,7 @@ namespace VirtualRadar.WebServer.HttpListener
 
                 Factory.ResolveSingleton<IWebSitePipelineBuilder>()
                     .PipelineBuilder
-                    .DeregisterMiddlewareBuilder(handle);
+                    .DeregisterCallback(handle);
             }
         }
 
@@ -363,10 +363,10 @@ namespace VirtualRadar.WebServer.HttpListener
             }
         }
 
-        private void AddShimMiddleware(IPipelineBuilderEnvironment builderEnv)
+        private void UseShimAppFuncBuilder(IPipelineBuilderEnvironment builderEnv)
         {
             _OldServerShim = new WebServerShim(this);
-            builderEnv.UseMiddleware(_OldServerShim.ShimMiddleware);
+            builderEnv.UseMiddlewareBuilder(_OldServerShim.AppFuncBuilder);
         }
 
         private void HookHeartbeat()

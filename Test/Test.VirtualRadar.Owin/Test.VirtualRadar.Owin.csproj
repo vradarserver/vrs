@@ -37,19 +37,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AWhewell.Owin, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AWhewell.Owin.1.0.0-beta09\lib\net45\AWhewell.Owin.dll</HintPath>
+      <HintPath>..\..\packages\AWhewell.Owin.1.0.0-beta23\lib\net45\AWhewell.Owin.dll</HintPath>
     </Reference>
     <Reference Include="AWhewell.Owin.Interface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AWhewell.Owin.1.0.0-beta09\lib\net45\AWhewell.Owin.Interface.dll</HintPath>
+      <HintPath>..\..\packages\AWhewell.Owin.1.0.0-beta23\lib\net45\AWhewell.Owin.Interface.dll</HintPath>
     </Reference>
     <Reference Include="AWhewell.Owin.Interface.WebApi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AWhewell.Owin.WebApi.1.0.0-beta09\lib\net45\AWhewell.Owin.Interface.WebApi.dll</HintPath>
+      <HintPath>..\..\packages\AWhewell.Owin.WebApi.1.0.0-beta23\lib\net45\AWhewell.Owin.Interface.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="AWhewell.Owin.Utility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AWhewell.Owin.Utility.1.0.0-beta09\lib\net45\AWhewell.Owin.Utility.dll</HintPath>
+      <HintPath>..\..\packages\AWhewell.Owin.Utility.1.0.0-beta23\lib\net45\AWhewell.Owin.Utility.dll</HintPath>
     </Reference>
     <Reference Include="AWhewell.Owin.WebApi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AWhewell.Owin.WebApi.1.0.0-beta09\lib\net45\AWhewell.Owin.WebApi.dll</HintPath>
+      <HintPath>..\..\packages\AWhewell.Owin.WebApi.1.0.0-beta23\lib\net45\AWhewell.Owin.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Castle.Core.4.4.0\lib\net45\Castle.Core.dll</HintPath>

@@ -24,10 +24,11 @@ namespace VirtualRadar.Interface.Owin
     public interface IJavascriptManipulator
     {
         /// <summary>
-        /// Creates the middleware.
+        /// Returns an AppFunc that, when called, passed JavaScript responses through all registered
+        /// JavaScript manipulators.
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>
-        AppFunc CreateMiddleware(AppFunc next);
+        AppFunc AppFuncBuilder(AppFunc next);
     }
 }

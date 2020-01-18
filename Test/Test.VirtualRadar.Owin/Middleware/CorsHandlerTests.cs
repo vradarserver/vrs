@@ -128,7 +128,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigureCorsSupport("*");
             ConfigurePreflightRequest("http://www.allowed.com");
 
-            _Pipeline.CallMiddleware(_Handler.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Handler.AppFuncBuilder, _Environment.Environment);
 
             AssertPreflightAccepted("http://www.allowed.com");
         }
@@ -141,7 +141,7 @@ namespace Test.VirtualRadar.Owin.Middleware
 
             ConfigurePreflightRequest("http://www.allowed.com");
 
-            _Pipeline.CallMiddleware(_Handler.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Handler.AppFuncBuilder, _Environment.Environment);
 
             AssertPreflightRejected();
         }
@@ -153,12 +153,12 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigureCorsSupport("*");
 
             _Configuration.GoogleMapSettings.EnableCorsSupport = false;
-            _Pipeline.CallMiddleware(_Handler.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Handler.AppFuncBuilder, _Environment.Environment);
             AssertPreflightRejected();
 
             _SharedConfiguration.Setup(r => r.GetConfigurationChangedUtc()).Returns(DateTime.UtcNow.AddSeconds(1));
             _Configuration.GoogleMapSettings.EnableCorsSupport = true;
-            _Pipeline.CallMiddleware(_Handler.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Handler.AppFuncBuilder, _Environment.Environment);
             AssertPreflightAccepted("http://www.allowed.com");
         }
 
@@ -173,7 +173,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 ConfigurePreflightRequest("http://www.allowed.com");
                 _Environment.RequestMethod = method;
 
-                _Pipeline.CallMiddleware(_Handler.HandleRequest, _Environment.Environment);
+                _Pipeline.BuildAndCallMiddleware(_Handler.AppFuncBuilder, _Environment.Environment);
 
                 Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
                 var allowMethods = _Environment.ResponseHeaders["Access-Control-Allow-Methods"];
@@ -191,7 +191,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 ConfigureCorsSupport("http://ok.domain.com", "https://good.other.com");
                 ConfigurePreflightRequest(origin);
 
-                _Pipeline.CallMiddleware(_Handler.HandleRequest, _Environment.Environment);
+                _Pipeline.BuildAndCallMiddleware(_Handler.AppFuncBuilder, _Environment.Environment);
 
                 AssertPreflightRejected();
             }
@@ -207,7 +207,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 ConfigureCorsSupport("*");
                 ConfigurePreflightRequest("http://www.allowed.com", requestMethod: method);
 
-                _Pipeline.CallMiddleware(_Handler.HandleRequest, _Environment.Environment);
+                _Pipeline.BuildAndCallMiddleware(_Handler.AppFuncBuilder, _Environment.Environment);
 
                 var headers = _Environment.ResponseHeaders.GetCommaSeparatedValues("Access-Control-Allow-Methods");
                 Assert.AreEqual(1, headers.Count(r => String.Equals(r, method, StringComparison.OrdinalIgnoreCase)), $"Failed for method {method}");
@@ -220,7 +220,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigureCorsSupport("*");
             ConfigurePreflightRequest("http://www.allowed.com", requestMethod: "");
 
-            _Pipeline.CallMiddleware(_Handler.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Handler.AppFuncBuilder, _Environment.Environment);
 
             AssertPreflightRejected();
         }
@@ -231,7 +231,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigureCorsSupport("*");
             ConfigurePreflightRequest("http://www.allowed.com", requestHeaders: new string[] { "Header-1", "Header-2" });
 
-            _Pipeline.CallMiddleware(_Handler.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Handler.AppFuncBuilder, _Environment.Environment);
 
             AssertPreflightAccepted("http://www.allowed.com");
             var headers = _Environment.ResponseHeaders.GetCommaSeparatedValues("Access-Control-Allow-Headers");
@@ -247,7 +247,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigureCorsSupport("*");
             ConfigureSimpleRequest("http://www.allowed.com");
 
-            _Pipeline.CallMiddleware(_Handler.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Handler.AppFuncBuilder, _Environment.Environment);
 
             AssertSimpleAccepted("http://www.allowed.com");
         }
@@ -262,7 +262,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 ConfigureCorsSupport("*");
                 ConfigureSimpleRequest("http://www.allowed.com", method: safeMethod);
 
-                _Pipeline.CallMiddleware(_Handler.HandleRequest, _Environment.Environment);
+                _Pipeline.BuildAndCallMiddleware(_Handler.AppFuncBuilder, _Environment.Environment);
 
                 AssertSimpleAccepted("http://www.allowed.com");
             }

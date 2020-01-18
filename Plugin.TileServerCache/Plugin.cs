@@ -197,11 +197,11 @@ namespace VirtualRadar.Plugin.TileServerCache
         {
             Factory.ResolveSingleton<IWebSitePipelineBuilder>()
             .PipelineBuilder
-            .RegisterMiddlewareBuilder(
+            .RegisterCallback(
                 (IPipelineBuilderEnvironment builderEnv) => {
                     var middleware = new WebServerV3Middleware();
-                    builderEnv.UseMiddleware(
-                        middleware.CreateAppFunc
+                    builderEnv.UseMiddlewareBuilder(
+                        middleware.AppFuncBuilder
                     );
                 },
                 StandardPipelinePriority.HighestVrsContentMiddlewarePriority + 1000

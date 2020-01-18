@@ -50,7 +50,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             _TextManipulators.Add(manipulator);
 
             SetResponseContent(MimeType.Javascript, "a");
-            _Pipeline.CallMiddleware(_JavascriptManipulator.CreateMiddleware, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_JavascriptManipulator.AppFuncBuilder, _Environment.Environment);
 
             Assert.AreEqual(1, manipulator.CallCount);
             Assert.AreSame(_Environment.Environment, manipulator.Environment);
@@ -64,7 +64,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             _TextManipulators.Add(manipulator);
 
             SetResponseContent(MimeType.Javascript, "a");
-            _Pipeline.CallMiddleware(_JavascriptManipulator.CreateMiddleware, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_JavascriptManipulator.AppFuncBuilder, _Environment.Environment);
 
             Assert.IsFalse(manipulator.TextContent.IsDirty);
         }
@@ -78,7 +78,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             _TextManipulators.Add(manipulator);
 
             SetResponseContent(MimeType.Javascript, "a");
-            _Pipeline.CallMiddleware(_JavascriptManipulator.CreateMiddleware, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_JavascriptManipulator.AppFuncBuilder, _Environment.Environment);
 
             var textContent = GetResponseContent();
             Assert.AreEqual("b", textContent.Content);
@@ -97,7 +97,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             _TextManipulators.Add(manipulator);
 
             SetResponseContent(MimeType.Javascript, "a");
-            _Pipeline.CallMiddleware(_JavascriptManipulator.CreateMiddleware, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_JavascriptManipulator.AppFuncBuilder, _Environment.Environment);
 
             var textContent = GetResponseContent();
             Assert.AreEqual("a", textContent.Content);
@@ -107,7 +107,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
         public void JavascriptManipulator_ManipulateResponseStream_Minifies_Javascript()
         {
             SetResponseContent(MimeType.Javascript, "a");
-            _Pipeline.CallMiddleware(_JavascriptManipulator.CreateMiddleware, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_JavascriptManipulator.AppFuncBuilder, _Environment.Environment);
             _Minifier.Verify(r => r.MinifyJavaScript("a"), Times.Once());
         }
 
@@ -117,7 +117,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             SetResponseContent(MimeType.Javascript, "a");
             _Environment.Environment.Add(VrsEnvironmentKey.SuppressJavascriptMinification, true);
 
-            _Pipeline.CallMiddleware(_JavascriptManipulator.CreateMiddleware, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_JavascriptManipulator.AppFuncBuilder, _Environment.Environment);
 
             _Minifier.Verify(r => r.MinifyJavaScript("a"), Times.Never());
         }
@@ -128,7 +128,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             SetResponseContent(MimeType.Javascript, "a");
             _Environment.Environment.Add(VrsEnvironmentKey.SuppressJavascriptMinification, false);
 
-            _Pipeline.CallMiddleware(_JavascriptManipulator.CreateMiddleware, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_JavascriptManipulator.AppFuncBuilder, _Environment.Environment);
 
             _Minifier.Verify(r => r.MinifyJavaScript("a"), Times.Once());
         }
@@ -137,7 +137,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
         public void JavascriptManipulator_ManipulateResponseStream_Does_Not_Minify_NonJavascript()
         {
             SetResponseContent(MimeType.Html, "a");
-            _Pipeline.CallMiddleware(_JavascriptManipulator.CreateMiddleware, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_JavascriptManipulator.AppFuncBuilder, _Environment.Environment);
             _Minifier.Verify(r => r.MinifyJavaScript(It.IsAny<string>()), Times.Never());
         }
 
@@ -147,7 +147,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             SetResponseContent(MimeType.Javascript, "abc");
             _Minifier.Setup(r => r.MinifyJavaScript("abc")).Returns("z");
 
-            _Pipeline.CallMiddleware(_JavascriptManipulator.CreateMiddleware, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_JavascriptManipulator.AppFuncBuilder, _Environment.Environment);
 
             var textContent = GetResponseContent();
             Assert.AreEqual("z", textContent.Content);
@@ -160,7 +160,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             SetResponseContent(MimeType.Javascript, "abc");
             _Minifier.Setup(r => r.MinifyJavaScript("abc")).Returns("xyz");
 
-            _Pipeline.CallMiddleware(_JavascriptManipulator.CreateMiddleware, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_JavascriptManipulator.AppFuncBuilder, _Environment.Environment);
 
             Assert.AreEqual("abc", GetResponseContent().Content);
         }
@@ -171,7 +171,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             SetResponseContent(MimeType.Javascript, "abc", Encoding.Unicode, addPreamble: true);
             _Minifier.Setup(r => r.MinifyJavaScript("abc")).Returns("z");
 
-            _Pipeline.CallMiddleware(_JavascriptManipulator.CreateMiddleware, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_JavascriptManipulator.AppFuncBuilder, _Environment.Environment);
 
             var textContent = GetResponseContent();
             Assert.AreEqual("z", textContent.Content);

@@ -64,11 +64,11 @@ namespace VirtualRadar.WebServer.HttpListener
         }
 
         /// <summary>
-        /// The shim's OWIN middleware.
+        /// Returns an OWIN AppFunc that can be used in a pipeline.
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>
-        public AppFunc ShimMiddleware(AppFunc next)
+        public AppFunc AppFuncBuilder(AppFunc next)
         {
             AppFunc appFunc = async(IDictionary<string, object> environment) => {
                 var startTime = WebServer.Provider.UtcNow;

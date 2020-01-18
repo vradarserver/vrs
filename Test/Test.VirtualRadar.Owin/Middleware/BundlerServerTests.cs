@@ -86,7 +86,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             RegisterBundle();
 
             _Environment.RequestPath = "/bundle.js";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             AssertBundleReturned("hello");
         }
@@ -97,7 +97,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             RegisterBundle();
 
             _Environment.RequestPath = "/not-bundle.js";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             AssertBundleNotReturned();
         }
@@ -108,7 +108,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             RegisterBundle();
 
             _Environment.RequestPath = "/bundle.js";
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             Assert.AreEqual(true, (bool)_Environment.Environment[VrsEnvironmentKey.SuppressJavascriptMinification]);
         }

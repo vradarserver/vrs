@@ -24,10 +24,10 @@ namespace VirtualRadar.Interface.Owin
     public interface IImageServer
     {
         /// <summary>
-        /// Handles the request.
+        /// Returns an AppFunc that, when called, handles requests for images.
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>
-        AppFunc HandleRequest(AppFunc next);
+        AppFunc AppFuncBuilder(AppFunc next);
     }
 }

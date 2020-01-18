@@ -44,7 +44,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             _TextManipulators.Add(manipulator);
 
             SetResponseContent(MimeType.Html, "a");
-            _Pipeline.CallMiddleware(_HtmlManipulator.CreateMiddleware, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_HtmlManipulator.AppFuncBuilder, _Environment.Environment);
 
             Assert.AreEqual(1, manipulator.CallCount);
             Assert.AreSame(_Environment.Environment, manipulator.Environment);
@@ -58,7 +58,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             _TextManipulators.Add(manipulator);
 
             SetResponseContent(MimeType.Html, "a");
-            _Pipeline.CallMiddleware(_HtmlManipulator.CreateMiddleware, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_HtmlManipulator.AppFuncBuilder, _Environment.Environment);
 
             Assert.IsFalse(manipulator.TextContent.IsDirty);
         }
@@ -72,7 +72,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             _TextManipulators.Add(manipulator);
 
             SetResponseContent(MimeType.Html, "a");
-            _Pipeline.CallMiddleware(_HtmlManipulator.CreateMiddleware, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_HtmlManipulator.AppFuncBuilder, _Environment.Environment);
 
             var textContent = GetResponseContent();
             Assert.AreEqual("b", textContent.Content);
@@ -91,7 +91,7 @@ namespace Test.VirtualRadar.Owin.StreamManipulator
             _TextManipulators.Add(manipulator);
 
             SetResponseContent(MimeType.Html, "a");
-            _Pipeline.CallMiddleware(_HtmlManipulator.CreateMiddleware, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_HtmlManipulator.AppFuncBuilder, _Environment.Environment);
 
             var textContent = GetResponseContent();
             Assert.AreEqual("a", textContent.Content);

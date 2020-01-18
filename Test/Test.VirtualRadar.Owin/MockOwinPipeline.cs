@@ -37,7 +37,7 @@ namespace Test.VirtualRadar.Owin
         /// </summary>
         /// <param name="appFunc"></param>
         /// <param name="environment"></param>
-        public void CallMiddleware(Func<AppFunc, AppFunc> middlewareEntryPoint, IDictionary<string, object> environment)
+        public void BuildAndCallMiddleware(Func<AppFunc, AppFunc> middlewareEntryPoint, IDictionary<string, object> environment)
         {
             NextMiddlewareCalled = false;
 
@@ -57,9 +57,9 @@ namespace Test.VirtualRadar.Owin
         /// </summary>
         /// <param name="middlewareEntryPoint"></param>
         /// <param name="environment"></param>
-        public void CallMiddleware(Func<AppFunc, AppFunc> middlewareEntryPoint, MockOwinEnvironment environment)
+        public void BuildAndCallMiddleware(Func<AppFunc, AppFunc> middlewareEntryPoint, MockOwinEnvironment environment)
         {
-            CallMiddleware(middlewareEntryPoint, environment.Environment);
+            BuildAndCallMiddleware(middlewareEntryPoint, environment.Environment);
         }
     }
 }

@@ -43,15 +43,13 @@ namespace VirtualRadar.Owin.Middleware
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>
-        public AppFunc FilterRequest(AppFunc next)
+        public AppFunc AppFuncBuilder(AppFunc next)
         {
-            AppFunc appFunc = async(IDictionary<string, object> environment) => {
+            return async(IDictionary<string, object> environment) => {
                 if(AllowAccess(environment)) {
-                    await next.Invoke(environment);
+                    await next(environment);
                 }
             };
-
-            return appFunc;
         }
 
         /// <summary>

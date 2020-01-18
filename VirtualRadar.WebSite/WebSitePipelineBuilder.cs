@@ -47,19 +47,19 @@ namespace VirtualRadar.WebSite
             if(!_HasRegistrationBeenDone) {
                 _HasRegistrationBeenDone = true;
 
-                PipelineBuilder.RegisterMiddlewareBuilder(UseExceptionHandler,              StandardPipelinePriority.Exception);
-                PipelineBuilder.RegisterMiddlewareBuilder(UseAccessFilter,                  StandardPipelinePriority.Access);
-                PipelineBuilder.RegisterMiddlewareBuilder(UseBasicAuthenticationFilter,     StandardPipelinePriority.Authentication);
-                PipelineBuilder.RegisterMiddlewareBuilder(UseRedirectionFilter,             StandardPipelinePriority.Redirection);
-                PipelineBuilder.RegisterMiddlewareBuilder(UseCorsHandler,                   StandardPipelinePriority.Cors);
-                PipelineBuilder.RegisterMiddlewareBuilder(UseWebApiMiddleware,              StandardPipelinePriority.WebApi);
-                PipelineBuilder.RegisterMiddlewareBuilder(UseBundlerServer,                 StandardPipelinePriority.BundlerServer);
-                PipelineBuilder.RegisterMiddlewareBuilder(UseFileSystemServer,              StandardPipelinePriority.FileSystemServer);
-                PipelineBuilder.RegisterMiddlewareBuilder(UseImageServer,                   StandardPipelinePriority.ImageServer);
-                PipelineBuilder.RegisterMiddlewareBuilder(UseAudioServer,                   StandardPipelinePriority.AudioServer);
+                PipelineBuilder.RegisterCallback(UseExceptionHandler,              StandardPipelinePriority.Exception);
+                PipelineBuilder.RegisterCallback(UseAccessFilter,                  StandardPipelinePriority.Access);
+                PipelineBuilder.RegisterCallback(UseBasicAuthenticationFilter,     StandardPipelinePriority.Authentication);
+                PipelineBuilder.RegisterCallback(UseRedirectionFilter,             StandardPipelinePriority.Redirection);
+                PipelineBuilder.RegisterCallback(UseCorsHandler,                   StandardPipelinePriority.Cors);
+                PipelineBuilder.RegisterCallback(UseWebApi,                        StandardPipelinePriority.WebApi);
+                PipelineBuilder.RegisterCallback(UseBundlerServer,                 StandardPipelinePriority.BundlerServer);
+                PipelineBuilder.RegisterCallback(UseFileSystemServer,              StandardPipelinePriority.FileSystemServer);
+                PipelineBuilder.RegisterCallback(UseImageServer,                   StandardPipelinePriority.ImageServer);
+                PipelineBuilder.RegisterCallback(UseAudioServer,                   StandardPipelinePriority.AudioServer);
 
-                PipelineBuilder.RegisterMiddlewareBuilder(UseHtmlManipulator,               StreamManipulatorPriority.HtmlManipulator);
-                PipelineBuilder.RegisterMiddlewareBuilder(UseJavaScriptManipulator,         StreamManipulatorPriority.JavascriptManipulator);
+                PipelineBuilder.RegisterCallback(UseHtmlManipulator,               StreamManipulatorPriority.HtmlManipulator);
+                PipelineBuilder.RegisterCallback(UseJavaScriptManipulator,         StreamManipulatorPriority.JavascriptManipulator);
 
                 var htmlManipulatorConfiguration = Factory.ResolveSingleton<IHtmlManipulatorConfiguration>();
                 htmlManipulatorConfiguration.AddTextResponseManipulator<IMapPluginHtmlManipulator>();
@@ -69,77 +69,76 @@ namespace VirtualRadar.WebSite
 
         private void UseExceptionHandler(IPipelineBuilderEnvironment builderEnv)
         {
-            var handler = Factory.Resolve<IExceptionHandler>();
-            builderEnv.UseMiddleware(handler.HandleRequest);
+            builderEnv.UseExceptionLogger(new OwinExceptionLogger());
         }
 
         private void UseAccessFilter(IPipelineBuilderEnvironment builderEnv)
         {
             var filter = Factory.Resolve<IAccessFilter>();
-            builderEnv.UseMiddleware(filter.FilterRequest);
+            builderEnv.UseMiddlewareBuilder(filter.AppFuncBuilder);
         }
 
         private void UseBasicAuthenticationFilter(IPipelineBuilderEnvironment builderEnv)
         {
             var filter = Factory.Resolve<IBasicAuthenticationFilter>();
-            builderEnv.UseMiddleware(filter.FilterRequest);
+            builderEnv.UseMiddlewareBuilder(filter.AppFuncBuilder);
         }
 
         private void UseRedirectionFilter(IPipelineBuilderEnvironment builderEnv)
         {
             var filter = Factory.Resolve<IRedirectionFilter>();
-            builderEnv.UseMiddleware(filter.FilterRequest);
+            builderEnv.UseMiddlewareBuilder(filter.AppFuncBuilder);
         }
 
         private void UseCorsHandler(IPipelineBuilderEnvironment builderEnv)
         {
             var handler = Factory.Resolve<ICorsHandler>();
-            builderEnv.UseMiddleware(handler.HandleRequest);
+            builderEnv.UseMiddlewareBuilder(handler.AppFuncBuilder);
         }
 
-        private void UseWebApiMiddleware(IPipelineBuilderEnvironment builderEnv)
+        private void UseWebApi(IPipelineBuilderEnvironment builderEnv)
         {
-            var middleware = Factory.Resolve<IWebApiMiddleware>();
-            middleware.AreFormNamesCaseSensitive = false;
-            middleware.AreQueryStringNamesCaseSensitive = false;
+            var webApi = Factory.Resolve<IWebApiMiddleware>();
+            webApi.AreFormNamesCaseSensitive = false;
+            webApi.AreQueryStringNamesCaseSensitive = false;
 
-            builderEnv.UseMiddleware(middleware.CreateMiddleware);
+            builderEnv.UseMiddlewareBuilder(webApi.AppFuncBuilder);
         }
 
         private void UseBundlerServer(IPipelineBuilderEnvironment builderEnv)
         {
             var server = Factory.Resolve<IBundlerServer>();
-            builderEnv.UseMiddleware(server.HandleRequest);
+            builderEnv.UseMiddlewareBuilder(server.AppFuncBuilder);
         }
 
         private void UseFileSystemServer(IPipelineBuilderEnvironment builderEnv)
         {
             var server = Factory.Resolve<IFileSystemServer>();
-            builderEnv.UseMiddleware(server.HandleRequest);
+            builderEnv.UseMiddlewareBuilder(server.AppFuncBuilder);
         }
 
         private void UseImageServer(IPipelineBuilderEnvironment builderEnv)
         {
             var server = Factory.Resolve<IImageServer>();
-            builderEnv.UseMiddleware(server.HandleRequest);
+            builderEnv.UseMiddlewareBuilder(server.AppFuncBuilder);
         }
 
         private void UseAudioServer(IPipelineBuilderEnvironment builderEnv)
         {
             var server = Factory.Resolve<IAudioServer>();
-            builderEnv.UseMiddleware(server.HandleRequest);
+            builderEnv.UseMiddlewareBuilder(server.AppFuncBuilder);
         }
 
         private void UseHtmlManipulator(IPipelineBuilderEnvironment builderEnv)
         {
             var manipulator = Factory.Resolve<IHtmlManipulator>();
-            builderEnv.UseStreamManipulator(manipulator.CreateMiddleware);
+            builderEnv.UseStreamManipulatorBuilder(manipulator.AppFuncBuilder);
         }
 
         private void UseJavaScriptManipulator(IPipelineBuilderEnvironment builderEnv)
         {
             var manipulator = Factory.Resolve<IJavascriptManipulator>();
-            builderEnv.UseStreamManipulator(manipulator.CreateMiddleware);
+            builderEnv.UseStreamManipulatorBuilder(manipulator.AppFuncBuilder);
         }
     }
 }

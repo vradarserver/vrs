@@ -49,7 +49,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         [TestMethod]
         public void ExceptionHandler_Calls_Next_Middleware()
         {
-            _Pipeline.CallMiddleware(_ExceptionHandler.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_ExceptionHandler.AppFuncBuilder, _Environment.Environment);
             Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
         }
 
@@ -59,7 +59,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             var exception = new InvalidOperationException("Hello");
             _Pipeline.NextMiddlewareCallback += r => throw exception;
 
-            _Pipeline.CallMiddleware(_ExceptionHandler.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_ExceptionHandler.AppFuncBuilder, _Environment.Environment);
 
             _Log.Verify(r => r.WriteLine(It.IsAny<string>()), Times.Once());
         }
@@ -70,7 +70,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             var exception = new InvalidOperationException("Hello");
             _Pipeline.NextMiddlewareCallback += r => throw exception;
 
-            _Pipeline.CallMiddleware(_ExceptionHandler.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_ExceptionHandler.AppFuncBuilder, _Environment.Environment);
 
             Assert.AreEqual(500, _Environment.ResponseStatusCode);
         }

@@ -24,10 +24,10 @@ namespace VirtualRadar.Interface.Owin
     public interface IAudioServer
     {
         /// <summary>
-        /// Handles the request.
+        /// Returns an AppFunc that, when called, handles requests for audio.
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>
-        AppFunc HandleRequest(AppFunc next);
+        AppFunc AppFuncBuilder(AppFunc next);
     }
 }

@@ -134,7 +134,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         [TestMethod]
         public void RedirectionFilter_Passes_Request_Through_If_Path_Not_Known()
         {
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment.Environment);
             AssertPassedThrough();
         }
 
@@ -144,7 +144,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigureRedirection("/", "/index.html");
             ConfigureEnvironment(scheme: "http", host: "127.0.0.1", port: 8080, pathBase: "/VirtualRadar", path: "/", queryString: "arg=value");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment.Environment);
 
             AssertRedirectedTo("http://127.0.0.1:8080/VirtualRadar/index.html?arg=value");
         }
@@ -155,7 +155,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigureRedirection("/", "/index.html");
             ConfigureEnvironment(scheme: "http", host: "127.0.0.1", port: 8080, pathBase: "/VirtualRadar", path: "", queryString: "arg=value");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment.Environment);
 
             AssertRedirectedTo("http://127.0.0.1:8080/VirtualRadar/index.html?arg=value");
         }
@@ -166,7 +166,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigureRedirection("/", "/index.html");
             ConfigureEnvironment(scheme: "http", host: "127.0.0.1", port: 80, pathBase: "/VirtualRadar", path: "/", queryString: "arg=value");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment.Environment);
 
             AssertRedirectedTo("http://127.0.0.1/VirtualRadar/index.html?arg=value");
         }
@@ -177,7 +177,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigureRedirection("/", "/index.html");
             ConfigureEnvironment(scheme: "https", host: "127.0.0.1", port: 80, pathBase: "/VirtualRadar", path: "/", queryString: "arg=value");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment.Environment);
 
             AssertRedirectedTo("https://127.0.0.1:80/VirtualRadar/index.html?arg=value");
         }
@@ -188,7 +188,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigureRedirection("/", "/index.html");
             ConfigureEnvironment(scheme: "https", host: "127.0.0.1", port: 443, pathBase: "/VirtualRadar", path: "/", queryString: "arg=value");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment.Environment);
 
             AssertRedirectedTo("https://127.0.0.1/VirtualRadar/index.html?arg=value");
         }
@@ -199,7 +199,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigureRedirection("/", "/index.html");
             ConfigureEnvironment(scheme: "http", host: "127.0.0.1", port: 443, pathBase: "/VirtualRadar", path: "/", queryString: "arg=value");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment.Environment);
 
             AssertRedirectedTo("http://127.0.0.1:443/VirtualRadar/index.html?arg=value");
         }
@@ -223,7 +223,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigureRedirection("/", "/mobile.html", isMobile: true);
             _Environment.RequestHeaders["User-Agent"] = userAgent;
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment.Environment);
 
             var location = _Environment.ResponseHeaders["Location"];
             Assert.IsTrue(location.EndsWith("/mobile.html"), $"{userAgent} not recognised as mobile user agent");
@@ -249,7 +249,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             ConfigureRedirection("/", "/mobile.html", isMobile: true);
             _Environment.RequestHeaders["User-Agent"] = userAgent;
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment.Environment);
 
             var location = _Environment.ResponseHeaders["Location"];
             Assert.IsTrue(location.EndsWith("/not-mobile.html"), $"{userAgent} not recognised as desktop user agent");

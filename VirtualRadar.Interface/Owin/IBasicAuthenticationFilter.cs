@@ -24,10 +24,11 @@ namespace VirtualRadar.Interface.Owin
     public interface IBasicAuthenticationFilter
     {
         /// <summary>
-        /// Authenticates the request.
+        /// Returns an AppFunc that, when called, will authenticate the request using the Basic authentication
+        /// scheme.
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>
-        AppFunc FilterRequest(AppFunc next);
+        AppFunc AppFuncBuilder(AppFunc next);
     }
 }

@@ -23,6 +23,7 @@ using Test.Framework;
 using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.WebSite;
+using VirtualRadar.WebSite;
 
 namespace Test.VirtualRadar.WebSite
 {
@@ -47,7 +48,6 @@ namespace Test.VirtualRadar.WebSite
         private List<RegisteredType>                _RegisteredMiddlewareTypes;
         private List<RegisteredType>                _RegisteredStreamManipulatorTypes;
 
-        private Mock<IExceptionHandler>             _ExceptionHandler;
         private Mock<IAccessFilter>                 _AccessFilter;
         private Mock<IBasicAuthenticationFilter>    _BasicAuthenticationFilter;
         private Mock<IRedirectionFilter>            _RedirectionFilter;
@@ -67,20 +67,18 @@ namespace Test.VirtualRadar.WebSite
         {
             _Snapshot = Factory.TakeSnapshot();
 
-            _ExceptionHandler =             CreateMockMiddleware<IExceptionHandler>(r => r.HandleRequest(It.IsAny<AppFunc>()));
+            _AccessFilter =                 CreateMockMiddleware<IAccessFilter>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _BasicAuthenticationFilter =    CreateMockMiddleware<IBasicAuthenticationFilter>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _RedirectionFilter =            CreateMockMiddleware<IRedirectionFilter>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _CorsHandler =                  CreateMockMiddleware<ICorsHandler>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _BundlerServer =                CreateMockMiddleware<IBundlerServer>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _WebApiMiddleware =             CreateMockMiddleware<IWebApiMiddleware>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _FileSystemServer =             CreateMockMiddleware<IFileSystemServer>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _ImageServer =                  CreateMockMiddleware<IImageServer>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _AudioServer =                  CreateMockMiddleware<IAudioServer>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
 
-            _AccessFilter =                 CreateMockMiddleware<IAccessFilter>(r => r.FilterRequest(It.IsAny<AppFunc>()));
-            _BasicAuthenticationFilter =    CreateMockMiddleware<IBasicAuthenticationFilter>(r => r.FilterRequest(It.IsAny<AppFunc>()));
-            _RedirectionFilter =            CreateMockMiddleware<IRedirectionFilter>(r => r.FilterRequest(It.IsAny<AppFunc>()));
-            _CorsHandler =                  CreateMockMiddleware<ICorsHandler>(r => r.HandleRequest(It.IsAny<AppFunc>()));
-            _BundlerServer =                CreateMockMiddleware<IBundlerServer>(r => r.HandleRequest(It.IsAny<AppFunc>()));
-            _WebApiMiddleware =             CreateMockMiddleware<IWebApiMiddleware>(r => r.CreateMiddleware(It.IsAny<AppFunc>()));
-            _FileSystemServer =             CreateMockMiddleware<IFileSystemServer>(r => r.HandleRequest(It.IsAny<AppFunc>()));
-            _ImageServer =                  CreateMockMiddleware<IImageServer>(r => r.HandleRequest(It.IsAny<AppFunc>()));
-            _AudioServer =                  CreateMockMiddleware<IAudioServer>(r => r.HandleRequest(It.IsAny<AppFunc>()));
-
-            _HtmlManipulator =              CreateMockMiddleware<IHtmlManipulator>(r => r.CreateMiddleware(It.IsAny<AppFunc>()));
-            _JavascriptManipulator =        CreateMockMiddleware<IJavascriptManipulator>(r => r.CreateMiddleware(It.IsAny<AppFunc>()));
+            _HtmlManipulator =              CreateMockMiddleware<IHtmlManipulator>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _JavascriptManipulator =        CreateMockMiddleware<IJavascriptManipulator>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
 
             _HtmlManipulatorConfiguration = TestUtilities.CreateMockImplementation<IHtmlManipulatorConfiguration>();
 
@@ -90,7 +88,7 @@ namespace Test.VirtualRadar.WebSite
             _Priority = null;
 
             _PipelineBuilder = TestUtilities.CreateMockImplementation<IPipelineBuilder>();
-            _PipelineBuilder.Setup(r => r.RegisterMiddlewareBuilder(It.IsAny<Action<IPipelineBuilderEnvironment>>(), It.IsAny<int>()))
+            _PipelineBuilder.Setup(r => r.RegisterCallback(It.IsAny<Action<IPipelineBuilderEnvironment>>(), It.IsAny<int>()))
                 .Callback((Action<IPipelineBuilderEnvironment> action, int priority) => {
                     // The action would normally be called when the pipeline is created. We call it
                     // here so that we can figure out which bit of middleware is being created and
@@ -101,9 +99,9 @@ namespace Test.VirtualRadar.WebSite
             );
 
             _PipelineBuilderEnvironment = TestUtilities.CreateMockImplementation<IPipelineBuilderEnvironment>();
-            _PipelineBuilderEnvironment.Setup(r => r.UseMiddleware(It.IsAny<Func<AppFunc, AppFunc>>()))
-                .Callback((Func<AppFunc, AppFunc> middleware) => {
-                    middleware(null);
+            _PipelineBuilderEnvironment.Setup(r => r.UseMiddlewareBuilder(It.IsAny<Func<AppFunc, AppFunc>>()))
+                .Callback((Func<AppFunc, AppFunc> appFuncBuilder) => {
+                    appFuncBuilder(null);
                     if(_MiddlewareType != null && _Priority != null) {
                         _RegisteredMiddlewareTypes.Add(new RegisteredType() {
                             MiddlewareType = _MiddlewareType,
@@ -114,9 +112,9 @@ namespace Test.VirtualRadar.WebSite
                     }
                 }
             );
-            _PipelineBuilderEnvironment.Setup(r => r.UseStreamManipulator(It.IsAny<Func<AppFunc, AppFunc>>()))
-                .Callback((Func<AppFunc, AppFunc> streamManipulator) => {
-                    streamManipulator(null);
+            _PipelineBuilderEnvironment.Setup(r => r.UseStreamManipulatorBuilder(It.IsAny<Func<AppFunc, AppFunc>>()))
+                .Callback((Func<AppFunc, AppFunc> appFuncBuilder) => {
+                    appFuncBuilder(null);
                     if(_MiddlewareType != null && _Priority != null) {
                         _RegisteredStreamManipulatorTypes.Add(new RegisteredType() {
                             MiddlewareType = _MiddlewareType,
@@ -160,7 +158,6 @@ namespace Test.VirtualRadar.WebSite
         {
             _Builder.AddStandardPipelineMiddleware();
 
-            AssertMiddlewareRegistered(typeof(IExceptionHandler),           StandardPipelinePriority.Exception);
             AssertMiddlewareRegistered(typeof(IAccessFilter),               StandardPipelinePriority.Access);
             AssertMiddlewareRegistered(typeof(IBasicAuthenticationFilter),  StandardPipelinePriority.Authentication);
             AssertMiddlewareRegistered(typeof(IRedirectionFilter),          StandardPipelinePriority.Redirection);
@@ -231,6 +228,14 @@ namespace Test.VirtualRadar.WebSite
             AddStandardPipelineMiddleware_Adds_Standard_Middleware_With_Correct_Priorities();
             AddStandardPipelineMiddleware_Adds_Standard_Stream_Manipulators_With_Correct_Priorities();
             AddStandardPiplineMiddleware_Configures_HtmlManipulatorConfiguration();
+        }
+
+        [TestMethod]
+        public void AddStandardPipelineMiddleware_Registers_An_OwinExceptionHandler()
+        {
+            _Builder.AddStandardPipelineMiddleware();
+
+            _PipelineBuilderEnvironment.Verify(r => r.UseExceptionLogger(It.IsAny<OwinExceptionLogger>()), Times.Once());
         }
     }
 }

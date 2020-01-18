@@ -132,7 +132,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         [TestMethod]
         public void BasicAuthenticationFilter_Calls_Next_Middleware_When_Authentication_Switched_Off()
         {
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             AssertRequestAllowed();
         }
@@ -142,7 +142,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         {
             SetGlobalAuthentication(true);
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             AssertSendCredentialsSent();
         }
@@ -154,7 +154,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache(loginName: "known");
             _Environment.SetBasicCredentials("unknown", "password");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             AssertSendCredentialsSent();
         }
@@ -166,7 +166,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache(loginName: "known", password: "password");
             _Environment.SetBasicCredentials("known", "not password");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             AssertSendCredentialsSent();
         }
@@ -178,7 +178,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache(loginName: "known", password: "password");
             _Environment.SetBasicCredentials("known", "password");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             AssertRequestAllowed();
         }
@@ -190,7 +190,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache("user", "password");
             _Environment.SetBasicCredentials("user", "password");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             var principal = _Environment.User;
             Assert.IsNotNull(principal);
@@ -206,7 +206,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache("user", "password");
             _Environment.SetBasicCredentials("user", "not password");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             AssertSendCredentialsSent();
             Assert.IsNull(_Environment.User);
@@ -217,7 +217,7 @@ namespace Test.VirtualRadar.Owin.Middleware
         {
             SetGlobalAuthentication(true);
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             AssertSendCredentialsSent();
             Assert.IsNull(_Environment.User);
@@ -230,7 +230,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache("user", "password");
             _Environment.SetBasicCredentials("user", "password");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             AssertRequestAllowed();
             Assert.IsNull(_Environment.User);
@@ -243,7 +243,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache("joe", "bloggs");
             _Environment.SetBasicCredentials("joe", "bloggs");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             var principal = _Environment.User;
             Assert.IsNotNull(principal);
@@ -258,7 +258,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache("joe", "bloggs", isAdministrator: true);
             _Environment.SetBasicCredentials("joe", "bloggs");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             var principal = _Environment.User;
             Assert.IsNotNull(principal);
@@ -273,7 +273,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache(loginName: "known", password: "password", isWebContentUser: false);
             _Environment.SetBasicCredentials("known", "password");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             AssertSendCredentialsSent();
         }
@@ -284,7 +284,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             SetAdministratorPath("/admin/");
             _Environment.RequestPath = "/admin/index.html";
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             AssertSendCredentialsSent();
         }
@@ -295,7 +295,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             SetAdministratorPath("/");
             _Environment.RequestPath = "";
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             AssertSendCredentialsSent();
         }
@@ -308,7 +308,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache("admin", "adminPassword", isAdministrator: true);
             _Environment.SetBasicCredentials("admin", "adminPassword");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             AssertRequestAllowed();
         }
@@ -321,7 +321,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache("admin", "adminPassword", isAdministrator: true);
             _Environment.SetBasicCredentials("admin", "adminPassword");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             Assert.IsNotNull(_Environment.User);
         }
@@ -334,7 +334,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache("user", "password", isAdministrator: false);
             _Environment.SetBasicCredentials("user", "password");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             AssertSendCredentialsSent();
         }
@@ -347,7 +347,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache("user", "password", isAdministrator: false);
             _Environment.SetBasicCredentials("user", "password");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             Assert.IsNull(_Environment.User);
         }
@@ -360,7 +360,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache("known", "password", isAdministrator: true);
             _Environment.SetBasicCredentials("notknown", "password");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             AssertSendCredentialsSent();
         }
@@ -372,8 +372,8 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache("user", "password");
             _Environment.SetBasicCredentials("user", "password");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             _UserManager.Verify(r => r.PasswordMatches(It.IsAny<IUser>(), It.IsAny<string>()), Times.Once());
         }
@@ -385,9 +385,9 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache("user", "password");
             _Environment.SetBasicCredentials("user", "password");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
             _Environment.SetBasicCredentials("user", "other password");
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             _UserManager.Verify(r => r.PasswordMatches(It.IsAny<IUser>(), It.IsAny<string>()), Times.Exactly(2));
         }
@@ -399,11 +399,11 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache("user", "password");
 
             _Environment.SetBasicCredentials("user", "password");
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
             AssertRequestAllowed();
 
             _Environment.SetBasicCredentials("user", "other password");
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
             AssertSendCredentialsSent();
         }
 
@@ -414,7 +414,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache("user", "£money");
             _Environment.SetBasicCredentials("user", "£money");
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             AssertRequestAllowed();
         }
@@ -428,19 +428,19 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddUserToCache("admin", "boss", isAdministrator: true);
 
             _Environment.SetBasicCredentials("drone", "sector");
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
             AssertRequestAllowed();
 
             _Environment.Reset();
             _Environment.SetBasicCredentials("drone", "sector");
             _Environment.RequestPath = "/admin/index.html";
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
             AssertSendCredentialsSent();
 
             _Environment.Reset();
             _Environment.SetBasicCredentials("admin", "boss");
             _Environment.RequestPath = "/admin/index.html";
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
             AssertRequestAllowed();
         }
 
@@ -452,7 +452,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             var mime64Credentials = _Environment.EncodeBasicCredentials("user", "password");
             _Environment.RequestAuthorizationHeader = $"Other {mime64Credentials}";
 
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
 
             AssertSendCredentialsSent();
         }
@@ -465,12 +465,12 @@ namespace Test.VirtualRadar.Owin.Middleware
             var mime64Credentials = _Environment.EncodeBasicCredentials("user", "password");
 
             _Environment.RequestAuthorizationHeader = $"BASIC {mime64Credentials}";
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
             AssertRequestAllowed();
 
             _Environment.Reset();
             _Environment.RequestAuthorizationHeader = $"basic {mime64Credentials}";
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
             AssertRequestAllowed();
         }
 
@@ -482,7 +482,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             var mime64Credentials = _Environment.EncodeBasicCredentials("user", "password");
 
             _Environment.RequestAuthorizationHeader = $"Basic  {mime64Credentials}";
-            _Pipeline.CallMiddleware(_Filter.FilterRequest, _Environment);
+            _Pipeline.BuildAndCallMiddleware(_Filter.AppFuncBuilder, _Environment);
             AssertRequestAllowed();
         }
     }

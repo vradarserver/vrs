@@ -135,7 +135,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddSiteRootAndFile(@"c:\web\root", "Hello World.txt", content);
             ConfigureRequest("/Hello World.txt");
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             AssertFileReturned(MimeType.Text, content);
         }
@@ -146,7 +146,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddSiteRootAndFile(@"c:\web\root", "Distant.mp3", "Past");
             ConfigureRequest("/Distant.mp3");
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);
         }
@@ -157,7 +157,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddSiteRootAndFile(@"c:\web\root", "Exists.txt", "I am here");
             ConfigureRequest("/Hello World.txt");
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             AssertNoFileReturned();
             Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
@@ -172,7 +172,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 var badRequest = $"/web/-{invalidPathChar}-/File.txt";
                 ConfigureRequest(badRequest);
 
-                _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+                _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
                 AssertNoFileReturned();
                 Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
@@ -188,7 +188,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 var badRequest = $"/web/-{invalidFileNameChar}-.txt";
                 ConfigureRequest(badRequest);
 
-                _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+                _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
                 AssertNoFileReturned();
                 Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
@@ -202,7 +202,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _FileSystem.AddFile(@"c:\web\NotAllowed.txt", Encoding.UTF8.GetBytes("NotAllowed"));
             ConfigureRequest("/../NotAllowed.txt");
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             AssertNoFileReturned();
             Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
@@ -214,7 +214,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddSiteRootAndFile(@"c:\web\root", "Content.txt", "Content");
             ConfigureRequest("/");
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             AssertNoFileReturned();
             Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
@@ -226,7 +226,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddSiteRootAndFile(@"c:\web\root", "Content.txt", "Content");
             ConfigureRequest("/Content.txt/");
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             AssertNoFileReturned();
             Assert.IsTrue(_Pipeline.NextMiddlewareCalled);
@@ -242,7 +242,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 AddSiteRootAndFile(@"c:\web\root", $"file.{extension}", extension);
                 ConfigureRequest($"/file.{extension}");
 
-                _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+                _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
                 var expectedMimeType = MimeType.GetForExtension(extension);
                 AssertFileReturned(expectedMimeType, extension);
@@ -256,7 +256,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddSiteRootAndFile(@"c:\web\root", "NoExtension", content);
             ConfigureRequest("/NoExtension");
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             AssertFileReturned("application/octet-stream", content);
         }
@@ -269,7 +269,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ServerConfiguration.Setup(r => r.IsFileUnmodified(@"c:\web\root", "/file.txt", It.IsAny<byte[]>())).Returns(false);
 
             ConfigureRequest("/file.txt");
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             Assert.AreEqual(400, _Environment.ResponseStatusCode);
             Assert.AreEqual(0, _Environment.ResponseBodyBytes.Length);
@@ -283,7 +283,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ServerConfiguration.Setup(r => r.IsFileUnmodified(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<byte[]>())).Returns(false);
 
             ConfigureRequest("/file.html");
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             var expectedResponse = "<HTML><HEAD><TITLE>No</TITLE></HEAD><BODY>VRS will not serve content that has been tampered with. Install the custom content plugin if you want to alter the site's files.</BODY></HTML>";
             var expectedBytes = Encoding.UTF8.GetBytes(expectedResponse);
@@ -299,7 +299,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             AddSiteRootAndFile(@"c:\second", "file.html", "DO NOT USE THIS ONE");
 
             ConfigureRequest("/file.html");
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             AssertFileReturned(MimeType.Html, content);
         }
@@ -313,7 +313,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             _ServerConfiguration.Setup(r => r.IsFileUnmodified(@"c:\web\root", "/file.txt", It.IsAny<byte[]>())).Returns(false);
 
             ConfigureRequest("/subfolder/../file.txt");
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             Assert.AreEqual(400, _Environment.ResponseStatusCode);
             Assert.AreEqual(0, _Environment.ResponseBodyBytes.Length);
@@ -343,7 +343,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                     args = e;
                 });
 
-                _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+                _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
                 _ServerConfiguration.Verify(r => r.RaiseTextLoadedFromFile(It.IsAny<TextContentEventArgs>()), Times.Once(), errorMessage);
                 Assert.AreEqual($"/Folder/File{extension}", args.PathAndFile, errorMessage);
@@ -364,7 +364,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 args = e;
             });
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             _ServerConfiguration.Verify(r => r.RaiseTextLoadedFromFile(It.IsAny<TextContentEventArgs>()), Times.Never());
         }
@@ -382,7 +382,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 args = e;
             });
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             _ServerConfiguration.Verify(r => r.RaiseTextLoadedFromFile(It.IsAny<TextContentEventArgs>()), Times.Once());
             Assert.AreEqual("/Folder/File.html", args.PathAndFile);
@@ -401,7 +401,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 e.Content = "New Content";
             });
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             AssertFileReturned(MimeType.Html, "New Content");
         }
@@ -418,7 +418,7 @@ namespace Test.VirtualRadar.Owin.Middleware
                 e.Content = "New Content";
             });
 
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             var expectedBytes = Encoding.UTF32.GetPreamble().Concat(Encoding.UTF32.GetBytes("New Content")).ToArray();
             AssertFileReturned(MimeType.Html, expectedBytes);
@@ -442,7 +442,7 @@ namespace Test.VirtualRadar.Owin.Middleware
             });
 
             ConfigureRequest("/file.txt");
-            _Pipeline.CallMiddleware(_Server.HandleRequest, _Environment.Environment);
+            _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             Assert.IsTrue(content.SequenceEqual(checksumTestContent));
         }

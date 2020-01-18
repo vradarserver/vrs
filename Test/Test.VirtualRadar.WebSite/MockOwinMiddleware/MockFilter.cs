@@ -26,7 +26,7 @@ namespace Test.VirtualRadar.WebSite.MockOwinMiddleware
 
         public Action<IDictionary<string, object>> Action { get; set; }
 
-        public AppFunc FilterRequest(AppFunc next)
+        public AppFunc AppFuncBuilder(AppFunc next)
         {
             AppFunc appFunc = async(IDictionary<string, object> environment) => {
                 if(Action != null) {

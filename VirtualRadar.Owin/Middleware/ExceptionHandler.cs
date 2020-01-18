@@ -30,11 +30,11 @@ namespace VirtualRadar.Owin.Middleware
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>
-        public AppFunc HandleRequest(AppFunc next)
+        public AppFunc AppFuncBuilder(AppFunc next)
         {
-            AppFunc appFunc = async(IDictionary<string, object> environment) => {
+            return async(IDictionary<string, object> environment) => {
                 try {
-                    await next.Invoke(environment);
+                    await next(environment);
                 } catch(Exception ex) {
                     try {
                         var context = OwinContext.Create(environment);
@@ -52,8 +52,6 @@ namespace VirtualRadar.Owin.Middleware
                     }
                 }
             };
-
-            return appFunc;
         }
     }
 }

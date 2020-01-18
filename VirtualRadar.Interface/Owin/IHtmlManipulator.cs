@@ -24,10 +24,11 @@ namespace VirtualRadar.Interface.Owin
     public interface IHtmlManipulator
     {
         /// <summary>
-        /// Creates the middleware.
+        /// Returns an AppFunc that, when called, passes HTML responses through all registered
+        /// HTML manipulators.
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>
-        AppFunc CreateMiddleware(AppFunc next);
+        AppFunc AppFuncBuilder(AppFunc next);
     }
 }

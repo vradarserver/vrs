@@ -74,8 +74,8 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _PipelineBuilderEnvironment = Factory.Resolve<IPipelineBuilderEnvironment>();
             _WebApiMiddleware = Factory.Resolve<IWebApiMiddleware>();
 
-            _PipelineBuilder.RegisterMiddlewareBuilder(UseSetupTestEnvironment, StandardPipelinePriority.Access - 1);
-            _PipelineBuilder.RegisterMiddlewareBuilder(UseWebApi,               StandardPipelinePriority.WebApi);
+            _PipelineBuilder.RegisterCallback(UseSetupTestEnvironment, StandardPipelinePriority.Access - 1);
+            _PipelineBuilder.RegisterCallback(UseWebApi,               StandardPipelinePriority.WebApi);
 
             _Context = new OwinContext();
             _Context.RequestHeaders = new HeadersDictionary();
@@ -135,15 +135,15 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         void UseSetupTestEnvironment(IPipelineBuilderEnvironment builderEnv)
         {
             // The intention is for this to get called at the start of the pipeline
-            Func<AppFunc, AppFunc> middleware = (Func<IDictionary<string, object>, Task> next) =>
+            Func<AppFunc, AppFunc> appFuncBuilder = (Func<IDictionary<string, object>, Task> next) =>
             {
                 return async(IDictionary<string, object> environment) => {
                     environment["server.RemoteIpAddress"] = _RemoteIpAddress;
-                    await next.Invoke(environment);
+                    await next(environment);
                 };
             };
 
-            builderEnv.UseMiddleware(middleware);
+            builderEnv.UseMiddlewareBuilder(appFuncBuilder);
         }
 
         void UseWebApi(IPipelineBuilderEnvironment builderEnv)
@@ -151,7 +151,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             _WebApiMiddleware.AreFormNamesCaseSensitive = false;
             _WebApiMiddleware.AreQueryStringNamesCaseSensitive = false;
 
-            builderEnv.UseMiddleware(_WebApiMiddleware.CreateMiddleware);
+            builderEnv.UseMiddlewareBuilder(_WebApiMiddleware.AppFuncBuilder);
         }
 
         public void SetPathAndQueryString(string pathAndQueryString)

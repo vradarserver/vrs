@@ -25,11 +25,11 @@ namespace VirtualRadar.Interface.Owin
     public interface IAccessFilter
     {
         /// <summary>
-        /// Stops processing requests that fail to meet <see cref="Access"/> criteria held by the singleton
-        /// <see cref="IAccessConfiguration"/>.
+        /// Returns an AppFunc that, when called, will stop the processing of requests that fail to meet <see
+        /// cref="Access"/> criteria held by the singleton <see cref="IAccessConfiguration"/>.
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>
-        AppFunc FilterRequest(AppFunc next);
+        AppFunc AppFuncBuilder(AppFunc next);
     }
 }

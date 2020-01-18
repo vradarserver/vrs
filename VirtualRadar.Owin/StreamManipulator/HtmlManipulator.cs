@@ -35,16 +35,14 @@ namespace VirtualRadar.Owin.StreamManipulator
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>
-        public AppFunc CreateMiddleware(AppFunc next)
+        public AppFunc AppFuncBuilder(AppFunc next)
         {
-            AppFunc appFunc = async(IDictionary<string, object> environment) => {
+            return async(IDictionary<string, object> environment) => {
                 _Config = Factory.ResolveSingleton<IHtmlManipulatorConfiguration>();
                 ManipulateResponseStream(environment);
 
                 await next(environment);
             };
-
-            return appFunc;
         }
 
         /// <summary>

@@ -25,10 +25,11 @@ namespace VirtualRadar.Interface.Owin
     public interface IRedirectionFilter
     {
         /// <summary>
-        /// Redirects the request if it matches a registered redirection path.
+        /// Returns an AppFunc that, when called, will redirects the request if it matches a registered
+        /// redirection path.
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>
-        AppFunc FilterRequest(AppFunc next);
+        AppFunc AppFuncBuilder(AppFunc next);
     }
 }
