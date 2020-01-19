@@ -73,7 +73,6 @@ namespace VirtualRadar
 
             VirtualRadar.WebServer.Implementations.Register(Factory.Singleton);                 // The original home brew HttpListener web server...
             VirtualRadar.WebServer.HttpListener.Implementations.Register(Factory.Singleton);    // ... and the new OWIN HttpListener web server + shim
-            VirtualRadar.Owin.Implementations.Register(Factory.Singleton);
 
             VirtualRadar.WebSite.Implementations.Register(Factory.Singleton);
             if(!ProgramLifetime.Headless) {

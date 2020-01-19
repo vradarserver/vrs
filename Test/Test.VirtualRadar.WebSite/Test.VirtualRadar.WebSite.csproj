@@ -105,8 +105,38 @@
     <Compile Include="ApiControllers\ControllerTests.cs" />
     <Compile Include="ApiControllers\DirectoryEntryControllerTests.cs" />
     <Compile Include="ApiControllers\FeedsControllerTests.cs" />
+    <Compile Include="MiddlewareConfiguration\AccessConfigurationTests.cs" />
     <Compile Include="HtmlManipulatorTests.cs" />
+    <Compile Include="LoopbackHostTests.cs" />
+    <Compile Include="MiddlewareConfiguration\AuthenticationConfigurationTests.cs" />
+    <Compile Include="MiddlewareConfiguration\BundlerConfigurationTests.cs" />
+    <Compile Include="MiddlewareConfiguration\FileSystemServerConfigurationTests.cs" />
+    <Compile Include="MiddlewareConfiguration\HtmlManipulatorConfigurationTests.cs" />
+    <Compile Include="MiddlewareConfiguration\ImageServerConfigurationTests.cs" />
+    <Compile Include="MiddlewareConfiguration\JavascriptManipulatorConfigurationTests.cs" />
+    <Compile Include="MiddlewareConfiguration\ManipulatorConfigurationTests.cs" />
+    <Compile Include="MiddlewareConfiguration\RedirectionConfigurationTests.cs" />
+    <Compile Include="Middleware\AccessFilterTests.cs" />
+    <Compile Include="Middleware\AudioServerTests.cs" />
+    <Compile Include="Middleware\BasicAuthenticationFilterTests.cs" />
+    <Compile Include="Middleware\BundlerServerTests.cs" />
+    <Compile Include="Middleware\CorsHandlerTests.cs" />
+    <Compile Include="Middleware\FileSystemServerTests.cs" />
+    <Compile Include="Middleware\ImageServerTests.cs" />
+    <Compile Include="Middleware\RedirectionFilterTests.cs" />
+    <Compile Include="MockOwinEnvironment.cs" />
+    <Compile Include="MockOwinPipeline.cs" />
     <Compile Include="OwinExceptionLogger_Tests.cs" />
+    <Compile Include="StreamManipulator\BundlerHtmlManipulatorTests.cs" />
+    <Compile Include="StreamManipulator\HtmlManipulatorTests.cs" />
+    <Compile Include="StreamManipulator\JavascriptManipulatorTests.cs" />
+    <Compile Include="StreamManipulator\ManipulatorTests.cs" />
+    <Compile Include="StreamManipulator\MapPluginHtmlManipulatorTests.cs" />
+    <Compile Include="TestImages.Designer.cs">
+      <DependentUpon>TestImages.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="WebSitePipelineBuilder_Tests.cs" />
     <Compile Include="TestHelpers\BoolFilter.cs" />
     <Compile Include="TestHelpers\DateFilter.cs" />
@@ -139,9 +169,9 @@
       <Project>{4BC834F4-005B-4EF9-BDA4-078C3F1745D3}</Project>
       <Name>VirtualRadar.Library</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\VirtualRadar.Owin\VirtualRadar.Owin.csproj">
-      <Project>{a91617bc-3503-4e70-8c66-f5a9a9ff6ae0}</Project>
-      <Name>VirtualRadar.Owin</Name>
+    <ProjectReference Include="..\..\VirtualRadar.Resources\VirtualRadar.Resources.csproj">
+      <Project>{b74413ac-8898-45da-b4bd-82e4f9f58d72}</Project>
+      <Name>VirtualRadar.Resources</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\VirtualRadar.WebServer\VirtualRadar.WebServer.csproj">
       <Project>{368D365B-D45A-439E-B649-0512C395351F}</Project>
@@ -155,14 +185,30 @@
       <Project>{94F0A821-51BB-4381-9413-1A3FAD661D82}</Project>
       <Name>Test.Framework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Test.VirtualRadar.Owin\Test.VirtualRadar.Owin.csproj">
-      <Project>{123dbe76-0386-4a40-9164-1fa9759403d1}</Project>
-      <Name>Test.VirtualRadar.Owin</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TestImages\AltitudeImageTest-01.png" />
+    <Content Include="TestImages\DLH.bmp" />
+    <Content Include="TestImages\OversizedLogo.bmp" />
+    <Content Include="TestImages\Picture-120x140-Resized-60x40.png" />
+    <Content Include="TestImages\Picture-120x140.png" />
+    <Content Include="TestImages\Picture-120x80-Resized-60x40.png" />
+    <Content Include="TestImages\Picture-120x80.png" />
+    <Content Include="TestImages\Picture-140x80-Resized-60x40.png" />
+    <Content Include="TestImages\Picture-140x80.png" />
+    <Content Include="TestImages\Picture-700x400.png" />
+    <Content Include="TestImages\TestSquare.bmp" />
+    <Content Include="TestImages\TestSquare.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestImages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TestImages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

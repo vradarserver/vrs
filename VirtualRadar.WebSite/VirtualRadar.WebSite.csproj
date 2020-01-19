@@ -90,15 +90,38 @@
     <Compile Include="ApiControllers\ReportsController.cs" />
     <Compile Include="ApiControllers\ReportsControllerSharedState.cs" />
     <Compile Include="ApiControllers\SettingsController.cs" />
+    <Compile Include="MiddlewareConfiguration\AccessConfiguration.cs" />
     <Compile Include="FontCache.cs" />
     <Compile Include="HtmlManipulator.cs" />
     <Compile Include="HtmlLocaliser.cs" />
     <Compile Include="Implementations.cs" />
+    <Compile Include="LoopbackHost.cs" />
+    <Compile Include="MiddlewareConfiguration\AuthenticationConfiguration.cs" />
+    <Compile Include="MiddlewareConfiguration\BaseTextResponseManipulatorConfiguration.cs" />
+    <Compile Include="MiddlewareConfiguration\BundlerConfiguration.cs" />
+    <Compile Include="MiddlewareConfiguration\FileSystemServerConfiguration.cs" />
+    <Compile Include="MiddlewareConfiguration\HtmlManipulatorConfiguration.cs" />
+    <Compile Include="MiddlewareConfiguration\ImageServerConfiguration.cs" />
+    <Compile Include="MiddlewareConfiguration\JavascriptManipulatorConfiguration.cs" />
+    <Compile Include="MiddlewareConfiguration\RedirectionConfiguration.cs" />
+    <Compile Include="Middleware\AccessFilter.cs" />
+    <Compile Include="Middleware\AudioServer.cs" />
+    <Compile Include="Middleware\BasicAuthenticationFilter.cs" />
+    <Compile Include="Middleware\BasicAuthenticationHelper.cs" />
+    <Compile Include="Middleware\BundlerServer.cs" />
+    <Compile Include="Middleware\CorsHandler.cs" />
+    <Compile Include="Middleware\FileSystemServer.cs" />
+    <Compile Include="Middleware\ImageServer.cs" />
+    <Compile Include="Middleware\RedirectionFilter.cs" />
     <Compile Include="Minifier.cs" />
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="OwinExceptionLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportParameters.cs" />
+    <Compile Include="StreamManipulator\BundlerHtmlManipulator.cs" />
+    <Compile Include="StreamManipulator\HtmlManipulator.cs" />
+    <Compile Include="StreamManipulator\JavascriptManipulator.cs" />
+    <Compile Include="StreamManipulator\MapPluginHtmlManipulator.cs" />
     <Compile Include="WebAdminViewManagerStub.cs" />
     <Compile Include="WebSite.cs" />
     <Compile Include="WebSiteExtender.cs" />
@@ -980,6 +1003,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
