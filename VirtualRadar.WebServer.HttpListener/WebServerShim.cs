@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using AWhewell.Owin.Utility;
 using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.WebServer;
@@ -30,20 +31,6 @@ namespace VirtualRadar.WebServer.HttpListener
     /// </remarks>
     class WebServerShim
     {
-        /// <summary>
-        /// A web request that is waiting for an OnRequestFinished to be raised for it.
-        /// </summary>
-        class FinishedWebRequest
-        {
-            public long RequestId;
-            public DateTime RaiseEventTimeUtc;
-        }
-
-        /// <summary>
-        /// A list of finished web requests.
-        /// </summary>
-        private LinkedList<FinishedWebRequest> _FinishedWebRequests = new LinkedList<FinishedWebRequest>();
-
         /// <summary>
         /// The object used to control access to the fields.
         /// </summary>
@@ -74,6 +61,8 @@ namespace VirtualRadar.WebServer.HttpListener
                 var startTime = WebServer.Provider.UtcNow;
                 var context = new Context(environment);
                 var requestArgs = new RequestReceivedEventArgs(context.Request, context.Response, WebServer.Root);
+
+                environment[CustomEnvironmentKey.RequestID] = requestArgs.UniqueId;
 
                 RaiseRequestReceivedEvents(context, requestArgs);
 
@@ -144,48 +133,15 @@ namespace VirtualRadar.WebServer.HttpListener
                 var log = Factory.ResolveSingleton<ILog>();
                 log.WriteLine("Caught exception in general request handling event handlers: {0}", ex);
             }
-
-            // The request finished event has to be raised after the response has been sent. This is
-            // a bit tricky with OWIN because we don't know when the response has finished. So we're
-            // just going to wait a couple of seconds on a background thread, raise the event and
-            // hope for the best. In practise the event is used by web admin views to do things that
-            // might reset the connection, they're not common.
-            lock(_SyncLock) {
-                _FinishedWebRequests.AddLast(new FinishedWebRequest() {
-                    RequestId =         requestArgs.UniqueId,
-                    RaiseEventTimeUtc = DateTime.UtcNow.AddSeconds(2),
-                });
-            }
         }
 
         /// <summary>
-        /// Called about once a second by the parent <see cref="OwinWebServer"/> to raise outstanding RequestFinished events.
+        /// Called by the parent <see cref="OwinWebServer"/> after a request has completely finished processing.
         /// </summary>
-        public void RaiseRequestFinishedEvents()
+        /// <param name="requestID"></param>
+        public void RaiseRequestFinishedEvents(long requestID)
         {
-            var now = DateTime.UtcNow;
-
-            for(var loop = true;loop;) {
-                FinishedWebRequest finishedWebRequest = null;
-                lock(_SyncLock) {
-                    finishedWebRequest = _FinishedWebRequests.First?.Value;
-                    loop = finishedWebRequest?.RaiseEventTimeUtc <= now;
-                    if(!loop) {
-                        finishedWebRequest = null;
-                    } else {
-                        _FinishedWebRequests.RemoveFirst();
-                    }
-                }
-
-                if(finishedWebRequest != null) {
-                    try {
-                        WebServer.OnRequestFinished(new EventArgs<long>(finishedWebRequest.RequestId));
-                    } catch(Exception ex) {
-                        var log = Factory.ResolveSingleton<ILog>();
-                        log.WriteLine($"Caught exception in RequestFinished event handler: {ex}");
-                    }
-                }
-            }
+            WebServer.OnRequestFinished(new EventArgs<long>(requestID));
         }
     }
 }

@@ -281,7 +281,6 @@ namespace VirtualRadar.WebServer.HttpListener
 
         public void Dispose()
         {
-            UnhookHeartbeat();
             DeregisterConfigureCallback();
             StopHosting();
         }
@@ -330,13 +329,13 @@ namespace VirtualRadar.WebServer.HttpListener
         private void StartHosting()
         {
             if(_Host == null) {
-                HookHeartbeat();
                 RegisterConfigureCallback();
 
                 _Host = Factory.Resolve<IHostHttpListener>();
                 _Host.Port = Port;
                 _Host.Root = Root;
                 _Host.UseStrongWildcard = false;
+                _Host.RequestProcessed += Host_RequestProcessed;
 
                 var pipelineBuilder = Factory.ResolveSingleton<IWebSitePipelineBuilder>()
                     .PipelineBuilder;
@@ -356,6 +355,7 @@ namespace VirtualRadar.WebServer.HttpListener
                 try {
                     _Host.Dispose();
                 } finally {
+                    _Host.RequestProcessed -= Host_RequestProcessed;
                     _Host = null;
                     _Online = false;
                     OnOnlineChanged(EventArgs.Empty);
@@ -369,27 +369,9 @@ namespace VirtualRadar.WebServer.HttpListener
             builderEnv.UseMiddlewareBuilder(_OldServerShim.AppFuncBuilder);
         }
 
-        private void HookHeartbeat()
+        private void Host_RequestProcessed(object sender, RequestProcessedEventArgs e)
         {
-            if(!_HookedHeartbeat) {
-                _HookedHeartbeat = true;
-                var heartbeatTimer = Factory.ResolveSingleton<IHeartbeatService>();
-                heartbeatTimer.FastTick += HeartbeatService_FastTick;
-            }
-        }
-
-        private void UnhookHeartbeat()
-        {
-            if(_HookedHeartbeat) {
-                _HookedHeartbeat = false;
-                var heartbeatTimer = Factory.ResolveSingleton<IHeartbeatService>();
-                heartbeatTimer.FastTick -= HeartbeatService_FastTick;
-            }
-        }
-
-        private void HeartbeatService_FastTick(object sender, EventArgs e)
-        {
-            _OldServerShim.RaiseRequestFinishedEvents();
+             _OldServerShim.RaiseRequestFinishedEvents(e.RequestID);
         }
     }
 }
