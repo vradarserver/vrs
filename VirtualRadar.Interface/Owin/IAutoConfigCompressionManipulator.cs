@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 onwards, Andrew Whewell
+﻿// Copyright © 2020 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -10,40 +10,23 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace VirtualRadar.Interface.Owin
 {
+    using AppFunc = Func<IDictionary<string, object>, Task>;
+
     /// <summary>
-    /// A static class enumeration that lays out the order in which stream manipulators are run.
+    /// The interface for an object that wraps the Owin library's ICompressionManipulator
+    /// and enables / disables it when the program configuration changes.
     /// </summary>
-    public static class StreamManipulatorPriority
+    public interface IAutoConfigCompressionManipulator
     {
         /// <summary>
-        /// The lowest priority that any VRS manipulator uses.
+        /// Returns an AppFunc that, when called, adds a manipulator that can compress streams if required.
         /// </summary>
-        public static readonly int LowestVrsManipulatorPriority = 0;
-
-        /// <summary>
-        /// The normal priority for Javascript manipulation.
-        /// </summary>
-        public static int JavascriptManipulator = LowestVrsManipulatorPriority;
-
-        /// <summary>
-        /// The normal priority for HTML manipulation.
-        /// </summary>
-        public static int HtmlManipulator = JavascriptManipulator + 1000;
-
-        /// <summary>
-        /// The normal priority for compressing the response stream if required.
-        /// </summary>
-        public static int CompressionManipulator = HtmlManipulator + 2000;
-
-        /// <summary>
-        /// The highest priority used by VRS content middleware.
-        /// </summary>
-        public static readonly int HighestVrsManipulatorPriority = CompressionManipulator;
+        /// <param name="next"></param>
+        /// <returns></returns>
+        AppFunc AppFuncBuilder(AppFunc next);
     }
 }

@@ -38,49 +38,51 @@ namespace Test.VirtualRadar.WebSite
             public int? Priority       { get; set; }
         }
 
-        private IClassFactory                       _Snapshot;
-        private IWebSitePipelineBuilder             _Builder;
+        private IClassFactory                           _Snapshot;
+        private IWebSitePipelineBuilder                 _Builder;
 
-        private Mock<IPipelineBuilderEnvironment>   _PipelineBuilderEnvironment;
-        private Mock<IPipelineBuilder>              _PipelineBuilder;
-        private int?                                _Priority;
-        private Type                                _MiddlewareType;
-        private List<RegisteredType>                _RegisteredMiddlewareTypes;
-        private List<RegisteredType>                _RegisteredStreamManipulatorTypes;
+        private Mock<IPipelineBuilderEnvironment>       _PipelineBuilderEnvironment;
+        private Mock<IPipelineBuilder>                  _PipelineBuilder;
+        private int?                                    _Priority;
+        private Type                                    _MiddlewareType;
+        private List<RegisteredType>                    _RegisteredMiddlewareTypes;
+        private List<RegisteredType>                    _RegisteredStreamManipulatorTypes;
 
-        private Mock<IAccessFilter>                 _AccessFilter;
-        private Mock<IBasicAuthenticationFilter>    _BasicAuthenticationFilter;
-        private Mock<IRedirectionFilter>            _RedirectionFilter;
-        private Mock<ICorsHandler>                  _CorsHandler;
-        private Mock<IWebApiMiddleware>             _WebApiMiddleware;
-        private Mock<IBundlerServer>                _BundlerServer;
-        private Mock<IFileSystemServer>             _FileSystemServer;
-        private Mock<IImageServer>                  _ImageServer;
-        private Mock<IAudioServer>                  _AudioServer;
-        private Mock<IHtmlManipulator>              _HtmlManipulator;
-        private Mock<IJavascriptManipulator>        _JavascriptManipulator;
+        private Mock<IAccessFilter>                     _AccessFilter;
+        private Mock<IAutoConfigCompressionManipulator> _AutoConfigCompressionManipulator;
+        private Mock<IBasicAuthenticationFilter>        _BasicAuthenticationFilter;
+        private Mock<IRedirectionFilter>                _RedirectionFilter;
+        private Mock<ICorsHandler>                      _CorsHandler;
+        private Mock<IWebApiMiddleware>                 _WebApiMiddleware;
+        private Mock<IBundlerServer>                    _BundlerServer;
+        private Mock<IFileSystemServer>                 _FileSystemServer;
+        private Mock<IImageServer>                      _ImageServer;
+        private Mock<IAudioServer>                      _AudioServer;
+        private Mock<IHtmlManipulator>                  _HtmlManipulator;
+        private Mock<IJavascriptManipulator>            _JavascriptManipulator;
 
-        private Mock<IHtmlManipulatorConfiguration> _HtmlManipulatorConfiguration;
+        private Mock<IHtmlManipulatorConfiguration>     _HtmlManipulatorConfiguration;
 
         [TestInitialize]
         public void TestInitialise()
         {
             _Snapshot = Factory.TakeSnapshot();
 
-            _AccessFilter =                 CreateMockMiddleware<IAccessFilter>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
-            _BasicAuthenticationFilter =    CreateMockMiddleware<IBasicAuthenticationFilter>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
-            _RedirectionFilter =            CreateMockMiddleware<IRedirectionFilter>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
-            _CorsHandler =                  CreateMockMiddleware<ICorsHandler>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
-            _BundlerServer =                CreateMockMiddleware<IBundlerServer>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
-            _WebApiMiddleware =             CreateMockMiddleware<IWebApiMiddleware>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
-            _FileSystemServer =             CreateMockMiddleware<IFileSystemServer>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
-            _ImageServer =                  CreateMockMiddleware<IImageServer>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
-            _AudioServer =                  CreateMockMiddleware<IAudioServer>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _AccessFilter =                     CreateMockMiddleware<IAccessFilter>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _AutoConfigCompressionManipulator = CreateMockMiddleware<IAutoConfigCompressionManipulator>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _BasicAuthenticationFilter =        CreateMockMiddleware<IBasicAuthenticationFilter>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _RedirectionFilter =                CreateMockMiddleware<IRedirectionFilter>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _CorsHandler =                      CreateMockMiddleware<ICorsHandler>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _BundlerServer =                    CreateMockMiddleware<IBundlerServer>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _WebApiMiddleware =                 CreateMockMiddleware<IWebApiMiddleware>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _FileSystemServer =                 CreateMockMiddleware<IFileSystemServer>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _ImageServer =                      CreateMockMiddleware<IImageServer>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _AudioServer =                      CreateMockMiddleware<IAudioServer>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
 
-            _HtmlManipulator =              CreateMockMiddleware<IHtmlManipulator>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
-            _JavascriptManipulator =        CreateMockMiddleware<IJavascriptManipulator>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _HtmlManipulator =                  CreateMockMiddleware<IHtmlManipulator>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
+            _JavascriptManipulator =            CreateMockMiddleware<IJavascriptManipulator>(r => r.AppFuncBuilder(It.IsAny<AppFunc>()));
 
-            _HtmlManipulatorConfiguration = TestUtilities.CreateMockImplementation<IHtmlManipulatorConfiguration>();
+            _HtmlManipulatorConfiguration =     TestUtilities.CreateMockImplementation<IHtmlManipulatorConfiguration>();
 
             _RegisteredMiddlewareTypes = new List<RegisteredType>();
             _RegisteredStreamManipulatorTypes = new List<RegisteredType>();
@@ -182,8 +184,9 @@ namespace Test.VirtualRadar.WebSite
         {
             _Builder.AddStandardPipelineMiddleware();
 
-            AssertStreamManipulatorRegistered(typeof(IHtmlManipulator),         StreamManipulatorPriority.HtmlManipulator);
-            AssertStreamManipulatorRegistered(typeof(IJavascriptManipulator),   StreamManipulatorPriority.JavascriptManipulator);
+            AssertStreamManipulatorRegistered(typeof(IAutoConfigCompressionManipulator),    StreamManipulatorPriority.CompressionManipulator);
+            AssertStreamManipulatorRegistered(typeof(IHtmlManipulator),                     StreamManipulatorPriority.HtmlManipulator);
+            AssertStreamManipulatorRegistered(typeof(IJavascriptManipulator),               StreamManipulatorPriority.JavascriptManipulator);
         }
 
         private void AssertStreamManipulatorRegistered(Type streamManipulatorType, int expectedPriority)
@@ -236,6 +239,17 @@ namespace Test.VirtualRadar.WebSite
             _Builder.AddStandardPipelineMiddleware();
 
             _PipelineBuilderEnvironment.Verify(r => r.UseExceptionLogger(It.IsAny<OwinExceptionLogger>()), Times.Once());
+        }
+
+        [TestMethod]
+        public void AddStandardPipelineMiddleware_Does_Not_Add_Compression_To_The_VRS_LoopbackHost()
+        {
+            _PipelineBuilderEnvironment.Object.Properties["server.HostType"] = "VRS.LoopbackHost";
+
+            _Builder.AddStandardPipelineMiddleware();
+
+            var entry = _RegisteredStreamManipulatorTypes.SingleOrDefault(r => r.MiddlewareType == typeof(IAutoConfigCompressionManipulator));
+            Assert.IsNull(entry);
         }
     }
 }

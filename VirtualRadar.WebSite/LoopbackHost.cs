@@ -61,6 +61,9 @@ namespace VirtualRadar.WebSite
             }
 
             var environment = Factory.Resolve<IPipelineBuilderEnvironment>();
+            environment.Properties[ApplicationStartupKey.Version] =     Constants.Version;
+            environment.Properties[ApplicationStartupKey.HostType] =    "VRS.LoopbackHost";
+
             _Pipeline = pipelineBuilder.CreatePipeline(environment);
         }
 

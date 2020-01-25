@@ -28,6 +28,7 @@ namespace VirtualRadar.WebSite
             factory.Register<Interface.Owin.IAccessFilter, Middleware.AccessFilter>();
             factory.Register<Interface.Owin.IAudioServer, Middleware.AudioServer>();
             factory.Register<Interface.Owin.IAuthenticationConfiguration, MiddlewareConfiguration.AuthenticationConfiguration>();
+            factory.Register<Interface.Owin.IAutoConfigCompressionManipulator, StreamManipulator.AutoConfigCompressionManipulator>();
             factory.Register<Interface.Owin.IBasicAuthenticationFilter, Middleware.BasicAuthenticationFilter>();
             factory.Register<Interface.Owin.IBundlerConfiguration, MiddlewareConfiguration.BundlerConfiguration>();
             factory.Register<Interface.Owin.IBundlerHtmlManipulator, StreamManipulator.BundlerHtmlManipulator>();

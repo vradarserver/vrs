@@ -47,7 +47,7 @@ namespace VirtualRadar.WebSite
             if(!_HasRegistrationBeenDone) {
                 _HasRegistrationBeenDone = true;
 
-                PipelineBuilder.RegisterCallback(UseExceptionHandler,              StandardPipelinePriority.Exception);
+                PipelineBuilder.RegisterCallback(UseExceptionHandler,              StandardPipelinePriority.LowestVrsMiddlewarePriority);
                 PipelineBuilder.RegisterCallback(UseAccessFilter,                  StandardPipelinePriority.Access);
                 PipelineBuilder.RegisterCallback(UseBasicAuthenticationFilter,     StandardPipelinePriority.Authentication);
                 PipelineBuilder.RegisterCallback(UseRedirectionFilter,             StandardPipelinePriority.Redirection);
@@ -60,6 +60,7 @@ namespace VirtualRadar.WebSite
 
                 PipelineBuilder.RegisterCallback(UseHtmlManipulator,               StreamManipulatorPriority.HtmlManipulator);
                 PipelineBuilder.RegisterCallback(UseJavaScriptManipulator,         StreamManipulatorPriority.JavascriptManipulator);
+                PipelineBuilder.RegisterCallback(UseCompressionManipulator,        StreamManipulatorPriority.CompressionManipulator);
 
                 var htmlManipulatorConfiguration = Factory.ResolveSingleton<IHtmlManipulatorConfiguration>();
                 htmlManipulatorConfiguration.AddTextResponseManipulator<IMapPluginHtmlManipulator>();
@@ -139,6 +140,20 @@ namespace VirtualRadar.WebSite
         {
             var manipulator = Factory.Resolve<IJavascriptManipulator>();
             builderEnv.UseStreamManipulatorBuilder(manipulator.AppFuncBuilder);
+        }
+
+        private void UseCompressionManipulator(IPipelineBuilderEnvironment builderEnv)
+        {
+            if(!IsLoopbackHost(builderEnv)) {
+                var manipulator = Factory.Resolve<IAutoConfigCompressionManipulator>();
+                builderEnv.UseStreamManipulatorBuilder(manipulator.AppFuncBuilder);
+            }
+        }
+
+        private bool IsLoopbackHost(IPipelineBuilderEnvironment builderEnv)
+        {
+            builderEnv.Properties.TryGetValue(ApplicationStartupKey.HostType, out var host);
+            return host as string == "VRS.LoopbackHost";
         }
     }
 }

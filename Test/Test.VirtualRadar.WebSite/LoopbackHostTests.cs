@@ -90,6 +90,22 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
+        public void LoopbackHost_ConfigureStandardPipeline_Sets_HostType_Builder_Property_Key()
+        {
+            _LoopbackHost.ConfigureStandardPipeline();
+
+            Assert.AreEqual("VRS.LoopbackHost", _PipelineBuilderEnvironment.Object.Properties["server.HostType"]);
+        }
+
+        [TestMethod]
+        public void LoopbackHost_ConfigureStandardPipeline_Sets_Version_Key()
+        {
+            _LoopbackHost.ConfigureStandardPipeline();
+
+            Assert.AreEqual("1.0.0", _PipelineBuilderEnvironment.Object.Properties["owin.Version"]);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void LoopbackHost_ConfigureStandardPipeline_Throws_If_Already_Configured()
         {

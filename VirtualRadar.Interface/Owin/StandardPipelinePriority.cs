@@ -21,14 +21,9 @@ namespace VirtualRadar.Interface.Owin
         public static readonly int LowestVrsMiddlewarePriority = -1000000;
 
         /// <summary>
-        /// The normal priority for exception handling.
-        /// </summary>
-        public static readonly int Exception = LowestVrsMiddlewarePriority;
-
-        /// <summary>
         /// The normal priority for access checking.
         /// </summary>
-        public static readonly int Access = Exception + 1000;
+        public static readonly int Access = LowestVrsMiddlewarePriority + 1000;
 
         /// <summary>
         /// The normal priority for authentication.
@@ -46,26 +41,16 @@ namespace VirtualRadar.Interface.Owin
         public static readonly int Cors = Redirection + 1000;
 
         /// <summary>
-        /// The normal priority for wrapping the response stream so that it can be manipulated after the pipeline has finished.
-        /// </summary>
-        public static readonly int ResponseStreamWrapper = Cors + 1000;
-
-        /// <summary>
         /// The normal priority for the shim middleware that fires the IWebServer events.
         /// </summary>
-        public static readonly int ShimServerPriority = ResponseStreamWrapper + 1000;
+        public static readonly int ShimServerPriority = Cors + 1000;
 
         /***********************************************************************************************
          * 3rd party frameworks that short-circuit pipeline processing if they handle a request
          **********************************************************************************************/
 
         /// <summary>
-        /// The normal priority for callbacks that configure HttpConfiguration for Web API.
-        /// </summary>
-        public static readonly int WebApiConfiguration = WebApi - 1000;
-
-        /// <summary>
-        /// The normal priority for Microsft Web API requests.
+        /// The normal priority for Web API requests.
         /// </summary>
         public static readonly int WebApi = 0;
 

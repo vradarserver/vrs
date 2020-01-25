@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 onwards, Andrew Whewell
+﻿// Copyright © 2020 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,37 +13,60 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AWhewell.Owin.Interface;
+using InterfaceFactory;
+using VirtualRadar.Interface.Owin;
+using VirtualRadar.Interface.Settings;
 
-namespace VirtualRadar.Interface.Owin
+namespace VirtualRadar.WebSite.StreamManipulator
 {
+    using AppFunc = Func<IDictionary<string, object>, Task>;
+
     /// <summary>
-    /// A static class enumeration that lays out the order in which stream manipulators are run.
+    /// See interface docs.
     /// </summary>
-    public static class StreamManipulatorPriority
+    class AutoConfigCompressionManipulator : IAutoConfigCompressionManipulator, ISharedConfigurationSubscriber
     {
         /// <summary>
-        /// The lowest priority that any VRS manipulator uses.
+        /// The Owin library manipulator that does all the work.
         /// </summary>
-        public static readonly int LowestVrsManipulatorPriority = 0;
+        private ICompressResponseManipulator _Wrapped;
 
         /// <summary>
-        /// The normal priority for Javascript manipulation.
+        /// The singleton shared configuration that we're listening to.
         /// </summary>
-        public static int JavascriptManipulator = LowestVrsManipulatorPriority;
+        private ISharedConfiguration _SharedConfiguration;
 
         /// <summary>
-        /// The normal priority for HTML manipulation.
+        /// Creates a new object.
         /// </summary>
-        public static int HtmlManipulator = JavascriptManipulator + 1000;
+        public AutoConfigCompressionManipulator()
+        {
+            _SharedConfiguration = Factory.ResolveSingleton<ISharedConfiguration>();
+
+            _Wrapped = Factory.Resolve<ICompressResponseManipulator>();
+            SharedConfigurationChanged(_SharedConfiguration);
+
+            _SharedConfiguration.AddWeakSubscription(this);
+        }
 
         /// <summary>
-        /// The normal priority for compressing the response stream if required.
+        /// See interface docs.
         /// </summary>
-        public static int CompressionManipulator = HtmlManipulator + 2000;
+        /// <param name="next"></param>
+        /// <returns></returns>
+        public AppFunc AppFuncBuilder(AppFunc next) => _Wrapped.AppFuncBuilder(next);
 
         /// <summary>
-        /// The highest priority used by VRS content middleware.
+        /// See interface docs.
         /// </summary>
-        public static readonly int HighestVrsManipulatorPriority = CompressionManipulator;
+        /// <param name="sharedConfiguration"></param>
+        public void SharedConfigurationChanged(ISharedConfiguration sharedConfiguration)
+        {
+            _Wrapped.Enabled = sharedConfiguration
+                .Get()
+                .GoogleMapSettings
+                .EnableCompression;
+        }
     }
 }
