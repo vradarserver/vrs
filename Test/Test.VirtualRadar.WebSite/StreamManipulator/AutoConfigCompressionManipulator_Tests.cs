@@ -66,7 +66,7 @@ namespace Test.VirtualRadar.WebSite.StreamManipulator
 
             var actual = _Manipulator.AppFuncBuilder(next);
 
-            Assert.AreSame(response, actual);
+            Assert.AreNotSame(response, actual);        // If they are the same then the pipeline keeps the wrapped manipulator alive instead of our wrapper
             _WrappedManipulator.Verify(r => r.AppFuncBuilder(next), Times.Once());
         }
 

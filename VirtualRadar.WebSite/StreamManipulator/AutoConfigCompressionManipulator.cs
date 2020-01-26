@@ -10,8 +10,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AWhewell.Owin.Interface;
 using InterfaceFactory;
@@ -30,7 +28,24 @@ namespace VirtualRadar.WebSite.StreamManipulator
         /// <summary>
         /// The Owin library manipulator that does all the work.
         /// </summary>
+        /// <remarks><para>
+        /// This is a little more complicated than you might first imagine because if we just pass the
+        /// <see cref="AppFuncBuilder"/> call through to the wrapped class then the pipeline effectively
+        /// holds an instance to the wrapped class and we lose all references to our wrapper. Our wrapper
+        /// gets finalised early on and changes to configuration do not affect the wrapped class.
+        /// </para><para>
+        /// To avoid this outcome we don't return the reference to the wrapped AppFunc to the pipeline.
+        /// Instead we keep a note of the AppFunc returned by the wrapped manipulator and return our own
+        /// AppFunc. Our AppFunc just calls the wrapped AppFunc. That way the pipeline keeps our reference
+        /// alive and configuration changes are correctly picked up.
+        /// </para>
+        /// </remarks>
         private ICompressResponseManipulator _Wrapped;
+
+        /// <summary>
+        /// The AppFunc that the wrapped manipulator creates. See remarks against class.
+        /// </summary>
+        private AppFunc _AppFunc;
 
         /// <summary>
         /// The singleton shared configuration that we're listening to.
@@ -55,7 +70,21 @@ namespace VirtualRadar.WebSite.StreamManipulator
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>
-        public AppFunc AppFuncBuilder(AppFunc next) => _Wrapped.AppFuncBuilder(next);
+        public AppFunc AppFuncBuilder(AppFunc next)
+        {
+            _AppFunc = _Wrapped.AppFuncBuilder(next);
+            return CallWrappedAppFunc;
+        }
+
+        /// <summary>
+        /// Calls the AppFunc returned by the wrapped manipulator. See remarks against class.
+        /// </summary>
+        /// <param name="environment"></param>
+        /// <returns></returns>
+        private async Task CallWrappedAppFunc(IDictionary<string, object> environment)
+        {
+            await _AppFunc(environment);
+        }
 
         /// <summary>
         /// See interface docs.
