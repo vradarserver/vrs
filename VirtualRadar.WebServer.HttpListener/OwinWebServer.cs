@@ -55,11 +55,6 @@ namespace VirtualRadar.WebServer.HttpListener
         private IAccessConfiguration _AccessConfiguration;
 
         /// <summary>
-        /// True if the heartbeat timer has been hooked.
-        /// </summary>
-        private bool _HookedHeartbeat;
-
-        /// <summary>
         /// See interface docs.
         /// </summary>
         public string ExternalAddress
