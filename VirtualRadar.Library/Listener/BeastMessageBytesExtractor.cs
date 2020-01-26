@@ -243,7 +243,7 @@ namespace VirtualRadar.Library.Listener
             int endOfPacket;
             dataLength = 0;
             switch(_ReadBuffer[startOfPacket++]) {
-                case 0x31: dataLength = 4; break;
+                case 0x31: dataLength = 2; break;
                 case 0x32: dataLength = 7; break;
                 case 0x33: dataLength = 14; break;
             }
