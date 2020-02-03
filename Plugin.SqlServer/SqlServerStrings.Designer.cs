@@ -19,7 +19,7 @@ namespace VirtualRadar.Plugin.SqlServer {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class SqlServerStrings {
@@ -169,11 +169,20 @@ namespace VirtualRadar.Plugin.SqlServer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Schema Updated.
+        ///   Looks up a localized string similar to The schema was not updated. Has the connection string been entered correctly?.
         /// </summary>
-        public static string SchemaUpdatedTitle {
+        public static string SchemaUpdateFailed {
             get {
-                return ResourceManager.GetString("SchemaUpdatedTitle", resourceCulture);
+                return ResourceManager.GetString("SchemaUpdateFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Schema Update.
+        /// </summary>
+        public static string SchemaUpdateTitle {
+            get {
+                return ResourceManager.GetString("SchemaUpdateTitle", resourceCulture);
             }
         }
         

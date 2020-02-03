@@ -95,7 +95,7 @@ namespace VirtualRadar.Plugin.SqlServer.WinForms
             var presenter = new OptionsPresenter();
             var scriptOutput = presenter.UpdateSchema(Options.ConnectionString, Options.CommandTimeoutSeconds);
 
-            MessageBox.Show(String.Join(Environment.NewLine, scriptOutput), SqlServerStrings.SchemaUpdatedTitle);
+            MessageBox.Show(String.Join(Environment.NewLine, scriptOutput), SqlServerStrings.SchemaUpdateTitle);
         }
 
         /// <summary>

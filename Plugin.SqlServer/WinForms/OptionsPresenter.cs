@@ -55,6 +55,13 @@ namespace VirtualRadar.Plugin.SqlServer.WinForms
             };
             var scriptOutput = database.UpdateSchema();
 
+            if(   scriptOutput == null
+               || scriptOutput.Length == 0
+               || (scriptOutput.Length == 1 && String.IsNullOrEmpty(scriptOutput[0]))
+            ) {
+                scriptOutput = new string[] { SqlServerStrings.SchemaUpdateFailed };
+            }
+
             return scriptOutput;
         }
     }

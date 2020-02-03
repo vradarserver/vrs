@@ -152,8 +152,8 @@
   <data name="SchemaUpdated" xml:space="preserve">
     <value>Schema updated</value>
   </data>
-  <data name="SchemaUpdatedTitle" xml:space="preserve">
-    <value>Schema Updated</value>
+  <data name="SchemaUpdateTitle" xml:space="preserve">
+    <value>Schema Update</value>
   </data>
   <data name="UpdateSchema" xml:space="preserve">
     <value>Update Schema</value>
@@ -177,5 +177,8 @@
   </data>
   <data name="WebAdminMenuName" xml:space="preserve">
     <value>SQL Server</value>
+  </data>
+  <data name="SchemaUpdateFailed" xml:space="preserve">
+    <value>The schema was not updated. Has the connection string been entered correctly?</value>
   </data>
 </root>
