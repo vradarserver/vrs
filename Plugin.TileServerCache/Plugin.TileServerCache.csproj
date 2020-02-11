@@ -35,13 +35,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AWhewell.Owin, Version=1.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AWhewell.Owin.1.0.0-beta35\lib\net45\AWhewell.Owin.dll</HintPath>
+      <HintPath>..\packages\AWhewell.Owin.1.0.0-beta36\lib\net45\AWhewell.Owin.dll</HintPath>
     </Reference>
     <Reference Include="AWhewell.Owin.Interface, Version=1.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AWhewell.Owin.1.0.0-beta35\lib\net45\AWhewell.Owin.Interface.dll</HintPath>
+      <HintPath>..\packages\AWhewell.Owin.1.0.0-beta36\lib\net45\AWhewell.Owin.Interface.dll</HintPath>
     </Reference>
     <Reference Include="AWhewell.Owin.Utility, Version=1.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AWhewell.Owin.Utility.1.0.0-beta35\lib\net45\AWhewell.Owin.Utility.dll</HintPath>
+      <HintPath>..\packages\AWhewell.Owin.Utility.1.0.0-beta36\lib\net45\AWhewell.Owin.Utility.dll</HintPath>
     </Reference>
     <Reference Include="InterfaceFactory, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AWhewell.InterfaceFactory.4.0.0\lib\net40\InterfaceFactory.dll</HintPath>
