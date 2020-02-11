@@ -142,7 +142,9 @@ namespace VirtualRadar.WebSite
                 context.Environment[EnvironmentKey.ServerRemotePort] =      environmentContext.ServerRemotePort;
 
                 foreach(var header in environmentContext.RequestHeaders) {
-                    context.RequestHeaders[header.Key] = header.Value;
+                    if(!String.Equals(header.Key, "Accept-Encoding", StringComparison.OrdinalIgnoreCase)) {
+                        context.RequestHeaders[header.Key] = header.Value;
+                    }
                 }
             }
 
