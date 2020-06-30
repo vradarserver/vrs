@@ -27,6 +27,8 @@ namespace VirtualRadar.WebSite
     /// </summary>
     class LoopbackHost : ILoopbackHost
     {
+        internal const string HostType = "VRS.LoopbackHost";
+
         /// <summary>
         /// The pipeline that will be used to process messages.
         /// </summary>
@@ -62,7 +64,7 @@ namespace VirtualRadar.WebSite
 
             var environment = Factory.Resolve<IPipelineBuilderEnvironment>();
             environment.Properties[ApplicationStartupKey.Version] =     Constants.Version;
-            environment.Properties[ApplicationStartupKey.HostType] =    "VRS.LoopbackHost";
+            environment.Properties[ApplicationStartupKey.HostType] =    HostType;
 
             _Pipeline = pipelineBuilder.CreatePipeline(environment);
         }
@@ -140,7 +142,9 @@ namespace VirtualRadar.WebSite
                 context.Environment[EnvironmentKey.ServerRemotePort] =      environmentContext.ServerRemotePort;
 
                 foreach(var header in environmentContext.RequestHeaders) {
-                    context.RequestHeaders[header.Key] = header.Value;
+                    if(!String.Equals(header.Key, "Accept-Encoding", StringComparison.OrdinalIgnoreCase)) {
+                        context.RequestHeaders[header.Key] = header.Value;
+                    }
                 }
             }
 

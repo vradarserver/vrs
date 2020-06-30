@@ -294,6 +294,18 @@ namespace Test.VirtualRadar.WebSite
         }
 
         [TestMethod]
+        public void LoopbackHost_SendSimpleRequest_Does_Not_Copy_Accept_Encoding_Header_From_Environment()
+        {
+            _LoopbackHost.ConfigureStandardPipeline();
+
+            _Environment.RequestHeaders["Accept-Encoding"] = "gzip";
+            _LoopbackHost.SendSimpleRequest("/", _Environment.Environment);
+
+            var context = OwinContext.Create(_LoopbackEnvironment);
+            Assert.IsFalse(context.RequestHeadersDictionary.ContainsKey("Accept-Encoding"));
+        }
+
+        [TestMethod]
         public void LoopbackHost_SendSimpleRequest_Copes_When_Environment_Supplies_Headers_That_Are_Defaulted()
         {
             _LoopbackHost.ConfigureStandardPipeline();

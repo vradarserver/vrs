@@ -153,7 +153,7 @@ namespace VirtualRadar.WebSite
         private bool IsLoopbackHost(IPipelineBuilderEnvironment builderEnv)
         {
             builderEnv.Properties.TryGetValue(ApplicationStartupKey.HostType, out var host);
-            return host as string == "VRS.LoopbackHost";
+            return host as string == LoopbackHost.HostType;
         }
     }
 }
