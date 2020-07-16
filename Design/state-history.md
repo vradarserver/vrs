@@ -9,6 +9,8 @@ The state snapshots record state for:
 * Client connections
 * The aircraft lists
 
+All strings use case insensitive collation.
+
 ## Client Connections
 
 The state database records the /24 IP address of the machine that connects, the user name that they connect as,
@@ -58,6 +60,12 @@ rules, some of which are drawn from git:
 The intention is to have a single core library that can deal with the creation or loading of database IDs
 for any set of SDM records presented to it. It will assume that all records have this core set of fields.
 
+Some design field lengths will be excessive when compared to the maximums specified in specifications. This
+is because the snapshots could be recording data coming from informal sources such as privately curated
+BaseStation.sqb files and those sources do not always stick to field length rules. The SQL Server plugin
+originally observed strict rules for field lengths and had to relax them considerably to accommodate some
+of the things that people were putting into BaseStation.sqbs.
+
 ### Flight Recording
 
 The easiest way to record a flight is to periodically write all known values for the flight for every
@@ -80,10 +88,14 @@ There is one snapshot record per aircraft list. It is the parent for SnapshotAir
 
 | Name       | Type     | Meaning |
 | ---        | ---      | --- |
-| SnapshotID | bigint   | Unique ID of the record |
+| SnapshotID | bigint   | Primary key |
 | CreatedUTC | datetime | Moment when the snapshot was taken |
 | Sequence   | bigint   | Indicates display order in ascending order |
 | ReceiverID | bigint   | ID of the SDM record for the receiver being recorded |
+
+Indexes on primary key plus:
+
+* Duplicate on ```CreatedUTC```
 
 ```Sequence``` is assigned via the database, either by the stored procedure that saves the record or (if ```SnapshotID``` is
 guaranteed by the database to always be in ascending order of creation) it can be a calculated field on ```SnapshotID```. No
@@ -95,13 +107,11 @@ There is one aircraft record per aircraft in an aircraft list.
 
 | Name                | Type       | Nullable | Meaning |
 | ---                 | ---        | ---      | --- |
-| SnapshotAircraftID  | bigint     | N        | Unique ID of the record |
+| SnapshotAircraftID  | bigint     | N        | Primary key |
 | SnapshotID          | bigint     | N        | Parent snapshot |
-| Icao                | int        | N        | Unique ID of the aircraft |
-| IsPreserved         | bit        | N        | True if the aircraft snapshot (and parent snapshot) are to be excluded from auto-cleans |
-| AircraftID          | bigint     | Y        | Unique ID of the new SDM record for the aircraft |
-| ReceiverID          | bigint     | Y        | Unique ID of the SDM record of receiver than is now providing aircraft messages |
-| PositionReceiverID  | bigint     | Y        | Unique ID of the SDM record of receiver that is now providing position messages |
+| AircraftID          | bigint     | N        | Unique ID of the  SDM record for the aircraft |
+| ReceiverID          | bigint     | Y        | Unique ID of the new SDM record of the receiver than is now providing aircraft messages |
+| PositionReceiverID  | bigint     | Y        | Unique ID of the new SDM record of the receiver that is now providing position messages |
 | Callsign            | varchar(8) | Y        | New callsign |
 | IsCallsignSuspect   | bit        | Y        | Change in whether callsign is from a reliable source |
 | Longitude           | real       | Y        | New longitude |
@@ -127,11 +137,53 @@ There is one aircraft record per aircraft in an aircraft list.
 | IsCharterFlight     | bit        | Y        | New flag indicating that the aircraft is flying a charter flight |
 | TransponderTypeID   | bigint     | Y        | Unique ID of the SDM record for the aircraft's transponder type (as inferred from messages received so far) |
 
-There is a possible update anomaly between ```Icao``` and the aircraft referenced by ```AircraftID```.
-However, we need an aircraft ID that cannot change mid-flight and that is not true of the SDM aircraft,
-an aircraft lookup could change the SDM details and trigger creation of a new SDM record for it. I
-think we just need to put up with the possible anomaly.
+Indexes on primary key plus:
+
+* Duplicate on ```SnapshotID```
+* Duplicate on ```AircraftID```
+* Duplicate on ```RouteID```
+
+Note that ```AircraftID``` is not nullable and is repeated on every snapshot for a given aircraft, even if
+the aircraft record does not change. We need some kind of ID for the aircraft on the table and it would be
+nice to avoid update anomalies between this and ```Aircraft```.
+
+Note that any given aircraft (as identified by its Mode-S ICAO ID) can be represented by more than one
+```Aircraft``` record for a single flight. It will get a new aircraft record any time there is a change to
+one of the aircraft's details, e.g. when an online aircraft detail lookup completes, or values are read
+from the database.
 
 The aircraft ```ReceiverID``` will be different to the parent snapshot's ```ReceiverID``` when the parent
 snapshot is a merged feed. The parent records the merged feed ID, each aircraft records the receiver that
 is picking up the aircraft. The aircraft receivers can change over the duration of the flight.
+
+The receiver ID and various type IDs are not indexed because their cardinality would be too low. It is
+anticipated that these record types will be excluded from auto-cleans.
+
+
+#### (SDM) Aircraft
+
+There is one aircraft record per version of an aircraft's details.
+
+| Name               | Type           | Meaning |
+| ---                | ---            | --- |
+| AircraftID         | bigint         | Primary key |
+| CreatedUTC         | datetime       | Date record was created |
+| Preserve           | bit            | True if the record should be excluded from automatic deletion of old records |
+| SHA1Fingerprint    | binary(20)     | SHA1 hash of all fields except primary key, ```CreatedUTC``` and ```Preserve``` |
+| Icao               | char(6)        | Mode-S identitifer expressed as a hex string |
+| Registration       | nvarchar(80)   | Aircraft registration |
+| ModelID            | bigint         | Unique ID of the SDM model record |
+| ConstructionNumber | nvarchar(80)   | Construction number |
+| YearBuilt          | nvarchar(80)   | Year built expressed as a string - this is for compatability with BaseStation.sqb sources |
+| OperatorID         | bigint         | Unique ID of the SDM operator record |
+| CountryID          | bigint         | Unique ID of the SDM country record |
+| IsInteresting      | bit            | Whether the aircraft is currently flagged as interesting |
+| UserNotes          | nvarchar(300)  | Notes user has recorded against the aircraft |
+| UserTag            | nvarchar(300)  | Tag user has recorded against the aircraft |
+
+Indexes on primary key plus:
+
+* Duplicate on ```ModelID```
+* Duplicate on ```OperatorID```
+* Duplicate on ```CountryID```
+
