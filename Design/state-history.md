@@ -89,12 +89,29 @@ to those fields.
 
 VRS creates one record every time it starts up. It can be used to detect whether records are associated with a live
 VRS session or a historic session. This could be of interest to utilities that are trying to clean up records left
-behind by a previous session that might have stopped abruptly.
+behind by a previous session that might have stopped abruptly. It can also be used to detect and work around issues
+with historical states that might be missing certain features added in a later schema.
 
-| Name         | Type     | Meaning |
-| ---          | ---      | --- |
-| VRSSessionID | bigint   | Primary key |
-| CreatedUTC   | datetime | Moment when the record was created |
+SDM records do not need to refer to a VRS session. If new fields are added in a later schema then the existing records
+will have SHA1 fingerprints that do not include the new fields, so they will not be valid and new records will be
+created as required. This is by design, it preserves SDM records as they were for a given state record.
+
+| Name              | Type     | Meaning |
+| ---               | ---      | --- |
+| VRSSessionID      | bigint   | Primary key |
+| CreatedUTC        | datetime | Moment when the record was created |
+| DatabaseVersionID | bigint   | ID of the schema that was in force when the session was running |
+
+
+#### DatabaseVersion
+
+Records the version of the schema in force at the time a session started. New records are written every time the schema
+is updated. The IDs correspond to an enum in code.
+
+| Name              | Type     | Meaning |
+| ---               | ---      | --- |
+| DatabaseVersionID | bigint   | Primary key - corresponds to a code enum |
+| CreatedUTC        | datetime | Moment when the record was created / schema updated |
 
 
 #### AircraftList
