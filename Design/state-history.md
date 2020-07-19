@@ -34,7 +34,7 @@ Recording an aircraft list will involve different types of database records:
 
 Each record type is stored in its own table. Each record type contains a history of all changes to
 the standing data, one record per version of the record. To support this we need to follow a few
-rules, some of which are drawn from git:
+rules:
 
 1. Each record has an immutable unique database-assigned ID. This is the primary key. It is an 8-byte int.
 2. Each record has a CreatedUTC column that holds the date and time the record was created.
@@ -42,29 +42,35 @@ rules, some of which are drawn from git:
    record might have the Mode-S six digit hex code. These are not unique within the database,
    if you want the most recent version of the record then you need to take the top record by
    descending order of CreatedUTC.
-4. To simplify version management each record will have a 20 byte SHA-1 hash. The idea is borrowed
-   from git - the hash is formed from a text representation of the record and is used to figure out
+4. To simplify version management each record will have a 20 byte SHA-1 hash. The idea is nicked
+   from git - the hash is formed from a binary representation of the record and is used to figure out
    whether a particular version already exists or whether it needs to be created. Hashes will likely
    be unique across the database but will definitely be unique within a record type. The database ID
-   and the CreatedUTC fields will not be considered when calculating the hash. The field needs to
+   and timestamp(s) will not be considered when calculating the hash. The field needs to
    have a unique index.
 
 The intention is to have a single core library that can deal with the creation or loading of database IDs
 for any set of SDM records presented to it. It will assume that all records have this core set of fields.
 
-Some design field lengths will be excessive when compared to the maximums specified in specifications. This
+### String Field Lengths
+
+Some string field lengths will be excessive when compared to the maximums in corresponding ICAO specifications. This
 is because the snapshots could be recording data coming from informal sources such as privately curated
-BaseStation.sqb files and those sources do not always stick to field length rules. The SQL Server plugin
-originally observed strict rules for field lengths and had to relax them considerably to accommodate some
-of the things that people were putting into BaseStation.sqbs.
+BaseStation.sqb files, and those sources do not always stick to field length rules.
+
+The SQL Server plugin originally observed strict rules for field lengths and had to relax them considerably to
+accommodate some of the things that people were putting into BaseStation.sqbs. We will have to do the same.
 
 ### Flight Recording
 
 The easiest way to record a flight is to periodically write all known values for the flight for every
-snapshot. This will use a lot of disk.
+snapshot.
 
-A more disk efficient approach would be to write one record that holds the initial values and then subsequent
-records only store changes from the previous record.
+Many values will either not change between snapshots (e.g. callsign) or will mostly stay within a range of
+values (e.g. altitude is usually within a small band of altitudes).
+
+A more efficient approach would be to write one record that holds the initial values and then subsequent
+records only record changes from previous records.
 
 Different database and file management systems store nulls in different ways. The ones we care about at the
 moment, SQLite and SQL Server, both store nulls reasonably efficiently:
@@ -74,25 +80,26 @@ moment, SQLite and SQL Server, both store nulls reasonably efficiently:
 | SQLite     | One byte per NULL field |
 | SQL Server | None (sets the field's bit in the null bitmap) |
 
+The drawback to this approach is that you may need to read many records if you want to work out what the full
+state of the aircraft was at any given time. You cannot look at a record full of changes and know what the current
+values for the unchanged fields are without reading backwards through the database until you find the last change
+to those fields.
 
 ### KeySnapshot
 
 There is one key snapshot record per full snapshot.
 
-As described earlier each snapshot is a set of deltas from the previous snapshot. If nothing changes for an aircraft then
-its snapshot record is just a couple of IDs and all other fields are null.
-
 A key snapshot is a ```Snapshot``` record where every ```SnapshotAircraft``` child records the full state of the aircraft
 list at that moment in time.
 
-The aim with key snapshots is similar to key frames. If we only record one initial state and then thousands of deltas for
-an aircraft then if you want to know the state of the aircraft one hour into its flight you will need to find the first
-record for the aircraft and then read (and process) all of its snapshots until you get to the record that you are interested
-in.
+The aim with key snapshots is similar to key frames in video. If we only record one initial state and then thousands of deltas
+for an aircraft then if you want to know the state of the aircraft one hour into its flight you will need to read and process
+up to an hours' worth of snapshots. Key snapshots are periodically recorded in place of a set of deltas to reduce the number
+of snapshots that need to be read before you get to the first record that deltas were possibly calculated from.
 
-Key snapshots are recorded periodically. The interval between key snapshots during recording is determined by configuration
-settings. Whenever the interval passes the system records a full copy of the aircraft list instead of a set of deltas.
-Subsequent snapshots are then deltas from the last key snapshot recorded.
+Key snapshots are also used to implement time-shifting UI. When the user asks to start playback at a point in time the system
+goes back to the first key snapshot before that point in time and then reads forward to the last snapshot before the moment in
+time that playback is to start from.
 
 | Name          | Type     | Meaning |
 | ---           | ---      | --- |
