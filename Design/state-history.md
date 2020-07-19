@@ -61,7 +61,7 @@ BaseStation.sqb files, and those sources do not always stick to field length rul
 The SQL Server plugin originally observed strict rules for field lengths and had to relax them considerably to
 accommodate some of the things that people were putting into BaseStation.sqbs. We will have to do the same.
 
-### Flight Recording
+### Recording Deltas
 
 The easiest way to record a flight is to periodically write all known values for the flight for every
 snapshot.
@@ -84,6 +84,36 @@ The drawback to this approach is that you may need to read many records if you w
 state of the aircraft was at any given time. You cannot look at a record full of changes and know what the current
 values for the unchanged fields are without reading backwards through the database until you find the last change
 to those fields.
+
+
+### Usage
+
+VRS will need to be able to quickly retrieve state histories for the following situations:
+
+1. Time shifted playback of all aircraft seen on a receiver. The user interface will offer up UI to start playback
+   of saved history at a given date and time. The UI then displays the recorded state one list at a time.
+   
+   The ```CreatedUTC``` field on ```AircraftList``` supports the retrieval of aircraft lists for playback.
+   
+2. Time shifted playback of a single flight. Not sure if this will be in the first release but it would be possible
+   via the ```Flight``` table and the ```CreatedUTC``` field on ```AircraftList```.
+   
+3. Display the actual flight track on BaseStation.sqb reports. See section re. tying session history flights
+   to BaseStation.sqb files later in this document.
+   
+4. Use state history as a source for the standard reports. Reports that look to the old Flights table for criteria
+   should map onto the ```FlightView``` view fairly easily, but those that searched ```Aircraft``` might get
+   tricky. A flight can be comprised of any number of versions of a single aircraft. However, it should be possible.
+   
+5. Use state history for sundry aircraft list values that normally come from BaseStation.sqb - in particular the number
+   of flight records previously seen for an aircraft. Given this would use the aircraft's ICAO that should not be
+   a problem, ```FlightView``` exposes the ICAO.
+   
+6. Add a new report that can only run from state history that shows the changes in state over the course of a flight,
+   for example the changes in altitude and when they occur, changes in speed, full track etc. This would be showing
+   data for a single ```Flight```.
+   
+### Common Schema
 
 #### VRSSession
 
@@ -114,6 +144,8 @@ is updated. The IDs correspond to an enum in code.
 | CreatedUTC        | datetime | Moment when the record was created / schema updated |
 
 
+### Aircraft List Schema
+
 #### AircraftList
 
 There is one aircraft list record per aircraft list capture. The intention here is to record values that are common
@@ -125,18 +157,21 @@ to all ```AircraftState``` records in the list.
 | VRSSessionID           | bigint   | ID of the session that the aircraft list was created in |
 | CreatedUTC             | datetime | Moment when the record was first created |
 | UpdatedUTC             | datetime | Moment when the record was last updated |
-| PreviousAircraftListID | bigint   | List record that immediately preceeds this one, null if this is the first record saved for this receiver in a VRS session |
 | ReceiverID             | bigint   | ID of the SDM record for the receiver being recorded |
 
 Indexes on primary key plus:
 
-* Duplicate on ```CreatedUTC```
-* If RDBMS supports filtered indexes then either unique on ```PreviousAircraftListID``` where not null or duplicate on ```PreviousAircraftListID```.
+* Duplicate on ```CreatedUTC```.
 
-When walking a chain of aircraft list records you go backwards using ```PreviousAircraftListID``` and forwards by searching for the single
-record whose ```PreviousAircraftListID``` is the current record's ```AircraftListID```. The intention here is to make the chain less
-vulnerable to breaks caused by bad updates and also avoid having to update the record after it has been created.
+VRS will ensure that the ```CreatedUTC``` for a new record is **always** later than the CreatedUTC of the last
+record written for any receiver ID with the same receiver GUID. The system will try to use the current time but
+if a system clock correction has moved the clock to a point earlier than the latest saved CreatedUTC then the new
+CreatedUTC will be one millisecond later than the previous CreatedUTC.
 
+#### AircraftListView
+
+View joining ```AircraftList``` to ```Receiver```. Contains all of the fields from ```AircraftListView``` plus
+the receiver's GUID.
 
 #### KeyAircraftList
 
@@ -163,7 +198,9 @@ The reason for keeping a separate table of key aircraft lists is to make searche
 
 #### KeyAircraftListView
 
-All of the fields from ```AircraftList``` joined against ```KeyAircraftList``` to filter out delta aircraft lists.
+All of the fields from ```AircraftListView``` joined against ```KeyAircraftList``` to filter out delta aircraft lists.
+
+The view itself does not join to AircraftListView, it just builds on the definition for that view.
 
 
 #### AircraftState
@@ -182,6 +219,7 @@ never a delta. This is an important point to bear in mind when considering the `
 | ---                 | ---        | ---      | --- |
 | AircraftStateID     | bigint     | N        | Primary key |
 | AircraftListID      | bigint     | N        | ID of parent aircraft list |
+| FlightID            | bigint     | N [1]    | ID of parent flight |
 | AircraftID          | bigint     | N        | Unique ID of the  SDM record for the aircraft |
 | IsDelta             | bit        | N        | 1 if this is a set of deltas against a previous record, 0 if this is the complete state of the aircraft |
 | ReceiverID          | bigint     | Y        | Unique ID of the new SDM record of the receiver than is now providing aircraft messages |
@@ -217,6 +255,14 @@ Indexes on primary key plus:
 * Duplicate on ```AircraftID```
 * Duplicate on ```RouteID```
 
+[1] There is a chicken and egg situation with ```FlightID```. The flight has the IDs of the first and last
+```AircraftState```s in the flight. The ```AircraftState``` has a link to the flight. They both can't
+be non-nullable. So the first aircraft state is created without a flight, then its ID is used to create
+the flight record, then it is updated to set the parent flight ID. All this is done in one transaction
+so that the temporarily null FlightID parent is not visible to the rest of the world.
+
+See ```Flight``` re. the update anomaly caused by it containing references to ```AircraftState```.
+
 Note that any given aircraft (as identified by its Mode-S ICAO ID) can be represented by more than one
 ```Aircraft``` record for a single flight. It will get a new aircraft record any time there is a change to
 one of the aircraft's details, e.g. when an online aircraft detail lookup completes, or values are read
@@ -246,12 +292,20 @@ Keeps a record of aircraft whose state records have been deleted from a given ai
 must not be allowed to time out during playback of aircraft lists, they can be considered to be completely
 empty deltas from the last known state.
 
+```AircraftStateless``` records are not considered when searching for empty aircraft lists to delete. This
+means that when you have an ```AircraftState``` record that is an empty delta - i.e. there are no changes -
+you must still write an ```AircraftState``` record. If you were to substitute it with one of these stateless
+records instead then the entire aircraft list could be prematurely removed in the next trim.
+
 | Name                | Type       | Meaning |
 | ---                 | ---        | --- |
 | AircraftListID      | bigint     | ID of parent aircraft list |
-| AircraftID          | bigint     | Unique ID of the SDM record for the aircraft |
+| AircraftID          | bigint     | ID of the SDM record for the aircraft |
+| FlightID            | bigint     | ID of the flight record for the aircraft |
 
-The primary key is a composite of the two fields.
+The primary key is a composite of ```AircraftListID``` and ```AircraftID```, in that order.
+
+There is a duplicates index on ```FlightID```.
 
 
 #### AircraftStatelessView
@@ -281,6 +335,23 @@ Every time VRS adds more ```AircraftState``` records it will update the ```Final
 It is expected that VRS will save ```AircraftState``` records in bursts, and that each burst of records will finish
 with a key frame, i.e. a state record where ```IsDelta``` will be 0. If this expectation goes ahead then both state IDs
 will always point at complete records.
+
+The ```AircraftState``` contains a reference back to the flight. This means that it is possible for the ```InitialAircraftStateID```
+to point to an aircraft state that is not the first for this flight (in ascending order of parent aircraft list) and
+likewise ```FinalAircraftStateID``` might not point to the last record.
+
+I have considered putting a sequence number onto ```AircraftState``` which starts at 1 and increments on each state
+written for the flight. The ```FlightView``` (see later) could report ```InitialAircraftStateID``` as the ID of the
+record with the lowest flight sequence and ```FinalAircraftStateID``` as the record with the highest flight sequence.
+
+This would work but it is slower than direct access to the ID that we've spec'd here. The reason why we have the first
+and last state IDs is so that we can implement a view that broadly reproduces the ```Flight``` record from BaseStation.sqb,
+it can be used to search for flights matching criteria. The ```FlightView``` needs to be fast to read, as fast as possible.
+
+So - in the trade off between speed and data purity we are going with speed, just for the sake of reporting.
+
+If it is necessary then a database check utility can easily tell whether the initial and final state IDs here are actually
+pointing at the first and last records for the flight.
 
 ```Preserve``` overrides all other auto-clean considerations. Preserved flights are never trimmed or deleted.
 
@@ -646,8 +717,6 @@ When a flight is deleted the following records need to be removed:
 Any ```AircraftList``` records that have no child ```AircraftState``` records can be deleted. The order of operations should
 be:
 
-* Update AircraftList where PreviousAircraftListID is equal to the AircraftListID of the record you are deleting, set
-  PreviousAircraftListID to the deleted record's PreviousAircraftListID
 * Delete parent KeyAircraftList
 * Delete all child AircraftStateless
 * Delete the AircraftList
