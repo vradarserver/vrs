@@ -85,7 +85,7 @@ state of the aircraft was at any given time. You cannot look at a record full of
 values for the unchanged fields are without reading backwards through the database until you find the last change
 to those fields.
 
-### KeySnapshot
+#### KeySnapshot
 
 There is one key snapshot record per full snapshot.
 
@@ -406,7 +406,7 @@ There is one country record per version of a country. These are not auto-cleaned
 | CountryName     | nvarchar(80)   | The country's name |
 
 
-### (SDM) Receiver
+#### (SDM) Receiver
 
 There is one record per version of each receiver being recorded. These are not auto-cleaned.
 
@@ -446,7 +446,7 @@ There is one speed type record per version of the ```SpeedType``` enum. These ar
 | SpeedTypeName   | varchar(80)    | The enumeration name |
 
 
-### (SDM) Route
+#### (SDM) Route
 
 There is one record per version of a route
 
@@ -466,7 +466,7 @@ Indexes on primary key plus:
 
 
 
-### (SDM) Route Stopover
+#### (SDM) Route Stopover
 
 There is one record per stopover in a route. Stopovers appear between the ```FromAirportID``` and ```ToAirportID``` of the
 parent ```Route``` record. They are always associated with a version of a route, the stopovers themselves are not versioned.
