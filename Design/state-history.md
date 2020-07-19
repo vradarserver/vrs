@@ -137,10 +137,6 @@ When walking a chain of aircraft list records you go backwards using ```Previous
 record whose ```PreviousAircraftListID``` is the current record's ```AircraftListID```. The intention here is to make the chain less
 vulnerable to breaks caused by bad updates and also avoid having to update the record after it has been created.
 
-Over time auto-clean could remove aircraft from an aircraft list. If all aircraft are removed from the list then the list record itself is removed and,
-if necessary, the chain record fixed up for the following record in the chain. This will necessitate updates, which in turn means we need the
-```UpdatedUTC``` so that we can guard against concurrent updates.
-
 
 #### KeyAircraftList
 
@@ -149,7 +145,7 @@ There is one key aircraft list record per fully populated aircraft list.
 A fully populated list is an ```AircraftList``` record where every ```AircraftState``` child contains the full state of the aircraft
 list at that moment in time (i.e. its ```IsDelta``` field is 0 / false).
 
-The aim with key lists is similar to key frames in video. If we only record one initial state and then thousands of deltas
+The aim with key lists is similar to key frames in video. If we only record one initial state followed by thousands of deltas
 for an aircraft then if you want to know the state of the aircraft one hour into its flight you will need to read and process
 up to an hours' worth of state records. Key states are periodically recorded in place of a set of deltas to reduce the number
 of records that need to be read to calculate the end state from deltas.
@@ -174,29 +170,12 @@ All of the fields from ```AircraftList``` joined against ```KeyAircraftList``` t
 
 There is one aircraft state record per aircraft in an aircraft list.
 
-The table has a dual role. It is the snapshot of an aircraft's state in an aircraft list but it also records the initial and final
-states of an aircraft in a ```Flight```. The true parent is the aircraft list.
+To keep life simple VRS does not record aircraft lists as soon as the snapshot is taken. Rather it builds up a set of snapshot records
+and holds them all in memory until a key list needs to be saved. It then saves all of the delta aircraft lists and the key list in one
+operation.
 
-Updates are forbidden *except* when converting a delta record into a complete record or vice versa. If this happens then you
-must update WHERE [IsDelta] = (old value of IsDelta).
-
-There might be some mileage in VRS always recording a complete set of values when writing new aircraft state records for a list
-that is being recorded in real time and then updating the previous set of values to turn them into deltas if (a) the aircraft exists
-the previous aircraft list and (b) the previous aircraft list is not marked as a key frame.
-
-The advantages would be that the last record for an aircraft's flight is always complete, which makes getting the first and last
-set of values for a ```Flight``` trivial, and it pushes the creation of deltas to the database which might be more efficient than
-doing it in code.
-
-The disadvantages are that it doubles the number of writes required when a snapshot is taken, it will cause some fragmentation in
-the database when large complete records are replaced with (hopefully!) smaller deltas and it increases the possibility of locking
-issues caused by updates. Also any work done in the database has to be duplicated for each supported RDBMS, which makes testing
-more complicated.
-
-One approach to solve the disadvantages could be for VRS to maintain a set of objects that represent aircraft state records and aircraft
-list snapshots either in memory or in a temporary file, and only save them to the database itself when the key frames are saved. If every
-write transaction always ends with a key frame then a view on ```Flight``` that shows initial and final (or current) values is much easier
-to achieve.
+This means that the latest aircraft list - and therefore the latest ```AircraftState``` - is *always* a complete state and
+never a delta. This is an important point to bear in mind when considering the ```Flight``` table later on.
 
 
 | Name                | Type       | Nullable | Meaning |
@@ -243,7 +222,8 @@ Note that any given aircraft (as identified by its Mode-S ICAO ID) can be repres
 one of the aircraft's details, e.g. when an online aircraft detail lookup completes, or values are read
 from the database. This means that you cannot just search against ```AircraftID``` if you want to find
 all records for a given aircraft. You need to join against ```Aircraft``` and search against the
-```Aircraft```'s ICAO.
+```Aircraft```'s ICAO. Use ```AircraftStateView``` to isolate your searches from changes to ```AircraftID```
+over the lifetime of a flight.
 
 The aircraft ```ReceiverID``` will be different to the parent aircraft list's ```ReceiverID``` when the
 parent is a merged feed. The parent records the merged feed ID, each aircraft records the receiver that
@@ -663,12 +643,16 @@ When a flight is deleted the following records need to be removed:
 
 #### Trimming Aircraft Lists
 
-Any ```AircraftList``` records that have no child ```AircraftState``` records can be deleted. The order of deletion
-should be:
+Any ```AircraftList``` records that have no child ```AircraftState``` records can be deleted. The order of operations should
+be:
 
-* Parent KeyAircraftList
-* All child AircraftStateless
-* AircraftList
+* Update AircraftList where PreviousAircraftListID is equal to the AircraftListID of the record you are deleting, set
+  PreviousAircraftListID to the deleted record's PreviousAircraftListID
+* Delete parent KeyAircraftList
+* Delete all child AircraftStateless
+* Delete the AircraftList
+
+All of this needs doing within a transaction.
 
 
 #### Trimming SDM Records
