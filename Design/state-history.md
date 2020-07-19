@@ -85,81 +85,109 @@ state of the aircraft was at any given time. You cannot look at a record full of
 values for the unchanged fields are without reading backwards through the database until you find the last change
 to those fields.
 
-#### KeySnapshot
+#### VRSSession
 
-There is one key snapshot record per full snapshot.
+VRS creates one record every time it starts up. It can be used to detect whether records are associated with a live
+VRS session or a historic session. This could be of interest to utilities that are trying to clean up records left
+behind by a previous session that might have stopped abruptly.
 
-A key snapshot is a ```Snapshot``` record where every ```SnapshotAircraft``` child records the full state of the aircraft
-list at that moment in time.
-
-The aim with key snapshots is similar to key frames in video. If we only record one initial state and then thousands of deltas
-for an aircraft then if you want to know the state of the aircraft one hour into its flight you will need to read and process
-up to an hours' worth of snapshots. Key snapshots are periodically recorded in place of a set of deltas to reduce the number
-of snapshots that need to be read before you get to the first record that deltas were possibly calculated from.
-
-Key snapshots are also used to implement time-shifting UI. When the user asks to start playback at a point in time the system
-goes back to the first key snapshot before that point in time and then reads forward to the last snapshot before the moment in
-time that playback is to start from.
-
-| Name          | Type     | Meaning |
-| ---           | ---      | --- |
-| KeySnapshotID | bigint   | Primary key |
-| SnapshotID    | bigint   | ID of the snapshot that contains a full set of aircraft data instead of deltas |
-
-Indexes on primary key plus:
-
-* Unique on ```SnapshotID```.
+| Name         | Type     | Meaning |
+| ---          | ---      | --- |
+| VRSSessionID | bigint   | Primary key |
+| CreatedUTC   | datetime | Moment when the record was created |
 
 
-#### Snapshot
+#### AircraftList
 
-There is one snapshot record per aircraft list capture.
+There is one aircraft list record per aircraft list capture. The intention here is to record values that are common
+to all ```AircraftState``` records in the list.
 
-| Name       | Type     | Meaning |
-| ---        | ---      | --- |
-| SnapshotID | bigint   | Primary key |
-| CreatedUTC | datetime | Moment when the snapshot was taken |
-| Sequence   | bigint   | Indicates display order in ascending order |
-| ReceiverID | bigint   | ID of the SDM record for the receiver being recorded |
+| Name                   | Type     | Meaning |
+| ---                    | ---      | --- |
+| AircraftListID         | bigint   | Primary key |
+| VRSSessionID           | bigint   | ID of the session that the aircraft list was created in |
+| CreatedUTC             | datetime | Moment when the record was first created |
+| UpdatedUTC             | datetime | Moment when the record was last updated |
+| PreviousAircraftListID | bigint   | List record that immediately preceeds this one, null if this is the first record saved for this receiver in a VRS session |
+| ReceiverID             | bigint   | ID of the SDM record for the receiver being recorded |
 
 Indexes on primary key plus:
 
 * Duplicate on ```CreatedUTC```
-* Unique on composite of SnapshotID and Sequence (if they are separate) and duplicate on Sequence (if appropriate).
+* If RDBMS supports filtered indexes then either unique on ```PreviousAircraftListID``` where not null or duplicate on ```PreviousAircraftListID```.
 
-```Sequence``` is assigned via the database, either by the stored procedure that saves the record or (if ```SnapshotID``` is
-guaranteed by the database to always be in ascending order of creation) it can be a calculated field on ```SnapshotID```. No
-meaning should be assigned to it other than it can be used to sort snapshots into the correct display order.
+When walking a chain of aircraft list records you go backwards using ```PreviousAircraftListID``` and forwards by searching for the single
+record whose ```PreviousAircraftListID``` is the current record's ```AircraftListID```. The intention here is to make the chain less
+vulnerable to breaks caused by bad updates and also avoid having to update the record after it has been created.
 
-In principle ```CreatedUTC``` could be used to sort snapshots into display order. However, the program is expected to run for
-extended periods of time and the clock will be periodically adjusted while the program is running. The scheme for only recording
-deltas from a previous snapshot only works if the order of snapshots is guaranteed.
+Over time auto-clean could remove aircraft from an aircraft list. If all aircraft are removed from the list then the list record itself is removed and,
+if necessary, the chain record fixed up for the following record in the chain. This will necessitate updates, which in turn means we need the
+```UpdatedUTC``` so that we can guard against concurrent updates.
 
 
-#### KeySnapshotView
+#### KeyAircraftList
 
-View used to make accessing key snapshots easier.
+There is one key aircraft list record per fully populated aircraft list.
 
-| Table       | Field         | Alias |
-| ---         | ---           | ---   |
-| KeySnapshot | KeySnapshotID | |
-| Snapshot    | SnapshotID    | |
-| Snapshot    | CreatedUTC    | |
-| Snapshot    | Sequence      | |
-| Receiver    | ReceiverID    | |
-| Receiver    | ReceiverName  | |
-| Receiver    | Guid          | ReceiverGuid |
+A fully populated list is an ```AircraftList``` record where every ```AircraftState``` child contains the full state of the aircraft
+list at that moment in time (i.e. its ```IsDelta``` field is 0 / false).
+
+The aim with key lists is similar to key frames in video. If we only record one initial state and then thousands of deltas
+for an aircraft then if you want to know the state of the aircraft one hour into its flight you will need to read and process
+up to an hours' worth of state records. Key states are periodically recorded in place of a set of deltas to reduce the number
+of records that need to be read to calculate the end state from deltas.
+
+Key records are also used to implement time-shifting UI. When the user asks to start playback at a point in time the system
+goes back to the first key record before that point in time and then reads forward to the last record before the moment that
+playback is to start from.
+
+The reason for keeping a separate table of key aircraft lists is to make searches for key lists as efficient as possible.
+
+| Name           | Type     | Meaning |
+| ---            | ---      | --- |
+| AircraftListID | bigint   | Primary key, ID of the fully-populated aircraft list |
+
+
+#### KeyAircraftListView
+
+All of the fields from ```AircraftList``` joined against ```KeyAircraftList``` to filter out delta aircraft lists.
 
 
 #### AircraftState
 
 There is one aircraft state record per aircraft in an aircraft list.
 
+The table has a dual role. It is the snapshot of an aircraft's state in an aircraft list but it also records the initial and final
+states of an aircraft in a ```Flight```. The true parent is the aircraft list.
+
+Updates are forbidden *except* when converting a delta record into a complete record or vice versa. If this happens then you
+must update WHERE [IsDelta] = (old value of IsDelta).
+
+There might be some mileage in VRS always recording a complete set of values when writing new aircraft state records for a list
+that is being recorded in real time and then updating the previous set of values to turn them into deltas if (a) the aircraft exists
+the previous aircraft list and (b) the previous aircraft list is not marked as a key frame.
+
+The advantages would be that the last record for an aircraft's flight is always complete, which makes getting the first and last
+set of values for a ```Flight``` trivial, and it pushes the creation of deltas to the database which might be more efficient than
+doing it in code.
+
+The disadvantages are that it doubles the number of writes required when a snapshot is taken, it will cause some fragmentation in
+the database when large complete records are replaced with (hopefully!) smaller deltas and it increases the possibility of locking
+issues caused by updates. Also any work done in the database has to be duplicated for each supported RDBMS, which makes testing
+more complicated.
+
+One approach to solve the disadvantages could be for VRS to maintain a set of objects that represent aircraft state records and aircraft
+list snapshots either in memory or in a temporary file, and only save them to the database itself when the key frames are saved. If every
+write transaction always ends with a key frame then a view on ```Flight``` that shows initial and final (or current) values is much easier
+to achieve.
+
+
 | Name                | Type       | Nullable | Meaning |
 | ---                 | ---        | ---      | --- |
 | AircraftStateID     | bigint     | N        | Primary key |
+| AircraftListID      | bigint     | N        | ID of parent aircraft list |
 | AircraftID          | bigint     | N        | Unique ID of the  SDM record for the aircraft |
-| IsKeyFrame          | bit        | N        | 0 if this is a set of deltas against a previous record, 1 if this is the complete state of the aircraft |
+| IsDelta             | bit        | N        | 1 if this is a set of deltas against a previous record, 0 if this is the complete state of the aircraft |
 | ReceiverID          | bigint     | Y        | Unique ID of the new SDM record of the receiver than is now providing aircraft messages |
 | PositionReceiverID  | bigint     | Y        | Unique ID of the new SDM record of the receiver that is now providing position messages |
 | Callsign            | varchar(8) | Y        | New callsign |
@@ -189,51 +217,49 @@ There is one aircraft state record per aircraft in an aircraft list.
 
 Indexes on primary key plus:
 
+* Duplicate on ```AircraftListID```
 * Duplicate on ```AircraftID```
 * Duplicate on ```RouteID```
-
-Note that ```AircraftID``` is not nullable and is repeated on every snapshot for a given aircraft, even if
-the aircraft record does not change. We need some kind of ID for the aircraft on the table and it would be
-nice to avoid update anomalies between this and ```Aircraft```.
 
 Note that any given aircraft (as identified by its Mode-S ICAO ID) can be represented by more than one
 ```Aircraft``` record for a single flight. It will get a new aircraft record any time there is a change to
 one of the aircraft's details, e.g. when an online aircraft detail lookup completes, or values are read
-from the database.
+from the database. This means that you cannot just search against ```AircraftID``` if you want to find
+all records for a given aircraft. You need to join against ```Aircraft``` and search against the
+```Aircraft```'s ICAO.
 
-```IsKeyFrame``` is a similar idea to ```KeySnapshot```, it indicates whether this is a delta or a complete
-representation of the entire set of values for the aircraft. ```KeySnapshot``` snapshots will always create
-aircraft snapshots with ```IsKeyFrame``` set, however there are circumstances where key frames will be
-created for aircraft that are not in key frames. Typically this will be after an aircraft is removed from
-an aircraft list when it times out - a state history will be recorded for its final state and this history
-might not be in a key snapshot.
-
-The aircraft ```ReceiverID``` will be different to the parent snapshot's ```ReceiverID``` when the parent
-snapshot is a merged feed. The parent records the merged feed ID, each aircraft records the receiver that
+The aircraft ```ReceiverID``` will be different to the parent aircraft list's ```ReceiverID``` when the
+parent is a merged feed. The parent records the merged feed ID, each aircraft records the receiver that
 is picking up the aircraft. The aircraft receivers can change over the duration of the flight.
 
 The receiver ID and various type IDs are not indexed because their cardinality would be too low. It is
-anticipated that these record types will be excluded from auto-cleans.
-
-#### SnapshotAircraft
-
-Links aircraft states to a snapshot.
-
-| Name            | Type   | Meaning |
-| ---             | ---    | --- |
-| AircraftStateID | bigint | ID of an aircraft in the snapshot's aircraft list |
-| SnapshotID      | bigint | ID of the snapshot that is linking to the aircraft state |
-
-Primary key is ```AircraftStateID```.
-
-Duplicates index on ```SnapshotID```.
+anticipated that these record types will be excluded from auto-cleans so the RDBMS will not need to
+search for existing instances before deletion.
 
 
-#### SnapshotAircraftStateView
+#### AircraftStateView
 
-Joins ```SnapshotAircraft``` and ```AircraftState```.
+An inner join between ```AircraftState``` and ```Aircraft``` exposing every field from ```AircraftState```
+and ```Icao``` from ```Aircraft```.
 
-This is the ```SnapshotID``` from ```SnapshotAircraft``` and every field from ```AircraftState```.
+
+#### AircraftStateless
+
+Keeps a record of aircraft whose state records have been deleted from a given aircraft list. These aircraft
+must not be allowed to time out during playback of aircraft lists, they can be considered to be completely
+empty deltas from the last known state.
+
+| Name                | Type       | Meaning |
+| ---                 | ---        | --- |
+| AircraftListID      | bigint     | ID of parent aircraft list |
+| AircraftID          | bigint     | Unique ID of the SDM record for the aircraft |
+
+The primary key is a composite of the two fields.
+
+
+#### AircraftStatelessView
+
+An inner join between ```AircraftStateless``` and ```Aircraft``` that adds the ```Icao``` from ```Aircraft```.
 
 
 #### Flight
@@ -241,25 +267,38 @@ This is the ```SnapshotID``` from ```SnapshotAircraft``` and every field from ``
 Records the start and end states for a flight. A flight comprises a sequence of messages for an aircraft, starting
 with the first received within a session to the last received before the aircraft times out.
 
-| Name                    | Type   | Meaning |
-| ---                     | ---    | --- |
-| FlightID                | bigint | Primary key |
-| InitialAircraftStateID  | bigint | ID of the first state record for the aircraft |
-| FinalKeyAircraftStateID | bigint | ID of the last state record that holds a full set of state data for the aircraft |
-| FinalAircraftStateID    | bigint | ID of the last state record for the aircraft |
+| Name                    | Type     | Meaning |
+| ---                     | ---      | --- |
+| FlightID                | bigint   | Primary key |
+| UpdatedUTC              | datetime | Date of last update |
+| Preserve                | bit      | 1 if the flight should be excluded from auto-clean |
+| IntervalSeconds         | integer  | The nominal number of seconds between the flight's snapshots |
+| InitialAircraftStateID  | bigint   | ID of the first state record for the aircraft |
+| FinalAircraftStateID    | bigint   | ID of the last state record for the aircraft |
 
-When an aircraft is first detected in a snapshot a new ```Flight``` record is created for it. The initial and both final
-states will point to the same ```AircraftSnapshot```.
+When an aircraft is first detected in an aircraft list a new ```Flight``` record is created for it. All state IDs will
+point at the same ```AircraftState``` record.
 
-While an aircraft continues to appear in an aircraft list its ```Flight``` record will be updated to set the ```FinalAircraftStateID```
-to the latest state record.
+Every time VRS adds more ```AircraftState``` records it will update the ```FinalAircraftStateID``` field.
 
-Whenever a key frame is saved the ```Flight``` is updated to record the ID of the key frame.
+It is expected that VRS will save ```AircraftState``` records in bursts, and that each burst of records will finish
+with a key frame, i.e. a state record where ```IsDelta``` will be 0. If this expectation goes ahead then both state IDs
+will always point at complete records.
 
-Nothing special happens when the aircraft times out and is removed from the aircraft list.
+```Preserve``` overrides all other auto-clean considerations. Preserved flights are never trimmed or deleted.
 
-This means that to obtain the final state for an aircraft you will have to read the state from ```FinalKeyAircraftStateID```
-and then, if ```FinalAircraftStateID``` is different, apply all states.
+```IntervalSeconds``` starts at the configured interval between snapshots in the flight. If the interval is reconfigured
+by the user during a flight recording then the largest value is recorded - e.g. if the interval between snapshots is
+10 seconds when a flight starts and then the user changes it to 5 seconds mid-flight then intervals between snapshots for
+the flight will be a mixture of 5 and 10 seconds apart, but the flight will declare that they are 10 seconds apart.
+
+If the flight only contains the start and end states for a flight then ```IntervalSeconds``` will be 2^31 (more than 2 billion).
+
+
+#### FlightView
+
+Left outer joins ```Flight``` records to two ```AircraftState``` records, one for the initial state and one for the final state.
+In both cases the join is where the ```IsDelta``` flag is 0 / false.
 
 
 #### (SDM) Aircraft
@@ -270,8 +309,7 @@ There is one aircraft record per version of an aircraft's details.
 | ---                | ---            | --- |
 | AircraftID         | bigint         | Primary key |
 | CreatedUTC         | datetime       | Date record was created |
-| Preserve           | bit            | True if the record should be excluded from automatic deletion of old records |
-| SHA1Fingerprint    | binary(20)     | SHA1 hash of all fields except primary key, ```CreatedUTC``` and ```Preserve``` |
+| SHA1Fingerprint    | binary(20)     | SHA1 hash of all fields except primary key and ```CreatedUTC``` |
 | Icao               | char(6)        | Mode-S identitifer expressed as a hex string |
 | Registration       | nvarchar(80)   | Aircraft registration |
 | ModelID            | bigint         | Unique ID of the SDM model record |
@@ -286,6 +324,8 @@ There is one aircraft record per version of an aircraft's details.
 
 Indexes on primary key plus:
 
+* Duplicate on ```Icao```
+* Duplicate on ```Registration```
 * Duplicate on ```ModelID```
 * Duplicate on ```OperatorID```
 * Duplicate on ```CountryID```
@@ -299,8 +339,7 @@ There is one model record per version of an aircraft's model details.
 | ---                      | ---            | --- |
 | ModelID                  | bigint         | Primary key |
 | CreatedUTC               | datetime       | Date record was created |
-| Preserve                 | bit            | True if the record should be excluded from automatic deletion of old records |
-| SHA1Fingerprint          | binary(20)     | SHA1 hash of all fields except primary key, ```CreatedUTC``` and ```Preserve``` |
+| SHA1Fingerprint          | binary(20)     | SHA1 hash of all fields except primary key and ```CreatedUTC``` |
 | Icao                     | nvarchar(80)   | ICAO8643 type - see notes elsewhere regarding use of oversized fields |
 | ManufacturerID           | bigint         | ID of the SDM manufacturer record |
 | ModelName                | nvarchar(80)   | Model name |
@@ -312,7 +351,9 @@ There is one model record per version of an aircraft's model details.
 
 Indexes on primary key plus:
 
+* Duplicate on ```Icao```
 * Duplicate on ```ManufacturerID```
+* Duplicate on ```ModelName```
 
 
 #### (SDM) Manufacturer
@@ -323,9 +364,10 @@ There is one manufacturer record per version of an aircraft's manufacturer detai
 | ---              | ---            | --- |
 | ManufacturerID   | bigint         | Primary key |
 | CreatedUTC       | datetime       | Date record was created |
-| Preserve         | bit            | True if the record should be excluded from automatic deletion of old records |
-| SHA1Fingerprint  | binary(20)     | SHA1 hash of all fields except primary key, ```CreatedUTC``` and ```Preserve``` |
+| SHA1Fingerprint  | binary(20)     | SHA1 hash of all fields except primary key and ```CreatedUTC``` |
 | ManufacturerName | nvarchar(80)   | The name of the manufacturer |
+
+* Duplicate on ManufacturerName.
 
 
 #### (SDM) Wake Turbulence Category
@@ -336,9 +378,11 @@ There is one WTC record per version of the ```WakeTurbulenceCategory``` enum. Th
 | ---                        | ---            | --- |
 | WakeTurbulenceCategoryID   | bigint         | Primary key |
 | CreatedUTC                 | datetime       | Date record was created |
-| SHA1Fingerprint            | binary(20)     | SHA1 hash of all fields except primary key, ```CreatedUTC``` and ```Preserve``` |
+| SHA1Fingerprint            | binary(20)     | SHA1 hash of all fields except primary key and ```CreatedUTC```  |
 | EnumValue                  | int            | The enumeration value |
 | WakeTurbulenceCategoryName | varchar(80)    | The enumeration name |
+
+It is anticipated that there will be too few records in the table to warrant an index on the name.
 
 
 #### (SDM) Engine Type
@@ -349,9 +393,11 @@ There is one engine type record per version of the ```EngineType``` enum. These 
 | ---             | ---            | --- |
 | EngineTypeID    | bigint         | Primary key |
 | CreatedUTC      | datetime       | Date record was created |
-| SHA1Fingerprint | binary(20)     | SHA1 hash of all fields except primary key, ```CreatedUTC``` and ```Preserve``` |
+| SHA1Fingerprint | binary(20)     | SHA1 hash of all fields except primary key and ```CreatedUTC```  |
 | EnumValue       | int            | The enumeration value |
 | EngineTypeName  | varchar(80)    | The enumeration name |
+
+It is anticipated that there will be too few records in the table to warrant an index on the name.
 
 
 #### (SDM) Engine Placement
@@ -362,9 +408,11 @@ There is one engine placement record per version of the ```EnginePlacement``` en
 | ---                 | ---            | --- |
 | EnginePlacementID   | bigint         | Primary key |
 | CreatedUTC          | datetime       | Date record was created |
-| SHA1Fingerprint     | binary(20)     | SHA1 hash of all fields except primary key, ```CreatedUTC``` and ```Preserve``` |
+| SHA1Fingerprint     | binary(20)     | SHA1 hash of all fields except primary key and ```CreatedUTC``` |
 | EnumValue           | int            | The enumeration value |
 | EnginePlacementName | varchar(80)    | The enumeration name |
+
+It is anticipated that there will be too few records in the table to warrant an index on the name.
 
 
 #### (SDM) Species
@@ -375,9 +423,11 @@ There is one species record per version of the ```Species``` enum. These are nev
 | ---             | ---            | --- |
 | SpeciesID       | bigint         | Primary key |
 | CreatedUTC      | datetime       | Date record was created |
-| SHA1Fingerprint | binary(20)     | SHA1 hash of all fields except primary key, ```CreatedUTC``` and ```Preserve``` |
+| SHA1Fingerprint | binary(20)     | SHA1 hash of all fields except primary key and ```CreatedUTC``` |
 | EnumValue       | int            | The enumeration value |
 | SpeciesName     | varchar(80)    | The enumeration name |
+
+It is anticipated that there will be too few records in the table to warrant an index on the name.
 
 
 #### (SDM) Operator
@@ -388,10 +438,12 @@ There is one operator record per version of an operator.
 | ---             | ---            | --- |
 | OperatorID      | bigint         | Primary key |
 | CreatedUTC      | datetime       | Date record was created |
-| Preserve        | bit            | True if the record should be excluded from automatic deletion of old records |
-| SHA1Fingerprint | binary(20)     | SHA1 hash of all fields except primary key, ```CreatedUTC``` and ```Preserve``` |
+| SHA1Fingerprint | binary(20)     | SHA1 hash of all fields except primary key and ```CreatedUTC``` |
 | Icao            | nvarchar(80)   | The three character operator ICAO code, see notes regarding use of oversized strings |
 | OperatorName    | nvarchar(100)  | The operator name |
+
+* Duplicate index on Icao.
+* Duplicate index on OperatorName.
 
 
 #### (SDM) Country
@@ -402,8 +454,10 @@ There is one country record per version of a country. These are not auto-cleaned
 | ---             | ---            | --- |
 | CountryID       | bigint         | Primary key |
 | CreatedUTC      | datetime       | Date record was created |
-| SHA1Fingerprint | binary(20)     | SHA1 hash of all fields except primary key, ```CreatedUTC``` and ```Preserve``` |
+| SHA1Fingerprint | binary(20)     | SHA1 hash of all fields except primary key and ```CreatedUTC``` |
 | CountryName     | nvarchar(80)   | The country's name |
+
+* Duplicate index on CountryName.
 
 
 #### (SDM) Receiver
@@ -414,10 +468,12 @@ There is one record per version of each receiver being recorded. These are not a
 | ---             | ---              | --- |
 | ReceiverID      | bigint           | Primary key |
 | CreatedUTC      | datetime         | Date record was created |
-| SHA1Fingerprint | binary(20)       | SHA1 hash of all fields except primary key, ```CreatedUTC``` and ```Preserve``` |
+| SHA1Fingerprint | binary(20)       | SHA1 hash of all fields except primary key and ```CreatedUTC``` |
 | Guid            | uniqueidentifier | The receiver's GUID. |
 | ReceiverID      | int              | The receiver's ID at the time of recording |
 | ReceiverName    | nvarchar(255)    | The receiver's name |
+
+It is anticipated that there will be too few records in the table to warrant an index on the name.
 
 
 #### (SDM) Altitude Type
@@ -428,9 +484,11 @@ There is one altitude type record per version of the ```AltitudeType``` enum. Th
 | ---              | ---            | --- |
 | AltitudeTypeID   | bigint         | Primary key |
 | CreatedUTC       | datetime       | Date record was created |
-| SHA1Fingerprint  | binary(20)     | SHA1 hash of all fields except primary key, ```CreatedUTC``` and ```Preserve``` |
+| SHA1Fingerprint  | binary(20)     | SHA1 hash of all fields except primary key and ```CreatedUTC``` |
 | EnumValue        | int            | The enumeration value |
 | AltitudeTypeName | varchar(80)    | The enumeration name |
+
+It is anticipated that there will be too few records in the table to warrant an index on the name.
 
 
 #### (SDM) Speed Type
@@ -441,9 +499,11 @@ There is one speed type record per version of the ```SpeedType``` enum. These ar
 | ---             | ---            | --- |
 | SpeedTypeID     | bigint         | Primary key |
 | CreatedUTC      | datetime       | Date record was created |
-| SHA1Fingerprint | binary(20)     | SHA1 hash of all fields except primary key, ```CreatedUTC``` and ```Preserve``` |
+| SHA1Fingerprint | binary(20)     | SHA1 hash of all fields except primary key and ```CreatedUTC``` |
 | EnumValue       | int            | The enumeration value |
 | SpeedTypeName   | varchar(80)    | The enumeration name |
+
+It is anticipated that there will be too few records in the table to warrant an index on the name.
 
 
 #### (SDM) Route
@@ -454,8 +514,7 @@ There is one record per version of a route
 | ---             | ---            | --- |
 | RouteID         | bigint         | Primary key |
 | CreatedUTC      | datetime       | Date record was created |
-| Preserve        | bit            | True if the record should be excluded from automatic deletion of old records |
-| SHA1Fingerprint | binary(20)     | SHA1 hash of all fields except primary key, ```CreatedUTC``` and ```Preserve``` |
+| SHA1Fingerprint | binary(20)     | SHA1 hash of all fields except primary key and ```CreatedUTC``` |
 | FromAirportID   | bigint         | ID of the airport that the route starts from |
 | ToAirportID     | bigint         | ID of the airport that the route finishes on |
 
@@ -492,36 +551,118 @@ There is one transponder type record per version of the ```TransponderType``` en
 | ---                 | ---            | --- |
 | TransponderTypeID   | bigint         | Primary key |
 | CreatedUTC          | datetime       | Date record was created |
-| SHA1Fingerprint     | binary(20)     | SHA1 hash of all fields except primary key, ```CreatedUTC``` and ```Preserve``` |
+| SHA1Fingerprint     | binary(20)     | SHA1 hash of all fields except primary key and ```CreatedUTC``` |
 | EnumValue           | int            | The enumeration value |
 | TransponderTypeName | varchar(80)    | The enumeration name |
 
-### Searching
+It is anticipated that there will be too few records in the table to warrant an index on the name.
 
-The intended uses for the state history of aircraft lists are:
+### Auto-cleaning Aircraft Lists
 
-1. Support time shifting displays of all aircraft movements.
-2. Support playback of a single aircraft's flight from when it was picked up to when it went out of range.
-3. Support historic reports in the style of the BaseStation.sqb reports.
+The state history for aircraft lists can easily consume a lot of disk space very quickly.
 
-The ```CreatedUTC``` field on ```Snapshot``` lends itself to time shifting displays of aircraft movements.
+SQLite files have an upper limit of ~140 TB.
 
-The ```Flight``` table exists to support playback of a single flight for an aircraft.
+SQL Server has an upper limit of ~524 TB but Express has an upper limit of 10 GB.
 
-Historic BaseStation reports are more difficult because their criteria includes fields that would be punishing
-to index here. Indexing anything in ```AircraftState``` needs a lot of forethought and we can't assume that the
-database engine / library supports features to improve cardinality like nullable indexes.
+The intention is to support the gradual trimming back and eventual removal of snapshot records for aircraft lists.
 
-One possibility is to add a set of child records to a flight that record searchable values for each flight,
-as per BaseStation flight records - minimum altitude, maximum altitude, initial and final callsign and so on.
-This will lead to update anomalies between the aircraft state records and the criteria records and there have
-been issues in the past where the initial and final values omit transient values that were of interest to the
-user (e.g. whether the aircraft passes through a band of altitudes).
+#### Trimming and Deleting Flights
 
-It could be that historic reports continue to be the purview of BaseStation.sqb and there is no support for
-general queries against state history.
+Configuration options will let users control the interval between recorded snapshots for a flight. These intervals
+are only allowed to get longer over time. The default schedule might look like this:
 
-TBD.
+| Threshold          | Interval |
+| ---                | ---      |
+| Up to 2 weeks ago  | 10 seconds, key every 2 minutes |
+| Up to 1 month ago  | 1 minute |
+| Up to 6 months ago | 5 minutes |
+| Up to 1 year ago   | 10 minutes |
+| Up to 3 years ago  | Just start and end |
+| Over 3 years ago   | Delete |
+
+The ```Preserved``` field on ```Flight``` indicates that the flight cannot be trimmed or deleted. Flights with this
+flag set are ignored.
+
+##### Trimming Flights
+
+The ```IntervalSeconds``` field on ```Flight``` declares the maximum period between each snapshot for the flight.
+When trimming flights the system fetches the ```CreatedUTC``` for the flight's initial aircraft state's parent
+list and from that it calculates the minimum allowable interval between the flight's snapshots from configuration.
+
+Flights that already at or above the minimum interval are ignored, they do not need to be trimmed.
+
+When the flight needs to be trimmed the system loads all ```AircraftState```s for the flight. 
+
+The first state record is always preserved. The system takes the created time for this record (as stored on its parent aircraft list) and adds the interval. This gives us a target CreatedUTC.
+
+It finds the nearest aircraft list to that CreatedUTC. The aircraft list can be before or after the target, it
+just needs to be closest. The aircraft state hanging from the closest aircraft list is the **Preserved State**.
+
+If there is no qualifying aircraft list then the Preserved State will be the last ```AircraftState``` for the
+flight.
+
+It then finds the last key aircraft list on or before the Preserved State's aircraft list. This is the **Preserved
+Key State**. It is possible for the Preserved State and Preserved Key State to be the same state record. It is
+also possible that there is no Preserved Key State, in which case it is null.
+
+If Preserved State and the first state are the same then there is nothing to trim, we stop here. There was only
+one state record for the aircraft.
+
+If Preserved Key State is null then all states after the first state up to (but not including) the Preserved State
+are deleted from ```AircraftState```.
+
+Otherwise all states after the first state and before the Preserved Key State are deleted from ```AircraftState```,
+along with all states after Preserved Key State and up to (but not including) the Preserved State.
+
+When states are deleted from ```AircraftState``` their corresponding ```AircraftID```s are added to ```AircraftStateless```,
+one record per list that an aircraft state was removed from. All deletions from ```AircraftState``` and
+```AircraftStateless``` should be done in a transaction so that you cannot have the same aircraft appear simultaneously
+in both the State and Stateless tables for a list.
+
+If Preversed Key State is null, and states were removed between the first state and the Preserved State, then
+Preserved State is updated so that it is now a delta from the first state record.
+
+Likewise if Preserved Key State is not null, and is not the same as Preserved State, and deltas were removed between the
+Preserved Key State and the Preserved State, then the Preserved State is updated so that it is now a delta from the
+Preserved Key State.
+
+If no state records had to be removed then there is no need to update the Preserved State record.
+
+The code then repeats this process with the Preserved State taking the place of the initial state for each iteration
+through the loop.
+
+Finally the ```Flight``` record can be updated with the new ```IntervalSeconds``` value.
+
+
+##### Deleting Flights
+
+When a flight is deleted the following records need to be removed:
+
+* Flight
+* All AircraftState records for the flight.
+* All AircraftStateless records for the flight.
+
+
+#### Trimming Aircraft Lists
+
+Any ```AircraftList``` records that have no child ```AircraftState``` records can be deleted. The order of deletion
+should be:
+
+* Parent KeyAircraftList
+* All child AircraftStateless
+* AircraftList
+
+
+#### Trimming SDM Records
+
+Periodically defunct SDM records can be removed from the system. SDM records for enum values or configured records that
+are unlikely to be created in large numbers (e.g. receivers) do not need to be trimmed. However, aircraft versions for
+flights that no longer exist, routes for flights that no longer exist etc. - they can all be deleted.
+
+Deleting SDM records is a little tricky because VRS will be caching SDM record IDs. Care would need to be taken to ensure
+that VRS does not write a record referring to an SDM record at the same time that the SDM record is deleted.
+
 
 ### Tying State History and BaseStation.sqb Reports Together
 
