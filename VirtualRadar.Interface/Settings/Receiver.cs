@@ -43,6 +43,35 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _UniqueId, value, nameof(UniqueId)); }
         }
 
+
+        private Guid _Key;
+        /// <summary>
+        /// Gets or sets a globally unique ID for the receiver.
+        /// </summary>
+        /// <remarks><para>
+        /// <see cref="UniqueId"/> is only unique for a given instance of a configuration. If a user edits a configuration in two sessions,
+        /// deleting receiver #1 in the first session and creating a receiver in the second, then in the second session the new
+        /// receiver will probably have the unique ID of the receiver that was deleted.
+        /// </para><para>
+        /// This has not been an issue for most of the lifetime of VRS - at least up until state history was added.
+        /// </para><para>
+        /// State history records state against receivers. If you delete a receiver and create a new one then the new receiver should
+        /// have history that is distinct from the receiver you deleted. The deleted receiver's history should stop at the point where
+        /// you delete it.
+        /// </para><para>
+        /// The <see cref="Key"/> field was added to support tracking receivers by a unique ID that would be set when the receiver was
+        /// first created and then never change over the lifetime of the receiver. The first time VRS loads a receiver that does not have
+        /// the field set it assigns a new Guid and saves it.
+        /// </para><para>
+        /// Previous versions of VRS will ignore the field on loading configuration and remove it entirely on save.
+        /// </para>
+        /// </remarks>
+        public Guid Key
+        {
+            get { return _Key; }
+            set { SetField(ref _Key, value, nameof(Key)); }
+        }
+
         private string _Name;
         /// <summary>
         /// Gets or sets the unique name of the receiver.

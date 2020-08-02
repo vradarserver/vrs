@@ -134,6 +134,8 @@ namespace VirtualRadar.Library.Settings
                 bool needResave = false;
                 if(GenerateRebroadcastServerUniqueIds(result)) needResave = true;
                 if(ConvertBasicAuthenticationUser(result))     needResave = true;
+                if(GenerateReceiverKeys(result))               needResave = true;
+                if(GenerateMergedFeedKeys(result))             needResave = true;
                 if(result.Receivers.Count == 0) CreateInitialReceiverLocations(result);
 
                 if(needResave) Save(result);
@@ -150,6 +152,7 @@ namespace VirtualRadar.Library.Settings
                         Enabled = true,
                         Port = 30003,
                         UniqueId = 1,
+                        Key = Guid.NewGuid(),
                     } },
                 };
                 result.GoogleMapSettings.ClosestAircraftReceiverId = 1;
@@ -215,6 +218,48 @@ namespace VirtualRadar.Library.Settings
         }
 
         /// <summary>
+        /// Assigns missing GUIDs to the <see cref="Receiver.Key"/> property.
+        /// </summary>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This was introduced for state history, UniqueId is not properly unique across all receivers for all time
+        /// and state history needs an ID that is.
+        /// </remarks>
+        private bool GenerateReceiverKeys(Configuration config)
+        {
+            var result = false;
+
+            foreach(var receiver in config.Receivers) {
+                if(receiver.Key == Guid.Empty) {
+                    result = true;
+                    receiver.Key = Guid.NewGuid();
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Same as <see cref="GenerateReceiverKeys"/> but for merged feeds.
+        /// </summary>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        private bool GenerateMergedFeedKeys(Configuration config)
+        {
+            var result = false;
+
+            foreach(var mergedFeed in config.MergedFeeds) {
+                if(mergedFeed.Key == Guid.Empty) {
+                    result = true;
+                    mergedFeed.Key = Guid.NewGuid();
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Builds an initial receiver from the existing BaseStation settings.
         /// </summary>
         /// <param name="configuration"></param>
@@ -252,6 +297,7 @@ namespace VirtualRadar.Library.Settings
                 StartupText = baseStation.StartupText,
                 StopBits = baseStation.StopBits,
                 UniqueId = 1,
+                Key = Guid.NewGuid(),
             });
 
             configuration.GoogleMapSettings.ClosestAircraftReceiverId =

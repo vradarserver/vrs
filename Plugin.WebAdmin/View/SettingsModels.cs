@@ -683,6 +683,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public int UniqueId { get; set; }
 
+        public Guid Key { get; set; }
+
         public string Name { get; set; }
 
         [ValidationModelField(ValidationField.Name)]
@@ -719,6 +721,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         {
             Enabled =                       settings.Enabled;
             UniqueId =                      settings.UniqueId;
+            Key =                           settings.Key;
             Name =                          settings.Name;
             IcaoTimeout =                   settings.IcaoTimeout;
             IgnoreAircraftWithNoPosition =  settings.IgnoreAircraftWithNoPosition;
@@ -734,6 +737,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         {
             settings.Enabled =                      Enabled;
             settings.UniqueId =                     UniqueId;
+            settings.Key =                          Key;
             settings.Name =                         Name;
             settings.IcaoTimeout =                  IcaoTimeout;
             settings.IgnoreAircraftWithNoPosition = IgnoreAircraftWithNoPosition;
@@ -1033,6 +1037,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
 
         public int UniqueId { get; set; }
 
+        public Guid Key { get; set; }
+
         public string Name { get; set; }
 
         [ValidationModelField(ValidationField.Name)]
@@ -1135,6 +1141,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         {
             Enabled =                       settings.Enabled;
             UniqueId =                      settings.UniqueId;
+            Key =                           settings.Key;
             Name =                          settings.Name;
             DataSource =                    settings.DataSource;
             IsSatcomFeed =                  settings.IsSatcomFeed;
@@ -1166,6 +1173,7 @@ namespace VirtualRadar.Plugin.WebAdmin.View.Settings
         {
             settings.Enabled =                      Enabled;
             settings.UniqueId =                     UniqueId;
+            settings.Key =                          Key;
             settings.Name =                         Name;
             settings.DataSource =                   DataSource;
             settings.IsSatcomFeed =                 IsSatcomFeed;

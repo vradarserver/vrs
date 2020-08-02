@@ -380,6 +380,7 @@ namespace VirtualRadar.Library.Presenter
         {
             var result = new Receiver() {
                 UniqueId = NextCombinedFeedUniqueId(),
+                Key = Guid.NewGuid(),
                 Name = NextCombinedFeedName("Receiver"),
                 Enabled = true,
             };
@@ -416,6 +417,7 @@ namespace VirtualRadar.Library.Presenter
         {
             var result = new MergedFeed() {
                 UniqueId = NextCombinedFeedUniqueId(),
+                Key = Guid.NewGuid(),
                 Name = NextCombinedFeedName("Merged Feed"),
                 Enabled = true,
             };

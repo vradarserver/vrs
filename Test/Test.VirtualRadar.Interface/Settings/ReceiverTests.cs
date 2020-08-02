@@ -56,6 +56,15 @@ namespace Test.VirtualRadar.Interface.Settings
             TestUtilities.TestProperty(settings, r => r.WebAddress, null, "Abc");
             TestUtilities.TestProperty(settings, r => r.FetchIntervalMilliseconds, 1000, 12000);
 
+            if(!assumeInitialConfig) {
+                TestUtilities.TestProperty(settings, r => r.Key, Guid.Empty, Guid.NewGuid());
+            } else {
+                Assert.AreNotEqual(Guid.Empty, settings.Key);
+                TestUtilities.TestProperty(settings, r => r.Key, settings.Key, Guid.NewGuid());
+            }
+
+            
+
             Assert.IsNotNull(settings.Access);
         }
     }

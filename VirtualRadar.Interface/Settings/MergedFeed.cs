@@ -45,6 +45,16 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _UniqueId, value, nameof(UniqueId)); }
         }
 
+        private Guid _Key;
+        /// <summary>
+        /// Gets or sets a globally unique ID for the merged feed. See notes against <see cref="Receiver.Key"/>.
+        /// </summary>
+        public Guid Key
+        {
+            get { return _Key; }
+            set { SetField(ref _Key, value, nameof(Key)); }
+        }
+
         private string _Name;
         /// <summary>
         /// Gets or sets the name that the merged feed will be known by.

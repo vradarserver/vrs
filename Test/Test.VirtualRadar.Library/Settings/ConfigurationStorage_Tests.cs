@@ -436,6 +436,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(true, receiver.IsSatcomFeed);
                         Assert.AreEqual("http://example.com:1/path/page", receiver.WebAddress);
                         Assert.AreEqual(12345, receiver.FetchIntervalMilliseconds);
+                        Assert.AreEqual(Guid.Parse("6363bea8-4077-4131-85bd-39b8a1a211cb"), receiver.Key);
 
                         receiver = readBack.Receivers[1];
                         Assert.AreEqual(false, receiver.Enabled);
@@ -463,6 +464,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(false, receiver.IsSatcomFeed);
                         Assert.AreEqual("http://example.com:2/path/page", receiver.WebAddress);
                         Assert.AreEqual(67890, receiver.FetchIntervalMilliseconds);
+                        Assert.AreEqual(Guid.Parse("d66cbcca-19e9-4656-875e-a19031ea4cbc"), receiver.Key);
 
                         Assert.AreEqual(DefaultAccess.Deny, readBack.Receivers[0].Access.DefaultAccess);
                         Assert.AreEqual(2, readBack.Receivers[0].Access.Addresses.Count);
@@ -492,6 +494,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(false, mergedFeed.ReceiverFlags[0].IsMlatFeed);
                         Assert.AreEqual(2, mergedFeed.ReceiverFlags[1].UniqueId);
                         Assert.AreEqual(true, mergedFeed.ReceiverFlags[1].IsMlatFeed);
+                        Assert.AreEqual(Guid.Parse("b0fb95a0-8321-40f1-bbae-dccac3b072a2"), mergedFeed.Key);
 
                         mergedFeed = readBack.MergedFeeds[1];
                         Assert.AreEqual(false, mergedFeed.Enabled);
@@ -507,6 +510,7 @@ namespace Test.VirtualRadar.Library.Settings
                         Assert.AreEqual(true,  mergedFeed.ReceiverFlags[0].IsMlatFeed);
                         Assert.AreEqual(1, mergedFeed.ReceiverFlags[1].UniqueId);
                         Assert.AreEqual(false, mergedFeed.ReceiverFlags[1].IsMlatFeed);
+                        Assert.AreEqual(Guid.Parse("32cb9a22-14e2-4cd4-b5c5-54ce84a29470"), mergedFeed.Key);
                         break;
                     case nameof(Configuration.DataVersion):
                         Assert.AreEqual(102, readBack.DataVersion);     // Save adds one to the saved DataVersion of 101
@@ -810,6 +814,7 @@ namespace Test.VirtualRadar.Library.Settings
                     IsSatcomFeed = true,
                     WebAddress = "http://example.com:1/path/page",
                     FetchIntervalMilliseconds = 12345,
+                    Key = Guid.Parse("6363bea8-4077-4131-85bd-39b8a1a211cb"),
                 },
                 new Receiver() {
                     Enabled = false,
@@ -843,6 +848,7 @@ namespace Test.VirtualRadar.Library.Settings
                     IsSatcomFeed = false,
                     WebAddress = "http://example.com:2/path/page",
                     FetchIntervalMilliseconds = 67890,
+                    Key = Guid.Parse("d66cbcca-19e9-4656-875e-a19031ea4cbc"),
                 },
             });
         }
@@ -862,7 +868,8 @@ namespace Test.VirtualRadar.Library.Settings
                     ReceiverFlags = {
                         new MergedFeedReceiver() { UniqueId = 1, IsMlatFeed = false, },
                         new MergedFeedReceiver() { UniqueId = 2, IsMlatFeed = true, },
-                    }
+                    },
+                    Key = Guid.Parse("b0fb95a0-8321-40f1-bbae-dccac3b072a2"),
                 },
                 new MergedFeed() {
                     Enabled = false,
@@ -875,7 +882,8 @@ namespace Test.VirtualRadar.Library.Settings
                     ReceiverFlags = {
                         new MergedFeedReceiver() { UniqueId = 2, IsMlatFeed = true, },
                         new MergedFeedReceiver() { UniqueId = 1, IsMlatFeed = false, },
-                    }
+                    },
+                    Key = Guid.Parse("32cb9a22-14e2-4cd4-b5c5-54ce84a29470"),
                 },
             });
         }
@@ -949,6 +957,7 @@ namespace Test.VirtualRadar.Library.Settings
             Assert.AreEqual(true, receiver.Enabled);
             Assert.AreEqual(30003, receiver.Port);
             Assert.AreEqual(1, receiver.UniqueId);
+            Assert.AreNotEqual(Guid.Empty, receiver.Key);
 
             Assert.AreEqual(1, readBack.GoogleMapSettings.ClosestAircraftReceiverId);
             Assert.AreEqual(1, readBack.GoogleMapSettings.FlightSimulatorXReceiverId);
@@ -1027,6 +1036,7 @@ namespace Test.VirtualRadar.Library.Settings
             Assert.AreEqual("startup", receiver.StartupText);
             Assert.AreEqual("shutdown", receiver.ShutdownText);
             Assert.AreEqual(true, receiver.AutoReconnectAtStartup);
+            Assert.AreNotEqual(Guid.Empty, receiver.Key);
 
             Assert.AreEqual(2, readBack.RebroadcastSettings.Count);
             Assert.AreEqual(receiver.UniqueId, readBack.RebroadcastSettings[0].ReceiverId);
@@ -1035,6 +1045,31 @@ namespace Test.VirtualRadar.Library.Settings
             Assert.AreNotEqual(0, readBack.GoogleMapSettings.ClosestAircraftReceiverId);
             Assert.AreNotEqual(0, readBack.GoogleMapSettings.FlightSimulatorXReceiverId);
             Assert.AreNotEqual(0, readBack.GoogleMapSettings.WebSiteReceiverId);
+        }
+
+        [TestMethod]
+        public void Receiver_Key_Filled_If_Empty_When_Loaded()
+        {
+            // State history brought with it the need to give receivers and merged feeds unique IDs
+            // that cannot be shared with old receivers that have been deleted. Nowadays I would probably
+            // have the presenter that loads and initialises the application look for out-of-date
+            // configuration and update it to fit current requirements, but there is already code to do
+            // that and it's in the ConfigurationStorage class, so we're sticking with that.
+
+            // Save a configuration with an empty receiver key
+            var configuration = new Configuration();
+            configuration.Receivers.Add(new Receiver() { Key = Guid.Empty });
+            _Implementation.Save(configuration);
+
+            // Read it back - the read should have created a Key GUID and also saved it, so it should be
+            // the same in future reads
+
+            var readback = _Implementation.Load();
+            var key = readback.Receivers[0].Key;
+            Assert.AreNotEqual(Guid.Empty, key);
+
+            var reloadedKey = _Implementation.Load().Receivers[0].Key;
+            Assert.AreEqual(key, reloadedKey);
         }
         #endregion
 
@@ -1185,6 +1220,28 @@ namespace Test.VirtualRadar.Library.Settings
             Assert.IsTrue(settings.ConvertedUser);
             Assert.AreEqual(1, settings.BasicAuthenticationUserIds.Count);
             Assert.AreEqual("ABC123", settings.BasicAuthenticationUserIds[0]);
+        }
+        #endregion
+
+        #region MergedFeed automated modifications
+        [TestMethod]
+        public void MergedFeed_Key_Filled_If_Empty_When_Loaded()
+        {
+            // See notes against Receiver version of this. Exactly the same reasoning and behaviour.
+
+            var configuration = new Configuration();
+            configuration.MergedFeeds.Add(new MergedFeed() { Key = Guid.Empty });
+            _Implementation.Save(configuration);
+
+            // Read it back - the read should have created a Key GUID and also saved it, so it should be
+            // the same in future reads
+
+            var readback = _Implementation.Load();
+            var key = readback.MergedFeeds[0].Key;
+            Assert.AreNotEqual(Guid.Empty, key);
+
+            var reloadedKey = _Implementation.Load().MergedFeeds[0].Key;
+            Assert.AreEqual(key, reloadedKey);
         }
         #endregion
     }
