@@ -30,6 +30,7 @@ using VirtualRadar.Interface.StandingData;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
+using VirtualRadar.Interface.XPlane;
 using VirtualRadar.Localisation;
 
 namespace VirtualRadar.Library.Presenter
@@ -374,6 +375,9 @@ namespace VirtualRadar.Library.Presenter
                 // ... while Mono throws SocketException
                 ReportWebServerStartupFailure(webServer, ex);
             }
+
+            var xplaneConnection = Factory.ResolveSingleton<IXPlaneConnection>();
+            xplaneConnection.FlightSimulatorAircraftList = webSite.FlightSimulatorAircraftList;
 
             _View.FlightSimulatorXAircraftList = webSite.FlightSimulatorAircraftList;
 

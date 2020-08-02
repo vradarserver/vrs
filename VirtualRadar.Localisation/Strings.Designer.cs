@@ -1084,6 +1084,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connect to XPlane.
+        /// </summary>
+        public static string ConnectToXPlane {
+            get {
+                return ResourceManager.GetString("ConnectToXPlane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Content.
         /// </summary>
         public static string Content {
@@ -2975,6 +2984,15 @@ namespace VirtualRadar.Localisation {
         public static string menuUsers {
             get {
                 return ResourceManager.GetString("menuUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XPlane Mode....
+        /// </summary>
+        public static string menuXPlaneMode {
+            get {
+                return ResourceManager.GetString("menuXPlaneMode", resourceCulture);
             }
         }
         
@@ -5742,6 +5760,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reply port.
+        /// </summary>
+        public static string ReplyPort {
+            get {
+                return ResourceManager.GetString("ReplyPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Requests.
         /// </summary>
         public static string Requests {
@@ -7417,6 +7444,24 @@ namespace VirtualRadar.Localisation {
         public static string Wizard {
             get {
                 return ResourceManager.GetString("Wizard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XPlane host.
+        /// </summary>
+        public static string XPlaneHost {
+            get {
+                return ResourceManager.GetString("XPlaneHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XPlane port.
+        /// </summary>
+        public static string XPlanePort {
+            get {
+                return ResourceManager.GetString("XPlanePort", resourceCulture);
             }
         }
         

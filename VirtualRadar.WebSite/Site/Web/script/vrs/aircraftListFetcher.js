@@ -333,14 +333,6 @@ var VRS;
                         VRS.serverConfig.fetch(function () { });
                     }
                     _this._Settings.aircraftList.applyJson(data, _this);
-                    if (_this._Settings.fetchFsxList) {
-                        var fsxAircraft = _this._Settings.aircraftList.findAircraftById(1);
-                        var selectedAircraft = _this._Settings.aircraftList.getSelectedAircraft();
-                        var newAircraft = selectedAircraft !== fsxAircraft;
-                        _this._Settings.aircraftList.setSelectedAircraft(fsxAircraft, false);
-                        if (newAircraft && fsxAircraft && fsxAircraft.getPosition() && _this._MapPlugin)
-                            _this._MapPlugin.panTo(fsxAircraft.getPosition());
-                    }
                     _this._TimeoutHandle = setTimeout($.proxy(_this.fetch, _this), _this._IntervalMilliseconds);
                 }
             };
