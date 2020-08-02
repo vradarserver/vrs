@@ -29,7 +29,7 @@ using System.IO;
 namespace Test.VirtualRadar.Library.Settings
 {
     [TestClass]
-    public class ConfigurationStorageTests
+    public class ConfigurationStorage_Tests
     {
         #region Private class - TestProvider
         class TestProvider : IConfigurationStorageProvider
@@ -39,13 +39,13 @@ namespace Test.VirtualRadar.Library.Settings
         #endregion
 
         #region TestContext, fields, TestInitialise, TestCleanup
-        public TestContext TestContext { get; set; }
-        private IClassFactory _OriginalFactory;
-        private IConfigurationStorage _Implementation;
-        private TestProvider _Provider;
-        private EventRecorder<EventArgs> _ConfigurationChangedEvent;
-        private Mock<IUserManager> _UserManager;
-        private Mock<IUser> _User;
+        public TestContext                  TestContext { get; set; }
+        private IClassFactory               _OriginalFactory;
+        private IConfigurationStorage       _Implementation;
+        private TestProvider                _Provider;
+        private EventRecorder<EventArgs>    _ConfigurationChangedEvent;
+        private Mock<IUserManager>          _UserManager;
+        private Mock<IUser>                 _User;
 
         [TestInitialize]
         public void TestInitialise()
@@ -78,7 +78,7 @@ namespace Test.VirtualRadar.Library.Settings
 
         #region Ctor and properties
         [TestMethod]
-        public void ConfigurationStorage_Initialises_To_Known_State_And_Properties_Work()
+        public void Ctor_Initialises_To_Known_State_And_Properties_Work()
         {
             _Implementation = Factory.ResolveNewInstance<IConfigurationStorage>();
             Assert.IsNotNull(_Implementation.Provider);
@@ -88,14 +88,14 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationStorage_SetFolder_Stores_Folder()
+        public void Folder_Setter_Stores_Folder()
         {
             _Implementation.Folder = "xX";
             Assert.AreEqual("xX", _Provider.Folder);
         }
 
         [TestMethod]
-        public void ConfigurationStorage_GetFolder_Retrieves_Folder()
+        public void Folder_Getter_Retrieves_Folder()
         {
             Assert.AreEqual(TestContext.TestDeploymentDir, _Implementation.Folder);
         }
@@ -103,7 +103,7 @@ namespace Test.VirtualRadar.Library.Settings
 
         #region Erase
         [TestMethod]
-        public void ConfigurationStorage_Erase_Deletes_Existing_Settings()
+        public void Erase_Deletes_Existing_Settings()
         {
             _Implementation.Save(CreateKnownConfiguration());
             _Implementation.Erase();
@@ -128,13 +128,14 @@ namespace Test.VirtualRadar.Library.Settings
                     case nameof(Configuration.MergedFeeds):             Assert.AreEqual(0, configuration.MergedFeeds.Count); break;
                     case nameof(Configuration.DataVersion):             Assert.AreEqual(0, configuration.DataVersion); break;
                     case nameof(Configuration.MonoSettings):            MonoSettingsTests.CheckProperties(configuration.MonoSettings); break;
+                    case nameof(Configuration.StateHistorySettings):    StateHistorySettings_Tests.CheckProperties(configuration.StateHistorySettings); break;
                     default:                                            Assert.Fail("Missing {0} property test", property.Name); break;
                 }
             }
         }
 
         [TestMethod]
-        public void ConfigurationStorage_Erase_Raises_ConfigurationChanged()
+        public void Erase_Raises_ConfigurationChanged()
         {
             var configuration = new Configuration() { AudioSettings = new AudioSettings() { VoiceName = "This was saved" } };
             _Implementation.Save(configuration);
@@ -152,7 +153,7 @@ namespace Test.VirtualRadar.Library.Settings
 
         #region Save and Load
         [TestMethod]
-        public void ConfigurationStorage_Save_Raises_ConfigurationChanged()
+        public void Save_Raises_ConfigurationChanged()
         {
             var configuration = new Configuration() { AudioSettings = new AudioSettings() { VoiceName = "This was saved" } };
             _Implementation.ConfigurationChanged += _ConfigurationChangedEvent.Handler;
@@ -165,7 +166,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationStorage_Save_Increments_DataVersion()
+        public void Save_Increments_DataVersion()
         {
             var config = _Implementation.Load();
             var initialDataVersion = config.DataVersion;
@@ -177,7 +178,7 @@ namespace Test.VirtualRadar.Library.Settings
 
         [TestMethod]
         [ExpectedException(typeof(ConflictingUpdateException))]
-        public void ConfigurationStorage_Save_Rejects_Unexpected_DataVersion()
+        public void Save_Rejects_Unexpected_DataVersion()
         {
             var config = _Implementation.Load();
             _Implementation.Save(config);
@@ -187,7 +188,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationStorage_Save_Backs_Up_Current_Configuration()
+        public void Save_Backs_Up_Current_Configuration()
         {
             var config = _Implementation.Load();
             _Implementation.Save(config);
@@ -210,7 +211,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationStorage_Load_Asks_XmlSerialiser_To_Use_Defaults_If_Enum_Unrecognised()
+        public void Load_Asks_XmlSerialiser_To_Use_Defaults_If_Enum_Unrecognised()
         {
             var config = new Configuration();
 
@@ -226,7 +227,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationStorage_Can_Save_And_Load_Configurations()
+        public void Save_And_Load_Can_Roundtrip_Values()
         {
             var configuration = CreateKnownConfiguration();
             _Implementation.Save(configuration);
@@ -514,6 +515,11 @@ namespace Test.VirtualRadar.Library.Settings
                         var monoSettings = readBack.MonoSettings;
                         Assert.AreEqual(false, monoSettings.UseMarkerLabels);
                         break;
+                    case nameof(Configuration.StateHistorySettings):
+                        var stateHistorySettings = readBack.StateHistorySettings;
+                        Assert.AreEqual(false, stateHistorySettings.Enabled);
+                        Assert.AreEqual("Foo", stateHistorySettings.NonStandardFolder);
+                        break;
                     default:
                         throw new NotImplementedException();
                 }
@@ -539,6 +545,7 @@ namespace Test.VirtualRadar.Library.Settings
                     case nameof(Configuration.MergedFeeds):             CreateKnownMergedFeeds(result); break;
                     case nameof(Configuration.DataVersion):             result.DataVersion = 101; break;
                     case nameof(Configuration.MonoSettings):            CreateKnownMonoSettings(result); break;
+                    case nameof(Configuration.StateHistorySettings):    CreateKnownStateHistorySettings(result); break;
                     default:                                            throw new NotImplementedException($"Unknown property {property.Name}");
                 }
             }
@@ -879,11 +886,19 @@ namespace Test.VirtualRadar.Library.Settings
                 UseMarkerLabels = false,
             };
         }
+
+        private static void CreateKnownStateHistorySettings(Configuration configuration)
+        {
+            configuration.StateHistorySettings = new StateHistorySettings() {
+                Enabled =           false,
+                NonStandardFolder = "Foo",
+            };
+        }
         #endregion
 
         #region IgnoreBadMessages automated modifications
         [TestMethod]
-        public void ConfigurationStorage_Resets_IgnoreBadMessages()
+        public void IgnoreBadMessages_Cannot_Be_Assigned()
         {
             // The connection flag "IgnoreBadMessages" has been retired. If the user has the value set to false in their
             // configuration then Load overrides this and forces it to true. It is no longer presented to the user.
@@ -898,7 +913,7 @@ namespace Test.VirtualRadar.Library.Settings
 
         #region RebroadcastServer automated modifications
         [TestMethod]
-        public void ConfigurationStorage_Automatically_Assigns_UniqueId_To_Old_RebroadcastServer_Settings()
+        public void RebroadcastServer_UniqueID_Bug_Worked_Around()
         {
             // Between the introduction of rebroadcast servers and version 2 of VRS the rebroadcast server settings did
             // not have unique IDs. We're just checking here that when we load old records that don't have UniqueId filled
@@ -920,7 +935,7 @@ namespace Test.VirtualRadar.Library.Settings
 
         #region Receiver automated modifications
         [TestMethod]
-        public void ConfigurationStorage_Creates_Initial_Receiver_If_None_Exists()
+        public void Receiver_Created_If_None_Exists()
         {
             var readBack = _Implementation.Load();
 
@@ -941,7 +956,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationStorage_Automatically_Creates_Receiver_From_BaseStationSettings()
+        public void Receiver_Can_Be_Created_From_Version_One_Settings()
         {
             var configuration = new Configuration();
             configuration.BaseStationSettings = new BaseStationSettings() {
@@ -1042,7 +1057,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationStorage_Automatically_Converts_Existing_BasicAuthentication_User_To_IUser()
+        public void User_Can_Be_Created_From_Version_One_Settings()
         {
             var hashBytes = SaveBasicAuthenticationConfiguration();
 
@@ -1069,7 +1084,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationStorage_Does_Not_Convert_User_If_User_Already_Converted()
+        public void User_Not_Created_From_Version_One_If_It_Already_Exists()
         {
             SaveBasicAuthenticationConfiguration(r => r.WebServerSettings.ConvertedUser = true);
 
@@ -1081,7 +1096,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationStorage_Does_Not_Convert_User_If_User_Name_Is_Null()
+        public void User_Not_Created_From_Version_One_If_Name_Is_Null()
         {
             var saveConfig = new Configuration();
             saveConfig.WebServerSettings.BasicAuthenticationUser = null;
@@ -1095,7 +1110,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationStorage_Does_Not_Convert_User_If_User_Name_Is_Empty()
+        public void User_Not_Created_From_Version_One_If_Name_Is_Empty()
         {
             var saveConfig = new Configuration();
             saveConfig.WebServerSettings.BasicAuthenticationUser = "";
@@ -1109,7 +1124,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationStorage_Does_Not_Convert_User_If_UserManager_Does_Not_Support_VRS_Hashes()
+        public void User_Not_Created_From_Version_One_If_UserManager_Does_Not_Support_VRS_Hashes()
         {
             SaveBasicAuthenticationConfiguration();
 
@@ -1122,7 +1137,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationStorage_Can_Convert_Basic_Authentication_User_To_Existing_User()
+        public void Can_Convert_Basic_Authentication_User_To_Existing_User()
         {
             var hashBytes = SaveBasicAuthenticationConfiguration();
 
@@ -1141,7 +1156,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationStorage_Can_Use_Existing_User_Even_If_UserManager_Disallows_Use_Of_VRS_Hash()
+        public void Can_Use_Existing_User_Even_If_UserManager_Disallows_Use_Of_VRS_Hash()
         {
             var hashBytes = SaveBasicAuthenticationConfiguration();
 
@@ -1157,7 +1172,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationStorage_Does_Not_Convert_The_User_If_It_Is_Already_In_The_List()
+        public void Does_Not_Convert_The_User_If_It_Is_Already_In_The_List()
         {
             var hashBytes = SaveBasicAuthenticationConfiguration(r => r.WebServerSettings.BasicAuthenticationUserIds.Add("ABC123"));
 

@@ -27,7 +27,6 @@ namespace VirtualRadar.Library.Settings
     /// </summary>
     class ConfigurationListener : IConfigurationListener
     {
-        #region Fields
         /// <summary>
         /// The configuration that we're listening to.
         /// </summary>
@@ -45,9 +44,7 @@ namespace VirtualRadar.Library.Settings
         private List<RebroadcastSettings> _HookedRebroadcastSettings = new List<RebroadcastSettings>();
         private List<ReceiverLocation> _HookedReceiverLocations = new List<ReceiverLocation>();
         private Dictionary<object, List<object>> _HookedChildren = new Dictionary<object,List<object>>();
-        #endregion
 
-        #region Events exposed
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -73,9 +70,7 @@ namespace VirtualRadar.Library.Settings
         {
             EventHelper.Raise(PropertyChanged, this, () => new ConfigurationListenerEventArgs(_Configuration, record, isListChild, group, propertyChanged.PropertyName));
         }
-        #endregion
 
-        #region Ctors and finaliser
         /// <summary>
         /// Finalises the object.
         /// </summary>
@@ -83,9 +78,7 @@ namespace VirtualRadar.Library.Settings
         {
             Dispose(false);
         }
-        #endregion
 
-        #region Dispose
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -105,9 +98,7 @@ namespace VirtualRadar.Library.Settings
                 UnhookConfiguration();
             }
         }
-        #endregion
 
-        #region Initialise, Release
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -124,9 +115,7 @@ namespace VirtualRadar.Library.Settings
         {
             UnhookConfiguration();
         }
-        #endregion
 
-        #region HookConfiguration, UnhookConfiguration
         /// <summary>
         /// Hooks the configuration passed across.
         /// </summary>
@@ -145,6 +134,7 @@ namespace VirtualRadar.Library.Settings
                 _Configuration.InternetClientSettings.PropertyChanged +=    InternetClientSettings_PropertyChanged;
                 _Configuration.MonoSettings.PropertyChanged +=              MonoSettings_PropertyChanged;
                 _Configuration.RawDecodingSettings.PropertyChanged +=       RawDecodingSettings_PropertyChanged;
+                _Configuration.StateHistorySettings.PropertyChanged +=      StateHistorySettings_PropertyChanged;
                 _Configuration.VersionCheckSettings.PropertyChanged +=      VersionCheckSettings_PropertyChanged;
                 _Configuration.WebServerSettings.PropertyChanged +=         WebServerSettings_PropertyChanged;
 
@@ -169,6 +159,7 @@ namespace VirtualRadar.Library.Settings
                 _Configuration.InternetClientSettings.PropertyChanged -=    InternetClientSettings_PropertyChanged;
                 _Configuration.MonoSettings.PropertyChanged -=              MonoSettings_PropertyChanged;
                 _Configuration.RawDecodingSettings.PropertyChanged -=       RawDecodingSettings_PropertyChanged;
+                _Configuration.StateHistorySettings.PropertyChanged -=      StateHistorySettings_PropertyChanged;
                 _Configuration.VersionCheckSettings.PropertyChanged -=      VersionCheckSettings_PropertyChanged;
                 _Configuration.WebServerSettings.PropertyChanged -=         WebServerSettings_PropertyChanged;
 
@@ -328,9 +319,7 @@ namespace VirtualRadar.Library.Settings
                 if(hookedChildren.Count == 0) _HookedChildren.Remove(record);
             }
         }
-        #endregion
 
-        #region Event handlers - PropertyChanged
         private void Configuration_PropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             RaisePropertyChanged(sender, ConfigurationListenerGroup.Configuration, args);
@@ -411,6 +400,11 @@ namespace VirtualRadar.Library.Settings
             RaisePropertyChanged(sender, ConfigurationListenerGroup.ReceiverLocation, args, isListChild: true);
         }
 
+        private void StateHistorySettings_PropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            RaisePropertyChanged(sender, ConfigurationListenerGroup.StateHistorySettings, args);
+        }
+
         private void VersionCheckSettings_PropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             RaisePropertyChanged(sender, ConfigurationListenerGroup.VersionCheckSettings, args);
@@ -420,9 +414,7 @@ namespace VirtualRadar.Library.Settings
         {
             RaisePropertyChanged(sender, ConfigurationListenerGroup.WebServerSettings, args);
         }
-        #endregion
 
-        #region Event handlers - CollectionChanged
         private void MergedFeeds_ListChanged(object sender, ListChangedEventArgs args)
         {
             HookList(_Configuration.MergedFeeds, _HookedMergedFeeds, MergedFeed_PropertyChanged, MergedFeeds_ListChanged, MergedFeed_HookChild, MergedFeed_UnhookChild);
@@ -447,6 +439,5 @@ namespace VirtualRadar.Library.Settings
         {
             HookList(_Configuration.ReceiverLocations, _HookedReceiverLocations, ReceiverLocation_PropertyChanged, ReceiverLocations_ListChanged);
         }
-        #endregion
     }
 }

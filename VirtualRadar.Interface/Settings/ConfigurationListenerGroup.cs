@@ -92,6 +92,11 @@ namespace VirtualRadar.Interface.Settings
         ReceiverLocation,
 
         /// <summary>
+        /// The property belongs to a <see cref="StateHistorySettings"/> object.
+        /// </summary>
+        StateHistorySettings,
+
+        /// <summary>
         /// The property belongs to the <see cref="VersionCheckSettings"/> object.
         /// </summary>
         VersionCheckSettings,

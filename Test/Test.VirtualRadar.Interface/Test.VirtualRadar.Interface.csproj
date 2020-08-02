@@ -156,7 +156,7 @@
     <Compile Include="RoundTests.cs" />
     <Compile Include="Settings\AccessTests.cs" />
     <Compile Include="Settings\BaseStationSettingsTests.cs" />
-    <Compile Include="Settings\ConfigurationTests.cs" />
+    <Compile Include="Settings\Configuration_Tests.cs" />
     <Compile Include="Settings\AudioSettingsTests.cs" />
     <Compile Include="Settings\InternetClientSettingsTests.cs" />
     <Compile Include="Settings\InstallerSettingsTests.cs" />
@@ -169,6 +169,7 @@
     <Compile Include="Settings\RebroadcastSettingsTests.cs" />
     <Compile Include="Settings\ReceiverLocationTests.cs" />
     <Compile Include="Settings\ReceiverTests.cs" />
+    <Compile Include="Settings\StateHistorySettings_Tests.cs" />
     <Compile Include="Settings\TileServerSettingsTests.cs" />
     <Compile Include="Settings\VersionCheckSettingsTests.cs" />
     <Compile Include="Settings\GoogleMapSettingsTests.cs" />

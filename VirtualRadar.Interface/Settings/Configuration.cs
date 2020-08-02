@@ -129,6 +129,16 @@ namespace VirtualRadar.Interface.Settings
             set { SetField(ref _MonoSettings, value, nameof(MonoSettings)); }
         }
 
+        private StateHistorySettings _StateHistorySettings;
+        /// <summary>
+        /// Gets or sets the object that carries the state history settings.
+        /// </summary>
+        public StateHistorySettings StateHistorySettings
+        {
+            get { return _StateHistorySettings; }
+            set { SetField(ref _StateHistorySettings, value, nameof(StateHistorySettings)); }
+        }
+
         private NotifyList<Receiver> _Receivers = new NotifyList<Receiver>();
         /// <summary>
         /// Gets a list of every receveiver that the program will listen to.
@@ -203,6 +213,7 @@ namespace VirtualRadar.Interface.Settings
             AudioSettings = new AudioSettings();
             RawDecodingSettings = new RawDecodingSettings();
             MonoSettings = new MonoSettings();
+            StateHistorySettings = new StateHistorySettings();
 
             _MergedFeeds.ListChanged +=           MergedFeeds_ListChanged;
             _RebroadcastSettings.ListChanged +=   RebroadcastSettings_ListChanged;

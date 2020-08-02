@@ -139,8 +139,8 @@
     <Compile Include="Listener\FeedManagerTests.cs" />
     <Compile Include="Listener\FeedTests.cs" />
     <Compile Include="RuntimeEnvironmentTests.cs" />
-    <Compile Include="Settings\ConfigurationListenerTests.cs" />
-    <Compile Include="Settings\ConfigurationStorageTests.cs" />
+    <Compile Include="Settings\ConfigurationListener_Tests.cs" />
+    <Compile Include="Settings\ConfigurationStorage_Tests.cs" />
     <Compile Include="Settings\InstallerSettingsStorageTests.cs" />
     <Compile Include="EventArgsTests.cs" />
     <Compile Include="ExternalIPAddressServiceTests.cs" />
@@ -153,6 +153,7 @@
     <Compile Include="Settings\PluginManifestStorageTests.cs" />
     <Compile Include="Settings\PluginSettingsStorageTests.cs" />
     <Compile Include="SimpleAircraftListTests.cs" />
+    <Compile Include="StateHistory\StateHistoryManager_Tests.cs" />
     <Compile Include="StatisticsTests.cs" />
     <Compile Include="TestResources.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -22,7 +22,7 @@ using Moq;
 namespace Test.VirtualRadar.Interface.Settings
 {
     [TestClass]
-    public class ConfigurationTests
+    public class Configuration_Tests
     {
         private IClassFactory _ClassFactorySnapshot;
         private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
@@ -44,7 +44,7 @@ namespace Test.VirtualRadar.Interface.Settings
         }
 
         [TestMethod]
-        public void Configuration_Constructor_Initialises_To_Known_State_And_Properties_Work()
+        public void Ctor_Initialises_To_Known_State_And_Properties_Work()
         {
             Assert.IsNotNull(_Implementation.BaseStationSettings);
             Assert.IsNotNull(_Implementation.FlightRouteSettings);
@@ -54,22 +54,25 @@ namespace Test.VirtualRadar.Interface.Settings
             Assert.IsNotNull(_Implementation.InternetClientSettings);
             Assert.IsNotNull(_Implementation.RawDecodingSettings);
             Assert.IsNotNull(_Implementation.MonoSettings);
+            Assert.IsNotNull(_Implementation.StateHistorySettings);
 
             Assert.AreEqual(0, _Implementation.ReceiverLocations.Count);
             Assert.AreEqual(0, _Implementation.RebroadcastSettings.Count);
             Assert.AreEqual(0, _Implementation.Receivers.Count);
 
-            TestUtilities.TestProperty(_Implementation, r => r.BaseStationSettings, _Implementation.BaseStationSettings, new BaseStationSettings());
-            TestUtilities.TestProperty(_Implementation, r => r.FlightRouteSettings, _Implementation.FlightRouteSettings, new FlightRouteSettings());
-            TestUtilities.TestProperty(_Implementation, r => r.WebServerSettings, _Implementation.WebServerSettings, new WebServerSettings());
-            TestUtilities.TestProperty(_Implementation, r => r.GoogleMapSettings, _Implementation.GoogleMapSettings, new GoogleMapSettings());
-            TestUtilities.TestProperty(_Implementation, r => r.VersionCheckSettings, _Implementation.VersionCheckSettings, new VersionCheckSettings());
-            TestUtilities.TestProperty(_Implementation, r => r.InternetClientSettings, _Implementation.InternetClientSettings, new InternetClientSettings());
-            TestUtilities.TestProperty(_Implementation, r => r.RawDecodingSettings, _Implementation.RawDecodingSettings, new RawDecodingSettings());
+            TestUtilities.TestProperty(_Implementation, r => r.BaseStationSettings,     _Implementation.BaseStationSettings,    new BaseStationSettings());
+            TestUtilities.TestProperty(_Implementation, r => r.FlightRouteSettings,     _Implementation.FlightRouteSettings,    new FlightRouteSettings());
+            TestUtilities.TestProperty(_Implementation, r => r.WebServerSettings,       _Implementation.WebServerSettings,      new WebServerSettings());
+            TestUtilities.TestProperty(_Implementation, r => r.GoogleMapSettings,       _Implementation.GoogleMapSettings,      new GoogleMapSettings());
+            TestUtilities.TestProperty(_Implementation, r => r.VersionCheckSettings,    _Implementation.VersionCheckSettings,   new VersionCheckSettings());
+            TestUtilities.TestProperty(_Implementation, r => r.InternetClientSettings,  _Implementation.InternetClientSettings, new InternetClientSettings());
+            TestUtilities.TestProperty(_Implementation, r => r.RawDecodingSettings,     _Implementation.RawDecodingSettings,    new RawDecodingSettings());
+            TestUtilities.TestProperty(_Implementation, r => r.MonoSettings,            _Implementation.MonoSettings,           new MonoSettings());
+            TestUtilities.TestProperty(_Implementation, r => r.StateHistorySettings,    _Implementation.StateHistorySettings,   new StateHistorySettings());
         }
 
         [TestMethod]
-        public void Configuration_ReceiverLocation_Returns_ReceiverLocation_From_ReceiverLocations()
+        public void ReceiverLocation_Returns_ReceiverLocation_From_ReceiverLocations()
         {
             var home = new ReceiverLocation() { UniqueId = 1, Name = "HOME" };
             var away = new ReceiverLocation() { UniqueId = 2, Name = "AWAY" };
@@ -80,7 +83,7 @@ namespace Test.VirtualRadar.Interface.Settings
         }
 
         [TestMethod]
-        public void Configuration_ReceiverLocation_Returns_Null_If_Receiver_Cannot_Be_Found()
+        public void ReceiverLocation_Returns_Null_If_Receiver_Cannot_Be_Found()
         {
             var home = new ReceiverLocation() { UniqueId = 1, Name = "HOME" };
             var away = new ReceiverLocation() { UniqueId = 2, Name = "AWAY" };

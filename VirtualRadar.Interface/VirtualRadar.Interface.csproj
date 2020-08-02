@@ -242,8 +242,10 @@
     <Compile Include="Settings\MapProvider.cs" />
     <Compile Include="Settings\MergedFeedReceiver.cs" />
     <Compile Include="Settings\ReceiverUsage.cs" />
+    <Compile Include="Settings\StateHistorySettings.cs" />
     <Compile Include="Settings\TileServerSettings.cs" />
     <Compile Include="StandingData\EnginePlacement.cs" />
+    <Compile Include="StateHistory\IStateHistoryManager.cs" />
     <Compile Include="StringBuilderExtensions.cs" />
     <Compile Include="TextContent.cs" />
     <Compile Include="UriHelper.cs" />

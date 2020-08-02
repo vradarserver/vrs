@@ -22,14 +22,13 @@ using VirtualRadar.Interface.Settings;
 namespace Test.VirtualRadar.Library.Settings
 {
     [TestClass]
-    public class ConfigurationListenerTests
+    public class ConfigurationListener_Tests
     {
-        #region TestContext, Fields, TestInitialise, TestCleanup
-        public TestContext TestContext { get; set; }
+        public TestContext                                      TestContext { get; set; }
 
-        private IConfigurationListener _Listener;
-        private Configuration _Configuration;
-        private EventRecorder<ConfigurationListenerEventArgs> _PropertyChanged;
+        private IConfigurationListener                          _Listener;
+        private Configuration                                   _Configuration;
+        private EventRecorder<ConfigurationListenerEventArgs>   _PropertyChanged;
 
         [TestInitialize]
         public void TestInitialise()
@@ -48,9 +47,7 @@ namespace Test.VirtualRadar.Library.Settings
         {
             _Listener.Dispose();
         }
-        #endregion
 
-        #region RaisedEvent, SetValue
         /// <summary>
         /// Returns true if an event with the given properties has been raised by the listener.
         /// </summary>
@@ -136,11 +133,9 @@ namespace Test.VirtualRadar.Library.Settings
 
             return result;
         }
-        #endregion
 
-        #region Audio
         [TestMethod]
-        public void ConfigurationListener_Raises_Events_When_Audio_Changes()
+        public void Audio_Changes_Raise_Events()
         {
             foreach(var propertyName in typeof(AudioSettings).GetProperties().Select(r => r.Name)) {
                 TestCleanup();
@@ -156,11 +151,9 @@ namespace Test.VirtualRadar.Library.Settings
                 Assert.IsTrue(RaisedEvent(ConfigurationListenerGroup.Audio, propertyName, settings), "Audio.{0}", propertyName);
             }
         }
-        #endregion
 
-        #region BaseStationSettings
         [TestMethod]
-        public void ConfigurationListener_Raises_Events_When_BaseStationSettings_Changes()
+        public void BaseStationSettings_Changes_Raise_Events()
         {
             foreach(var propertyName in typeof(BaseStationSettings).GetProperties().Select(r => r.Name)) {
                 TestCleanup();
@@ -206,11 +199,9 @@ namespace Test.VirtualRadar.Library.Settings
                 }
             }
         }
-        #endregion
 
-        #region FlightRouteSettings
         [TestMethod]
-        public void ConfigurationListener_Raises_Events_When_FlightRouteSettings_Changes()
+        public void FlightRouteSettings_Changes_Raise_Events()
         {
             foreach(var propertyName in typeof(FlightRouteSettings).GetProperties().Select(r => r.Name)) {
                 TestCleanup();
@@ -224,11 +215,9 @@ namespace Test.VirtualRadar.Library.Settings
                 Assert.IsTrue(RaisedEvent(ConfigurationListenerGroup.FlightRoute, propertyName, settings), "FlightRouteSettings.{0}", propertyName);
             }
         }
-        #endregion
 
-        #region GoogleMapSettings
         [TestMethod]
-        public void ConfigurationListener_Raises_Events_When_GoogleMapSettings_Changes()
+        public void GoogleMapSettings_Changes_Raise_Events()
         {
             foreach(var propertyName in typeof(GoogleMapSettings).GetProperties().Select(r => r.Name)) {
                 TestCleanup();
@@ -270,18 +259,16 @@ namespace Test.VirtualRadar.Library.Settings
                 Assert.IsTrue(RaisedEvent(ConfigurationListenerGroup.GoogleMapSettings, propertyName, settings), "GoogleMapSettings.{0}", propertyName);
             }
         }
-        #endregion
 
-        #region MergedFeed
         [TestMethod]
-        public void ConfigurationListener_Raises_Events_When_MergedFeed_List_Changes()
+        public void MergedFeed_List_Changes_Raise_Events()
         {
             _Configuration.MergedFeeds.Add(new MergedFeed());
             Assert.IsTrue(RaisedEvent<Configuration>(ConfigurationListenerGroup.Configuration, r => r.MergedFeeds, _Configuration, isListChild: false));
         }
 
         [TestMethod]
-        public void ConfigurationListener_Raises_Events_When_MergedFeed_Changes()
+        public void MergedFeed_Changes_Raise_Events()
         {
             foreach(var propertyName in typeof(MergedFeed).GetProperties().Select(r => r.Name)) {
                 TestCleanup();
@@ -306,7 +293,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationListener_Does_Not_Raise_Events_After_MergedFeed_Is_Detached()
+        public void No_Events_After_MergedFeed_Is_Detached()
         {
             var record = new MergedFeed();
             _Configuration.MergedFeeds.Add(record);
@@ -317,11 +304,9 @@ namespace Test.VirtualRadar.Library.Settings
             Assert.IsFalse(RaisedEvent<MergedFeed>(ConfigurationListenerGroup.MergedFeed, r => r.UniqueId, record, isListChild: true));
             Assert.AreEqual(2, _PropertyChanged.CallCount);
         }
-        #endregion
 
-        #region MergedFeedReceiver
         [TestMethod]
-        public void ConfigurationListener_Raises_Events_When_MergedFeedRecevier_Changes()
+        public void MergedFeedRecevier_Changes_Raise_Events()
         {
             foreach(var propertyName in typeof(MergedFeedReceiver).GetProperties().Select(r => r.Name)) {
                 TestCleanup();
@@ -341,7 +326,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationListener_Does_Not_Raise_Events_After_MergedFeedReceiver_Is_Detached()
+        public void No_Events_After_MergedFeedReceiver_Is_Detached()
         {
             var mergedFeed = new MergedFeed();
             var settings = new MergedFeedReceiver();
@@ -353,11 +338,9 @@ namespace Test.VirtualRadar.Library.Settings
             Assert.IsFalse(RaisedEvent<MergedFeed>(ConfigurationListenerGroup.MergedFeedReceiver, r => r.UniqueId, settings, isListChild: true));
             Assert.AreEqual(2, _PropertyChanged.CallCount);
         }
-        #endregion
 
-        #region Mono
         [TestMethod]
-        public void ConfigurationListener_Raises_Events_When_Mono_Settings_Change()
+        public void Mono_Settings_Changes_Raise_Events()
         {
             foreach(var propertyName in typeof(MonoSettings).GetProperties().Select(r => r.Name)) {
                 TestCleanup();
@@ -371,11 +354,9 @@ namespace Test.VirtualRadar.Library.Settings
                 Assert.IsTrue(RaisedEvent(ConfigurationListenerGroup.MonoSettings, propertyName, settings), "Mono.{0}", propertyName);
             }
         }
-        #endregion
 
-        #region RawDecodingSettings
         [TestMethod]
-        public void ConfigurationListener_Raises_Events_When_RawDecodingSettings_Changes()
+        public void RawDecodingSettings_Changes_Raise_Events()
         {
             foreach(var propertyName in typeof(RawDecodingSettings).GetProperties().Select(r => r.Name)) {
                 TestCleanup();
@@ -414,18 +395,16 @@ namespace Test.VirtualRadar.Library.Settings
                 }
             }
         }
-        #endregion
 
-        #region RebroadcastSettings
         [TestMethod]
-        public void ConfigurationListener_Raises_Events_When_RebroadcastSettings_List_Changes()
+        public void RebroadcastSettings_List_Changes_Raise_Events()
         {
             _Configuration.RebroadcastSettings.Add(new RebroadcastSettings());
             Assert.IsTrue(RaisedEvent<Configuration>(ConfigurationListenerGroup.Configuration, r => r.RebroadcastSettings, _Configuration, isListChild: false));
         }
 
         [TestMethod]
-        public void ConfigurationListener_Raises_Events_When_RebroadcastSettings_Changes()
+        public void RebroadcastSettings_Changes_Raise_Events()
         {
             foreach(var propertyName in typeof(RebroadcastSettings).GetProperties().Select(r => r.Name)) {
                 TestCleanup();
@@ -456,7 +435,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationListener_Does_Not_Raise_Events_After_RebroadcastSettings_Is_Detached()
+        public void No_Events_After_RebroadcastSettings_Is_Detached()
         {
             var record = new RebroadcastSettings();
             _Configuration.RebroadcastSettings.Add(record);
@@ -467,11 +446,9 @@ namespace Test.VirtualRadar.Library.Settings
             Assert.IsFalse(RaisedEvent<RebroadcastSettings>(ConfigurationListenerGroup.RebroadcastSetting, r => r.UniqueId, record, isListChild: true));
             Assert.AreEqual(2, _PropertyChanged.CallCount);
         }
-        #endregion
 
-        #region RebroadcastSettings.Access
         [TestMethod]
-        public void ConfigurationListener_Raises_Events_When_RebroadcastSettings_Access_Changes()
+        public void RebroadcastSettings_Access_Changes_Raise_Events()
         {
             foreach(var propertyName in typeof(Access).GetProperties().Select(r => r.Name)) {
                 TestCleanup();
@@ -488,18 +465,16 @@ namespace Test.VirtualRadar.Library.Settings
                 Assert.IsTrue(RaisedEvent(ConfigurationListenerGroup.Access, propertyName, settings, isListChild: true), "RebroadcastSettings.Access.{0}", propertyName);
             }
         }
-        #endregion
 
-        #region Receiver
         [TestMethod]
-        public void ConfigurationListener_Raises_Events_When_Receiver_List_Changes()
+        public void Receiver_List_Changes_Raise_Events()
         {
             _Configuration.Receivers.Add(new Receiver());
             Assert.IsTrue(RaisedEvent<Configuration>(ConfigurationListenerGroup.Configuration, r => r.Receivers, _Configuration, isListChild: false));
         }
 
         [TestMethod]
-        public void ConfigurationListener_Raises_Events_When_Receiver_Changes()
+        public void Receiver_Changes_Raise_Events()
         {
             foreach(var propertyName in typeof(Receiver).GetProperties().Select(r => r.Name)) {
                 TestCleanup();
@@ -542,7 +517,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationListener_Does_Not_Raise_Events_After_Receiver_Is_Detached()
+        public void No_Events_After_Receiver_Is_Detached()
         {
             var record = new Receiver();
             _Configuration.Receivers.Add(record);
@@ -553,18 +528,16 @@ namespace Test.VirtualRadar.Library.Settings
             Assert.IsFalse(RaisedEvent<Receiver>(ConfigurationListenerGroup.Receiver, r => r.UniqueId, record, isListChild: true));
             Assert.AreEqual(2, _PropertyChanged.CallCount);
         }
-        #endregion
 
-        #region ReceiverLocation
         [TestMethod]
-        public void ConfigurationListener_Raises_Events_When_ReceiverLocation_List_Changes()
+        public void ReceiverLocation_List_Changes_Raise_Events()
         {
             _Configuration.ReceiverLocations.Add(new ReceiverLocation());
             Assert.IsTrue(RaisedEvent<Configuration>(ConfigurationListenerGroup.Configuration, r => r.ReceiverLocations, _Configuration, isListChild: false));
         }
 
         [TestMethod]
-        public void ConfigurationListener_Raises_Events_When_ReceiverLocation_Changes()
+        public void ReceiverLocation_Changes_Raise_Events()
         {
             foreach(var propertyName in typeof(ReceiverLocation).GetProperties().Select(r => r.Name)) {
                 TestCleanup();
@@ -586,7 +559,7 @@ namespace Test.VirtualRadar.Library.Settings
         }
 
         [TestMethod]
-        public void ConfigurationListener_Does_Not_Raise_Events_After_ReceiverLocation_Is_Detached()
+        public void No_Events_After_ReceiverLocation_Is_Detached()
         {
             var record = new ReceiverLocation();
             _Configuration.ReceiverLocations.Add(record);
@@ -597,11 +570,26 @@ namespace Test.VirtualRadar.Library.Settings
             Assert.IsFalse(RaisedEvent<ReceiverLocation>(ConfigurationListenerGroup.ReceiverLocation, r => r.UniqueId, record, isListChild: true));
             Assert.AreEqual(2, _PropertyChanged.CallCount);
         }
-        #endregion
 
-        #region VersionCheckSettings
         [TestMethod]
-        public void ConfigurationListener_Raises_Events_When_VersionCheckSettings_Changes()
+        public void StateHistory_Settings_Changes_Raise_Events()
+        {
+            foreach(var propertyName in typeof(StateHistorySettings).GetProperties().Select(r => r.Name)) {
+                TestCleanup();
+                TestInitialise();
+
+                var settings = _Configuration.StateHistorySettings;
+                SetValue(settings, propertyName, new Dictionary<Expression<Func<StateHistorySettings,object>>,Action<StateHistorySettings>>() {
+                    { r => r.Enabled,           r => r.Enabled = !r.Enabled },
+                    { r => r.NonStandardFolder, r => r.NonStandardFolder = "Test" },
+                });
+
+                Assert.IsTrue(RaisedEvent(ConfigurationListenerGroup.StateHistorySettings, propertyName, settings), "StateHistory.{0}", propertyName);
+            }
+        }
+
+        [TestMethod]
+        public void VersionCheckSettings_Changes_Raise_Events()
         {
             foreach(var propertyName in typeof(VersionCheckSettings).GetProperties().Select(r => r.Name)) {
                 TestCleanup();
@@ -616,11 +604,9 @@ namespace Test.VirtualRadar.Library.Settings
                 Assert.IsTrue(RaisedEvent(ConfigurationListenerGroup.VersionCheckSettings, propertyName, settings), "VersionCheckSettings.{0}", propertyName);
             }
         }
-        #endregion
 
-        #region WebServerSettings
         [TestMethod]
-        public void ConfigurationListener_Raises_Events_When_WebServerSettings_Changes()
+        public void WebServerSettings_Changes_Raise_Events()
         {
             foreach(var propertyName in typeof(WebServerSettings).GetProperties().Select(r => r.Name)) {
                 TestCleanup();
@@ -648,6 +634,5 @@ namespace Test.VirtualRadar.Library.Settings
                 }
             }
         }
-        #endregion
     }
 }
