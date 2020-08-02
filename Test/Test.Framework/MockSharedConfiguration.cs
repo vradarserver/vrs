@@ -28,7 +28,7 @@ namespace Test.Framework
 
         public void RaiseConfigurationChanged()
         {
-            Raise(r => r.ConfigurationChanged += null);
+            Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
             foreach(var subscriber in Subscribers) {
                 subscriber.SharedConfigurationChanged(this.Object);

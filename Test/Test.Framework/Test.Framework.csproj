@@ -80,6 +80,7 @@
     <Compile Include="RequestReceivedEventArgsHelper.cs" />
     <Compile Include="SpreadsheetFieldValue.cs" />
     <Compile Include="StatisticsHelper.cs" />
+    <Compile Include="InlineDataTest.cs" />
     <Compile Include="TestUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
