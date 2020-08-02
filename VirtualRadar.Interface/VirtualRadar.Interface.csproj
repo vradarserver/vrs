@@ -194,6 +194,7 @@
     <Compile Include="Presenter\IAircraftOnlineLookupLogPresenter.cs" />
     <Compile Include="ProgramLifetime.cs" />
     <Compile Include="ProgressEventArgs.cs" />
+    <Compile Include="Presenter\IXPlanePresenter.cs" />
     <Compile Include="QueueRepository.cs" />
     <Compile Include="BaseStation\BaseStationSupplementaryMessage.cs" />
     <Compile Include="BaseStation\BaseStationTranslatorException.cs" />
@@ -231,6 +232,7 @@
     <Compile Include="UriHelper.cs" />
     <Compile Include="View\IAircraftOnlineLookupLogView.cs" />
     <Compile Include="View\IBackgroundThreadQueuesView.cs" />
+    <Compile Include="View\IXPlaneView.cs" />
     <Compile Include="View\ValidationModelField.cs" />
     <Compile Include="View\ValidationModelFieldAttribute.cs" />
     <Compile Include="View\ValidationModelHelper.cs" />
@@ -600,6 +602,11 @@
     <Compile Include="WebSite\StandardWebSiteImageSize.cs" />
     <Compile Include="WebSite\TextContentEventArgs.cs" />
     <Compile Include="WebSite\TrailType.cs" />
+    <Compile Include="XPlane\IXPlaneConnection.cs" />
+    <Compile Include="XPlane\XPlaneSettings.cs" />
+    <Compile Include="XPlane\IXPlaneSettingsStorage.cs" />
+    <Compile Include="XPlane\IXPlaneUdp.cs" />
+    <Compile Include="XPlane\XPlaneRposReply.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">

@@ -165,6 +165,7 @@
     <Compile Include="Presenter\SettingsPresenter.cs" />
     <Compile Include="Presenter\Presenter.cs" />
     <Compile Include="Presenter\ViewDtoHelper.cs" />
+    <Compile Include="Presenter\XPlanePresenter.cs" />
     <Compile Include="Settings\ConfigurationListener.cs" />
     <Compile Include="Presenter\StatisticsPresenter.cs" />
     <Compile Include="Network\RebroadcastServer.cs" />
@@ -218,6 +219,9 @@
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
     <Compile Include="XmlSerialiser.cs" />
+    <Compile Include="XPlane\XPlaneConnection.cs" />
+    <Compile Include="XPlane\XPlaneSettingsStorage.cs" />
+    <Compile Include="XPlane\XPlaneUdp.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ThirdParty\KdTreeLib\KdTreeLib.csproj">

@@ -55,6 +55,11 @@ namespace VirtualRadar.WinForms
         private FlightSimulatorXView _FlightSimulatorXView;
 
         /// <summary>
+        /// The current instance of the modeless dialog that displays the XPlane connection.
+        /// </summary>
+        private XPlaneView _XPlaneView;
+
+        /// <summary>
         /// The current instance of the modeless dialog that displays the statistics, if any, against the unique ID of the feed being displayed.
         /// </summary>
         private Dictionary<int, StatisticsView> _StatisticsViews = new Dictionary<int,StatisticsView>();
@@ -605,6 +610,27 @@ namespace VirtualRadar.WinForms
             Close();
         }
 
+        private void menuXPlaneModeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(_XPlaneView != null) {
+                _XPlaneView.Activate();
+            } else {
+                _XPlaneView = new XPlaneView();
+                _XPlaneView.CloseClicked += XPlaneView_CloseClicked;
+                _XPlaneView.Show();
+            }
+        }
+
+        private void XPlaneView_CloseClicked(object sender, EventArgs e)
+        {
+            if(_XPlaneView != null) {
+                _XPlaneView.CloseClicked -= XPlaneView_CloseClicked;
+                _XPlaneView.Close();
+                _XPlaneView.Dispose();
+                _XPlaneView = null;
+            }
+        }
+
         private void menuFlightSimulatorXModeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if(_FlightSimulatorXView != null) _FlightSimulatorXView.Activate();
@@ -614,6 +640,16 @@ namespace VirtualRadar.WinForms
                 _FlightSimulatorXView.CloseClicked += FlightSimulatorXView_CloseClicked;
                 _FlightSimulatorXView.Initialise(null, _FlightSimulatorXAircraftList, webServer);
                 _FlightSimulatorXView.Show();
+            }
+        }
+
+        private void FlightSimulatorXView_CloseClicked(object sender, EventArgs e)
+        {
+            if(_FlightSimulatorXView != null) {
+                _FlightSimulatorXView.CloseClicked -= FlightSimulatorXView_CloseClicked;
+                _FlightSimulatorXView.Close();
+                _FlightSimulatorXView.Dispose();
+                _FlightSimulatorXView = null;
             }
         }
 
@@ -632,16 +668,6 @@ namespace VirtualRadar.WinForms
         private void menuOptionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ShowSettingsConfigurationUI(null, null);
-        }
-
-        private void FlightSimulatorXView_CloseClicked(object sender, EventArgs e)
-        {
-            if(_FlightSimulatorXView != null) {
-                _FlightSimulatorXView.CloseClicked -= FlightSimulatorXView_CloseClicked;
-                _FlightSimulatorXView.Close();
-                _FlightSimulatorXView.Dispose();
-                _FlightSimulatorXView = null;
-            }
         }
 
         private void webServerStatusControl_ToggleServerStatus(object sender, EventArgs e)

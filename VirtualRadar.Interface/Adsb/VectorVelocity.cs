@@ -139,7 +139,7 @@ namespace VirtualRadar.Interface.Adsb
                     else if(NorthSouthVelocity != null && EastWestVelocity != null) {
                         var vx = (double)EastWestVelocity;
                         var vy = (double)NorthSouthVelocity;
-                        _Speed = Math.Sqrt((vx * vx) + (vy * vy));
+                        _Speed = CalculateVectorSpeed(vx, vy);
 
                         if(EastWestVelocity == 0) _Bearing = IsSoutherlyVelocity ? 180.0 : 0.0;
                         else {
@@ -155,6 +155,14 @@ namespace VirtualRadar.Interface.Adsb
                     }
                 }
             }
+        }
+
+        public static double CalculateVectorSpeed(double eastWestVelocity, double northSouthVelocity)
+        {
+            return Math.Sqrt(
+                  (eastWestVelocity * eastWestVelocity)
+                + (northSouthVelocity * northSouthVelocity)
+            );
         }
 
         /// <summary>

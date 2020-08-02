@@ -78,6 +78,7 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.Presenter.IShutdownPresenter, Presenter.ShutdownPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.ISplashPresenter, Presenter.SplashPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IStatisticsPresenter, Presenter.StatisticsPresenter>();
+            factory.Register<VirtualRadar.Interface.Presenter.IXPlanePresenter, Presenter.XPlanePresenter>();
             factory.Register<VirtualRadar.Interface.Settings.IConfigurationListener, Settings.ConfigurationListener>();
             factory.Register<VirtualRadar.Interface.Settings.IConfigurationStorage, Settings.ConfigurationStorage>();
             factory.Register<VirtualRadar.Interface.Settings.IInstallerSettingsStorage, Settings.InstallerSettingsStorage>();
@@ -89,6 +90,9 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.Settings.ITileServerSettingsDownloader, Settings.TileServerSettingsDownloader>();
             factory.Register<VirtualRadar.Interface.Settings.ITileServerSettingsManager, Settings.TileServerSettingsManager>();
             factory.Register<VirtualRadar.Interface.Settings.ITileServerSettingsStorage, Settings.TileServerSettingsStorage>();
+            factory.Register<VirtualRadar.Interface.XPlane.IXPlaneConnection, XPlane.XPlaneConnection>();
+            factory.Register<VirtualRadar.Interface.XPlane.IXPlaneSettingsStorage, XPlane.XPlaneSettingsStorage>();
+            factory.Register<VirtualRadar.Interface.XPlane.IXPlaneUdp, XPlane.XPlaneUdp>();
             factory.Register<VirtualRadar.Interface.Settings.IUserCache, Settings.UserCache>();
             factory.Register<IAccessFilter, AccessFilter>();
             factory.Register<IAircraft, Aircraft>();

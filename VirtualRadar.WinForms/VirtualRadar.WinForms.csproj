@@ -474,6 +474,12 @@
     <Compile Include="Wizard\WizardPage.designer.cs">
       <DependentUpon>WizardPage.cs</DependentUpon>
     </Compile>
+    <Compile Include="XPlaneView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XPlaneView.Designer.cs">
+      <DependentUpon>XPlaneView.cs</DependentUpon>
+    </Compile>
     <Compile Include="YesNo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -655,6 +661,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Wizard\WizardPage.resx">
       <DependentUpon>WizardPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XPlaneView.resx">
+      <DependentUpon>XPlaneView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

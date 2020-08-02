@@ -2797,4 +2797,19 @@ Show this message.</value>
   <data name="OptionsDescribeRawFeedAssumeDF18CF1IsIcao" xml:space="preserve">
     <value>CF1 indicates that a ground vehicle is transmitting a non-standard ID instead of an ICAO ID. Some ground vehicles send CF1 even when they are using a real ICAO address. This option lets VRS track such vehicles at the expense of possibly mixing non-standard addresses in with valid ICAO.</value>
   </data>
+  <data name="menuXPlaneMode" xml:space="preserve">
+    <value>XPlane Mode...</value>
+  </data>
+  <data name="ConnectToXPlane" xml:space="preserve">
+    <value>Connect to XPlane</value>
+  </data>
+  <data name="ReplyPort" xml:space="preserve">
+    <value>Reply port</value>
+  </data>
+  <data name="XPlaneHost" xml:space="preserve">
+    <value>XPlane host</value>
+  </data>
+  <data name="XPlanePort" xml:space="preserve">
+    <value>XPlane port</value>
+  </data>
 </root>

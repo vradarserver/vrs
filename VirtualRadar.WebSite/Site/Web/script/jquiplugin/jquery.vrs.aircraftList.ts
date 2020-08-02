@@ -37,7 +37,7 @@ namespace VRS
             VRS.RenderProperty.Registration,
             VRS.RenderProperty.Callsign,
             VRS.RenderProperty.ModelIcao,
-            VRS.RenderProperty.Altitude,
+            VRS.RenderProperty.AltitudeBarometric,
             VRS.RenderProperty.VerticalSpeed,
             VRS.RenderProperty.Squawk,
             VRS.RenderProperty.Speed

@@ -29,6 +29,7 @@ using VirtualRadar.Interface.StandingData;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
+using VirtualRadar.Interface.XPlane;
 using VirtualRadar.Localisation;
 
 namespace Test.VirtualRadar.Library.Presenter
@@ -72,6 +73,7 @@ namespace Test.VirtualRadar.Library.Presenter
         private Mock<IUser> _User;
         private Mock<IAirPressureManager> _AirPressureManager;
         private Mock<ITileServerSettingsManager> _TileServerSettingsManager;
+        private Mock<IXPlaneConnection> _XPlaneConnection;
 
         private EventRecorder<EventArgs<Exception>> _BackgroundExceptionEvent;
 
@@ -114,6 +116,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _User = TestUtilities.CreateMockImplementation<IUser>();
             _AirPressureManager = TestUtilities.CreateMockSingleton<IAirPressureManager>();
             _TileServerSettingsManager = TestUtilities.CreateMockSingleton<ITileServerSettingsManager>();
+            _XPlaneConnection = TestUtilities.CreateMockSingleton<IXPlaneConnection>();
 
             _BackgroundExceptionEvent = new EventRecorder<EventArgs<Exception>>();
 
@@ -1000,6 +1003,15 @@ namespace Test.VirtualRadar.Library.Presenter
             _Presenter.StartApplication();
 
             Assert.AreEqual(_FlightSimulatorXAircraftList.Object, _View.Object.FlightSimulatorXAircraftList);
+        }
+
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Copies_Web_Site_Flight_Simulator_Aircraft_List_To_XPlane_Connection()
+        {
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            Assert.AreEqual(_FlightSimulatorXAircraftList.Object, _XPlaneConnection.Object.FlightSimulatorAircraftList);
         }
         #endregion
 

@@ -569,14 +569,6 @@ namespace VRS
 
                 this._Settings.aircraftList.applyJson(data, this);
 
-                if(this._Settings.fetchFsxList) {
-                    var fsxAircraft = this._Settings.aircraftList.findAircraftById(1);
-                    var selectedAircraft = this._Settings.aircraftList.getSelectedAircraft();
-                    var newAircraft = selectedAircraft !== fsxAircraft;
-                    this._Settings.aircraftList.setSelectedAircraft(fsxAircraft, false);
-                    if(newAircraft && fsxAircraft && fsxAircraft.getPosition() && this._MapPlugin) this._MapPlugin.panTo(fsxAircraft.getPosition());
-                }
-
                 this._TimeoutHandle = setTimeout($.proxy(this.fetch, this), this._IntervalMilliseconds);
             }
         }

@@ -59,6 +59,8 @@ namespace VirtualRadar.Library.Presenter
         #endregion
 
         #region Fields
+        const string FlightSimulatorXCallsign = "FSX";
+
         /// <summary>
         /// The view that this presenter is controlling.
         /// </summary>
@@ -239,12 +241,12 @@ namespace VirtualRadar.Library.Presenter
         private void UpdateFlightSimulatorAircraftList(ReadAircraftInformation fsxAircraft)
         {
             lock(FlightSimulatorAircraftList.ListSyncLock) {
-                IAircraft aircraft;
-                if(FlightSimulatorAircraftList.Aircraft.Count != 0) aircraft = FlightSimulatorAircraftList.Aircraft[0];
-                else {
+                var aircraft = FlightSimulatorAircraftList.Aircraft.FirstOrDefault(r => r.Callsign == FlightSimulatorXCallsign);
+                if(aircraft == null) {
                     aircraft = Factory.Resolve<IAircraft>();
-                    aircraft.Icao24 = "000000";
+                    aircraft.Icao24 = "000001";
                     aircraft.UniqueId = 1;
+                    aircraft.Callsign = FlightSimulatorXCallsign;
                     FlightSimulatorAircraftList.Aircraft.Add(aircraft);
                 }
 
