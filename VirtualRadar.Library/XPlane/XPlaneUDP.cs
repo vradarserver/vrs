@@ -45,17 +45,17 @@ namespace VirtualRadar.Library.XPlane
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Host { get; private set; } = "127.0.0.1";
+        public string Host { get; private set; }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public int XPlanePort { get; private set; } = 49000;
+        public int XPlanePort { get; private set; }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public int ReplyPort { get; private set; } = 39000;
+        public int ReplyPort { get; private set; }
 
         /// <summary>
         /// See interface docs.
@@ -72,11 +72,35 @@ namespace VirtualRadar.Library.XPlane
         }
 
         /// <summary>
+        /// Finalises the object.
+        /// </summary>
+        ~XPlaneUdp()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public void Dispose()
         {
-            throw new NotImplementedException();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes of or finalises the object.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposing) {
+                if(_Client != null) {
+                    try { _Client.Close(); } catch {}
+                    try { ((IDisposable)_Client).Dispose(); } catch {}
+                    _Client = null;
+                }
+            }
         }
 
         /// <summary>
