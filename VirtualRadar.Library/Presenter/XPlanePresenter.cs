@@ -63,6 +63,9 @@ namespace VirtualRadar.Library.Presenter
                 try {
                     connection.Connect(settings);
                     view.ConnectionStatus = Strings.Connected;
+
+                    var storage = Factory.Resolve<IXPlaneSettingsStorage>();
+                    storage.Save(settings);
                 } catch(Exception ex) {
                     view.ConnectionStatus = $"Caught exception when connecting: {ex}";
                 }
