@@ -24,3 +24,6 @@ NuGet package. Unblock, add a .zip extension and fish the files out from the fol
 `System.Data.SQLite.dll`: $/lib/net46
 `x64/SQLite.Interop.dll`: $/build/net46/x64
 `x86/SQLite.Interop.dll`: $/build/net46/x86
+
+The download section title is **Official NuGet Packages**, Core is the largest download (~15Mb as of
+time of writing).
