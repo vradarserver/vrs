@@ -26,6 +26,7 @@ using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StandingData;
+using VirtualRadar.Interface.StateHistory;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
@@ -73,6 +74,7 @@ namespace Test.VirtualRadar.Library.Presenter
         private Mock<IUser> _User;
         private Mock<IAirPressureManager> _AirPressureManager;
         private Mock<ITileServerSettingsManager> _TileServerSettingsManager;
+        private Mock<IStateHistoryManager> _StateHistoryManager;
         private Mock<IXPlaneConnection> _XPlaneConnection;
 
         private EventRecorder<EventArgs<Exception>> _BackgroundExceptionEvent;
@@ -116,6 +118,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _User = TestUtilities.CreateMockImplementation<IUser>();
             _AirPressureManager = TestUtilities.CreateMockSingleton<IAirPressureManager>();
             _TileServerSettingsManager = TestUtilities.CreateMockSingleton<ITileServerSettingsManager>();
+            _StateHistoryManager = TestUtilities.CreateMockSingleton<IStateHistoryManager>();
             _XPlaneConnection = TestUtilities.CreateMockSingleton<IXPlaneConnection>();
 
             _BackgroundExceptionEvent = new EventRecorder<EventArgs<Exception>>();
@@ -842,6 +845,17 @@ namespace Test.VirtualRadar.Library.Presenter
             _FeedManager.Raise(b => b.ExceptionCaught += null, new EventArgs<Exception>(new InvalidOperationException()));
 
             Assert.AreEqual(1, _BackgroundExceptionEvent.CallCount);
+        }
+        #endregion
+
+        #region StateHistoryManager
+        [TestMethod]
+        public void SplashPresenter_StartApplication_Initialises_StateHistoryManager()
+        {
+            _Presenter.Initialise(_View.Object);
+            _Presenter.StartApplication();
+
+            _StateHistoryManager.Verify(r => r.Initialise(), Times.Once());
         }
         #endregion
 

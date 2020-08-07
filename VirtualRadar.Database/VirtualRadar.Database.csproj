@@ -88,6 +88,12 @@
     <Compile Include="StandingData\RouteViewModel.cs" />
     <Compile Include="StandingData\StandingDataManager.cs" />
     <Compile Include="StandingData\StandingDataUpdater.cs" />
+    <Compile Include="StateHistory\Scripts.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Scripts.resx</DependentUpon>
+    </Compile>
+    <Compile Include="StateHistory\StateHistoryRepository_SQLite.cs" />
     <Compile Include="Table.cs" />
     <Compile Include="TransactionHelper.cs" />
     <Compile Include="Users\Database.cs" />
@@ -126,6 +132,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Commands.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="StateHistory\Scripts.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Scripts.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="AircraftOnlineLookupCache\Scripts\AircraftDetail_Insert.sql" />
@@ -153,10 +163,11 @@
     <Content Include="Log\Scripts\Session_Insert.sql" />
     <Content Include="Log\Scripts\Session_Update.sql" />
     <Content Include="Log\Scripts\UpdateSchema.sql" />
+    <Content Include="StateHistory\Scripts\DatabaseVersion_Save.sql" />
+    <Content Include="StateHistory\Scripts\DatabaseVersion_GetLatest.sql" />
+    <Content Include="StateHistory\Scripts\Schema.sql" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="StateHistory\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

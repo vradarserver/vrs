@@ -27,6 +27,7 @@ using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StandingData;
+using VirtualRadar.Interface.StateHistory;
 using VirtualRadar.Interface.View;
 using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
@@ -125,6 +126,7 @@ namespace VirtualRadar.Library.Presenter
             StartTileServerSettingsManager();
             StartAirPressureManager();
             StartFeedManager(configuration);
+            StartStateHistoryManager();
             var webSite = StartWebSite();
             StartRebroadcastServers();
             InitialiseUniversalPlugAndPlay(configuration);
@@ -347,6 +349,14 @@ namespace VirtualRadar.Library.Presenter
             }
 
             feedManager.Initialise();
+        }
+
+        private void StartStateHistoryManager()
+        {
+            _View.ReportProgress(Strings.SplashScreenInitialisingStateHistoryManager);
+
+            var stateHistoryManager = Factory.ResolveSingleton<IStateHistoryManager>();
+            stateHistoryManager.Initialise();
         }
 
         private IWebSite StartWebSite()

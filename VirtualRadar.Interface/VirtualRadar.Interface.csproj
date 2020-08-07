@@ -245,7 +245,10 @@
     <Compile Include="Settings\StateHistorySettings.cs" />
     <Compile Include="Settings\TileServerSettings.cs" />
     <Compile Include="StandingData\EnginePlacement.cs" />
+    <Compile Include="StateHistory\DatabaseVersion.cs" />
     <Compile Include="StateHistory\IStateHistoryManager.cs" />
+    <Compile Include="StateHistory\IStateHistoryRepository.cs" />
+    <Compile Include="StateHistory\IStateHistoryRepository_SQLite.cs" />
     <Compile Include="StringBuilderExtensions.cs" />
     <Compile Include="TextContent.cs" />
     <Compile Include="UriHelper.cs" />

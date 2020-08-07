@@ -25,6 +25,16 @@ namespace VirtualRadar.Library.StateHistory
     class StateHistoryManager : IStateHistoryManager, ISharedConfigurationSubscriber
     {
         /// <summary>
+        /// The repository that we'll be using for the duration.
+        /// </summary>
+        private IStateHistoryRepository _Repository;
+
+        /// <summary>
+        /// The lock that ensures access to the repository is single-threaded.
+        /// </summary>
+        private object _DatabaseLock = new Object();
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public bool Enabled { get; private set; }
@@ -49,7 +59,25 @@ namespace VirtualRadar.Library.StateHistory
             Enabled = config.StateHistorySettings.Enabled;
             NonStandardFolder = config.StateHistorySettings.NonStandardFolder;
 
+            _Repository = Factory.Resolve<IStateHistoryRepository>();
+            InitialiseDatabaseWithNewConfiguration();
+
             sharedConfiguration.AddWeakSubscription(this);
+        }
+
+        private void InitialiseDatabaseWithNewConfiguration()
+        {
+            LockRepoAndCallIfEnabled(r => {
+                r.Schema_Update();
+
+                if(r.DatabaseVersion_GetLatest() == null) {
+                    var databaseVersion = new DatabaseVersion() {
+                        DatabaseVersionID = 1,
+                        CreatedUtc = DateTime.UtcNow,
+                    };
+                    r.DatabaseVersion_Save(databaseVersion);
+                }
+            });
         }
 
         /// <summary>
@@ -70,11 +98,30 @@ namespace VirtualRadar.Library.StateHistory
                 }
             }
 
-            assignConfigValue(config.StateHistorySettings.Enabled,              () => Enabled,              r => Enabled = r);
-            assignConfigValue(config.StateHistorySettings.NonStandardFolder,    () => NonStandardFolder,    r => NonStandardFolder = r);
+            // We need to share the repository lock here so that we can establish configuration without the repository getting
+            // called mid-change
+            lock(_DatabaseLock) {
+                assignConfigValue(config.StateHistorySettings.Enabled,              () => Enabled,              r => Enabled = r);
+                assignConfigValue(config.StateHistorySettings.NonStandardFolder,    () => NonStandardFolder,    r => NonStandardFolder = r);
+
+                if(raiseConfigurationLoaded) {
+                    InitialiseDatabaseWithNewConfiguration();
+                }
+            }
 
             if(raiseConfigurationLoaded) {
                 ConfigurationLoaded?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private void LockRepoAndCallIfEnabled(Action<IStateHistoryRepository> action)
+        {
+            var enabled = Enabled;
+            var repository = _Repository;
+            if(enabled && repository != null) {
+                lock(_DatabaseLock) {
+                    action(repository);
+                }
             }
         }
     }

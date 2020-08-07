@@ -16,6 +16,7 @@ using VirtualRadar.Interface;
 using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StandingData;
+using VirtualRadar.Interface.StateHistory;
 
 namespace VirtualRadar.Database
 {
@@ -30,17 +31,19 @@ namespace VirtualRadar.Database
         /// <param name="factory"></param>
         public static void Register(IClassFactory factory)
         {
-            factory.Register<IAutoConfigBaseStationDatabase, BaseStation.AutoConfigBaseStationDatabase>();
-            factory.Register<IBackgroundDataDownloader, StandingData.BackgroundDataDownloader>();
-            factory.Register<IBaseStationDatabase, BaseStation.Database>();
-            factory.Register<IBaseStationDatabaseSQLite, BaseStation.Database>();
-            factory.Register<ICallsignRouteFetcher, StandingData.CallsignRouteFetcher>();
-            factory.Register<ILogDatabase, Log.Database>();
-            factory.Register<IStandaloneAircraftOnlineLookupCache, AircraftOnlineLookupCache.StandaloneAircraftOnlineLookupCache>();
-            factory.Register<IStandingDataManager, StandingData.StandingDataManager>();
-            factory.Register<IStandingDataUpdater, StandingData.StandingDataUpdater>();
-            factory.Register<IUser, Users.User>();
-            factory.Register<IUserManager, Users.UserManager>();
+            factory.Register<IStandaloneAircraftOnlineLookupCache,  AircraftOnlineLookupCache.StandaloneAircraftOnlineLookupCache>();
+            factory.Register<IAutoConfigBaseStationDatabase,        BaseStation.AutoConfigBaseStationDatabase>();
+            factory.Register<IBaseStationDatabase,                  BaseStation.Database>();
+            factory.Register<IBaseStationDatabaseSQLite,            BaseStation.Database>();
+            factory.Register<IBackgroundDataDownloader,             StandingData.BackgroundDataDownloader>();
+            factory.Register<ICallsignRouteFetcher,                 StandingData.CallsignRouteFetcher>();
+            factory.Register<IStandingDataManager,                  StandingData.StandingDataManager>();
+            factory.Register<IStandingDataUpdater,                  StandingData.StandingDataUpdater>();
+            factory.Register<IStateHistoryRepository,               StateHistory.StateHistoryRepository_SQLite>();
+            factory.Register<IStateHistoryRepository_SQLite,        StateHistory.StateHistoryRepository_SQLite>();
+            factory.Register<ILogDatabase,                          Log.Database>();
+            factory.Register<IUser,                                 Users.User>();
+            factory.Register<IUserManager,                          Users.UserManager>();
         }
     }
 }

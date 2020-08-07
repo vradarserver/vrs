@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Test.Framework;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StateHistory;
@@ -16,10 +17,11 @@ namespace Test.VirtualRadar.Library.StateHistory
     {
         public TestContext TestContext { get; set; }
 
-        private IStateHistoryManager    _Manager;
-        private IClassFactory           _Snapshot;
-        private MockSharedConfiguration _SharedConfig;
-        private Configuration           _Configuration;
+        private IStateHistoryManager            _Manager;
+        private IClassFactory                   _Snapshot;
+        private MockSharedConfiguration         _SharedConfig;
+        private Configuration                   _Configuration;
+        private Mock<IStateHistoryRepository>   _Repository;
 
         [TestInitialize]
         public void TestInitialise()
@@ -28,6 +30,7 @@ namespace Test.VirtualRadar.Library.StateHistory
 
             _Configuration = new Configuration();
             _SharedConfig = MockSharedConfiguration.TestInitialise(_Configuration);
+            _Repository =       TestUtilities.CreateMockImplementation<IStateHistoryRepository>();
 
             _Manager = Factory.ResolveNewInstance<IStateHistoryManager>();
         }
@@ -65,6 +68,49 @@ namespace Test.VirtualRadar.Library.StateHistory
             _Manager.Initialise();
 
             Assert.AreEqual(0, eventRec.CallCount);
+        }
+
+        [TestMethod]
+        public void Initialise_Updates_The_Schema_If_Enabled()
+        {
+            new InlineDataTest(this).TestAndAssert(new bool[] {
+                true, false
+            }, enabled => {
+                _Configuration.StateHistorySettings.Enabled = enabled;
+                _Manager.Initialise();
+
+                _Repository.Verify(r => r.Schema_Update(), enabled
+                    ? Times.Once()
+                    : Times.Never()
+                );
+            });
+        }
+
+        [TestMethod]
+        public void Initialise_Creates_DatabaseVersion_On_First_Run()
+        {
+            _Repository
+                .Setup(r => r.DatabaseVersion_GetLatest())
+                .Returns((DatabaseVersion)null);
+
+            _Manager.Initialise();
+
+            _Repository.Verify(r => r.DatabaseVersion_Save(It.IsAny<DatabaseVersion>()), Times.Once());
+        }
+
+        [TestMethod]
+        public void Initialise_Ignores_DatabaseVersion_If_Already_Exists()
+        {
+            _Repository
+                .Setup(r => r.DatabaseVersion_GetLatest())
+                .Returns(new DatabaseVersion() {
+                    DatabaseVersionID = 1,
+                    CreatedUtc =        DateTime.UtcNow.AddDays(-1)
+                });
+
+            _Manager.Initialise();
+
+            _Repository.Verify(r => r.DatabaseVersion_Save(It.IsAny<DatabaseVersion>()), Times.Never());
         }
 
         [TestMethod]
@@ -126,6 +172,30 @@ namespace Test.VirtualRadar.Library.StateHistory
             _SharedConfig.RaiseConfigurationChanged();
 
             Assert.AreEqual(0, eventRec.CallCount);
+        }
+
+        [TestMethod]
+        public void ConfigurationChange_Updates_Schema()
+        {
+            new InlineDataTest(this).TestAndAssert(new [] {
+                new { InitialEnabled = false,   InitialFolder = "",     NewEnabled = false, NewFolder = "",     CountExpectedSchemaInit = 0 },
+                new { InitialEnabled = false,   InitialFolder = "",     NewEnabled = false, NewFolder = "new",  CountExpectedSchemaInit = 0 },
+                new { InitialEnabled = false,   InitialFolder = "",     NewEnabled = true,  NewFolder = "",     CountExpectedSchemaInit = 1 },
+                new { InitialEnabled = true,    InitialFolder = "",     NewEnabled = false, NewFolder = "",     CountExpectedSchemaInit = 1 },
+                new { InitialEnabled = true,    InitialFolder = "",     NewEnabled = true,  NewFolder = "",     CountExpectedSchemaInit = 1 },
+                new { InitialEnabled = true,    InitialFolder = "",     NewEnabled = true,  NewFolder = "new",  CountExpectedSchemaInit = 2 },
+                new { InitialEnabled = true,    InitialFolder = "old",  NewEnabled = true,  NewFolder = "",     CountExpectedSchemaInit = 2 },
+            }, row => {
+                _Configuration.StateHistorySettings.Enabled =           row.InitialEnabled;
+                _Configuration.StateHistorySettings.NonStandardFolder = row.InitialFolder;
+                _Manager.Initialise();
+
+                _Configuration.StateHistorySettings.Enabled =           row.NewEnabled;
+                _Configuration.StateHistorySettings.NonStandardFolder = row.NewFolder;
+                _SharedConfig.RaiseConfigurationChanged();
+
+                _Repository.Verify(r => r.Schema_Update(), Times.Exactly(row.CountExpectedSchemaInit));
+            });
         }
     }
 }

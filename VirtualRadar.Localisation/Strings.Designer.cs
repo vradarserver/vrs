@@ -6579,6 +6579,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Initialising state history manager.
+        /// </summary>
+        public static string SplashScreenInitialisingStateHistoryManager {
+            get {
+                return ResourceManager.GetString("SplashScreenInitialisingStateHistoryManager", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Initialising tile server settings manager.
         /// </summary>
         public static string SplashScreenInitialisingTileServerSettingsManager {
