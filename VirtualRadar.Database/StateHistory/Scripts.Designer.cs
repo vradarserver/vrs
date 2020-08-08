@@ -74,17 +74,16 @@ namespace VirtualRadar.Database.StateHistory {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to INSERT OR REPLACE INTO [DatabaseVersion] (
+        ///   Looks up a localized string similar to INSERT INTO [DatabaseVersion] (
         ///    [DatabaseVersionID]
         ///   ,[CreatedUtc]
         ///) VALUES (
         ///    @DatabaseVersionID
         ///   ,@CreatedUtc
         ///)
-        ///ON CONFLICT ([DatabaseVersionID]) DO
-        ///UPDATE
-        ///SET    [CreatedUtc] = @CreatedUtc
-        ///WHERE  [DatabaseVersionID] = @DatabaseVersionID;
+        ///ON    CONFLICT ([DatabaseVersionID])
+        ///DO    UPDATE
+        ///SET   [CreatedUtc] = @CreatedUtc;
         ///.
         /// </summary>
         internal static string DatabaseVersion_Save {
@@ -99,7 +98,17 @@ namespace VirtualRadar.Database.StateHistory {
         ///--
         ///CREATE TABLE IF NOT EXISTS [DatabaseVersion]
         ///(
-        ///    [DatabaseVersionID] BIGINT NOT NULL PRIMARY KEY
+        ///    [DatabaseVersionID] INTEGER NOT NULL PRIMARY KEY
+        ///   ,[CreatedUtc]        DATETIME NOT NULL
+        ///);
+        ///
+        ///--
+        ///-- VrsSession (v1)
+        ///--
+        ///CREATE TABLE IF NOT EXISTS [VrsSession]
+        ///(
+        ///    [VrsSessionID]      INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+        ///   ,[DatabaseVersionID] BIGINT NOT NULL
         ///   ,[CreatedUtc]        DATETIME NOT NULL
         ///);
         ///.
@@ -107,6 +116,23 @@ namespace VirtualRadar.Database.StateHistory {
         internal static string Schema {
             get {
                 return ResourceManager.GetString("Schema", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [VrsSession] (
+        ///    [DatabaseVersionID]
+        ///   ,[CreatedUtc]
+        ///) VALUES (
+        ///    @DatabaseVersionID
+        ///   ,@CreatedUtc
+        ///);
+        ///SELECT last_insert_rowid();
+        ///.
+        /// </summary>
+        internal static string VrsSession_Insert {
+            get {
+                return ResourceManager.GetString("VrsSession_Insert", resourceCulture);
             }
         }
     }

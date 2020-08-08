@@ -25,6 +25,11 @@ namespace VirtualRadar.Library.StateHistory
     class StateHistoryManager : IStateHistoryManager, ISharedConfigurationSubscriber
     {
         /// <summary>
+        /// The database version ID for the current schema / recording methodology etc.
+        /// </summary>
+        private const long CurrentDatabaseVersionID = 1;
+
+        /// <summary>
         /// The repository that we'll be using for the duration.
         /// </summary>
         private IStateHistoryRepository _Repository;
@@ -72,11 +77,16 @@ namespace VirtualRadar.Library.StateHistory
 
                 if(r.DatabaseVersion_GetLatest() == null) {
                     var databaseVersion = new DatabaseVersion() {
-                        DatabaseVersionID = 1,
-                        CreatedUtc = DateTime.UtcNow,
+                        DatabaseVersionID = CurrentDatabaseVersionID,
+                        CreatedUtc =        DateTime.UtcNow,
                     };
                     r.DatabaseVersion_Save(databaseVersion);
                 }
+
+                r.VrsSession_Insert(new VrsSession() {
+                    DatabaseVersionID = CurrentDatabaseVersionID,
+                    CreatedUtc =        DateTime.UtcNow,
+                });
             });
         }
 

@@ -114,6 +114,21 @@ namespace Test.VirtualRadar.Library.StateHistory
         }
 
         [TestMethod]
+        public void Initialise_Creates_VrsSession()
+        {
+            VrsSession session = null;
+            _Repository
+                .Setup(r => r.VrsSession_Insert(It.IsAny<VrsSession>()))
+                .Callback((VrsSession s) => session = s);
+
+            _Manager.Initialise();
+
+            _Repository.Verify(r => r.VrsSession_Insert(It.IsAny<VrsSession>()), Times.Once());
+            Assert.AreNotEqual(0, session.DatabaseVersionID);
+            Assert.IsTrue(session.CreatedUtc > DateTime.UtcNow.AddMinutes(-2));
+        }
+
+        [TestMethod]
         public void Configuration_Change_Automatically_Picked_Up()
         {
             new InlineDataTest(this).TestAndAssert(new [] {

@@ -67,6 +67,20 @@ namespace VirtualRadar.Database.StateHistory
         }
 
         /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="session"></param>
+        public void VrsSession_Insert(VrsSession session)
+        {
+            using(var connection = OpenConnection()) {
+                session.VrsSessionID = connection.Query<int>(Scripts.VrsSession_Insert, new {
+                    session.DatabaseVersionID,
+                    session.CreatedUtc,
+                }).Single();
+            }
+        }
+
+        /// <summary>
         /// Creates an open connection to the state history database.
         /// </summary>
         /// <returns></returns>

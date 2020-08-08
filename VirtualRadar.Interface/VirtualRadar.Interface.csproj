@@ -249,6 +249,7 @@
     <Compile Include="StateHistory\IStateHistoryManager.cs" />
     <Compile Include="StateHistory\IStateHistoryRepository.cs" />
     <Compile Include="StateHistory\IStateHistoryRepository_SQLite.cs" />
+    <Compile Include="StateHistory\VrsSession.cs" />
     <Compile Include="StringBuilderExtensions.cs" />
     <Compile Include="TextContent.cs" />
     <Compile Include="UriHelper.cs" />

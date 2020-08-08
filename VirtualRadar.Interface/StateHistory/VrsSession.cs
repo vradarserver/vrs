@@ -17,36 +17,14 @@ using System.Threading.Tasks;
 namespace VirtualRadar.Interface.StateHistory
 {
     /// <summary>
-    /// The interface for objects that can store and retrieve state history records.
+    /// Describes a Virtual Radar Server session. There is one of these per VRS run.
     /// </summary>
-    /// <remarks>
-    /// State history repositories are not expected to be thread-safe. The code that calls them
-    /// will ensure that concurrent calls won't happen.
-    /// </remarks>
-    public interface IStateHistoryRepository
+    public class VrsSession
     {
-        /// <summary>
-        /// Retrieves the latest database version record.
-        /// </summary>
-        /// <returns></returns>
-        DatabaseVersion DatabaseVersion_GetLatest();
+        public long VrsSessionID { get; set; }
 
-        /// <summary>
-        /// Saves the database record passed across.
-        /// </summary>
-        /// <param name="record"></param>
-        void DatabaseVersion_Save(DatabaseVersion record);
+        public long DatabaseVersionID { get; set; }
 
-        /// <summary>
-        /// Updates the schema to the latest version. The application is expected to run this once at
-        /// program startup.
-        /// </summary>
-        void Schema_Update();
-
-        /// <summary>
-        /// Creates a new session record and fills in its ID.
-        /// </summary>
-        /// <param name="session"></param>
-        void VrsSession_Insert(VrsSession session);
+        public DateTime CreatedUtc { get; set; }
     }
 }
