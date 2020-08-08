@@ -9,12 +9,9 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Dapper;
 using InterfaceFactory;
 using VirtualRadar.Interface.Settings;
@@ -28,10 +25,38 @@ namespace VirtualRadar.Database.StateHistory
     /// </summary>
     class StateHistoryRepository_SQLite : IStateHistoryRepository_SQLite
     {
-        private IStateHistoryManager _Manager;
-        private IConfigurationStorage _ConfigurationStorage;
-        private string _CachedConnectionString;
-        private string _CachedFullPath;
+        /// <summary>
+        /// The connection string that the repository will always use.
+        /// </summary>
+        private string _ConnectionString;
+
+        /// <summary>
+        /// The database instance that holds configuration variables etc. for us.
+        /// </summary>
+        private IStateHistoryDatabaseInstance _DatabaseInstance;
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool IsMissing { get; private set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public bool WritesEnabled => _DatabaseInstance?.WritesEnabled ?? false;
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="databaseInstance"></param>
+        public void Initialise(IStateHistoryDatabaseInstance databaseInstance)
+        {
+            if(_DatabaseInstance != null) {
+                throw new InvalidOperationException($"You cannot initialise a {nameof(IStateHistoryRepository)} twice");
+            }
+            _DatabaseInstance = databaseInstance ?? throw new ArgumentNullException(nameof(databaseInstance));
+            _ConnectionString = BuildConnectionString();
+        }
 
         /// <summary>
         /// See interface docs.
@@ -39,7 +64,7 @@ namespace VirtualRadar.Database.StateHistory
         /// <returns></returns>
         public DatabaseVersion DatabaseVersion_GetLatest()
         {
-            using(var connection = OpenConnection()) {
+            using(var connection = OpenConnection(forWrite: false)) {
                 return connection.Query<DatabaseVersion>(Scripts.DatabaseVersion_GetLatest)
                     .FirstOrDefault();
             }
@@ -51,7 +76,7 @@ namespace VirtualRadar.Database.StateHistory
         /// <param name="record"></param>
         public void DatabaseVersion_Save(DatabaseVersion record)
         {
-            using(var connection = OpenConnection()) {
+            using(var connection = OpenConnection(forWrite: true)) {
                 connection.Execute(Scripts.DatabaseVersion_Save, record);
             }
         }
@@ -61,7 +86,7 @@ namespace VirtualRadar.Database.StateHistory
         /// </summary>
         public void Schema_Update()
         {
-            using(var connection = OpenConnection()) {
+            using(var connection = OpenConnection(forWrite: true)) {
                 connection.Execute(Scripts.Schema);
             }
         }
@@ -72,7 +97,7 @@ namespace VirtualRadar.Database.StateHistory
         /// <param name="session"></param>
         public void VrsSession_Insert(VrsSession session)
         {
-            using(var connection = OpenConnection()) {
+            using(var connection = OpenConnection(forWrite: true)) {
                 session.VrsSessionID = connection.Query<int>(Scripts.VrsSession_Insert, new {
                     session.DatabaseVersionID,
                     session.CreatedUtc,
@@ -83,45 +108,60 @@ namespace VirtualRadar.Database.StateHistory
         /// <summary>
         /// Creates an open connection to the state history database.
         /// </summary>
+        /// <param name="forWrite"></param>
         /// <returns></returns>
-        protected IDbConnection OpenConnection()
+        protected IDbConnection OpenConnection(bool forWrite)
         {
-            EstablishCachedConnectionString();
+            if(IsMissing) {
+                throw new InvalidOperationException($"The {nameof(IStateHistoryRepository)} cannot be called, the database is missing");
+            }
+            if(!WritesEnabled && forWrite) {
+                throw new InvalidOperationException($"Write operations on {nameof(IStateHistoryRepository)} are invalid, writes have been disabled");
+            }
 
-            var connectionString = _CachedConnectionString;
             var result = Factory.Resolve<ISQLiteConnectionProvider>()
-                .Create(connectionString);
+                .Create(_ConnectionString);
             result.Open();
 
             return result;
         }
 
-        private void EstablishCachedConnectionString()
+        private string BuildConnectionString()
         {
-            if(_Manager == null) {
-                _Manager = Factory.ResolveSingleton<IStateHistoryManager>();
-            }
-            if(_ConfigurationStorage == null) {
-                _ConfigurationStorage = Factory.ResolveSingleton<IConfigurationStorage>();
-            }
-            var folder = _Manager.NonStandardFolder;
+            var folder = _DatabaseInstance.NonStandardFolder;
             if(String.IsNullOrEmpty(folder)) {
-                folder = _ConfigurationStorage.Folder;
+                folder = Factory.ResolveSingleton<IConfigurationStorage>()
+                    .Folder;
+            }
+            var fullPath = Path.Combine(folder, "StateHistory.sqb");
+
+            if(_DatabaseInstance.WritesEnabled) {
+                if(!Directory.Exists(folder)) {
+                    Directory.CreateDirectory(folder);
+                }
+                if(!File.Exists(fullPath)) {
+                    File
+                        .Create(fullPath)
+                        .Dispose();
+                }
             }
 
-            var fullPath = Path.Combine(folder, "StateHistory.sqb");
-            if(fullPath != _CachedFullPath) {
+            IsMissing = !File.Exists(fullPath);
+
+            var result = "";
+            if(!IsMissing) {
                 var builder = Factory.Resolve<ISQLiteConnectionStringBuilder>()
-                    .Initialise();
+                        .Initialise();
                 builder.DataSource = fullPath;
                 builder.DateTimeFormat = SQLiteDateFormats.ISO8601; // <-- not the most efficient but having different date formats in different SQLite files blows the ADO.NET adapter's mind
-                builder.FailIfMissing = false;
+                builder.FailIfMissing = true;
                 builder.JournalMode = SQLiteJournalModeEnum.Default;
-                builder.ReadOnly = false;
+                builder.ReadOnly = !_DatabaseInstance.WritesEnabled;
 
-                _CachedConnectionString = builder.ConnectionString;
-                _CachedFullPath = fullPath;
+                result = builder.ConnectionString;
             }
+
+            return result;
         }
     }
 }

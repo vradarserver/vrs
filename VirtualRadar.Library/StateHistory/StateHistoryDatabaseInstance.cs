@@ -14,25 +14,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using InterfaceFactory;
-using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StateHistory;
 
 namespace VirtualRadar.Library.StateHistory
 {
-    /// <summary>
-    /// Default implementation of <see cref="IStateHistoryManager"/>.
-    /// </summary>
-    class StateHistoryManager : IStateHistoryManager, ISharedConfigurationSubscriber
+    class StateHistoryDatabaseInstance : IStateHistoryDatabaseInstance
     {
         /// <summary>
-        /// The database instance that we're using.
+        /// The database version ID for the current schema / recording methodology etc.
         /// </summary>
-        private IStateHistoryDatabaseInstance _DatabaseInstance;
+        private const long CurrentDatabaseVersionID = 1;
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public bool Enabled { get; private set; }
+        public bool WritesEnabled { get; private set; }
 
         /// <summary>
         /// See interface docs.
@@ -42,58 +38,66 @@ namespace VirtualRadar.Library.StateHistory
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public event EventHandler ConfigurationLoaded;
+        public IStateHistoryRepository Repository { get; private set; }
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public void Initialise()
+        /// <param name="writesEnabled"></param>
+        /// <param name="nonStandardFolder"></param>
+        public void Initialise(bool writesEnabled, string nonStandardFolder)
         {
-            var sharedConfiguration = Factory.ResolveSingleton<ISharedConfiguration>();
-            var config = sharedConfiguration.Get();
-            Enabled = config.StateHistorySettings.Enabled;
-            NonStandardFolder = config.StateHistorySettings.NonStandardFolder;
+            WritesEnabled =     writesEnabled;
+            NonStandardFolder = nonStandardFolder;
+            Repository =        Factory.Resolve<IStateHistoryRepository>();
 
-            InitialiseDatabaseWithNewConfiguration();
+            Repository.Initialise(this);
 
-            sharedConfiguration.AddWeakSubscription(this);
-        }
+            DoIfWriteable(repo => {
+                repo.Schema_Update();
 
-        private void InitialiseDatabaseWithNewConfiguration()
-        {
-            var databaseInstance = Factory.Resolve<IStateHistoryDatabaseInstance>();
-            databaseInstance.Initialise(Enabled, NonStandardFolder);
-            _DatabaseInstance = databaseInstance;
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="sharedConfiguration"></param>
-        public void SharedConfigurationChanged(ISharedConfiguration sharedConfiguration)
-        {
-            var config = sharedConfiguration.Get();
-
-            var raiseConfigurationLoaded = false;
-
-            void assignConfigValue<T>(T configValue, Func<T> readProperty, Action<T> writeProperty)
-            {
-                if(!Object.Equals(readProperty(), configValue)) {
-                    raiseConfigurationLoaded = true;
-                    writeProperty(configValue);
+                if(repo.DatabaseVersion_GetLatest() == null) {
+                    var databaseVersion = new DatabaseVersion() {
+                        DatabaseVersionID = CurrentDatabaseVersionID,
+                        CreatedUtc =        DateTime.UtcNow,
+                    };
+                    repo.DatabaseVersion_Save(databaseVersion);
                 }
+
+                repo.VrsSession_Insert(new VrsSession() {
+                    DatabaseVersionID = CurrentDatabaseVersionID,
+                    CreatedUtc =        DateTime.UtcNow,
+                });
+            });
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public bool DoIfReadable(Action<IStateHistoryRepository> action)
+        {
+            if(!Repository.IsMissing) {
+                action(Repository);
             }
 
-            assignConfigValue(config.StateHistorySettings.Enabled,              () => Enabled,              r => Enabled = r);
-            assignConfigValue(config.StateHistorySettings.NonStandardFolder,    () => NonStandardFolder,    r => NonStandardFolder = r);
+            return !Repository.IsMissing;
+        }
 
-            if(raiseConfigurationLoaded) {
-                InitialiseDatabaseWithNewConfiguration();
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public bool DoIfWriteable(Action<IStateHistoryRepository> action)
+        {
+            var result = Repository.WritesEnabled;
+            if(result) {
+                result = DoIfReadable(action);
             }
 
-            if(raiseConfigurationLoaded) {
-                ConfigurationLoaded?.Invoke(this, EventArgs.Empty);
-            }
+            return result;
         }
     }
 }

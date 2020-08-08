@@ -153,6 +153,7 @@
     <Compile Include="Settings\PluginManifestStorageTests.cs" />
     <Compile Include="Settings\PluginSettingsStorageTests.cs" />
     <Compile Include="SimpleAircraftListTests.cs" />
+    <Compile Include="StateHistory\StateHistoryDatabaseInstance_Tests.cs" />
     <Compile Include="StateHistory\StateHistoryManager_Tests.cs" />
     <Compile Include="StatisticsTests.cs" />
     <Compile Include="TestResources.Designer.cs">

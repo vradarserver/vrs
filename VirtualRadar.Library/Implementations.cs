@@ -94,6 +94,7 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.XPlane.IXPlaneSettingsStorage, XPlane.XPlaneSettingsStorage>();
             factory.Register<VirtualRadar.Interface.XPlane.IXPlaneUdp, XPlane.XPlaneUdp>();
             factory.Register<VirtualRadar.Interface.Settings.IUserCache, Settings.UserCache>();
+            factory.Register<VirtualRadar.Interface.StateHistory.IStateHistoryDatabaseInstance, StateHistory.StateHistoryDatabaseInstance>();
             factory.Register<VirtualRadar.Interface.StateHistory.IStateHistoryManager, StateHistory.StateHistoryManager>();
             factory.Register<IAccessFilter, AccessFilter>();
             factory.Register<IAircraft, Aircraft>();

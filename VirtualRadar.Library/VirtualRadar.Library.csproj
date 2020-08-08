@@ -262,6 +262,7 @@
     <Compile Include="Settings\TileServerSettingsStorage.cs" />
     <Compile Include="Settings\UserCache.cs" />
     <Compile Include="SimpleAircraftList.cs" />
+    <Compile Include="StateHistory\StateHistoryDatabaseInstance.cs" />
     <Compile Include="StateHistory\StateHistoryManager.cs" />
     <Compile Include="Statistics.cs" />
     <Compile Include="Network\TcpConnectionStateService.cs" />

@@ -17,20 +17,24 @@ namespace Test.VirtualRadar.Library.StateHistory
     {
         public TestContext TestContext { get; set; }
 
-        private IStateHistoryManager            _Manager;
-        private IClassFactory                   _Snapshot;
-        private MockSharedConfiguration         _SharedConfig;
-        private Configuration                   _Configuration;
-        private Mock<IStateHistoryRepository>   _Repository;
+        private IStateHistoryManager                _Manager;
+        private IClassFactory                       _Snapshot;
+        private MockSharedConfiguration             _SharedConfig;
+        private Configuration                       _Configuration;
+        private Mock<IStateHistoryRepository>       _Repository;
+        private Mock<IStateHistoryDatabaseInstance> _DatabaseInstance;
 
         [TestInitialize]
         public void TestInitialise()
         {
             _Snapshot = Factory.TakeSnapshot();
 
-            _Configuration = new Configuration();
-            _SharedConfig = MockSharedConfiguration.TestInitialise(_Configuration);
+            _Configuration =    new Configuration();
+            _SharedConfig =     MockSharedConfiguration.TestInitialise(_Configuration);
             _Repository =       TestUtilities.CreateMockImplementation<IStateHistoryRepository>();
+            _DatabaseInstance = TestUtilities.CreateMockImplementation<IStateHistoryDatabaseInstance>();
+
+            SetupDatabaseInstance(_DatabaseInstance, _Repository);
 
             _Manager = Factory.ResolveNewInstance<IStateHistoryManager>();
         }
@@ -39,6 +43,24 @@ namespace Test.VirtualRadar.Library.StateHistory
         public void TestCleanup()
         {
             Factory.RestoreSnapshot(_Snapshot);
+        }
+
+        private void SetupDatabaseInstance(Mock<IStateHistoryDatabaseInstance> mockDatabaseInstance, Mock<IStateHistoryRepository> mockRepository)
+        {
+            mockDatabaseInstance.Setup(r => r.Initialise(It.IsAny<bool>(), It.IsAny<string>()))
+                .Callback((bool writesEnabled, string nonStandardFolder) => {
+                    mockDatabaseInstance
+                        .SetupGet(r => r.WritesEnabled)
+                        .Returns(writesEnabled);
+
+                    mockDatabaseInstance
+                        .SetupGet(r => r.NonStandardFolder)
+                        .Returns(nonStandardFolder);
+
+                    mockDatabaseInstance
+                        .SetupGet(r => r.Repository)
+                        .Returns(mockRepository.Object);
+                });
         }
 
         [TestMethod]
@@ -71,61 +93,19 @@ namespace Test.VirtualRadar.Library.StateHistory
         }
 
         [TestMethod]
-        public void Initialise_Updates_The_Schema_If_Enabled()
+        public void Initialise_Creates_DatabaseInstance()
         {
-            new InlineDataTest(this).TestAndAssert(new bool[] {
-                true, false
-            }, enabled => {
-                _Configuration.StateHistorySettings.Enabled = enabled;
+            new InlineDataTest(this).TestAndAssert(new [] {
+                new { WritesEnabled = true,     NonStandardFolder = (string)null },
+                new { WritesEnabled = true,     NonStandardFolder = "" },
+                new { WritesEnabled = false,    NonStandardFolder = "Abc" },
+            }, row => {
+                _Configuration.StateHistorySettings.Enabled =           row.WritesEnabled;
+                _Configuration.StateHistorySettings.NonStandardFolder = row.NonStandardFolder;
                 _Manager.Initialise();
 
-                _Repository.Verify(r => r.Schema_Update(), enabled
-                    ? Times.Once()
-                    : Times.Never()
-                );
+                _DatabaseInstance.Verify(r => r.Initialise(row.WritesEnabled, row.NonStandardFolder), Times.Once());
             });
-        }
-
-        [TestMethod]
-        public void Initialise_Creates_DatabaseVersion_On_First_Run()
-        {
-            _Repository
-                .Setup(r => r.DatabaseVersion_GetLatest())
-                .Returns((DatabaseVersion)null);
-
-            _Manager.Initialise();
-
-            _Repository.Verify(r => r.DatabaseVersion_Save(It.IsAny<DatabaseVersion>()), Times.Once());
-        }
-
-        [TestMethod]
-        public void Initialise_Ignores_DatabaseVersion_If_Already_Exists()
-        {
-            _Repository
-                .Setup(r => r.DatabaseVersion_GetLatest())
-                .Returns(new DatabaseVersion() {
-                    DatabaseVersionID = 1,
-                    CreatedUtc =        DateTime.UtcNow.AddDays(-1)
-                });
-
-            _Manager.Initialise();
-
-            _Repository.Verify(r => r.DatabaseVersion_Save(It.IsAny<DatabaseVersion>()), Times.Never());
-        }
-
-        [TestMethod]
-        public void Initialise_Creates_VrsSession()
-        {
-            VrsSession session = null;
-            _Repository
-                .Setup(r => r.VrsSession_Insert(It.IsAny<VrsSession>()))
-                .Callback((VrsSession s) => session = s);
-
-            _Manager.Initialise();
-
-            _Repository.Verify(r => r.VrsSession_Insert(It.IsAny<VrsSession>()), Times.Once());
-            Assert.AreNotEqual(0, session.DatabaseVersionID);
-            Assert.IsTrue(session.CreatedUtc > DateTime.UtcNow.AddMinutes(-2));
         }
 
         [TestMethod]
@@ -190,26 +170,32 @@ namespace Test.VirtualRadar.Library.StateHistory
         }
 
         [TestMethod]
-        public void ConfigurationChange_Updates_Schema()
+        public void Configuration_Change_Replaces_DatabaseInstance_When_Database_Settings_Change()
         {
             new InlineDataTest(this).TestAndAssert(new [] {
-                new { InitialEnabled = false,   InitialFolder = "",     NewEnabled = false, NewFolder = "",     CountExpectedSchemaInit = 0 },
-                new { InitialEnabled = false,   InitialFolder = "",     NewEnabled = false, NewFolder = "new",  CountExpectedSchemaInit = 0 },
-                new { InitialEnabled = false,   InitialFolder = "",     NewEnabled = true,  NewFolder = "",     CountExpectedSchemaInit = 1 },
-                new { InitialEnabled = true,    InitialFolder = "",     NewEnabled = false, NewFolder = "",     CountExpectedSchemaInit = 1 },
-                new { InitialEnabled = true,    InitialFolder = "",     NewEnabled = true,  NewFolder = "",     CountExpectedSchemaInit = 1 },
-                new { InitialEnabled = true,    InitialFolder = "",     NewEnabled = true,  NewFolder = "new",  CountExpectedSchemaInit = 2 },
-                new { InitialEnabled = true,    InitialFolder = "old",  NewEnabled = true,  NewFolder = "",     CountExpectedSchemaInit = 2 },
+                new { InitialEnabled = false,   InitialFolder = "",     NewEnabled = false, NewFolder = "",     ExpectNewDatabaseInstance = false, },
+                new { InitialEnabled = false,   InitialFolder = "",     NewEnabled = false, NewFolder = "new",  ExpectNewDatabaseInstance = true, },
+                new { InitialEnabled = false,   InitialFolder = "",     NewEnabled = true,  NewFolder = "",     ExpectNewDatabaseInstance = true, },
+                new { InitialEnabled = true,    InitialFolder = "",     NewEnabled = false, NewFolder = "",     ExpectNewDatabaseInstance = true, },
+                new { InitialEnabled = true,    InitialFolder = "",     NewEnabled = true,  NewFolder = "",     ExpectNewDatabaseInstance = false, },
+                new { InitialEnabled = true,    InitialFolder = "",     NewEnabled = true,  NewFolder = "new",  ExpectNewDatabaseInstance = true, },
+                new { InitialEnabled = true,    InitialFolder = "old",  NewEnabled = true,  NewFolder = "",     ExpectNewDatabaseInstance = true, },
             }, row => {
                 _Configuration.StateHistorySettings.Enabled =           row.InitialEnabled;
                 _Configuration.StateHistorySettings.NonStandardFolder = row.InitialFolder;
                 _Manager.Initialise();
 
+                var originalDatabaseInstance = _DatabaseInstance;
+                var newDatabaseInstance = TestUtilities.CreateMockImplementation<IStateHistoryDatabaseInstance>();
+
                 _Configuration.StateHistorySettings.Enabled =           row.NewEnabled;
                 _Configuration.StateHistorySettings.NonStandardFolder = row.NewFolder;
                 _SharedConfig.RaiseConfigurationChanged();
 
-                _Repository.Verify(r => r.Schema_Update(), Times.Exactly(row.CountExpectedSchemaInit));
+                newDatabaseInstance.Verify(r => r.Initialise(row.NewEnabled, row.NewFolder), row.ExpectNewDatabaseInstance
+                    ? Times.Once()
+                    : Times.Never()
+                );
             });
         }
     }

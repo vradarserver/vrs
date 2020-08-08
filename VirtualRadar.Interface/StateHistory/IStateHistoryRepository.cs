@@ -26,6 +26,24 @@ namespace VirtualRadar.Interface.StateHistory
     public interface IStateHistoryRepository
     {
         /// <summary>
+        /// True if the database is missing / unusable etc. Calls to any function other than <see cref="Initialise"/>
+        /// are forbidden when the database is missing.
+        /// </summary>
+        bool IsMissing { get; }
+
+        /// <summary>
+        /// True if the repository write modes are switched on. Calls to write functions will thrown an exception if
+        /// writes are disabled.
+        /// </summary>
+        bool WritesEnabled { get; }
+
+        /// <summary>
+        /// Initialises a new object.
+        /// </summary>
+        /// <param name="databaseInstance"></param>
+        void Initialise(IStateHistoryDatabaseInstance databaseInstance);
+
+        /// <summary>
         /// Retrieves the latest database version record.
         /// </summary>
         /// <returns></returns>
