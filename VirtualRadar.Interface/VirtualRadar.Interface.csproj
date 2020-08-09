@@ -246,6 +246,8 @@
     <Compile Include="Settings\TileServerSettings.cs" />
     <Compile Include="StandingData\EnginePlacement.cs" />
     <Compile Include="StateHistory\DatabaseVersion.cs" />
+    <Compile Include="StateHistory\OperatorSnapshot.cs" />
+    <Compile Include="StateHistory\Sha1Fingerprint.cs" />
     <Compile Include="StateHistory\IStateHistoryDatabaseInstance.cs" />
     <Compile Include="StateHistory\IStateHistoryManager.cs" />
     <Compile Include="StateHistory\IStateHistoryRepository.cs" />

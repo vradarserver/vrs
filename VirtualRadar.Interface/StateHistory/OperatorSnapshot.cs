@@ -17,61 +17,56 @@ using System.Threading.Tasks;
 namespace VirtualRadar.Interface.StateHistory
 {
     /// <summary>
-    /// The interface for objects that can store and retrieve state history records.
+    /// Holds a snapshot of an aircraft operator's details.
     /// </summary>
-    /// <remarks>
-    /// State history repositories are not expected to be thread-safe. The code that calls them
-    /// will ensure that concurrent calls won't happen.
-    /// </remarks>
-    public interface IStateHistoryRepository
+    public class OperatorSnapshot : Sha1Fingerprint
     {
         /// <summary>
-        /// True if the database is missing / unusable etc. Calls to any function other than <see cref="Initialise"/>
-        /// are forbidden when the database is missing.
+        /// Gets or sets the unique ID of the snapshot in the database.
         /// </summary>
-        bool IsMissing { get; }
+        public long OperatorSnapshotID { get; set; }
 
         /// <summary>
-        /// True if the repository write modes are switched on. Calls to write functions will thrown an exception if
-        /// writes are disabled.
+        /// Gets or sets the time the snapshot was created.
         /// </summary>
-        bool WritesEnabled { get; }
+        public DateTime CreatedUtc { get; set; }
 
         /// <summary>
-        /// Initialises a new object.
+        /// Gets or sets the operator's 3 character ICAO code.
         /// </summary>
-        /// <param name="databaseInstance"></param>
-        void Initialise(IStateHistoryDatabaseInstance databaseInstance);
+        public string Icao { get; set; }
 
         /// <summary>
-        /// Retrieves the latest database version record.
+        /// Gets or sets the operator's name.
+        /// </summary>
+        public string OperatorName { get; set; }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        public override void TakeFingerprint()
+        {
+            Fingerprint = TakeFingerprint(
+                Icao,
+                OperatorName
+            );
+        }
+
+        /// <summary>
+        /// Returns the fingerprint derived from component parts.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <param name="operatorName"></param>
+        /// <returns></returns>
+        public static byte[] TakeFingerprint(string icao, string operatorName) => CreateFingerprintFromObjects(
+            icao,
+            operatorName
+        );
+
+        /// <summary>
+        /// See base docs.
         /// </summary>
         /// <returns></returns>
-        DatabaseVersion DatabaseVersion_GetLatest();
-
-        /// <summary>
-        /// Saves the database record passed across.
-        /// </summary>
-        /// <param name="record"></param>
-        void DatabaseVersion_Save(DatabaseVersion record);
-
-        /// <summary>
-        /// Either creates a new snapshot record or reads the existing record that has the
-        /// same fingerprint and returns it.
-        /// </summary>
-        /// <param name="snapshot"></param>
-        OperatorSnapshot OperatorSnapshot_GetOrCreate(OperatorSnapshot snapshot);
-
-        /// <summary>
-        /// Updates the schema to the latest version. The application is expected to run this once at
-        /// program startup.
-        /// </summary>
-        void Schema_Update();
-
-        /// <summary>
-        /// Creates a new session record and fills in its ID.
-        /// </summary>
-        /// <param name="session"></param>
-        void VrsSession_Insert(VrsSession session);
+        public override string ToString() => $"[{FingerprintHex}] {OperatorName}";
     }
 }

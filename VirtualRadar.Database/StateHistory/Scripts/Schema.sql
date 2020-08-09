@@ -8,6 +8,22 @@ CREATE TABLE IF NOT EXISTS [DatabaseVersion]
 );
 
 --
+-- OperatorSnapshot (v1)
+--
+CREATE TABLE IF NOT EXISTS [OperatorSnapshot]
+(
+    [OperatorSnapshotID]    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+   ,[CreatedUtc]            DATETIME NOT NULL
+   ,[Fingerprint]           VARBINARY(20) NOT NULL
+   ,[Icao]                  NVARCHAR(80) NULL
+   ,[OperatorName]          NVARCHAR(100) NULL
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS [IX_OperatorSnapshot_Fingerprint]  ON [OperatorSnapshot] ([Fingerprint]);
+CREATE        INDEX IF NOT EXISTS [IX_OperatorSnapshot_Icao]         ON [OperatorSnapshot] ([Icao]);
+CREATE        INDEX IF NOT EXISTS [IX_OperatorSnapshot_OperatorName] ON [OperatorSnapshot] ([OperatorName]);
+
+--
 -- VrsSession (v1)
 --
 CREATE TABLE IF NOT EXISTS [VrsSession]

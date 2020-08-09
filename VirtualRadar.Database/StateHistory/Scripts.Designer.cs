@@ -93,6 +93,31 @@ namespace VirtualRadar.Database.StateHistory {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [OperatorSnapshot] (
+        ///    [CreatedUtc]
+        ///   ,[Fingerprint]
+        ///   ,[Icao]
+        ///   ,[OperatorName]
+        ///) VALUES (
+        ///    @CreatedUtc
+        ///   ,@Fingerprint
+        ///   ,@Icao
+        ///   ,@OperatorName
+        ///)
+        ///ON CONFLICT ([Fingerprint]) DO NOTHING;
+        ///
+        ///SELECT *
+        ///FROM   [OperatorSnapshot]
+        ///WHERE  [Fingerprint] = @Fingerprint;
+        ///.
+        /// </summary>
+        internal static string OperatorSnapshot_GetOrCreate {
+            get {
+                return ResourceManager.GetString("OperatorSnapshot_GetOrCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to --
         ///-- Database Version (v1)
         ///--
@@ -103,15 +128,15 @@ namespace VirtualRadar.Database.StateHistory {
         ///);
         ///
         ///--
-        ///-- VrsSession (v1)
+        ///-- OperatorSnapshot (v1)
         ///--
-        ///CREATE TABLE IF NOT EXISTS [VrsSession]
+        ///CREATE TABLE IF NOT EXISTS [OperatorSnapshot]
         ///(
-        ///    [VrsSessionID]      INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
-        ///   ,[DatabaseVersionID] BIGINT NOT NULL
-        ///   ,[CreatedUtc]        DATETIME NOT NULL
-        ///);
-        ///.
+        ///    [OperatorSnapshotID]    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+        ///   ,[CreatedUtc]            DATETIME NOT NULL
+        ///   ,[Fingerprint]           VARBINARY(20) NOT NULL
+        ///   ,[Icao]                  NVARCHAR(80) NULL
+        ///   ,[OperatorName]       [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Schema {
             get {
