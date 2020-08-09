@@ -47,6 +47,10 @@ namespace Test.VirtualRadar.Library.StateHistory
 
         private void SetupDatabaseInstance(Mock<IStateHistoryDatabaseInstance> mockDatabaseInstance, Mock<IStateHistoryRepository> mockRepository)
         {
+            mockRepository
+                .Setup(r => r.IsMissing)
+                .Returns(false);
+
             mockDatabaseInstance.Setup(r => r.Initialise(It.IsAny<bool>(), It.IsAny<string>()))
                 .Callback((bool writesEnabled, string nonStandardFolder) => {
                     mockDatabaseInstance
@@ -58,8 +62,25 @@ namespace Test.VirtualRadar.Library.StateHistory
                         .Returns(nonStandardFolder);
 
                     mockDatabaseInstance
-                        .SetupGet(r => r.Repository)
-                        .Returns(mockRepository.Object);
+                        .Setup(r => r.DoIfReadable(It.IsAny<Action<IStateHistoryRepository>>()))
+                        .Returns((Action<IStateHistoryRepository> action) => {
+                            var readable = !mockRepository.Object.IsMissing;
+                            if(readable) {
+                                action(mockRepository.Object);
+                            }
+                            return readable;
+                        });
+
+                    mockDatabaseInstance
+                        .Setup(r => r.DoIfWriteable(It.IsAny<Action<IStateHistoryRepository>>()))
+                        .Returns((Action<IStateHistoryRepository> action) => {
+                            var readable = !mockRepository.Object.IsMissing;
+                            var writable = writesEnabled;
+                            if(readable && writable) {
+                                action(mockRepository.Object);
+                            }
+                            return readable && writable;
+                        });
                 });
         }
 

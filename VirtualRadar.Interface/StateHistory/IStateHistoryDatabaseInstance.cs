@@ -47,11 +47,6 @@ namespace VirtualRadar.Interface.StateHistory
         string NonStandardFolder { get; }
 
         /// <summary>
-        /// Gets the repository that the instance is wrapping.
-        /// </summary>
-        IStateHistoryRepository Repository { get; }
-
-        /// <summary>
         /// Initialises a new instance.
         /// </summary>
         /// <param name="writesEnabled"></param>

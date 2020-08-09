@@ -18,12 +18,20 @@ using VirtualRadar.Interface.StateHistory;
 
 namespace VirtualRadar.Library.StateHistory
 {
+    /// <summary>
+    /// Default implementation of <see cref="IStateHistoryDatabaseInstance"/>.
+    /// </summary>
     class StateHistoryDatabaseInstance : IStateHistoryDatabaseInstance
     {
         /// <summary>
         /// The database version ID for the current schema / recording methodology etc.
         /// </summary>
         private const long CurrentDatabaseVersionID = 1;
+
+        /// <summary>
+        /// The repository that this instance wraps.
+        /// </summary>
+        private IStateHistoryRepository _Repository;
 
         /// <summary>
         /// See interface docs.
@@ -38,20 +46,15 @@ namespace VirtualRadar.Library.StateHistory
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IStateHistoryRepository Repository { get; private set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
         /// <param name="writesEnabled"></param>
         /// <param name="nonStandardFolder"></param>
         public void Initialise(bool writesEnabled, string nonStandardFolder)
         {
             WritesEnabled =     writesEnabled;
             NonStandardFolder = nonStandardFolder;
-            Repository =        Factory.Resolve<IStateHistoryRepository>();
+            _Repository =        Factory.Resolve<IStateHistoryRepository>();
 
-            Repository.Initialise(this);
+            _Repository.Initialise(this);
 
             DoIfWriteable(repo => {
                 repo.Schema_Update();
@@ -78,11 +81,11 @@ namespace VirtualRadar.Library.StateHistory
         /// <returns></returns>
         public bool DoIfReadable(Action<IStateHistoryRepository> action)
         {
-            if(!Repository.IsMissing) {
-                action(Repository);
+            if(!_Repository.IsMissing) {
+                action(_Repository);
             }
 
-            return !Repository.IsMissing;
+            return !_Repository.IsMissing;
         }
 
         /// <summary>
@@ -92,7 +95,7 @@ namespace VirtualRadar.Library.StateHistory
         /// <returns></returns>
         public bool DoIfWriteable(Action<IStateHistoryRepository> action)
         {
-            var result = Repository.WritesEnabled;
+            var result = _Repository.WritesEnabled;
             if(result) {
                 result = DoIfReadable(action);
             }

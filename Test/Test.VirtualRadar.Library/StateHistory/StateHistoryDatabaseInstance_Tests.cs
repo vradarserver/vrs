@@ -47,7 +47,6 @@ namespace Test.VirtualRadar.Library.StateHistory
         public void Ctor_Initialises_To_Known_State()
         {
             Assert.IsNull(_DatabaseInstance.NonStandardFolder);
-            Assert.IsNull(_DatabaseInstance.Repository);
         }
 
         [TestMethod]
@@ -63,7 +62,6 @@ namespace Test.VirtualRadar.Library.StateHistory
 
                 Assert.AreEqual(row.Enabled,            _DatabaseInstance.WritesEnabled);
                 Assert.AreEqual(row.NonStandardFolder,  _DatabaseInstance.NonStandardFolder);
-                Assert.AreSame(_Repository.Object,      _DatabaseInstance.Repository);
                 _Repository.Verify(r => r.Initialise(_DatabaseInstance), Times.Once());
             });
         }
