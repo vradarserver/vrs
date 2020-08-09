@@ -28,7 +28,7 @@ namespace Test.VirtualRadar.Interface.Settings
 
         public static void CheckProperties(StateHistorySettings settings)
         {
-            TestUtilities.TestProperty(settings, nameof(settings.Enabled),              true);
+            TestUtilities.TestProperty(settings, nameof(settings.WritesEnabled),        true);
             TestUtilities.TestProperty(settings, nameof(settings.NonStandardFolder),    "", "Foo");
         }
     }

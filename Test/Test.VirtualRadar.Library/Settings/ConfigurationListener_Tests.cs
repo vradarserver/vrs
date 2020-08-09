@@ -281,6 +281,7 @@ namespace Test.VirtualRadar.Library.Settings
                     { r => r.Enabled,                       r => r.Enabled = !r.Enabled },
                     { r => r.IcaoTimeout,                   r => r.IcaoTimeout += 1 },
                     { r => r.IgnoreAircraftWithNoPosition,  r => r.IgnoreAircraftWithNoPosition = !r.IgnoreAircraftWithNoPosition },
+                    { r => r.Key,                           r => r.Key = Guid.NewGuid() },
                     { r => r.Name,                          r => r.Name = "TEST" },
                     { r => r.ReceiverIds,                   r => r.ReceiverIds.Add(100) },
                     { r => r.ReceiverFlags,                 r => r.ReceiverFlags.Add(new MergedFeedReceiver() { UniqueId = 100, IsMlatFeed = true }) },
@@ -498,6 +499,7 @@ namespace Test.VirtualRadar.Library.Settings
                     { r => r.IdleTimeoutMilliseconds,   r => r.IdleTimeoutMilliseconds++ },
                     { r => r.IsPassive,                 r => r.IsPassive = !r.IsPassive },
                     { r => r.IsSatcomFeed,              r => r.IsSatcomFeed = !r.IsSatcomFeed },
+                    { r => r.Key,                       r => r.Key = Guid.NewGuid() },
                     { r => r.Name,                      r => r.Name = "TEST" },
                     { r => r.Parity,                    r => r.Parity = System.IO.Ports.Parity.Mark },
                     { r => r.Passphrase,                r => r.Passphrase = r.Passphrase + 'A' },
@@ -580,7 +582,7 @@ namespace Test.VirtualRadar.Library.Settings
 
                 var settings = _Configuration.StateHistorySettings;
                 SetValue(settings, propertyName, new Dictionary<Expression<Func<StateHistorySettings,object>>,Action<StateHistorySettings>>() {
-                    { r => r.Enabled,           r => r.Enabled = !r.Enabled },
+                    { r => r.WritesEnabled,     r => r.WritesEnabled = !r.WritesEnabled },
                     { r => r.NonStandardFolder, r => r.NonStandardFolder = "Test" },
                 });
 

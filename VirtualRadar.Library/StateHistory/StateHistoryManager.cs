@@ -51,7 +51,7 @@ namespace VirtualRadar.Library.StateHistory
         {
             var sharedConfiguration = Factory.ResolveSingleton<ISharedConfiguration>();
             var config = sharedConfiguration.Get();
-            Enabled = config.StateHistorySettings.Enabled;
+            Enabled = config.StateHistorySettings.WritesEnabled;
             NonStandardFolder = config.StateHistorySettings.NonStandardFolder;
 
             InitialiseDatabaseWithNewConfiguration();
@@ -84,7 +84,7 @@ namespace VirtualRadar.Library.StateHistory
                 }
             }
 
-            assignConfigValue(config.StateHistorySettings.Enabled,              () => Enabled,              r => Enabled = r);
+            assignConfigValue(config.StateHistorySettings.WritesEnabled,        () => Enabled,              r => Enabled = r);
             assignConfigValue(config.StateHistorySettings.NonStandardFolder,    () => NonStandardFolder,    r => NonStandardFolder = r);
 
             if(raiseConfigurationLoaded) {

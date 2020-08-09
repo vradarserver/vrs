@@ -67,16 +67,16 @@ namespace Test.VirtualRadar.Library.StateHistory
         public void Initialise_Loads_Configuration()
         {
             new InlineDataTest(this).TestAndAssert(new [] {
-                new { Enabled = true,   NonStandardFolder = "Xyz", },
-                new { Enabled = false,  NonStandardFolder = (string)null, },
-                new { Enabled = false,  NonStandardFolder = "", },
+                new { WritesEnabled = true,   NonStandardFolder = "Xyz", },
+                new { WritesEnabled = false,  NonStandardFolder = (string)null, },
+                new { WritesEnabled = false,  NonStandardFolder = "", },
             }, row => {
-                _Configuration.StateHistorySettings.Enabled =           row.Enabled;
+                _Configuration.StateHistorySettings.WritesEnabled =     row.WritesEnabled;
                 _Configuration.StateHistorySettings.NonStandardFolder = row.NonStandardFolder;
 
                 _Manager.Initialise();
 
-                Assert.AreEqual(row.Enabled,            _Manager.Enabled);
+                Assert.AreEqual(row.WritesEnabled,      _Manager.Enabled);
                 Assert.AreEqual(row.NonStandardFolder,  _Manager.NonStandardFolder);
             });
         }
@@ -100,7 +100,7 @@ namespace Test.VirtualRadar.Library.StateHistory
                 new { WritesEnabled = true,     NonStandardFolder = "" },
                 new { WritesEnabled = false,    NonStandardFolder = "Abc" },
             }, row => {
-                _Configuration.StateHistorySettings.Enabled =           row.WritesEnabled;
+                _Configuration.StateHistorySettings.WritesEnabled =     row.WritesEnabled;
                 _Configuration.StateHistorySettings.NonStandardFolder = row.NonStandardFolder;
                 _Manager.Initialise();
 
@@ -113,19 +113,19 @@ namespace Test.VirtualRadar.Library.StateHistory
         {
             new InlineDataTest(this).TestAndAssert(new [] {
                 new {
-                    OldEnabled = false,                     NewEnabled = true,
+                    OldWritesEnabled = false,               NewWritesEnabled = true,
                     OldNonStandardFolder = (string)null,    NewNonStandardFolder = "Abc"
                 },
             }, row => {
-                _Configuration.StateHistorySettings.Enabled =           row.OldEnabled;
+                _Configuration.StateHistorySettings.WritesEnabled =     row.OldWritesEnabled;
                 _Configuration.StateHistorySettings.NonStandardFolder = row.OldNonStandardFolder;
                 _Manager.Initialise();
 
-                _Configuration.StateHistorySettings.Enabled =           row.NewEnabled;
+                _Configuration.StateHistorySettings.WritesEnabled =     row.NewWritesEnabled;
                 _Configuration.StateHistorySettings.NonStandardFolder = row.NewNonStandardFolder;
                 _SharedConfig.RaiseConfigurationChanged();
 
-                Assert.AreEqual(row.NewEnabled,             _Manager.Enabled);
+                Assert.AreEqual(row.NewWritesEnabled,       _Manager.Enabled);
                 Assert.AreEqual(row.NewNonStandardFolder,   _Manager.NonStandardFolder);
             });
         }
@@ -140,7 +140,7 @@ namespace Test.VirtualRadar.Library.StateHistory
 
                 var config = _Configuration.StateHistorySettings;
                 switch(configProperty.Name) {
-                    case nameof(config.Enabled):            config.Enabled = !config.Enabled; break;
+                    case nameof(config.WritesEnabled):      config.WritesEnabled = !config.WritesEnabled; break;
                     case nameof(config.NonStandardFolder):  config.NonStandardFolder = (config.NonStandardFolder ?? "") + "a"; break;
                     default:                                throw new NotImplementedException($"Need code to change {configProperty.Name}");
                 }
@@ -181,14 +181,14 @@ namespace Test.VirtualRadar.Library.StateHistory
                 new { InitialEnabled = true,    InitialFolder = "",     NewEnabled = true,  NewFolder = "new",  ExpectNewDatabaseInstance = true, },
                 new { InitialEnabled = true,    InitialFolder = "old",  NewEnabled = true,  NewFolder = "",     ExpectNewDatabaseInstance = true, },
             }, row => {
-                _Configuration.StateHistorySettings.Enabled =           row.InitialEnabled;
+                _Configuration.StateHistorySettings.WritesEnabled =     row.InitialEnabled;
                 _Configuration.StateHistorySettings.NonStandardFolder = row.InitialFolder;
                 _Manager.Initialise();
 
                 var originalDatabaseInstance = _DatabaseInstance;
                 var newDatabaseInstance = TestUtilities.CreateMockImplementation<IStateHistoryDatabaseInstance>();
 
-                _Configuration.StateHistorySettings.Enabled =           row.NewEnabled;
+                _Configuration.StateHistorySettings.WritesEnabled =     row.NewEnabled;
                 _Configuration.StateHistorySettings.NonStandardFolder = row.NewFolder;
                 _SharedConfig.RaiseConfigurationChanged();
 

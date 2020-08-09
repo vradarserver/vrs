@@ -521,7 +521,7 @@ namespace Test.VirtualRadar.Library.Settings
                         break;
                     case nameof(Configuration.StateHistorySettings):
                         var stateHistorySettings = readBack.StateHistorySettings;
-                        Assert.AreEqual(false, stateHistorySettings.Enabled);
+                        Assert.AreEqual(false, stateHistorySettings.WritesEnabled);
                         Assert.AreEqual("Foo", stateHistorySettings.NonStandardFolder);
                         break;
                     default:
@@ -898,7 +898,7 @@ namespace Test.VirtualRadar.Library.Settings
         private static void CreateKnownStateHistorySettings(Configuration configuration)
         {
             configuration.StateHistorySettings = new StateHistorySettings() {
-                Enabled =           false,
+                WritesEnabled =     false,
                 NonStandardFolder = "Foo",
             };
         }

@@ -12,14 +12,15 @@ namespace VirtualRadar.Interface.Settings
     /// </summary>
     public class StateHistorySettings : INotifyPropertyChanged
     {
-        private bool _Enabled;
+        private bool _WritesEnabled;
         /// <summary>
-        /// Gets or sets a value indicating whether state history is being saved.
+        /// Gets or sets a value indicating whether state history is being saved. Does not affect whether
+        /// state history is read.
         /// </summary>
-        public bool Enabled
+        public bool WritesEnabled
         {
-            get { return _Enabled; }
-            set { SetField(ref _Enabled, value, nameof(Enabled)); }
+            get { return _WritesEnabled; }
+            set { SetField(ref _WritesEnabled, value, nameof(WritesEnabled)); }
         }
 
         private string _NonStandardFolder;
@@ -74,7 +75,7 @@ namespace VirtualRadar.Interface.Settings
         /// </summary>
         public StateHistorySettings()
         {
-            _Enabled = true;
+            _WritesEnabled = true;
             _NonStandardFolder = "";
         }
     }
