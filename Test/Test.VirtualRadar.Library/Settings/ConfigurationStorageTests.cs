@@ -29,7 +29,7 @@ using System.IO;
 namespace Test.VirtualRadar.Library.Settings
 {
     [TestClass]
-    public class ConfigurationStorage_Tests
+    public class ConfigurationStorageTests
     {
         #region Private class - TestProvider
         class TestProvider : IConfigurationStorageProvider

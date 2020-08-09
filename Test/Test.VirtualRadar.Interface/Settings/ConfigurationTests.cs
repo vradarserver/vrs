@@ -22,7 +22,7 @@ using Moq;
 namespace Test.VirtualRadar.Interface.Settings
 {
     [TestClass]
-    public class Configuration_Tests
+    public class ConfigurationTests
     {
         private IClassFactory _ClassFactorySnapshot;
         private Mock<IRuntimeEnvironment> _RuntimeEnvironment;

@@ -22,7 +22,7 @@ using VirtualRadar.Interface.Settings;
 namespace Test.VirtualRadar.Library.Settings
 {
     [TestClass]
-    public class ConfigurationListener_Tests
+    public class ConfigurationListenerTests
     {
         public TestContext                                      TestContext { get; set; }
 
