@@ -76,7 +76,7 @@ namespace Test.VirtualRadar.Library.StateHistory
 
                 _Manager.Initialise();
 
-                Assert.AreEqual(row.WritesEnabled,      _Manager.Enabled);
+                Assert.AreEqual(row.WritesEnabled,      _Manager.WritesEnabled);
                 Assert.AreEqual(row.NonStandardFolder,  _Manager.NonStandardFolder);
             });
         }
@@ -125,7 +125,7 @@ namespace Test.VirtualRadar.Library.StateHistory
                 _Configuration.StateHistorySettings.NonStandardFolder = row.NewNonStandardFolder;
                 _SharedConfig.RaiseConfigurationChanged();
 
-                Assert.AreEqual(row.NewWritesEnabled,       _Manager.Enabled);
+                Assert.AreEqual(row.NewWritesEnabled,       _Manager.WritesEnabled);
                 Assert.AreEqual(row.NewNonStandardFolder,   _Manager.NonStandardFolder);
             });
         }

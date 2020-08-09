@@ -32,7 +32,7 @@ namespace VirtualRadar.Library.StateHistory
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public bool Enabled { get; private set; }
+        public bool WritesEnabled { get; private set; }
 
         /// <summary>
         /// See interface docs.
@@ -51,7 +51,7 @@ namespace VirtualRadar.Library.StateHistory
         {
             var sharedConfiguration = Factory.ResolveSingleton<ISharedConfiguration>();
             var config = sharedConfiguration.Get();
-            Enabled = config.StateHistorySettings.WritesEnabled;
+            WritesEnabled =     config.StateHistorySettings.WritesEnabled;
             NonStandardFolder = config.StateHistorySettings.NonStandardFolder;
 
             InitialiseDatabaseWithNewConfiguration();
@@ -62,7 +62,7 @@ namespace VirtualRadar.Library.StateHistory
         private void InitialiseDatabaseWithNewConfiguration()
         {
             var databaseInstance = Factory.Resolve<IStateHistoryDatabaseInstance>();
-            databaseInstance.Initialise(Enabled, NonStandardFolder);
+            databaseInstance.Initialise(WritesEnabled, NonStandardFolder);
             _DatabaseInstance = databaseInstance;
         }
 
@@ -84,7 +84,7 @@ namespace VirtualRadar.Library.StateHistory
                 }
             }
 
-            assignConfigValue(config.StateHistorySettings.WritesEnabled,        () => Enabled,              r => Enabled = r);
+            assignConfigValue(config.StateHistorySettings.WritesEnabled,        () => WritesEnabled,        r => WritesEnabled = r);
             assignConfigValue(config.StateHistorySettings.NonStandardFolder,    () => NonStandardFolder,    r => NonStandardFolder = r);
 
             if(raiseConfigurationLoaded) {

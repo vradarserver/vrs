@@ -26,7 +26,7 @@ namespace VirtualRadar.Interface.StateHistory
         /// <summary>
         /// Gets the configured Enabled value.
         /// </summary>
-        bool Enabled { get; }
+        bool WritesEnabled { get; }
 
         /// <summary>
         /// Gets the configured NonStandardFolder value.
