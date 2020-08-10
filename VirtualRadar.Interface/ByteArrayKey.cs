@@ -14,59 +14,75 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VirtualRadar.Interface.StateHistory
+namespace VirtualRadar.Interface
 {
     /// <summary>
-    /// Holds a snapshot of an aircraft operator's details.
+    /// Similar to <see cref="ByteArrayComparable"/> except this can be used as a key in dictionaries. Unlike
+    /// <see cref="ByteArrayComparable"/> an empty array and a null array are not considered the same array.
     /// </summary>
-    public class OperatorSnapshot : SnapshotRecord
+    public class ByteArrayKey
     {
         /// <summary>
-        /// Gets or sets the unique ID of the snapshot in the database.
+        /// Gets the byte array that is being used as a key.
         /// </summary>
-        public long OperatorSnapshotID { get; set; }
+        public byte[] Array { get; }
 
         /// <summary>
-        /// Gets or sets the time the snapshot was created.
+        /// Creates a new object.
         /// </summary>
-        public DateTime CreatedUtc { get; set; }
-
-        /// <summary>
-        /// Gets or sets the operator's 3 character ICAO code.
-        /// </summary>
-        public string Icao { get; set; }
-
-        /// <summary>
-        /// Gets or sets the operator's name.
-        /// </summary>
-        public string OperatorName { get; set; }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        public override void TakeFingerprint()
+        /// <param name="array"></param>
+        public ByteArrayKey(byte[] array)
         {
-            Fingerprint = TakeFingerprint(
-                Icao,
-                OperatorName
-            );
+            Array = array;
         }
 
         /// <summary>
-        /// Returns the fingerprint derived from component parts.
+        /// See base docs.
         /// </summary>
-        /// <param name="icao"></param>
-        /// <param name="operatorName"></param>
+        /// <param name="obj"></param>
         /// <returns></returns>
-        public static byte[] TakeFingerprint(string icao, string operatorName) => Sha1Fingerprint.CreateFingerprintFromObjects(
-            icao,
-            operatorName
-        );
+        public override bool Equals(object obj)
+        {
+            var result = Object.ReferenceEquals(this, obj);
+            if(!result) {
+                if(obj is ByteArrayKey other) {
+                    result = Array == null && other.Array == null;
+                    if(!result && Array != null && other.Array != null) {
+                        result = Array.Length == other.Array.Length;
+                        for(var i = 0;result && i < Array.Length;++i) {
+                            result = Array[i] == other.Array[i];
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
 
         /// <summary>
         /// See base docs.
         /// </summary>
         /// <returns></returns>
-        public override string ToString() => $"[{FingerprintHex}] {OperatorName}";
+        public override int GetHashCode()
+        {
+            if(Array == null) {
+                return int.MinValue;
+            }
+
+            var toHashCode = 0L;
+            var len = Array.Length < 9 ? Array.Length : 8;
+            for(var i = 0;i < len;++i) {
+                toHashCode <<= 8;
+                toHashCode |= Array[i];
+            }
+
+            return toHashCode.GetHashCode();
+        }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString() => Array == null ? "<null>" : String.Join("", Array.Select(r => r.ToString("x2")));
     }
 }

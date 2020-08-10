@@ -125,6 +125,7 @@
     <Compile Include="AltitudeType.cs" />
     <Compile Include="BackgroundThreadQueue.cs" />
     <Compile Include="BackgroundThreadQueueMechanism.cs" />
+    <Compile Include="ByteArrayKey.cs" />
     <Compile Include="Callsign.cs" />
     <Compile Include="CollectionHelper.cs" />
     <Compile Include="Database\BaseStationAircraftUpsert.cs" />
@@ -252,6 +253,7 @@
     <Compile Include="StateHistory\IStateHistoryManager.cs" />
     <Compile Include="StateHistory\IStateHistoryRepository.cs" />
     <Compile Include="StateHistory\IStateHistoryRepository_SQLite.cs" />
+    <Compile Include="StateHistory\SnapshotRecord.cs" />
     <Compile Include="StateHistory\VrsSession.cs" />
     <Compile Include="StringBuilderExtensions.cs" />
     <Compile Include="TextContent.cs" />

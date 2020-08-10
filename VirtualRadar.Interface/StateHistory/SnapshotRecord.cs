@@ -17,56 +17,25 @@ using System.Threading.Tasks;
 namespace VirtualRadar.Interface.StateHistory
 {
     /// <summary>
-    /// Holds a snapshot of an aircraft operator's details.
+    /// The base class for records that use SHA1 fingerprints to record a snapshot of
+    /// standing data.
     /// </summary>
-    public class OperatorSnapshot : SnapshotRecord
+    public abstract class SnapshotRecord
     {
         /// <summary>
-        /// Gets or sets the unique ID of the snapshot in the database.
+        /// Gets or sets the fingerprint derived from the record's content.
         /// </summary>
-        public long OperatorSnapshotID { get; set; }
+        public byte[] Fingerprint { get; set; }
 
         /// <summary>
-        /// Gets or sets the time the snapshot was created.
+        /// Gets the fingerprint expressed as a hex string without a prefix.
         /// </summary>
-        public DateTime CreatedUtc { get; set; }
+        public string FingerprintHex => Sha1Fingerprint.ConvertToString(Fingerprint);
 
         /// <summary>
-        /// Gets or sets the operator's 3 character ICAO code.
+        /// When implemented by the derivee this fills the <see cref="Fingerprint"/> property with the
+        /// object's fingerprint.
         /// </summary>
-        public string Icao { get; set; }
-
-        /// <summary>
-        /// Gets or sets the operator's name.
-        /// </summary>
-        public string OperatorName { get; set; }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        public override void TakeFingerprint()
-        {
-            Fingerprint = TakeFingerprint(
-                Icao,
-                OperatorName
-            );
-        }
-
-        /// <summary>
-        /// Returns the fingerprint derived from component parts.
-        /// </summary>
-        /// <param name="icao"></param>
-        /// <param name="operatorName"></param>
-        /// <returns></returns>
-        public static byte[] TakeFingerprint(string icao, string operatorName) => Sha1Fingerprint.CreateFingerprintFromObjects(
-            icao,
-            operatorName
-        );
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString() => $"[{FingerprintHex}] {OperatorName}";
+        public abstract void TakeFingerprint();
     }
 }

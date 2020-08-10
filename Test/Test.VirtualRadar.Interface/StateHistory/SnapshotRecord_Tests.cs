@@ -13,60 +13,48 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Test.Framework;
+using VirtualRadar.Interface.StateHistory;
 
-namespace VirtualRadar.Interface.StateHistory
+namespace Test.VirtualRadar.Interface.StateHistory
 {
     /// <summary>
-    /// Holds a snapshot of an aircraft operator's details.
+    /// Tests on the base class for snapshot records.
     /// </summary>
-    public class OperatorSnapshot : SnapshotRecord
+    [TestClass]
+    public class SnapshotRecord_Tests
     {
-        /// <summary>
-        /// Gets or sets the unique ID of the snapshot in the database.
-        /// </summary>
-        public long OperatorSnapshotID { get; set; }
-
-        /// <summary>
-        /// Gets or sets the time the snapshot was created.
-        /// </summary>
-        public DateTime CreatedUtc { get; set; }
-
-        /// <summary>
-        /// Gets or sets the operator's 3 character ICAO code.
-        /// </summary>
-        public string Icao { get; set; }
-
-        /// <summary>
-        /// Gets or sets the operator's name.
-        /// </summary>
-        public string OperatorName { get; set; }
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        public override void TakeFingerprint()
+        class TestDerivee : SnapshotRecord
         {
-            Fingerprint = TakeFingerprint(
-                Icao,
-                OperatorName
-            );
+            public override void TakeFingerprint()
+            {
+                ;
+            }
         }
 
-        /// <summary>
-        /// Returns the fingerprint derived from component parts.
-        /// </summary>
-        /// <param name="icao"></param>
-        /// <param name="operatorName"></param>
-        /// <returns></returns>
-        public static byte[] TakeFingerprint(string icao, string operatorName) => Sha1Fingerprint.CreateFingerprintFromObjects(
-            icao,
-            operatorName
-        );
+        [TestMethod]
+        public void FingerprintHex_Expresses_Fingerprint_As_Hex_String()
+        {
+            new InlineDataTest(this).TestAndAssert(new [] {
+                new { Fingerprint = (string)null },
+                new { Fingerprint = "" },
+                new { Fingerprint = "7d157d7c000ae27db146575c08ce30df893d3a64" },
+            }, row => {
+                var inputBytes = row.Fingerprint == null ? null : new List<byte>();
+                for(var i = 0;inputBytes != null && i < row.Fingerprint.Length;i += 2) {
+                    inputBytes.Add(
+                        Convert.ToByte(row.Fingerprint.Substring(i, 2), 16)
+                    );
+                }
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString() => $"[{FingerprintHex}] {OperatorName}";
+                var instance = new TestDerivee() {
+                    Fingerprint = inputBytes?.ToArray(),
+                };
+                var actual = instance.FingerprintHex;
+
+                Assert.AreEqual(row.Fingerprint, actual);
+            });
+        }
     }
 }

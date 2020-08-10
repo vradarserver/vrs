@@ -19,32 +19,10 @@ using System.Threading.Tasks;
 namespace VirtualRadar.Interface.StateHistory
 {
     /// <summary>
-    /// The base class for SDM records that have an SHA-1 fingerprint.
+    /// A static class that can be used to create and work with SHA-1 fingerprints.
     /// </summary>
-    public abstract class Sha1Fingerprint
+    public static class Sha1Fingerprint
     {
-        /// <summary>
-        /// Gets or sets the fingerprint expressed as a byte array.
-        /// </summary>
-        public byte[] Fingerprint { get; set; }
-
-        /// <summary>
-        /// Gets the fingerprint expressed as a hex string without a prefix.
-        /// </summary>
-        public string FingerprintHex => ConvertToString(Fingerprint);
-
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString() => FingerprintHex ?? "<null>";
-
-        /// <summary>
-        /// When implemented by the derivee this fills the <see cref="Fingerprint"/> property with the
-        /// object's fingerprint.
-        /// </summary>
-        public abstract void TakeFingerprint();
-
         /// <summary>
         /// Creates an SHA1 fingerprint from a string.
         /// </summary>

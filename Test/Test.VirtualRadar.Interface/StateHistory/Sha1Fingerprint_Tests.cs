@@ -9,10 +9,7 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Test.Framework;
 using VirtualRadar.Interface.StateHistory;
@@ -22,38 +19,6 @@ namespace Test.VirtualRadar.Interface.StateHistory
     [TestClass]
     public class Sha1Fingerprint_Tests
     {
-        class TestFingerprintClass : Sha1Fingerprint
-        {
-            public override void TakeFingerprint()
-            {
-                ;
-            }
-        }
-
-        [TestMethod]
-        public void FingerprintHex_Expresses_Fingerprint_As_Hex_String()
-        {
-            new InlineDataTest(this).TestAndAssert(new [] {
-                new { Fingerprint = (string)null },
-                new { Fingerprint = "" },
-                new { Fingerprint = "7d157d7c000ae27db146575c08ce30df893d3a64" },
-            }, row => {
-                var inputBytes = row.Fingerprint == null ? null : new List<byte>();
-                for(var i = 0;inputBytes != null && i < row.Fingerprint.Length;i += 2) {
-                    inputBytes.Add(
-                        Convert.ToByte(row.Fingerprint.Substring(i, 2), 16)
-                    );
-                }
-
-                var instance = new TestFingerprintClass() {
-                    Fingerprint = inputBytes?.ToArray(),
-                };
-                var actual = instance.FingerprintHex;
-
-                Assert.AreEqual(row.Fingerprint, actual);
-            });
-        }
-
         [TestMethod]
         public void CreateFingerprintFromText_Produces_Correct_Results()
         {

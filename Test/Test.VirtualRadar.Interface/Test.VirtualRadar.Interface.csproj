@@ -113,6 +113,7 @@
     <Compile Include="BaseStation\BaseStationSupplementaryMessageTests.cs" />
     <Compile Include="BaseStation\BaseStationMessageTests.cs" />
     <Compile Include="BaseStation\BaseStationTranslatorExceptionTests.cs" />
+    <Compile Include="ByteArrayKey_Tests.cs" />
     <Compile Include="CallsignTests.cs" />
     <Compile Include="CustomConvertTests.cs" />
     <Compile Include="EventHelperTests.cs" />
@@ -187,6 +188,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StateHistory\OperatorSnapshot_Tests.cs" />
     <Compile Include="StateHistory\Sha1Fingerprint_Tests.cs" />
+    <Compile Include="StateHistory\SnapshotRecord_Tests.cs" />
     <Compile Include="StreamHelperTests.cs" />
     <Compile Include="StringDeduplicatorTests.cs" />
     <Compile Include="TextContentTests.cs" />
