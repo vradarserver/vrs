@@ -27,10 +27,32 @@ namespace Test.VirtualRadar.Interface.StateHistory
     {
         class TestDerivee : SnapshotRecord
         {
-            public override void TakeFingerprint()
-            {
-                ;
-            }
+            public byte[] FingerprintToReturn { get; set; }
+
+            protected override byte[] FingerprintProperties() => FingerprintToReturn;
+        }
+
+        [TestMethod]
+        public void TakeFingerprint_Fills_Fingerprint_Property()
+        {
+            var expected = new byte[] { 1, 2, 3 };
+            var derivee = new TestDerivee() {
+                FingerprintToReturn = expected,
+            };
+
+            derivee.TakeFingerprint();
+
+            Assert.IsTrue(expected.SequenceEqual(derivee.Fingerprint));
+        }
+
+        [TestMethod]
+        public void TakeFingerprint_Fills_CreatedUtc_Property()
+        {
+            var derivee = new TestDerivee();
+
+            derivee.TakeFingerprint();
+
+            Assert.IsTrue(derivee.CreatedUtc > DateTime.UtcNow.AddMinutes(-1));
         }
 
         [TestMethod]

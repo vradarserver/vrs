@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Text;
 using System.Threading.Tasks;
 using InterfaceFactory;
@@ -34,6 +35,18 @@ namespace VirtualRadar.Library.StateHistory
         private IStateHistoryRepository _Repository;
 
         /// <summary>
+        /// The cache of known objects indexed by fingerprint.
+        /// </summary>
+        private MemoryCache _Cache = new MemoryCache("StateHistoryDatabaseInstance cache");
+
+        /// <summary>
+        /// The policy to use when adding records to the cache.
+        /// </summary>
+        private CacheItemPolicy _CacheItemPolicy = new CacheItemPolicy() {
+            SlidingExpiration = new TimeSpan(0, 10, 0),
+        };
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         public bool WritesEnabled { get; private set; }
@@ -42,6 +55,34 @@ namespace VirtualRadar.Library.StateHistory
         /// See interface docs.
         /// </summary>
         public string NonStandardFolder { get; private set; }
+
+        /// <summary>
+        /// Finalises the object.
+        /// </summary>
+        ~StateHistoryDatabaseInstance()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes of or finalises the object.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposing) {
+                _Cache.Dispose();
+            }
+        }
 
         /// <summary>
         /// See interface docs.
@@ -99,6 +140,39 @@ namespace VirtualRadar.Library.StateHistory
             if(result) {
                 result = DoIfReadable(action);
             }
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <param name="operatorName"></param>
+        /// <returns></returns>
+        public OperatorSnapshot Operator_GetOrCreate(string icao, string operatorName)
+        {
+            OperatorSnapshot result = null;
+
+            DoIfWriteable(repo => {
+                var cache = _Cache;
+                var fingerprint = OperatorSnapshot.TakeFingerprint(
+                    icao,
+                    operatorName
+                );
+                var key = Sha1Fingerprint.ConvertToString(fingerprint);
+                result = cache.Get(key) as OperatorSnapshot;
+                if(result == null) {
+                    result = repo.OperatorSnapshot_GetOrCreate(
+                        fingerprint,
+                        DateTime.UtcNow,
+                        icao,
+                        operatorName
+                    );
+
+                    cache.Add(key, result, _CacheItemPolicy);
+                }
+            });
 
             return result;
         }

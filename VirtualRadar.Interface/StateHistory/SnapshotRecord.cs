@@ -23,6 +23,11 @@ namespace VirtualRadar.Interface.StateHistory
     public abstract class SnapshotRecord
     {
         /// <summary>
+        /// Gets or sets the time that the fingerprint was established / snapshot was taken.
+        /// </summary>
+        public DateTime CreatedUtc { get; set; }
+
+        /// <summary>
         /// Gets or sets the fingerprint derived from the record's content.
         /// </summary>
         public byte[] Fingerprint { get; set; }
@@ -33,9 +38,19 @@ namespace VirtualRadar.Interface.StateHistory
         public string FingerprintHex => Sha1Fingerprint.ConvertToString(Fingerprint);
 
         /// <summary>
-        /// When implemented by the derivee this fills the <see cref="Fingerprint"/> property with the
-        /// object's fingerprint.
+        /// Fills the <see cref="Fingerprint"/> property with the object's fingerprint and
+        /// <see cref="CreatedUtc"/> with the current time.
         /// </summary>
-        public abstract void TakeFingerprint();
+        public void TakeFingerprint()
+        {
+            CreatedUtc = DateTime.UtcNow;
+            Fingerprint = FingerprintProperties();
+        }
+
+        /// <summary>
+        /// When overridden by the derivee this returns the fingerprint for all properties except
+        /// for the ID and everything on the base.
+        /// </summary>
+        protected abstract byte[] FingerprintProperties();
     }
 }

@@ -34,7 +34,7 @@ namespace VirtualRadar.Interface.StateHistory
     /// settings on the instance.
     /// </para>
     /// </remarks>
-    public interface IStateHistoryDatabaseInstance
+    public interface IStateHistoryDatabaseInstance : IDisposable
     {
         /// <summary>
         /// Gets a value indicating that database writes are enabled.
@@ -66,5 +66,13 @@ namespace VirtualRadar.Interface.StateHistory
         /// <param name="action"></param>
         /// <returns>True if the repository supports write actions, false otherwise.</returns>
         bool DoIfWriteable(Action<IStateHistoryRepository> action);
+
+        /// <summary>
+        /// Returns a snapshot for the values passed across. Returns null if writes are disabled.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <param name="operatorName"></param>
+        /// <returns></returns>
+        OperatorSnapshot Operator_GetOrCreate(string icao, string operatorName);
     }
 }

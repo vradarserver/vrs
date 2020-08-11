@@ -84,16 +84,19 @@ namespace VirtualRadar.Database.StateHistory
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="snapshot"></param>
+        /// <param name="fingerprint"></param>
+        /// <param name="createdUtc"></param>
+        /// <param name="icao"></param>
+        /// <param name="operatorName"></param>
         /// <returns></returns>
-        public OperatorSnapshot OperatorSnapshot_GetOrCreate(OperatorSnapshot snapshot)
+        public OperatorSnapshot OperatorSnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, string icao, string operatorName)
         {
             using(var connection = OpenConnection(forWrite: true)) {
                 return connection.Query<OperatorSnapshot>(Scripts.OperatorSnapshot_GetOrCreate, new {
-                    snapshot.CreatedUtc,
-                    snapshot.Fingerprint,
-                    snapshot.Icao,
-                    snapshot.OperatorName,
+                    createdUtc,
+                    fingerprint,
+                    icao,
+                    operatorName,
                 })
                 .FirstOrDefault();
             }

@@ -217,6 +217,10 @@ namespace Test.VirtualRadar.Library.StateHistory
                     ? Times.Once()
                     : Times.Never()
                 );
+
+                if(row.ExpectNewDatabaseInstance) {
+                    originalDatabaseInstance.Verify(r => r.Dispose(), Times.Once());
+                }
             });
         }
     }

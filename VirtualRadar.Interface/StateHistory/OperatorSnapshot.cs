@@ -27,11 +27,6 @@ namespace VirtualRadar.Interface.StateHistory
         public long OperatorSnapshotID { get; set; }
 
         /// <summary>
-        /// Gets or sets the time the snapshot was created.
-        /// </summary>
-        public DateTime CreatedUtc { get; set; }
-
-        /// <summary>
         /// Gets or sets the operator's 3 character ICAO code.
         /// </summary>
         public string Icao { get; set; }
@@ -44,9 +39,9 @@ namespace VirtualRadar.Interface.StateHistory
         /// <summary>
         /// See base docs.
         /// </summary>
-        public override void TakeFingerprint()
+        protected override byte[] FingerprintProperties()
         {
-            Fingerprint = TakeFingerprint(
+            return TakeFingerprint(
                 Icao,
                 OperatorName
             );

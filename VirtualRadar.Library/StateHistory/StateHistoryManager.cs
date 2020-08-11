@@ -61,9 +61,15 @@ namespace VirtualRadar.Library.StateHistory
 
         private void InitialiseDatabaseWithNewConfiguration()
         {
+            var oldDatabaseInstance = _DatabaseInstance;
+
             var databaseInstance = Factory.Resolve<IStateHistoryDatabaseInstance>();
             databaseInstance.Initialise(WritesEnabled, NonStandardFolder);
             _DatabaseInstance = databaseInstance;
+
+            if(oldDatabaseInstance != null) {
+                oldDatabaseInstance.Dispose();
+            }
         }
 
         /// <summary>

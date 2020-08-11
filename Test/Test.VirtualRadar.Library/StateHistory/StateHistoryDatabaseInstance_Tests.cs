@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -40,6 +41,7 @@ namespace Test.VirtualRadar.Library.StateHistory
         [TestCleanup]
         public void TestCleanup()
         {
+            _DatabaseInstance.Dispose();
             Factory.RestoreSnapshot(_Snapshot);
         }
 
@@ -180,6 +182,80 @@ namespace Test.VirtualRadar.Library.StateHistory
 
                 Assert.AreEqual(row.ExpectWriteable, canReadDatabase);
                 Assert.AreEqual(row.ExpectWriteable, called);
+            });
+        }
+
+        [TestMethod]
+        public void Operator_GetOrCreate_Returns_Null_If_Not_Writeable()
+        {
+            _DatabaseInstance.Initialise(false, null);
+            Assert.IsNull(_DatabaseInstance.Operator_GetOrCreate("ABC", "Def"));
+        }
+
+        [TestMethod]
+        public void Operator_GetOrCreate_Calls_Repository_GetOrCreate()
+        {
+            new InlineDataTest(this).TestAndAssert(new [] {
+                new { Icao = (string)null,  OperatorName = (string)null, },
+                new { Icao = "VIR",         OperatorName = "Virgin Atlantic", },
+            }, row => {
+                var record = new OperatorSnapshot();
+                _Repository
+                    .Setup(r => r.OperatorSnapshot_GetOrCreate(
+                        It.Is<byte[]>(p => p.SequenceEqual(OperatorSnapshot.TakeFingerprint(
+                            row.Icao,
+                            row.OperatorName
+                        ))),
+                        It.IsAny<DateTime>(),
+                        row.Icao,
+                        row.OperatorName
+                    ))
+                    .Returns(record);
+                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
+
+                var actual = _DatabaseInstance.Operator_GetOrCreate(
+                    row.Icao,
+                    row.OperatorName
+                );
+
+                Assert.AreSame(record, actual);
+            });
+        }
+
+        [TestMethod]
+        public void Operator_GetOrCreate_Caches_Results()
+        {
+            new InlineDataTest(this).TestAndAssert(new [] {
+                new { Icao = "BAW", OperatorName = "British Airways", },
+            }, row => {
+                var record = new OperatorSnapshot() {
+                    Icao =          row.Icao,
+                    OperatorName =  row.OperatorName,
+                };
+                var callCount = 0;
+                _Repository
+                    .Setup(r => r.OperatorSnapshot_GetOrCreate(
+                        It.IsAny<byte[]>(),
+                        It.IsAny<DateTime>(),
+                        It.IsAny<string>(),
+                        It.IsAny<string>()
+                    ))
+                    .Callback(() => ++callCount)
+                    .Returns(record);
+                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
+
+                var firstResult = _DatabaseInstance.Operator_GetOrCreate(
+                    row.Icao,
+                    row.OperatorName
+                );
+
+                var secondResult = _DatabaseInstance.Operator_GetOrCreate(
+                    row.Icao,
+                    row.OperatorName
+                );
+
+                Assert.AreSame(firstResult, secondResult);
+                Assert.AreEqual(1, callCount);
             });
         }
     }
