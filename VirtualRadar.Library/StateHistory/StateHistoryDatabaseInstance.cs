@@ -151,27 +151,16 @@ namespace VirtualRadar.Library.StateHistory
         /// <returns></returns>
         public CountrySnapshot Country_GetOrCreate(string countryName)
         {
-            CountrySnapshot result = null;
-
-            DoIfWriteable(repo => {
-                var cache = _Cache;
-                var fingerprint = CountrySnapshot.TakeFingerprint(
+            return Snapshot_GetOrCreate(
+                () => CountrySnapshot.TakeFingerprint(
                     countryName
-                );
-                var key = Sha1Fingerprint.ConvertToString(fingerprint);
-                result = cache.Get(key) as CountrySnapshot;
-                if(result == null) {
-                    result = repo.CountrySnapshot_GetOrCreate(
-                        fingerprint,
-                        DateTime.UtcNow,
-                        countryName
-                    );
-
-                    cache.Add(key, result, _CacheItemPolicy);
-                }
-            });
-
-            return result;
+                ),
+                (repo, fingerprint, now) => repo.CountrySnapshot_GetOrCreate(
+                    fingerprint,
+                    now,
+                    countryName
+                )
+            );
         }
 
         /// <summary>
@@ -182,24 +171,32 @@ namespace VirtualRadar.Library.StateHistory
         /// <returns></returns>
         public OperatorSnapshot Operator_GetOrCreate(string icao, string operatorName)
         {
-            OperatorSnapshot result = null;
+            return Snapshot_GetOrCreate(
+                () => OperatorSnapshot.TakeFingerprint(
+                    icao,
+                    operatorName
+                ),
+                (repo, fingerprint, now) => repo.OperatorSnapshot_GetOrCreate(
+                    fingerprint,
+                    now,
+                    icao,
+                    operatorName
+                )
+            );
+        }
+
+        private T Snapshot_GetOrCreate<T>(Func<byte[]> createFingerprint, Func<IStateHistoryRepository, byte[], DateTime, T> getOrCreate)
+            where T: SnapshotRecord
+        {
+            T result = null;
 
             DoIfWriteable(repo => {
                 var cache = _Cache;
-                var fingerprint = OperatorSnapshot.TakeFingerprint(
-                    icao,
-                    operatorName
-                );
+                var fingerprint = createFingerprint();
                 var key = Sha1Fingerprint.ConvertToString(fingerprint);
-                result = cache.Get(key) as OperatorSnapshot;
+                result = cache.Get(key) as T;
                 if(result == null) {
-                    result = repo.OperatorSnapshot_GetOrCreate(
-                        fingerprint,
-                        DateTime.UtcNow,
-                        icao,
-                        operatorName
-                    );
-
+                    result = getOrCreate(repo, fingerprint, DateTime.UtcNow);
                     cache.Add(key, result, _CacheItemPolicy);
                 }
             });
