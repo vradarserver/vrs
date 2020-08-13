@@ -86,6 +86,25 @@ namespace VirtualRadar.Database.StateHistory
         /// </summary>
         /// <param name="fingerprint"></param>
         /// <param name="createdUtc"></param>
+        /// <param name="countryName"></param>
+        /// <returns></returns>
+        public CountrySnapshot CountrySnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, string countryName)
+        {
+            using(var connection = OpenConnection(forWrite: true)) {
+                return connection.Query<CountrySnapshot>(Scripts.CountrySnapshot_GetOrCreate, new {
+                    createdUtc,
+                    fingerprint,
+                    countryName,
+                })
+                .FirstOrDefault();
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="fingerprint"></param>
+        /// <param name="createdUtc"></param>
         /// <param name="icao"></param>
         /// <param name="operatorName"></param>
         /// <returns></returns>

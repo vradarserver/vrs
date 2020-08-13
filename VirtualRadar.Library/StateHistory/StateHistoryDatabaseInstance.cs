@@ -147,6 +147,36 @@ namespace VirtualRadar.Library.StateHistory
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="countryName"></param>
+        /// <returns></returns>
+        public CountrySnapshot Country_GetOrCreate(string countryName)
+        {
+            CountrySnapshot result = null;
+
+            DoIfWriteable(repo => {
+                var cache = _Cache;
+                var fingerprint = CountrySnapshot.TakeFingerprint(
+                    countryName
+                );
+                var key = Sha1Fingerprint.ConvertToString(fingerprint);
+                result = cache.Get(key) as CountrySnapshot;
+                if(result == null) {
+                    result = repo.CountrySnapshot_GetOrCreate(
+                        fingerprint,
+                        DateTime.UtcNow,
+                        countryName
+                    );
+
+                    cache.Add(key, result, _CacheItemPolicy);
+                }
+            });
+
+            return result;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="icao"></param>
         /// <param name="operatorName"></param>
         /// <returns></returns>

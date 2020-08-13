@@ -70,6 +70,13 @@ namespace VirtualRadar.Interface.StateHistory
         /// <summary>
         /// Returns a snapshot for the values passed across. Returns null if writes are disabled.
         /// </summary>
+        /// <param name="countryName"></param>
+        /// <returns></returns>
+        CountrySnapshot Country_GetOrCreate(string countryName);
+
+        /// <summary>
+        /// Returns a snapshot for the values passed across. Returns null if writes are disabled.
+        /// </summary>
         /// <param name="icao"></param>
         /// <param name="operatorName"></param>
         /// <returns></returns>

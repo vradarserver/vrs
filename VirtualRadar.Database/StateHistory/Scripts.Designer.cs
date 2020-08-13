@@ -61,6 +61,31 @@ namespace VirtualRadar.Database.StateHistory {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [OperatorSnapshot] (
+        ///    [CreatedUtc]
+        ///   ,[Fingerprint]
+        ///   ,[Icao]
+        ///   ,[OperatorName]
+        ///) VALUES (
+        ///    @CreatedUtc
+        ///   ,@Fingerprint
+        ///   ,@Icao
+        ///   ,@OperatorName
+        ///)
+        ///ON CONFLICT ([Fingerprint]) DO NOTHING;
+        ///
+        ///SELECT *
+        ///FROM   [OperatorSnapshot]
+        ///WHERE  [Fingerprint] = @Fingerprint;
+        ///.
+        /// </summary>
+        internal static string CountrySnapshot_GetOrCreate {
+            get {
+                return ResourceManager.GetString("CountrySnapshot_GetOrCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SELECT   *
         ///FROM     [DatabaseVersion]
         ///ORDER BY [DatabaseVersionID] DESC
@@ -127,16 +152,19 @@ namespace VirtualRadar.Database.StateHistory {
         ///   ,[CreatedUtc]        DATETIME NOT NULL
         ///);
         ///
+        ///
         ///--
-        ///-- OperatorSnapshot (v1)
+        ///-- CountrySnapshot (v1)
         ///--
-        ///CREATE TABLE IF NOT EXISTS [OperatorSnapshot]
+        ///CREATE TABLE IF NOT EXISTS [CountrySnapshot]
         ///(
-        ///    [OperatorSnapshotID]    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+        ///    [CountrySnapshotID]     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
         ///   ,[CreatedUtc]            DATETIME NOT NULL
         ///   ,[Fingerprint]           VARBINARY(20) NOT NULL
-        ///   ,[Icao]                  NVARCHAR(80) NULL
-        ///   ,[OperatorName]       [rest of string was truncated]&quot;;.
+        ///   ,[CountryName]           NVARCHAR(80) NULL
+        ///);
+        ///
+        ///CREATE UNIQUE INDE [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Schema {
             get {

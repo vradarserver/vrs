@@ -44,6 +44,15 @@ namespace VirtualRadar.Interface.StateHistory
         void Initialise(IStateHistoryDatabaseInstance databaseInstance);
 
         /// <summary>
+        /// Either creates a new snapshot record or reads the existing record that has the
+        /// same fingerprint and returns it.
+        /// </summary>
+        /// <param name="fingerprint"></param>
+        /// <param name="createdUtc"></param>
+        /// <param name="countryName"></param>
+        CountrySnapshot CountrySnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, string countryName);
+
+        /// <summary>
         /// Retrieves the latest database version record.
         /// </summary>
         /// <returns></returns>
