@@ -1,4 +1,25 @@
 ﻿--
+-- Database Version (v1)
+--
+CREATE TABLE IF NOT EXISTS [DatabaseVersion]
+(
+    [DatabaseVersionID] INTEGER NOT NULL PRIMARY KEY
+   ,[CreatedUtc]        DATETIME NOT NULL
+);
+
+
+--
+-- VrsSession (v1)
+--
+CREATE TABLE IF NOT EXISTS [VrsSession]
+(
+    [VrsSessionID]      INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+   ,[DatabaseVersionID] BIGINT NOT NULL
+   ,[CreatedUtc]        DATETIME NOT NULL
+);
+
+
+--
 -- CountrySnapshot (v1)
 --
 CREATE TABLE IF NOT EXISTS [CountrySnapshot]
@@ -14,13 +35,18 @@ CREATE        INDEX IF NOT EXISTS [IX_CountrySnapshot_CountryName] ON [CountrySn
 
 
 --
--- Database Version (v1)
+-- ManufacturerSnapshot (v1)
 --
-CREATE TABLE IF NOT EXISTS [DatabaseVersion]
+CREATE TABLE IF NOT EXISTS [ManufacturerSnapshot]
 (
-    [DatabaseVersionID] INTEGER NOT NULL PRIMARY KEY
-   ,[CreatedUtc]        DATETIME NOT NULL
+    [ManufacturerSnapshotID]    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+   ,[CreatedUtc]                DATETIME NOT NULL
+   ,[Fingerprint]               VARBINARY(20) NOT NULL
+   ,[ManufacturerName]          NVARCHAR(80) NULL
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS [IX_ManufacturerSnapshot_Fingerprint]      ON [ManufacturerSnapshot] ([Fingerprint]);
+CREATE        INDEX IF NOT EXISTS [IX_ManufacturerSnapshot_ManufacturerName] ON [ManufacturerSnapshot] ([ManufacturerName]);
 
 
 --
@@ -38,14 +64,3 @@ CREATE TABLE IF NOT EXISTS [OperatorSnapshot]
 CREATE UNIQUE INDEX IF NOT EXISTS [IX_OperatorSnapshot_Fingerprint]  ON [OperatorSnapshot] ([Fingerprint]);
 CREATE        INDEX IF NOT EXISTS [IX_OperatorSnapshot_Icao]         ON [OperatorSnapshot] ([Icao]);
 CREATE        INDEX IF NOT EXISTS [IX_OperatorSnapshot_OperatorName] ON [OperatorSnapshot] ([OperatorName]);
-
-
---
--- VrsSession (v1)
---
-CREATE TABLE IF NOT EXISTS [VrsSession]
-(
-    [VrsSessionID]      INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
-   ,[DatabaseVersionID] BIGINT NOT NULL
-   ,[CreatedUtc]        DATETIME NOT NULL
-);

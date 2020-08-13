@@ -105,6 +105,25 @@ namespace VirtualRadar.Database.StateHistory
         /// </summary>
         /// <param name="fingerprint"></param>
         /// <param name="createdUtc"></param>
+        /// <param name="manufacturerName"></param>
+        /// <returns></returns>
+        public ManufacturerSnapshot ManufacturerSnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, string manufacturerName)
+        {
+            using(var connection = OpenConnection(forWrite: true)) {
+                return connection.Query<ManufacturerSnapshot>(Scripts.ManufacturerSnapshot_GetOrCreate, new {
+                    createdUtc,
+                    fingerprint,
+                    manufacturerName,
+                })
+                .FirstOrDefault();
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="fingerprint"></param>
+        /// <param name="createdUtc"></param>
         /// <param name="icao"></param>
         /// <param name="operatorName"></param>
         /// <returns></returns>

@@ -163,6 +163,7 @@
     <Content Include="Log\Scripts\Session_Insert.sql" />
     <Content Include="Log\Scripts\Session_Update.sql" />
     <Content Include="Log\Scripts\UpdateSchema.sql" />
+    <Content Include="StateHistory\Scripts\ManufacturerSnapshot_GetOrCreate.sql" />
     <Content Include="StateHistory\Scripts\CountrySnapshot_GetOrCreate.sql" />
     <Content Include="StateHistory\Scripts\OperatorSnapshot_GetOrCreate.sql" />
     <Content Include="StateHistory\Scripts\VrsSession_Insert.sql" />

@@ -77,6 +77,13 @@ namespace VirtualRadar.Interface.StateHistory
         /// <summary>
         /// Returns a snapshot for the values passed across. Returns null if writes are disabled.
         /// </summary>
+        /// <param name="manufacturerName"></param>
+        /// <returns></returns>
+        ManufacturerSnapshot Manufacturer_GetOrCreate(string manufacturerName);
+
+        /// <summary>
+        /// Returns a snapshot for the values passed across. Returns null if writes are disabled.
+        /// </summary>
         /// <param name="icao"></param>
         /// <param name="operatorName"></param>
         /// <returns></returns>

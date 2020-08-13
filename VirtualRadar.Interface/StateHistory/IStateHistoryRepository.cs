@@ -70,6 +70,15 @@ namespace VirtualRadar.Interface.StateHistory
         /// </summary>
         /// <param name="fingerprint"></param>
         /// <param name="createdUtc"></param>
+        /// <param name="manufacturerName"></param>
+        ManufacturerSnapshot ManufacturerSnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, string manufacturerName);
+
+        /// <summary>
+        /// Either creates a new snapshot record or reads the existing record that has the
+        /// same fingerprint and returns it.
+        /// </summary>
+        /// <param name="fingerprint"></param>
+        /// <param name="createdUtc"></param>
         /// <param name="icao"></param>
         /// <param name="operatorName"></param>
         OperatorSnapshot OperatorSnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, string icao, string operatorName);

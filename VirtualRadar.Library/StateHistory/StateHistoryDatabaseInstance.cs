@@ -166,6 +166,25 @@ namespace VirtualRadar.Library.StateHistory
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="manufacturerName"></param>
+        /// <returns></returns>
+        public ManufacturerSnapshot Manufacturer_GetOrCreate(string manufacturerName)
+        {
+            return Snapshot_GetOrCreate(
+                () => ManufacturerSnapshot.TakeFingerprint(
+                    manufacturerName
+                ),
+                (repo, fingerprint, now) => repo.ManufacturerSnapshot_GetOrCreate(
+                    fingerprint,
+                    now,
+                    manufacturerName
+                )
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="icao"></param>
         /// <param name="operatorName"></param>
         /// <returns></returns>

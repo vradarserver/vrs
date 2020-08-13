@@ -61,21 +61,19 @@ namespace VirtualRadar.Database.StateHistory {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to INSERT INTO [OperatorSnapshot] (
+        ///   Looks up a localized string similar to INSERT INTO [CountrySnapshot] (
         ///    [CreatedUtc]
         ///   ,[Fingerprint]
-        ///   ,[Icao]
-        ///   ,[OperatorName]
+        ///   ,[CountryName]
         ///) VALUES (
         ///    @CreatedUtc
         ///   ,@Fingerprint
-        ///   ,@Icao
-        ///   ,@OperatorName
+        ///   ,@CountryName
         ///)
         ///ON CONFLICT ([Fingerprint]) DO NOTHING;
         ///
         ///SELECT *
-        ///FROM   [OperatorSnapshot]
+        ///FROM   [CountrySnapshot]
         ///WHERE  [Fingerprint] = @Fingerprint;
         ///.
         /// </summary>
@@ -118,6 +116,29 @@ namespace VirtualRadar.Database.StateHistory {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [ManufacturerSnapshot] (
+        ///    [CreatedUtc]
+        ///   ,[Fingerprint]
+        ///   ,[ManufacturerName]
+        ///) VALUES (
+        ///    @CreatedUtc
+        ///   ,@Fingerprint
+        ///   ,@ManufacturerName
+        ///)
+        ///ON CONFLICT ([Fingerprint]) DO NOTHING;
+        ///
+        ///SELECT *
+        ///FROM   [ManufacturerSnapshot]
+        ///WHERE  [Fingerprint] = @Fingerprint;
+        ///.
+        /// </summary>
+        internal static string ManufacturerSnapshot_GetOrCreate {
+            get {
+                return ResourceManager.GetString("ManufacturerSnapshot_GetOrCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to INSERT INTO [OperatorSnapshot] (
         ///    [CreatedUtc]
         ///   ,[Fingerprint]
@@ -154,17 +175,22 @@ namespace VirtualRadar.Database.StateHistory {
         ///
         ///
         ///--
+        ///-- VrsSession (v1)
+        ///--
+        ///CREATE TABLE IF NOT EXISTS [VrsSession]
+        ///(
+        ///    [VrsSessionID]      INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+        ///   ,[DatabaseVersionID] BIGINT NOT NULL
+        ///   ,[CreatedUtc]        DATETIME NOT NULL
+        ///);
+        ///
+        ///
+        ///--
         ///-- CountrySnapshot (v1)
         ///--
         ///CREATE TABLE IF NOT EXISTS [CountrySnapshot]
         ///(
-        ///    [CountrySnapshotID]     INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
-        ///   ,[CreatedUtc]            DATETIME NOT NULL
-        ///   ,[Fingerprint]           VARBINARY(20) NOT NULL
-        ///   ,[CountryName]           NVARCHAR(80) NULL
-        ///);
-        ///
-        ///CREATE UNIQUE INDE [rest of string was truncated]&quot;;.
+        ///    [Count [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Schema {
             get {

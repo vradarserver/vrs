@@ -186,6 +186,140 @@ namespace Test.VirtualRadar.Library.StateHistory
         }
 
         [TestMethod]
+        public void Country_GetOrCreate_Returns_Null_If_Not_Writeable()
+        {
+            _DatabaseInstance.Initialise(false, null);
+            Assert.IsNull(_DatabaseInstance.Country_GetOrCreate("Abc"));
+        }
+
+        [TestMethod]
+        public void Country_GetOrCreate_Calls_Repository_GetOrCreate()
+        {
+            new InlineDataTest(this).TestAndAssert(new [] {
+                new { CountryName = (string)null, },
+                new { CountryName = "Airstrip One", },
+            }, row => {
+                var record = new CountrySnapshot();
+                _Repository
+                    .Setup(r => r.CountrySnapshot_GetOrCreate(
+                        It.Is<byte[]>(p => p.SequenceEqual(CountrySnapshot.TakeFingerprint(
+                            row.CountryName
+                        ))),
+                        It.IsAny<DateTime>(),
+                        row.CountryName
+                    ))
+                    .Returns(record);
+                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
+
+                var actual = _DatabaseInstance.Country_GetOrCreate(
+                    row.CountryName
+                );
+
+                Assert.AreSame(record, actual);
+            });
+        }
+
+        [TestMethod]
+        public void Country_GetOrCreate_Caches_Results()
+        {
+            new InlineDataTest(this).TestAndAssert(new [] {
+                new { CountryName = "Nod", },
+            }, row => {
+                var record = new CountrySnapshot() {
+                    CountryName = row.CountryName,
+                };
+                var callCount = 0;
+                _Repository
+                    .Setup(r => r.CountrySnapshot_GetOrCreate(
+                        It.IsAny<byte[]>(),
+                        It.IsAny<DateTime>(),
+                        It.IsAny<string>()
+                    ))
+                    .Callback(() => ++callCount)
+                    .Returns(record);
+                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
+
+                var firstResult = _DatabaseInstance.Country_GetOrCreate(
+                    row.CountryName
+                );
+
+                var secondResult = _DatabaseInstance.Country_GetOrCreate(
+                    row.CountryName
+                );
+
+                Assert.AreSame(firstResult, secondResult);
+                Assert.AreEqual(1, callCount);
+            });
+        }
+
+        [TestMethod]
+        public void Manufacturer_GetOrCreate_Returns_Null_If_Not_Writeable()
+        {
+            _DatabaseInstance.Initialise(false, null);
+            Assert.IsNull(_DatabaseInstance.Manufacturer_GetOrCreate("Abc"));
+        }
+
+        [TestMethod]
+        public void Manufacturer_GetOrCreate_Calls_Repository_GetOrCreate()
+        {
+            new InlineDataTest(this).TestAndAssert(new [] {
+                new { ManufacturerName = (string)null, },
+                new { ManufacturerName = "Boeing", },
+            }, row => {
+                var record = new ManufacturerSnapshot();
+                _Repository
+                    .Setup(r => r.ManufacturerSnapshot_GetOrCreate(
+                        It.Is<byte[]>(p => p.SequenceEqual(ManufacturerSnapshot.TakeFingerprint(
+                            row.ManufacturerName
+                        ))),
+                        It.IsAny<DateTime>(),
+                        row.ManufacturerName
+                    ))
+                    .Returns(record);
+                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
+
+                var actual = _DatabaseInstance.Manufacturer_GetOrCreate(
+                    row.ManufacturerName
+                );
+
+                Assert.AreSame(record, actual);
+            });
+        }
+
+        [TestMethod]
+        public void Manufacturer_GetOrCreate_Caches_Results()
+        {
+            new InlineDataTest(this).TestAndAssert(new [] {
+                new { ManufacturerName = "Airbus", },
+            }, row => {
+                var record = new ManufacturerSnapshot() {
+                    ManufacturerName = row.ManufacturerName,
+                };
+                var callCount = 0;
+                _Repository
+                    .Setup(r => r.ManufacturerSnapshot_GetOrCreate(
+                        It.IsAny<byte[]>(),
+                        It.IsAny<DateTime>(),
+                        It.IsAny<string>()
+                    ))
+                    .Callback(() => ++callCount)
+                    .Returns(record);
+                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
+
+                var firstResult = _DatabaseInstance.Manufacturer_GetOrCreate(
+                    row.ManufacturerName
+                );
+
+                var secondResult = _DatabaseInstance.Manufacturer_GetOrCreate(
+                    row.ManufacturerName
+                );
+
+                Assert.AreSame(firstResult, secondResult);
+                Assert.AreEqual(1, callCount);
+            });
+        }
+
+        [TestMethod]
         public void Operator_GetOrCreate_Returns_Null_If_Not_Writeable()
         {
             _DatabaseInstance.Initialise(false, null);
@@ -252,73 +386,6 @@ namespace Test.VirtualRadar.Library.StateHistory
                 var secondResult = _DatabaseInstance.Operator_GetOrCreate(
                     row.Icao,
                     row.OperatorName
-                );
-
-                Assert.AreSame(firstResult, secondResult);
-                Assert.AreEqual(1, callCount);
-            });
-        }
-
-        [TestMethod]
-        public void Country_GetOrCreate_Returns_Null_If_Not_Writeable()
-        {
-            _DatabaseInstance.Initialise(false, null);
-            Assert.IsNull(_DatabaseInstance.Country_GetOrCreate("Abc"));
-        }
-
-        [TestMethod]
-        public void Country_GetOrCreate_Calls_Repository_GetOrCreate()
-        {
-            new InlineDataTest(this).TestAndAssert(new [] {
-                new { CountryName = (string)null, },
-                new { CountryName = "Airstrip One", },
-            }, row => {
-                var record = new CountrySnapshot();
-                _Repository
-                    .Setup(r => r.CountrySnapshot_GetOrCreate(
-                        It.Is<byte[]>(p => p.SequenceEqual(CountrySnapshot.TakeFingerprint(
-                            row.CountryName
-                        ))),
-                        It.IsAny<DateTime>(),
-                        row.CountryName
-                    ))
-                    .Returns(record);
-                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
-
-                var actual = _DatabaseInstance.Country_GetOrCreate(
-                    row.CountryName
-                );
-
-                Assert.AreSame(record, actual);
-            });
-        }
-
-        [TestMethod]
-        public void Country_GetOrCreate_Caches_Results()
-        {
-            new InlineDataTest(this).TestAndAssert(new [] {
-                new { CountryName = "Nod", },
-            }, row => {
-                var record = new CountrySnapshot() {
-                    CountryName = row.CountryName,
-                };
-                var callCount = 0;
-                _Repository
-                    .Setup(r => r.CountrySnapshot_GetOrCreate(
-                        It.IsAny<byte[]>(),
-                        It.IsAny<DateTime>(),
-                        It.IsAny<string>()
-                    ))
-                    .Callback(() => ++callCount)
-                    .Returns(record);
-                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
-
-                var firstResult = _DatabaseInstance.Country_GetOrCreate(
-                    row.CountryName
-                );
-
-                var secondResult = _DatabaseInstance.Country_GetOrCreate(
-                    row.CountryName
                 );
 
                 Assert.AreSame(firstResult, secondResult);
