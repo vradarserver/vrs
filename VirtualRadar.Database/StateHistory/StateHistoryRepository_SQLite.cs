@@ -106,6 +106,27 @@ namespace VirtualRadar.Database.StateHistory
         /// <param name="fingerprint"></param>
         /// <param name="createdUtc"></param>
         /// <param name="enumValue"></param>
+        /// <param name="enginePlacementName"></param>
+        /// <returns></returns>
+        public EnginePlacementSnapshot EnginePlacementSnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, int enumValue, string enginePlacementName)
+        {
+            using(var connection = OpenConnection(forWrite: true)) {
+                return connection.Query<EnginePlacementSnapshot>(Scripts.EnginePlacementSnapshot_GetOrCreate, new {
+                    createdUtc,
+                    fingerprint,
+                    enumValue,
+                    enginePlacementName,
+                })
+                .FirstOrDefault();
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="fingerprint"></param>
+        /// <param name="createdUtc"></param>
+        /// <param name="enumValue"></param>
         /// <param name="engineTypeName"></param>
         /// <returns></returns>
         public EngineTypeSnapshot EngineTypeSnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, int enumValue, string engineTypeName)

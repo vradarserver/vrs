@@ -167,6 +167,28 @@ namespace VirtualRadar.Library.StateHistory
         /// See interface docs.
         /// </summary>
         /// <param name="enumValue"></param>
+        /// <param name="enginePlacementName"></param>
+        /// <returns></returns>
+        public EnginePlacementSnapshot EnginePlacement_GetOrCreate(int enumValue, string enginePlacementName)
+        {
+            return Snapshot_GetOrCreate(
+                () => EnginePlacementSnapshot.TakeFingerprint(
+                    enumValue,
+                    enginePlacementName
+                ),
+                (repo, fingerprint, now) => repo.EnginePlacementSnapshot_GetOrCreate(
+                    fingerprint,
+                    now,
+                    enumValue,
+                    enginePlacementName
+                )
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="enumValue"></param>
         /// <param name="engineTypeName"></param>
         /// <returns></returns>
         public EngineTypeSnapshot EngineType_GetOrCreate(int enumValue, string engineTypeName)

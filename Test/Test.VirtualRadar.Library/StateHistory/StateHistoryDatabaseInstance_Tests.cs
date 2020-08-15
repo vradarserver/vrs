@@ -3,6 +3,7 @@ using System.Linq;
 using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Moq.Language.Flow;
 using Test.Framework;
 using VirtualRadar.Interface.StateHistory;
 
@@ -185,358 +186,324 @@ namespace Test.VirtualRadar.Library.StateHistory
             });
         }
 
-        [TestMethod]
-        public void Country_GetOrCreate_Returns_Null_If_Not_Writeable()
+        /// <summary>
+        /// Base class for GetOrCreate SnapshotRecord tests that common tests can use.
+        /// </summary>
+        /// <typeparam name="TSnapshot"></typeparam>
+        abstract class GetOrCreate_TestParams<TSnapshot>
+            where TSnapshot : SnapshotRecord
         {
-            _DatabaseInstance.Initialise(false, null);
-            Assert.IsNull(_DatabaseInstance.Country_GetOrCreate("Abc"));
+            public abstract TSnapshot CallGetOrCreate(IStateHistoryDatabaseInstance dbi);
+
+            public abstract TSnapshot CreateDummyRecord();
+
+            public abstract Moq.Language.Flow.ISetup<IStateHistoryRepository, TSnapshot> RepositorySetup(Mock<IStateHistoryRepository> repository);
         }
 
-        [TestMethod]
-        public void Country_GetOrCreate_Calls_Repository_GetOrCreate()
+        /// <summary>
+        /// Common GetOrCreate test that confirms that null is always returned when writes are switched off.
+        /// </summary>
+        /// <typeparam name="TSnapshot"></typeparam>
+        /// <param name="rows"></param>
+        private void GetOrCreate_Returns_Null_If_Not_Writeable<TSnapshot>(GetOrCreate_TestParams<TSnapshot>[] rows)
+            where TSnapshot: SnapshotRecord
         {
-            new InlineDataTest(this).TestAndAssert(new [] {
-                new { CountryName = (string)null, },
-                new { CountryName = "Airstrip One", },
-            }, row => {
-                var record = new CountrySnapshot();
-                _Repository
-                    .Setup(r => r.CountrySnapshot_GetOrCreate(
-                        It.Is<byte[]>(p => p.SequenceEqual(CountrySnapshot.TakeFingerprint(
-                            row.CountryName
-                        ))),
-                        It.IsAny<DateTime>(),
-                        row.CountryName
-                    ))
-                    .Returns(record);
+            new InlineDataTest(this).TestAndAssert(rows, row => {
+                _DatabaseInstance.Initialise(false, null);
+                Assert.IsNull(
+                    row.CallGetOrCreate(_DatabaseInstance)
+                );
+            });
+        }
+
+        /// <summary>
+        /// Common GetOrCreate test that confirms that the repository is called to get or create records.
+        /// </summary>
+        /// <typeparam name="TSnapshot"></typeparam>
+        /// <param name="rows"></param>
+        private void GetOrCreate_Calls_Repository_GetOrCreate<TSnapshot>(GetOrCreate_TestParams<TSnapshot>[] rows)
+            where TSnapshot: SnapshotRecord
+        {
+            new InlineDataTest(this).TestAndAssert(rows, row => {
+                var record = row.CreateDummyRecord();
+                row.RepositorySetup(_Repository)
+                   .Returns(record);
                 _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
 
-                var actual = _DatabaseInstance.Country_GetOrCreate(
-                    row.CountryName
-                );
+                var actual = row.CallGetOrCreate(_DatabaseInstance);
 
                 Assert.AreSame(record, actual);
             });
         }
 
-        [TestMethod]
-        public void Country_GetOrCreate_Caches_Results()
+        /// <summary>
+        /// Common GetOrCreate test that confirms that once the repository has supplied a record for a fingerprint
+        /// it will be cached.
+        /// </summary>
+        /// <typeparam name="TSnapshot"></typeparam>
+        /// <param name="rows"></param>
+        private void GetOrCreate_Caches_Results<TSnapshot>(GetOrCreate_TestParams<TSnapshot>[] rows)
+            where TSnapshot: SnapshotRecord
         {
-            new InlineDataTest(this).TestAndAssert(new [] {
-                new { CountryName = "Nod", },
-            }, row => {
-                var record = new CountrySnapshot() {
-                    CountryName = row.CountryName,
-                };
+            new InlineDataTest(this).TestAndAssert(rows, row => {
+                var record = row.CreateDummyRecord();
                 var callCount = 0;
-                _Repository
-                    .Setup(r => r.CountrySnapshot_GetOrCreate(
-                        It.IsAny<byte[]>(),
-                        It.IsAny<DateTime>(),
-                        It.IsAny<string>()
-                    ))
-                    .Callback(() => ++callCount)
-                    .Returns(record);
+
+                row.RepositorySetup(_Repository)
+                   .Callback(() => ++callCount)
+                   .Returns(record);
                 _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
 
-                var firstResult = _DatabaseInstance.Country_GetOrCreate(
-                    row.CountryName
-                );
-
-                var secondResult = _DatabaseInstance.Country_GetOrCreate(
-                    row.CountryName
-                );
+                var firstResult = row.CallGetOrCreate(_DatabaseInstance);
+                var secondResult = row.CallGetOrCreate(_DatabaseInstance);
 
                 Assert.AreSame(firstResult, secondResult);
                 Assert.AreEqual(1, callCount);
             });
         }
 
-        [TestMethod]
-        public void Manufacturer_GetOrCreate_Returns_Null_If_Not_Writeable()
+        /// <summary>
+        /// CountrySnapshot GetOrCreate tests
+        /// </summary>
+        class Country_GetOrCreate_TestParams : GetOrCreate_TestParams<CountrySnapshot>
         {
-            _DatabaseInstance.Initialise(false, null);
-            Assert.IsNull(_DatabaseInstance.Manufacturer_GetOrCreate("Abc"));
+            public string CountryName { get; set; }
+
+            public static Country_GetOrCreate_TestParams[] Rows = new Country_GetOrCreate_TestParams[] {
+                new Country_GetOrCreate_TestParams() { CountryName = null },
+                new Country_GetOrCreate_TestParams() { CountryName = "Airstrip One" },
+            };
+
+            public override CountrySnapshot CallGetOrCreate(IStateHistoryDatabaseInstance dbi) => dbi.Country_GetOrCreate(CountryName);
+
+            public override CountrySnapshot CreateDummyRecord() => new CountrySnapshot() {
+                CountryName = CountryName,
+            };
+
+            public override ISetup<IStateHistoryRepository, CountrySnapshot> RepositorySetup(Mock<IStateHistoryRepository> repository) => repository
+                .Setup(r => r.CountrySnapshot_GetOrCreate(
+                    It.Is<byte[]>(p => p.SequenceEqual(CountrySnapshot.TakeFingerprint(
+                        CountryName
+                    ))),
+                    It.IsAny<DateTime>(),
+                    CountryName
+                ));
         }
 
         [TestMethod]
-        public void Manufacturer_GetOrCreate_Calls_Repository_GetOrCreate()
+        public void Country_GetOrCreate_Returns_Null_If_Not_Writeable() => GetOrCreate_Returns_Null_If_Not_Writeable(Country_GetOrCreate_TestParams.Rows);
+
+        [TestMethod]
+        public void Country_GetOrCreate_Calls_Repository_GetOrCreate() => GetOrCreate_Calls_Repository_GetOrCreate(Country_GetOrCreate_TestParams.Rows);
+
+        [TestMethod]
+        public void Country_GetOrCreate_Caches_Results() => GetOrCreate_Caches_Results(Country_GetOrCreate_TestParams.Rows);
+
+
+        /// <summary>
+        /// EnginePlacementSnapshot GetOrCreate tests
+        /// </summary>
+        class EnginePlacement_GetOrCreate_TestParams : GetOrCreate_TestParams<EnginePlacementSnapshot>
         {
-            new InlineDataTest(this).TestAndAssert(new [] {
-                new { ManufacturerName = (string)null, },
-                new { ManufacturerName = "Boeing", },
-            }, row => {
-                var record = new ManufacturerSnapshot();
-                _Repository
-                    .Setup(r => r.ManufacturerSnapshot_GetOrCreate(
-                        It.Is<byte[]>(p => p.SequenceEqual(ManufacturerSnapshot.TakeFingerprint(
-                            row.ManufacturerName
-                        ))),
-                        It.IsAny<DateTime>(),
-                        row.ManufacturerName
-                    ))
-                    .Returns(record);
-                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
+            public int EnumValue { get; set; }
 
-                var actual = _DatabaseInstance.Manufacturer_GetOrCreate(
-                    row.ManufacturerName
-                );
+            public string EnginePlacementName { get; set; }
 
-                Assert.AreSame(record, actual);
-            });
+            public static EnginePlacement_GetOrCreate_TestParams[] Rows = new EnginePlacement_GetOrCreate_TestParams[] {
+                new EnginePlacement_GetOrCreate_TestParams() { EnumValue = 72, EnginePlacementName = "Nose", },
+            };
+
+            public override EnginePlacementSnapshot CallGetOrCreate(IStateHistoryDatabaseInstance dbi) => dbi.EnginePlacement_GetOrCreate(EnumValue, EnginePlacementName);
+
+            public override EnginePlacementSnapshot CreateDummyRecord() => new EnginePlacementSnapshot() {
+                EnumValue =             EnumValue,
+                EnginePlacementName =   EnginePlacementName,
+            };
+
+            public override ISetup<IStateHistoryRepository, EnginePlacementSnapshot> RepositorySetup(Mock<IStateHistoryRepository> repository) => repository
+                .Setup(r => r.EnginePlacementSnapshot_GetOrCreate(
+                    It.Is<byte[]>(p => p.SequenceEqual(EnginePlacementSnapshot.TakeFingerprint(
+                        EnumValue,
+                        EnginePlacementName
+                    ))),
+                    It.IsAny<DateTime>(),
+                    EnumValue,
+                    EnginePlacementName
+                ));
         }
 
         [TestMethod]
-        public void Manufacturer_GetOrCreate_Caches_Results()
+        public void EnginePlacement_GetOrCreate_Returns_Null_If_Not_Writeable() => GetOrCreate_Returns_Null_If_Not_Writeable(EnginePlacement_GetOrCreate_TestParams.Rows);
+
+        [TestMethod]
+        public void EnginePlacement_GetOrCreate_Calls_Repository_GetOrCreate() => GetOrCreate_Calls_Repository_GetOrCreate(EnginePlacement_GetOrCreate_TestParams.Rows);
+
+        [TestMethod]
+        public void EnginePlacement_GetOrCreate_Caches_Results() => GetOrCreate_Caches_Results(EnginePlacement_GetOrCreate_TestParams.Rows);
+
+
+        /// <summary>
+        /// EngineTypeSnapshot GetOrCreate tests
+        /// </summary>
+        class EngineType_GetOrCreate_TestParams : GetOrCreate_TestParams<EngineTypeSnapshot>
         {
-            new InlineDataTest(this).TestAndAssert(new [] {
-                new { ManufacturerName = "Airbus", },
-            }, row => {
-                var record = new ManufacturerSnapshot() {
-                    ManufacturerName = row.ManufacturerName,
-                };
-                var callCount = 0;
-                _Repository
-                    .Setup(r => r.ManufacturerSnapshot_GetOrCreate(
-                        It.IsAny<byte[]>(),
-                        It.IsAny<DateTime>(),
-                        It.IsAny<string>()
-                    ))
-                    .Callback(() => ++callCount)
-                    .Returns(record);
-                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
+            public int EnumValue { get; set; }
 
-                var firstResult = _DatabaseInstance.Manufacturer_GetOrCreate(
-                    row.ManufacturerName
-                );
+            public string EngineTypeName { get; set; }
 
-                var secondResult = _DatabaseInstance.Manufacturer_GetOrCreate(
-                    row.ManufacturerName
-                );
+            public static EngineType_GetOrCreate_TestParams[] Rows = new EngineType_GetOrCreate_TestParams[] {
+                new EngineType_GetOrCreate_TestParams() { EnumValue = 72, EngineTypeName = "Piston", },
+            };
 
-                Assert.AreSame(firstResult, secondResult);
-                Assert.AreEqual(1, callCount);
-            });
+            public override EngineTypeSnapshot CallGetOrCreate(IStateHistoryDatabaseInstance dbi) => dbi.EngineType_GetOrCreate(EnumValue, EngineTypeName);
+
+            public override EngineTypeSnapshot CreateDummyRecord() => new EngineTypeSnapshot() {
+                EnumValue =         EnumValue,
+                EngineTypeName =    EngineTypeName,
+            };
+
+            public override ISetup<IStateHistoryRepository, EngineTypeSnapshot> RepositorySetup(Mock<IStateHistoryRepository> repository) => repository
+                .Setup(r => r.EngineTypeSnapshot_GetOrCreate(
+                    It.Is<byte[]>(p => p.SequenceEqual(EngineTypeSnapshot.TakeFingerprint(
+                        EnumValue,
+                        EngineTypeName
+                    ))),
+                    It.IsAny<DateTime>(),
+                    EnumValue,
+                    EngineTypeName
+                ));
         }
 
         [TestMethod]
-        public void Operator_GetOrCreate_Returns_Null_If_Not_Writeable()
+        public void EngineType_GetOrCreate_Returns_Null_If_Not_Writeable() => GetOrCreate_Returns_Null_If_Not_Writeable(EngineType_GetOrCreate_TestParams.Rows);
+
+        [TestMethod]
+        public void EngineType_GetOrCreate_Calls_Repository_GetOrCreate() => GetOrCreate_Calls_Repository_GetOrCreate(EngineType_GetOrCreate_TestParams.Rows);
+
+        [TestMethod]
+        public void EngineType_GetOrCreate_Caches_Results() => GetOrCreate_Caches_Results(EngineType_GetOrCreate_TestParams.Rows);
+
+
+        /// <summary>
+        /// ManufacturerSnapshot GetOrCreate tests
+        /// </summary>
+        class Manufacturer_GetOrCreate_TestParams : GetOrCreate_TestParams<ManufacturerSnapshot>
         {
-            _DatabaseInstance.Initialise(false, null);
-            Assert.IsNull(_DatabaseInstance.Operator_GetOrCreate("ABC", "Def"));
+            public string ManufacturerName { get; set; }
+
+            public static Manufacturer_GetOrCreate_TestParams[] Rows = new Manufacturer_GetOrCreate_TestParams[] {
+                new Manufacturer_GetOrCreate_TestParams() { ManufacturerName = null },
+                new Manufacturer_GetOrCreate_TestParams() { ManufacturerName = "Boeing" },
+            };
+
+            public override ManufacturerSnapshot CallGetOrCreate(IStateHistoryDatabaseInstance dbi) => dbi.Manufacturer_GetOrCreate(ManufacturerName);
+
+            public override ManufacturerSnapshot CreateDummyRecord() => new ManufacturerSnapshot() {
+                ManufacturerName = ManufacturerName,
+            };
+
+            public override ISetup<IStateHistoryRepository, ManufacturerSnapshot> RepositorySetup(Mock<IStateHistoryRepository> repository) => repository
+                .Setup(r => r.ManufacturerSnapshot_GetOrCreate(
+                    It.Is<byte[]>(p => p.SequenceEqual(ManufacturerSnapshot.TakeFingerprint(
+                        ManufacturerName
+                    ))),
+                    It.IsAny<DateTime>(),
+                    ManufacturerName
+                ));
         }
 
         [TestMethod]
-        public void Operator_GetOrCreate_Calls_Repository_GetOrCreate()
+        public void Manufacturer_GetOrCreate_Returns_Null_If_Not_Writeable() => GetOrCreate_Returns_Null_If_Not_Writeable(Manufacturer_GetOrCreate_TestParams.Rows);
+
+        [TestMethod]
+        public void Manufacturer_GetOrCreate_Calls_Repository_GetOrCreate() => GetOrCreate_Calls_Repository_GetOrCreate(Manufacturer_GetOrCreate_TestParams.Rows);
+
+        [TestMethod]
+        public void Manufacturer_GetOrCreate_Caches_Results() => GetOrCreate_Caches_Results(Manufacturer_GetOrCreate_TestParams.Rows);
+
+
+        /// <summary>
+        /// OperatorSnapshot GetOrCreate tests
+        /// </summary>
+        class Operator_GetOrCreate_TestParams : GetOrCreate_TestParams<OperatorSnapshot>
         {
-            new InlineDataTest(this).TestAndAssert(new [] {
-                new { Icao = (string)null,  OperatorName = (string)null, },
-                new { Icao = "VIR",         OperatorName = "Virgin Atlantic", },
-            }, row => {
-                var record = new OperatorSnapshot();
-                _Repository
-                    .Setup(r => r.OperatorSnapshot_GetOrCreate(
-                        It.Is<byte[]>(p => p.SequenceEqual(OperatorSnapshot.TakeFingerprint(
-                            row.Icao,
-                            row.OperatorName
-                        ))),
-                        It.IsAny<DateTime>(),
-                        row.Icao,
-                        row.OperatorName
-                    ))
-                    .Returns(record);
-                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
+            public string Icao { get; set; }
 
-                var actual = _DatabaseInstance.Operator_GetOrCreate(
-                    row.Icao,
-                    row.OperatorName
-                );
+            public string OperatorName { get; set; }
 
-                Assert.AreSame(record, actual);
-            });
+            public static Operator_GetOrCreate_TestParams[] Rows = new Operator_GetOrCreate_TestParams[] {
+                new Operator_GetOrCreate_TestParams() { Icao = null,  OperatorName = null },
+                new Operator_GetOrCreate_TestParams() { Icao = "VIR", OperatorName = "Virgin Atlantic" },
+            };
+
+            public override OperatorSnapshot CallGetOrCreate(IStateHistoryDatabaseInstance dbi) => dbi.Operator_GetOrCreate(Icao, OperatorName);
+
+            public override OperatorSnapshot CreateDummyRecord() => new OperatorSnapshot() {
+                Icao =         Icao,
+                OperatorName = OperatorName,
+            };
+
+            public override ISetup<IStateHistoryRepository, OperatorSnapshot> RepositorySetup(Mock<IStateHistoryRepository> repository) => repository
+                .Setup(r => r.OperatorSnapshot_GetOrCreate(
+                    It.Is<byte[]>(p => p.SequenceEqual(OperatorSnapshot.TakeFingerprint(
+                        Icao,
+                        OperatorName
+                    ))),
+                    It.IsAny<DateTime>(),
+                    Icao,
+                    OperatorName
+                ));
         }
 
         [TestMethod]
-        public void Operator_GetOrCreate_Caches_Results()
+        public void Operator_GetOrCreate_Returns_Null_If_Not_Writeable() => GetOrCreate_Returns_Null_If_Not_Writeable(Operator_GetOrCreate_TestParams.Rows);
+
+        [TestMethod]
+        public void Operator_GetOrCreate_Calls_Repository_GetOrCreate() => GetOrCreate_Calls_Repository_GetOrCreate(Operator_GetOrCreate_TestParams.Rows);
+
+        [TestMethod]
+        public void Operator_GetOrCreate_Caches_Results() => GetOrCreate_Caches_Results(Operator_GetOrCreate_TestParams.Rows);
+
+
+        /// <summary>
+        /// WakeTurbulenceCategorySnapshot GetOrCreate tests
+        /// </summary>
+        class WakeTurbulenceCategory_GetOrCreate_TestParams : GetOrCreate_TestParams<WakeTurbulenceCategorySnapshot>
         {
-            new InlineDataTest(this).TestAndAssert(new [] {
-                new { Icao = "BAW", OperatorName = "British Airways", },
-            }, row => {
-                var record = new OperatorSnapshot() {
-                    Icao =          row.Icao,
-                    OperatorName =  row.OperatorName,
-                };
-                var callCount = 0;
-                _Repository
-                    .Setup(r => r.OperatorSnapshot_GetOrCreate(
-                        It.IsAny<byte[]>(),
-                        It.IsAny<DateTime>(),
-                        It.IsAny<string>(),
-                        It.IsAny<string>()
-                    ))
-                    .Callback(() => ++callCount)
-                    .Returns(record);
-                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
+            public int EnumValue { get; set; }
 
-                var firstResult = _DatabaseInstance.Operator_GetOrCreate(
-                    row.Icao,
-                    row.OperatorName
-                );
+            public string WakeTurbulenceCategoryName { get; set; }
 
-                var secondResult = _DatabaseInstance.Operator_GetOrCreate(
-                    row.Icao,
-                    row.OperatorName
-                );
+            public static WakeTurbulenceCategory_GetOrCreate_TestParams[] Rows = new WakeTurbulenceCategory_GetOrCreate_TestParams[] {
+                new WakeTurbulenceCategory_GetOrCreate_TestParams() { EnumValue = 72, WakeTurbulenceCategoryName = "Heavy", },
+            };
 
-                Assert.AreSame(firstResult, secondResult);
-                Assert.AreEqual(1, callCount);
-            });
+            public override WakeTurbulenceCategorySnapshot CallGetOrCreate(IStateHistoryDatabaseInstance dbi) => dbi.WakeTurbulenceCategory_GetOrCreate(EnumValue, WakeTurbulenceCategoryName);
+
+            public override WakeTurbulenceCategorySnapshot CreateDummyRecord() => new WakeTurbulenceCategorySnapshot() {
+                EnumValue =                     EnumValue,
+                WakeTurbulenceCategoryName =    WakeTurbulenceCategoryName,
+            };
+
+            public override ISetup<IStateHistoryRepository, WakeTurbulenceCategorySnapshot> RepositorySetup(Mock<IStateHistoryRepository> repository) => repository
+                .Setup(r => r.WakeTurbulenceCategorySnapshot_GetOrCreate(
+                    It.Is<byte[]>(p => p.SequenceEqual(WakeTurbulenceCategorySnapshot.TakeFingerprint(
+                        EnumValue,
+                        WakeTurbulenceCategoryName
+                    ))),
+                    It.IsAny<DateTime>(),
+                    EnumValue,
+                    WakeTurbulenceCategoryName
+                ));
         }
 
         [TestMethod]
-        public void WakeTurbulenceCategory_GetOrCreate_Returns_Null_If_Not_Writeable()
-        {
-            _DatabaseInstance.Initialise(false, null);
-            Assert.IsNull(_DatabaseInstance.WakeTurbulenceCategory_GetOrCreate(1, "Abc"));
-        }
+        public void WakeTurbulenceCategory_GetOrCreate_Returns_Null_If_Not_Writeable() => GetOrCreate_Returns_Null_If_Not_Writeable(WakeTurbulenceCategory_GetOrCreate_TestParams.Rows);
 
         [TestMethod]
-        public void WakeTurbulenceCategory_GetOrCreate_Calls_Repository_GetOrCreate()
-        {
-            new InlineDataTest(this).TestAndAssert(new [] {
-                new { EnumValue = 2, WakeTurbulenceCategoryName = "Heavy", },
-            }, row => {
-                var record = new WakeTurbulenceCategorySnapshot();
-                _Repository
-                    .Setup(r => r.WakeTurbulenceCategorySnapshot_GetOrCreate(
-                        It.Is<byte[]>(p => p.SequenceEqual(WakeTurbulenceCategorySnapshot.TakeFingerprint(
-                            row.EnumValue,
-                            row.WakeTurbulenceCategoryName
-                        ))),
-                        It.IsAny<DateTime>(),
-                        row.EnumValue,
-                        row.WakeTurbulenceCategoryName
-                    ))
-                    .Returns(record);
-                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
-
-                var actual = _DatabaseInstance.WakeTurbulenceCategory_GetOrCreate(
-                    row.EnumValue,
-                    row.WakeTurbulenceCategoryName
-                );
-
-                Assert.AreSame(record, actual);
-            });
-        }
+        public void WakeTurbulenceCategory_GetOrCreate_Calls_Repository_GetOrCreate() => GetOrCreate_Calls_Repository_GetOrCreate(WakeTurbulenceCategory_GetOrCreate_TestParams.Rows);
 
         [TestMethod]
-        public void WakeTurbulenceCategory_GetOrCreate_Caches_Results()
-        {
-            new InlineDataTest(this).TestAndAssert(new [] {
-                new { EnumValue = 72, WakeTurbulenceCategoryName = "Medium", },
-            }, row => {
-                var record = new WakeTurbulenceCategorySnapshot() {
-                    EnumValue =                     row.EnumValue,
-                    WakeTurbulenceCategoryName =    row.WakeTurbulenceCategoryName,
-                };
-                var callCount = 0;
-                _Repository
-                    .Setup(r => r.WakeTurbulenceCategorySnapshot_GetOrCreate(
-                        It.IsAny<byte[]>(),
-                        It.IsAny<DateTime>(),
-                        It.IsAny<int>(),
-                        It.IsAny<string>()
-                    ))
-                    .Callback(() => ++callCount)
-                    .Returns(record);
-                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
-
-                var firstResult = _DatabaseInstance.WakeTurbulenceCategory_GetOrCreate(
-                    row.EnumValue,
-                    row.WakeTurbulenceCategoryName
-                );
-
-                var secondResult = _DatabaseInstance.WakeTurbulenceCategory_GetOrCreate(
-                    row.EnumValue,
-                    row.WakeTurbulenceCategoryName
-                );
-
-                Assert.AreSame(firstResult, secondResult);
-                Assert.AreEqual(1, callCount);
-            });
-        }
-
-        [TestMethod]
-        public void EngineType_GetOrCreate_Returns_Null_If_Not_Writeable()
-        {
-            _DatabaseInstance.Initialise(false, null);
-            Assert.IsNull(_DatabaseInstance.EngineType_GetOrCreate(1, "Abc"));
-        }
-
-        [TestMethod]
-        public void EngineType_GetOrCreate_Calls_Repository_GetOrCreate()
-        {
-            new InlineDataTest(this).TestAndAssert(new [] {
-                new { EnumValue = 2, EngineTypeName = "Turbo", },
-            }, row => {
-                var record = new EngineTypeSnapshot();
-                _Repository
-                    .Setup(r => r.EngineTypeSnapshot_GetOrCreate(
-                        It.Is<byte[]>(p => p.SequenceEqual(EngineTypeSnapshot.TakeFingerprint(
-                            row.EnumValue,
-                            row.EngineTypeName
-                        ))),
-                        It.IsAny<DateTime>(),
-                        row.EnumValue,
-                        row.EngineTypeName
-                    ))
-                    .Returns(record);
-                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
-
-                var actual = _DatabaseInstance.EngineType_GetOrCreate(
-                    row.EnumValue,
-                    row.EngineTypeName
-                );
-
-                Assert.AreSame(record, actual);
-            });
-        }
-
-        [TestMethod]
-        public void EngineType_GetOrCreate_Caches_Results()
-        {
-            new InlineDataTest(this).TestAndAssert(new [] {
-                new { EnumValue = 72, EngineTypeName = "Piston", },
-            }, row => {
-                var record = new EngineTypeSnapshot() {
-                    EnumValue =         row.EnumValue,
-                    EngineTypeName =    row.EngineTypeName,
-                };
-                var callCount = 0;
-                _Repository
-                    .Setup(r => r.EngineTypeSnapshot_GetOrCreate(
-                        It.IsAny<byte[]>(),
-                        It.IsAny<DateTime>(),
-                        It.IsAny<int>(),
-                        It.IsAny<string>()
-                    ))
-                    .Callback(() => ++callCount)
-                    .Returns(record);
-                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
-
-                var firstResult = _DatabaseInstance.EngineType_GetOrCreate(
-                    row.EnumValue,
-                    row.EngineTypeName
-                );
-
-                var secondResult = _DatabaseInstance.EngineType_GetOrCreate(
-                    row.EnumValue,
-                    row.EngineTypeName
-                );
-
-                Assert.AreSame(firstResult, secondResult);
-                Assert.AreEqual(1, callCount);
-            });
-        }
+        public void WakeTurbulenceCategory_GetOrCreate_Caches_Results() => GetOrCreate_Caches_Results(WakeTurbulenceCategory_GetOrCreate_TestParams.Rows);
     }
 }
