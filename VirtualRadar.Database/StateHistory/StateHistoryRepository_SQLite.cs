@@ -195,6 +195,27 @@ namespace VirtualRadar.Database.StateHistory
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="fingerprint"></param>
+        /// <param name="createdUtc"></param>
+        /// <param name="enumValue"></param>
+        /// <param name="speciesName"></param>
+        /// <returns></returns>
+        public SpeciesSnapshot SpeciesSnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, int enumValue, string speciesName)
+        {
+            using(var connection = OpenConnection(forWrite: true)) {
+                return connection.Query<SpeciesSnapshot>(Scripts.SpeciesSnapshot_GetOrCreate, new {
+                    createdUtc,
+                    fingerprint,
+                    enumValue,
+                    speciesName,
+                })
+                .FirstOrDefault();
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="session"></param>
         public void VrsSession_Insert(VrsSession session)
         {

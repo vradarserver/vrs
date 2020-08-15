@@ -249,6 +249,31 @@ namespace VirtualRadar.Database.StateHistory {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [SpeciesSnapshot] (
+        ///    [CreatedUtc]
+        ///   ,[Fingerprint]
+        ///   ,[EnumValue]
+        ///   ,[SpeciesName]
+        ///) VALUES (
+        ///    @CreatedUtc
+        ///   ,@Fingerprint
+        ///   ,@EnumValue
+        ///   ,@SpeciesName
+        ///)
+        ///ON CONFLICT ([Fingerprint]) DO NOTHING;
+        ///
+        ///SELECT *
+        ///FROM   [SpeciesSnapshot]
+        ///WHERE  [Fingerprint] = @Fingerprint;
+        ///.
+        /// </summary>
+        internal static string SpeciesSnapshot_GetOrCreate {
+            get {
+                return ResourceManager.GetString("SpeciesSnapshot_GetOrCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to INSERT INTO [VrsSession] (
         ///    [DatabaseVersionID]
         ///   ,[CreatedUtc]

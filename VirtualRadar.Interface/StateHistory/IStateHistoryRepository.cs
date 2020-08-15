@@ -112,6 +112,17 @@ namespace VirtualRadar.Interface.StateHistory
         void Schema_Update();
 
         /// <summary>
+        /// Either creates a new snapshot record or reads the existing record that has the
+        /// same fingerprint and returns it. 
+        /// </summary>
+        /// <param name="fingerprint"></param>
+        /// <param name="createdUtc"></param>
+        /// <param name="enumValue"></param>
+        /// <param name="speciesName"></param>
+        /// <returns></returns>
+        SpeciesSnapshot SpeciesSnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, int enumValue, string speciesName);
+
+        /// <summary>
         /// Creates a new session record and fills in its ID.
         /// </summary>
         /// <param name="session"></param>

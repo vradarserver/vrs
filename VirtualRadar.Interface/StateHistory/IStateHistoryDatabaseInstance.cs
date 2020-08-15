@@ -109,6 +109,14 @@ namespace VirtualRadar.Interface.StateHistory
         /// Returns a snapshot for the values passed across. Returns null if writes are disabled.
         /// </summary>
         /// <param name="enumValue"></param>
+        /// <param name="speciesName"></param>
+        /// <returns></returns>
+        SpeciesSnapshot Species_GetOrCreate(int enumValue, string speciesName);
+
+        /// <summary>
+        /// Returns a snapshot for the values passed across. Returns null if writes are disabled.
+        /// </summary>
+        /// <param name="enumValue"></param>
         /// <param name="wakeTurbulenceCategoryName"></param>
         /// <returns></returns>
         WakeTurbulenceCategorySnapshot WakeTurbulenceCategory_GetOrCreate(int enumValue, string wakeTurbulenceCategoryName);

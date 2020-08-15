@@ -466,6 +466,48 @@ namespace Test.VirtualRadar.Library.StateHistory
 
 
         /// <summary>
+        /// SpeciesSnapshot GetOrCreate tests
+        /// </summary>
+        class Species_GetOrCreate_TestParams : GetOrCreate_TestParams<SpeciesSnapshot>
+        {
+            public int EnumValue { get; set; }
+
+            public string SpeciesName { get; set; }
+
+            public static Species_GetOrCreate_TestParams[] Rows = new Species_GetOrCreate_TestParams[] {
+                new Species_GetOrCreate_TestParams() { EnumValue = 49, SpeciesName = "Helicopter", },
+            };
+
+            public override SpeciesSnapshot CallGetOrCreate(IStateHistoryDatabaseInstance dbi) => dbi.Species_GetOrCreate(EnumValue, SpeciesName);
+
+            public override SpeciesSnapshot CreateDummyRecord() => new SpeciesSnapshot() {
+                EnumValue =     EnumValue,
+                SpeciesName =   SpeciesName,
+            };
+
+            public override ISetup<IStateHistoryRepository, SpeciesSnapshot> RepositorySetup(Mock<IStateHistoryRepository> repository) => repository
+                .Setup(r => r.SpeciesSnapshot_GetOrCreate(
+                    It.Is<byte[]>(p => p.SequenceEqual(SpeciesSnapshot.TakeFingerprint(
+                        EnumValue,
+                        SpeciesName
+                    ))),
+                    It.IsAny<DateTime>(),
+                    EnumValue,
+                    SpeciesName
+                ));
+        }
+
+        [TestMethod]
+        public void Species_GetOrCreate_Returns_Null_If_Not_Writeable() => GetOrCreate_Returns_Null_If_Not_Writeable(Species_GetOrCreate_TestParams.Rows);
+
+        [TestMethod]
+        public void Species_GetOrCreate_Calls_Repository_GetOrCreate() => GetOrCreate_Calls_Repository_GetOrCreate(Species_GetOrCreate_TestParams.Rows);
+
+        [TestMethod]
+        public void Species_GetOrCreate_Caches_Results() => GetOrCreate_Caches_Results(Species_GetOrCreate_TestParams.Rows);
+
+
+        /// <summary>
         /// WakeTurbulenceCategorySnapshot GetOrCreate tests
         /// </summary>
         class WakeTurbulenceCategory_GetOrCreate_TestParams : GetOrCreate_TestParams<WakeTurbulenceCategorySnapshot>

@@ -252,6 +252,28 @@ namespace VirtualRadar.Library.StateHistory
         /// See interface docs.
         /// </summary>
         /// <param name="enumValue"></param>
+        /// <param name="speciesName"></param>
+        /// <returns></returns>
+        public SpeciesSnapshot Species_GetOrCreate(int enumValue, string speciesName)
+        {
+            return Snapshot_GetOrCreate(
+                () => SpeciesSnapshot.TakeFingerprint(
+                    enumValue,
+                    speciesName
+                ),
+                (repo, fingerprint, now) => repo.SpeciesSnapshot_GetOrCreate(
+                    fingerprint,
+                    now,
+                    enumValue,
+                    speciesName
+                )
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="enumValue"></param>
         /// <param name="wakeTurbulenceCategoryName"></param>
         /// <returns></returns>
         public WakeTurbulenceCategorySnapshot WakeTurbulenceCategory_GetOrCreate(int enumValue, string wakeTurbulenceCategoryName)

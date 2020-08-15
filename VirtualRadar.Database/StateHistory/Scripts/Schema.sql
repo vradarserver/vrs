@@ -97,6 +97,21 @@ CREATE        INDEX IF NOT EXISTS [IX_OperatorSnapshot_OperatorName] ON [Operato
 
 
 --
+-- SpeciesSnapshot (v1)
+--
+CREATE TABLE IF NOT EXISTS [SpeciesSnapshot]
+(
+    [SpeciesSnapshotID] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+   ,[CreatedUtc]        DATETIME NOT NULL
+   ,[Fingerprint]       VARBINARY(20) NOT NULL
+   ,[EnumValue]         INTEGER NOT NULL
+   ,[SpeciesName]       VARCHAR(80) NOT NULL
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS [IX_SpeciesSnapshot_Fingerprint] ON [SpeciesSnapshot] ([Fingerprint]);
+
+
+--
 -- WakeTurbulenceCategorySnapshot (v1)
 --
 CREATE TABLE IF NOT EXISTS [WakeTurbulenceCategorySnapshot]

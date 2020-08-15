@@ -247,6 +247,7 @@
     <Compile Include="Settings\TileServerSettings.cs" />
     <Compile Include="StandingData\EnginePlacement.cs" />
     <Compile Include="StateHistory\EnginePlacementSnapshot.cs" />
+    <Compile Include="StateHistory\SpeciesSnapshot.cs" />
     <Compile Include="StateHistory\ManufacturerSnapshot.cs" />
     <Compile Include="StateHistory\DatabaseVersion.cs" />
     <Compile Include="StateHistory\CountrySnapshot.cs" />
