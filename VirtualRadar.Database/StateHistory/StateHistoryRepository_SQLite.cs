@@ -165,6 +165,28 @@ namespace VirtualRadar.Database.StateHistory
         }
 
         /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="fingerprint"></param>
+        /// <param name="createdUtc"></param>
+        /// <param name="enumValue"></param>
+        /// <param name="wakeTurbulenceCategoryName"></param>
+        /// <returns></returns>
+        public WakeTurbulenceCategorySnapshot WakeTurbulenceCategorySnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, int enumValue, string wakeTurbulenceCategoryName)
+        {
+            using(var connection = OpenConnection(forWrite: true)) {
+                return connection.Query<WakeTurbulenceCategorySnapshot>(Scripts.WakeTurbulenceCategorySnapshot_GetOrCreate, new {
+                    createdUtc,
+                    fingerprint,
+                    enumValue,
+                    wakeTurbulenceCategoryName,
+                })
+                .FirstOrDefault();
+            }
+        }
+
+
+        /// <summary>
         /// Creates an open connection to the state history database.
         /// </summary>
         /// <param name="forWrite"></param>

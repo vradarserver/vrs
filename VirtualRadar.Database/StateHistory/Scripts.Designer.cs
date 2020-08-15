@@ -214,5 +214,30 @@ namespace VirtualRadar.Database.StateHistory {
                 return ResourceManager.GetString("VrsSession_Insert", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [WakeTurbulenceCategorySnapshot] (
+        ///    [CreatedUtc]
+        ///   ,[Fingerprint]
+        ///   ,[EnumValue]
+        ///   ,[WakeTurbulenceCategoryName]
+        ///) VALUES (
+        ///    @CreatedUtc
+        ///   ,@Fingerprint
+        ///   ,@EnumValue
+        ///   ,@WakeTurbulenceCategoryName
+        ///)
+        ///ON CONFLICT ([Fingerprint]) DO NOTHING;
+        ///
+        ///SELECT *
+        ///FROM   [WakeTurbulenceCategorySnapshot]
+        ///WHERE  [Fingerprint] = @Fingerprint;
+        ///.
+        /// </summary>
+        internal static string WakeTurbulenceCategorySnapshot_GetOrCreate {
+            get {
+                return ResourceManager.GetString("WakeTurbulenceCategorySnapshot_GetOrCreate", resourceCulture);
+            }
+        }
     }
 }

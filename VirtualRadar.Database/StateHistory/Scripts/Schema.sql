@@ -64,3 +64,18 @@ CREATE TABLE IF NOT EXISTS [OperatorSnapshot]
 CREATE UNIQUE INDEX IF NOT EXISTS [IX_OperatorSnapshot_Fingerprint]  ON [OperatorSnapshot] ([Fingerprint]);
 CREATE        INDEX IF NOT EXISTS [IX_OperatorSnapshot_Icao]         ON [OperatorSnapshot] ([Icao]);
 CREATE        INDEX IF NOT EXISTS [IX_OperatorSnapshot_OperatorName] ON [OperatorSnapshot] ([OperatorName]);
+
+
+--
+-- WakeTurbulenceCategorySnapshot (v1)
+--
+CREATE TABLE IF NOT EXISTS [WakeTurbulenceCategorySnapshot]
+(
+    [WakeTurbulenceCategorySnapshotID]  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+   ,[CreatedUtc]                        DATETIME NOT NULL
+   ,[Fingerprint]                       VARBINARY(20) NOT NULL
+   ,[EnumValue]                         INTEGER NOT NULL
+   ,[WakeTurbulenceCategoryName]        VARCHAR(80) NOT NULL
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS [IX_WakeTurbulenceCategorySnapshot_Fingerprint] ON [WakeTurbulenceCategorySnapshot] ([Fingerprint]);

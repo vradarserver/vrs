@@ -392,5 +392,78 @@ namespace Test.VirtualRadar.Library.StateHistory
                 Assert.AreEqual(1, callCount);
             });
         }
+
+        [TestMethod]
+        public void WakeTurbulenceCategory_GetOrCreate_Returns_Null_If_Not_Writeable()
+        {
+            _DatabaseInstance.Initialise(false, null);
+            Assert.IsNull(_DatabaseInstance.WakeTurbulenceCategory_GetOrCreate(1, "Abc"));
+        }
+
+        [TestMethod]
+        public void WakeTurbulenceCategory_GetOrCreate_Calls_Repository_GetOrCreate()
+        {
+            new InlineDataTest(this).TestAndAssert(new [] {
+                new { EnumValue = 2, WakeTurbulenceCategoryName = "Heavy", },
+            }, row => {
+                var record = new WakeTurbulenceCategorySnapshot();
+                _Repository
+                    .Setup(r => r.WakeTurbulenceCategorySnapshot_GetOrCreate(
+                        It.Is<byte[]>(p => p.SequenceEqual(WakeTurbulenceCategorySnapshot.TakeFingerprint(
+                            row.EnumValue,
+                            row.WakeTurbulenceCategoryName
+                        ))),
+                        It.IsAny<DateTime>(),
+                        row.EnumValue,
+                        row.WakeTurbulenceCategoryName
+                    ))
+                    .Returns(record);
+                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
+
+                var actual = _DatabaseInstance.WakeTurbulenceCategory_GetOrCreate(
+                    row.EnumValue,
+                    row.WakeTurbulenceCategoryName
+                );
+
+                Assert.AreSame(record, actual);
+            });
+        }
+
+        [TestMethod]
+        public void WakeTurbulenceCategory_GetOrCreate_Caches_Results()
+        {
+            new InlineDataTest(this).TestAndAssert(new [] {
+                new { EnumValue = 72, WakeTurbulenceCategoryName = "Medium", },
+            }, row => {
+                var record = new WakeTurbulenceCategorySnapshot() {
+                    EnumValue =                     row.EnumValue,
+                    WakeTurbulenceCategoryName =    row.WakeTurbulenceCategoryName,
+                };
+                var callCount = 0;
+                _Repository
+                    .Setup(r => r.WakeTurbulenceCategorySnapshot_GetOrCreate(
+                        It.IsAny<byte[]>(),
+                        It.IsAny<DateTime>(),
+                        It.IsAny<int>(),
+                        It.IsAny<string>()
+                    ))
+                    .Callback(() => ++callCount)
+                    .Returns(record);
+                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
+
+                var firstResult = _DatabaseInstance.WakeTurbulenceCategory_GetOrCreate(
+                    row.EnumValue,
+                    row.WakeTurbulenceCategoryName
+                );
+
+                var secondResult = _DatabaseInstance.WakeTurbulenceCategory_GetOrCreate(
+                    row.EnumValue,
+                    row.WakeTurbulenceCategoryName
+                );
+
+                Assert.AreSame(firstResult, secondResult);
+                Assert.AreEqual(1, callCount);
+            });
+        }
     }
 }

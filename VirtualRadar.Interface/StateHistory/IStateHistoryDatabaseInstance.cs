@@ -88,5 +88,13 @@ namespace VirtualRadar.Interface.StateHistory
         /// <param name="operatorName"></param>
         /// <returns></returns>
         OperatorSnapshot Operator_GetOrCreate(string icao, string operatorName);
+
+        /// <summary>
+        /// Returns a snapshot for the values passed across. Returns null if writes are disabled.
+        /// </summary>
+        /// <param name="enumValue"></param>
+        /// <param name="wakeTurbulenceCategoryName"></param>
+        /// <returns></returns>
+        WakeTurbulenceCategorySnapshot WakeTurbulenceCategory_GetOrCreate(int enumValue, string wakeTurbulenceCategoryName);
     }
 }

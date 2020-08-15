@@ -94,5 +94,16 @@ namespace VirtualRadar.Interface.StateHistory
         /// </summary>
         /// <param name="session"></param>
         void VrsSession_Insert(VrsSession session);
+
+        /// <summary>
+        /// Either creates a new snapshot record or reads the existing record that has the
+        /// same fingerprint and returns it.
+        /// </summary>
+        /// <param name="fingerprint"></param>
+        /// <param name="createdUtc"></param>
+        /// <param name="enumValue"></param>
+        /// <param name="wakeTurbulenceCategoryName"></param>
+        /// <returns></returns>
+        WakeTurbulenceCategorySnapshot WakeTurbulenceCategorySnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, int enumValue, string wakeTurbulenceCategoryName);
     }
 }

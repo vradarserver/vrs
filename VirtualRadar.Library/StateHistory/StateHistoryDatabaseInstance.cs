@@ -204,6 +204,28 @@ namespace VirtualRadar.Library.StateHistory
             );
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="enumValue"></param>
+        /// <param name="wakeTurbulenceCategoryName"></param>
+        /// <returns></returns>
+        public WakeTurbulenceCategorySnapshot WakeTurbulenceCategory_GetOrCreate(int enumValue, string wakeTurbulenceCategoryName)
+        {
+            return Snapshot_GetOrCreate(
+                () => WakeTurbulenceCategorySnapshot.TakeFingerprint(
+                    enumValue,
+                    wakeTurbulenceCategoryName
+                ),
+                (repo, fingerprint, now) => repo.WakeTurbulenceCategorySnapshot_GetOrCreate(
+                    fingerprint,
+                    now,
+                    enumValue,
+                    wakeTurbulenceCategoryName
+                )
+            );
+        }
+
         private T Snapshot_GetOrCreate<T>(Func<byte[]> createFingerprint, Func<IStateHistoryRepository, byte[], DateTime, T> getOrCreate)
             where T: SnapshotRecord
         {
