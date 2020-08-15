@@ -465,5 +465,78 @@ namespace Test.VirtualRadar.Library.StateHistory
                 Assert.AreEqual(1, callCount);
             });
         }
+
+        [TestMethod]
+        public void EngineType_GetOrCreate_Returns_Null_If_Not_Writeable()
+        {
+            _DatabaseInstance.Initialise(false, null);
+            Assert.IsNull(_DatabaseInstance.EngineType_GetOrCreate(1, "Abc"));
+        }
+
+        [TestMethod]
+        public void EngineType_GetOrCreate_Calls_Repository_GetOrCreate()
+        {
+            new InlineDataTest(this).TestAndAssert(new [] {
+                new { EnumValue = 2, EngineTypeName = "Turbo", },
+            }, row => {
+                var record = new EngineTypeSnapshot();
+                _Repository
+                    .Setup(r => r.EngineTypeSnapshot_GetOrCreate(
+                        It.Is<byte[]>(p => p.SequenceEqual(EngineTypeSnapshot.TakeFingerprint(
+                            row.EnumValue,
+                            row.EngineTypeName
+                        ))),
+                        It.IsAny<DateTime>(),
+                        row.EnumValue,
+                        row.EngineTypeName
+                    ))
+                    .Returns(record);
+                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
+
+                var actual = _DatabaseInstance.EngineType_GetOrCreate(
+                    row.EnumValue,
+                    row.EngineTypeName
+                );
+
+                Assert.AreSame(record, actual);
+            });
+        }
+
+        [TestMethod]
+        public void EngineType_GetOrCreate_Caches_Results()
+        {
+            new InlineDataTest(this).TestAndAssert(new [] {
+                new { EnumValue = 72, EngineTypeName = "Piston", },
+            }, row => {
+                var record = new EngineTypeSnapshot() {
+                    EnumValue =         row.EnumValue,
+                    EngineTypeName =    row.EngineTypeName,
+                };
+                var callCount = 0;
+                _Repository
+                    .Setup(r => r.EngineTypeSnapshot_GetOrCreate(
+                        It.IsAny<byte[]>(),
+                        It.IsAny<DateTime>(),
+                        It.IsAny<int>(),
+                        It.IsAny<string>()
+                    ))
+                    .Callback(() => ++callCount)
+                    .Returns(record);
+                _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
+
+                var firstResult = _DatabaseInstance.EngineType_GetOrCreate(
+                    row.EnumValue,
+                    row.EngineTypeName
+                );
+
+                var secondResult = _DatabaseInstance.EngineType_GetOrCreate(
+                    row.EnumValue,
+                    row.EngineTypeName
+                );
+
+                Assert.AreSame(firstResult, secondResult);
+                Assert.AreEqual(1, callCount);
+            });
+        }
     }
 }

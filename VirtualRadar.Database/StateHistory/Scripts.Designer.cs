@@ -116,6 +116,31 @@ namespace VirtualRadar.Database.StateHistory {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [EngineTypeSnapshot] (
+        ///    [CreatedUtc]
+        ///   ,[Fingerprint]
+        ///   ,[EnumValue]
+        ///   ,[EngineTypeName]
+        ///) VALUES (
+        ///    @CreatedUtc
+        ///   ,@Fingerprint
+        ///   ,@EnumValue
+        ///   ,@EngineTypeName
+        ///)
+        ///ON CONFLICT ([Fingerprint]) DO NOTHING;
+        ///
+        ///SELECT *
+        ///FROM   [EngineTypeSnapshot]
+        ///WHERE  [Fingerprint] = @Fingerprint;
+        ///.
+        /// </summary>
+        internal static string EngineTypeSnapshot_GetOrCreate {
+            get {
+                return ResourceManager.GetString("EngineTypeSnapshot_GetOrCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to INSERT INTO [ManufacturerSnapshot] (
         ///    [CreatedUtc]
         ///   ,[Fingerprint]

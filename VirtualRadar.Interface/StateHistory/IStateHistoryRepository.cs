@@ -70,6 +70,17 @@ namespace VirtualRadar.Interface.StateHistory
         /// </summary>
         /// <param name="fingerprint"></param>
         /// <param name="createdUtc"></param>
+        /// <param name="enumValue"></param>
+        /// <param name="engineTypeName"></param>
+        /// <returns></returns>
+        EngineTypeSnapshot EngineTypeSnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, int enumValue, string engineTypeName);
+
+        /// <summary>
+        /// Either creates a new snapshot record or reads the existing record that has the
+        /// same fingerprint and returns it.
+        /// </summary>
+        /// <param name="fingerprint"></param>
+        /// <param name="createdUtc"></param>
         /// <param name="manufacturerName"></param>
         ManufacturerSnapshot ManufacturerSnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, string manufacturerName);
 

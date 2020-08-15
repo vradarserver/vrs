@@ -77,6 +77,14 @@ namespace VirtualRadar.Interface.StateHistory
         /// <summary>
         /// Returns a snapshot for the values passed across. Returns null if writes are disabled.
         /// </summary>
+        /// <param name="enumValue"></param>
+        /// <param name="engineTypeName"></param>
+        /// <returns></returns>
+        EngineTypeSnapshot EngineType_GetOrCreate(int enumValue, string engineTypeName);
+
+        /// <summary>
+        /// Returns a snapshot for the values passed across. Returns null if writes are disabled.
+        /// </summary>
         /// <param name="manufacturerName"></param>
         /// <returns></returns>
         ManufacturerSnapshot Manufacturer_GetOrCreate(string manufacturerName);

@@ -186,6 +186,7 @@
     <Compile Include="JavascriptHelperTests.cs" />
     <Compile Include="PairTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StateHistory\EngineTypeSnapshot_Tests.cs" />
     <Compile Include="StateHistory\WakeTurbulenceCategorySnapshot_Tests.cs" />
     <Compile Include="StateHistory\ManufacturerSnapshot_Tests.cs" />
     <Compile Include="StateHistory\CountrySnapshot_Tests.cs" />

@@ -105,6 +105,27 @@ namespace VirtualRadar.Database.StateHistory
         /// </summary>
         /// <param name="fingerprint"></param>
         /// <param name="createdUtc"></param>
+        /// <param name="enumValue"></param>
+        /// <param name="engineTypeName"></param>
+        /// <returns></returns>
+        public EngineTypeSnapshot EngineTypeSnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, int enumValue, string engineTypeName)
+        {
+            using(var connection = OpenConnection(forWrite: true)) {
+                return connection.Query<EngineTypeSnapshot>(Scripts.EngineTypeSnapshot_GetOrCreate, new {
+                    createdUtc,
+                    fingerprint,
+                    enumValue,
+                    engineTypeName,
+                })
+                .FirstOrDefault();
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="fingerprint"></param>
+        /// <param name="createdUtc"></param>
         /// <param name="manufacturerName"></param>
         /// <returns></returns>
         public ManufacturerSnapshot ManufacturerSnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, string manufacturerName)
@@ -184,7 +205,6 @@ namespace VirtualRadar.Database.StateHistory
                 .FirstOrDefault();
             }
         }
-
 
         /// <summary>
         /// Creates an open connection to the state history database.

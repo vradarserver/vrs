@@ -35,6 +35,21 @@ CREATE        INDEX IF NOT EXISTS [IX_CountrySnapshot_CountryName] ON [CountrySn
 
 
 --
+-- EngineTypeSnapshot (v1)
+--
+CREATE TABLE IF NOT EXISTS [EngineTypeSnapshot]
+(
+    [EngineTypeSnapshotID]  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+   ,[CreatedUtc]            DATETIME NOT NULL
+   ,[Fingerprint]           VARBINARY(20) NOT NULL
+   ,[EnumValue]             INTEGER NOT NULL
+   ,[EngineTypeName]        VARCHAR(80) NOT NULL
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS [IX_EngineTypeSnapshot_Fingerprint] ON [EngineTypeSnapshot] ([Fingerprint]);
+
+
+--
 -- ManufacturerSnapshot (v1)
 --
 CREATE TABLE IF NOT EXISTS [ManufacturerSnapshot]
