@@ -189,6 +189,36 @@ namespace VirtualRadar.Database.StateHistory {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [ModelSnapshot] (
+        ///    [CreatedUtc]
+        ///   ,[Fingerprint]
+        ///   ,[Icao]
+        ///   ,[ManufacturerSnapshotID]
+        ///   ,[ModelName]
+        ///   ,[WakeTurbulenceCategorySnapshotID]
+        ///   ,[EngineTypeSnapshotID]
+        ///   ,[EnginePlacementSnapshotID]
+        ///   ,[NumberOfEngines]
+        ///   ,[SpeciesSnapshotID]
+        ///) VALUES (
+        ///    @CreatedUtc
+        ///   ,@Fingerprint
+        ///   ,@Icao
+        ///   ,@ManufacturerSnapshotID
+        ///   ,@ModelName
+        ///   ,@WakeTurbulenceCategorySnapshotID
+        ///   ,@EngineTypeSnapshotID
+        ///   ,@EnginePlacementSnapshotID
+        ///   ,@NumberOfEngines
+        ///   ,@SpeciesS [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ModelSnapshot_GetOrCreate {
+            get {
+                return ResourceManager.GetString("ModelSnapshot_GetOrCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to INSERT INTO [OperatorSnapshot] (
         ///    [CreatedUtc]
         ///   ,[Fingerprint]

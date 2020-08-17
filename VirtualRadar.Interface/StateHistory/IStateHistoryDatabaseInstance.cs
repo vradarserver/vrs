@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VirtualRadar.Interface.StandingData;
 
 namespace VirtualRadar.Interface.StateHistory
 {
@@ -68,37 +69,63 @@ namespace VirtualRadar.Interface.StateHistory
         bool DoIfWriteable(Action<IStateHistoryRepository> action);
 
         /// <summary>
-        /// Returns a snapshot for the values passed across. Returns null if writes are disabled.
+        /// Returns a snapshot for the values passed across. Returns null if writes are disabled
+        /// or the country name is null.
         /// </summary>
         /// <param name="countryName"></param>
         /// <returns></returns>
         CountrySnapshot Country_GetOrCreate(string countryName);
 
         /// <summary>
-        /// Returns a snapshot for the values passed across. Returns null if writes are disabled.
+        /// Returns a snapshot for the enum passed across. Returns null if writes are disabled or
+        /// the engine placement is null.
         /// </summary>
-        /// <param name="enumValue"></param>
-        /// <param name="enginePlacementName"></param>
+        /// <param name="enginePlacement"></param>
         /// <returns></returns>
-        EnginePlacementSnapshot EnginePlacement_GetOrCreate(int enumValue, string enginePlacementName);
+        EnginePlacementSnapshot EnginePlacement_GetOrCreate(EnginePlacement? enginePlacement);
 
         /// <summary>
-        /// Returns a snapshot for the values passed across. Returns null if writes are disabled.
+        /// Returns a snapshot for the enum passed across. Returns null if writes are disabled.
         /// </summary>
-        /// <param name="enumValue"></param>
-        /// <param name="engineTypeName"></param>
+        /// <param name="engineType"></param>
         /// <returns></returns>
-        EngineTypeSnapshot EngineType_GetOrCreate(int enumValue, string engineTypeName);
+        EngineTypeSnapshot EngineType_GetOrCreate(EngineType? engineType);
 
         /// <summary>
-        /// Returns a snapshot for the values passed across. Returns null if writes are disabled.
+        /// Returns a snapshot for the values passed across. Returns null if writes are disabled
+        /// or the manufacturer name is null.
         /// </summary>
         /// <param name="manufacturerName"></param>
         /// <returns></returns>
         ManufacturerSnapshot Manufacturer_GetOrCreate(string manufacturerName);
 
         /// <summary>
-        /// Returns a snapshot for the values passed across. Returns null if writes are disabled.
+        /// Returns a snapshot for the values passed across. Returns null if writes are disabled or
+        /// all values are null.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <param name="modelName"></param>
+        /// <param name="numberOfEngines"></param>
+        /// <param name="manufacturerName"></param>
+        /// <param name="wakeTurbulenceCategory"></param>
+        /// <param name="engineType"></param>
+        /// <param name="enginePlacement"></param>
+        /// <param name="species"></param>
+        /// <returns></returns>
+        ModelSnapshot Model_GetOrCreate(
+            string icao,
+            string modelName,
+            string numberOfEngines,
+            string manufacturerName,
+            WakeTurbulenceCategory? wakeTurbulenceCategory,
+            EngineType? engineType,
+            EnginePlacement? enginePlacement,
+            Species? species
+        );
+
+        /// <summary>
+        /// Returns a snapshot for the values passed across. Returns null if writes are disabled
+        /// or both the operator ICAO and name are null.
         /// </summary>
         /// <param name="icao"></param>
         /// <param name="operatorName"></param>
@@ -106,19 +133,19 @@ namespace VirtualRadar.Interface.StateHistory
         OperatorSnapshot Operator_GetOrCreate(string icao, string operatorName);
 
         /// <summary>
-        /// Returns a snapshot for the values passed across. Returns null if writes are disabled.
+        /// Returns a snapshot for the values passed across. Returns null if writes are disabled
+        /// or the species is null.
         /// </summary>
-        /// <param name="enumValue"></param>
-        /// <param name="speciesName"></param>
+        /// <param name="species"></param>
         /// <returns></returns>
-        SpeciesSnapshot Species_GetOrCreate(int enumValue, string speciesName);
+        SpeciesSnapshot Species_GetOrCreate(Species? species);
 
         /// <summary>
-        /// Returns a snapshot for the values passed across. Returns null if writes are disabled.
+        /// Returns a snapshot for the values passed across. Returns null if writes are disabled or
+        /// the wake turbulence category is null.
         /// </summary>
-        /// <param name="enumValue"></param>
-        /// <param name="wakeTurbulenceCategoryName"></param>
+        /// <param name="wakeTurbulenceCategory"></param>
         /// <returns></returns>
-        WakeTurbulenceCategorySnapshot WakeTurbulenceCategory_GetOrCreate(int enumValue, string wakeTurbulenceCategoryName);
+        WakeTurbulenceCategorySnapshot WakeTurbulenceCategory_GetOrCreate(WakeTurbulenceCategory? wakeTurbulenceCategory);
     }
 }

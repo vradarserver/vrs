@@ -15,6 +15,7 @@ using System.Runtime.Caching;
 using System.Text;
 using System.Threading.Tasks;
 using InterfaceFactory;
+using VirtualRadar.Interface.StandingData;
 using VirtualRadar.Interface.StateHistory;
 
 namespace VirtualRadar.Library.StateHistory
@@ -152,6 +153,7 @@ namespace VirtualRadar.Library.StateHistory
         public CountrySnapshot Country_GetOrCreate(string countryName)
         {
             return Snapshot_GetOrCreate(
+                () => countryName == null,
                 () => CountrySnapshot.TakeFingerprint(
                     countryName
                 ),
@@ -166,21 +168,21 @@ namespace VirtualRadar.Library.StateHistory
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="enumValue"></param>
-        /// <param name="enginePlacementName"></param>
+        /// <param name="enginePlacement"></param>
         /// <returns></returns>
-        public EnginePlacementSnapshot EnginePlacement_GetOrCreate(int enumValue, string enginePlacementName)
+        public EnginePlacementSnapshot EnginePlacement_GetOrCreate(EnginePlacement? enginePlacement)
         {
             return Snapshot_GetOrCreate(
+                () => enginePlacement == null,
                 () => EnginePlacementSnapshot.TakeFingerprint(
-                    enumValue,
-                    enginePlacementName
+                    (int)enginePlacement,
+                    enginePlacement.ToString()
                 ),
                 (repo, fingerprint, now) => repo.EnginePlacementSnapshot_GetOrCreate(
                     fingerprint,
                     now,
-                    enumValue,
-                    enginePlacementName
+                    (int)enginePlacement,
+                    enginePlacement.ToString()
                 )
             );
         }
@@ -188,21 +190,21 @@ namespace VirtualRadar.Library.StateHistory
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="enumValue"></param>
-        /// <param name="engineTypeName"></param>
+        /// <param name="engineType"></param>
         /// <returns></returns>
-        public EngineTypeSnapshot EngineType_GetOrCreate(int enumValue, string engineTypeName)
+        public EngineTypeSnapshot EngineType_GetOrCreate(EngineType? engineType)
         {
             return Snapshot_GetOrCreate(
+                () => engineType == null,
                 () => EngineTypeSnapshot.TakeFingerprint(
-                    enumValue,
-                    engineTypeName
+                    (int)engineType,
+                    engineType.ToString()
                 ),
                 (repo, fingerprint, now) => repo.EngineTypeSnapshot_GetOrCreate(
                     fingerprint,
                     now,
-                    enumValue,
-                    engineTypeName
+                    (int)engineType,
+                    engineType.ToString()
                 )
             );
         }
@@ -215,6 +217,7 @@ namespace VirtualRadar.Library.StateHistory
         public ManufacturerSnapshot Manufacturer_GetOrCreate(string manufacturerName)
         {
             return Snapshot_GetOrCreate(
+                () => manufacturerName == null,
                 () => ManufacturerSnapshot.TakeFingerprint(
                     manufacturerName
                 ),
@@ -230,11 +233,82 @@ namespace VirtualRadar.Library.StateHistory
         /// See interface docs.
         /// </summary>
         /// <param name="icao"></param>
+        /// <param name="modelName"></param>
+        /// <param name="numberOfEngines"></param>
+        /// <param name="manufacturerName"></param>
+        /// <param name="wakeTurbulenceCategory"></param>
+        /// <param name="engineType"></param>
+        /// <param name="enginePlacement"></param>
+        /// <param name="species"></param>
+        /// <returns></returns>
+        public ModelSnapshot Model_GetOrCreate(
+            string icao,
+            string modelName,
+            string numberOfEngines,
+            string manufacturerName,
+            WakeTurbulenceCategory? wakeTurbulenceCategory,
+            EngineType? engineType,
+            EnginePlacement? enginePlacement,
+            Species? species
+        )
+        {
+            long? manufacturerSnapshotID = null;
+            long? wakeTurbulenceCategorySnapshotID = null;
+            long? engineTypeSnapshotID = null;
+            long? enginePlacementSnapshotID = null;
+            long? speciesSnapshotID = null;
+
+            return Snapshot_GetOrCreate(
+                () =>  icao == null
+                    && modelName == null
+                    && numberOfEngines == null
+                    && manufacturerName == null
+                    && wakeTurbulenceCategory == null
+                    && engineType == null
+                    && enginePlacement == null
+                    && species == null,
+                () => ModelSnapshot.TakeFingerprint(
+                    icao:                               icao,
+                    modelName:                          modelName,
+                    numberOfEngines:                    numberOfEngines,
+                    manufacturerSnapshotID:             manufacturerSnapshotID,
+                    wakeTurbulenceCategorySnapshotID:   wakeTurbulenceCategorySnapshotID,
+                    engineTypeSnapshotID:               engineTypeSnapshotID,
+                    enginePlacementSnapshotID:          enginePlacementSnapshotID,
+                    speciesSnapshotID:                  speciesSnapshotID
+                ),
+                (repo, fingerprint, now) => repo.ModelSnapshot_GetOrCreate(
+                    fingerprint:                        fingerprint,
+                    createdUtc:                         now,
+                    icao:                               icao,
+                    modelName:                          modelName,
+                    numberOfEngines:                    numberOfEngines,
+                    manufacturerSnapshotID:             manufacturerSnapshotID,
+                    wakeTurbulenceCategorySnapshotID:   wakeTurbulenceCategorySnapshotID,
+                    engineTypeSnapshotID:               engineTypeSnapshotID,
+                    enginePlacementSnapshotID:          enginePlacementSnapshotID,
+                    speciesSnapshotID:                  speciesSnapshotID
+                ),
+                fetchChildIDs: () => {
+                    manufacturerSnapshotID =            Manufacturer_GetOrCreate(manufacturerName)?.ManufacturerSnapshotID;
+                    wakeTurbulenceCategorySnapshotID =  WakeTurbulenceCategory_GetOrCreate(wakeTurbulenceCategory)?.WakeTurbulenceCategorySnapshotID;
+                    engineTypeSnapshotID =              EngineType_GetOrCreate(engineType)?.EngineTypeSnapshotID;
+                    enginePlacementSnapshotID =         EnginePlacement_GetOrCreate(enginePlacement)?.EnginePlacementSnapshotID;
+                    speciesSnapshotID =                 Species_GetOrCreate(species)?.SpeciesSnapshotID;
+                }
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="icao"></param>
         /// <param name="operatorName"></param>
         /// <returns></returns>
         public OperatorSnapshot Operator_GetOrCreate(string icao, string operatorName)
         {
             return Snapshot_GetOrCreate(
+                () => icao == null && operatorName == null,
                 () => OperatorSnapshot.TakeFingerprint(
                     icao,
                     operatorName
@@ -251,21 +325,21 @@ namespace VirtualRadar.Library.StateHistory
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="enumValue"></param>
-        /// <param name="speciesName"></param>
+        /// <param name="species"></param>
         /// <returns></returns>
-        public SpeciesSnapshot Species_GetOrCreate(int enumValue, string speciesName)
+        public SpeciesSnapshot Species_GetOrCreate(Species? species)
         {
             return Snapshot_GetOrCreate(
+                () => species == null,
                 () => SpeciesSnapshot.TakeFingerprint(
-                    enumValue,
-                    speciesName
+                    (int)species,
+                    species.ToString()
                 ),
                 (repo, fingerprint, now) => repo.SpeciesSnapshot_GetOrCreate(
                     fingerprint,
                     now,
-                    enumValue,
-                    speciesName
+                    (int)species,
+                    species.ToString()
                 )
             );
         }
@@ -273,40 +347,43 @@ namespace VirtualRadar.Library.StateHistory
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="enumValue"></param>
-        /// <param name="wakeTurbulenceCategoryName"></param>
+        /// <param name="wakeTurbulenceCategory"></param>
         /// <returns></returns>
-        public WakeTurbulenceCategorySnapshot WakeTurbulenceCategory_GetOrCreate(int enumValue, string wakeTurbulenceCategoryName)
+        public WakeTurbulenceCategorySnapshot WakeTurbulenceCategory_GetOrCreate(WakeTurbulenceCategory? wakeTurbulenceCategory)
         {
             return Snapshot_GetOrCreate(
+                () => wakeTurbulenceCategory == null,
                 () => WakeTurbulenceCategorySnapshot.TakeFingerprint(
-                    enumValue,
-                    wakeTurbulenceCategoryName
+                    (int)wakeTurbulenceCategory,
+                    wakeTurbulenceCategory.ToString()
                 ),
                 (repo, fingerprint, now) => repo.WakeTurbulenceCategorySnapshot_GetOrCreate(
                     fingerprint,
                     now,
-                    enumValue,
-                    wakeTurbulenceCategoryName
+                    (int)wakeTurbulenceCategory,
+                    wakeTurbulenceCategory.ToString()
                 )
             );
         }
 
-        private T Snapshot_GetOrCreate<T>(Func<byte[]> createFingerprint, Func<IStateHistoryRepository, byte[], DateTime, T> getOrCreate)
+        private T Snapshot_GetOrCreate<T>(Func<bool> allParametersAreNull, Func<byte[]> createFingerprint, Func<IStateHistoryRepository, byte[], DateTime, T> getOrCreate, Action fetchChildIDs = null)
             where T: SnapshotRecord
         {
             T result = null;
 
-            DoIfWriteable(repo => {
-                var cache = _Cache;
-                var fingerprint = createFingerprint();
-                var key = Sha1Fingerprint.ConvertToString(fingerprint);
-                result = cache.Get(key) as T;
-                if(result == null) {
-                    result = getOrCreate(repo, fingerprint, DateTime.UtcNow);
-                    cache.Add(key, result, _CacheItemPolicy);
-                }
-            });
+            if(!allParametersAreNull()) {
+                DoIfWriteable(repo => {
+                    fetchChildIDs?.Invoke();
+                    var cache = _Cache;
+                    var fingerprint = createFingerprint();
+                    var key = Sha1Fingerprint.ConvertToString(fingerprint);
+                    result = cache.Get(key) as T;
+                    if(result == null) {
+                        result = getOrCreate(repo, fingerprint, DateTime.UtcNow);
+                        cache.Add(key, result, _CacheItemPolicy);
+                    }
+                });
+            }
 
             return result;
         }

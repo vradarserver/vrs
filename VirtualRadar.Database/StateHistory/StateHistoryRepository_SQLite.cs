@@ -167,6 +167,50 @@ namespace VirtualRadar.Database.StateHistory
         /// <param name="fingerprint"></param>
         /// <param name="createdUtc"></param>
         /// <param name="icao"></param>
+        /// <param name="modelName"></param>
+        /// <param name="numberOfEngines"></param>
+        /// <param name="manufacturerSnapshotID"></param>
+        /// <param name="wakeTurbulenceCategorySnapshotID"></param>
+        /// <param name="engineTypeSnapshotID"></param>
+        /// <param name="enginePlacementSnapshotID"></param>
+        /// <param name="speciesSnapshotID"></param>
+        /// <returns></returns>
+        public ModelSnapshot ModelSnapshot_GetOrCreate(
+            byte[] fingerprint,
+            DateTime createdUtc,
+            string icao,
+            string modelName,
+            string numberOfEngines,
+            long? manufacturerSnapshotID,
+            long? wakeTurbulenceCategorySnapshotID,
+            long? engineTypeSnapshotID,
+            long? enginePlacementSnapshotID,
+            long? speciesSnapshotID
+        )
+        {
+            using(var connection = OpenConnection(forWrite: true)) {
+                return connection.Query<ModelSnapshot>(Scripts.ModelSnapshot_GetOrCreate, new {
+                    createdUtc,
+                    fingerprint,
+                    icao,
+                    manufacturerSnapshotID,
+                    modelName,
+                    wakeTurbulenceCategorySnapshotID,
+                    engineTypeSnapshotID,
+                    enginePlacementSnapshotID,
+                    numberOfEngines,
+                    speciesSnapshotID,
+                })
+                .FirstOrDefault();
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="fingerprint"></param>
+        /// <param name="createdUtc"></param>
+        /// <param name="icao"></param>
         /// <param name="operatorName"></param>
         /// <returns></returns>
         public OperatorSnapshot OperatorSnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, string icao, string operatorName)

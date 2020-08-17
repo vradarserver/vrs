@@ -124,3 +124,27 @@ CREATE TABLE IF NOT EXISTS [WakeTurbulenceCategorySnapshot]
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS [IX_WakeTurbulenceCategorySnapshot_Fingerprint] ON [WakeTurbulenceCategorySnapshot] ([Fingerprint]);
+
+
+--
+-- ModelSnapshot (v1)
+--
+CREATE TABLE IF NOT EXISTS [ModelSnapshot]
+(
+    [ModelSnapshotID]                   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+   ,[CreatedUtc]                        DATETIME NOT NULL
+   ,[Fingerprint]                       VARBINARY(20) NOT NULL
+   ,[Icao]                              NVARCHAR(80) NULL
+   ,[ManufacturerSnapshotID]            INTEGER NULL CONSTRAINT [FK_ModelSnapshot_ManufacturerSnapshot] REFERENCES [ManufacturerSnapshot] ([ManufacturerSnapshotID])
+   ,[ModelName]                         NVARCHAR(80) NULL
+   ,[WakeTurbulenceCategorySnapshotID]  INTEGER NULL CONSTRAINT [FK_ModelSnapshot_WakeTurbulenceCategorySnapshot] REFERENCES [WakeTurbulenceCategorySnapshot] ([WakeTurbulenceCategorySnapshotID])
+   ,[EngineTypeSnapshotID]              INTEGER NULL CONSTRAINT [FK_ModelSnapshot_EngineTypeSnapshot] REFERENCES [EngineTypeSnapshot] ([EngineTypeSnapshotID])
+   ,[EnginePlacementSnapshotID]         INTEGER NULL CONSTRAINT [FK_ModelSnapshot_EnginePlacementSnapshot] REFERENCES [EnginePlacementSnapshot] ([EnginePlacementSnapshotID])
+   ,[NumberOfEngines]                   VARCHAR(2) NULL
+   ,[SpeciesSnapshotID]                 INTEGER NULL CONSTRAINT [FK_ModelSnapshot_SpeciesSnapshot] REFERENCES [SpeciesSnapshot] ([SpeciesSnapshotID])
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS [IX_ModelSnapshot_Fingerprint]            ON [ModelSnapshot] ([Fingerprint]);
+CREATE        INDEX IF NOT EXISTS [IX_ModelSnapshot_Icao]                   ON [ModelSnapshot] ([Icao]) WHERE [Icao] IS NOT NULL;
+CREATE        INDEX IF NOT EXISTS [IX_ModelSnapshot_ManufacturerSnapshotID] ON [ModelSnapshot] ([ManufacturerSnapshotID]) WHERE [ManufacturerSnapshotID] IS NOT NULL;
+CREATE        INDEX IF NOT EXISTS [IX_ModelSnapshot_ModelName]              ON [ModelSnapshot] ([ModelName]) WHERE [ModelName] IS NOT NULL;
