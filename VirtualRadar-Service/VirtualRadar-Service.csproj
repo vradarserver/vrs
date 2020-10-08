@@ -39,6 +39,28 @@
   <PropertyGroup>
     <ApplicationIcon>application.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="InterfaceFactory, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AWhewell.InterfaceFactory.4.0.0\lib\net40\InterfaceFactory.dll</HintPath>
@@ -86,9 +108,13 @@
     <Content Include="application.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SQLiteWrapper.DotNet\SQLiteWrapper.DotNet.csproj">
-      <Project>{ddf2a51a-4ab8-4338-94ae-6320637ae3d7}</Project>
+    <ProjectReference Include="..\SQLiteWrapper.DotNet\SQLiteWrapper.DotNet.csproj" Condition="'$(Configuration)|$(Platform)'=='Debug|x86' OR '$(Configuration)|$(Platform)'=='Release|x86'">
+      <Project>{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}</Project>
       <Name>SQLiteWrapper.DotNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SQLiteWrapper.DotNet.AnyCPU\SQLiteWrapper.DotNet.AnyCPU.csproj" Condition="'$(Configuration)|$(Platform)'=='Debug|x64' OR '$(Configuration)|$(Platform)'=='Release|x64'">
+      <Project>{c4516cf0-85e9-4b59-b22a-efdff1d8399d}</Project>
+      <Name>SQLiteWrapper.DotNet.AnyCPU</Name>
     </ProjectReference>
     <ProjectReference Include="..\VirtualRadar.Database\VirtualRadar.Database.csproj">
       <Project>{049a9a56-990e-4f99-99f7-cc09767508d9}</Project>
@@ -133,7 +159,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>PowerShell.exe -ExecutionPolicy Bypass "$(SolutionDir)_PostBuild.ps1" -projectName "$(ProjectName)"  -configurationName "$(ConfigurationName)" -targetName "$(TargetName)"</PostBuildEvent>
+    <PostBuildEvent>PowerShell.exe -ExecutionPolicy Bypass "$(SolutionDir)_PostBuild.ps1" -projectName "$(ProjectName)"  -configurationName "$(ConfigurationName)" -targetName "$(TargetName)" -platformName "$(PlatformName)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -5,6 +5,8 @@ rem %2 = ProjectDir
 rem %3 = ConfigurationName
 rem %4 = TargetDir
 
+rem "$(ProjectDir)\CreateAnyCPUBuild.bat" "$(SolutionDir)" "$(ProjectDir)" "$(ConfigurationName)" "$(TargetDir)"
+
 set SolutionDir=%~1
 set ProjectDir=%~2
 set ConfigurationName=%~3
@@ -39,3 +41,4 @@ rem Remove the 32-bit required flag from all utilities
 rem Copy in the AnyCPU interop folders
 xcopy /ei %SolutionDir%Dependencies\AnyCPUBuilds\x86 %DEST%\x86
 xcopy /ei %SolutionDir%Dependencies\AnyCPUBuilds\x64 %DEST%\x64
+xcopy /ei %SolutionDir%Dependencies\FS2020\x64\*.* %DEST%

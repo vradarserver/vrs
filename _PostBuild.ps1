@@ -1,12 +1,14 @@
 ﻿param (
     [string] $projectName,
     [string] $configurationName,
-    [string] $targetName
+    [string] $targetName,
+    [string] $platformName
 )
 function Usage
 {
-    Write-Host 'usage: _PostBuild.ps1 -projectName <project name> -configurationName <configuration name> [-targetName <targetName>]'
+    Write-Host 'usage: _PostBuild.ps1 -projectName <project name> -configurationName <configuration name> [-targetName <targetName>] [-platformName <platformName>]'
     Write-Host 'The targetName parameter is not optional for plugins or projects with translation files'
+    Write-Host 'The platformName parameter is not optional for BaseStationImport'
     Exit 1
 }
 
@@ -21,12 +23,22 @@ if($projectName.ToLower() -eq 'basestationimport') {
 
 $solutionDir = Split-Path -Parent $PSCommandPath
 $projectDir = [io.Path]::Combine($solutionDir, $pathFromSolution, $projectName)
-$virtualRadarDir = [io.Path]::Combine($solutionDir, 'VirtualRadar', 'bin', 'x86', $configurationName)
+$virtualRadarDirX86 = [io.Path]::Combine($solutionDir, 'VirtualRadar', 'bin', 'x86', $configurationName)
+$virtualRadarDirX64 = [io.Path]::Combine($solutionDir, 'VirtualRadar', 'bin', 'x64', $configurationName)
+$virtualRadarDir = switch($platformName) {
+    'x64'   { $virtualRadarDirX64 }
+    'x86'   { $virtualRadarDirX86 }
+    default { '::UNDEFINED-' + $platformName + '::' }
+}
 
-Write-Host ('Running post-build steps for project ' + $projectName + ' (' + $configurationName + ' configuration)')
-Write-Host ('Solution folder:           ' + $solutionDir)
-Write-Host ('Project folder:            ' + $projectDir)
-Write-Host ('VirtualRadar build folder: ' + $virtualRadarDir)
+Write-Host ('**********')
+Write-Host ('Running post-build steps for project ' + $projectName + ' (' + $configurationName + ' configuration, ' + $platformName + ' platform)')
+Write-Host ('Solution folder:                 ' + $solutionDir)
+Write-Host ('Project folder:                  ' + $projectDir)
+Write-Host ('VirtualRadar build folder (x86): ' + $virtualRadarDirX86)
+Write-Host ('VirtualRadar build folder (x64): ' + $virtualRadarDirX64)
+Write-Host ('VirtualRadar build folder:       ' + $virtualRadarDir)
+Write-Host ('**********')
 
 function Copy-File
 {
@@ -150,11 +162,15 @@ function Copy-Translations
     } |
     ForEach-Object {
         $sourceDll = [io.Path]::Combine($_.FullName, ($targetName + ".resources.dll"))
-        $targetDir = [io.Path]::Combine($virtualRadarDir, $_.Name)
 
         # Note that the file might not exist if no translations have been done for the plugin but
         # the plugin refers to a library that *does* have translations. The reference will create
         # the language folders but there won't be any resource DLLs for the plugin in them.
+
+        $targetDir = [io.Path]::Combine($virtualRadarDirX86, $_.Name)
+        Copy-File $sourceDll $targetDir -ignoreIfMissing
+
+        $targetDir = [io.Path]::Combine($virtualRadarDirX64, $_.Name)
         Copy-File $sourceDll $targetDir -ignoreIfMissing
     }
 }
@@ -165,15 +181,23 @@ function PostBuild-WebSite-Project
     $webDir =  [io.Path]::Combine($siteDir, 'Web')
 
     # Checksum the web folder
-    $checksumOut = [io.Path]::Combine($virtualRadarDir, 'Checksums.txt')
-    Checksum-Folder -folder $webDir -checksumFile $checksumOut
-
     # The unit tests on the web site need to have the checksums file in a fixed location, i.e.
     # its folder should not include the configuration name
+
+    $checksumOut = [io.Path]::Combine($virtualRadarDirX86, 'Checksums.txt')
+    Checksum-Folder -folder $webDir -checksumFile $checksumOut
+    Copy-File $checksumOut $siteDir
+
+    $checksumOut = [io.Path]::Combine($virtualRadarDirX64, 'Checksums.txt')
+    Checksum-Folder -folder $webDir -checksumFile $checksumOut
     Copy-File $checksumOut $siteDir
 
     # Copy the web folder to the VRS build folder
-    $vrsWebDir = [io.Path]::Combine($virtualRadarDir, "Web")
+
+    $vrsWebDir = [io.Path]::Combine($virtualRadarDirX86, "Web")
+    Copy-Folder $webDir $vrsWebDir -deleteBeforeCopy -recursive
+
+    $vrsWebDir = [io.Path]::Combine($virtualRadarDirX64, "Web")
     Copy-Folder $webDir $vrsWebDir -deleteBeforeCopy -recursive
 }
 
@@ -198,21 +222,23 @@ function PostBuild-Plugin
         $pluginName = $projectName.Substring($lastDotIdx + 1)
     }
 
-    $pluginsRoot =    [io.Path]::Combine($virtualRadarDir, "Plugins")
-    $pluginDir =      [io.Path]::Combine($pluginsRoot, $pluginName)
-    $pluginBuildDir = [io.Path]::Combine($projectDir, "bin", $configurationName)
-    $pluginDll =      [io.Path]::Combine($pluginBuildDir, ($targetName + '.dll'))
-    $pluginManifest = [io.Path]::Combine($pluginBuildDir, ($targetName + '.xml'))
+    foreach ($vrsBuildDir in $virtualRadarDirX86, $virtualRadarDirX64) {
+        $pluginsRoot =    [io.Path]::Combine($vrsBuildDir, "Plugins")
+        $pluginDir =      [io.Path]::Combine($pluginsRoot, $pluginName)
+        $pluginBuildDir = [io.Path]::Combine($projectDir, "bin", $configurationName)
+        $pluginDll =      [io.Path]::Combine($pluginBuildDir, ($targetName + '.dll'))
+        $pluginManifest = [io.Path]::Combine($pluginBuildDir, ($targetName + '.xml'))
 
-    Delete-Folder $pluginDir
+        Delete-Folder $pluginDir
 
-    Copy-File $pluginDll $pluginDir
-    Copy-File $pluginManifest $pluginDir
+        Copy-File $pluginDll $pluginDir
+        Copy-File $pluginManifest $pluginDir
 
-    Copy-PluginWebFolder $projectWebDir $destWebDir
-    Copy-PluginWebFolder $projectWebAdminDir $destWebAdminDir
+        Copy-PluginWebFolder $projectWebDir $destWebDir
+        Copy-PluginWebFolder $projectWebAdminDir $destWebAdminDir
 
-    Copy-Translations -buildFolder $pluginBuildDir
+        Copy-Translations -buildFolder $pluginBuildDir
+    }
 }
 
 function PostBuild-VirtualRadar-Service
@@ -221,7 +247,7 @@ function PostBuild-VirtualRadar-Service
         Usage
     }
 
-    $buildFolder = [io.Path]::Combine($projectDir, "bin", "x86", $configurationName)
+    $buildFolder = [io.Path]::Combine($projectDir, "bin", $platformName, $configurationName)
 
     Copy-File ([io.Path]::Combine($buildFolder, ($targetName + '.exe'))) $virtualRadarDir
     Copy-File ([io.Path]::Combine($buildFolder, ($targetName + '.exe.config'))) $virtualRadarDir
@@ -233,7 +259,7 @@ function PostBuild-BaseStationImport
         Usage
     }
 
-    $buildFolder = [io.Path]::Combine($projectDir, "bin", "x86", $configurationName)
+    $buildFolder = [io.Path]::Combine($projectDir, "bin", $platformName, $configurationName)
 
     Copy-File ([io.Path]::Combine($buildFolder, ($targetName + '.exe'))) $virtualRadarDir
     Copy-File ([io.Path]::Combine($buildFolder, ($targetName + '.exe.config'))) $virtualRadarDir
