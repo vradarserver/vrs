@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VirtualRadar.Interface.FlightSimulatorX
+namespace VirtualRadar.Interface.FlightSimulator
 {
     /// <summary>
     /// An enumeration of the values used to identify events within FSX that we are interested in. Many of

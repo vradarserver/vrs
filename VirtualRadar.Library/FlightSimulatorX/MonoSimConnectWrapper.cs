@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Interface.FlightSimulatorX;
+using VirtualRadar.Interface.FlightSimulator;
 
 namespace VirtualRadar.Library.FlightSimulatorX
 {

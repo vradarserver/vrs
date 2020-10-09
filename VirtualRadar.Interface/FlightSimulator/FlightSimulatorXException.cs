@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
 
-namespace VirtualRadar.Interface.FlightSimulatorX
+namespace VirtualRadar.Interface.FlightSimulator
 {
     /// <summary>
     /// Thrown when FlightSimulatorX reports an exception.

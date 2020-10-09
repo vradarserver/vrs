@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace VirtualRadar.Interface.FlightSimulatorX
+namespace VirtualRadar.Interface.FlightSimulator
 {
     /// <summary>
     /// The interface for objects that can talk to Microsoft's Flight Simulator X for us.

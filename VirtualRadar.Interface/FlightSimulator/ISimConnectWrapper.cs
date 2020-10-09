@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace VirtualRadar.Interface.FlightSimulatorX
+namespace VirtualRadar.Interface.FlightSimulator
 {
     /// <summary>
     /// The interface for objects that allows tests to abstract away the SimConnect object that we have to use to connect to FSX.

@@ -33,7 +33,7 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.BaseStation.IBaseStationMessageCompressor, BaseStation.BaseStationMessageCompressor>();
             factory.Register<VirtualRadar.Interface.BaseStation.IBaseStationMessageTranslator, BaseStation.BaseStationMessageTranslator>();
             factory.Register<VirtualRadar.Interface.BaseStation.IRawMessageTranslator, BaseStation.RawMessageTranslator>();
-            factory.Register<VirtualRadar.Interface.FlightSimulatorX.IFlightSimulatorX, FlightSimulatorX.FlightSimulatorX>();
+            factory.Register<VirtualRadar.Interface.FlightSimulator.IFlightSimulatorX, FlightSimulatorX.FlightSimulatorX>();
             factory.Register<VirtualRadar.Interface.Listener.IAircraftListJsonMessageBytesExtractor, Listener.AircraftListJsonMessageBytesExtractor>();
             factory.Register<VirtualRadar.Interface.Listener.IAircraftListJsonMessageConverter, Listener.AircraftListJsonMessageConverter>();
             factory.Register<VirtualRadar.Interface.Listener.IAirnavXRangeMessageBytesExtractor, Listener.AirnavXRangeMessageBytesExtractor>();
@@ -137,11 +137,11 @@ namespace VirtualRadar.Library
             if(Type.GetType("Mono.Runtime") == null) {
                 factory.Register<IShutdownSignalHandler, DotNetShutdownSignalHandler>();
                 factory.Register<ISpeechSynthesizerWrapper, DotNetSpeechSynthesizerWrapper>();
-                factory.Register<VirtualRadar.Interface.FlightSimulatorX.ISimConnectWrapper, FlightSimulatorX.DotNetSimConnectWrapper>();
+                factory.Register<VirtualRadar.Interface.FlightSimulator.ISimConnectWrapper, FlightSimulatorX.DotNetSimConnectWrapper>();
             } else {
                 factory.Register<IShutdownSignalHandler, MonoShutdownSignalHandler>();
                 factory.Register<ISpeechSynthesizerWrapper, MonoSpeechSynthesizerWrapper>();
-                factory.Register<VirtualRadar.Interface.FlightSimulatorX.ISimConnectWrapper, FlightSimulatorX.MonoSimConnectWrapper>();
+                factory.Register<VirtualRadar.Interface.FlightSimulator.ISimConnectWrapper, FlightSimulatorX.MonoSimConnectWrapper>();
             }
         }
     }

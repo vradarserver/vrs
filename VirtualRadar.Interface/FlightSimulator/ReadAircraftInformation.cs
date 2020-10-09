@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace VirtualRadar.Interface.FlightSimulatorX
+namespace VirtualRadar.Interface.FlightSimulator
 {
     /// <summary>
     /// The structure that <see cref="IFlightSimulatorX"/> will fill in with information about the simulated aircraft

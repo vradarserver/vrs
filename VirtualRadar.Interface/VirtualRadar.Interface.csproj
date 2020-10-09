@@ -362,8 +362,8 @@
     <Compile Include="StandingData\IStandingDataUpdaterProvider.cs" />
     <Compile Include="StandingData\NamespaceDoc.cs" />
     <Compile Include="DistanceUnit.cs" />
-    <Compile Include="FlightSimulatorX\FlightSimulatorXEventId.cs" />
-    <Compile Include="FlightSimulatorX\NamespaceDoc.cs" />
+    <Compile Include="FlightSimulator\FlightSimulatorXEventId.cs" />
+    <Compile Include="FlightSimulator\NamespaceDoc.cs" />
     <Compile Include="HeightUnit.cs" />
     <Compile Include="IApplicationInformation.cs" />
     <Compile Include="IAutoConfigPictureFolderCache.cs" />
@@ -420,11 +420,11 @@
     <Compile Include="Settings\IConfigurationStorageProvider.cs" />
     <Compile Include="Settings\IInstallerSettingsStorageProvider.cs" />
     <Compile Include="Database\ILogDatabaseProvider.cs" />
-    <Compile Include="FlightSimulatorX\ReadAircraftInformation.cs" />
-    <Compile Include="FlightSimulatorX\FlightSimulatorXException.cs" />
-    <Compile Include="FlightSimulatorX\FlightSimulatorXExceptionCode.cs" />
-    <Compile Include="FlightSimulatorX\ISimConnectWrapper.cs" />
-    <Compile Include="FlightSimulatorX\WriteAircraftInformation.cs" />
+    <Compile Include="FlightSimulator\ReadAircraftInformation.cs" />
+    <Compile Include="FlightSimulator\FlightSimulatorXException.cs" />
+    <Compile Include="FlightSimulator\FlightSimulatorXExceptionCode.cs" />
+    <Compile Include="FlightSimulator\ISimConnectWrapper.cs" />
+    <Compile Include="FlightSimulator\WriteAircraftInformation.cs" />
     <Compile Include="IAircraftComparer.cs" />
     <Compile Include="AircraftComparerColumn.cs" />
     <Compile Include="AircraftListSource.cs" />
@@ -484,7 +484,7 @@
     <Compile Include="BaseStation\IBaseStationAircraftList.cs" />
     <Compile Include="IBackgroundThreadExceptionCatcher.cs" />
     <Compile Include="IExternalIPAddressService.cs" />
-    <Compile Include="FlightSimulatorX\IFlightSimulatorX.cs" />
+    <Compile Include="FlightSimulator\IFlightSimulatorX.cs" />
     <Compile Include="IExternalIPAddressServiceProvider.cs" />
     <Compile Include="IHeartbeatService.cs" />
     <Compile Include="IImageFileManager.cs" />
@@ -624,7 +624,6 @@
     <None Include="README.md" />
     <None Include="SQLite\_VirtualRadarInterfaceSQLite.cd" />
     <None Include="StandingData\_VirtualRadarInterfaceData.cd" />
-    <None Include="FlightSimulatorX\_VirtualRadarInterfaceFlightSimulatorX.cd" />
     <None Include="Listener\_VirtualRadarInterfaceListener.cd" />
     <None Include="ModeS\_VirtualRadarInterfaceModeS.cd" />
     <None Include="Settings\_VirtualRadarInterfaceSettings.cd" />
