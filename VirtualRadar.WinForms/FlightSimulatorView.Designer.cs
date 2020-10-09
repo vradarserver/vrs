@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FlightSimulatorView));
             this.radioButtonFreezeMethod = new System.Windows.Forms.RadioButton();
             this.groupBoxAdsAircraft = new System.Windows.Forms.GroupBox();
+            this.aircraftListControl = new VirtualRadar.WinForms.Controls.AircraftListControl();
             this.radioButtonSlewMethod = new System.Windows.Forms.RadioButton();
             this.labelRideStatus = new System.Windows.Forms.Label();
             this.buttonRideAircraft = new System.Windows.Forms.Button();
@@ -40,7 +41,6 @@
             this.buttonConnect = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.timer = new System.Windows.Forms.Timer(this.components);
-            this.aircraftListControl = new VirtualRadar.WinForms.Controls.AircraftListControl();
             this.linkLabelAddress = new System.Windows.Forms.LinkLabel();
             this.groupBoxAdsAircraft.SuspendLayout();
             this.SuspendLayout();
@@ -73,6 +73,16 @@
             this.groupBoxAdsAircraft.TabIndex = 11;
             this.groupBoxAdsAircraft.TabStop = false;
             this.groupBoxAdsAircraft.Text = "::ADSBAircraft::";
+            // 
+            // aircraftListControl
+            // 
+            this.aircraftListControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.aircraftListControl.Location = new System.Drawing.Point(6, 19);
+            this.aircraftListControl.Name = "aircraftListControl";
+            this.aircraftListControl.Size = new System.Drawing.Size(515, 165);
+            this.aircraftListControl.TabIndex = 5;
             // 
             // radioButtonSlewMethod
             // 
@@ -155,16 +165,6 @@
             this.timer.Interval = 1000;
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
-            // aircraftListControl
-            // 
-            this.aircraftListControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.aircraftListControl.Location = new System.Drawing.Point(6, 19);
-            this.aircraftListControl.Name = "aircraftListControl";
-            this.aircraftListControl.Size = new System.Drawing.Size(515, 165);
-            this.aircraftListControl.TabIndex = 5;
-            // 
             // linkLabelAddress
             // 
             this.linkLabelAddress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -177,7 +177,7 @@
             this.linkLabelAddress.Text = "link to flight sim page";
             this.linkLabelAddress.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelAddress_LinkClicked);
             // 
-            // FlightSimulatorXView
+            // FlightSimulatorView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -190,9 +190,9 @@
             this.Controls.Add(this.buttonCancel);
             this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "FlightSimulatorXView";
+            this.Name = "FlightSimulatorView";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Flight Simulator X";
+            this.Text = "Microsoft Flight Simulator";
             this.groupBoxAdsAircraft.ResumeLayout(false);
             this.groupBoxAdsAircraft.PerformLayout();
             this.ResumeLayout(false);

@@ -19,7 +19,7 @@ namespace VirtualRadar.Localisation {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Strings {
@@ -466,7 +466,7 @@ namespace VirtualRadar.Localisation {
                 return ResourceManager.GetString("AssumeDF18CF1IsIcao", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Audio.
         /// </summary>
@@ -666,7 +666,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot communicate with Flight Simulator X.
+        ///   Looks up a localized string similar to Cannot communicate with Microsoft Flight Simulator.
         /// </summary>
         public static string CannotCommunicateWithFlightSimulatorX {
             get {
@@ -1093,7 +1093,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect to Flight Simulator X.
+        ///   Looks up a localized string similar to Connect to Flight Simulator.
         /// </summary>
         public static string ConnectToFlightSimulatorX {
             get {
@@ -1849,7 +1849,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Flight Simulator X is not installed (cannot load SimConnect).
+        ///   Looks up a localized string similar to Microsoft Flight Simulator is not installed (cannot load SimConnect).
         /// </summary>
         public static string FlightSimulatorXIsNotInstalled {
             get {
@@ -1858,7 +1858,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Flight Simulator X receiver.
+        ///   Looks up a localized string similar to Flight Simulator receiver.
         /// </summary>
         public static string FlightSimulatorXReceiverId {
             get {
@@ -1867,7 +1867,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please specify the receiver that the FSX ride-along feature will use.
+        ///   Looks up a localized string similar to Please specify the receiver that the MSFS ride-along feature will use.
         /// </summary>
         public static string FlightSimulatorXReceiverRequired {
             get {
@@ -1876,7 +1876,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disconnected due to Flight Simulator X exiting.
+        ///   Looks up a localized string similar to Disconnected due to Microsoft Flight Simulator exiting.
         /// </summary>
         public static string FlightSimulatorXShutdown {
             get {
@@ -2416,7 +2416,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Flight Simulator X Only.
+        ///   Looks up a localized string similar to Flight Simulator Only.
         /// </summary>
         public static string JustFlightSimulatorX {
             get {
@@ -2871,7 +2871,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Flight &amp;Simulator X Mode....
+        ///   Looks up a localized string similar to Microsoft Flight &amp;Simulator Mode....
         /// </summary>
         public static string menuFlightSimulatorXMode {
             get {
@@ -3753,7 +3753,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The receiver that will be used by the Flight Simulator X &quot;ride-along&quot; feature..
+        ///   Looks up a localized string similar to The receiver that will be used by the Flight Simulator &quot;ride-along&quot; feature..
         /// </summary>
         public static string OptionsDescribeFlightSimulatorXReceiverId {
             get {
@@ -4093,7 +4093,7 @@ namespace VirtualRadar.Localisation {
                 return ResourceManager.GetString("OptionsDescribeRawFeedAssumeDF18CF1IsIcao", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The number of seconds that can elapse between odd/even format surface position messages in global decoding for vehicles travelling over 25 knots. ICAO recommend 25 seconds. High values can cause vehicles to initially appear several hundred miles from their true location..
         /// </summary>
@@ -6918,15 +6918,15 @@ namespace VirtualRadar.Localisation {
         ///========================================
         ///
         ///It is a requirement for most free tile servers that the program does not hard
-        ///code their address and that there is some way to remove support for a
-        ///particular tile server if their operators request it.
+        ///code their address and that there is some way to remove support for a tile
+        ///server if their operators request it.
         ///
         ///To that end VRS downloads a copy of the tile server settings from the SDM site
         ///once a day. The downloaded settings are stored in a file called:
         ///
         ///    TileServerSettings-Downloaded.json.
         ///
-        ///DO NOT CHANGE THE SETTINGS I [rest of string was truncated]&quot;;.
+        ///DO NOT CHANGE THE SETTINGS IN THAT FILE [rest of string was truncated]&quot;;.
         /// </summary>
         public static string TileServerSettings_ReadMe {
             get {
