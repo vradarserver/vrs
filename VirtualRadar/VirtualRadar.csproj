@@ -110,7 +110,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
-    <None Include="CreateAnyCPUBuild.bat" />
     <None Include="packages.config" />
     <None Include="README.md" />
   </ItemGroup>
