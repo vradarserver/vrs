@@ -202,14 +202,14 @@
     <Compile Include="Presenter\ConnectionClientLogPresenter.cs" />
     <Compile Include="Presenter\ConnectionSessionLogPresenter.cs" />
     <Compile Include="Presenter\DownloadDataPresenter.cs" />
-    <Compile Include="Presenter\FlightSimulatorXPresenter.cs" />
+    <Compile Include="Presenter\FlightSimulatorPresenter.cs" />
     <Compile Include="Presenter\InvalidPluginsPresenter.cs" />
     <Compile Include="Presenter\PluginsPresenter.cs" />
     <Compile Include="Presenter\ShutdownPresenter.cs" />
     <Compile Include="Presenter\SplashPresenter.cs" />
     <Compile Include="Settings\InstallerSettingsStorage.cs" />
     <Compile Include="ExternalIPAddressService.cs" />
-    <Compile Include="FlightSimulator\FlightSimulatorX.cs" />
+    <Compile Include="FlightSimulator\FlightSimulator.cs" />
     <Compile Include="FlightSimulator\DotNetSimConnectWrapper.cs" />
     <Compile Include="HeartbeatService.cs" />
     <Compile Include="Log.cs" />

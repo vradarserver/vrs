@@ -26,7 +26,7 @@ namespace VirtualRadar.Interface.FlightSimulator
     /// naughty-naughty, so instead the caller should call <see cref="IsSimConnectMessage"/> for every message they receive
     /// and do nothing if it returns true.
     /// </remarks>
-    public interface IFlightSimulatorX : IDisposable
+    public interface IFlightSimulator : IDisposable
     {
         #region Properties
         /// <summary>
@@ -81,7 +81,7 @@ namespace VirtualRadar.Interface.FlightSimulator
         /// <summary>
         /// Raised whenever Flight Simulator raises an exception.
         /// </summary>
-        event EventHandler<EventArgs<FlightSimulatorXException>> FlightSimulatorXExceptionRaised;
+        event EventHandler<EventArgs<FlightSimulatorException>> FlightSimulatorXExceptionRaised;
 
         /// <summary>
         /// Raised whenever <see cref="IsFrozen"/> changes.

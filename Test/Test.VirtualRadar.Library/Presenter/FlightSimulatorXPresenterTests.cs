@@ -36,11 +36,11 @@ namespace Test.VirtualRadar.Library.Presenter
         public TestContext TestContext { get; set; }
 
         private IClassFactory _ClassFactorySnapshot;
-        private IFlightSimulatorXPresenter _Presenter;
-        private Mock<IFlightSimulatorXPresenterProvider> _Provider;
+        private IFlightSimulatorPresenter _Presenter;
+        private Mock<IFlightSimulatorPresenterProvider> _Provider;
         private ClockMock _Clock;
         private int _LimitTimedInvokeCallbacks;
-        private Mock<IFlightSimulatorXView> _View;
+        private Mock<IFlightSimulatorView> _View;
         private Mock<ISimpleAircraftList> _FlightSimulatorAircraftList;
         private Mock<IFlightSimulatorX> _FlightSimulatorX;
         private List<IAircraft> _FSXAircraftList;
@@ -74,9 +74,9 @@ namespace Test.VirtualRadar.Library.Presenter
 
             _Log = TestUtilities.CreateMockSingleton<ILog>();
 
-            _Presenter = Factory.Resolve<IFlightSimulatorXPresenter>();
+            _Presenter = Factory.Resolve<IFlightSimulatorPresenter>();
 
-            _Provider = new Mock<IFlightSimulatorXPresenterProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+            _Provider = new Mock<IFlightSimulatorPresenterProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _LimitTimedInvokeCallbacks = 1;
             int callbacks = 0;
             _Provider.Setup(p => p.TimedInvokeOnBackgroundThread(It.IsAny<Action>(), It.IsAny<int>())).Callback((Action callback, int milliseconds) => {
@@ -85,7 +85,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _Presenter.Provider = _Provider.Object;
 
             _SelectedAircraft = new Mock<IAircraft>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties().Object;
-            _View = new Mock<IFlightSimulatorXView>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
+            _View = new Mock<IFlightSimulatorView>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _View.Setup(v => v.CanBeRefreshed).Returns(true);
             _View.Setup(v => v.SelectedRealAircraft).Returns(_SelectedAircraft);
 
@@ -123,7 +123,7 @@ namespace Test.VirtualRadar.Library.Presenter
         [TestMethod]
         public void FlightSimulatorXPresenter_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
-            _Presenter = Factory.Resolve<IFlightSimulatorXPresenter>();
+            _Presenter = Factory.Resolve<IFlightSimulatorPresenter>();
 
             Assert.IsNotNull(_Presenter.Provider);
             TestUtilities.TestProperty(_Presenter, r => r.Provider, _Presenter.Provider, _Provider.Object);

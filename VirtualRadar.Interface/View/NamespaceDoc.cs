@@ -24,7 +24,7 @@ namespace VirtualRadar.Interface.View
     /// The application follows the MVP pattern for user interfaces, whereby the view is hidden behind an interface, is
     /// very dumb (it only contains code to drive the user interface elements, it is not allowed to directly load or save
     /// data) and is controlled by a presenter. In almost all cases the object implementing the view doesn't actually
-    /// need to be a GUI object, although in the case of <see cref="IFlightSimulatorXView"/> is must create a window handle
+    /// need to be a GUI object, although in the case of <see cref="IFlightSimulatorView"/> is must create a window handle
     /// somewhere for the SimConnect library to communicate through.
     /// </para></remarks>
     [CompilerGenerated]

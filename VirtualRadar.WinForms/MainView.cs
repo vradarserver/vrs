@@ -52,7 +52,7 @@ namespace VirtualRadar.WinForms
         /// <summary>
         /// The current instance of the modeless dialog that displays the FSX connection, if any.
         /// </summary>
-        private FlightSimulatorXView _FlightSimulatorXView;
+        private FlightSimulatorView _FlightSimulatorXView;
 
         /// <summary>
         /// The current instance of the modeless dialog that displays the XPlane connection.
@@ -636,7 +636,7 @@ namespace VirtualRadar.WinForms
             if(_FlightSimulatorXView != null) _FlightSimulatorXView.Activate();
             else {
                 var webServer = Factory.ResolveSingleton<IAutoConfigWebServer>().WebServer;
-                _FlightSimulatorXView = new FlightSimulatorXView();
+                _FlightSimulatorXView = new FlightSimulatorView();
                 _FlightSimulatorXView.CloseClicked += FlightSimulatorXView_CloseClicked;
                 _FlightSimulatorXView.Initialise(null, _FlightSimulatorXAircraftList, webServer);
                 _FlightSimulatorXView.Show();

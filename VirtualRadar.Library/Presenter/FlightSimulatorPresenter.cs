@@ -25,15 +25,15 @@ using VirtualRadar.Localisation;
 namespace VirtualRadar.Library.Presenter
 {
     /// <summary>
-    /// The default implmentation of <see cref="IFlightSimulatorXPresenter"/>.
+    /// The default implmentation of <see cref="IFlightSimulatorPresenter"/>.
     /// </summary>
-    class FlightSimulatorXPresenter : IFlightSimulatorXPresenter
+    class FlightSimulatorPresenter : IFlightSimulatorPresenter
     {
         #region Private class - DefaultProvider
         /// <summary>
         /// The default implementation of the provider.
         /// </summary>
-        class DefaultProvider : IFlightSimulatorXPresenterProvider
+        class DefaultProvider : IFlightSimulatorPresenterProvider
         {
             class BackgroundState
             {
@@ -61,12 +61,12 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// The view that this presenter is controlling.
         /// </summary>
-        IFlightSimulatorXView _View;
+        IFlightSimulatorView _View;
 
         /// <summary>
         /// The object that will talk to FSX for us.
         /// </summary>
-        IFlightSimulatorX _FlightSimulatorX;
+        IFlightSimulator _FlightSimulatorX;
 
         /// <summary>
         /// The object that manages the clock for us.
@@ -112,7 +112,7 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IFlightSimulatorXPresenterProvider Provider { get; set; }
+        public IFlightSimulatorPresenterProvider Provider { get; set; }
 
         /// <summary>
         /// See interface docs.
@@ -129,10 +129,10 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public FlightSimulatorXPresenter()
+        public FlightSimulatorPresenter()
         {
             Provider = new DefaultProvider();
-            _FlightSimulatorX = Factory.Resolve<IFlightSimulatorX>();
+            _FlightSimulatorX = Factory.Resolve<IFlightSimulator>();
             _Clock = Factory.Resolve<IClock>();
 
             Factory.ResolveSingleton<IConfigurationStorage>().ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
@@ -142,7 +142,7 @@ namespace VirtualRadar.Library.Presenter
         /// <summary>
         /// Finalises the object.
         /// </summary>
-        ~FlightSimulatorXPresenter()
+        ~FlightSimulatorPresenter()
         {
             Dispose(false);
         }
@@ -177,7 +177,7 @@ namespace VirtualRadar.Library.Presenter
         /// See interface docs.
         /// </summary>
         /// <param name="view"></param>
-        public void Initialise(IFlightSimulatorXView view)
+        public void Initialise(IFlightSimulatorView view)
         {
             LoadConfiguration();
 
@@ -420,7 +420,7 @@ namespace VirtualRadar.Library.Presenter
             _View.RideAircraftEnabled = _FlightSimulatorX.Connected;
         }
 
-        private void FlightSimulatorX_FlightSimulatorXExceptionRaised(object sender, EventArgs<FlightSimulatorXException> args)
+        private void FlightSimulatorX_FlightSimulatorXExceptionRaised(object sender, EventArgs<FlightSimulatorException> args)
         {
             var now = _Clock.UtcNow;
             if(now >= _TimeLastFsxExceptionRaised.AddSeconds(20)) {

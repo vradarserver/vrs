@@ -20,12 +20,12 @@ namespace VirtualRadar.Interface.FlightSimulator
     /// Thrown when FlightSimulatorX reports an exception.
     /// </summary>
     [Serializable]
-    public class FlightSimulatorXException : Exception
+    public class FlightSimulatorException : Exception
     {
         /// <summary>
         /// Gets the FSX exception identifier.
         /// </summary>
-        public FlightSimulatorXExceptionCode ExceptionCode { get; private set; }
+        public FlightSimulatorExceptionCode ExceptionCode { get; private set; }
 
         /// <summary>
         /// Gets the FSX exception code that underlies <see cref="ExceptionCode"/>.
@@ -46,27 +46,27 @@ namespace VirtualRadar.Interface.FlightSimulator
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public FlightSimulatorXException() { }
+        public FlightSimulatorException() { }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="message"></param>
-        public FlightSimulatorXException(string message) : base(message) { }
+        public FlightSimulatorException(string message) : base(message) { }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="message"></param>
         /// <param name="inner"></param>
-        public FlightSimulatorXException(string message, Exception inner) : base(message, inner) { }
+        public FlightSimulatorException(string message, Exception inner) : base(message, inner) { }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected FlightSimulatorXException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+        protected FlightSimulatorException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 
         /// <summary>
         /// Creates a new object.
@@ -74,7 +74,7 @@ namespace VirtualRadar.Interface.FlightSimulator
         /// <param name="exceptionID"></param>
         /// <param name="indexNumber"></param>
         /// <param name="sendID"></param>
-        public FlightSimulatorXException(uint exceptionID, uint indexNumber, uint sendID) : this(String.Format("FSX exception {0}({1}), parameter {2}, packet {3}", ConvertIdToExceptionCode(exceptionID), exceptionID, indexNumber, sendID))
+        public FlightSimulatorException(uint exceptionID, uint indexNumber, uint sendID) : this(String.Format("FSX exception {0}({1}), parameter {2}, packet {3}", ConvertIdToExceptionCode(exceptionID), exceptionID, indexNumber, sendID))
         {
             RawExceptionCode = exceptionID;
             IndexNumber = indexNumber;
@@ -84,13 +84,13 @@ namespace VirtualRadar.Interface.FlightSimulator
         }
 
         /// <summary>
-        /// Returns the <see cref="FlightSimulatorXExceptionCode"/> corresponding to the FSX exception ID passed across.
+        /// Returns the <see cref="FlightSimulatorExceptionCode"/> corresponding to the FSX exception ID passed across.
         /// </summary>
         /// <param name="exceptionID"></param>
         /// <returns></returns>
-        private static FlightSimulatorXExceptionCode ConvertIdToExceptionCode(uint exceptionID)
+        private static FlightSimulatorExceptionCode ConvertIdToExceptionCode(uint exceptionID)
         {
-            return Enum.IsDefined(typeof(FlightSimulatorXExceptionCode), exceptionID) ? (FlightSimulatorXExceptionCode)exceptionID : FlightSimulatorXExceptionCode.Unknown;
+            return Enum.IsDefined(typeof(FlightSimulatorExceptionCode), exceptionID) ? (FlightSimulatorExceptionCode)exceptionID : FlightSimulatorExceptionCode.Unknown;
         }
     }
 }

@@ -213,11 +213,11 @@
       <DependentUpon>DownloadDataView.cs</DependentUpon>
     </Compile>
     <Compile Include="DynamicImageList.cs" />
-    <Compile Include="FlightSimulatorXView.cs">
+    <Compile Include="FlightSimulatorView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FlightSimulatorXView.Designer.cs">
-      <DependentUpon>FlightSimulatorXView.cs</DependentUpon>
+    <Compile Include="FlightSimulatorView.Designer.cs">
+      <DependentUpon>FlightSimulatorView.cs</DependentUpon>
     </Compile>
     <Compile Include="FontFactory.cs" />
     <Compile Include="Implementations.cs" />
@@ -556,8 +556,8 @@
       <DependentUpon>DownloadDataView.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="FlightSimulatorXView.resx">
-      <DependentUpon>FlightSimulatorXView.cs</DependentUpon>
+    <EmbeddedResource Include="FlightSimulatorView.resx">
+      <DependentUpon>FlightSimulatorView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InvalidPluginsView.resx">
       <DependentUpon>InvalidPluginsView.cs</DependentUpon>

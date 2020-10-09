@@ -17,12 +17,12 @@ using System.Runtime.InteropServices;
 namespace VirtualRadar.Interface.FlightSimulator
 {
     /// <summary>
-    /// The structure that is passed to <see cref="IFlightSimulatorX"/> to control the location, altitude, attitude and details
+    /// The structure that is passed to <see cref="IFlightSimulator"/> to control the location, altitude, attitude and details
     /// of the simulated aircraft.
     /// </summary>
     /// <remarks>
     /// The order in which the fields appear in this structure is important - do not change it without also changing the
-    /// order of field registration in <see cref="IFlightSimulatorX"/>'s implementation.
+    /// order of field registration in <see cref="IFlightSimulator"/>'s implementation.
     /// </remarks>
     public struct WriteAircraftInformation
     {

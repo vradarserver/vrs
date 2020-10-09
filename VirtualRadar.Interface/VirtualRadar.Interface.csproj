@@ -362,7 +362,7 @@
     <Compile Include="StandingData\IStandingDataUpdaterProvider.cs" />
     <Compile Include="StandingData\NamespaceDoc.cs" />
     <Compile Include="DistanceUnit.cs" />
-    <Compile Include="FlightSimulator\FlightSimulatorXEventId.cs" />
+    <Compile Include="FlightSimulator\FlightSimulatorEventId.cs" />
     <Compile Include="FlightSimulator\NamespaceDoc.cs" />
     <Compile Include="HeightUnit.cs" />
     <Compile Include="IApplicationInformation.cs" />
@@ -393,8 +393,8 @@
     <Compile Include="Presenter\IConnectionClientLogPresenter.cs" />
     <Compile Include="Presenter\IConnectionClientLogPresenterProvider.cs" />
     <Compile Include="Presenter\IConnectionSessionLogPresenter.cs" />
-    <Compile Include="Presenter\IFlightSimulatorXPresenter.cs" />
-    <Compile Include="Presenter\IFlightSimulatorXPresenterProvider.cs" />
+    <Compile Include="Presenter\IFlightSimulatorPresenter.cs" />
+    <Compile Include="Presenter\IFlightSimulatorPresenterProvider.cs" />
     <Compile Include="Presenter\IInvalidPluginsPresenter.cs" />
     <Compile Include="Presenter\IPluginsPresenter.cs" />
     <Compile Include="Presenter\IPresenter.cs" />
@@ -421,8 +421,8 @@
     <Compile Include="Settings\IInstallerSettingsStorageProvider.cs" />
     <Compile Include="Database\ILogDatabaseProvider.cs" />
     <Compile Include="FlightSimulator\ReadAircraftInformation.cs" />
-    <Compile Include="FlightSimulator\FlightSimulatorXException.cs" />
-    <Compile Include="FlightSimulator\FlightSimulatorXExceptionCode.cs" />
+    <Compile Include="FlightSimulator\FlightSimulatorException.cs" />
+    <Compile Include="FlightSimulator\FlightSimulatorExceptionCode.cs" />
     <Compile Include="FlightSimulator\ISimConnectWrapper.cs" />
     <Compile Include="FlightSimulator\WriteAircraftInformation.cs" />
     <Compile Include="IAircraftComparer.cs" />
@@ -484,7 +484,7 @@
     <Compile Include="BaseStation\IBaseStationAircraftList.cs" />
     <Compile Include="IBackgroundThreadExceptionCatcher.cs" />
     <Compile Include="IExternalIPAddressService.cs" />
-    <Compile Include="FlightSimulator\IFlightSimulatorX.cs" />
+    <Compile Include="FlightSimulator\IFlightSimulator.cs" />
     <Compile Include="IExternalIPAddressServiceProvider.cs" />
     <Compile Include="IHeartbeatService.cs" />
     <Compile Include="IImageFileManager.cs" />
@@ -516,7 +516,7 @@
     <Compile Include="View\IConnectionSessionLogView.cs" />
     <Compile Include="View\IConnectorActivityLogView.cs" />
     <Compile Include="View\IDownloadDataView.cs" />
-    <Compile Include="View\IFlightSimulatorXView.cs" />
+    <Compile Include="View\IFlightSimulatorView.cs" />
     <Compile Include="View\IInvalidPluginsView.cs" />
     <Compile Include="View\IListDetailEditorView.cs" />
     <Compile Include="View\IPluginsView.cs" />

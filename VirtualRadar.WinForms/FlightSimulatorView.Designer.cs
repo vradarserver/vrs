@@ -1,6 +1,6 @@
 ﻿namespace VirtualRadar.WinForms
 {
-    partial class FlightSimulatorXView
+    partial class FlightSimulatorView
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FlightSimulatorXView));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FlightSimulatorView));
             this.radioButtonFreezeMethod = new System.Windows.Forms.RadioButton();
             this.groupBoxAdsAircraft = new System.Windows.Forms.GroupBox();
             this.radioButtonSlewMethod = new System.Windows.Forms.RadioButton();

@@ -33,7 +33,7 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.BaseStation.IBaseStationMessageCompressor, BaseStation.BaseStationMessageCompressor>();
             factory.Register<VirtualRadar.Interface.BaseStation.IBaseStationMessageTranslator, BaseStation.BaseStationMessageTranslator>();
             factory.Register<VirtualRadar.Interface.BaseStation.IRawMessageTranslator, BaseStation.RawMessageTranslator>();
-            factory.Register<VirtualRadar.Interface.FlightSimulator.IFlightSimulatorX, FlightSimulator.FlightSimulatorX>();
+            factory.Register<VirtualRadar.Interface.FlightSimulator.IFlightSimulator, FlightSimulator.FlightSimulator>();
             factory.Register<VirtualRadar.Interface.Listener.IAircraftListJsonMessageBytesExtractor, Listener.AircraftListJsonMessageBytesExtractor>();
             factory.Register<VirtualRadar.Interface.Listener.IAircraftListJsonMessageConverter, Listener.AircraftListJsonMessageConverter>();
             factory.Register<VirtualRadar.Interface.Listener.IAirnavXRangeMessageBytesExtractor, Listener.AirnavXRangeMessageBytesExtractor>();
@@ -70,7 +70,7 @@ namespace VirtualRadar.Library
             factory.Register<VirtualRadar.Interface.Presenter.IConnectionSessionLogPresenter, Presenter.ConnectionSessionLogPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IConnectorActivityLogPresenter, Presenter.ConnectorActivityLogPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IDownloadDataPresenter, Presenter.DownloadDataPresenter>();
-            factory.Register<VirtualRadar.Interface.Presenter.IFlightSimulatorXPresenter, Presenter.FlightSimulatorXPresenter>();
+            factory.Register<VirtualRadar.Interface.Presenter.IFlightSimulatorPresenter, Presenter.FlightSimulatorPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IInvalidPluginsPresenter, Presenter.InvalidPluginsPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IMainPresenter, Presenter.MainPresenter>();
             factory.Register<VirtualRadar.Interface.Presenter.IPluginsPresenter, Presenter.PluginsPresenter>();

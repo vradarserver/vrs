@@ -28,15 +28,15 @@ using System.Diagnostics;
 namespace VirtualRadar.WinForms
 {
     /// <summary>
-    /// Implements <see cref="IFlightSimulatorXView"/> using a WinForms dialog box.
+    /// Implements <see cref="IFlightSimulatorView"/> using a WinForms dialog box.
     /// </summary>
-    public partial class FlightSimulatorXView : BaseForm, IFlightSimulatorXView
+    public partial class FlightSimulatorView : BaseForm, IFlightSimulatorView
     {
         #region Fields
         /// <summary>
         /// The presenter that's controlling this view.
         /// </summary>
-        private IFlightSimulatorXPresenter _Presenter;
+        private IFlightSimulatorPresenter _Presenter;
 
         /// <summary>
         /// The object that handles the display of online help for us.
@@ -216,7 +216,7 @@ namespace VirtualRadar.WinForms
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public FlightSimulatorXView() : base()
+        public FlightSimulatorView() : base()
         {
             InitializeComponent();
 
@@ -280,7 +280,7 @@ namespace VirtualRadar.WinForms
 
                 _OnlineHelp = new OnlineHelpHelper(this, OnlineHelpAddress.WinFormsFlightSimulatorXDialog);
 
-                _Presenter = Factory.Resolve<IFlightSimulatorXPresenter>();
+                _Presenter = Factory.Resolve<IFlightSimulatorPresenter>();
                 _Presenter.FlightSimulatorAircraftList = _FlightSimulatorAircraftList;
                 _Presenter.WebServer = _WebServer;
                 _Presenter.Initialise(this);

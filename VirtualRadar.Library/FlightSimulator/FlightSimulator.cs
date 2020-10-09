@@ -22,9 +22,9 @@ using VirtualRadar.Localisation;
 namespace VirtualRadar.Library.FlightSimulator
 {
     /// <summary>
-    /// The default implementation of <see cref="IFlightSimulatorX"/>.
+    /// The default implementation of <see cref="IFlightSimulator"/>.
     /// </summary>
-    sealed class FlightSimulatorX : IFlightSimulatorX
+    sealed class FlightSimulator : IFlightSimulator
     {
         #region SimConnect enums and fields
         /// <summary>
@@ -93,9 +93,9 @@ namespace VirtualRadar.Library.FlightSimulator
             {
                 if(Connected && IsFrozen != value) {
                     var dataValue = value ? 1u : 0u;
-                    _SimConnect.TransmitClientEvent((uint)SIMCONNECT_SIMOBJECT_TYPE.USER, FlightSimulatorXEventId.FreezeAltitude, dataValue, GroupId.Freezing, (int)SIMCONNECT_EVENT_FLAG.DEFAULT);
-                    _SimConnect.TransmitClientEvent((uint)SIMCONNECT_SIMOBJECT_TYPE.USER, FlightSimulatorXEventId.FreezeAttitude, dataValue, GroupId.Freezing, (int)SIMCONNECT_EVENT_FLAG.DEFAULT);
-                    _SimConnect.TransmitClientEvent((uint)SIMCONNECT_SIMOBJECT_TYPE.USER, FlightSimulatorXEventId.FreezeLatitudeLongitude, dataValue, GroupId.Freezing, (int)SIMCONNECT_EVENT_FLAG.DEFAULT);
+                    _SimConnect.TransmitClientEvent((uint)SIMCONNECT_SIMOBJECT_TYPE.USER, FlightSimulatorEventId.FreezeAltitude, dataValue, GroupId.Freezing, (int)SIMCONNECT_EVENT_FLAG.DEFAULT);
+                    _SimConnect.TransmitClientEvent((uint)SIMCONNECT_SIMOBJECT_TYPE.USER, FlightSimulatorEventId.FreezeAttitude, dataValue, GroupId.Freezing, (int)SIMCONNECT_EVENT_FLAG.DEFAULT);
+                    _SimConnect.TransmitClientEvent((uint)SIMCONNECT_SIMOBJECT_TYPE.USER, FlightSimulatorEventId.FreezeLatitudeLongitude, dataValue, GroupId.Freezing, (int)SIMCONNECT_EVENT_FLAG.DEFAULT);
 
                     _IsFrozen = value;
                     OnFreezeStatusChanged(EventArgs.Empty);
@@ -114,12 +114,12 @@ namespace VirtualRadar.Library.FlightSimulator
             {
                 if(Connected && IsSlewing != value) {
                     if(!value) {
-                        _SimConnect.TransmitClientEvent(0, FlightSimulatorXEventId.SlewModeOff, 0, GroupId.Slewing, (int)SIMCONNECT_EVENT_FLAG.DEFAULT);
+                        _SimConnect.TransmitClientEvent(0, FlightSimulatorEventId.SlewModeOff, 0, GroupId.Slewing, (int)SIMCONNECT_EVENT_FLAG.DEFAULT);
                     } else {
-                        _SimConnect.TransmitClientEvent(0, FlightSimulatorXEventId.SlewModeOn, 0, GroupId.Slewing, (int)SIMCONNECT_EVENT_FLAG.DEFAULT);
-                        _SimConnect.TransmitClientEvent(0, FlightSimulatorXEventId.SlewAltitudeUpSlow, 0, GroupId.Slewing, (int)SIMCONNECT_EVENT_FLAG.DEFAULT);
+                        _SimConnect.TransmitClientEvent(0, FlightSimulatorEventId.SlewModeOn, 0, GroupId.Slewing, (int)SIMCONNECT_EVENT_FLAG.DEFAULT);
+                        _SimConnect.TransmitClientEvent(0, FlightSimulatorEventId.SlewAltitudeUpSlow, 0, GroupId.Slewing, (int)SIMCONNECT_EVENT_FLAG.DEFAULT);
                         Thread.Sleep(250);
-                        _SimConnect.TransmitClientEvent(0, FlightSimulatorXEventId.SlewFreeze, 0, GroupId.Slewing, (int)SIMCONNECT_EVENT_FLAG.DEFAULT);
+                        _SimConnect.TransmitClientEvent(0, FlightSimulatorEventId.SlewFreeze, 0, GroupId.Slewing, (int)SIMCONNECT_EVENT_FLAG.DEFAULT);
                     }
 
                     _IsSlewing = value;
@@ -166,13 +166,13 @@ namespace VirtualRadar.Library.FlightSimulator
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public event EventHandler<EventArgs<FlightSimulatorXException>> FlightSimulatorXExceptionRaised;
+        public event EventHandler<EventArgs<FlightSimulatorException>> FlightSimulatorXExceptionRaised;
 
         /// <summary>
         /// Raises <see cref="FlightSimulatorXExceptionRaised"/>.
         /// </summary>
         /// <param name="args"></param>
-        private void OnFlightSimulatorXExceptionRaised(EventArgs<FlightSimulatorXException> args)
+        private void OnFlightSimulatorXExceptionRaised(EventArgs<FlightSimulatorException> args)
         {
             EventHelper.Raise(FlightSimulatorXExceptionRaised, this, args);
         }
@@ -224,7 +224,7 @@ namespace VirtualRadar.Library.FlightSimulator
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public FlightSimulatorX()
+        public FlightSimulator()
         {
             ConnectionStatus = Strings.Disconnected;
             _SimConnect = Factory.Resolve<ISimConnectWrapper>();
@@ -237,7 +237,7 @@ namespace VirtualRadar.Library.FlightSimulator
         /// <summary>
         /// Finalises the object.
         /// </summary>
-        ~FlightSimulatorX()
+        ~FlightSimulator()
         {
             Dispose(false);
         }
@@ -279,26 +279,26 @@ namespace VirtualRadar.Library.FlightSimulator
                 try {
                     _SimConnect.CreateSimConnect("Virtual Radar Server", windowHandle, SimConnect_UserMessageId, null, 0);
 
-                    _SimConnect.MapClientEventToSimEvent(FlightSimulatorXEventId.SlewModeOn, "SLEW_ON");
-                    _SimConnect.MapClientEventToSimEvent(FlightSimulatorXEventId.SlewModeOff, "SLEW_OFF");
-                    _SimConnect.MapClientEventToSimEvent(FlightSimulatorXEventId.SlewAltitudeUpSlow, "SLEW_ALTIT_UP_SLOW");
-                    _SimConnect.MapClientEventToSimEvent(FlightSimulatorXEventId.SlewFreeze, "SLEW_FREEZE");
-                    _SimConnect.MapClientEventToSimEvent(FlightSimulatorXEventId.SlewToggle, "SLEW_TOGGLE");
-                    _SimConnect.MapClientEventToSimEvent(FlightSimulatorXEventId.FreezeAltitude, "FREEZE_ALTITUDE_SET");
-                    _SimConnect.MapClientEventToSimEvent(FlightSimulatorXEventId.FreezeAttitude, "FREEZE_ATTITUDE_SET");
-                    _SimConnect.MapClientEventToSimEvent(FlightSimulatorXEventId.FreezeLatitudeLongitude, "FREEZE_LATITUDE_LONGITUDE_SET");
+                    _SimConnect.MapClientEventToSimEvent(FlightSimulatorEventId.SlewModeOn, "SLEW_ON");
+                    _SimConnect.MapClientEventToSimEvent(FlightSimulatorEventId.SlewModeOff, "SLEW_OFF");
+                    _SimConnect.MapClientEventToSimEvent(FlightSimulatorEventId.SlewAltitudeUpSlow, "SLEW_ALTIT_UP_SLOW");
+                    _SimConnect.MapClientEventToSimEvent(FlightSimulatorEventId.SlewFreeze, "SLEW_FREEZE");
+                    _SimConnect.MapClientEventToSimEvent(FlightSimulatorEventId.SlewToggle, "SLEW_TOGGLE");
+                    _SimConnect.MapClientEventToSimEvent(FlightSimulatorEventId.FreezeAltitude, "FREEZE_ALTITUDE_SET");
+                    _SimConnect.MapClientEventToSimEvent(FlightSimulatorEventId.FreezeAttitude, "FREEZE_ATTITUDE_SET");
+                    _SimConnect.MapClientEventToSimEvent(FlightSimulatorEventId.FreezeLatitudeLongitude, "FREEZE_LATITUDE_LONGITUDE_SET");
 
-                    _SimConnect.AddClientEventToNotificationGroup(GroupId.Slewing, FlightSimulatorXEventId.SlewModeOn, false);
-                    _SimConnect.AddClientEventToNotificationGroup(GroupId.Slewing, FlightSimulatorXEventId.SlewModeOff, false);
-                    _SimConnect.AddClientEventToNotificationGroup(GroupId.Slewing, FlightSimulatorXEventId.SlewAltitudeUpSlow, false);
-                    _SimConnect.AddClientEventToNotificationGroup(GroupId.Slewing, FlightSimulatorXEventId.SlewFreeze, false);
-                    _SimConnect.AddClientEventToNotificationGroup(GroupId.Slewing, FlightSimulatorXEventId.SlewToggle, false);
-                    _SimConnect.AddClientEventToNotificationGroup(GroupId.Freezing, FlightSimulatorXEventId.FreezeAltitude, false);
-                    _SimConnect.AddClientEventToNotificationGroup(GroupId.Freezing, FlightSimulatorXEventId.FreezeAttitude, false);
-                    _SimConnect.AddClientEventToNotificationGroup(GroupId.Freezing, FlightSimulatorXEventId.FreezeLatitudeLongitude, false);
+                    _SimConnect.AddClientEventToNotificationGroup(GroupId.Slewing, FlightSimulatorEventId.SlewModeOn, false);
+                    _SimConnect.AddClientEventToNotificationGroup(GroupId.Slewing, FlightSimulatorEventId.SlewModeOff, false);
+                    _SimConnect.AddClientEventToNotificationGroup(GroupId.Slewing, FlightSimulatorEventId.SlewAltitudeUpSlow, false);
+                    _SimConnect.AddClientEventToNotificationGroup(GroupId.Slewing, FlightSimulatorEventId.SlewFreeze, false);
+                    _SimConnect.AddClientEventToNotificationGroup(GroupId.Slewing, FlightSimulatorEventId.SlewToggle, false);
+                    _SimConnect.AddClientEventToNotificationGroup(GroupId.Freezing, FlightSimulatorEventId.FreezeAltitude, false);
+                    _SimConnect.AddClientEventToNotificationGroup(GroupId.Freezing, FlightSimulatorEventId.FreezeAttitude, false);
+                    _SimConnect.AddClientEventToNotificationGroup(GroupId.Freezing, FlightSimulatorEventId.FreezeLatitudeLongitude, false);
 
-                    _SimConnect.SubscribeToSystemEvent(FlightSimulatorXEventId.Crashed, "Crashed");
-                    _SimConnect.SubscribeToSystemEvent(FlightSimulatorXEventId.MissionCompleted, "MissionCompleted");
+                    _SimConnect.SubscribeToSystemEvent(FlightSimulatorEventId.Crashed, "Crashed");
+                    _SimConnect.SubscribeToSystemEvent(FlightSimulatorEventId.MissionCompleted, "MissionCompleted");
 
                     _SimConnect.AddToDataDefinition(DefinitionId.ReadAircraftInformation, "PLANE LATITUDE", "degrees", (int)SIMCONNECT_DATATYPE.FLOAT64, 0.0f, _SimConnect.UnusedValue);
                     _SimConnect.AddToDataDefinition(DefinitionId.ReadAircraftInformation, "PLANE LONGITUDE", "degrees", (int)SIMCONNECT_DATATYPE.FLOAT64, 0.0f, _SimConnect.UnusedValue);
@@ -327,8 +327,8 @@ namespace VirtualRadar.Library.FlightSimulator
                     _SimConnect.AddToDataDefinition(DefinitionId.WriteAircraftInformation, "PLANE BANK DEGREES", "degrees", (int)SIMCONNECT_DATATYPE.FLOAT64, 0.0f, _SimConnect.UnusedValue);
                     _SimConnect.RegisterDataDefineStruct<WriteAircraftInformation>(DefinitionId.WriteAircraftInformation);
 
-                    _SimConnect.SetSystemEventState(FlightSimulatorXEventId.Crashed, true);
-                    _SimConnect.SetSystemEventState(FlightSimulatorXEventId.MissionCompleted, true);
+                    _SimConnect.SetSystemEventState(FlightSimulatorEventId.Crashed, true);
+                    _SimConnect.SetSystemEventState(FlightSimulatorEventId.MissionCompleted, true);
 
                     Connected = true;
                     ConnectionStatus = Strings.Connected;
@@ -428,7 +428,7 @@ namespace VirtualRadar.Library.FlightSimulator
         /// <param name="args"></param>
         private void SimConnect_EventObserved(object sender, SimConnectEventObservedEventArgs args)
         {
-            if(args.EventId == (uint)FlightSimulatorXEventId.SlewToggle) OnSlewToggled(EventArgs.Empty);
+            if(args.EventId == (uint)FlightSimulatorEventId.SlewToggle) OnSlewToggled(EventArgs.Empty);
         }
 
         /// <summary>
@@ -436,7 +436,7 @@ namespace VirtualRadar.Library.FlightSimulator
         /// </summary>
         private void SimConnect_ExceptionRaised(object sender, SimConnectExceptionRaisedEventArgs args)
         {
-            OnFlightSimulatorXExceptionRaised(new EventArgs<FlightSimulatorXException>(new FlightSimulatorXException(
+            OnFlightSimulatorXExceptionRaised(new EventArgs<FlightSimulatorException>(new FlightSimulatorException(
                 args.ExceptionCode,
                 args.ParameterIndex,
                 args.SendId

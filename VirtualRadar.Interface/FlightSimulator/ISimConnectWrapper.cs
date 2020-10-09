@@ -20,7 +20,7 @@ namespace VirtualRadar.Interface.FlightSimulator
     /// The interface for objects that allows tests to abstract away the SimConnect object that we have to use to connect to FSX.
     /// </summary>
     /// <remarks>
-    /// Part of the public behaviour of the <see cref="IFlightSimulatorX"/> object is that it must talk to SimConnect and say the right
+    /// Part of the public behaviour of the <see cref="IFlightSimulator"/> object is that it must talk to SimConnect and say the right
     /// things. This provider wraps SimConnect so that we can check that IFSX is using it properly without having to have FSX installed.
     /// It is a very lightweight wrapper, you will need to read the SimConnect documentation in conjunction with the code.
     /// </remarks>

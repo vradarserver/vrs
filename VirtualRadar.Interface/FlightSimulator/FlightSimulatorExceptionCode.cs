@@ -13,18 +13,54 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VirtualRadar.Interface.Presenter
+namespace VirtualRadar.Interface.FlightSimulator
 {
     /// <summary>
-    /// The interface for objects that abstract away the environment for <see cref="IFlightSimulatorXPresenter"/>s.
+    /// An enumeration of the reasons given by Flight Simulator X for throwing an exception.
     /// </summary>
-    public interface IFlightSimulatorXPresenterProvider
+    #pragma warning disable 1591 // no XML comments - these are straight from SimConnect, people should refer to the documentation for that.
+    public enum FlightSimulatorExceptionCode : uint
     {
-        /// <summary>
-        /// Invoke the callback on a background thread after a non-blocking pause of so-many milliseconds.
-        /// </summary>
-        /// <param name="callback"></param>
-        /// <param name="milliseconds"></param>
-        void TimedInvokeOnBackgroundThread(Action callback, int milliseconds);
-    }
+        // These are all straight copies of the error codes in the SimConnect documentation.
+        None = 0,
+        Error = 1,
+        SizeMismatch = 2,
+        UnrecognizedId = 3,
+        Unopened = 4,
+        VersionMismatch = 5,
+        TooManyGroups = 6,
+        NameUnrecognized = 7,
+        TooManyEventNames = 8,
+        EventIdDuplicate = 9,
+        TooManyMaps = 10,
+        TooManyObjects = 11,
+        TooManyRequests = 12,
+        WeatherInvalidPort = 13,
+        WeatherInvalidMetar = 14,
+        WeatherUnableToGetObservation = 15,
+        WeatherUnableToCreateStation = 16,
+        WeatherUnableToRemoveStation = 17,
+        Invalid_dataType = 18,
+        Invalid_dataSize = 19,
+        DataError = 20,
+        InvalidArray = 21,
+        CreateObjectFailed = 22,
+        LoadFlightplanFailed = 23,
+        OperationInvalidForOjbectType = 24,
+        IllegalOperation = 25,
+        AlreadySubscribed = 26,
+        InvalidEnum = 27,
+        DefinitionError = 28,
+        DuplicateId = 29,
+        DatumId = 30,
+        OutOfBounds = 31,
+        AlreadyCreated = 32,
+        ObjectOutsideReality_bubble = 33,
+        ObjectContainer = 34,
+        ObjectAi = 35,
+        ObjectAtc = 36,
+        ObjectSchedule = 37,
+        Unknown = 0xffffffff,
+      }
+      #pragma warning restore 1591
 }

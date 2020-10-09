@@ -18,13 +18,13 @@ using VirtualRadar.Interface.WebServer;
 namespace VirtualRadar.Interface.View
 {
     /// <summary>
-    /// The interface for views that can display information about the connection to Flight Simulator X.
+    /// The interface for views that can display information about the connection to Flight Simulator.
     /// </summary>
     /// <remarks>
     /// Note that SimConnect requires that this have a window handle to which messages can be sent which may limit the
     /// circumstances under which this can be fully implemented.
     /// </remarks>
-    public interface IFlightSimulatorXView : IView
+    public interface IFlightSimulatorView : IView
     {
         /// <summary>
         /// Gets a value indicating to the presenter that the view is on show and should be refreshed.
@@ -112,7 +112,7 @@ namespace VirtualRadar.Interface.View
         event EventHandler RefreshFlightSimulatorXInformation;
 
         /// <summary>
-        /// Records objects that will be passed on to <see cref="Presenter.IFlightSimulatorXPresenter"/> when it is created.
+        /// Records objects that will be passed on to <see cref="Presenter.IFlightSimulatorPresenter"/> when it is created.
         /// </summary>
         /// <param name="baseStationAircraftList"></param>
         /// <param name="flightSimulatorAircraftList"></param>

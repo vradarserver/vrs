@@ -20,15 +20,15 @@ namespace Test.VirtualRadar.Interface.FlightSimulatorX
         [TestMethod]
         public void FlightSimulatorXException_Complies_With_Exception_Spec()
         {
-            TestUtilities.AssertIsException(typeof(FlightSimulatorXException));
+            TestUtilities.AssertIsException(typeof(FlightSimulatorException));
         }
 
         [TestMethod]
         public void FlightSimulatorXException_Custom_Constructor_Initialises_Properties_Correctly()
         {
-            var exception = new FlightSimulatorXException((uint)FlightSimulatorXExceptionCode.DataError, 12, 43);
-            Assert.AreEqual(FlightSimulatorXExceptionCode.DataError, exception.ExceptionCode);
-            Assert.AreEqual((uint)FlightSimulatorXExceptionCode.DataError, exception.RawExceptionCode);
+            var exception = new FlightSimulatorException((uint)FlightSimulatorExceptionCode.DataError, 12, 43);
+            Assert.AreEqual(FlightSimulatorExceptionCode.DataError, exception.ExceptionCode);
+            Assert.AreEqual((uint)FlightSimulatorExceptionCode.DataError, exception.RawExceptionCode);
             Assert.AreEqual(12u, exception.IndexNumber);
             Assert.AreEqual(43u, exception.SendID);
         }
@@ -36,15 +36,15 @@ namespace Test.VirtualRadar.Interface.FlightSimulatorX
         [TestMethod]
         public void FlightSimulatorXException_Custom_Constructor_Copes_When_No_Enum_Exists_For_The_Exception_Code()
         {
-            var exception = new FlightSimulatorXException(91237, 12, 43);
-            Assert.AreEqual(FlightSimulatorXExceptionCode.Unknown, exception.ExceptionCode);
+            var exception = new FlightSimulatorException(91237, 12, 43);
+            Assert.AreEqual(FlightSimulatorExceptionCode.Unknown, exception.ExceptionCode);
             Assert.AreEqual(91237u, exception.RawExceptionCode);
         }
 
         [TestMethod]
         public void FlightSimulatorXException_Custom_Constructor_Sets_Message_Based_On_Parameters()
         {
-            var exception = new FlightSimulatorXException((uint)FlightSimulatorXExceptionCode.OutOfBounds, 2, 3);
+            var exception = new FlightSimulatorException((uint)FlightSimulatorExceptionCode.OutOfBounds, 2, 3);
             Assert.AreEqual("FSX exception OutOfBounds(31), parameter 2, packet 3", exception.Message);
         }
 

@@ -12,39 +12,63 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VirtualRadar.Interface.View;
-using VirtualRadar.Interface.BaseStation;
-using System.Windows.Forms;
-using VirtualRadar.Interface.WebServer;
 
-namespace VirtualRadar.Interface.Presenter
+namespace VirtualRadar.Interface.FlightSimulator
 {
     /// <summary>
-    /// The interface for objects that can control <see cref="IFlightSimulatorXView"/> views.
+    /// An enumeration of the values used to identify events within FSX that we are interested in. Many of
+    /// these events are sent to FSX although some identify events which have taken place at the user's behest.
     /// </summary>
-    public interface IFlightSimulatorXPresenter : IPresenter<IFlightSimulatorXView>, IDisposable
+    public enum FlightSimulatorEventId
     {
         /// <summary>
-        /// Gets or sets the provider that will abstract away the environment for the provider to make it easier to test.
+        /// (Sent) Turn slew mode on.
         /// </summary>
-        IFlightSimulatorXPresenterProvider Provider { get; set; }
+        SlewModeOn,
 
         /// <summary>
-        /// Gets or sets the object that will be modified by the presenter to record the simulated aircraft in FSX.
+        /// (Sent) Turn slew mode off.
         /// </summary>
-        ISimpleAircraftList FlightSimulatorAircraftList { get; set; }
+        SlewModeOff,
 
         /// <summary>
-        /// Gets or sets the web server that the view will show a link to.
+        /// (Sent) Increase altitude slowly.
         /// </summary>
-        IWebServer WebServer { get; set; }
+        SlewAltitudeUpSlow,
 
         /// <summary>
-        /// Returns true if the message passed across is intended for SimConnect (i.e. it's a Flight Simulator X message).
-        /// If it is then the view should not process it.
+        /// (Sent) Stop moving the aircraft.
         /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        bool IsSimConnectMessage(Message message);
+        SlewFreeze,
+
+        /// <summary>
+        /// (Received) The user has toggled slew mode.
+        /// </summary>
+        SlewToggle,
+
+        /// <summary>
+        /// (Sent) Stop moving the aircraft when not in slew.
+        /// </summary>
+        FreezeLatitudeLongitude,
+
+        /// <summary>
+        /// (Sent) Stop the aircraft from changing altitude when not in slew.
+        /// </summary>
+        FreezeAltitude,
+
+        /// <summary>
+        /// (Sent) Stop the aircraft from rolling or changing pitch.
+        /// </summary>
+        FreezeAttitude,
+
+        /// <summary>
+        /// (Received) The aircraft has crashed.
+        /// </summary>
+        Crashed,
+
+        /// <summary>
+        /// (Received) The user has finished the mission they were flying.
+        /// </summary>
+        MissionCompleted,
     }
 }
