@@ -126,7 +126,7 @@
     <Compile Include="Settings\InstallerSettingsStorageTests.cs" />
     <Compile Include="EventArgsTests.cs" />
     <Compile Include="ExternalIPAddressServiceTests.cs" />
-    <Compile Include="FlightSimulatorX\FlightSimulatorXTests.cs" />
+    <Compile Include="FlightSimulator\FlightSimulatorXTests.cs" />
     <Compile Include="LogTests.cs" />
     <Compile Include="NewVersionCheckerTests.cs" />
     <Compile Include="Presenter\AboutPresenterTests.cs" />

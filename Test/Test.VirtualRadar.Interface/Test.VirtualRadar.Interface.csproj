@@ -158,7 +158,7 @@
     <Compile Include="CoordinateTests.cs" />
     <Compile Include="DescribeTests.cs" />
     <Compile Include="EventArgsTests.cs" />
-    <Compile Include="FlightSimulatorX\FlightSimulatorXExceptionTests.cs" />
+    <Compile Include="FlightSimulator\FlightSimulatorXExceptionTests.cs" />
     <Compile Include="GreatCircleMathsTests.cs" />
     <Compile Include="IPEndPointHelperTests.cs" />
     <Compile Include="JavascriptHelperTests.cs" />
