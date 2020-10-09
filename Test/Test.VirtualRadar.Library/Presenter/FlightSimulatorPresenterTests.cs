@@ -19,7 +19,7 @@ using Moq;
 using Test.Framework;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.BaseStation;
-using VirtualRadar.Interface.FlightSimulatorX;
+using VirtualRadar.Interface.FlightSimulator;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Presenter;
 using VirtualRadar.Interface.Settings;
@@ -30,7 +30,7 @@ using VirtualRadar.Localisation;
 namespace Test.VirtualRadar.Library.Presenter
 {
     [TestClass]
-    public class FlightSimulatorXPresenterTests
+    public class FlightSimulatorPresenterTests
     {
         #region TestContext, fields, TestInitialise
         public TestContext TestContext { get; set; }
@@ -42,7 +42,7 @@ namespace Test.VirtualRadar.Library.Presenter
         private int _LimitTimedInvokeCallbacks;
         private Mock<IFlightSimulatorView> _View;
         private Mock<ISimpleAircraftList> _FlightSimulatorAircraftList;
-        private Mock<IFlightSimulatorX> _FlightSimulatorX;
+        private Mock<IFlightSimulator> _FlightSimulatorX;
         private List<IAircraft> _FSXAircraftList;
         private IAircraft _SelectedAircraft;
         private Configuration _Configuration;
@@ -62,7 +62,7 @@ namespace Test.VirtualRadar.Library.Presenter
         {
             _ClassFactorySnapshot = Factory.TakeSnapshot();
 
-            _FlightSimulatorX = TestUtilities.CreateMockImplementation<IFlightSimulatorX>();
+            _FlightSimulatorX = TestUtilities.CreateMockImplementation<IFlightSimulator>();
             _FlightSimulatorX.Setup(fsx => fsx.IsInstalled).Returns(true);
 
             _Clock = new ClockMock();
@@ -394,10 +394,10 @@ namespace Test.VirtualRadar.Library.Presenter
         {
             _Presenter.Initialise(_View.Object);
 
-            var exception = new FlightSimulatorXException();
+            var exception = new FlightSimulatorException();
             bool seenException = false;
             try {
-                _FlightSimulatorX.Raise(f => f.FlightSimulatorXExceptionRaised += null, new EventArgs<FlightSimulatorXException>(exception));
+                _FlightSimulatorX.Raise(f => f.FlightSimulatorXExceptionRaised += null, new EventArgs<FlightSimulatorException>(exception));
             } catch(Exception ex) {
                 seenException = ex == exception;
             }
@@ -413,7 +413,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _Presenter.Initialise(_View.Object);
 
             try {
-                _FlightSimulatorX.Raise(f => f.FlightSimulatorXExceptionRaised += null, new EventArgs<FlightSimulatorXException>(new FlightSimulatorXException()));
+                _FlightSimulatorX.Raise(f => f.FlightSimulatorXExceptionRaised += null, new EventArgs<FlightSimulatorException>(new FlightSimulatorException()));
             } catch {
             }
 
@@ -423,7 +423,7 @@ namespace Test.VirtualRadar.Library.Presenter
 
             bool seenException = false;
             try {
-                _FlightSimulatorX.Raise(f => f.FlightSimulatorXExceptionRaised += null, new EventArgs<FlightSimulatorXException>(new FlightSimulatorXException()));
+                _FlightSimulatorX.Raise(f => f.FlightSimulatorXExceptionRaised += null, new EventArgs<FlightSimulatorException>(new FlightSimulatorException()));
             } catch {
                 seenException = true;
             }
@@ -434,7 +434,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _Clock.UtcNowValue = _Clock.UtcNowValue.AddSeconds(2);
 
             try {
-                _FlightSimulatorX.Raise(f => f.FlightSimulatorXExceptionRaised += null, new EventArgs<FlightSimulatorXException>(new FlightSimulatorXException()));
+                _FlightSimulatorX.Raise(f => f.FlightSimulatorXExceptionRaised += null, new EventArgs<FlightSimulatorException>(new FlightSimulatorException()));
             } catch {
                 seenException = true;
             }

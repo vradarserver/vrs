@@ -109,7 +109,7 @@
     <Compile Include="Presenter\ConnectionClientLogPresenterTests.cs" />
     <Compile Include="Presenter\ConnectionSessionLogPresenterTests.cs" />
     <Compile Include="Presenter\DownloadDataPresenterTests.cs" />
-    <Compile Include="Presenter\FlightSimulatorXPresenterTests.cs" />
+    <Compile Include="Presenter\FlightSimulatorPresenterTests.cs" />
     <Compile Include="Presenter\InvalidPluginsPresenterTests.cs" />
     <Compile Include="Presenter\PluginsPresenterTests.cs" />
     <Compile Include="Presenter\ShutdownPresenterTests.cs" />
@@ -126,7 +126,7 @@
     <Compile Include="Settings\InstallerSettingsStorageTests.cs" />
     <Compile Include="EventArgsTests.cs" />
     <Compile Include="ExternalIPAddressServiceTests.cs" />
-    <Compile Include="FlightSimulator\FlightSimulatorXTests.cs" />
+    <Compile Include="FlightSimulator\FlightSimulatorTests.cs" />
     <Compile Include="LogTests.cs" />
     <Compile Include="NewVersionCheckerTests.cs" />
     <Compile Include="Presenter\AboutPresenterTests.cs" />

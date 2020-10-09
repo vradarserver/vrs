@@ -13,7 +13,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VirtualRadar.Interface.FlightSimulatorX;
+using VirtualRadar.Interface.FlightSimulator;
 using VirtualRadar.Library;
 using System.Threading;
 using System.Globalization;
@@ -28,19 +28,19 @@ using VirtualRadar.Interface;
 namespace Test.VirtualRadar.Library.FlightSimulatorX
 {
     [TestClass]
-    public class FlightSimulatorXTests
+    public class FlightSimulatorTests
     {
         #region TestContext, Fields, TestInitialise, TestCleanup
         public TestContext TestContext { get; set; }
 
         private IClassFactory _OriginalClassFactory;
 
-        private IFlightSimulatorX _Fsx;
+        private IFlightSimulator _Fsx;
         private Mock<ISimConnectWrapper> _SimConnect;
         private EventRecorder<EventArgs> _ConnectionStatusChangedEvent;
         private EventRecorder<EventArgs> _FreezeStatusChangedEvent;
         private EventRecorder<EventArgs> _SlewStatusChangedEvent;
-        private EventRecorder<EventArgs<FlightSimulatorXException>> _FlightSimulatorXExceptionRaisedEvent;
+        private EventRecorder<EventArgs<FlightSimulatorException>> _FlightSimulatorXExceptionRaisedEvent;
         private EventRecorder<EventArgs<ReadAircraftInformation>> _AircraftInformationReceivedEvent;
         private EventRecorder<EventArgs> _SlewToggledEvent;
         private Dictionary<string, Enum> _ClientEventIdMap;
@@ -62,7 +62,7 @@ namespace Test.VirtualRadar.Library.FlightSimulatorX
             _SimConnect = TestUtilities.CreateMockImplementation<ISimConnectWrapper>();
             _SimConnect.Setup(m => m.IsInstalled).Returns(true);
 
-            _Fsx = Factory.Resolve<IFlightSimulatorX>();
+            _Fsx = Factory.Resolve<IFlightSimulator>();
 
             _ClientEventIdMap = new Dictionary<string,Enum>();
             _SimConnect.Setup(m => m.MapClientEventToSimEvent(It.IsAny<Enum>(), It.IsAny<string>())).Callback((Enum id, string name) => { _ClientEventIdMap.Add(name, id); });
@@ -87,7 +87,7 @@ namespace Test.VirtualRadar.Library.FlightSimulatorX
             _ConnectionStatusChangedEvent = new EventRecorder<EventArgs>();
             _FreezeStatusChangedEvent = new EventRecorder<EventArgs>();
             _SlewStatusChangedEvent = new EventRecorder<EventArgs>();
-            _FlightSimulatorXExceptionRaisedEvent = new EventRecorder<EventArgs<FlightSimulatorXException>>();
+            _FlightSimulatorXExceptionRaisedEvent = new EventRecorder<EventArgs<FlightSimulatorException>>();
             _AircraftInformationReceivedEvent = new EventRecorder<EventArgs<ReadAircraftInformation>>();
             _SlewToggledEvent = new EventRecorder<EventArgs>();
 
@@ -204,7 +204,7 @@ namespace Test.VirtualRadar.Library.FlightSimulatorX
         public void FlightSimulatorX_Constructor_Initialises_To_Known_State_And_Properties_Work()
         {
             _Fsx.Dispose();
-            _Fsx = Factory.Resolve<IFlightSimulatorX>();
+            _Fsx = Factory.Resolve<IFlightSimulator>();
 
             Assert.AreEqual(false, _Fsx.Connected);
             Assert.AreEqual(Strings.Disconnected, _Fsx.ConnectionStatus);
@@ -450,14 +450,14 @@ namespace Test.VirtualRadar.Library.FlightSimulatorX
 
             _SimConnect.Verify(m => m.MapClientEventToSimEvent(It.IsAny<Enum>(), It.IsAny<string>()), Times.Exactly(8));
 
-            _SimConnect.Verify(m => m.MapClientEventToSimEvent(FlightSimulatorXEventId.SlewModeOn, "SLEW_ON"), Times.Once());
-            _SimConnect.Verify(m => m.MapClientEventToSimEvent(FlightSimulatorXEventId.SlewModeOff, "SLEW_OFF"), Times.Once());
-            _SimConnect.Verify(m => m.MapClientEventToSimEvent(FlightSimulatorXEventId.SlewAltitudeUpSlow, "SLEW_ALTIT_UP_SLOW"), Times.Once());
-            _SimConnect.Verify(m => m.MapClientEventToSimEvent(FlightSimulatorXEventId.SlewFreeze, "SLEW_FREEZE"), Times.Once());
-            _SimConnect.Verify(m => m.MapClientEventToSimEvent(FlightSimulatorXEventId.SlewToggle, "SLEW_TOGGLE"), Times.Once());
-            _SimConnect.Verify(m => m.MapClientEventToSimEvent(FlightSimulatorXEventId.FreezeAltitude, "FREEZE_ALTITUDE_SET"), Times.Once());
-            _SimConnect.Verify(m => m.MapClientEventToSimEvent(FlightSimulatorXEventId.FreezeAttitude, "FREEZE_ATTITUDE_SET"), Times.Once());
-            _SimConnect.Verify(m => m.MapClientEventToSimEvent(FlightSimulatorXEventId.FreezeLatitudeLongitude, "FREEZE_LATITUDE_LONGITUDE_SET"), Times.Once());
+            _SimConnect.Verify(m => m.MapClientEventToSimEvent(FlightSimulatorEventId.SlewModeOn, "SLEW_ON"), Times.Once());
+            _SimConnect.Verify(m => m.MapClientEventToSimEvent(FlightSimulatorEventId.SlewModeOff, "SLEW_OFF"), Times.Once());
+            _SimConnect.Verify(m => m.MapClientEventToSimEvent(FlightSimulatorEventId.SlewAltitudeUpSlow, "SLEW_ALTIT_UP_SLOW"), Times.Once());
+            _SimConnect.Verify(m => m.MapClientEventToSimEvent(FlightSimulatorEventId.SlewFreeze, "SLEW_FREEZE"), Times.Once());
+            _SimConnect.Verify(m => m.MapClientEventToSimEvent(FlightSimulatorEventId.SlewToggle, "SLEW_TOGGLE"), Times.Once());
+            _SimConnect.Verify(m => m.MapClientEventToSimEvent(FlightSimulatorEventId.FreezeAltitude, "FREEZE_ALTITUDE_SET"), Times.Once());
+            _SimConnect.Verify(m => m.MapClientEventToSimEvent(FlightSimulatorEventId.FreezeAttitude, "FREEZE_ATTITUDE_SET"), Times.Once());
+            _SimConnect.Verify(m => m.MapClientEventToSimEvent(FlightSimulatorEventId.FreezeLatitudeLongitude, "FREEZE_LATITUDE_LONGITUDE_SET"), Times.Once());
 
             Assert.AreEqual(8, _ClientEventIdMap.Values.Distinct().Count());
         }
@@ -487,8 +487,8 @@ namespace Test.VirtualRadar.Library.FlightSimulatorX
 
             _SimConnect.Verify(m => m.SubscribeToSystemEvent(It.IsAny<Enum>(), It.IsAny<string>()), Times.Exactly(2));
 
-            _SimConnect.Verify(m => m.SubscribeToSystemEvent(FlightSimulatorXEventId.Crashed, "Crashed"), Times.Once());
-            _SimConnect.Verify(m => m.SubscribeToSystemEvent(FlightSimulatorXEventId.MissionCompleted, "MissionCompleted"), Times.Once());
+            _SimConnect.Verify(m => m.SubscribeToSystemEvent(FlightSimulatorEventId.Crashed, "Crashed"), Times.Once());
+            _SimConnect.Verify(m => m.SubscribeToSystemEvent(FlightSimulatorEventId.MissionCompleted, "MissionCompleted"), Times.Once());
 
             Assert.AreEqual(2, _SystemEventIdMap.Values.Distinct().Count());
         }
@@ -721,7 +721,7 @@ namespace Test.VirtualRadar.Library.FlightSimulatorX
             _SimConnect.Raise(m => m.UserHasQuit += null, EventArgs.Empty);
             Assert.AreEqual(0, _ConnectionStatusChangedEvent.CallCount);
 
-            _SimConnect.Raise(m => m.EventObserved += null, new SimConnectEventObservedEventArgs() { EventId = (uint)FlightSimulatorXEventId.SlewToggle });
+            _SimConnect.Raise(m => m.EventObserved += null, new SimConnectEventObservedEventArgs() { EventId = (uint)FlightSimulatorEventId.SlewToggle });
             Assert.AreEqual(0, _SlewToggledEvent.CallCount);
         }
 
@@ -754,7 +754,7 @@ namespace Test.VirtualRadar.Library.FlightSimulatorX
             secondSimConnect.Raise(m => m.UserHasQuit += null, EventArgs.Empty);
             Assert.AreEqual(1, _ConnectionStatusChangedEvent.CallCount);
 
-            secondSimConnect.Raise(m => m.EventObserved += null, new SimConnectEventObservedEventArgs() { EventId = (uint)FlightSimulatorXEventId.SlewToggle });
+            secondSimConnect.Raise(m => m.EventObserved += null, new SimConnectEventObservedEventArgs() { EventId = (uint)FlightSimulatorEventId.SlewToggle });
             Assert.AreEqual(1, _SlewToggledEvent.CallCount);
         }
 
@@ -995,7 +995,7 @@ namespace Test.VirtualRadar.Library.FlightSimulatorX
             Assert.AreSame(_Fsx, _FlightSimulatorXExceptionRaisedEvent.Sender);
 
             var args = _FlightSimulatorXExceptionRaisedEvent.Args.Value;
-            Assert.AreEqual(FlightSimulatorXExceptionCode.AlreadyCreated, args.ExceptionCode);
+            Assert.AreEqual(FlightSimulatorExceptionCode.AlreadyCreated, args.ExceptionCode);
             Assert.AreEqual(32U, args.RawExceptionCode);
             Assert.AreEqual(2U, args.IndexNumber);
             Assert.AreEqual(3U, args.SendID);
@@ -1009,7 +1009,7 @@ namespace Test.VirtualRadar.Library.FlightSimulatorX
             _Fsx.SlewToggled += _SlewToggledEvent.Handler;
             _Fsx.Connect(new IntPtr(10));
 
-            var args = new SimConnectEventObservedEventArgs() { EventId = (uint)FlightSimulatorXEventId.SlewToggle, };
+            var args = new SimConnectEventObservedEventArgs() { EventId = (uint)FlightSimulatorEventId.SlewToggle, };
             _SimConnect.Raise(s => s.EventObserved += null, args);
 
             Assert.AreEqual(1, _SlewToggledEvent.CallCount);

@@ -15,7 +15,7 @@ using VirtualRadar.Interface.FlightSimulator;
 namespace Test.VirtualRadar.Interface.FlightSimulatorX
 {
     [TestClass]
-    public class FlightSimulatorXExceptionTests
+    public class FlightSimulatorExceptionTests
     {
         [TestMethod]
         public void FlightSimulatorXException_Complies_With_Exception_Spec()
