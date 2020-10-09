@@ -131,7 +131,7 @@
     <Compile Include="ExceptionReporter.cs" />
     <Compile Include="FileSystemProvider.cs" />
     <Compile Include="FileSystemWatcherWrapper.cs" />
-    <Compile Include="FlightSimulatorX\FlightSimulatorAircraftList.cs" />
+    <Compile Include="FlightSimulator\FlightSimulatorAircraftList.cs" />
     <Compile Include="ImageDimensionsFetcher.cs" />
     <Compile Include="Listener\AircraftListJsonMessageBytesExtractor.cs" />
     <Compile Include="Listener\AircraftListJsonMessageConverter.cs" />
@@ -157,7 +157,7 @@
     <Compile Include="Network\HttpConnection.cs" />
     <Compile Include="Network\HttpConnector.cs" />
     <Compile Include="Network\NetworkConnector.cs" />
-    <Compile Include="FlightSimulatorX\MonoSimConnectWrapper.cs" />
+    <Compile Include="FlightSimulator\MonoSimConnectWrapper.cs" />
     <Compile Include="Listener\BeastMessageBytesExtractor.cs" />
     <Compile Include="Listener\CompressedMessageBytesExtractor.cs" />
     <Compile Include="Listener\Listener.cs" />
@@ -209,8 +209,8 @@
     <Compile Include="Presenter\SplashPresenter.cs" />
     <Compile Include="Settings\InstallerSettingsStorage.cs" />
     <Compile Include="ExternalIPAddressService.cs" />
-    <Compile Include="FlightSimulatorX\FlightSimulatorX.cs" />
-    <Compile Include="FlightSimulatorX\DotNetSimConnectWrapper.cs" />
+    <Compile Include="FlightSimulator\FlightSimulatorX.cs" />
+    <Compile Include="FlightSimulator\DotNetSimConnectWrapper.cs" />
     <Compile Include="HeartbeatService.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="NewVersionChecker.cs" />
