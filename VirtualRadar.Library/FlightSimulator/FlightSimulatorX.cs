@@ -19,7 +19,7 @@ using VirtualRadar.Interface;
 using VirtualRadar.Interface.FlightSimulator;
 using VirtualRadar.Localisation;
 
-namespace VirtualRadar.Library.FlightSimulatorX
+namespace VirtualRadar.Library.FlightSimulator
 {
     /// <summary>
     /// The default implementation of <see cref="IFlightSimulatorX"/>.

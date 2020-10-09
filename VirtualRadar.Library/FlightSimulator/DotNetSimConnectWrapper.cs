@@ -15,7 +15,7 @@ using Microsoft.FlightSimulator.SimConnect;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.FlightSimulator;
 
-namespace VirtualRadar.Library.FlightSimulatorX
+namespace VirtualRadar.Library.FlightSimulator
 {
     /// <summary>
     /// The default implementation of <see cref="ISimConnectWrapper"/>.

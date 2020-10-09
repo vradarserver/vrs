@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.FlightSimulator;
 
-namespace VirtualRadar.Library.FlightSimulatorX
+namespace VirtualRadar.Library.FlightSimulator
 {
     /// <summary>
     /// The default implementation of <see cref="ISimConnectWrapper"/> when running under Mono.
