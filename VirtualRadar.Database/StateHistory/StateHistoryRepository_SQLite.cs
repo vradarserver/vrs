@@ -241,6 +241,29 @@ namespace VirtualRadar.Database.StateHistory
         /// </summary>
         /// <param name="fingerprint"></param>
         /// <param name="createdUtc"></param>
+        /// <param name="receiverID"></param>
+        /// <param name="key"></param>
+        /// <param name="receiverName"></param>
+        /// <returns></returns>
+        public ReceiverSnapshot ReceiverSnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, int receiverID, Guid key, string receiverName)
+        {
+            using(var connection = OpenConnection(forWrite: true)) {
+                return connection.Query<ReceiverSnapshot>(Scripts.ReceiverSnapshot_GetOrCreate, new {
+                    createdUtc,
+                    fingerprint,
+                    receiverID,
+                    key,
+                    receiverName,
+                })
+                .FirstOrDefault();
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="fingerprint"></param>
+        /// <param name="createdUtc"></param>
         /// <param name="enumValue"></param>
         /// <param name="speciesName"></param>
         /// <returns></returns>

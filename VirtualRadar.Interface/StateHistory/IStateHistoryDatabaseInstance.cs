@@ -26,7 +26,7 @@ namespace VirtualRadar.Interface.StateHistory
     /// manager creates one of these every time the configuration changes, and it takes a
     /// reference to one of these before it makes any database changes. All changes within
     /// a set use the same reference, so if configuration is changed while the instance is
-    /// used it shouldn't matter, the database won't change in the middle of a set of
+    /// being used it shouldn't matter, the database won't change in the middle of a set of
     /// operations.
     /// </para><para>
     /// Bear in mind that two instances can exist concurrently, one reflects the most recent
@@ -131,6 +131,20 @@ namespace VirtualRadar.Interface.StateHistory
         /// <param name="operatorName"></param>
         /// <returns></returns>
         OperatorSnapshot Operator_GetOrCreate(string icao, string operatorName);
+
+        /// <summary>
+        /// Returns a snapshot for the values passed across. Returns null if writes are disabled
+        /// or all parameters are null.
+        /// </summary>
+        /// <param name="receiverID"></param>
+        /// <param name="key"></param>
+        /// <param name="receiverName"></param>
+        /// <returns></returns>
+        ReceiverSnapshot Receiver_GetOrCreate(
+            int? receiverID,
+            Guid? key,
+            string receiverName
+        );
 
         /// <summary>
         /// Returns a snapshot for the values passed across. Returns null if writes are disabled

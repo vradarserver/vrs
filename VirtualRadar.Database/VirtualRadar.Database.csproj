@@ -165,6 +165,7 @@
     <Content Include="Log\Scripts\UpdateSchema.sql" />
     <Content Include="StateHistory\Scripts\EnginePlacementSnapshot_GetOrCreate.sql" />
     <Content Include="StateHistory\Scripts\ModelSnapshot_GetOrCreate.sql" />
+    <Content Include="StateHistory\Scripts\ReceiverSnapshot_GetOrCreate.sql" />
     <Content Include="StateHistory\Scripts\SpeciesSnapshot_GetOrCreate.sql" />
     <Content Include="StateHistory\Scripts\EngineTypeSnapshot_GetOrCreate.sql" />
     <Content Include="StateHistory\Scripts\WakeTurbulenceCategorySnapshot_GetOrCreate.sql" />

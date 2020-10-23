@@ -325,6 +325,32 @@ namespace VirtualRadar.Library.StateHistory
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="receiverID"></param>
+        /// <param name="key"></param>
+        /// <param name="receiverName"></param>
+        /// <returns></returns>
+        public ReceiverSnapshot Receiver_GetOrCreate(int? receiverID, Guid? key, string receiverName)
+        {
+            return Snapshot_GetOrCreate(
+                () => receiverID == null || key == null,
+                () => ReceiverSnapshot.TakeFingerprint(
+                    (int)receiverID,
+                    (Guid)key,
+                    receiverName
+                ),
+                (repo, fingerprint, now) => repo.ReceiverSnapshot_GetOrCreate(
+                    fingerprint,
+                    now,
+                    (int)receiverID,
+                    (Guid)key,
+                    receiverName
+                )
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="species"></param>
         /// <returns></returns>
         public SpeciesSnapshot Species_GetOrCreate(Species? species)

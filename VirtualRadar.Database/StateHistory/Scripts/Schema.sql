@@ -35,6 +35,22 @@ CREATE        INDEX IF NOT EXISTS [IX_CountrySnapshot_CountryName] ON [CountrySn
 
 
 --
+-- Receiver (v1)
+--
+CREATE TABLE IF NOT EXISTS [ReceiverSnapshot]
+(
+    [ReceiverSnapshotID]    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+   ,[CreatedUtc]            DATETIME NOT NULL
+   ,[Fingerprint]           VARBINARY(20) NOT NULL
+   ,[Key]                   UNIQUEIDENTIFIER NOT NULL
+   ,[ReceiverID]            INTEGER NOT NULL
+   ,[ReceiverName]          NVARCHAR(255) NULL
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS [IX_ReceiverSnapshot_Fingerprint] ON [ReceiverSnapshot] ([Fingerprint]);
+
+
+--
 -- EnginePlacementSnapshot (v1)
 --
 CREATE TABLE IF NOT EXISTS [EnginePlacementSnapshot]

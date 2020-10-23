@@ -657,6 +657,57 @@ namespace Test.VirtualRadar.Library.StateHistory
 
 
         /// <summary>
+        /// ReceiverSnapshot GetOrCreate tests
+        /// </summary>
+        class Receiver_GetOrCreate_TestParams : GetOrCreate_TestParams<ReceiverSnapshot>
+        {
+            public int? ReceiverID { get; set; }
+
+            public Guid? Key { get; set; }
+
+            public string ReceiverName { get; set; }
+
+            public static Receiver_GetOrCreate_TestParams[] Rows = new Receiver_GetOrCreate_TestParams[] {
+                new Receiver_GetOrCreate_TestParams() { ReceiverID = null, Key = null,           ReceiverName = null },
+                new Receiver_GetOrCreate_TestParams() { ReceiverID = null, Key = null,           ReceiverName = "" },
+                new Receiver_GetOrCreate_TestParams() { ReceiverID = 1,    Key = null,           ReceiverName = "" },
+                new Receiver_GetOrCreate_TestParams() { ReceiverID = 1,    Key = Guid.NewGuid(), ReceiverName = "" },
+                new Receiver_GetOrCreate_TestParams() { ReceiverID = 1,    Key = Guid.NewGuid(), ReceiverName = "Home" },
+            };
+
+            public override bool ExpectNullSnapshot() => ReceiverID == null || Key == null;
+
+            public override ReceiverSnapshot CallGetOrCreate(IStateHistoryDatabaseInstance dbi) => dbi.Receiver_GetOrCreate(ReceiverID, Key, ReceiverName);
+
+            public override ReceiverSnapshot CreateDummyRecord(long id) => new ReceiverSnapshot() {
+                ReceiverSnapshotID = id,
+            };
+
+            public override ISetup<IStateHistoryRepository, ReceiverSnapshot> RepositorySetup(Mock<IStateHistoryRepository> repository) => repository
+                .Setup(r => r.ReceiverSnapshot_GetOrCreate(
+                    It.Is<byte[]>(p => p.SequenceEqual(ReceiverSnapshot.TakeFingerprint(
+                        (int)ReceiverID,
+                        (Guid)Key,
+                        ReceiverName
+                    ))),
+                    It.IsAny<DateTime>(),
+                    (int)ReceiverID,
+                    (Guid)Key,
+                    ReceiverName
+                ));
+        }
+
+        [TestMethod]
+        public void Receiver_GetOrCreate_Returns_Null_If_Not_Writeable() => GetOrCreate_Returns_Null_If_Not_Writeable(Receiver_GetOrCreate_TestParams.Rows);
+
+        [TestMethod]
+        public void Receiver_GetOrCreate_Calls_Repository_GetOrCreate() => GetOrCreate_Calls_Repository_GetOrCreate(Receiver_GetOrCreate_TestParams.Rows);
+
+        [TestMethod]
+        public void Receiver_GetOrCreate_Caches_Results() => GetOrCreate_Caches_Results(Receiver_GetOrCreate_TestParams.Rows);
+
+
+        /// <summary>
         /// SpeciesSnapshot GetOrCreate tests
         /// </summary>
         class Species_GetOrCreate_TestParams : GetOrCreate_TestParams<SpeciesSnapshot>

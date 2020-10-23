@@ -210,7 +210,9 @@ namespace VirtualRadar.Database.StateHistory {
         ///   ,@EngineTypeSnapshotID
         ///   ,@EnginePlacementSnapshotID
         ///   ,@NumberOfEngines
-        ///   ,@SpeciesS [rest of string was truncated]&quot;;.
+        ///   ,@SpeciesSnapshotID
+        ///)
+        ///ON CONFLI [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ModelSnapshot_GetOrCreate {
             get {
@@ -240,6 +242,33 @@ namespace VirtualRadar.Database.StateHistory {
         internal static string OperatorSnapshot_GetOrCreate {
             get {
                 return ResourceManager.GetString("OperatorSnapshot_GetOrCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [ReceiverSnapshot] (
+        ///    [CreatedUtc]
+        ///   ,[Fingerprint]
+        ///   ,[Key]
+        ///   ,[ReceiverID]
+        ///   ,[ReceiverName]
+        ///) VALUES (
+        ///    @CreatedUtc
+        ///   ,@Fingerprint
+        ///   ,@Key
+        ///   ,@ReceiverID
+        ///   ,@ReceiverName
+        ///)
+        ///ON CONFLICT ([Fingerprint]) DO NOTHING;
+        ///
+        ///SELECT *
+        ///FROM   [ReceiverSnapshot]
+        ///WHERE  [Fingerprint] = @Fingerprint;
+        ///.
+        /// </summary>
+        internal static string ReceiverSnapshot_GetOrCreate {
+            get {
+                return ResourceManager.GetString("ReceiverSnapshot_GetOrCreate", resourceCulture);
             }
         }
         

@@ -134,6 +134,24 @@ namespace VirtualRadar.Interface.StateHistory
         OperatorSnapshot OperatorSnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, string icao, string operatorName);
 
         /// <summary>
+        /// Either creates a new snapshot record or reads the existing record that has the same fingerprint
+        /// and returns it.
+        /// </summary>
+        /// <param name="fingerprint"></param>
+        /// <param name="createdUtc"></param>
+        /// <param name="receiverID"></param>
+        /// <param name="key"></param>
+        /// <param name="receiverName"></param>
+        /// <returns></returns>
+        ReceiverSnapshot ReceiverSnapshot_GetOrCreate(
+            byte[] fingerprint,
+            DateTime createdUtc,
+            int receiverID,
+            Guid key,
+            string receiverName
+        );
+
+        /// <summary>
         /// Updates the schema to the latest version. The application is expected to run this once at
         /// program startup.
         /// </summary>
