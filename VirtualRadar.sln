@@ -36,9 +36,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar.WebServer", "VirtualRadar.WebServer\VirtualRadar.WebServer.csproj", "{368D365B-D45A-439E-B649-0512C395351F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar.WebSite", "VirtualRadar.WebSite\VirtualRadar.WebSite.csproj", "{EACC3459-9586-4977-A664-AE5827699B30}"
-	ProjectSection(ProjectDependencies) = postProject
-		{FA2466BB-95ED-47CE-B996-6641E228916C} = {FA2466BB-95ED-47CE-B996-6641E228916C}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar.WinForms", "VirtualRadar.WinForms\VirtualRadar.WinForms.csproj", "{3A1330D8-1E7D-4C70-BA9A-39851389CFFF}"
 EndProject
@@ -48,6 +45,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Framework", "Test\Test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1FB59799-F940-44C5-8BF6-668C46EB97C0}"
 	ProjectSection(SolutionItems) = preProject
+		_ChecksumFiles.ps1 = _ChecksumFiles.ps1
 		_PostBuild.ps1 = _PostBuild.ps1
 		Build.bat = Build.bat
 		Clean.bat = Clean.bat
@@ -109,8 +107,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeLite.Net35", "ThirdParty\TypeLite.Net35\TypeLite.Net35.csproj", "{A81147B6-D3E8-42AE-A98F-21BA5C4BAE99}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KdTreeLib", "ThirdParty\KdTreeLib\KdTreeLib.csproj", "{68C8066D-7844-41C2-993D-3160798164D1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChecksumFiles", "ThirdParty\ChecksumFiles\ChecksumFiles.csproj", "{FA2466BB-95ED-47CE-B996-6641E228916C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar-Service", "VirtualRadar-Service\VirtualRadar-Service.csproj", "{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}"
 EndProject
@@ -594,20 +590,6 @@ Global
 		{68C8066D-7844-41C2-993D-3160798164D1}.Release|x64.Build.0 = Release|Any CPU
 		{68C8066D-7844-41C2-993D-3160798164D1}.Release|x86.ActiveCfg = Release|Any CPU
 		{68C8066D-7844-41C2-993D-3160798164D1}.Release|x86.Build.0 = Release|Any CPU
-		{FA2466BB-95ED-47CE-B996-6641E228916C}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{FA2466BB-95ED-47CE-B996-6641E228916C}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{FA2466BB-95ED-47CE-B996-6641E228916C}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{FA2466BB-95ED-47CE-B996-6641E228916C}.Debug|x64.ActiveCfg = Debug|x86
-		{FA2466BB-95ED-47CE-B996-6641E228916C}.Debug|x64.Build.0 = Debug|x86
-		{FA2466BB-95ED-47CE-B996-6641E228916C}.Debug|x86.ActiveCfg = Debug|x86
-		{FA2466BB-95ED-47CE-B996-6641E228916C}.Debug|x86.Build.0 = Debug|x86
-		{FA2466BB-95ED-47CE-B996-6641E228916C}.Release|Any CPU.ActiveCfg = Release|x86
-		{FA2466BB-95ED-47CE-B996-6641E228916C}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{FA2466BB-95ED-47CE-B996-6641E228916C}.Release|Mixed Platforms.Build.0 = Release|x86
-		{FA2466BB-95ED-47CE-B996-6641E228916C}.Release|x64.ActiveCfg = Release|x86
-		{FA2466BB-95ED-47CE-B996-6641E228916C}.Release|x64.Build.0 = Release|x86
-		{FA2466BB-95ED-47CE-B996-6641E228916C}.Release|x86.ActiveCfg = Release|x86
-		{FA2466BB-95ED-47CE-B996-6641E228916C}.Release|x86.Build.0 = Release|x86
 		{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{17C22B5C-2875-4FFA-9A78-2C0DF1DD030E}.Debug|Mixed Platforms.Build.0 = Debug|x86
@@ -698,7 +680,6 @@ Global
 		{9E538513-A812-4A09-BD54-96734AD4A850} = {3DD098CE-F3C7-4D95-8EDC-969A4F71D740}
 		{A81147B6-D3E8-42AE-A98F-21BA5C4BAE99} = {1D1FAF73-5B9E-4A66-B928-ED19AA5E3BD8}
 		{68C8066D-7844-41C2-993D-3160798164D1} = {1D1FAF73-5B9E-4A66-B928-ED19AA5E3BD8}
-		{FA2466BB-95ED-47CE-B996-6641E228916C} = {1D1FAF73-5B9E-4A66-B928-ED19AA5E3BD8}
 		{C21751B3-11B0-41E0-8221-C1106F4D0A9E} = {933CD81D-0867-426B-BF84-77517E59E0B3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

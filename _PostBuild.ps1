@@ -118,15 +118,11 @@ function Checksum-Folder
     Write-Host ('Generating checksums for ' + $folder)
     Write-Host ('Saving checksums to ' + $checksumFile)
 
-    $checksumExe = [io.Path]::Combine($solutionDir, 'ThirdParty', 'ChecksumFiles', 'bin', $configurationName, 'ChecksumFiles.exe')
-    if(![io.File]::Exists($checksumExe)) {
-        Write-Host ('The checksum utility ' + $checksumExe + ' has not been built. Add it as a dependency to the project and try again.')
-        Exit 1
-    }
+    $checksumScript = [IO.Path]::Combine($solutionDir, '_ChecksumFiles.ps1')
 
-    & $checksumExe -root:"$folder" -out:"$checksumFile" -addContentChecksum
+    & $checksumScript -root "$folder" -out "$checksumFile" -addContentChecksum
     if($LASTEXITCODE -ne 0) {
-        Write-Host ('The checksum utility failed with an exit code of ' + $LASTEXITCODE)
+        Write-Host ([String]::Format('The checksum script failed with an exit code of {0}', $LASTEXITCODE))
         Exit 1
     }
 }
