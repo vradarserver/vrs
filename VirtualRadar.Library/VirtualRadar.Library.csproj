@@ -65,6 +65,9 @@
     <Reference Include="InterfaceFactory, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AWhewell.InterfaceFactory.4.0.0\lib\net40\InterfaceFactory.dll</HintPath>
     </Reference>
+    <Reference Include="KdTreeLib, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\KdTree.1.4.1\lib\net461\KdTreeLib.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Posix">
       <HintPath>..\Dependencies\MonoBuilds\Mono.Posix.dll</HintPath>
     </Reference>
@@ -250,10 +253,6 @@
     <Compile Include="XPlane\XPlaneUdp.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ThirdParty\KdTreeLib\KdTreeLib.csproj">
-      <Project>{68c8066d-7844-41c2-993d-3160798164d1}</Project>
-      <Name>KdTreeLib</Name>
-    </ProjectReference>
     <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
       <Project>{8EF81105-F45D-4EDB-996C-DE7D5644B1E7}</Project>
       <Name>VirtualRadar.Interface</Name>

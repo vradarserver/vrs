@@ -2,15 +2,6 @@ This folder contains the source for third-party libraries and utilities that I c
 directly use because either they do not target .NET 3.5 or I needed to make changes to
 them.
 
-KdTreeLib
-=========
-Home page: https://github.com/codeandcats/KdTree
-Backported from .NET 4 to .NET 3.5, otherwise unchanged.
-
-This is shipped with VRS, VirtualRadar.Library uses it to store the air pressures reported
-from weather stations. It's used to search for the weather station closest to an aircraft's
-position.
-
 
 TypeLite.Net35
 ==============
