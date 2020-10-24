@@ -55,7 +55,7 @@ jobs:
         run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\VirtualRadar-x64.iss
 
       - name:  Build mono tarball
-        run:   Installers/Mono/build-virtualradar.shell ${{ steps.set_ver.outputs.VER }}
+        run:   Installers/Mono/build-virtualradar.sh ${{ steps.set_ver.outputs.VER }}
         shell: bash
 
       - name: Create Github release
