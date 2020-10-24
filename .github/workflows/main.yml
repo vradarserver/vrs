@@ -24,7 +24,7 @@ jobs:
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.2
         with:
-          vs-version: '16.x'
+          vs-version: '[16.0.0.0,16.65535.65535.65535]'
 
       - name: Build Release x86
         run:  msbuild VirtualRadar.sln -property:Configuration=Release,Platform=x86 -nowarn:1570,1572,1573,1574,1584,1587,1591,1711
