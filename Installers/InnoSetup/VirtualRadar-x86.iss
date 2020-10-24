@@ -1,6 +1,6 @@
 #define Root        "..\.."
 #define BuildType   "Release"
-#define Version     "3.0.0 Beta"
+#define Version     "3.0.0-beta-xyz"
 
 [Setup]
 AppName=Virtual Radar
@@ -12,7 +12,7 @@ InfoBeforeFile=VirtualRadar-VersionHistory.rtf
 LicenseFile={#Root}\License.txt
 ; .NET 4.6.1 minimum version is Windows 7 SP1
 MinVersion=6.1.7601
-OutputBaseFileName=VirtualRadarSetup
+OutputBaseFileName=VirtualRadar-x86-{#Version}
 SetupIconFile={#Root}\VirtualRadar\Application.ico
 WizardImageFile=..\Resources\WizardImage.bmp
 WizardSmallImageFile=..\Resources\WizardSmallImage.bmp

@@ -1,17 +1,29 @@
-name: VirtualRadar.CI
+name: Build V3 Release
 
 on:
   push:
-    branches: [ master ]
+    branches: master
+    tags:     v3.*
   pull_request:
-    branches: [ master ]
+    branches: master
+    tags:     v3.*
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
+
+      - name:  Extract tag
+        id:    get_version
+        run:   echo ::set-output name=VRS_TAG::${GITHUB_REF/refs\/tags\//}
+        shell: bash
+
+      - name:  Extract version number from tag (i.e. strip leading V from tag)
+        id:    get_version
+        run:   echo ::set-output name=VRS_VERSION::${VRS_TAG/v}
+        shell: bash
 
       - name: Setup Nuget
         uses: nuget/setup-nuget@v1
@@ -26,17 +38,32 @@ jobs:
         with:
           vs-version: '[16.0.0.0,16.65535.65535.65535]'
 
-      - name: Build Release x86
+      - name: Build x86 release
         run:  msbuild VirtualRadar.sln -property:Configuration=Release,Platform=x86 -nowarn:1570,1572,1573,1574,1584,1587,1591,1711
 
-      - name: Build Release x64
+      - name: Build x64 release
         run:  msbuild VirtualRadar.sln -property:Configuration=Release,Platform=x64 -nowarn:1570,1572,1573,1574,1584,1587,1591,1711
 
-      - name: Build x86 Installer
-        run:  iscc /Q Installers\InnoSetup\VirtualRadar-x86.iss
+      - name: Build x86 installer
+        run:  iscc /Q "/DVersion=$VRS_VERSION" Installers\InnoSetup\VirtualRadar-x86.iss
 
-      - name: Record Installer as Artifact
-        uses: actions/upload-artifact@v2
+      - name: Create Github release
+        id:   create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: virtual-radar-x86-installer
-          path: Installers\InnoSetup\Output\VirtualRadarSetup.exe
+          tag_name: $VRS_TAG
+          release_name: $VRS_TAG
+          draft: true
+          prerelease: true
+
+      - name: Add x86 installer to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: Installers\InnoSetup\Output\VirtualRadar-x86-$VRS_VERSION.exe
+          asset_name:                             VirtualRadar-x86-$VRS_VERSION.exe
+          asset_content_type: application/vnd.microsoft.portable-executable
