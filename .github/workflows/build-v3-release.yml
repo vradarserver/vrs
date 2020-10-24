@@ -3,10 +3,10 @@ name: Build V3 Release
 on:
   push:
     branches: master
-    tags:     v3.*
+      tags:   v3.*
   pull_request:
     branches: master
-    tags:     v3.*
+      tags:   v3.*
 
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
         shell: bash
 
       - name: Setup Nuget
-        uses: nuget/setup-nuget@v1
+        uses: NuGet/setup-nuget@v1.0.2
         with:
           nuget-version: '5.x'
 
