@@ -253,4 +253,5 @@ paket-files/
 *.sln.iml
 
 # VRS files to ignore
+/Installers/InnoSetup/Output/
 /VirtualRadar.WebSite/Site/Checksums.txt

@@ -118,6 +118,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseStationImport", "Utilit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.TileServerCache", "Plugin.TileServerCache\Plugin.TileServerCache.csproj", "{65C67D9E-42FF-467C-92C2-10F0B9481309}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installers", "Installers", "{2706C041-CF15-4CA8-AB29-717CEB7EB0C2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{6DA177EA-7167-4E2F-B673-6CC020171F51}"
+	ProjectSection(SolutionItems) = preProject
+		Installers\Resources\WizardImage.bmp = Installers\Resources\WizardImage.bmp
+		Installers\Resources\WizardSmallImage.bmp = Installers\Resources\WizardSmallImage.bmp
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InnoSetup", "InnoSetup", "{217CFBE8-E223-4C45-B8A3-B6BAF32A1D45}"
+	ProjectSection(SolutionItems) = preProject
+		Installers\InnoSetup\VirtualRadar-VersionHistory.rtf = Installers\InnoSetup\VirtualRadar-VersionHistory.rtf
+		Installers\InnoSetup\VirtualRadar-x86.iss = Installers\InnoSetup\VirtualRadar-x86.iss
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -662,6 +676,8 @@ Global
 		{9E538513-A812-4A09-BD54-96734AD4A850} = {3DD098CE-F3C7-4D95-8EDC-969A4F71D740}
 		{A81147B6-D3E8-42AE-A98F-21BA5C4BAE99} = {1D1FAF73-5B9E-4A66-B928-ED19AA5E3BD8}
 		{C21751B3-11B0-41E0-8221-C1106F4D0A9E} = {933CD81D-0867-426B-BF84-77517E59E0B3}
+		{6DA177EA-7167-4E2F-B673-6CC020171F51} = {2706C041-CF15-4CA8-AB29-717CEB7EB0C2}
+		{217CFBE8-E223-4C45-B8A3-B6BAF32A1D45} = {2706C041-CF15-4CA8-AB29-717CEB7EB0C2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0B7509BC-2E0B-4EE1-9683-D79016B9781E}
