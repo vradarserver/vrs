@@ -34,3 +34,9 @@ jobs:
 
       - name: Build x86 Installer
         run:  iscc /Q Installers\InnoSetup\VirtualRadar-x86.iss
+
+      - name: Record Installer as Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: virtual-radar-x86-installer
+          path: Installers\InnoSetup\Output\VirtualRadarSetup.exe
