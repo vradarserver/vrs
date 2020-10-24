@@ -254,4 +254,6 @@ paket-files/
 
 # VRS files to ignore
 /Installers/InnoSetup/Output/
+/Installers/Mono/output
+/Installers/Mono/work-virtual-radar
 /VirtualRadar.WebSite/Site/Checksums.txt

@@ -45,8 +45,18 @@ jobs:
       - name: Build x86 release
         run:  msbuild VirtualRadar.sln -property:Configuration=Release,Platform=x86 -nowarn:1570,1572,1573,1574,1584,1587,1591,1711
 
+      - name: Build x64 release
+        run:  msbuild VirtualRadar.sln -property:Configuration=Release,Platform=x64 -nowarn:1570,1572,1573,1574,1584,1587,1591,1711
+
       - name: Build x86 installer
         run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\VirtualRadar-x86.iss
+
+      - name: Build x64 installer
+        run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\VirtualRadar-x64.iss
+
+      - name:  Build mono tarball
+        run:   Installers/Mono/build-virtualradar.shell ${{ steps.set_ver.outputs.VER }}
+        shell: bash
 
       - name: Create Github release
         id:   create_release
@@ -68,3 +78,23 @@ jobs:
           asset_content_type: application/vnd.microsoft.portable-executable
           asset_path: Installers\InnoSetup\Output\VirtualRadar-x86-${{ steps.set_ver.outputs.VER }}.exe
           asset_name:                             VirtualRadar-x86-${{ steps.set_ver.outputs.VER }}.exe
+
+      - name: Add x64 installer to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_content_type: application/vnd.microsoft.portable-executable
+          asset_path: Installers\InnoSetup\Output\VirtualRadar-x64-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             VirtualRadar-x64-${{ steps.set_ver.outputs.VER }}.exe
+
+      - name: Add mono tarball to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_content_type: application/vnd.microsoft.portable-executable
+          asset_path: Installers\Mono\output\VirtualRadar-mono-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        VirtualRadar-mono-${{ steps.set_ver.outputs.VER }}.tar.gz
