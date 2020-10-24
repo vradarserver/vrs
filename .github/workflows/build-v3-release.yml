@@ -2,11 +2,15 @@ name: Build V3 Release
 
 on:
   push:
-    branches: master
-      tags:   v3.*
+    branches:
+      - main
+    tags:
+      - v3.*
   pull_request:
-    branches: master
-      tags:   v3.*
+    branches:
+      - main
+    tags:
+      - v3.*
 
 jobs:
   build:
