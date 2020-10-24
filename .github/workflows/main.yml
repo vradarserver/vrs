@@ -13,14 +13,21 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: Setup Nuget.exe
-        uses: warrenbuckley/Setup-Nuget@v1
+      - name: Setup Nuget
+        uses: nuget/setup-nuget@v1
+        with:
+          nuget-version: '5.x'
 
       - name: Restore packages
         run:  nuget restore VirtualRadar.sln
 
-      - name: Setup MSBuild.exe
-        uses: warrenbuckley/Setup-MSBuild@v1
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+        with:
+          vs-version: '[16.0.0.0,16.65535.65535.65535]'
 
       - name: Build Release x86
-        run:  msbuild VirtualRadar.sln -p:Configuration=Release,Platform=x86 -nowarn:1570,1572,1573,1574,1584,1587,1591,1711
+        run:  msbuild VirtualRadar.sln -property:Configuration=Release,Platform=x86 -nowarn:1570,1572,1573,1574,1584,1587,1591,1711
+
+      - name: Build Release x64
+        run:  msbuild VirtualRadar.sln -property:Configuration=Release,Platform=x64 -nowarn:1570,1572,1573,1574,1584,1587,1591,1711
