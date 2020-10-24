@@ -26,7 +26,7 @@ jobs:
 
       - name:  Extract version
         id:    set_ver
-        run:   echo ::set-output name=VER::${GITHUB_REF/refs\/tags\//v}
+        run:   echo ::set-output name=VER::${GITHUB_REF/refs\/tags\/v/}
         shell: bash
 
       - name: Setup Nuget
@@ -46,7 +46,7 @@ jobs:
         run:  msbuild VirtualRadar.sln -property:Configuration=Release,Platform=x86 -nowarn:1570,1572,1573,1574,1584,1587,1591,1711
 
       - name: Build x86 installer
-        run:  iscc /Q "/DVersion=${{ steps.set_ver.outputs.VER }}" Installers\InnoSetup\VirtualRadar-x86.iss
+        run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\VirtualRadar-x86.iss
 
       - name: Create Github release
         id:   create_release
