@@ -31,3 +31,6 @@ jobs:
 
       - name: Build Release x64
         run:  msbuild VirtualRadar.sln -property:Configuration=Release,Platform=x64 -nowarn:1570,1572,1573,1574,1584,1587,1591,1711
+
+      - name: Build x86 Installer
+        run:  iscc /Q Installers\InnoSetup\VirtualRadar-x86.iss
