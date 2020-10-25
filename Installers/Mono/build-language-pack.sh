@@ -25,6 +25,6 @@ cp -t $WORK/pt-BR $BUILD/pt-BR/*
 cp -t $WORK/ru-RU $BUILD/ru-RU/*
 cp -t $WORK/zh-CN $BUILD/zh-CN/*
 cd $WORK
-tar -czf     $OUTPUT/LanguagePack-$VER.tar.gz *
-echo Created $OUTPUT/LanguagePack-$VER.tar.gz
+tar -czf     $OUTPUT/LanguagePack-Linux-$VER.tar.gz *
+echo Created $OUTPUT/LanguagePack-Linux-$VER.tar.gz
 
