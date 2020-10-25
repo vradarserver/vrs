@@ -120,14 +120,25 @@ jobs:
         run:   Installers/Mono/build-language-pack.sh ${{ steps.set_ver.outputs.VER }}
         shell: bash
 
-      - name: Create Github release
-        id:   create_release
+      - name: Create Windows .NET Framework release
+        id:   framework_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name:     ${{ steps.set_tag.outputs.TAG }}
-          release_name: ${{ steps.set_tag.outputs.TAG }}
+          release_name: ${{ steps.set_tag.outputs.TAG }} [Windows .NET Framework]
+          draft:        true
+          prerelease:   true
+
+      - name: Create Mono release
+        id:   mono_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name:     ${{ steps.set_tag.outputs.TAG }}
+          release_name: ${{ steps.set_tag.outputs.TAG }} [Linux / Mac OSX Mono]
           draft:        true
           prerelease:   true
 
@@ -136,7 +147,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
           asset_path: Installers\InnoSetup\Output\VirtualRadar-Windows-${{ steps.set_ver.outputs.VER }}.exe
           asset_name:                             VirtualRadar-Windows-${{ steps.set_ver.outputs.VER }}.exe
@@ -146,7 +157,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
           asset_path: Installers\InnoSetup\Output\VirtualRadar-Windows-64bit-${{ steps.set_ver.outputs.VER }}.exe
           asset_name:                             VirtualRadar-Windows-64bit-${{ steps.set_ver.outputs.VER }}.exe
@@ -156,7 +167,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
           asset_path: Installers\Mono\output\VirtualRadar-Linux-${{ steps.set_ver.outputs.VER }}.tar.gz
           asset_name:                        VirtualRadar-Linux-${{ steps.set_ver.outputs.VER }}.tar.gz
@@ -166,7 +177,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
           asset_path: Installers\InnoSetup\Output\Plugin-Windows-CustomContent-${{ steps.set_ver.outputs.VER }}.exe
           asset_name:                             Plugin-Windows-CustomContent-${{ steps.set_ver.outputs.VER }}.exe
@@ -176,7 +187,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
           asset_path: Installers\Mono\output\Plugin-Linux-CustomContent-${{ steps.set_ver.outputs.VER }}.tar.gz
           asset_name:                        Plugin-Linux-CustomContent-${{ steps.set_ver.outputs.VER }}.tar.gz
@@ -186,7 +197,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
           asset_path: Installers\InnoSetup\Output\Plugin-Windows-DatabaseEditor-${{ steps.set_ver.outputs.VER }}.exe
           asset_name:                             Plugin-Windows-DatabaseEditor-${{ steps.set_ver.outputs.VER }}.exe
@@ -196,7 +207,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
           asset_path: Installers\Mono\output\Plugin-Linux-DatabaseEditor-${{ steps.set_ver.outputs.VER }}.tar.gz
           asset_name:                        Plugin-Linux-DatabaseEditor-${{ steps.set_ver.outputs.VER }}.tar.gz
@@ -206,7 +217,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
           asset_path: Installers\InnoSetup\Output\Plugin-Windows-DatabaseWriter-${{ steps.set_ver.outputs.VER }}.exe
           asset_name:                             Plugin-Windows-DatabaseWriter-${{ steps.set_ver.outputs.VER }}.exe
@@ -216,7 +227,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
           asset_path: Installers\Mono\output\Plugin-Linux-DatabaseWriter-${{ steps.set_ver.outputs.VER }}.tar.gz
           asset_name:                        Plugin-Linux-DatabaseWriter-${{ steps.set_ver.outputs.VER }}.tar.gz
@@ -226,7 +237,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
           asset_path: Installers\InnoSetup\Output\Plugin-Windows-DisableAudio-${{ steps.set_ver.outputs.VER }}.exe
           asset_name:                             Plugin-Windows-DisableAudio-${{ steps.set_ver.outputs.VER }}.exe
@@ -236,7 +247,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
           asset_path: Installers\InnoSetup\Output\Plugin-Linux-DisableUPnP-${{ steps.set_ver.outputs.VER }}.exe
           asset_name:                             Plugin-Linux-DisableUPnP-${{ steps.set_ver.outputs.VER }}.exe
@@ -246,7 +257,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
           asset_path: Installers\InnoSetup\Output\Plugin-Windows-FeedFilter-${{ steps.set_ver.outputs.VER }}.exe
           asset_name:                             Plugin-Windows-FeedFilter-${{ steps.set_ver.outputs.VER }}.exe
@@ -256,7 +267,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
           asset_path: Installers\Mono\output\Plugin-Linux-FeedFilter-${{ steps.set_ver.outputs.VER }}.tar.gz
           asset_name:                        Plugin-Linux-FeedFilter-${{ steps.set_ver.outputs.VER }}.tar.gz
@@ -266,7 +277,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
           asset_path: Installers\InnoSetup\Output\Plugin-Windows-SqlServer-${{ steps.set_ver.outputs.VER }}.exe
           asset_name:                             Plugin-Windows-SqlServer-${{ steps.set_ver.outputs.VER }}.exe
@@ -276,7 +287,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
           asset_path: Installers\Mono\output\Plugin-Linux-SqlServer-${{ steps.set_ver.outputs.VER }}.tar.gz
           asset_name:                        Plugin-Linux-SqlServer-${{ steps.set_ver.outputs.VER }}.tar.gz
@@ -286,7 +297,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
           asset_path: Installers\InnoSetup\Output\Plugin-Windows-TileServerCache-${{ steps.set_ver.outputs.VER }}.exe
           asset_name:                             Plugin-Windows-TileServerCache-${{ steps.set_ver.outputs.VER }}.exe
@@ -296,7 +307,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
           asset_path: Installers\Mono\output\Plugin-Linux-TileServerCache-${{ steps.set_ver.outputs.VER }}.tar.gz
           asset_name:                        Plugin-Linux-TileServerCache-${{ steps.set_ver.outputs.VER }}.tar.gz
@@ -306,7 +317,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
           asset_path: Installers\InnoSetup\Output\Plugin-Windows-WebAdmin-${{ steps.set_ver.outputs.VER }}.exe
           asset_name:                             Plugin-Windows-WebAdmin-${{ steps.set_ver.outputs.VER }}.exe
@@ -316,7 +327,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
           asset_path: Installers\Mono\output\Plugin-Linux-WebAdmin-${{ steps.set_ver.outputs.VER }}.tar.gz
           asset_name:                        Plugin-Linux-WebAdmin-${{ steps.set_ver.outputs.VER }}.tar.gz
@@ -326,7 +337,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
           asset_path: Installers\InnoSetup\Output\LanguagePack-Windows-${{ steps.set_ver.outputs.VER }}.exe
           asset_name:                             LanguagePack-Windows-${{ steps.set_ver.outputs.VER }}.exe
@@ -336,7 +347,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
           asset_path: Installers\Mono\output\LanguagePack-Linux-${{ steps.set_ver.outputs.VER }}.tar.gz
           asset_name:                        LanguagePack-Linux-${{ steps.set_ver.outputs.VER }}.tar.gz
