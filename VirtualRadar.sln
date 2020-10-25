@@ -129,6 +129,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InnoSetup", "InnoSetup", "{217CFBE8-E223-4C45-B8A3-B6BAF32A1D45}"
 	ProjectSection(SolutionItems) = preProject
+		Installers\InnoSetup\LanguagePack-Contents.rtf = Installers\InnoSetup\LanguagePack-Contents.rtf
+		Installers\InnoSetup\LanguagePack-Setup.iss = Installers\InnoSetup\LanguagePack-Setup.iss
+		Installers\InnoSetup\Plugin-CustomContent-VersionHistory.rtf = Installers\InnoSetup\Plugin-CustomContent-VersionHistory.rtf
+		Installers\InnoSetup\Plugin-CustomContent.iss = Installers\InnoSetup\Plugin-CustomContent.iss
+		Installers\InnoSetup\Plugin-DatabaseEditor-VersionHistory.rtf = Installers\InnoSetup\Plugin-DatabaseEditor-VersionHistory.rtf
+		Installers\InnoSetup\Plugin-DatabaseEditor.iss = Installers\InnoSetup\Plugin-DatabaseEditor.iss
+		Installers\InnoSetup\Plugin-DatabaseWriter-VersionHistory.rtf = Installers\InnoSetup\Plugin-DatabaseWriter-VersionHistory.rtf
+		Installers\InnoSetup\Plugin-DatabaseWriter.iss = Installers\InnoSetup\Plugin-DatabaseWriter.iss
+		Installers\InnoSetup\Plugin-DisableAudio-VersionHistory.rtf = Installers\InnoSetup\Plugin-DisableAudio-VersionHistory.rtf
+		Installers\InnoSetup\Plugin-DisableAudio.iss = Installers\InnoSetup\Plugin-DisableAudio.iss
+		Installers\InnoSetup\Plugin-DisableUPnP-VersionHistory.rtf = Installers\InnoSetup\Plugin-DisableUPnP-VersionHistory.rtf
+		Installers\InnoSetup\Plugin-DisableUPnP.iss = Installers\InnoSetup\Plugin-DisableUPnP.iss
+		Installers\InnoSetup\Plugin-FeedFilter-VersionHistory.rtf = Installers\InnoSetup\Plugin-FeedFilter-VersionHistory.rtf
+		Installers\InnoSetup\Plugin-FeedFilter.iss = Installers\InnoSetup\Plugin-FeedFilter.iss
+		Installers\InnoSetup\Plugin-SqlServer-VersionHistory.rtf = Installers\InnoSetup\Plugin-SqlServer-VersionHistory.rtf
+		Installers\InnoSetup\Plugin-SqlServer.iss = Installers\InnoSetup\Plugin-SqlServer.iss
+		Installers\InnoSetup\Plugin-TileServerCache-VersionHistory.rtf = Installers\InnoSetup\Plugin-TileServerCache-VersionHistory.rtf
+		Installers\InnoSetup\Plugin-TileServerCache.iss = Installers\InnoSetup\Plugin-TileServerCache.iss
+		Installers\InnoSetup\Plugin-WebAdmin-VersionHistory.rtf = Installers\InnoSetup\Plugin-WebAdmin-VersionHistory.rtf
+		Installers\InnoSetup\Plugin-WebAdmin.iss = Installers\InnoSetup\Plugin-WebAdmin.iss
 		Installers\InnoSetup\VirtualRadar-VersionHistory.rtf = Installers\InnoSetup\VirtualRadar-VersionHistory.rtf
 		Installers\InnoSetup\VirtualRadar-x64.iss = Installers\InnoSetup\VirtualRadar-x64.iss
 		Installers\InnoSetup\VirtualRadar-x86.iss = Installers\InnoSetup\VirtualRadar-x86.iss
@@ -136,6 +156,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InnoSetup", "InnoSetup", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mono", "Mono", "{47B5682B-D580-49F5-8038-F4DB6AFAB6DE}"
 	ProjectSection(SolutionItems) = preProject
+		Installers\Mono\build-language-pack.sh = Installers\Mono\build-language-pack.sh
+		Installers\Mono\build-plugin-custom-content.sh = Installers\Mono\build-plugin-custom-content.sh
+		Installers\Mono\build-plugin-database-editor.sh = Installers\Mono\build-plugin-database-editor.sh
+		Installers\Mono\build-plugin-database-writer.sh = Installers\Mono\build-plugin-database-writer.sh
+		Installers\Mono\build-plugin-feed-filter.sh = Installers\Mono\build-plugin-feed-filter.sh
+		Installers\Mono\build-plugin-sql-server.sh = Installers\Mono\build-plugin-sql-server.sh
+		Installers\Mono\build-plugin-tile-server-cache.sh = Installers\Mono\build-plugin-tile-server-cache.sh
+		Installers\Mono\build-plugin-web-admin.sh = Installers\Mono\build-plugin-web-admin.sh
 		Installers\Mono\build-virtualradar.sh = Installers\Mono\build-virtualradar.sh
 	EndProjectSection
 EndProject

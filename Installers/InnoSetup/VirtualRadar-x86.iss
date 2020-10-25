@@ -1,8 +1,8 @@
 #define public Root       "..\.."
 #define public BuildType  "Release"
-  #ifndef VERSION
-    #define public VERSION    "0.0.0"
-  #endif
+#ifndef VERSION
+  #define public VERSION    "0.0.0"
+#endif
 
 [Setup]
 AppName=Virtual Radar
