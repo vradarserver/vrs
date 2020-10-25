@@ -120,17 +120,6 @@ jobs:
         run:   Installers/Mono/build-language-pack.sh ${{ steps.set_ver.outputs.VER }}
         shell: bash
 
-      - name: Create Windows .NET Framework release
-        id:   framework_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name:     ${{ steps.set_tag.outputs.TAG }}
-          release_name: ${{ steps.set_tag.outputs.TAG }} [Windows .NET Framework]
-          draft:        true
-          prerelease:   true
-
       - name: Create Mono release
         id:   mono_release
         uses: actions/create-release@v1
@@ -139,6 +128,17 @@ jobs:
         with:
           tag_name:     ${{ steps.set_tag.outputs.TAG }}
           release_name: ${{ steps.set_tag.outputs.TAG }} [Linux / Mac OSX Mono]
+          draft:        true
+          prerelease:   true
+
+      - name: Create Windows .NET Framework release
+        id:   framework_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name:     ${{ steps.set_tag.outputs.TAG }}
+          release_name: ${{ steps.set_tag.outputs.TAG }} [Windows .NET Framework]
           draft:        true
           prerelease:   true
 
