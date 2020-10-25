@@ -17,5 +17,5 @@ mkdir -p $WORK
 
 cp -r $BUILD/* $WORK
 cd $WORKROOT
-tar -czf     $OUTPUT/Plugin-WebAdmin-$VER.tar.gz *
-echo Created $OUTPUT/Plugin-WebAdmin-$VER.tar.gz
+tar -czf     $OUTPUT/Plugin-Linux-WebAdmin-$VER.tar.gz *
+echo Created $OUTPUT/Plugin-Linux-WebAdmin-$VER.tar.gz

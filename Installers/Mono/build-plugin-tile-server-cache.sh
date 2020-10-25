@@ -17,5 +17,5 @@ mkdir -p $WORK
 
 cp -r $BUILD/* $WORK
 cd $WORKROOT
-tar -czf     $OUTPUT/Plugin-TileServerCache-$VER.tar.gz *
-echo Created $OUTPUT/Plugin-TileServerCache-$VER.tar.gz
+tar -czf     $OUTPUT/Plugin-Linux-TileServerCache-$VER.tar.gz *
+echo Created $OUTPUT/Plugin-Linux-TileServerCache-$VER.tar.gz

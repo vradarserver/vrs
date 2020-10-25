@@ -2,7 +2,7 @@
 #define public BuildType  "Release"
 #define public Plugin     "{app}\Plugins\DatabaseEditor"
 #ifndef VERSION
-  #define public VERSION    "0.0.0"
+  #define public VERSION    "v3"
 #endif
 
 [Setup]
@@ -15,7 +15,7 @@ InfoBeforeFile=Plugin-DatabaseEditor-VersionHistory.rtf
 LicenseFile={#Root}\License.txt
 ; .NET 4.6.1 minimum version is Windows 7 SP1
 MinVersion=6.1.7601
-OutputBaseFileName=Plugin-DatabaseEditor-{#VERSION}
+OutputBaseFileName=Plugin-Windows-DatabaseEditor-{#VERSION}
 SetupIconFile={#Root}\VirtualRadar\Application.ico
 WizardImageFile=..\Resources\WizardImage.bmp
 WizardSmallImageFile=..\Resources\WizardSmallImage.bmp

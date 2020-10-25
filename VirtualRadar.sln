@@ -130,7 +130,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InnoSetup", "InnoSetup", "{217CFBE8-E223-4C45-B8A3-B6BAF32A1D45}"
 	ProjectSection(SolutionItems) = preProject
 		Installers\InnoSetup\LanguagePack-Contents.rtf = Installers\InnoSetup\LanguagePack-Contents.rtf
-		Installers\InnoSetup\LanguagePack-Setup.iss = Installers\InnoSetup\LanguagePack-Setup.iss
+		Installers\InnoSetup\LanguagePack.iss = Installers\InnoSetup\LanguagePack.iss
 		Installers\InnoSetup\Plugin-CustomContent-VersionHistory.rtf = Installers\InnoSetup\Plugin-CustomContent-VersionHistory.rtf
 		Installers\InnoSetup\Plugin-CustomContent.iss = Installers\InnoSetup\Plugin-CustomContent.iss
 		Installers\InnoSetup\Plugin-DatabaseEditor-VersionHistory.rtf = Installers\InnoSetup\Plugin-DatabaseEditor-VersionHistory.rtf

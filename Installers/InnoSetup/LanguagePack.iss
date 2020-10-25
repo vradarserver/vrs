@@ -1,7 +1,7 @@
 #define public Root       "..\.."
 #define public BuildType  "Release"
 #ifndef VERSION
-  #define public VERSION    "0.0.0"
+  #define public VERSION    "v3"
 #endif
 
 [Setup]
@@ -14,7 +14,7 @@ InfoBeforeFile=LanguagePack-Contents.rtf
 LicenseFile={#Root}\License.txt
 ; .NET 4.6.1 minimum version is Windows 7 SP1
 MinVersion=6.1.7601
-OutputBaseFileName=LanguagePack-{#Version}
+OutputBaseFileName=LanguagePack-Windows-{#Version}
 SetupIconFile={#Root}\VirtualRadar\Application.ico
 WizardImageFile=..\Resources\WizardImage.bmp
 WizardSmallImageFile=..\Resources\WizardSmallImage.bmp

@@ -17,5 +17,5 @@ mkdir -p $WORK
 
 cp -r $BUILD/* $WORK
 cd $WORKROOT
-tar -czf     $OUTPUT/Plugin-DatabaseWriter-$VER.tar.gz *
-echo Created $OUTPUT/Plugin-DatabaseWriter-$VER.tar.gz
+tar -czf     $OUTPUT/Plugin-Linux-DatabaseWriter-$VER.tar.gz *
+echo Created $OUTPUT/Plugin-Linux-DatabaseWriter-$VER.tar.gz
