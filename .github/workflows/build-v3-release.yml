@@ -249,8 +249,8 @@ jobs:
         with:
           upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
-          asset_path: Installers\InnoSetup\Output\Plugin-Linux-DisableUPnP-${{ steps.set_ver.outputs.VER }}.exe
-          asset_name:                             Plugin-Linux-DisableUPnP-${{ steps.set_ver.outputs.VER }}.exe
+          asset_path: Installers\InnoSetup\Output\Plugin-Windows-DisableUPnP-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-Windows-DisableUPnP-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add feed filter installer to release
         uses: actions/upload-release-asset@v1
