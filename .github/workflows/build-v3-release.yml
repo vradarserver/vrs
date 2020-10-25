@@ -110,7 +110,7 @@ jobs:
         run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\Plugin-WebAdmin.iss
 
       - name:  Build WebAdmin tarball
-        run:   Installers/Mono/build-plugin-tile-web-admin.sh ${{ steps.set_ver.outputs.VER }}
+        run:   Installers/Mono/build-plugin-web-admin.sh ${{ steps.set_ver.outputs.VER }}
         shell: bash
 
       - name: Build LanguagePack plugin installer
