@@ -45,7 +45,7 @@ cp    $BUILD/AjaxMin.dll $WORK
 cp    $BUILD/Dapper.dll $WORK
 cp    $BUILD/HtmlAgilityPack.dll $WORK
 cp    $BUILD/KdTreeLib.dll $WORK
-cp    $BUILD/NewtonSoft.Json.dll $WORK
+cp    $BUILD/NewtonSoft.Json.dll $WORK/Newtonsoft.Json.dll
 cp    $BUILD/BaseStationImport.exe $WORK
 cp    $BUILD/BaseStationImport.exe.config $WORK
 cp    $BUILD/Checksums.txt $WORK

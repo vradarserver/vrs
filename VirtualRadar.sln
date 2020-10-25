@@ -134,6 +134,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InnoSetup", "InnoSetup", "{
 		Installers\InnoSetup\VirtualRadar-x86.iss = Installers\InnoSetup\VirtualRadar-x86.iss
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mono", "Mono", "{47B5682B-D580-49F5-8038-F4DB6AFAB6DE}"
+	ProjectSection(SolutionItems) = preProject
+		Installers\Mono\build-virtualradar.sh = Installers\Mono\build-virtualradar.sh
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -680,6 +685,7 @@ Global
 		{C21751B3-11B0-41E0-8221-C1106F4D0A9E} = {933CD81D-0867-426B-BF84-77517E59E0B3}
 		{6DA177EA-7167-4E2F-B673-6CC020171F51} = {2706C041-CF15-4CA8-AB29-717CEB7EB0C2}
 		{217CFBE8-E223-4C45-B8A3-B6BAF32A1D45} = {2706C041-CF15-4CA8-AB29-717CEB7EB0C2}
+		{47B5682B-D580-49F5-8038-F4DB6AFAB6DE} = {2706C041-CF15-4CA8-AB29-717CEB7EB0C2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0B7509BC-2E0B-4EE1-9683-D79016B9781E}
