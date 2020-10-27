@@ -58,5 +58,5 @@ cp -t $WORK/ru-RU $BUILD/ru-RU/VirtualRadar.WebSite.resources.dll
 cp -t $WORK/zh-CN $BUILD/zh-CN/VirtualRadar.WebSite.resources.dll
 rm $WORK/Web/zz-norel-*
 cd $WORK
-tar -czf     $OUTPUT/VirtualRadar-Linux-$VER.tar.gz *
-echo Created $OUTPUT/VirtualRadar-Linux-$VER.tar.gz
+tar -czf     $OUTPUT/VirtualRadar-$VER.tar.gz *
+echo Created $OUTPUT/VirtualRadar-$VER.tar.gz

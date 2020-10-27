@@ -17,5 +17,5 @@ mkdir -p $WORK
 
 cp -r $BUILD/* $WORK
 cd $WORKROOT
-tar -czf     $OUTPUT/Plugin-Linux-FeedFilter-$VER.tar.gz *
-echo Created $OUTPUT/Plugin-Linux-FeedFilter-$VER.tar.gz
+tar -czf     $OUTPUT/Plugin-FeedFilter-$VER.tar.gz *
+echo Created $OUTPUT/Plugin-FeedFilter-$VER.tar.gz

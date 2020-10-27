@@ -15,7 +15,7 @@ InfoBeforeFile=Plugin-DatabaseWriter-VersionHistory.rtf
 LicenseFile={#Root}\License.txt
 ; .NET 4.6.1 minimum version is Windows 7 SP1
 MinVersion=6.1.7601
-OutputBaseFileName=Plugin-Windows-DatabaseWriter-{#VERSION}
+OutputBaseFileName=Plugin-DatabaseWriter-{#VERSION}
 SetupIconFile={#Root}\VirtualRadar\Application.ico
 WizardImageFile=..\Resources\WizardImage.bmp
 WizardSmallImageFile=..\Resources\WizardSmallImage.bmp

@@ -149,8 +149,8 @@ jobs:
         with:
           upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
-          asset_path: Installers\InnoSetup\Output\VirtualRadar-Windows-${{ steps.set_ver.outputs.VER }}.exe
-          asset_name:                             VirtualRadar-Windows-${{ steps.set_ver.outputs.VER }}.exe
+          asset_path: Installers\InnoSetup\Output\VirtualRadar-32bit-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             VirtualRadar-32bit-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add x64 installer to release
         uses: actions/upload-release-asset@v1
@@ -159,8 +159,8 @@ jobs:
         with:
           upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
-          asset_path: Installers\InnoSetup\Output\VirtualRadar-Windows-64bit-${{ steps.set_ver.outputs.VER }}.exe
-          asset_name:                             VirtualRadar-Windows-64bit-${{ steps.set_ver.outputs.VER }}.exe
+          asset_path: Installers\InnoSetup\Output\VirtualRadar-64bit-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             VirtualRadar-64bit-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add mono tarball to release
         uses: actions/upload-release-asset@v1
@@ -169,8 +169,8 @@ jobs:
         with:
           upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
-          asset_path: Installers\Mono\output\VirtualRadar-Linux-${{ steps.set_ver.outputs.VER }}.tar.gz
-          asset_name:                        VirtualRadar-Linux-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_path: Installers\Mono\output\VirtualRadar-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        VirtualRadar-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add custom content installer to release
         uses: actions/upload-release-asset@v1
@@ -179,8 +179,8 @@ jobs:
         with:
           upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
-          asset_path: Installers\InnoSetup\Output\Plugin-Windows-CustomContent-${{ steps.set_ver.outputs.VER }}.exe
-          asset_name:                             Plugin-Windows-CustomContent-${{ steps.set_ver.outputs.VER }}.exe
+          asset_path: Installers\InnoSetup\Output\Plugin-CustomContent-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-CustomContent-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add custom content tarball to release
         uses: actions/upload-release-asset@v1
@@ -189,8 +189,8 @@ jobs:
         with:
           upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
-          asset_path: Installers\Mono\output\Plugin-Linux-CustomContent-${{ steps.set_ver.outputs.VER }}.tar.gz
-          asset_name:                        Plugin-Linux-CustomContent-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_path: Installers\Mono\output\Plugin-CustomContent-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        Plugin-CustomContent-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add database editor installer to release
         uses: actions/upload-release-asset@v1
@@ -199,8 +199,8 @@ jobs:
         with:
           upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
-          asset_path: Installers\InnoSetup\Output\Plugin-Windows-DatabaseEditor-${{ steps.set_ver.outputs.VER }}.exe
-          asset_name:                             Plugin-Windows-DatabaseEditor-${{ steps.set_ver.outputs.VER }}.exe
+          asset_path: Installers\InnoSetup\Output\Plugin-DatabaseEditor-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-DatabaseEditor-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add database editor tarball to release
         uses: actions/upload-release-asset@v1
@@ -209,8 +209,8 @@ jobs:
         with:
           upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
-          asset_path: Installers\Mono\output\Plugin-Linux-DatabaseEditor-${{ steps.set_ver.outputs.VER }}.tar.gz
-          asset_name:                        Plugin-Linux-DatabaseEditor-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_path: Installers\Mono\output\Plugin-DatabaseEditor-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        Plugin-DatabaseEditor-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add database writer installer to release
         uses: actions/upload-release-asset@v1
@@ -219,8 +219,8 @@ jobs:
         with:
           upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
-          asset_path: Installers\InnoSetup\Output\Plugin-Windows-DatabaseWriter-${{ steps.set_ver.outputs.VER }}.exe
-          asset_name:                             Plugin-Windows-DatabaseWriter-${{ steps.set_ver.outputs.VER }}.exe
+          asset_path: Installers\InnoSetup\Output\Plugin-DatabaseWriter-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-DatabaseWriter-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add database writer tarball to release
         uses: actions/upload-release-asset@v1
@@ -229,8 +229,8 @@ jobs:
         with:
           upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
-          asset_path: Installers\Mono\output\Plugin-Linux-DatabaseWriter-${{ steps.set_ver.outputs.VER }}.tar.gz
-          asset_name:                        Plugin-Linux-DatabaseWriter-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_path: Installers\Mono\output\Plugin-DatabaseWriter-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        Plugin-DatabaseWriter-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add disable audio installer to release
         uses: actions/upload-release-asset@v1
@@ -239,8 +239,8 @@ jobs:
         with:
           upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
-          asset_path: Installers\InnoSetup\Output\Plugin-Windows-DisableAudio-${{ steps.set_ver.outputs.VER }}.exe
-          asset_name:                             Plugin-Windows-DisableAudio-${{ steps.set_ver.outputs.VER }}.exe
+          asset_path: Installers\InnoSetup\Output\Plugin-DisableAudio-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-DisableAudio-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add disable UPnP installer to release
         uses: actions/upload-release-asset@v1
@@ -249,8 +249,8 @@ jobs:
         with:
           upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
-          asset_path: Installers\InnoSetup\Output\Plugin-Windows-DisableUPnP-${{ steps.set_ver.outputs.VER }}.exe
-          asset_name:                             Plugin-Windows-DisableUPnP-${{ steps.set_ver.outputs.VER }}.exe
+          asset_path: Installers\InnoSetup\Output\Plugin-DisableUPnP-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-DisableUPnP-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add feed filter installer to release
         uses: actions/upload-release-asset@v1
@@ -259,8 +259,8 @@ jobs:
         with:
           upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
-          asset_path: Installers\InnoSetup\Output\Plugin-Windows-FeedFilter-${{ steps.set_ver.outputs.VER }}.exe
-          asset_name:                             Plugin-Windows-FeedFilter-${{ steps.set_ver.outputs.VER }}.exe
+          asset_path: Installers\InnoSetup\Output\Plugin-FeedFilter-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-FeedFilter-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add feed filter tarball to release
         uses: actions/upload-release-asset@v1
@@ -269,8 +269,8 @@ jobs:
         with:
           upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
-          asset_path: Installers\Mono\output\Plugin-Linux-FeedFilter-${{ steps.set_ver.outputs.VER }}.tar.gz
-          asset_name:                        Plugin-Linux-FeedFilter-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_path: Installers\Mono\output\Plugin-FeedFilter-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        Plugin-FeedFilter-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add SQL Server installer to release
         uses: actions/upload-release-asset@v1
@@ -279,8 +279,8 @@ jobs:
         with:
           upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
-          asset_path: Installers\InnoSetup\Output\Plugin-Windows-SqlServer-${{ steps.set_ver.outputs.VER }}.exe
-          asset_name:                             Plugin-Windows-SqlServer-${{ steps.set_ver.outputs.VER }}.exe
+          asset_path: Installers\InnoSetup\Output\Plugin-SqlServer-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-SqlServer-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add SQL Server tarball to release
         uses: actions/upload-release-asset@v1
@@ -289,8 +289,8 @@ jobs:
         with:
           upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
-          asset_path: Installers\Mono\output\Plugin-Linux-SqlServer-${{ steps.set_ver.outputs.VER }}.tar.gz
-          asset_name:                        Plugin-Linux-SqlServer-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_path: Installers\Mono\output\Plugin-SqlServer-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        Plugin-SqlServer-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add tile server cache installer to release
         uses: actions/upload-release-asset@v1
@@ -299,8 +299,8 @@ jobs:
         with:
           upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
-          asset_path: Installers\InnoSetup\Output\Plugin-Windows-TileServerCache-${{ steps.set_ver.outputs.VER }}.exe
-          asset_name:                             Plugin-Windows-TileServerCache-${{ steps.set_ver.outputs.VER }}.exe
+          asset_path: Installers\InnoSetup\Output\Plugin-TileServerCache-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-TileServerCache-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add tile server cache tarball to release
         uses: actions/upload-release-asset@v1
@@ -309,8 +309,8 @@ jobs:
         with:
           upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
-          asset_path: Installers\Mono\output\Plugin-Linux-TileServerCache-${{ steps.set_ver.outputs.VER }}.tar.gz
-          asset_name:                        Plugin-Linux-TileServerCache-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_path: Installers\Mono\output\Plugin-TileServerCache-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        Plugin-TileServerCache-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add web admin installer to release
         uses: actions/upload-release-asset@v1
@@ -319,8 +319,8 @@ jobs:
         with:
           upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
-          asset_path: Installers\InnoSetup\Output\Plugin-Windows-WebAdmin-${{ steps.set_ver.outputs.VER }}.exe
-          asset_name:                             Plugin-Windows-WebAdmin-${{ steps.set_ver.outputs.VER }}.exe
+          asset_path: Installers\InnoSetup\Output\Plugin-WebAdmin-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-WebAdmin-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add web admin tarball to release
         uses: actions/upload-release-asset@v1
@@ -329,8 +329,8 @@ jobs:
         with:
           upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
-          asset_path: Installers\Mono\output\Plugin-Linux-WebAdmin-${{ steps.set_ver.outputs.VER }}.tar.gz
-          asset_name:                        Plugin-Linux-WebAdmin-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_path: Installers\Mono\output\Plugin-WebAdmin-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        Plugin-WebAdmin-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add language pack installer to release
         uses: actions/upload-release-asset@v1
@@ -339,8 +339,8 @@ jobs:
         with:
           upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
-          asset_path: Installers\InnoSetup\Output\LanguagePack-Windows-${{ steps.set_ver.outputs.VER }}.exe
-          asset_name:                             LanguagePack-Windows-${{ steps.set_ver.outputs.VER }}.exe
+          asset_path: Installers\InnoSetup\Output\LanguagePack-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             LanguagePack-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add language pack tarball to release
         uses: actions/upload-release-asset@v1
@@ -349,5 +349,5 @@ jobs:
         with:
           upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
-          asset_path: Installers\Mono\output\LanguagePack-Linux-${{ steps.set_ver.outputs.VER }}.tar.gz
-          asset_name:                        LanguagePack-Linux-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_path: Installers\Mono\output\LanguagePack-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        LanguagePack-${{ steps.set_ver.outputs.VER }}.tar.gz

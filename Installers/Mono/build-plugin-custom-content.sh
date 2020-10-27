@@ -18,6 +18,6 @@ mkdir -p $WORK
 
 cp -r $BUILD/* $WORK
 cd $WORKROOT
-tar -czf     $OUTPUT/Plugin-Linux-CustomContent-$VER.tar.gz *
-echo Created $OUTPUT/Plugin-Linux-CustomContent-$VER.tar.gz
+tar -czf     $OUTPUT/Plugin-CustomContent-$VER.tar.gz *
+echo Created $OUTPUT/Plugin-CustomContent-$VER.tar.gz
 
