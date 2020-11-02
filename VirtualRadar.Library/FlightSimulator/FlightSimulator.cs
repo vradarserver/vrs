@@ -333,9 +333,9 @@ namespace VirtualRadar.Library.FlightSimulator
                     Connected = true;
                     ConnectionStatus = Strings.Connected;
                 } catch(COMException ex) {
-                    Debug.WriteLine(String.Format("FlightSimulatorX.Connect caught exception: {0}", ex.ToString()));
+                    Debug.WriteLine($"{nameof(FlightSimulator)}.{nameof(FlightSimulator.Connect)} caught exception: {ex}");
                     Connected = false;
-                    ConnectionStatus = String.Format("{0}... {1} - {2}", Strings.Disconnected, Strings.CouldNotConnect, ex.Message);
+                    ConnectionStatus = $"{Strings.Disconnected}... {Strings.CouldNotConnect} - {ex.Message}";
                 }
 
                 OnConnectionStatusChanged(EventArgs.Empty);
