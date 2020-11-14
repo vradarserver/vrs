@@ -155,52 +155,33 @@ to all ```AircraftState``` records in the list.
 | ---                    | ---      | --- |
 | AircraftListID         | bigint   | Primary key |
 | VRSSessionID           | bigint   | ID of the session that the aircraft list was created in |
+| IsKeyList              | bit      | 1 if there is at least one aircraft in the list and it is not a delta |
 | CreatedUTC             | datetime | Moment when the record was first created |
 | UpdatedUTC             | datetime | Moment when the record was last updated |
 | ReceiverID             | bigint   | ID of the SDM record for the receiver being recorded |
 
 Indexes on primary key plus:
 
-* Duplicate on ```CreatedUTC```.
+* Index on ```Created```, ```ReceiverID```
 
 VRS will ensure that the ```CreatedUTC``` for a new record is **always** later than the CreatedUTC of the last
 record written for any receiver ID with the same receiver GUID. The system will try to use the current time but
 if a system clock correction has moved the clock to a point earlier than the latest saved CreatedUTC then the new
 CreatedUTC will be one millisecond later than the previous CreatedUTC.
 
+* Filtered index on ```Created```, ```ReceiverID``` where IsKeyList = 1
+
+A filtered version of the existing index, the idea (hope?) being that the query optimiser will use it when the
+query is explicitly only looking for key frames (e.g. when skipping forwards or backwards).
+
+**IsKeyList** is an update anomaly. It should only be set if there is at least one child aircraft record and all
+child aircraft records are complete sets of data, none are deltas from the previous list. However this could be
+expensive to determine at runtime and it is important that we can find key records quickly.
+
 #### AircraftListView
 
 View joining ```AircraftList``` to ```Receiver```. Contains all of the fields from ```AircraftListView``` plus
 the receiver's GUID.
-
-#### KeyAircraftList
-
-There is one key aircraft list record per fully populated aircraft list.
-
-A fully populated list is an ```AircraftList``` record where every ```AircraftState``` child contains the full state of the aircraft
-list at that moment in time (i.e. its ```IsDelta``` field is 0 / false).
-
-The aim with key lists is similar to key frames in video. If we only record one initial state followed by thousands of deltas
-for an aircraft then if you want to know the state of the aircraft one hour into its flight you will need to read and process
-up to an hours' worth of state records. Key states are periodically recorded in place of a set of deltas to reduce the number
-of records that need to be read to calculate the end state from deltas.
-
-Key records are also used to implement time-shifting UI. When the user asks to start playback at a point in time the system
-goes back to the first key record before that point in time and then reads forward to the last record before the moment that
-playback is to start from.
-
-The reason for keeping a separate table of key aircraft lists is to make searches for key lists as efficient as possible.
-
-| Name           | Type     | Meaning |
-| ---            | ---      | --- |
-| AircraftListID | bigint   | Primary key, ID of the fully-populated aircraft list |
-
-
-#### KeyAircraftListView
-
-All of the fields from ```AircraftListView``` joined against ```KeyAircraftList``` to filter out delta aircraft lists.
-
-The view itself does not join to AircraftListView, it just builds on the definition for that view.
 
 
 #### AircraftState
@@ -256,7 +237,7 @@ Indexes on primary key plus:
 * Duplicate on ```RouteID```
 
 [1] There is a chicken and egg situation with ```FlightID```. The flight has the IDs of the first and last
-```AircraftState```s in the flight. The ```AircraftState``` has a link to the flight. They both can't
+```AircraftState```s in the flight. The ```AircraftState``` has a link to the flight. They can't both
 be non-nullable. So the first aircraft state is created without a flight, then its ID is used to create
 the flight record, then it is updated to set the parent flight ID. All this is done in one transaction
 so that the temporarily null FlightID parent is not visible to the rest of the world.
@@ -348,7 +329,7 @@ This would work but it is slower than direct access to the ID that we've spec'd 
 and last state IDs is so that we can implement a view that broadly reproduces the ```Flight``` record from BaseStation.sqb,
 it can be used to search for flights matching criteria. The ```FlightView``` needs to be fast to read, as fast as possible.
 
-So - in the trade off between speed and data purity we are going with speed, just for the sake of reporting.
+So - in the trade off between speed and data purity we are going with speed for the sake of reporting.
 
 If it is necessary then a database check utility can easily tell whether the initial and final state IDs here are actually
 pointing at the first and last records for the flight.
@@ -662,7 +643,8 @@ Flights that already at or above the minimum interval are ignored, they do not n
 
 When the flight needs to be trimmed the system loads all ```AircraftState```s for the flight. 
 
-The first state record is always preserved. The system takes the created time for this record (as stored on its parent aircraft list) and adds the interval. This gives us a target CreatedUTC.
+The first state record is always preserved. The system takes the created time for this record (as stored on its parent
+aircraft list) and adds the interval. This gives us a target CreatedUTC.
 
 It finds the nearest aircraft list to that CreatedUTC. The aircraft list can be before or after the target, it
 just needs to be closest. The aircraft state hanging from the closest aircraft list is the **Preserved State**.
