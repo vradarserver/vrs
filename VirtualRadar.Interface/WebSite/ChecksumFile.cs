@@ -30,19 +30,69 @@ namespace VirtualRadar.Interface.WebSite
         /// Parses the content of a checksum file into checksum file entries.
         /// </summary>
         /// <param name="checksumFileContent"></param>
+        /// <param name="enforceContentChecksum">True if the checksum file entries should start with a content checksum</param>
         /// <returns></returns>
-        public static List<ChecksumFileEntry> Load(string checksumFileContent)
+        public static List<ChecksumFileEntry> Load(string checksumFileContent, bool enforceContentChecksum)
         {
             var result = new List<ChecksumFileEntry>();
-            foreach(var line in checksumFileContent.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)) {
-                var slashPosn = line.IndexOf('\\');
-                if(slashPosn != -1) {
-                    var chunks = line.Substring(0, slashPosn).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    if(chunks.Length == 2) result.Add(new ChecksumFileEntry() {
+
+            var lines = checksumFileContent.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            if(enforceContentChecksum) {
+                EnforceContentChecksum(lines);
+            }
+
+            foreach(var line in lines) {
+                var entry = CreateFromLine(line);
+                if(entry != null) {
+                    result.Add(entry);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Tests the content checksum for validity, throws an exception if it is invalid.
+        /// </summary>
+        /// <param name="lines"></param>
+        private static void EnforceContentChecksum(List<string> lines)
+        {
+            if(lines.Count == 0) {
+                throw new InvalidOperationException("The checksums file is empty");
+            }
+
+            var contentLine = lines[0];
+            var contentEntry = CreateFromLine(contentLine);
+            if(contentEntry == null || contentEntry.FileName != "\\**CONTENT CHECKSUM**") {
+                throw new InvalidOperationException($@"""{contentLine}"" is not a valid content checksum line");
+            }
+            lines.RemoveAt(0);
+
+            var checksumBytes = Encoding.UTF8.GetBytes(String.Concat(lines.ToArray()));     // IF YOU ARE PORTING FROM V3 NOTE THAT .NET 3.5 String.Concat NEEDS TO BE PASSED AN ARRAY
+            var checksum = ChecksumFileEntry.GenerateChecksum(checksumBytes);
+            var checksumSize = lines.Sum(r => r.Length);
+
+            if(contentEntry.FileSize != checksumSize) {
+                throw new InvalidOperationException($"The lines in the checksums file have been altered - was expecting {contentEntry.FileSize} bytes, the lines added up to {checksumSize}");
+            }
+            if(contentEntry.Checksum != checksum) {
+                throw new InvalidOperationException($"The checksums file has been altered - was expecting a checksum of {contentEntry.Checksum}, it was actually {checksum}");
+            }
+        }
+
+        private static ChecksumFileEntry CreateFromLine(string line)
+        {
+            ChecksumFileEntry result = null;
+
+            var slashPosn = line.IndexOf('\\');
+            if(slashPosn != -1) {
+                var chunks = line.Substring(0, slashPosn).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                if(chunks.Length == 2) {
+                    result = new ChecksumFileEntry() {
                         Checksum = chunks[0],
                         FileSize = long.Parse(chunks[1]),
                         FileName = line.Substring(slashPosn)
-                    });
+                    };
                 }
             }
 

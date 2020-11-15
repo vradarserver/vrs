@@ -118,6 +118,7 @@
     <Compile Include="IAirPressureDownloader.cs" />
     <Compile Include="IAirPressureManager.cs" />
     <Compile Include="IAirPressureLookup.cs" />
+    <Compile Include="IFileSystemWatcher.cs" />
     <Compile Include="IPAddressHelper.cs" />
     <Compile Include="Listener\IPlaneFinderMessageBytesExtractor.cs" />
     <Compile Include="Listener\IReceiverFormatManager.cs" />

@@ -48,7 +48,7 @@ namespace Test.VirtualRadar.Interface.WebSite
         [ExpectedException(typeof(ArgumentNullException))]
         public void ChecksumFileEntry_GenerateChecksum_Throws_If_FileName_Is_Null()
         {
-            ChecksumFileEntry.GenerateChecksum(null);
+            ChecksumFileEntry.GenerateChecksum((string)null);
         }
 
         [TestMethod]

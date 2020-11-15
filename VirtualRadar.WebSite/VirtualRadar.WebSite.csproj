@@ -93,11 +93,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ServerConfigJsonPage.cs" />
-    <Compile Include="SiteResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SiteResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="TextContent.cs" />
     <Compile Include="TextPage.cs" />
     <Compile Include="WebAdminViewManagerStub.cs" />
@@ -568,10 +563,6 @@
     <Content Include="Site\Web\zz-norel-marker-contact-sheet.html" />
     <Content Include="Site\Web\zz-norel-test.html" />
     <Content Include="Site\Web\_WARNING.txt" />
-    <EmbeddedResource Include="SiteResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>SiteResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Site\Web\favicon.ico" />
     <Content Include="Site\Web\images\regions\en.bmp" />
     <Content Include="Site\Web\images\regions\fr.bmp" />

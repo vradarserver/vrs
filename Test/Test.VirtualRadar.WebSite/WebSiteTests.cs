@@ -614,7 +614,7 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
             foreach(var checksum in checksums) {
                 var args = RequestReceivedEventArgsHelper.Create(_Request, _Response, checksum.FileName.Replace("\\", "/"), false);
@@ -647,7 +647,7 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
             foreach(var checksum in checksums) {
                 var args = RequestReceivedEventArgsHelper.Create(_Request, _Response, checksum.FileName.Replace("\\", "/"), false);
@@ -671,7 +671,7 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
             var checksum = checksums.First(r => Path.GetExtension(r.FileName) == ".html");
             var pathAndFile = checksum.FileName.Replace("\\", "/");
@@ -687,7 +687,7 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
             var checksum = checksums.First(chk =>
                    Path.GetExtension(chk.FileName) == ".html"
@@ -719,7 +719,7 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
             var checksum = checksums.First(r => Path.GetExtension(r.FileName) == ".js");
             var pathAndFile = checksum.FileName.Replace("\\", "/");
@@ -735,7 +735,7 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
             var checksum = checksums.First(r => Path.GetExtension(r.FileName) == ".js");
             var pathAndFile = checksum.FileName.Replace("\\", "/");
@@ -751,7 +751,7 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
             var checksum = checksums.First(r => Path.GetExtension(r.FileName) == ".js");
             var pathAndFile = checksum.FileName.Replace("\\", "/");
@@ -810,7 +810,7 @@ namespace Test.VirtualRadar.WebSite
 
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
             var checksum = checksums.First(r => Path.GetExtension(r.FileName) == ".css");
             var pathAndFile = checksum.FileName.Replace("\\", "/");
@@ -826,7 +826,7 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
             var checksum = checksums.First(r => Path.GetExtension(r.FileName) == ".css");
             var pathAndFile = checksum.FileName.Replace("\\", "/");
@@ -842,7 +842,7 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
             var checksum = checksums.First(r => Path.GetExtension(r.FileName) == ".ico");
             var pathAndFile = checksum.FileName.Replace("\\", "/");
@@ -858,7 +858,7 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
             var checksum = checksums.First(r => Path.GetExtension(r.FileName) == ".gif");
             var pathAndFile = checksum.FileName.Replace("\\", "/");
@@ -874,7 +874,7 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
             var checksum = checksums.First(r => !(new string[] { ".gif", ".ico", ".html", ".htm", ".js", ".css" }).Contains(Path.GetExtension(r.FileName)));
             var pathAndFile = checksum.FileName.Replace("\\", "/");
@@ -888,7 +888,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AttachSiteToServer_Will_Not_Serve_Files_From_Default_Site_That_Do_Not_Match_Checksum()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => r.FileName.EndsWith(".js"));
             var checksumFile = checksum.GetFullPathFromRoot(_WebRoot);
             var backupCopyFileName = String.Format("{0}.backup", checksumFile);
@@ -912,7 +912,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AttachSiteToServer_Will_Serve_Explanatory_Page_If_HTML_Is_Altered()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => r.FileName.EndsWith(".html"));
             var checksumFile = checksum.GetFullPathFromRoot(_WebRoot);
             var backupCopyFileName = String.Format("{0}.backup", checksumFile);
@@ -1102,7 +1102,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AddSiteRoot_Can_Serve_Unprotected_Content()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => Path.GetExtension(r.FileName).ToLower() == ".html" && r.FileName.Count(i => i == '\\') == 1);
             var originalFileName = checksum.GetFullPathFromRoot(_WebRoot);
             var newFileName = Path.Combine(TestContext.TestDeploymentDir, Path.GetFileName(originalFileName));
@@ -1248,7 +1248,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AddHtmlContentInjector_Injects_Content_Into_HTML_At_Start_Of_Element()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => "\\index.html".Equals(r.FileName, StringComparison.OrdinalIgnoreCase));
             var pathAndFile = checksum.FileName.Replace("\\", "/");
 
@@ -1278,7 +1278,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AddHtmlContentInjector_Does_Not_Inject_Content_Into_Other_Html_Files()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => "\\index.html".Equals(r.FileName, StringComparison.OrdinalIgnoreCase));
             var pathAndFile = checksum.FileName.Replace("\\", "/");
 
@@ -1306,7 +1306,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AddHtmlContentInjector_Injects_Content_Regardless_Of_PathAndFile_Case()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => "\\index.html".Equals(r.FileName, StringComparison.OrdinalIgnoreCase));
             var pathAndFile = checksum.FileName.Replace("\\", "/");
             var otherCasePathAndFile = Char.IsLower(pathAndFile[1]) ? pathAndFile.ToUpper() : pathAndFile.ToLower();
@@ -1331,7 +1331,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AddHtmlContentInjector_Injects_Content_Regardless_Of_Element_Case()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => "\\index.html".Equals(r.FileName, StringComparison.OrdinalIgnoreCase));
             var pathAndFile = checksum.FileName.Replace("\\", "/");
             var headIsLowerCase = File.ReadAllText(checksum.GetFullPathFromRoot(_WebRoot)).Contains("<head>");
@@ -1356,7 +1356,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AddHtmlContentInjector_Null_PathAndFile_Injects_Content_Into_Every_Html_File()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => "\\index.html".Equals(r.FileName, StringComparison.OrdinalIgnoreCase));
             var pathAndFile = checksum.FileName.Replace("\\", "/");
 
@@ -1381,7 +1381,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AddHtmlContentInjector_Injects_Content_Into_HTML_At_End_Of_Element()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => "\\index.html".Equals(r.FileName, StringComparison.OrdinalIgnoreCase));
             var pathAndFile = checksum.FileName.Replace("\\", "/");
 
@@ -1410,7 +1410,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AddHtmlContentInjector_Injects_Into_First_Element_When_Multiple_Are_Present_And_AtStart_Is_True()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => "\\desktop.html".Equals(r.FileName, StringComparison.OrdinalIgnoreCase));
             var pathAndFile = checksum.FileName.Replace("\\", "/");
 
@@ -1436,7 +1436,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AddHtmlContentInjector_Injects_Into_Last_Element_When_Multiple_Are_Present_And_AtStart_Is_False()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => "\\desktop.html".Equals(r.FileName, StringComparison.OrdinalIgnoreCase));
             var pathAndFile = checksum.FileName.Replace("\\", "/");
 
@@ -1462,7 +1462,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AddHtmlContentInjector_Does_Nothing_When_Element_Does_Not_Exist()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => "\\index.html".Equals(r.FileName, StringComparison.OrdinalIgnoreCase));
             var pathAndFile = checksum.FileName.Replace("\\", "/");
             var content = Encoding.UTF8.GetString(File.ReadAllBytes(checksum.GetFullPathFromRoot(_WebRoot)));
@@ -1482,7 +1482,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AddHtmlContentInjector_Does_Nothing_When_Element_Is_Null()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => "\\index.html".Equals(r.FileName, StringComparison.OrdinalIgnoreCase));
             var pathAndFile = checksum.FileName.Replace("\\", "/");
             var content = Encoding.UTF8.GetString(File.ReadAllBytes(checksum.GetFullPathFromRoot(_WebRoot)));
@@ -1502,7 +1502,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AddHtmlContentInjector_Does_Nothing_When_Element_Is_Empty_String()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => "\\index.html".Equals(r.FileName, StringComparison.OrdinalIgnoreCase));
             var pathAndFile = checksum.FileName.Replace("\\", "/");
             var content = Encoding.UTF8.GetString(File.ReadAllBytes(checksum.GetFullPathFromRoot(_WebRoot)));
@@ -1522,7 +1522,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AddHtmlContentInjector_Does_Nothing_When_Content_Is_Null()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => "\\index.html".Equals(r.FileName, StringComparison.OrdinalIgnoreCase));
             var pathAndFile = checksum.FileName.Replace("\\", "/");
             var content = Encoding.UTF8.GetString(File.ReadAllBytes(checksum.GetFullPathFromRoot(_WebRoot)));
@@ -1542,7 +1542,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AddHtmlContentInjector_Does_Nothing_When_Content_Returns_Null()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => "\\index.html".Equals(r.FileName, StringComparison.OrdinalIgnoreCase));
             var pathAndFile = checksum.FileName.Replace("\\", "/");
             var content = Encoding.UTF8.GetString(File.ReadAllBytes(checksum.GetFullPathFromRoot(_WebRoot)));
@@ -1562,7 +1562,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AddHtmlContentInjector_Does_Nothing_When_Content_Returns_Empty_String()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => "\\index.html".Equals(r.FileName, StringComparison.OrdinalIgnoreCase));
             var pathAndFile = checksum.FileName.Replace("\\", "/");
             var content = Encoding.UTF8.GetString(File.ReadAllBytes(checksum.GetFullPathFromRoot(_WebRoot)));
@@ -1582,7 +1582,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AddHtmlContentInjector_Calls_Multiple_AtStart_Injectors_In_Correct_Order()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => "\\index.html".Equals(r.FileName, StringComparison.OrdinalIgnoreCase));
             var pathAndFile = checksum.FileName.Replace("\\", "/");
 
@@ -1619,7 +1619,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_AddHtmlContentInjector_Calls_Multiple_AtEnd_Injectors_In_Correct_Order()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => "\\index.html".Equals(r.FileName, StringComparison.OrdinalIgnoreCase));
             var pathAndFile = checksum.FileName.Replace("\\", "/");
 
@@ -1658,7 +1658,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_RemoveHtmlContentInjector_Prevents_Injector_From_Injecting_Content()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => "\\index.html".Equals(r.FileName, StringComparison.OrdinalIgnoreCase));
             var pathAndFile = checksum.FileName.Replace("\\", "/");
             var content = Encoding.UTF8.GetString(File.ReadAllBytes(checksum.GetFullPathFromRoot(_WebRoot)));
@@ -1711,7 +1711,7 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
             foreach(var checksum in checksums) {
                 var args = RequestReceivedEventArgsHelper.Create(_Request, _Response, checksum.FileName.Replace("\\", "/"), false);
@@ -1754,7 +1754,7 @@ namespace Test.VirtualRadar.WebSite
         {
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             if(checksums.Count == 0) throw new InvalidOperationException("The checksum file is either missing or couldn't be parsed");
             foreach(var checksum in checksums) {
                 var pathAndFile = checksum.FileName.Replace("\\", "/");
@@ -1792,7 +1792,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void WebSite_RequestSimpleContent_Returns_Correct_Response_For_Bad_Checksum_Files()
         {
-            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName));
+            var checksums = ChecksumFile.Load(File.ReadAllText(_ChecksumsFileName), enforceContentChecksum: true);
             var checksum = checksums.First(r => r.FileName.EndsWith(".js"));
             var checksumFile = checksum.GetFullPathFromRoot(_WebRoot);
             var backupCopyFileName = String.Format("{0}.backup", checksumFile);

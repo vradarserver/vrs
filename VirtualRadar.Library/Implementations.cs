@@ -113,6 +113,7 @@ namespace VirtualRadar.Library
             factory.Register<IConnectionLogger, ConnectionLogger>();
             factory.Register<IDirectoryCache, DirectoryCache>();
             factory.Register<IExternalIPAddressService, ExternalIPAddressService>();
+            factory.Register<IFileSystemWatcher, FileSystemWatcherWrapper>();
             factory.Register<IHeartbeatService, HeartbeatService>();
             factory.Register<IImageDimensionsFetcher, ImageDimensionsFetcher>();
             factory.Register<IImageFileManager, ParallelAccessImageFileManager>();
