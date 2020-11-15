@@ -114,13 +114,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SQLiteWrapper.DotNet\SQLiteWrapper.DotNet.csproj" Condition="'$(Configuration)|$(Platform)'=='Debug|x86' OR '$(Configuration)|$(Platform)'=='Release|x86'">
+    <ProjectReference Include="..\SQLiteWrapper.DotNet.x86\SQLiteWrapper.DotNet.x86.csproj" Condition="'$(Configuration)|$(Platform)'=='Debug|x86' OR '$(Configuration)|$(Platform)'=='Release|x86'">
       <Project>{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}</Project>
-      <Name>SQLiteWrapper.DotNet</Name>
+      <Name>SQLiteWrapper.DotNet.x86</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SQLiteWrapper.DotNet.AnyCPU\SQLiteWrapper.DotNet.AnyCPU.csproj" Condition="'$(Configuration)|$(Platform)'=='Debug|x64' OR '$(Configuration)|$(Platform)'=='Release|x64'">
+    <ProjectReference Include="..\SQLiteWrapper.DotNet.x64\SQLiteWrapper.DotNet.x64.csproj" Condition="'$(Configuration)|$(Platform)'=='Debug|x64' OR '$(Configuration)|$(Platform)'=='Release|x64'">
       <Project>{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}</Project>
-      <Name>SQLiteWrapper.DotNet.AnyCPU</Name>
+      <Name>SQLiteWrapper.DotNet.x64</Name>
     </ProjectReference>
     <ProjectReference Include="..\VirtualRadar.Database\VirtualRadar.Database.csproj">
       <Project>{049A9A56-990E-4F99-99F7-CC09767508D9}</Project>

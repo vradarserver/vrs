@@ -49,19 +49,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\SQLiteWrapper.DotNet\ConvertSQLite.cs">
+    <Compile Include="..\SQLiteWrapper.DotNet.x86\ConvertSQLite.cs">
       <Link>ConvertSQLite.cs</Link>
     </Compile>
-    <Compile Include="..\SQLiteWrapper.DotNet\Implementations.cs">
+    <Compile Include="..\SQLiteWrapper.DotNet.x86\Implementations.cs">
       <Link>Implementations.cs</Link>
     </Compile>
-    <Compile Include="..\SQLiteWrapper.DotNet\SQLiteConnectionProvider.cs">
+    <Compile Include="..\SQLiteWrapper.DotNet.x86\SQLiteConnectionProvider.cs">
       <Link>SQLiteConnectionProvider.cs</Link>
     </Compile>
-    <Compile Include="..\SQLiteWrapper.DotNet\SQLiteConnectionStringBuilderWrapper.cs">
+    <Compile Include="..\SQLiteWrapper.DotNet.x86\SQLiteConnectionStringBuilderWrapper.cs">
       <Link>SQLiteConnectionStringBuilderWrapper.cs</Link>
     </Compile>
-    <Compile Include="..\SQLiteWrapper.DotNet\SQLiteExceptionWrapper.cs">
+    <Compile Include="..\SQLiteWrapper.DotNet.x86\SQLiteExceptionWrapper.cs">
       <Link>SQLiteExceptionWrapper.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

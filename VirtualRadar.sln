@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar", "VirtualRada
 		{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D} = {C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLiteWrapper.DotNet", "SQLiteWrapper.DotNet\SQLiteWrapper.DotNet.csproj", "{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLiteWrapper.DotNet.x86", "SQLiteWrapper.DotNet.x86\SQLiteWrapper.DotNet.x86.csproj", "{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLiteWrapper.Mono", "SQLiteWrapper.Mono\SQLiteWrapper.Mono.csproj", "{336BA243-B238-4C73-97B5-ABACDFF4DB4F}"
 EndProject
@@ -91,7 +91,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.DatabaseEditor", "Pl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.FeedFilter", "Plugin.FeedFilter\Plugin.FeedFilter.csproj", "{DFF79AA9-DAD3-4F45-8D7A-7C76FEBE50CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLiteWrapper.DotNet.AnyCPU", "SQLiteWrapper.DotNet.AnyCPU\SQLiteWrapper.DotNet.AnyCPU.csproj", "{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLiteWrapper.DotNet.x64", "SQLiteWrapper.DotNet.x64\SQLiteWrapper.DotNet.x64.csproj", "{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdParty", "ThirdParty", "{1D1FAF73-5B9E-4A66-B928-ED19AA5E3BD8}"
 	ProjectSection(SolutionItems) = preProject
