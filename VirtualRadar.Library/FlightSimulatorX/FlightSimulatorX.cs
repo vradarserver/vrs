@@ -14,7 +14,9 @@ using System.Linq;
 using System.Text;
 using VirtualRadar.Interface.FlightSimulatorX;
 using VirtualRadar.Localisation;
+#if FSX
 using Microsoft.FlightSimulator.SimConnect;
+#endif
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Threading;
@@ -29,6 +31,45 @@ namespace VirtualRadar.Library.FlightSimulatorX
     /// </summary>
     sealed class FlightSimulatorX : IFlightSimulatorX
     {
+#if !FSX
+#pragma warning disable 0067
+        public bool IsInstalled => false;
+
+        public bool Connected => false;
+
+        public string ConnectionStatus => "Not Installed";
+
+        public bool IsFrozen { get; set; }
+
+        public bool IsSlewing { get; set; }
+
+        public int MessagesReceivedCount => 0;
+
+        public event EventHandler<EventArgs<ReadAircraftInformation>> AircraftInformationReceived;
+
+        public event EventHandler ConnectionStatusChanged;
+
+        public event EventHandler<EventArgs<FlightSimulatorXException>> FlightSimulatorXExceptionRaised;
+
+        public event EventHandler FreezeStatusChanged;
+
+        public event EventHandler SlewStatusChanged;
+
+        public event EventHandler SlewToggled;
+
+        public void Connect(IntPtr windowHandle) {}
+
+        public void Disconnect() {}
+
+        public void Dispose() {}
+
+        public bool IsSimConnectMessage(Message message) => false;
+
+        public void MoveAircraft(WriteAircraftInformation aircraftInformation) {}
+
+        public void RequestAircraftInformation() {}
+#pragma warning restore
+#else
         #region SimConnect enums and fields
         /// <summary>
         /// The message number that we use to identify SimConnect messages.
@@ -471,5 +512,6 @@ namespace VirtualRadar.Library.FlightSimulatorX
             DoDisconnect(Strings.FlightSimulatorXShutdown);
         }
         #endregion
+#endif
     }
 }

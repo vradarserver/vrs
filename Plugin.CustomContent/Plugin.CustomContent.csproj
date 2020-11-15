@@ -140,8 +140,6 @@
       <DependentUpon>CustomContentPluginOptions.ts</DependentUpon>
     </Content>
     <None Include="Typings\Manager.ttinclude" />
-    <None Include="_PostBuild.bat" />
-    <None Include="_PostBuildCopyLanguage.bat" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="VirtualRadar.Plugin.CustomContent.xml">
@@ -174,7 +172,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)\_PostBuild.bat" "$(SolutionDir)" "$(ConfigurationName)" "$(TargetDir)" $(TargetName) "CustomContent"</PostBuildEvent>
+    <PostBuildEvent>PowerShell.exe -ExecutionPolicy Bypass "$(SolutionDir)_PostBuild.ps1" -projectName "$(ProjectName)"  -configurationName "$(ConfigurationName)" -targetName "$(TargetName)" -platformName "$(PlatformName)"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -164,8 +164,6 @@
     <None Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <None Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.woff" />
-    <None Include="_PostBuild.bat" />
-    <None Include="_PostBuildCopyLanguage.bat" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="FeedFilterStrings.resx">
@@ -176,7 +174,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)\_PostBuild.bat" "$(SolutionDir)" "$(ConfigurationName)" "$(TargetDir)" $(TargetName) "FeedFilter"</PostBuildEvent>
+    <PostBuildEvent>PowerShell.exe -ExecutionPolicy Bypass "$(SolutionDir)_PostBuild.ps1" -projectName "$(ProjectName)"  -configurationName "$(ConfigurationName)" -targetName "$(TargetName)" -platformName "$(PlatformName)"</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -140,8 +140,6 @@
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Typings\Manager.ttinclude" />
-    <None Include="_PostBuildCopyLanguage.bat" />
-    <None Include="_PostBuild.bat" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web\WebAdmin\DatabaseWriterPluginOptions.js">
@@ -185,7 +183,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)\_PostBuild.bat" "$(SolutionDir)" "$(ConfigurationName)" "$(TargetDir)" $(TargetName) "BaseStationDatabaseWriter"</PostBuildEvent>
+    <PostBuildEvent>PowerShell.exe -ExecutionPolicy Bypass "$(SolutionDir)_PostBuild.ps1" -projectName "$(ProjectName)"  -configurationName "$(ConfigurationName)" -targetName "$(TargetName)" -platformName "$(PlatformName)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

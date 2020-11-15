@@ -12,7 +12,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if FSX
 using Microsoft.FlightSimulator.SimConnect;
+#endif
 using VirtualRadar.Interface.FlightSimulatorX;
 using System.Threading;
 using System.Diagnostics;
@@ -25,6 +27,45 @@ namespace VirtualRadar.Library.FlightSimulatorX
     /// </summary>
     sealed class DotNetSimConnectWrapper : ISimConnectWrapper
     {
+#if !FSX
+#pragma warning disable 0067
+        public bool IsInstalled => false;
+
+        public uint UnusedValue => 0;
+
+        public event EventHandler<SimConnectEventObservedEventArgs> EventObserved;
+
+        public event EventHandler<SimConnectExceptionRaisedEventArgs> ExceptionRaised;
+
+        public event EventHandler UserHasQuit;
+
+        public event EventHandler<SimConnectObjectReceivedEventArgs> ObjectReceived;
+
+        public void AddClientEventToNotificationGroup(Enum groupId, Enum eventId, bool maskable) {}
+
+        public void AddToDataDefinition(Enum defineId, string fieldName, string unitsName, int dataType, float epsilon, uint dataId) {}
+
+        public void CreateSimConnect(string name, IntPtr windowHandle, uint userEventWin32, WaitHandle eventHandle, uint configurationIndex) {}
+
+        public void Dispose() {}
+
+        public void MapClientEventToSimEvent(Enum eventId, string eventName) {}
+
+        public void ReceiveMessage() {}
+
+        public void RegisterDataDefineStruct<T>(Enum definitionId) {}
+
+        public void RequestDataOnSimObjectType(Enum requestId, Enum definitionId, uint radius, int objectType) {}
+
+        public void SetDataOnSimObject(Enum defineID, uint objectID, int flags, object data) {}
+
+        public void SetSystemEventState(Enum eventId, bool on) {}
+
+        public void SubscribeToSystemEvent(Enum eventId, string eventName) {}
+
+        public void TransmitClientEvent(uint objectId, Enum eventId, uint value, Enum groupId, int flags) {}
+#pragma warning restore
+#else
         #region Fields
         /// <summary>
         /// The SimConnect object that the provider wraps access to.
@@ -371,5 +412,6 @@ namespace VirtualRadar.Library.FlightSimulatorX
             OnUserHasQuit(EventArgs.Empty);
         }
         #endregion
+#endif
     }
 }

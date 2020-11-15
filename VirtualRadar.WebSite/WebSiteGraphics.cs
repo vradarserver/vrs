@@ -46,7 +46,6 @@ namespace VirtualRadar.WebSite
         #endregion
 
         #region Properties
-        private static WebSiteGraphics _Singleton;
         /// <summary>
         /// See interface docs. Retained for backwards compatability.
         /// </summary>

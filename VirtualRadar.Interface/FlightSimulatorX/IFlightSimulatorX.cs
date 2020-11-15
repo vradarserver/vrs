@@ -28,7 +28,6 @@ namespace VirtualRadar.Interface.FlightSimulatorX
     /// </remarks>
     public interface IFlightSimulatorX : IDisposable
     {
-        #region Properties
         /// <summary>
         /// Gets a value indicating that Flight Simulator X appears to be installed.
         /// </summary>
@@ -65,9 +64,7 @@ namespace VirtualRadar.Interface.FlightSimulatorX
         /// Gets a count of messages that have been sent from FSX.
         /// </summary>
         int MessagesReceivedCount { get; }
-        #endregion
 
-        #region Events
         /// <summary>
         /// Raised when Flight Simulator responds to a call to <see cref="RequestAircraftInformation"/>.
         /// </summary>
@@ -97,9 +94,7 @@ namespace VirtualRadar.Interface.FlightSimulatorX
         /// Raised whenever the user manually toggles slew mode within the game.
         /// </summary>
         event EventHandler SlewToggled;
-        #endregion
 
-        #region Methods
         /// <summary>
         /// Connects to Flight Simulator X. 
         /// </summary>
@@ -146,6 +141,5 @@ namespace VirtualRadar.Interface.FlightSimulatorX
         /// <see cref="AircraftInformationReceived"/> to be raised, also on the GUI thread.
         /// </remarks>
         void RequestAircraftInformation();
-        #endregion
     }
 }

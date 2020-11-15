@@ -912,8 +912,6 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>translations.d.ts</LastGenOutput>
     </None>
-    <None Include="_PostBuild.bat" />
-    <None Include="_PostBuild.sh" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Site\typings\geojson.d.ts" />
@@ -1053,10 +1051,11 @@
     <PreBuildEvent Condition="'$(OS)' == 'Unix'">mono "$(SolutionDir)Dependencies\ChecksumFiles.exe" -root:"$(ProjectDir)Site\Web" -out:"$(ProjectDir)Site\Checksums.txt"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)_PostBuild.bat" "$(ProjectDir)Site\Web" "$(SolutionDir)VirtualRadar\bin\x86\$(ConfigurationName)\Web"</PostBuildEvent>
+    <PostBuildEvent>PowerShell.exe -ExecutionPolicy Bypass "$(SolutionDir)_PostBuild.ps1" -projectName "$(ProjectName)"  -configurationName "$(ConfigurationName)" -targetName "$(TargetName)" -platformName "$(PlatformName)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)ThirdParty\ChecksumFiles\bin\$(ConfigurationName)\ChecksumFiles.exe" -root:"$(ProjectDir)Site\Web" -out:"$(ProjectDir)Site\Checksums.txt"</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
