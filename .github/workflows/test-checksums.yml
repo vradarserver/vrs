@@ -1,0 +1,20 @@
+name: Test Checksums
+
+on: push
+
+jobs:
+  checkout:
+    steps:
+      - uses: actions/checkout@v2
+
+  sha256sum:
+    needs:
+        checkout
+    run:    sha256sum LICENSE.txt > checksums-sha256.txt
+    shell:  bash
+
+  dos2unix:
+    needs:
+        sha256sum
+    run:    unix2dos checksums-sha256.txt
+    shell:  bash
