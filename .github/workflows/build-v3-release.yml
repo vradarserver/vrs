@@ -2,16 +2,10 @@ name: Build Release
 
 on:
   push:
-    branches:
-      - master
-      - v2-master
     tags:
       - v3.*
       - v2.*
   pull_request:
-    branches:
-      - master
-      - v2-master
     tags:
       - v3.*
       - v2.*
