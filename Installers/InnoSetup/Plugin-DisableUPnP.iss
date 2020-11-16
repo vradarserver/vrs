@@ -29,7 +29,7 @@ InfoBeforeLabel=What has changed?
 Source: "{#Root}\LICENSE.txt"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
 ; Application files
-Source: "{#Root}\Plugin.DisableUPnP\bin\Release\VirtualRadar.Plugin.DisableUPnP.dll"; DestDir: "{#Plugin}"; Flags: ignoreversion;
+Source: "{#Root}\Plugin.DisableUPnP\bin\{#BuildType}\VirtualRadar.Plugin.DisableUPnP.dll"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
 ; Manifest file
-Source: "{#Root}\Plugin.DisableUPnP\bin\Release\VirtualRadar.Plugin.DisableUPnP.xml"; DestDir: "{#Plugin}"; Flags: ignoreversion;
+Source: "{#Root}\Plugin.DisableUPnP\bin\{#BuildType}\VirtualRadar.Plugin.DisableUPnP.xml"; DestDir: "{#Plugin}"; Flags: ignoreversion;

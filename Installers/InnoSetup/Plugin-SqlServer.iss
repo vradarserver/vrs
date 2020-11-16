@@ -29,7 +29,7 @@ InfoBeforeLabel=What has changed?
 Source: "{#Root}\LICENSE.txt"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
 ; Application files
-Source: "{#Root}\Plugin.SqlServer\bin\Release\VirtualRadar.Plugin.SqlServer.dll"; DestDir: "{#Plugin}"; Flags: ignoreversion;
+Source: "{#Root}\Plugin.SqlServer\bin\{#BuildType}\VirtualRadar.Plugin.SqlServer.dll"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
 ; Web site files
 Source: "{#Root}\Plugin.SqlServer\Web\*"; DestDir: "{#Plugin}\Web"; Excludes: "zz-norel-*"; Flags: ignoreversion recursesubdirs;

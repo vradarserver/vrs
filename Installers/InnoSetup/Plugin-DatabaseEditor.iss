@@ -29,7 +29,7 @@ InfoBeforeLabel=What has changed?
 Source: "{#Root}\LICENSE.txt"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
 ; Application files
-Source: "{#Root}\Plugin.DatabaseEditor\bin\Release\VirtualRadar.Plugin.DatabaseEditor.dll"; DestDir: "{#Plugin}"; Flags: ignoreversion;
+Source: "{#Root}\Plugin.DatabaseEditor\bin\{#BuildType}\VirtualRadar.Plugin.DatabaseEditor.dll"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
 ; Manifest file
 Source: "{#Root}\Plugin.DatabaseEditor\VirtualRadar.Plugin.DatabaseEditor.xml"; DestDir: "{#Plugin}"; Flags: ignoreversion;

@@ -29,7 +29,7 @@ InfoBeforeLabel=What has changed?
 Source: "{#Root}\LICENSE.txt"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
 ; Application files
-Source: "{#Root}\Plugin.TileServerCache\bin\Release\VirtualRadar.Plugin.TileServerCache.dll"; DestDir: "{#Plugin}"; Flags: ignoreversion;
+Source: "{#Root}\Plugin.TileServerCache\bin\{#BuildType}\VirtualRadar.Plugin.TileServerCache.dll"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
 ; Web site files
 Source: "{#Root}\Plugin.TileServerCache\Web\*"; DestDir: "{#Plugin}\Web"; Excludes: "zz-norel-*"; Flags: ignoreversion recursesubdirs;

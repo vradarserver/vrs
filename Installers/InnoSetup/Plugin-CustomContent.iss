@@ -29,7 +29,7 @@ InfoBeforeLabel=What has changed?
 Source: "{#Root}\LICENSE.txt"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
 ; Application files
-Source: "{#Root}\Plugin.CustomContent\bin\Release\VirtualRadar.Plugin.CustomContent.dll"; DestDir: "{#Plugin}"; Flags: ignoreversion;
+Source: "{#Root}\Plugin.CustomContent\bin\{#BuildType}\VirtualRadar.Plugin.CustomContent.dll"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
 ; Web site files
 Source: "{#Root}\Plugin.CustomContent\Web\*"; DestDir: "{#Plugin}\Web"; Excludes: "zz-norel-*"; Flags: ignoreversion recursesubdirs;

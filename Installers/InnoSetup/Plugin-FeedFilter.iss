@@ -29,7 +29,7 @@ InfoBeforeLabel=What has changed?
 Source: "{#Root}\LICENSE.txt"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
 ; Application files
-Source: "{#Root}\Plugin.FeedFilter\bin\Release\VirtualRadar.Plugin.FeedFilter.dll"; DestDir: "{#Plugin}"; Flags: ignoreversion;
+Source: "{#Root}\Plugin.FeedFilter\bin\{#BuildType}\VirtualRadar.Plugin.FeedFilter.dll"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
 ; Manifest file
 Source: "{#Root}\Plugin.FeedFilter\VirtualRadar.Plugin.FeedFilter.xml"; DestDir: "{#Plugin}"; Flags: ignoreversion;

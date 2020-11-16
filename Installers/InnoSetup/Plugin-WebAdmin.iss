@@ -30,7 +30,7 @@ InfoBeforeLabel=What has changed?
 Source: "{#Root}\LICENSE.txt"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
 ; Application files
-Source: "{#Root}\Plugin.WebAdmin\bin\Release\VirtualRadar.Plugin.WebAdmin.dll"; DestDir: "{#Plugin}"; Flags: ignoreversion;
+Source: "{#Root}\Plugin.WebAdmin\bin\{#BuildType}\VirtualRadar.Plugin.WebAdmin.dll"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
 ; Manifest file
 Source: "{#Root}\Plugin.WebAdmin\VirtualRadar.Plugin.WebAdmin.xml"; DestDir: "{#Plugin}"; Flags: ignoreversion;

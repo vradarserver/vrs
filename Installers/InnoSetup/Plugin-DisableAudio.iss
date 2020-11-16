@@ -29,8 +29,8 @@ InfoBeforeLabel=What has changed?
 Source: "{#Root}\LICENSE.txt"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
 ; Application files
-Source: "{#Root}\Plugin.DisableAudio\bin\Release\VirtualRadar.Plugin.DisableAudio.dll"; DestDir: "{#Plugin}"; Flags: ignoreversion;
+Source: "{#Root}\Plugin.DisableAudio\bin\{#BuildType}\VirtualRadar.Plugin.DisableAudio.dll"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
 ; Manifest file
-Source: "{#Root}\Plugin.DisableAudio\bin\Release\VirtualRadar.Plugin.DisableAudio.xml"; DestDir: "{#Plugin}"; Flags: ignoreversion;
+Source: "{#Root}\Plugin.DisableAudio\bin\{#BuildType}\VirtualRadar.Plugin.DisableAudio.xml"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
