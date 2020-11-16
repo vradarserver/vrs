@@ -3,14 +3,18 @@ name: Build V3 Release
 on:
   push:
     branches:
-      - main
+      - master
+      - v2-master
     tags:
       - v3.*
+      - v2.*
   pull_request:
     branches:
-      - main
+      - master
+      - v2-master
     tags:
       - v3.*
+      - v2.*
 
 jobs:
   build:
@@ -28,6 +32,10 @@ jobs:
         id:    set_ver
         run:   echo ::set-output name=VER::${GITHUB_REF/refs\/tags\/v/}
         shell: bash
+
+      - name:  Extract branch
+        id:    set_branch
+        run:   echo ::set-output name=BRANCH::${GITHUB_REF##*/}
 
       - name: Setup Nuget
         uses: NuGet/setup-nuget@v1.0.2
@@ -93,9 +101,11 @@ jobs:
         shell: bash
 
       - name: Build SqlServer plugin installer
+        if:   ${{ steps.set_branch.outputs.BRANCH != "v2-master" }}
         run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\Plugin-SqlServer.iss
 
       - name:  Build SqlServer tarball
+        if:    ${{ steps.set_branch.outputs.BRANCH != "v2-master" }}
         run:   Installers/Mono/build-plugin-sql-server.sh ${{ steps.set_ver.outputs.VER }}
         shell: bash
 
@@ -273,6 +283,7 @@ jobs:
           asset_name:                        Plugin-FeedFilter-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add SQL Server installer to release
+        if:   ${{ steps.set_branch.outputs.BRANCH != "v2-master" }}
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -283,6 +294,7 @@ jobs:
           asset_name:                             Plugin-SqlServer-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add SQL Server tarball to release
+        if:   ${{ steps.set_branch.outputs.BRANCH != "v2-master" }}
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
