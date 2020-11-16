@@ -1,0 +1,357 @@
+name: Build Release
+
+on:
+  push:
+    tags:
+      - v[23].*
+  pull_request:
+    tags:
+      - v[23].*
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name:  Extract tag
+        id:    set_tag
+        run:   echo ::set-output name=TAG::${GITHUB_REF/refs\/tags\//}
+        shell: bash
+
+      - name:  Extract version
+        id:    set_ver
+        run:   echo ::set-output name=VER::${GITHUB_REF/refs\/tags\/v/}
+        shell: bash
+
+      - name:  Extract branch
+        id:    set_branch
+        run:   echo ::set-output name=BRANCH::${GITHUB_REF##*/}
+
+      - name: Setup Nuget
+        uses: NuGet/setup-nuget@v1.0.5
+        with:
+          nuget-version: '5.x'
+
+      - name: Restore packages
+        run:  nuget restore VirtualRadar.sln
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+        with:
+          vs-version: '[16.0.0.0,16.65535.65535.65535]'
+
+      - name: Build x86 release
+        run:  msbuild VirtualRadar.sln -property:Configuration=Release,Platform=x86 -nowarn:1570,1572,1573,1574,1584,1587,1591,1711
+
+      - name: Build x64 release
+        run:  msbuild VirtualRadar.sln -property:Configuration=Release,Platform=x64 -nowarn:1570,1572,1573,1574,1584,1587,1591,1711
+
+      - name: Build x86 installer
+        run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\VirtualRadar-x86.iss
+
+      - name: Build x64 installer
+        run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\VirtualRadar-x64.iss
+
+      - name:  Build mono tarball
+        run:   Installers/Mono/build-virtualradar.sh ${{ steps.set_ver.outputs.VER }}
+        shell: bash
+
+      - name: Build CustomContent plugin installer
+        run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\Plugin-CustomContent.iss
+
+      - name:  Build CustomContent tarball
+        run:   Installers/Mono/build-plugin-custom-content.sh ${{ steps.set_ver.outputs.VER }}
+        shell: bash
+
+      - name: Build DatabaseEditor plugin installer
+        run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\Plugin-DatabaseEditor.iss
+
+      - name:  Build DatabaseEditor tarball
+        run:   Installers/Mono/build-plugin-database-editor.sh ${{ steps.set_ver.outputs.VER }}
+        shell: bash
+
+      - name: Build DatabaseWriter plugin installer
+        run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\Plugin-DatabaseWriter.iss
+
+      - name:  Build DatabaseWriter tarball
+        run:   Installers/Mono/build-plugin-database-writer.sh ${{ steps.set_ver.outputs.VER }}
+        shell: bash
+
+      - name: Build DisableAudio plugin installer
+        run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\Plugin-DisableAudio.iss
+
+      - name: Build DisableUPnP plugin installer
+        run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\Plugin-DisableUPnP.iss
+
+      - name: Build FeedFilter plugin installer
+        run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\Plugin-FeedFilter.iss
+
+      - name:  Build FeedFilter tarball
+        run:   Installers/Mono/build-plugin-feed-filter.sh ${{ steps.set_ver.outputs.VER }}
+        shell: bash
+
+      - name: Build SqlServer plugin installer
+        if:   ${{ steps.set_branch.outputs.BRANCH != 'v2-master' }}
+        run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\Plugin-SqlServer.iss
+
+      - name:  Build SqlServer tarball
+        if:    ${{ steps.set_branch.outputs.BRANCH != 'v2-master' }}
+        run:   Installers/Mono/build-plugin-sql-server.sh ${{ steps.set_ver.outputs.VER }}
+        shell: bash
+
+      - name: Build TileServerCache plugin installer
+        run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\Plugin-TileServerCache.iss
+
+      - name:  Build TileServerCache tarball
+        run:   Installers/Mono/build-plugin-tile-server-cache.sh ${{ steps.set_ver.outputs.VER }}
+        shell: bash
+
+      - name: Build WebAdmin plugin installer
+        run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\Plugin-WebAdmin.iss
+
+      - name:  Build WebAdmin tarball
+        run:   Installers/Mono/build-plugin-web-admin.sh ${{ steps.set_ver.outputs.VER }}
+        shell: bash
+
+      - name: Build LanguagePack plugin installer
+        run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\LanguagePack.iss
+
+      - name:  Build LanguagePack tarball
+        run:   Installers/Mono/build-language-pack.sh ${{ steps.set_ver.outputs.VER }}
+        shell: bash
+
+      - name: Create Mono release
+        id:   mono_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name:     ${{ steps.set_tag.outputs.TAG }}
+          release_name: ${{ steps.set_tag.outputs.TAG }} [Linux / Mac OSX Mono]
+          draft:        true
+          prerelease:   true
+
+      - name: Create Windows .NET Framework release
+        id:   framework_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name:     ${{ steps.set_tag.outputs.TAG }}
+          release_name: ${{ steps.set_tag.outputs.TAG }} [Windows .NET Framework]
+          draft:        true
+          prerelease:   true
+
+      - name: Add x86 installer to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
+          asset_content_type: application/vnd.microsoft.portable-executable
+          asset_path: Installers\InnoSetup\Output\VirtualRadar-32bit-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             VirtualRadar-32bit-${{ steps.set_ver.outputs.VER }}.exe
+
+      - name: Add x64 installer to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
+          asset_content_type: application/vnd.microsoft.portable-executable
+          asset_path: Installers\InnoSetup\Output\VirtualRadar-64bit-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             VirtualRadar-64bit-${{ steps.set_ver.outputs.VER }}.exe
+
+      - name: Add mono tarball to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
+          asset_content_type: application/gzip
+          asset_path: Installers\Mono\output\VirtualRadar-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        VirtualRadar-${{ steps.set_ver.outputs.VER }}.tar.gz
+
+      - name: Add custom content installer to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
+          asset_content_type: application/vnd.microsoft.portable-executable
+          asset_path: Installers\InnoSetup\Output\Plugin-CustomContent-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-CustomContent-${{ steps.set_ver.outputs.VER }}.exe
+
+      - name: Add custom content tarball to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
+          asset_content_type: application/gzip
+          asset_path: Installers\Mono\output\Plugin-CustomContent-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        Plugin-CustomContent-${{ steps.set_ver.outputs.VER }}.tar.gz
+
+      - name: Add database editor installer to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
+          asset_content_type: application/vnd.microsoft.portable-executable
+          asset_path: Installers\InnoSetup\Output\Plugin-DatabaseEditor-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-DatabaseEditor-${{ steps.set_ver.outputs.VER }}.exe
+
+      - name: Add database editor tarball to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
+          asset_content_type: application/gzip
+          asset_path: Installers\Mono\output\Plugin-DatabaseEditor-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        Plugin-DatabaseEditor-${{ steps.set_ver.outputs.VER }}.tar.gz
+
+      - name: Add database writer installer to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
+          asset_content_type: application/vnd.microsoft.portable-executable
+          asset_path: Installers\InnoSetup\Output\Plugin-DatabaseWriter-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-DatabaseWriter-${{ steps.set_ver.outputs.VER }}.exe
+
+      - name: Add database writer tarball to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
+          asset_content_type: application/gzip
+          asset_path: Installers\Mono\output\Plugin-DatabaseWriter-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        Plugin-DatabaseWriter-${{ steps.set_ver.outputs.VER }}.tar.gz
+
+      - name: Add disable audio installer to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
+          asset_content_type: application/vnd.microsoft.portable-executable
+          asset_path: Installers\InnoSetup\Output\Plugin-DisableAudio-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-DisableAudio-${{ steps.set_ver.outputs.VER }}.exe
+
+      - name: Add disable UPnP installer to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
+          asset_content_type: application/vnd.microsoft.portable-executable
+          asset_path: Installers\InnoSetup\Output\Plugin-DisableUPnP-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-DisableUPnP-${{ steps.set_ver.outputs.VER }}.exe
+
+      - name: Add feed filter installer to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
+          asset_content_type: application/vnd.microsoft.portable-executable
+          asset_path: Installers\InnoSetup\Output\Plugin-FeedFilter-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-FeedFilter-${{ steps.set_ver.outputs.VER }}.exe
+
+      - name: Add feed filter tarball to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
+          asset_content_type: application/gzip
+          asset_path: Installers\Mono\output\Plugin-FeedFilter-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        Plugin-FeedFilter-${{ steps.set_ver.outputs.VER }}.tar.gz
+
+      - name: Add SQL Server installer to release
+        if:   ${{ steps.set_branch.outputs.BRANCH != 'v2-master' }}
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
+          asset_content_type: application/vnd.microsoft.portable-executable
+          asset_path: Installers\InnoSetup\Output\Plugin-SqlServer-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-SqlServer-${{ steps.set_ver.outputs.VER }}.exe
+
+      - name: Add SQL Server tarball to release
+        if:   ${{ steps.set_branch.outputs.BRANCH != 'v2-master' }}
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
+          asset_content_type: application/gzip
+          asset_path: Installers\Mono\output\Plugin-SqlServer-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        Plugin-SqlServer-${{ steps.set_ver.outputs.VER }}.tar.gz
+
+      - name: Add tile server cache installer to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
+          asset_content_type: application/vnd.microsoft.portable-executable
+          asset_path: Installers\InnoSetup\Output\Plugin-TileServerCache-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-TileServerCache-${{ steps.set_ver.outputs.VER }}.exe
+
+      - name: Add tile server cache tarball to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
+          asset_content_type: application/gzip
+          asset_path: Installers\Mono\output\Plugin-TileServerCache-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        Plugin-TileServerCache-${{ steps.set_ver.outputs.VER }}.tar.gz
+
+      - name: Add web admin installer to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
+          asset_content_type: application/vnd.microsoft.portable-executable
+          asset_path: Installers\InnoSetup\Output\Plugin-WebAdmin-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-WebAdmin-${{ steps.set_ver.outputs.VER }}.exe
+
+      - name: Add web admin tarball to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
+          asset_content_type: application/gzip
+          asset_path: Installers\Mono\output\Plugin-WebAdmin-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        Plugin-WebAdmin-${{ steps.set_ver.outputs.VER }}.tar.gz
+
+      - name: Add language pack installer to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
+          asset_content_type: application/vnd.microsoft.portable-executable
+          asset_path: Installers\InnoSetup\Output\LanguagePack-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             LanguagePack-${{ steps.set_ver.outputs.VER }}.exe
+
+      - name: Add language pack tarball to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
+          asset_content_type: application/gzip
+          asset_path: Installers\Mono\output\LanguagePack-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        LanguagePack-${{ steps.set_ver.outputs.VER }}.tar.gz
