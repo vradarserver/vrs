@@ -1,0 +1,189 @@
+#define public Root       "..\.."
+#define public BuildType  "Release"
+#ifndef VERSION
+  #define public VERSION    "v2"
+#endif
+
+[Setup]
+AppName=Virtual Radar
+AppVerName=Virtual Radar {#VERSION}
+DefaultDirName={autopf}\VirtualRadar
+DefaultGroupName=Virtual Radar
+DisableDirPage=no
+InfoBeforeFile=VirtualRadar-VersionHistory.rtf
+LicenseFile={#Root}\License.txt
+OutputBaseFileName=VirtualRadar-32bit-{#VERSION}
+SetupIconFile={#Root}\VirtualRadar\Application.ico
+WizardImageFile=..\Resources\WizardImage.bmp
+WizardSmallImageFile=..\Resources\WizardSmallImage.bmp
+WizardImageStretch=yes
+UninstallDisplayIcon={app}\VirtualRadar.exe
+
+[Messages]
+WizardInfoBefore=Version History
+InfoBeforeLabel=What has changed?
+
+[Tasks]
+Name: AddToFirewall; Description: "Configure Windows Firewall so other computers on your network can access Virtual Radar Server"; Flags: unchecked;
+
+[Files]
+; License
+Source: "{#Root}\LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion;
+
+; Application files
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\VirtualRadar.exe"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\VirtualRadar.exe.config"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\VirtualRadar.Database.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\VirtualRadar.Headless.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\VirtualRadar.Interface.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\VirtualRadar.Interop.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\VirtualRadar.Library.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\VirtualRadar.Localisation.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\VirtualRadar.Resources.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\VirtualRadar.SQLiteWrapper.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\VirtualRadar.WebServer.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\VirtualRadar.WebSite.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\VirtualRadar.WinForms.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\InterfaceFactory.dll"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\Interop.NATUPNPLib.dll"; DestDir: "{app}"; Flags: ignoreversion;
+
+; Web site files
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\Web\*"; DestDir: "{app}\Web"; Excludes: "zz-norel-*"; Flags: ignoreversion recursesubdirs;
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\Checksums.txt"; DestDir: "{app}"; Flags: ignoreversion;
+
+; Web site translations
+Source: "{#Root}\VirtualRadar\bin\x86\Release\de-DE\VirtualRadar.WebSite.resources.dll"; DestDir: "{app}\de-DE"; Excludes: "zz-norel-*"; Flags: ignoreversion recursesubdirs;
+Source: "{#Root}\VirtualRadar\bin\x86\Release\fr-FR\VirtualRadar.WebSite.resources.dll"; DestDir: "{app}\fr-FR"; Excludes: "zz-norel-*"; Flags: ignoreversion recursesubdirs;
+Source: "{#Root}\VirtualRadar\bin\x86\Release\pt-BR\VirtualRadar.WebSite.resources.dll"; DestDir: "{app}\pt-BR"; Excludes: "zz-norel-*"; Flags: ignoreversion recursesubdirs;
+Source: "{#Root}\VirtualRadar\bin\x86\Release\ru-RU\VirtualRadar.WebSite.resources.dll"; DestDir: "{app}\ru-RU"; Excludes: "zz-norel-*"; Flags: ignoreversion recursesubdirs;
+Source: "{#Root}\VirtualRadar\bin\x86\Release\zh-CN\VirtualRadar.WebSite.resources.dll"; DestDir: "{app}\zh-CN"; Excludes: "zz-norel-*"; Flags: ignoreversion recursesubdirs;
+
+; SQLite
+Source: "{#Root}\Dependencies\System.Data.SQLite.dll"; DestDir: "{app}"; Flags: ignoreversion
+
+; 3rd party libraries
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\AjaxMin.dll"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\HtmlAgilityPack.dll"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\KdTreeLib.dll"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion;
+
+; Flight Simulator
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\Microsoft.FlightSimulator.SimConnect.dll"; DestDir: "{app}"; Flags: ignoreversion
+
+[Dirs]
+Name: "{app}\Plugins"
+Name: "{localappdata}\VirtualRadar"; AfterInstall: WriteInstallerConfiguration;
+
+[InstallDelete]
+; Old web site files
+Type: filesandordirs; Name: "{app}\Web";
+
+; Old translations
+Type: filesandordirs; Name: "{app}\de-DE";
+Type: filesandordirs; Name: "{app}\fr-FR";
+Type: filesandordirs; Name: "{app}\pl-PL";
+Type: filesandordirs; Name: "{app}\pt-BR";
+Type: filesandordirs; Name: "{app}\ru-RU";
+Type: filesandordirs; Name: "{app}\zh-CN";
+
+; Files that were laid down by old versions of the installer but are either no longer required or are no longer supported
+Type: files; Name: "{app}\Microsoft.Practices.ObjectBuilder2.dll";
+Type: files; Name: "{app}\Microsoft.Practices.Unity.dll";
+Type: files; Name: "{app}\Checksums.txt";
+Type: files; Name: "{app}\DecompressMessageLog.exe";
+Type: files; Name: "{app}\MessageLogServer.exe";
+Type: files; Name: "{app}\IQToolkit.dll";
+Type: files; Name: "{app}\IQToolkit.Data.dll";
+Type: files; Name: "{app}\IQToolkit.Data.SQLite.dll";
+Type: files; Name: "{app}\VirtualRadar-Service.exe";
+Type: files; Name: "{app}\VirtualRadar-Service.exe.config";
+Type: files; Name: "{localappdata}\VirtualRadar\AirlineCodes.csv";
+Type: files; Name: "{localappdata}\VirtualRadar\AirportCodes.csv";
+Type: files; Name: "{localappdata}\VirtualRadar\AircraftTypes.csv";
+Type: files; Name: "{localappdata}\VirtualRadar\Countries.dat";
+Type: files; Name: "{localappdata}\VirtualRadar\FlightNumbers.csv";
+
+[Icons]
+Name: "{group}\Virtual Radar"; Filename: "{app}\VirtualRadar.exe"; WorkingDir: "{app}"
+
+[Run]
+; Add permissions on Vista or better for our listener so we don't need to run as an administrator
+MinVersion: 5.0,6.0; Filename: "{sys}\netsh.exe"; Parameters: "http add urlacl url=http://*:{code:GetChosenPort}/VirtualRadar/ sddl=D:(A;;GX;;;WD) listen=yes"; Flags: runhidden;
+; Optionally add the program to the firewall
+MinVersion: 5.0,6.0; Tasks: AddToFirewall; Filename: "{sys}\netsh.exe"; Parameters: "advfirewall firewall add rule name=""VirtualRadar Server Port {code:GetChosenPort}"" dir=in action=allow protocol=TCP localport={code:GetChosenPort} profile=private"; Flags: runhidden;
+OnlyBelowVersion: 1.0,6.0; Tasks: AddToFirewall; Filename: "{sys}\netsh.exe"; Parameters: "firewall add portopening TCP {code:GetChosenPort} ""VirtualRadar Server Port {code:GetChosenPort}"""; Flags: runhidden;
+
+[UninstallRun]
+; Remove the permissions that were added for Vista or better
+Filename: "{sys}\netsh.exe"; Parameters: "http delete urlacl url=http://*:{code:GetChosenPort}/VirtualRadar/"; MinVersion: 5.0,6.0; Flags: runhidden;
+; Remove the program from the firewall
+MinVersion: 5.0,6.0; Tasks: AddToFirewall; Filename: "{sys}\netsh.exe"; Parameters: "advfirewall firewall delete rule name=""VirtualRadar Server Port {code:GetChosenPort}"""; Flags: runhidden;
+OnlyBelowVersion: 1.0,6.0; Tasks: AddToFirewall; Filename: "{sys}\netsh.exe"; Parameters: "firewall delete portopening TCP {code:GetChosenPort}"; Flags: runhidden;
+
+[Code]
+var
+  PortPage:     TInputQueryWizardPage;
+
+procedure InitializeWizard;
+begin
+  PortPage := CreateInputQueryPage(wpSelectDir, 'Server Port', 'Which port should the server listen on?', 'Please enter the port that you would like the server to listen on. You can usually leave this at 80 - choose a value between 1025 and 65535 only if other software is already using port 80.');
+  PortPage.Add('Port:', false);
+  
+  PortPage.Values[0] := GetPreviousData('Port', '80');
+end;
+
+function ChosenPort() : string;
+var
+  port: Integer;
+begin
+  port := StrToIntDef(PortPage.Values[0], 80);
+  if port < 1 then port := 80;
+  if port > 65535 then port := 80;
+
+  Result := IntToStr(port);
+end;
+
+function GetChosenPort(Param: string) : string;
+begin
+  Result := ChosenPort();
+end;
+
+procedure RegisterPreviousData(PreviousDataKey: Integer);
+begin
+  SetPreviousData(PreviousDataKey, 'Port', ChosenPort());
+end;
+
+function UpdateReadyMemo(Space, NewLine, MemoUserInfoInfo, MemoDirInfo, MemoTypeInfo,
+  MemoComponentsInfo, MemoGroupInfo, MemoTasksInfo: String): String;
+var
+  msg: String;
+begin
+  msg := '';
+  msg := msg + MemoDirInfo + NewLine;
+  msg := msg + NewLine;
+  msg := msg + 'Port: ' + NewLine;
+  msg := msg + Space + ChosenPort() + NewLine;
+  msg := msg + NewLine;
+  msg := msg + MemoGroupInfo + NewLine;
+  msg := msg + NewLine;
+  msg := msg + MemoTasksInfo + NewLine;
+
+  Result := msg;
+end;
+
+procedure WriteInstallerConfiguration();
+var
+  content: TStringList;
+  fileName: string;
+begin
+  content := TStringList.Create();
+  content.Add('<?xml version="1.0" encoding="utf-8" ?>');
+  content.Add('<InstallerSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">');
+  content.Add('  <WebServerPort>' + ChosenPort() + '</WebServerPort>');
+  content.Add('</InstallerSettings>');
+
+  fileName := ExpandConstant('{localappdata}');
+  fileName := AddBackslash(fileName) + 'VirtualRadar\InstallerConfiguration.xml';
+  content.SaveToFile(fileName);
+end;
+

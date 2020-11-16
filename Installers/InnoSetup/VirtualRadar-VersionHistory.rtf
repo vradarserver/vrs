@@ -1,0 +1,400 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang2057\deflangfe2057{\fonttbl{\f0\fmodern\fprq1\fcharset0 Courier New;}{\f1\fnil\fprq2\fcharset2 Wingdings;}{\f2\fnil\fcharset1 Cambria Math;}}
+{\colortbl ;\red0\green0\blue255;}
+{\*\generator Riched20 10.0.18362}{\*\mmathPr\mmathFont2\mdispDef1\mwrapIndent1440 }\viewkind4\uc1 
+\pard\nowidctlpar\sa200\sl276\slmult1\ul\f0\fs18\lang9 2.4.4\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed: Mobile reports were not loading.\line\f1\lang2057\'9f \f0\lang9 Fixed: Network connections would keep resetting under Mono 6.0.\line\f1\lang2057\'9f \f0\lang9 Added: Ground vehicles transmitting DF18 CF1 can now be tracked.\line\f1\lang2057\'9f \f0\lang9 Added: User notes now available on map page.\line\f1\lang2057\'9f \f0\lang9 Added: User tag now available on reports.\line\ul\par
+2.4.3\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed: Crash on startup if tile server JSON is empty.\line\f1\lang2057\'9f \f0\lang9 Fixed: Exception thrown when requesting empty query string segment.\line\f1\lang2057\'9f \f0\lang9 Fixed: Feeds with short ICAOs are now padded to 6 digits.\line\f1\lang2057\'9f \f0\lang9 Added: Map layer support.\line\f1\lang2057\'9f \f0\lang9 Added: Map brightness and layer opacity are now user-configurable.\line\ul\par
+2.4.2\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed: Leaflet marker labels not removed when marker gets removed.\line\f1\lang2057\'9f \f0\lang9 Fixed: Leaflet marker tooltips were not refreshing properly.\line\f1\lang2057\'9f \f0\lang9 Fixed: Report map did not show menu button when using Leaflet maps.\line\f1\lang2057\'9f \f0\lang9 Fixed: Range circles ignored configuration on Leaflet maps.\par
+\line\ul 2.4.1\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Added: Support for Leaflet as a free keyless alternative to Google Maps.\line\f1\lang2057\'9f \f0\lang9 Fixed: MLAT sort was not working (thanks to MHH for fix).\line\f1\lang2057\'9f \f0\lang9 Fixed: Setting page now lets you view the content of sections.\f1\lang2057\line\'9f \f0\lang9 Fixed: Mono idle connection timeout was not working.\line\f1\lang2057\'9f \f0\lang9 Fixed: Move to selected aircraft was moving to current location.\line\par
+\ul 2.4.0\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed: Menu button stopped working under Firefox 46+.\line\f1\lang2057\'9f \f0\lang9 Fixed: Airliners.net links.\line\f1\lang2057\'9f \f0\lang9 Fixed: Messages are now dropped if they come in faster than they can be processed.\line\f1\lang2057\'9f \f0\lang9 Fixed: Aircraft heading and speed could freeze when aircraft is visible on MLAT and non-MLAT receiver.\line\f1\lang2057\'9f \f0\lang9 Added: Support for specifying Google Maps API key\line\f1\lang2057\'9f \f0\lang9 Added: Support for optional Web Admin plugin.\line\f1\lang2057\'9f \f0\lang9 Added: Lookup of air pressure settings.\f1\lang2057\line\'9f \f0\lang9 Added: Support for Plane Finder receiver.\line\f1\lang2057\'9f \f0\lang9 Added: Support for separate JAERO receiver timeouts.\line\f1\lang2057\'9f \f0\lang9 Added: Marker cluster support.\line\f1\lang2057\'9f \f0\lang9 Updated to Google Maps 3.24.\par
+\par
+\ul 2.3.1\par
+\ulnone For the full list of changes please visit {{\field{\*\fldinst{HYPERLINK https://trello.com/b/bSMJm8I8 }}{\fldrslt{https://trello.com/b/bSMJm8I8\ul0\cf0}}}}\f0\fs18\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Issue whereby CPU usage was higher than usual and the server could crash on sites with many large feeds.\par
+\ul\par
+2.3.0\par
+\ulnone For the full list of changes please visit {{\field{\*\fldinst{HYPERLINK https://trello.com/b/bSMJm8I8 }}{\fldrslt{https://trello.com/b/bSMJm8I8\ul0\cf0}}}}\f0\fs18\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Aircraft list (JSON) feeds could sometimes have latitude or longitude set to zero.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Issue with selecting Portuguese (Brazilian) as a web site language under Mono.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Values in numeric filters can now be cleared.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Text to speech no longer inserts spurious "to"s under Windows 8/10.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Options screen could be slow to open.\par
+\f1\lang2057\'9f \f0\lang9 Added: Online lookup of aircraft details courtesy of PlaneBaseNG.\par
+\f1\lang2057\'9f \f0\lang9 Added: Report details now show links to airliners.net etc.\par
+\f1\lang2057\'9f \f0\lang9 Updated to Google Maps 3.22. This version of Google Maps does not support IE8 and has a different style of map control.\par
+\par
+\ul 2.2.0\par
+\ulnone For the full list of changes please visit {{\field{\*\fldinst{HYPERLINK http://tracker.virtualradarserver.co.uk/youtrack/issues?q=Fix+versions%3A+2.2.0 }}{\fldrslt{http://tracker.virtualradarserver.co.uk/youtrack/issues?q=Fix+versions%3A+2.2.0\ul0\cf0}}}}\ul\f0\fs18\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed: Scroll bars are now shown in menus within Firefox.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Report data is no longer cached by the browser.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Firefox and Chrome no longer warn about asynchronous XHR on the main thread.\par
+\f1\lang2057\'9f \f0\lang9 Added: Aircraft list rebroadcast and receiver format.\par
+\f1\lang2057\'9f \f0\lang9 Added: Support for merging MLAT feeds correctly.\par
+\f1\lang2057\'9f \f0\lang9 Added: Map markers now reflect aircraft type, weight etc.\par
+\ul\par
+2.1.0\par
+\ulnone For the full list of changes please visit {{\field{\*\fldinst{HYPERLINK http://tracker.virtualradarserver.co.uk/youtrack/issues?q=Fix+versions%3A+2.1.0 }}{\fldrslt{http://tracker.virtualradarserver.co.uk/youtrack/issues?q=Fix+versions%3A+2.1.0\ul0\cf0}}}}\ul\f0\fs18\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed: Opening options no longer reverts some filters.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: "Requested name is valid but no data of the requested type" exceptions no longer shown when receivers attempt to reconnect to a network connection that is down.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: BaseStation format receivers can no longer fill memory.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: An exception is no longer thrown when opening the options screen on a Windows machine that has no voices installed.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Removing a rebroadcast server now removes it from the main screen.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Rebroadcast servers now use local dates and times when transmitting BaseStation format.\par
+\f1\lang2057\'9f \f0\lang9 Added: The web site settings can now be exported and imported. Exported settings can be saved on the server to use as defaults for all new visitors to the site.\par
+\f1\lang2057\'9f \f0\lang9 Added: Receiver ranges are now saved between sessions.\par
+\f1\lang2057\'9f \f0\lang9 Added: Rebroadcast servers can now push a feed to a single IP address.\par
+\f1\lang2057\'9f \f0\lang9 Added: Access to receivers and rebroadcast servers can now be whitelisted and blacklisted.\par
+\f1\lang2057\'9f \f0\lang9 Added: Users that choose to make their VRS site accessible from the Internet can now opt into a directory of public VRS sites.\par
+\f1\lang2057\'9f \f0\lang9 Added: Multiple credentials can now be created for access to the site.\par
+\f1\lang2057\'9f \f0\lang9 Added: Some ADSB2 properties can now be shown on the site.\par
+\par
+\ul 2.0.2\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed: The list sort order was not being loaded correctly.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Occasionally the program wouldn't reconnect to a disconnected network feed. It would show an exception instead.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Reports weren't showing the line between the start and end points when running under Mono.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Crash when changing marker options under Mono.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: OperatorFlagCode and ModelIcao fields with invalid characters can no longer cause an exception to be thrown when displaying silhouettes or logos.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Reports now search all alternate callsigns for routes.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Operator flags and logos can be overridden by ICAO or registration, as per version 1 of the site.\par
+\f1\lang2057\'9f \f0\lang9 Added receiver range plot. Only receivers with a receiver location will have their range plotted.\f1\lang2057\par
+\'9f \f0\lang9 Added thumbnails for aircraft pictures from {{\field{\*\fldinst{HYPERLINK www.airport-data.com }}{\fldrslt{www.airport-data.com\ul0\cf0}}}}\f0\fs18  to the aircraft detail panel.\par
+\f1\lang2057\'9f \f0\lang9 Added support for showing different markers for ground vehicles and radio masts on the map. Vehicles should be given an ICAOTypeCode of "-GND" and radio masts a code of "-TWR" in BaseStation.sqb.\par
+\f1\lang2057\'9f \f0\lang9 The number of lines of labels on aircraft markers is now configurable.\par
+\f1\lang2057\'9f \f0\lang9 Abbreviated circular routes now show the last stopover and an infinity symbol instead of the first and last airport (e.g. ORD-IAD-ORD is now shown as "ORD-IAD \f2\u8734?\f0\lang9 " instead of "ORD-*-ORD").\ul\par
+\par
+2.0.1\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed: An exception was being thrown when an established Rebroadcast Server's settings were changed.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Sorting reports by registration did not work.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Default values for combo boxes on the criteria screen were ignored.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Validation errors on the Mono options screen did not prevent the screen from being accepted when you clicked OK.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: The aircraft icon overlapped the aircraft text when the stalk was hidden when running under Mono.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Connections to receivers could get into a connect / reconnect loop when running under Mono.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Broken Rebroadcast Server connections are now detected and closed down.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: The local codeblock override file could cause civilian aircraft to be flagged as military.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: Redirections and bundling didn't work through a reverse proxy. There is now an option to tell VRS whether it is behind a reverse proxy or a forward proxy.\par
+\f1\lang2057\'9f \f0\lang9 Fixed: The correct icon is now shown when the site is added to an iOS device's home screen.\par
+\f1\lang2057\'9f \f0\lang9 It is now possible to set the sort order, the aircraft detail panel options and the aircraft list panel options by just setting VRS.globalOptions.\par
+\f1\lang2057\'9f \f0\lang9 The currently selected aircraft is no longer hidden when "List only visible" is selected, even if it is not visible.\par
+\f1\lang2057\'9f \f0\lang9 Added a French translation of the web site.\par
+\f1\lang2057\'9f \f0\lang9 Added a permanent link to reports in the criteria settings.\par
+\f1\lang2057\'9f \f0\lang9 Database details are now refreshed once a minute over the entire duration of the flight.\par
+\f1\lang2057\'9f \f0\lang9 Added support for loading local GIF aircraft pictures.\par
+\f1\lang2057\'9f \f0\lang9 Added a new interface, IWebSiteExtender, to make it easier for plugins to add their own content to the web site.\par
+\f1\lang2057\'9f \f0\lang9 Added support for filtering reports by aircraft ICAO model code.\par
+\f1\lang2057\'9f \f0\lang9 Updated to Google Maps 3.15.\par
+\ul\par
+2.0.0\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Added ability to listen to multiple receivers simultaneously and merge their feeds together.\par
+\f1\lang2057\'9f \f0\lang9 Rewrote website output.\par
+\f1\lang2057\'9f \f0\lang9 Added support for bundling and minifying the JavaScript served by the server.\par
+\f1\lang2057\'9f \f0\lang9 Added support for modifying the site without having to recompile the server.\par
+\f1\lang2057\'9f \f0\lang9 Added support for searching in sub-folders for aircraft pictures.\par
+\f1\lang2057\'9f \f0\lang9 Added support for bundling and minifying the JavaScript served by the server.\par
+\f1\lang2057\'9f \f0\lang9 Added support for translating the website output.\par
+\f1\lang2057\'9f \f0\lang9 Added support for sending and receiving compressed feeds.\par
+\ul\par
+1.2.4\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed a problem whereby VRS would keep buffering until it runs out of memory when a program connects to a rebroadcast server but doesn't take any data from it.\par
+\f1\lang2057\'9f \f0\lang9 The rebroadcast server status display no longer continues to update "Bytes Sent" for listeners that are holding the connection open but are not accepting incoming packets.\par
+\f1\lang2057\'9f \f0\lang9 Added a new column to the rebroadcast servers display - "Bytes Buffered" - that shows how much data has been buffered for listeners that are holding an open connection but not taking data from it as quickly as it is being sent.\par
+\ul\par
+1.2.3\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed the problem where a block of BaseStation format messages are reported as bad when they are not.\par
+\f1\lang2057\'9f \f0\lang9 Fixed the problem where the route doesn't get blanked out when an aircraft changes from a callsign that has a route to one that does not.\par
+\f1\lang2057\'9f \f0\lang9 The program now checks for route updates once an hour instead of once a day.\par
+\ul\par
+1.2.2\par
+\ulnone\f1\lang2057\'9f \f0\lang9 VRS now copes with two common miscodings of callsigns when looking up routes - where the pilot pads the callsign with leading zeros (e.g. BAW007 instead of BAW7) and where the pilot enters the IATA code instead of the ICAO code (e.g. VS6 instead of VIR6).\par
+It now also looks up codes against alternate ICAOs for the airline, but only if the code is numeric (e.g. if SHT1234 cannot be found then it will search for BAW1234, but a missing route for SHT1N will not use the route for BAW1N).\par
+\ul\par
+1.2.1\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed the problem with altitude and speed not being displayed on the Mono aircraft markers.\par
+\f1\lang2057\'9f \f0\lang9 Fixed the problem with numeric callsigns not always using the operator ICAO code when looking up routes.\par
+\f1\lang2057\'9f \f0\lang9 Fixed the problem with route stopovers sometimes not showing up until the website is reloaded.\par
+\f1\lang2057\'9f \f0\lang9 Fixed the problem with the iPhone map not working when running under Mono.\par
+\f1\lang2057\'9f \f0\lang9 Fixed the overflowing text on the iPhone options screen.\par
+\f1\lang2057\'9f \f0\lang9 Malformed BaseStation messages no longer cause a disconnection from the receiver.\par
+\f1\lang2057\'9f \f0\lang9 Added an option to display the route on the iPhone aircraft markers.\par
+\f1\lang2057\'9f \f0\lang9 Added an option to display the route on the list.\par
+\f1\lang2057\'9f \f0\lang9 Added links to submit missing routes or corrections to existing routes. These can be suppressed for Internet clients.\par
+\f1\lang2057\'9f \f0\lang9 Added option to web site settings to display IATA airport codes instead of ICAO codes.\par
+\f1\lang2057\'9f \f0\lang9 The aircraft list will now use operator flags named after the aircraft's ICAO when the aircraft has no operator.\par
+\f1\lang2057\'9f \f0\lang9 Registrations and callsigns are now called out using the phoentic alphabet.\par
+\f1\lang2057\'9f \f0\lang9 A transition altitude can now be specified for the flight level. The flight level can be in different units to the altitude.\par
+\f1\lang2057\'9f \f0\lang9 iPhone options that open a seperate page now automatically scroll back to the option when the sub-page is closed.\par
+\ul\par
+1.2.0\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed the problems with starting the Mono version under some Linux distributions. VRS now uses Mono's SQLite library when running under Mono.\par
+\f1\lang2057\'9f \f0\lang9 Fixed the problem with the Mono version shutting down without reporting the cause when another application is listening to the web server port.\par
+\f1\lang2057\'9f \f0\lang9 Fixed the two libpng warnings that appear when starting the Mono version under Linux.\par
+\f1\lang2057\'9f \f0\lang9 Worked around the libcairo problems suffered by the Mono version. The Mono version now uses text labels for aircraft text instead of drawing text onto the marker images.\par
+\f1\lang2057\'9f \f0\lang9 VRS can now run on Ubuntu 10.04 and Mac OS/X.\ul\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Updated Google Maps to the current stable release, version 3.10.\ul\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Added data feed statistics to the File menu.\ul\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Added ability to display route on aircraft marker images.\par
+\f1\lang2057\'9f \f0\lang9 Added ability to display UserTag in aircraft list.\par
+\f1\lang2057\'9f \f0\lang9 Added a new option, "Stop tracking after signal loss (seconds)", which determines how long an aircraft continues to be tracked after it has gone out of reception range.\ul\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Added a new option, "Reconnect at startup". If set to "no" (the default) then the program only tries to connect to the data feed once when starting up and reports an error if it fails. If "yes" then the program will not report failures to connect at startup, it'll just keep trying to connect until it succeeds.\ul\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Added new options to control how many times an ICAO24 code has to be seen in messages with parity and without (testable) parity before it will be accepted as valid.\par
+\f1\lang2057\'9f \f0\lang9 The standing data (routes, aircraft type information etc.) is now stored in a SQLite database instead of being loaded from CSV files.\par
+\f1\lang2057\'9f \f0\lang9 If the callsign does not contain the operator code then the route lookup uses the operator code from the aircraft's database record.\ul\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Removed the "Ignore bad messages" option. Bad messages will no longer cause the program to disconnect from the data feed.\par
+\f1\lang2057\'9f \f0\lang9 Removed the custom routes feature. Users with custom routes can submit them for incorporation into the standing data database.\par
+\f1\lang2057\'9f \f0\lang9 Plugins can now provide their own user authentication for the website.\ul\par
+\par
+1.1.2\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed problem with full-length trails not always displaying correctly when aircraft changes track.\par
+\f1\lang2057\'9f \f0\lang9 Now only shows one decimal place for bearing to aircraft.\par
+\f1\lang2057\'9f \f0\lang9 Empty callsigns from BDS2,0 Mode-S messages are no longer shown.\par
+\f1\lang2057\'9f \f0\lang9 Added calculation of track when aircraft transmits wrong track on surface (e.g. 757-200s before they are airborne).\par
+\par
+\ul 1.1.1\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed true/false values in Port 30003 messages being represented as 1/0 instead of -1/0.\par
+\f1\lang2057\'9f \f0\lang9 Fixed the display of unprintable characters in the Options screen.\par
+\f1\lang2057\'9f \f0\lang9 Latitude and longitude are now shown rounded to 6 decimal places while track and speed are now rounded to 1 decimal place.\par
+\ul\par
+1.1.0\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed the display of on-ground status.\par
+\f1\lang2057\'9f \f0\lang9 Fixed problem when using a hostname as the network address of the receiver / BaseStation.\par
+\f1\lang2057\'9f \f0\lang9 Added calculation of track for aircraft that stop transmitting track when travelling at slow speeds on ground.\par
+\f1\lang2057\'9f \f0\lang9 Added support for decoding of raw messages from radios capable of sending them. This release supports the SBS-3, AVR "*", ":" and "@" formats and Beast binary format raw messages.\par
+\f1\lang2057\'9f \f0\lang9 Added support for listening to receivers that are connected via a COM port.\par
+\f1\lang2057\'9f \f0\lang9 Added support for network rebroadcasting of messages. Mode-S messages can be broadcast in Mode-S, BaseStation or AVR formats. BaseStation messages can only be re-transmitted as BaseStation messages. AVR format switches automatically between "*" and ":" types depending on whether Mode-S source has stripped parity.\par
+\f1\lang2057\'9f \f0\lang9 Removed the translations - they are now installed via a separate language pack installer.\par
+\par
+\ul 1.0.5\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed the problem with incorrect links to registration reports for aircraft with certain characters in their registration (e.g. '10+23').\par
+\f1\lang2057\'9f \f0\lang9 Removed IQToolkit and switched back to ADO.NET for database access - IQToolkit didn't work with Mono.\par
+\f1\lang2057\'9f \f0\lang9 Worked around the variety of problems with Mono's WinForms implementation that caused the main server display to look messy.\par
+\f1\lang2057\'9f \f0\lang9 Added the ability to set the initial units for distances, heights and speeds in the options pages on the server.\par
+\f1\lang2057\'9f \f0\lang9 Added the option "Ignore badly formatted messages" to the BaseStation options. If this is ticked then messages from the port 30003 data feed that do not comply with Kinetic's standard are ignored, and VRS will remain connected to the data feed. If this is not ticked then VRS displays an error message and disconnects from the data feed when a non-conforming message is seen.\par
+\f1\lang2057\'9f \f0\lang9 Added operator flags and silhouettes to the date report.\par
+\par
+\ul 1.0.4\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed problem whereby illegal characters in the registration would trigger an exception. The program now only uses the ICAO compliant characters in the registration when searching for aircraft pictures (so for example, a registration of *G-ABCD will map onto a filename of G-ABCD.jpg).\par
+\f1\lang2057\'9f \f0\lang9 Fixed the excessive flickering in Chrome of silhouette and operator flag images in the aircraft list.\par
+\f1\lang2057\'9f \f0\lang9 Added filter to only show aircraft flagged as Interested in the BaseStation database.\par
+\f1\lang2057\'9f \f0\lang9 Added Time Tracked column to aircraft lists to show the time elapsed since VRS first saw the aircraft.\par
+\f1\lang2057\'9f \f0\lang9 Added Seen Count column to aircraft lists to show the number of flight records an aircraft has in the database - i.e. how many times BaseStation has seen the plane. The list can be sorted on this column.\par
+\ul\par
+1.0.3\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed problem where very occasionally an aircraft's registration etc. would not be shown and its picture would appear as a broken image link.\par
+\f1\lang2057\'9f \f0\lang9 File | Exit now closes the program.\f1\lang2057\par
+\'9f \f0\lang9 Added support for rewriten proximity gadget.\par
+\f1\lang2057\'9f \f0\lang9 Added correct Cache-Control headers to JSON files.\par
+\f1\lang2057\'9f \f0\lang9 Plugin API change: Added GuiThreadStartup to IPlugin interface to give plugins a mechanism for creating their own modeless displays.\ul\par
+\par
+1.0.2\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed bug in IQueryable Toolkit that caused problems with the database writer plugin for non-UK/US regions.\par
+\f1\lang2057\'9f \f0\lang9 Fixed bug that produced a normal exception message instead of a friendly message when the web server could not be started because something else is listening to the port.\par
+\f1\lang2057\'9f \f0\lang9 Fixed problem with aircraft with no position data being shown at 0\'b0/0\'b0 in the flight report.\par
+\f1\lang2057\'9f \f0\lang9 Fixed problem display of aircraft on track of 0\'b0 when altitude stalks are displayed with no text lines.\par
+\f1\lang2057\'9f \f0\lang9 Zero-length BaseStation database files will now just produce a message at startup and will no longer generate an exception every few seconds.\par
+\f1\lang2057\'9f \f0\lang9 Improved report generation time when the picture folder has thousands of files in it.\par
+\ul\par
+1.0.1\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed problem where CPU usage could go to 100% under some circumstances where the connection to BaseStation was broken.\par
+\f1\lang2057\'9f \f0\lang9 Fixed problem with saving options when some fields were showing a warning.\par
+\f1\lang2057\'9f \f0\lang9 Fixed display of squawks of 0000.\par
+\f1\lang2057\'9f \f0\lang9 Long running reports no longer cause the aircraft to appear to stop moving.\par
+\f1\lang2057\'9f \f0\lang9 Changes to the BaseStation address or port are now immediately picked up and now cause the aircraft list to reset correctly.\par
+\f1\lang2057\'9f \f0\lang9 The aircraft picture shown in the detail panel is no longer zoomed to be 350 pixels wide if the original is less than 350 pixels wide.\par
+\f1\lang2057\'9f \f0\lang9 If an aircraft has no database record, or its database record has no registration, then the database record is reloaded a minute after the aircraft is first seen to pick up changes made to it by 3rd party tools.\par
+\f1\lang2057\'9f \f0\lang9 Report generation time has been improved but at the expense of making the Operator Name and Mode-S Country criteria case sensitive.\par
+\f1\lang2057\'9f \f0\lang9 Mobile version of the website now shows the count of aircraft on the list page.\par
+\f1\lang2057\'9f \f0\lang9 All clickable elements on the web page now show the correct pointer mouse cursor.\par
+\f1\lang2057\'9f \f0\lang9 Added links to online help to the server and web site.\par
+\f1\lang2057\'9f \f0\lang9 Added plugin system to allow third parties to extend the application and to allow the addition of optional features.\par
+\f1\lang2057\'9f \f0\lang9 Added shutdown screen to show shutdown progress (particularly for plugins that may need to do a lot of work during shutdown).\par
+\f1\lang2057\'9f \f0\lang9 Added count of tracked aircraft to main server window. Note that aircraft are not removed from this total until at least ten minutes have passed since their last received message so it can be considerably higher than the count shown on the web site.\par
+\f1\lang2057\'9f \f0\lang9 Added tooltip to the 'Powered by Virtual Radar Server' link that shows the version number of the server.\par
+\ul\par
+1.0.0\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Updated Google Maps version to 3.6.\par
+\f1\lang2057\'9f \f0\lang9 Fixed problem with "only show aircraft on map" filter when the map straddles the antimeridian.\par
+\f1\lang2057\'9f \f0\lang9 Fixed the bank angle in the FSX ride aircraft feature.\par
+\f1\lang2057\'9f \f0\lang9 Fixed the exception that could be thrown if the Windows UPnP COM component threw an exception on startup.\par
+\f1\lang2057\'9f \f0\lang9 Improved the handling of requests coming through reverse proxies.\par
+\f1\lang2057\'9f \f0\lang9 Added a splash screen.\par
+\f1\lang2057\'9f \f0\lang9 Many other small bug fixes arising from the rewrite of the server and UI.\ul\par
+\par
+0.25.1\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed problem with an exception being raised during startup on systems where the Windows UPnP COM component has not been registered.\par
+\ul\par
+0.25.0\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed problem with redirecting to the wrong port if an Internet client connects without specifying the correct page from the root of the site.\par
+\f1\lang2057\'9f \f0\lang9 Fixed problem with aircraft trail stopping short on the main iPhone map when the aircraft detail was displayed.\par
+\f1\lang2057\'9f \f0\lang9 Made it easier to put the server onto the Internet if so desired by adding support for controlling port forwarding on UPnP NAT routers from within the program.\par
+\f1\lang2057\'9f \f0\lang9 Added German translation for (most of) the server user interface.\par
+\f1\lang2057\'9f \f0\lang9 Added support for displaying pictures of the aircraft from a local folder that contains pictures named after the aircraft's registration (e.g. "G-EUUA.jpg") or ICAO (e.g. "40097C.png"). Supports JPG, PNG and BMP formats.\par
+\f1\lang2057\'9f \f0\lang9 Added scale control to map.\par
+\f1\lang2057\'9f \f0\lang9 Added option to show speed on aircraft labels.\par
+\f1\lang2057\'9f \f0\lang9 Added option to aircraft list to copy default columns into custom columns.\par
+\f1\lang2057\'9f \f0\lang9 Updates can now be paused.\par
+\f1\lang2057\'9f \f0\lang9 Trails are now smoother when you have a large refresh time.\par
+\f1\lang2057\'9f \f0\lang9 Trails are now reset if it appears that the aircraft is reporting inaccurate positions.\par
+\f1\lang2057\'9f \f0\lang9 Improved general responsiveness of the UI.\par
+\ul\par
+0.24.0\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Switched over to version 3.4 of Google Maps.\par
+\f1\lang2057\'9f \f0\lang9 Fixed a couple of bugs in the bearing calculation.\par
+\f1\lang2057\'9f \f0\lang9 Fixed a bug which caused changes to the callsign to be ignored.\par
+\f1\lang2057\'9f \f0\lang9 Fixed a double-scrollbar on the aircraft report in Internet Explorer 9.\par
+\f1\lang2057\'9f \f0\lang9 Fixed a problem with not being able to force two instances to run on the same machine with the -workingFolder command-line parameter.\par
+\f1\lang2057\'9f \f0\lang9 The session and client logs now show the correct address when VRS is behind a reverse proxy.\par
+\f1\lang2057\'9f \f0\lang9 Report criteria such as operator and country are no longer case sensitive.\par
+\f1\lang2057\'9f \f0\lang9 The server will now automatically reconnect to BaseStation if the connection goes down, e.g. if BaseStation is stopped and restarted.\par
+\f1\lang2057\'9f \f0\lang9 Added the display of ATC wake turbulence category, engine type, engine count and aircraft species (landplane, helicopter etc.) to aircraft details, aircraft lists, filters and reports.\par
+\f1\lang2057\'9f \f0\lang9 Added the display of the ICAO country and whether the aircraft is military or civilian to aircraft details, aircraft lists, filters and reports.\par
+PLEASE NOTE: Filtering reports by any of wake turbulence category, species or military-only will slow down the production of the report.\par
+\ul\par
+0.23.0\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed bug whereby if the user is in daylight savings time and they ran a report for a period before DST began then the dates in the criteria would go backwards one day.\par
+\f1\lang2057\'9f \f0\lang9 Fixed bug whereby when the user set their current location for the first time the selected aircraft details still described distances as "from map centre" instead of "from here".\par
+\f1\lang2057\'9f \f0\lang9 Worked around problem with some feed aggregators that were incorrectly reporting squawks were emergency codes when they were not.\par
+\f1\lang2057\'9f \f0\lang9 Added options to filter out aircraft by a combination of altitude, callsign, distance, operator, registration, squawk and type. The filtering takes place at the server so that it can be used to reduce the browser's workload.\par
+\f1\lang2057\'9f \f0\lang9 Added option to suppress the listing of aircraft that are not transmitting their position.\par
+\f1\lang2057\'9f \f0\lang9 Added option to show distances in nautical miles.\par
+\f1\lang2057\'9f \f0\lang9 Added option to display simple aircraft images when zoomed out. If you are displaying a lot of aircraft this can reduce clutter.\par
+\f1\lang2057\'9f \f0\lang9 Added graphic to show bearing from current location to selected aircraft.\par
+\f1\lang2057\'9f \f0\lang9 Improved the display of the server's addresses in the server window.\par
+\f1\lang2057\'9f \f0\lang9 Squawk codes of 0000 are now suppressed.\par
+\f1\lang2057\'9f \f0\lang9 An explanation of an emergency squawk code is now displayed when appropriate.\par
+\f1\lang2057\'9f \f0\lang9 A pretty message is now shown when you try to start two instances of VRS.\par
+\ul\par
+0.22.0\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed exception when reading flight route data for Russian users.\par
+\f1\lang2057\'9f \f0\lang9 Switched over to the latest stable version of Google Maps (version 3.3).\f1\lang2057\par
+\ul\f0\lang9\par
+0.21.1\par
+\ulnone\f1\lang2057\'9f \f0\lang9 VRS now requests the last stable version of Google Maps from Google instead of the latest nightly build version in an attempt to stop nightly builds of Google Maps from introducing unexpected side-effects.\par
+\ul\par
+0.21.0\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Worked around a problem with some non-BaseStation feed sources appending spaces to the callsign.\par
+\f1\lang2057\'9f \f0\lang9 Worked around a problem with aggregator feeds that caused some trails to be truncated.\par
+\f1\lang2057\'9f \f0\lang9 Fixed bug that prevented the current location from being displayed when the "Show current location" options box was ticked.\par
+\f1\lang2057\'9f \f0\lang9 There were two problems that took place when an aircraft went off radar and then came back into range. First if the "Hide selected aircraft when off radar" option is \i not\i0  ticked the aircraft should be reselected when it returns, but it wasn't. Secondly the iPhone aircraft detail page would stop showing updates.\par
+\f1\lang2057\'9f \f0\lang9 The moving map button would keep centering the map on the last location of an aircraft even after it had gone off radar.\par
+\f1\lang2057\'9f \f0\lang9 Added option in the "Units" section to display vertical speed per second rather than per minute.\par
+\f1\lang2057\'9f \f0\lang9 The aircraft list in the Flight Simulator X window can now be sorted and starts off enabled.\par
+\ul\par
+0.20.2\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed a bug in the installer which prevented VRS from being given the correct permissions under non-English Windows Vista and Windows 7 installations.\ul\par
+\par
+0.20.1\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed an exception that appeared when running reports with empty date criteria for some time zones.\ul\par
+\par
+0.20.0\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Added an iPhone / iPad / Android version of the site. This does not have reports or page transition animations but is otherwise complete.\par
+\f1\lang2057\'9f \f0\lang9 Fixed problem with users in time zones behind GMT not being able to run reports.\par
+\f1\lang2057\'9f \f0\lang9 Fixed display of dates in the from and to date critiera of date reports.\par
+\f1\lang2057\'9f \f0\lang9 Fixed timezone conversion of dates in reports.\par
+\f1\lang2057\'9f \f0\lang9 Fixed problem with the "Tracking xx Aircraft" link going to a report for all the aircraft seen the day the browser session was started instead of using today's date.\par
+\f1\lang2057\'9f \f0\lang9 The street view control is no longer shown on any map.\par
+\ul\par
+0.19.0\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Reduced the bandwidth consumed when refreshing the aircraft information held by the browser.\par
+\f1\lang2057\'9f \f0\lang9 Fixed another bug with operator flags and underscores.\par
+\f1\lang2057\'9f \f0\lang9 Fixed bug which prevented the callsign and route from being called out if it was transmitted after the rest of the details had started being called out.\par
+\f1\lang2057\'9f \f0\lang9 Worked around problem whereby Windows locale settings can cause BaseStation to use unpredictable delimiters for dates and times in the feed.\par
+\f1\lang2057\'9f \f0\lang9 Fixed bug which prevented the aircraft list from being correctly sorted by distance.\par
+\f1\lang2057\'9f \f0\lang9 Browser can now choose between short and full trails. The length of the short trail is set in server options.\par
+\f1\lang2057\'9f \f0\lang9 Server now records statistics about connections. These can be viewed via options in the File menu.\par
+\f1\lang2057\'9f \f0\lang9 Browser options are now presented in tabs.\par
+\f1\lang2057\'9f \f0\lang9 Added distance and altitude criteria to auto-select.\par
+\f1\lang2057\'9f \f0\lang9 Added bearing from current location. The list columns previously mistakenly called the aircraft's heading "Bearing" - this has now been fixed.\par
+\f1\lang2057\'9f \f0\lang9 Added server option to configure how long aircraft are kept on display after their last signal is received.\par
+\f1\lang2057\'9f \f0\lang9 Added altitude to the aircraft pin labels.\par
+\f1\lang2057\'9f \f0\lang9 Reduced flickering on the aircraft detail display.\par
+\f1\lang2057\'9f \f0\lang9 Added links to a callsign report.\par
+\f1\lang2057\'9f \f0\lang9 Added moving map button, can be hidden via browser options.\par
+\f1\lang2057\'9f \f0\lang9 Added support for metric units for speed and height as well as distance.\par
+\f1\lang2057\'9f \f0\lang9 Added support for use of an optional local flight numbers CSV file called "LocalFlightNumbers.csv". Flight numbers detailed in this add to and override routes from the standard file. It is not overwritten when new route data is downloaded.\par
+\f1\lang2057\'9f \f0\lang9 Added support for displaying the location of aircraft in Flight Simulator X on a Google Maps page.\par
+\f1\lang2057\'9f \f0\lang9 Added support for repeatedly positioning the Flight Simulator X plane to correspond with the altitude, position, speed (limited to 30kts below barber pole speed) and approximated attitude of an aircraft being tracked by the SBS-1. Once activated Virtual Radar Server will stop controlling the FSX aircraft when slew mode is toggled.\par
+\par
+\ul 0.18.0\par
+\ulnone\f1\lang2057\'9f \f0\lang9 The server now requires the full .NET 3.5 Framework instead of .NET 2. The installer will attempt to check for the presence of .NET 3.5 and will run the installer if necessary.\f1\lang2057\par
+\'9f \f0\lang9 Fixed a bug that would prevent the server from starting if the configuration file was corrupt or if the interval between checks for a new version of the program was higher than about 20 days.\f1\lang2057\par
+\'9f \f0\lang9 Internet connections now time out after 20 minutes of inactivity. The timeout can be configured or turned off altogether. Local connections never time out.\par
+\f1\lang2057\'9f \f0\lang9 Added option to only allow connections from Proximity Gadgets on the local network.\par
+\f1\lang2057\'9f \f0\lang9 Altitude stalks are now optional.\par
+\f1\lang2057\'9f \f0\lang9 Added support for synthesised speech from the server. Only works on browsers that support the HTML5 <audio> tag and WAV playback (Firefox 3.5+ and Safari). Can call out selected aircraft, but probably will be more useful once highlighting of "interesting" aircraft is implemented. By default this is disabled for Internet connections.\par
+\f1\lang2057\'9f \f0\lang9 Removed the option to record BaseStation messages.\par
+\f1\lang2057\'9f \f0\lang9 Reduced the number of cookies stored by the site.\par
+\par
+\ul 0.17.0\par
+\ulnone\f1\lang2057\'9f \f0\lang9 A disconnected browser is now removed from the list of active sessions on the server's display after 60 seconds.\par
+\f1\lang2057\'9f \f0\lang9 Users can now display labels against each aircraft on the map. By default this is disabled for connections from the Internet.\par
+\f1\lang2057\'9f \f0\lang9 The list of aircraft can now be hidden.\ul\par
+\par
+0.16.0\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Users can now configure the columns they want to see in the list and the order in which they appear.\f1\lang2057\par
+\'9f \f0\lang9 Users can now configure whether the distance should be shown in miles or kilometres.\par
+\f1\lang2057\'9f \f0\lang9 Added tooltip showing the route when hovering over the callsign and another showing the model when hovering over the aircraft type.\par
+\f1\lang2057\'9f \f0\lang9 Fixed a problem that caused more than one marker to occasionally appear for an aircraft. This should also allow the aircraft to appear when used with an AirNav RadarBox. Note that AirNav RadarBoxes are still not supported.\f1\lang2057\par
+\'9f \f0\lang9 Fixed problem that caused two scroll bars to appear with some browsers.\par
+\f1\lang2057\'9f \f0\lang9 Fixed problem with leading zeros not being shown on squawks.\par
+\f1\lang2057\'9f \f0\lang9 Tidied up the list sort options and made their appearance consistent across browsers.\par
+\ul\par
+0.15.0\par
+
+\pard\nowidctlpar\ulnone\f1\lang2057\'9f \f0\lang9 Fixed bug which caused a blank page to be displayed instead of the Google Maps page when the Windows regional settings cause decimal numbers to be formatted with commas in them instead of decimal points (e.g. "12,345" instead of "12.345").\par
+\f1\lang2057\par
+\'9f \f0\lang9 Fixed bug which caused the refresh interval to be double the amount requested. To keep default behaviour consistent with previous versions 1 second is always added to the requested refresh interval.\par
+\par
+\f1\lang2057\'9f \f0\lang9 Minimum allowable refresh interval is now 0 seconds.\par
+\f1\lang2057\par
+\'9f \f0\lang9 Added support for alternate configurations.\par
+\par
+\f1\lang2057\'9f \f0\lang9 Revamped Help | About dialog.\par
+\par
+\par
+
+\pard\nowidctlpar\sa200\sl276\slmult1\ul 0.14.1\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed a problem that prevented Internet Explorer 6 from showing any aircraft. Please note that IE6 is still not supported.\par
+\f1\lang2057\'9f \f0\lang9 Fixed a bug that led to more points being stored against an aircraft than was intended. This fix should improve the Google Maps page performance.\par
+\f1\lang2057\'9f \f0\lang9 Redundant trail co-ordinates are now discarded. This should lead to a significant improvement in Google Maps page performance.\par
+\f1\lang2057\'9f \f0\lang9 Improved the calculation of bearing for aircraft that transmit a position but no bearing.\par
+\f1\lang2057\'9f \f0\lang9 Now disconnects BaseStation connection when an exception occurs during message parsing rather than displaying potentially hundreds of exception messages.\par
+\f1\lang2057\'9f \f0\lang9 Now shows the BaseStation port 30003 message text in the log when there's an exception during parsing.\par
+\f1\lang2057\'9f \f0\lang9 Possible fix for parsing BaseStation messages for .NET installations that don't have UK English region settings available to them. The Portuguese chap I sent a test version to didn't get back to me, but the way it was done before was wrong anyway so the fix stays in.\par
+\f1\lang2057\'9f \f0\lang9 Added an option under the Tools menu to reconnect to BaseStation without having to quit and restart the server.\par
+\f1\lang2057\'9f \f0\lang9 Added date report.\par
+\f1\lang2057\'9f \f0\lang9 Added detection of Internet connections and configuration page to allow these to be treated differently to LAN connections.\par
+\f1\lang2057\'9f \f0\lang9 Disabled reports for Internet connections by default. Reports can place a heavy load on the BaseStation database and should only be run by trusted users.\par
+\f1\lang2057\'9f \f0\lang9 Reports now have links to external websites for an aircraft.\par
+\par
+\ul 0.13.0\par
+\ulnone\f1\lang2057\'9f \f0\lang9 Fixed a bug whereby if the operator flag code contained an underscore then the flag wasn't displayed.\par
+\f1\lang2057\'9f \f0\lang9 Added version history to the installer.\par
+\f1\lang2057\'9f \f0\lang9 Added a license page to the installer to ensure people know that they're bound by the Google Maps API Terms & Conditions.\par
+\f1\lang2057\'9f \f0\lang9 Installer now lets user choose the port number to listen on.\par
+\f1\lang2057\'9f \f0\lang9 Reports no longer show alerts in red.\par
+\f1\lang2057\'9f \f0\lang9 Additional criteria added to the registration report:\par
+
+\pard\nowidctlpar\li720\sa200\sl276\slmult1 a) Date range.\par
+b) Callsign.\par
+c) Had emergency.\par
+
+\pard\nowidctlpar\sa200\sl276\slmult1\f1\lang2057\'9f \f0\lang9 Added a report that displays all flights for an ICAO / Mode-S code. The ICAOs shown on the 'live map' page now link to the ICAO report.\par
+\f1\lang2057\'9f \f0\lang9 Added a link to the ad-hoc registration and ICAO reports from the map screen. When there are more reports there'll be a separate page to start ad-hoc runs.\par
+\f1\lang2057\'9f \f0\lang9 Distances now note that they're from the centre of the map if the location hasn't yet been set through the browser.\par
+\f1\lang2057\'9f \f0\lang9 Added support for displaying silhouettes instead of the type code. If you display both silhouettes and operator flags then you lose the squawk column.\par
+\f1\lang2057\'9f \f0\lang9 Various changes to the aircraft list:\par
+
+\pard\nowidctlpar\li720\sa200\sl276\slmult1 a) The list can now be sorted.\par
+b) Cells are only filled if their content changes - should stop flickering under some flavours of IE and improve performance.\par
+c) Operator flags and silhouettes columns shown or hidden dynamically when server options are changed.\par
+d) If the server options mean that neither the operator flags or the silhouettes column can be shown then a row header image is displayed against each row to allow the aircraft to be selected.\par
+e) Hovering over the operator flag shows the name of the operator. This also works for flag cells that are empty.\par
+f) Hovering over the silhouette shows the aircraft ICAO type code and model.\par
+
+\pard\nowidctlpar\sa200\sl276\slmult1\f1\lang2057\'9f \f0\lang9 The map now stays in position when the list is scrolled. On the iPad the list will need to be scrolled with two fingers instead of one.\par
+\f1\lang2057\'9f \f0\lang9 Operator flags and silhouette images are now fixed at 85x20 pixels again. If the need to allow this to be configurable arises then it will be done through server options, the code won't try to figure the size out.\par
+}
+ 

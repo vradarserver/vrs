@@ -43,8 +43,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Framework", "Test\Test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1FB59799-F940-44C5-8BF6-668C46EB97C0}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		_ChecksumFiles.ps1 = _ChecksumFiles.ps1
 		_PostBuild.ps1 = _PostBuild.ps1
+		Build.bat = Build.bat
+		Clean.bat = Clean.bat
 		LICENSE.txt = LICENSE.txt
 		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
 		VirtualRadar.vsmdi = VirtualRadar.vsmdi
@@ -103,6 +106,60 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KdTreeLib", "ThirdParty\KdTreeLib\KdTreeLib.csproj", "{68C8066D-7844-41C2-993D-3160798164D1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.TileServerCache", "Plugin.TileServerCache\Plugin.TileServerCache.csproj", "{99D4BD27-48F5-492A-8EDD-FB4368F08692}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installers", "Installers", "{BE944B88-4338-436B-B813-95E8491C9A0D}"
+	ProjectSection(SolutionItems) = preProject
+		Installers\clean-innosetup.bat = Installers\clean-innosetup.bat
+		Installers\clean-mono.bat = Installers\clean-mono.bat
+		Installers\clean.bat = Installers\clean.bat
+		Installers\make-innosetup.bat = Installers\make-innosetup.bat
+		Installers\make-mono-with-wsl.bat = Installers\make-mono-with-wsl.bat
+		Installers\make.bat = Installers\make.bat
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InnoSetup", "InnoSetup", "{953CC51C-9511-4438-8754-F0E8DE62F98B}"
+	ProjectSection(SolutionItems) = preProject
+		Installers\InnoSetup\LanguagePack-Contents.rtf = Installers\InnoSetup\LanguagePack-Contents.rtf
+		Installers\InnoSetup\LanguagePack.iss = Installers\InnoSetup\LanguagePack.iss
+		Installers\InnoSetup\Plugin-CustomContent-VersionHistory.rtf = Installers\InnoSetup\Plugin-CustomContent-VersionHistory.rtf
+		Installers\InnoSetup\Plugin-CustomContent.iss = Installers\InnoSetup\Plugin-CustomContent.iss
+		Installers\InnoSetup\Plugin-DatabaseEditor-VersionHistory.rtf = Installers\InnoSetup\Plugin-DatabaseEditor-VersionHistory.rtf
+		Installers\InnoSetup\Plugin-DatabaseEditor.iss = Installers\InnoSetup\Plugin-DatabaseEditor.iss
+		Installers\InnoSetup\Plugin-DatabaseWriter-VersionHistory.rtf = Installers\InnoSetup\Plugin-DatabaseWriter-VersionHistory.rtf
+		Installers\InnoSetup\Plugin-DatabaseWriter.iss = Installers\InnoSetup\Plugin-DatabaseWriter.iss
+		Installers\InnoSetup\Plugin-DisableAudio-VersionHistory.rtf = Installers\InnoSetup\Plugin-DisableAudio-VersionHistory.rtf
+		Installers\InnoSetup\Plugin-DisableAudio.iss = Installers\InnoSetup\Plugin-DisableAudio.iss
+		Installers\InnoSetup\Plugin-DisableUPnP-VersionHistory.rtf = Installers\InnoSetup\Plugin-DisableUPnP-VersionHistory.rtf
+		Installers\InnoSetup\Plugin-DisableUPnP.iss = Installers\InnoSetup\Plugin-DisableUPnP.iss
+		Installers\InnoSetup\Plugin-FeedFilter-VersionHistory.rtf = Installers\InnoSetup\Plugin-FeedFilter-VersionHistory.rtf
+		Installers\InnoSetup\Plugin-FeedFilter.iss = Installers\InnoSetup\Plugin-FeedFilter.iss
+		Installers\InnoSetup\Plugin-TileServerCache-VersionHistory.rtf = Installers\InnoSetup\Plugin-TileServerCache-VersionHistory.rtf
+		Installers\InnoSetup\Plugin-TileServerCache.iss = Installers\InnoSetup\Plugin-TileServerCache.iss
+		Installers\InnoSetup\Plugin-WebAdmin-VersionHistory.rtf = Installers\InnoSetup\Plugin-WebAdmin-VersionHistory.rtf
+		Installers\InnoSetup\Plugin-WebAdmin.iss = Installers\InnoSetup\Plugin-WebAdmin.iss
+		Installers\InnoSetup\VirtualRadar-VersionHistory.rtf = Installers\InnoSetup\VirtualRadar-VersionHistory.rtf
+		Installers\InnoSetup\VirtualRadar-x64.iss = Installers\InnoSetup\VirtualRadar-x64.iss
+		Installers\InnoSetup\VirtualRadar-x86.iss = Installers\InnoSetup\VirtualRadar-x86.iss
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mono", "Mono", "{210B7DFB-8F08-428A-861A-56CBD9C5E642}"
+	ProjectSection(SolutionItems) = preProject
+		Installers\Mono\.gitattributes = Installers\Mono\.gitattributes
+		Installers\Mono\build-language-pack.sh = Installers\Mono\build-language-pack.sh
+		Installers\Mono\build-plugin-custom-content.sh = Installers\Mono\build-plugin-custom-content.sh
+		Installers\Mono\build-plugin-database-editor.sh = Installers\Mono\build-plugin-database-editor.sh
+		Installers\Mono\build-plugin-database-writer.sh = Installers\Mono\build-plugin-database-writer.sh
+		Installers\Mono\build-plugin-feed-filter.sh = Installers\Mono\build-plugin-feed-filter.sh
+		Installers\Mono\build-plugin-tile-server-cache.sh = Installers\Mono\build-plugin-tile-server-cache.sh
+		Installers\Mono\build-plugin-web-admin.sh = Installers\Mono\build-plugin-web-admin.sh
+		Installers\Mono\build-virtualradar.sh = Installers\Mono\build-virtualradar.sh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{657E8A17-0729-4330-A9DE-E16F23480BA5}"
+	ProjectSection(SolutionItems) = preProject
+		Installers\Resources\WizardImage.bmp = Installers\Resources\WizardImage.bmp
+		Installers\Resources\WizardSmallImage.bmp = Installers\Resources\WizardSmallImage.bmp
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -583,6 +640,9 @@ Global
 		{9E538513-A812-4A09-BD54-96734AD4A850} = {3DD098CE-F3C7-4D95-8EDC-969A4F71D740}
 		{A81147B6-D3E8-42AE-A98F-21BA5C4BAE99} = {1D1FAF73-5B9E-4A66-B928-ED19AA5E3BD8}
 		{68C8066D-7844-41C2-993D-3160798164D1} = {1D1FAF73-5B9E-4A66-B928-ED19AA5E3BD8}
+		{953CC51C-9511-4438-8754-F0E8DE62F98B} = {BE944B88-4338-436B-B813-95E8491C9A0D}
+		{210B7DFB-8F08-428A-861A-56CBD9C5E642} = {BE944B88-4338-436B-B813-95E8491C9A0D}
+		{657E8A17-0729-4330-A9DE-E16F23480BA5} = {BE944B88-4338-436B-B813-95E8491C9A0D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2081B535-0616-491B-BD4F-2E7C3C63E026}
