@@ -3,12 +3,10 @@ name: Build Release
 on:
   push:
     tags:
-      - v3.*
-      - v2.*
+      - v[23].*
   pull_request:
     tags:
-      - v3.*
-      - v2.*
+      - v[23].*
 
 jobs:
   build:
