@@ -125,7 +125,7 @@ jobs:
         shell: bash
 
       - name:  Build Windows .NET Framework SHA256 checksums
-        run:   sha256sum Installers/InnoSetup/Output/*.exe > Installers/InnoSetup/Output/checksums-${{ steps.set_ver.outputs.VER }}-sha256.txt
+        run:   sha256sum Installers/InnoSetup/Output/*.exe > Installers/InnoSetup/Output/checksums-windows-${{ steps.set_ver.outputs.VER }}-sha256.txt
         shell: bash
 
       - name:  Fix line endings on Windows .NET Framework SHA256 checksums
@@ -133,7 +133,7 @@ jobs:
         shell: bash
 
       - name:  Build Mono SHA256 checksums
-        run:   sha256sum Installers/InnoSetup/Output/*.tar.gz > Installers/Mono/Output/checksums-${{ steps.set_ver.outputs.VER }}-sha256.txt
+        run:   sha256sum Installers/Mono/output/*.tar.gz > Installers/Mono/output/checksums-mono-${{ steps.set_ver.outputs.VER }}-sha256.txt
         shell: bash
 
       - name: Create Mono release
@@ -377,8 +377,8 @@ jobs:
         with:
           upload_url: ${{ steps.framework_release.outputs.upload_url }}
           asset_content_type: application/vnd.microsoft.portable-executable
-          asset_path: Installers\InnoSetup\Output\checksums-${{ steps.set_ver.outputs.VER }}-sha256.txt
-          asset_name:                             checksums-${{ steps.set_ver.outputs.VER }}-sha256.txt
+          asset_path: Installers\InnoSetup\Output\checksums-windows-${{ steps.set_ver.outputs.VER }}-sha256.txt
+          asset_name:                             checksums-windows-${{ steps.set_ver.outputs.VER }}-sha256.txt
 
       - name: Add Mono SHA256 checksums to release
         uses: actions/upload-release-asset@v1
@@ -387,5 +387,5 @@ jobs:
         with:
           upload_url: ${{ steps.mono_release.outputs.upload_url }}
           asset_content_type: application/gzip
-          asset_path: Installers\Mono\output\checksums-${{ steps.set_ver.outputs.VER }}-sha256.txt
-          asset_name:                        checksums-${{ steps.set_ver.outputs.VER }}-sha256.txt
+          asset_path: Installers\Mono\output\checksums-mono-${{ steps.set_ver.outputs.VER }}-sha256.txt
+          asset_name:                        checksums-mono-${{ steps.set_ver.outputs.VER }}-sha256.txt
