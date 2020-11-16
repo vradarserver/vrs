@@ -25,9 +25,11 @@ jobs:
         run:   echo ::set-output name=VER::${GITHUB_REF/refs\/tags\/v/}
         shell: bash
 
-      - name:  Extract branch
-        id:    set_branch
-        run:   echo ::set-output name=BRANCH::${GITHUB_REF##*/}
+      - name:  SQLServer plugin exists
+        id:    plugin_sqlserver_exists
+        uses:  andstor/file-existence-action@v1.0.1
+        with:
+            files: "Installers\InnoSetup\Plugin-SqlServer.iss"
 
       - name: Setup Nuget
         uses: NuGet/setup-nuget@v1.0.5
@@ -93,11 +95,11 @@ jobs:
         shell: bash
 
       - name: Build SqlServer plugin installer
-        if:   steps.set_branch.outputs.BRANCH != 'v2-master'
+        if:   steps.plugin_sqlserver_exists.outputs.files_exists == 'true'
         run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\Plugin-SqlServer.iss
 
       - name:  Build SqlServer tarball
-        if:    steps.set_branch.outputs.BRANCH != 'v2-master'
+        if:    steps.plugin_sqlserver_exists.outputs.files_exists == 'true'
         run:   Installers/Mono/build-plugin-sql-server.sh ${{ steps.set_ver.outputs.VER }}
         shell: bash
 
@@ -275,7 +277,7 @@ jobs:
           asset_name:                        Plugin-FeedFilter-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add SQL Server installer to release
-        if:   steps.set_branch.outputs.BRANCH != 'v2-master'
+        if:   steps.plugin_sqlserver_exists.outputs.files_exists == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -286,7 +288,7 @@ jobs:
           asset_name:                             Plugin-SqlServer-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add SQL Server tarball to release
-        if:   steps.set_branch.outputs.BRANCH != 'v2-master'
+        if:   steps.plugin_sqlserver_exists.outputs.files_exists == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
