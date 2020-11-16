@@ -29,7 +29,7 @@ jobs:
         id:    plugin_sqlserver_exists
         uses:  andstor/file-existence-action@v1.0.1
         with:
-            files: "Installers\InnoSetup\Plugin-SqlServer.iss"
+            files: "Installers/InnoSetup/Plugin-SqlServer.iss"
 
       - name: Setup Nuget
         uses: NuGet/setup-nuget@v1.0.5
