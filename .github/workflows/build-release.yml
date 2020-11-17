@@ -125,7 +125,7 @@ jobs:
         shell: bash
 
       - name:  Build Windows .NET Framework SHA256 checksums
-        run:   sha256sum Installers/InnoSetup/Output/*.exe > Installers/InnoSetup/Output/checksums-windows-${{ steps.set_ver.outputs.VER }}-sha256.txt
+        run:   cd Installers/InnoSetup/Output; sha256sum *.exe > checksums-windows-${{ steps.set_ver.outputs.VER }}-sha256.txt
         shell: bash
 
       - name:  Fix line endings on Windows .NET Framework SHA256 checksums
@@ -133,7 +133,7 @@ jobs:
         shell: bash
 
       - name:  Build Mono SHA256 checksums
-        run:   sha256sum Installers/Mono/output/*.tar.gz > Installers/Mono/output/checksums-mono-${{ steps.set_ver.outputs.VER }}-sha256.txt
+        run:   cd Installers/Mono/output; sha256sum *.tar.gz > checksums-mono-${{ steps.set_ver.outputs.VER }}-sha256.txt
         shell: bash
 
       - name: Create Mono release
