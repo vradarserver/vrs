@@ -70,6 +70,9 @@ var VRS;
                     }, false, true);
                 }
             };
+            /**
+             * Shows or hides a modal overlay that prevents interaction with the page.
+             */
             ViewId.prototype.showModalOverlay = function (show) {
                 if (show) {
                     this._ModalOverlay.show();
@@ -78,9 +81,15 @@ var VRS;
                     this._ModalOverlay.hide();
                 }
             };
+            /**
+             * Returns true if the modal overlay that prevents interaction with the page is visible.
+             */
             ViewId.prototype.isModalOverlayVisible = function () {
                 return this._ModalOverlay.is(':visible');
             };
+            /**
+             * Sends an AJAX request to the view. Handles deferred execution responses automatically.
+             */
             ViewId.prototype.ajax = function (methodName, settings, showModalOverlay, keepOverlayWhenFinished) {
                 var _this = this;
                 if (settings === void 0) { settings = {}; }
@@ -161,7 +170,7 @@ var VRS;
                             }
                             else {
                                 removeOverlay();
-                                success(response, textStatus, jqXHR);
+                                success(response, textStatus, jqXHR); // This may need a bit of adjusting if anything's expecting to see their original XHR...
                             }
                         }
                     },
@@ -174,6 +183,9 @@ var VRS;
                 this.addViewIdToSettings(settings);
                 $.ajax(settings);
             };
+            /**
+             * Creates a wrap-up validation field that reports on the state of a number of other validation fields.
+             */
             ViewId.prototype.createWrapupValidation = function (validationFields) {
                 var result = {
                     IsValid: ko.computed(function () {
@@ -209,6 +221,10 @@ var VRS;
                 };
                 return result;
             };
+            /**
+             * Creates a wrap-up validation field that reports on the state of every element in an array that contains other wrap-up fields.
+             * Can optionally also include an open list of standalone validation fields.
+             */
             ViewId.prototype.createArrayWrapupValidation = function (array, getWrapUp) {
                 var includeValidations = [];
                 for (var _i = 2; _i < arguments.length; _i++) {
@@ -281,6 +297,9 @@ var VRS;
                 };
                 return result;
             };
+            /**
+             * Returns an array of all properties of the model that look like they are validation model field objects.
+             */
             ViewId.prototype.findValidationProperties = function (model, filter, appendToArray) {
                 if (filter === void 0) { filter = null; }
                 if (appendToArray === void 0) { appendToArray = []; }
@@ -299,6 +318,9 @@ var VRS;
                 });
                 return result;
             };
+            /**
+             * Returns a description of an enum value.
+             */
             ViewId.prototype.describeEnum = function (enumValue, enumModels) {
                 var enumModel = VRS.arrayHelper.findFirst(enumModels, function (r) { return r.Value === enumValue; });
                 return enumModel ? enumModel.Description : null;
