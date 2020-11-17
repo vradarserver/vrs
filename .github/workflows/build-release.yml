@@ -25,9 +25,11 @@ jobs:
         run:   echo ::set-output name=VER::${GITHUB_REF/refs\/tags\/v/}
         shell: bash
 
-      - name:  Extract branch
-        id:    set_branch
-        run:   echo ::set-output name=BRANCH::${GITHUB_REF##*/}
+      - name:  SQLServer plugin exists
+        id:    plugin_sqlserver_exists
+        uses:  andstor/file-existence-action@v1.0.1
+        with:
+            files: "Installers/InnoSetup/Plugin-SqlServer.iss"
 
       - name: Setup Nuget
         uses: NuGet/setup-nuget@v1.0.5
@@ -93,11 +95,11 @@ jobs:
         shell: bash
 
       - name: Build SqlServer plugin installer
-        if:   ${{ steps.set_branch.outputs.BRANCH != 'v2-master' }}
+        if:   steps.plugin_sqlserver_exists.outputs.files_exists == 'true'
         run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\Plugin-SqlServer.iss
 
       - name:  Build SqlServer tarball
-        if:    ${{ steps.set_branch.outputs.BRANCH != 'v2-master' }}
+        if:    steps.plugin_sqlserver_exists.outputs.files_exists == 'true'
         run:   Installers/Mono/build-plugin-sql-server.sh ${{ steps.set_ver.outputs.VER }}
         shell: bash
 
@@ -120,6 +122,18 @@ jobs:
 
       - name:  Build LanguagePack tarball
         run:   Installers/Mono/build-language-pack.sh ${{ steps.set_ver.outputs.VER }}
+        shell: bash
+
+      - name:  Build Windows .NET Framework SHA256 checksums
+        run:   cd Installers/InnoSetup/Output; sha256sum *.exe > checksums-windows-${{ steps.set_ver.outputs.VER }}-sha256.txt
+        shell: bash
+
+      - name:  Fix line endings on Windows .NET Framework SHA256 checksums
+        run:   unix2dos Installers/InnoSetup/Output/checksums-windows-${{ steps.set_ver.outputs.VER }}-sha256.txt
+        shell: bash
+
+      - name:  Build Mono SHA256 checksums
+        run:   cd Installers/Mono/output; sha256sum *.tar.gz > checksums-mono-${{ steps.set_ver.outputs.VER }}-sha256.txt
         shell: bash
 
       - name: Create Mono release
@@ -275,7 +289,7 @@ jobs:
           asset_name:                        Plugin-FeedFilter-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add SQL Server installer to release
-        if:   ${{ steps.set_branch.outputs.BRANCH != 'v2-master' }}
+        if:   steps.plugin_sqlserver_exists.outputs.files_exists == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -286,7 +300,7 @@ jobs:
           asset_name:                             Plugin-SqlServer-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add SQL Server tarball to release
-        if:   ${{ steps.set_branch.outputs.BRANCH != 'v2-master' }}
+        if:   steps.plugin_sqlserver_exists.outputs.files_exists == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -355,3 +369,23 @@ jobs:
           asset_content_type: application/gzip
           asset_path: Installers\Mono\output\LanguagePack-${{ steps.set_ver.outputs.VER }}.tar.gz
           asset_name:                        LanguagePack-${{ steps.set_ver.outputs.VER }}.tar.gz
+
+      - name: Add Windows .NET Framework SHA256 checksums to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
+          asset_content_type: application/vnd.microsoft.portable-executable
+          asset_path: Installers\InnoSetup\Output\checksums-windows-${{ steps.set_ver.outputs.VER }}-sha256.txt
+          asset_name:                             checksums-windows-${{ steps.set_ver.outputs.VER }}-sha256.txt
+
+      - name: Add Mono SHA256 checksums to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
+          asset_content_type: application/gzip
+          asset_path: Installers\Mono\output\checksums-mono-${{ steps.set_ver.outputs.VER }}-sha256.txt
+          asset_name:                        checksums-mono-${{ steps.set_ver.outputs.VER }}-sha256.txt
