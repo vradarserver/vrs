@@ -129,7 +129,7 @@ jobs:
         shell: bash
 
       - name:  Fix line endings on Windows .NET Framework SHA256 checksums
-        run:   unix2dos Installers/InnoSetup/Output/checksums-${{ steps.set_ver.outputs.VER }}-sha256.txt
+        run:   unix2dos Installers/InnoSetup/Output/checksums-windows-${{ steps.set_ver.outputs.VER }}-sha256.txt
         shell: bash
 
       - name:  Build Mono SHA256 checksums
