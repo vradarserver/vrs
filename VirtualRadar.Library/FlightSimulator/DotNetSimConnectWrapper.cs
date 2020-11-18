@@ -344,22 +344,93 @@ namespace VirtualRadar.Library.FlightSimulator
         /// <param name="data"></param>
         private void SimConnect_RecvSimobjectDataBytype(SimConnect sender, SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE data)
         {
+            var cleanedData = CleanupFlightSimulator2020Issues(data.dwData);
+
             var args = new SimConnectObjectReceivedEventArgs() {
-                Data = data.dwData,
-                DefineCount = data.dwDefineCount,
-                DefineId = data.dwDefineID,
-                EntryNumber = data.dwentrynumber,
-                Flags = data.dwFlags,
-                ObjectId = data.dwObjectID,
-                OutOf = data.dwoutof,
-                RequestId = data.dwRequestID,
+                Data =          cleanedData,
+                DefineCount =   data.dwDefineCount,
+                DefineId =      data.dwDefineID,
+                EntryNumber =   data.dwentrynumber,
+                Flags =         data.dwFlags,
+                ObjectId =      data.dwObjectID,
+                OutOf =         data.dwoutof,
+                RequestId =     data.dwRequestID,
             };
 
             OnObjectReceived(args);
         }
 
         /// <summary>
-        /// Called when SimConnect detects that the user has quit FSX.
+        /// Fixes issues with early versions of the FS2020 SimConnect whereby it did not strip the data
+        /// names off some of the fields correctly.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <remarks><para>
+        /// There are two fields in <see cref="ReadAircraftInformation"/> that are incorrectly parsed by SimConnect. They
+        /// are Model and Type.
+        /// </para><para>
+        /// Model is prefixed with 'TT:ATCCOM.ATC_NAME ' and a suffix of '.0.text' appended. The suffix might be truncated
+        /// depending on the length of the model name.
+        /// </para><para>
+        /// Type is prefixed with 'TT:ATCCOM.AC_MODEL ' and a suffix of '.0.text' appended. The suffix might be truncated
+        /// depending on the length of the model type.
+        /// </para></remarks>
+        object[] CleanupFlightSimulator2020Issues(object[] data)
+        {
+            var result = data;
+
+            if(data?.Length > 0 && data[0] is ReadAircraftInformation readAircraftInformation) {
+                var changed = false;
+
+                string stripDataName(string value, string unwantedPrefix)
+                {
+                    var stripped = value;
+
+                    if(stripped != null && stripped.StartsWith(unwantedPrefix)) {
+                        stripped = stripped.Substring(unwantedPrefix.Length);
+                        changed = true;
+
+                        for(var dotIdx = stripped.IndexOf('.');dotIdx != -1;dotIdx = stripped.IndexOf('.', dotIdx + 1)) {
+                            var trailingText = stripped.Substring(dotIdx);
+                            if(".0.text".StartsWith(trailingText)) {
+                                stripped = stripped.Substring(0, dotIdx);
+                                break;
+                            }
+                        }
+                    }
+
+                    return stripped;
+                }
+
+                var model = stripDataName(readAircraftInformation.Model, "TT:ATCCOM.ATC_NAME ");
+                var type =  stripDataName(readAircraftInformation.Type,  "TT:ATCCOM.AC_MODEL ");
+
+                if(changed) {
+                    result = new object[] {
+                        new ReadAircraftInformation() {
+                            AirspeedIndicated =     readAircraftInformation.AirspeedIndicated,
+                            Altitude =              readAircraftInformation.Altitude,
+                            Latitude =              readAircraftInformation.Latitude,
+                            Longitude =             readAircraftInformation.Longitude,
+                            MaxAirspeedIndicated =  readAircraftInformation.MaxAirspeedIndicated,
+                            Model =                 model,
+                            OnGround =              readAircraftInformation.OnGround,
+                            Operator =              readAircraftInformation.Operator,
+                            Registration =          readAircraftInformation.Registration,
+                            Squawk =                readAircraftInformation.Squawk,
+                            TrueHeading =           readAircraftInformation.TrueHeading,
+                            Type =                  type,
+                            VerticalSpeed =         readAircraftInformation.VerticalSpeed,
+                        },
+                    };
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Called when SimConnect detects that the user has quit Flight Simulator.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="data"></param>
