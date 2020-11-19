@@ -132,7 +132,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                     var databaseService = Factory.Resolve<IBaseStationDatabase>();
                     databaseService.CreateDatabaseIfMissing(_View.DatabaseFileName);
 
-                    _View.ShowCreateDatabaseOutcome(String.Format(PluginStrings.CreatedDatabaseFile, databaseFileName), PluginStrings.CreatedDatabaseFile);
+                    _View.ShowCreateDatabaseOutcome(String.Format(PluginStrings.CreatedDatabaseFile, databaseFileName), PluginStrings.CreatedDatabaseFileTitle);
                 }
             }
         }
