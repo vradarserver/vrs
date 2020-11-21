@@ -160,7 +160,8 @@ var VRS;
         AirframesDotOrg: 'airframes.org',
         AirlinersDotNet: 'airliners.net',
         AirportDataDotCom: 'airport-data.com',
-        StandingDataMaintenance: 'sdm'
+        StandingDataMaintenance: 'sdm',
+        JetPhotosDotCom: 'jetphotos.com',
     };
     VRS.MapControlStyle = {
         Default: 'a',
