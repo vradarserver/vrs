@@ -258,10 +258,11 @@ namespace VRS
      */
     export var LinkSite = {
         None:                       'none',
-        AirframesDotOrg:            'airframes.org',
+        AirframesDotOrg:            'airframes.org',        // Defunct, requires account, no longer used
         AirlinersDotNet:            'airliners.net',
         AirportDataDotCom:          'airport-data.com',
-        StandingDataMaintenance:    'sdm'
+        StandingDataMaintenance:    'sdm',
+        JetPhotosDotCom:            'jetphotos.com',
     };
 
     export type MapControlStyleEnum = string;
