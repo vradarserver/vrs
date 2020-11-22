@@ -61,6 +61,23 @@ namespace VirtualRadar.Database.StateHistory
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="aircraftList"></param>
+        public void AircraftList_Insert(AircraftList aircraftList)
+        {
+            using(var connection = OpenConnection(forWrite: true)) {
+                aircraftList.AircraftListID = connection.Query<long>(Scripts.AircraftList_Insert, new {
+                    aircraftList.VrsSessionID,
+                    aircraftList.IsKeyList,
+                    aircraftList.ReceiverSnapshotID,
+                    aircraftList.CreatedUtc,
+                    aircraftList.UpdatedUtc,
+                }).Single();
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <returns></returns>
         public DatabaseVersion DatabaseVersion_GetLatest()
         {
@@ -287,7 +304,7 @@ namespace VirtualRadar.Database.StateHistory
         public void VrsSession_Insert(VrsSession session)
         {
             using(var connection = OpenConnection(forWrite: true)) {
-                session.VrsSessionID = connection.Query<int>(Scripts.VrsSession_Insert, new {
+                session.VrsSessionID = connection.Query<long>(Scripts.VrsSession_Insert, new {
                     session.DatabaseVersionID,
                     session.CreatedUtc,
                 }).Single();

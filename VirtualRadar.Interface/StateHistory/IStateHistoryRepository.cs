@@ -44,6 +44,12 @@ namespace VirtualRadar.Interface.StateHistory
         void Initialise(IStateHistoryDatabaseInstance databaseInstance);
 
         /// <summary>
+        /// Creates a new aircraft list and fills in its ID.
+        /// </summary>
+        /// <param name="aircraftList"></param>
+        void AircraftList_Insert(AircraftList aircraftList);
+
+        /// <summary>
         /// Either creates a new snapshot record or reads the existing record that has the
         /// same fingerprint and returns it.
         /// </summary>

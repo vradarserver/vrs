@@ -148,6 +148,22 @@ namespace VirtualRadar.Library.StateHistory
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="aircraftList"></param>
+        /// <returns></returns>
+        public bool AircraftList_Insert(AircraftList aircraftList)
+        {
+            DoIfWriteable(repo => {
+                aircraftList.CreatedUtc = DateTime.UtcNow;
+                aircraftList.UpdatedUtc = aircraftList.CreatedUtc;
+                repo.AircraftList_Insert(aircraftList);
+            });
+
+            return WritesEnabled;
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="countryName"></param>
         /// <returns></returns>
         public CountrySnapshot Country_GetOrCreate(string countryName)

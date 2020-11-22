@@ -61,6 +61,29 @@ namespace VirtualRadar.Database.StateHistory {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [AircraftList] (
+        ///    [VrsSessionID]
+        ///   ,[IsKeyList]
+        ///   ,[ReceiverSnapshotID]
+        ///   ,[CreatedUtc]
+        ///   ,[UpdatedUtc]
+        ///) VALUES (
+        ///    @VrsSessionID
+        ///   ,@IsKeyList
+        ///   ,@ReceiverSnapshotID
+        ///   ,@CreatedUtc
+        ///   ,@UpdatedUtc
+        ///);
+        ///SELECT last_insert_rowid();
+        ///.
+        /// </summary>
+        internal static string AircraftList_Insert {
+            get {
+                return ResourceManager.GetString("AircraftList_Insert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to INSERT INTO [CountrySnapshot] (
         ///    [CreatedUtc]
         ///   ,[Fingerprint]

@@ -164,3 +164,20 @@ CREATE UNIQUE INDEX IF NOT EXISTS [IX_ModelSnapshot_Fingerprint]            ON [
 CREATE        INDEX IF NOT EXISTS [IX_ModelSnapshot_Icao]                   ON [ModelSnapshot] ([Icao]) WHERE [Icao] IS NOT NULL;
 CREATE        INDEX IF NOT EXISTS [IX_ModelSnapshot_ManufacturerSnapshotID] ON [ModelSnapshot] ([ManufacturerSnapshotID]) WHERE [ManufacturerSnapshotID] IS NOT NULL;
 CREATE        INDEX IF NOT EXISTS [IX_ModelSnapshot_ModelName]              ON [ModelSnapshot] ([ModelName]) WHERE [ModelName] IS NOT NULL;
+
+
+--
+-- AircraftList (v1)
+--
+CREATE TABLE IF NOT EXISTS [AircraftList]
+(
+    [AircraftListID]        BIGINT NOT NULL PRIMARY KEY AUTOINCREMENT
+   ,[VrsSessionID]          BIGINT NOT NULL CONSTRAINT [FK_AircraftList_VrsSession] REFERENCES [VrsSession] ([VrsSessionID])
+   ,[IsKeyList]             BIT NOT NULL
+   ,[ReceiverSnapshotID]    BIGINT NOT NULL CONSTRAINT [FK_AircraftList_ReceiverSnapshot] REFERENCES [ReceiverSnapshot] ([ReceiverSnapshotID])
+   ,[CreatedUtc]            DATETIME NOT NULL
+   ,[UpdatedUtc]            DATETIME NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS [IX_AircraftList_ReceiverCreated]          ON [AircraftList] ([ReceiverSnapshotID], [Created]);
+CREATE INDEX IF NOT EXISTS [IX_AircraftList_ReceiverdCreatedKeyLists] ON [AircraftList] ([ReceiverSnapshotID], [Created]) WHERE [IsKeyList] = 1;

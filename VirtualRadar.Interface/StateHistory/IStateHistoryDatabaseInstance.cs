@@ -69,6 +69,13 @@ namespace VirtualRadar.Interface.StateHistory
         bool DoIfWriteable(Action<IStateHistoryRepository> action);
 
         /// <summary>
+        /// Creates a new aircraft list, filling in the ID and created / updated dates.
+        /// </summary>
+        /// <param name="aircraftList"></param>
+        /// <returns>True if writes are enabled and it was created, false otherwise.</returns>
+        bool AircraftList_Insert(AircraftList aircraftList);
+
+        /// <summary>
         /// Returns a snapshot for the values passed across. Returns null if writes are disabled
         /// or the country name is null.
         /// </summary>

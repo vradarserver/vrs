@@ -144,6 +144,32 @@ namespace Test.VirtualRadar.Library.StateHistory
         }
 
         [TestMethod]
+        public void AircraftList_Insert_Creates_AircraftList_Record()
+        {
+            new InlineDataTest(this).TestAndAssert(new bool[] {
+                true, false
+            }, writesEnabled => {
+                AircraftList aircraftList = null;
+                _Repository
+                    .Setup(r => r.AircraftList_Insert(It.IsAny<AircraftList>()))
+                    .Callback((AircraftList al) => aircraftList = al);
+
+                _DatabaseInstance.Initialise(writesEnabled, null);
+
+                _DatabaseInstance.AircraftList_Insert(new AircraftList());
+
+                _Repository.Verify(r => r.AircraftList_Insert(It.IsAny<AircraftList>()), writesEnabled
+                    ? Times.Once()
+                    : Times.Never()
+                );
+                if(writesEnabled) {
+                    Assert.IsTrue(aircraftList.CreatedUtc > DateTime.UtcNow.AddMinutes(-2));
+                    Assert.IsTrue(aircraftList.UpdatedUtc == aircraftList.CreatedUtc);
+                }
+            });
+        }
+
+        [TestMethod]
         public void DoIfReadable_Calls_Action_When_Database_Is_Not_Missing()
         {
             new InlineDataTest(this).TestAndAssert(new bool[] {

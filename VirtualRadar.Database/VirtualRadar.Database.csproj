@@ -168,6 +168,7 @@
     <Content Include="StateHistory\Scripts\ReceiverSnapshot_GetOrCreate.sql" />
     <Content Include="StateHistory\Scripts\SpeciesSnapshot_GetOrCreate.sql" />
     <Content Include="StateHistory\Scripts\EngineTypeSnapshot_GetOrCreate.sql" />
+    <Content Include="StateHistory\Scripts\AircraftList_Insert.sql" />
     <Content Include="StateHistory\Scripts\WakeTurbulenceCategorySnapshot_GetOrCreate.sql" />
     <Content Include="StateHistory\Scripts\ManufacturerSnapshot_GetOrCreate.sql" />
     <Content Include="StateHistory\Scripts\CountrySnapshot_GetOrCreate.sql" />
