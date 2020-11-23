@@ -103,7 +103,7 @@
       <Name>Plugin.BaseStationDatabaseWriter</Name>
     </ProjectReference>
     <ProjectReference Include="..\Test.Framework\Test.Framework.csproj">
-      <Project>{94F0A821-51BB-4381-9413-1A3FAD661D82}</Project>
+      <Project>{94f0a821-51bb-4381-9413-1a3fad661d82}</Project>
       <Name>Test.Framework</Name>
     </ProjectReference>
   </ItemGroup>
