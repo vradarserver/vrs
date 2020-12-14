@@ -9,7 +9,10 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    SELECT *
+    SELECT [SessionID]
+          ,ISNULL([LocationID], 0) AS [LocationID]
+          ,[StartTime]
+          ,[EndTime]
     FROM   [BaseStation].[Sessions];
 END;
 GO

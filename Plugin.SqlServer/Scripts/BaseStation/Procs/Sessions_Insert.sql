@@ -12,6 +12,8 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+    SET @LocationID = CASE WHEN @LocationID = 0 THEN NULL ELSE @LocationID END;
+
     INSERT INTO [BaseStation].[Sessions] (
          [LocationID]
         ,[StartTime]

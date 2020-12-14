@@ -1870,13 +1870,13 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void SQLite_BaseStationDatabase_UpdateSession_Correctly_Updates_Record()
         {
-            BaseStationDatabase_UpdateSession_Correctly_Updates_Record();
+            BaseStationDatabase_UpdateSession_Correctly_Updates_Record(timeGetsRounded: true);
         }
 
         [TestMethod]
         public void SQLite_BaseStationDatabase_UpdateSession_Works_For_Different_Cultures()
         {
-            BaseStationDatabase_UpdateSession_Works_For_Different_Cultures();
+            BaseStationDatabase_UpdateSession_Works_For_Different_Cultures(timeGetsRounded: true);
         }
         #endregion
 

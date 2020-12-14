@@ -281,7 +281,7 @@ BEGIN
     CREATE TABLE [BaseStation].[Sessions]
     (
         [SessionID]     INTEGER IDENTITY
-       ,[LocationID]    INTEGER NOT NULL CONSTRAINT [FK_Sessions_Location] FOREIGN KEY REFERENCES [BaseStation].[Locations] ([LocationID])
+       ,[LocationID]    INTEGER NULL CONSTRAINT [FK_Sessions_Location] FOREIGN KEY REFERENCES [BaseStation].[Locations] ([LocationID])
        ,[StartTime]     DATETIME2 NOT NULL
        ,[EndTime]       DATETIME2 NULL
 
@@ -291,6 +291,14 @@ BEGIN
     CREATE INDEX [IX_Sessions_EndTime]      ON [BaseStation].[Sessions]([EndTime]);
     CREATE INDEX [IX_Sessions_LocationID]   ON [BaseStation].[Sessions]([LocationID]);
     CREATE INDEX [IX_Sessions_StartTime]    ON [BaseStation].[Sessions]([StartTime]);
+END;
+GO
+
+-- LocationID was originally not nullable. This causes issues if the location is unknown.
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'BaseStation' AND TABLE_NAME = 'Sessions' AND COLUMN_NAME = 'LocationID' AND IS_NULLABLE = 'YES')
+BEGIN
+    ALTER TABLE  [BaseStation].[Sessions]
+    ALTER COLUMN [LocationID] INTEGER NULL;
 END;
 GO
 
@@ -2249,7 +2257,10 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    SELECT *
+    SELECT [SessionID]
+          ,ISNULL([LocationID], 0) AS [LocationID]
+          ,[StartTime]
+          ,[EndTime]
     FROM   [BaseStation].[Sessions];
 END;
 GO
@@ -2277,6 +2288,8 @@ ALTER PROCEDURE [BaseStation].[Sessions_Insert]
 AS
 BEGIN
     SET NOCOUNT ON;
+
+    SET @LocationID = CASE WHEN @LocationID = 0 THEN NULL ELSE @LocationID END;
 
     INSERT INTO [BaseStation].[Sessions] (
          [LocationID]
@@ -2317,7 +2330,7 @@ BEGIN
     SET NOCOUNT ON;
 
     UPDATE [BaseStation].[Sessions]
-    SET    [LocationID]    = @LocationID
+    SET    [LocationID]    = CASE WHEN @LocationID = 0 THEN NULL ELSE @LocationID END
           ,[StartTime]     = ISNULL(@StartTime, [StartTime])
           ,[EndTime]       = @EndTime
     WHERE [SessionID] = @SessionID;

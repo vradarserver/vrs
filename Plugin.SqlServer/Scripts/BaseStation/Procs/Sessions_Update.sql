@@ -14,7 +14,7 @@ BEGIN
     SET NOCOUNT ON;
 
     UPDATE [BaseStation].[Sessions]
-    SET    [LocationID]    = @LocationID
+    SET    [LocationID]    = CASE WHEN @LocationID = 0 THEN NULL ELSE @LocationID END
           ,[StartTime]     = ISNULL(@StartTime, [StartTime])
           ,[EndTime]       = @EndTime
     WHERE [SessionID] = @SessionID;

@@ -3942,7 +3942,7 @@ namespace Test.VirtualRadar.Database
             _Database.UpdateSession(session);
         }
 
-        protected void BaseStationDatabase_UpdateSession_Correctly_Updates_Record()
+        protected void BaseStationDatabase_UpdateSession_Correctly_Updates_Record(bool timeGetsRounded)
         {
             _Database.WriteSupportEnabled = true;
             var locationId = (int)AddLocation(new BaseStationLocation() { LocationName = "X" });
@@ -3953,11 +3953,16 @@ namespace Test.VirtualRadar.Database
                 StartTime = new DateTime(2001, 2, 3, 4, 5, 6, 789),
             });
 
+            var endTime =   new DateTime(2007, 8, 9, 10, 11, 12, 772);
+            var startTime = new DateTime(2006, 7, 8, 9,  10, 11, 124);
+            var expectedEndTime =   timeGetsRounded ? new DateTime(2007, 8, 9, 10, 11, 12) : endTime;
+            var expectedStartTime = timeGetsRounded ? new DateTime(2006, 7, 8, 9, 10, 11) : startTime;
+
             var update = _Database.GetSessions()[0];
             var originalId = update.SessionID;
-            update.EndTime = new DateTime(2007, 8, 9, 10, 11, 12, 772);
+            update.EndTime = endTime;
             update.LocationID = newLocationId;
-            update.StartTime = new DateTime(2006, 7, 8, 9, 10, 11, 124);
+            update.StartTime = startTime;
 
             _Database.UpdateSession(update);
 
@@ -3965,12 +3970,12 @@ namespace Test.VirtualRadar.Database
             Assert.AreEqual(1, allSessions.Count);
             var readBack = allSessions[0];
             Assert.AreEqual(originalId, readBack.SessionID);
-            Assert.AreEqual(new DateTime(2007, 8, 9, 10, 11, 12), readBack.EndTime);
+            Assert.AreEqual(expectedEndTime, readBack.EndTime);
             Assert.AreEqual(newLocationId, readBack.LocationID);
-            Assert.AreEqual(new DateTime(2006, 7, 8, 9, 10, 11), readBack.StartTime);
+            Assert.AreEqual(expectedStartTime, readBack.StartTime);
         }
 
-        protected void BaseStationDatabase_UpdateSession_Works_For_Different_Cultures()
+        protected void BaseStationDatabase_UpdateSession_Works_For_Different_Cultures(bool timeGetsRounded)
         {
             foreach(var culture in _Cultures) {
                 using(var switcher = new CultureSwitcher(culture)) {
@@ -3978,7 +3983,7 @@ namespace Test.VirtualRadar.Database
                     RunTestInitialise();
 
                     try {
-                        BaseStationDatabase_UpdateSession_Correctly_Updates_Record();
+                        BaseStationDatabase_UpdateSession_Correctly_Updates_Record(timeGetsRounded);
                     } catch(Exception ex) {
                         throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }

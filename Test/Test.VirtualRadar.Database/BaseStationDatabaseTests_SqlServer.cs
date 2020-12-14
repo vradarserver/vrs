@@ -1078,8 +1078,6 @@ namespace Test.VirtualRadar.Database
             BaseStationDatabase_InsertSession_Works_For_Different_Cultures();
         }
 
-        // SQL Server doesn't cope when there are no locations because of the foreign key on a non-nullable field.
-        // Not sure if I care yet. I'll leave the test failing for now.
         [TestMethod]
         public void SqlServer_BaseStationDatabase_InsertSession_Copes_If_There_Are_No_Locations()
         {
@@ -1098,13 +1096,13 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void SqlServer_BaseStationDatabase_UpdateSession_Correctly_Updates_Record()
         {
-            BaseStationDatabase_UpdateSession_Correctly_Updates_Record();
+            BaseStationDatabase_UpdateSession_Correctly_Updates_Record(timeGetsRounded: false);
         }
 
         [TestMethod]
         public void SqlServer_BaseStationDatabase_UpdateSession_Works_For_Different_Cultures()
         {
-            BaseStationDatabase_UpdateSession_Works_For_Different_Cultures();
+            BaseStationDatabase_UpdateSession_Works_For_Different_Cultures(timeGetsRounded: false);
         }
         #endregion
 
