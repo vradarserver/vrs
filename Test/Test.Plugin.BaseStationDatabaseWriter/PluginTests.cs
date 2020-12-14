@@ -799,6 +799,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
                 _OptionsView.Verify(v => v.Dispose(), Times.Never());
                 _OptionsView.Raise(r => r.SaveClicked += null, EventArgs.Empty);
             };
+            _Plugin.Startup(_StartupParameters);
             _Plugin.ShowWinFormsOptionsUI();
 
             _OptionsView.Verify(v => v.Dispose(), Times.Once());
