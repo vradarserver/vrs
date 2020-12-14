@@ -108,6 +108,13 @@ namespace Test.VirtualRadar.Library
             public static Dictionary<Type, int> _RegisterOwinMiddlewareCallCount = new Dictionary<Type,int>();
             public static bool _RegisterOwinMiddlewareThrowsException;
 
+            public static new void _Reset()
+            {
+                Plugin._Reset();
+                _RegisterOwinMiddlewareCallCount.Clear();
+                _RegisterOwinMiddlewareThrowsException = false;
+            }
+
             public void RegisterOwinMiddleware()
             {
                 IncrementCallCount(_RegisterOwinMiddlewareCallCount);
@@ -193,6 +200,7 @@ namespace Test.VirtualRadar.Library
             PluginB._Reset();
             PluginC._Reset();
             NotPlugin._Reset();
+            Plugin_V2._Reset();
         }
 
         [TestCleanup]

@@ -2203,6 +2203,15 @@ namespace Test.VirtualRadar.Library.BaseStation
             _AircraftDetailFetcher.Raise(r => r.Fetched += null, new EventArgs<AircraftDetail>(_AircraftDetail));
 
             var aircraft = _AircraftList.FindAircraft(0x4008F6);
+            Assert.IsNull(aircraft.Origin);
+            Assert.IsNull(aircraft.Destination);
+            Assert.AreEqual(0, aircraft.Stopovers.Count);
+
+            // Once the callsign route fetcher has found the route we should see the details get put back
+            _CallsignRouteDetail.Route = _Route;
+            _CallsignRouteFetcher.Raise(r => r.Fetched += null, new EventArgs<CallsignRouteDetail>(_CallsignRouteDetail));
+
+            aircraft = _AircraftList.FindAircraft(0x4008F6);
             Assert.IsNotNull(aircraft.Origin);
             Assert.IsNotNull(aircraft.Destination);
             Assert.AreEqual(1, aircraft.Stopovers.Count);
