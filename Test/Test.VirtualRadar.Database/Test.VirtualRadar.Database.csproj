@@ -118,9 +118,13 @@
       <Project>{8cdf8d3f-ca98-4027-abc0-8ad12f91e93e}</Project>
       <Name>Plugin.SqlServer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\SQLiteWrapper.DotNet\SQLiteWrapper.DotNet.csproj">
+    <ProjectReference Include="..\..\SQLiteWrapper.DotNet\SQLiteWrapper.DotNet.csproj" Condition="'$(Configuration)|$(Platform)'=='Debug|x86' OR '$(Configuration)|$(Platform)'=='Release|x86'">
       <Project>{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}</Project>
       <Name>SQLiteWrapper.DotNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SQLiteWrapper.DotNet.AnyCPU\SQLiteWrapper.DotNet.AnyCPU.csproj" Condition="'$(Configuration)|$(Platform)'=='Debug|x64' OR '$(Configuration)|$(Platform)'=='Release|x64'">
+      <Project>{c4516cf0-85e9-4b59-b22a-efdff1d8399d}</Project>
+      <Name>SQLiteWrapper.DotNet.AnyCPU</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\VirtualRadar.Database\VirtualRadar.Database.csproj">
       <Project>{049A9A56-990E-4F99-99F7-CC09767508D9}</Project>
