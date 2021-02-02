@@ -309,6 +309,172 @@ namespace Test.VirtualRadar.Library.StateHistory
         }
 
         /// <summary>
+        /// AircraftSnapshot GetOrCreate tests
+        /// </summary>
+        /// <remarks>
+        /// These do not use the common tests, the child records introduce complications that the common tests can't cope with.
+        /// There are only a small number of snapshots with child records, I'm not going to have common tests for them.
+        /// </remarks>
+        class Aircraft_GetOrCreate_TestParams
+        {
+            public string Icao { get; set; }
+
+            public string Registration { get; set; }
+
+            public long? ModelSnapshotID { get; set; }
+
+            public string ConstructionNumber { get; set; }
+
+            public string YearBuilt { get; set; }
+
+            public long? OperatorSnapshotID { get; set; }
+
+            public long? CountrySnapshotID { get; set; }
+
+            public bool? IsMilitary { get; set; }
+
+            public bool? IsInteresting { get; set; }
+
+            public string UserNotes { get; set; }
+
+            public string UserTag { get; set; }
+
+            public static Aircraft_GetOrCreate_TestParams[] Rows = new Aircraft_GetOrCreate_TestParams[] {
+                new Aircraft_GetOrCreate_TestParams() { Icao = null,     Registration = null,     ConstructionNumber = null,    YearBuilt = null,   IsMilitary = null,  IsInteresting = null,  UserNotes = null,                    UserTag = null, },
+                new Aircraft_GetOrCreate_TestParams() { Icao = "",       Registration = "",       ConstructionNumber = "",      YearBuilt = "",     IsMilitary = false, IsInteresting = false, UserNotes = "",                      UserTag = "", },
+                new Aircraft_GetOrCreate_TestParams() { Icao = "48506D", Registration = "PH-TFM", ConstructionNumber = "36429", YearBuilt = "2018", IsMilitary = false, IsInteresting = true,  UserNotes = "Some notes",            UserTag = "A tag", },
+                new Aircraft_GetOrCreate_TestParams() { Icao = "ABC948", Registration = "N859FD", ConstructionNumber = "37730", YearBuilt = "2013", IsMilitary = true,  IsInteresting = false, UserNotes = "Not *really* military", UserTag = "Le tag", },
+            };
+        }
+
+        [TestMethod]
+        public void Aircraft_GetOrCreate_Returns_Null_If_Not_Writeable()
+        {
+            new InlineDataTest(this).TestAndAssert(Aircraft_GetOrCreate_TestParams.Rows, row => {
+                _DatabaseInstance.Initialise(false, null);
+                Assert.IsNull(
+                    _DatabaseInstance.Aircraft_GetOrCreate(
+                        row.Icao,
+                        row.Registration,
+                        row.ConstructionNumber,
+                        row.YearBuilt,
+                        row.IsMilitary,
+                        row.IsInteresting,
+                        row.UserNotes,
+                        row.UserTag,
+                        null,
+                        null,
+                        null
+                    )
+                );
+            });
+        }
+
+        [TestMethod]
+        public void Aircraft_GetOrCreate_Calls_Repository_GetOrCreate()
+        {
+            new InlineDataTest(this).TestAndAssert(Aircraft_GetOrCreate_TestParams.Rows, row => {
+                foreach(var modelID in new long?[] { null, 100 }) {
+                    foreach(var operatorID in new long?[] { null, 299 }) {
+                        foreach(var countryID in new long?[] { null, 319 }) {
+                            TestCleanup();
+                            TestInitialise();
+
+                            var modelSnapshot = modelID == null
+                                ? null
+                                : new ModelSnapshot() { ModelSnapshotID = modelID.Value, };
+
+                            var operatorSnapshot = operatorID == null
+                                ? null
+                                : new OperatorSnapshot() { OperatorSnapshotID = operatorID.Value, };
+
+                            var countrySnapshot = countryID == null
+                                ? null
+                                : new CountrySnapshot() { CountrySnapshotID = countryID.Value, };
+
+                            var expected = new AircraftSnapshot() {
+                                ConstructionNumber =    row.ConstructionNumber,
+                                CountrySnapshotID =     countryID,
+                                Fingerprint =           AircraftSnapshot.TakeFingerprint(
+                                                            row.Icao,
+                                                            row.Registration,
+                                                            modelID,
+                                                            row.ConstructionNumber,
+                                                            row.YearBuilt,
+                                                            operatorID,
+                                                            countryID,
+                                                            row.IsMilitary,
+                                                            row.IsInteresting,
+                                                            row.UserNotes,
+                                                            row.UserTag
+                                                        ),
+                                Icao =                  row.Icao,
+                                IsInteresting =         row.IsInteresting,
+                                IsMilitary =            row.IsMilitary,
+                                ModelSnapshotID =       modelID,
+                                OperatorSnapshotID =    operatorID,
+                                Registration =          row.Registration,
+                                UserNotes =             row.UserNotes,
+                                UserTag =               row.UserTag,
+                                YearBuilt =             row.YearBuilt,
+                            };
+
+                            var expectNull = expected.ConstructionNumber == null
+                                && expected.CountrySnapshotID == null
+                                && expected.Icao == null
+                                && expected.IsInteresting == null
+                                && expected.IsMilitary == null
+                                && expected.ModelSnapshotID == null
+                                && expected.OperatorSnapshotID == null
+                                && expected.Registration == null
+                                && expected.UserNotes == null
+                                && expected.UserTag == null
+                                && expected.YearBuilt == null;
+
+                            _Repository.Setup(r => r.AircraftSnapshot_GetOrCreate(
+                                It.Is<byte[]>(p => p.SequenceEqual(expected.Fingerprint)),
+                                It.IsAny<DateTime>(),
+                                expected.Icao,
+                                expected.Registration,
+                                expected.ModelSnapshotID,
+                                expected.ConstructionNumber,
+                                expected.YearBuilt,
+                                expected.OperatorSnapshotID,
+                                expected.CountrySnapshotID,
+                                expected.IsMilitary,
+                                expected.IsInteresting,
+                                expected.UserNotes,
+                                expected.UserTag
+                            ))
+                            .Returns(expected);
+
+                            _DatabaseInstance.Initialise(writesEnabled: true, nonStandardFolder: null);
+                            var actual = _DatabaseInstance.Aircraft_GetOrCreate(
+                                row.Icao,
+                                row.Registration,
+                                row.ConstructionNumber,
+                                row.YearBuilt,
+                                row.IsMilitary,
+                                row.IsInteresting,
+                                row.UserNotes,
+                                row.UserTag,
+                                modelSnapshot,
+                                operatorSnapshot,
+                                countrySnapshot
+                            );
+
+                            if(!expectNull) {
+                                Assert.AreSame(expected, actual);
+                            } else {
+                                Assert.IsNull(actual);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        /// <summary>
         /// CountrySnapshot GetOrCreate tests
         /// </summary>
         class Country_GetOrCreate_TestParams : GetOrCreate_TestParams<CountrySnapshot>

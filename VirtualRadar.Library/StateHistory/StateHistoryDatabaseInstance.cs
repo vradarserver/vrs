@@ -148,6 +148,78 @@ namespace VirtualRadar.Library.StateHistory
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="icao"></param>
+        /// <param name="registration"></param>
+        /// <param name="constructionNumber"></param>
+        /// <param name="yearBuilt"></param>
+        /// <param name="isMilitary"></param>
+        /// <param name="isInteresting"></param>
+        /// <param name="userNotes"></param>
+        /// <param name="userTag"></param>
+        /// <param name="modelSnapshot"></param>
+        /// <param name="operatorSnapshot"></param>
+        /// <param name="countrySnapshot"></param>
+        /// <returns></returns>
+        public AircraftSnapshot Aircraft_GetOrCreate(
+            string icao,
+            string registration,
+            string constructionNumber,
+            string yearBuilt,
+            bool? isMilitary,
+            bool? isInteresting,
+            string userNotes,
+            string userTag,
+            ModelSnapshot modelSnapshot,
+            OperatorSnapshot operatorSnapshot,
+            CountrySnapshot countrySnapshot
+        )
+        {
+            return Snapshot_GetOrCreate(
+                () =>  icao == null
+                    && registration == null
+                    && constructionNumber == null
+                    && yearBuilt == null
+                    && isMilitary == null
+                    && isInteresting == null
+                    && userNotes == null
+                    && userTag == null
+                    && modelSnapshot == null
+                    && operatorSnapshot == null
+                    && countrySnapshot == null,
+                () => AircraftSnapshot.TakeFingerprint(
+                    icao,
+                    registration,
+                    modelSnapshot?.ModelSnapshotID,
+                    constructionNumber,
+                    yearBuilt,
+                    operatorSnapshot?.OperatorSnapshotID,
+                    countrySnapshot?.CountrySnapshotID,
+                    isMilitary,
+                    isInteresting,
+                    userNotes,
+                    userTag
+                ),
+                (repo, fingerprint, now) => repo.AircraftSnapshot_GetOrCreate(
+                    fingerprint,
+                    now,
+                    icao,
+                    registration,
+                    modelSnapshot?.ModelSnapshotID,
+                    constructionNumber,
+                    yearBuilt,
+                    operatorSnapshot?.OperatorSnapshotID,
+                    countrySnapshot?.CountrySnapshotID,
+                    isMilitary,
+                    isInteresting,
+                    userNotes,
+                    userTag
+                )
+            );
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="aircraftList"></param>
         /// <returns></returns>
         public bool AircraftList_Insert(AircraftList aircraftList)

@@ -55,6 +55,40 @@ namespace VirtualRadar.Interface.StateHistory
         /// </summary>
         /// <param name="fingerprint"></param>
         /// <param name="createdUtc"></param>
+        /// <param name="icao"></param>
+        /// <param name="registration"></param>
+        /// <param name="modelSnapshotID"></param>
+        /// <param name="constructionNumber"></param>
+        /// <param name="yearBuilt"></param>
+        /// <param name="operatorSnapshotID"></param>
+        /// <param name="countrySnapshotID"></param>
+        /// <param name="isMilitary"></param>
+        /// <param name="isInteresting"></param>
+        /// <param name="userNotes"></param>
+        /// <param name="userTag"></param>
+        /// <returns></returns>
+        AircraftSnapshot AircraftSnapshot_GetOrCreate(
+            byte[] fingerprint,
+            DateTime createdUtc,
+            string icao,
+            string registration,
+            long? modelSnapshotID,
+            string constructionNumber,
+            string yearBuilt,
+            long? operatorSnapshotID,
+            long? countrySnapshotID,
+            bool? isMilitary,
+            bool? isInteresting,
+            string userNotes,
+            string userTag
+        );
+
+        /// <summary>
+        /// Either creates a new snapshot record or reads the existing record that has the
+        /// same fingerprint and returns it.
+        /// </summary>
+        /// <param name="fingerprint"></param>
+        /// <param name="createdUtc"></param>
         /// <param name="countryName"></param>
         CountrySnapshot CountrySnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, string countryName);
 

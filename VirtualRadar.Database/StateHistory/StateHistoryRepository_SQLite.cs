@@ -61,6 +61,59 @@ namespace VirtualRadar.Database.StateHistory
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="fingerprint"></param>
+        /// <param name="createdUtc"></param>
+        /// <param name="icao"></param>
+        /// <param name="registration"></param>
+        /// <param name="modelSnapshotID"></param>
+        /// <param name="constructionNumber"></param>
+        /// <param name="yearBuilt"></param>
+        /// <param name="operatorSnapshotID"></param>
+        /// <param name="countrySnapshotID"></param>
+        /// <param name="isMilitary"></param>
+        /// <param name="isInteresting"></param>
+        /// <param name="userNotes"></param>
+        /// <param name="userTag"></param>
+        /// <returns></returns>
+        public AircraftSnapshot AircraftSnapshot_GetOrCreate(
+            byte[] fingerprint,
+            DateTime createdUtc,
+            string icao,
+            string registration,
+            long? modelSnapshotID,
+            string constructionNumber,
+            string yearBuilt,
+            long? operatorSnapshotID,
+            long? countrySnapshotID,
+            bool? isMilitary,
+            bool? isInteresting,
+            string userNotes,
+            string userTag
+        )
+        {
+            using(var connection = OpenConnection(forWrite: true)) {
+                return connection.Query<AircraftSnapshot>(Scripts.AircraftSnapshot_GetOrCreate, new {
+                    createdUtc,
+                    fingerprint,
+                    icao,
+                    registration,
+                    modelSnapshotID,
+                    constructionNumber,
+                    yearBuilt,
+                    operatorSnapshotID,
+                    countrySnapshotID,
+                    isMilitary,
+                    isInteresting,
+                    userNotes,
+                    userTag,
+                })
+                .FirstOrDefault();
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <param name="aircraftList"></param>
         public void AircraftList_Insert(AircraftList aircraftList)
         {

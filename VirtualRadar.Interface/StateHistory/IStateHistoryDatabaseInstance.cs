@@ -69,6 +69,36 @@ namespace VirtualRadar.Interface.StateHistory
         bool DoIfWriteable(Action<IStateHistoryRepository> action);
 
         /// <summary>
+        /// Returns a snapshot for the values passed across. Returns null if writes are disabled
+        /// or all values are null.
+        /// </summary>
+        /// <param name="icao"></param>
+        /// <param name="registration"></param>
+        /// <param name="constructionNumber"></param>
+        /// <param name="yearBuilt"></param>
+        /// <param name="isMilitary"></param>
+        /// <param name="isInteresting"></param>
+        /// <param name="userNotes"></param>
+        /// <param name="userTag"></param>
+        /// <param name="modelSnapshot"></param>
+        /// <param name="operatorSnapshot"></param>
+        /// <param name="countrySnapshot"></param>
+        /// <returns></returns>
+        AircraftSnapshot Aircraft_GetOrCreate(
+            string icao,
+            string registration,
+            string constructionNumber,
+            string yearBuilt,
+            bool? isMilitary,
+            bool? isInteresting,
+            string userNotes,
+            string userTag,
+            ModelSnapshot modelSnapshot,
+            OperatorSnapshot operatorSnapshot,
+            CountrySnapshot countrySnapshot
+        );
+
+        /// <summary>
         /// Creates a new aircraft list, filling in the ID and created / updated dates.
         /// </summary>
         /// <param name="aircraftList"></param>

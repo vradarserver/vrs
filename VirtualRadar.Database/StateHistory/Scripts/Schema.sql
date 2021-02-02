@@ -167,17 +167,44 @@ CREATE        INDEX IF NOT EXISTS [IX_ModelSnapshot_ModelName]              ON [
 
 
 --
+-- AircraftSnapshot (v1)
+--
+CREATE TABLE IF NOT EXISTS [AircraftSnapshot]
+(
+    [AircraftSnapshotID]                INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+   ,[CreatedUtc]                        DATETIME NOT NULL
+   ,[Fingerprint]                       VARBINARY(20) NOT NULL
+   ,[Icao]                              VARCHAR(6) NULL
+   ,[Registration]                      NVARCHAR(80) NULL
+   ,[ModelSnapshotID]                   INTEGER NULL CONSTRAINT [FK_AircraftSnapshot_ModelSnapshot] REFERENCES [ModelSnapshot] ([ModelSnapshotID])
+   ,[ConstructionNumber]                NVARCHAR(80) NULL
+   ,[YearBuilt]                         NVARCHAR(80) NULL
+   ,[OperatorSnapshotID]                INTEGER NULL CONSTRAINT [FK_AircraftSnapshot_OperatorSnapshot] REFERENCES [OperatorSnapshot] ([OperatorSnapshotID])
+   ,[CountrySnapshotID]                 INTEGER NULL CONSTRAINT [FK_AircraftSnapshot_CountrySnapshot] REFERENCES [OperatorSnapshot] ([CountrySnapshotID])
+   ,[IsMilitary]                        BIT NULL
+   ,[IsInteresting]                     BIT NULL
+   ,[UserNotes]                         NVARCHAR(300) NULL
+   ,[UserTag]                           NVARCHAR(300) NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS [IX_AircraftSnapshot_Fingerprint]        ON [AircraftSnapshot] ([Fingerprint]);
+CREATE        INDEX IF NOT EXISTS [IX_AircraftSnapshot_Icao]               ON [AircraftSnapshot] ([Icao]) WHERE [Icao] IS NOT NULL;
+CREATE        INDEX IF NOT EXISTS [IX_AircraftSnapshot_Registration]       ON [AircraftSnapshot] ([Registration]) WHERE [Registration] IS NOT NULL;
+CREATE        INDEX IF NOT EXISTS [IX_AircraftSnapshot_ModelSnapshotID]    ON [AircraftSnapshot] ([ModelSnapshotID]) WHERE [ModelSnapshotID] IS NOT NULL;
+CREATE        INDEX IF NOT EXISTS [IX_AircraftSnapshot_OperatorSnapshotID] ON [AircraftSnapshot] ([OperatorSnapshotID]) WHERE [OperatorSnapshotID] IS NOT NULL;
+CREATE        INDEX IF NOT EXISTS [IX_AircraftSnapshot_CountrySnapshotID]  ON [AircraftSnapshot] ([CountrySnapshotID]) WHERE [CountrySnapshotID] IS NOT NULL;
+
+--
 -- AircraftList (v1)
 --
 CREATE TABLE IF NOT EXISTS [AircraftList]
 (
-    [AircraftListID]        BIGINT NOT NULL PRIMARY KEY AUTOINCREMENT
-   ,[VrsSessionID]          BIGINT NOT NULL CONSTRAINT [FK_AircraftList_VrsSession] REFERENCES [VrsSession] ([VrsSessionID])
+    [AircraftListID]        INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+   ,[VrsSessionID]          INTEGER NOT NULL CONSTRAINT [FK_AircraftList_VrsSession] REFERENCES [VrsSession] ([VrsSessionID])
    ,[IsKeyList]             BIT NOT NULL
-   ,[ReceiverSnapshotID]    BIGINT NOT NULL CONSTRAINT [FK_AircraftList_ReceiverSnapshot] REFERENCES [ReceiverSnapshot] ([ReceiverSnapshotID])
+   ,[ReceiverSnapshotID]    INTEGER NOT NULL CONSTRAINT [FK_AircraftList_ReceiverSnapshot] REFERENCES [ReceiverSnapshot] ([ReceiverSnapshotID])
    ,[CreatedUtc]            DATETIME NOT NULL
    ,[UpdatedUtc]            DATETIME NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS [IX_AircraftList_ReceiverCreated]          ON [AircraftList] ([ReceiverSnapshotID], [Created]);
-CREATE INDEX IF NOT EXISTS [IX_AircraftList_ReceiverdCreatedKeyLists] ON [AircraftList] ([ReceiverSnapshotID], [Created]) WHERE [IsKeyList] = 1;
+CREATE INDEX IF NOT EXISTS [IX_AircraftList_ReceiverCreated]          ON [AircraftList] ([ReceiverSnapshotID], [CreatedUtc]);
+CREATE INDEX IF NOT EXISTS [IX_AircraftList_ReceiverdCreatedKeyLists] ON [AircraftList] ([ReceiverSnapshotID], [CreatedUtc]) WHERE [IsKeyList] = 1;
