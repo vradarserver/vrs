@@ -4,9 +4,9 @@
 
 void Main()
 {
-    var valueRegex = new Regex(@"<value>(?<relativePath>.*);");
+    var valueRegex = new Regex(@"<value>(?<relativePath>.*?);");
     var scriptFolder = Path.GetDirectoryName(Util.CurrentQueryPath);
-    
+
     foreach(var resxFileName in Directory.GetFiles(scriptFolder, "*.resx", SearchOption.AllDirectories)) {
         var resxFolder = Path.GetDirectoryName(resxFileName);
         var content = File.ReadAllLines(resxFileName);
@@ -32,7 +32,15 @@ void Main()
                                 newRelativePath +
                                 line.Substring(matchGroup.Index + matchGroup.Length);
 
-                            Console.WriteLine($"{resxFileName}: {line} -> {content[lineIdx]}");
+                            if(changedContent) {
+                                Console.WriteLine();
+                            } else {
+                                Console.WriteLine();
+                                Console.WriteLine(resxFileName);
+                                Console.WriteLine(new String('=', resxFileName.Length));
+                            }
+                            Console.WriteLine($"OLD:{line}");
+                            Console.WriteLine($"NEW:{content[lineIdx]}");
                             changedContent = true;
                         }
                     }
@@ -41,6 +49,7 @@ void Main()
         }
 
         if(changedContent) {
+            Util.ReadLine("Press ENTER to save or stop script to abandon:");
             File.WriteAllLines(resxFileName, content);
         }
     }

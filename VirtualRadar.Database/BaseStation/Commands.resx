@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -119,45 +119,45 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="Aircraft_GetAircraftAndFlightsCountByIcao" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>scripts\aircraft_getaircraftandflightscountbyicao.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Scripts\Aircraft_GetAircraftAndFlightsCountByIcao.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="Aircraft_Insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>scripts\aircraft_insert.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Scripts\Aircraft_Insert.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="Aircraft_Update" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>scripts\aircraft_update.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Scripts\Aircraft_Update.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="DBHistory_Insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>scripts\dbhistory_insert.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Scripts\DBHistory_Insert.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="DBInfo_Insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>scripts\dbinfo_insert.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Scripts\DBInfo_Insert.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="Flights_Insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>scripts\flights_insert.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Scripts\Flights_Insert.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="Flights_Update" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>scripts\flights_update.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Scripts\Flights_Update.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="Locations_Insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>scripts\locations_insert.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Scripts\Locations_Insert.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="Locations_Update" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>scripts\locations_update.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Scripts\Locations_Update.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="Sessions_Insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>scripts\sessions_insert.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Scripts\Sessions_Insert.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="Sessions_Update" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>scripts\sessions_update.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Scripts\Sessions_Update.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="SystemEvents_Insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>scripts\systemevents_insert.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Scripts\SystemEvents_Insert.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="SystemEvents_Update" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>scripts\systemevents_update.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Scripts\SystemEvents_Update.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="UpdateSchema" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>scripts\updateschema.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Scripts\UpdateSchema.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>
