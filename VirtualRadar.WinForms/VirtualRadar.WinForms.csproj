@@ -139,7 +139,7 @@
     <Compile Include="Controls\InvalidPluginCountControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\InvalidPluginCountControl.designer.cs">
+    <Compile Include="Controls\InvalidPluginCountControl.Designer.cs">
       <DependentUpon>InvalidPluginCountControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\InvalidPluginsControl.cs">
@@ -452,13 +452,13 @@
     <Compile Include="Wizard\InfoContainer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Wizard\InfoContainer.designer.cs">
+    <Compile Include="Wizard\InfoContainer.Designer.cs">
       <DependentUpon>InfoContainer.cs</DependentUpon>
     </Compile>
     <Compile Include="Wizard\InfoPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Wizard\InfoPage.designer.cs">
+    <Compile Include="Wizard\InfoPage.Designer.cs">
       <DependentUpon>InfoPage.cs</DependentUpon>
     </Compile>
     <Compile Include="Wizard\PageCollection.cs" />
@@ -466,13 +466,13 @@
     <Compile Include="Wizard\Wizard.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Wizard\Wizard.designer.cs">
+    <Compile Include="Wizard\Wizard.Designer.cs">
       <DependentUpon>Wizard.cs</DependentUpon>
     </Compile>
     <Compile Include="Wizard\WizardPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Wizard\WizardPage.designer.cs">
+    <Compile Include="Wizard\WizardPage.Designer.cs">
       <DependentUpon>WizardPage.cs</DependentUpon>
     </Compile>
     <Compile Include="XPlaneView.cs">
