@@ -25,7 +25,6 @@ namespace VirtualRadar.Library
     /// </summary>
     class AirportDataDotCom : IAirportDataDotCom
     {
-        #region Constant fields
         /// <summary>
         /// The timeout for requests for thumbnails
         /// </summary>
@@ -36,9 +35,7 @@ namespace VirtualRadar.Library
         /// been accessed within this period of time are automatically removed.
         /// </summary>
         const int ThumbnailCacheMaxMinutes = 60;
-        #endregion
 
-        #region Private classes
         /// <summary>
         /// A private class that acts as a key into the thumbnail cache.
         /// </summary>
@@ -84,16 +81,12 @@ namespace VirtualRadar.Library
 
             public DateTime LastAccessTimeUtc { get; set; }
         }
-        #endregion
 
-        #region Fields
         /// <summary>
         /// A cache of recent thumbnail requests and their responses.
         /// </summary>
         private static ExpiringDictionary<ThumbnailKey, CachedThumbnail> _ThumbnailCache = new ExpiringDictionary<ThumbnailKey,CachedThumbnail>(ThumbnailCacheMaxMinutes * 60000, 60000);
-        #endregion
 
-        #region GetThumbnails
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -120,29 +113,9 @@ namespace VirtualRadar.Library
 
         private WebRequestResult<AirportDataThumbnailsJson> RequestThumbnails(string icao, string registration, int maxThumbnails)
         {
-            var requestUrl = String.Format("http://www.airport-data.com/api/ac_thumb.json?m={0}&r={1}&n={2}", HttpUtility.UrlEncode(icao), HttpUtility.UrlEncode(registration ?? ""), maxThumbnails);
-            var request = HttpWebRequest.Create(requestUrl);
-            request.Timeout = ThumbnailTimeout;
-
-            var result = new WebRequestResult<AirportDataThumbnailsJson>();
-            try {
-                using(var response = (HttpWebResponse)WebRequestHelper.GetResponse(request)) {
-                    result.HttpStatusCode = response.StatusCode;
-                    if(result.HttpStatusCode == HttpStatusCode.OK) {
-                        using(var responseStream = WebRequestHelper.GetResponseStream(response)) {
-                            var deserialiser = new DataContractJsonSerializer(typeof(AirportDataThumbnailsJson));
-                            result.Result = (AirportDataThumbnailsJson)deserialiser.ReadObject(responseStream);
-                        }
-                    }
-                }
-            } catch(WebException ex) {
-                var webResponse = ex.Response as HttpWebResponse;
-                if(webResponse != null) result.HttpStatusCode = webResponse.StatusCode;
-                else                    throw;
-            }
-
-            return result;
+            return new WebRequestResult<AirportDataThumbnailsJson>() {
+                HttpStatusCode = HttpStatusCode.NotFound,
+            };
         }
-        #endregion
     }
 }

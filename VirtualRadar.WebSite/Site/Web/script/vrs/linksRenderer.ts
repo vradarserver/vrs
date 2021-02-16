@@ -127,15 +127,6 @@ namespace VRS
      */
     export var linkRenderHandlers = [
         new VRS.LinkRenderHandler({
-            linkSite:           VRS.LinkSite.AirportDataDotCom,
-            displayOrder:       100,
-            canLinkAircraft:    function(aircraft) { return aircraft && !!aircraft.registration.val; },
-            hasChanged:         function(aircraft) { return aircraft.registration.chg; },
-            title:              'www.airport-data.com',
-            buildUrl:           function(aircraft) { return 'http://www.airport-data.com/aircraft/' + VRS.stringUtility.htmlEscape(aircraft.formatRegistration()) + '.html'; },
-            target:             'airport-data'
-        }),
-        new VRS.LinkRenderHandler({
             linkSite:           VRS.LinkSite.AirlinersDotNet,
             displayOrder:       200,
             canLinkAircraft:    function(aircraft) { return aircraft && !!aircraft.registration.val; },
