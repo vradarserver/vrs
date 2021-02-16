@@ -260,7 +260,7 @@ namespace VRS
         None:                       'none',
         AirframesDotOrg:            'airframes.org',        // Defunct, requires account, no longer used
         AirlinersDotNet:            'airliners.net',
-        AirportDataDotCom:          'airport-data.com',
+        AirportDataDotCom:          'airport-data.com',     // Defunct, as of Feb 2021 Malwarebytes and AVG block links to the site
         StandingDataMaintenance:    'sdm',
         JetPhotosDotCom:            'jetphotos.com',
     };
