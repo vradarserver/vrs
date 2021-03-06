@@ -50,7 +50,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Transactions" />
@@ -113,6 +112,24 @@
     <Compile Include="BackgroundThreadQueue.cs" />
     <Compile Include="BackgroundThreadQueueMechanism.cs" />
     <Compile Include="CollectionHelper.cs" />
+    <Compile Include="Drawing\FontAndText.cs" />
+    <Compile Include="Drawing\FontStyle.cs" />
+    <Compile Include="Drawing\HorizontalAlignment.cs" />
+    <Compile Include="Drawing\IBrush.cs" />
+    <Compile Include="Drawing\IBrushFactory.cs" />
+    <Compile Include="Drawing\IDrawing.cs" />
+    <Compile Include="Drawing\IFont.cs" />
+    <Compile Include="Drawing\IFontFactory.cs" />
+    <Compile Include="Drawing\IFontFamily.cs" />
+    <Compile Include="Drawing\IImage.cs" />
+    <Compile Include="Drawing\IImageFile.cs" />
+    <Compile Include="Drawing\ImageFormat.cs" />
+    <Compile Include="Drawing\IPen.cs" />
+    <Compile Include="Drawing\IPenFactory.cs" />
+    <Compile Include="Drawing\Point.cs" />
+    <Compile Include="Drawing\RectangleF.cs" />
+    <Compile Include="Drawing\ResizeMode.cs" />
+    <Compile Include="Drawing\Size.cs" />
     <Compile Include="EventHelperException.cs" />
     <Compile Include="IAircraftOnlineLookupLog.cs" />
     <Compile Include="IAirPressureDownloader.cs" />
@@ -519,7 +536,6 @@
     <Compile Include="WebSite\ReportFlightJson.cs" />
     <Compile Include="WebSite\ReportRouteJson.cs" />
     <Compile Include="WebSite\ReportRowsJson.cs" />
-    <Compile Include="WebSite\ResizeImageMode.cs" />
     <Compile Include="WebSite\ServerConfigJson.cs" />
     <Compile Include="WebSite\ServerReceiverJson.cs" />
     <Compile Include="WebSite\SimpleContent.cs" />
@@ -543,6 +559,7 @@
     <None Include="Adsb\_VirtualRadarInterfaceAdsb.cd" />
     <None Include="BaseStation\_VirtualRadarInterfaceBaseStation.cd" />
     <None Include="Database\_VirtualRadarInterfaceDatabase.cd" />
+    <None Include="Drawing\README.md" />
     <None Include="packages.config" />
     <None Include="SQLite\_VirtualRadarInterfaceSQLite.cd" />
     <None Include="StandingData\_VirtualRadarInterfaceData.cd" />

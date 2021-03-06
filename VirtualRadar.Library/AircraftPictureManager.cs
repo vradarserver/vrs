@@ -17,6 +17,7 @@ using System.IO;
 using VirtualRadar.Interface.Settings;
 using InterfaceFactory;
 using System.Drawing;
+using VirtualRadar.Interface.Drawing;
 
 namespace VirtualRadar.Library
 {
@@ -102,12 +103,14 @@ namespace VirtualRadar.Library
         /// <param name="icao24"></param>
         /// <param name="registration"></param>
         /// <returns></returns>
-        public Image LoadPicture(IDirectoryCache directoryCache, string icao24, string registration)
+        public IImage LoadPicture(IDirectoryCache directoryCache, string icao24, string registration)
         {
-            Image result = null;
+            IImage result = null;
 
             var fileName = GetImageFileName(directoryCache, icao24, registration);
-            if(!String.IsNullOrEmpty(fileName)) result = LoadImage(fileName);
+            if(!String.IsNullOrEmpty(fileName)) {
+                result = LoadImage(fileName);
+            }
 
             return result;
         }
@@ -148,13 +151,14 @@ namespace VirtualRadar.Library
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        private Image LoadImage(string fileName)
+        private IImage LoadImage(string fileName)
         {
-            Image result = null;
+            IImage result = null;
 
             if(!String.IsNullOrEmpty(fileName)) {
                 try {
-                    result = Image.FromFile(fileName);
+                    var imageFile = Factory.ResolveSingleton<IImageFile>();
+                    result = imageFile.LoadFromFile(fileName);
                 } catch(Exception ex) {
                     if(_Log == null) _Log = Factory.ResolveSingleton<ILog>();
                     _Log.WriteLine("AircraftPictureManager caught an exception while loading {0}: {1}", fileName, ex.ToString());

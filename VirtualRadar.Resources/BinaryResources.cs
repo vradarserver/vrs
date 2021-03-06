@@ -29,21 +29,35 @@ namespace VirtualRadar.Resources
         /// <returns></returns>
         public static byte[] Copy(string name)
         {
-            byte[] result = null;
-
-            string fullPath = String.Format("VirtualRadar.Resources.{0}", name);
-
-            var assembly = Assembly.GetExecutingAssembly();
-            using(var streamIn = assembly.GetManifestResourceStream(fullPath)) {
+            using(var streamIn = GetManifestResourceStream(name)) {
                 using(var streamOut = new MemoryStream()) {
-                    byte[] buffer = new byte[1024];
-                    int bytesRead = 0;
-                    while((bytesRead = streamIn.Read(buffer, 0, buffer.Length)) != 0) {
+                    // No reference to VirtualRadar.Interface allowed from here and no Stream.CopyTo in 3.5,
+                    // so we need to copy the stream the long way.
+                    var buffer = new byte[1024];
+                    var bytesRead = 0;
+                    do {
+                        bytesRead = streamIn.Read(buffer, 0, buffer.Length);
                         streamOut.Write(buffer, 0, bytesRead);
-                    };
+                    } while(bytesRead != 0);
 
-                    result = streamOut.ToArray();
+                    return streamOut.ToArray();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Exposes the resource stream for the named resource passed across.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        private static Stream GetManifestResourceStream(string name)
+        {
+            var fullPath = $"VirtualRadar.Resources.{name}";
+            var assembly = Assembly.GetExecutingAssembly();
+
+            var result = assembly.GetManifestResourceStream(fullPath);
+            if(result == null) {
+                throw new InvalidOperationException($"There is no resource called {fullPath} in {assembly.FullName}");
             }
 
             return result;

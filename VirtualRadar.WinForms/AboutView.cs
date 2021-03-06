@@ -153,7 +153,7 @@ namespace VirtualRadar.WinForms
 
             if(!DesignMode) {
                 Localise.Form(this);
-                logoPictureBox.Image = Resources.Images.HelpAbout;
+                logoPictureBox.Image = ResourceImages.HelpAbout;
 
                 _Presenter = Factory.Resolve<IAboutPresenter>();
                 _Presenter.Initialise(this);

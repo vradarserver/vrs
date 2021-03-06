@@ -35,7 +35,7 @@ namespace VirtualRadar.WinForms.SettingPage
         /// </summary>
         public class Summary : PageSummary
         {
-            private static Image _PageIcon = Images.Location16x16;
+            private static Image _PageIcon = ResourceImages.Location16x16;
 
             /// <summary>
             /// See base docs.

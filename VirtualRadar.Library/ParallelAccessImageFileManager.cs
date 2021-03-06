@@ -10,13 +10,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VirtualRadar.Interface;
-using System.Drawing;
-using VirtualRadar.Interface.WebSite;
-using InterfaceFactory;
 using System.IO;
+using InterfaceFactory;
+using VirtualRadar.Interface;
+using VirtualRadar.Interface.Drawing;
+using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Library
 {
@@ -37,7 +35,7 @@ namespace VirtualRadar.Library
         {
             public string NormalisedFileName;
 
-            public Image Image;
+            public IImage Image;
 
             public DateTime LastFetchedUtc;
         }
@@ -75,10 +73,13 @@ namespace VirtualRadar.Library
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public Image LoadFromFile(string fileName)
+        public IImage LoadFromFile(string fileName)
         {
-            Bitmap result = null;
-            if(!String.IsNullOrEmpty(fileName)) result = (Bitmap)Bitmap.FromFile(fileName);
+            IImage result = null;
+            if(!String.IsNullOrEmpty(fileName)) {
+                var imageFile = Factory.ResolveSingleton<IImageFile>();
+                result = imageFile.LoadFromFile(fileName);
+            }
 
             return result;
         }
@@ -111,9 +112,9 @@ namespace VirtualRadar.Library
         /// <param name="webPathAndFileName"></param>
         /// <param name="useImageCache"></param>
         /// <returns></returns>
-        public Image LoadFromWebSite(IWebSite webSite, string webPathAndFileName, bool useImageCache)
+        public IImage LoadFromWebSite(IWebSite webSite, string webPathAndFileName, bool useImageCache)
         {
-            Image result = null;
+            IImage result = null;
 
             if(!useImageCache) {
                 result = FetchFromWebSite(webSite, webPathAndFileName);
@@ -124,7 +125,7 @@ namespace VirtualRadar.Library
                     _WebSiteImageCache.TryGetValue(normalisedName, out cacheEntry);
                     if(cacheEntry != null && cacheEntry.LastFetchedUtc >= _Clock.UtcNow.AddSeconds(-WebSiteCacheExpirySeconds)) {
                         if(cacheEntry.Image != null) {
-                            result = new Bitmap(cacheEntry.Image);
+                            result = cacheEntry.Image.Clone();
                         }
                     }
                 }
@@ -134,7 +135,7 @@ namespace VirtualRadar.Library
                     // being fetched serially.
                     result = FetchFromWebSite(webSite, webPathAndFileName);
                     cacheEntry = new CacheEntry() {
-                        Image = result == null ? null : new Bitmap(result),
+                        Image = result == null ? null : result.Clone(),
                         LastFetchedUtc = _Clock.UtcNow,
                         NormalisedFileName = normalisedName,
                     };
@@ -163,17 +164,14 @@ namespace VirtualRadar.Library
         /// <param name="webSite"></param>
         /// <param name="webPathAndFileName"></param>
         /// <returns></returns>
-        private Image FetchFromWebSite(IWebSite webSite, string webPathAndFileName)
+        private IImage FetchFromWebSite(IWebSite webSite, string webPathAndFileName)
         {
-            Image result = null;
+            IImage result = null;
 
             var simpleContent = webSite.RequestSimpleContent(webPathAndFileName);
             if(simpleContent != null && simpleContent.HttpStatusCode == System.Net.HttpStatusCode.OK) {
-                using(var memoryStream = new MemoryStream(simpleContent.Content)) {
-                    using(var image = Image.FromStream(memoryStream)) {
-                        result = new Bitmap(image);     // work around the problem that GDI+ has with images built from streams being accessed after the stream has been disposed
-                    }
-                }
+                var imageFile = Factory.ResolveSingleton<IImageFile>();
+                result = imageFile.LoadFromByteArray(simpleContent.Content);
             }
 
             return result;

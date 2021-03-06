@@ -126,6 +126,12 @@ namespace VirtualRadar.Library
             factory.Register<ITimer, Timer>();
             factory.Register<IXmlSerialiser, XmlSerialiser>();
 
+            // System.Drawing graphics
+            factory.Register<VirtualRadar.Interface.Drawing.IBrushFactory,  Drawing.SystemDrawing.BrushFactory>();
+            factory.Register<VirtualRadar.Interface.Drawing.IFontFactory,   Drawing.SystemDrawing.FontFactory>();
+            factory.Register<VirtualRadar.Interface.Drawing.IImageFile,     Drawing.SystemDrawing.ImageFile>();
+            factory.Register<VirtualRadar.Interface.Drawing.IPenFactory,    Drawing.SystemDrawing.PenFactory>();
+
             if(Type.GetType("Mono.Runtime") == null) {
                 factory.Register<ISpeechSynthesizerWrapper, DotNetSpeechSynthesizerWrapper>();
                 factory.Register<VirtualRadar.Interface.FlightSimulatorX.ISimConnectWrapper, FlightSimulatorX.DotNetSimConnectWrapper>();

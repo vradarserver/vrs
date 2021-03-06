@@ -51,11 +51,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Images.tt</DependentUpon>
     </Compile>
-    <Compile Include="InternalResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>InternalResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -66,92 +61,85 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\Add16x16.png" />
-    <Content Include="Images\ApplicationIcon.ico" />
-    <Content Include="Images\ArrowBack16x16.png" />
-    <Content Include="Images\ArrowForward16x16.png" />
-    <Content Include="Images\Cancel16x16.png" />
-    <Content Include="Images\CancelSmall16x16.png" />
-    <Content Include="Images\CloseSlider.png" />
-    <Content Include="Images\Compass.png" />
-    <Content Include="Images\Edit16x16.png" />
-    <Content Include="Images\Test16x16.png" />
-    <Content Include="Images\Wizard16x16.png" />
-    <Content Include="vrs.d.ts-readme.txt" />
+    <EmbeddedResource Include="Images\Add16x16.png" />
+    <EmbeddedResource Include="Images\ApplicationIcon.ico" />
+    <EmbeddedResource Include="Images\ArrowBack16x16.png" />
+    <EmbeddedResource Include="Images\ArrowForward16x16.png" />
+    <EmbeddedResource Include="Images\Cancel16x16.png" />
+    <EmbeddedResource Include="Images\CancelSmall16x16.png" />
+    <EmbeddedResource Include="Images\CloseSlider.png" />
+    <EmbeddedResource Include="Images\Compass.png" />
+    <EmbeddedResource Include="Images\Edit16x16.png" />
+    <EmbeddedResource Include="Images\Test16x16.png" />
+    <EmbeddedResource Include="Images\Wizard16x16.png" />
     <EmbeddedResource Include="Images\Favicon.ico" />
-    <Content Include="Images\Corner_BottomLeft.png" />
-    <Content Include="Images\Corner_BottomRight.png" />
-    <Content Include="Images\Corner_TopLeft.png" />
-    <Content Include="Images\Corner_TopRight.png" />
-    <Content Include="Images\Decoding16x16.png" />
-    <Content Include="Images\FollowMe.png" />
-    <Content Include="Images\Gear16x16.png" />
-    <Content Include="Images\GotoCurrentLocation.png" />
-    <Content Include="Images\HideList.png" />
-    <Content Include="Images\Location16x16.png" />
-    <Content Include="Images\Radio16x16.png" />
-    <Content Include="Images\IPadSplash.png" />
-    <Content Include="Images\IPhoneIcon.png" />
-    <Content Include="Images\ChevronBlueCircle.png" />
-    <Content Include="Images\ChevronGreenCircle.png" />
-    <Content Include="Images\ChevronRedCircle.png" />
-    <Content Include="Images\Crosshair.png" />
-    <Content Include="Images\IPhoneBackButton.png" />
-    <Content Include="Images\IPhoneBlueButton.png" />
-    <Content Include="Images\IPhoneChevron.png" />
-    <Content Include="Images\IPhoneGrayButton.png" />
-    <Content Include="Images\IPhoneListGroup.png" />
-    <Content Include="Images\IPhoneOnOff.png" />
-    <Content Include="Images\IPhonePinstripes.png" />
-    <Content Include="Images\IPhoneSelectedTick.png" />
-    <Content Include="Images\IPhoneSelection.png" />
-    <Content Include="Images\IPhoneSplash.png" />
-    <Content Include="Images\IPhoneToolbar.png" />
-    <Content Include="Images\IPhoneToolButton.png" />
-    <Content Include="Images\IPhoneWhiteButton.png" />
-    <Content Include="Images\Logo128x128.png" />
-    <Content Include="Images\Marker_AirplaneSelected.png" />
-    <Content Include="Images\Marker_Airplane.png" />
-    <Content Include="Images\BlueBall.png" />
-    <Content Include="Images\HelpAbout.png" />
-    <Content Include="Images\Collapse.png" />
-    <Content Include="Images\Expand.png" />
-    <Content Include="Images\MergedFeed16x16.png" />
-    <Content Include="Images\MovingMapChecked.png" />
-    <Content Include="Images\MovingMapUnchecked.png" />
-    <Content Include="Images\Notebook16x16.png" />
-    <Content Include="Images\OpenSlider.png" />
-    <Content Include="Images\Radio48x48.png" />
-    <Content Include="Images\Rebroadcast16x16.png" />
-    <Content Include="Images\RowHeader.png" />
-    <Content Include="Images\RowHeaderSelected.png" />
-    <Content Include="Images\Server16x16.png" />
-    <Content Include="Images\ShowList.png" />
-    <Content Include="Images\Site16x16.png" />
-    <Content Include="Images\SmallPlaneNorth.png" />
-    <Content Include="Images\TestSquare.png" />
-    <Content Include="Images\Tower.png" />
-    <Content Include="Images\Transparent-25.png" />
-    <Content Include="Images\Transparent-50.png" />
-    <Content Include="Images\Transparent_16x16.png" />
-    <Content Include="Images\User16x16.png" />
-    <Content Include="Images\Volume0.png" />
-    <Content Include="Images\Volume100.png" />
-    <Content Include="Images\Volume25.png" />
-    <Content Include="Images\Volume50.png" />
-    <Content Include="Images\Volume75.png" />
-    <Content Include="Images\VolumeDown.png" />
-    <Content Include="Images\VolumeMute.png" />
-    <Content Include="Images\VolumeUp.png" />
-    <Content Include="Images\WarningBitmap.png" />
-    <Content Include="Images\WarningIcon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="InternalResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>InternalResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Images\Corner_BottomLeft.png" />
+    <EmbeddedResource Include="Images\Corner_BottomRight.png" />
+    <EmbeddedResource Include="Images\Corner_TopLeft.png" />
+    <EmbeddedResource Include="Images\Corner_TopRight.png" />
+    <EmbeddedResource Include="Images\Decoding16x16.png" />
+    <EmbeddedResource Include="Images\FollowMe.png" />
+    <EmbeddedResource Include="Images\Gear16x16.png" />
+    <EmbeddedResource Include="Images\GotoCurrentLocation.png" />
+    <EmbeddedResource Include="Images\HideList.png" />
+    <EmbeddedResource Include="Images\Location16x16.png" />
+    <EmbeddedResource Include="Images\Radio16x16.png" />
+    <EmbeddedResource Include="Images\IPadSplash.png" />
+    <EmbeddedResource Include="Images\IPhoneIcon.png" />
+    <EmbeddedResource Include="Images\ChevronBlueCircle.png" />
+    <EmbeddedResource Include="Images\ChevronGreenCircle.png" />
+    <EmbeddedResource Include="Images\ChevronRedCircle.png" />
+    <EmbeddedResource Include="Images\Crosshair.png" />
+    <EmbeddedResource Include="Images\IPhoneBackButton.png" />
+    <EmbeddedResource Include="Images\IPhoneBlueButton.png" />
+    <EmbeddedResource Include="Images\IPhoneChevron.png" />
+    <EmbeddedResource Include="Images\IPhoneGrayButton.png" />
+    <EmbeddedResource Include="Images\IPhoneListGroup.png" />
+    <EmbeddedResource Include="Images\IPhoneOnOff.png" />
+    <EmbeddedResource Include="Images\IPhonePinstripes.png" />
+    <EmbeddedResource Include="Images\IPhoneSelectedTick.png" />
+    <EmbeddedResource Include="Images\IPhoneSelection.png" />
+    <EmbeddedResource Include="Images\IPhoneSplash.png" />
+    <EmbeddedResource Include="Images\IPhoneToolbar.png" />
+    <EmbeddedResource Include="Images\IPhoneToolButton.png" />
+    <EmbeddedResource Include="Images\IPhoneWhiteButton.png" />
+    <EmbeddedResource Include="Images\Logo128x128.png" />
+    <EmbeddedResource Include="Images\Marker_AirplaneSelected.png" />
+    <EmbeddedResource Include="Images\Marker_Airplane.png" />
+    <EmbeddedResource Include="Images\BlueBall.png" />
+    <EmbeddedResource Include="Images\HelpAbout.png" />
+    <EmbeddedResource Include="Images\Collapse.png" />
+    <EmbeddedResource Include="Images\Expand.png" />
+    <EmbeddedResource Include="Images\MergedFeed16x16.png" />
+    <EmbeddedResource Include="Images\MovingMapChecked.png" />
+    <EmbeddedResource Include="Images\MovingMapUnchecked.png" />
+    <EmbeddedResource Include="Images\Notebook16x16.png" />
+    <EmbeddedResource Include="Images\OpenSlider.png" />
+    <EmbeddedResource Include="Images\Radio48x48.png" />
+    <EmbeddedResource Include="Images\Rebroadcast16x16.png" />
+    <EmbeddedResource Include="Images\RowHeader.png" />
+    <EmbeddedResource Include="Images\RowHeaderSelected.png" />
+    <EmbeddedResource Include="Images\Server16x16.png" />
+    <EmbeddedResource Include="Images\ShowList.png" />
+    <EmbeddedResource Include="Images\Site16x16.png" />
+    <EmbeddedResource Include="Images\SmallPlaneNorth.png" />
+    <EmbeddedResource Include="Images\TestSquare.png" />
+    <EmbeddedResource Include="Images\Tower.png" />
+    <EmbeddedResource Include="Images\Transparent-25.png" />
+    <EmbeddedResource Include="Images\Transparent-50.png" />
+    <EmbeddedResource Include="Images\Transparent_16x16.png" />
+    <EmbeddedResource Include="Images\User16x16.png" />
+    <EmbeddedResource Include="Images\Volume0.png" />
+    <EmbeddedResource Include="Images\Volume100.png" />
+    <EmbeddedResource Include="Images\Volume25.png" />
+    <EmbeddedResource Include="Images\Volume50.png" />
+    <EmbeddedResource Include="Images\Volume75.png" />
+    <EmbeddedResource Include="Images\VolumeDown.png" />
+    <EmbeddedResource Include="Images\VolumeMute.png" />
+    <EmbeddedResource Include="Images\VolumeUp.png" />
+    <EmbeddedResource Include="Images\WarningBitmap.png" />
+    <EmbeddedResource Include="Images\WarningIcon.ico" />
+    <Content Include="vrs.d.ts-readme.txt" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

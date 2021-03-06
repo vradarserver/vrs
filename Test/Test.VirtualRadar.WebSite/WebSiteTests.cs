@@ -28,6 +28,7 @@ using Test.Framework;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Database;
+using VirtualRadar.Interface.Drawing;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StandingData;
@@ -87,7 +88,7 @@ namespace Test.VirtualRadar.WebSite
         private List<List<IAircraft>> _AircraftLists;
         private Mock<IFeedManager> _ReceiverManager;
         private ClockMock _Clock;
-        private Image _Image;
+        private IImage _Image;
         private Mock<IAirportDataDotCom> _AirportDataDotCom;
         private WebRequestResult<AirportDataThumbnailsJson> _AirportDataThumbnails;
         private string _AirportDataThumbnailsIcao;
@@ -188,7 +189,8 @@ namespace Test.VirtualRadar.WebSite
 
             _ImageFileManager = TestUtilities.CreateMockImplementation<IImageFileManager>();
             _ImageFileManager.Setup(i => i.LoadFromFile(It.IsAny<string>())).Returns((string fileName) => {
-                return Bitmap.FromFile(fileName);
+                var imageFile = Factory.ResolveSingleton<IImageFile>();
+                return imageFile.LoadFromFile(fileName);
             });
 
             _Audio = TestUtilities.CreateMockImplementation<IAudio>();

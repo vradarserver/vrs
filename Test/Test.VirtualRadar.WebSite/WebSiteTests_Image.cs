@@ -30,6 +30,8 @@ using VirtualRadar.Interface.StandingData;
 using VirtualRadar.Interface.WebServer;
 using VirtualRadar.Interface.WebSite;
 using System.Web;
+using InterfaceFactory;
+using VirtualRadar.Interface.Drawing;
 
 namespace Test.VirtualRadar.WebSite
 {
@@ -180,7 +182,8 @@ namespace Test.VirtualRadar.WebSite
             if(_Image != null) _Image.Dispose();
             _Image = null;
 
-            _Image = Image.FromFile(imageFullPath);
+            var imageFile = Factory.ResolveSingleton<IImageFile>();
+            _Image = imageFile.LoadFromFile(imageFullPath);
 
             if(icao24 != null || registration != null) {
                 _LoadPictureTestParams = true;
@@ -744,7 +747,7 @@ namespace Test.VirtualRadar.WebSite
             _Configuration.BaseStationSettings.PicturesFolder = TestContext.TestDeploymentDir;
             _WebSite.AttachSiteToServer(_WebServer.Object);
 
-            _AircraftPictureManager.Setup(p => p.LoadPicture(_DirectoryCache.Object, It.IsAny<string>(), It.IsAny<string>())).Returns((Image)null);
+            _AircraftPictureManager.Setup(p => p.LoadPicture(_DirectoryCache.Object, It.IsAny<string>(), It.IsAny<string>())).Returns((IImage)null);
 
             string pathAndFile = "/Images/Size-Full/File-G-ABCD 112233/Picture.png";
             _WebServer.Raise(m => m.RequestReceived += null, RequestReceivedEventArgsHelper.Create(_Request, _Response, pathAndFile, false));
