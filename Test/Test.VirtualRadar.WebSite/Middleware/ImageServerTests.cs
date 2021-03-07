@@ -24,6 +24,7 @@ using VirtualRadar.Interface.Owin;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.WebSite;
 using VirtualRadar.Resources;
+using VrsDrawing = VirtualRadar.Interface.Drawing;
 
 namespace Test.VirtualRadar.WebSite.Middleware
 {
@@ -74,7 +75,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
             _ImageFileManager = TestUtilities.CreateMockImplementation<IImageFileManager>();
             _AircraftPictureManager = TestUtilities.CreateMockSingleton<IAircraftPictureManager>();
             _AircraftPictureManager.Setup(r => r.FindPicture(It.IsAny<IDirectoryCache>(), It.IsAny<string>(), It.IsAny<string>())).Returns((PictureDetail)null);
-            _AircraftPictureManager.Setup(r => r.LoadPicture(It.IsAny<IDirectoryCache>(), It.IsAny<string>(), It.IsAny<string>())).Returns((Image)null);
+            _AircraftPictureManager.Setup(r => r.LoadPicture(It.IsAny<IDirectoryCache>(), It.IsAny<string>(), It.IsAny<string>())).Returns((VrsDrawing.IImage)null);
             _AircraftPictureCache = TestUtilities.CreateMockImplementation<IDirectoryCache>();
             _AutoConfigurePictureCache = TestUtilities.CreateMockSingleton<IAutoConfigPictureFolderCache>();
             _AutoConfigurePictureCache.SetupGet(r => r.DirectoryCache).Returns(_AircraftPictureCache.Object);
@@ -161,14 +162,13 @@ namespace Test.VirtualRadar.WebSite.Middleware
             return result;
         }
 
-        private Image GetFakePicture(string imageFullPath)
+        private VrsDrawing.IImage GetFakePicture(string imageFullPath)
         {
-            Image result = null;
+            VrsDrawing.IImage result = null;
             var bytes = _FileSystem.FileExists(imageFullPath) ? _FileSystem.FileReadAllBytes(imageFullPath) : null;
             if(bytes != null) {
-                using(var stream = new MemoryStream(bytes)) {
-                    result = Image.FromStream(stream);
-                }
+                var imageFile = Factory.ResolveSingleton<VrsDrawing.IImageFile>();
+                result = imageFile.LoadFromByteArray(bytes);
             }
 
             return result;
@@ -251,8 +251,8 @@ namespace Test.VirtualRadar.WebSite.Middleware
         private Mock<IWebSiteGraphics> ReplaceWebSiteGraphics()
         {
             var result = TestUtilities.CreateMockSingleton<IWebSiteGraphics>();
-            result.Setup(r => r.UseImage(It.IsAny<Image>(), It.IsAny<Image>()))
-                           .Returns((Image tempImage, Image newImage) => {
+            result.Setup(r => r.UseImage(It.IsAny<VrsDrawing.IImage>(), It.IsAny<VrsDrawing.IImage>()))
+                           .Returns((VrsDrawing.IImage tempImage, VrsDrawing.IImage newImage) => {
                                 return newImage;
                            });
 
@@ -268,8 +268,12 @@ namespace Test.VirtualRadar.WebSite.Middleware
             var requestImageName = worksheet.String("RequestImageName");
             var stockImagePropertyName = worksheet.String("StockImage");
 
-            var cloneMethod = typeof(Images).GetMethod($"Clone_{stockImagePropertyName}", new Type[0]);
-            var expectedImage = (Bitmap)cloneMethod.Invoke(null, new object[0]);
+            var getImageBytesMethod = typeof(Images).GetMethod($"{stockImagePropertyName}", new Type[0]);
+            var expectedImageBytes = (byte[])getImageBytesMethod.Invoke(null, new object[0]);
+            Bitmap expectedImage;
+            using(var memoryStream = new MemoryStream(expectedImageBytes)) {
+                expectedImage = (Bitmap)Bitmap.FromStream(memoryStream);
+            }
             try {
                 _Environment.RequestPath = $"/Images/{requestImageName}.png";
                 _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
@@ -436,7 +440,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
-                    AssertImagesAreIdentical(TestImages.AltitudeImageTest_01_png, siteImage);
+                    AssertImagesAreIdentical(TestImages.AltitudeImageTest_01_png_Bitmap, siteImage);
                 }
             }
         }
@@ -446,17 +450,17 @@ namespace Test.VirtualRadar.WebSite.Middleware
         {
             var textLines = new List<string>();
             var webSiteGraphics = ReplaceWebSiteGraphics();
-            webSiteGraphics.Setup(r => r.AddTextLines(It.IsAny<Image>(), It.IsAny<IEnumerable<string>>(), It.IsAny<bool>(), It.IsAny<bool>()))
-                           .Returns((Image image, IEnumerable<string> lines, bool unused2, bool unused3) => {
+            webSiteGraphics.Setup(r => r.AddTextLines(It.IsAny<VrsDrawing.IImage>(), It.IsAny<IEnumerable<string>>(), It.IsAny<bool>(), It.IsAny<bool>()))
+                           .Returns((VrsDrawing.IImage image, IEnumerable<string> lines, bool unused2, bool unused3) => {
                                 textLines.AddRange(lines);
-                                return (Image)image.Clone();
+                                return image.Clone();
                            });
             _Server = Factory.Resolve<IImageServer>();
 
             _Environment.RequestPath = "/Images/PL1-Hello/PL2-There/TestSquare.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
-            webSiteGraphics.Verify(r => r.AddTextLines(It.IsAny<Image>(), It.IsAny<IEnumerable<string>>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Once());
+            webSiteGraphics.Verify(r => r.AddTextLines(It.IsAny<VrsDrawing.IImage>(), It.IsAny<IEnumerable<string>>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Once());
             Assert.AreEqual(2, textLines.Count);
             Assert.AreEqual("Hello", textLines[0]);
             Assert.AreEqual("There", textLines[1]);
@@ -518,15 +522,15 @@ namespace Test.VirtualRadar.WebSite.Middleware
         public void ImageServer_Can_Serve_Operator_Logos()
         {
             _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns(@"c:\flags");
-            AddFileSystemImageFile(TestImages.DLH_bmp, "DLH.bmp", ImageFormat.Bmp, @"c:\flags");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\DLH.bmp")).Returns(TestImages.DLH_bmp);
+            AddFileSystemImageFile(TestImages.DLH_bmp_Bitmap, "DLH.bmp", ImageFormat.Bmp, @"c:\flags");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\DLH.bmp")).Returns(TestImages.DLH_bmp_IImage);
 
             _Environment.RequestPath = "/Images/File-DLH/OpFlag.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
-                    AssertImagesAreIdentical(TestImages.DLH_bmp, siteImage);
+                    AssertImagesAreIdentical(TestImages.DLH_bmp_Bitmap, siteImage);
                 }
             }
         }
@@ -535,15 +539,15 @@ namespace Test.VirtualRadar.WebSite.Middleware
         public void ImageServer_Can_Serve_Silhouettes()
         {
             _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns(@"c:\types");
-            AddFileSystemImageFile(TestImages.DLH_bmp, "DLH.bmp", ImageFormat.Bmp, @"c:\types");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\DLH.bmp")).Returns(TestImages.DLH_bmp);
+            AddFileSystemImageFile(TestImages.DLH_bmp_Bitmap, "DLH.bmp", ImageFormat.Bmp, @"c:\types");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\DLH.bmp")).Returns(TestImages.DLH_bmp_IImage);
 
             _Environment.RequestPath = "/Images/File-DLH/Type.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
-                    AssertImagesAreIdentical(TestImages.DLH_bmp, siteImage);
+                    AssertImagesAreIdentical(TestImages.DLH_bmp_Bitmap, siteImage);
                 }
             }
         }
@@ -552,15 +556,15 @@ namespace Test.VirtualRadar.WebSite.Middleware
         public void ImageServer_Can_Serve_Alternative_Operator_Logos()
         {
             _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns(@"c:\flags");
-            AddFileSystemImageFile(TestImages.DLH_bmp, "DLH.bmp", ImageFormat.Bmp, @"c:\flags");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\DLH.bmp")).Returns(TestImages.DLH_bmp);
+            AddFileSystemImageFile(TestImages.DLH_bmp_Bitmap, "DLH.bmp", ImageFormat.Bmp, @"c:\flags");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\DLH.bmp")).Returns(TestImages.DLH_bmp_IImage);
 
             _Environment.RequestPath = "/Images/File-DOESNOTEXIST|DLH/OpFlag.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
-                    AssertImagesAreIdentical(TestImages.DLH_bmp, siteImage);
+                    AssertImagesAreIdentical(TestImages.DLH_bmp_Bitmap, siteImage);
                 }
             }
         }
@@ -569,15 +573,15 @@ namespace Test.VirtualRadar.WebSite.Middleware
         public void ImageServer_Can_Serve_Alternative_Silhouettes()
         {
             _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns(@"c:\types");
-            AddFileSystemImageFile(TestImages.DLH_bmp, "DLH.bmp", ImageFormat.Bmp, @"c:\types");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\DLH.bmp")).Returns(TestImages.DLH_bmp);
+            AddFileSystemImageFile(TestImages.DLH_bmp_Bitmap, "DLH.bmp", ImageFormat.Bmp, @"c:\types");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\DLH.bmp")).Returns(TestImages.DLH_bmp_IImage);
 
             _Environment.RequestPath = "/Images/File-DOESNOTEXIST|DLH/Type.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
-                    AssertImagesAreIdentical(TestImages.DLH_bmp, siteImage);
+                    AssertImagesAreIdentical(TestImages.DLH_bmp_Bitmap, siteImage);
                 }
             }
         }
@@ -586,8 +590,8 @@ namespace Test.VirtualRadar.WebSite.Middleware
         public void ImageServer_Resizes_Small_Operator_Logos_To_Fit_Standard_Size()
         {
             _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns(@"c:\flags");
-            AddFileSystemImageFile(TestImages.TestSquare_bmp, "TestSquare.bmp", ImageFormat.Bmp, @"c:\flags");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\TestSquare.bmp")).Returns(TestImages.TestSquare_bmp);
+            AddFileSystemImageFile(TestImages.TestSquare_bmp_Bitmap, "TestSquare.bmp", ImageFormat.Bmp, @"c:\flags");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\TestSquare.bmp")).Returns(TestImages.TestSquare_bmp_IImage);
 
             _Environment.RequestPath = "/Images/File-TestSquare/OpFlag.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
@@ -609,8 +613,8 @@ namespace Test.VirtualRadar.WebSite.Middleware
         public void ImageServer_Resizes_Small_Silhouettes_To_Fit_Standard_Size()
         {
             _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns(@"c:\types");
-            AddFileSystemImageFile(TestImages.TestSquare_bmp, "TestSquare.bmp", ImageFormat.Bmp, @"c:\types");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\TestSquare.bmp")).Returns(TestImages.TestSquare_bmp);
+            AddFileSystemImageFile(TestImages.TestSquare_bmp_Bitmap, "TestSquare.bmp", ImageFormat.Bmp, @"c:\types");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\TestSquare.bmp")).Returns(TestImages.TestSquare_bmp_IImage);
 
             _Environment.RequestPath = "/Images/File-TestSquare/Type.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
@@ -632,8 +636,8 @@ namespace Test.VirtualRadar.WebSite.Middleware
         public void ImageServer_Resizes_Large_Operator_Logos_To_Fit_Standard_Size()
         {
             _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns(@"c:\flags");
-            AddFileSystemImageFile(TestImages.OversizedLogo_bmp, "OversizeLogo.bmp", ImageFormat.Bmp, @"c:\flags");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\OversizeLogo.bmp")).Returns(TestImages.OversizedLogo_bmp);
+            AddFileSystemImageFile(TestImages.OversizedLogo_bmp_Bitmap, "OversizeLogo.bmp", ImageFormat.Bmp, @"c:\flags");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\OversizeLogo.bmp")).Returns(TestImages.OversizedLogo_bmp_IImage);
 
             _Environment.RequestPath = "/Images/File-OversizeLogo/OpFlag.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
@@ -658,8 +662,8 @@ namespace Test.VirtualRadar.WebSite.Middleware
         public void ImageServer_Resizes_Large_Silhouettes_To_Fit_Standard_Size()
         {
             _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns(@"c:\types");
-            AddFileSystemImageFile(TestImages.OversizedLogo_bmp, "OversizeLogo.bmp", ImageFormat.Bmp, @"c:\types");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\OversizeLogo.bmp")).Returns(TestImages.OversizedLogo_bmp);
+            AddFileSystemImageFile(TestImages.OversizedLogo_bmp_Bitmap, "OversizeLogo.bmp", ImageFormat.Bmp, @"c:\types");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\OversizeLogo.bmp")).Returns(TestImages.OversizedLogo_bmp_IImage);
 
             _Environment.RequestPath = "/Images/File-OversizeLogo/Type.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
@@ -779,8 +783,8 @@ namespace Test.VirtualRadar.WebSite.Middleware
         {
             _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns(@"c:\flags\subfolder");
             _FileSystem.AddFolder(@"c:\flags\subfolder");
-            AddFileSystemImageFile(TestImages.DLH_bmp, "DLH.bmp", ImageFormat.Bmp, @"c:\flags");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\DLH.bmp")).Returns(TestImages.DLH_bmp);
+            AddFileSystemImageFile(TestImages.DLH_bmp_Bitmap, "DLH.bmp", ImageFormat.Bmp, @"c:\flags");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\DLH.bmp")).Returns(TestImages.DLH_bmp_IImage);
 
             _Environment.RequestPath = "/Images/File-..\\DLH/OpFlag.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
@@ -797,8 +801,8 @@ namespace Test.VirtualRadar.WebSite.Middleware
         {
             _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns(@"c:\types\subfolder");
             _FileSystem.AddFolder(@"c:\types\subfolder");
-            AddFileSystemImageFile(TestImages.DLH_bmp, "DLH.bmp", ImageFormat.Bmp, @"c:\types");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\DLH.bmp")).Returns(TestImages.DLH_bmp);
+            AddFileSystemImageFile(TestImages.DLH_bmp_Bitmap, "DLH.bmp", ImageFormat.Bmp, @"c:\types");
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\DLH.bmp")).Returns(TestImages.DLH_bmp_IImage);
 
             _Environment.RequestPath = "/Images/File-..\\DLH/Type.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
@@ -934,7 +938,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
         public void ImageServer_Can_Render_Aircraft_Full_Sized_Picture()
         {
             _ProgramConfiguration.BaseStationSettings.PicturesFolder = @"c:\pictures";
-            AddFileSystemImageFile(TestImages.Picture_700x400_png, "Picture-700x400.png", ImageFormat.Png, path: @"c:\pictures");
+            AddFileSystemImageFile(TestImages.Picture_700x400_png_Bitmap, "Picture-700x400.png", ImageFormat.Png, path: @"c:\pictures");
             ConfigurePictureManagerForFile(@"c:\pictures\Picture-700x400.png", 700, 400, icao24: "Picture-700x400", registration: null);
 
             _Environment.RequestPath = "/Images/Size-Full/File-Picture-700x400/Picture.png";
@@ -942,7 +946,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
 
             using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                 using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
-                    AssertImagesAreIdentical(TestImages.Picture_700x400_png, siteImage);
+                    AssertImagesAreIdentical(TestImages.Picture_700x400_png_Bitmap, siteImage);
                 }
             }
         }
@@ -971,7 +975,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
         public void ImageServer_Sends_Requests_For_Image_Files_Through_ImageFileManager()
         {
             _Environment.RequestPath = $"/Images/Web/File.bmp";
-            _ImageFileManager.Setup(r => r.LoadFromStandardPipeline("/images/File.bmp", true, _Environment.Environment)).Returns((Image)TestImages.DLH_bmp.Clone());
+            _ImageFileManager.Setup(r => r.LoadFromStandardPipeline("/images/File.bmp", true, _Environment.Environment)).Returns(TestImages.DLH_bmp_IImage.Clone());
 
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
@@ -982,7 +986,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
         public void ImageServer_Web_Request_SubFolders_Corrected_Extracted()
         {
             _Environment.RequestPath = $"/Images/Web-SubFolder\\ChildFolder/File.bmp";
-            _ImageFileManager.Setup(r => r.LoadFromStandardPipeline("/images/SubFolder/ChildFolder/File.bmp", true, _Environment.Environment)).Returns((Image)TestImages.DLH_bmp.Clone());
+            _ImageFileManager.Setup(r => r.LoadFromStandardPipeline("/images/SubFolder/ChildFolder/File.bmp", true, _Environment.Environment)).Returns(TestImages.DLH_bmp_IImage.Clone());
 
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
@@ -993,7 +997,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
         public void ImageServer_Can_Request_Uncached_Images()
         {
             _Environment.RequestPath = $"/Images/Web/no-cache/File.bmp";
-            _ImageFileManager.Setup(r => r.LoadFromStandardPipeline("/images/File.bmp", false, _Environment.Environment)).Returns((Image)TestImages.DLH_bmp.Clone());
+            _ImageFileManager.Setup(r => r.LoadFromStandardPipeline("/images/File.bmp", false, _Environment.Environment)).Returns(TestImages.DLH_bmp_IImage.Clone());
 
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 
@@ -1005,7 +1009,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
         {
             _Environment.ServerRemoteIpAddress = "1.2.3.4";
             _Environment.RequestPath = $"/Images/Web/no-cache/File.bmp";
-            _ImageFileManager.Setup(r => r.LoadFromStandardPipeline("/images/File.bmp", true, _Environment.Environment)).Returns((Image)TestImages.DLH_bmp.Clone());
+            _ImageFileManager.Setup(r => r.LoadFromStandardPipeline("/images/File.bmp", true, _Environment.Environment)).Returns(TestImages.DLH_bmp_IImage.Clone());
 
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
 

@@ -29,21 +29,27 @@ namespace VirtualRadar.Resources
         /// <returns></returns>
         public static byte[] Copy(string name)
         {
-            byte[] result = null;
-
-            string fullPath = String.Format("VirtualRadar.Resources.{0}", name);
-
-            var assembly = Assembly.GetExecutingAssembly();
-            using(var streamIn = assembly.GetManifestResourceStream(fullPath)) {
+            using(var streamIn = GetManifestResourceStream(name)) {
                 using(var streamOut = new MemoryStream()) {
-                    byte[] buffer = new byte[1024];
-                    int bytesRead = 0;
-                    while((bytesRead = streamIn.Read(buffer, 0, buffer.Length)) != 0) {
-                        streamOut.Write(buffer, 0, bytesRead);
-                    };
-
-                    result = streamOut.ToArray();
+                    streamIn.CopyTo(streamOut, 1024);
+                    return streamOut.ToArray();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Exposes the resource stream for the named resource passed across.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        private static Stream GetManifestResourceStream(string name)
+        {
+            var fullPath = $"VirtualRadar.Resources.{name}";
+            var assembly = Assembly.GetExecutingAssembly();
+
+            var result = assembly.GetManifestResourceStream(fullPath);
+            if(result == null) {
+                throw new InvalidOperationException($"There is no resource called {fullPath} in {assembly.FullName}");
             }
 
             return result;

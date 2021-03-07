@@ -10,11 +10,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using InterfaceFactory;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Drawing;
 
 namespace VirtualRadar.Library
 {
@@ -137,9 +138,10 @@ namespace VirtualRadar.Library
                 stream.Seek(0, SeekOrigin.Begin);
             }
 
-            using(var image = Image.FromStream(stream)) {
-                return image.Size;
-            }
+            var imageFile = Factory.ResolveSingleton<IImageFile>();
+            var result = imageFile.LoadDimensions(stream);
+
+            return result ?? Size.Empty;
         }
 
         /// <summary>

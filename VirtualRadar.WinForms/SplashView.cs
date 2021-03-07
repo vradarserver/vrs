@@ -169,8 +169,8 @@ namespace VirtualRadar.WinForms
             if(!DesignMode) {
                 Localise.Form(this);
 
-                pictureBoxLogo.Image = Images.Logo128x128;
-                Icon = Images.ApplicationIcon;
+                pictureBoxLogo.Image = ResourceImages.Logo128x128;
+                Icon = ResourceImages.ApplicationIcon;
                 labelApplicationTitle.Text = "";
                 labelApplicationVersion.Text = "";
                 labelProgressText.Text = "";

@@ -10,16 +10,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Runtime.Serialization.Json;
 using System.Text;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Drawing;
 using VirtualRadar.Interface.WebServer;
-using InterfaceFactory;
 
 namespace VirtualRadar.WebServer
 {
@@ -141,26 +137,24 @@ namespace VirtualRadar.WebServer
         /// <param name="response"></param>
         /// <param name="image"></param>
         /// <param name="format"></param>
-        public void SendImage(IRequest request, IResponse response, Image image, ImageFormat format)
+        public void SendImage(IRequest request, IResponse response, IImage image, ImageFormat format)
         {
-            if(request == null) throw new ArgumentNullException("request");
-            if(response == null) throw new ArgumentNullException("response");
-            if(image == null) throw new ArgumentNullException("image");
-            if(format == null) throw new ArgumentNullException("format");
+            if(request == null) {
+                throw new ArgumentNullException("request");
+            }
+            if(response == null) {
+                throw new ArgumentNullException("response");
+            }
+            if(image == null) {
+                throw new ArgumentNullException("image");
+            }
             if(format != ImageFormat.Bmp && format != ImageFormat.Gif && format != ImageFormat.Png) {
                 throw new NotSupportedException($"Responder does not support sending {format} images");
             }
 
             AddCacheHeaders(response, 21600);
 
-            byte[] bytes;
-            using(var stream = new MemoryStream()) {
-                using(var copy = (Image)image.Clone()) {
-                    copy.Save(stream, format);
-                }
-
-                bytes = stream.ToArray();
-            }
+            var bytes = image.GetImageBytes(format);
 
             response.StatusCode = HttpStatusCode.OK;
             response.MimeType = ImageMimeType(format);

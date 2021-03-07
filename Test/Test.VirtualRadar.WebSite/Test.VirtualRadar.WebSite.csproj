@@ -125,6 +125,12 @@
     <Compile Include="ApiControllers\ControllerTests.cs" />
     <Compile Include="ApiControllers\DirectoryEntryControllerTests.cs" />
     <Compile Include="ApiControllers\FeedsControllerTests.cs" />
+    <Compile Include="BinaryResources.cs" />
+    <Compile Include="TestImages.cs">
+      <DependentUpon>TestImages.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="MiddlewareConfiguration\AccessConfigurationTests.cs" />
     <Compile Include="HtmlManipulatorTests.cs" />
     <Compile Include="LoopbackHostTests.cs" />
@@ -153,11 +159,6 @@
     <Compile Include="StreamManipulator\JavascriptManipulatorTests.cs" />
     <Compile Include="StreamManipulator\ManipulatorTests.cs" />
     <Compile Include="StreamManipulator\MapPluginHtmlManipulatorTests.cs" />
-    <Compile Include="TestImages.Designer.cs">
-      <DependentUpon>TestImages.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="WebSitePipelineBuilder_Tests.cs" />
     <Compile Include="TestHelpers\BoolFilter.cs" />
     <Compile Include="TestHelpers\DateFilter.cs" />
@@ -212,24 +213,25 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestImages\AltitudeImageTest-01.png" />
-    <Content Include="TestImages\DLH.bmp" />
-    <Content Include="TestImages\OversizedLogo.bmp" />
-    <Content Include="TestImages\Picture-120x140-Resized-60x40.png" />
-    <Content Include="TestImages\Picture-120x140.png" />
-    <Content Include="TestImages\Picture-120x80-Resized-60x40.png" />
-    <Content Include="TestImages\Picture-120x80.png" />
-    <Content Include="TestImages\Picture-140x80-Resized-60x40.png" />
-    <Content Include="TestImages\Picture-140x80.png" />
-    <Content Include="TestImages\Picture-700x400.png" />
-    <Content Include="TestImages\TestSquare.bmp" />
-    <Content Include="TestImages\TestSquare.png" />
+    <None Include="TestImages.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TestImages.cs</LastGenOutput>
+    </None>
+    <EmbeddedResource Include="TestImages\AltitudeImageTest-01.png" />
+    <EmbeddedResource Include="TestImages\DLH.bmp" />
+    <EmbeddedResource Include="TestImages\OversizedLogo.bmp" />
+    <EmbeddedResource Include="TestImages\Picture-120x140-Resized-60x40.png" />
+    <EmbeddedResource Include="TestImages\Picture-120x140.png" />
+    <EmbeddedResource Include="TestImages\Picture-120x80-Resized-60x40.png" />
+    <EmbeddedResource Include="TestImages\Picture-120x80.png" />
+    <EmbeddedResource Include="TestImages\Picture-140x80-Resized-60x40.png" />
+    <EmbeddedResource Include="TestImages\Picture-140x80.png" />
+    <EmbeddedResource Include="TestImages\Picture-700x400.png" />
+    <EmbeddedResource Include="TestImages\TestSquare.bmp" />
+    <EmbeddedResource Include="TestImages\TestSquare.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="TestImages.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>TestImages.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

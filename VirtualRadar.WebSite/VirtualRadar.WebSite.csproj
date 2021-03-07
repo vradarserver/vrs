@@ -70,7 +70,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel.Web" />
@@ -91,7 +90,6 @@
     <Compile Include="ApiControllers\ReportsControllerSharedState.cs" />
     <Compile Include="ApiControllers\SettingsController.cs" />
     <Compile Include="MiddlewareConfiguration\AccessConfiguration.cs" />
-    <Compile Include="FontCache.cs" />
     <Compile Include="HtmlManipulator.cs" />
     <Compile Include="HtmlLocaliser.cs" />
     <Compile Include="Implementations.cs" />

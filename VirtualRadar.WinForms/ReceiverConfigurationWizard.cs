@@ -90,7 +90,7 @@ namespace VirtualRadar.WinForms
             if(!DesignMode) {
                 Localise.Form(this);
 
-                pictureBoxLogo.Image = Images.Radio48x48;
+                pictureBoxLogo.Image = ResourceImages.Radio48x48;
 
                 Answers = new ReceiverConfigurationWizardAnswers() {
                     ConnectionType =        ConnectionType.TCP,

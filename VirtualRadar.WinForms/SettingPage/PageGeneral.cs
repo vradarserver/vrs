@@ -37,7 +37,7 @@ namespace VirtualRadar.WinForms.SettingPage
         /// </summary>
         public class Summary : PageSummary
         {
-            private static Image _PageIcon = Images.Gear16x16;
+            private static Image _PageIcon = ResourceImages.Gear16x16;
 
             /// <summary>
             /// 
@@ -158,7 +158,7 @@ namespace VirtualRadar.WinForms.SettingPage
         {
             base.OnLoad(e);
             if(!DesignMode) {
-                buttonTestAudio.Image = Images.Test16x16;
+                buttonTestAudio.Image = ResourceImages.Test16x16;
             }
         }
 

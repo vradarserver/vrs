@@ -379,8 +379,8 @@ namespace Gui.Wizard
             if(!DesignMode) {
                 btnBack.FlatStyle = FlatStyle.Standard;  // Need System for designer, but need Standard for images
                 btnNext.FlatStyle = FlatStyle.Standard;  // Need System for designer, but need Standard for images
-                btnBack.Image = VirtualRadar.Resources.Images.ArrowBack16x16;
-                btnNext.Image = VirtualRadar.Resources.Images.ArrowForward16x16;
+                btnBack.Image = VirtualRadar.WinForms.ResourceImages.ArrowBack16x16;
+                btnNext.Image = VirtualRadar.WinForms.ResourceImages.ArrowForward16x16;
                 _NextText = VirtualRadar.Localisation.Strings.Next;
                 _FinishText = VirtualRadar.Localisation.Strings.Finish;
             }

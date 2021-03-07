@@ -14,6 +14,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using InterfaceFactory;
+using VirtualRadar.Interface.Drawing;
 
 namespace VirtualRadar.Interface.WebSite
 {
@@ -29,7 +30,7 @@ namespace VirtualRadar.Interface.WebSite
         /// <param name="original"></param>
         /// <param name="degrees"></param>
         /// <returns></returns>
-        Image RotateImage(Image original, double degrees);
+        IImage RotateImage(IImage original, double degrees);
 
         /// <summary>
         /// Widens the image and centres the original image within it. The new pixels are transparent.
@@ -38,7 +39,7 @@ namespace VirtualRadar.Interface.WebSite
         /// <param name="width"></param>
         /// <param name="centreHorizontally"></param>
         /// <returns></returns>
-        Image WidenImage(Image original, int width, bool centreHorizontally);
+        IImage WidenImage(IImage original, int width, bool centreHorizontally);
 
         /// <summary>
         /// Heightens the image and centres the original image within it. The new pixels are transparent.
@@ -47,14 +48,14 @@ namespace VirtualRadar.Interface.WebSite
         /// <param name="height"></param>
         /// <param name="centreVertically"></param>
         /// <returns></returns>
-        Image HeightenImage(Image original, int height, bool centreVertically);
+        IImage HeightenImage(IImage original, int height, bool centreVertically);
 
         /// <summary>
         /// Doubles the width and height of the image for use on high DPI displays.
         /// </summary>
         /// <param name="original"></param>
         /// <returns></returns>
-        Image ResizeForHiDpi(Image original);
+        IImage ResizeForHiDpi(IImage original);
 
         /// <summary>
         /// Returns a new bitmap with the dimensions specified. The entire bitmap is filled with the
@@ -69,7 +70,7 @@ namespace VirtualRadar.Interface.WebSite
         /// <param name="zoomBackground"></param>
         /// <param name="preferSpeedOverQuality"></param>
         /// <returns></returns>
-        Bitmap ResizeBitmap(Bitmap original, int width, int height, ResizeImageMode mode, Brush zoomBackground, bool preferSpeedOverQuality);
+        IImage ResizeBitmap(IImage original, int width, int height, ResizeMode mode, IBrush zoomBackground, bool preferSpeedOverQuality);
 
         /// <summary>
         /// Creates a fully-transparent image of the size specified.
@@ -77,7 +78,7 @@ namespace VirtualRadar.Interface.WebSite
         /// <param name="width"></param>
         /// <param name="height"></param>
         /// <returns></returns>
-        Image CreateBlankImage(int width, int height);
+        IImage CreateBlankImage(int width, int height);
 
         /// <summary>
         /// Creates an iPhone splash page image.
@@ -86,7 +87,7 @@ namespace VirtualRadar.Interface.WebSite
         /// <param name="isIPad"></param>
         /// <param name="pathParts"></param>
         /// <returns></returns>
-        Image CreateIPhoneSplash(string webSiteAddress, bool isIPad, List<string> pathParts);
+        IImage CreateIPhoneSplash(string webSiteAddress, bool isIPad, List<string> pathParts);
 
         /// <summary>
         /// Creates a new image of the required height with an altitude stalk drawn centred on the X
@@ -96,7 +97,7 @@ namespace VirtualRadar.Interface.WebSite
         /// <param name="height"></param>
         /// <param name="centreX"></param>
         /// <returns></returns>
-        Image AddAltitudeStalk(Image original, int height, int centreX);
+        IImage AddAltitudeStalk(IImage original, int height, int centreX);
 
         /// <summary>
         /// Overlays lines of text onto the image.
@@ -106,7 +107,7 @@ namespace VirtualRadar.Interface.WebSite
         /// <param name="centreText"></param>
         /// <param name="isHighDpi"></param>
         /// <returns></returns>
-        Image AddTextLines(Image image, IEnumerable<string> textLines, bool centreText, bool isHighDpi);
+        IImage AddTextLines(IImage image, IEnumerable<string> textLines, bool centreText, bool isHighDpi);
 
         /// <summary>
         /// When passed the current temporary image and the image that will become the new temporary image this
@@ -116,6 +117,6 @@ namespace VirtualRadar.Interface.WebSite
         /// <param name="tempImage"></param>
         /// <param name="newImage"></param>
         /// <returns></returns>
-        Image UseImage(Image tempImage, Image newImage);
+        IImage UseImage(IImage tempImage, IImage newImage);
     }
 }
