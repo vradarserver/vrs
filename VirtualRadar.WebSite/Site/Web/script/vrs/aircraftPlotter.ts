@@ -140,6 +140,15 @@ namespace VRS
             this._Settings.embeddedSvg = value;
         }
 
+        getSvgFillColourCallback()
+        {
+            return this._Settings.svgFillColourCallback;
+        }
+        setSvgFillColourCallback(value: (Aircraft, boolean) => string)
+        {
+            this._Settings.svgFillColourCallback = value;
+        }
+
         /**
          * Returns true if the marker can be used to represent the aircraft passed across.
          */

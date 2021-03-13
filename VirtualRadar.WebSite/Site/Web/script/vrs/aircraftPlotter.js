@@ -68,6 +68,12 @@ var VRS;
         AircraftMarker.prototype.setEmbeddedSvg = function (value) {
             this._Settings.embeddedSvg = value;
         };
+        AircraftMarker.prototype.getSvgFillColourCallback = function () {
+            return this._Settings.svgFillColourCallback;
+        };
+        AircraftMarker.prototype.setSvgFillColourCallback = function (value) {
+            this._Settings.svgFillColourCallback = value;
+        };
         AircraftMarker.prototype.matchesAircraft = function (aircraft) {
             return this._Settings.matches ? this._Settings.matches(aircraft) : false;
         };
