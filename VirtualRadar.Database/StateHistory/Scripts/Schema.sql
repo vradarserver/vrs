@@ -208,3 +208,15 @@ CREATE TABLE IF NOT EXISTS [AircraftList]
 
 CREATE INDEX IF NOT EXISTS [IX_AircraftList_ReceiverCreated]          ON [AircraftList] ([ReceiverSnapshotID], [CreatedUtc]);
 CREATE INDEX IF NOT EXISTS [IX_AircraftList_ReceiverdCreatedKeyLists] ON [AircraftList] ([ReceiverSnapshotID], [CreatedUtc]) WHERE [IsKeyList] = 1;
+
+--
+-- Flight (v1)
+--
+CREATE TABLE IF NOT EXISTS [Flight]
+(
+    [FlightID]          INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+   ,[Preserve]          BIT NOT NULL
+   ,[IntervalSeconds]   INTEGER NOT NULL
+   ,[CreatedUtc]        DATETIME NOT NULL
+   ,[UpdatedUtc]        DATETIME NOT NULL
+);

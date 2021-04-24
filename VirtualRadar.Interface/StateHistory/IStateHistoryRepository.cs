@@ -127,6 +127,12 @@ namespace VirtualRadar.Interface.StateHistory
         EngineTypeSnapshot EngineTypeSnapshot_GetOrCreate(byte[] fingerprint, DateTime createdUtc, int enumValue, string engineTypeName);
 
         /// <summary>
+        /// Creates a new flight record and fills in its ID.
+        /// </summary>
+        /// <param name="record"></param>
+        void Flight_Insert(Flight record);
+
+        /// <summary>
         /// Either creates a new snapshot record or reads the existing record that has the
         /// same fingerprint and returns it.
         /// </summary>

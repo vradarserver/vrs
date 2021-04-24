@@ -223,6 +223,27 @@ namespace VirtualRadar.Database.StateHistory {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [Flight] (
+        ///    [Preserve]
+        ///   ,[IntervalSeconds]
+        ///   ,[CreatedUtc]
+        ///   ,[UpdatedUtc]
+        ///) VALUES (
+        ///    @Preserve
+        ///   ,@IntervalSeconds
+        ///   ,@CreatedUtc
+        ///   ,@UpdatedUtc
+        ///);
+        ///SELECT last_insert_rowid();
+        ///.
+        /// </summary>
+        internal static string Flight_Insert {
+            get {
+                return ResourceManager.GetString("Flight_Insert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to INSERT INTO [ManufacturerSnapshot] (
         ///    [CreatedUtc]
         ///   ,[Fingerprint]

@@ -233,6 +233,17 @@ namespace VirtualRadar.Library.StateHistory
             return WritesEnabled;
         }
 
+        public bool Flight_Insert(Flight flight)
+        {
+            DoIfWriteable(repo => {
+                flight.CreatedUtc = DateTime.UtcNow;
+                flight.UpdatedUtc = flight.CreatedUtc;
+                repo.Flight_Insert(flight);
+            });
+
+            return WritesEnabled;
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>

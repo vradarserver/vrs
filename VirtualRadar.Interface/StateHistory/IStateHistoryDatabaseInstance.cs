@@ -129,6 +129,13 @@ namespace VirtualRadar.Interface.StateHistory
         EngineTypeSnapshot EngineType_GetOrCreate(EngineType? engineType);
 
         /// <summary>
+        /// Creates a new flight, filling in the ID.
+        /// </summary>
+        /// <param name="flight"></param>
+        /// <returns>True if writes are enabled and it was created, false otherwise.</returns>
+        bool Flight_Insert(Flight flight);
+
+        /// <summary>
         /// Returns a snapshot for the values passed across. Returns null if writes are disabled
         /// or the manufacturer name is null.
         /// </summary>

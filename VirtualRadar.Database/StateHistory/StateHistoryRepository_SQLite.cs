@@ -131,6 +131,22 @@ namespace VirtualRadar.Database.StateHistory
         /// <summary>
         /// See interface docs.
         /// </summary>
+        /// <param name="flight"></param>
+        public void Flight_Insert(Flight flight)
+        {
+            using(var connection = OpenConnection(forWrite: true)) {
+                flight.FlightID = connection.Query<long>(Scripts.Flight_Insert, new {
+                    flight.Preserve,
+                    flight.IntervalSeconds,
+                    flight.CreatedUtc,
+                    flight.UpdatedUtc,
+                }).Single();
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         /// <returns></returns>
         public DatabaseVersion DatabaseVersion_GetLatest()
         {

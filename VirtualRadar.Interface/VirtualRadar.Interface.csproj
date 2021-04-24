@@ -248,6 +248,7 @@
     <Compile Include="StandingData\EnginePlacement.cs" />
     <Compile Include="StateHistory\AircraftList.cs" />
     <Compile Include="StateHistory\AircraftSnapshot.cs" />
+    <Compile Include="StateHistory\Flight.cs" />
     <Compile Include="StateHistory\ReceiverSnapshot.cs" />
     <Compile Include="StateHistory\EnginePlacementSnapshot.cs" />
     <Compile Include="StateHistory\ModelSnapshot.cs" />

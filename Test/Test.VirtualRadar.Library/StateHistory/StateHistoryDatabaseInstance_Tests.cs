@@ -213,6 +213,32 @@ namespace Test.VirtualRadar.Library.StateHistory
             });
         }
 
+        [TestMethod]
+        public void Flight_Insert_Creates_Flight_Record()
+        {
+            new InlineDataTest(this).TestAndAssert(new bool[] {
+                true, false
+            }, writesEnabled => {
+                Flight flight = null;
+                _Repository
+                    .Setup(r => r.Flight_Insert(It.IsAny<Flight>()))
+                    .Callback((Flight f) => flight = f);
+
+                _DatabaseInstance.Initialise(writesEnabled, null);
+
+                _DatabaseInstance.Flight_Insert(new Flight());
+
+                _Repository.Verify(r => r.Flight_Insert(It.IsAny<Flight>()), writesEnabled
+                    ? Times.Once()
+                    : Times.Never()
+                );
+                if(writesEnabled) {
+                    Assert.IsTrue(flight.CreatedUtc > DateTime.UtcNow.AddMinutes(-2));
+                    Assert.IsTrue(flight.UpdatedUtc == flight.CreatedUtc);
+                }
+            });
+        }
+
         /// <summary>
         /// Base class for GetOrCreate SnapshotRecord tests that common tests can use.
         /// </summary>
