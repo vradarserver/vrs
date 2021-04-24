@@ -27,10 +27,14 @@ namespace VirtualRadar.Interface.StateHistory
         public long ReceiverSnapshotID { get; set; }
 
         /// <summary>
-        /// Gets or sets the receiver's ID.
+        /// Gets or sets the receiver's ID. This is not unique across all of state history,
+        /// it is only guaranteed unique within a single VRS session.
         /// </summary>
         public int ReceiverID { get; set; }
 
+        /// <summary>
+        /// Gets or sets the receiver's unique ID. This is unique across all of state history.
+        /// </summary>
         public Guid Key { get; set; }
 
         /// <summary>
