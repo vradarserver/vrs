@@ -55,7 +55,7 @@ namespace VirtualRadar.Library
         /// <summary>
         /// The URL to fetch lookup settings from. This returns a single JSON object as outlined in <see cref="ServerSettings"/>.
         /// </summary>
-        private static readonly string SettingsUrl = "http://sdm.virtualradarserver.co.uk/Aircraft/GetAircraftLookupSettings?language={0}";
+        private static string SettingsUrl { get; }
 
         /// <summary>
         /// The server settings last fetched by the provider.
@@ -96,6 +96,15 @@ namespace VirtualRadar.Library
         /// See interface docs.
         /// </summary>
         public string SupplierWebSiteUrl { get { return _ServerSettings == null ? null : _ServerSettings.SupplierUrl; } }
+
+        /// <summary>
+        /// Static ctor.
+        /// </summary>
+        static AircraftOnlineLookupProvider()
+        {
+            var webAddressManager = Factory.ResolveSingleton<IWebAddressManager>();
+            SettingsUrl = webAddressManager.RegisterAddress("vrs-aircraft-lookup-settings", "http://sdm.virtualradarserver.co.uk/Aircraft/GetAircraftLookupSettings?language={0}");
+        }
 
         /// <summary>
         /// See interface docs.

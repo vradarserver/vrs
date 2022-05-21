@@ -131,6 +131,7 @@ namespace VirtualRadar.Library
             factory.Register<ISimpleAircraftList, SimpleAircraftList>();
             factory.Register<IStatistics, Statistics>();
             factory.Register<ITimer, Timer>();
+            factory.Register<IWebAddressManager, WebAddressManager>();
             factory.Register<IXmlSerialiser, XmlSerialiser>();
 
             // System.Drawing graphics

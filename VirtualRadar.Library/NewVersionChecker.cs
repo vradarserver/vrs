@@ -51,6 +51,9 @@ namespace VirtualRadar.Library
             }
         }
 
+        private static string _DownloadUrl { get; }
+        private static string _LatestVersionUrl { get; }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -64,7 +67,7 @@ namespace VirtualRadar.Library
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string DownloadUrl { get { return "http://www.virtualradarserver.co.uk"; } }
+        public string DownloadUrl => _DownloadUrl;
 
         /// <summary>
         /// See interface docs.
@@ -89,6 +92,16 @@ namespace VirtualRadar.Library
         }
 
         /// <summary>
+        /// Static ctor.
+        /// </summary>
+        static NewVersionChecker()
+        {
+            var webAddressManager = Factory.ResolveSingleton<IWebAddressManager>();
+            _DownloadUrl =      webAddressManager.RegisterAddress("vrs-download",       "https://www.virtualradarserver.co.uk");
+            _LatestVersionUrl = webAddressManager.RegisterAddress("vrs-latest-version", "http://www.virtualradarserver.co.uk/LatestVersion.txt");
+        }
+
+        /// <summary>
         /// See interface docs.
         /// </summary>
         /// <returns></returns>
@@ -96,7 +109,7 @@ namespace VirtualRadar.Library
         {
             var result = false;
 
-            var content = Provider.DownloadFileContent("http://www.virtualradarserver.co.uk/LatestVersion.txt");
+            var content = Provider.DownloadFileContent(_LatestVersionUrl);
             if(!String.IsNullOrEmpty(content)) {
                 var applicationInfo = Factory.Resolve<IApplicationInformation>();
                 var thisVersion = applicationInfo.Version;

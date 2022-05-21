@@ -271,6 +271,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
+    <Compile Include="WebAddressManager.cs" />
     <Compile Include="XmlSerialiser.cs" />
     <Compile Include="XPlane\XPlaneConnection.cs" />
     <Compile Include="XPlane\XPlaneSettingsStorage.cs" />

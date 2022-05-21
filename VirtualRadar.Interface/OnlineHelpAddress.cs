@@ -8,10 +8,7 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using InterfaceFactory;
 
 namespace VirtualRadar.Interface
 {
@@ -24,53 +21,66 @@ namespace VirtualRadar.Interface
     public static class OnlineHelpAddress
     {
         /// <summary>
-        /// The prefix for every online help address.
-        /// </summary>
-        private const string Prefix = "http://www.virtualradarserver.co.uk/OnlineHelp/";
-
-        /// <summary>
         /// The address of the online help page for the About WinForms dialog.
         /// </summary>
-        public static readonly string WinFormsAboutDialog = Prefix + "WinFormsAboutDialog.aspx";
+        public static string WinFormsAboutDialog { get; }
 
         /// <summary>
         /// The address of the online help page for the Connection Client Log dialog.
         /// </summary>
-        public static readonly string WinFormsConnectionClientLogDialog = Prefix + "WinFormsConnectionClientLogDialog.aspx";
+        public static string WinFormsConnectionClientLogDialog { get; }
 
         /// <summary>
         /// The address of the online help page for the Connection Session Log dialog.
         /// </summary>
-        public static readonly string WinFormsConnectionSessionLogDialog = Prefix + "WinFormsConnectionSessionLogDialog.aspx";
+        public static string WinFormsConnectionSessionLogDialog { get; }
 
         /// <summary>
         /// The address of the online help page for the Flight Simulator X dialog.
         /// </summary>
-        public static readonly string WinFormsFlightSimulatorXDialog = Prefix + "WinFormsFlightSimulatorXDialog.aspx";
+        public static string WinFormsFlightSimulatorXDialog { get; }
 
         /// <summary>
         /// The address of the online help page for the Main dialog.
         /// </summary>
-        public static readonly string WinFormsMainDialog = Prefix + "WinFormsMainDialog2.aspx";
+        public static string WinFormsMainDialog { get; }
 
         /// <summary>
         /// The address of the online help page for the Rebroadcast Options dialog.
         /// </summary>
-        public static readonly string WinFormsRebroadcastOptionsView = Prefix + "WinFormsRebroadcastServersView.aspx";
+        public static string WinFormsRebroadcastOptionsView { get; }
 
         /// <summary>
         /// The address of the online help page for the Receiver Locations dialog.
         /// </summary>
-        public static readonly string WinFormsReceiverLocationsView = Prefix + "WinFormsReceiverLocationsView.aspx";
+        public static string WinFormsReceiverLocationsView { get; }
 
         /// <summary>
         /// The address of the online help page for the Options dialog.
         /// </summary>
-        public static readonly string WinFormsOptionsDialog = Prefix + "WinFormsOptionsDialog2.aspx";
+        public static string WinFormsOptionsDialog { get; }
 
         /// <summary>
         /// The address of the online help page for the Statistics dialog.
         /// </summary>
-        public static readonly string WinFormsStatisticsDialog = Prefix + "WinFormsStatisticsDialog.aspx";
+        public static string WinFormsStatisticsDialog { get; }
+
+        /// <summary>
+        /// Static ctor.
+        /// </summary>
+        static OnlineHelpAddress()
+        {
+            var webAddressManager = Factory.ResolveSingleton<IWebAddressManager>();
+
+            WinFormsAboutDialog =                   webAddressManager.RegisterAddress("vrs-onlinehelp-winforms-about",                  "https://www.virtualradarserver.co.uk/OnlineHelp/WinFormsAboutDialog.aspx");
+            WinFormsConnectionClientLogDialog =     webAddressManager.RegisterAddress("vrs-onlinehelp-winforms-client-log",             "https://www.virtualradarserver.co.uk/OnlineHelp/WinFormsConnectionClientLogDialog.aspx");
+            WinFormsConnectionSessionLogDialog =    webAddressManager.RegisterAddress("vrs-onlinehelp-winforms-session-log",            "https://www.virtualradarserver.co.uk/OnlineHelp/WinFormsConnectionSessionLogDialog.aspx");
+            WinFormsFlightSimulatorXDialog =        webAddressManager.RegisterAddress("vrs-onlinehelp-winforms-fsx",                    "https://www.virtualradarserver.co.uk/OnlineHelp/WinFormsFlightSimulatorXDialog.aspx");
+            WinFormsMainDialog =                    webAddressManager.RegisterAddress("vrs-onlinehelp-winforms-main-window",            "https://www.virtualradarserver.co.uk/OnlineHelp/WinFormsMainDialog2.aspx");
+            WinFormsRebroadcastOptionsView =        webAddressManager.RegisterAddress("vrs-onlinehelp-winforms-rebroadcast-servers",    "https://www.virtualradarserver.co.uk/OnlineHelp/WinFormsRebroadcastServersView.aspx");
+            WinFormsReceiverLocationsView =         webAddressManager.RegisterAddress("vrs-onlinehelp-winforms-receiver-locations",     "https://www.virtualradarserver.co.uk/OnlineHelp/WinFormsReceiverLocationsView.aspx");
+            WinFormsOptionsDialog =                 webAddressManager.RegisterAddress("vrs-onlinehelp-winforms-options",                "https://www.virtualradarserver.co.uk/OnlineHelp/WinFormsOptionsDialog2.aspx");
+            WinFormsStatisticsDialog =              webAddressManager.RegisterAddress("vrs-onlinehelp-winforms-statistics",             "https://www.virtualradarserver.co.uk/OnlineHelp/WinFormsStatisticsDialog.aspx");
+        }
     }
 }

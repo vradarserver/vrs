@@ -126,7 +126,7 @@ namespace VirtualRadar.Database.StandingData
         /// <summary>
         /// The URL of the file holding the standing data database.
         /// </summary>
-        private const string DatabaseUrl = "http://www.virtualradarserver.co.uk/Files/StandingData.sqb.gz";
+        private static string DatabaseUrl { get; }
 
         /// <summary>
         /// The name of the file that describes the dates and state of the other files.
@@ -141,7 +141,7 @@ namespace VirtualRadar.Database.StandingData
         /// <summary>
         /// The URL of the file that describes the dates and state of the other files.
         /// </summary>
-        private const string StateFileUrl = "http://www.virtualradarserver.co.uk/Files/FlightNumberCoverage.csv";
+        private static string StateFileUrl { get; }
         #endregion
 
         #region Properties
@@ -151,13 +151,23 @@ namespace VirtualRadar.Database.StandingData
         public IStandingDataUpdaterProvider Provider { get; set; }
         #endregion
 
-        #region Constructor
+        #region Constructors
         /// <summary>
         /// Creates a new object.
         /// </summary>
         public StandingDataUpdater()
         {
             Provider = new DefaultProvider();
+        }
+
+        /// <summary>
+        /// Static ctor.
+        /// </summary>
+        static StandingDataUpdater()
+        {
+            var webAddressManager = Factory.ResolveSingleton<IWebAddressManager>();
+            DatabaseUrl =  webAddressManager.RegisterAddress("vrs-sdm-database",    "http://www.virtualradarserver.co.uk/Files/StandingData.sqb.gz");
+            StateFileUrl = webAddressManager.RegisterAddress("vrs-sdm-state-file",  "http://www.virtualradarserver.co.uk/Files/FlightNumberCoverage.csv");
         }
         #endregion
 

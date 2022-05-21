@@ -15,6 +15,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+using InterfaceFactory;
 using Newtonsoft.Json;
 using VirtualRadar.Interface;
 
@@ -37,7 +38,7 @@ namespace VirtualRadar.Library
         /// <summary>
         /// The URL to fetch lookup settings from. This returns a single JSON object as outlined in <see cref="ServerSettings"/>.
         /// </summary>
-        private static readonly string SettingsUrl = "http://sdm.virtualradarserver.co.uk/Weather/GetWeatherSettings?language={0}";
+        private static string SettingsUrl { get; }
 
         /// <summary>
         /// The server settings last fetched.
@@ -55,6 +56,15 @@ namespace VirtualRadar.Library
         public int IntervalMinutes
         {
             get { return _ServerSettings == null ? 30 : _ServerSettings.GetGlobalWeatherIntervalMinutes; }
+        }
+
+        /// <summary>
+        /// Static ctor.
+        /// </summary>
+        static AirPressureDownloader()
+        {
+            var webAddressManager = Factory.ResolveSingleton<IWebAddressManager>();
+            SettingsUrl = webAddressManager.RegisterAddress("vrs-weather-lookup-settings", "http://sdm.virtualradarserver.co.uk/Weather/GetWeatherSettings?language={0}");
         }
 
         /// <summary>

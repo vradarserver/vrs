@@ -14,7 +14,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using InterfaceFactory;
 using Newtonsoft.Json;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Library.Settings
@@ -24,7 +26,16 @@ namespace VirtualRadar.Library.Settings
     /// </summary>
     class TileServerSettingsDownloader : ITileServerSettingsDownloader
     {
-        internal const string TileServerSettingsUrl = "http://sdm.virtualradarserver.co.uk/api/1.01/tile-servers";
+        internal static string TileServerSettingsUrl { get; }
+
+        /// <summary>
+        /// Static ctor.
+        /// </summary>
+        static TileServerSettingsDownloader()
+        {
+            var webAddressManager = Factory.ResolveSingleton<IWebAddressManager>();
+            TileServerSettingsUrl = webAddressManager.RegisterAddress("vrs-tile-server-settings", "http://sdm.virtualradarserver.co.uk/api/1.01/tile-servers");
+        }
 
         /// <summary>
         /// See interface docs.

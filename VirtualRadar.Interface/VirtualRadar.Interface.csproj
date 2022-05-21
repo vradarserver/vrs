@@ -163,6 +163,7 @@
     <Compile Include="IPlugin_V2.cs" />
     <Compile Include="IShutdownSignalHandler.cs" />
     <Compile Include="IPAddressHelper.cs" />
+    <Compile Include="IWebAddressManager.cs" />
     <Compile Include="Listener\AirnavXRangeAircraftJson.cs" />
     <Compile Include="Listener\AirnavXRangeJson.cs" />
     <Compile Include="Listener\IAirnavXRangeMessageBytesExtractor.cs" />
