@@ -1854,4 +1854,10 @@
     <value>Volume</value>
     <comment>As in how loud a sound is</comment>
   </data>
+  <data name="AddAircraftLookup" xml:space="preserve">
+    <value>Add lookup details</value>
+  </data>
+  <data name="UpdateAircraftLookup" xml:space="preserve">
+    <value>Update lookup details</value>
+  </data>
 </root>

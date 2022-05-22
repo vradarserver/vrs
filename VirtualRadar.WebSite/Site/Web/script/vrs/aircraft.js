@@ -465,6 +465,9 @@ var VRS;
         Aircraft.prototype.canSubmitRoute = function () {
             return !this.isCharterFlight.val && !this.isPositioningFlight.val;
         };
+        Aircraft.prototype.canSubmitAircraftLookup = function () {
+            return !this.icaoInvalid.val;
+        };
         Aircraft.prototype.hasRouteChanged = function () {
             return this.from.chg || this.to.chg || this.via.chg;
         };
@@ -641,6 +644,9 @@ var VRS;
         };
         Aircraft.prototype.formatModelIcao = function () {
             return VRS.format.modelIcao(this.modelIcao.val);
+        };
+        Aircraft.prototype.hasModelIcao = function () {
+            return !!this.modelIcao.val;
         };
         Aircraft.prototype.formatModelIcaoImageHtml = function () {
             return VRS.format.modelIcaoImageHtml(this.modelIcao.val, this.icao.val, this.registration.val);

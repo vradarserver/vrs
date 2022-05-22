@@ -50,8 +50,9 @@ namespace VRS
             VRS.RenderProperty.PictureOrThumbnails
         ];
     }
-    VRS.globalOptions.detailPanelUserCanConfigureItems = VRS.globalOptions.detailPanelUserCanConfigureItems !== undefined ? VRS.globalOptions.detailPanelUserCanConfigureItems : true;    // True if the user can change the items shown for an aircraft in the details panel.
+    VRS.globalOptions.detailPanelUserCanConfigureItems = VRS.globalOptions.detailPanelUserCanConfigureItems !== undefined ? VRS.globalOptions.detailPanelUserCanConfigureItems : true;  // True if the user can change the items shown for an aircraft in the details panel.
     VRS.globalOptions.detailPanelShowSeparateRouteLink = VRS.globalOptions.detailPanelShowSeparateRouteLink !== undefined ? VRS.globalOptions.detailPanelShowSeparateRouteLink : true;  // Show a separate link to add or correct routes if the detail panel is showing routes.
+    VRS.globalOptions.detailPanelShowSDMAircraftLink = VRS.globalOptions.detailPanelShowSDMAircraftLink !== undefined ? VRS.globalOptions.detailPanelShowSDMAircraftLink : true;        // Show a link to add or update aircraft details on the SDM site.
     VRS.globalOptions.detailPanelShowAircraftLinks = VRS.globalOptions.detailPanelShowAircraftLinks !== undefined ? VRS.globalOptions.detailPanelShowAircraftLinks : true;              // True to show the links for an aircraft, false to suppress them.
     VRS.globalOptions.detailPanelShowEnableAutoSelect = VRS.globalOptions.detailPanelShowEnableAutoSelect !== undefined ? VRS.globalOptions.detailPanelShowEnableAutoSelect : true;     // True to show a link to enable and disable auto-select, false to suppress the link.
     VRS.globalOptions.detailPanelShowCentreOnAircraft = VRS.globalOptions.detailPanelShowCentreOnAircraft !== undefined ? VRS.globalOptions.detailPanelShowCentreOnAircraft : true;     // True to show a link to centre the map on the selected aircraft.
@@ -109,6 +110,11 @@ namespace VRS
          * True if a separate link to add or correct links is to be shown if the user is displaying routes. Always hidden if there are no routes on display.
          */
         showSeparateRouteLink?: boolean;
+
+        /**
+         * True if a link to add or update aircraft lookup details is to be shown.
+         */
+        showSDMAircraftLink?: boolean;
 
         /**
          * True if uncertain callsigns are to show be flagged up as such on display.
@@ -286,6 +292,7 @@ namespace VRS
             showUnits:                  VRS.globalOptions.detailPanelDefaultShowUnits,
             items:                      VRS.globalOptions.detailPanelDefaultItems.slice(),
             showSeparateRouteLink:      VRS.globalOptions.detailPanelShowSeparateRouteLink,
+            showSDMAircraftLink:        VRS.globalOptions.detailPanelShowSDMAircraftLink,
             flagUncertainCallsigns:     VRS.globalOptions.detailPanelFlagUncertainCallsigns,
             distinguishOnGround:        VRS.globalOptions.detailPanelDistinguishOnGround,
             airportDataThumbnails:      VRS.globalOptions.detailPanelAirportDataThumbnails,
@@ -737,8 +744,12 @@ namespace VRS
                 state.autoSelectLinkRenderHelper = new VRS.AutoSelectLinkRenderHelper(options.aircraftAutoSelect);
                 routeLinks.push(state.autoSelectLinkRenderHelper);
             }
+
             if(VRS.globalOptions.detailPanelShowSeparateRouteLink) {
                 routeLinks.push(VRS.LinkSite.StandingDataMaintenance);
+            }
+            if(VRS.globalOptions.detailPanelShowSeparateRouteLink) {
+                routeLinks.push(VRS.LinkSite.SDMAircraft);
             }
 
             if(routeLinks.length > 0) {

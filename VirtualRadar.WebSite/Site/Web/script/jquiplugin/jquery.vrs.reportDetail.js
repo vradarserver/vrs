@@ -64,6 +64,7 @@ var VRS;
     VRS.globalOptions.reportDetailDefaultShowEmptyValues = VRS.globalOptions.reportDetailDefaultShowEmptyValues !== undefined ? VRS.globalOptions.reportDetailDefaultShowEmptyValues : false;
     VRS.globalOptions.reportDetailShowAircraftLinks = VRS.globalOptions.reportDetailShowAircraftLinks !== undefined ? VRS.globalOptions.reportDetailShowAircraftLinks : true;
     VRS.globalOptions.reportDetailShowSeparateRouteLink = VRS.globalOptions.reportDetailShowSeparateRouteLink !== undefined ? VRS.globalOptions.reportDetailShowSeparateRouteLink : true;
+    VRS.globalOptions.reportDetailShowSDMAircraftLink = VRS.globalOptions.reportDetailShowSDMAircraftLink !== undefined ? VRS.globalOptions.reportDetailShowSDMAircraftLink : true;
     var ReportDetailPlugin_State = (function () {
         function ReportDetailPlugin_State() {
             this.suspended = false;
@@ -361,6 +362,9 @@ var VRS;
                 var routeLinks = [];
                 if (VRS.globalOptions.reportDetailShowSeparateRouteLink) {
                     routeLinks.push(VRS.LinkSite.StandingDataMaintenance);
+                }
+                if (VRS.globalOptions.reportDetailShowSDMAircraftLink) {
+                    routeLinks.push(VRS.LinkSite.SDMAircraft);
                 }
                 if (routeLinks.length > 0) {
                     var routeLinksElement = $('<div/>')

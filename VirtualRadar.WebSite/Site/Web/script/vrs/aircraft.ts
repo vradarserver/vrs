@@ -742,6 +742,14 @@ namespace VRS
         }
 
         /**
+         * Returns true if the SDM site allows lookup details for the aircraft.
+         */
+        canSubmitAircraftLookup() : boolean
+        {
+            return !this.icaoInvalid.val;
+        }
+
+        /**
          * Returns true if the aircraft's route has changed.
          */
         hasRouteChanged() : boolean
@@ -1136,6 +1144,14 @@ namespace VRS
         formatModelIcao() : string
         {
             return VRS.format.modelIcao(this.modelIcao.val);
+        }
+
+        /**
+         * True if the modelIcao is filled.
+         */
+        hasModelIcao() : boolean
+        {
+            return !!this.modelIcao.val;
         }
 
         /**

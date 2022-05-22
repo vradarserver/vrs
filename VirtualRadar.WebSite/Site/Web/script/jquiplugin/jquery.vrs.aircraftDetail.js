@@ -45,6 +45,7 @@ var VRS;
     }
     VRS.globalOptions.detailPanelUserCanConfigureItems = VRS.globalOptions.detailPanelUserCanConfigureItems !== undefined ? VRS.globalOptions.detailPanelUserCanConfigureItems : true;
     VRS.globalOptions.detailPanelShowSeparateRouteLink = VRS.globalOptions.detailPanelShowSeparateRouteLink !== undefined ? VRS.globalOptions.detailPanelShowSeparateRouteLink : true;
+    VRS.globalOptions.detailPanelShowSDMAircraftLink = VRS.globalOptions.detailPanelShowSDMAircraftLink !== undefined ? VRS.globalOptions.detailPanelShowSDMAircraftLink : true;
     VRS.globalOptions.detailPanelShowAircraftLinks = VRS.globalOptions.detailPanelShowAircraftLinks !== undefined ? VRS.globalOptions.detailPanelShowAircraftLinks : true;
     VRS.globalOptions.detailPanelShowEnableAutoSelect = VRS.globalOptions.detailPanelShowEnableAutoSelect !== undefined ? VRS.globalOptions.detailPanelShowEnableAutoSelect : true;
     VRS.globalOptions.detailPanelShowCentreOnAircraft = VRS.globalOptions.detailPanelShowCentreOnAircraft !== undefined ? VRS.globalOptions.detailPanelShowCentreOnAircraft : true;
@@ -104,6 +105,7 @@ var VRS;
             showUnits: VRS.globalOptions.detailPanelDefaultShowUnits,
             items: VRS.globalOptions.detailPanelDefaultItems.slice(),
             showSeparateRouteLink: VRS.globalOptions.detailPanelShowSeparateRouteLink,
+            showSDMAircraftLink: VRS.globalOptions.detailPanelShowSDMAircraftLink,
             flagUncertainCallsigns: VRS.globalOptions.detailPanelFlagUncertainCallsigns,
             distinguishOnGround: VRS.globalOptions.detailPanelDistinguishOnGround,
             airportDataThumbnails: VRS.globalOptions.detailPanelAirportDataThumbnails,
@@ -429,6 +431,9 @@ var VRS;
             }
             if (VRS.globalOptions.detailPanelShowSeparateRouteLink) {
                 routeLinks.push(VRS.LinkSite.StandingDataMaintenance);
+            }
+            if (VRS.globalOptions.detailPanelShowSeparateRouteLink) {
+                routeLinks.push(VRS.LinkSite.SDMAircraft);
             }
             if (routeLinks.length > 0) {
                 var routeLinksElement = $('<div/>')

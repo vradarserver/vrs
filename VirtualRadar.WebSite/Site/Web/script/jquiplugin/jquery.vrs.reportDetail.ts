@@ -72,6 +72,7 @@ namespace VRS
     VRS.globalOptions.reportDetailDefaultShowEmptyValues = VRS.globalOptions.reportDetailDefaultShowEmptyValues !== undefined ? VRS.globalOptions.reportDetailDefaultShowEmptyValues : false;   // True if empty values are to be shown.
     VRS.globalOptions.reportDetailShowAircraftLinks = VRS.globalOptions.reportDetailShowAircraftLinks !== undefined ? VRS.globalOptions.reportDetailShowAircraftLinks : true;       // True if links should be shown for the aircraft in the aircraft detail panel
     VRS.globalOptions.reportDetailShowSeparateRouteLink = VRS.globalOptions.reportDetailShowSeparateRouteLink !== undefined ? VRS.globalOptions.reportDetailShowSeparateRouteLink : true;  // Show a separate link to add or correct routes
+    VRS.globalOptions.reportDetailShowSDMAircraftLink = VRS.globalOptions.reportDetailShowSDMAircraftLink !== undefined ? VRS.globalOptions.reportDetailShowSDMAircraftLink : true;  // Show a link to add or update aircraft lookup details.
 
     /**
      * The options that can be passed when creating a new ReportDetailPlugin
@@ -599,6 +600,9 @@ namespace VRS
                 var routeLinks: (LinkSiteEnum | LinkRenderHandler)[] = [];
                 if(VRS.globalOptions.reportDetailShowSeparateRouteLink) {
                     routeLinks.push(VRS.LinkSite.StandingDataMaintenance);
+                }
+                if(VRS.globalOptions.reportDetailShowSDMAircraftLink) {
+                    routeLinks.push(VRS.LinkSite.SDMAircraft);
                 }
 
                 if(routeLinks.length > 0) {

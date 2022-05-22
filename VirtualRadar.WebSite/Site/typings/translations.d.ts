@@ -12,6 +12,7 @@ declare namespace VRS
         AddCondition:                       string;
         AddCriteria:                        string;
         AddFilter:                          string;
+        AddAircraftLookup:                  string;
         ADSB:                               string;
         ADSB0:                              string;
         ADSB1:                              string;
@@ -554,6 +555,7 @@ declare namespace VRS
         TrueHeadingShort:                   string;
         Turbo:                              string;
         Unknown:                            string;
+        UpdateAircraftLookup:               string;
         UseBrowserLocation:                 string;
         UsePressureAltitude:                string;
         UseRelativeDates:                   string;
