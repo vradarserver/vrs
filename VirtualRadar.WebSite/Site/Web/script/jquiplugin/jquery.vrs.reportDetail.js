@@ -362,6 +362,9 @@ var VRS;
                 if (VRS.globalOptions.reportDetailShowSeparateRouteLink) {
                     routeLinks.push(VRS.LinkSite.StandingDataMaintenance);
                 }
+                if (VRS.globalOptions.reportDetailShowSDMAircraftLink) {
+                    routeLinks.push(VRS.LinkSite.SDMAircraft);
+                }
                 if (routeLinks.length > 0) {
                     var routeLinksElement = $('<div/>')
                         .appendTo(state.linksContainer)

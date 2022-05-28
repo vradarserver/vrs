@@ -83,7 +83,16 @@ var VRS;
             canLinkAircraft: function (aircraft) { return (!VRS.serverConfig || VRS.serverConfig.routeSubmissionEnabled()) && aircraft && !!aircraft.callsign.val; },
             hasChanged: function (aircraft) { return aircraft.callsign.chg; },
             title: function (aircraft) { return aircraft.hasRoute() ? VRS.$$.SubmitRouteCorrection : VRS.$$.SubmitRoute; },
-            buildUrl: function (aircraft) { return 'http://sdm.virtualradarserver.co.uk/Edit/AddCallsigns.aspx?callsigns=' + VRS.stringUtility.htmlEscape(aircraft.formatCallsign(false)); },
+            buildUrl: function (aircraft) { return 'https://sdm.virtualradarserver.co.uk/Edit/AddCallsigns.aspx?callsigns=' + VRS.stringUtility.htmlEscape(aircraft.formatCallsign(false)); },
+            target: 'vrs-sdm'
+        }),
+        new VRS.LinkRenderHandler({
+            linkSite: VRS.LinkSite.SDMAircraft,
+            displayOrder: -1,
+            canLinkAircraft: function (aircraft) { return (!VRS.serverConfig || VRS.serverConfig.routeSubmissionEnabled()) && aircraft && aircraft.canSubmitAircraftLookup(); },
+            hasChanged: function (aircraft) { return aircraft.icao.chg; },
+            title: function (aircraft) { return aircraft.hasModelIcao() ? VRS.$$.UpdateAircraftLookup : VRS.$$.AddAircraftLookup; },
+            buildUrl: function (aircraft) { return 'https://sdm.virtualradarserver.co.uk/Edit/Aircraft?icao=' + VRS.stringUtility.htmlEscape(aircraft.formatIcao()); },
             target: 'vrs-sdm'
         })
     ];

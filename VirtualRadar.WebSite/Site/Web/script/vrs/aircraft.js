@@ -529,6 +529,9 @@ var VRS;
         Aircraft.prototype.convertVerticalSpeed = function (toUnit, perSecond) {
             return VRS.unitConverter.convertVerticalSpeed(this.verticalSpeed.val, VRS.Height.Feet, toUnit, perSecond);
         };
+        Aircraft.prototype.canSubmitAircraftLookup = function () {
+            return !this.icaoInvalid.val;
+        };
         Aircraft.prototype.fetchAirportDataThumbnails = function (numThumbnails) {
             if (numThumbnails === void 0) { numThumbnails = 1; }
             if (this.icao.val) {
@@ -624,6 +627,9 @@ var VRS;
         };
         Aircraft.prototype.formatModelIcao = function () {
             return VRS.format.modelIcao(this.modelIcao.val);
+        };
+        Aircraft.prototype.hasModelIcao = function () {
+            return !!this.modelIcao.val;
         };
         Aircraft.prototype.formatModelIcaoImageHtml = function () {
             return VRS.format.modelIcaoImageHtml(this.modelIcao.val, this.icao.val, this.registration.val);

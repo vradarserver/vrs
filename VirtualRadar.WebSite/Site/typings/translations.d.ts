@@ -9,6 +9,7 @@ declare namespace VRS
     interface TranslatedStringsStatic
     {
         Add:                                string;
+        AddAircraftLookup:                  string;
         AddCondition:                       string;
         AddCriteria:                        string;
         AddFilter:                          string;
@@ -296,6 +297,8 @@ declare namespace VRS
         Longitude:                          string;
         Manufacturer:                       string;
         Map:                                string;
+        MapBrightness:                      string;
+        MapLayers:                          string;
         MaxTakeoffWeight:                   string;
         Menu:                               string;
         MenuBack:                           string;
@@ -543,6 +546,7 @@ declare namespace VRS
         TrueHeadingShort:                   string;
         Turbo:                              string;
         Unknown:                            string;
+        UpdateAircraftLookup:               string;
         UseBrowserLocation:                 string;
         UsePressureAltitude:                string;
         UseRelativeDates:                   string;
@@ -551,10 +555,7 @@ declare namespace VRS
         VerticalSpeed:                      string;
         VerticalSpeedType:                  string;
         VirtualRadar:                       string;
-        Volume100:                          string;
-        Volume25:                           string;
-        Volume50:                           string;
-        Volume75:                           string;
+        Volume:                             string;
         VrsVersion:                         string;
         WakeTurbulenceCategory:             string;
         Warning:                            string;

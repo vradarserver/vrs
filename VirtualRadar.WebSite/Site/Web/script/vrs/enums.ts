@@ -261,7 +261,8 @@ namespace VRS
         AirframesDotOrg:            'airframes.org',        // Defunct, requires account, no longer used
         AirlinersDotNet:            'airliners.net',
         AirportDataDotCom:          'airport-data.com',     // Defunct, as of Feb 2021 Malwarebytes and AVG block links to the site
-        StandingDataMaintenance:    'sdm',
+        StandingDataMaintenance:    'sdm',                  // SDM Routes - names left alone for backwards compatability
+        SDMAircraft:                'sdm-aircraft',         // SDM Aircraft lookup details
         JetPhotosDotCom:            'jetphotos.com',
     };
 

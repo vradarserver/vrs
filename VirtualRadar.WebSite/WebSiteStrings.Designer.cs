@@ -70,6 +70,15 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add lookup details.
+        /// </summary>
+        public static string AddAircraftLookup {
+            get {
+                return ResourceManager.GetString("AddAircraftLookup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add Condition.
         /// </summary>
         public static string AddCondition {
@@ -2581,15 +2590,6 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Notes.
-        /// </summary>
-        public static string ListUserNotes {
-            get {
-                return ResourceManager.GetString("ListUserNotes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Tag.
         /// </summary>
         public static string ListUserTag {
@@ -4899,6 +4899,15 @@ namespace VirtualRadar.WebSite {
         public static string Unknown {
             get {
                 return ResourceManager.GetString("Unknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update lookup details.
+        /// </summary>
+        public static string UpdateAircraftLookup {
+            get {
+                return ResourceManager.GetString("UpdateAircraftLookup", resourceCulture);
             }
         }
         

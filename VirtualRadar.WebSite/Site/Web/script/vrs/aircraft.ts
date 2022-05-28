@@ -872,6 +872,14 @@ namespace VRS
         }
 
         /**
+         * Returns true if the SDM site allows lookup details for the aircraft.
+         */
+        canSubmitAircraftLookup() : boolean
+        {
+            return !this.icaoInvalid.val;
+        }
+
+        /**
          * Fetches thumbnails for the aircraft from www.airport-data.com. Once the fetch has been satisfied the chg
          * value for airportDataThumbnail will be set for the next refresh of aircraft data, and then cleared on the
          * subsequent refresh.
@@ -1104,6 +1112,14 @@ namespace VRS
         formatModelIcao() : string
         {
             return VRS.format.modelIcao(this.modelIcao.val);
+        }
+
+        /**
+         * True if the modelIcao is filled.
+         */
+        hasModelIcao() : boolean
+        {
+            return !!this.modelIcao.val;
         }
 
         /**

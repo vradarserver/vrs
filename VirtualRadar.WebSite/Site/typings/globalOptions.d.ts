@@ -22,6 +22,7 @@
         detailPanelDefaultItems?: RenderPropertyEnum[];             // An array of VRS.RenderProperty values that are shown by default in the aircraft detail panel.
         detailPanelUserCanConfigureItems?: boolean;                 // True if the user can change the items shown for an aircraft in the details panel.
         detailPanelShowSeparateRouteLink?: boolean;                 // Show a separate link to add or correct routes if the detail panel is showing routes.
+        detailPanelShowSDMAircraftLink?: boolean;                   // Show a link to add or update aircraft lookup details on the SDM site.
         detailPanelShowAircraftLinks?: boolean;                     // True to show the links for an aircraft, false to suppress them.
         detailPanelShowEnableAutoSelect?: boolean;                  // True to show a link to enable and disable auto-select, false to suppress the link.
         detailPanelShowCentreOnAircraft?: boolean;                  // True to show a link to centre the map on the selected aircraft.
@@ -280,6 +281,7 @@
         reportDetailDefaultShowEmptyValues?: boolean;                                       // True if empty values are to be shown.
         reportDetailShowAircraftLinks?: boolean;                                            // True if external site links are to be shown.
         reportDetailShowSeparateRouteLink?: boolean;                                        // True if the user should be shown a link to correct routes.
+        reportDetailShowSDMAircraftLink?: boolean;                                          // True if the user should be shown a link to add or update aircraft lookup details on the SDM site.
 
         /* jquery.vrs.reportList */
         reportListClass?: string;                                                                       // The CSS class to assign to the report list panel.

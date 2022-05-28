@@ -161,6 +161,7 @@ var VRS;
         AirlinersDotNet: 'airliners.net',
         AirportDataDotCom: 'airport-data.com',
         StandingDataMaintenance: 'sdm',
+        SDMAircraft: 'sdm-aircraft',
         JetPhotosDotCom: 'jetphotos.com',
     };
     VRS.MapControlStyle = {

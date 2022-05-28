@@ -1816,4 +1816,10 @@
   <data name="Volume" xml:space="preserve">
     <value>Volume</value>
   </data>
+  <data name="AddAircraftLookup" xml:space="preserve">
+    <value>Add lookup details</value>
+  </data>
+  <data name="UpdateAircraftLookup" xml:space="preserve">
+    <value>Update lookup details</value>
+  </data>
 </root>
