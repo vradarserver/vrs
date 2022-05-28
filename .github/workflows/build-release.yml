@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2019
 
     steps:
       - uses: actions/checkout@v2
@@ -40,9 +40,7 @@ jobs:
         run:  nuget restore VirtualRadar.sln
 
       - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.0.2
-        with:
-          vs-version: '[16.0.0.0,16.65535.65535.65535]'
+        uses: microsoft/setup-msbuild@v1.1
 
       - name: Build x86 release
         run:  msbuild VirtualRadar.sln -property:Configuration=Release,Platform=x86 -nowarn:1570,1572,1573,1574,1584,1587,1591,1711
