@@ -364,7 +364,7 @@ namespace VirtualRadar.Library.Presenter
                 .OrderBy(r => r.IsDefault && !r.IsCustom ? 0 : 1)
                 .ThenBy(r => !r.IsCustom ? 0 : 1)
                 .ThenBy(r => r.DisplayOrder)
-                .ThenBy(r => (r.Name ?? "").ToLower())
+                .ThenBy(r => (r.Name ?? ""), StringComparer.InvariantCultureIgnoreCase)
                 .Select(r => r.Name)
                 .ToArray();
 
@@ -813,9 +813,9 @@ namespace VirtualRadar.Library.Presenter
         /// <returns></returns>
         private string[] CombinedFeedAndServerNamesUpperCase(object exceptCurrent)
         {
-            var receiverNames = _View.Configuration.Receivers.Where(r => r != exceptCurrent).Select(r => (r.Name ?? "").ToUpper());
-            var mergedFeedNames = _View.Configuration.MergedFeeds.Where(r => r != exceptCurrent).Select(r => (r.Name ?? "").ToUpper());
-            var rebroadcastServerNames = _View.Configuration.RebroadcastSettings.Where(r => r != exceptCurrent).Select(r => (r.Name ?? "").ToUpper());
+            var receiverNames = _View.Configuration.Receivers.Where(r => r != exceptCurrent).Select(r => (r.Name ?? "").ToUpperInvariant());
+            var mergedFeedNames = _View.Configuration.MergedFeeds.Where(r => r != exceptCurrent).Select(r => (r.Name ?? "").ToUpperInvariant());
+            var rebroadcastServerNames = _View.Configuration.RebroadcastSettings.Where(r => r != exceptCurrent).Select(r => (r.Name ?? "").ToUpperInvariant());
 
             return receiverNames.Concat(mergedFeedNames).ToArray();
         }
@@ -1080,7 +1080,7 @@ namespace VirtualRadar.Library.Presenter
                 })) {
                     // The name must be unique
                     var names = CombinedFeedAndServerNamesUpperCase(mergedFeed);
-                    ValueIsNotInList(mergedFeed.Name.ToUpper(), names, new Validation(ValidationField.Name, defaults) {
+                    ValueIsNotInList(mergedFeed.Name.ToUpperInvariant(), names, new Validation(ValidationField.Name, defaults) {
                         Message = Strings.FeedAndServerNamesMustBeUnique,
                     });
 
@@ -1342,7 +1342,7 @@ namespace VirtualRadar.Library.Presenter
                 })) {
                     // The name cannot be the same as any other receiver or merged feed name
                     var names = CombinedFeedAndServerNamesUpperCase(receiver);
-                    ValueIsNotInList(receiver.Name.ToUpper(), names, new Validation(ValidationField.Name, defaults) {
+                    ValueIsNotInList(receiver.Name.ToUpperInvariant(), names, new Validation(ValidationField.Name, defaults) {
                         Message = Strings.FeedAndServerNamesMustBeUnique,
                     });
 
@@ -1486,8 +1486,8 @@ namespace VirtualRadar.Library.Presenter
                 if(StringIsNotEmpty(receiverLocation.Name, new Validation(ValidationField.Location, defaults) {
                     Message = Strings.PleaseEnterNameForLocation,
                 })) {
-                    var names = _View.Configuration.ReceiverLocations.Where(r => r != receiverLocation).Select(r => (r.Name ?? "").ToUpper());
-                    ValueIsNotInList(receiverLocation.Name.ToUpper(), names, new Validation(ValidationField.Location, defaults) {
+                    var names = _View.Configuration.ReceiverLocations.Where(r => r != receiverLocation).Select(r => (r.Name ?? "").ToUpperInvariant());
+                    ValueIsNotInList(receiverLocation.Name.ToUpperInvariant(), names, new Validation(ValidationField.Location, defaults) {
                         Message = Strings.PleaseEnterUniqueNameForLocation,
                     });
                 }

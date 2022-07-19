@@ -626,7 +626,7 @@ namespace VirtualRadar.Library
                 if(trailingSlash && !hasTrailingSlash)      result += Path.DirectorySeparatorChar;
                 else if(!trailingSlash && hasTrailingSlash) result = result.Substring(0, result.Length - 1);
 
-                result = result.ToUpper();
+                result = result.ToUpperInvariant();
             }
 
             return result;
@@ -639,7 +639,7 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         private static string NormaliseFileName(string fileName)
         {
-            return fileName == null ? null : fileName.ToUpper();
+            return fileName == null ? null : fileName.ToUpperInvariant();
         }
         #endregion
 

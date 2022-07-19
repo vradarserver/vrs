@@ -475,7 +475,7 @@ namespace Test.VirtualRadar.Library.BaseStation
             _Translator.AcceptIcaoInNonPIMilliseconds = worksheet.Int("NonPIMs");
 
             IEnumerable<ModeSMessage> messages;
-            switch(worksheet.String("DownlinkFormat").ToUpper()) {
+            switch(worksheet.String("DownlinkFormat").ToUpperInvariant()) {
                 case "HASPI":       messages = CreateModeSMessagesWithPIField(); break;
                 case "NOPI":        messages = CreateModeSMessagesWithNoPIField(); break;
                 default:            throw new NotImplementedException();

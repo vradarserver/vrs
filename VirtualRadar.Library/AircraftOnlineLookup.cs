@@ -201,7 +201,7 @@ namespace VirtualRadar.Library
 
         private static string NormaliseIcao(string icao)
         {
-            var result = (icao ?? "").Trim().ToUpper();
+            var result = (icao ?? "").Trim().ToUpperInvariant();
             return result;
         }
 

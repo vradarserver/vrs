@@ -92,11 +92,11 @@ namespace VirtualRadar.WebSite.MiddlewareConfiguration
         {
             var result = false;
 
-            pathAndFile = (pathAndFile ?? "").ToLower();
+            pathAndFile = (pathAndFile ?? "");
 
             var administratorPaths = _AdministratorPaths;
             for(var i = 0;i < administratorPaths.Count;++i) {
-                if(pathAndFile.StartsWith(administratorPaths[i])) {
+                if(pathAndFile.StartsWith(administratorPaths[i], StringComparison.InvariantCultureIgnoreCase)) {
                     result = true;
                     break;
                 }

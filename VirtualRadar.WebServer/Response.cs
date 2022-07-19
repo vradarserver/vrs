@@ -168,7 +168,7 @@ namespace VirtualRadar.WebServer
                 if(_Response.ContentLength64 != 0) throw new InvalidOperationException("You cannot enable compression after you have started writing to the OutputStream");
 
                 if(!IsBadBrowser(request.UserAgent)) {
-                    var acceptEncoding = (request.Headers["Accept-Encoding"] ?? "*").ToLower();
+                    var acceptEncoding = (request.Headers["Accept-Encoding"] ?? "*").ToLowerInvariant();
                     int? gzipQuality = null;
                     int? othersQuality = null;
                     foreach(var encoding in acceptEncoding.Split(',').Select(r => r.Replace(" ",""))) {

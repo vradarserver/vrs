@@ -176,15 +176,15 @@ namespace VirtualRadar.Interface
         {
             if(args != null) {
                 foreach(string arg in args) {
-                    if(arg.ToUpper().StartsWith("-CULTURE:")) {
+                    if(arg.StartsWith("-CULTURE:", StringComparison.InvariantCultureIgnoreCase)) {
                         ForcedCultureInfo = new CultureInfo(arg.Substring(9));
                         Thread.CurrentThread.CurrentUICulture = ForcedCultureInfo;
                         Thread.CurrentThread.CurrentCulture = ForcedCultureInfo;
-                    } else if(arg.ToUpper() == "-DEFAULTFONTS") {
+                    } else if(arg.Equals("-DEFAULTFONTS", StringComparison.InvariantCultureIgnoreCase)) {
                         DisableFontReplacement = true;
-                    } else if(arg.ToUpper() == "-NOGUI") {
+                    } else if(arg.Equals("-NOGUI", StringComparison.InvariantCultureIgnoreCase)) {
                         Headless = true;
-                    } else if(arg.ToUpper().StartsWith("-WORKINGFOLDER:")) {
+                    } else if(arg.StartsWith("-WORKINGFOLDER:", StringComparison.InvariantCultureIgnoreCase)) {
                         AllowMultipleInstances = true;
                     }
                 }

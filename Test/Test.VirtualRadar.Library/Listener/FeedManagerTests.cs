@@ -711,8 +711,8 @@ namespace Test.VirtualRadar.Library.Listener
         public void FeedManager_GetByName_Is_Case_Insensitive()
         {
             _Manager.Initialise();
-            Assert.AreSame(_CreatedFeeds[0].Object, _Manager.GetByName(_Receiver1.Name.ToLower(), false));
-            Assert.AreSame(_CreatedFeeds[0].Object, _Manager.GetByName(_Receiver1.Name.ToUpper(), false));
+            Assert.AreSame(_CreatedFeeds[0].Object, _Manager.GetByName(_Receiver1.Name.ToLowerInvariant(), false));
+            Assert.AreSame(_CreatedFeeds[0].Object, _Manager.GetByName(_Receiver1.Name.ToUpperInvariant(), false));
         }
 
         [TestMethod]

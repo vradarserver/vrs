@@ -99,7 +99,7 @@ namespace VirtualRadar
             var result = new List<string>();
 
             foreach(var arg in args ?? new string[] {}) {
-                switch(arg.ToLower()) {
+                switch(arg.ToLowerInvariant()) {
                     case "-nogui":
                         // Don't let these get through to the program
                         break;

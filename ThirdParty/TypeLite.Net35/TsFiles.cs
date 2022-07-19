@@ -92,7 +92,7 @@ namespace TypeLite {
         /// <returns></returns>
         private static string convertToIdentifier (this string text){
             string result = text;
-            string firstLetter = text[0].ToString().ToLower();
+            string firstLetter = text[0].ToString().ToLowerInvariant();
             result = firstLetter + text.Substring(1);
             result = result.Replace(".", "");
             return result;

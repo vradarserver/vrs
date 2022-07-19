@@ -320,8 +320,8 @@ namespace VirtualRadar.Database.StandingData
                                     continue;
                                 }
 
-                                var isMilitary = mil.ToUpper() == "MIL";
-                                if(!isMilitary && mil.ToUpper() != "CIV") {
+                                var isMilitary = mil.Equals("MIL", StringComparison.InvariantCultureIgnoreCase);
+                                if(!isMilitary && mil.Equals("CIV", StringComparison.InvariantCultureIgnoreCase)) {
                                     log.WriteLine("Invalid military/civilian designator '{0}' - must be one of 'mil' or 'civ' at line {1} of local codeblock override", mil, lineNumber);
                                     continue;
                                 }

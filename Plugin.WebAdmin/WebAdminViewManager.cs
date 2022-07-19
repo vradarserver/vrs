@@ -346,7 +346,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <returns></returns>
         private string NormaliseFullPath(string fullPath, bool appendTrailingSlash = false)
         {
-            var result = String.IsNullOrEmpty(fullPath) ? "" : fullPath.ToLower();
+            var result = String.IsNullOrEmpty(fullPath) ? "" : fullPath.ToLowerInvariant();
             if(appendTrailingSlash && (result.Length == 0 || result[result.Length - 1] != '/')) {
                 result = String.Format("{0}/", result);
             }

@@ -533,7 +533,7 @@ namespace VirtualRadar.Plugin.WebAdmin
         /// <returns></returns>
         private string NormaliseString(string text)
         {
-            return (text ?? "").ToLower();
+            return (text ?? "").ToLowerInvariant();
         }
 
         /// <summary>

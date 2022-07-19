@@ -107,7 +107,7 @@ namespace VirtualRadar.WinForms.SettingPage
                 .OrderBy(r => r.IsDefault && !r.IsCustom ? 0 : 1)
                 .ThenBy(r => !r.IsCustom ? 0 : 1)
                 .ThenBy(r => r.DisplayOrder)
-                .ThenBy(r => (r.Name ?? "").ToLower())
+                .ThenBy(r => (r.Name ?? ""), StringComparer.InvariantCultureIgnoreCase)
                 .Select(r => r.Name)
                 .ToArray();
 

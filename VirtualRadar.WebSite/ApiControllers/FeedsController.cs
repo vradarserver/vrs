@@ -399,7 +399,7 @@ namespace VirtualRadar.WebSite.ApiControllers
             var result = TrailType.None;
 
             if(!String.IsNullOrEmpty(trFmt)) {
-                switch(trFmt.ToUpper()) {
+                switch(trFmt.ToUpperInvariant()) {
                     case "F":   result = TrailType.Full; break;
                     case "FA":  result = TrailType.FullAltitude; break;
                     case "FS":  result = TrailType.FullSpeed; break;
@@ -416,16 +416,16 @@ namespace VirtualRadar.WebSite.ApiControllers
         {
             var query = RequestQueryString;
 
-            var sortBy1 = (query["sortBy1"] ?? "").ToUpper();
+            var sortBy1 = (query["sortBy1"] ?? "").ToUpperInvariant();
             if(sortBy1 == "") {
                 SetDefaultAircraftListSortBy(args);
             } else {
-                var sortOrder1 = (query["sortOrder1"] ?? "").ToUpper();
+                var sortOrder1 = (query["sortOrder1"] ?? "").ToUpperInvariant();
                 args.SortBy.Add(new KeyValuePair<string, bool>(sortBy1, sortOrder1 == "ASC"));
 
-                var sortBy2 = (query["sortBy2"] ?? "").ToUpper();
+                var sortBy2 = (query["sortBy2"] ?? "").ToUpperInvariant();
                 if(sortBy2 != "") {
-                    var sortOrder2 = (query["sortOrder2"] ?? "").ToUpper();
+                    var sortOrder2 = (query["sortOrder2"] ?? "").ToUpperInvariant();
                     args.SortBy.Add(new KeyValuePair<string, bool>(sortBy2, sortOrder2 == "ASC"));
                 }
             }
@@ -442,7 +442,7 @@ namespace VirtualRadar.WebSite.ApiControllers
 
             var query = RequestQueryString;
             foreach(var kvp in query.Where(r => r.Key.Length > 3 && (r.Key[0] == 'f' || r.Key[0] == 'F'))) {
-                var key = kvp.Key.ToUpper();
+                var key = kvp.Key.ToUpperInvariant();
                 var value = kvp.Value;
                 switch(key.Substring(0, 3)) {
                     case "FAI":     result = DecodeStringFilter     ("FAIR",    key, value, result, (f,v) => f.Airport = v); break;

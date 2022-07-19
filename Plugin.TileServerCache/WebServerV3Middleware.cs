@@ -59,7 +59,7 @@ namespace VirtualRadar.Plugin.TileServerCache
                 context.ResponseStatusCode = (int)outcome.StatusCode;
                 if(outcome.ImageBytes != null) {
                     var mimeType = "";
-                    switch((outcome.ImageExtension ?? "").ToLower()) {
+                    switch((outcome.ImageExtension ?? "").ToLowerInvariant()) {
                         case ".bmp":    mimeType = MimeType.BitmapImage; break;
                         case ".gif":    mimeType = MimeType.GifImage; break;
                         case ".jpg":    mimeType = MimeType.JpegImage; break;

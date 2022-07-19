@@ -35,9 +35,9 @@ namespace VirtualRadar.Database.StandingData
 
             public Key(IAircraft aircraft)
             {
-                Icao24 = aircraft.Icao24?.ToUpper();
-                Callsign = aircraft.Callsign?.ToUpper();
-                OperatorIcao = aircraft.OperatorIcao?.ToUpper();
+                Icao24 = aircraft.Icao24?.ToUpperInvariant();
+                Callsign = aircraft.Callsign?.ToUpperInvariant();
+                OperatorIcao = aircraft.OperatorIcao?.ToUpperInvariant();
             }
 
             public override string ToString()

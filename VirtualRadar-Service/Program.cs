@@ -61,8 +61,8 @@ namespace VirtualRadar
         /// <returns></returns>
         static bool ServiceIsInstalled()
         {
-            var serviceName = ProjectInstaller.ServiceName.ToLower();
-            return ServiceController.GetServices().Any(r => (r.ServiceName ?? "").ToLower() == serviceName);
+            return ServiceController.GetServices().Any(r => (r.ServiceName ?? "")
+                .Equals(ProjectInstaller.ServiceName, StringComparison.InvariantCultureIgnoreCase));
         }
 
         /// <summary>

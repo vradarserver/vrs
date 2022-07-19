@@ -63,7 +63,7 @@ namespace VirtualRadar.WebSite.MiddlewareConfiguration
             /// <returns></returns>
             public static string NormalisePath(string path)
             {
-                return (path ?? "").ToLower();
+                return (path ?? "").ToLowerInvariant();
             }
         }
 

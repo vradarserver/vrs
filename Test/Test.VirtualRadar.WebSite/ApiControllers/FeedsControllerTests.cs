@@ -1129,7 +1129,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
                 var queryString = "trfmt=fa";
                 if(upperCase) {
-                    queryString = queryString.ToUpper();
+                    queryString = queryString.ToUpperInvariant();
                 }
 
                 var expected = ExpectedAircraftListJsonBuilderArgs(trailType: TrailType.FullAltitude);
@@ -1148,7 +1148,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
                 var queryString = "trfmt=fa";
                 if(upperCase) {
-                    queryString = queryString.ToUpper();
+                    queryString = queryString.ToUpperInvariant();
                 }
 
                 var expected = ExpectedAircraftListJsonBuilderArgs(trailType: TrailType.FullAltitude);

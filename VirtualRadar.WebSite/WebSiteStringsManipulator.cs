@@ -76,7 +76,7 @@ namespace VirtualRadar.WebSite
                         var extension = javaScriptLanguage.Substring(dotIndex);
                         if(String.Equals(".js", extension, StringComparison.OrdinalIgnoreCase) ||
                            extension.StartsWith(".js?", StringComparison.OrdinalIgnoreCase)) {
-                            result = javaScriptLanguage.Substring(0, dotIndex).ToLower();
+                            result = javaScriptLanguage.Substring(0, dotIndex).ToLowerInvariant();
                         }
                     }
                 }

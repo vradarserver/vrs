@@ -76,14 +76,14 @@ namespace Test.VirtualRadar.Database
             _FileExists.Add(DatabaseFileName, true);
             _FileExists.Add(FlightNumberCoverageFileName, true);
             _Provider.Setup(p => p.FileExists(It.IsAny<string>())).Returns((string fileName) => {
-                var key = String.IsNullOrEmpty(fileName) ? null : Path.GetFileName(fileName).ToUpper();
+                var key = String.IsNullOrEmpty(fileName) ? null : Path.GetFileName(fileName).ToUpperInvariant();
                 return key != null && _FileExists.ContainsKey(key) ? _FileExists[key] : false;
             });
 
             _ReadAllLines = new Dictionary<string,List<string>>();
             _ReadAllLines.Add(FlightNumberCoverageFileName, new List<string>());
             _Provider.Setup(p => p.ReadAllLines(It.IsAny<string>())).Returns((string fileName) => {
-                return _ReadAllLines[Path.GetFileName(fileName).ToUpper()].ToArray();
+                return _ReadAllLines[Path.GetFileName(fileName).ToUpperInvariant()].ToArray();
             });
 
             _ReadAllLines[FlightNumberCoverageFileName].Add("A,B,C,D,E");
@@ -139,7 +139,7 @@ namespace Test.VirtualRadar.Database
 
         private void CheckFileMissingRouteStatusMessage(string missingFile)
         {
-            missingFile = missingFile.ToUpper();
+            missingFile = missingFile.ToUpperInvariant();
             foreach(var fileName in AllFileNames) {
                 _FileExists[fileName] = fileName != missingFile;
             }

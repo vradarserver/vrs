@@ -97,7 +97,7 @@ namespace VirtualRadar.Interface
         /// <param name="callsign"></param>
         public Callsign(string callsign)
         {
-            OriginalCallsign = callsign?.ToUpper().Trim();
+            OriginalCallsign = callsign?.ToUpperInvariant().Trim();
 
             if(!String.IsNullOrEmpty(callsign)) {
                 var match = CallsignRegex.Match(callsign);

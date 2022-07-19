@@ -46,7 +46,7 @@ namespace VirtualRadar.WebSite.ApiControllers
             } else {
                 try {
                     var airportDataDotCom = Factory.Resolve<IAirportDataDotCom>();
-                    var outcome = airportDataDotCom.GetThumbnails((icao ?? "").ToUpper(), (reg ?? "").ToUpper(), numThumbs);
+                    var outcome = airportDataDotCom.GetThumbnails((icao ?? "").ToUpperInvariant(), (reg ?? "").ToUpperInvariant(), numThumbs);
                     if(outcome.Result == null) {
                         result = new AirportDataThumbnailsJson() {
                             Status = (int)outcome.HttpStatusCode,

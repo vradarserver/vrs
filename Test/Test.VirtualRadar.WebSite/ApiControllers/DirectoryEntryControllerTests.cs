@@ -81,7 +81,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         private void SetKey(Guid key, bool ensureUppercase = true)
         {
             var text = key.ToString();
-            text = ensureUppercase ? text.ToUpper() : text.ToLower();
+            text = ensureUppercase ? text.ToUpperInvariant() : text.ToLowerInvariant();
 
             _Configuration.GoogleMapSettings.DirectoryEntryKey = text;
         }
@@ -116,7 +116,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             var key = Guid.NewGuid();
             SetKey(key, ensureUppercase: true);
 
-            var json = Get($"/api/3.00/directory-entry/{key.ToString().ToLower()}").Json<DirectoryEntryJson>();
+            var json = Get($"/api/3.00/directory-entry/{key.ToString().ToLowerInvariant()}").Json<DirectoryEntryJson>();
 
             Assert.AreEqual(HttpStatusCode.OK, _Context.ResponseHttpStatusCode);
             Assert.IsNotNull(json);

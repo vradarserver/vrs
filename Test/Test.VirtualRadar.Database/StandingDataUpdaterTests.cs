@@ -81,7 +81,7 @@ namespace Test.VirtualRadar.Database
                 _FileExists.Add(fileName, true);
             }
             _Provider.Setup(p => p.FileExists(It.IsAny<string>())).Returns((string fileName) => {
-                return _FileExists[fileName.ToUpper()];
+                return _FileExists[fileName.ToUpperInvariant()];
             });
 
             _ReadLines = new Dictionary<string,List<string>>();
@@ -89,7 +89,7 @@ namespace Test.VirtualRadar.Database
                 _ReadLines.Add(fileName, new List<string>());
             }
             _Provider.Setup(p => p.ReadLines(It.IsAny<string>())).Returns((string fileName) => {
-                return _ReadLines[fileName.ToUpper()].ToArray();
+                return _ReadLines[fileName.ToUpperInvariant()].ToArray();
             });
 
             _DownloadLines = new Dictionary<string,List<string>>();
@@ -97,24 +97,24 @@ namespace Test.VirtualRadar.Database
                 _DownloadLines.Add(url, new List<string>());
             }
             _Provider.Setup(p => p.DownloadLines(It.IsAny<string>())).Returns((string url) => {
-                return _DownloadLines[url.ToUpper()].ToArray();
+                return _DownloadLines[url.ToUpperInvariant()].ToArray();
             });
 
             _SavedLines = new Dictionary<string,List<string>>();
             _Provider.Setup(p => p.WriteLines(It.IsAny<string>(), It.IsAny<string[]>())).Callback((string fileName, string[] lines) => {
-                var key = fileName.ToUpper();
+                var key = fileName.ToUpperInvariant();
                 var value = new List<string>(lines);
                 _SavedLines.Add(key, value);
             });
 
             _DownloadedCompressedFiles = new Dictionary<string,string>();
             _Provider.Setup(r => r.DownloadAndDecompressFile(It.IsAny<string>(), It.IsAny<string>())).Callback((string url, string fileName) => {
-                _DownloadedCompressedFiles.Add(url.ToUpper(), fileName.ToUpper());
+                _DownloadedCompressedFiles.Add(url.ToUpperInvariant(), fileName.ToUpperInvariant());
             });
 
             _MovedFiles = new Dictionary<string,string>();
             _Provider.Setup(r => r.MoveFile(It.IsAny<string>(), It.IsAny<string>())).Callback((string temporaryFileName, string liveFileName) => {
-                _MovedFiles.Add(temporaryFileName.ToUpper(), liveFileName.ToUpper());
+                _MovedFiles.Add(temporaryFileName.ToUpperInvariant(), liveFileName.ToUpperInvariant());
             });
         }
 
@@ -146,8 +146,8 @@ namespace Test.VirtualRadar.Database
 
         private void AssertLinesDownloaded(string url, string tempFileName, string finalFileName)
         {
-            _Provider.Verify(p => p.DownloadLines(It.Is<string>(u => u.ToUpper() == url)), Times.Once());
-            _Provider.Verify(p => p.WriteLines(It.Is<string>(f => f.ToUpper() == tempFileName), It.IsAny<string[]>()), Times.Once());
+            _Provider.Verify(p => p.DownloadLines(It.Is<string>(u => u.ToUpperInvariant() == url)), Times.Once());
+            _Provider.Verify(p => p.WriteLines(It.Is<string>(f => f.ToUpperInvariant() == tempFileName), It.IsAny<string[]>()), Times.Once());
 
             List<string> downloadedLines;
             if(!_DownloadLines.TryGetValue(url, out downloadedLines)) downloadedLines = new List<string>();
@@ -179,7 +179,7 @@ namespace Test.VirtualRadar.Database
         {
             _FileExists[StateFileName] = false;
             Assert.AreEqual(true, _Implementation.DataIsOld());
-            _Provider.Verify(p => p.FileExists(It.Is<string>(f => f.ToUpper() == StateFileName)), Times.Once());
+            _Provider.Verify(p => p.FileExists(It.Is<string>(f => f.ToUpperInvariant() == StateFileName)), Times.Once());
             _Provider.Verify(p => p.DownloadLines(It.IsAny<string>()), Times.Never());
         }
 
@@ -187,7 +187,7 @@ namespace Test.VirtualRadar.Database
         public void StandingDataUpdater_DataIsOld_Downloads_Current_State_File()
         {
             _Implementation.DataIsOld();
-            _Provider.Verify(p => p.DownloadLines(It.Is<string>(u => u.ToUpper() == StateFileUrl)), Times.Once());
+            _Provider.Verify(p => p.DownloadLines(It.Is<string>(u => u.ToUpperInvariant() == StateFileUrl)), Times.Once());
         }
 
         [TestMethod]
@@ -214,7 +214,7 @@ namespace Test.VirtualRadar.Database
         {
             SetupValidStateFileDownload();
             _Implementation.Update();
-            _Provider.Verify(p => p.DownloadLines(It.Is<string>(u => u.ToUpper() == StateFileUrl)), Times.Once());
+            _Provider.Verify(p => p.DownloadLines(It.Is<string>(u => u.ToUpperInvariant() == StateFileUrl)), Times.Once());
         }
 
         [TestMethod]
@@ -238,7 +238,7 @@ namespace Test.VirtualRadar.Database
 
             _Implementation.Update();
 
-            _Provider.Verify(p => p.WriteLines(It.Is<string>(f => f.ToUpper() == StateTempFileName), It.IsAny<string[]>()), Times.Never());
+            _Provider.Verify(p => p.WriteLines(It.Is<string>(f => f.ToUpperInvariant() == StateTempFileName), It.IsAny<string[]>()), Times.Never());
         }
         #endregion
 

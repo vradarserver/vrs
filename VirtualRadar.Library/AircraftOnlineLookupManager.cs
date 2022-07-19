@@ -212,7 +212,7 @@ namespace VirtualRadar.Library
         {
             Initialise();
 
-            var uniqueIcaos = icaos.Where(r => r != null && r.Length == 6).Select(r => r.ToUpper()).Distinct().ToArray();
+            var uniqueIcaos = icaos.Where(r => r != null && r.Length == 6).Select(r => r.ToUpperInvariant()).Distinct().ToArray();
             var result = FetchManyAircraftDetailsFromCache(uniqueIcaos, baseStationAircraft);
 
             var refreshIcaos = result.Where(r => RecordNeedsRefresh(r.Value)).Select(r => r.Key).ToArray();

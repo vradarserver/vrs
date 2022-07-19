@@ -437,7 +437,7 @@ namespace VirtualRadar.Library
         {
             try {
                 foreach(var onlineAircraft in args.AircraftDetails) {
-                    CallWithinFetchLock(onlineAircraft.Icao.ToUpper(), (string icao24, AircraftDetail detail, bool isFirstFetch, IAircraft aircraft) => {
+                    CallWithinFetchLock(onlineAircraft.Icao.ToUpperInvariant(), (string icao24, AircraftDetail detail, bool isFirstFetch, IAircraft aircraft) => {
                         return ApplyDatabaseRecord(detail, detail.Aircraft, onlineAircraft, aircraft, isFirstFetch);
                     });
                 }
@@ -460,7 +460,7 @@ namespace VirtualRadar.Library
                 var databaseAircraft = args.Value;
 
                 if(databaseAircraft != null && !String.IsNullOrEmpty(databaseAircraft.ModeS)) {
-                    CallWithinFetchLock(databaseAircraft.ModeS.ToUpper(), (string icao24, AircraftDetail detail, bool isFirstFetch, IAircraft aircraft) => {
+                    CallWithinFetchLock(databaseAircraft.ModeS.ToUpperInvariant(), (string icao24, AircraftDetail detail, bool isFirstFetch, IAircraft aircraft) => {
                         return ApplyDatabaseRecord(detail, databaseAircraft, detail.OnlineAircraft, aircraft, isFirstFetch);
                     });
                 }

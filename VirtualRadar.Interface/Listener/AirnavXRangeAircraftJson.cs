@@ -35,8 +35,8 @@ namespace VirtualRadar.Interface.Listener
         /// </summary>
         [IgnoreDataMember]
         public string Icao24 {
-            get => RawIcao24?.ToUpper();
-            set => RawIcao24 = value?.ToLower();
+            get => RawIcao24?.ToUpperInvariant();
+            set => RawIcao24 = value?.ToLowerInvariant();
         }
 
         /// <summary>

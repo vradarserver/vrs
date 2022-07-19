@@ -189,7 +189,7 @@ namespace VirtualRadar.Plugin.CustomContent.WinForms
             FillListViewItem<InjectSettings>(item, r => new String[] {
                 r.Enabled ? Strings.Yes : Strings.No,
                 r.File,
-                r.InjectionLocation.ToString().ToUpper(),
+                r.InjectionLocation.ToString().ToUpperInvariant(),
                 r.Start ? CustomContentStrings.Start : CustomContentStrings.End,
                 r.PathAndFile,
             });

@@ -244,7 +244,7 @@ namespace VirtualRadar.Database.BaseStation
         /// <returns></returns>
         public static string NormaliseAircraftIcao(string icao)
         {
-            return (icao ?? "").ToUpper();
+            return (icao ?? "").ToUpperInvariant();
         }
     }
 }

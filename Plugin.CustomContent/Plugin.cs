@@ -293,7 +293,7 @@ namespace VirtualRadar.Plugin.CustomContent
                     foreach(var injectSettings in options.InjectSettings.Where(r => r.Enabled)) {
                         var injector = new CustomHtmlContentInjector() {
                             AtStart = injectSettings.Start,
-                            Element = injectSettings.InjectionLocation.ToString().ToLower(),
+                            Element = injectSettings.InjectionLocation.ToString().ToLowerInvariant(),
                             FileName = injectSettings.File,
                             PathAndFile = injectSettings.PathAndFile == "*" ? null : injectSettings.PathAndFile,
                             Priority = priority++,

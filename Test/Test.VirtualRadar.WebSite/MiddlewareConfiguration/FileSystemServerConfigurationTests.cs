@@ -242,7 +242,7 @@ namespace Test.VirtualRadar.WebSite.MiddlewareConfiguration
 
                 var folders = _Configuration.GetSiteRootFolders();
                 Assert.AreEqual(2, folders.Count);
-                var abcIsFirst = folders[0].ToLower().TrimEnd('\\', '/') == abcFolder.ToLower();
+                var abcIsFirst = folders[0].TrimEnd('\\', '/').Equals(abcFolder, StringComparison.InvariantCultureIgnoreCase);
 
                 Assert.AreEqual(expectAbcFirst, abcIsFirst);
                 _Configuration.RemoveSiteRoot(abcSiteRoot);

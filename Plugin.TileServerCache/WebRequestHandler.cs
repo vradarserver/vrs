@@ -167,7 +167,7 @@ namespace VirtualRadar.Plugin.TileServerCache
                 request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
                 foreach(var headerKey in headers.Keys) {
                     var value = headers[headerKey];
-                    switch(headerKey.ToLower()) {
+                    switch(headerKey.ToLowerInvariant()) {
                         case "accept":              request.Accept = value; break;
                         case "accept-encoding":     break;
                         case "connection":          break;

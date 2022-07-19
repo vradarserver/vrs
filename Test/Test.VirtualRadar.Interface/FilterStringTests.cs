@@ -41,15 +41,15 @@ namespace Test.VirtualRadar.Interface
             var filter = new FilterString();
 
             filter.Value = null;
-            filter.ToUpper();
+            filter.ToUpperInvariant();
             Assert.IsNull(filter.Value);
 
             filter.Value = "";
-            filter.ToUpper();
+            filter.ToUpperInvariant();
             Assert.AreEqual("", filter.Value);
 
             filter.Value = "Abc";
-            filter.ToUpper();
+            filter.ToUpperInvariant();
             Assert.AreEqual("ABC", filter.Value);
         }
 
@@ -77,8 +77,8 @@ namespace Test.VirtualRadar.Interface
                                         if(reverseCondition) expectedResult = !expectedResult;
                                     }
                                 } else {
-                                    var ucaseValue = (value ?? "").ToUpper();
-                                    var ucaseTestValue = (testValue ?? "").ToUpper();
+                                    var ucaseValue = (value ?? "").ToUpperInvariant();
+                                    var ucaseTestValue = (testValue ?? "").ToUpperInvariant();
                                     switch(condition) {
                                         case FilterCondition.Contains:      expectedResult = ucaseTestValue.Contains(ucaseValue); break;
                                         case FilterCondition.EndsWith:      expectedResult = ucaseTestValue.EndsWith(ucaseValue); break;
@@ -132,8 +132,8 @@ namespace Test.VirtualRadar.Interface
                                         if(reverseCondition) expectedResult = !expectedResult;
                                     }
                                 } else {
-                                    var ucaseValue = (value ?? "").ToUpper();
-                                    var ucaseTestValue = (testValue ?? new string[0]).Select(r => (r ?? "").ToUpper()).ToArray();
+                                    var ucaseValue = (value ?? "").ToUpperInvariant();
+                                    var ucaseTestValue = (testValue ?? new string[0]).Select(r => (r ?? "").ToUpperInvariant()).ToArray();
                                     switch(condition) {
                                         case FilterCondition.Contains:      expectedResult = ucaseTestValue.Any(r => r.Contains(ucaseValue)); break;
                                         case FilterCondition.EndsWith:      expectedResult = ucaseTestValue.Any(r => r.EndsWith(ucaseValue)); break;
