@@ -1,5 +1,17 @@
 @echo off
 
+set "VSCPMSB15=%VSINSTALLDIR%MSBuild\15.0\Bin\msbuild.exe"
+set "VSCPMSB=%VSINSTALLDIR%MSBuild\Current\Bin\msbuild.exe"
+set "VS2017MSB=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild.exe"
+set "VS2019MSB=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\msbuild.exe"
+set "VS2022MSB=C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\msbuild.exe"
+
+set                          "MSBUILD=%VSCPMSB15%"
+if not exist "%MSBUILD%" set "MSBUILD=%VSCPMSB%"
+if not exist "%MSBUILD%" set "MSBUILD=%VS2022MSB%"
+if not exist "%MSBUILD%" set "MSBUILD=%VS2019MSB%"
+if not exist "%MSBUILD%" set "MSBUILD=%VS2017MSB%"
+
 set SRC=%~dp0
 set "SOLUTION=%SRC%VirtualRadar.sln"
 set NOWARN=1570,1572,1573,1574,1584,1587,1591,1711
@@ -15,6 +27,9 @@ set X64=0
     if "%1"=="-debug"   set DEBUG=1
     if "%1"=="-x86"     set X86=1
     if "%1"=="-x64"     set X64=1
+    if "%1"=="-vs2017"  set "MSBUILD=%VS2017MSB%"
+    if "%1"=="-vs2019"  set "MSBUILD=%VS2019MSB%"
+    if "%1"=="-vs2022"  set "MSBUILD=%VS2022MSB%"
     shift
     goto :NEXTARG
 :ENDARGS
@@ -36,7 +51,7 @@ for %%C IN (%CONFIGS%) do (
     for %%P IN (%PLATFORMS%) do (
         set PLATFORM=%%P
 
-        msbuild "%SOLUTION%" -target:Restore,Build -property:Configuration=%%C,Platform=%%P -nowarn:%NOWARN%
+        "%MSBUILD%" "%SOLUTION%" -target:Restore,Build -property:Configuration=%%C,Platform=%%P -nowarn:%NOWARN%
         if ERRORLEVEL 1 goto :FAILED
     )
 )
@@ -54,6 +69,7 @@ goto :EOF
     echo Compilation failed - build is incomplete
     echo Configuration: %CONFIG%
     echo Platform:      %PLATFORM%
+    echo MSBuild:       %MSBUILD%
     echo.
     echo Build failed
     exit /b 1
