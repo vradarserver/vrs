@@ -160,7 +160,7 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         private static string FormKey(string ipAddress, string userName)
         {
-            userName = (userName ?? "").Trim().ToUpper();
+            userName = (userName ?? "").Trim().ToUpperInvariant();
 
             return String.Format("{0}{1}{2}",
                 ipAddress,

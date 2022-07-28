@@ -91,7 +91,7 @@ namespace VirtualRadar.WebSite.ApiControllers
             var result = typeof(AircraftReportJson);
 
             var reportType = RequestQueryString["rep"];
-            switch((reportType ?? "").ToUpper()) {
+            switch((reportType ?? "").ToUpperInvariant()) {
                 case "DATE":    result = typeof(FlightReportJson); break;
             }
 
@@ -422,7 +422,7 @@ namespace VirtualRadar.WebSite.ApiControllers
             };
 
             foreach(var kvp in RequestQueryString) {
-                var name = (kvp.Key ?? "").ToUpper();
+                var name = (kvp.Key ?? "").ToUpperInvariant();
                 var value = kvp.Value ?? "";
 
                 if(name.StartsWith("CALL-"))        result.Callsign =               DecodeStringFilter(name, value);
@@ -464,7 +464,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         {
             var result = RequestQueryString[key];
             if(toUpperCase) {
-                result = result?.ToUpper();
+                result = result?.ToUpperInvariant();
             }
 
             return result;

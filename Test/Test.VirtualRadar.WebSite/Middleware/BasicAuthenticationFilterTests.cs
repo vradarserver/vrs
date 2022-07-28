@@ -56,8 +56,8 @@ namespace Test.VirtualRadar.WebSite.Middleware
             _AdministratorPaths = new List<string>();
             _AuthenticationConfiguration.Setup(r => r.GetAdministratorPaths()).Returns(() => _AdministratorPaths.ToArray());
             _AuthenticationConfiguration.Setup(r => r.IsAdministratorPath(It.IsAny<string>())).Returns((string pathAndFile) => {
-                var normalised = (pathAndFile ?? "").ToLower();
-                return _AdministratorPaths.Any(r => normalised.StartsWith(r));
+                var normalised = (pathAndFile ?? "");
+                return _AdministratorPaths.Any(r => normalised.StartsWith(r, StringComparison.InvariantCultureIgnoreCase));
             });
 
             _Filter = Factory.Resolve<IBasicAuthenticationFilter>();
@@ -98,7 +98,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
 
         private void SetAdministratorPath(string pathFromRoot)
         {
-            pathFromRoot = (pathFromRoot ?? "").Trim().ToLower();
+            pathFromRoot = (pathFromRoot ?? "").Trim().ToLowerInvariant();
             if(!pathFromRoot.StartsWith("/")) pathFromRoot = String.Format("/{0}", pathFromRoot);
             if(!pathFromRoot.EndsWith("/")) pathFromRoot = String.Format("{0}/", pathFromRoot);
 

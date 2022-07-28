@@ -90,8 +90,8 @@ namespace Test.VirtualRadar.Interface.WebServer
             var mimeType = worksheet.String("MimeType");
             var extension = String.Format(".{0}", worksheet.String("Extension"));
 
-            Assert.AreEqual(mimeType, MimeType.GetForExtension(extension.ToLower()), extension.ToLower());
-            Assert.AreEqual(mimeType, MimeType.GetForExtension(extension.ToUpper()), extension.ToUpper());
+            Assert.AreEqual(mimeType, MimeType.GetForExtension(extension.ToLowerInvariant()), extension.ToLowerInvariant());
+            Assert.AreEqual(mimeType, MimeType.GetForExtension(extension.ToUpperInvariant()), extension.ToUpperInvariant());
         }
 
         [TestMethod]
@@ -108,11 +108,10 @@ namespace Test.VirtualRadar.Interface.WebServer
         public void MimeType_GetKnownExtensions_Returns_Reasonable_List()
         {
             var worksheet = new ExcelWorksheetData(TestContext);
-            var mimeType = worksheet.String("MimeType");
             var extension = worksheet.String("Extension");
 
             var extensions = MimeType.GetKnownExtensions();
-            Assert.IsTrue(extensions.Contains(extension.ToLower()));
+            Assert.IsTrue(extensions.Contains(extension, StringComparer.InvariantCultureIgnoreCase));
         }
 
         [TestMethod]

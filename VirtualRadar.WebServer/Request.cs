@@ -199,7 +199,7 @@ namespace VirtualRadar.WebServer
         private Encoding ParseEncoding(string charsetName)
         {
             var result = Encoding.UTF8;
-            switch(charsetName.ToUpper()) {
+            switch(charsetName.ToUpperInvariant()) {
                 case "US-ASCII":    result = Encoding.ASCII; break;
                 case "UTF-7":       result = Encoding.UTF7; break;
                 case "UTF-16BE":    result = Encoding.BigEndianUnicode; break;

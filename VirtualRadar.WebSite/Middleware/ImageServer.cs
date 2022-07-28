@@ -283,9 +283,9 @@ namespace VirtualRadar.WebSite.Middleware
         {
             var requestFileName = context.RequestPathFileName;
             ImageRequest result = new ImageRequest() {
-                ImageName = Path.GetFileNameWithoutExtension(requestFileName).ToUpper(),
+                ImageName = Path.GetFileNameWithoutExtension(requestFileName).ToUpperInvariant(),
             };
-            switch(Path.GetExtension(requestFileName).ToUpper()) {
+            switch(Path.GetExtension(requestFileName).ToUpperInvariant()) {
                 case ".PNG":    result.ImageFormat = ImageFormat.Png; break;
                 case ".GIF":    result.ImageFormat = ImageFormat.Gif; break;
                 case ".BMP":    result.ImageFormat = ImageFormat.Bmp; break;
@@ -302,7 +302,7 @@ namespace VirtualRadar.WebSite.Middleware
         private ImageRequest ParsePathParts(ImageRequest result, OwinContext context)
         {
             foreach(var pathPart in context.RequestPathParts) {
-                var caselessPart = pathPart.ToUpper();
+                var caselessPart = pathPart.ToUpperInvariant();
 
                 if(caselessPart.StartsWith("ALT-")) {
                     result.ShowAltitudeStalk = true;
@@ -390,7 +390,7 @@ namespace VirtualRadar.WebSite.Middleware
         /// <returns></returns>
         private StandardWebSiteImageSize ParseStandardSize(string text)
         {
-            switch(text.ToUpper()) {
+            switch(text.ToUpperInvariant()) {
                 case "DETAIL":          return StandardWebSiteImageSize.PictureDetail;
                 case "FULL":            return StandardWebSiteImageSize.Full;
                 case "LIST":            return StandardWebSiteImageSize.PictureListThumbnail;

@@ -315,8 +315,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor
         /// <param name="e"></param>
         void WebSite_HtmlLoadedFromFile(object sender, TextContentEventArgs e)
         {
-            var key = e.PathAndFile.ToLower();
-            if(key.StartsWith("/databaseeditor/")) {
+            if(e.PathAndFile.StartsWith("/databaseeditor/", StringComparison.InvariantCultureIgnoreCase)) {
                 e.Content = _HtmlLocaliser.Html(e.Content, e.Encoding);
             }
         }

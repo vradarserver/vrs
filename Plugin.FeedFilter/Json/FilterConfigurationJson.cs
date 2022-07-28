@@ -93,7 +93,7 @@ namespace VirtualRadar.Plugin.FeedFilter.Json
 
             if(!String.IsNullOrEmpty(rawIcaos)) {
                 foreach(var chunk in rawIcaos.Split(new char[] { ';', ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)) {
-                    var candidate = chunk.ToUpper().Trim();
+                    var candidate = chunk.ToUpperInvariant().Trim();
                     var rangeSeparatorIndex = candidate.IndexOf('-');
                     if(rangeSeparatorIndex == -1) {
                         ParseSingleIcao(candidate, singleIcaos, duplicateIcaos, invalidIcaos);

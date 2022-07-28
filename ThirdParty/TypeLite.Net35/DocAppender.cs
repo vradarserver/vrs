@@ -48,7 +48,7 @@ namespace TypeLite.Net4 {
                 return null;
             }
 
-            var key = xmlPath.ToLower();
+            var key = xmlPath.ToLowerInvariant();
             XmlDocumentationProvider provider;
             if (_providers.TryGetValue(key, out provider) == false) {
                 provider = new XmlDocumentationProvider(xmlPath);

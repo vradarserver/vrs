@@ -216,7 +216,7 @@ namespace VirtualRadar.Library
         /// <returns></returns>
         private string NormaliseWebPath(string path)
         {
-            return (path ?? "").ToUpper();
+            return (path ?? "").ToUpperInvariant();
         }
     }
 }

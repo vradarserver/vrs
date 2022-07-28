@@ -32,7 +32,7 @@ namespace VirtualRadar.Interface
         {
             pathFromRoot = (pathFromRoot ?? "").Trim();
             if(convertToLowerCase) {
-                pathFromRoot = pathFromRoot.ToLower();
+                pathFromRoot = pathFromRoot.ToLowerInvariant();
             }
 
             if(!pathFromRoot.StartsWith("/")) pathFromRoot = String.Format("/{0}", pathFromRoot);

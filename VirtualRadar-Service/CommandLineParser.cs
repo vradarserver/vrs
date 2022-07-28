@@ -33,7 +33,7 @@ namespace VirtualRadar
             args = args ?? new string[] {};
             for(var i = 0;i < args.Length;++i) {
                 var arg = args[i];
-                var normalisedArg = (arg ?? "").ToLower().Trim();
+                var normalisedArg = (arg ?? "").ToLowerInvariant().Trim();
                 var nextArg = i + 1 < args.Length ? args[i + 1] : null;
 
                 switch(normalisedArg) {

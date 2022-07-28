@@ -36,7 +36,7 @@ namespace BaseStationImport
 
             for(var i = 0;i < args.Length;++i) {
                 var arg = (args[i] ?? "");
-                var normalisedArg = arg.ToLower();
+                var normalisedArg = arg.ToLowerInvariant();
                 var nextArg = GetNextArg(args, i);
 
                 switch(normalisedArg) {
@@ -200,7 +200,7 @@ namespace BaseStationImport
             return String.Join(" | ",
                     Enum.GetNames(typeof(T))
                    .OfType<string>()
-                   .OrderBy(r => r.ToLower())
+                   .OrderBy(r => r, StringComparer.InvariantCultureIgnoreCase)
                    .Where(r => exclude == null || !exclude.Contains((T)Enum.Parse(typeof(T), r)))
             );
         }

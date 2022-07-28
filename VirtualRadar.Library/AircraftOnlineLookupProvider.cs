@@ -148,7 +148,7 @@ namespace VirtualRadar.Library
             if(result) {
                 var aircraftDetails = JsonConvert.DeserializeObject<AircraftOnlineLookupDetail[]>(jsonText);
                 fetchedAircraft.AddRange(aircraftDetails);
-                missingIcaos.AddRange(icaos.Select(r => r.ToUpper()).Except(aircraftDetails.Select(r => r.Icao.ToUpper())));
+                missingIcaos.AddRange(icaos.Select(r => r.ToUpperInvariant()).Except(aircraftDetails.Select(r => r.Icao.ToUpperInvariant())));
             }
 
             return result;

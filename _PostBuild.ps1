@@ -17,7 +17,7 @@ if([string]::IsNullOrWhiteSpace($projectName) -or [string]::IsNullOrWhiteSpace($
 }
 
 $pathFromSolution = '';
-if($projectName.ToLower() -eq 'basestationimport') {
+if($projectName.ToLowerInvariant() -eq 'basestationimport') {
     $pathFromSolution = 'Utilities'
 }
 
@@ -263,7 +263,7 @@ function PostBuild-BaseStationImport
 }
 
 # Main switch
-$caselessProject = $projectName.ToLower()
+$caselessProject = $projectName.ToLowerInvariant()
 if($caselessProject -eq 'virtualradar.website') {
     PostBuild-WebSite-Project
 } elseif($caselessProject.StartsWith('plugin.')) {

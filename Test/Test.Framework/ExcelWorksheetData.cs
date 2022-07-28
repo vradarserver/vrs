@@ -244,7 +244,7 @@ namespace Test.Framework
                 var parsed = new List<int>();
                 var kind = DateTimeKind.Unspecified;
                 for(int i = 0;i < dateParts.Length;++i) {
-                    switch(dateParts[i].ToUpper()) {
+                    switch(dateParts[i].ToUpperInvariant()) {
                         case "L":   kind = DateTimeKind.Local; break;
                         case "Z":
                         case "U":   kind = DateTimeKind.Utc; break;

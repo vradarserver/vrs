@@ -190,9 +190,9 @@ namespace Test.VirtualRadar.WebSite.MiddlewareConfiguration
             _HtmlEnv.RequestPath = "/index.html";
             _Config.RegisterJavascriptBundle(_HtmlEnv.Environment, 0, new List<string>() { "1" });
 
-            _BndlEnv.RequestPath = "/index-0-bundle.js".ToUpper();
+            _BndlEnv.RequestPath = "/index-0-bundle.js".ToUpperInvariant();
             var bundled1 = _Config.GetJavascriptBundle(_BndlEnv.Environment);
-            _BndlEnv.RequestPath = "/index-0-bundle.js".ToLower();
+            _BndlEnv.RequestPath = "/index-0-bundle.js".ToLowerInvariant();
             var bundled2 = _Config.GetJavascriptBundle(_BndlEnv.Environment);
 
             Assert.IsNotNull(bundled1);

@@ -290,7 +290,7 @@ namespace VirtualRadar.WebSite.MiddlewareConfiguration
         /// <returns></returns>
         private static string NormaliseRequestPath(string requestPath)
         {
-            return (requestPath ?? "").ToLower().Replace("\\", "/");
+            return (requestPath ?? "").ToLowerInvariant().Replace("\\", "/");
         }
 
         /// <summary>

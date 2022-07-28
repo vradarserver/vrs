@@ -45,9 +45,9 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// Converts the value to upper-case.
         /// </summary>
-        public void ToUpper()
+        public void ToUpperInvariant()
         {
-            if(Value != null) Value = Value.ToUpper();
+            if(Value != null) Value = Value.ToUpperInvariant();
         }
 
         /// <summary>

@@ -144,7 +144,7 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
         /// <returns></returns>
         public Dictionary<string, AircraftOnlineLookupDetail> LoadMany(IEnumerable<string> icaos, IDictionary<string, BaseStationAircraft> baseStationAircraft)
         {
-            var filteredIcaos = icaos.Where(r => !String.IsNullOrEmpty(r)).Select(r => r.ToUpper().Trim()).Distinct().ToArray();
+            var filteredIcaos = icaos.Where(r => !String.IsNullOrEmpty(r)).Select(r => r.ToUpperInvariant().Trim()).Distinct().ToArray();
 
             var details = new List<AircraftOnlineLookupDetail>();
             lock(_SyncLock) {
@@ -161,7 +161,7 @@ namespace VirtualRadar.Database.AircraftOnlineLookupCache
             }
 
             var result = details.ToDictionary(r => r.Icao, r => r);
-            foreach(var missingIcao in filteredIcaos.Except(details.Select(r => r.Icao.ToUpper()))) {
+            foreach(var missingIcao in filteredIcaos.Except(details.Select(r => r.Icao.ToUpperInvariant()))) {
                 result.Add(missingIcao, null);
             }
 

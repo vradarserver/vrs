@@ -219,7 +219,7 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
             var database = Database;
             if(database != null && Enabled) {
                 var map = new Dictionary<string, AircraftOnlineLookupDetail>();
-                string normaliseIcao(string icao) => icao.ToUpper();
+                string normaliseIcao(string icao) => icao.ToUpperInvariant();
 
                 foreach(var lookupDetail in lookupDetails) {
                     var icao = normaliseIcao(lookupDetail.Icao);

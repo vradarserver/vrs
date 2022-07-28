@@ -99,11 +99,12 @@ namespace Test.VirtualRadar.WebSite.Middleware
         {
             var fullPath = Path.Combine(folder, fileName);
 
-            var imageFormat = ImageFormat.Bmp;
-            switch(Path.GetExtension(fileName).ToLower()) {
-                case ".bmp":    break;
-                case ".png":    imageFormat = ImageFormat.Png; break;
-                default:        throw new NotImplementedException();
+            ImageFormat imageFormat;
+            var extension = Path.GetExtension(fileName).ToLowerInvariant();
+            switch(extension) {
+                case ".bmp": imageFormat = ImageFormat.Bmp; break;
+                case ".png": imageFormat = ImageFormat.Png; break;
+                default:     throw new NotImplementedException();
             }
 
             using(var stream = new MemoryStream()) {

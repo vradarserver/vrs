@@ -40,7 +40,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         private void SetupAirportDataDotCom(string icao, string registration, int maxThumbs, HttpStatusCode statusCode, AirportDataThumbnailsJson response)
         {
             var result = new WebRequestResult<AirportDataThumbnailsJson>(statusCode, response);
-            _AirportDataDotCom.Setup(r => r.GetThumbnails((icao ?? "").ToUpper(), (registration ?? "").ToUpper(), maxThumbs)).Returns(result);
+            _AirportDataDotCom.Setup(r => r.GetThumbnails((icao ?? "").ToUpperInvariant(), (registration ?? "").ToUpperInvariant(), maxThumbs)).Returns(result);
         }
 
         private Mock<IBaseStationAircraftList> SetupAircraftList(int receiverId = 1)

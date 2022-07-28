@@ -345,8 +345,7 @@ namespace VirtualRadar.Plugin.FeedFilter
         /// <param name="e"></param>
         void WebSite_HtmlLoadedFromFile(object sender, TextContentEventArgs e)
         {
-            var key = e.PathAndFile.ToLower();
-            if(key.StartsWith("/feedfilter/")) {
+            if(e.PathAndFile.StartsWith("/feedfilter/", StringComparison.InvariantCultureIgnoreCase)) {
                 e.Content = _HtmlLocaliser.Html(e.Content, e.Encoding);
             }
         }

@@ -20,7 +20,7 @@ namespace TypeLite.Extensions {
 				case SystemTypeKind.Bool: return "boolean";
 			}
 
-			return type.ToString().ToLower();
+			return type.ToString().ToLowerInvariant();
 		}
 	}
 }

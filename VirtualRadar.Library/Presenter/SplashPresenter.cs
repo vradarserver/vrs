@@ -142,7 +142,7 @@ namespace VirtualRadar.Library.Presenter
 
             if(CommandLineArgs != null) {
                 foreach(var arg in CommandLineArgs) {
-                    var caselessArg = arg.ToUpper();
+                    var caselessArg = arg.ToUpperInvariant();
                     if(caselessArg.StartsWith("-CULTURE:"))         continue;
                     else if(caselessArg == "-SHOWCONFIGFOLDER")     continue;
                     else if(caselessArg == "-DEFAULTFONTS")         continue;

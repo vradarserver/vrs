@@ -1480,10 +1480,10 @@ namespace VirtualRadar.Database.BaseStation
         /// <param name="criteria"></param>
         public static void NormaliseCriteria(SearchBaseStationCriteria criteria)
         {
-            if(criteria.Callsign != null)       criteria.Callsign.ToUpper();
-            if(criteria.Icao != null)           criteria.Icao.ToUpper();
-            if(criteria.Registration != null)   criteria.Registration.ToUpper();
-            if(criteria.Type != null)           criteria.Type.ToUpper();
+            if(criteria.Callsign != null)       criteria.Callsign.ToUpperInvariant();
+            if(criteria.Icao != null)           criteria.Icao.ToUpperInvariant();
+            if(criteria.Registration != null)   criteria.Registration.ToUpperInvariant();
+            if(criteria.Type != null)           criteria.Type.ToUpperInvariant();
         }
 
         /// <summary>

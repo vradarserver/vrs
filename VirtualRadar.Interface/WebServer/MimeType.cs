@@ -102,7 +102,7 @@ namespace VirtualRadar.Interface.WebServer
                 if(extension[0] == '.') {
                     extension = extension.Substring(1);
                 }
-                extension = extension.ToLower();
+                extension = extension.ToLowerInvariant();
                 if(!extensionMap.TryGetValue(extension, out result)) {
                     result = "application/octet-stream";
                 }
@@ -139,7 +139,7 @@ namespace VirtualRadar.Interface.WebServer
                         var mimeType = chunks[0];
                         if(mimeType.Contains('/')) {
                             for(var i = 1;i < chunks.Length;++i) {
-                                var extension = chunks[i].ToLower();
+                                var extension = chunks[i].ToLowerInvariant();
                                 if(!extensionMap.ContainsKey(extension)) {
                                     extensionMap.Add(extension, mimeType);
                                 }

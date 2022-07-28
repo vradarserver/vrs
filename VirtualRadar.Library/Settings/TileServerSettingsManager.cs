@@ -277,7 +277,8 @@ namespace VirtualRadar.Library.Settings
             var allDefaults = results.Where(r => r.MapProvider == mapProvider && r.IsDefault && !r.IsCustom).ToArray();
             switch(allDefaults.Length) {
                 case 0:
-                    var nominated = results.OrderBy(r => (r.Name ?? "").ToLower()).FirstOrDefault(r => r.MapProvider == mapProvider && !r.IsCustom);
+                    var nominated = results.OrderBy(r => (r.Name ?? ""), StringComparer.InvariantCultureIgnoreCase)
+                        .FirstOrDefault(r => r.MapProvider == mapProvider && !r.IsCustom);
                     if(nominated != null) {
                         nominated.IsDefault = true;
                     }
@@ -285,7 +286,7 @@ namespace VirtualRadar.Library.Settings
                 case 1:
                     break;
                 default:
-                    foreach(var notDefault in allDefaults.OrderBy(r => (r.Name ?? "").ToLower()).Skip(1)) {
+                    foreach(var notDefault in allDefaults.OrderBy(r => (r.Name ?? ""), StringComparer.InvariantCultureIgnoreCase).Skip(1)) {
                         notDefault.IsDefault = false;
                     }
                     break;

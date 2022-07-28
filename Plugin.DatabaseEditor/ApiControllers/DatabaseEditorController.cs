@@ -23,7 +23,7 @@ namespace VirtualRadar.Plugin.DatabaseEditor.ApiControllers
                     result.Aircraft = plugin.BaseStationDatabase.GetAircraftByCode(icao);
                     if(result.Aircraft == null) {
                         result.Aircraft = new BaseStationAircraft();
-                        result.Aircraft.ModeS = icao.ToUpper();
+                        result.Aircraft.ModeS = icao.ToUpperInvariant();
                     }
                     plugin.IncrementSearchCount();
                     plugin.UpdateStatusTotals();
@@ -47,9 +47,9 @@ namespace VirtualRadar.Plugin.DatabaseEditor.ApiControllers
                 result.Aircraft = aircraft;
 
                 if(CustomConvert.Icao24(aircraft?.ModeS) > 0) {
-                    aircraft.Registration =     aircraft?.Registration?.ToUpper().Trim();
-                    aircraft.ICAOTypeCode =     aircraft?.ICAOTypeCode?.ToUpper().Trim();
-                    aircraft.OperatorFlagCode = aircraft?.OperatorFlagCode?.ToUpper().Trim();
+                    aircraft.Registration =     aircraft?.Registration?.ToUpperInvariant().Trim();
+                    aircraft.ICAOTypeCode =     aircraft?.ICAOTypeCode?.ToUpperInvariant().Trim();
+                    aircraft.OperatorFlagCode = aircraft?.OperatorFlagCode?.ToUpperInvariant().Trim();
                     aircraft.LastModified = DateTime.Now;
 
                     if(aircraft.UserString1 == "Missing") {

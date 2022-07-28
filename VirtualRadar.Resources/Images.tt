@@ -61,7 +61,7 @@ var path = Path.GetDirectoryName(project.FullName);
 path = Path.Combine(path, "Images");
 var first = true;
 foreach(var fileName in Directory.GetFiles(path)) {
-    var extension = (Path.GetExtension(fileName) ?? "").ToLower();
+    var extension = (Path.GetExtension(fileName) ?? "").ToLowerInvariant();
     if(extension != ".png" && extension != ".ico" && extension != ".jpg") continue;
 
     var imageFileName = String.Format("../TestImages/{0}", Path.GetFileName(fileName));

@@ -60,7 +60,7 @@ namespace VirtualRadar.Plugin.SqlServer
                 using(var reader = new StringReader(script)) {
                     string line;
                     while((line = reader.ReadLine()) != null) {
-                        if(line.Trim().ToUpper() != "GO") {
+                        if(!line.Trim().Equals("GO", StringComparison.InvariantCultureIgnoreCase)) {
                             scriptLines.Add(line);
                         } else {
                             RunScriptChunk(connection, scriptLines, commandTimeoutSeconds);

@@ -471,10 +471,10 @@ namespace VirtualRadar.Plugin.SqlServer
 
         private void NormaliseCriteria(SearchBaseStationCriteria criteria)
         {
-            if(criteria?.Callsign != null)      criteria.Callsign.ToUpper();
-            if(criteria?.Icao != null)          criteria.Icao.ToUpper();
-            if(criteria?.Registration != null)  criteria.Registration.ToUpper();
-            if(criteria?.Type != null)          criteria.Type.ToUpper();
+            if(criteria?.Callsign != null)      criteria.Callsign.ToUpperInvariant();
+            if(criteria?.Icao != null)          criteria.Icao.ToUpperInvariant();
+            if(criteria?.Registration != null)  criteria.Registration.ToUpperInvariant();
+            if(criteria?.Type != null)          criteria.Type.ToUpperInvariant();
         }
 
         private int Flights_GetCountByCriteria(ConnectionWrapper wrapper, BaseStationAircraft aircraft, SearchBaseStationCriteria criteria)
@@ -774,7 +774,7 @@ namespace VirtualRadar.Plugin.SqlServer
         {
             return SqlServerHelper.UdttParameter<Icao24Udtt>(
                 Icao24Udtt.UdttProperties,
-                icao24s?.Select(r => (r ?? "").ToUpper().Trim()).Where(r => r != "").Distinct().Select(r => new Icao24Udtt(r))
+                icao24s?.Select(r => (r ?? "").ToUpperInvariant().Trim()).Where(r => r != "").Distinct().Select(r => new Icao24Udtt(r))
             );
         }
 

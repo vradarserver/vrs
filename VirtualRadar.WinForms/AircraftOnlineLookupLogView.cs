@@ -99,7 +99,7 @@ namespace VirtualRadar.WinForms
 
         private string NormaliseIcao(string icao)
         {
-            return (icao ?? "").ToUpper();
+            return (icao ?? "").ToUpperInvariant();
         }
 
         private void RemoveOldEntries(Dictionary<string, AircraftOnlineLookupLogEntry> icaoMap)

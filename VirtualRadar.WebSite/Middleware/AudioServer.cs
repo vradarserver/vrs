@@ -65,7 +65,7 @@ namespace VirtualRadar.WebSite.Middleware
 
             if(result) {
                 var queryString = context.RequestQueryStringDictionary(caseSensitiveKeys: false);
-                switch(queryString["cmd"]?.ToLower()) {
+                switch(queryString["cmd"]?.ToLowerInvariant()) {
                     case "say":
                         var text = queryString["line"];
                         if(text == null) {

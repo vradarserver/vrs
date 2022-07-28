@@ -82,7 +82,7 @@ namespace Test.VirtualRadar.Library
             _Provider = new Mock<IDirectoryCacheProvider>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _Provider.Setup(p => p.FolderExists(It.IsAny<string>())).Returns((string folder) => {
                 if(folder != null && folder.EndsWith(@"\")) folder = folder.Substring(0, folder.Length - 1);
-                return _Folders.Contains(folder.ToLower());
+                return _Folders.Contains(folder.ToLowerInvariant());
             });
             _Provider.Setup(p => p.GetSubFoldersInFolder(It.IsAny<string>())).Returns((string folder) => {
                 if(folder != null && !folder.EndsWith(@"\")) folder += '\\';
@@ -96,12 +96,12 @@ namespace Test.VirtualRadar.Library
             _Provider.Setup(p => p.GetFilesInFolder(It.IsAny<string>())).Returns((string folder) => {
                 List<TestFileInfo> files;
                 if(folder != null && folder.EndsWith(@"\")) folder = folder.Substring(0, folder.Length - 1);
-                _Files.TryGetValue(folder.ToLower(), out files);
+                _Files.TryGetValue(folder.ToLowerInvariant(), out files);
                 return (IEnumerable<TestFileInfo>)files ?? new TestFileInfo[0];
             });
             _Provider.Setup(p => p.GetFileInfo(It.IsAny<string>())).Returns((string fullPath) => {
                 TestFileInfo result = null;
-                var folder = (Path.GetDirectoryName(fullPath) ?? "").ToLower();
+                var folder = (Path.GetDirectoryName(fullPath) ?? "").ToLowerInvariant();
                 var fileName = Path.GetFileName(fullPath);
                 List<TestFileInfo> files;
                 if(_Files.TryGetValue(folder, out files)) result = files.FirstOrDefault(r => r.Name.Equals(fileName, StringComparison.OrdinalIgnoreCase));
@@ -132,7 +132,7 @@ namespace Test.VirtualRadar.Library
         {
             if(!String.IsNullOrEmpty(folder)) {
                 if(folder[folder.Length - 1] == '\\') folder = folder.Substring(0, folder.Length - 1);
-                folder = folder.ToLower();
+                folder = folder.ToLowerInvariant();
 
                 var previousFolder = folder;
                 do {
@@ -150,7 +150,7 @@ namespace Test.VirtualRadar.Library
         private TestFileInfo AddToFiles(string directory, TestFileInfo fileInfo)
         {
             if(!String.IsNullOrEmpty(directory)) {
-                directory = directory.ToLower();
+                directory = directory.ToLowerInvariant();
 
                 AddToFolders(directory);
 
@@ -185,7 +185,7 @@ namespace Test.VirtualRadar.Library
         private void RemoveFromFiles(string fullPath)
         {
             try {
-                var directory = Path.GetDirectoryName(fullPath).ToLower();
+                var directory = Path.GetDirectoryName(fullPath).ToLowerInvariant();
                 var fileName = Path.GetFileName(fullPath);
                 List<TestFileInfo> files;
                 if(_Files.TryGetValue(directory, out files)) {

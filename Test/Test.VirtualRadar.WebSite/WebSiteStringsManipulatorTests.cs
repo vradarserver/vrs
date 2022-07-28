@@ -65,7 +65,7 @@ namespace Test.VirtualRadar.WebSite
 
         private string GetWebsiteStringLanguage(string fileName)
         {
-            return Regex.Match(fileName, @"strings\.(?<lang>.*)\.js", RegexOptions.IgnoreCase).Groups["lang"].Value?.ToLower();
+            return Regex.Match(fileName, @"strings\.(?<lang>.*)\.js", RegexOptions.IgnoreCase).Groups["lang"].Value?.ToLowerInvariant();
         }
 
         [TestMethod]
