@@ -56,7 +56,8 @@ namespace Test.VirtualRadar.WebSite.Middleware
             _AdministratorPaths = new List<string>();
             _AuthenticationConfiguration.Setup(r => r.GetAdministratorPaths()).Returns(() => _AdministratorPaths.ToArray());
             _AuthenticationConfiguration.Setup(r => r.IsAdministratorPath(It.IsAny<string>())).Returns((string pathAndFile) => {
-                return _AdministratorPaths.Any(r => (pathAndFile ?? "").StartsWith(r, StringComparison.InvariantCultureIgnoreCase));
+                var normalised = (pathAndFile ?? "");
+                return _AdministratorPaths.Any(r => normalised.StartsWith(r, StringComparison.InvariantCultureIgnoreCase));
             });
 
             _Filter = Factory.Resolve<IBasicAuthenticationFilter>();
