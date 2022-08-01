@@ -2476,7 +2476,7 @@ namespace VRS
                         if(lastLine) {
                             var firstPoint = lastLine.getFirstLatLng();
                             var firstSegment = segments[0];
-                            if(firstPoint && Math.abs(firstPoint.lat - firstSegment.lat) < 0.0000001 && Math.abs(firstPoint.lng - firstSegment.lng) < 0.0000001) {
+                            if(firstPoint && this.isSameLatLng(firstPoint, firstSegment)) {
                                 this._Map.destroyPolyline(lastLine);
                                 details.mapPolylines.splice(-1, 1);
                             }
@@ -2498,6 +2498,16 @@ namespace VRS
 
                 segments = [];
             }
+        }
+
+        /**
+         * Returns true if two coordinates are roughly the same.
+         * @param lhs
+         * @param rhs
+         */
+        private isSameLatLng(lhs: ILatLng, rhs: ILatLng) : boolean
+        {
+            return Math.abs(lhs.lat - rhs.lat) < 0.0000001 && Math.abs(lhs.lng - rhs.lng) < 0.0000001;
         }
 
         /**
@@ -2548,17 +2558,64 @@ namespace VRS
          */
         private trimShortTrailPoints(details: PlottedDetail, trail: TrailArray)
         {
-            var countRemove = trail.trimStartCount;
-            var polylines = details.mapPolylines;
-            var countLines = polylines.length;
-            while(countRemove > 0 && countLines) {
-                var oldestLine = polylines[0];
-                var removeState = this._Map.trimPolyline(oldestLine, countRemove, true);
-                countRemove -= removeState.countRemoved;
-                if(removeState.emptied || !removeState.countRemoved) {     // Remove the line if it was emptied or if nothing was removed and nothing emptied (i.e. it was an empty line)
-                    polylines.splice(0, 1);
-                    --countLines;
-                    this._Map.destroyPolyline(oldestLine);
+            // The old code here (see history) only worked for monochrome trails. Life
+            // gets harder with multi-coloured trails because they are broken into multiple
+            // paths and those paths have extra points added to them to get everything to
+            // join together.
+            //
+            // The new approach taken here simply looks for the last short trail point in
+            // the polyline paths and deletes everything up until that point. If it can't
+            // find the last short trail point then all of the polylines end up getting
+            // deleted.
+            //
+            // This should work for almost all cases. Where it will fail will be for
+            // aircraft that repeatedly move through the same location. If you imagine
+            // locations are represented by letters then you could have a short trail and
+            // an extant polyline path that look like this:
+            //
+            //         -8s -7s -6s -5s -4s -3s -2s -1s NOW
+            // Trail:               A   B   C   B   A   X
+            // Path:    C   A   B   A   B   C   B
+            //
+            // This code will see that the last trail position (at -4 seconds) is A and
+            // then look in the path for the last occurrance of A, and delete everything
+            // before it. It will trim the path at -7s instead of -5s.
+            //
+            // Ideally we would have position ticks against the polyline path positions,
+            // in which case this would be a trivial exercise... but we don't, and adding
+            // them would be painful, so this will have to do for now.
+
+            if(trail.trimStartCount) {      // <-- we can probably replace trimStartCount with a true/false flag, we're no longer using it to count points to delete
+                // The trail array has the oldest position first and the most recent position last.
+                // The plotted detail can have many line segments, one for each colour in the trail,
+                // with the oldest segment first. Each segment is made up of a path, the oldest
+                // position is the first in each segment.
+
+                if(trail.arr.length === 0) {
+                    this.removeTrail(details);
+                } else {
+                    var oldestTrailPosition = trail.arr[0];
+                    var matchIdx = -1;
+
+                    while(matchIdx === -1 && details.mapPolylines.length > 0) {
+                        var polyline = details.mapPolylines[0];
+                        var path = polyline.getPath();
+                        var pathLength = path.length;
+
+                        for(var pathIdx = 0;pathIdx < pathLength;++pathIdx) {
+                            if(this.isSameLatLng(oldestTrailPosition, path[pathIdx])) {
+                                matchIdx = pathIdx;
+                                break;
+                            }
+                        }
+
+                        if(matchIdx > 0) {
+                            this._Map.trimPolyline(polyline, matchIdx, true);
+                        } else if(matchIdx === -1) {
+                            this._Map.destroyPolyline(polyline);
+                            details.mapPolylines.splice(0, 1);
+                        }
+                    }
                 }
             }
         }
