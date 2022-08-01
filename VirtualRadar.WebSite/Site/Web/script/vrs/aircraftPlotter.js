@@ -1600,7 +1600,7 @@ var VRS;
                         if (lastLine) {
                             var firstPoint = lastLine.getFirstLatLng();
                             var firstSegment = segments[0];
-                            if (firstPoint && Math.abs(firstPoint.lat - firstSegment.lat) < 0.0000001 && Math.abs(firstPoint.lng - firstSegment.lng) < 0.0000001) {
+                            if (firstPoint && this.isSameLatLng(firstPoint, firstSegment)) {
                                 this._Map.destroyPolyline(lastLine);
                                 details.mapPolylines.splice(-1, 1);
                             }
@@ -1620,6 +1620,9 @@ var VRS;
                 }
                 segments = [];
             }
+        };
+        AircraftPlotter.prototype.isSameLatLng = function (lhs, rhs) {
+            return Math.abs(lhs.lat - rhs.lat) < 0.0000001 && Math.abs(lhs.lng - rhs.lng) < 0.0000001;
         };
         AircraftPlotter.prototype.removeTrail = function (details) {
             var length = details.mapPolylines.length;
@@ -1655,17 +1658,31 @@ var VRS;
             }
         };
         AircraftPlotter.prototype.trimShortTrailPoints = function (details, trail) {
-            var countRemove = trail.trimStartCount;
-            var polylines = details.mapPolylines;
-            var countLines = polylines.length;
-            while (countRemove > 0 && countLines) {
-                var oldestLine = polylines[0];
-                var removeState = this._Map.trimPolyline(oldestLine, countRemove, true);
-                countRemove -= removeState.countRemoved;
-                if (removeState.emptied || !removeState.countRemoved) {
-                    polylines.splice(0, 1);
-                    --countLines;
-                    this._Map.destroyPolyline(oldestLine);
+            if (trail.trimStartCount) {
+                if (trail.arr.length === 0) {
+                    this.removeTrail(details);
+                }
+                else {
+                    var oldestTrailPosition = trail.arr[0];
+                    var matchIdx = -1;
+                    while (matchIdx === -1 && details.mapPolylines.length > 0) {
+                        var polyline = details.mapPolylines[0];
+                        var path = polyline.getPath();
+                        var pathLength = path.length;
+                        for (var pathIdx = 0; pathIdx < pathLength; ++pathIdx) {
+                            if (this.isSameLatLng(oldestTrailPosition, path[pathIdx])) {
+                                matchIdx = pathIdx;
+                                break;
+                            }
+                        }
+                        if (matchIdx > 0) {
+                            this._Map.trimPolyline(polyline, matchIdx, true);
+                        }
+                        else if (matchIdx === -1) {
+                            this._Map.destroyPolyline(polyline);
+                            details.mapPolylines.splice(0, 1);
+                        }
+                    }
                 }
             }
         };
