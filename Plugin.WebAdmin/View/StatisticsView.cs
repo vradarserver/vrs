@@ -146,8 +146,8 @@ namespace VirtualRadar.Plugin.WebAdmin.View
         public void RegisterFeedId(int feedId)
         {
             var feed = _FeedManager.GetByUniqueId(feedId, ignoreInvisibleFeeds: false);
-            if(feed != null && feed.Listener != null) {
-                Statistics = feed.Listener.Statistics;
+            if(feed is INetworkFeed networkFeed && networkFeed.Listener != null) {
+                Statistics = networkFeed.Listener.Statistics;
             }
 
             _FeedId = feedId;

@@ -7,7 +7,7 @@ using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Library.Listener
 {
-    class MergedFeedFeed : Feed, IMergedFeedFeed
+    class MergedFeedFeed : NetworkFeed, IMergedFeedFeed
     {
         /// <summary>
         /// See interface docs.
@@ -25,6 +25,7 @@ namespace VirtualRadar.Library.Listener
 
             var mergedFeedListener = Factory.Resolve<IMergedFeedListener>();
             Listener = mergedFeedListener;
+            Listener.ConnectionStateChanged += Listener_ConnectionStateChanged;
             Listener.ExceptionCaught += Listener_ExceptionCaught;
             Listener.IgnoreBadMessages = true;
             Listener.AssumeDF18CF1IsIcao = false;
@@ -63,11 +64,13 @@ namespace VirtualRadar.Library.Listener
         {
             var result = new List<IMergedFeedComponentListener>();
             foreach(var receiverId in mergedFeed.ReceiverIds) {
-                var feed = mergeFeeds.FirstOrDefault(r => r.UniqueId == receiverId);
-                var listener = feed == null ? null : feed.Listener;
+                var feed = mergeFeeds
+                    .OfType<INetworkFeed>()
+                    .FirstOrDefault(r => r.UniqueId == receiverId);
+                var listener = feed?.Listener;
                 if(listener != null) {
                     var mergedFeedReceiver = mergedFeed.ReceiverFlags.FirstOrDefault(r => r.UniqueId == receiverId);
-                    var isMlatFeed = mergedFeedReceiver == null ? false : mergedFeedReceiver.IsMlatFeed;
+                    var isMlatFeed = mergedFeedReceiver != null && mergedFeedReceiver.IsMlatFeed;
 
                     var mergedFeedComponent = Factory.Resolve<IMergedFeedComponentListener>();
                     mergedFeedComponent.SetListener(listener, isMlatFeed);

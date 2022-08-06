@@ -98,8 +98,10 @@ namespace VirtualRadar.Library.Network
                 UnhookFeed();
             }
 
-            _Listener = RebroadcastServer.Feed.Listener;
-            _Listener.RawBytesReceived += Listener_RawBytesReceived;
+            if(RebroadcastServer.Feed is INetworkFeed networkFeed) {
+                _Listener = networkFeed.Listener;
+                _Listener.RawBytesReceived += Listener_RawBytesReceived;
+            }
         }
 
         /// <summary>

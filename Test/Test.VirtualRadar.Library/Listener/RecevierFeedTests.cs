@@ -257,6 +257,14 @@ namespace Test.VirtualRadar.Library.Listener
             Assert.IsNull(_Feed.Name);
             Assert.AreEqual(0, _Feed.UniqueId);
         }
+
+        [TestMethod]
+        public void ConnectionStatus_Passes_Through_To_Listener()
+        {
+            _Feed.Initialise(_Receiver, _Configuration);
+            _Listener.SetupGet(r => r.ConnectionStatus).Returns(ConnectionStatus.Connected);
+            Assert.AreEqual(ConnectionStatus.Connected, _Feed.ConnectionStatus);
+        }
         #endregion
 
         #region Initialise - Receiver
@@ -1219,6 +1227,40 @@ namespace Test.VirtualRadar.Library.Listener
             _Feed.Initialise(_Receiver, _Configuration);
             _Feed.Dispose();
             _Feed.Initialise(_Receiver, _Configuration);
+        }
+        #endregion
+
+        #region ConnectionStateChanged
+        [TestMethod]
+        public void ConnectionStateChanged_Passes_Through_To_Listener()
+        {
+            var eventRecorder = new EventRecorder<EventArgs>();
+            _Feed.ConnectionStateChanged += eventRecorder.Handler;
+
+            _Feed.Initialise(_Receiver, _Configuration);
+            _Listener.Raise(r => r.ConnectionStateChanged += null, EventArgs.Empty);
+
+            Assert.AreEqual(1, eventRecorder.CallCount);
+            Assert.AreSame(_Feed, eventRecorder.Sender);
+            Assert.IsNotNull(eventRecorder.Args);
+        }
+        #endregion
+
+        #region Connect and Disconnect
+        [TestMethod]
+        public void Connect_Passes_Through_To_Listener()
+        {
+            _Feed.Initialise(_Receiver, _Configuration);
+            _Feed.Connect();
+            _Listener.Verify(r => r.Connect(), Times.Once());
+        }
+
+        [TestMethod]
+        public void Disconnect_Passes_Through_To_Listener()
+        {
+            _Feed.Initialise(_Receiver, _Configuration);
+            _Feed.Disconnect();
+            _Listener.Verify(r => r.Disconnect(), Times.Once());
         }
         #endregion
     }

@@ -35,7 +35,7 @@ namespace Test.VirtualRadar.Library.Network
 
         private IRebroadcastServerManager _Manager;
         private Mock<IRebroadcastServer> _Server;
-        private List<Mock<IFeed>> _Feeds;
+        private List<Mock<INetworkFeed>> _Feeds;
         private List<Mock<IListener>> _Listeners;
         private Mock<IFeedManager> _FeedManager;
         private MockConnector<INetworkConnector, INetworkConnection> _Connector;
@@ -57,7 +57,7 @@ namespace Test.VirtualRadar.Library.Network
 
             _PassphraseAuthentication = TestUtilities.CreateMockImplementation<IPassphraseAuthentication>();
 
-            _Feeds = new List<Mock<IFeed>>();
+            _Feeds = new List<Mock<INetworkFeed>>();
             _Listeners = new List<Mock<IListener>>();
             var useVisibleFeeds = false;
             _FeedManager = FeedHelper.CreateMockFeedManager(_Feeds, _Listeners, useVisibleFeeds, 1, 2);

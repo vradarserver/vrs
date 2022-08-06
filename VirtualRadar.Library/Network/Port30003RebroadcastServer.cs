@@ -123,8 +123,10 @@ namespace VirtualRadar.Library.Network
                 UnhookFeed();
             }
 
-            _Listener = RebroadcastServer.Feed.Listener;
-            _Listener.Port30003MessageReceived += Listener_Port30003MessageReceived;
+            if(RebroadcastServer.Feed is INetworkFeed networkFeed) {
+                _Listener = networkFeed.Listener;
+                _Listener.Port30003MessageReceived += Listener_Port30003MessageReceived;
+            }
         }
 
         /// <summary>

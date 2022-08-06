@@ -17,7 +17,7 @@ namespace VirtualRadar.Interface.Listener
     /// The interface for objects that expose a single feed built from the merging of
     /// two or more feeds.
     /// </summary>
-    public interface IMergedFeedFeed : IFeed
+    public interface IMergedFeedFeed : INetworkFeed
     {
         /// <summary>
         /// Initialises the feed with the merged feed configuration settings passed across.

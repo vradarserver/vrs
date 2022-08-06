@@ -8,7 +8,7 @@ using VirtualRadar.Interface.Settings;
 
 namespace VirtualRadar.Library.Listener
 {
-    class ReceiverFeed : Feed, IReceiverFeed
+    class ReceiverFeed : NetworkFeed, IReceiverFeed
     {
         /// <summary>
         /// The singleton receiver format manager.
@@ -30,6 +30,7 @@ namespace VirtualRadar.Library.Listener
             _ReceiverFormatManager = Factory.ResolveSingleton<IReceiverFormatManager>();
 
             Listener = Factory.Resolve<IListener>();
+            Listener.ConnectionStateChanged += Listener_ConnectionStateChanged;
             Listener.ExceptionCaught += Listener_ExceptionCaught;
             Listener.IgnoreBadMessages = true;
             ApplyReceiverListenerSettings(false, receiver, configuration, receiverLocation);

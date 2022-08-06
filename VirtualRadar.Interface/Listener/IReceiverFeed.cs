@@ -15,7 +15,7 @@ namespace VirtualRadar.Interface.Listener
     /// <summary>
     /// An object that pulls in the feed from a single configurable receiver.
     /// </summary>
-    public interface IReceiverFeed : IFeed
+    public interface IReceiverFeed : INetworkFeed
     {
         /// <summary>
         /// Initialises the feed with the receiver configuration settings passed across.

@@ -55,7 +55,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
         private EventRecorder<EventArgs> _StatusChangedEvent;
         private Mock<ILog> _Log;
         private Mock<IRuntimeEnvironment> _RuntimeEnvironment;
-        private List<Mock<IFeed>> _Feeds;
+        private List<Mock<INetworkFeed>> _Feeds;
         private List<Mock<IListener>> _Listeners;
         private Mock<IFeedManager> _FeedManger;
         private Mock<IListener> _Listener;
@@ -80,7 +80,7 @@ namespace Test.VirtualRadar.Plugin.BaseStationDatabaseWriter
             _RuntimeEnvironment.Setup(r => r.IsTest).Returns(true);
             _Options = new Options();
 
-            _Feeds = new List<Mock<IFeed>>();
+            _Feeds = new List<Mock<INetworkFeed>>();
             _Listeners = new List<Mock<IListener>>();
             var useVisibleFeeds = false;
             _FeedManger = FeedHelper.CreateMockFeedManager(_Feeds, _Listeners, useVisibleFeeds, 1, 2);

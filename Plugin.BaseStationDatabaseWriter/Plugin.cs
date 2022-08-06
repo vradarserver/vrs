@@ -364,9 +364,9 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 var feedManager = Factory.ResolveSingleton<IFeedManager>();
                 var feed = feedManager.GetByUniqueId(_Options.ReceiverId, ignoreInvisibleFeeds: false);
                 if(feed != _Feed) {
-                    if(feed != null) {
-                        feed.Listener.Port30003MessageReceived += MessageListener_MessageReceived;
-                        feed.Listener.SourceChanged += MessageListener_SourceChanged;
+                    if(feed is INetworkFeed networkFeed && networkFeed.Listener != null) {
+                        networkFeed.Listener.Port30003MessageReceived += MessageListener_MessageReceived;
+                        networkFeed.Listener.SourceChanged += MessageListener_SourceChanged;
                     }
 
                     _Feed = feed;
@@ -383,9 +383,9 @@ namespace VirtualRadar.Plugin.BaseStationDatabaseWriter
                 var feedManager = Factory.ResolveSingleton<IFeedManager>();
                 var feed = feedManager.GetByUniqueId(_Options.ReceiverId, ignoreInvisibleFeeds: false);
                 if(feed != _Feed) {
-                    if(_Feed != null && _Feed.Listener != null) {
-                        _Feed.Listener.Port30003MessageReceived -= MessageListener_MessageReceived;
-                        _Feed.Listener.SourceChanged -= MessageListener_SourceChanged;
+                    if(_Feed is INetworkFeed networkFeed && networkFeed.Listener != null) {
+                        networkFeed.Listener.Port30003MessageReceived -= MessageListener_MessageReceived;
+                        networkFeed.Listener.SourceChanged -= MessageListener_SourceChanged;
                     }
 
                     _Feed = null;

@@ -656,31 +656,20 @@ namespace Test.VirtualRadar.Library.Listener
 
         #region ConnectionStateChanged
         [TestMethod]
-        public void FeedManager_ConnectionStateChanged_Raised_When_Listener_Raises_Event()
+        public void FeedManager_ConnectionStateChanged_Raised_When_Feed_Raises_Event()
         {
             _Manager.ConnectionStateChanged += _ConnectionStateChangedRecorder.Handler;
             _Manager.Initialise();
 
-            _CreatedListeners[1].Raise(r => r.ConnectionStateChanged += null, EventArgs.Empty);
+            _CreatedReceiverFeeds[0].Raise(r => r.ConnectionStateChanged += null, EventArgs.Empty);
             Assert.AreEqual(1, _ConnectionStateChangedRecorder.CallCount);
             Assert.AreSame(_Manager, _ConnectionStateChangedRecorder.Sender);
-            Assert.AreSame(_CreatedReceiverFeeds[1].Object, _ConnectionStateChangedRecorder.Args.Value);
-        }
+            Assert.AreSame(_CreatedReceiverFeeds[0].Object, _ConnectionStateChangedRecorder.Args.Value);
 
-        [TestMethod]
-        public void FeedManager_ConnectionStateChanged_Raised_When_Listener_Raises_Event_After_Being_Created_By_Configuration_Change()
-        {
-            _Manager.ConnectionStateChanged += _ConnectionStateChangedRecorder.Handler;
-
-            _Configuration.Receivers.RemoveAt(1);
-            _Manager.Initialise();
-            _Configuration.Receivers.Add(_Receiver2);
-            _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
-
-            _CreatedListeners[1].Raise(r => r.ConnectionStateChanged += null, EventArgs.Empty);
-            Assert.AreEqual(1, _ConnectionStateChangedRecorder.CallCount);
+            _CreatedMergedFeedFeeds[0].Raise(r => r.ConnectionStateChanged += null, EventArgs.Empty);
+            Assert.AreEqual(2, _ConnectionStateChangedRecorder.CallCount);
             Assert.AreSame(_Manager, _ConnectionStateChangedRecorder.Sender);
-            Assert.AreSame(_CreatedReceiverFeeds[1].Object, _ConnectionStateChangedRecorder.Args.Value);
+            Assert.AreSame(_CreatedMergedFeedFeeds[0].Object, _ConnectionStateChangedRecorder.Args.Value);
         }
 
         [TestMethod]
@@ -773,29 +762,32 @@ namespace Test.VirtualRadar.Library.Listener
 
         #region Connect
         [TestMethod]
-        public void FeedManager_Connect_Passes_The_Call_Through_To_Listeners()
+        public void FeedManager_Connect_Passes_The_Call_Through_To_Feeds()
         {
             _Manager.Initialise();
 
             // Can't use Verify as that will count the connect from Initialise as well and it gets a bit messy
-            bool seenConnectCall = false;
-            _CreatedListeners[0].Setup(r => r.Connect()).Callback(() => seenConnectCall = true);
+            var seenReceiverFeedConnect = false;
+            var seenMergedFeedConnect = false;
+            _CreatedReceiverFeeds[0].Setup(r => r.Connect()).Callback(() => seenReceiverFeedConnect = true);
+            _CreatedMergedFeedFeeds[0].Setup(r => r.Connect()).Callback(() => seenMergedFeedConnect = true);
 
             _Manager.Connect();
 
-            Assert.IsTrue(seenConnectCall);
+            Assert.IsTrue(seenReceiverFeedConnect);
+            Assert.IsTrue(seenMergedFeedConnect);
         }
         #endregion
 
         #region Disconnect
         [TestMethod]
-        public void FeedManager_Disconnect_Passes_The_Call_Through_To_Listeners()
+        public void FeedManager_Disconnect_Passes_The_Call_Through_To_Feeds()
         {
             _Manager.Initialise();
             _Manager.Disconnect();
 
-            _CreatedListeners[0].Verify(r => r.Disconnect(), Times.Once());
-            _CreatedListeners[1].Verify(r => r.Disconnect(), Times.Once());
+            _CreatedReceiverFeeds[0].Verify(r => r.Disconnect(), Times.Once());
+            _CreatedMergedFeedFeeds[0].Verify(r => r.Disconnect(), Times.Once());
         }
         #endregion
     }

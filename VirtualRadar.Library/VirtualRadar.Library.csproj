@@ -170,6 +170,7 @@
     <Compile Include="Listener\JsonMessageBytesExtractor.cs" />
     <Compile Include="Listener\MergedFeedComponentListener.cs" />
     <Compile Include="Listener\MergedFeedFeed.cs" />
+    <Compile Include="Listener\NetworkFeed.cs" />
     <Compile Include="Listener\PlaneFinderMessageBytesExtractor.cs" />
     <Compile Include="Listener\PlaneFinderReceiverProvider.cs" />
     <Compile Include="Listener\Port30003ReceiverProvider.cs" />
@@ -201,7 +202,6 @@
     <Compile Include="ModeS\ModeSAltitudeConversion.cs" />
     <Compile Include="ModeS\ModeSTranslator.cs" />
     <Compile Include="Listener\FeedManager.cs" />
-    <Compile Include="Listener\Feed.cs" />
     <Compile Include="Network\PassphraseAuthentication.cs" />
     <Compile Include="Network\AvrRebroadcastServer.cs" />
     <Compile Include="Network\CompressedVrsRebroadcastServer.cs" />

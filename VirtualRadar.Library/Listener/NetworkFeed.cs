@@ -9,14 +9,9 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using InterfaceFactory;
 using VirtualRadar.Interface;
-using VirtualRadar.Interface.Adsb;
 using VirtualRadar.Interface.BaseStation;
-using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Network;
 using VirtualRadar.Interface.Settings;
@@ -25,9 +20,9 @@ using VirtualRadar.Interface.StandingData;
 namespace VirtualRadar.Library.Listener
 {
     /// <summary>
-    /// The default implementation of <see cref="IFeed"/>.
+    /// The default implementation of <see cref="INetworkFeed"/>.
     /// </summary>
-    class Feed : IFeed
+    class NetworkFeed : INetworkFeed
     {
         /// <summary>
         /// True if the feed has been initialised.
@@ -64,10 +59,16 @@ namespace VirtualRadar.Library.Listener
         /// </summary>
         public bool IsVisible { get; private set; }
 
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public ConnectionStatus ConnectionStatus => Listener?.ConnectionStatus ?? default;
+
         /// <summary>
         /// Finalises the object.
         /// </summary>
-        ~Feed()
+        ~NetworkFeed()
         {
             Dispose(false);
         }
@@ -84,6 +85,20 @@ namespace VirtualRadar.Library.Listener
         protected virtual void OnExceptionCaught(EventArgs<Exception> args)
         {
             EventHelper.Raise(ExceptionCaught, this, args);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public event EventHandler ConnectionStateChanged;
+
+        /// <summary>
+        /// Raises <see cref="ConnectionStateChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnConnectionStateChanged(EventArgs args)
+        {
+            EventHelper.Raise(ConnectionStateChanged, this, args);
         }
 
         /// <summary>
@@ -115,10 +130,31 @@ namespace VirtualRadar.Library.Listener
                 }
 
                 if(Listener != null) {
+                    Listener.ConnectionStateChanged -= Listener_ConnectionStateChanged;
                     Listener.ExceptionCaught -= Listener_ExceptionCaught;
                     Listener.Dispose();
                     Listener = null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void Connect()
+        {
+            if(Listener != null) {
+                Listener.Connect();
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void Disconnect()
+        {
+            if(Listener != null) {
+                Listener.Disconnect();
             }
         }
 
@@ -234,6 +270,16 @@ namespace VirtualRadar.Library.Listener
         protected void Listener_ExceptionCaught(object sender, EventArgs<Exception> args)
         {
             OnExceptionCaught(args);
+        }
+
+        /// <summary>
+        /// Raised when the listener changes connection state.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        protected void Listener_ConnectionStateChanged(object sender, EventArgs args)
+        {
+            OnConnectionStateChanged(args);
         }
 
         /// <summary>

@@ -38,7 +38,7 @@ namespace Test.VirtualRadar.Library.Network
         private IClassFactory _OriginalFactory;
         private IRebroadcastServer _Server;
 
-        private Mock<IFeed> _Feed;
+        private Mock<INetworkFeed> _Feed;
         private Mock<IListener> _Listener;
         private MockConnector<INetworkConnector, INetworkConnection> _Connector;
         private BaseStationMessage _Port30003Message;
@@ -67,7 +67,7 @@ namespace Test.VirtualRadar.Library.Network
 
             _Server = Factory.Resolve<IRebroadcastServer>();
 
-            _Feed = TestUtilities.CreateMockInstance<IFeed>();
+            _Feed = TestUtilities.CreateMockInstance<INetworkFeed>();
             _Listener = TestUtilities.CreateMockInstance<IListener>();
             _Feed.SetupGet(r => r.Listener).Returns(_Listener.Object);
 

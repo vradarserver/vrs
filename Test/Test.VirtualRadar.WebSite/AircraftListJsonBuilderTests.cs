@@ -45,7 +45,7 @@ namespace Test.VirtualRadar.WebSite
 
         private MockFileSystemProvider _FileSystemProvider;
         private ClockMock _Clock;
-        private List<Mock<IFeed>> _Feeds;
+        private List<Mock<INetworkFeed>> _Feeds;
         private List<Mock<IBaseStationAircraftList>> _BaseStationAircraftLists;
         private List<List<IAircraft>> _AircraftLists;
         private Mock<IFeedManager> _FeedManager;
@@ -72,7 +72,7 @@ namespace Test.VirtualRadar.WebSite
             _Args = new AircraftListJsonBuilderArgs();
             _Filter = new AircraftListJsonBuilderFilter();
 
-            _Feeds = new List<Mock<IFeed>>();
+            _Feeds = new List<Mock<INetworkFeed>>();
             _BaseStationAircraftLists = new List<Mock<IBaseStationAircraftList>>();
             _AircraftLists = new List<List<IAircraft>>();
             var useVisibleFeeds = true;
@@ -128,7 +128,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void AircraftListJsonBuilder_Passes_True_IgnoreInvisibleFeeds_Parameter_To_FeedManager_When_Fetching_Source_Feed()
         {
-            _FeedManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
+            _FeedManager = FeedHelper.CreateMockFeedManager(new List<Mock<INetworkFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
             _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
 
             _Args.SourceFeedId = 5;
@@ -141,7 +141,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void AircraftListJsonBuilder_Passes_False_IgnoreInvisibleFeeds_Parameter_To_FeedManager_When_Fetching_Source_Feed()
         {
-            _FeedManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
+            _FeedManager = FeedHelper.CreateMockFeedManager(new List<Mock<INetworkFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
             _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
 
             _Args.SourceFeedId = 5;
@@ -154,7 +154,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void AircraftListJsonBuilder_Passes_False_IgnoreInvisibleFeeds_Parameter_When_Falling_Back_To_Default()
         {
-            _FeedManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
+            _FeedManager = FeedHelper.CreateMockFeedManager(new List<Mock<INetworkFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
             _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
 
             _Args.SourceFeedId = 5;
@@ -167,7 +167,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void AircraftListJsonBuilder_Fallback_To_Default_Can_Be_Suppressed()
         {
-            _FeedManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
+            _FeedManager = FeedHelper.CreateMockFeedManager(new List<Mock<INetworkFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
             _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
 
             _Args.SourceFeedId = 5;
@@ -179,7 +179,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void AircraftListJsonBuilder_Returns_Empty_Json_When_There_Are_No_Feeds()
         {
-            _FeedManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
+            _FeedManager = FeedHelper.CreateMockFeedManager(new List<Mock<INetworkFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
             _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
 
             var json = _Builder.Build(_Args, ignoreInvisibleFeeds: true, fallbackToDefaultFeed: true);
@@ -192,7 +192,7 @@ namespace Test.VirtualRadar.WebSite
         [TestMethod]
         public void AircraftListJsonBuilder_Returns_Requested_SourceFeedId_When_There_Are_No_Feeds()
         {
-            _FeedManager = FeedHelper.CreateMockFeedManager(new List<Mock<IFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
+            _FeedManager = FeedHelper.CreateMockFeedManager(new List<Mock<INetworkFeed>>(), new List<Mock<IListener>>(), useVisibleFeeds: true);
             _Builder = Factory.Resolve<IAircraftListJsonBuilder>();
 
             _Args.SourceFeedId = 9;

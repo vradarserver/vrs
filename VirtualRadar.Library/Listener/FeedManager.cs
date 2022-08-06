@@ -209,7 +209,7 @@ namespace VirtualRadar.Library.Listener
         private void AttachFeed(IFeed feed, List<IFeed> feeds)
         {
             feed.ExceptionCaught += Feed_ExceptionCaught;
-            feed.Listener.ConnectionStateChanged += Listener_ConnectionStateChanged;
+            feed.ConnectionStateChanged += Feed_ConnectionStateChanged;
             feeds.Add(feed);
         }
 
@@ -256,7 +256,7 @@ namespace VirtualRadar.Library.Listener
                         }
                     } else if(pass == 0) {
                         feed.ExceptionCaught -= Feed_ExceptionCaught;
-                        feed.Listener.ConnectionStateChanged -= Listener_ConnectionStateChanged;
+                        feed.ConnectionStateChanged -= Feed_ConnectionStateChanged;
                         feed.Dispose();
                         feeds.Remove(feed);
                     }
@@ -309,7 +309,7 @@ namespace VirtualRadar.Library.Listener
         public void Connect()
         {
             foreach(var feed in Feeds) {
-                feed.Listener.Connect();
+                feed.Connect();
             }
         }
 
@@ -319,7 +319,7 @@ namespace VirtualRadar.Library.Listener
         public void Disconnect()
         {
             foreach(var feed in Feeds) {
-                feed.Listener.Disconnect();
+                feed.Disconnect();
             }
         }
         #endregion
@@ -346,14 +346,15 @@ namespace VirtualRadar.Library.Listener
         }
 
         /// <summary>
-        /// Raised when a listener raised ConnectionStateChanged.
+        /// Raised when a feed raises ConnectionStateChanged.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        private void Listener_ConnectionStateChanged(object sender, EventArgs args)
+        private void Feed_ConnectionStateChanged(object sender, EventArgs args)
         {
-            var feed = _Feeds.FirstOrDefault(r => r.Listener == sender);
-            if(feed != null) OnConnectionStateChanged(new EventArgs<IFeed>(feed));
+            if(sender is IFeed feed) {
+                OnConnectionStateChanged(new EventArgs<IFeed>(feed));
+            }
         }
         #endregion
     }

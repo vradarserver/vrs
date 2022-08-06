@@ -78,7 +78,6 @@ namespace Test.VirtualRadar.Library.Listener
 
         private IClassFactory _OriginalFactory;
         private IMergedFeedFeed _Feed;
-        private Mock<IListener> _Listener;
         private Mock<IBaseStationAircraftList> _AircraftList;
         private Mock<IStandingDataManager> _StandingDataManager;
         private Mock<IBaseStationDatabase> _BaseStationDatabase;
@@ -91,10 +90,10 @@ namespace Test.VirtualRadar.Library.Listener
 
         private MergedFeed _MergedFeed;
         private Mock<IMergedFeedListener> _MergedFeedListener;
-        private List<Mock<IFeed>> _Feeds;
+        private List<Mock<INetworkFeed>> _Feeds;
         private List<Mock<IListener>> _Listeners;
         private Mock<IFeedManager> _FeedManager;
-        private List<IFeed> _MergedFeedReceivers;
+        private List<INetworkFeed> _MergedFeedReceivers;
         private List<IMergedFeedComponentListener> _SetMergedFeedListeners;
         private Mock<IPolarPlotter> _PolarPlotter;
 
@@ -133,18 +132,6 @@ namespace Test.VirtualRadar.Library.Listener
                 _PolarPlotter.Setup(r => r.RoundToDegrees).Returns(1);
             });
 
-            _Listener = TestUtilities.CreateMockImplementation<IListener>();
-            _Listener.Setup(r => r.Connector).Returns((IConnector)null);
-            _Listener.Setup(r => r.BytesExtractor).Returns((IMessageBytesExtractor)null);
-            _Listener.Setup(r => r.RawMessageTranslator).Returns((IRawMessageTranslator)null);
-            _Listener.Setup(r => r.Statistics).Returns(_Statistics.Object);
-            _Listener.Setup(r => r.ChangeSource(It.IsAny<IConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()))
-                     .Callback((IConnector connector, IMessageBytesExtractor extractor, IRawMessageTranslator translator) => {
-                _Listener.Setup(r => r.Connector).Returns(connector);
-                _Listener.Setup(r => r.BytesExtractor).Returns(extractor);
-                _Listener.Setup(r => r.RawMessageTranslator).Returns(translator);
-            });
-
             _SetMergedFeedListeners = new List<IMergedFeedComponentListener>();
             _MergedFeedListener = TestUtilities.CreateMockImplementation<IMergedFeedListener>();
             _MergedFeedListener.Setup(r => r.SetListeners(It.IsAny<IEnumerable<IMergedFeedComponentListener>>())).Callback((IEnumerable<IMergedFeedComponentListener> listeners) => {
@@ -154,7 +141,7 @@ namespace Test.VirtualRadar.Library.Listener
 
             _ExceptionCaughtRecorder = new EventRecorder<EventArgs<Exception>>();
 
-            _Feeds = new List<Mock<IFeed>>();
+            _Feeds = new List<Mock<INetworkFeed>>();
             _Listeners = new List<Mock<IListener>>();
             var useVisibleFeeds = false;
             _FeedManager = FeedHelper.CreateMockFeedManager(_Feeds, _Listeners, useVisibleFeeds, 1, 2);
@@ -170,23 +157,6 @@ namespace Test.VirtualRadar.Library.Listener
         }
         #endregion
 
-        #region Utility methods
-        private void DoForAllSourcesAndConnectionTypes(Action<string, ConnectionType, string> action)
-        {
-            foreach(var dataSource in DataSource.AllInternalDataSources) {
-                foreach(ConnectionType connectionType in Enum.GetValues(typeof(ConnectionType))) {
-                    TestCleanup();
-                    TestInitialise();
-
-                    _Receiver.DataSource = dataSource;
-                    _Receiver.ConnectionType = connectionType;
-
-                    action(dataSource, connectionType, String.Format("DataSource {0} ConnectionType {1}", dataSource, connectionType));
-                }
-            }
-        }
-        #endregion
-
         #region Constructors and Properties
         [TestMethod]
         public void Constructor_Initialises_To_Known_Value_And_Properties_Work()
@@ -199,6 +169,14 @@ namespace Test.VirtualRadar.Library.Listener
             Assert.IsNull(_Feed.Listener);
             Assert.IsNull(_Feed.Name);
             Assert.AreEqual(0, _Feed.UniqueId);
+        }
+
+        [TestMethod]
+        public void ConnectionStatus_Passes_Through_To_Listener()
+        {
+            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
+            _MergedFeedListener.SetupGet(r => r.ConnectionStatus).Returns(ConnectionStatus.Connected);
+            Assert.AreEqual(ConnectionStatus.Connected, _Feed.ConnectionStatus);
         }
         #endregion
 
@@ -541,7 +519,7 @@ namespace Test.VirtualRadar.Library.Listener
         {
             _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
             _AircraftList.Setup(r => r.Dispose()).Callback(() => {
-                _Listener.Verify(r => r.Dispose(), Times.Never());
+                _MergedFeedListener.Verify(r => r.Dispose(), Times.Never());
             });
 
             _Feed.Dispose();
@@ -572,7 +550,7 @@ namespace Test.VirtualRadar.Library.Listener
             var exception = new InvalidOperationException();
             _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
             _Feed.Dispose();
-            _Listener.Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(exception));
+            _MergedFeedListener.Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(exception));
 
             Assert.AreEqual(0, _ExceptionCaughtRecorder.CallCount);
         }
@@ -621,6 +599,40 @@ namespace Test.VirtualRadar.Library.Listener
             _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
             _Feed.Dispose();
             _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
+        }
+        #endregion
+
+        #region ConnectionStateChanged
+        [TestMethod]
+        public void ConnectionStateChanged_Passes_Through_To_Listener()
+        {
+            var eventRecorder = new EventRecorder<EventArgs>();
+            _Feed.ConnectionStateChanged += eventRecorder.Handler;
+
+            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
+            _MergedFeedListener.Raise(r => r.ConnectionStateChanged += null, EventArgs.Empty);
+
+            Assert.AreEqual(1, eventRecorder.CallCount);
+            Assert.AreSame(_Feed, eventRecorder.Sender);
+            Assert.IsNotNull(eventRecorder.Args);
+        }
+        #endregion
+
+        #region Connect and Disconnect
+        [TestMethod]
+        public void Connect_Passes_Through_To_Listener()
+        {
+            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
+            _Feed.Connect();
+            _MergedFeedListener.Verify(r => r.Connect(), Times.Once());
+        }
+
+        [TestMethod]
+        public void Disconnect_Passes_Through_To_Listener()
+        {
+            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
+            _Feed.Disconnect();
+            _MergedFeedListener.Verify(r => r.Disconnect(), Times.Once());
         }
         #endregion
     }

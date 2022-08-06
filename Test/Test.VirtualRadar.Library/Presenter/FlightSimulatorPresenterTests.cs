@@ -50,7 +50,7 @@ namespace Test.VirtualRadar.Library.Presenter
         private Mock<ILog> _Log;
         private Mock<IWebServer> _WebServer;
 
-        private List<Mock<IFeed>> _Feeds;
+        private List<Mock<INetworkFeed>> _Feeds;
         private List<Mock<IBaseStationAircraftList>> _BaseStationAircraftLists;
         private List<List<IAircraft>> _RealAircraftLists;
         private Mock<IFeedManager> _FeedManager;
@@ -90,7 +90,7 @@ namespace Test.VirtualRadar.Library.Presenter
             _View.Setup(v => v.SelectedRealAircraft).Returns(_SelectedAircraft);
 
             _BaseStationAircraftLists = new List<Mock<IBaseStationAircraftList>>();
-            _Feeds = new List<Mock<IFeed>>();
+            _Feeds = new List<Mock<INetworkFeed>>();
             _RealAircraftLists = new List<List<IAircraft>>();
             var useVisibleFeeds = false;
             _FeedManager = FeedHelper.CreateMockFeedManager(_Feeds, _BaseStationAircraftLists, _RealAircraftLists, useVisibleFeeds, 1, 2);

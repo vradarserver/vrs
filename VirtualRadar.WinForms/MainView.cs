@@ -431,19 +431,19 @@ namespace VirtualRadar.WinForms
         #region ShowStatisticsView, CloseStatisticsView
         private void ShowStatisticsView(IFeed feed)
         {
-            if(feed != null && feed.Listener.Statistics != null) {
-                StatisticsView view;
-                if(_StatisticsViews.TryGetValue(feed.UniqueId, out view)) {
+            if(feed is INetworkFeed networkFeed && networkFeed.Listener.Statistics != null) {
+                if(_StatisticsViews.TryGetValue(networkFeed.UniqueId, out StatisticsView view)) {
                     view.WindowState = FormWindowState.Normal;
                     view.Activate();
                 } else {
-                    view = new StatisticsView();
-                    view.Statistics = feed.Listener.Statistics;
-                    view.FeedName = feed.Name;
+                    view = new StatisticsView {
+                        Statistics = networkFeed.Listener.Statistics,
+                        FeedName = networkFeed.Name
+                    };
                     view.CloseClicked += StatisticsView_CloseClicked;
                     view.Show();
 
-                    _StatisticsViews.Add(feed.UniqueId, view);
+                    _StatisticsViews.Add(networkFeed.UniqueId, view);
                 }
             }
         }

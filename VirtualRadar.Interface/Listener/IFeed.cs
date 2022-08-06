@@ -9,13 +9,7 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VirtualRadar.Interface.BaseStation;
-using VirtualRadar.Interface.Database;
-using VirtualRadar.Interface.Listener;
-using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.Network;
 
 namespace VirtualRadar.Interface.Listener
 {
@@ -41,13 +35,29 @@ namespace VirtualRadar.Interface.Listener
         IAircraftList AircraftList { get; }
 
         /// <summary>
-        /// Gets the listener that <see cref="AircraftList"/> is listening to.
-        /// </summary>
-        IListener Listener { get; }
-
-        /// <summary>
         /// Gets a value indicating that the feed can be viewed from the web site.
         /// </summary>
         bool IsVisible { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the feed is connected to the source of aircraft message data.
+        /// </summary>
+        ConnectionStatus ConnectionStatus { get; }
+
+        /// <summary>
+        /// Raised when the feed connects or disconnects. Note that exceptions raised during parsing of
+        /// messages will cause the object to automatically disconnect.
+        /// </summary>
+        event EventHandler ConnectionStateChanged;
+
+        /// <summary>
+        /// Connects to the source of aircraft data.
+        /// </summary>
+        void Connect();
+
+        /// <summary>
+        /// Called implicitly by Dispose, disconnects from the source of aircraft data.
+        /// </summary>
+        void Disconnect();
     }
 }

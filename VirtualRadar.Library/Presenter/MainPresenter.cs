@@ -205,7 +205,10 @@ namespace VirtualRadar.Library.Presenter
         /// <returns></returns>
         public IFeed[] GetReceiverFeeds()
         {
-            return Factory.ResolveSingleton<IFeedManager>().Feeds.Where(r => !(r.Listener is IMergedFeedListener)).ToArray();
+            return Factory.ResolveSingleton<IFeedManager>()
+                .Feeds
+                .Where(r => !(r is IMergedFeedFeed))
+                .ToArray();
         }
 
         /// <summary>
@@ -452,14 +455,14 @@ namespace VirtualRadar.Library.Presenter
                     _FeedCounterMapSpinLock.Unlock();
                 }
 
-                var listener = feed.Listener;
+                var listener = (feed as INetworkFeed)?.Listener;
                 var aircraftList = feed.AircraftList;
                 var noValue = listener == null || aircraftList == null;
 
                 var isMerged = noValue ? false : listener is IMergedFeedListener;
                 var hasPolarPlot = noValue ? false : (aircraftList as IPolarPlottingAircraftList)?.PolarPlotter != null;
                 var hasAircraftList = noValue ? false : aircraftList.IsTracking;
-                var connectionStatus = noValue ? ConnectionStatus.Disconnected : feed.Listener.ConnectionStatus;
+                var connectionStatus = feed.ConnectionStatus;
                 var connectionStatusDescription = Describe.ConnectionStatus(connectionStatus);
                 var totalAircraft = noValue ? 0 : aircraftList.Count;
                 var totalBadMessages = noValue ? 0 : listener.TotalBadMessages;
@@ -534,8 +537,8 @@ namespace VirtualRadar.Library.Presenter
             ThreadPool.QueueUserWorkItem(r => {
                 try {
                     var feed = args.Value;
-                    feed.Listener.Disconnect();
-                    feed.Listener.Connect();
+                    feed.Disconnect();
+                    feed.Connect();
                 } catch(Exception ex) {
                     View.BubbleExceptionToGui(ex);
                 }

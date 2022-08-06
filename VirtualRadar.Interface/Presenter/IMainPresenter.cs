@@ -35,7 +35,7 @@ namespace VirtualRadar.Interface.Presenter
         IUniversalPlugAndPlayManager UPnpManager { get; set; }
 
         /// <summary>
-        /// Returns an array of receiver feeds. Merged feeds are not included.
+        /// Returns an array of all feeds except for merged feeds.
         /// </summary>
         /// <returns></returns>
         IFeed[] GetReceiverFeeds();

@@ -11,11 +11,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Moq;
 using VirtualRadar.Interface;
-using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.BaseStation;
+using VirtualRadar.Interface.Listener;
 
 namespace Test.Framework
 {
@@ -34,7 +33,7 @@ namespace Test.Framework
         /// <param name="useVisibleFeeds"></param>
         /// <param name="feedIds"></param>
         /// <returns></returns>
-        public static Mock<IFeedManager> CreateMockFeedManager(List<Mock<IFeed>> feeds, List<Mock<IListener>> listeners, bool useVisibleFeeds, params int[] feedIds)
+        public static Mock<IFeedManager> CreateMockFeedManager(List<Mock<INetworkFeed>> feeds, List<Mock<IListener>> listeners, bool useVisibleFeeds, params int[] feedIds)
         {
             var result = CreateMockFeedManager(feeds, useVisibleFeeds);
             AddFeeds(feeds, listeners, feedIds);
@@ -52,7 +51,7 @@ namespace Test.Framework
         /// <param name="useVisibleFeeds"></param>
         /// <param name="feedIds"></param>
         /// <returns></returns>
-        public static Mock<IFeedManager> CreateMockFeedManager(List<Mock<IFeed>> feeds, List<Mock<IBaseStationAircraftList>> baseStationAircraftLists, List<List<IAircraft>> aircraftLists, bool useVisibleFeeds, params int[] feedIds)
+        public static Mock<IFeedManager> CreateMockFeedManager(List<Mock<INetworkFeed>> feeds, List<Mock<IBaseStationAircraftList>> baseStationAircraftLists, List<List<IAircraft>> aircraftLists, bool useVisibleFeeds, params int[] feedIds)
         {
             var result = CreateMockFeedManager(feeds, useVisibleFeeds);
             AddFeeds(feeds, baseStationAircraftLists, aircraftLists, feedIds);
@@ -60,7 +59,7 @@ namespace Test.Framework
             return result;
         }
 
-        private static Mock<IFeedManager> CreateMockFeedManager(List<Mock<IFeed>> feeds, bool useVisibleFeeds)
+        private static Mock<IFeedManager> CreateMockFeedManager(List<Mock<INetworkFeed>> feeds, bool useVisibleFeeds)
         {
             var result = TestUtilities.CreateMockSingleton<IFeedManager>();
 
@@ -96,7 +95,7 @@ namespace Test.Framework
         /// <param name="feeds"></param>
         /// <param name="listeners"></param>
         /// <param name="feedIds"></param>
-        public static void AddFeeds(List<Mock<IFeed>> feeds, List<Mock<IListener>> listeners, params int[] feedIds)
+        public static void AddFeeds(List<Mock<INetworkFeed>> feeds, List<Mock<IListener>> listeners, params int[] feedIds)
         {
             DoAddFeeds(feeds, feedIds, feed => {
                 var listener = TestUtilities.CreateMockInstance<IListener>();
@@ -112,7 +111,7 @@ namespace Test.Framework
         /// <param name="feeds"></param>
         /// <param name="listeners"></param>
         /// <param name="feedIds"></param>
-        public static void AddMergedFeeds(List<Mock<IFeed>> feeds, List<Mock<IMergedFeedListener>> listeners, params int[] feedIds)
+        public static void AddMergedFeeds(List<Mock<INetworkFeed>> feeds, List<Mock<IMergedFeedListener>> listeners, params int[] feedIds)
         {
             DoAddFeeds(feeds, feedIds, feed => {
                 var listener = TestUtilities.CreateMockInstance<IMergedFeedListener>();
@@ -129,7 +128,7 @@ namespace Test.Framework
         /// <param name="baseStationAircraftLists"></param>
         /// <param name="aircraftLists"></param>
         /// <param name="feedIds"></param>
-        public static void AddFeeds(List<Mock<IFeed>> feeds, List<Mock<IBaseStationAircraftList>> baseStationAircraftLists, List<List<IAircraft>> aircraftLists, params int[] feedIds)
+        public static void AddFeeds(List<Mock<INetworkFeed>> feeds, List<Mock<IBaseStationAircraftList>> baseStationAircraftLists, List<List<IAircraft>> aircraftLists, params int[] feedIds)
         {
             DoAddFeeds(feeds, feedIds, feed => {
                 var index = baseStationAircraftLists.Count;
@@ -146,11 +145,11 @@ namespace Test.Framework
             });
         }
 
-        private static void DoAddFeeds(List<Mock<IFeed>> feeds, int[] feedIds, Action<Mock<IFeed>> setupFeed)
+        private static void DoAddFeeds(List<Mock<INetworkFeed>> feeds, int[] feedIds, Action<Mock<INetworkFeed>> setupFeed)
         {
             foreach(var feedId in feedIds) {
                 if(!feeds.Any(r => r.Object.UniqueId == feedId)) {
-                    var feed = TestUtilities.CreateMockInstance<IFeed>();
+                    var feed = TestUtilities.CreateMockInstance<INetworkFeed>();
                     feed.Setup(r => r.UniqueId).Returns(feedId);
                     feeds.Add(feed);
 
@@ -167,7 +166,7 @@ namespace Test.Framework
         /// <param name="feeds"></param>
         /// <param name="listeners"></param>
         /// <param name="feedIds"></param>
-        public static void RemoveFeed(List<Mock<IFeed>> feeds, List<Mock<IListener>> listeners, params int[] feedIds)
+        public static void RemoveFeed(List<Mock<INetworkFeed>> feeds, List<Mock<IListener>> listeners, params int[] feedIds)
         {
             DoRemoveFeed(feeds, feedIds, receiver => {
                 var listener = listeners.Single(r => Object.ReferenceEquals(receiver.Object.Listener, r.Object));
@@ -182,7 +181,7 @@ namespace Test.Framework
         /// <param name="baseStationAircraftLists"></param>
         /// <param name="aircraftLists"></param>
         /// <param name="feedIds"></param>
-        public static void RemoveFeed(List<Mock<IFeed>> feeds, List<Mock<IBaseStationAircraftList>> baseStationAircraftLists, List<List<IAircraft>> aircraftLists, params int[] feedIds)
+        public static void RemoveFeed(List<Mock<INetworkFeed>> feeds, List<Mock<IBaseStationAircraftList>> baseStationAircraftLists, List<List<IAircraft>> aircraftLists, params int[] feedIds)
         {
             DoRemoveFeed(feeds, feedIds, receiver => {
                 var baseStationAircraftList = baseStationAircraftLists.Single(r => Object.ReferenceEquals(receiver.Object.AircraftList, r.Object));
@@ -193,7 +192,7 @@ namespace Test.Framework
             });
         }
 
-        private static void DoRemoveFeed(List<Mock<IFeed>> feeds, int[] feedIds, Action<Mock<IFeed>> removeForFeed)
+        private static void DoRemoveFeed(List<Mock<INetworkFeed>> feeds, int[] feedIds, Action<Mock<INetworkFeed>> removeForFeed)
         {
             foreach(var feedId in feedIds) {
                 var feed = feeds.FirstOrDefault(r => r.Object.UniqueId == feedId);
@@ -232,7 +231,7 @@ namespace Test.Framework
         /// </summary>
         /// <param name="feeds"></param>
         /// <returns></returns>
-        public static List<IFeed> GetFeeds(List<Mock<IFeed>> feeds)
+        public static List<INetworkFeed> GetFeeds(List<Mock<INetworkFeed>> feeds)
         {
             return feeds.Select(r => r.Object).ToList();
         }
