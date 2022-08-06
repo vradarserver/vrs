@@ -28,7 +28,7 @@ using VirtualRadar.Interface.Network;
 namespace Test.VirtualRadar.Library.Listener
 {
     [TestClass]
-    public class FeedTests
+    public class ReceiverFeedTests
     {
         #region Private class - SettingsProperty, ConnectionProperty
         /// <summary>
@@ -78,7 +78,7 @@ namespace Test.VirtualRadar.Library.Listener
         public TestContext TestContext { get; set; }
 
         private IClassFactory _OriginalFactory;
-        private IFeed _Feed;
+        private IReceiverFeed _Feed;
         private Mock<IListener> _Listener;
         private Mock<IBaseStationAircraftList> _AircraftList;
         private Mock<IStandingDataManager> _StandingDataManager;
@@ -86,7 +86,6 @@ namespace Test.VirtualRadar.Library.Listener
         private Mock<IAutoConfigBaseStationDatabase> _AutoConfigBaseStationDatabase;
         private Configuration _Configuration;
         private Receiver _Receiver;
-        private RawDecodingSettings _RawDecodingSettings;
         private EventRecorder<EventArgs<Exception>> _ExceptionCaughtRecorder;
 
         private Mock<INetworkConnector> _IPActiveConnector;
@@ -106,13 +105,6 @@ namespace Test.VirtualRadar.Library.Listener
 
         private Mock<IStatistics> _Statistics;
 
-        private MergedFeed _MergedFeed;
-        private Mock<IMergedFeedListener> _MergedFeedListener;
-        private List<Mock<IFeed>> _Feeds;
-        private List<Mock<IListener>> _Listeners;
-        private Mock<IFeedManager> _FeedManager;
-        private List<IFeed> _MergedFeedReceivers;
-        private List<IMergedFeedComponentListener> _SetMergedFeedListeners;
         private Mock<IPolarPlotter> _PolarPlotter;
 
         private readonly List<ConnectionProperty> _ConnectionProperties = new List<ConnectionProperty>() {
@@ -154,9 +146,8 @@ namespace Test.VirtualRadar.Library.Listener
         {
             _OriginalFactory = Factory.TakeSnapshot();
 
-            _Feed = Factory.Resolve<IFeed>();
+            _Feed = Factory.Resolve<IReceiverFeed>();
             _Receiver = new Receiver() { UniqueId = 1, Name = "A", ReceiverLocationId = 1, IsSatcomFeed = true, };
-            _RawDecodingSettings = new RawDecodingSettings();
 
             _Configuration = new Configuration();
             _Configuration.RawDecodingSettings.AssumeDF18CF1IsIcao = true;
@@ -196,21 +187,7 @@ namespace Test.VirtualRadar.Library.Listener
                 _Listener.Setup(r => r.RawMessageTranslator).Returns(translator);
             });
 
-            _SetMergedFeedListeners = new List<IMergedFeedComponentListener>();
-            _MergedFeedListener = TestUtilities.CreateMockImplementation<IMergedFeedListener>();
-            _MergedFeedListener.Setup(r => r.SetListeners(It.IsAny<IEnumerable<IMergedFeedComponentListener>>())).Callback((IEnumerable<IMergedFeedComponentListener> listeners) => {
-                _SetMergedFeedListeners.Clear();
-                _SetMergedFeedListeners.AddRange(listeners);
-            });
-
             _ExceptionCaughtRecorder = new EventRecorder<EventArgs<Exception>>();
-
-            _Feeds = new List<Mock<IFeed>>();
-            _Listeners = new List<Mock<IListener>>();
-            var useVisibleFeeds = false;
-            _FeedManager = FeedHelper.CreateMockFeedManager(_Feeds, _Listeners, useVisibleFeeds, 1, 2);
-            _MergedFeedReceivers = FeedHelper.GetFeeds(_Feeds);
-            _MergedFeed = new MergedFeed() { UniqueId = 3, Name = "M1", ReceiverIds = { 1, 2 } };
 
             CreateNewListenerChildObjectInstances();
         }
@@ -269,10 +246,10 @@ namespace Test.VirtualRadar.Library.Listener
 
         #region Constructors and Properties
         [TestMethod]
-        public void Feed_Constructor_Initialises_To_Known_Value_And_Properties_Work()
+        public void Constructor_Initialises_To_Known_Value_And_Properties_Work()
         {
             _Feed.Dispose();
-            _Feed = Factory.Resolve<IFeed>();
+            _Feed = Factory.Resolve<IReceiverFeed>();
 
             Assert.IsNull(_Feed.AircraftList);
             Assert.IsFalse(_Feed.IsVisible);
@@ -285,20 +262,20 @@ namespace Test.VirtualRadar.Library.Listener
         #region Initialise - Receiver
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Feed_Initialise_Throws_If_Passed_Null_Receiver()
+        public void Initialise_Throws_If_Passed_Null_Receiver()
         {
             _Feed.Initialise((Receiver)null, _Configuration);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Feed_Initialise_Throws_If_Passed_Null_Configuration()
+        public void Initialise_Throws_If_Passed_Null_Configuration()
         {
             _Feed.Initialise(_Receiver, null);
         }
 
         [TestMethod]
-        public void Feed_Initialise_Does_Not_Care_If_Receiver_Is_Not_In_Configuration()
+        public void Initialise_Does_Not_Care_If_Receiver_Is_Not_In_Configuration()
         {
             var otherReceiver = new Receiver() { UniqueId = _Receiver.UniqueId + 1, Name = "Other receiver", Port = _Receiver.Port + 1 };
             _Feed.Initialise(otherReceiver, _Configuration);
@@ -306,7 +283,7 @@ namespace Test.VirtualRadar.Library.Listener
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Feed_Initialise_Throws_If_Passed_Disabled_Receiver()
+        public void Initialise_Throws_If_Passed_Disabled_Receiver()
         {
             _Receiver.Enabled = false;
             _Feed.Initialise(_Receiver, _Configuration);
@@ -314,21 +291,21 @@ namespace Test.VirtualRadar.Library.Listener
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Feed_Initialise_Throws_If_Called_Twice()
+        public void Initialise_Throws_If_Called_Twice()
         {
             _Feed.Initialise(_Receiver, _Configuration);
             _Feed.Initialise(_Receiver, _Configuration);
         }
 
         [TestMethod]
-        public void Feed_Initialise_Does_Not_Throw_If_ReceiverLocationId_Is_Not_In_ReceiverLocations()
+        public void Initialise_Does_Not_Throw_If_ReceiverLocationId_Is_Not_In_ReceiverLocations()
         {
             _Receiver.ReceiverLocationId = _ReceiverLocations.Max(r => r.UniqueId) + 1;
             _Feed.Initialise(_Receiver, _Configuration);
         }
 
         [TestMethod]
-        public void Feed_Initialise_Copies_Receiver_Details_To_Properties()
+        public void Initialise_Copies_Receiver_Details_To_Properties()
         {
             _Feed.Initialise(_Receiver, _Configuration);
 
@@ -337,7 +314,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Initialise_Creates_Listener_And_AircraftList()
+        public void Initialise_Creates_Listener_And_AircraftList()
         {
             _Receiver.UniqueId = 1234;
             _Feed.Initialise(_Receiver, _Configuration);
@@ -353,7 +330,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Initialise_Creates_PolarPlotter_If_ReceiverLocation_Is_Present()
+        public void Initialise_Creates_PolarPlotter_If_ReceiverLocation_Is_Present()
         {
             _Feed.Initialise(_Receiver, _Configuration);
 
@@ -362,7 +339,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Initialise_Does_Not_Create_PolarPlotter_If_ReceiverLocation_Missing()
+        public void Initialise_Does_Not_Create_PolarPlotter_If_ReceiverLocation_Missing()
         {
             _Configuration.ReceiverLocations.Clear();
 
@@ -374,7 +351,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Initialise_Calls_Listener_ChangeSource_With_Correct_Parameters_For_DataSource_And_ConnectionType()
+        public void Initialise_Calls_Listener_ChangeSource_With_Correct_Parameters_For_DataSource_And_ConnectionType()
         {
             DoForAllSourcesAndConnectionTypes((dataSource, connectionType, failMessage) => {
                 _Feed.Initialise(_Receiver, _Configuration);
@@ -409,7 +386,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Initialise_Applies_Configuration_Settings_For_Connection_Type()
+        public void Initialise_Applies_Configuration_Settings_For_Connection_Type()
         {
             Do_Check_Configuration_Changes_Are_Applied(false, () => { _Feed.Initialise(_Receiver, _Configuration); });
         }
@@ -473,7 +450,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Initialise_Applies_Correct_Network_Settings_To_Connector()
+        public void Initialise_Applies_Correct_Network_Settings_To_Connector()
         {
             Do_Check_Correct_Network_Settings_Applied_To_Connector(false, () => { _Feed.Initialise(_Receiver, _Configuration); });
         }
@@ -513,7 +490,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Initialise_Copies_Configuration_To_RawTranslator()
+        public void Initialise_Copies_Configuration_To_RawTranslator()
         {
             Do_Check_Configuration_Changes_Copied_To_RawTranslator(false, () => _Feed.Initialise(_Receiver, _Configuration));
         }
@@ -583,7 +560,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Initialise_Does_Not_Connect_Listener()
+        public void Initialise_Does_Not_Connect_Listener()
         {
             _Feed.Initialise(_Receiver, _Configuration);
 
@@ -592,7 +569,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Initialise_Attaches_Listener_To_AircraftList()
+        public void Initialise_Attaches_Listener_To_AircraftList()
         {
             _Feed.Initialise(_Receiver, _Configuration);
 
@@ -600,7 +577,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Initialise_Attaches_StandingDataManager_To_AircraftList()
+        public void Initialise_Attaches_StandingDataManager_To_AircraftList()
         {
             _Feed.Initialise(_Receiver, _Configuration);
 
@@ -608,7 +585,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Initialise_Starts_AircraftList_If_Required()
+        public void Initialise_Starts_AircraftList_If_Required()
         {
             foreach(ReceiverUsage receiverUsage in Enum.GetValues(typeof(ReceiverUsage))) {
                 TestCleanup();
@@ -632,7 +609,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Initialise_Sets_Receiver_IsVisible_From_ReceiverUsage()
+        public void Initialise_Sets_Receiver_IsVisible_From_ReceiverUsage()
         {
             foreach(ReceiverUsage receiverUsage in Enum.GetValues(typeof(ReceiverUsage))) {
                 TestCleanup();
@@ -647,7 +624,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Initialise_Hooks_Listener_ExceptionCaught()
+        public void Initialise_Hooks_Listener_ExceptionCaught()
         {
             _Feed.ExceptionCaught += _ExceptionCaughtRecorder.Handler;
 
@@ -661,7 +638,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Initialise_Hooks_AircraftList_ExceptionCaught()
+        public void Initialise_Hooks_AircraftList_ExceptionCaught()
         {
             _Feed.ExceptionCaught += _ExceptionCaughtRecorder.Handler;
 
@@ -675,7 +652,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Initialise_Sets_Authentication_On_Network_Connector_If_Passphrase_Supplied()
+        public void Initialise_Sets_Authentication_On_Network_Connector_If_Passphrase_Supplied()
         {
             _Receiver.Passphrase = "A";
 
@@ -686,7 +663,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Initialise_Does_Not_Set_Authentication_On_Network_Connector_If_Passphrase_Is_Null()
+        public void Initialise_Does_Not_Set_Authentication_On_Network_Connector_If_Passphrase_Is_Null()
         {
             _Receiver.Passphrase = null;
 
@@ -696,257 +673,17 @@ namespace Test.VirtualRadar.Library.Listener
         }
         #endregion
 
-        #region Initialise - MergedFeed
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Feed_Initialise_Throws_If_Passed_Null_MergedFeed()
-        {
-            _Feed.Initialise((MergedFeed)null, _MergedFeedReceivers);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Feed_Initialise_Throws_If_Passed_Null_ReceiverPathways_List()
-        {
-            _Feed.Initialise(_MergedFeed, null);
-        }
-
-        [TestMethod]
-        public void Feed_Initialise_Does_Not_Care_If_MergedFeed_Is_Not_In_Configuration()
-        {
-            var otherMergedFeed = new MergedFeed() { UniqueId = _MergedFeed.UniqueId + 1, Name = "Other mergedFeed", ReceiverIds = { 1, 2 } };
-            _Feed.Initialise(otherMergedFeed, _MergedFeedReceivers);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Feed_Initialise_Throws_If_Passed_Disabled_MergedFeed()
-        {
-            _MergedFeed.Enabled = false;
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Feed_Initialise_Throws_If_Called_Twice_With_MergedFeeds()
-        {
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Feed_Initialise_Throws_If_Called_Twice_With_Combination_Of_Receiver_And_MergedFeeds()
-        {
-            _Feed.Initialise(_Receiver, _Configuration);
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-        }
-
-        [TestMethod]
-        public void Feed_Initialise_Does_Not_Throw_If_ReceiverId_Is_Not_In_ReceiverPathways()
-        {
-            _MergedFeed.ReceiverIds.Clear();
-            _MergedFeed.ReceiverIds.Add(100);
-            _MergedFeed.ReceiverIds.Add(101);
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-        }
-
-        [TestMethod]
-        public void Feed_Initialise_Copies_MergedFeed_Details_To_Properties()
-        {
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-
-            Assert.AreEqual(3, _Feed.UniqueId);
-            Assert.AreEqual("M1", _Feed.Name);
-        }
-
-        [TestMethod]
-        public void Feed_Initialise_Creates_MergedFeed_Listener_And_AircraftList()
-        {
-            _MergedFeed.IcaoTimeout = 1234;
-            _MergedFeed.UniqueId = 9988;
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-
-            Assert.IsNotNull(_Feed.Listener);
-            Assert.AreSame(_MergedFeedListener.Object, _Feed.Listener);
-            Assert.IsNotNull(_Feed.AircraftList);
-            Assert.IsTrue(_Feed.Listener.IgnoreBadMessages);
-            Assert.AreEqual(1234, _MergedFeedListener.Object.IcaoTimeout);
-            Assert.AreEqual(9988, _MergedFeedListener.Object.ReceiverId);
-            Assert.AreEqual("M1", _MergedFeedListener.Object.ReceiverName);
-            Assert.AreEqual(false, _MergedFeedListener.Object.IsSatcomFeed);
-            Assert.AreEqual(false, _MergedFeedListener.Object.AssumeDF18CF1IsIcao);
-        }
-
-        [TestMethod]
-        public void Feed_Initialise_Sets_IgnoreAircraftWithNoPosition_On_MergedFeed()
-        {
-            foreach(var ignoreFlag in new bool[] { true, false }) {
-                TestCleanup();
-                TestInitialise();
-
-                _MergedFeed.IgnoreAircraftWithNoPosition = ignoreFlag;
-                _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-
-                Assert.AreEqual(ignoreFlag, _MergedFeedListener.Object.IgnoreAircraftWithNoPosition);
-            }
-        }
-
-        [TestMethod]
-        public void Feed_Initialise_Does_Not_Call_Change_Source_For_Merged_Feeds()
-        {
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-
-            _MergedFeedListener.Verify(r => r.ChangeSource(It.IsAny<IConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()), Times.Never());
-        }
-
-        [TestMethod]
-        public void Feed_Initialise_Calls_SetListeners()
-        {
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-
-            Assert.AreEqual(2, _SetMergedFeedListeners.Count);
-            Assert.IsTrue(_SetMergedFeedListeners.Any(r => Object.ReferenceEquals(r.Listener, _Listeners[0].Object)));
-            Assert.IsTrue(_SetMergedFeedListeners.Any(r => Object.ReferenceEquals(r.Listener, _Listeners[1].Object)));
-        }
-
-        [TestMethod]
-        public void Feed_Initialise_Only_Calls_SetListeners_With_Listeners_For_The_Right_IDs()
-        {
-            FeedHelper.AddFeeds(_Feeds, _Listeners, 3, 4);
-            _MergedFeedReceivers = FeedHelper.GetFeeds(_Feeds);
-
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-
-            Assert.AreEqual(2, _SetMergedFeedListeners.Count);
-            Assert.IsTrue(_SetMergedFeedListeners.Any(r => Object.ReferenceEquals(r.Listener, _Listeners[0].Object)));
-            Assert.IsTrue(_SetMergedFeedListeners.Any(r => Object.ReferenceEquals(r.Listener, _Listeners[1].Object)));
-        }
-
-        [TestMethod]
-        public void Feed_Initialise_Calls_SetListeners_With_The_Correct_Feed_Types()
-        {
-        //MLATME
-            _MergedFeed.ReceiverFlags.Add(new MergedFeedReceiver() {
-                UniqueId = _Listeners[0].Object.ReceiverId,
-                IsMlatFeed = false,
-            });
-            _MergedFeed.ReceiverFlags.Add(new MergedFeedReceiver() {
-                UniqueId = _Listeners[1].Object.ReceiverId,
-                IsMlatFeed = true,
-            });
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-
-            var component0 = _SetMergedFeedListeners.Single(r => Object.ReferenceEquals(r.Listener, _Listeners[0].Object));
-            var component1 = _SetMergedFeedListeners.Single(r => Object.ReferenceEquals(r.Listener, _Listeners[1].Object));
-
-            Assert.AreEqual(false, component0.IsMlatFeed);
-            Assert.AreEqual(true, component1.IsMlatFeed);
-        }
-
-        [TestMethod]
-        public void Feed_Initialise_Calls_SetListeners_With_No_Feed_Type_When_No_Flag_Is_Set()
-        {
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-
-            var component0 = _SetMergedFeedListeners.Single(r => Object.ReferenceEquals(r.Listener, _Listeners[0].Object));
-            var component1 = _SetMergedFeedListeners.Single(r => Object.ReferenceEquals(r.Listener, _Listeners[1].Object));
-
-            Assert.AreEqual(false, component0.IsMlatFeed);
-            Assert.AreEqual(false, component1.IsMlatFeed);
-        }
-
-        [TestMethod]
-        public void Feed_Initialise_Attaches_Merged_Feed_Listener_To_AircraftList()
-        {
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-
-            Assert.AreSame(_MergedFeedListener.Object, _Feed.AircraftList.Listener);
-        }
-
-        [TestMethod]
-        public void Feed_Initialise_Attaches_StandingDataManager_To_MergedFeed_AircraftList()
-        {
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-
-            Assert.AreSame(_StandingDataManager.Object, _Feed.AircraftList.StandingDataManager);
-        }
-
-        [TestMethod]
-        public void Feed_Initialise_Starts_MergedFeed_AircraftList()
-        {
-            _AircraftList.Setup(r => r.Start()).Callback(() => {
-                Assert.IsNotNull(_AircraftList.Object.Listener);
-                Assert.IsNotNull(_AircraftList.Object.StandingDataManager);
-            });
-
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-
-            _AircraftList.Verify(r => r.Start(), Times.Once());
-        }
-
-        [TestMethod]
-        public void Feed_Initialise_Sets_IsVisible_For_MergedFeeds()
-        {
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-            Assert.IsTrue(_Feed.IsVisible);
-        }
-
-        [TestMethod]
-        public void Feed_Initialise_Hooks_MergedFeed_Listener_ExceptionCaught()
-        {
-            _Feed.ExceptionCaught += _ExceptionCaughtRecorder.Handler;
-
-            var exception = new InvalidOperationException();
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-            _MergedFeedListener.Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(exception));
-
-            Assert.AreEqual(1, _ExceptionCaughtRecorder.CallCount);
-            Assert.AreSame(_Feed, _ExceptionCaughtRecorder.Sender);
-            Assert.AreSame(exception, _ExceptionCaughtRecorder.Args.Value);
-        }
-
-        [TestMethod]
-        public void Feed_Initialise_Hooks_MergedFeed_AircraftList_ExceptionCaught()
-        {
-            _Feed.ExceptionCaught += _ExceptionCaughtRecorder.Handler;
-
-            var exception = new InvalidOperationException();
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-            _AircraftList.Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(exception));
-
-            Assert.AreEqual(1, _ExceptionCaughtRecorder.CallCount);
-            Assert.AreSame(_Feed, _ExceptionCaughtRecorder.Sender);
-            Assert.AreSame(exception, _ExceptionCaughtRecorder.Args.Value);
-        }
-
-        [TestMethod]
-        public void Feed_Initialise_Sets_MergedFeed_IsVisible_From_ReceiverUsage()
-        {
-            foreach(ReceiverUsage receiverUsage in Enum.GetValues(typeof(ReceiverUsage))) {
-                TestCleanup();
-                TestInitialise();
-
-                _MergedFeed.ReceiverUsage = receiverUsage;
-                _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-
-                var isVisible = receiverUsage == ReceiverUsage.Normal;
-                Assert.AreEqual(isVisible, _Feed.IsVisible, receiverUsage.ToString());
-            }
-        }
-        #endregion
-
         #region ApplyConfiguration - Receiver
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Feed_ApplyConfiguration_Throws_If_Called_Before_Initialise()
+        public void ApplyConfiguration_Throws_If_Called_Before_Initialise()
         {
             _Feed.ApplyConfiguration(_Receiver, _Configuration);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Feed_ApplyConfiguration_Throws_If_Passed_Null_Receiver()
+        public void ApplyConfiguration_Throws_If_Passed_Null_Receiver()
         {
             _Feed.Initialise(_Receiver, _Configuration);
             _Feed.ApplyConfiguration((Receiver)null, _Configuration);
@@ -954,7 +691,7 @@ namespace Test.VirtualRadar.Library.Listener
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Feed_ApplyConfiguration_Throws_If_Passed_Null_Configuration()
+        public void ApplyConfiguration_Throws_If_Passed_Null_Configuration()
         {
             _Feed.Initialise(_Receiver, _Configuration);
             _Feed.ApplyConfiguration(_Receiver, null);
@@ -962,7 +699,7 @@ namespace Test.VirtualRadar.Library.Listener
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Feed_ApplyConfiguration_Throws_If_Passed_Receiver_With_Different_Unique_ID()
+        public void ApplyConfiguration_Throws_If_Passed_Receiver_With_Different_Unique_ID()
         {
             _Feed.Initialise(_Receiver, _Configuration);
             ++_Receiver.UniqueId;
@@ -970,7 +707,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Picks_Up_Name_Change()
+        public void ApplyConfiguration_Picks_Up_Name_Change()
         {
             _Feed.Initialise(_Receiver, _Configuration);
             _Receiver.Name = "My New Name";
@@ -981,7 +718,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Picks_Up_IsSatcomFeed_Change()
+        public void ApplyConfiguration_Picks_Up_IsSatcomFeed_Change()
         {
             _Feed.Initialise(_Receiver, _Configuration);
             _Receiver.IsSatcomFeed = false;
@@ -991,7 +728,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Picks_Up_AssumeDF18CF1IsIcao_Change()
+        public void ApplyConfiguration_Picks_Up_AssumeDF18CF1IsIcao_Change()
         {
             _Feed.Initialise(_Receiver, _Configuration);
             Assert.AreEqual(true, _Feed.Listener.AssumeDF18CF1IsIcao);
@@ -1003,7 +740,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Saves_PolarPlot_Before_Change_Of_Name()
+        public void ApplyConfiguration_Saves_PolarPlot_Before_Change_Of_Name()
         {
             var savedFeedName = "";
             _SavedPolarPlotStorage.Setup(r => r.Save(It.IsAny<IFeed>())).Callback((IFeed feed) => {
@@ -1019,7 +756,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Does_Not_Save_PolarPlot_If_Name_Does_Not_Change()
+        public void ApplyConfiguration_Does_Not_Save_PolarPlot_If_Name_Does_Not_Change()
         {
             _Receiver.Name = "OldName";
             _Feed.Initialise(_Receiver, _Configuration);
@@ -1029,25 +766,25 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Copies_Changes_To_Listener()
+        public void ApplyConfiguration_Copies_Changes_To_Listener()
         {
             Do_Check_Configuration_Changes_Are_Applied(true, () => _Feed.ApplyConfiguration(_Receiver, _Configuration) );
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Copies_Changes_To_RawTranslator()
+        public void ApplyConfiguration_Copies_Changes_To_RawTranslator()
         {
             Do_Check_Configuration_Changes_Copied_To_RawTranslator(true, () => _Feed.ApplyConfiguration(_Receiver, _Configuration) );
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Applies_Correct_Settings_To_Network_Connector()
+        public void ApplyConfiguration_Applies_Correct_Settings_To_Network_Connector()
         {
             Do_Check_Correct_Network_Settings_Applied_To_Connector(true, () => _Feed.ApplyConfiguration(_Receiver, _Configuration) );
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Creates_PolarPlotter_If_ReceiverLocation_Is_Added()
+        public void ApplyConfiguration_Creates_PolarPlotter_If_ReceiverLocation_Is_Added()
         {
             _Configuration.ReceiverLocations[0].UniqueId = 1000;
             _Feed.Initialise(_Receiver, _Configuration);
@@ -1060,7 +797,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Loads_PolarPlotter_If_ReceiverLocation_Is_Added()
+        public void ApplyConfiguration_Loads_PolarPlotter_If_ReceiverLocation_Is_Added()
         {
             _Configuration.ReceiverLocations[0].UniqueId = 1000;
             _Feed.Initialise(_Receiver, _Configuration);
@@ -1072,7 +809,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Loads_PolarPlotter_If_Name_Is_Changed()
+        public void ApplyConfiguration_Loads_PolarPlotter_If_Name_Is_Changed()
         {
             _Receiver.Name = "OldName";
             _Feed.Initialise(_Receiver, _Configuration);
@@ -1084,7 +821,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Reinitialises_PolarPlotter_If_ReceiverLocation_Latitude_Is_Changed()
+        public void ApplyConfiguration_Reinitialises_PolarPlotter_If_ReceiverLocation_Latitude_Is_Changed()
         {
             _Feed.Initialise(_Receiver, _Configuration);
 
@@ -1099,7 +836,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Does_Not_Load_PolarPlotter_If_ReceiverLocation_Latitude_Is_Changed()
+        public void ApplyConfiguration_Does_Not_Load_PolarPlotter_If_ReceiverLocation_Latitude_Is_Changed()
         {
             _Feed.Initialise(_Receiver, _Configuration);
             TestUtilities.CreateMockImplementation<IPolarPlotter>();
@@ -1110,7 +847,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Reinitialises_PolarPlotter_If_ReceiverLocation_Longitude_Is_Changed()
+        public void ApplyConfiguration_Reinitialises_PolarPlotter_If_ReceiverLocation_Longitude_Is_Changed()
         {
             _Feed.Initialise(_Receiver, _Configuration);
 
@@ -1125,7 +862,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Leaves_PolarPlotter_Alone_If_Nothing_Changed()
+        public void ApplyConfiguration_Leaves_PolarPlotter_Alone_If_Nothing_Changed()
         {
             _Feed.Initialise(_Receiver, _Configuration);
 
@@ -1138,7 +875,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Nulls_PolarPlotter_If_ReceiverLocation_Goes_Away()
+        public void ApplyConfiguration_Nulls_PolarPlotter_If_ReceiverLocation_Goes_Away()
         {
             _Feed.Initialise(_Receiver, _Configuration);
 
@@ -1149,7 +886,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Only_Creates_New_BytesExtractor_When_DataSource_Changes()
+        public void ApplyConfiguration_Only_Creates_New_BytesExtractor_When_DataSource_Changes()
         {
             foreach(var initialDataSource in DataSource.AllInternalDataSources) {
                 foreach(var newDataSource in DataSource.AllInternalDataSources) {
@@ -1176,7 +913,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Resets_Statistics_When_DataSource_Changes()
+        public void ApplyConfiguration_Resets_Statistics_When_DataSource_Changes()
         {
             foreach(var initialDataSource in DataSource.AllInternalDataSources) {
                 foreach(var newDataSource in DataSource.AllInternalDataSources) {
@@ -1201,7 +938,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Only_Creates_New_Provider_When_Connection_Properties_Change()
+        public void ApplyConfiguration_Only_Creates_New_Provider_When_Connection_Properties_Change()
         {
             foreach(ConnectionType initialConnectionType in Enum.GetValues(typeof(ConnectionType))) {
                 foreach(ConnectionType newConnectionType in Enum.GetValues(typeof(ConnectionType))) {
@@ -1232,7 +969,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Resets_Statistics_When_Connection_Properties_Change()
+        public void ApplyConfiguration_Resets_Statistics_When_Connection_Properties_Change()
         {
             foreach(ConnectionType initialConnectionType in Enum.GetValues(typeof(ConnectionType))) {
                 foreach(ConnectionType newConnectionType in Enum.GetValues(typeof(ConnectionType))) {
@@ -1261,7 +998,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Only_Creates_New_RawMessageTranslator_When_ConnectionType_Or_DataSource_Changes()
+        public void ApplyConfiguration_Only_Creates_New_RawMessageTranslator_When_ConnectionType_Or_DataSource_Changes()
         {
             var connectionTypes = new ConnectionType[] { ConnectionType.COM, ConnectionType.TCP };
             var dataSources = new string[] { DataSource.Sbs3, DataSource.Beast };
@@ -1300,7 +1037,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Does_Not_Call_ChangeSource_If_DataSource_Or_ConnectionType_Has_Not_Changed()
+        public void ApplyConfiguration_Does_Not_Call_ChangeSource_If_DataSource_Or_ConnectionType_Has_Not_Changed()
         {
             _Feed.Initialise(_Receiver, _Configuration);
             _Listener.Verify(r => r.ChangeSource(It.IsAny<IConnector>(), It.IsAny<IMessageBytesExtractor>(), It.IsAny<IRawMessageTranslator>()), Times.Once());
@@ -1322,7 +1059,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Applies_Passphrase_If_Supplied()
+        public void ApplyConfiguration_Applies_Passphrase_If_Supplied()
         {
             _Receiver.Passphrase = null;
             _Feed.Initialise(_Receiver, _Configuration);
@@ -1335,7 +1072,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Removes_Passphrase_If_Not_Supplied()
+        public void ApplyConfiguration_Removes_Passphrase_If_Not_Supplied()
         {
             _Receiver.Passphrase = "A";
             _Feed.Initialise(_Receiver, _Configuration);
@@ -1347,7 +1084,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Starts_Or_Stops_AircraftList_As_Appropriate()
+        public void ApplyConfiguration_Starts_Or_Stops_AircraftList_As_Appropriate()
         {
             foreach(ReceiverUsage initialReceiverUsage in Enum.GetValues(typeof(ReceiverUsage))) {
                 foreach(ReceiverUsage newReceiverUsage in Enum.GetValues(typeof(ReceiverUsage))) {
@@ -1374,7 +1111,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_ApplyConfiguration_Sets_IsVisible_As_Appropriate()
+        public void ApplyConfiguration_Sets_IsVisible_As_Appropriate()
         {
             _Feed.Initialise(_Receiver, _Configuration);
 
@@ -1389,127 +1126,9 @@ namespace Test.VirtualRadar.Library.Listener
         }
         #endregion
 
-        #region ApplyConfiguration - MergedFeed
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Feed_ApplyConfiguration_Throws_If_Called_Before_Initialise_For_MergedFeed()
-        {
-            _Feed.ApplyConfiguration(_MergedFeed, _MergedFeedReceivers);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Feed_ApplyConfiguration_Throws_If_Passed_Null_MergedFeed()
-        {
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-            _Feed.ApplyConfiguration((MergedFeed)null, _MergedFeedReceivers);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Feed_ApplyConfiguration_Throws_If_Passed_Null_ReceiverPathways()
-        {
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-            _Feed.ApplyConfiguration(_MergedFeed, null);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Feed_ApplyConfiguration_Throws_If_Passed_MergedFeed_With_Different_Unique_ID()
-        {
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-            ++_MergedFeed.UniqueId;
-            _Feed.ApplyConfiguration(_MergedFeed, _MergedFeedReceivers);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Feed_ApplyConfiguration_Throws_If_Initialised_With_MergedFeed_But_Updated_With_Receiver()
-        {
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-            _Receiver.UniqueId = _MergedFeed.UniqueId;
-            _Feed.ApplyConfiguration(_Receiver, _Configuration);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Feed_ApplyConfiguration_Throws_If_Initialised_With_Receiver_But_Updated_With_MergedFeed()
-        {
-            _Feed.Initialise(_Receiver, _Configuration);
-            _MergedFeed.UniqueId = _Receiver.UniqueId;
-            _Feed.ApplyConfiguration(_MergedFeed, _MergedFeedReceivers);
-        }
-
-        [TestMethod]
-        public void Feed_ApplyConfiguration_Picks_Up_Name_Change_For_MergedFeed()
-        {
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-            _MergedFeed.Name = "My New Name";
-            _Feed.ApplyConfiguration(_MergedFeed, _MergedFeedReceivers);
-
-            Assert.AreEqual("My New Name", _Feed.Name);
-        }
-
-        [TestMethod]
-        public void Feed_ApplyConfiguration_Calls_SetListeners()
-        {
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-            _SetMergedFeedListeners.Clear();
-            _Feed.ApplyConfiguration(_MergedFeed, _MergedFeedReceivers);
-
-            Assert.AreEqual(2, _SetMergedFeedListeners.Count);
-            Assert.IsTrue(_SetMergedFeedListeners.Any(r => Object.ReferenceEquals(r.Listener, _Listeners[0].Object)));
-            Assert.IsTrue(_SetMergedFeedListeners.Any(r => Object.ReferenceEquals(r.Listener, _Listeners[1].Object)));
-        }
-
-        [TestMethod]
-        public void Feed_ApplyConfiguration_Sets_IcaoTimeout()
-        {
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-            _SetMergedFeedListeners.Clear();
-
-            _MergedFeed.IcaoTimeout = 9876;
-            _Feed.ApplyConfiguration(_MergedFeed, _MergedFeedReceivers);
-
-            Assert.AreEqual(9876, _MergedFeedListener.Object.IcaoTimeout);
-        }
-
-        [TestMethod]
-        public void Feed_ApplyConfiguration_Sets_IgnoreAircraftWithNoPosition()
-        {
-            foreach(var ignoreFlag in new bool[] { true, false }) {
-                TestCleanup();
-                TestInitialise();
-
-                _MergedFeed.IgnoreAircraftWithNoPosition = !ignoreFlag;
-                _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-
-                _MergedFeed.IgnoreAircraftWithNoPosition = ignoreFlag;
-                _Feed.ApplyConfiguration(_MergedFeed, _MergedFeedReceivers);
-
-                Assert.AreEqual(ignoreFlag, _MergedFeedListener.Object.IgnoreAircraftWithNoPosition);
-            }
-        }
-
-        [TestMethod]
-        public void Feed_ApplyConfiguration_Sets_IsVisible_On_MergedFeeds_As_Appropriate()
-        {
-            _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-
-            foreach(ReceiverUsage receiverUsage in Enum.GetValues(typeof(ReceiverUsage))) {
-                _MergedFeed.ReceiverUsage = receiverUsage;
-
-                _Feed.ApplyConfiguration(_MergedFeed, _MergedFeedReceivers);
-
-                var expected = receiverUsage == ReceiverUsage.Normal;
-                Assert.AreEqual(expected, _Feed.IsVisible, receiverUsage.ToString());
-            }
-        }
-        #endregion
-
         #region Dispose
         [TestMethod]
-        public void Feed_Dispose_Disposes_Of_AircraftList_First()
+        public void Dispose_Disposes_Of_AircraftList_First()
         {
             _Feed.Initialise(_Receiver, _Configuration);
             _AircraftList.Setup(r => r.Dispose()).Callback(() => {
@@ -1521,7 +1140,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Dispose_Disposes_Of_Listener()
+        public void Dispose_Disposes_Of_Listener()
         {
             _Feed.Initialise(_Receiver, _Configuration);
             _Feed.Dispose();
@@ -1529,7 +1148,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Dispose_Does_Not_Dispose_Of_BaseStationDatabase()
+        public void Dispose_Does_Not_Dispose_Of_BaseStationDatabase()
         {
             _Feed.Initialise(_Receiver, _Configuration);
             _Feed.Dispose();
@@ -1537,7 +1156,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Dispose_Unhooks_Listener_ExceptionCaught()
+        public void Dispose_Unhooks_Listener_ExceptionCaught()
         {
             _Feed.ExceptionCaught += _ExceptionCaughtRecorder.Handler;
 
@@ -1550,7 +1169,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Dispose_Unhooks_AircraftList_ExceptionCaught()
+        public void Dispose_Unhooks_AircraftList_ExceptionCaught()
         {
             _Feed.ExceptionCaught += _ExceptionCaughtRecorder.Handler;
 
@@ -1563,13 +1182,13 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Dispose_Can_Be_Called_Before_Initialise()
+        public void Dispose_Can_Be_Called_Before_Initialise()
         {
             _Feed.Dispose();
         }
 
         [TestMethod]
-        public void Feed_Dispose_Resets_Listener_And_AircraftList_Properties()
+        public void Dispose_Resets_Listener_And_AircraftList_Properties()
         {
             _Feed.Initialise(_Receiver, _Configuration);
 
@@ -1580,7 +1199,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void Feed_Dispose_Can_Be_Called_Twice()
+        public void Dispose_Can_Be_Called_Twice()
         {
             _Feed.Dispose();
             _Feed.Dispose();
@@ -1588,7 +1207,7 @@ namespace Test.VirtualRadar.Library.Listener
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Feed_Dispose_Does_Not_Reset_Initialise_DoubleCall_Guard()
+        public void Dispose_Does_Not_Reset_Initialise_DoubleCall_Guard()
         {
             _Feed.Initialise(_Receiver, _Configuration);
             _Feed.Dispose();

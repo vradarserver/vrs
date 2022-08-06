@@ -192,7 +192,7 @@ namespace VirtualRadar.Library.Listener
 
         private void CreateFeedForReceiver(Receiver receiver, Configuration configuration, List<IFeed> feeds)
         {
-            var feed = Factory.Resolve<IFeed>();
+            var feed = Factory.Resolve<IReceiverFeed>();
             feed.Initialise(receiver, configuration);
             AttachFeed(feed, feeds);
             feed.Listener.Connect();
@@ -201,7 +201,7 @@ namespace VirtualRadar.Library.Listener
         private void CreateFeedForMergedFeed(MergedFeed mergedFeed, IEnumerable<IFeed> allReceiverPathways, List<IFeed> feeds)
         {
             var mergeFeeds = allReceiverPathways.Where(r => mergedFeed.ReceiverIds.Contains(r.UniqueId)).ToArray();
-            var feed = Factory.Resolve<IFeed>();
+            var feed = Factory.Resolve<IMergedFeedFeed>();
             feed.Initialise(mergedFeed, mergeFeeds);
             AttachFeed(feed, feeds);
         }
@@ -246,11 +246,13 @@ namespace VirtualRadar.Library.Listener
                     if(mergedFeedConfig != null && !mergedFeedConfig.Enabled) mergedFeedConfig = null;
 
                     if(receiverConfig != null) {
-                        if(pass == 0) feed.ApplyConfiguration(receiverConfig, configuration);
+                        if(pass == 0 && feed is IReceiverFeed receiverFeed) {
+                            receiverFeed.ApplyConfiguration(receiverConfig, configuration);
+                        }
                     } else if(mergedFeedConfig != null) {
-                        if(pass == 1) {
+                        if(pass == 1 && feed is IMergedFeedFeed mergedFeedFeed) {
                             var mergeFeeds = justReceiverFeeds.Where(r => mergedFeedConfig.ReceiverIds.Contains(r.UniqueId)).ToList();
-                            feed.ApplyConfiguration(mergedFeedConfig, mergeFeeds);
+                            mergedFeedFeed.ApplyConfiguration(mergedFeedConfig, mergeFeeds);
                         }
                     } else if(pass == 0) {
                         feed.ExceptionCaught -= Feed_ExceptionCaught;

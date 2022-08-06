@@ -169,10 +169,12 @@
     <Compile Include="Listener\AircraftListJsonReceiverProvider.cs" />
     <Compile Include="Listener\JsonMessageBytesExtractor.cs" />
     <Compile Include="Listener\MergedFeedComponentListener.cs" />
+    <Compile Include="Listener\MergedFeedFeed.cs" />
     <Compile Include="Listener\PlaneFinderMessageBytesExtractor.cs" />
     <Compile Include="Listener\PlaneFinderReceiverProvider.cs" />
     <Compile Include="Listener\Port30003ReceiverProvider.cs" />
     <Compile Include="Listener\CompressedReceiverProvider.cs" />
+    <Compile Include="Listener\ReceiverFeed.cs" />
     <Compile Include="Listener\ReceiverFormatManager.cs" />
     <Compile Include="Listener\Sbs3ReceiverProvider.cs" />
     <Compile Include="MonoShutdownSignalHandler.cs" />

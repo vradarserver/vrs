@@ -113,6 +113,7 @@
     <Compile Include="ConnectionLoggerTests.cs" />
     <Compile Include="DirectoryCacheTests.cs" />
     <Compile Include="Listener\CompressedMessageBytesExtractorTests.cs" />
+    <Compile Include="Listener\RecevierFeedTests.cs" />
     <Compile Include="Listener\ListenerTests.cs" />
     <Compile Include="Listener\MergedFeedComponentListenerTests.cs" />
     <Compile Include="Listener\MergedFeedListenerTests.cs" />
@@ -137,7 +138,7 @@
     <Compile Include="Network\RebroadcastServerManagerTests.cs" />
     <Compile Include="Network\RebroadcastServerTests.cs" />
     <Compile Include="Listener\FeedManagerTests.cs" />
-    <Compile Include="Listener\FeedTests.cs" />
+    <Compile Include="Listener\MergedFeedFeedTests.cs" />
     <Compile Include="RuntimeEnvironmentTests.cs" />
     <Compile Include="Settings\ConfigurationListenerTests.cs" />
     <Compile Include="Settings\ConfigurationStorageTests.cs" />

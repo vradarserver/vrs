@@ -31,7 +31,8 @@ namespace Test.VirtualRadar.Library.Listener
 
         private IClassFactory _SnapshotFactory;
         private IFeedManager _Manager;
-        private List<Mock<IFeed>> _CreatedFeeds;
+        private List<Mock<IReceiverFeed>> _CreatedReceiverFeeds;
+        private List<Mock<IMergedFeedFeed>> _CreatedMergedFeedFeeds;
         private List<Mock<IListener>> _CreatedListeners;
         private Dictionary<MergedFeed, List<IFeed>> _MergedFeedFeeds;
         private Configuration _Configuration;
@@ -67,10 +68,12 @@ namespace Test.VirtualRadar.Library.Listener
             _ConfigurationStorage.Setup(r => r.Load()).Returns(_Configuration);
 
             _CreatedListeners = new List<Mock<IListener>>();
-            _CreatedFeeds = new List<Mock<IFeed>>();
+            _CreatedReceiverFeeds = new List<Mock<IReceiverFeed>>();
+            _CreatedMergedFeedFeeds = new List<Mock<IMergedFeedFeed>>();
             _MergedFeedFeeds = new Dictionary<MergedFeed,List<IFeed>>();
-            Factory.Register<IFeed>(() => {
-                var feed = TestUtilities.CreateMockInstance<IFeed>();
+
+            Factory.Register<IReceiverFeed>(() => {
+                var feed = TestUtilities.CreateMockInstance<IReceiverFeed>();
                 var listener = TestUtilities.CreateMockInstance<IListener>();
                 _CreatedListeners.Add(listener);
 
@@ -80,6 +83,15 @@ namespace Test.VirtualRadar.Library.Listener
                     feed.Setup(i => i.Listener).Returns(listener.Object);
                     feed.Setup(i => i.IsVisible).Returns(rcvr.ReceiverUsage == ReceiverUsage.Normal);
                 });
+
+                _CreatedReceiverFeeds.Add(feed);
+                return feed.Object;
+            });
+
+            Factory.Register<IMergedFeedFeed>(() => {
+                var feed = TestUtilities.CreateMockInstance<IMergedFeedFeed>();
+                var listener = TestUtilities.CreateMockInstance<IListener>();
+                _CreatedListeners.Add(listener);
 
                 feed.Setup(r => r.Initialise(It.IsAny<MergedFeed>(), It.IsAny<IEnumerable<IFeed>>())).Callback((MergedFeed mfeed, IEnumerable<IFeed> feeds) => {
                     feed.Setup(i => i.UniqueId).Returns(mfeed.UniqueId);
@@ -96,7 +108,7 @@ namespace Test.VirtualRadar.Library.Listener
                     else                                    _MergedFeedFeeds.Add(mfeed, feeds.ToList());
                 });
 
-                _CreatedFeeds.Add(feed);
+                _CreatedMergedFeedFeeds.Add(feed);
                 return feed.Object;
             });
 
@@ -150,9 +162,10 @@ namespace Test.VirtualRadar.Library.Listener
             OnlyUseTwoReceiversAndNoMergedFeed();
             _Manager.Initialise();
 
-            Assert.AreEqual(2, _CreatedFeeds.Count);
-            _CreatedFeeds[0].Verify(r => r.Initialise(_Receiver1, _Configuration), Times.Once());
-            _CreatedFeeds[1].Verify(r => r.Initialise(_Receiver2, _Configuration), Times.Once());
+            Assert.AreEqual(2, _CreatedReceiverFeeds.Count);
+            Assert.AreEqual(0, _CreatedMergedFeedFeeds.Count);
+            _CreatedReceiverFeeds[0].Verify(r => r.Initialise(_Receiver1, _Configuration), Times.Once());
+            _CreatedReceiverFeeds[1].Verify(r => r.Initialise(_Receiver2, _Configuration), Times.Once());
         }
 
         [TestMethod]
@@ -160,17 +173,18 @@ namespace Test.VirtualRadar.Library.Listener
         {
             _Manager.Initialise();
 
-            Assert.AreEqual(6, _CreatedFeeds.Count);
-            _CreatedFeeds[4].Verify(r => r.Initialise(_MergedFeed1, It.IsAny<IEnumerable<IFeed>>()), Times.Once());
-            _CreatedFeeds[5].Verify(r => r.Initialise(_MergedFeed2, It.IsAny<IEnumerable<IFeed>>()), Times.Once());
+            Assert.AreEqual(4, _CreatedReceiverFeeds.Count);
+            Assert.AreEqual(2, _CreatedMergedFeedFeeds.Count);
+            _CreatedMergedFeedFeeds[0].Verify(r => r.Initialise(_MergedFeed1, It.IsAny<IEnumerable<IFeed>>()), Times.Once());
+            _CreatedMergedFeedFeeds[1].Verify(r => r.Initialise(_MergedFeed2, It.IsAny<IEnumerable<IFeed>>()), Times.Once());
 
             Assert.AreEqual(2, _MergedFeedFeeds[_MergedFeed1].Count);
-            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed1].Contains(_CreatedFeeds[0].Object));
-            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed1].Contains(_CreatedFeeds[1].Object));
+            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed1].Contains(_CreatedReceiverFeeds[0].Object));
+            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed1].Contains(_CreatedReceiverFeeds[1].Object));
 
             Assert.AreEqual(2, _MergedFeedFeeds[_MergedFeed2].Count);
-            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed2].Contains(_CreatedFeeds[2].Object));
-            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed2].Contains(_CreatedFeeds[3].Object));
+            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed2].Contains(_CreatedReceiverFeeds[2].Object));
+            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed2].Contains(_CreatedReceiverFeeds[3].Object));
         }
 
         [TestMethod]
@@ -180,8 +194,8 @@ namespace Test.VirtualRadar.Library.Listener
             _Receiver1.Enabled = false;
             _Manager.Initialise();
 
-            Assert.AreEqual(1, _CreatedFeeds.Count);
-            _CreatedFeeds[0].Verify(r => r.Initialise(_Receiver2, _Configuration), Times.Once());
+            Assert.AreEqual(1, _CreatedReceiverFeeds.Count);
+            _CreatedReceiverFeeds[0].Verify(r => r.Initialise(_Receiver2, _Configuration), Times.Once());
         }
 
         [TestMethod]
@@ -190,8 +204,8 @@ namespace Test.VirtualRadar.Library.Listener
             _MergedFeed1.Enabled = false;
             _Manager.Initialise();
 
-            Assert.AreEqual(5, _CreatedFeeds.Count);
-            _CreatedFeeds[4].Verify(r => r.Initialise(_MergedFeed2, It.IsAny<IEnumerable<IFeed>>()), Times.Once());
+            Assert.AreEqual(1, _CreatedMergedFeedFeeds.Count);
+            _CreatedMergedFeedFeeds[0].Verify(r => r.Initialise(_MergedFeed2, It.IsAny<IEnumerable<IFeed>>()), Times.Once());
         }
 
         [TestMethod]
@@ -200,12 +214,12 @@ namespace Test.VirtualRadar.Library.Listener
             _Manager.Initialise();
 
             Assert.AreEqual(6, _Manager.Feeds.Length);
-            Assert.AreSame(_CreatedFeeds[0].Object, _Manager.Feeds[0]);
-            Assert.AreSame(_CreatedFeeds[1].Object, _Manager.Feeds[1]);
-            Assert.AreSame(_CreatedFeeds[2].Object, _Manager.Feeds[2]);
-            Assert.AreSame(_CreatedFeeds[3].Object, _Manager.Feeds[3]);
-            Assert.AreSame(_CreatedFeeds[4].Object, _Manager.Feeds[4]);
-            Assert.AreSame(_CreatedFeeds[5].Object, _Manager.Feeds[5]);
+            Assert.AreSame(_CreatedReceiverFeeds[0].Object, _Manager.Feeds[0]);
+            Assert.AreSame(_CreatedReceiverFeeds[1].Object, _Manager.Feeds[1]);
+            Assert.AreSame(_CreatedReceiverFeeds[2].Object, _Manager.Feeds[2]);
+            Assert.AreSame(_CreatedReceiverFeeds[3].Object, _Manager.Feeds[3]);
+            Assert.AreSame(_CreatedMergedFeedFeeds[0].Object, _Manager.Feeds[4]);
+            Assert.AreSame(_CreatedMergedFeedFeeds[1].Object, _Manager.Feeds[5]);
         }
 
         [TestMethod]
@@ -229,13 +243,13 @@ namespace Test.VirtualRadar.Library.Listener
             var exception = new InvalidOperationException();
 
             // Pathway created from receiver
-            _CreatedFeeds[0].Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(exception));
+            _CreatedReceiverFeeds[0].Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(exception));
             Assert.AreEqual(1, _ExceptionCaughtRecorder.CallCount);
             Assert.AreSame(_Manager, _ExceptionCaughtRecorder.Sender);
             Assert.AreSame(exception, _ExceptionCaughtRecorder.Args.Value);
 
             // Pathway created from merged feed
-            _CreatedFeeds[4].Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(exception));
+            _CreatedMergedFeedFeeds[0].Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(exception));
             Assert.AreEqual(2, _ExceptionCaughtRecorder.CallCount);
             Assert.AreSame(_Manager, _ExceptionCaughtRecorder.Sender);
             Assert.AreSame(exception, _ExceptionCaughtRecorder.Args.Value);
@@ -277,8 +291,8 @@ namespace Test.VirtualRadar.Library.Listener
 
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
-            _CreatedFeeds[0].Verify(r => r.ApplyConfiguration(_Receiver1, _Configuration), Times.Once());
-            _CreatedFeeds[1].Verify(r => r.ApplyConfiguration(_Receiver2, _Configuration), Times.Once());
+            _CreatedReceiverFeeds[0].Verify(r => r.ApplyConfiguration(_Receiver1, _Configuration), Times.Once());
+            _CreatedReceiverFeeds[1].Verify(r => r.ApplyConfiguration(_Receiver2, _Configuration), Times.Once());
         }
 
         [TestMethod]
@@ -289,16 +303,16 @@ namespace Test.VirtualRadar.Library.Listener
 
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
-            _CreatedFeeds[4].Verify(r => r.ApplyConfiguration(_MergedFeed1, It.IsAny<IEnumerable<IFeed>>()), Times.Once());
-            _CreatedFeeds[5].Verify(r => r.ApplyConfiguration(_MergedFeed2, It.IsAny<IEnumerable<IFeed>>()), Times.Once());
+            _CreatedMergedFeedFeeds[0].Verify(r => r.ApplyConfiguration(_MergedFeed1, It.IsAny<IEnumerable<IFeed>>()), Times.Once());
+            _CreatedMergedFeedFeeds[1].Verify(r => r.ApplyConfiguration(_MergedFeed2, It.IsAny<IEnumerable<IFeed>>()), Times.Once());
 
             Assert.AreEqual(2, _MergedFeedFeeds[_MergedFeed1].Count);
-            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed1].Contains(_CreatedFeeds[0].Object));
-            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed1].Contains(_CreatedFeeds[1].Object));
+            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed1].Contains(_CreatedReceiverFeeds[0].Object));
+            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed1].Contains(_CreatedReceiverFeeds[1].Object));
 
             Assert.AreEqual(2, _MergedFeedFeeds[_MergedFeed2].Count);
-            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed2].Contains(_CreatedFeeds[2].Object));
-            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed2].Contains(_CreatedFeeds[3].Object));
+            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed2].Contains(_CreatedReceiverFeeds[2].Object));
+            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed2].Contains(_CreatedReceiverFeeds[3].Object));
         }
 
         [TestMethod]
@@ -310,7 +324,7 @@ namespace Test.VirtualRadar.Library.Listener
 
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
-            _CreatedFeeds[0].Verify(r => r.ApplyConfiguration(_Receiver1, _Configuration), Times.Once());
+            _CreatedReceiverFeeds[0].Verify(r => r.ApplyConfiguration(_Receiver1, _Configuration), Times.Once());
         }
 
         [TestMethod]
@@ -321,7 +335,7 @@ namespace Test.VirtualRadar.Library.Listener
 
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
-            _CreatedFeeds[4].Verify(r => r.ApplyConfiguration(_MergedFeed1, It.IsAny<IEnumerable<IFeed>>()), Times.Once());
+            _CreatedMergedFeedFeeds[0].Verify(r => r.ApplyConfiguration(_MergedFeed1, It.IsAny<IEnumerable<IFeed>>()), Times.Once());
         }
 
         [TestMethod]
@@ -333,8 +347,8 @@ namespace Test.VirtualRadar.Library.Listener
 
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
-            _CreatedFeeds[0].Verify(r => r.Dispose(), Times.Once());
-            _CreatedFeeds[4].Verify(r => r.Dispose(), Times.Once());
+            _CreatedReceiverFeeds[0].Verify(r => r.Dispose(), Times.Once());
+            _CreatedMergedFeedFeeds[0].Verify(r => r.Dispose(), Times.Once());
         }
 
         [TestMethod]
@@ -346,8 +360,8 @@ namespace Test.VirtualRadar.Library.Listener
 
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
-            _CreatedFeeds[0].Verify(r => r.Dispose(), Times.Never());
-            _CreatedFeeds[4].Verify(r => r.Dispose(), Times.Never());
+            _CreatedReceiverFeeds[0].Verify(r => r.Dispose(), Times.Never());
+            _CreatedMergedFeedFeeds[0].Verify(r => r.Dispose(), Times.Never());
         }
 
         [TestMethod]
@@ -360,10 +374,10 @@ namespace Test.VirtualRadar.Library.Listener
 
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
-            _CreatedFeeds[0].Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(new Exception()));
+            _CreatedReceiverFeeds[0].Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(new Exception()));
             Assert.AreEqual(0, _ExceptionCaughtRecorder.CallCount);
 
-            _CreatedFeeds[4].Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(new Exception()));
+            _CreatedMergedFeedFeeds[0].Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(new Exception()));
             Assert.AreEqual(0, _ExceptionCaughtRecorder.CallCount);
         }
 
@@ -376,8 +390,8 @@ namespace Test.VirtualRadar.Library.Listener
 
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
-            _CreatedFeeds[0].Verify(r => r.Dispose(), Times.Once());
-            _CreatedFeeds[4].Verify(r => r.Dispose(), Times.Once());
+            _CreatedReceiverFeeds[0].Verify(r => r.Dispose(), Times.Once());
+            _CreatedMergedFeedFeeds[0].Verify(r => r.Dispose(), Times.Once());
         }
 
         [TestMethod]
@@ -390,8 +404,8 @@ namespace Test.VirtualRadar.Library.Listener
 
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
-            _CreatedFeeds[1].Verify(r => r.Initialise(_Receiver2, _Configuration), Times.Once());
-            _CreatedFeeds[1].Verify(r => r.ApplyConfiguration(_Receiver2, _Configuration), Times.Never());
+            _CreatedReceiverFeeds[1].Verify(r => r.Initialise(_Receiver2, _Configuration), Times.Once());
+            _CreatedReceiverFeeds[1].Verify(r => r.ApplyConfiguration(_Receiver2, _Configuration), Times.Never());
         }
 
         [TestMethod]
@@ -437,12 +451,12 @@ namespace Test.VirtualRadar.Library.Listener
             _MergedFeedFeeds.Clear();
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
-            _CreatedFeeds[5].Verify(r => r.Initialise(_MergedFeed2, It.IsAny<IEnumerable<IFeed>>()), Times.Once());
-            _CreatedFeeds[5].Verify(r => r.ApplyConfiguration(_MergedFeed2, It.IsAny<IEnumerable<IFeed>>()), Times.Never());
+            _CreatedMergedFeedFeeds[1].Verify(r => r.Initialise(_MergedFeed2, It.IsAny<IEnumerable<IFeed>>()), Times.Once());
+            _CreatedMergedFeedFeeds[1].Verify(r => r.ApplyConfiguration(_MergedFeed2, It.IsAny<IEnumerable<IFeed>>()), Times.Never());
 
             Assert.AreEqual(2, _MergedFeedFeeds[_MergedFeed2].Count);
-            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed2].Contains(_CreatedFeeds[2].Object));
-            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed2].Contains(_CreatedFeeds[3].Object));
+            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed2].Contains(_CreatedReceiverFeeds[2].Object));
+            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed2].Contains(_CreatedReceiverFeeds[3].Object));
         }
 
         [TestMethod]
@@ -473,8 +487,8 @@ namespace Test.VirtualRadar.Library.Listener
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
             Assert.AreEqual(2, _MergedFeedFeeds[_MergedFeed2].Count);
-            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed2].Contains(_CreatedFeeds[2].Object));
-            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed2].Contains(_CreatedFeeds[3].Object));
+            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed2].Contains(_CreatedReceiverFeeds[2].Object));
+            Assert.IsTrue(_MergedFeedFeeds[_MergedFeed2].Contains(_CreatedReceiverFeeds[3].Object));
         }
 
         [TestMethod]
@@ -489,7 +503,7 @@ namespace Test.VirtualRadar.Library.Listener
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
             Assert.AreEqual(1, _MergedFeedFeeds[_MergedFeed2].Count);
-            Assert.AreSame(_CreatedFeeds[2].Object, _MergedFeedFeeds[_MergedFeed2][0]);
+            Assert.AreSame(_CreatedReceiverFeeds[2].Object, _MergedFeedFeeds[_MergedFeed2][0]);
         }
 
         [TestMethod]
@@ -502,7 +516,7 @@ namespace Test.VirtualRadar.Library.Listener
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
             var exception = new InvalidOperationException();
-            _CreatedFeeds[1].Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(exception));
+            _CreatedReceiverFeeds[1].Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(exception));
 
             Assert.AreEqual(1, _ExceptionCaughtRecorder.CallCount);
             Assert.AreSame(_Manager, _ExceptionCaughtRecorder.Sender);
@@ -519,7 +533,7 @@ namespace Test.VirtualRadar.Library.Listener
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
             var exception = new InvalidOperationException();
-            _CreatedFeeds[5].Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(exception));
+            _CreatedMergedFeedFeeds[1].Raise(r => r.ExceptionCaught += null, new EventArgs<Exception>(exception));
 
             Assert.AreEqual(1, _ExceptionCaughtRecorder.CallCount);
             Assert.AreSame(_Manager, _ExceptionCaughtRecorder.Sender);
@@ -538,9 +552,13 @@ namespace Test.VirtualRadar.Library.Listener
             _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
 
             Assert.AreEqual(6, _Manager.Feeds.Length);
-            for(var i = 0;i < 8;++i) {
-                var stillExists = i != 0 /* Receiver1 */ && i != 4 /* MergedFeed1 */;
-                Assert.AreEqual(stillExists, _Manager.Feeds.Contains(_CreatedFeeds[i].Object));
+            for(var i = 0;i < 4;++i) {
+                var stillExists = i != 0;
+                Assert.AreEqual(stillExists, _Manager.Feeds.Contains(_CreatedReceiverFeeds[i].Object));
+            }
+            for(var i = 0;i < 2;++i) {
+                var stillExists = i != 0;
+                Assert.AreEqual(stillExists, _Manager.Feeds.Contains(_CreatedMergedFeedFeeds[i].Object));
             }
         }
 
@@ -577,8 +595,8 @@ namespace Test.VirtualRadar.Library.Listener
 
             _Manager.Dispose();
 
-            _CreatedFeeds[0].Verify(r => r.Dispose(), Times.Once());
-            _CreatedFeeds[1].Verify(r => r.Dispose(), Times.Once());
+            _CreatedReceiverFeeds[0].Verify(r => r.Dispose(), Times.Once());
+            _CreatedReceiverFeeds[1].Verify(r => r.Dispose(), Times.Once());
         }
 
         [TestMethod]
@@ -589,8 +607,8 @@ namespace Test.VirtualRadar.Library.Listener
 
             _Manager.Dispose();
             var args = new EventArgs<Exception>(new Exception());
-            _CreatedFeeds[0].Raise(r => r.ExceptionCaught += null, args);
-            _CreatedFeeds[1].Raise(r => r.ExceptionCaught += null, args);
+            _CreatedReceiverFeeds[0].Raise(r => r.ExceptionCaught += null, args);
+            _CreatedReceiverFeeds[1].Raise(r => r.ExceptionCaught += null, args);
 
             Assert.AreEqual(0, _ExceptionCaughtRecorder.CallCount);
         }
@@ -646,7 +664,7 @@ namespace Test.VirtualRadar.Library.Listener
             _CreatedListeners[1].Raise(r => r.ConnectionStateChanged += null, EventArgs.Empty);
             Assert.AreEqual(1, _ConnectionStateChangedRecorder.CallCount);
             Assert.AreSame(_Manager, _ConnectionStateChangedRecorder.Sender);
-            Assert.AreSame(_CreatedFeeds[1].Object, _ConnectionStateChangedRecorder.Args.Value);
+            Assert.AreSame(_CreatedReceiverFeeds[1].Object, _ConnectionStateChangedRecorder.Args.Value);
         }
 
         [TestMethod]
@@ -662,7 +680,7 @@ namespace Test.VirtualRadar.Library.Listener
             _CreatedListeners[1].Raise(r => r.ConnectionStateChanged += null, EventArgs.Empty);
             Assert.AreEqual(1, _ConnectionStateChangedRecorder.CallCount);
             Assert.AreSame(_Manager, _ConnectionStateChangedRecorder.Sender);
-            Assert.AreSame(_CreatedFeeds[1].Object, _ConnectionStateChangedRecorder.Args.Value);
+            Assert.AreSame(_CreatedReceiverFeeds[1].Object, _ConnectionStateChangedRecorder.Args.Value);
         }
 
         [TestMethod]
@@ -690,7 +708,7 @@ namespace Test.VirtualRadar.Library.Listener
         public void FeedManager_GetByName_Returns_Feed_If_Passed_Matching_Name()
         {
             _Manager.Initialise();
-            Assert.AreSame(_CreatedFeeds[0].Object, _Manager.GetByName(_Receiver1.Name, false));
+            Assert.AreSame(_CreatedReceiverFeeds[0].Object, _Manager.GetByName(_Receiver1.Name, false));
         }
 
         [TestMethod]
@@ -711,8 +729,8 @@ namespace Test.VirtualRadar.Library.Listener
         public void FeedManager_GetByName_Is_Case_Insensitive()
         {
             _Manager.Initialise();
-            Assert.AreSame(_CreatedFeeds[0].Object, _Manager.GetByName(_Receiver1.Name.ToLowerInvariant(), false));
-            Assert.AreSame(_CreatedFeeds[0].Object, _Manager.GetByName(_Receiver1.Name.ToUpperInvariant(), false));
+            Assert.AreSame(_CreatedReceiverFeeds[0].Object, _Manager.GetByName(_Receiver1.Name.ToLowerInvariant(), false));
+            Assert.AreSame(_CreatedReceiverFeeds[0].Object, _Manager.GetByName(_Receiver1.Name.ToUpperInvariant(), false));
         }
 
         [TestMethod]
@@ -728,7 +746,7 @@ namespace Test.VirtualRadar.Library.Listener
         public void FeedManager_GetByUniqueId_Returns_Pathway_With_Matching_UniqueId()
         {
             _Manager.Initialise();
-            Assert.AreSame(_CreatedFeeds[0].Object, _Manager.GetByUniqueId(_Receiver1.UniqueId, false));
+            Assert.AreSame(_CreatedReceiverFeeds[0].Object, _Manager.GetByUniqueId(_Receiver1.UniqueId, false));
         }
 
         [TestMethod]
