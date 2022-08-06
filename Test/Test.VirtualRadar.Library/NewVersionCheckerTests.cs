@@ -58,7 +58,7 @@ namespace Test.VirtualRadar.Library
             Assert.IsNotNull(_NewVersionChecker.Provider);
             TestUtilities.TestProperty(_NewVersionChecker, "Provider", _NewVersionChecker.Provider, _Provider.Object);
             Assert.IsFalse(_NewVersionChecker.IsNewVersionAvailable);
-            Assert.AreEqual("http://www.virtualradarserver.co.uk", _NewVersionChecker.DownloadUrl, true);
+            Assert.AreEqual("https://www.virtualradarserver.co.uk", _NewVersionChecker.DownloadUrl, true);
         }
 
         [TestMethod]

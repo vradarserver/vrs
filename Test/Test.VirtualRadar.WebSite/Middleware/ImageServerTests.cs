@@ -269,8 +269,8 @@ namespace Test.VirtualRadar.WebSite.Middleware
             var requestImageName = worksheet.String("RequestImageName");
             var stockImagePropertyName = worksheet.String("StockImage");
 
-            var getImageBytesMethod = typeof(Images).GetMethod($"{stockImagePropertyName}", new Type[0]);
-            var expectedImageBytes = (byte[])getImageBytesMethod.Invoke(null, new object[0]);
+            var getImageBytesProperty = typeof(Images).GetProperty(stockImagePropertyName);
+            var expectedImageBytes = (byte[])getImageBytesProperty.GetValue(null);
             Bitmap expectedImage;
             using(var memoryStream = new MemoryStream(expectedImageBytes)) {
                 expectedImage = (Bitmap)Bitmap.FromStream(memoryStream);
@@ -281,7 +281,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
 
                 using(var stream = new MemoryStream(_Environment.ResponseBodyBytes)) {
                     using(var siteImage = (Bitmap)Bitmap.FromStream(stream)) {
-                        AssertImagesAreIdentical(expectedImage, siteImage);
+                        AssertImagesAreIdentical(expectedImage, siteImage, $"Image property is: {stockImagePropertyName}");
                     }
                 }
             } finally {
