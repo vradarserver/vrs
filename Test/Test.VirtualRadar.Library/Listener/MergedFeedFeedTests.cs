@@ -85,23 +85,7 @@ namespace Test.VirtualRadar.Library.Listener
         private Mock<IAutoConfigBaseStationDatabase> _AutoConfigBaseStationDatabase;
         private Configuration _Configuration;
         private Receiver _Receiver;
-        private RawDecodingSettings _RawDecodingSettings;
         private EventRecorder<EventArgs<Exception>> _ExceptionCaughtRecorder;
-
-        private Mock<INetworkConnector> _IPActiveConnector;
-        private Mock<ISerialConnector> _SerialActiveConnector;
-        private Mock<IHttpConnector> _HttpActiveConnector;
-        private Mock<IPassphraseAuthentication> _PassphraseAuthentication;
-        private Mock<IPort30003MessageBytesExtractor> _Port30003Extractor;
-        private Mock<ISbs3MessageBytesExtractor> _Sbs3MessageBytesExtractor;
-        private Mock<IBeastMessageBytesExtractor> _BeastMessageBytesExtractor;
-        private Mock<ICompressedMessageBytesExtractor> _CompressedMessageBytesExtractor;
-        private Mock<IAircraftListJsonMessageBytesExtractor> _AircraftListJsonMessageBytesExtractor;
-        private Mock<IPlaneFinderMessageBytesExtractor> _PlaneFinderMessageBytesExtractor;
-        private Mock<IAirnavXRangeMessageBytesExtractor> _AirnavXRangeMessageBytesExtractor;
-        private Mock<IRawMessageTranslator> _RawMessageTranslator;
-        private Mock<ISavedPolarPlotStorage> _SavedPolarPlotStorage;
-        private SavedPolarPlot _SavedPolarPlot;
 
         private Mock<IStatistics> _Statistics;
 
@@ -113,35 +97,6 @@ namespace Test.VirtualRadar.Library.Listener
         private List<IFeed> _MergedFeedReceivers;
         private List<IMergedFeedComponentListener> _SetMergedFeedListeners;
         private Mock<IPolarPlotter> _PolarPlotter;
-
-        private readonly List<ConnectionProperty> _ConnectionProperties = new List<ConnectionProperty>() {
-            new ConnectionProperty(ConnectionType.TCP, "Address",                   c => c.Receivers[0].Address = "9.8.7.6"),
-            new ConnectionProperty(ConnectionType.TCP, "Port",                      c => c.Receivers[0].Port = 77),
-            new ConnectionProperty(ConnectionType.TCP, "UseKeepAlive",              c => c.Receivers[0].UseKeepAlive = false),
-            new ConnectionProperty(ConnectionType.TCP, "IdleTimeoutMilliseconds",   c => c.Receivers[0].IdleTimeoutMilliseconds = 20000),
-
-            new ConnectionProperty(ConnectionType.COM, "ComPort",                   c => c.Receivers[0].ComPort = "COM99"),
-            new ConnectionProperty(ConnectionType.COM, "BaudRate",                  c => c.Receivers[0].BaudRate = 9600),
-            new ConnectionProperty(ConnectionType.COM, "DataBits",                  c => c.Receivers[0].DataBits = 7),
-            new ConnectionProperty(ConnectionType.COM, "StopBits",                  c => c.Receivers[0].StopBits = StopBits.OnePointFive),
-            new ConnectionProperty(ConnectionType.COM, "Parity",                    c => c.Receivers[0].Parity = Parity.Odd),
-            new ConnectionProperty(ConnectionType.COM, "Handshake",                 c => c.Receivers[0].Handshake = Handshake.XOnXOff),
-            new ConnectionProperty(ConnectionType.COM, "StartupText",               c => c.Receivers[0].StartupText = "UP"),
-            new ConnectionProperty(ConnectionType.COM, "ShutdownText",              c => c.Receivers[0].ShutdownText = "DOWN"),
-        };
-
-        private readonly List<SettingsProperty> _RawMessageTranslatorProperties = new List<SettingsProperty>() {
-            new SettingsProperty("AirborneGlobalPositionLimit",         s => s.RawDecodingSettings.AirborneGlobalPositionLimit = 999),
-            new SettingsProperty("FastSurfaceGlobalPositionLimit",      s => s.RawDecodingSettings.FastSurfaceGlobalPositionLimit = 998),
-            new SettingsProperty("SlowSurfaceGlobalPositionLimit",      s => s.RawDecodingSettings.SlowSurfaceGlobalPositionLimit = 997),
-            new SettingsProperty("AcceptableAirborneSpeed",             s => s.RawDecodingSettings.AcceptableAirborneSpeed = 996),
-            new SettingsProperty("AcceptableSurfaceSpeed",              s => s.RawDecodingSettings.AcceptableSurfaceSpeed = 995),
-            new SettingsProperty("AcceptableAirSurfaceTransitionSpeed", s => s.RawDecodingSettings.AcceptableAirSurfaceTransitionSpeed = 994),
-            new SettingsProperty("ReceiverRange",                       s => s.RawDecodingSettings.ReceiverRange = 993),
-            new SettingsProperty("IgnoreMilitaryExtendedSquitter",      s => s.RawDecodingSettings.IgnoreMilitaryExtendedSquitter = true),
-            new SettingsProperty("ReceiverLocation",                    s => s.Receivers[0].ReceiverLocationId = 2),
-            new SettingsProperty("TrackingTimeoutSeconds",              s => s.BaseStationSettings.TrackingTimeoutSeconds = 100),
-        };
 
         private readonly List<ReceiverLocation> _ReceiverLocations = new List<ReceiverLocation>() {
             new ReceiverLocation() { UniqueId = 1, Name = "First", Latitude = 1.1, Longitude = 2.2 },
@@ -155,7 +110,6 @@ namespace Test.VirtualRadar.Library.Listener
 
             _Feed = Factory.Resolve<IMergedFeedFeed>();
             _Receiver = new Receiver() { UniqueId = 1, Name = "A", ReceiverLocationId = 1, IsSatcomFeed = true, };
-            _RawDecodingSettings = new RawDecodingSettings();
 
             _Configuration = new Configuration();
             _Configuration.RawDecodingSettings.AssumeDF18CF1IsIcao = true;
@@ -163,10 +117,6 @@ namespace Test.VirtualRadar.Library.Listener
             _Configuration.Receivers.Add(_Receiver);
             _Configuration.ReceiverLocations.Clear();
             _Configuration.ReceiverLocations.AddRange(_ReceiverLocations);
-
-            _SavedPolarPlot = new SavedPolarPlot();
-            _SavedPolarPlotStorage = TestUtilities.CreateMockSingleton<ISavedPolarPlotStorage>();
-            _SavedPolarPlotStorage.Setup(r => r.Load(It.IsAny<IFeed>())).Returns(_SavedPolarPlot);
 
             _AircraftList = TestUtilities.CreateMockImplementation<IBaseStationAircraftList>();
             _AircraftList.Object.PolarPlotter = null;
@@ -210,8 +160,6 @@ namespace Test.VirtualRadar.Library.Listener
             _FeedManager = FeedHelper.CreateMockFeedManager(_Feeds, _Listeners, useVisibleFeeds, 1, 2);
             _MergedFeedReceivers = FeedHelper.GetFeeds(_Feeds);
             _MergedFeed = new MergedFeed() { UniqueId = 3, Name = "M1", ReceiverIds = { 1, 2 } };
-
-            CreateNewListenerChildObjectInstances();
         }
 
         [TestCleanup]
@@ -236,33 +184,6 @@ namespace Test.VirtualRadar.Library.Listener
                     action(dataSource, connectionType, String.Format("DataSource {0} ConnectionType {1}", dataSource, connectionType));
                 }
             }
-        }
-
-        private void CreateNewListenerChildObjectInstances()
-        {
-            // The TestInitialise method sets up the different listener providers, byte extractors and raw message translators
-            // so that every time the code asks for one they'll get the same instance back. This is fine as far as it goes but
-            // it makes it hard to test that new instances are created when appropriate. This method creates a new set of objects
-            // and registers them as the default object.
-            _IPActiveConnector = TestUtilities.CreateMockImplementation<INetworkConnector>();
-            _SerialActiveConnector = TestUtilities.CreateMockImplementation<ISerialConnector>();
-            _HttpActiveConnector = TestUtilities.CreateMockImplementation<IHttpConnector>();
-            _IPActiveConnector.Object.Authentication = null;
-            _SerialActiveConnector.Object.Authentication = null;
-            _HttpActiveConnector.Object.Authentication = null;
-
-            _Port30003Extractor = TestUtilities.CreateMockImplementation<IPort30003MessageBytesExtractor>();
-            _Sbs3MessageBytesExtractor = TestUtilities.CreateMockImplementation<ISbs3MessageBytesExtractor>();
-            _BeastMessageBytesExtractor = TestUtilities.CreateMockImplementation<IBeastMessageBytesExtractor>();
-            _CompressedMessageBytesExtractor = TestUtilities.CreateMockImplementation<ICompressedMessageBytesExtractor>();
-            _AircraftListJsonMessageBytesExtractor = TestUtilities.CreateMockImplementation<IAircraftListJsonMessageBytesExtractor>();
-            _PlaneFinderMessageBytesExtractor = TestUtilities.CreateMockImplementation<IPlaneFinderMessageBytesExtractor>();
-            _AirnavXRangeMessageBytesExtractor = TestUtilities.CreateMockImplementation<IAirnavXRangeMessageBytesExtractor>();
-
-            _RawMessageTranslator = TestUtilities.CreateMockImplementation<IRawMessageTranslator>();
-            _RawMessageTranslator.Object.ReceiverLocation = null;
-
-            _PassphraseAuthentication = TestUtilities.CreateMockImplementation<IPassphraseAuthentication>();
         }
         #endregion
 
