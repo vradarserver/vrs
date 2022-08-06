@@ -49,33 +49,5 @@ namespace VirtualRadar.Interface.Listener
         /// Gets a value indicating that the feed can be viewed from the web site.
         /// </summary>
         bool IsVisible { get; }
-
-        /// <summary>
-        /// Initialises the feed with the receiver configuration settings passed across.
-        /// </summary>
-        /// <param name="receiver"></param>
-        /// <param name="configuration"></param>
-        void Initialise(Receiver receiver, Configuration configuration);
-
-        /// <summary>
-        /// Initialises the feed with the merged feed configuration settings passed across.
-        /// </summary>
-        /// <param name="mergedFeed"></param>
-        /// <param name="mergePathways"></param>
-        void Initialise(MergedFeed mergedFeed, IEnumerable<IFeed> mergePathways);
-
-        /// <summary>
-        /// Updates the listener with the new configuration options passed across.
-        /// </summary>
-        /// <param name="receiver"></param>
-        /// <param name="configuration"></param>
-        void ApplyConfiguration(Receiver receiver, Configuration configuration);
-
-        /// <summary>
-        /// Updates the listener with the new configuration options passed across.
-        /// </summary>
-        /// <param name="mergedFeed"></param>
-        /// <param name="mergePathways"></param>
-        void ApplyConfiguration(MergedFeed mergedFeed, IEnumerable<IFeed> mergePathways);
     }
 }

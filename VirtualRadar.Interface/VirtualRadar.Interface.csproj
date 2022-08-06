@@ -168,7 +168,9 @@
     <Compile Include="Listener\AirnavXRangeJson.cs" />
     <Compile Include="Listener\IAirnavXRangeMessageBytesExtractor.cs" />
     <Compile Include="Listener\IAirnavXRangeMessageConverter.cs" />
+    <Compile Include="Listener\IMergedFeedFeed.cs" />
     <Compile Include="Listener\IPlaneFinderMessageBytesExtractor.cs" />
+    <Compile Include="Listener\IReceiverFeed.cs" />
     <Compile Include="Listener\IReceiverFormatManager.cs" />
     <Compile Include="Listener\IReceiverFormatProvider.cs" />
     <Compile Include="Listener\ReceiverFormatName.cs" />
