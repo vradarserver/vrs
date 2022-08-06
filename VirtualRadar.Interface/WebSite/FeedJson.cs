@@ -51,10 +51,12 @@ namespace VirtualRadar.Interface.WebSite
             FeedJson result = null;
 
             if(feed?.IsVisible == true) {
+                var polarPlottingAircraftList = feed.AircraftList as IPolarPlottingAircraftList;
+
                 result = new FeedJson() {
                     UniqueId =      feed.UniqueId,
                     Name =          feed.Name,
-                    HasPolarPlot =  feed.AircraftList?.PolarPlotter != null,
+                    HasPolarPlot =  polarPlottingAircraftList?.PolarPlotter != null,
                 };
             }
 

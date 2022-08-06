@@ -358,8 +358,8 @@ namespace Test.VirtualRadar.Library.Listener
         public void Initialise_Attaches_Merged_Feed_Listener_To_AircraftList()
         {
             _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
-
-            Assert.AreSame(_MergedFeedListener.Object, _Feed.AircraftList.Listener);
+            var baseStationAircraftList = (IBaseStationAircraftList)_Feed.AircraftList;
+            Assert.AreSame(_MergedFeedListener.Object, baseStationAircraftList.Listener);
         }
 
         [TestMethod]
@@ -367,7 +367,8 @@ namespace Test.VirtualRadar.Library.Listener
         {
             _Feed.Initialise(_MergedFeed, _MergedFeedReceivers);
 
-            Assert.AreSame(_StandingDataManager.Object, _Feed.AircraftList.StandingDataManager);
+            var baseStationAircraftList = (IBaseStationAircraftList)_Feed.AircraftList;
+            Assert.AreSame(_StandingDataManager.Object, baseStationAircraftList.StandingDataManager);
         }
 
         [TestMethod]

@@ -65,7 +65,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         {
             var feedManager = Factory.ResolveSingleton<IFeedManager>();
             var feed = feedManager.GetByUniqueId(feedId, ignoreInvisibleFeeds: true);
-            var plotter = feed?.AircraftList?.PolarPlotter;
+            var plotter = (feed?.AircraftList as IPolarPlottingAircraftList)?.PolarPlotter;
 
             if(plotter != null && Context.IsInternet) {
                 var configuration = Factory.ResolveSingleton<ISharedConfiguration>().Get();

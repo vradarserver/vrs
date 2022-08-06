@@ -38,7 +38,7 @@ namespace VirtualRadar.Interface.Listener
         /// <summary>
         /// Gets the aircraft list that the feed is supplying.
         /// </summary>
-        IBaseStationAircraftList AircraftList { get; }
+        IAircraftList AircraftList { get; }
 
         /// <summary>
         /// Gets the listener that <see cref="AircraftList"/> is listening to.

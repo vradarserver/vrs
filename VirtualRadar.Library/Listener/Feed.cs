@@ -47,7 +47,12 @@ namespace VirtualRadar.Library.Listener
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IBaseStationAircraftList AircraftList { get; private set; }
+        public IAircraftList AircraftList { get; private set; }
+
+        /// <summary>
+        /// Returns <see cref="AircraftList"/> cast to an <see cref="IPolarPlottingAircraftList"/>.
+        /// </summary>
+        protected IPolarPlottingAircraftList PolarPlottingAircraftList => AircraftList as IPolarPlottingAircraftList;
 
         /// <summary>
         /// See interface docs.
@@ -98,9 +103,9 @@ namespace VirtualRadar.Library.Listener
         {
             if(disposing) {
                 if(AircraftList != null) {
-                    if(AircraftList.PolarPlotter != null) {
-                        var polarPlotter = AircraftList.PolarPlotter;
-                        AircraftList.PolarPlotter = null;
+                    var polarPlotter = PolarPlottingAircraftList?.PolarPlotter;
+                    if(polarPlotter != null) {
+                        PolarPlottingAircraftList.PolarPlotter = null;
                         polarPlotter.Dispose();
                     }
 
@@ -135,10 +140,11 @@ namespace VirtualRadar.Library.Listener
             Listener.ReceiverName = Name;
             Listener.IsSatcomFeed = isSatcomFeed;
 
-            AircraftList = Factory.Resolve<IBaseStationAircraftList>();
-            AircraftList.ExceptionCaught += AircraftList_ExceptionCaught;
-            AircraftList.Listener = Listener;
-            AircraftList.StandingDataManager = Factory.ResolveSingleton<IStandingDataManager>();
+            var baseStationAircraftList = Factory.Resolve<IBaseStationAircraftList>();
+            AircraftList = baseStationAircraftList;
+            baseStationAircraftList.ExceptionCaught += AircraftList_ExceptionCaught;
+            baseStationAircraftList.Listener = Listener;
+            baseStationAircraftList.StandingDataManager = Factory.ResolveSingleton<IStandingDataManager>();
 
             SetIsVisible(receiverUsage);
 
@@ -176,11 +182,14 @@ namespace VirtualRadar.Library.Listener
         private void LoadCurrentPolarPlot()
         {
             try {
-                var storage = Factory.ResolveSingleton<ISavedPolarPlotStorage>();
-                var savedPolarPlot = storage.Load(this);
+                var plottingAircraftList = PolarPlottingAircraftList;
+                if(plottingAircraftList != null) {
+                    var storage = Factory.ResolveSingleton<ISavedPolarPlotStorage>();
+                    var savedPolarPlot = storage.Load(this);
 
-                if(savedPolarPlot != null && savedPolarPlot.IsForSameFeed(this)) {
-                    AircraftList.PolarPlotter.LoadFrom(savedPolarPlot);
+                    if(savedPolarPlot != null && savedPolarPlot.IsForSameFeed(this)) {
+                        plottingAircraftList.PolarPlotter.LoadFrom(savedPolarPlot);
+                    }
                 }
             } catch(Exception ex) {
                 var log = Factory.ResolveSingleton<ILog>();
@@ -195,20 +204,24 @@ namespace VirtualRadar.Library.Listener
         /// <param name="nameChanged"></param>
         protected void ConfigurePolarPlotter(ReceiverLocation receiverLocation, bool nameChanged)
         {
-            if(receiverLocation == null) AircraftList.PolarPlotter = null;
-            else {
-                var existingPlotter = AircraftList.PolarPlotter;
-                if(existingPlotter == null || existingPlotter.Latitude != receiverLocation.Latitude || existingPlotter.Longitude != receiverLocation.Longitude) {
-                    var polarPlotter = existingPlotter ?? Factory.Resolve<IPolarPlotter>();
-                    polarPlotter.Initialise(receiverLocation.Latitude, receiverLocation.Longitude);
-                    if(existingPlotter == null) {
-                        AircraftList.PolarPlotter = polarPlotter;
+            var plottingAircraftList = PolarPlottingAircraftList;
+            if(plottingAircraftList != null) {
+                if(receiverLocation == null) {
+                    plottingAircraftList.PolarPlotter = null;
+                } else {
+                    var existingPlotter = plottingAircraftList.PolarPlotter;
+                    if(existingPlotter == null || existingPlotter.Latitude != receiverLocation.Latitude || existingPlotter.Longitude != receiverLocation.Longitude) {
+                        var polarPlotter = existingPlotter ?? Factory.Resolve<IPolarPlotter>();
+                        polarPlotter.Initialise(receiverLocation.Latitude, receiverLocation.Longitude);
+                        if(existingPlotter == null) {
+                            plottingAircraftList.PolarPlotter = polarPlotter;
+                            LoadCurrentPolarPlot();
+                        }
+                    }
+
+                    if(nameChanged && existingPlotter != null) {
                         LoadCurrentPolarPlot();
                     }
-                }
-
-                if(nameChanged && existingPlotter != null) {
-                    LoadCurrentPolarPlot();
                 }
             }
         }

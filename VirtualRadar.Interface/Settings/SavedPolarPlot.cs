@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VirtualRadar.Interface.BaseStation;
 using VirtualRadar.Interface.Listener;
 
 namespace VirtualRadar.Interface.Settings
@@ -63,9 +64,9 @@ namespace VirtualRadar.Interface.Settings
         /// <param name="feed"></param>
         public SavedPolarPlot(IFeed feed)
         {
-            var aircraftList = feed == null ? null : feed.AircraftList;
-            var polarPlotter = aircraftList == null ? null : aircraftList.PolarPlotter;
-            var slices = polarPlotter == null ? null : polarPlotter.TakeSnapshot();
+            var aircraftList = feed?.AircraftList as IPolarPlottingAircraftList;
+            var polarPlotter = aircraftList?.PolarPlotter;
+            var slices = polarPlotter?.TakeSnapshot();
 
             if(slices != null) {
                 FeedId = feed.UniqueId;
@@ -85,9 +86,10 @@ namespace VirtualRadar.Interface.Settings
         {
             var result = false;
 
-            var aircraftList = feed == null ? null : feed.AircraftList;
-            var polarPlotter = aircraftList == null ? null : aircraftList.PolarPlotter;
-            var slices = polarPlotter == null ? null : polarPlotter.TakeSnapshot();
+            var aircraftList = feed?.AircraftList as IPolarPlottingAircraftList;
+            var polarPlotter = aircraftList?.PolarPlotter;
+            var slices = polarPlotter?.TakeSnapshot();
+
             if(slices != null) {
                 const double roundMultiplier = 10000.0;        // Latitude & Longitude need to be the same to 4 decimal places
                 result = FeedId == feed.UniqueId &&

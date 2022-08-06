@@ -334,7 +334,8 @@ namespace Test.VirtualRadar.Library.Listener
         {
             _Feed.Initialise(_Receiver, _Configuration);
 
-            Assert.AreSame(_PolarPlotter.Object, _Feed.AircraftList.PolarPlotter);
+            var polarPlottingAircraftList = (IPolarPlottingAircraftList)_Feed.AircraftList;
+            Assert.AreSame(_PolarPlotter.Object, polarPlottingAircraftList.PolarPlotter);
             _PolarPlotter.Verify(r => r.Initialise(1.1, 2.2), Times.Once());
         }
 
@@ -345,7 +346,8 @@ namespace Test.VirtualRadar.Library.Listener
 
             _Feed.Initialise(_Receiver, _Configuration);
 
-            Assert.AreNotSame(_PolarPlotter.Object, _Feed.AircraftList.PolarPlotter);
+            var polarPlottingAircraftList = (IPolarPlottingAircraftList)_Feed.AircraftList;
+            Assert.AreNotSame(_PolarPlotter.Object, polarPlottingAircraftList.PolarPlotter);
             _PolarPlotter.Verify(r => r.Initialise(It.IsAny<double>(), It.IsAny<double>()), Times.Never());
             _PolarPlotter.Verify(r => r.Initialise(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()), Times.Never());
         }
@@ -572,16 +574,16 @@ namespace Test.VirtualRadar.Library.Listener
         public void Initialise_Attaches_Listener_To_AircraftList()
         {
             _Feed.Initialise(_Receiver, _Configuration);
-
-            Assert.AreSame(_Listener.Object, _Feed.AircraftList.Listener);
+            var baseStationAircraftList = (IBaseStationAircraftList)_Feed.AircraftList;
+            Assert.AreSame(_Listener.Object, baseStationAircraftList.Listener);
         }
 
         [TestMethod]
         public void Initialise_Attaches_StandingDataManager_To_AircraftList()
         {
             _Feed.Initialise(_Receiver, _Configuration);
-
-            Assert.AreSame(_StandingDataManager.Object, _Feed.AircraftList.StandingDataManager);
+            var baseStationAircraftList = (IBaseStationAircraftList)_Feed.AircraftList;
+            Assert.AreSame(_StandingDataManager.Object, baseStationAircraftList.StandingDataManager);
         }
 
         [TestMethod]
@@ -792,7 +794,8 @@ namespace Test.VirtualRadar.Library.Listener
             _Configuration.ReceiverLocations[0].UniqueId = 1;
             _Feed.ApplyConfiguration(_Receiver, _Configuration);
 
-            Assert.AreSame(_PolarPlotter.Object, _Feed.AircraftList.PolarPlotter);
+            var polarPlottingAircraftList = (IPolarPlottingAircraftList)_Feed.AircraftList;
+            Assert.AreSame(_PolarPlotter.Object, polarPlottingAircraftList.PolarPlotter);
             _PolarPlotter.Verify(r => r.Initialise(1.1, 2.2), Times.Once());
         }
 
@@ -831,7 +834,8 @@ namespace Test.VirtualRadar.Library.Listener
             _Configuration.ReceiverLocations[0].Latitude = 9.9;
             _Feed.ApplyConfiguration(_Receiver, _Configuration);
 
-            Assert.AreSame(_PolarPlotter.Object, _Feed.AircraftList.PolarPlotter);
+            var polarPlottingAircraftList = (IPolarPlottingAircraftList)_Feed.AircraftList;
+            Assert.AreSame(_PolarPlotter.Object, polarPlottingAircraftList.PolarPlotter);
             _PolarPlotter.Verify(r => r.Initialise(9.9, 2.2), Times.Once());
         }
 
@@ -857,7 +861,8 @@ namespace Test.VirtualRadar.Library.Listener
             _Configuration.ReceiverLocations[0].Longitude = 9.9;
             _Feed.ApplyConfiguration(_Receiver, _Configuration);
 
-            Assert.AreSame(_PolarPlotter.Object, _Feed.AircraftList.PolarPlotter);
+            var polarPlottingAircraftList = (IPolarPlottingAircraftList)_Feed.AircraftList;
+            Assert.AreSame(_PolarPlotter.Object, polarPlottingAircraftList.PolarPlotter);
             _PolarPlotter.Verify(r => r.Initialise(1.1, 9.9), Times.Once());
         }
 
@@ -870,7 +875,8 @@ namespace Test.VirtualRadar.Library.Listener
             TestUtilities.CreateMockImplementation<IPolarPlotter>();
             _Feed.ApplyConfiguration(_Receiver, _Configuration);
 
-            Assert.AreSame(_PolarPlotter.Object, _Feed.AircraftList.PolarPlotter);
+            var polarPlottingAircraftList = (IPolarPlottingAircraftList)_Feed.AircraftList;
+            Assert.AreSame(_PolarPlotter.Object, polarPlottingAircraftList.PolarPlotter);
             _PolarPlotter.Verify(r => r.Initialise(1.1, 2.2), Times.Once());
         }
 
@@ -882,7 +888,8 @@ namespace Test.VirtualRadar.Library.Listener
             _Configuration.ReceiverLocations.Clear();
             _Feed.ApplyConfiguration(_Receiver, _Configuration);
 
-            Assert.AreNotSame(_PolarPlotter.Object, _Feed.AircraftList.PolarPlotter);
+            var polarPlottingAircraftList = (IPolarPlottingAircraftList)_Feed.AircraftList;
+            Assert.AreNotSame(_PolarPlotter.Object, polarPlottingAircraftList.PolarPlotter);
         }
 
         [TestMethod]

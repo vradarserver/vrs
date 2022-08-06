@@ -217,10 +217,11 @@ namespace VirtualRadar.WebSite
 
             if(!args.FeedsNotRequired) {
                 foreach(var feed in _FeedManager.VisibleFeeds) {
+                    var plottingAircraftList = feed.AircraftList as IPolarPlottingAircraftList;
                     result.Feeds.Add(new FeedJson() {
                         UniqueId = feed.UniqueId,
                         Name = feed.Name,
-                        HasPolarPlot = feed.AircraftList != null && feed.AircraftList.PolarPlotter != null
+                        HasPolarPlot = plottingAircraftList?.PolarPlotter != null
                     });
                 }
             }

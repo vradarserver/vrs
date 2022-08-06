@@ -742,7 +742,11 @@ namespace VirtualRadar.WinForms
         private void menuToolsToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
             AttachReceiverFeedMenuItems(menuReconnectToDataFeedToolStripMenuItem, feedItem_ReconnectToDataFeedClicked);
-            AttachReceiverFeedMenuItems(menuResetReceiverRangeToolStripMenuItem, feedItem_ResetReceiverRangeFeedClicked, feed => feed.AircraftList != null && feed.AircraftList.PolarPlotter != null);
+            AttachReceiverFeedMenuItems(
+                menuResetReceiverRangeToolStripMenuItem,
+                feedItem_ResetReceiverRangeFeedClicked,
+                feed => (feed?.AircraftList as IPolarPlottingAircraftList)?.PolarPlotter != null
+            );
         }
 
         private void feedItem_ReconnectToDataFeedClicked(object sender, EventArgs args)

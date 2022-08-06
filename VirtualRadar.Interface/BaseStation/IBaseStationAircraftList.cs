@@ -22,7 +22,7 @@ namespace VirtualRadar.Interface.BaseStation
     /// <summary>
     /// An aircraft list that uses a feed of <see cref="BaseStationMessage"/>s as its source of information about aircraft.
     /// </summary>
-    public interface IBaseStationAircraftList : IAircraftList
+    public interface IBaseStationAircraftList : IPolarPlottingAircraftList
     {
         /// <summary>
         /// Gets or sets the listener that will pick up messages from a source of data and translate them into <see cref="BaseStationMessage"/>s for us.
@@ -33,11 +33,5 @@ namespace VirtualRadar.Interface.BaseStation
         /// Gets or sets the object that will look up information about aircraft from the standing data files.
         /// </summary>
         IStandingDataManager StandingDataManager { get; set; }
-
-        /// <summary>
-        /// Gets or sets the object that's keeping polar plots for us. Can be null if the listener that's feeding this list doesn't support
-        /// polar plots.
-        /// </summary>
-        IPolarPlotter PolarPlotter { get; set; }
     }
 }

@@ -457,7 +457,7 @@ namespace VirtualRadar.Library.Presenter
                 var noValue = listener == null || aircraftList == null;
 
                 var isMerged = noValue ? false : listener is IMergedFeedListener;
-                var hasPolarPlot = noValue ? false : aircraftList.PolarPlotter != null;
+                var hasPolarPlot = noValue ? false : (aircraftList as IPolarPlottingAircraftList)?.PolarPlotter != null;
                 var hasAircraftList = noValue ? false : aircraftList.IsTracking;
                 var connectionStatus = noValue ? ConnectionStatus.Disconnected : feed.Listener.ConnectionStatus;
                 var connectionStatusDescription = Describe.ConnectionStatus(connectionStatus);
@@ -547,7 +547,7 @@ namespace VirtualRadar.Library.Presenter
             var feed = args.Value;
             if(feed != null) {
                 var aircraftList = feed.AircraftList;
-                var polarPlotter = aircraftList == null ? null : aircraftList.PolarPlotter;
+                var polarPlotter = aircraftList == null ? null : (aircraftList as IPolarPlottingAircraftList)?.PolarPlotter;
                 if(polarPlotter != null) {
                     polarPlotter.ClearPolarPlots();
                 }
