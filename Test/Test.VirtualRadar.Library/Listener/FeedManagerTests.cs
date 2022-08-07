@@ -953,6 +953,18 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
+        public void Dispose_Disconnects_Custom_Feeds()
+        {
+            var customFeed = new CustomFeed();
+            _Manager.AddCustomFeed(customFeed);
+            _Manager.Initialise();
+
+            _Manager.Dispose();
+
+            Assert.AreEqual(1, customFeed.CallCount_Disconnect);
+        }
+
+        [TestMethod]
         public void Dispose_Unhooks_Custom_Feeds()
         {
             _Manager.ConnectionStateChanged += _ConnectionStateChangedRecorder.Handler;

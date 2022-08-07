@@ -152,7 +152,9 @@ namespace VirtualRadar.Library.Listener
 
                 foreach(var feed in Feeds) {
                     DetachFeed(feed);
-                    if(!(feed is ICustomFeed)) {
+                    if(feed is ICustomFeed customFeed) {
+                        customFeed.Disconnect();
+                    } else {
                         feed.Dispose();
                     }
                 }
