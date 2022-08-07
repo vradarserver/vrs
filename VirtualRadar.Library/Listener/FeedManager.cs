@@ -11,10 +11,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using InterfaceFactory;
 using VirtualRadar.Interface;
-using VirtualRadar.Interface.Database;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Settings;
 
@@ -25,7 +23,9 @@ namespace VirtualRadar.Library.Listener
     /// </summary>
     class FeedManager : IFeedManager
     {
-        #region Fields
+        private int _NextCustomUniqueId =       1000000;
+        private const int MaxCustomUniqueId =   1999999;
+
         /// <summary>
         /// True after <see cref="Initialise"/> has been called.
         /// </summary>
@@ -35,9 +35,12 @@ namespace VirtualRadar.Library.Listener
         /// Locks the <see cref="Feeds"/> list.
         /// </summary>
         private object _SyncLock = new object();
-        #endregion
 
-        #region Properties
+        /// <summary>
+        /// A list of custom feeds that were added before <see cref="Initialise"/> was called.
+        /// </summary>
+        private List<ICustomFeed> _PreinitialiseCustomFeeds = new List<ICustomFeed>();
+
         private IFeed[] _Feeds;
         /// <summary>
         /// See interface docs.
@@ -49,7 +52,7 @@ namespace VirtualRadar.Library.Listener
                 lock(_SyncLock) result = _Feeds;
                 return result;
             }
-            set {
+            private set {
                 lock(_SyncLock) {
                     _Feeds = value;
                     _VisibleFeeds = value.Where(r => r.IsVisible).ToArray();
@@ -69,9 +72,7 @@ namespace VirtualRadar.Library.Listener
                 return result;
             }
         }
-        #endregion
 
-        #region Events exposed
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -113,9 +114,7 @@ namespace VirtualRadar.Library.Listener
         {
             EventHelper.Raise(FeedsChanged, this, args);
         }
-        #endregion
 
-        #region Constructor
         /// <summary>
         /// Creates a new object.
         /// </summary>
@@ -131,9 +130,7 @@ namespace VirtualRadar.Library.Listener
         {
             Dispose(false);
         }
-        #endregion
 
-        #region Dispose
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -154,15 +151,15 @@ namespace VirtualRadar.Library.Listener
                 configurationStorage.ConfigurationChanged -= ConfigurationStorage_ConfigurationChanged;
 
                 foreach(var feed in Feeds) {
-                    feed.ExceptionCaught -= Feed_ExceptionCaught;
-                    feed.Dispose();
+                    DetachFeed(feed);
+                    if(!(feed is ICustomFeed)) {
+                        feed.Dispose();
+                    }
                 }
                 Feeds = new IFeed[0];
             }
         }
-        #endregion
 
-        #region Initialise, ApplyConfigurationChanges
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -184,10 +181,80 @@ namespace VirtualRadar.Library.Listener
                 CreateFeedForMergedFeed(mergedFeed, justReceiverFeeds, feeds);
             }
 
+            var firstClashingCustomFeed = _PreinitialiseCustomFeeds
+                .FirstOrDefault(customFeed => feeds.Any(feed => feed.UniqueId == customFeed.UniqueId));
+            if(firstClashingCustomFeed != null) {
+                throw new FeedUniqueIdException($"A custom feed has used a unique ID of {firstClashingCustomFeed.UniqueId}. This ID is already in use.");
+            }
+            foreach(var customFeed in _PreinitialiseCustomFeeds) {
+                AttachFeed(customFeed, feeds);
+            }
+            _PreinitialiseCustomFeeds.Clear();
+
             Feeds = feeds.ToArray();
             _Initialised = true;
 
             OnFeedsChanged(EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="customFeed"></param>
+        public void AddCustomFeed(ICustomFeed customFeed)
+        {
+            if(customFeed == null) {
+                throw new ArgumentNullException(nameof(customFeed));
+            }
+
+            if(customFeed.UniqueId == 0) {
+                var uniqueId = System.Threading.Interlocked.Increment(ref _NextCustomUniqueId);
+                if(uniqueId > MaxCustomUniqueId) {
+                    throw new FeedUniqueIdException($"Cannot allocate any more unique custom feed identifiers, the limit of {MaxCustomUniqueId + 1} has been reached");
+                }
+                customFeed.SetUniqueId(uniqueId);
+            }
+
+            lock(_SyncLock) {
+                if(!_Initialised) {
+                    if(_PreinitialiseCustomFeeds.Any(r => r.UniqueId == customFeed.UniqueId)) {
+                        throw new FeedUniqueIdException($"Cannot add a custom feed with a unique ID of {customFeed.UniqueId} - the ID is already in use");
+                    }
+
+                    _PreinitialiseCustomFeeds.Add(customFeed);
+                } else {
+                    if(_Feeds.Any(r => r.UniqueId == customFeed.UniqueId)) {
+                        throw new FeedUniqueIdException($"Cannot add a custom feed with a unique ID of {customFeed.UniqueId} - the ID is already in use");
+                    }
+
+                    var feeds = new List<IFeed>(_Feeds);
+                    AttachFeed(customFeed, feeds);
+                    Feeds = feeds.ToArray();
+                }
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="customFeed"></param>
+        public void RemoveCustomFeed(ICustomFeed customFeed)
+        {
+            if(customFeed == null) {
+                throw new ArgumentNullException(nameof(customFeed));
+            }
+
+            lock(_SyncLock) {
+                if(!_Initialised) {
+                    _PreinitialiseCustomFeeds.Remove(customFeed);
+                } else {
+                    var feeds = new List<IFeed>(_Feeds);
+                    if(feeds.Remove(customFeed)) {
+                        DetachFeed(customFeed);
+                    }
+                    Feeds = feeds.ToArray();
+                }
+            }
         }
 
         private void CreateFeedForReceiver(Receiver receiver, Configuration configuration, List<IFeed> feeds)
@@ -254,9 +321,10 @@ namespace VirtualRadar.Library.Listener
                             var mergeFeeds = justReceiverFeeds.Where(r => mergedFeedConfig.ReceiverIds.Contains(r.UniqueId)).ToList();
                             mergedFeedFeed.ApplyConfiguration(mergedFeedConfig, mergeFeeds);
                         }
+                    } else if(feed is ICustomFeed _) {
+                        ;
                     } else if(pass == 0) {
-                        feed.ExceptionCaught -= Feed_ExceptionCaught;
-                        feed.ConnectionStateChanged -= Feed_ConnectionStateChanged;
+                        DetachFeed(feed);
                         feed.Dispose();
                         feeds.Remove(feed);
                     }
@@ -266,9 +334,13 @@ namespace VirtualRadar.Library.Listener
             Feeds = feeds.ToArray();
             OnFeedsChanged(EventArgs.Empty);
         }
-        #endregion
 
-        #region GetByName, GetByUniqueId
+        void DetachFeed(IFeed feed)
+        {
+            feed.ExceptionCaught -=         Feed_ExceptionCaught;
+            feed.ConnectionStateChanged -=  Feed_ConnectionStateChanged;
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -300,9 +372,7 @@ namespace VirtualRadar.Library.Listener
 
             return result;
         }
-        #endregion
 
-        #region Connect, Disconnect
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -322,9 +392,7 @@ namespace VirtualRadar.Library.Listener
                 feed.Disconnect();
             }
         }
-        #endregion
 
-        #region Events subscribed
         /// <summary>
         /// Raised when a feed picks up an exception.
         /// </summary>
@@ -356,6 +424,5 @@ namespace VirtualRadar.Library.Listener
                 OnConnectionStateChanged(new EventArgs<IFeed>(feed));
             }
         }
-        #endregion
     }
 }

@@ -55,6 +55,36 @@ namespace VirtualRadar.Interface.Listener
         void Initialise();
 
         /// <summary>
+        /// Adds a custom feed.
+        /// </summary>
+        /// <param name="customFeed"></param>
+        /// <remarks><para>
+        /// This can be called before or after <see cref="Initialise"/> is called. Any feeds that are
+        /// added before the manager is initialised will not appear in feed lists until after the
+        /// <see cref="Initialise"/> call. Events raised on the custom feed before <see cref="Initialise"/>
+        /// is called will not raise feed manager events.
+        /// </para><para>
+        /// If the custom feed's unique ID is zero then an ID will be allocated from a pool. If the pool
+        /// is exhausted then the program will throw a <see cref="FeedUniqueIdException"/> exception.
+        /// At time of writing the pool's range is 1000000 to 1999999 inclusive. Allocated IDs are not
+        /// returned to the pool after a custom feed has been removed from the manager.
+        /// </para><para>
+        /// If the custom feed's unique ID is not zero then it is used unchanged. If this would lead to
+        /// a clash of unique IDs, either between other custom feeds or with a normal feed, then the
+        /// program will throw a <see cref="FeedUniqueIdException"/> exception.
+        /// </para><para>
+        /// Custom feeds are disconnected when <see cref="Dispose"/> is called but they are not themselves
+        /// disposed. The code that adds custom feeds is solely responsible for their disposal.
+        /// </para></remarks>
+        void AddCustomFeed(ICustomFeed customFeed);
+
+        /// <summary>
+        /// Removes a custom feed.
+        /// </summary>
+        /// <param name="customFeed"></param>
+        void RemoveCustomFeed(ICustomFeed customFeed);
+
+        /// <summary>
         /// Causes every feed to establish a connection.
         /// </summary>
         void Connect();

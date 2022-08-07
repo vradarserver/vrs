@@ -167,8 +167,10 @@
     <Compile Include="IWebAddressManager.cs" />
     <Compile Include="Listener\AirnavXRangeAircraftJson.cs" />
     <Compile Include="Listener\AirnavXRangeJson.cs" />
+    <Compile Include="Listener\FeedUniqueIdException.cs" />
     <Compile Include="Listener\IAirnavXRangeMessageBytesExtractor.cs" />
     <Compile Include="Listener\IAirnavXRangeMessageConverter.cs" />
+    <Compile Include="Listener\ICustomFeed.cs" />
     <Compile Include="Listener\IMergedFeedFeed.cs" />
     <Compile Include="Listener\INetworkFeed.cs" />
     <Compile Include="Listener\IPlaneFinderMessageBytesExtractor.cs" />

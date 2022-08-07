@@ -20,12 +20,60 @@ using Test.Framework;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.Network;
 
 namespace Test.VirtualRadar.Library.Listener
 {
     [TestClass]
     public class FeedManagerTests
     {
+        #region CustomFeed
+        private class CustomFeed : ICustomFeed
+        {
+            public int UniqueId { get; private set; }
+
+            public string Name => "Custom Feed";
+
+            private Mock<IAircraftList> _AircraftList = TestUtilities.CreateMockInstance<IAircraftList>();
+            public IAircraftList AircraftList => _AircraftList.Object;
+
+            public bool IsVisible { get; set; } = true;
+
+            public ConnectionStatus ConnectionStatus { get; set; }
+
+            public event EventHandler ConnectionStateChanged;
+
+            public void RaiseConnectionStateChanged() => ConnectionStateChanged?.Invoke(this, EventArgs.Empty);
+
+            public event EventHandler<EventArgs<Exception>> ExceptionCaught;
+
+            public void RaiseExceptionCaught(EventArgs<Exception> args) => ExceptionCaught?.Invoke(this, args);
+
+            public int CallCount_Connect;
+
+            public void Connect()
+            {
+                ++CallCount_Connect;
+            }
+
+            public int CallCount_Disconnect;
+
+            public void Disconnect()
+            {
+                ++CallCount_Disconnect;
+            }
+
+            public int CallCount_Dispose;
+
+            public void Dispose()
+            {
+                ++CallCount_Dispose;
+            }
+
+            public void SetUniqueId(int uniqueId) => UniqueId = uniqueId;
+        }
+        #endregion
+
         #region TestContext, Fields, TestInitialise, TestCleanup
         public TestContext TestContext { get; set; }
 
@@ -137,7 +185,7 @@ namespace Test.VirtualRadar.Library.Listener
 
         #region Constructors and Properties
         [TestMethod]
-        public void FeedManager_Constructor_Initialises_To_Known_Value_And_Properties_Work()
+        public void Constructor_Initialises_To_Known_Value_And_Properties_Work()
         {
             _Manager.Dispose();
             _Manager = Factory.ResolveNewInstance<IFeedManager>();
@@ -150,14 +198,14 @@ namespace Test.VirtualRadar.Library.Listener
         #region Initialise
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void FeedManager_Initialise_Throws_If_Called_Twice()
+        public void Initialise_Throws_If_Called_Twice()
         {
             _Manager.Initialise();
             _Manager.Initialise();
         }
 
         [TestMethod]
-        public void FeedManager_Initialise_Causes_Manager_To_Create_And_Initialise_ReceiverPathways_For_Receivers()
+        public void Initialise_Causes_Manager_To_Create_And_Initialise_ReceiverPathways_For_Receivers()
         {
             OnlyUseTwoReceiversAndNoMergedFeed();
             _Manager.Initialise();
@@ -169,7 +217,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_Initialise_Causes_Manager_To_Create_And_Initialise_ReceiverPathways_For_MergedFeeds()
+        public void Initialise_Causes_Manager_To_Create_And_Initialise_ReceiverPathways_For_MergedFeeds()
         {
             _Manager.Initialise();
 
@@ -188,7 +236,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_Initialise_Does_Not_Create_Pathways_For_Disabled_Receivers()
+        public void Initialise_Does_Not_Create_Pathways_For_Disabled_Receivers()
         {
             OnlyUseTwoReceiversAndNoMergedFeed();
             _Receiver1.Enabled = false;
@@ -199,7 +247,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_Initialise_Does_Not_Create_Pathways_For_Disabled_MergedFeeds()
+        public void Initialise_Does_Not_Create_Pathways_For_Disabled_MergedFeeds()
         {
             _MergedFeed1.Enabled = false;
             _Manager.Initialise();
@@ -209,7 +257,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_Initialise_Exposes_Created_Feeds_In_Feeds_Property()
+        public void Initialise_Exposes_Created_Feeds_In_Feeds_Property()
         {
             _Manager.Initialise();
 
@@ -223,7 +271,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_Initialise_Exposes_Visible_Feeds_In_VisibleFeeds_Property()
+        public void Initialise_Exposes_Visible_Feeds_In_VisibleFeeds_Property()
         {
             // Receivers 3 & 4 should not be visible, neither should merged feed 2
             _Manager.Initialise();
@@ -235,7 +283,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_Initialise_Hooks_ExceptionCaught_On_Pathways()
+        public void Initialise_Hooks_ExceptionCaught_On_Pathways()
         {
             _Manager.Initialise();
             _Manager.ExceptionCaught += _ExceptionCaughtRecorder.Handler;
@@ -256,7 +304,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_Initialise_Raises_FeedsChanged()
+        public void Initialise_Raises_FeedsChanged()
         {
             _Manager.FeedsChanged += _FeedsChangedRecorder.Handler;
             _Manager.Initialise();
@@ -266,7 +314,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_Initialise_Connects_Listeners()
+        public void Initialise_Connects_Listeners()
         {
             _Receiver1.AutoReconnectAtStartup = true;
             _Receiver2.AutoReconnectAtStartup = false;
@@ -282,9 +330,233 @@ namespace Test.VirtualRadar.Library.Listener
         }
         #endregion
 
+        #region AddCustomFeed
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddCustomFeed_Throws_When_Passed_Null()
+        {
+            _Manager.AddCustomFeed(null);
+        }
+
+        [TestMethod]
+        public void AddCustomFeed_Adds_The_Feed_If_Called_After_Initialise()
+        {
+            _Manager.Initialise();
+
+            var customFeed = new CustomFeed();
+            _Manager.AddCustomFeed(customFeed);
+
+            Assert.IsTrue(_Manager.Feeds.Contains(customFeed));
+            Assert.IsTrue(_Manager.VisibleFeeds.Contains(customFeed));
+        }
+
+        [TestMethod]
+        public void AddCustomFeed_Does_Not_Destroy_Existing_Feeds()
+        {
+            _Manager.Initialise();
+
+            Assert.AreEqual(6, _Manager.Feeds.Length);
+
+            _Manager.AddCustomFeed(new CustomFeed());
+
+            Assert.AreEqual(7, _Manager.Feeds.Length);
+        }
+
+        [TestMethod]
+        public void AddCustomFeed_Adds_The_Feed_If_Called_Before_Initialise()
+        {
+            var customFeed = new CustomFeed();
+            _Manager.AddCustomFeed(customFeed);
+
+            Assert.AreEqual(0, _Manager.Feeds.Length);
+            Assert.AreEqual(0, _Manager.VisibleFeeds.Length);
+
+            _Manager.Initialise();
+
+            Assert.IsTrue(_Manager.Feeds.Contains(customFeed));
+            Assert.IsTrue(_Manager.VisibleFeeds.Contains(customFeed));
+        }
+
+        [TestMethod]
+        public void AddCustomFeed_Assigns_UniqueId_If_Zero()
+        {
+            var customFeed = new CustomFeed();
+            _Manager.AddCustomFeed(customFeed);
+            Assert.AreNotEqual(0, customFeed.UniqueId);
+        }
+
+        [TestMethod]
+        public void AddCustomFeed_Will_Not_Overwrite_NonZero_UniqueId()
+        {
+            var customFeed = new CustomFeed();
+            customFeed.SetUniqueId(10203040);
+            _Manager.AddCustomFeed(customFeed);
+
+            Assert.AreEqual(10203040, customFeed.UniqueId);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FeedUniqueIdException))]
+        public void AddCustomFeed_Will_Not_Allow_Duplicate_UniqueId_When_Called_Before_Initialise()
+        {
+            var customFeed1 = new CustomFeed();
+            var customFeed2 = new CustomFeed();
+            customFeed1.SetUniqueId(100);
+            customFeed2.SetUniqueId(100);
+            _Manager.AddCustomFeed(customFeed1);
+            _Manager.AddCustomFeed(customFeed2);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FeedUniqueIdException))]
+        public void AddCustomFeed_Will_Not_Allow_Clash_With_Configured_UniqueIds()
+        {
+            var customFeed = new CustomFeed();
+            customFeed.SetUniqueId(_Receiver1.UniqueId);
+            _Manager.AddCustomFeed(customFeed);
+            _Manager.Initialise();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FeedUniqueIdException))]
+        public void AddCustomFeed_Will_Not_Allow_Duplicate_UniqueId_When_Called_After_Initialise()
+        {
+            _Manager.Initialise();
+
+            var customFeed1 = new CustomFeed();
+            var customFeed2 = new CustomFeed();
+            customFeed1.SetUniqueId(100);
+            customFeed2.SetUniqueId(100);
+            _Manager.AddCustomFeed(customFeed1);
+            _Manager.AddCustomFeed(customFeed2);
+        }
+
+        [TestMethod]
+        public void AddCustomFeed_Will_Not_Assign_The_Same_UniqueId_Twice()
+        {
+            var customFeed1 = new CustomFeed();
+            var customFeed2 = new CustomFeed();
+            _Manager.AddCustomFeed(customFeed1);
+            _Manager.AddCustomFeed(customFeed2);
+
+            Assert.AreNotEqual(customFeed1.UniqueId, customFeed2.UniqueId);
+        }
+
+        [TestMethod]
+        public void AddCustomFeed_Hooks_Feeds_In_Initialise_When_Called_Before_Initialise()
+        {
+            _Manager.ConnectionStateChanged += _ConnectionStateChangedRecorder.Handler;
+            _Manager.ExceptionCaught += _ExceptionCaughtRecorder.Handler;
+
+            var customFeed = new CustomFeed();
+            _Manager.AddCustomFeed(customFeed);
+
+            customFeed.RaiseConnectionStateChanged();
+            Assert.AreEqual(0, _ConnectionStateChangedRecorder.CallCount);
+            customFeed.RaiseExceptionCaught(new EventArgs<Exception>(new NotImplementedException()));
+            Assert.AreEqual(0, _ExceptionCaughtRecorder.CallCount);
+
+            _Manager.Initialise();
+
+            customFeed.RaiseConnectionStateChanged();
+            Assert.AreEqual(1, _ConnectionStateChangedRecorder.CallCount);
+            customFeed.RaiseExceptionCaught(new EventArgs<Exception>(new NotImplementedException()));
+            Assert.AreEqual(1, _ExceptionCaughtRecorder.CallCount);
+        }
+
+        [TestMethod]
+        public void AddCustomFeed_Hooks_Feeds_When_Called_After_Initialise()
+        {
+            _Manager.ConnectionStateChanged += _ConnectionStateChangedRecorder.Handler;
+            _Manager.ExceptionCaught += _ExceptionCaughtRecorder.Handler;
+            _Manager.Initialise();
+
+            var customFeed = new CustomFeed();
+            _Manager.AddCustomFeed(customFeed);
+
+            customFeed.RaiseConnectionStateChanged();
+            Assert.AreEqual(1, _ConnectionStateChangedRecorder.CallCount);
+
+            customFeed.RaiseExceptionCaught(new EventArgs<Exception>(new NotImplementedException()));
+            Assert.AreEqual(1, _ExceptionCaughtRecorder.CallCount);
+        }
+        #endregion
+
+        #region RemoveCustomFeed
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void RemoveCustomFeed_Throws_When_Passed_Null()
+        {
+            _Manager.RemoveCustomFeed(null);
+        }
+
+        [TestMethod]
+        public void RemoveCustomFeed_Ignores_Attempts_To_Remove_Feeds_That_Have_Not_Been_Added()
+        {
+            _Manager.RemoveCustomFeed(new CustomFeed());
+        }
+
+        [TestMethod]
+        public void RemoveCustomFeed_Removes_Feeds_When_Called_Before_Initialise()
+        {
+            var customFeed = new CustomFeed();
+            _Manager.AddCustomFeed(customFeed);
+
+            _Manager.RemoveCustomFeed(customFeed);
+
+            _Manager.Initialise();
+            Assert.IsFalse(_Manager.Feeds.Contains(customFeed));
+            Assert.IsFalse(_Manager.VisibleFeeds.Contains(customFeed));
+        }
+
+        [TestMethod]
+        public void RemoveCustomFeed_Removes_Feeds_When_Called_After_Initialise()
+        {
+            var customFeed = new CustomFeed();
+            _Manager.AddCustomFeed(customFeed);
+            _Manager.Initialise();
+
+            _Manager.RemoveCustomFeed(customFeed);
+
+            Assert.IsFalse(_Manager.Feeds.Contains(customFeed));
+            Assert.IsFalse(_Manager.VisibleFeeds.Contains(customFeed));
+        }
+
+        [TestMethod]
+        public void RemoveCustomFeed_Does_Not_Return_UniqueId_To_Pool()
+        {
+            var customFeed1 = new CustomFeed();
+            _Manager.AddCustomFeed(customFeed1);
+            _Manager.RemoveCustomFeed(customFeed1);
+
+            var customFeed2 = new CustomFeed();
+            _Manager.AddCustomFeed(customFeed2);
+
+            Assert.AreNotEqual(customFeed1.UniqueId, customFeed2.UniqueId);
+        }
+
+        [TestMethod]
+        public void RemoveCustomFeed_Detaches_Events()
+        {
+            _Manager.ConnectionStateChanged += _ConnectionStateChangedRecorder.Handler;
+            _Manager.ExceptionCaught += _ExceptionCaughtRecorder.Handler;
+
+            var customFeed = new CustomFeed();
+            _Manager.AddCustomFeed(customFeed);
+            _Manager.Initialise();
+            _Manager.RemoveCustomFeed(customFeed);
+
+            customFeed.RaiseConnectionStateChanged();
+            Assert.AreEqual(0, _ConnectionStateChangedRecorder.CallCount);
+
+            customFeed.RaiseExceptionCaught(new EventArgs<Exception>(new NotImplementedException()));
+            Assert.AreEqual(0, _ExceptionCaughtRecorder.CallCount);
+        }
+        #endregion
+
         #region ConfigurationChanged
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Updates_Existing_ReceiverPathways_For_Receivers()
+        public void ConfigurationChanged_Updates_Existing_ReceiverPathways_For_Receivers()
         {
             OnlyUseTwoReceiversAndNoMergedFeed();
             _Manager.Initialise();
@@ -296,7 +568,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Updates_Existing_ReceiverPathways_For_Merged_Feeds()
+        public void ConfigurationChanged_Updates_Existing_ReceiverPathways_For_Merged_Feeds()
         {
             _Manager.Initialise();
             _MergedFeedFeeds.Clear();
@@ -316,7 +588,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Determines_Existing_ReceiverPathways_By_UniqueId_For_Receivers()
+        public void ConfigurationChanged_Determines_Existing_ReceiverPathways_By_UniqueId_For_Receivers()
         {
             OnlyUseTwoReceiversAndNoMergedFeed();
             _Manager.Initialise();
@@ -328,7 +600,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Determines_Existing_ReceiverPathways_By_UniqueId_For_MergedFeeds()
+        public void ConfigurationChanged_Determines_Existing_ReceiverPathways_By_UniqueId_For_MergedFeeds()
         {
             _Manager.Initialise();
             _MergedFeed1.Name = "New Name";
@@ -339,7 +611,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Disposes_Of_Old_ReceiverPathways()
+        public void ConfigurationChanged_Disposes_Of_Old_ReceiverPathways()
         {
             _Manager.Initialise();
             _Configuration.Receivers.RemoveAt(0);
@@ -352,7 +624,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Identifies_Old_ReceiverPathways_By_UniqueId()
+        public void ConfigurationChanged_Identifies_Old_ReceiverPathways_By_UniqueId()
         {
             _Manager.Initialise();
             _Receiver1.Name = "New Name";
@@ -365,7 +637,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Unhooks_Disposed_ReceiverPathways()
+        public void ConfigurationChanged_Unhooks_Disposed_ReceiverPathways()
         {
             _Manager.Initialise();
             _Manager.ExceptionCaught += _ExceptionCaughtRecorder.Handler;
@@ -382,7 +654,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Disposes_Of_ReceiverPathways_That_Have_Been_Disabled()
+        public void ConfigurationChanged_Disposes_Of_ReceiverPathways_That_Have_Been_Disabled()
         {
             _Manager.Initialise();
             _Receiver1.Enabled = false;
@@ -395,7 +667,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Creates_New_Pathways_For_New_Receivers()
+        public void ConfigurationChanged_Creates_New_Pathways_For_New_Receivers()
         {
             OnlyUseTwoReceiversAndNoMergedFeed();
             _Configuration.Receivers.RemoveAt(1);
@@ -409,7 +681,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Connects_New_Receivers()
+        public void ConfigurationChanged_Connects_New_Receivers()
         {
             foreach(var reconnect in new bool[] { true, false }) {
                 TestCleanup();
@@ -428,7 +700,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Does_Not_Create_New_Feeds_For_Disabled_New_Receivers()
+        public void ConfigurationChanged_Does_Not_Create_New_Feeds_For_Disabled_New_Receivers()
         {
             OnlyUseTwoReceiversAndNoMergedFeed();
             _Configuration.Receivers.RemoveAt(1);
@@ -442,7 +714,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Creates_New_Feeds_For_New_MergedFeeds()
+        public void ConfigurationChanged_Creates_New_Feeds_For_New_MergedFeeds()
         {
             _Configuration.MergedFeeds.RemoveAt(1);
             _Manager.Initialise();
@@ -460,7 +732,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Creates_New_Feeds_For_Disabled_New_MergedFeeds()
+        public void ConfigurationChanged_Creates_New_Feeds_For_Disabled_New_MergedFeeds()
         {
             _Configuration.MergedFeeds.RemoveAt(1);
             _Manager.Initialise();
@@ -473,7 +745,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Creates_New_Merged_Feeds_After_All_Receivers_Have_Been_Created()
+        public void ConfigurationChanged_Creates_New_Merged_Feeds_After_All_Receivers_Have_Been_Created()
         {
             _Configuration.Receivers.Remove(_Receiver3);
             _Configuration.Receivers.Remove(_Receiver4);
@@ -492,7 +764,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Creates_New_Merged_Feeds_After_All_Receivers_Have_Been_Deleted()
+        public void ConfigurationChanged_Creates_New_Merged_Feeds_After_All_Receivers_Have_Been_Deleted()
         {
             _Configuration.MergedFeeds.Clear();
             _Manager.Initialise();
@@ -507,7 +779,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Hooks_ExceptionCaught_On_New_Receivers()
+        public void ConfigurationChanged_Hooks_ExceptionCaught_On_New_Receivers()
         {
             _Configuration.Receivers.RemoveAt(1);
             _Manager.Initialise();
@@ -524,7 +796,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Hooks_ExceptionCaught_On_New_Merged_Feeds()
+        public void ConfigurationChanged_Hooks_ExceptionCaught_On_New_Merged_Feeds()
         {
             _Configuration.MergedFeeds.RemoveAt(1);
             _Manager.Initialise();
@@ -541,7 +813,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Reflects_Changes_In_Feeds_Property()
+        public void ConfigurationChanged_Reflects_Changes_In_Feeds_Property()
         {
             _Manager.Initialise();
 
@@ -563,7 +835,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Reflects_Changes_In_VisibleFeeds_Property()
+        public void ConfigurationChanged_Reflects_Changes_In_VisibleFeeds_Property()
         {
             _Manager.Initialise();
 
@@ -575,7 +847,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConfigurationChanged_Raises_FeedsChanged()
+        public void ConfigurationChanged_Raises_FeedsChanged()
         {
             _Manager.Initialise();
             _Manager.FeedsChanged += _FeedsChangedRecorder.Handler;
@@ -585,11 +857,24 @@ namespace Test.VirtualRadar.Library.Listener
             Assert.AreEqual(1, _FeedsChangedRecorder.CallCount);
             Assert.AreSame(_Manager, _FeedsChangedRecorder.Sender);
         }
+
+        [TestMethod]
+        public void ConfigurationChanged_Preserves_Custom_Feeds()
+        {
+            var customFeed = new CustomFeed();
+            _Manager.AddCustomFeed(customFeed);
+            _Manager.Initialise();
+
+            _ConfigurationStorage.Raise(r => r.ConfigurationChanged += null, EventArgs.Empty);
+
+            Assert.AreEqual(1, _Manager.Feeds.Count(r => Object.ReferenceEquals(r, customFeed)));
+            Assert.AreEqual(1, _Manager.VisibleFeeds.Count(r => Object.ReferenceEquals(r, customFeed)));
+        }
         #endregion
 
         #region Dispose
         [TestMethod]
-        public void FeedManager_Dispose_Disposes_Of_All_Pathways()
+        public void Dispose_Disposes_Of_All_Pathways()
         {
             _Manager.Initialise();
 
@@ -600,21 +885,23 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_Dispose_Unhooks_All_Pathways()
+        public void Dispose_Unhooks_All_Pathways()
         {
             _Manager.Initialise();
+            _Manager.ConnectionStateChanged += _ConnectionStateChangedRecorder.Handler;
             _Manager.ExceptionCaught += _ExceptionCaughtRecorder.Handler;
 
             _Manager.Dispose();
             var args = new EventArgs<Exception>(new Exception());
             _CreatedReceiverFeeds[0].Raise(r => r.ExceptionCaught += null, args);
-            _CreatedReceiverFeeds[1].Raise(r => r.ExceptionCaught += null, args);
+            _CreatedReceiverFeeds[1].Raise(r => r.ConnectionStateChanged += null, EventArgs.Empty);
 
             Assert.AreEqual(0, _ExceptionCaughtRecorder.CallCount);
+            Assert.AreEqual(0, _ConnectionStateChangedRecorder.CallCount);
         }
 
         [TestMethod]
-        public void FeedManager_Dispose_Unhooks_ConfigurationManager()
+        public void Dispose_Unhooks_ConfigurationManager()
         {
             _Manager.Initialise();
             _Manager.Dispose();
@@ -625,7 +912,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_Dispose_Clears_Down_Feeds_Property()
+        public void Dispose_Clears_Down_Feeds_Property()
         {
             _Manager.Initialise();
             _Manager.Dispose();
@@ -633,7 +920,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_Dispose_Clears_Down_VisibleFeeds_Property()
+        public void Dispose_Clears_Down_VisibleFeeds_Property()
         {
             _Manager.Initialise();
             _Manager.Dispose();
@@ -641,22 +928,53 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_Dispose_Can_Be_Called_Before_Initialise()
+        public void Dispose_Can_Be_Called_Before_Initialise()
         {
             _Manager.Dispose();
         }
 
         [TestMethod]
-        public void FeedManager_Dispose_Can_Be_Called_Twice()
+        public void Dispose_Can_Be_Called_Twice()
         {
             _Manager.Dispose();
             _Manager.Dispose();
+        }
+
+        [TestMethod]
+        public void Dispose_Does_Not_Dispose_Custom_Feeds()
+        {
+            var customFeed = new CustomFeed();
+            _Manager.AddCustomFeed(customFeed);
+            _Manager.Initialise();
+
+            _Manager.Dispose();
+
+            Assert.AreEqual(0, customFeed.CallCount_Dispose);
+        }
+
+        [TestMethod]
+        public void Dispose_Unhooks_Custom_Feeds()
+        {
+            _Manager.ConnectionStateChanged += _ConnectionStateChangedRecorder.Handler;
+            _Manager.ExceptionCaught += _ExceptionCaughtRecorder.Handler;
+
+            var customFeed = new CustomFeed();
+            _Manager.AddCustomFeed(customFeed);
+            _Manager.Initialise();
+
+            _Manager.Dispose();
+
+            customFeed.RaiseConnectionStateChanged();
+            Assert.AreEqual(0, _ConnectionStateChangedRecorder.CallCount);
+
+            customFeed.RaiseExceptionCaught(new EventArgs<Exception>(new NotImplementedException()));
+            Assert.AreEqual(0, _ExceptionCaughtRecorder.CallCount);
         }
         #endregion
 
         #region ConnectionStateChanged
         [TestMethod]
-        public void FeedManager_ConnectionStateChanged_Raised_When_Feed_Raises_Event()
+        public void ConnectionStateChanged_Raised_When_Feed_Raises_Event()
         {
             _Manager.ConnectionStateChanged += _ConnectionStateChangedRecorder.Handler;
             _Manager.Initialise();
@@ -673,7 +991,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_ConnectionStateChanged_Not_Raised_When_Listener_Raises_Event_After_Removal_By_Configuration_Change()
+        public void ConnectionStateChanged_Not_Raised_When_Listener_Raises_Event_After_Removal_By_Configuration_Change()
         {
             _Manager.ConnectionStateChanged += _ConnectionStateChangedRecorder.Handler;
             _Manager.Initialise();
@@ -687,35 +1005,35 @@ namespace Test.VirtualRadar.Library.Listener
 
         #region GetByName
         [TestMethod]
-        public void FeedManager_GetByName_Returns_Null_If_Passed_Null()
+        public void GetByName_Returns_Null_If_Passed_Null()
         {
             _Manager.Initialise();
             Assert.IsNull(_Manager.GetByName(null, false));
         }
 
         [TestMethod]
-        public void FeedManager_GetByName_Returns_Feed_If_Passed_Matching_Name()
+        public void GetByName_Returns_Feed_If_Passed_Matching_Name()
         {
             _Manager.Initialise();
             Assert.AreSame(_CreatedReceiverFeeds[0].Object, _Manager.GetByName(_Receiver1.Name, false));
         }
 
         [TestMethod]
-        public void FeedManager_GetByName_Can_Ignore_Invisible_Feeds()
+        public void GetByName_Can_Ignore_Invisible_Feeds()
         {
             _Manager.Initialise();
             Assert.IsNull(_Manager.GetByName(_Receiver3.Name, ignoreInvisibleFeeds: true));
         }
 
         [TestMethod]
-        public void FeedManager_GetByName_Can_Return_Invisible_Feeds()
+        public void GetByName_Can_Return_Invisible_Feeds()
         {
             _Manager.Initialise();
             Assert.IsNotNull(_Manager.GetByName(_Receiver3.Name, ignoreInvisibleFeeds: false));
         }
 
         [TestMethod]
-        public void FeedManager_GetByName_Is_Case_Insensitive()
+        public void GetByName_Is_Case_Insensitive()
         {
             _Manager.Initialise();
             Assert.AreSame(_CreatedReceiverFeeds[0].Object, _Manager.GetByName(_Receiver1.Name.ToLowerInvariant(), false));
@@ -723,7 +1041,7 @@ namespace Test.VirtualRadar.Library.Listener
         }
 
         [TestMethod]
-        public void FeedManager_GetByName_Returns_Null_If_Not_Found()
+        public void GetByName_Returns_Null_If_Not_Found()
         {
             _Manager.Initialise();
             Assert.IsNull(_Manager.GetByName("DOES NOT EXIST", false));
@@ -732,28 +1050,28 @@ namespace Test.VirtualRadar.Library.Listener
 
         #region GetByUniqueId
         [TestMethod]
-        public void FeedManager_GetByUniqueId_Returns_Pathway_With_Matching_UniqueId()
+        public void GetByUniqueId_Returns_Pathway_With_Matching_UniqueId()
         {
             _Manager.Initialise();
             Assert.AreSame(_CreatedReceiverFeeds[0].Object, _Manager.GetByUniqueId(_Receiver1.UniqueId, false));
         }
 
         [TestMethod]
-        public void FeedManager_GetByUniqueId_Returns_Null_If_No_Record_Matches()
+        public void GetByUniqueId_Returns_Null_If_No_Record_Matches()
         {
             _Manager.Initialise();
             Assert.IsNull(_Manager.GetByUniqueId(_Manager.Feeds.Select(r => r.UniqueId).Max() + 1, false));
         }
 
         [TestMethod]
-        public void FeedManager_GetByUniqueId_Can_Ignore_Invisible_Feeds()
+        public void GetByUniqueId_Can_Ignore_Invisible_Feeds()
         {
             _Manager.Initialise();
             Assert.IsNull(_Manager.GetByUniqueId(_Receiver3.UniqueId, ignoreInvisibleFeeds: true));
         }
 
         [TestMethod]
-        public void FeedManager_GetByUniqueId_Can_Return_Invisible_Feeds()
+        public void GetByUniqueId_Can_Return_Invisible_Feeds()
         {
             _Manager.Initialise();
             Assert.IsNotNull(_Manager.GetByUniqueId(_Receiver3.UniqueId, ignoreInvisibleFeeds: false));
@@ -762,7 +1080,7 @@ namespace Test.VirtualRadar.Library.Listener
 
         #region Connect
         [TestMethod]
-        public void FeedManager_Connect_Passes_The_Call_Through_To_Feeds()
+        public void Connect_Passes_The_Call_Through_To_Feeds()
         {
             _Manager.Initialise();
 
@@ -781,7 +1099,7 @@ namespace Test.VirtualRadar.Library.Listener
 
         #region Disconnect
         [TestMethod]
-        public void FeedManager_Disconnect_Passes_The_Call_Through_To_Feeds()
+        public void Disconnect_Passes_The_Call_Through_To_Feeds()
         {
             _Manager.Initialise();
             _Manager.Disconnect();
