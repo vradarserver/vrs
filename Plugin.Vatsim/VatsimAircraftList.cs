@@ -30,6 +30,8 @@ namespace VirtualRadar.Plugin.Vatsim
     {
         private object _SyncLock = new object();
 
+        private long _DataVersion;
+
         private volatile Dictionary<int, IAircraft> _Aircraft = new Dictionary<int, IAircraft>();
 
         private IClock _Clock;
@@ -196,6 +198,7 @@ namespace VirtualRadar.Plugin.Vatsim
         private void ApplyPilotStateToAircraft(DateTime utcNow, VatsimDataV3Pilot pilot, IAircraft aircraft, Configuration config)
         {
             lock(aircraft) {
+                aircraft.DataVersion =      Interlocked.Increment(ref _DataVersion);
                 aircraft.LastModeSUpdate =  utcNow;
                 aircraft.LastUpdate =       utcNow;
                 aircraft.Latitude =         pilot.latitude;
@@ -205,10 +208,42 @@ namespace VirtualRadar.Plugin.Vatsim
                 aircraft.TransponderType =  TransponderType.Adsb;
                 aircraft.GroundSpeed =      pilot.groundspeed;
                 aircraft.Squawk =           String.IsNullOrEmpty(pilot.transponder) ? (int?)null : pilot.TransponderValue;
-                aircraft.UserNotes =        $"{pilot.flight_plan?.route}\r\n{pilot.flight_plan?.remarks}";
-                aircraft.UserTag =          $"[{pilot.pilot_rating}] {pilot.name} on {pilot.server}";
+                aircraft.Emergency =        aircraft.Squawk == 7500 || aircraft.Squawk == 7600 || aircraft.Squawk == 7700;
+                aircraft.UserTag =          $"[{pilot.pilot_rating}] {pilot.name}";
                 aircraft.AirPressureInHg =  pilot.qnh_i_hg;
-                aircraft.Callsign =         pilot.callsign;
+                aircraft.Icao24Country =    pilot.server;
+
+                var operatorIcaoDataVersion = aircraft.OperatorIcaoChanged;
+
+                var userNotes = $"{pilot.flight_plan?.route}\r\n{pilot.flight_plan?.remarks}";
+                if(aircraft.UserNotes != userNotes) {
+                    aircraft.UserNotes = userNotes;
+                    var remarks = new VatsimRemarks(pilot.flight_plan?.remarks);
+                    aircraft.Registration = remarks.Registration;
+                    aircraft.OperatorIcao = remarks.OperatorIcao;
+                    aircraft.Icao24 = remarks.ModeSCode;        // <-- not sure whether this is a good idea, it'll lead to non-null / non-empty duplicates and it won't match the unique ID...
+                }
+
+                IEnumerable<Airline> airlinesForOperatorIcao = null;
+                if(aircraft.Callsign != pilot.callsign) {
+                    aircraft.Callsign = pilot.callsign;
+                    var callsign = new Callsign(pilot.callsign);
+                    airlinesForOperatorIcao = callsign.IsOriginalCallsignValid
+                        ? _StandingDataManager.FindAirlinesForCode(callsign.Code)
+                        : null;
+                    var hasAirlineForCallsign = airlinesForOperatorIcao?.Any() ?? false;
+                    if(hasAirlineForCallsign) {
+                        aircraft.OperatorIcao = callsign.Code;
+                    } else {
+                        aircraft.Registration = aircraft.Callsign;
+                    }
+                }
+
+                if(operatorIcaoDataVersion != aircraft.OperatorIcaoChanged) {
+                    var airlines = airlinesForOperatorIcao
+                        ?? _StandingDataManager.FindAirlinesForCode(aircraft.OperatorIcao);
+                    aircraft.Operator = airlines.FirstOrDefault()?.Name ?? aircraft.OperatorIcao;
+                }
 
                 if(!Plugin.Options.AssumeSlowAircraftAreOnGround) {
                     aircraft.OnGround = false;
