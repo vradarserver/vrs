@@ -44,6 +44,13 @@ namespace VirtualRadar.Plugin.Vatsim
             set => SetField(ref _SlowAircraftThresholdSpeed, value, nameof(SlowAircraftThresholdSpeed));
         }
 
+        private bool _InferModelFromModelType = true;
+        public bool InferModelFromModelType
+        {
+            get => _InferModelFromModelType;
+            set => SetField(ref _InferModelFromModelType, value, nameof(InferModelFromModelType));
+        }
+
         /// <summary>
         /// See interface docs.
         /// </summary>

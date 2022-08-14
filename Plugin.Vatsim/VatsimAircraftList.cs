@@ -271,6 +271,28 @@ namespace VirtualRadar.Plugin.Vatsim
                         aircraft.NumberOfEngines =          typeData?.Engines;
                         aircraft.Species =                  typeData?.Species ?? Species.None;
                         aircraft.WakeTurbulenceCategory =   typeData?.WakeTurbulenceCategory ?? WakeTurbulenceCategory.None;
+
+                        if(!Plugin.Options.InferModelFromModelType) {
+                            aircraft.Manufacturer = "";
+                            aircraft.Model = "";
+                        } else {
+                            // This is going to be complete garbage quite a lot of the time...
+                            var manufacturer = typeData?.Manufacturers
+                                ?.OrderBy(r => r, StringComparer.InvariantCultureIgnoreCase)
+                                .FirstOrDefault()
+                                ?? "";
+                            var model = typeData?.Models
+                                ?.OrderBy(r => r, StringComparer.InvariantCultureIgnoreCase)
+                                .FirstOrDefault()
+                                ?? "";
+                            var hasModel = !String.IsNullOrEmpty(model);
+                            aircraft.Manufacturer = manufacturer;
+                            aircraft.Model = !String.IsNullOrEmpty(manufacturer) && hasModel
+                                ? $"{manufacturer} {model}"     // most of VRS expects model to actually be manufacturer + model
+                                : hasModel
+                                    ? model
+                                    : manufacturer;
+                        }
                     }
 
                     var departureAirport = flightPlan.departure ?? "";
