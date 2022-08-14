@@ -58,6 +58,7 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(0, _Aircraft.GeometricAltitudeChanged);
             Assert.AreEqual(0, _Aircraft.CountMessagesReceivedChanged);
             Assert.AreEqual(0, _Aircraft.DestinationChanged);
+            Assert.AreEqual(0, _Aircraft.DestinationAirportCodeChanged);
             Assert.AreEqual(0, _Aircraft.EmergencyChanged);
             Assert.AreEqual(0, _Aircraft.EnginePlacementChanged);
             Assert.AreEqual(0, _Aircraft.EngineTypeChanged);
@@ -82,6 +83,7 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(0, _Aircraft.OperatorChanged);
             Assert.AreEqual(0, _Aircraft.OperatorIcaoChanged);
             Assert.AreEqual(0, _Aircraft.OriginChanged);
+            Assert.AreEqual(0, _Aircraft.OriginAirportCodeChanged);
             Assert.AreEqual(0, _Aircraft.PictureFileNameChanged);
             Assert.AreEqual(0, _Aircraft.PictureHeightChanged);
             Assert.AreEqual(0, _Aircraft.PictureWidthChanged);
@@ -122,6 +124,7 @@ namespace Test.VirtualRadar.Library
             TestUtilities.TestProperty(_Aircraft, r => r.CountMessagesReceived, 0L, 12L);
             TestUtilities.TestProperty(_Aircraft, r => r.DataVersion, 0L, 12023L);
             TestUtilities.TestProperty(_Aircraft, r => r.Destination, null, "XYZ");
+            TestUtilities.TestProperty(_Aircraft, r => r.DestinationAirportCode, null, "XYZ");
             TestUtilities.TestProperty(_Aircraft, r => r.Emergency, null, false);
             TestUtilities.TestProperty(_Aircraft, r => r.EnginePlacement, EnginePlacement.Unknown, EnginePlacement.AftMounted);
             TestUtilities.TestProperty(_Aircraft, r => r.EngineType, EngineType.None, EngineType.Jet);
@@ -153,6 +156,7 @@ namespace Test.VirtualRadar.Library
             TestUtilities.TestProperty(_Aircraft, r => r.Operator, null, "HJ");
             TestUtilities.TestProperty(_Aircraft, r => r.OperatorIcao, null, "YUI");
             TestUtilities.TestProperty(_Aircraft, r => r.Origin, null, "TG");
+            TestUtilities.TestProperty(_Aircraft, r => r.OriginAirportCode, null, "TG");
             TestUtilities.TestProperty(_Aircraft, r => r.PictureFileName, null, "VG");
             TestUtilities.TestProperty(_Aircraft, r => r.PictureHeight, 0, 1024);
             TestUtilities.TestProperty(_Aircraft, r => r.PictureWidth, 0, 2048);
@@ -186,7 +190,12 @@ namespace Test.VirtualRadar.Library
         {
             // The coordinate lists are not auto-updating, there is a function to add coordinates that takes care of things like
             // dataversions. The others have dedicated tests for them.
-            var ignoreProperties = new string[] { "FirstCoordinateChanged", "LastCoordinateChanged", "StopoversChanged" };
+            var ignoreProperties = new string[] {
+                nameof(IAircraft.FirstCoordinateChanged),
+                nameof(IAircraft.LastCoordinateChanged),
+                nameof(IAircraft.StopoversChanged),
+                nameof(IAircraft.StopoverAirportCodesChanged),
+            };
 
             var changedProperties = typeof(IAircraft).GetProperties().Where(p => !ignoreProperties.Contains(p.Name) && p.Name.EndsWith("Changed")).ToList();
 
@@ -228,6 +237,22 @@ namespace Test.VirtualRadar.Library
             _Aircraft.DataVersion = 9010;
             _Aircraft.Stopovers.Clear();
             Assert.AreEqual(9010, _Aircraft.StopoversChanged);
+        }
+
+        [TestMethod]
+        public void Aircraft_PropertyChanged_Modifying_StopoverAirportCodes_Updates_StopoverAirportCodesChanged()
+        {
+            _Aircraft.DataVersion = 1;
+            _Aircraft.StopoverAirportCodes.Add("Item 1");
+            Assert.AreEqual(1, _Aircraft.StopoverAirportCodesChanged);
+
+            _Aircraft.DataVersion = 200;
+            _Aircraft.StopoverAirportCodes.Add("Item 2");
+            Assert.AreEqual(200, _Aircraft.StopoverAirportCodesChanged);
+
+            _Aircraft.DataVersion = 9010;
+            _Aircraft.StopoverAirportCodes.Clear();
+            Assert.AreEqual(9010, _Aircraft.StopoverAirportCodesChanged);
         }
 
         [TestMethod]
@@ -368,12 +393,18 @@ namespace Test.VirtualRadar.Library
                             case nameof(IAircraft.ConstructionNumberChanged):       value = _Aircraft.ConstructionNumberChanged; break;
                             case nameof(IAircraft.Origin):                          value = _Aircraft.Origin = stringValue; break;
                             case nameof(IAircraft.OriginChanged):                   value = _Aircraft.OriginChanged; break;
+                            case nameof(IAircraft.OriginAirportCode):               value = _Aircraft.OriginAirportCode = stringValue; break;
+                            case nameof(IAircraft.OriginAirportCodeChanged):        value = _Aircraft.OriginAirportCodeChanged; break;
                             case nameof(IAircraft.Destination):                     value = _Aircraft.Destination = stringValue; break;
                             case nameof(IAircraft.DestinationChanged):              value = _Aircraft.DestinationChanged; break;
+                            case nameof(IAircraft.DestinationAirportCode):          value = _Aircraft.DestinationAirportCode = stringValue; break;
+                            case nameof(IAircraft.DestinationAirportCodeChanged):   value = _Aircraft.DestinationAirportCodeChanged; break;
                             case nameof(IAircraft.SignalLevel):                     value = _Aircraft.SignalLevel = intValue; break;
                             case nameof(IAircraft.SignalLevelChanged):              value = _Aircraft.SignalLevelChanged; break;
                             case nameof(IAircraft.Stopovers):                       value = stringValue; _Aircraft.Stopovers.Add(stringValue); break;
                             case nameof(IAircraft.StopoversChanged):                value = _Aircraft.StopoversChanged = longValue; break;
+                            case nameof(IAircraft.StopoverAirportCodes):            value = stringValue; _Aircraft.StopoverAirportCodes.Add(stringValue); break;
+                            case nameof(IAircraft.StopoverAirportCodesChanged):     value = _Aircraft.StopoverAirportCodesChanged = longValue; break;
                             case nameof(IAircraft.Operator):                        value = _Aircraft.Operator = stringValue; break;
                             case nameof(IAircraft.OperatorChanged):                 value = _Aircraft.OperatorChanged; break;
                             case nameof(IAircraft.OperatorIcao):                    value = _Aircraft.OperatorIcao = stringValue; break;
@@ -454,9 +485,10 @@ namespace Test.VirtualRadar.Library
                 foreach(var property in typeof(IAircraft).GetProperties()) {
                     var expected = values[property.Name];
                     switch(property.Name) {
-                        case "Stopovers":           Assert.AreEqual(expected, clone.Stopovers.First(), property.Name); break;
-                        case "FullCoordinates":     Assert.AreEqual(expected, clone.FullCoordinates[0], property.Name); break;
-                        case "ShortCoordinates":    Assert.AreEqual(expected, clone.ShortCoordinates[0], property.Name); break;
+                        case nameof(IAircraft.Stopovers):               Assert.AreEqual(expected, clone.Stopovers.First(), property.Name); break;
+                        case nameof(IAircraft.StopoverAirportCodes):    Assert.AreEqual(expected, clone.StopoverAirportCodes.First(), property.Name); break;
+                        case nameof(IAircraft.FullCoordinates):         Assert.AreEqual(expected, clone.FullCoordinates[0], property.Name); break;
+                        case nameof(IAircraft.ShortCoordinates):        Assert.AreEqual(expected, clone.ShortCoordinates[0], property.Name); break;
                         default:
                             var actual = property.GetValue(clone, null);
                             Assert.AreEqual(expected, actual, property.Name); break;

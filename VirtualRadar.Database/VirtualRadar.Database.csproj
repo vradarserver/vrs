@@ -82,6 +82,7 @@
     <Compile Include="Sql.cs" />
     <Compile Include="SQLiteExecute.cs" />
     <Compile Include="SqlPreparedCommand.cs" />
+    <Compile Include="StandingData\AirportAndCountryModel.cs" />
     <Compile Include="StandingData\BackgroundDataDownloader.cs" />
     <Compile Include="StandingData\CallsignRouteFetcher.cs" />
     <Compile Include="StandingData\RouteStopViewModel.cs" />

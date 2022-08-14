@@ -79,5 +79,12 @@ namespace VirtualRadar.Interface.StandingData
         /// <param name="icao24"></param>
         /// <returns></returns>
         CodeBlock FindCodeBlock(string icao24);
+
+        /// <summary>
+        /// Returns the airport that has the ICAO or IATA code passed across.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        Airport FindAirportForCode(string code);
     }
 }

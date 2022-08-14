@@ -708,5 +708,56 @@ namespace VirtualRadar.Database.StandingData
             return result;
         }
         #endregion
+
+        #region FindAirportForCode
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public Airport FindAirportForCode(string code)
+        {
+            Airport result = null;
+
+            if(!String.IsNullOrEmpty(code)) {
+                lock(Lock) {
+                    if(_FilesValid) {
+                        using(var connection = CreateOpenConnection()) {
+                            var codeType = code.Length == 4 ? "Icao" : "Iata";
+                            var rawData = connection.QueryFirstOrDefault<AirportAndCountryModel>($@"
+                                    SELECT     [Airport].[Iata]
+                                              ,[Airport].[Icao]
+                                              ,[Airport].[Name]
+                                              ,[Airport].[Location]
+                                              ,[Airport].[CountryId]
+                                              ,[Country].[Name] AS [CountryName]
+                                              ,[Airport].[Latitude]
+                                              ,[Airport].[Longitude]
+                                              ,[Airport].[Altitude]
+                                    FROM       [Airport]
+                                    JOIN       [Country] ON [Airport].[CountryId] = [Country].[CountryId]
+                                    WHERE  [{codeType}] = @code
+                                ", new { code }
+                            );
+                            if(rawData != null) {
+                                result = CreateAirport(
+                                    rawData.Icao,
+                                    rawData.Iata,
+                                    rawData.Name,
+                                    rawData.Latitude,
+                                    rawData.Longitude,
+                                    rawData.Altitude,
+                                    rawData.Location,
+                                    rawData.CountryName
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+        #endregion
     }
 }

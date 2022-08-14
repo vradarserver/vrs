@@ -493,6 +493,17 @@ namespace VirtualRadar.Library
         /// </summary>
         public long OriginChanged { get; private set; }
 
+        private string _OriginAirportCode;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string OriginAirportCode { get { return _OriginAirportCode; } set { if(value != _OriginAirportCode) { _OriginAirportCode = value; OriginAirportCodeChanged = DataVersion; } } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long OriginAirportCodeChanged { get; private set; }
+
         private string _Destination;
         /// <summary>
         /// See interface docs.
@@ -504,6 +515,17 @@ namespace VirtualRadar.Library
         /// </summary>
         public long DestinationChanged { get; private set; }
 
+        private string _DestinationAirportCode;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public string DestinationAirportCode { get { return _DestinationAirportCode; } set { if(value != _DestinationAirportCode) { _DestinationAirportCode = value; DestinationAirportCodeChanged = DataVersion; } } }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long DestinationAirportCodeChanged { get; private set; }
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -513,6 +535,16 @@ namespace VirtualRadar.Library
         /// See interface docs.
         /// </summary>
         public long StopoversChanged { get; set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public ICollection<string> StopoverAirportCodes { get; private set; }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public long StopoverAirportCodesChanged { get; set; }
 
         private bool _IsPositioningFlight;
         /// <summary>
@@ -777,9 +809,13 @@ namespace VirtualRadar.Library
         /// </summary>
         public Aircraft()
         {
-            var stopOvers = new NotifyList<string>();
-            stopOvers.ListChanged += Stopovers_ListChanged;
-            Stopovers = stopOvers;
+            var stopovers = new NotifyList<string>();
+            stopovers.ListChanged += (sender, args) => StopoversChanged = DataVersion;
+            Stopovers = stopovers;
+
+            var stopoverAirportCodes = new NotifyList<string>();
+            stopoverAirportCodes.ListChanged += (sender, args) => StopoverAirportCodesChanged = DataVersion;
+            StopoverAirportCodes = stopoverAirportCodes;
 
             FullCoordinates = new List<Coordinate>();
             ShortCoordinates = new List<Coordinate>();
@@ -812,6 +848,7 @@ namespace VirtualRadar.Library
                 result.ShortCoordinates.AddRange(ShortCoordinates);
                 result.DataVersion = DataVersion;
                 result.Destination = Destination;
+                result.DestinationAirportCode = DestinationAirportCode;
                 result.Emergency = Emergency;
                 result.EnginePlacement = EnginePlacement;
                 result.EngineType = EngineType;
@@ -841,6 +878,7 @@ namespace VirtualRadar.Library
                 result.Operator = Operator;
                 result.OperatorIcao = OperatorIcao;
                 result.Origin = Origin;
+                result.OriginAirportCode = OriginAirportCode;
                 result.PictureFileName = PictureFileName;
                 result.PictureHeight = PictureHeight;
                 result.PictureWidth = PictureWidth;
@@ -870,6 +908,9 @@ namespace VirtualRadar.Library
                 foreach(var stopover in Stopovers) {
                     result.Stopovers.Add(stopover);
                 }
+                foreach(var stopoverAirportCode in StopoverAirportCodes) {
+                    result.StopoverAirportCodes.Add(stopoverAirportCode);
+                }
 
                 result.AirPressureInHgChanged = AirPressureInHgChanged;
                 result.AltitudeChanged = AltitudeChanged;
@@ -880,6 +921,7 @@ namespace VirtualRadar.Library
                 result.GeometricAltitudeChanged = GeometricAltitudeChanged;
                 result.CountMessagesReceivedChanged = CountMessagesReceivedChanged;
                 result.DestinationChanged = DestinationChanged;
+                result.DestinationAirportCodeChanged = DestinationAirportCodeChanged;
                 result.EmergencyChanged = EmergencyChanged;
                 result.EnginePlacementChanged = EnginePlacementChanged;
                 result.EngineTypeChanged = EngineTypeChanged;
@@ -904,6 +946,7 @@ namespace VirtualRadar.Library
                 result.OperatorChanged = OperatorChanged;
                 result.OperatorIcaoChanged = OperatorIcaoChanged;
                 result.OriginChanged = OriginChanged;
+                result.OriginAirportCodeChanged = OriginAirportCodeChanged;
                 result.PictureFileNameChanged = PictureFileNameChanged;
                 result.PictureHeightChanged = PictureHeightChanged;
                 result.PictureWidthChanged = PictureWidthChanged;
@@ -917,6 +960,7 @@ namespace VirtualRadar.Library
                 result.SpeedTypeChanged = SpeedTypeChanged;
                 result.SquawkChanged = SquawkChanged;
                 result.StopoversChanged = StopoversChanged;
+                result.StopoverAirportCodesChanged = StopoverAirportCodesChanged;
                 result.TargetAltitudeChanged = TargetAltitudeChanged;
                 result.TargetTrackChanged = TargetTrackChanged;
                 result.TrackChanged = TrackChanged;
@@ -1006,18 +1050,6 @@ namespace VirtualRadar.Library
                     }
                 }
             }
-        }
-        #endregion
-
-        #region Events subscribed
-        /// <summary>
-        /// Raised when the stopovers on a route are changed.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void Stopovers_ListChanged(object sender, EventArgs args)
-        {
-            StopoversChanged = DataVersion;
         }
         #endregion
     }

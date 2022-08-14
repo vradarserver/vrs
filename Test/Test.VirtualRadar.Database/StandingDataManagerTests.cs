@@ -670,5 +670,51 @@ namespace Test.VirtualRadar.Database
             Assert.AreEqual(0, _LogLines.Count);
         }
         #endregion
+
+        #region FindAirportForCode
+        [TestMethod]
+        public void StandingDataManager_FindAirportForCode_Returns_Null_If_Passed_Null()
+        {
+            _Implementation.Load();
+            Assert.IsNull(_Implementation.FindAirportForCode(null));
+        }
+
+        [TestMethod]
+        public void StandingDataManager_FindAirportForCode_Returns_Null_If_Passed_Unknown_Code()
+        {
+            _Implementation.Load();
+            Assert.IsNull(_Implementation.FindAirportForCode("999"));
+        }
+
+        [TestMethod]
+        public void StandingDataManager_FindAirportForCode_Returns_Airport_When_Passed_Known_Icao()
+        {
+            _Implementation.Load();
+            var airport = _Implementation.FindAirportForCode("KJFK");
+
+            Assert.AreEqual("KJFK",                          airport.IcaoCode);
+            Assert.AreEqual("JFK",                           airport.IataCode);
+            Assert.AreEqual("John F Kennedy Intl, New York", airport.Name);
+            Assert.AreEqual("United States",                 airport.Country);
+            Assert.AreEqual(40.639751,                       airport.Latitude);
+            Assert.AreEqual(-73.778925,                      airport.Longitude);
+            Assert.AreEqual(13,                              airport.AltitudeFeet);
+        }
+
+        [TestMethod]
+        public void StandingDataManager_FindAirportForCode_Returns_Airport_When_Passed_Known_Iata()
+        {
+            _Implementation.Load();
+            var airport = _Implementation.FindAirportForCode("JFK");
+
+            Assert.AreEqual("KJFK",                          airport.IcaoCode);
+            Assert.AreEqual("JFK",                           airport.IataCode);
+            Assert.AreEqual("John F Kennedy Intl, New York", airport.Name);
+            Assert.AreEqual("United States",                 airport.Country);
+            Assert.AreEqual(40.639751,                       airport.Latitude);
+            Assert.AreEqual(-73.778925,                      airport.Longitude);
+            Assert.AreEqual(13,                              airport.AltitudeFeet);
+        }
+        #endregion
     }
 }

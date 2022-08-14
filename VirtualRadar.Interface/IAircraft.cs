@@ -422,6 +422,16 @@ namespace VirtualRadar.Interface
         long YearBuiltChanged { get; }
 
         /// <summary>
+        /// Gets or sets the code for the origin airport.
+        /// </summary>
+        string OriginAirportCode { get; set; }
+
+        /// <summary>
+        /// Gets the <see cref="DataVersion"/> that was current when <see cref="OriginAirportCode"/> was last changed.
+        /// </summary>
+        long OriginAirportCodeChanged { get; }
+
+        /// <summary>
         /// Gets or sets a description of the airport where the aircraft's journey began.
         /// </summary>
         string Origin { get; set; }
@@ -442,6 +452,16 @@ namespace VirtualRadar.Interface
         long DestinationChanged { get; }
 
         /// <summary>
+        /// Gets or sets the code of the airport where the aircraft's journey is scheduled to end.
+        /// </summary>
+        string DestinationAirportCode { get; set; }
+
+        /// <summary>
+        /// Gets the <see cref="DataVersion"/> that was current when <see cref="DestinationAirportCode"/> was last changed.
+        /// </summary>
+        long DestinationAirportCodeChanged { get; }
+
+        /// <summary>
         /// Gets or sets a list of scheduled stops for the aircraft.
         /// </summary>
         ICollection<string> Stopovers { get; }
@@ -450,6 +470,16 @@ namespace VirtualRadar.Interface
         /// Gets or sets the <see cref="DataVersion"/> that was current when <see cref="Stopovers"/> was last changed.
         /// </summary>
         long StopoversChanged { get; set; }
+
+        /// <summary>
+        /// Gets or sets a list of airport codes for the aircraft's scheduled stops.
+        /// </summary>
+        ICollection<string> StopoverAirportCodes { get; }
+
+        /// <summary>
+        /// Gets or sets the <see cref="DataVersion"/> that was current when <see cref="StopoverAirportCodes"/> was last changed.
+        /// </summary>
+        long StopoverAirportCodesChanged { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating that this is probably a positioning / ferry flight.
