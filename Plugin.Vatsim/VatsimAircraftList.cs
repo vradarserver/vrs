@@ -209,14 +209,15 @@ namespace VirtualRadar.Plugin.Vatsim
                 aircraft.UserTag =          $"[{pilot.pilot_rating}] {pilot.name} on {pilot.server}";
                 aircraft.AirPressureInHg =  pilot.qnh_i_hg;
                 aircraft.Callsign =         pilot.callsign;
+                aircraft.OnGround =         pilot.groundspeed < 40;
 
-                FillStandingDataFields(pilot, aircraft);
+                FillStandingDataFields(pilot, aircraft, config);
 
                 aircraft.UpdateCoordinates(utcNow, config.GoogleMapSettings.ShortTrailLengthSeconds);
             }
         }
 
-        private void FillStandingDataFields(VatsimDataV3Pilot pilot, IAircraft aircraft)
+        private void FillStandingDataFields(VatsimDataV3Pilot pilot, IAircraft aircraft, Configuration config)
         {
             var flightPlan = pilot.flight_plan;
             if(flightPlan != null) {
@@ -239,7 +240,7 @@ namespace VirtualRadar.Plugin.Vatsim
                     if(!String.IsNullOrEmpty(aircraft.OriginAirportCode) && String.IsNullOrEmpty(aircraft.Origin)) {
                         var airport = _StandingDataManager.FindAirportForCode(aircraft.OriginAirportCode);
                         if(airport != null) {
-                            aircraft.Origin = airport.Name;
+                            aircraft.Origin = Describe.Airport(airport, config.GoogleMapSettings.PreferIataAirportCodes);
                         }
                     }
 
@@ -250,7 +251,7 @@ namespace VirtualRadar.Plugin.Vatsim
                     if(!String.IsNullOrEmpty(aircraft.DestinationAirportCode) && String.IsNullOrEmpty(aircraft.Destination)) {
                         var airport = _StandingDataManager.FindAirportForCode(aircraft.DestinationAirportCode);
                         if(airport != null) {
-                            aircraft.Destination = airport.Name;
+                            aircraft.Destination = Describe.Airport(airport, config.GoogleMapSettings.PreferIataAirportCodes);
                         }
                     }
                 }
