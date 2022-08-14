@@ -209,7 +209,12 @@ namespace VirtualRadar.Plugin.Vatsim
                 aircraft.UserTag =          $"[{pilot.pilot_rating}] {pilot.name} on {pilot.server}";
                 aircraft.AirPressureInHg =  pilot.qnh_i_hg;
                 aircraft.Callsign =         pilot.callsign;
-                aircraft.OnGround =         pilot.groundspeed < 40;
+
+                if(!Plugin.Options.AssumeSlowAircraftAreOnGround) {
+                    aircraft.OnGround = false;
+                } else {
+                    aircraft.OnGround = pilot.groundspeed < Plugin.Options.SlowAircraftThresholdSpeed;
+                }
 
                 FillStandingDataFields(pilot, aircraft, config);
 

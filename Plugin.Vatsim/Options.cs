@@ -26,8 +26,22 @@ namespace VirtualRadar.Plugin.Vatsim
         /// </summary>
         public bool Enabled
         {
-            get { return _Enabled; }
-            set { SetField(ref _Enabled, value, nameof(Enabled)); }
+            get => _Enabled;
+            set => SetField(ref _Enabled, value, nameof(Enabled));
+        }
+
+        private bool _AssumeSlowAircraftAreOnGround = true;
+        public bool AssumeSlowAircraftAreOnGround
+        {
+            get => _AssumeSlowAircraftAreOnGround;
+            set => SetField(ref _AssumeSlowAircraftAreOnGround, value, nameof(AssumeSlowAircraftAreOnGround));
+        }
+
+        private int _SlowAircraftThresholdSpeed = 40;
+        public int SlowAircraftThresholdSpeed
+        {
+            get => _SlowAircraftThresholdSpeed;
+            set => SetField(ref _SlowAircraftThresholdSpeed, value, nameof(SlowAircraftThresholdSpeed));
         }
 
         /// <summary>
