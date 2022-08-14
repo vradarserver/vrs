@@ -2292,7 +2292,7 @@ namespace VRS
                 if(details.mapPolylines.length && details.polylineTrailType !== trailType) {
                     this.removeTrail(details);
                 }
-                if(trail.trimStartCount) {
+                if(trail.trimStartCount && !isFullTrail) {
                     this.trimShortTrailPoints(details, trail);
                 }
 
