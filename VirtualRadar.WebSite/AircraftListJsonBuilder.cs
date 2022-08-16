@@ -515,7 +515,7 @@ namespace VirtualRadar.WebSite
                 if(result && filter.MustTransmitPosition != null)   result = filter.MustTransmitPosition.Passes(aircraft.Latitude != null && aircraft.Longitude != null);
                 if(result && filter.Operator != null)               result = filter.Operator.Passes(aircraft.Operator);
                 if(result && filter.OperatorIcao != null)           result = filter.OperatorIcao.Passes(aircraft.OperatorIcao);
-                if(result && filter.PositionWithin != null)         result = args.SelectedAircraftId == aircraft.UniqueId || IsWithinBounds(aircraft.Latitude, aircraft.Longitude, filter.PositionWithin);
+                if(result && filter.PositionWithin != null)         result = args.SelectedAircraftId == aircraft.UniqueId || GeofenceChecker.IsWithinBounds(aircraft.Latitude, aircraft.Longitude, filter.PositionWithin);
                 if(result && filter.Registration != null)           result = filter.Registration.Passes(aircraft.Registration);
                 if(result && filter.Species != null)                result = filter.Species.Passes(aircraft.Species);
                 if(result && filter.Squawk != null)                 result = filter.Squawk.Passes(aircraft.Squawk);
@@ -561,58 +561,6 @@ namespace VirtualRadar.WebSite
             }
 
             return filterString.Passes(airportCodes);
-        }
-
-        /// <summary>
-        /// Returns true if an aircraft at the latitude and longitude passed across is within the rectangle on the surface
-        /// of the earth described by the pair of coordinates passed across, where the first coordinate is top-left and
-        /// the second is bottom-right.
-        /// </summary>
-        /// <param name="latitude"></param>
-        /// <param name="longitude"></param>
-        /// <param name="bounds"></param>
-        /// <returns></returns>
-        private bool IsWithinBounds(double? latitude, double? longitude, Pair<Coordinate> bounds)
-        {
-            bool result = latitude != null && longitude != null;
-            if(result) {
-                result = false;
-
-                // Latitude is simple because we assume there is nothing past the poles... from north to south the earth is flat :)
-                result = bounds.First.Latitude >= latitude && bounds.Second.Latitude <= latitude;
-
-                if(result) {
-                    // Longitude is harder because if the bounding box straddles the anti-meridian then the normal comparison of coordinates
-                    // fails. When it straddles the anti-meridian the left edge is a +ve value < 180 and the right edge is a -ve value > -180.
-                    // You can also end up with a left edge that is larger than the right edge (e.g. left is 170, Alaska-ish, while right is
-                    // 60, Russia-ish). On top of that -180 and 180 are the same value. The easiest way to cope is to normalise all longitudes
-                    // to a linear scale of angles from 0 through 360 and then check that the longitude lies between the left and right.
-                    //
-                    // If the left degree is larger than the right degree then the bounds straddle the meridian, in which case we need to allow
-                    // all longitudes from the left to 0/360 and all longitudes from 0/360 to the right. If left < right then it's easier, we
-                    // just have to have a longitude between left and right.
-                    //
-                    // One final twist - if you zoom out enough so that you can see the entire span of the globe in one go then Google will give
-                    // up and report a boundary of -180 on the left and 180 on the right... in other words, the same longitude. Still, there's
-                    // not much else they can do.
-                    longitude = ConvertLongitudeToLinear(longitude.Value);
-
-                    var left = ConvertLongitudeToLinear(bounds.First.Longitude);
-                    var right = ConvertLongitudeToLinear(bounds.Second.Longitude);
-                    if(left != 180.0 || right != 180.0) {
-                        if(left == right)     result = longitude == left;
-                        else if(left > right) result = (longitude >= left && longitude <= 360.0) || (longitude >= 0.0 && longitude <= right);
-                        else                  result = longitude >= left && longitude <= right;
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        private static double ConvertLongitudeToLinear(double longitude)
-        {
-            return longitude >= 0.0 ? longitude : longitude + 360.0;
         }
         #endregion
     }

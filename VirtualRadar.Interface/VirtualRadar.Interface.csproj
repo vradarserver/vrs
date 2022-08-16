@@ -152,6 +152,8 @@
     <Compile Include="Drawing\ResizeMode.cs" />
     <Compile Include="Drawing\Size.cs" />
     <Compile Include="EventHelperException.cs" />
+    <Compile Include="GeofenceChecker.cs" />
+    <Compile Include="GeofenceCWH.cs" />
     <Compile Include="HttpContentHelper.cs" />
     <Compile Include="IAircraftOnlineLookupLog.cs" />
     <Compile Include="IAirPressureDownloader.cs" />

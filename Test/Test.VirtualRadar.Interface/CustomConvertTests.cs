@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Test.Framework;
 using VirtualRadar.Interface;
 
 namespace Test.VirtualRadar.Interface
@@ -95,6 +96,28 @@ namespace Test.VirtualRadar.Interface
                 var expected = Convert.ToInt32(text, 16);
                 Assert.AreEqual(expected, CustomConvert.Icao24(text), $"Failed on {ch}");
             }
+        }
+        #endregion
+
+        #region DistanceUnits
+        [TestMethod]
+        public void CustomConvert_DistanceUnits_Calculates_Correct_Distances()
+        {
+            new InlineDataTest(this)
+            .TestAndAssert(new dynamic[] {
+                new { Distance = 12.34, FromUnit = DistanceUnit.Kilometres,     ToUnit  = DistanceUnit.Kilometres,      Expected = 12.34 },
+                new { Distance = 12.34, FromUnit = DistanceUnit.Kilometres,     ToUnit  = DistanceUnit.Miles,           Expected =  7.67 },
+                new { Distance = 12.34, FromUnit = DistanceUnit.Kilometres,     ToUnit  = DistanceUnit.NauticalMiles,   Expected =  6.66 },
+                new { Distance = 12.34, FromUnit = DistanceUnit.Miles,          ToUnit  = DistanceUnit.Kilometres,      Expected = 19.86 },
+                new { Distance = 12.34, FromUnit = DistanceUnit.Miles,          ToUnit  = DistanceUnit.Miles,           Expected = 12.34 },
+                new { Distance = 12.34, FromUnit = DistanceUnit.Miles,          ToUnit  = DistanceUnit.NauticalMiles,   Expected = 10.72 },
+                new { Distance = 12.34, FromUnit = DistanceUnit.NauticalMiles,  ToUnit  = DistanceUnit.Kilometres,      Expected = 22.85 },
+                new { Distance = 12.34, FromUnit = DistanceUnit.NauticalMiles,  ToUnit  = DistanceUnit.Miles,           Expected = 14.20 },
+                new { Distance = 12.34, FromUnit = DistanceUnit.NauticalMiles,  ToUnit  = DistanceUnit.NauticalMiles,   Expected = 12.34 },
+            }, (dynamic row) => {
+                var actual = CustomConvert.DistanceUnits(row.Distance, row.FromUnit, row.ToUnit);
+                Assert.AreEqual(row.Expected, actual, 0.01);
+            });
         }
         #endregion
     }

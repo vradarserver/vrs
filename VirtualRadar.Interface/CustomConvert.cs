@@ -110,5 +110,37 @@ namespace VirtualRadar.Interface
 
             return result;
         }
+
+        public static double DistanceUnits(double distance, DistanceUnit fromUnit, DistanceUnit toUnit)
+        {
+            switch(fromUnit) {
+                case DistanceUnit.Kilometres:
+                    switch(toUnit) {
+                        case DistanceUnit.Kilometres:               return distance;
+                        case DistanceUnit.Miles:                    return distance * 0.621371192;
+                        case DistanceUnit.NauticalMiles:            return distance * 0.539956803;
+                        default:
+                            throw new NotImplementedException();
+                    }
+                case DistanceUnit.Miles:
+                    switch(toUnit) {
+                        case DistanceUnit.Kilometres:               return distance * 1.609344;
+                        case DistanceUnit.Miles:                    return distance;
+                        case DistanceUnit.NauticalMiles:            return distance * 0.868976;
+                        default:
+                            throw new NotImplementedException();
+                    }
+                case DistanceUnit.NauticalMiles:
+                    switch(toUnit) {
+                        case DistanceUnit.Kilometres:               return distance * 1.852;
+                        case DistanceUnit.Miles:                    return distance * 1.15078;
+                        case DistanceUnit.NauticalMiles:            return distance;
+                        default:
+                            throw new NotImplementedException();
+                    }
+                default:
+                    throw new NotImplementedException();
+            }
+        }
     }
 }
