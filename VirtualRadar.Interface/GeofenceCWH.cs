@@ -90,7 +90,7 @@
                 CentreLatitude,
                 CentreLongitude,
                 angle,
-                CustomConvert.DistanceUnits(isLat ? Height : Width, DistanceUnit, DistanceUnit.Kilometres),
+                CustomConvert.DistanceUnits((isLat ? Height : Width) / 2.0, DistanceUnit, DistanceUnit.Kilometres),
                 out double? lat,
                 out double? lng
             );

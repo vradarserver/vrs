@@ -41,8 +41,8 @@ namespace Test.VirtualRadar.Interface
         {
             new InlineDataTest(this).TestAndAssert(
                 new dynamic[] {
-                    new { Lat =  0.0,  Lng =    0.0, W = 111.194927, H = 222.389853, D = DistanceUnit.Kilometres, ExW =  -1.0,     ExN =  2.0,     ExE =    1.0,     ExS = -2.0 },
-                    new { Lat = 50.0,  Lng = -179.0, W = 900.0,      H = 900.0,      D = DistanceUnit.Miles,      ExW = 161.20584, ExN = 63.02586, ExE = -159.20585, ExS = 36.97414 },
+                    new { Lat =  0.0,  Lng =    0.0, W = 222.389854, H = 444.779708, D = DistanceUnit.Kilometres, ExW =  -1.0,     ExN =  2.0,     ExE =    1.0,     ExS = -2.0 },
+                    new { Lat = 50.0,  Lng = -179.0, W = 1800.0,     H = 1800.0,     D = DistanceUnit.Miles,      ExW = 161.20584, ExN = 63.02586, ExE = -159.20585, ExS = 36.97414 },
                 },
                 (dynamic row) => {
                     var rect = new GeofenceCWH(
@@ -67,21 +67,21 @@ namespace Test.VirtualRadar.Interface
             new InlineDataTest(this).TestAndAssert(
                 new dynamic[] {
                     // W = -1  N = 1  E = 1  S = 1
-                    new { CLat =  0.0, CLng = 0.0, W = 111.194927, H = 111.194927, D = DistanceUnit.Kilometres, Lat = (double?)null, Lng = (double?)null, Expected = false },
-                    new { CLat =  0.0, CLng = 0.0, W = 111.194927, H = 111.194927, D = DistanceUnit.Kilometres, Lat = -1.1, Lng =  0.0, Expected = false },
-                    new { CLat =  0.0, CLng = 0.0, W = 111.194927, H = 111.194927, D = DistanceUnit.Kilometres, Lat =  1.1, Lng =  0.0, Expected = false },
-                    new { CLat =  0.0, CLng = 0.0, W = 111.194927, H = 111.194927, D = DistanceUnit.Kilometres, Lat =  0.0, Lng = -1.1, Expected = false },
-                    new { CLat =  0.0, CLng = 0.0, W = 111.194927, H = 111.194927, D = DistanceUnit.Kilometres, Lat =  0.0, Lng =  1.1, Expected = false },
-                    new { CLat =  0.0, CLng = 0.0, W = 111.194927, H = 111.194927, D = DistanceUnit.Kilometres, Lat = -0.9, Lng =  0.0, Expected = true },
-                    new { CLat =  0.0, CLng = 0.0, W = 111.194927, H = 111.194927, D = DistanceUnit.Kilometres, Lat =  0.9, Lng =  0.0, Expected = true },
-                    new { CLat =  0.0, CLng = 0.0, W = 111.194927, H = 111.194927, D = DistanceUnit.Kilometres, Lat =  0.0, Lng = -0.9, Expected = true },
-                    new { CLat =  0.0, CLng = 0.0, W = 111.194927, H = 111.194927, D = DistanceUnit.Kilometres, Lat =  0.0, Lng =  0.9, Expected = true },
+                    new { CLat =  0.0, CLng = 0.0, W = 222.389854, H = 222.389854, D = DistanceUnit.Kilometres, Lat = (double?)null, Lng = (double?)null, Expected = false },
+                    new { CLat =  0.0, CLng = 0.0, W = 222.389854, H = 222.389854, D = DistanceUnit.Kilometres, Lat = -1.1, Lng =  0.0, Expected = false },
+                    new { CLat =  0.0, CLng = 0.0, W = 222.389854, H = 222.389854, D = DistanceUnit.Kilometres, Lat =  1.1, Lng =  0.0, Expected = false },
+                    new { CLat =  0.0, CLng = 0.0, W = 222.389854, H = 222.389854, D = DistanceUnit.Kilometres, Lat =  0.0, Lng = -1.1, Expected = false },
+                    new { CLat =  0.0, CLng = 0.0, W = 222.389854, H = 222.389854, D = DistanceUnit.Kilometres, Lat =  0.0, Lng =  1.1, Expected = false },
+                    new { CLat =  0.0, CLng = 0.0, W = 222.389854, H = 222.389854, D = DistanceUnit.Kilometres, Lat = -0.9, Lng =  0.0, Expected = true },
+                    new { CLat =  0.0, CLng = 0.0, W = 222.389854, H = 222.389854, D = DistanceUnit.Kilometres, Lat =  0.9, Lng =  0.0, Expected = true },
+                    new { CLat =  0.0, CLng = 0.0, W = 222.389854, H = 222.389854, D = DistanceUnit.Kilometres, Lat =  0.0, Lng = -0.9, Expected = true },
+                    new { CLat =  0.0, CLng = 0.0, W = 222.389854, H = 222.389854, D = DistanceUnit.Kilometres, Lat =  0.0, Lng =  0.9, Expected = true },
 
                     // W = 161.20584, N = 63.02586, E = -159.20585, S = 36.97414
-                    new { CLat = 50.0, CLng = -179.0, W = 900.0, H = 900.0, D = DistanceUnit.Miles, Lat = 63.0, Lng = 162,  Expected = true },
-                    new { CLat = 50.0, CLng = -179.0, W = 900.0, H = 900.0, D = DistanceUnit.Miles, Lat = 63.0, Lng = 160,  Expected = false },
-                    new { CLat = 50.0, CLng = -179.0, W = 900.0, H = 900.0, D = DistanceUnit.Miles, Lat = 63.0, Lng = -160, Expected = true },
-                    new { CLat = 50.0, CLng = -179.0, W = 900.0, H = 900.0, D = DistanceUnit.Miles, Lat = 63.0, Lng = -158, Expected = false },
+                    new { CLat = 50.0, CLng = -179.0, W = 1800.0, H = 1800.0, D = DistanceUnit.Miles, Lat = 63.0, Lng = 162,  Expected = true },
+                    new { CLat = 50.0, CLng = -179.0, W = 1800.0, H = 1800.0, D = DistanceUnit.Miles, Lat = 63.0, Lng = 160,  Expected = false },
+                    new { CLat = 50.0, CLng = -179.0, W = 1800.0, H = 1800.0, D = DistanceUnit.Miles, Lat = 63.0, Lng = -160, Expected = true },
+                    new { CLat = 50.0, CLng = -179.0, W = 1800.0, H = 1800.0, D = DistanceUnit.Miles, Lat = 63.0, Lng = -158, Expected = false },
                 },
                 (dynamic row) => {
                     var rect = new GeofenceCWH(
