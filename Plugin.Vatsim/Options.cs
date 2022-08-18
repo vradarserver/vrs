@@ -30,21 +30,44 @@ namespace VirtualRadar.Plugin.Vatsim
             set => SetField(ref _Enabled, value, nameof(Enabled));
         }
 
+        private int _RefreshIntervalSeconds = 15;
+        /// <summary>
+        /// Gets or sets the number of seconds between fetches of VATSIM data. Note that there is a rate limit
+        /// at VATSIM of 15 seconds (as of time of writing).
+        /// </summary>
+        public int RefreshIntervalSeconds
+        {
+            get => _RefreshIntervalSeconds;
+            set => SetField(ref _RefreshIntervalSeconds, value, nameof(RefreshIntervalSeconds));
+        }
+
         private bool _AssumeSlowAircraftAreOnGround = true;
+        /// <summary>
+        /// Gets or sets a value indicating that on-ground status is to be inferred from the speed of the
+        /// aircraft. See <see cref="SlowAircraftThresholdSpeed"/>.
+        /// </summary>
         public bool AssumeSlowAircraftAreOnGround
         {
             get => _AssumeSlowAircraftAreOnGround;
             set => SetField(ref _AssumeSlowAircraftAreOnGround, value, nameof(AssumeSlowAircraftAreOnGround));
         }
 
-        private int _SlowAircraftThresholdSpeed = 40;
+        private int _SlowAircraftThresholdSpeedKnots = 40;
+        /// <summary>
+        /// Gets or sets an aircraft speed (in knots) below which aircraft are considered to be on the ground if
+        /// <see cref="AssumeSlowAircraftAreOnGround"/> is true.
+        /// </summary>
         public int SlowAircraftThresholdSpeed
         {
-            get => _SlowAircraftThresholdSpeed;
-            set => SetField(ref _SlowAircraftThresholdSpeed, value, nameof(SlowAircraftThresholdSpeed));
+            get => _SlowAircraftThresholdSpeedKnots;
+            set => SetField(ref _SlowAircraftThresholdSpeedKnots, value, nameof(SlowAircraftThresholdSpeed));
         }
 
         private bool _InferModelFromModelType = true;
+        /// <summary>
+        /// Gets or sets a value indicating that the manufacturer and model should be inferred from the reported
+        /// model type.
+        /// </summary>
         public bool InferModelFromModelType
         {
             get => _InferModelFromModelType;
