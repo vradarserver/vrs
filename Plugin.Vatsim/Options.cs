@@ -63,6 +63,22 @@ namespace VirtualRadar.Plugin.Vatsim
                 Height =        740.0,
                 DistanceUnit =  DistanceUnit.Miles,
             },
+            new GeofenceFeedOption() {
+                FeedName =      "Rando Pilot",
+                CentreOn =      GeofenceCentreOn.PilotCid,
+                PilotCid =      1518530,
+                Width =         30,
+                Height =        30,
+                DistanceUnit =  DistanceUnit.Miles,
+            },
+            new GeofenceFeedOption() {
+                FeedName =      "Heathrow",
+                CentreOn =      GeofenceCentreOn.Airport,
+                AirportCode =   "EGLL",
+                Width =         80,
+                Height =        80,
+                DistanceUnit =  DistanceUnit.Miles,
+            },
         };
     }
 }

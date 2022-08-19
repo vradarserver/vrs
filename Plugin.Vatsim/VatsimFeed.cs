@@ -23,7 +23,7 @@ namespace VirtualRadar.Plugin.Vatsim
     class VatsimFeed : ICustomFeed
     {
         private bool _FeedEnabled;
-        private static GeofenceCWH _Geofence;
+        private GeofenceCWH _Geofence;
 
         internal bool FeedEnabled
         {

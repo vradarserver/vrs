@@ -35,8 +35,6 @@ namespace VirtualRadar.Plugin.Vatsim
 
         public string AirportCode { get; set; }
 
-        public bool NeedsRebuildingEveryFetch => CentreOn == GeofenceCentreOn.PilotCid;
-
         public override string ToString()
         {
             switch(CentreOn) {

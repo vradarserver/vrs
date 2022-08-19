@@ -209,7 +209,7 @@ namespace VirtualRadar.Plugin.Vatsim
                 aircraft.GroundSpeed =      pilot.groundspeed;
                 aircraft.Squawk =           String.IsNullOrEmpty(pilot.transponder) ? (int?)null : pilot.TransponderValue;
                 aircraft.Emergency =        aircraft.Squawk == 7500 || aircraft.Squawk == 7600 || aircraft.Squawk == 7700;
-                aircraft.UserTag =          $"[{pilot.pilot_rating}] {pilot.name}";
+                aircraft.UserTag =          $"[{pilot.cid}] {pilot.name}";
                 aircraft.AirPressureInHg =  pilot.qnh_i_hg;
                 aircraft.Icao24Country =    pilot.server;
 
