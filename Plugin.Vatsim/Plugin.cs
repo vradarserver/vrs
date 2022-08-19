@@ -85,10 +85,16 @@ namespace VirtualRadar.Plugin.Vatsim
         {
             var feedManager = Factory.ResolveSingleton<IFeedManager>();
 
-            // Test feed that shows all pilots for now...
-            var feed = new VatsimFeed();
-            feedManager.AddCustomFeed(feed);
-            feed.Connect();
+            // Master feed - this can be a teensy-weensy bit punishing on browsers when VATSIM is busy...
+            var masterFeed = new VatsimFeed();
+            feedManager.AddCustomFeed(masterFeed);
+            masterFeed.Connect();
+
+            foreach(var geofencedFeedOption in Options.GeofencedFeeds) {
+                var geofencedFeed = new VatsimFeed(geofencedFeedOption);
+                feedManager.AddCustomFeed(geofencedFeed);
+                geofencedFeed.Connect();
+            }
 
             VatsimDownloader.Start();
         }

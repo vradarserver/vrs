@@ -79,6 +79,24 @@ namespace VirtualRadar.Plugin.Vatsim {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Everything.
+        /// </summary>
+        public static string FeedNameAllAircraft {
+            get {
+                return ResourceManager.GetString("FeedNameAllAircraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VATSIM: {0}.
+        /// </summary>
+        public static string FeedNameTemplate {
+            get {
+                return ResourceManager.GetString("FeedNameTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to VATSIM.
         /// </summary>
         public static string PluginName {

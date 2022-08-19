@@ -9,6 +9,14 @@
     /// </summary>
     public class GeofenceCWH
     {
+        public static GeofenceCWH Empty { get; } = new GeofenceCWH(
+            centreLatitude:  0.0,
+            centreLongitude: 0.0,
+            width:           0.0,
+            height:          0.0,
+            distanceUnit:    DistanceUnit.Kilometres
+        );
+
         /// <summary>
         /// Gets the latitude of the centre point of the fence.
         /// </summary>
@@ -76,10 +84,10 @@
             Height =            height;
             DistanceUnit =      distanceUnit;
 
-            WesterlyLongitude = CalculateBoundary(270);
             NortherlyLatitude = CalculateBoundary(0);
             EasterlyLongitude = CalculateBoundary(90);
             SoutherlyLatitude = CalculateBoundary(180);
+            WesterlyLongitude = CalculateBoundary(270);
         }
 
         private double CalculateBoundary(double angle)

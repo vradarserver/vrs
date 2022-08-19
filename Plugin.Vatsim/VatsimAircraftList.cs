@@ -248,7 +248,7 @@ namespace VirtualRadar.Plugin.Vatsim
                 if(!Plugin.Options.AssumeSlowAircraftAreOnGround) {
                     aircraft.OnGround = false;
                 } else {
-                    aircraft.OnGround = pilot.groundspeed < Plugin.Options.SlowAircraftThresholdSpeed;
+                    aircraft.OnGround = pilot.groundspeed < Plugin.Options.SlowAircraftThresholdSpeedKnots;
                 }
 
                 FillStandingDataFields(pilot, aircraft, config);

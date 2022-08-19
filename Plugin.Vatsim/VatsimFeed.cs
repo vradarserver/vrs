@@ -23,6 +23,7 @@ namespace VirtualRadar.Plugin.Vatsim
     class VatsimFeed : ICustomFeed
     {
         private bool _FeedEnabled;
+        private static GeofenceCWH _Geofence;
 
         internal bool FeedEnabled
         {
@@ -37,7 +38,9 @@ namespace VirtualRadar.Plugin.Vatsim
 
         public int UniqueId { get; private set; }
 
-        public string Name { get; internal set; } = "VATSIM Feed";
+        public string Name { get; internal set; }
+
+        public GeofenceFeedOption GeofenceFeedOption { get; }
 
         internal VatsimAircraftList VatsimAircraftList { get; } = new VatsimAircraftList();
 
@@ -63,6 +66,17 @@ namespace VirtualRadar.Plugin.Vatsim
         public event EventHandler<EventArgs<Exception>> ExceptionCaught;
 
         protected virtual void OnExceptionCaught(EventArgs<Exception> args) => ExceptionCaught?.Invoke(this, args);
+
+        public VatsimFeed(string feedName = null)
+        {
+            Name = String.Format(VatsimStrings.FeedNameTemplate, feedName ?? VatsimStrings.FeedNameAllAircraft);
+        }
+
+        public VatsimFeed(GeofenceFeedOption option) : this(option.FeedName)
+        {
+            GeofenceFeedOption = option;
+            _Geofence = option.CreateGeofence();
+        }
 
         public void Dispose()
         {
@@ -102,7 +116,35 @@ namespace VirtualRadar.Plugin.Vatsim
 
         private void ProcessDownload(EventArgs<VatsimDataV3> args)
         {
-            VatsimAircraftList.ApplyPilotStates(args.Value.pilots);
+            var filteredPilots = args.Value.pilots;
+
+            var feedOption = GeofenceFeedOption;
+            if(feedOption != null) {
+                filteredPilots = FilterPilots(filteredPilots, feedOption);
+            }
+
+            VatsimAircraftList.ApplyPilotStates(filteredPilots);
+        }
+
+        private List<VatsimDataV3Pilot> FilterPilots(List<VatsimDataV3Pilot> allPilots, GeofenceFeedOption feedOption)
+        {
+            var result = new List<VatsimDataV3Pilot>();
+
+            var geofence = _Geofence;
+            switch(feedOption.CentreOn) {
+                case GeofenceCentreOn.PilotCid:
+                    var pilot = allPilots.FirstOrDefault(r => r.cid == feedOption.PilotCid);
+                    geofence = feedOption.CreateGeofence(pilot?.latitude, pilot?.longitude);
+                    break;
+            }
+
+            foreach(var candidate in allPilots) {
+                if(geofence.IsWithinBounds(candidate.latitude, candidate.longitude)) {
+                    result.Add(candidate);
+                }
+            }
+
+            return result;
         }
 
         private void VatsimDownloader_DataDownloaded(object sender, EventArgs<VatsimDataV3> args)

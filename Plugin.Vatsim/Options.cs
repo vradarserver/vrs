@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.Plugin.Vatsim
 {
@@ -48,5 +49,20 @@ namespace VirtualRadar.Plugin.Vatsim
         /// model type.
         /// </summary>
         public bool InferModelFromModelType { get; set; } = true;
+
+        /// <summary>
+        /// Gets a list of geofences and the feeds that can be associated with them.
+        /// </summary>
+        public List<GeofenceFeedOption> GeofencedFeeds { get; } = new List<GeofenceFeedOption>() {
+            new GeofenceFeedOption() {
+                FeedName =      "UK and Ireland",
+                CentreOn =      GeofenceCentreOn.Coordinate,
+                Latitude =      54.49798931601776,
+                Longitude =     -4.5556287244490985,
+                Width =         560.0,
+                Height =        740.0,
+                DistanceUnit =  DistanceUnit.Miles,
+            },
+        };
     }
 }

@@ -123,6 +123,12 @@
   <data name="Enabled" xml:space="preserve">
     <value>Enabled</value>
   </data>
+  <data name="FeedNameAllAircraft" xml:space="preserve">
+    <value>Everything</value>
+  </data>
+  <data name="FeedNameTemplate" xml:space="preserve">
+    <value>VATSIM: {0}</value>
+  </data>
   <data name="PluginName" xml:space="preserve">
     <value>VATSIM</value>
   </data>
