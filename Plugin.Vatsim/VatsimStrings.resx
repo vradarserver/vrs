@@ -120,6 +120,9 @@
   <data name="Add" xml:space="preserve">
     <value>Add</value>
   </data>
+  <data name="Airport" xml:space="preserve">
+    <value>Airport</value>
+  </data>
   <data name="AirportCode" xml:space="preserve">
     <value>Airport code</value>
   </data>
@@ -137,6 +140,9 @@
   </data>
   <data name="CentredOnLabel" xml:space="preserve">
     <value>Centre on</value>
+  </data>
+  <data name="Coordinate" xml:space="preserve">
+    <value>Coordinate</value>
   </data>
   <data name="Delete" xml:space="preserve">
     <value>Delete</value>
@@ -197,6 +203,9 @@
   </data>
   <data name="OptionsDialogTitle" xml:space="preserve">
     <value>VATSIM Plugin Options</value>
+  </data>
+  <data name="Pilot" xml:space="preserve">
+    <value>Pilot</value>
   </data>
   <data name="PilotCID" xml:space="preserve">
     <value>Pilot CID</value>

@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DescribeVatsim.cs" />
     <Compile Include="GeofenceCentreOn.cs" />
     <Compile Include="GeofenceFeedOption.cs" />
     <Compile Include="Options.cs" />

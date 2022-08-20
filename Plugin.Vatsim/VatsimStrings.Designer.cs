@@ -70,6 +70,15 @@ namespace VirtualRadar.Plugin.Vatsim {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Airport.
+        /// </summary>
+        public static string Airport {
+            get {
+                return ResourceManager.GetString("Airport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Airport code.
         /// </summary>
         public static string AirportCode {
@@ -120,6 +129,15 @@ namespace VirtualRadar.Plugin.Vatsim {
         public static string CentredOnLabel {
             get {
                 return ResourceManager.GetString("CentredOnLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Coordinate.
+        /// </summary>
+        public static string Coordinate {
+            get {
+                return ResourceManager.GetString("Coordinate", resourceCulture);
             }
         }
         
@@ -300,6 +318,15 @@ namespace VirtualRadar.Plugin.Vatsim {
         public static string OptionsDialogTitle {
             get {
                 return ResourceManager.GetString("OptionsDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pilot.
+        /// </summary>
+        public static string Pilot {
+            get {
+                return ResourceManager.GetString("Pilot", resourceCulture);
             }
         }
         

@@ -17,6 +17,8 @@ namespace VirtualRadar.Plugin.Vatsim
 {
     class GeofenceFeedOption
     {
+        public Guid ID { get; set; } = Guid.NewGuid();
+
         public string FeedName { get; set; }
 
         public GeofenceCentreOn CentreOn { get; set; }

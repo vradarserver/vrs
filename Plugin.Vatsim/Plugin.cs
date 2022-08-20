@@ -124,6 +124,7 @@ namespace VirtualRadar.Plugin.Vatsim
         public void ShowWinFormsOptionsUI()
         {
             using(var optionsView = new WinForms.OptionsView()) {
+                optionsView.Options = OptionsStorage.Load();
                 if(optionsView.ShowDialog() == DialogResult.OK) {
                 }
             }

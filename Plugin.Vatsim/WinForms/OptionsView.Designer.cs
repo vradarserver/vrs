@@ -49,7 +49,6 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
             this.label12 = new System.Windows.Forms.Label();
             this.nudWidth = new System.Windows.Forms.NumericUpDown();
             this.label11 = new System.Windows.Forms.Label();
-            this.txtPilotCID = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.txtAirportCode = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -57,7 +56,7 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
             this.label8 = new System.Windows.Forms.Label();
             this.nudLatitude = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
-            this.cmdCentreOn = new System.Windows.Forms.ComboBox();
+            this.cmbCentreOn = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.txtFeedName = new System.Windows.Forms.TextBox();
@@ -72,6 +71,7 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
             this.colWidth = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colHeight = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colDistanceUnit = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.nudPilotCid = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.nudRefreshIntervalSeconds)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSlowAircraftThresholdSpeedKnots)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -79,6 +79,7 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
             ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLongitude)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLatitude)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPilotCid)).BeginInit();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -220,6 +221,7 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.nudPilotCid);
             this.groupBox1.Controls.Add(this.btnAdd);
             this.groupBox1.Controls.Add(this.btnDelete);
             this.groupBox1.Controls.Add(this.label14);
@@ -229,7 +231,6 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
             this.groupBox1.Controls.Add(this.label12);
             this.groupBox1.Controls.Add(this.nudWidth);
             this.groupBox1.Controls.Add(this.label11);
-            this.groupBox1.Controls.Add(this.txtPilotCID);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.txtAirportCode);
             this.groupBox1.Controls.Add(this.label9);
@@ -237,7 +238,7 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.nudLatitude);
             this.groupBox1.Controls.Add(this.label7);
-            this.groupBox1.Controls.Add(this.cmdCentreOn);
+            this.groupBox1.Controls.Add(this.cmbCentreOn);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.txtFeedName);
@@ -350,15 +351,6 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
             this.label11.TabIndex = 14;
             this.label11.Text = "::PilotCID:::";
             // 
-            // txtPilotCID
-            // 
-            this.txtPilotCID.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtPilotCID.Location = new System.Drawing.Point(596, 338);
-            this.txtPilotCID.MaxLength = 4;
-            this.txtPilotCID.Name = "txtPilotCID";
-            this.txtPilotCID.Size = new System.Drawing.Size(100, 20);
-            this.txtPilotCID.TabIndex = 13;
-            // 
             // label10
             // 
             this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -372,6 +364,7 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
             // txtAirportCode
             // 
             this.txtAirportCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtAirportCode.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.txtAirportCode.Location = new System.Drawing.Point(596, 312);
             this.txtAirportCode.MaxLength = 4;
             this.txtAirportCode.Name = "txtAirportCode";
@@ -448,15 +441,15 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
             this.label7.TabIndex = 6;
             this.label7.Text = "::CentredOnLabel:::";
             // 
-            // cmdCentreOn
+            // cmbCentreOn
             // 
-            this.cmdCentreOn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cmdCentreOn.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmdCentreOn.FormattingEnabled = true;
-            this.cmdCentreOn.Location = new System.Drawing.Point(165, 257);
-            this.cmdCentreOn.Name = "cmdCentreOn";
-            this.cmdCentreOn.Size = new System.Drawing.Size(190, 21);
-            this.cmdCentreOn.TabIndex = 5;
+            this.cmbCentreOn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cmbCentreOn.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbCentreOn.FormattingEnabled = true;
+            this.cmbCentreOn.Location = new System.Drawing.Point(165, 257);
+            this.cmbCentreOn.Name = "cmbCentreOn";
+            this.cmbCentreOn.Size = new System.Drawing.Size(190, 21);
+            this.cmbCentreOn.TabIndex = 5;
             // 
             // label6
             // 
@@ -571,6 +564,18 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
             this.colDistanceUnit.Text = "::DistanceUnitHeading::";
             this.colDistanceUnit.Width = 80;
             // 
+            // nudPilotCid
+            // 
+            this.nudPilotCid.Location = new System.Drawing.Point(596, 339);
+            this.nudPilotCid.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.nudPilotCid.Name = "nudPilotCid";
+            this.nudPilotCid.Size = new System.Drawing.Size(100, 20);
+            this.nudPilotCid.TabIndex = 23;
+            // 
             // OptionsView
             // 
             this.AcceptButton = this.btnSave;
@@ -603,6 +608,7 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
             ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLongitude)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLatitude)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPilotCid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -633,14 +639,13 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.ComboBox cmdCentreOn;
+        private System.Windows.Forms.ComboBox cmbCentreOn;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.NumericUpDown nudLongitude;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.NumericUpDown nudLatitude;
         private System.Windows.Forms.TextBox txtAirportCode;
-        private System.Windows.Forms.TextBox txtPilotCID;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.ComboBox cmbDistanceUnit;
@@ -654,5 +659,6 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
         private System.Windows.Forms.ColumnHeader colDistanceUnit;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnAdd;
+        private System.Windows.Forms.NumericUpDown nudPilotCid;
     }
 }
