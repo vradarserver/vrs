@@ -25,16 +25,37 @@ namespace VirtualRadar.Plugin.Vatsim
     {
         private static readonly Regex _KeyValuePairRegex = new Regex(@"(?<key>[A-Z/]+)/(?<value>(.(?![A-Z/]+/))*)", RegexOptions.Compiled);
 
+        private static readonly Regex _WordRegex = new Regex(@"(?<word>\b[A-Z0-9]+\b)", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Gets the full remarks.
+        /// </summary>
         public string Remarks { get; }
 
+        /// <summary>
+        /// Gets a collection of key-value properties extracted from <see cref="Remarks"/>.
+        /// </summary>
         public NameValueCollection Properties { get; } = new NameValueCollection();
 
-        public string Registration => Properties["REG"];
+        /// <summary>
+        /// Gets the registration as extracted from the <see cref="Remarks"/>.
+        /// </summary>
+        public string Registration => FirstWordOf("REG", truncateAt: 10);
 
-        public string OperatorIcao => Properties["OPR"];
+        /// <summary>
+        /// Gets the operator ICAO as extracted from the <see cref="Remarks"/>.
+        /// </summary>
+        public string OperatorIcao => FirstWordOf("OPR", truncateAt: 3);
 
-        public string ModeSCode => Properties["CODE"];
+        /// <summary>
+        /// Gets the Mode-S ICAO24 as extracted from the <see cref="Remarks"/>.
+        /// </summary>
+        public string ModeSCode => FirstWordOf("CODE", truncateAt: 6);
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="remarks">The remarks to parse into <see cref="Properties"/>.</param>
         public VatsimRemarks(string remarks)
         {
             Remarks = remarks;
@@ -72,6 +93,35 @@ namespace VirtualRadar.Plugin.Vatsim
             }
         }
 
+        /// <summary>
+        /// See base class.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString() => Remarks;
+
+        /// <summary>
+        /// Returns the first word of the <see cref="Properties"/> key passed across,
+        /// truncated at <paramref name="truncateAt"/> (zero based).
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="truncateAt"></param>
+        /// <returns></returns>
+        public string FirstWordOf(string key, int truncateAt)
+        {
+            var result = Properties[key] ?? "";
+
+            if(result != "") {
+                var match = _WordRegex.Match(result);
+                if(!match.Success) {
+                    result = "";
+                } else {
+                    result = match.Groups["word"].Value;
+                }
+            }
+
+            return result.Length > truncateAt
+                ? result.Substring(0, truncateAt)
+                : result;
+        }
     }
 }

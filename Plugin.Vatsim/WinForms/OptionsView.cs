@@ -10,12 +10,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using VirtualRadar.Interface;
 using VirtualRadar.WinForms;
@@ -36,6 +31,7 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
                 if(!Object.ReferenceEquals(_Options, value)) {
                     _Options = value;
                     CopyOptionsToControls();
+                    EnableDisableControls();
                 }
             }
         }
@@ -170,6 +166,20 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
             CopySelectedGeofenceFeedToControls();
         }
 
+        private void CopyControlsToOptions()
+        {
+            Options.AssumeSlowAircraftAreOnGround =     AssumeSlowAircraftAreOnGround;
+            Options.InferModelFromModelType =           InferModelFromModelType;
+            Options.Enabled =                           PluginEnabled;
+            Options.RefreshIntervalSeconds =            RefreshIntervalSeconds;
+            Options.SlowAircraftThresholdSpeedKnots =   SlowAircraftThresholdSpeedKnots;
+
+            Options.GeofencedFeeds.Clear();
+            foreach(var feedOption in _GeofenceFeedListViewHelper.AllAttachedValues) {
+                Options.GeofencedFeeds.Add(feedOption);
+            }
+        }
+
         private void CopySelectedGeofenceFeedToControls()
         {
             var feed = _GeofenceFeedListViewHelper.SelectedAttachedValues.FirstOrDefault();
@@ -185,6 +195,27 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
             PilotCid =          feed?.PilotCid ?? 0;
         }
 
+        private void EnableDisableControls()
+        {
+            var selectedGeofence =  _GeofenceFeedListViewHelper.SelectedAttachedValues.FirstOrDefault();
+            var geofenceSelected =  selectedGeofence != null;
+            var useAirport =        selectedGeofence?.CentreOn == GeofenceCentreOn.Airport;
+            var useCoordinate =     selectedGeofence?.CentreOn == GeofenceCentreOn.Coordinate;
+            var usePilot =          selectedGeofence?.CentreOn == GeofenceCentreOn.PilotCid;
+
+            txtFeedName.Enabled = geofenceSelected;
+            cmbCentreOn.Enabled = geofenceSelected;
+            nudWidth.Enabled = geofenceSelected;
+            nudHeight.Enabled = geofenceSelected;
+            cmbDistanceUnit.Enabled = geofenceSelected;
+            nudLatitude.Enabled = useCoordinate;
+            nudLongitude.Enabled = useCoordinate;
+            txtAirportCode.Enabled = useAirport;
+            nudPilotCid.Enabled = usePilot;
+
+            btnDelete.Enabled = geofenceSelected;
+        }
+
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
@@ -192,6 +223,71 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
             if(!DesignMode) {
                 PluginLocalise.Form(this);
             }
+        }
+
+        private void lvwGeofencedFeeds_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CopySelectedGeofenceFeedToControls();
+            EnableDisableControls();
+        }
+
+        private void UpdateSelectedGeofencedFeed(Action<GeofenceFeedOption> updateFeed)
+        {
+            var selectedFeed = _GeofenceFeedListViewHelper.SelectedAttachedValues.FirstOrDefault();
+            if(selectedFeed != null) {
+                updateFeed(selectedFeed);
+                _GeofenceFeedListViewHelper.RefreshList(_Options.GeofencedFeeds);
+            }
+        }
+
+        private void txtFeedName_TextChanged(object sender, EventArgs e) => UpdateSelectedGeofencedFeed(r => r.FeedName = FeedName);
+
+        private void cmbCentreOn_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateSelectedGeofencedFeed(r => r.CentreOn = CentreOn);
+            EnableDisableControls();
+        }
+
+        private void nudWidth_ValueChanged(object sender, EventArgs e) => UpdateSelectedGeofencedFeed(r => r.Width = GeofenceWidth);
+
+        private void nudHeight_ValueChanged(object sender, EventArgs e) => UpdateSelectedGeofencedFeed(r => r.Height = GeofenceHeight);
+
+        private void cmbDistanceUnit_SelectedIndexChanged(object sender, EventArgs e) => UpdateSelectedGeofencedFeed(r => r.DistanceUnit = DistanceUnit);
+
+        private void nudLatitude_ValueChanged(object sender, EventArgs e) => UpdateSelectedGeofencedFeed(r => r.Latitude = Latitude);
+
+        private void nudLongitude_ValueChanged(object sender, EventArgs e) => UpdateSelectedGeofencedFeed(r => r.Longitude = Longitude);
+
+        private void txtAirportCode_TextChanged(object sender, EventArgs e) => UpdateSelectedGeofencedFeed(r => r.AirportCode = AirportCode);
+
+        private void nudPilotCid_ValueChanged(object sender, EventArgs e) => UpdateSelectedGeofencedFeed(r => r.PilotCid = PilotCid);
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            var newOptions = new GeofenceFeedOption();
+            var newOptionsList = new GeofenceFeedOption[] { newOptions };
+
+            Options.GeofencedFeeds.Add(newOptions);
+            _GeofenceFeedListViewHelper.RefreshList(Options.GeofencedFeeds);
+            _GeofenceFeedListViewHelper.ScrollToFirst(newOptionsList);
+            _GeofenceFeedListViewHelper.SelectedAttachedValues = newOptionsList;
+            txtFeedName.Focus();
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            var selectedOption = _GeofenceFeedListViewHelper.SelectedAttachedValues.FirstOrDefault();
+            if(selectedOption != null) {
+                _Options.GeofencedFeeds.Remove(selectedOption);
+                _GeofenceFeedListViewHelper.RefreshList(_Options.GeofencedFeeds);
+                CopySelectedGeofenceFeedToControls();
+                EnableDisableControls();
+            }
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            CopyControlsToOptions();
         }
     }
 }

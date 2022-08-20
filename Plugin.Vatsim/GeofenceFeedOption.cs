@@ -15,28 +15,66 @@ using VirtualRadar.Interface.StandingData;
 
 namespace VirtualRadar.Plugin.Vatsim
 {
+    /// <summary>
+    /// Describes a feed that is composed of aircraft within a geofence.
+    /// </summary>
     class GeofenceFeedOption
     {
+        /// <summary>
+        /// Gets or sets the unique ID of the feed options.
+        /// </summary>
         public Guid ID { get; set; } = Guid.NewGuid();
 
+        /// <summary>
+        /// Gets or sets the feed's name. This will be prefixed with VATSIM:.
+        /// </summary>
         public string FeedName { get; set; }
 
+        /// <summary>
+        /// Gets or sets the element that the feed is centred on.
+        /// </summary>
         public GeofenceCentreOn CentreOn { get; set; }
 
+        /// <summary>
+        /// Gets or sets the latitude that coordinate feeds are centred on.
+        /// </summary>
         public double? Latitude { get; set; }
 
+        /// <summary>
+        /// Gets or sets the longitude that coordinate feeds are centred on.
+        /// </summary>
         public double? Longitude { get; set; }
 
-        public double Width { get; set; }
-
-        public double Height { get; set; }
-
-        public DistanceUnit DistanceUnit { get; set; }
-
+        /// <summary>
+        /// Gets or sets the CID of the pilot that pilot feeds are centred on.
+        /// </summary>
         public int? PilotCid { get; set; }
 
+        /// <summary>
+        /// Gets or sets the IATA or ICAO code of the airport that airport feeds are centred on.
+        /// </summary>
         public string AirportCode { get; set; }
 
+        /// <summary>
+        /// Gets or sets with width in <see cref="DistanceUnit"/> of the geofence.
+        /// </summary>
+        public double Width { get; set; }
+
+        /// <summary>
+        /// Gets or sets the height in <see cref="DistanceUnit"/> of the geofence.
+        /// </summary>
+        public double Height { get; set; }
+
+        /// <summary>
+        /// Gets the unit of distance that <see cref="Width"/> and <see cref="Height"/> are
+        /// measured in.
+        /// </summary>
+        public DistanceUnit DistanceUnit { get; set; }
+
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             switch(CentreOn) {
@@ -47,8 +85,19 @@ namespace VirtualRadar.Plugin.Vatsim
             }
         }
 
+        /// <summary>
+        /// Returns a deep (ish - the object has no depth) copy of the object.
+        /// </summary>
+        /// <returns></returns>
         public GeofenceFeedOption Clone() => (GeofenceFeedOption)MemberwiseClone();
 
+        /// <summary>
+        /// Returns a geofence built from the options. This can be empty if there is not enough information
+        /// but it will never be null.
+        /// </summary>
+        /// <param name="pilotLatitude"></param>
+        /// <param name="pilotLongitude"></param>
+        /// <returns></returns>
         public GeofenceCWH CreateGeofence(double? pilotLatitude = null, double? pilotLongitude = null)
         {
             GeofenceCWH result;

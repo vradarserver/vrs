@@ -11,8 +11,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Listener;
 using VirtualRadar.Interface.Network;
@@ -20,12 +18,18 @@ using VirtualRadar.Plugin.Vatsim.VatsimApiModels;
 
 namespace VirtualRadar.Plugin.Vatsim
 {
+    /// <summary>
+    /// A custom feed that exposes VATSIM pilot states as an aircraft feed.
+    /// </summary>
     class VatsimFeed : ICustomFeed
     {
         private bool _FeedEnabled;
         private GeofenceCWH _Geofence;
 
-        internal bool FeedEnabled
+        /// <summary>
+        /// True if the feed is enabled.
+        /// </summary>
+        public bool FeedEnabled
         {
             get => _FeedEnabled;
             private set {
@@ -36,18 +40,44 @@ namespace VirtualRadar.Plugin.Vatsim
             }
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public int UniqueId { get; private set; }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public string Name { get; internal set; }
 
-        public GeofenceFeedOption GeofenceFeedOption { get; }
+        /// <summary>
+        /// Gets or sets the feed options. This will be null for the master feed.
+        /// </summary>
+        public GeofenceFeedOption GeofenceFeedOption { get; internal set; }
 
+        /// <summary>
+        /// Gets a value indicating whether this is the master (i.e. unfiltered) feed.
+        /// </summary>
+        public bool IsMasterFeed => GeofenceFeedOption == null;
+
+        /// <summary>
+        /// Gets the <see cref="VatsimAircraftList"/> associated with this feed.
+        /// </summary>
         internal VatsimAircraftList VatsimAircraftList { get; } = new VatsimAircraftList();
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public IAircraftList AircraftList => VatsimAircraftList;
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public bool IsVisible => true;
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public ConnectionStatus ConnectionStatus
         {
             get {
@@ -59,31 +89,73 @@ namespace VirtualRadar.Plugin.Vatsim
             }
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public event EventHandler ConnectionStateChanged;
 
+        /// <summary>
+        /// Raises <see cref="ConnectionStateChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
         protected virtual void OnConnectionStateChanged(EventArgs args) => ConnectionStateChanged?.Invoke(this, args);
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public event EventHandler<EventArgs<Exception>> ExceptionCaught;
 
+        /// <summary>
+        /// Raises <see cref="ExceptionCaught"/>.
+        /// </summary>
+        /// <param name="args"></param>
         protected virtual void OnExceptionCaught(EventArgs<Exception> args) => ExceptionCaught?.Invoke(this, args);
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="feedName"></param>
         public VatsimFeed(string feedName = null)
+        {
+            SetName(feedName);
+        }
+
+        private void SetName(string feedName)
         {
             Name = $"VATSIM: {feedName}";
         }
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="option"></param>
         public VatsimFeed(GeofenceFeedOption option) : this(option.FeedName)
         {
             GeofenceFeedOption = option;
             _Geofence = option.CreateGeofence();
         }
 
+        /// <summary>
+        /// Finalises the object.
+        /// </summary>
+        ~VatsimFeed()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public void Dispose()
         {
             Dispose(false);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Disposes of or finalises the object.
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             if(disposing) {
@@ -91,11 +163,18 @@ namespace VirtualRadar.Plugin.Vatsim
             }
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="uniqueId"></param>
         public void SetUniqueId(int uniqueId)
         {
             UniqueId = uniqueId;
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public void Connect()
         {
             if(!FeedEnabled) {
@@ -105,6 +184,9 @@ namespace VirtualRadar.Plugin.Vatsim
             }
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public void Disconnect()
         {
             if(FeedEnabled) {
@@ -124,6 +206,17 @@ namespace VirtualRadar.Plugin.Vatsim
             }
 
             VatsimAircraftList.ApplyPilotStates(filteredPilots);
+        }
+
+        /// <summary>
+        /// Updates the feed with changed options.
+        /// </summary>
+        /// <param name="geofencedFeedOption"></param>
+        internal void RefreshOptions(GeofenceFeedOption geofencedFeedOption)
+        {
+            SetName(geofencedFeedOption.FeedName);
+            GeofenceFeedOption = geofencedFeedOption;
+            _Geofence = GeofenceFeedOption.CreateGeofence();
         }
 
         private List<VatsimDataV3Pilot> FilterPilots(List<VatsimDataV3Pilot> allPilots, GeofenceFeedOption feedOption)

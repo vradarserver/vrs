@@ -12,8 +12,16 @@ using System;
 
 namespace VirtualRadar.Plugin.Vatsim
 {
+    /// <summary>
+    /// Returns human language descriptions of VATSIM enumerations.
+    /// </summary>
     static class DescribeVatsim
     {
+        /// <summary>
+        /// Describes all members of the <see cref="GeofenceCentreOn"/> enum.
+        /// </summary>
+        /// <param name="setting"></param>
+        /// <returns></returns>
         public static string GeofenceCentreOn(GeofenceCentreOn setting)
         {
             switch(setting) {

@@ -17,6 +17,10 @@ namespace VirtualRadar.Plugin.Vatsim
     /// Manages the creation and removal of fake Mode-S ICAO identifiers for
     /// VATSIM pilot CIDs.
     /// </summary>
+    /// <remarks>
+    /// I didn't end up using this that much - turns out VRS doesn't seem to care whether
+    /// aircraft have unique ICAO-24 codes. They just need unique IDs.
+    /// </remarks>
     static class VatsimCIDToModeSIDMap
     {
         public const int StartFakeModeSRange = 0xB00000;
@@ -86,6 +90,10 @@ namespace VirtualRadar.Plugin.Vatsim
             return result;
         }
 
+        /// <summary>
+        /// Removes a mapping from VATSIM CID to Mode-S ID.
+        /// </summary>
+        /// <param name="vatsimCid"></param>
         public static void RemoveVatsimToModeSMapping(int vatsimCid)
         {
             lock(_WriteLock) {

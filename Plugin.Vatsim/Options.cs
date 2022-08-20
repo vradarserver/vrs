@@ -10,14 +10,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VirtualRadar.Interface;
 
 namespace VirtualRadar.Plugin.Vatsim
 {
+    /// <summary>
+    /// Holds the plugin's options.
+    /// </summary>
     class Options
     {
         /// <summary>
@@ -58,34 +57,12 @@ namespace VirtualRadar.Plugin.Vatsim
         /// <summary>
         /// Gets a list of geofences and the feeds that can be associated with them.
         /// </summary>
-        public List<GeofenceFeedOption> GeofencedFeeds { get; private set; } = new List<GeofenceFeedOption>() {
-            new GeofenceFeedOption() {
-                FeedName =      "UK and Ireland",
-                CentreOn =      GeofenceCentreOn.Coordinate,
-                Latitude =      54.49798931601776,
-                Longitude =     -4.5556287244490985,
-                Width =         560.0,
-                Height =        740.0,
-                DistanceUnit =  DistanceUnit.Miles,
-            },
-            new GeofenceFeedOption() {
-                FeedName =      "Rando Pilot",
-                CentreOn =      GeofenceCentreOn.PilotCid,
-                PilotCid =      1518530,
-                Width =         30,
-                Height =        30,
-                DistanceUnit =  DistanceUnit.Miles,
-            },
-            new GeofenceFeedOption() {
-                FeedName =      "Heathrow",
-                CentreOn =      GeofenceCentreOn.Airport,
-                AirportCode =   "EGLL",
-                Width =         80,
-                Height =        80,
-                DistanceUnit =  DistanceUnit.Miles,
-            },
-        };
+        public List<GeofenceFeedOption> GeofencedFeeds { get; private set; } = new List<GeofenceFeedOption>();
 
+        /// <summary>
+        /// Creates a deep copy of the object.
+        /// </summary>
+        /// <returns></returns>
         public Options Clone()
         {
             var result = (Options)MemberwiseClone();
@@ -95,6 +72,69 @@ namespace VirtualRadar.Plugin.Vatsim
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Fixes up any obvious garbage. Intended for use before saving.
+        /// </summary>
+        public void NormaliseBeforeSave()
+        {
+            foreach(var feed in GeofencedFeeds) {
+                var id = feed.ID.ToString().ToUpperInvariant();
+                if(String.IsNullOrEmpty(feed.FeedName)) {
+                    feed.FeedName = id.Substring(id.Length - Math.Min(8, id.Length));
+                }
+                switch(feed.CentreOn) {
+                    case GeofenceCentreOn.Airport:
+                        feed.Latitude = feed.Longitude = null;
+                        feed.PilotCid = null;
+                        feed.AirportCode = feed.AirportCode ?? "????";
+                        break;
+                    case GeofenceCentreOn.Coordinate:
+                        feed.Latitude = Math.Min(90.0, Math.Max(-90, feed.Latitude ?? 0.0));
+                        feed.Longitude = Math.Min(180.0, Math.Max(-180, feed.Longitude ?? 0.0));
+                        feed.AirportCode = null;
+                        feed.PilotCid = null;
+                        break;
+                    case GeofenceCentreOn.PilotCid:
+                        feed.AirportCode = null;
+                        feed.Latitude = feed.Longitude = null;
+                        feed.PilotCid = feed.PilotCid ?? 0;
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+                const double earthCircumferenceKilometres = 40075.0;
+                feed.Width = Math.Max(0.0, Math.Min(earthCircumferenceKilometres, feed.Width));
+                feed.Height = Math.Max(0.0, Math.Min(earthCircumferenceKilometres, feed.Height));
+            }
+        }
+
+        /// <summary>
+        /// Adds default geofeed settings to a new object.
+        /// </summary>
+        /// <returns></returns>
+        public Options AddDefaultGeofeeds()
+        {
+            GeofencedFeeds.Add(new GeofenceFeedOption() {
+                FeedName =      "UK and Ireland",
+                CentreOn =      GeofenceCentreOn.Coordinate,
+                Latitude =      54.497989,
+                Longitude =     -4.555628,
+                Width =         560.0,
+                Height =        740.0,
+                DistanceUnit =  DistanceUnit.Miles,
+            });
+            GeofencedFeeds.Add(new GeofenceFeedOption() {
+                FeedName =      "Heathrow",
+                CentreOn =      GeofenceCentreOn.Airport,
+                AirportCode =   "EGLL",
+                Width =         80,
+                Height =        80,
+                DistanceUnit =  DistanceUnit.Miles,
+            });
+
+            return this;
         }
     }
 }

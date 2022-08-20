@@ -10,6 +10,9 @@
 
 namespace VirtualRadar.Plugin.Vatsim
 {
+    /// <summary>
+    /// An enumeration of entities that a VATSIM geofence can be centred on.
+    /// </summary>
     enum GeofenceCentreOn
     {
         Coordinate,

@@ -11,8 +11,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using InterfaceFactory;
 using VirtualRadar.Interface;
@@ -20,9 +18,13 @@ using VirtualRadar.Interface.Listener;
 
 namespace VirtualRadar.Plugin.Vatsim
 {
+    /// <summary>
+    /// The object that interfaces with VRS.
+    /// </summary>
     public class Plugin : IPlugin
     {
         private object _SyncLock = new object();
+        private List<VatsimFeed> _Feeds = new List<VatsimFeed>();
 
         /// <summary>
         /// The single instance of the plugin created by VRS.
@@ -94,20 +96,78 @@ namespace VirtualRadar.Plugin.Vatsim
         /// <param name="parameters"></param>
         public void Startup(PluginStartupParameters parameters)
         {
-            var feedManager = Factory.ResolveSingleton<IFeedManager>();
+            ApplyOptions();
+        }
 
-            // Master feed - this can be a teensy-weensy bit punishing on browsers when VATSIM is busy...
-            var masterFeed = new VatsimFeed();
-            feedManager.AddCustomFeed(masterFeed);
-            masterFeed.Connect();
+        private void ApplyOptions()
+        {
+            lock(_SyncLock) {
+                var feedManager = Factory.ResolveSingleton<IFeedManager>();
 
-            foreach(var geofencedFeedOption in Options.GeofencedFeeds) {
-                var geofencedFeed = new VatsimFeed(geofencedFeedOption);
-                feedManager.AddCustomFeed(geofencedFeed);
-                geofencedFeed.Connect();
+                DeleteFeedsNoLongerInOptions(feedManager);
+                AddOrUpdateFeedsFromOptions(feedManager);
+
+                if(VatsimDownloader.Started != Options.Enabled) {
+                    if(Options.Enabled) {
+                        VatsimDownloader.Start();
+                    } else {
+                        VatsimDownloader.Stop();
+                    }
+                }
+            }
+        }
+
+        private void AddOrUpdateFeedsFromOptions(IFeedManager feedManager)
+        {
+            if(Options.Enabled) {
+                var masterFeed = _Feeds.FirstOrDefault(r => r.IsMasterFeed);
+                if(masterFeed != null) {
+                    masterFeed.VatsimAircraftList.ApplyOptions();
+                } else {
+                    masterFeed = new VatsimFeed("Everything");
+                    feedManager.AddCustomFeed(masterFeed);
+                    _Feeds.Add(masterFeed);
+                    masterFeed.Connect();
+                }
+
+                foreach(var geofencedFeedOption in Options.GeofencedFeeds) {
+                    var feed = _Feeds.FirstOrDefault(r => r.GeofenceFeedOption?.ID == geofencedFeedOption.ID);
+
+                    if(feed != null) {
+                        feed.RefreshOptions(geofencedFeedOption);
+                        feed.VatsimAircraftList.ApplyOptions();
+                    } else {
+                        var geofencedFeed = new VatsimFeed(geofencedFeedOption);
+                        feedManager.AddCustomFeed(geofencedFeed);
+                        _Feeds.Add(geofencedFeed);
+                        geofencedFeed.Connect();
+                    }
+                }
+            }
+        }
+
+        private void DeleteFeedsNoLongerInOptions(IFeedManager feedManager)
+        {
+            IEnumerable<VatsimFeed> deleteFeeds = _Feeds;
+
+            if(Options.Enabled) {
+                deleteFeeds = deleteFeeds.Where(feed =>
+                       feed.GeofenceFeedOption != null
+                    && !Options.GeofencedFeeds.Any(feedOption => feedOption.ID == feed.GeofenceFeedOption.ID)
+                );
             }
 
-            VatsimDownloader.Start();
+            foreach(var deleteFeed in deleteFeeds.ToArray()) {
+                try {
+                    deleteFeed.Disconnect();
+                } finally {
+                    try {
+                        feedManager.RemoveCustomFeed(deleteFeed);
+                    } finally {
+                        _Feeds.Remove(deleteFeed);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -126,6 +186,12 @@ namespace VirtualRadar.Plugin.Vatsim
             using(var optionsView = new WinForms.OptionsView()) {
                 optionsView.Options = OptionsStorage.Load();
                 if(optionsView.ShowDialog() == DialogResult.OK) {
+                    optionsView.Options.NormaliseBeforeSave();
+                    lock(_SyncLock) {
+                        OptionsStorage.Save(optionsView.Options);
+                        Options = optionsView.Options;
+                        ApplyOptions();
+                    }
                 }
             }
         }

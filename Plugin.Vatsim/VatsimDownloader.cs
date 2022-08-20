@@ -20,6 +20,9 @@ using VirtualRadar.Plugin.Vatsim.VatsimApiModels;
 
 namespace VirtualRadar.Plugin.Vatsim
 {
+    /// <summary>
+    /// A static class that manages the downloading of information from VATSIM.
+    /// </summary>
     static class VatsimDownloader
     {
         private static System.Timers.Timer _Timer;
@@ -29,28 +32,50 @@ namespace VirtualRadar.Plugin.Vatsim
         private static Status _VatsimStatus;
 
         private static bool _Started;
-        public static bool Started => _Started && _VatsimStatus != null;
-
-        public static int RefreshIntervalMilliseconds => Math.Min(1000, Plugin.Options.RefreshIntervalSeconds * 1000);
-
-        public static EventHandler StartedChanged;
-
-        private static void OnStartedChanged(EventArgs args) => StartedChanged?.Invoke(null, args);
-
-        public static EventHandler<EventArgs<VatsimDataV3>> DataDownloaded;
-
-        private static void OnDataDownloaded(EventArgs<VatsimDataV3> args) => DataDownloaded?.Invoke(null, args);
-
-        public static int DownloadIntervalMilliseconds
+        /// <summary>
+        /// Gets a value indicating whether the fetching of information has started.
+        /// </summary>
+        public static bool Started
         {
-            get => (int)_Timer.Interval;
-            set {
-                if(_Timer.Interval != value) {
-                    _Timer.Interval = value;
+            get => _Started;
+            private set {
+                if(_Started != value) {
+                    _Started = value;
+                    OnStartedChanged(EventArgs.Empty);
                 }
             }
         }
 
+        /// <summary>
+        /// Gets the refresh interval between fetches.
+        /// </summary>
+        public static int RefreshIntervalMilliseconds => Math.Max(1000, Plugin.Options.RefreshIntervalSeconds * 1000);
+
+        /// <summary>
+        /// Raised when <see cref="Started"/> changes.
+        /// </summary>
+        public static EventHandler StartedChanged;
+
+        /// <summary>
+        /// Raises <see cref="StartedChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected static void OnStartedChanged(EventArgs args) => StartedChanged?.Invoke(null, args);
+
+        /// <summary>
+        /// Raised when data has been downloaded from VATSIM.
+        /// </summary>
+        public static EventHandler<EventArgs<VatsimDataV3>> DataDownloaded;
+
+        /// <summary>
+        /// Raises <see cref="DataDownloaded"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        protected static void OnDataDownloaded(EventArgs<VatsimDataV3> args) => DataDownloaded?.Invoke(null, args);
+
+        /// <summary>
+        /// Static ctor.
+        /// </summary>
         static VatsimDownloader()
         {
             _Timer = new System.Timers.Timer() {
@@ -61,10 +86,13 @@ namespace VirtualRadar.Plugin.Vatsim
             _Timer.Elapsed += Timer_Elapsed;
         }
 
+        /// <summary>
+        /// Start downloading information from VATSIM on a timer.
+        /// </summary>
         public static void Start()
         {
-            if(!_Started) {
-                _Started = true;
+            if(!Started) {
+                Started = true;
                 _Timer.Interval = RefreshIntervalMilliseconds;
                 _Timer.Enabled = true;
                 DownloadFromVatsimOnBackgroundThread();
@@ -72,10 +100,13 @@ namespace VirtualRadar.Plugin.Vatsim
             }
         }
 
+        /// <summary>
+        /// Stop downloading information from VATSIM on a timer.
+        /// </summary>
         public static void Stop()
         {
-            if(_Started) {
-                _Started = false;
+            if(Started) {
+                Started = false;
                 _Timer.Enabled = false;
                 lock(_SyncLock) {
                     _VatsimStatus = null;
@@ -86,11 +117,11 @@ namespace VirtualRadar.Plugin.Vatsim
 
         private static void Timer_Elapsed(object sender, EventArgs args)
         {
-            if(_Started) {
+            if(Started) {
                 try {
                     DownloadFromVatsim();
                 } finally {
-                    if(_Started) {
+                    if(Started) {
                         _Timer.Interval = RefreshIntervalMilliseconds;
                         _Timer.Enabled = true;
                     }
@@ -102,7 +133,7 @@ namespace VirtualRadar.Plugin.Vatsim
         {
             ThreadPool.QueueUserWorkItem(state => {
                 try {
-                    if(_Started) {
+                    if(Started) {
                         DownloadFromVatsim();
                     }
                 } catch {

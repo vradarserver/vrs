@@ -10,11 +10,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
@@ -40,8 +37,14 @@ namespace VirtualRadar.Plugin.Vatsim
 
         private ISharedConfiguration _SharedConfiguration;
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public AircraftListSource Source => AircraftListSource.BaseStation;
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public int Count
         {
             get {
@@ -51,6 +54,9 @@ namespace VirtualRadar.Plugin.Vatsim
         }
 
         private bool _IsTracking;
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public bool IsTracking
         {
             get => _IsTracking;
@@ -62,18 +68,42 @@ namespace VirtualRadar.Plugin.Vatsim
             }
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public event EventHandler CountChanged;
 
+        /// <summary>
+        /// Raises <see cref="CountChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
         protected virtual void OnCountChanged(EventArgs args) => CountChanged?.Invoke(this, args);
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public event EventHandler TrackingStateChanged;
 
+        /// <summary>
+        /// Raises <see cref="TrackingStateChanged"/>.
+        /// </summary>
+        /// <param name="args"></param>
         protected virtual void OnTrackingStateChanged(EventArgs args) => TrackingStateChanged?.Invoke(this, args);
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public event EventHandler<EventArgs<Exception>> ExceptionCaught;
 
+        /// <summary>
+        /// Raises <see cref="ExceptionCaught"/>.
+        /// </summary>
+        /// <param name="args"></param>
         protected virtual void OnExceptionCaught(EventArgs<Exception> args) => ExceptionCaught?.Invoke(this, args);
 
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
         public VatsimAircraftList()
         {
             _Clock =                Factory.Resolve<IClock>();
@@ -81,10 +111,39 @@ namespace VirtualRadar.Plugin.Vatsim
             _SharedConfiguration =  Factory.ResolveSingleton<ISharedConfiguration>();
         }
 
-        public void Dispose()
+        /// <summary>
+        /// Finalises an object.
+        /// </summary>
+        ~VatsimAircraftList()
         {
+            Dispose(false);
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes or finalises the object.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposing) {
+                Stop();
+            }
+        }
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
         public IAircraft FindAircraft(int uniqueId)
         {
             var aircraftList = _Aircraft;
@@ -93,11 +152,17 @@ namespace VirtualRadar.Plugin.Vatsim
                 .FirstOrDefault(r => r.UniqueId == uniqueId);
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public void Start()
         {
             IsTracking = true;
         }
 
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
         public void Stop()
         {
             IsTracking = false;
@@ -136,6 +201,10 @@ namespace VirtualRadar.Plugin.Vatsim
             return result;
         }
 
+        /// <summary>
+        /// Applies VATSIM pilot states to the tracked aircraft.
+        /// </summary>
+        /// <param name="pilotStates"></param>
         public void ApplyPilotStates(IEnumerable<VatsimDataV3Pilot> pilotStates)
         {
             if(IsTracking && (pilotStates?.Any() ?? false)) {
@@ -148,6 +217,23 @@ namespace VirtualRadar.Plugin.Vatsim
                         } catch(Exception ex) {
                             OnExceptionCaught(new EventArgs<Exception>(ex));
                         }
+                    }
+                }
+
+                OnCountChanged(EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Apply global option changes to the aircraft list.
+        /// </summary>
+        public void ApplyOptions()
+        {
+            lock(_SyncLock) {
+                foreach(var aircraft in _Aircraft.Values) {
+                    lock(aircraft) {
+                        SetOnGround(aircraft);
+                        SetManufacturerAndModelFromType(aircraft, typeData: null, loadTypeDataIfMissing: true);
                     }
                 }
             }
@@ -221,7 +307,10 @@ namespace VirtualRadar.Plugin.Vatsim
                     var remarks = new VatsimRemarks(pilot.flight_plan?.remarks);
                     aircraft.Registration = remarks.Registration;
                     aircraft.OperatorIcao = remarks.OperatorIcao;
-                    aircraft.Icao24 = remarks.ModeSCode;        // <-- not sure whether this is a good idea, it'll lead to non-null / non-empty duplicates and it won't match the unique ID...
+                    var icao24 = remarks.ModeSCode;
+                    if(CustomConvert.Icao24(icao24) != -1) {
+                        aircraft.Icao24 = icao24;        // <-- not sure whether this is a good idea, it'll lead to non-null / non-empty duplicates and it won't match the unique ID...
+                    }
                 }
 
                 IEnumerable<Airline> airlinesForOperatorIcao = null;
@@ -245,15 +334,19 @@ namespace VirtualRadar.Plugin.Vatsim
                     aircraft.Operator = airlines.FirstOrDefault()?.Name ?? aircraft.OperatorIcao;
                 }
 
-                if(!Plugin.Options.AssumeSlowAircraftAreOnGround) {
-                    aircraft.OnGround = false;
-                } else {
-                    aircraft.OnGround = pilot.groundspeed < Plugin.Options.SlowAircraftThresholdSpeedKnots;
-                }
-
+                SetOnGround(aircraft);
                 FillStandingDataFields(pilot, aircraft, config);
 
                 aircraft.UpdateCoordinates(utcNow, config.GoogleMapSettings.ShortTrailLengthSeconds);
+            }
+        }
+
+        private void SetOnGround(IAircraft aircraft)
+        {
+            if(!Plugin.Options.AssumeSlowAircraftAreOnGround) {
+                aircraft.OnGround = false;
+            } else {
+                aircraft.OnGround = aircraft.GroundSpeed <= Plugin.Options.SlowAircraftThresholdSpeedKnots;
             }
         }
 
@@ -272,27 +365,7 @@ namespace VirtualRadar.Plugin.Vatsim
                         aircraft.Species =                  typeData?.Species ?? Species.None;
                         aircraft.WakeTurbulenceCategory =   typeData?.WakeTurbulenceCategory ?? WakeTurbulenceCategory.None;
 
-                        if(!Plugin.Options.InferModelFromModelType) {
-                            aircraft.Manufacturer = "";
-                            aircraft.Model = "";
-                        } else {
-                            // This is going to be complete garbage quite a lot of the time...
-                            var manufacturer = typeData?.Manufacturers
-                                ?.OrderBy(r => r, StringComparer.InvariantCultureIgnoreCase)
-                                .FirstOrDefault()
-                                ?? "";
-                            var model = typeData?.Models
-                                ?.OrderBy(r => r, StringComparer.InvariantCultureIgnoreCase)
-                                .FirstOrDefault()
-                                ?? "";
-                            var hasModel = !String.IsNullOrEmpty(model);
-                            aircraft.Manufacturer = manufacturer;
-                            aircraft.Model = !String.IsNullOrEmpty(manufacturer) && hasModel
-                                ? $"{manufacturer} {model}"     // most of VRS expects model to actually be manufacturer + model
-                                : hasModel
-                                    ? model
-                                    : manufacturer;
-                        }
+                        SetManufacturerAndModelFromType(aircraft, typeData, loadTypeDataIfMissing: false);
                     }
 
                     var departureAirport = flightPlan.departure ?? "";
@@ -317,6 +390,35 @@ namespace VirtualRadar.Plugin.Vatsim
                         }
                     }
                 }
+            }
+        }
+
+        private void SetManufacturerAndModelFromType(IAircraft aircraft, AircraftType typeData, bool loadTypeDataIfMissing)
+        {
+            if(!Plugin.Options.InferModelFromModelType) {
+                aircraft.Manufacturer = "";
+                aircraft.Model = "";
+            } else {
+                if(typeData == null && loadTypeDataIfMissing) {
+                    typeData = _StandingDataManager.FindAircraftType(aircraft.Type ?? "");
+                }
+
+                // This is going to be complete garbage quite a lot of the time...
+                var manufacturer = typeData?.Manufacturers
+                    ?.OrderBy(r => r, StringComparer.InvariantCultureIgnoreCase)
+                    .FirstOrDefault()
+                    ?? "";
+                var model = typeData?.Models
+                    ?.OrderBy(r => r, StringComparer.InvariantCultureIgnoreCase)
+                    .FirstOrDefault()
+                    ?? "";
+                var hasModel = !String.IsNullOrEmpty(model);
+                aircraft.Manufacturer = manufacturer;
+                aircraft.Model = !String.IsNullOrEmpty(manufacturer) && hasModel
+                    ? $"{manufacturer} {model}"     // most of VRS expects model to actually be manufacturer + model
+                    : hasModel
+                        ? model
+                        : manufacturer;
             }
         }
     }
