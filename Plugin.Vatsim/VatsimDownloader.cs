@@ -60,7 +60,7 @@ namespace VirtualRadar.Plugin.Vatsim
         /// Raises <see cref="StartedChanged"/>.
         /// </summary>
         /// <param name="args"></param>
-        protected static void OnStartedChanged(EventArgs args) => StartedChanged?.Invoke(null, args);
+        static void OnStartedChanged(EventArgs args) => StartedChanged?.Invoke(null, args);
 
         /// <summary>
         /// Raised when data has been downloaded from VATSIM.
@@ -71,7 +71,7 @@ namespace VirtualRadar.Plugin.Vatsim
         /// Raises <see cref="DataDownloaded"/>.
         /// </summary>
         /// <param name="args"></param>
-        protected static void OnDataDownloaded(EventArgs<VatsimDataV3> args) => DataDownloaded?.Invoke(null, args);
+        static void OnDataDownloaded(EventArgs<VatsimDataV3> args) => DataDownloaded?.Invoke(null, args);
 
         /// <summary>
         /// Static ctor.
