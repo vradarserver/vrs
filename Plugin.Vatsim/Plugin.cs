@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Listener;
@@ -21,10 +22,17 @@ namespace VirtualRadar.Plugin.Vatsim
 {
     public class Plugin : IPlugin
     {
+        private object _SyncLock = new object();
+
+        /// <summary>
+        /// The single instance of the plugin created by VRS.
+        /// </summary>
+        internal static Plugin Singleton { get; private set; }
+
         /// <summary>
         /// Gets the options being used by the plugin.
         /// </summary>
-        internal static Options Options { get; } = new Options();
+        internal static Options Options { get; set; } = new Options();
 
         /// <summary>
         /// See interface docs.
@@ -59,7 +67,7 @@ namespace VirtualRadar.Plugin.Vatsim
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public bool HasOptions => false;
+        public bool HasOptions => true;
 
         /// <summary>
         /// See interface docs.
@@ -74,7 +82,10 @@ namespace VirtualRadar.Plugin.Vatsim
         /// <param name="classFactory"></param>
         public void RegisterImplementations(IClassFactory classFactory)
         {
-            ;
+            Singleton = this;
+            lock(_SyncLock) {
+                Options = OptionsStorage.Load();
+            }
         }
 
         /// <summary>
@@ -112,7 +123,10 @@ namespace VirtualRadar.Plugin.Vatsim
         /// </summary>
         public void ShowWinFormsOptionsUI()
         {
-            ;
+            using(var optionsView = new WinForms.OptionsView()) {
+                if(optionsView.ShowDialog() == DialogResult.OK) {
+                }
+            }
         }
 
         /// <summary>

@@ -45,6 +45,8 @@ namespace VirtualRadar.Plugin.Vatsim
             }
         }
 
+        public GeofenceFeedOption Clone() => (GeofenceFeedOption)MemberwiseClone();
+
         public GeofenceCWH CreateGeofence(double? pilotLatitude = null, double? pilotLongitude = null)
         {
             GeofenceCWH result;

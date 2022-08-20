@@ -69,7 +69,7 @@ namespace VirtualRadar.Plugin.Vatsim
 
         public VatsimFeed(string feedName = null)
         {
-            Name = String.Format(VatsimStrings.FeedNameTemplate, feedName ?? VatsimStrings.FeedNameAllAircraft);
+            Name = $"VATSIM: {feedName}";
         }
 
         public VatsimFeed(GeofenceFeedOption option) : this(option.FeedName)

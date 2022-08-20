@@ -21,6 +21,11 @@ namespace VirtualRadar.Plugin.Vatsim
     class Options
     {
         /// <summary>
+        /// Gets or sets the current version of the options object. This is incremented every time it is saved.
+        /// </summary>
+        public long DataVersion { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the plugin is downloading VATSIM states and building
         /// feeds from them.
         /// </summary>
@@ -53,7 +58,7 @@ namespace VirtualRadar.Plugin.Vatsim
         /// <summary>
         /// Gets a list of geofences and the feeds that can be associated with them.
         /// </summary>
-        public List<GeofenceFeedOption> GeofencedFeeds { get; } = new List<GeofenceFeedOption>() {
+        public List<GeofenceFeedOption> GeofencedFeeds { get; private set; } = new List<GeofenceFeedOption>() {
             new GeofenceFeedOption() {
                 FeedName =      "UK and Ireland",
                 CentreOn =      GeofenceCentreOn.Coordinate,
@@ -80,5 +85,16 @@ namespace VirtualRadar.Plugin.Vatsim
                 DistanceUnit =  DistanceUnit.Miles,
             },
         };
+
+        public Options Clone()
+        {
+            var result = (Options)MemberwiseClone();
+            result.GeofencedFeeds = new List<GeofenceFeedOption>();
+            foreach(var original in GeofencedFeeds) {
+                result.GeofencedFeeds.Add(original.Clone());
+            }
+
+            return result;
+        }
     }
 }
