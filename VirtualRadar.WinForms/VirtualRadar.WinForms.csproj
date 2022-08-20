@@ -76,6 +76,7 @@
     <Compile Include="CidrEditView.Designer.cs">
       <DependentUpon>CidrEditView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ComboBoxHelper.cs" />
     <Compile Include="CommonBaseBehaviour.cs" />
     <Compile Include="ConnectionClientLogView.cs">
       <SubType>Form</SubType>
@@ -228,6 +229,7 @@
       <DependentUpon>InvalidPluginsView.cs</DependentUpon>
     </Compile>
     <Compile Include="KineticConnection.cs" />
+    <Compile Include="ListViewHelper.cs" />
     <Compile Include="ListViewSortHelper.cs" />
     <Compile Include="MainView.cs">
       <SubType>Form</SubType>
