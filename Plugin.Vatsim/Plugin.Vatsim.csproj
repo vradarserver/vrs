@@ -81,6 +81,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>VatsimStrings.resx</DependentUpon>
     </Compile>
+    <Compile Include="WebAdmin\OptionsView.cs" />
+    <Compile Include="WebAdmin\WebAdminModels.cs" />
     <Compile Include="WinForms\OptionsView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,9 +91,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Typings\translations-customcontentstrings.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>translations-customcontentstrings.d.ts</LastGenOutput>
+    </Content>
     <Content Include="VirtualRadar.Plugin.Vatsim.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Web\WebAdmin\VatsimPluginOptions.html" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
@@ -110,6 +117,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Readme.md" />
+    <None Include="Typings\WebAdminModels.tst" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="VatsimStrings.resx">
@@ -121,6 +129,22 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <TypeScriptCompile Include="Typings\translations-customcontentstrings.d.ts">
+      <DependentUpon>translations-customcontentstrings.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Typings\webadmin.d.ts" />
+    <TypeScriptCompile Include="Typings\WebAdminModels.ts">
+      <DependentUpon>WebAdminModels.tst</DependentUpon>
+      <CustomToolNamespace>WebAdmin\WebAdminModels.cs</CustomToolNamespace>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Web\WebAdmin\VatsimPluginOptions.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>PowerShell.exe -ExecutionPolicy Bypass "$(SolutionDir)_PostBuild.ps1" -projectName "$(ProjectName)"  -configurationName "$(ConfigurationName)" -targetName "$(TargetName)" -platformName "$(PlatformName)"</PostBuildEvent>

@@ -18,7 +18,7 @@ namespace VirtualRadar.Plugin.Vatsim
     /// <summary>
     /// Describes a feed that is composed of aircraft within a geofence.
     /// </summary>
-    class GeofenceFeedOption
+    public class GeofenceFeedOption
     {
         /// <summary>
         /// Gets or sets the unique ID of the feed options.

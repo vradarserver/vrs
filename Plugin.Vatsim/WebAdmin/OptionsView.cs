@@ -8,17 +8,64 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-namespace VirtualRadar.Plugin.Vatsim
+using System;
+using System.Windows.Forms;
+using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.View;
+using VirtualRadar.Interface.WebSite;
+
+namespace VirtualRadar.Plugin.Vatsim.WebAdmin
 {
-    /// <summary>
-    /// An enumeration of entities that a VATSIM geofence can be centred on.
-    /// </summary>
-    public enum GeofenceCentreOn
+    class OptionsView : IView
     {
-        Coordinate,
+        ~OptionsView()
+        {
+            Dispose(false);
+        }
 
-        PilotCid,
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-        Airport,
+        protected virtual void Dispose(bool disposing)
+        {
+            // Nothing to do...
+        }
+
+        public DialogResult ShowView()
+        {
+            return DialogResult.OK;
+        }
+
+        [WebAdminMethod]
+        public OptionsModel GetState()
+        {
+            return OptionsModel.FromOption(
+                OptionsStorage.Load()
+            );
+        }
+
+        [WebAdminMethod(DeferExecution = true)]
+        public SaveOutcomeModel Save(OptionsModel optionsModel)
+        {
+            var outcome = "";
+
+            var options = optionsModel.ToOption();
+            options.NormaliseBeforeSave();
+
+            try {
+                OptionsStorage.Save(options);
+                outcome = "Saved";
+            } catch(ConflictingUpdateException) {
+                outcome = "ConflictingUpdate";
+            }
+
+            return new SaveOutcomeModel(
+                outcome,
+                GetState()
+            );
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace VirtualRadar.Plugin.Vatsim
     /// <summary>
     /// Holds the plugin's options.
     /// </summary>
-    class Options
+    public class Options
     {
         /// <summary>
         /// Gets or sets the current version of the options object. This is incremented every time it is saved.
@@ -28,7 +28,7 @@ namespace VirtualRadar.Plugin.Vatsim
         /// Gets or sets a value indicating whether the plugin is downloading VATSIM states and building
         /// feeds from them.
         /// </summary>
-        public bool Enabled { get; set; } = true;
+        public bool Enabled { get; set; }
 
         /// <summary>
         /// Gets or sets the number of seconds between fetches of VATSIM data. Note that there is a rate limit
@@ -79,6 +79,9 @@ namespace VirtualRadar.Plugin.Vatsim
         /// </summary>
         public void NormaliseBeforeSave()
         {
+            RefreshIntervalSeconds = Math.Max(5, RefreshIntervalSeconds);
+            SlowAircraftThresholdSpeedKnots = Math.Max(0, SlowAircraftThresholdSpeedKnots);
+
             foreach(var feed in GeofencedFeeds) {
                 var id = feed.ID.ToString().ToUpperInvariant();
                 if(String.IsNullOrEmpty(feed.FeedName)) {
@@ -88,7 +91,10 @@ namespace VirtualRadar.Plugin.Vatsim
                     case GeofenceCentreOn.Airport:
                         feed.Latitude = feed.Longitude = null;
                         feed.PilotCid = null;
-                        feed.AirportCode = feed.AirportCode ?? "????";
+                        feed.AirportCode = (feed.AirportCode ?? "????").Trim().ToUpperInvariant();
+                        if(feed.AirportCode.Length > 4) {
+                            feed.AirportCode = feed.AirportCode.Substring(0, 4);
+                        }
                         break;
                     case GeofenceCentreOn.Coordinate:
                         feed.Latitude = Math.Min(90.0, Math.Max(-90, feed.Latitude ?? 0.0));

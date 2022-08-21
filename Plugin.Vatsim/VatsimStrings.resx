@@ -168,6 +168,9 @@
   <data name="FeedNameLabel" xml:space="preserve">
     <value>Feed name</value>
   </data>
+  <data name="GeofencedFeed" xml:space="preserve">
+    <value>Geofenced Feed</value>
+  </data>
   <data name="GeofencedFeeds" xml:space="preserve">
     <value>Geofenced Feeds</value>
   </data>
@@ -224,6 +227,9 @@
   </data>
   <data name="Seconds" xml:space="preserve">
     <value>seconds</value>
+  </data>
+  <data name="WebAdminMenuName" xml:space="preserve">
+    <value>VATSIM</value>
   </data>
   <data name="WidthHeading" xml:space="preserve">
     <value>Width</value>

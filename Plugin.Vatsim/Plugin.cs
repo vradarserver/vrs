@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Listener;
+using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Plugin.Vatsim
 {
@@ -175,7 +176,22 @@ namespace VirtualRadar.Plugin.Vatsim
         /// </summary>
         public void GuiThreadStartup()
         {
-            ;
+            var webAdminViewManager = Factory.ResolveSingleton<IWebAdminViewManager>();
+            webAdminViewManager.RegisterTranslations(typeof(VatsimStrings), "VatsimPlugin");
+
+            webAdminViewManager.AddWebAdminView(
+                new WebAdminView(
+                    "/WebAdmin/",
+                    "VatsimPluginOptions.html",
+                    VatsimStrings.WebAdminMenuName,
+                    () => new WebAdmin.OptionsView(),
+                    typeof(VatsimStrings)
+                ) {
+                    Plugin = this,
+                }
+            );
+
+            webAdminViewManager.RegisterWebAdminViewFolder(PluginFolder, "Web");
         }
 
         /// <summary>

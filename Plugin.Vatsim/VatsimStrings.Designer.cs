@@ -214,6 +214,15 @@ namespace VirtualRadar.Plugin.Vatsim {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Geofenced Feed.
+        /// </summary>
+        public static string GeofencedFeed {
+            get {
+                return ResourceManager.GetString("GeofencedFeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Geofenced Feeds.
         /// </summary>
         public static string GeofencedFeeds {
@@ -381,6 +390,15 @@ namespace VirtualRadar.Plugin.Vatsim {
         public static string Seconds {
             get {
                 return ResourceManager.GetString("Seconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VATSIM.
+        /// </summary>
+        public static string WebAdminMenuName {
+            get {
+                return ResourceManager.GetString("WebAdminMenuName", resourceCulture);
             }
         }
         
