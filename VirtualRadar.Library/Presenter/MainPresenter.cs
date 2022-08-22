@@ -457,16 +457,15 @@ namespace VirtualRadar.Library.Presenter
 
                 var listener = (feed as INetworkFeed)?.Listener;
                 var aircraftList = feed.AircraftList;
-                var noValue = listener == null || aircraftList == null;
 
-                var isMerged = noValue ? false : listener is IMergedFeedListener;
-                var hasPolarPlot = noValue ? false : (aircraftList as IPolarPlottingAircraftList)?.PolarPlotter != null;
-                var hasAircraftList = noValue ? false : aircraftList.IsTracking;
+                var isMerged = listener is IMergedFeedListener;
+                var hasPolarPlot = (aircraftList as IPolarPlottingAircraftList)?.PolarPlotter != null;
+                var hasAircraftList = aircraftList?.IsTracking ?? false;
                 var connectionStatus = feed.ConnectionStatus;
                 var connectionStatusDescription = Describe.ConnectionStatus(connectionStatus);
-                var totalAircraft = noValue ? 0 : aircraftList.Count;
-                var totalBadMessages = noValue ? 0 : listener.TotalBadMessages;
-                var totalMessages = noValue ? 0 : listener.TotalMessages;
+                var totalAircraft = aircraftList?.Count ?? 0;
+                var totalBadMessages = listener?.TotalBadMessages ?? 0;
+                var totalMessages = listener?.TotalMessages ?? 0;
 
                 _FeedStatusHelper.Update(feedStatus, feedStatus.ConnectionStatus,               connectionStatus,               (r,v) => r.ConnectionStatus = v);
                 _FeedStatusHelper.Update(feedStatus, feedStatus.ConnectionStatusDescription,    connectionStatusDescription,    (r,v) => r.ConnectionStatusDescription = v);
