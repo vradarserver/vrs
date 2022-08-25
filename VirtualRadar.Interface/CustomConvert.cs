@@ -78,15 +78,15 @@ namespace VirtualRadar.Interface
         /// <returns></returns>
         public static int HexInt(string hexText) => ParseHexSignedInt(hexText, maxLength: 8);
 
-        private static int ParseHexSignedInt(string icao24, int maxLength)
+        private static int ParseHexSignedInt(string hexText, int maxLength)
         {
             var result = -1;
 
-            if(icao24 != null && icao24.Length > 0 && icao24.Length <= maxLength) {
+            if(hexText != null && hexText.Length > 0 && hexText.Length <= maxLength) {
                 result = 0;
-                for(var i = 0;i < icao24.Length;++i) {
+                for(var i = 0;i < hexText.Length;++i) {
                     var digit = -1;
-                    switch(icao24[i]) {
+                    switch(hexText[i]) {
                         case '0':   digit = 0; break;
                         case '1':   digit = 1; break;
                         case '2':   digit = 2; break;
