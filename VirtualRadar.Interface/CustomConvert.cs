@@ -67,11 +67,22 @@ namespace VirtualRadar.Interface
         /// which need to be caught). This version takes about 50ms for a million valid or invalid
         /// 6 digt hex codes.
         /// </remarks>
-        public static int Icao24(string icao24)
+        public static int Icao24(string icao24) => ParseHexSignedInt(icao24, maxLength: 6);
+
+        /// <summary>
+        /// Exactly the same as <see cref="Icao24"/> except it will accept any length of
+        /// integer instead of rejecting anything over 7 digits. Note that invalid strings
+        /// always return -1 so the maximum parseable is 0xfffffffe.
+        /// </summary>
+        /// <param name="hexText"></param>
+        /// <returns></returns>
+        public static int HexInt(string hexText) => ParseHexSignedInt(hexText, maxLength: 8);
+
+        private static int ParseHexSignedInt(string icao24, int maxLength)
         {
             var result = -1;
 
-            if(icao24 != null && icao24.Length > 0 && icao24.Length < 7) {
+            if(icao24 != null && icao24.Length > 0 && icao24.Length <= maxLength) {
                 result = 0;
                 for(var i = 0;i < icao24.Length;++i) {
                     var digit = -1;
@@ -103,7 +114,7 @@ namespace VirtualRadar.Interface
                         result = -1;
                         break;
                     }
-                    result = result << 4;
+                    result <<= 4;
                     result |= digit;
                 }
             }

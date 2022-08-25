@@ -526,7 +526,7 @@ namespace VRS
 
             var postBody: IAircraftListRequestBody = { };
             if(!getFreshList) {
-                postBody.icaos = this._Settings.aircraftList.getAllAircraftIcaosString();
+                postBody.ids = this._Settings.aircraftList.getAllAircraftIdsHexHyphenString();
             }
 
             this._Settings.aircraftList.raiseFetchingList(params, headers, postBody);

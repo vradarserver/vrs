@@ -1354,7 +1354,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public void FeedsController_AircraftList_Can_Specify_Many_Known_Aircraft_V2_POST()
+        public void FeedsController_AircraftList_Can_Specify_Many_Known_Aircraft_Icaos_V2_POST()
         {
             var expected = ExpectedAircraftListJsonBuilderArgs(previousAircraft: new int[] {
                 0x4008f6,
@@ -1363,6 +1363,23 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             PostForm($"AircraftList.json", new string[,] {
                 { "icaos", "4008f6-A88CC0" }
+            });
+
+            AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+        }
+
+        [TestMethod]
+        public void FeedsController_AircraftList_Can_Specify_Many_Known_Aircraft_Ids_V2_POST()
+        {
+            var expected = ExpectedAircraftListJsonBuilderArgs(previousAircraft: new int[] {
+                0x4008f6,
+                1,
+                0xABCDEF,
+                0x7FFFFFFF,
+            });
+
+            PostForm($"AircraftList.json", new string[,] {
+                { "ids", "4008f6-1-ABCDEF-7FFFFFFF" }
             });
 
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
@@ -1437,7 +1454,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
         }
 
         [TestMethod]
-        public void FeedsController_AircraftList_V2_POST_Can_Post_Known_Aircraft_And_QueryString_Values()
+        public void FeedsController_AircraftList_V2_POST_Can_Post_Known_Aircraft_Icaos_And_QueryString_Values()
         {
             var expected = ExpectedAircraftListJsonBuilderArgs(previousAircraft: new int[] {
                 0x4008f6,
@@ -1445,6 +1462,20 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             PostForm($"AircraftList.json?stm=12", new string[,] {
                 { "icaos", "4008f6" }
+            });
+
+            AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);
+        }
+
+        [TestMethod]
+        public void FeedsController_AircraftList_V2_POST_Can_Post_Known_Aircraft_Ids_And_QueryString_Values()
+        {
+            var expected = ExpectedAircraftListJsonBuilderArgs(previousAircraft: new int[] {
+                0x1,
+            }, serverTimeTicks: 12);
+
+            PostForm($"AircraftList.json?stm=12", new string[,] {
+                { "ids", "1" }
             });
 
             AssertBuilderArgsAreEqual(expected, _ActualAircraftListJsonBuilderArgs);

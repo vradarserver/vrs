@@ -99,6 +99,38 @@ namespace Test.VirtualRadar.Interface
         }
         #endregion
 
+        #region HexInt
+        [TestMethod]
+        public void CustomConvert_HexInt_Valid_Values_Decode_Correctly()
+        {
+            new InlineDataTest(this)
+            .TestAndAssert(new dynamic[] {
+                new { Text = (string)null,  Expected = -1 },
+                new { Text = "",            Expected = -1 },
+                new { Text = " ",           Expected = -1 },
+                new { Text = "H",           Expected = -1 },
+                new { Text = "0",           Expected = 0 },
+                new { Text = "123456",      Expected = 0x123456 },
+                new { Text = "ABCDEF",      Expected = 0xABCDEF },
+                new { Text = "abcdef",      Expected = 0xABCDEF },
+                new { Text = "7fffffFF",    Expected = 0x7FFFFFFF },
+                new { Text = "80000000",    Expected = Convert.ToInt32("0x80000000", 16) },
+                new { Text = "90000000",    Expected = Convert.ToInt32("0x90000000", 16) },
+                new { Text = "a0000000",    Expected = Convert.ToInt32("0XA0000000", 16) },
+                new { Text = "B0000000",    Expected = Convert.ToInt32("0XB0000000", 16) },
+                new { Text = "c0000000",    Expected = Convert.ToInt32("0XC0000000", 16) },
+                new { Text = "D0000000",    Expected = Convert.ToInt32("0XD0000000", 16) },
+                new { Text = "e0000000",    Expected = Convert.ToInt32("0XE0000000", 16) },
+                new { Text = "FFFFfffE",    Expected = Convert.ToInt32("0xFFFFFFFE", 16) },
+                new { Text = "FFFFFFFF",    Expected = -1 },
+                new { Text = "100000000",   Expected = -1 },
+            }, (dynamic row) => {
+                var actual = CustomConvert.HexInt(row.Text);
+                Assert.AreEqual(row.Expected, actual);
+            });
+        }
+        #endregion
+
         #region DistanceUnits
         [TestMethod]
         public void CustomConvert_DistanceUnits_Calculates_Correct_Distances()

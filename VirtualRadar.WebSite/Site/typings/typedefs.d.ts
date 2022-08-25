@@ -102,7 +102,8 @@
      */
     export interface IAircraftListRequestBody
     {
-        icaos?: string;
+        icaos?: string;         // <-- deprecated, hyphen separated list of each tracked aircraft's ICAO
+        ids?:   string;         // hyphen separated list of each tracked aircraft's id in hex
     }
 
     /**

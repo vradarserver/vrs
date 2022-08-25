@@ -178,6 +178,15 @@ var VRS;
             });
             return result;
         };
+        AircraftList.prototype.getAllAircraftIdsHexHyphenString = function () {
+            var result = '';
+            this._Aircraft.foreachAircraft(function (aircraft) {
+                if (result)
+                    result += '-';
+                result += aircraft.id.toString(16);
+            });
+            return result;
+        };
         AircraftList.prototype.applyJson = function (aircraftListJson, aircraftListFetcher) {
             if (aircraftListJson) {
                 this._CountTrackedAircraft = aircraftListJson.totalAc || 0;

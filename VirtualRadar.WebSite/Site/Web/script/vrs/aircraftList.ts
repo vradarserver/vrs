@@ -381,6 +381,21 @@ namespace VRS
         }
 
         /**
+         * Returns the ID of every aircraft being tracked as a hyphen-delimited string, where
+         * each ID is in hex.
+         * */
+        getAllAircraftIdsHexHyphenString() : string
+        {
+            var result = '';
+            this._Aircraft.foreachAircraft(function(aircraft) {
+                if(result) result += '-';
+                result += aircraft.id.toString(16);
+            });
+
+            return result;
+        }
+
+        /**
          * Applies details about an aircraft's current state to the aircraft list.
          */
         applyJson(aircraftListJson: IAircraftList, aircraftListFetcher: AircraftListFetcher)
@@ -446,4 +461,3 @@ namespace VRS
         }
     }
 }
- 

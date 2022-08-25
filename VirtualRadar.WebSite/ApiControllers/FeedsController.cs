@@ -349,6 +349,8 @@ namespace VirtualRadar.WebSite.ApiControllers
         /// <summary>
         /// Improved version 2 endpoint that was accessed via POST and accepted known aircraft in the body.
         /// </summary>
+        /// <param name="icaos">A list of hyphen delimited tracked aircraft ICAOs. Mutually exclusive with <paramref name="ids"/>.</param>
+        /// <param name="ids">A list of hyphen delimited tracked aircraft IDs in hex. Mutually exclusive with <paramref name="icaos"/>.</param>
         /// <param name="feed"></param>
         /// <param name="lat"></param>
         /// <param name="lng"></param>
@@ -361,7 +363,7 @@ namespace VirtualRadar.WebSite.ApiControllers
         [HttpPost]
         [Route("AircraftList.json")]            // pre-version 3 route
         [Route("FlightSimList.json")]           // pre-version 3 route
-        public AircraftListJson AircraftListV2Post(string icaos = null, int feed = -1, double? lat = null, double? lng = null, long ldv = -1, long stm = -1, byte refreshTrails = 0, int selAc = -1, string trFmt = null)
+        public AircraftListJson AircraftListV2Post(string icaos = null, string ids = null, int feed = -1, double? lat = null, double? lng = null, long ldv = -1, long stm = -1, byte refreshTrails = 0, int selAc = -1, string trFmt = null)
         {
             var isFlightSimList = Route?.RouteAttribute.Route == "FlightSimList.json";
             var args = new AircraftListJsonBuilderArgs() {
@@ -377,14 +379,24 @@ namespace VirtualRadar.WebSite.ApiControllers
                 TrailType =             TrailTypeFromCode(trFmt),
             };
             SortByFromQueryString(args);
-            ExtractPreviousAircraftFromBody(args, icaos);
+            ExtractPreviousAircraftFromBody(args, icaos, ids);
 
             return BuildAircraftList(args);
         }
 
-        private void ExtractPreviousAircraftFromBody(AircraftListJsonBuilderArgs args, string icaos)
+        private void ExtractPreviousAircraftFromBody(AircraftListJsonBuilderArgs args, string icaos, string ids)
         {
-            if(!String.IsNullOrEmpty(icaos)) {
+            if(!String.IsNullOrEmpty(ids)) {
+                foreach(var hexUniqueID in ids.Split('-')) {
+                    var id = CustomConvert.HexInt(hexUniqueID);
+                    if(id != -1) {
+                        args.PreviousAircraft.Add(id);
+                    }
+                }
+            } else if(!String.IsNullOrEmpty(icaos)) {
+                // This is making the very dodgy assumption that unique ID and ICAO are the same thing. They are not!
+                // Or at least there is no reason for them to be the same thing. It is safer to use the IDS parameter
+                // (see above), I'm only retaining support for an ICAOS parameter for backwards compatability.
                 foreach(var icao in icaos.Split('-')) {
                     var id = CustomConvert.Icao24(icao);
                     if(id != -1) {
@@ -392,6 +404,10 @@ namespace VirtualRadar.WebSite.ApiControllers
                     }
                 }
             }
+        }
+
+        private void FillPreviousAircraftFromHyphenDelimtedHexStrings(AircraftListJsonBuilderArgs args, string hexCodes)
+        {
         }
 
         private TrailType TrailTypeFromCode(string trFmt)

@@ -306,7 +306,7 @@ var VRS;
                 var headers = {};
                 var postBody = {};
                 if (!getFreshList) {
-                    postBody.icaos = _this._Settings.aircraftList.getAllAircraftIcaosString();
+                    postBody.ids = _this._Settings.aircraftList.getAllAircraftIdsHexHyphenString();
                 }
                 _this._Settings.aircraftList.raiseFetchingList(params, headers, postBody);
                 var url = VRS.browserHelper.formUrl(_this._Settings.fetchFsxList ? VRS.globalOptions.aircraftListFlightSimUrl : VRS.globalOptions.aircraftListUrl, params, false);
