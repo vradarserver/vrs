@@ -365,6 +365,7 @@ namespace VRS
         receiverId:             NumberValue =                       new NumberValue();
         icao:                   StringValue =                       new StringValue();
         icaoInvalid:            BoolValue =                         new BoolValue();
+        isRealAircraft:         BoolValue =                         new BoolValue();                    // False for aircraft fetched from flight simulators and fake aircraft lists
         registration:           StringValue =                       new StringValue();
         altitude:               NumberValue =                       new NumberValue();                  // Pressure altitude
         geometricAltitude:      NumberValue =                       new NumberValue();                  // Geometric altitude
@@ -435,7 +436,13 @@ namespace VRS
          * and not for every value on every refresh. At best that can cause flicker, at worst it
          * can hammer the browser.
          */
-        applyJson(aircraftJson: IAircraftListAircraft, aircraftListFetcher: AircraftListFetcher, settings: Aircraft_ApplyJsonSettings, serverTicks: number)
+        applyJson(
+            aircraftJson: IAircraftListAircraft,
+            aircraftListFetcher: AircraftListFetcher,
+            settings: Aircraft_ApplyJsonSettings,
+            serverTicks: number,
+            isAircraftReal: boolean
+        )
         {
             this.id = aircraftJson.Id;
             this.secondsTracked = aircraftJson.TSecs;
@@ -445,6 +452,7 @@ namespace VRS
             this.setValue(this.receiverId,           aircraftJson.Rcvr);
             this.setValue(this.icao,                 aircraftJson.Icao);
             this.setValue(this.icaoInvalid,          aircraftJson.Bad);
+            this.setValue(this.isRealAircraft,       isAircraftReal);
             this.setValue(this.registration,         aircraftJson.Reg);
             this.setValue(this.altitude,             aircraftJson.Alt);
             this.setValue(this.geometricAltitude,    aircraftJson.GAlt);
@@ -738,7 +746,7 @@ namespace VRS
          */
         canSubmitRoute() : boolean
         {
-            return !this.isCharterFlight.val && !this.isPositioningFlight.val;
+            return !this.isCharterFlight.val && !this.isPositioningFlight.val && this.isRealAircraft.val;
         }
 
         /**
@@ -746,7 +754,7 @@ namespace VRS
          */
         canSubmitAircraftLookup() : boolean
         {
-            return !this.icaoInvalid.val;
+            return !this.icaoInvalid.val && this.isRealAircraft.val;
         }
 
         /**

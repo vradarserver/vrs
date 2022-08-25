@@ -8,8 +8,8 @@ if(VRS && VRS.LinkRenderHandler && VRS.linkRenderHandlers) {
         new VRS.LinkRenderHandler({
             linkSite:           VRS.LinkSite.DatabaseEditorPlugin,
             displayOrder:       9000,
-            canLinkAircraft:    function(/** VRS.Aircraft */ aircraft) { return true; },
-            hasChanged:         function(/** VRS.Aircraft */ aircraft) { return false; },
+            canLinkAircraft:    function(/** VRS.Aircraft */ aircraft) { return aircraft.isRealAircraft.val; },
+            hasChanged:         function(/** VRS.Aircraft */ aircraft) { return aircraft.isRealAircraft.chg; },
             title:              function(/** VRS.Aircraft */ aircraft) { return 'Database Editor'; },
             buildUrl:           function(/** VRS.Aircraft */ aircraft) { return 'DatabaseEditor/index.html?icao=' + encodeURIComponent(aircraft.formatIcao()); },
             target:             'databaseEditor'

@@ -154,6 +154,7 @@ var VRS;
             this.receiverId = new NumberValue();
             this.icao = new StringValue();
             this.icaoInvalid = new BoolValue();
+            this.isRealAircraft = new BoolValue();
             this.registration = new StringValue();
             this.altitude = new NumberValue();
             this.geometricAltitude = new NumberValue();
@@ -219,7 +220,7 @@ var VRS;
                 return VRS.format.serial(this.serial.val);
             };
         }
-        Aircraft.prototype.applyJson = function (aircraftJson, aircraftListFetcher, settings, serverTicks) {
+        Aircraft.prototype.applyJson = function (aircraftJson, aircraftListFetcher, settings, serverTicks, isAircraftReal) {
             this.id = aircraftJson.Id;
             this.secondsTracked = aircraftJson.TSecs;
             this._AircraftListFetcher = aircraftListFetcher;
@@ -227,6 +228,7 @@ var VRS;
             this.setValue(this.receiverId, aircraftJson.Rcvr);
             this.setValue(this.icao, aircraftJson.Icao);
             this.setValue(this.icaoInvalid, aircraftJson.Bad);
+            this.setValue(this.isRealAircraft, isAircraftReal);
             this.setValue(this.registration, aircraftJson.Reg);
             this.setValue(this.altitude, aircraftJson.Alt);
             this.setValue(this.geometricAltitude, aircraftJson.GAlt);
@@ -463,10 +465,10 @@ var VRS;
             return !this.isCharterFlight.val && !this.isPositioningFlight.val && !!this.from.val && !!this.to.val;
         };
         Aircraft.prototype.canSubmitRoute = function () {
-            return !this.isCharterFlight.val && !this.isPositioningFlight.val;
+            return !this.isCharterFlight.val && !this.isPositioningFlight.val && this.isRealAircraft.val;
         };
         Aircraft.prototype.canSubmitAircraftLookup = function () {
-            return !this.icaoInvalid.val;
+            return !this.icaoInvalid.val && this.isRealAircraft.val;
         };
         Aircraft.prototype.hasRouteChanged = function () {
             return this.from.chg || this.to.chg || this.via.chg;

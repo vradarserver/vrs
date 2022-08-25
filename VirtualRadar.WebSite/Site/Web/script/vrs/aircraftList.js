@@ -203,6 +203,7 @@ var VRS;
                 var newAircraft = new AircraftCollection();
                 var jsonList = aircraftListJson.acList || [];
                 var length = jsonList.length;
+                var isAircraftReal = this._AircraftListSource === VRS.AircraftListSource.BaseStation;
                 var aircraftApplyJsonSettings = {
                     shortTrailTickThreshold: this._ServerTicks === 0 || this._ShortTrailSeconds <= 0 ? -1 : (this._ServerTicks - ((1000 * this._ShortTrailSeconds) + 500)),
                     picturesEnabled: VRS.serverConfig ? VRS.serverConfig.picturesEnabled() : false
@@ -215,13 +216,14 @@ var VRS;
                     var id = aircraftJson.Id;
                     var aircraftState = this._Aircraft[id];
                     var isNew = !aircraftState;
-                    if (!isNew)
+                    if (!isNew) {
                         delete this._Aircraft[id];
+                    }
                     else {
                         aircraftState = new VRS.Aircraft();
                         newAircraft[id] = aircraftState;
                     }
-                    aircraftState.applyJson(aircraftJson, aircraftListFetcher, aircraftApplyJsonSettings, this._ServerTicks);
+                    aircraftState.applyJson(aircraftJson, aircraftListFetcher, aircraftApplyJsonSettings, this._ServerTicks, isAircraftReal);
                     aircraft[id] = aircraftState;
                     if (isNew && this._SelectedAircraft && this._SelectedAircraft.id === id)
                         reselectedAircraft = aircraftState;

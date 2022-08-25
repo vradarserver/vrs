@@ -62,8 +62,8 @@ var VRS;
         new VRS.LinkRenderHandler({
             linkSite: VRS.LinkSite.AirlinersDotNet,
             displayOrder: 200,
-            canLinkAircraft: function (aircraft) { return aircraft && !!aircraft.registration.val; },
-            hasChanged: function (aircraft) { return aircraft.registration.chg; },
+            canLinkAircraft: function (aircraft) { return aircraft && !!aircraft.registration.val && aircraft.isRealAircraft.val; },
+            hasChanged: function (aircraft) { return aircraft.registration.chg || aircraft.isRealAircraft.chg; },
             title: 'www.airliners.net',
             buildUrl: function (aircraft) { return 'http://www.airliners.net/search?registrationActual=' + VRS.stringUtility.htmlEscape(aircraft.formatRegistration()); },
             target: 'airliners'
@@ -71,8 +71,8 @@ var VRS;
         new VRS.LinkRenderHandler({
             linkSite: VRS.LinkSite.JetPhotosDotCom,
             displayOrder: 300,
-            canLinkAircraft: function (aircraft) { return aircraft && !!aircraft.registration.val; },
-            hasChanged: function (aircraft) { return aircraft.registration.chg; },
+            canLinkAircraft: function (aircraft) { return aircraft && !!aircraft.registration.val && aircraft.isRealAircraft.val; },
+            hasChanged: function (aircraft) { return aircraft.registration.chg || aircraft.isRealAircraft.chg; },
             title: 'www.jetphotos.com',
             buildUrl: function (aircraft) { return 'https://www.jetphotos.com/photo/keyword/' + VRS.stringUtility.htmlEscape(aircraft.formatRegistration(false)); },
             target: 'jetphotos'
@@ -81,7 +81,7 @@ var VRS;
             linkSite: VRS.LinkSite.StandingDataMaintenance,
             displayOrder: -1,
             canLinkAircraft: function (aircraft) { return (!VRS.serverConfig || VRS.serverConfig.routeSubmissionEnabled()) && aircraft && !!aircraft.callsign.val && aircraft.canSubmitRoute(); },
-            hasChanged: function (aircraft) { return aircraft.callsign.chg; },
+            hasChanged: function (aircraft) { return aircraft.callsign.chg || aircraft.isRealAircraft.chg; },
             title: function (aircraft) { return aircraft.hasRoute() ? VRS.$$.SubmitRouteCorrection : VRS.$$.SubmitRoute; },
             buildUrl: function (aircraft) { return 'https://sdm.virtualradarserver.co.uk/Edit/Route?callsign=' + VRS.stringUtility.htmlEscape(aircraft.formatCallsign(false)); },
             target: 'vrs-sdm'
@@ -90,7 +90,7 @@ var VRS;
             linkSite: VRS.LinkSite.SDMAircraft,
             displayOrder: -1,
             canLinkAircraft: function (aircraft) { return (!VRS.serverConfig || VRS.serverConfig.routeSubmissionEnabled()) && aircraft && aircraft.canSubmitAircraftLookup(); },
-            hasChanged: function (aircraft) { return aircraft.icao.chg; },
+            hasChanged: function (aircraft) { return aircraft.icao.chg || aircraft.isRealAircraft.chg; },
             title: function (aircraft) { return aircraft.hasModelIcao() ? VRS.$$.UpdateAircraftLookup : VRS.$$.AddAircraftLookup; },
             buildUrl: function (aircraft) { return 'https://sdm.virtualradarserver.co.uk/Edit/Aircraft?icao=' + VRS.stringUtility.htmlEscape(aircraft.formatIcao()); },
             target: 'vrs-sdm'
