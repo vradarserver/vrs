@@ -40,7 +40,7 @@ namespace VirtualRadar.Plugin.Vatsim
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public AircraftListSource Source => AircraftListSource.BaseStation;
+        public AircraftListSource Source => AircraftListSource.FlightSimulatorX;
 
         /// <summary>
         /// See interface docs.
