@@ -72,7 +72,6 @@
     <Compile Include="VatsimApiModels\VatsimDataV3Prefile.cs" />
     <Compile Include="VatsimApiModels\VatsimDataV3Rating.cs" />
     <Compile Include="VatsimApiModels\VatsimDataV3Server.cs" />
-    <Compile Include="VatsimCIDToModeSIDMap.cs" />
     <Compile Include="VatsimDownloader.cs" />
     <Compile Include="VatsimFeed.cs" />
     <Compile Include="VatsimRemarks.cs" />

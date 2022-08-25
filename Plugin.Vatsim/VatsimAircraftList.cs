@@ -247,10 +247,9 @@ namespace VirtualRadar.Plugin.Vatsim
 
             foreach(var pilot in pilotStates) {
                 if(!_Aircraft.TryGetValue(pilot.cid, out var aircraft)) {
-                    var modeSID = VatsimCIDToModeSIDMap.CreateOrFetchVatsimToModeSMapping(pilot.cid);
-                    if(modeSID != -1) {
+                    if(pilot.cid < -1 || pilot.cid > 0) {
                         aircraft = Factory.Resolve<IAircraft>();
-                        aircraft.UniqueId = modeSID;
+                        aircraft.UniqueId = pilot.cid;
                         aircraft.FirstSeen = utcNow;
                         newAircraft.Add(pilot.cid, aircraft);
                     }
