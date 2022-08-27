@@ -118,6 +118,7 @@
     <Compile Include="BaseStation\BaseStationMessageTests.cs" />
     <Compile Include="BaseStation\BaseStationTranslatorExceptionTests.cs" />
     <Compile Include="CallsignTests.cs" />
+    <Compile Include="CsvParserTests.cs" />
     <Compile Include="CustomConvertTests.cs" />
     <Compile Include="EventHelperTests.cs" />
     <Compile Include="ExpiringDictionaryTests.cs" />

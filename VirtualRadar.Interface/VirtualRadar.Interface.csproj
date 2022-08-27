@@ -127,6 +127,7 @@
     <Compile Include="BackgroundThreadQueueMechanism.cs" />
     <Compile Include="Callsign.cs" />
     <Compile Include="CollectionHelper.cs" />
+    <Compile Include="CsvParser.cs" />
     <Compile Include="Database\BaseStationAircraftUpsert.cs" />
     <Compile Include="Database\BaseStationAircraftUpsertLookup.cs" />
     <Compile Include="Database\BaseStationFlightUpsert.cs" />
