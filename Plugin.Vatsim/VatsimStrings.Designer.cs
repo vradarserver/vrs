@@ -403,6 +403,24 @@ namespace VirtualRadar.Plugin.Vatsim {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connected to VATSIM.
+        /// </summary>
+        public static string VatsimConnected {
+            get {
+                return ResourceManager.GetString("VatsimConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not connected to VATSIM.
+        /// </summary>
+        public static string VatsimDisconnected {
+            get {
+                return ResourceManager.GetString("VatsimDisconnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to VATSIM.
         /// </summary>
         public static string WebAdminMenuName {

@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using InterfaceFactory;
 using VirtualRadar.Interface;
@@ -65,7 +66,21 @@ namespace VirtualRadar.Plugin.Vatsim
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string StatusDescription => Status;
+        public string StatusDescription
+        {
+            get {
+                var result = new StringBuilder(Status);
+                if(Options.Enabled) {
+                    result.Append(". ");
+                    result.Append(VatsimDownloader.Started
+                        ? VatsimStrings.VatsimConnected
+                        : VatsimStrings.VatsimDisconnected
+                    );
+                    result.Append('.');
+                }
+                return result.ToString();
+            }
+        }
 
         /// <summary>
         /// See interface docs.
@@ -97,12 +112,15 @@ namespace VirtualRadar.Plugin.Vatsim
         /// <param name="parameters"></param>
         public void Startup(PluginStartupParameters parameters)
         {
+            VatsimDownloader.StartedChanged += VatsimDownloader_StartedChanged;
             ApplyOptions();
         }
 
         private void ApplyOptions()
         {
             lock(_SyncLock) {
+                OnStatusChanged(EventArgs.Empty);
+
                 var feedManager = Factory.ResolveSingleton<IFeedManager>();
 
                 DeleteFeedsNoLongerInOptions(feedManager);
@@ -202,7 +220,13 @@ namespace VirtualRadar.Plugin.Vatsim
             using(var optionsView = new WinForms.OptionsView()) {
                 optionsView.Options = OptionsStorage.Load();
                 if(optionsView.ShowDialog() == DialogResult.OK) {
-                    SaveAndLoadNewOptions(optionsView.Options);
+                    var cursor = Cursor.Current;
+                    try {
+                        Cursor.Current = Cursors.WaitCursor;
+                        SaveAndLoadNewOptions(optionsView.Options);
+                    } finally {
+                        Cursor.Current = cursor;
+                    }
                 }
             }
         }
@@ -227,6 +251,11 @@ namespace VirtualRadar.Plugin.Vatsim
         public void Shutdown()
         {
             ;
+        }
+
+        private void VatsimDownloader_StartedChanged(object sender, EventArgs args)
+        {
+            OnStatusChanged(EventArgs.Empty);
         }
     }
 }

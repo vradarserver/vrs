@@ -231,6 +231,12 @@
   <data name="ShowInvalidRegistrations" xml:space="preserve">
     <value>Show invalid registrations</value>
   </data>
+  <data name="VatsimConnected" xml:space="preserve">
+    <value>Connected to VATSIM</value>
+  </data>
+  <data name="VatsimDisconnected" xml:space="preserve">
+    <value>Not connected to VATSIM</value>
+  </data>
   <data name="WebAdminMenuName" xml:space="preserve">
     <value>VATSIM</value>
   </data>
