@@ -38,19 +38,22 @@ namespace VirtualRadar.Plugin.Vatsim
         public NameValueCollection Properties { get; } = new NameValueCollection();
 
         /// <summary>
-        /// Gets the registration as extracted from the <see cref="Remarks"/>.
+        /// Gets the registration as extracted from the <see cref="Remarks"/>. Will be an
+        /// empty string if missing or invalid, will never be null.
         /// </summary>
-        public string Registration => FirstWordOf("REG", truncateAt: 10);
+        public string Registration => OnlyWordOf("REG", maxLength: 10);
 
         /// <summary>
-        /// Gets the operator ICAO as extracted from the <see cref="Remarks"/>.
+        /// Gets the operator ICAO as extracted from the <see cref="Remarks"/>. Will be an
+        /// empty string if missing or invalid, will never be null.
         /// </summary>
-        public string OperatorIcao => FirstWordOf("OPR", truncateAt: 3);
+        public string OperatorIcao => OnlyWordOf("OPR", maxLength: 3);
 
         /// <summary>
-        /// Gets the Mode-S ICAO24 as extracted from the <see cref="Remarks"/>.
+        /// Gets the Mode-S ICAO24 as extracted from the <see cref="Remarks"/>. Will be an
+        /// empty string if missing or invalid, will never be null.
         /// </summary>
-        public string ModeSCode => FirstWordOf("CODE", truncateAt: 6);
+        public string ModeSCode => OnlyWordOf("CODE", maxLength: 6);
 
         /// <summary>
         /// Creates a new object.
@@ -100,28 +103,33 @@ namespace VirtualRadar.Plugin.Vatsim
         public override string ToString() => Remarks;
 
         /// <summary>
-        /// Returns the first word of the <see cref="Properties"/> key passed across,
-        /// truncated at <paramref name="truncateAt"/> (zero based).
+        /// Returns the <see cref="Properties"/> key passed across as long as (1) it
+        /// is an entire word and (2) it is not longer than <paramref name="maxLength"/>.
+        /// If both conditions are not met then an empty string is returned.
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="truncateAt"></param>
+        /// <param name="maxLength"></param>
         /// <returns></returns>
-        public string FirstWordOf(string key, int truncateAt)
+        public string OnlyWordOf(string key, int maxLength = int.MaxValue)
         {
-            var result = Properties[key] ?? "";
+            var result = (Properties[key] ?? "").Trim();
 
             if(result != "") {
-                var match = _WordRegex.Match(result);
-                if(!match.Success) {
+                if(result.Length > maxLength) {
                     result = "";
                 } else {
-                    result = match.Groups["word"].Value;
+                    var match = _WordRegex.Match(result);
+                    if(!match.Success) {
+                        result = "";
+                    } else {
+                        if(match.Groups["word"].Value.Length != result.Length) {
+                            result = "";
+                        }
+                    }
                 }
             }
 
-            return result.Length > truncateAt
-                ? result.Substring(0, truncateAt)
-                : result;
+            return result;
         }
     }
 }

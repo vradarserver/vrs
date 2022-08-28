@@ -301,45 +301,52 @@ namespace VirtualRadar.Plugin.Vatsim
                 aircraft.AirPressureInHg =  pilot.qnh_i_hg;
                 aircraft.Icao24Country =    pilot.server;
 
-                var operatorIcaoDataVersion = aircraft.OperatorIcaoChanged;
-
                 var userNotes = $"{pilot.flight_plan?.route}\r\n{pilot.flight_plan?.remarks}";
                 aircraft.UserNotes = userNotes;
                 var remarks = new VatsimRemarks(pilot.flight_plan?.remarks);
                 var registration = remarks.Registration;
-                aircraft.OperatorIcao = remarks.OperatorIcao;
+                if(registration == "") {
+                    registration = aircraft.Registration;
+                }
+                var operatorIcao = remarks.OperatorIcao;
+                if(operatorIcao == "") {
+                    operatorIcao = aircraft.OperatorIcao;
+                }
                 var icao24 = remarks.ModeSCode;
                 if(CustomConvert.Icao24(icao24) != -1) {
-                    aircraft.Icao24 = icao24;        // <-- not sure whether this is a good idea, it'll lead to non-null / non-empty duplicates and it won't match the unique ID...
+                    aircraft.Icao24 = icao24;
                 }
 
                 IEnumerable<Airline> airlinesForOperatorIcao = null;
                 if(aircraft.Callsign != pilot.callsign) {
                     aircraft.Callsign = pilot.callsign;
-                    var callsign = new Callsign(pilot.callsign);
-                    airlinesForOperatorIcao = callsign.IsOriginalCallsignValid
-                        ? _StandingDataManager.FindAirlinesForCode(callsign.Code)
-                        : null;
-                    var hasAirlineForCallsign = airlinesForOperatorIcao?.Any() ?? false;
-                    if(hasAirlineForCallsign) {
-                        aircraft.OperatorIcao = callsign.Code;
+                    if(remarks.Registration.Replace("-", "") != aircraft.Callsign) {        // <-- they never seem to have dashes in their registrations to begin with, but just in case...
+                        var callsign = new Callsign(pilot.callsign);
+                        airlinesForOperatorIcao = callsign.IsOriginalCallsignValid
+                            ? _StandingDataManager.FindAirlinesForCode(callsign.Code)
+                            : null;
+                        var hasAirlineForCallsign = airlinesForOperatorIcao?.Any() ?? false;
+                        if(hasAirlineForCallsign && String.IsNullOrEmpty(operatorIcao)) {
+                            operatorIcao = callsign.Code;
+                        }
                     }
                 }
-                if(String.IsNullOrEmpty(aircraft.OperatorIcao) && !String.IsNullOrEmpty(aircraft.Callsign)) {
+                if(String.IsNullOrEmpty(operatorIcao) && !String.IsNullOrEmpty(aircraft.Callsign)) {
                     if(String.IsNullOrEmpty(registration)) {
                         registration = aircraft.Callsign;
                     }
                 }
 
-                if(operatorIcaoDataVersion != aircraft.OperatorIcaoChanged) {
+                if(aircraft.OperatorIcao != operatorIcao) {
+                    aircraft.OperatorIcao = operatorIcao;
                     var airlines = airlinesForOperatorIcao
                         ?? _StandingDataManager.FindAirlinesForCode(aircraft.OperatorIcao);
                     aircraft.Operator = airlines.FirstOrDefault()?.Name ?? aircraft.OperatorIcao;
                 }
 
-                if(registration != null) {
+                if(aircraft.Registration != registration) {     // <-- very likely to fail this test, usually needs some kind of fixup
                     registration = FixRegistrationByExaminingPrefix(registration);
-                    aircraft.Registration = registration;
+                    aircraft.Registration = registration;       // <-- but Registration property will ignore non-changes, so it should be OK
                 }
 
                 SetOnGround(aircraft);
