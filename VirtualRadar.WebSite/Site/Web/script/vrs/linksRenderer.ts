@@ -129,8 +129,8 @@ namespace VRS
         new VRS.LinkRenderHandler({
             linkSite:           VRS.LinkSite.AirlinersDotNet,
             displayOrder:       200,
-            canLinkAircraft:    function(aircraft) { return aircraft && !!aircraft.registration.val && aircraft.isRealAircraft.val; },
-            hasChanged:         function(aircraft) { return aircraft.registration.chg || aircraft.isRealAircraft.chg; },
+            canLinkAircraft:    function(aircraft) { return aircraft && !!aircraft.registration.val; },
+            hasChanged:         function(aircraft) { return aircraft.registration.chg; },
             title:              'www.airliners.net',
             buildUrl:           function(aircraft) { return 'http://www.airliners.net/search?registrationActual=' + VRS.stringUtility.htmlEscape(aircraft.formatRegistration()); },
             target:             'airliners'
@@ -138,8 +138,8 @@ namespace VRS
         new VRS.LinkRenderHandler({
             linkSite:           VRS.LinkSite.JetPhotosDotCom,
             displayOrder:       300,
-            canLinkAircraft:    function(aircraft) { return aircraft && !!aircraft.registration.val && aircraft.isRealAircraft.val; },
-            hasChanged:         function(aircraft) { return aircraft.registration.chg || aircraft.isRealAircraft.chg; },
+            canLinkAircraft:    function(aircraft) { return aircraft && !!aircraft.registration.val; },
+            hasChanged:         function(aircraft) { return aircraft.registration.chg; },
             title:              'www.jetphotos.com',
             buildUrl:           function(aircraft) { return 'https://www.jetphotos.com/photo/keyword/' + VRS.stringUtility.htmlEscape(aircraft.formatRegistration(false)); },
             target:             'jetphotos'
