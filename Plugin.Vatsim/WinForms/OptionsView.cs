@@ -66,6 +66,12 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
             set => chkInferModelFromModelType.Checked = value;
         }
 
+        private bool ShowInvalidRegistrations
+        {
+            get => chkShowInvalidRegistrations.Checked;
+            set => chkShowInvalidRegistrations.Checked = value;
+        }
+
         private string FeedName
         {
             get => txtFeedName.Text.Trim();
@@ -159,6 +165,7 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
             InferModelFromModelType =           Options?.InferModelFromModelType ?? false;
             PluginEnabled =                     Options?.Enabled ?? false;
             RefreshIntervalSeconds =            Options?.RefreshIntervalSeconds ?? 15;
+            ShowInvalidRegistrations =          Options?.ShowInvalidRegistrations ?? false;
             SlowAircraftThresholdSpeedKnots =   Options?.SlowAircraftThresholdSpeedKnots ?? 40;
 
             _GeofenceFeedListViewHelper.RefreshList(Options?.GeofencedFeeds ?? new List<GeofenceFeedOption>());
@@ -172,6 +179,7 @@ namespace VirtualRadar.Plugin.Vatsim.WinForms
             Options.InferModelFromModelType =           InferModelFromModelType;
             Options.Enabled =                           PluginEnabled;
             Options.RefreshIntervalSeconds =            RefreshIntervalSeconds;
+            Options.ShowInvalidRegistrations =          ShowInvalidRegistrations;
             Options.SlowAircraftThresholdSpeedKnots =   SlowAircraftThresholdSpeedKnots;
 
             Options.GeofencedFeeds.Clear();

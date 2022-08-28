@@ -228,6 +228,9 @@
   <data name="Seconds" xml:space="preserve">
     <value>seconds</value>
   </data>
+  <data name="ShowInvalidRegistrations" xml:space="preserve">
+    <value>Show invalid registrations</value>
+  </data>
   <data name="WebAdminMenuName" xml:space="preserve">
     <value>VATSIM</value>
   </data>

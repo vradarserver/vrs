@@ -28,7 +28,9 @@ namespace VirtualRadar.Plugin.Vatsim.WebAdmin
 
         public int SlowAircraftThresholdSpeedKnots { get; set; }
 
-        public bool InferModelFromModelType { get; set; } = true;
+        public bool InferModelFromModelType { get; set; }
+
+        public bool ShowInvalidRegistrations { get; set; }
 
         public List<GeofenceFeedOptionModel> GeofencedFeeds { get; private set; } = new List<GeofenceFeedOptionModel>();
 
@@ -51,6 +53,7 @@ namespace VirtualRadar.Plugin.Vatsim.WebAdmin
                 AssumeSlowAircraftAreOnGround =     option.AssumeSlowAircraftAreOnGround,
                 SlowAircraftThresholdSpeedKnots =   option.SlowAircraftThresholdSpeedKnots,
                 InferModelFromModelType =           option.InferModelFromModelType,
+                ShowInvalidRegistrations =          option.ShowInvalidRegistrations,
             };
             result.GeofencedFeeds.AddRange(
                 option.GeofencedFeeds.Select(r => GeofenceFeedOptionModel.FromOption(r))
@@ -68,6 +71,7 @@ namespace VirtualRadar.Plugin.Vatsim.WebAdmin
                 AssumeSlowAircraftAreOnGround =     AssumeSlowAircraftAreOnGround,
                 SlowAircraftThresholdSpeedKnots =   SlowAircraftThresholdSpeedKnots,
                 InferModelFromModelType =           InferModelFromModelType,
+                ShowInvalidRegistrations =          ShowInvalidRegistrations
             };
             result.GeofencedFeeds.AddRange(
                 GeofencedFeeds.Select(r => r.ToOption())

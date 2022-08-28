@@ -237,6 +237,7 @@ namespace VirtualRadar.Plugin.Vatsim
                     lock(aircraft) {
                         SetOnGround(aircraft);
                         SetManufacturerAndModelFromType(aircraft, typeData: null, loadTypeDataIfMissing: true);
+                        FixRegistrationByExaminingPrefix(aircraft);
                     }
                 }
             }
@@ -338,7 +339,7 @@ namespace VirtualRadar.Plugin.Vatsim
                 }
 
                 if(registrationDataVersion != aircraft.RegistrationChanged) {
-                    AddHyphenToRegistrationIfMissing(aircraft);
+                    FixRegistrationByExaminingPrefix(aircraft);
                 }
 
                 SetOnGround(aircraft);
@@ -348,13 +349,19 @@ namespace VirtualRadar.Plugin.Vatsim
             }
         }
 
-        private void AddHyphenToRegistrationIfMissing(IAircraft aircraft)
+        private void FixRegistrationByExaminingPrefix(IAircraft aircraft)
         {
             var registration = aircraft.Registration?.ToUpperInvariant().Trim();
-            if(!String.IsNullOrEmpty(registration) && !registration.Contains("-")) {
+            var hasHyphen = registration?.Contains('-') ?? false;
+            var showInvalidRegistrations = Plugin.Options.ShowInvalidRegistrations;
+
+            if(!String.IsNullOrEmpty(registration) && (!hasHyphen || !showInvalidRegistrations)) {
                 var prefixes = _RegistrationPrefixLookup
                     .FindDetailsForNoHyphenRegistration(registration);
-                if(prefixes.Count > 0 && !prefixes.Any(prefix => !prefix.HasHyphen)) {
+
+                if(prefixes.Count == 0 && !showInvalidRegistrations) {
+                    aircraft.Registration = null;
+                } else if(prefixes.Count > 0 && !hasHyphen && !prefixes.Any(prefix => !prefix.HasHyphen)) {
                     var bestPrefix = prefixes
                         .OrderBy(r => r.Prefix)
                         .FirstOrDefault();

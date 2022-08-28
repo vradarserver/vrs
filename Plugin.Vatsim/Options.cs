@@ -55,6 +55,11 @@ namespace VirtualRadar.Plugin.Vatsim
         public bool InferModelFromModelType { get; set; } = true;
 
         /// <summary>
+        /// Gets or sets a value indicating that invalid registrations are to be ignored.
+        /// </summary>
+        public bool ShowInvalidRegistrations { get; set; } = false;
+
+        /// <summary>
         /// Gets a list of geofences and the feeds that can be associated with them.
         /// </summary>
         public List<GeofenceFeedOption> GeofencedFeeds { get; private set; } = new List<GeofenceFeedOption>();

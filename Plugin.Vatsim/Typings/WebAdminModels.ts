@@ -14,6 +14,7 @@ declare module VirtualRadar.Plugin.Vatsim.WebAdmin {
         AssumeSlowAircraftAreOnGround: boolean;
         SlowAircraftThresholdSpeedKnots: number;
         InferModelFromModelType: boolean;
+        ShowInvalidRegistrations: boolean;
         GeofencedFeeds: IGeofenceFeedOptionModel[];
         CentreOnTypes: IEnumModel[];
         DistanceUnitTypes: IEnumModel[];
@@ -48,6 +49,7 @@ declare module VirtualRadar.Plugin.Vatsim.WebAdmin {
         AssumeSlowAircraftAreOnGround: KnockoutObservable<boolean>;
         SlowAircraftThresholdSpeedKnots: KnockoutObservable<number>;
         InferModelFromModelType: KnockoutObservable<boolean>;
+        ShowInvalidRegistrations: KnockoutObservable<boolean>;
         GeofencedFeeds: KnockoutViewModelArray<IGeofenceFeedOptionModel_KO>;
         CentreOnTypes: KnockoutViewModelArray<IEnumModel_KO>;
         DistanceUnitTypes: KnockoutViewModelArray<IEnumModel_KO>;

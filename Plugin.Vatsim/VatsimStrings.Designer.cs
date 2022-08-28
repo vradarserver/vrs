@@ -394,6 +394,15 @@ namespace VirtualRadar.Plugin.Vatsim {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show invalid registrations.
+        /// </summary>
+        public static string ShowInvalidRegistrations {
+            get {
+                return ResourceManager.GetString("ShowInvalidRegistrations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to VATSIM.
         /// </summary>
         public static string WebAdminMenuName {
