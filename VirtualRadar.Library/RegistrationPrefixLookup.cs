@@ -106,7 +106,7 @@ namespace VirtualRadar.Library
             if(buckets != null && normalisedRegistration.Length > 0) {
                 if(buckets.TryGetValue(normalisedRegistration[0], out var bucket)) {
                     result = bucket
-                        .Where(prefix => predicate(prefix))
+                        .Where(prefix => normalisedRegistration.StartsWith(prefix.Prefix) && predicate(prefix))
                         .ToArray();
                 }
             }
