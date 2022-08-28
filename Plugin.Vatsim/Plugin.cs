@@ -202,13 +202,22 @@ namespace VirtualRadar.Plugin.Vatsim
             using(var optionsView = new WinForms.OptionsView()) {
                 optionsView.Options = OptionsStorage.Load();
                 if(optionsView.ShowDialog() == DialogResult.OK) {
-                    optionsView.Options.NormaliseBeforeSave();
-                    lock(_SyncLock) {
-                        OptionsStorage.Save(optionsView.Options);
-                        Options = optionsView.Options;
-                        ApplyOptions();
-                    }
+                    SaveAndLoadNewOptions(optionsView.Options);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Saves the options passed across and then loads them up for the plugin to use.
+        /// </summary>
+        /// <param name="options"></param>
+        public void SaveAndLoadNewOptions(Options options)
+        {
+            options.NormaliseBeforeSave();
+            lock(_SyncLock) {
+                OptionsStorage.Save(options);
+                Options = options;
+                ApplyOptions();
             }
         }
 

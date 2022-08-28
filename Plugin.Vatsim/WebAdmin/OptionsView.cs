@@ -53,10 +53,9 @@ namespace VirtualRadar.Plugin.Vatsim.WebAdmin
             var outcome = "";
 
             var options = optionsModel.ToOption();
-            options.NormaliseBeforeSave();
 
             try {
-                OptionsStorage.Save(options);
+                Plugin.Singleton.SaveAndLoadNewOptions(options);
                 outcome = "Saved";
             } catch(ConflictingUpdateException) {
                 outcome = "ConflictingUpdate";

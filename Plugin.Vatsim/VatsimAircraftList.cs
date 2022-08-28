@@ -237,7 +237,6 @@ namespace VirtualRadar.Plugin.Vatsim
                     lock(aircraft) {
                         SetOnGround(aircraft);
                         SetManufacturerAndModelFromType(aircraft, typeData: null, loadTypeDataIfMissing: true);
-                        FixRegistrationByExaminingPrefix(aircraft);
                     }
                 }
             }
@@ -303,18 +302,15 @@ namespace VirtualRadar.Plugin.Vatsim
                 aircraft.Icao24Country =    pilot.server;
 
                 var operatorIcaoDataVersion = aircraft.OperatorIcaoChanged;
-                var registrationDataVersion = aircraft.RegistrationChanged;
 
                 var userNotes = $"{pilot.flight_plan?.route}\r\n{pilot.flight_plan?.remarks}";
-                if(aircraft.UserNotes != userNotes) {
-                    aircraft.UserNotes = userNotes;
-                    var remarks = new VatsimRemarks(pilot.flight_plan?.remarks);
-                    aircraft.Registration = remarks.Registration;
-                    aircraft.OperatorIcao = remarks.OperatorIcao;
-                    var icao24 = remarks.ModeSCode;
-                    if(CustomConvert.Icao24(icao24) != -1) {
-                        aircraft.Icao24 = icao24;        // <-- not sure whether this is a good idea, it'll lead to non-null / non-empty duplicates and it won't match the unique ID...
-                    }
+                aircraft.UserNotes = userNotes;
+                var remarks = new VatsimRemarks(pilot.flight_plan?.remarks);
+                var registration = remarks.Registration;
+                aircraft.OperatorIcao = remarks.OperatorIcao;
+                var icao24 = remarks.ModeSCode;
+                if(CustomConvert.Icao24(icao24) != -1) {
+                    aircraft.Icao24 = icao24;        // <-- not sure whether this is a good idea, it'll lead to non-null / non-empty duplicates and it won't match the unique ID...
                 }
 
                 IEnumerable<Airline> airlinesForOperatorIcao = null;
@@ -327,8 +323,11 @@ namespace VirtualRadar.Plugin.Vatsim
                     var hasAirlineForCallsign = airlinesForOperatorIcao?.Any() ?? false;
                     if(hasAirlineForCallsign) {
                         aircraft.OperatorIcao = callsign.Code;
-                    } else {
-                        aircraft.Registration = aircraft.Callsign;
+                    }
+                }
+                if(String.IsNullOrEmpty(aircraft.OperatorIcao) && !String.IsNullOrEmpty(aircraft.Callsign)) {
+                    if(String.IsNullOrEmpty(registration)) {
+                        registration = aircraft.Callsign;
                     }
                 }
 
@@ -338,8 +337,9 @@ namespace VirtualRadar.Plugin.Vatsim
                     aircraft.Operator = airlines.FirstOrDefault()?.Name ?? aircraft.OperatorIcao;
                 }
 
-                if(registrationDataVersion != aircraft.RegistrationChanged) {
-                    FixRegistrationByExaminingPrefix(aircraft);
+                if(registration != null) {
+                    registration = FixRegistrationByExaminingPrefix(registration);
+                    aircraft.Registration = registration;
                 }
 
                 SetOnGround(aircraft);
@@ -349,30 +349,32 @@ namespace VirtualRadar.Plugin.Vatsim
             }
         }
 
-        private void FixRegistrationByExaminingPrefix(IAircraft aircraft)
+        private string FixRegistrationByExaminingPrefix(string registration)
         {
-            var registration = aircraft.Registration?.ToUpperInvariant().Trim();
-            var hasHyphen = registration?.Contains('-') ?? false;
+            var result = registration.ToUpperInvariant().Trim();
+            var hasHyphen = result?.Contains('-') ?? false;
             var showInvalidRegistrations = Plugin.Options.ShowInvalidRegistrations;
 
-            if(!String.IsNullOrEmpty(registration) && (!hasHyphen || !showInvalidRegistrations)) {
+            if(result.Length > 0 && (!hasHyphen || !showInvalidRegistrations)) {
                 var prefixes = _RegistrationPrefixLookup
-                    .FindDetailsForNoHyphenRegistration(registration);
+                    .FindDetailsForNoHyphenRegistration(result);
 
                 if(prefixes.Count == 0 && !showInvalidRegistrations) {
-                    aircraft.Registration = null;
+                    result = "";        // <-- don't set to null, it won't override a non-null value on the front end
                 } else if(prefixes.Count > 0 && !hasHyphen && !prefixes.Any(prefix => !prefix.HasHyphen)) {
                     var bestPrefix = prefixes
                         .OrderBy(r => r.Prefix)
                         .FirstOrDefault();
-                    var match = bestPrefix.DecodeNoHyphenRegex.Match(registration);
+                    var match = bestPrefix.DecodeNoHyphenRegex.Match(result);
                     if(match.Success) {     // <-- it really should match! but just in case...
-                        aircraft.Registration = bestPrefix.FormatCode(
+                        result = bestPrefix.FormatCode(
                             match.Groups["code"].Value
                         );
                     }
                 }
             }
+
+            return result;
         }
 
         private void SetOnGround(IAircraft aircraft)
