@@ -165,6 +165,7 @@
     <Compile Include="IFlightSimulatorAircraftList.cs" />
     <Compile Include="IPlugin_V2.cs" />
     <Compile Include="IPolarPlottingAircraftList.cs" />
+    <Compile Include="IRegistrationPrefixLookup.cs" />
     <Compile Include="IShutdownSignalHandler.cs" />
     <Compile Include="IPAddressHelper.cs" />
     <Compile Include="IWebAddressManager.cs" />
@@ -243,6 +244,7 @@
     <Compile Include="IStandaloneAircraftOnlineLookupCache.cs" />
     <Compile Include="Listener\IMergedFeedComponentListener.cs" />
     <Compile Include="Presenter\IBackgroundThreadQueuesPresenter.cs" />
+    <Compile Include="RegistrationPrefixDetail.cs" />
     <Compile Include="Settings\CachedUser.cs" />
     <Compile Include="Settings\ISharedConfigurationSubscriber.cs" />
     <Compile Include="Settings\ITileServerSettingsDownloader.cs" />

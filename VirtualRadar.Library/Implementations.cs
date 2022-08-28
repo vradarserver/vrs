@@ -128,6 +128,7 @@ namespace VirtualRadar.Library
             factory.Register<ILog, Log>();
             factory.Register<INewVersionChecker, NewVersionChecker>();
             factory.Register<IPluginManager, PluginManager>();
+            factory.Register<IRegistrationPrefixLookup, RegistrationPrefixLookup>();
             factory.Register<IRuntimeEnvironment, RuntimeEnvironment>();
             factory.Register<ISimpleAircraftList, SimpleAircraftList>();
             factory.Register<IStatistics, Statistics>();

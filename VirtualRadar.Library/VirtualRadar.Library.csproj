@@ -221,6 +221,7 @@
     <Compile Include="Presenter\Presenter.cs" />
     <Compile Include="Presenter\ViewDtoHelper.cs" />
     <Compile Include="Presenter\XPlanePresenter.cs" />
+    <Compile Include="RegistrationPrefixLookup.cs" />
     <Compile Include="Settings\ConfigurationListener.cs" />
     <Compile Include="Presenter\StatisticsPresenter.cs" />
     <Compile Include="Network\RebroadcastServer.cs" />

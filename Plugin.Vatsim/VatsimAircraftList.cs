@@ -37,6 +37,8 @@ namespace VirtualRadar.Plugin.Vatsim
 
         private ISharedConfiguration _SharedConfiguration;
 
+        private IRegistrationPrefixLookup _RegistrationPrefixLookup;
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -106,9 +108,10 @@ namespace VirtualRadar.Plugin.Vatsim
         /// </summary>
         public VatsimAircraftList()
         {
-            _Clock =                Factory.Resolve<IClock>();
-            _StandingDataManager =  Factory.ResolveSingleton<IStandingDataManager>();
-            _SharedConfiguration =  Factory.ResolveSingleton<ISharedConfiguration>();
+            _Clock =                    Factory.Resolve<IClock>();
+            _StandingDataManager =      Factory.ResolveSingleton<IStandingDataManager>();
+            _SharedConfiguration =      Factory.ResolveSingleton<ISharedConfiguration>();
+            _RegistrationPrefixLookup = Factory.ResolveSingleton<IRegistrationPrefixLookup>();
         }
 
         /// <summary>
@@ -299,6 +302,7 @@ namespace VirtualRadar.Plugin.Vatsim
                 aircraft.Icao24Country =    pilot.server;
 
                 var operatorIcaoDataVersion = aircraft.OperatorIcaoChanged;
+                var registrationDataVersion = aircraft.RegistrationChanged;
 
                 var userNotes = $"{pilot.flight_plan?.route}\r\n{pilot.flight_plan?.remarks}";
                 if(aircraft.UserNotes != userNotes) {
@@ -331,6 +335,25 @@ namespace VirtualRadar.Plugin.Vatsim
                     var airlines = airlinesForOperatorIcao
                         ?? _StandingDataManager.FindAirlinesForCode(aircraft.OperatorIcao);
                     aircraft.Operator = airlines.FirstOrDefault()?.Name ?? aircraft.OperatorIcao;
+                }
+
+                if(registrationDataVersion != aircraft.RegistrationChanged) {
+                    var registration = aircraft.Registration;
+                    if(!String.IsNullOrEmpty(registration) && !registration.Contains("-")) {
+                        var prefixes = _RegistrationPrefixLookup
+                            .FindDetailsForNoHyphenRegistration(registration);
+                        if(prefixes.Count > 0 && !prefixes.Any(r => !r.HasHyphen)) {
+                            var bestPrefix = prefixes
+                                .OrderBy(r => r.Prefix)
+                                .FirstOrDefault();
+                            var match = bestPrefix.DecodeNoHyphenRegex.Match(registration);
+                            if(match.Success) {     // <-- it really should match! but just in case...
+                                aircraft.Registration = bestPrefix.FormatCode(
+                                    match.Groups["code"].Value
+                                );
+                            }
+                        }
+                    }
                 }
 
                 SetOnGround(aircraft);
