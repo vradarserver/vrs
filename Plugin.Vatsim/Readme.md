@@ -72,6 +72,16 @@ A geofenced feed can be centred on a coordinate, a pilot or an airport.
 The plugin comes with two example geofenced feeds - one for the UK
 and Ireland and another for Heathrow airport.
 
+## Aircraft Details
+
+There are a couple of fields that hold information specific to VATSIM
+aircraft. These can be added to the aircraft detail panel and aircraft
+list display via `Menu`|`Options` in the browser.
+
+**User Tag**: Shows the pilot's CID and name.
+
+**Notes**: Shows the route and remarks from the filed flight plan.
+
 ## Caveats
 VATSIM feeds cannot be recorded by the BaseStation Database writer, so
 you cannot generate reports on VATSIM feeds.
