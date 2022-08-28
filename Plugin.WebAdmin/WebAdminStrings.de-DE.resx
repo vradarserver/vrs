@@ -224,7 +224,7 @@
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="WA_Title_WebAdmin" xml:space="preserve">
-    <value>VRS Web Amin</value>
+    <value>VRS Web Admin</value>
   </data>
   <data name="WA_Validation_Failed" xml:space="preserve">
     <value>Korrigieren Sie die Fehler und versuchen Sie es erneut</value>
