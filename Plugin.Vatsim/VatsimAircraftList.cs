@@ -338,28 +338,33 @@ namespace VirtualRadar.Plugin.Vatsim
                 }
 
                 if(registrationDataVersion != aircraft.RegistrationChanged) {
-                    var registration = aircraft.Registration;
-                    if(!String.IsNullOrEmpty(registration) && !registration.Contains("-")) {
-                        var prefixes = _RegistrationPrefixLookup
-                            .FindDetailsForNoHyphenRegistration(registration);
-                        if(prefixes.Count > 0 && !prefixes.Any(r => !r.HasHyphen)) {
-                            var bestPrefix = prefixes
-                                .OrderBy(r => r.Prefix)
-                                .FirstOrDefault();
-                            var match = bestPrefix.DecodeNoHyphenRegex.Match(registration);
-                            if(match.Success) {     // <-- it really should match! but just in case...
-                                aircraft.Registration = bestPrefix.FormatCode(
-                                    match.Groups["code"].Value
-                                );
-                            }
-                        }
-                    }
+                    AddHyphenToRegistrationIfMissing(aircraft);
                 }
 
                 SetOnGround(aircraft);
                 FillStandingDataFields(pilot, aircraft, config);
 
                 aircraft.UpdateCoordinates(utcNow, config.GoogleMapSettings.ShortTrailLengthSeconds);
+            }
+        }
+
+        private void AddHyphenToRegistrationIfMissing(IAircraft aircraft)
+        {
+            var registration = aircraft.Registration?.ToUpperInvariant().Trim();
+            if(!String.IsNullOrEmpty(registration) && !registration.Contains("-")) {
+                var prefixes = _RegistrationPrefixLookup
+                    .FindDetailsForNoHyphenRegistration(registration);
+                if(prefixes.Count > 0 && !prefixes.Any(prefix => !prefix.HasHyphen)) {
+                    var bestPrefix = prefixes
+                        .OrderBy(r => r.Prefix)
+                        .FirstOrDefault();
+                    var match = bestPrefix.DecodeNoHyphenRegex.Match(registration);
+                    if(match.Success) {     // <-- it really should match! but just in case...
+                        aircraft.Registration = bestPrefix.FormatCode(
+                            match.Groups["code"].Value
+                        );
+                    }
+                }
             }
         }
 
