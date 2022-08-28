@@ -45,7 +45,7 @@ namespace VirtualRadar.Library
 
         // A map of the first letter of a registration to a bucket of details for prefixes
         // that start with that letter. The letter is always upper-case, as are the prefixes.
-        private Dictionary<char, RegistrationPrefixDetail[]> _RegistrationFirstLetterToDetailsMap;
+        private volatile Dictionary<char, RegistrationPrefixDetail[]> _RegistrationFirstLetterToDetailsMap;
 
         // Times at UTC of the last download attempt (whether successful or not) and the last
         // successful download attempt.
@@ -119,8 +119,12 @@ namespace VirtualRadar.Library
             if(!_Initialised) {
                 lock(_SyncLock) {
                     if(!_Initialised) {
-                        RegisterDownloadAddresses();
-                        Load();
+                        try {
+                            RegisterDownloadAddresses();
+                            Load();
+                        } finally {
+                            _Initialised = true;
+                        }
                     }
                 }
             }
