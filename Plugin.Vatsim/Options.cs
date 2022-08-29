@@ -34,7 +34,7 @@ namespace VirtualRadar.Plugin.Vatsim
         /// Gets or sets the number of seconds between fetches of VATSIM data. Note that there is a rate limit
         /// at VATSIM of 15 seconds (as of time of writing).
         /// </summary>
-        public int RefreshIntervalSeconds { get; set; } = 15;
+        public int RefreshIntervalSeconds { get; set; } = 10;
 
         /// <summary>
         /// Gets or sets a value indicating that on-ground status is to be inferred from the speed of the
