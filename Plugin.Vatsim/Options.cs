@@ -136,14 +136,6 @@ namespace VirtualRadar.Plugin.Vatsim
                 Height =        740.0,
                 DistanceUnit =  DistanceUnit.Miles,
             });
-            GeofencedFeeds.Add(new GeofenceFeedOption() {
-                FeedName =      "Heathrow",
-                CentreOn =      GeofenceCentreOn.Airport,
-                AirportCode =   "EGLL",
-                Width =         80,
-                Height =        80,
-                DistanceUnit =  DistanceUnit.Miles,
-            });
 
             return this;
         }

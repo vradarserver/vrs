@@ -69,8 +69,7 @@ are within a pair of latitudes and longitudes on the surface of the Earth.
 
 A geofenced feed can be centred on a coordinate, a pilot or an airport.
 
-The plugin comes with two example geofenced feeds - one for the UK
-and Ireland and another for Heathrow airport.
+The plugin comes with an example geofenced feed for the UK and Ireland.
 
 ## Aircraft Details
 
