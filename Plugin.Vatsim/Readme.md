@@ -5,7 +5,7 @@ of flight simulators can connect to.
 This plugin adds a feed to the program that shows the location of all
 of the flight simulator pilots currently connected to the VATSIM network.
 
-## Installation
+## Requirements
 The plugin only works with version 3 preview 9 (or higher) of Virtual
 Radar Server. It will not work with version 2.
 
@@ -92,12 +92,12 @@ setting that VATSIM reports for each pilot.
 
 There are a variety of fields that can show either or both altitudes:
 
-| Field                   | Meaning |
-| ---                     | --- |
+| Field                 | Meaning |
+| ---                   | --- |
 | `Altitude (AMSL)`     | The geometric altitude, i.e. the altitude reported by VATSIM. |
 | `Altitude (Pressure)` | The pressure altitude calculated from the geometric altitude. |
-| `Altitude`             | Either the pressure or geometric altitude depending on whether "Use pressure altitude" is ticked in the `General` tab. |
-| `Flight Level`         | The `Altitude` (either pressure or geometric, see above) up to the transition altitude set in the `General` tab, and then the flight level calculated from the pressure altitude (never from the geometric altitude) when above the transition. |
+| `Altitude`            | Either the pressure or geometric altitude depending on whether "Use pressure altitude" is ticked in the `General` tab. |
+| `Flight Level`        | The `Altitude` (either pressure or geometric, see above) up to the transition altitude set in the `General` tab, and then the flight level calculated from the pressure altitude (never from the geometric altitude) when above the transition. |
 
 *Note: The pressure altitude calculation was added in preview 10.*
 
