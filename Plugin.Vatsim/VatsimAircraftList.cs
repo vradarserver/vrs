@@ -286,20 +286,31 @@ namespace VirtualRadar.Plugin.Vatsim
         private void ApplyPilotStateToAircraft(DateTime utcNow, VatsimDataV3Pilot pilot, IAircraft aircraft, Configuration config)
         {
             lock(aircraft) {
-                aircraft.DataVersion =      Interlocked.Increment(ref _DataVersion);
-                aircraft.LastModeSUpdate =  utcNow;
-                aircraft.LastUpdate =       utcNow;
-                aircraft.Latitude =         pilot.latitude;
-                aircraft.Longitude =        pilot.longitude;
-                aircraft.Altitude =         pilot.altitude;
-                aircraft.Track =            pilot.heading;
-                aircraft.TransponderType =  TransponderType.Adsb;
-                aircraft.GroundSpeed =      pilot.groundspeed;
-                aircraft.Squawk =           String.IsNullOrEmpty(pilot.transponder) ? (int?)null : pilot.TransponderValue;
-                aircraft.Emergency =        aircraft.Squawk == 7500 || aircraft.Squawk == 7600 || aircraft.Squawk == 7700;
-                aircraft.UserTag =          $"[{pilot.cid}] {pilot.name}";
-                aircraft.AirPressureInHg =  pilot.qnh_i_hg;
-                aircraft.Icao24Country =    pilot.server;
+                // VATSIM sends the geometric altitude and the prevailing pressure, not the
+                // QNH setting from the cockpit. I tested this with a C152 in MSFS2020, it
+                // didn't matter what pressure I set in the cockpit the altitude and QNH
+                // settings reported for me on ground remained constant.
+                var pressureAltitude = ((1013 - pilot.qnh_mb) * 30) + pilot.altitude;
+                var roundedPressureAltitude = (int)(((double)pressureAltitude / 25.0) + 0.5) * 25;
+
+                aircraft.DataVersion =              Interlocked.Increment(ref _DataVersion);
+                aircraft.LastModeSUpdate =          utcNow;
+                aircraft.LastUpdate =               utcNow;
+                aircraft.CountMessagesReceived =    aircraft.CountMessagesReceived + 1;
+                aircraft.Latitude =                 pilot.latitude;
+                aircraft.Longitude =                pilot.longitude;
+                aircraft.Altitude =                 roundedPressureAltitude;
+                aircraft.GeometricAltitude =        pilot.altitude;
+                aircraft.AltitudeType =             AltitudeType.Geometric;
+                aircraft.Track =                    pilot.heading;
+                aircraft.TransponderType =          TransponderType.Adsb;
+                aircraft.GroundSpeed =              pilot.groundspeed;
+                aircraft.Squawk =                   String.IsNullOrEmpty(pilot.transponder) ? (int?)null : pilot.TransponderValue;
+                aircraft.Emergency =                aircraft.Squawk == 7500 || aircraft.Squawk == 7600 || aircraft.Squawk == 7700;
+                aircraft.UserTag =                  $"[{pilot.cid}] {pilot.name}";
+                aircraft.AirPressureInHg =          pilot.qnh_i_hg;
+                aircraft.AirPressureLookedUpUtc =   utcNow;
+                aircraft.Icao24Country =            pilot.server;
 
                 var userNotes = $"{pilot.flight_plan?.route}\r\n{pilot.flight_plan?.remarks}";
                 aircraft.UserNotes = userNotes;
