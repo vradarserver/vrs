@@ -87,19 +87,18 @@ VATSIM sends the true altitude above mean sea level. VRS calls this the
 geometric or AMSL altitude.
 
 Mode-C/-S (and typically ADSB) report the pressure altitude at a standard
-pressure of 1013mb and then round it to the nearest 25 feet. The plugin
-calculates the pressure altitude from the geometric altitude and local
-pressure setting that VATSIM reports for each pilot.
+pressure of 1013mb, rounded to the nearest 25 feet. The plugin calculates
+the pressure altitude from the geometric altitude and local pressure
+setting that VATSIM reports for each pilot.
 
-There are a variety of altitude fields available for display on the site
-to show either or both altitudes:
+There are a variety of fields that can show either or both altitudes:
 
 | Field                   | Meaning |
 | ---                     | --- |
 | `Altitude (AMSL)`     | The geometric altitude, i.e. the altitude reported by VATSIM. |
 | `Altitude (Pressure)` | The pressure altitude calculated from the geometric altitude. |
 | `Altitude`             | Either the pressure or geometric altitude depending on whether "Use pressure altitude" is ticked in the `General` tab. |
-| `Flight level`         | The pressure altitude flight level (never geometric) above the transition altitude set on the `General` tab, otherwise the `Altitude` (either pressure or geometric, see above). |
+| `Flight Level`         | The `Altitude` (either pressure or geometric, see above) up to the transition altitude set in the `General` tab, and then the flight level calculated from the pressure altitude (never from the geometric altitude) when above the transition. |
 
 *Note: The pressure altitude calculation was added in preview 10.*
 
