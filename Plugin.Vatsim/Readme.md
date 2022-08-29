@@ -82,6 +82,27 @@ list display via `Menu`|`Options` in the browser.
 
 **Notes**: Shows the route and remarks from the filed flight plan.
 
+### Altitude
+VATSIM sends the true altitude above mean sea level. VRS calls this the
+geometric or AMSL altitude.
+
+Mode-C/-S (and typically ADSB) report the pressure altitude at a standard
+pressure of 1013mb and then round it to the nearest 25 feet. The plugin
+calculates the pressure altitude from the geometric altitude and local
+pressure setting that VATSIM reports for each pilot.
+
+There are a variety of altitude fields available for display on the site
+to show either or both altitudes:
+
+| Field                   | Meaning |
+| ---                     | --- |
+| `Altitude (AMSL)`     | The geometric altitude, i.e. the altitude reported by VATSIM. |
+| `Altitude (Pressure)` | The pressure altitude calculated from the geometric altitude. |
+| `Altitude`             | Either the pressure or geometric altitude depending on whether "Use pressure altitude" is ticked in the `General` tab. |
+| `Flight level`         | The pressure altitude flight level (never geometric) above the transition altitude set on the `General` tab, otherwise the `Altitude` (either pressure or geometric, see above). |
+
+*Note: The pressure altitude calculation was added in preview 10.*
+
 ## Caveats
 VATSIM feeds cannot be recorded by the BaseStation Database writer, so
 you cannot generate reports on VATSIM feeds.
@@ -90,9 +111,11 @@ VATSIM feeds cannot be rebroadcast or filtered.
 
 The program does not track receiver ranges for VATSIM feeds.
 
+
 ## Troubleshooting
 
 | Problem                                             | Solution |
 | ---                                                 | --- |
 | I cannot see any VATSIM feeds in the Receivers menu | Enable the plugin. |
 | The `VATSIM: Everything` feed kills my browser    | Zoom in a bit, try only showing trails for the selected aircraft instead of all aircraft, or configure a geofenced feed and view that instead. |
+
