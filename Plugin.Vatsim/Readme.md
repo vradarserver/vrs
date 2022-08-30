@@ -25,11 +25,11 @@ Most of the configuration options are self-explanatory, but there are
 a few things to note.
 
 **Enabled**: When you first install the plugin it is switched off. You
-have to edit the plugin's configuration and enable it before you will
-see any VATSIM feeds.
+have to change the plugin's settings and enable it before you will see
+any VATSIM feeds.
 
 **Refresh Interval**: Regardless of the value you set here VATSIM will
-only send updated values every 15 seconds (as of time of writing).
+only update values every 15 seconds (as of time of writing).
 
 **Assume slow aircraft are on ground**: VATSIM does not send a flag to
 indicate whether aircraft are airborne. The plugin can only infer the
@@ -85,19 +85,19 @@ list display via `Menu`|`Options` in the browser.
 VATSIM sends the true altitude above mean sea level. VRS calls this the
 geometric or AMSL altitude.
 
-Mode-C/-S (and typically ADSB) report the pressure altitude at a standard
-pressure of 1013mb, rounded to the nearest 25 feet. The plugin calculates
-the pressure altitude from the geometric altitude and local pressure
-setting that VATSIM reports for each pilot.
+Modes C and S (and typically ADSB) report the altitude at a standard pressure,
+rounded to the nearest 25 feet. This is called the pressure altitude. The
+plugin calculates the pressure altitude from the geometric altitude that VATSIM
+sends.
 
 There are a variety of fields that can show either or both altitudes:
 
 | Field                 | Meaning |
 | ---                   | --- |
 | `Altitude (AMSL)`     | The geometric altitude, i.e. the altitude reported by VATSIM. |
-| `Altitude (Pressure)` | The pressure altitude calculated from the geometric altitude. |
+| `Altitude (Pressure)` | The standard pressure altitude calculated from the geometric altitude. |
 | `Altitude`            | Either the pressure or geometric altitude depending on whether "Use pressure altitude" is ticked in the `General` tab. |
-| `Flight Level`        | The `Altitude` (either pressure or geometric, see above) up to the transition altitude set in the `General` tab, and then the flight level calculated from the pressure altitude (never from the geometric altitude) when above the transition. |
+| `Flight Level`        | The `Altitude` (either pressure or geometric, see above) up to the transition altitude set in the `General` tab, and then the flight level calculated from the pressure altitude when above the transition. |
 
 *Note: The pressure altitude calculation was added in preview 10.*
 
