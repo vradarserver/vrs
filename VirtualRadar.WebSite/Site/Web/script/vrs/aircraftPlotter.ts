@@ -289,6 +289,13 @@ namespace VRS
             size:               { width: 60, height: 60},
             matches:            function(aircraft) { return aircraft.modelIcao.val && (aircraft.modelIcao.val === 'E6' || (aircraft.modelIcao.val.length === 4 && aircraft.modelIcao.val.substring(0, 3) === 'A34')); }
         }),
+        new VRS.AircraftMarker({
+            normalFileName:     'Type-CONC.png',
+            selectedFileName:   'Type-CONC-Selected.png',
+            embeddedSvg:        EmbeddedSvgs.Marker_TypeCONC,
+            size:               { width: 60, height: 60},
+            matches:            function(aircraft) { return aircraft.modelIcao.val === 'CONC'; }
+        }),
         new VRS.AircraftMarker ({
             normalFileName:     'WTC-Light-1-Prop.png',
             selectedFileName:   'WTC-Light-1-Prop-Selected.png',

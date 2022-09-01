@@ -846,6 +846,57 @@ namespace VRS
             aircraftMarkerStatusFillPaths: [ 'outline-path' ]
         };
 
+        public static Marker_TypeCONC: EmbeddedSvg = {
+            svg: `<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   width="60"
+   height="60"
+   viewBox="0 0 60 60"
+   id="svg4148"
+   version="1.1">
+  <defs
+     id="defs4150">
+    <filter
+       style="color-interpolation-filters:sRGB"
+       id="filter7068">
+      <feFlood
+         flood-opacity="1"
+         flood-color="rgb(0,0,0)"
+         result="flood" />
+      <feComposite
+         in="flood"
+         in2="SourceGraphic"
+         operator="in"
+         result="composite" />
+      <feGaussianBlur
+         in="composite"
+         stdDeviation="1"
+         result="blur" />
+      <feComposite
+         in="SourceGraphic"
+         in2="blur"
+         operator="over" />
+    </filter>
+  </defs>
+  <g
+     id="outline"
+     style="display:inline;opacity:1"
+     transform="translate(0,-10)">
+    <path
+       id="outline-path"
+       style="fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.6;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1;filter:url(#filter7068);stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 30.635626,46.762709 c 0.240908,-1.648156 0.441736,-5.467675 0.441736,-5.467675 l 6.483412,-0.512052 0.850397,-0.48953 c 0,0 0.02758,-1.351102 -0.483434,-2.430256 -1.536812,-3.274994 -3.952978,-4.932386 -5.088138,-9.353567 -0.573378,-1.695427 -1.59684,-5.304776 -1.758936,-6.017381 l -0.03363,-4.236202 c -0.401564,-5.170624 -0.97916,-5.985228 -1.030957,-6.690138 -0.0518,0.704202 -0.629393,1.518806 -1.030957,6.68943 l -0.03363,4.236202 c -0.162096,0.712605 -1.185558,4.321954 -1.758936,6.017381 -1.13516,4.421181 -3.551326,6.078573 -5.088138,9.353567 -0.511014,1.079154 -0.483434,2.430256 -0.483434,2.430256 l 0.850397,0.48953 6.483413,0.512052 c 0,0 0.200827,3.819519 0.441736,5.467675 0.372188,2.546286 0.598065,2.917475 0.598065,2.917475 0,0 0.268846,-0.370481 0.641034,-2.916767 z"
+    />
+  </g>
+</svg>`,
+            aircraftMarkerStatusFillPaths: [ 'outline-path' ]
+        };
+
         public static Marker_TypeGLFx: EmbeddedSvg = {
             svg: `<svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
