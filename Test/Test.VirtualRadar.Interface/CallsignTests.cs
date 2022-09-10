@@ -21,19 +21,24 @@ namespace Test.VirtualRadar.Interface
         public void Ctor_Parses_Callsigns_Correctly()
         {
             new InlineDataTest(this).TestAndAssert(new dynamic[] {
-                new { Callsign = (string)null, Original = (string)null, Code = "",    Number = "",      TrimNumber = "",     TrimCallsign = "",        IsValid = false, },
-                new { Callsign = "",           Original = "",           Code = "",    Number = "",      TrimNumber = "",     TrimCallsign = "",        IsValid = false, },
-                new { Callsign = "VIR1234",    Original = "VIR1234",    Code = "VIR", Number = "1234",  TrimNumber = "1234", TrimCallsign = "VIR1234", IsValid = true, },
-                new { Callsign = "VS1234",     Original = "VS1234",     Code = "VS",  Number = "1234",  TrimNumber = "1234", TrimCallsign = "VS1234",  IsValid = true, },
-                new { Callsign = "VIR",        Original = "VIR",        Code = "",    Number = "",      TrimNumber = "",     TrimCallsign = "",        IsValid = false, },
-                new { Callsign = "1234",       Original = "1234",       Code = "",    Number = "",      TrimNumber = "",     TrimCallsign = "",        IsValid = false, },
-                new { Callsign = "VIR01234",   Original = "VIR01234",   Code = "VIR", Number = "01234", TrimNumber = "1234", TrimCallsign = "VIR1234", IsValid = true, },
-                new { Callsign = "VIR0",       Original = "VIR0",       Code = "VIR", Number = "0",     TrimNumber = "0",    TrimCallsign = "VIR0",    IsValid = true, },
-                new { Callsign = "VIR0000N",   Original = "VIR0000N",   Code = "VIR", Number = "0000N", TrimNumber = "0N",   TrimCallsign = "VIR0N",   IsValid = true, },
-                new { Callsign = "U21234",     Original = "U21234",     Code = "U2",  Number = "1234",  TrimNumber = "1234", TrimCallsign = "U21234",  IsValid = true, },
-                new { Callsign = "2P1234",     Original = "2P1234",     Code = "2P",  Number = "1234",  TrimNumber = "1234", TrimCallsign = "2P1234",  IsValid = true, },
-                new { Callsign = "BA1234",     Original = "BA1234",     Code = "BA",  Number = "1234",  TrimNumber = "1234", TrimCallsign = "BA1234",  IsValid = true, },
-                new { Callsign = "GABCD",      Original = "GABCD",      Code = "",    Number = "",      TrimNumber = "",     TrimCallsign = "",        IsValid = false, },
+                new { Callsign = (string)null, Original = (string)null, Code = "",    Number = "",      TrimNumber = "",      TrimCallsign = "",         IsValid = false, },
+                new { Callsign = "",           Original = "",           Code = "",    Number = "",      TrimNumber = "",      TrimCallsign = "",         IsValid = false, },
+                new { Callsign = "VIR1234",    Original = "VIR1234",    Code = "VIR", Number = "1234",  TrimNumber = "1234",  TrimCallsign = "VIR1234",  IsValid = true, },
+                new { Callsign = "VS1234",     Original = "VS1234",     Code = "VS",  Number = "1234",  TrimNumber = "1234",  TrimCallsign = "VS1234",   IsValid = true, },
+                new { Callsign = "VIR",        Original = "VIR",        Code = "",    Number = "",      TrimNumber = "",      TrimCallsign = "",         IsValid = false, },
+                new { Callsign = "1234",       Original = "1234",       Code = "",    Number = "",      TrimNumber = "",      TrimCallsign = "",         IsValid = false, },
+                new { Callsign = "VIR01234",   Original = "VIR01234",   Code = "VIR", Number = "01234", TrimNumber = "1234",  TrimCallsign = "VIR1234",  IsValid = true, },
+                new { Callsign = "VIR12345",   Original = "VIR12345",   Code = "VIR", Number = "12345", TrimNumber = "12345", TrimCallsign = "",         IsValid = false, }, // numbers can only be up to 4 characters
+                new { Callsign = "VIR123N",    Original = "VIR123N",    Code = "VIR", Number = "123N",  TrimNumber = "123N",  TrimCallsign = "VIR123N",  IsValid = true, },
+                new { Callsign = "VIR12NN",    Original = "VIR12NN",    Code = "VIR", Number = "12NN",  TrimNumber = "12NN",  TrimCallsign = "VIR12NN",  IsValid = true, },
+                new { Callsign = "VIR1NNN",    Original = "VIR1NNN",    Code = "VIR", Number = "1NNN",  TrimNumber = "1NNN",  TrimCallsign = "",         IsValid = false, }, // only last one or two digits of number can be alphabetical
+                new { Callsign = "VIR12N3",    Original = "VIR12N3",    Code = "VIR", Number = "12N3",  TrimNumber = "12N3",  TrimCallsign = "",         IsValid = false, }, // cannot have a letter followed by a digit in the number
+                new { Callsign = "VIR0",       Original = "VIR0",       Code = "VIR", Number = "0",     TrimNumber = "0",     TrimCallsign = "VIR0",     IsValid = true, },
+                new { Callsign = "VIR000N",    Original = "VIR000N",    Code = "VIR", Number = "000N",  TrimNumber = "0N",    TrimCallsign = "VIR0N",    IsValid = true, },
+                new { Callsign = "U21234",     Original = "U21234",     Code = "U2",  Number = "1234",  TrimNumber = "1234",  TrimCallsign = "U21234",   IsValid = true, },
+                new { Callsign = "2P1234",     Original = "2P1234",     Code = "2P",  Number = "1234",  TrimNumber = "1234",  TrimCallsign = "2P1234",   IsValid = true, },
+                new { Callsign = "BA1234",     Original = "BA1234",     Code = "BA",  Number = "1234",  TrimNumber = "1234",  TrimCallsign = "BA1234",   IsValid = true, },
+                new { Callsign = "GABCD",      Original = "GABCD",      Code = "",    Number = "",      TrimNumber = "",      TrimCallsign = "",         IsValid = false, },
             }, (row) => {
                 var message = $"Callsign is '{row.Callsign}'";
                 var callsign = new Callsign(row.Callsign);
