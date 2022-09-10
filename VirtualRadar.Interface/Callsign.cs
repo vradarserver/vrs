@@ -25,7 +25,7 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// The regex that can split a callsign into code and number portions.
         /// </summary>
-        public static readonly Regex CallsignRegex = new Regex(@"^(?<code>[A-Z]{3}|[A-Z]{2}|[A-Z][0-9]|[0-9][A-Z])(?<number>\d[A-Z0-9]*)");
+        public static readonly Regex CallsignRegex = new Regex(@"^(?<code>[A-Z]{2,3}|[A-Z][0-9]|[0-9][A-Z])(?<number>\d[A-Z0-9]*)");
 
         /// <summary>
         /// Gets or sets the full callsign as originally supplied.
@@ -51,14 +51,17 @@ namespace VirtualRadar.Interface
             get
             {
                 var number = Number ?? "";
-                var result = number;
-
-                result = result.TrimStart('0');
-                if(result.Length != number.Length) {
-                    if(result.Length == 0 || !Char.IsDigit(result[0])) result = '0' + result;
+                var startIdx = 0;
+                for(;startIdx < number.Length && number[startIdx] == '0';++startIdx) {
+                    ;
+                }
+                if(startIdx > 0 && (startIdx == number.Length || !Char.IsDigit(number[startIdx]))) {
+                    --startIdx;
                 }
 
-                return result;
+                return startIdx == 0
+                    ? number
+                    : number.Substring(startIdx);
             }
         }
 

@@ -8,11 +8,6 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Test.Framework;
 using VirtualRadar.Interface;
@@ -22,25 +17,34 @@ namespace Test.VirtualRadar.Interface
     [TestClass]
     public class CallsignTests
     {
-        public TestContext TestContext { get; set; }
-
         [TestMethod]
-        [DataSource("Data Source='LibraryTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "Callsign$")]
-        public void Callsign_Ctor_Parses_Callsigns_Correctly()
+        public void Ctor_Parses_Callsigns_Correctly()
         {
-            var worksheet = new ExcelWorksheetData(TestContext);
-            var callsignText = worksheet.EString("Callsign");
+            new InlineDataTest(this).TestAndAssert(new dynamic[] {
+                new { Callsign = (string)null, Original = (string)null, Code = "",    Number = "",      TrimNumber = "",     TrimCallsign = "",        IsValid = false, },
+                new { Callsign = "",           Original = "",           Code = "",    Number = "",      TrimNumber = "",     TrimCallsign = "",        IsValid = false, },
+                new { Callsign = "VIR1234",    Original = "VIR1234",    Code = "VIR", Number = "1234",  TrimNumber = "1234", TrimCallsign = "VIR1234", IsValid = true, },
+                new { Callsign = "VS1234",     Original = "VS1234",     Code = "VS",  Number = "1234",  TrimNumber = "1234", TrimCallsign = "VS1234",  IsValid = true, },
+                new { Callsign = "VIR",        Original = "VIR",        Code = "",    Number = "",      TrimNumber = "",     TrimCallsign = "",        IsValid = false, },
+                new { Callsign = "1234",       Original = "1234",       Code = "",    Number = "",      TrimNumber = "",     TrimCallsign = "",        IsValid = false, },
+                new { Callsign = "VIR01234",   Original = "VIR01234",   Code = "VIR", Number = "01234", TrimNumber = "1234", TrimCallsign = "VIR1234", IsValid = true, },
+                new { Callsign = "VIR0",       Original = "VIR0",       Code = "VIR", Number = "0",     TrimNumber = "0",    TrimCallsign = "VIR0",    IsValid = true, },
+                new { Callsign = "VIR0000N",   Original = "VIR0000N",   Code = "VIR", Number = "0000N", TrimNumber = "0N",   TrimCallsign = "VIR0N",   IsValid = true, },
+                new { Callsign = "U21234",     Original = "U21234",     Code = "U2",  Number = "1234",  TrimNumber = "1234", TrimCallsign = "U21234",  IsValid = true, },
+                new { Callsign = "2P1234",     Original = "2P1234",     Code = "2P",  Number = "1234",  TrimNumber = "1234", TrimCallsign = "2P1234",  IsValid = true, },
+                new { Callsign = "BA1234",     Original = "BA1234",     Code = "BA",  Number = "1234",  TrimNumber = "1234", TrimCallsign = "BA1234",  IsValid = true, },
+                new { Callsign = "GABCD",      Original = "GABCD",      Code = "",    Number = "",      TrimNumber = "",     TrimCallsign = "",        IsValid = false, },
+            }, (row) => {
+                var message = $"Callsign is '{row.Callsign}'";
+                var callsign = new Callsign(row.Callsign);
 
-            var callsign = new Callsign(callsignText);
-
-            var message = $"Callsign is '{callsignText}'";
-            Assert.AreEqual(worksheet.EString("OriginalCallsign"),          callsign.OriginalCallsign,          message);
-            Assert.AreEqual(worksheet.EString("Code"),                      callsign.Code,                      message);
-            Assert.AreEqual(worksheet.EString("Number"),                    callsign.Number,                    message);
-            Assert.AreEqual(worksheet.EString("TrimmedNumber"),             callsign.TrimmedNumber,             message);
-            Assert.AreEqual(worksheet.EString("TrimmedCallsign"),           callsign.TrimmedCallsign,           message);
-            Assert.AreEqual(worksheet.Bool(   "IsOriginalCallsignValid"),   callsign.IsOriginalCallsignValid,   message);
+                Assert.AreEqual(row.Original,       callsign.OriginalCallsign,          message);
+                Assert.AreEqual(row.Code,           callsign.Code,                      message);
+                Assert.AreEqual(row.Number,         callsign.Number,                    message);
+                Assert.AreEqual(row.TrimNumber,     callsign.TrimmedNumber,             message);
+                Assert.AreEqual(row.TrimCallsign,   callsign.TrimmedCallsign,           message);
+                Assert.AreEqual(row.IsValid,        callsign.IsOriginalCallsignValid,   message);
+            });
         }
     }
 }
