@@ -39,6 +39,7 @@ namespace Test.VirtualRadar.Interface
                 new { Callsign = "2P1234",     Original = "2P1234",     Code = "2P",  Number = "1234",  TrimNumber = "1234",  TrimCallsign = "2P1234",   IsValid = true, },
                 new { Callsign = "BA1234",     Original = "BA1234",     Code = "BA",  Number = "1234",  TrimNumber = "1234",  TrimCallsign = "BA1234",   IsValid = true, },
                 new { Callsign = "GABCD",      Original = "GABCD",      Code = "",    Number = "",      TrimNumber = "",      TrimCallsign = "",         IsValid = false, },
+                new { Callsign = "WBA2O5S",    Original = "WBA2O5S",    Code = "WBA", Number = "2O5S",  TrimNumber = "2O5S",  TrimCallsign = "",         IsValid = false, }, // real-life example, the 0 has been replaced with an O
             }, (row) => {
                 var message = $"Callsign is '{row.Callsign}'";
                 var callsign = new Callsign(row.Callsign);
