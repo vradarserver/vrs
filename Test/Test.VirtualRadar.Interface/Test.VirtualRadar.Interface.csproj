@@ -127,6 +127,7 @@
     <Compile Include="HttpContentHelperTests.cs" />
     <Compile Include="IPAddressHelperTests.cs" />
     <Compile Include="Listener\AirnavXRangeAircraftJsonTests.cs" />
+    <Compile Include="ModeS\RegistrationConverter_Tests.cs" />
     <Compile Include="PortableBinding\NotifyListTests.cs" />
     <Compile Include="CidrTests.cs" />
     <Compile Include="Listener\PolarPlotSliceTests.cs" />

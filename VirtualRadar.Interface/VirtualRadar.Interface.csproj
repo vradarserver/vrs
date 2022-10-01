@@ -183,6 +183,7 @@
     <Compile Include="Listener\IReceiverFormatProvider.cs" />
     <Compile Include="Listener\ReceiverFormatName.cs" />
     <Compile Include="ModeSDFStatistics.cs" />
+    <Compile Include="ModeS\RegistrationConverter.cs" />
     <Compile Include="Network\IHttpConnector.cs" />
     <Compile Include="Network\IRebroadcastFormatManager.cs" />
     <Compile Include="Network\IRebroadcastFormatProvider.cs" />
