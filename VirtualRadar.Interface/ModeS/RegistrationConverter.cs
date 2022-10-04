@@ -25,18 +25,21 @@ namespace VirtualRadar.Interface.ModeS
         {
             var icao = 0;
 
+            var secondLetter = false;
             for(var idx = 1;idx < registration.Length;++idx) {
                 var ch = registration[idx];
+
                 switch(idx - 1) {
                     case 0:
                         icao = 1;
                         break;
-                    case 1:
-                        var posnValue = Base64ATo9(ch);
-                        icao += posnValue + (24 * (posnValue - 1));
-                        break;
-                    case 2:
-                        icao += Base64ATo9(ch);
+                    default:
+                        var digit = Base64ATo9(ch);
+                        icao += digit;
+                        if(!secondLetter && idx != 5) {
+                            icao += 24 * (digit - 1);
+                        }
+                        secondLetter = digit < 25;
                         break;
                 }
             }
