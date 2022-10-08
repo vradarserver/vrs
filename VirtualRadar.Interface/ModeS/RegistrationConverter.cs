@@ -40,12 +40,23 @@ namespace VirtualRadar.Interface.ModeS
                         if(!secondLetter && idx != 5) {
                             var base24Portion = digit - 1;
                             var base34Portion = 0;
+                            var fullTwoLetterSetPortion = 0;
+                            if(numIdx == 2 && digit > 25) {
+                                base24Portion = 24;
+                                base34Portion = digit - 25;
+                                fullTwoLetterSetPortion = digit - 25;
+                            }
                             if(numIdx == 3 && digit > 25) {
                                 base24Portion = 24;
                                 base34Portion = digit - 25;
                             }
                             icao += 24 * base24Portion;
                             icao += 34 * base34Portion;
+                            // Two letter trailing portion total:
+                            // When 1st character is A-Z, 2nd is always A-Z = 24 * 24 = 576
+                            // When 1st character is 0-9, 2nd is always A-9 = 10 * 34 = 340
+                            //                                                        = 916
+                            icao += 916 * fullTwoLetterSetPortion;
                         }
                         secondLetter = digit < 25;
                         break;
