@@ -63,6 +63,13 @@ namespace Test.VirtualRadar.Interface.ModeS
                 new { Registration = "N10109", Expected = "A00AE5", },
                 new { Registration = "N1011",  Expected = "A00AE6", },
                 new { Registration = "N10199", Expected = "A00C20", },
+                new { Registration = "N10999", Expected = "A029D8", },
+                new { Registration = "N11",    Expected = "A029D9", },
+                new { Registration = "N11A",   Expected = "A029DA", },
+                new { Registration = "N11AA",  Expected = "A029DB", },
+                new { Registration = "N18999", Expected = "A165D0", },
+                new { Registration = "N19",    Expected = "A165D1", },
+                new { Registration = "N19999", Expected = "A18D4F", },
             },
             row => {
                 var actual = RegistrationConverter.RegistrationToModeS(row.Registration);
