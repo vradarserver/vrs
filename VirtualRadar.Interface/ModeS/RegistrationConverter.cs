@@ -1,4 +1,14 @@
-﻿using System;
+﻿// Copyright © 2022 onwards, Andrew Whewell
+// All rights reserved.
+//
+// Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+//    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+//    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+//    * Neither the name of the author nor the names of the program's contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,48 +35,49 @@ namespace VirtualRadar.Interface.ModeS
         {
             var icao = 0;
 
-            var secondLetter = false;
+            var thisCharacterFollowsAlphaCharacter = false;
             for(var idx = 1;idx < registration.Length;++idx) {
                 var ch = registration[idx];
+                var digit = Base34ATo9(ch);
 
-                var numIdx = idx - 1;
-                switch(numIdx) {
+                var base24Portion = digit - 1;
+                var base34Portion = 0;
+                var bigBaseMultiplier = 0;
+
+                switch(idx - 1) {
                     case 0:
-                        icao = (ch - '1') * 101711;
+                        icao = (digit - 26 /* '1' */) * 101711;
                         icao += 1;
                         break;
+                    case 1:
+                        if(digit > 25 /* '0' */) {
+                            bigBaseMultiplier = 10076;      // 11 * 916
+                        }
+                        goto default;
+                    case 2:
+                        if(digit > 25) {
+                            bigBaseMultiplier = 916;        // A-Z + A-Z = (24 * 24 = 576), plus 0-9 + A-Z = (10 * 34 = 340)
+                        }
+                        goto default;
+                    case 3:
+                        if(digit > 25) {
+                            base34Portion = digit - 25;
+                        }
+                        goto default;
                     default:
-                        var digit = Base34ATo9(ch);
                         icao += digit;
-                        if(!secondLetter && idx != 5) {
-                            var base24Portion = digit - 1;
-                            var base34Portion = 0;
-                            if(numIdx == 1 && digit > 25) {
-                                base24Portion = 24;
-                                base34Portion = digit - 25;
-
-                                // Digit + 2 letter trailing portion
-                                // 11 * 916 = 10076
-                                icao += 10076 * base34Portion;
-                            }
-                            if(numIdx == 2 && digit > 25) {
-                                base24Portion = 24;
-                                base34Portion = digit - 25;
-
-                                // Two letter trailing portion total:
-                                // When 1st character is A-Z, 2nd is always A-Z = 24 * 24 = 576
-                                // When 1st character is 0-9, 2nd is always A-9 = 10 * 34 = 340
-                                //                                                        = 916
-                                icao += 916 * (base34Portion);
-                            }
-                            if(numIdx == 3 && digit > 25) {
-                                base24Portion = 24;
-                                base34Portion = digit - 25;
-                            }
+                        if(bigBaseMultiplier > 0) {
+                            base34Portion = digit - 25;
+                            icao += base34Portion * bigBaseMultiplier;
+                        }
+                        if(base34Portion > 0) {
+                            base24Portion = 24;
+                        }
+                        if(!thisCharacterFollowsAlphaCharacter && idx != 5) {
                             icao += 24 * base24Portion;
                             icao += 34 * base34Portion;
                         }
-                        secondLetter = digit < 25;
+                        thisCharacterFollowsAlphaCharacter = digit < 25;
                         break;
                 }
             }
