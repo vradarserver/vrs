@@ -32,7 +32,8 @@ namespace VirtualRadar.Interface.ModeS
                 var numIdx = idx - 1;
                 switch(numIdx) {
                     case 0:
-                        icao = 1;
+                        icao = (ch - '1') * 101711;
+                        icao += 1;
                         break;
                     default:
                         var digit = Base34ATo9(ch);
