@@ -18,6 +18,19 @@ namespace Test.VirtualRadar.Interface.ModeS
     public class RegistrationConverter_Tests
     {
         [TestMethod]
+        public void RegistrationToModeS_Returns_Null_For_Unknown_Registrations()
+        {
+            new InlineDataTest(this).TestAndAssert(new dynamic[] {
+                new { Registration = "G-ABCD", },
+                new { Registration = "N", },
+            },
+            row => {
+                var actual = RegistrationConverter.RegistrationToModeS(row.Registration);
+                Assert.IsNull(actual);
+            });
+        }
+
+        [TestMethod]
         public void RegistrationToModeS_Can_Convert_US_Registrations()
         {
             new InlineDataTest(this).TestAndAssert(new dynamic[] {

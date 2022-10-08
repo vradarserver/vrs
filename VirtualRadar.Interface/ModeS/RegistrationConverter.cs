@@ -33,8 +33,18 @@ namespace VirtualRadar.Interface.ModeS
         /// <returns></returns>
         public static string RegistrationToModeS(string registration)
         {
-            var icao = 0;
+            string result = null;
 
+            if(registration?.Length > 1 && registration[0] == 'N') {
+                result = IcaoFromUSRegistration(registration);
+            }
+
+            return result;
+        }
+
+        private static string IcaoFromUSRegistration(string registration)
+        {
+            var icao = 0;
             var thisCharacterFollowsAlphaCharacter = false;
             for(var idx = 1;idx < registration.Length;++idx) {
                 var ch = registration[idx];
