@@ -29,15 +29,23 @@ namespace VirtualRadar.Interface.ModeS
             for(var idx = 1;idx < registration.Length;++idx) {
                 var ch = registration[idx];
 
-                switch(idx - 1) {
+                var numIdx = idx - 1;
+                switch(numIdx) {
                     case 0:
                         icao = 1;
                         break;
                     default:
-                        var digit = Base64ATo9(ch);
+                        var digit = Base34ATo9(ch);
                         icao += digit;
                         if(!secondLetter && idx != 5) {
-                            icao += 24 * (digit - 1);
+                            var base24Portion = digit - 1;
+                            var base34Portion = 0;
+                            if(numIdx == 3 && digit > 25) {
+                                base24Portion = 24;
+                                base34Portion = digit - 25;
+                            }
+                            icao += 24 * base24Portion;
+                            icao += 34 * base34Portion;
                         }
                         secondLetter = digit < 25;
                         break;
@@ -47,7 +55,7 @@ namespace VirtualRadar.Interface.ModeS
             return (icao + (0xA00000)).ToString("X6");
         }
 
-        static int Base64ATo9(char ch)
+        static int Base34ATo9(char ch)
         {
             // Values are:
             // A = 1
