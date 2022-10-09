@@ -69,8 +69,8 @@ namespace VirtualRadar.Interface.ModeS
                         if(numIdx == 4 || IsAsciiCharBetween(result[numIdx], 'A', 'Z')) {
                             if(icao < 35) {
                                 result.Append(ATo9Base34(icao));
-                                icao = 0;
                             }
+                            icao = 0;
                         } else {
                             if(icao > 1803) {
                                 var div = icao / 1804;
