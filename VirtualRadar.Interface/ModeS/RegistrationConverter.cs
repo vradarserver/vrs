@@ -72,7 +72,11 @@ namespace VirtualRadar.Interface.ModeS
                                 icao = 0;
                             }
                         } else {
-                            if(icao > 600) {
+                            if(icao > 1201) {
+                                var div = icao / 1202;
+                                icao -= 601 + ((div - 1) * 1202);
+                                result.Append(ATo9Base34(div + 24));
+                            } else if(icao > 600) {
                                 var div = icao / 601;
                                 icao -= div * 601;
                                 result.Append(ATo9Base34(div + 24));
