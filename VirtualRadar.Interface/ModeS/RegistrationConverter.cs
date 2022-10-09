@@ -61,21 +61,27 @@ namespace VirtualRadar.Interface.ModeS
             for(var numIdx = 0;icao > 0 && numIdx < 6;++numIdx) {
                 switch(numIdx) {
                     case 0:
-                        icao -= 1;
-                        result.Append('1');
+                        var zeroMod = icao / 101711;
+                        icao -= (zeroMod * 101711) + 1;
+                        result.Append(ATo9Base34(25 + zeroMod + 1));
                         break;
-                    case 1:
-                        if(icao < 0x25a) {
-                            --icao;
-                            var mod = icao / 25;
-                            icao -= mod * 25;
-                            result.Append(ATo9Base34(mod + 1));
-                        }
-                        break;
-                    case 2:
-                        if(icao < 25) {
-                            result.Append(ATo9Base34(icao));
-                            icao = 0;
+                    default:
+                        if(IsAsciiCharBetween(result[numIdx], 'A', 'Z')) {
+                            if(icao < 35) {
+                                result.Append(ATo9Base34(icao));
+                                icao = 0;
+                            }
+                        } else {
+                            if(icao > 600) {
+                                var mod = icao / 601;
+                                icao -= mod * 601;
+                                result.Append(ATo9Base34(mod + 24));
+                            } else {
+                                --icao;
+                                var mod = icao / 25;
+                                icao -= mod * 25;
+                                result.Append(ATo9Base34(mod + 1));
+                            }
                         }
                         break;
                 }
@@ -163,5 +169,7 @@ namespace VirtualRadar.Interface.ModeS
 
         // See Base34ATo9's comment
         static char ATo9Base34(int oneBasedValue) => "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789"[oneBasedValue - 1];
+
+        private static bool IsAsciiCharBetween(char character, char lowerInclusive, char upperInclusive) => character >= lowerInclusive && character <= upperInclusive;
     }
 }
