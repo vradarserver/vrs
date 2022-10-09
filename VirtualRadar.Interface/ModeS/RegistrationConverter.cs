@@ -42,6 +42,48 @@ namespace VirtualRadar.Interface.ModeS
             return result;
         }
 
+        /// <summary>
+        /// Returns the registration decoded from the ICAO or null
+        /// if the ICAO is not associated with a civilian aviation registry
+        /// that imposes a calculatable relationship between ICAO and
+        /// registration.
+        /// </summary>
+        /// <param name="modeSIcao"></param>
+        /// <returns></returns>
+        public static string ModeSToRegistration(string modeSIcao)
+        {
+            var icao = CustomConvert.Icao24(modeSIcao);
+
+            var result = new StringBuilder("N");
+
+            icao -= 0xa00000;
+
+            for(var numIdx = 0;icao > 0 && numIdx < 6;++numIdx) {
+                switch(numIdx) {
+                    case 0:
+                        icao -= 1;
+                        result.Append('1');
+                        break;
+                    case 1:
+                        if(icao < 0x25a) {
+                            --icao;
+                            var mod = icao / 25;
+                            icao -= mod * 25;
+                            result.Append(ATo9Base34(mod + 1));
+                        }
+                        break;
+                    case 2:
+                        if(icao < 25) {
+                            result.Append(ATo9Base34(icao));
+                            icao = 0;
+                        }
+                        break;
+                }
+            }
+
+            return result.ToString();
+        }
+
         private static string IcaoFromUSRegistration(string registration)
         {
             var icao = 0;
@@ -118,5 +160,8 @@ namespace VirtualRadar.Interface.ModeS
                     ? 0
                     : (ch - 'A') + (ch < 'I' ? 1 : ch < 'O' ? 0 : -1);
         }
+
+        // See Base34ATo9's comment
+        static char ATo9Base34(int oneBasedValue) => "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789"[oneBasedValue - 1];
     }
 }
