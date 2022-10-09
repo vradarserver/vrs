@@ -61,9 +61,9 @@ namespace VirtualRadar.Interface.ModeS
             for(var numIdx = 0;icao > 0 && numIdx < 6;++numIdx) {
                 switch(numIdx) {
                     case 0:
-                        var zeroMod = icao / 101711;
-                        icao -= (zeroMod * 101711) + 1;
-                        result.Append(ATo9Base34(25 + zeroMod + 1));
+                        var firstDiv = icao / 101711;
+                        icao -= (firstDiv * 101711) + 1;
+                        result.Append(ATo9Base34(25 + firstDiv + 1));
                         break;
                     default:
                         if(IsAsciiCharBetween(result[numIdx], 'A', 'Z')) {
@@ -73,14 +73,14 @@ namespace VirtualRadar.Interface.ModeS
                             }
                         } else {
                             if(icao > 600) {
-                                var mod = icao / 601;
-                                icao -= mod * 601;
-                                result.Append(ATo9Base34(mod + 24));
+                                var div = icao / 601;
+                                icao -= div * 601;
+                                result.Append(ATo9Base34(div + 24));
                             } else {
                                 --icao;
-                                var mod = icao / 25;
-                                icao -= mod * 25;
-                                result.Append(ATo9Base34(mod + 1));
+                                var div = icao / 25;
+                                icao -= div * 25;
+                                result.Append(ATo9Base34(div + 1));
                             }
                         }
                         break;
