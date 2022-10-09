@@ -66,13 +66,17 @@ namespace VirtualRadar.Interface.ModeS
                         result.Append(ATo9Base34(25 + firstDiv + 1));
                         break;
                     default:
-                        if(IsAsciiCharBetween(result[numIdx], 'A', 'Z')) {
+                        if(numIdx == 4 || IsAsciiCharBetween(result[numIdx], 'A', 'Z')) {
                             if(icao < 35) {
                                 result.Append(ATo9Base34(icao));
                                 icao = 0;
                             }
                         } else {
-                            if(icao > 1201) {
+                            if(icao > 1803) {
+                                var div = icao / 1804;
+                                icao -= 601 + ((div - 1) * 1804);
+                                result.Append(ATo9Base34(div + 24));
+                            } else if(icao > 1201) {
                                 var div = icao / 1202;
                                 icao -= 601 + ((div - 1) * 1202);
                                 result.Append(ATo9Base34(div + 24));
