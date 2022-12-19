@@ -52,59 +52,14 @@ namespace VirtualRadar.Interface.ModeS
         /// <returns></returns>
         public static string ModeSToRegistration(string modeSIcao)
         {
+            string result = null;
+
             var icao = CustomConvert.Icao24(modeSIcao);
-
-            var result = new StringBuilder("N");
-
-            icao -= 0xa00001;
-            if(icao == 0) {
-                result.Append('1');
+            if(icao > 0xa00000 && icao < 0xadf7c8) {
+                result = IcaoToUSRegistration(icao);
             }
 
-            var divisor = 0;
-            for(var digitIdx = 0;icao > 0 && digitIdx < 4;++digitIdx) {
-                switch(digitIdx) {
-                    case 0:
-                        var firstDiv = icao / 101711;
-                        result.Append(ATo9Base34(25 + firstDiv + 1));
-                        icao %= 101711;
-                        break;
-                    case 1:
-                        divisor = 10111;
-                        goto default;
-                    case 2:
-                        divisor = 951;
-                        goto default;
-                    case 3:
-                        divisor = 35;
-                        goto default;
-                    default:
-                        icao -= 601;
-                        var div = icao / divisor;
-                        result.Append(ATo9Base34(div + 25));
-                        icao %= divisor;
-                        break;
-                }
-
-                if(icao > 0) {
-                    if(digitIdx == 3) {
-                        result.Append(ATo9Base34(icao));
-                    } else {
-                        if(icao < 601) {
-                            --icao;
-                            var div = icao / 25;
-                            icao -= div * 25;
-                            result.Append(ATo9Base34(div + 1));
-                            if(icao > 0) {
-                                result.Append(ATo9Base34(icao));
-                                icao = 0;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return result.ToString();
+            return result;
         }
 
         private static string IcaoFromUSRegistration(string registration)
@@ -113,7 +68,7 @@ namespace VirtualRadar.Interface.ModeS
             var thisCharacterFollowsAlphaCharacter = false;
             for(var idx = 1;idx < registration.Length;++idx) {
                 var ch = registration[idx];
-                var digit = Base34ATo9(ch);
+                var digit = NRegBase34ATo9(ch);
 
                 var base24Portion = digit - 1;
                 var base34Portion = 0;
@@ -160,7 +115,64 @@ namespace VirtualRadar.Interface.ModeS
             return (icao + (0xA00000)).ToString("X6");
         }
 
-        static int Base34ATo9(char ch)
+        private static string IcaoToUSRegistration(int icao)
+        {
+            var result = new StringBuilder("N");
+
+            icao -= 0xa00001;
+            if(icao == 0) {
+                result.Append('1');
+            }
+
+            var divisor = 0;
+            for(var digitIdx = 0;icao > 0 && digitIdx < 4;++digitIdx) {
+                var startCountingAt = 0;
+                switch(digitIdx) {
+                    case 0:
+                        divisor = 101711;
+                        startCountingAt = 1;
+                        goto default;
+                    case 1:
+                        divisor = 10111;
+                        goto default;
+                    case 2:
+                        divisor = 951;
+                        goto default;
+                    case 3:
+                        divisor = 35;
+                        goto default;
+                    default:
+                        if(digitIdx > 0) {
+                            icao -= 601;
+                        }
+                        var digit = icao / divisor;
+                        result.Append(NRegATo9Base34(digit + 25 + startCountingAt));  // +25 skips over the letters to return a '0' for a digit of 0
+                        icao %= divisor;
+                        break;
+                }
+
+                if(icao > 0) {
+                    if(digitIdx == 3) {
+                        result.Append(NRegATo9Base34(icao));
+                    } else {
+                        if(icao < 601) {
+                            --icao;
+                            var div = icao / 25;
+                            icao -= div * 25;
+                            result.Append(NRegATo9Base34(div + 1));
+                            if(icao > 0) {
+                                result.Append(NRegATo9Base34(icao));
+                                icao = 0;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result.ToString();
+        }
+
+        static int NRegBase34ATo9(char ch)
         {
             // Values are:
             // A = 1
@@ -184,9 +196,7 @@ namespace VirtualRadar.Interface.ModeS
                     : (ch - 'A') + (ch < 'I' ? 1 : ch < 'O' ? 0 : -1);
         }
 
-        // See Base34ATo9's comment
-        static char ATo9Base34(int oneBasedValue) => "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789"[oneBasedValue - 1];
-
-        private static bool IsAsciiCharBetween(char character, char lowerInclusive, char upperInclusive) => character >= lowerInclusive && character <= upperInclusive;
+        // See NRegBase34ATo9's comment
+        static char NRegATo9Base34(int oneBasedValue) => "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789"[oneBasedValue - 1];
     }
 }

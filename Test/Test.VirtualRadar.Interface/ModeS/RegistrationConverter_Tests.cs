@@ -118,6 +118,19 @@ namespace Test.VirtualRadar.Interface.ModeS
         }
 
         [TestMethod]
+        public void ModeSToRegistration_Returns_Null_For_Unknown_Icao_Ranges()
+        {
+            new InlineDataTest(this).TestAndAssert(new dynamic[] {
+                new { Icao = "A00000", },
+                new { Icao = "ADF7C8", },
+            },
+            row => {
+                var actual = RegistrationConverter.ModeSToRegistration(row.Icao);
+                Assert.IsNull(actual);
+            });
+        }
+
+        [TestMethod]
         public void ModeSToRegistration_Can_Convert_US_ICAOs()
         {
             new InlineDataTest(this).TestAndAssert(new dynamic[] {
@@ -204,6 +217,18 @@ namespace Test.VirtualRadar.Interface.ModeS
                 var actual = RegistrationConverter.ModeSToRegistration(row.Icao);
                 Assert.AreEqual(row.Expected, actual, $"ICAO {row.Icao}");
             });
+        }
+
+        [TestMethod]
+        public void RegistrationConverter_Can_Round_Trip_All_US_Registrations()
+        {
+            for(var icao = 0xA00001;icao < 0xADF7C7;++icao) {
+                var icaoAsString = icao.ToString("X6");
+                var registrationFromIcao = RegistrationConverter.ModeSToRegistration(icaoAsString);
+                var icaoFromRegistration = RegistrationConverter.RegistrationToModeS(registrationFromIcao);
+
+                Assert.AreEqual(icaoAsString, icaoFromRegistration);
+            }
         }
     }
 }
