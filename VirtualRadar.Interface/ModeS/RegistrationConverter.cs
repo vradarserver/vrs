@@ -56,42 +56,51 @@ namespace VirtualRadar.Interface.ModeS
 
             var result = new StringBuilder("N");
 
-            icao -= 0xa00000;
+            icao -= 0xa00001;
+            if(icao == 0) {
+                result.Append('1');
+            }
 
-            for(var numIdx = 0;icao > 0 && numIdx < 6;++numIdx) {
-                switch(numIdx) {
+            var divisor = 0;
+            for(var digitIdx = 0;icao > 0 && digitIdx < 4;++digitIdx) {
+                switch(digitIdx) {
                     case 0:
                         var firstDiv = icao / 101711;
-                        icao -= (firstDiv * 101711) + 1;
                         result.Append(ATo9Base34(25 + firstDiv + 1));
+                        icao %= 101711;
                         break;
+                    case 1:
+                        divisor = 10111;
+                        goto default;
+                    case 2:
+                        divisor = 951;
+                        goto default;
+                    case 3:
+                        divisor = 35;
+                        goto default;
                     default:
-                        if(numIdx == 4 || IsAsciiCharBetween(result[numIdx], 'A', 'Z')) {
-                            if(icao < 35) {
+                        icao -= 601;
+                        var div = icao / divisor;
+                        result.Append(ATo9Base34(div + 25));
+                        icao %= divisor;
+                        break;
+                }
+
+                if(icao > 0) {
+                    if(digitIdx == 3) {
+                        result.Append(ATo9Base34(icao));
+                    } else {
+                        if(icao < 601) {
+                            --icao;
+                            var div = icao / 25;
+                            icao -= div * 25;
+                            result.Append(ATo9Base34(div + 1));
+                            if(icao > 0) {
                                 result.Append(ATo9Base34(icao));
-                            }
-                            icao = 0;
-                        } else {
-                            if(icao > 1803) {
-                                var div = icao / 1804;
-                                icao -= 601 + ((div - 1) * 1804);
-                                result.Append(ATo9Base34(div + 24));
-                            } else if(icao > 1201) {
-                                var div = icao / 1202;
-                                icao -= 601 + ((div - 1) * 1202);
-                                result.Append(ATo9Base34(div + 24));
-                            } else if(icao > 600) {
-                                var div = icao / 601;
-                                icao -= div * 601;
-                                result.Append(ATo9Base34(div + 24));
-                            } else {
-                                --icao;
-                                var div = icao / 25;
-                                icao -= div * 25;
-                                result.Append(ATo9Base34(div + 1));
+                                icao = 0;
                             }
                         }
-                        break;
+                    }
                 }
             }
 
