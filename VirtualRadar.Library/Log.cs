@@ -8,6 +8,7 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+using System.Text;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 
@@ -18,7 +19,8 @@ namespace VirtualRadar.Library
     /// </summary>
     class Log : ILog
     {
-        const int MaxAllowableMessagesInFile = 1000;      // Maximum number of messages to keep in the log file
+        const int MaxAllowableMessagesInFile = 1000;    // Maximum number of messages to keep in the log file
+        const int RateLimitMessageMinutes = 5;          // Merge the messages when they appear within this many minutes of a previous instance (rolling)
 
         // DI services
         private readonly IClock _Clock;
@@ -37,6 +39,10 @@ namespace VirtualRadar.Library
         private long _NextInstanceId;
         private bool _ContentLoaded;
         private bool _ContentNeedsFlushing;
+
+        // Indexed file content - used to find previous instances of messages without looping through
+        // hundreds of extant messages. Messages loaded from previous sessions are not indexed.
+        private readonly Dictionary<string, List<LogMessage>> _IndexedContent = new();
 
         /// <summary>
         /// The folder where we store the log file.
@@ -77,12 +83,13 @@ namespace VirtualRadar.Library
                     var utcNow = _Clock.UtcNow;
                     var threadId = _ThreadingEnvironment.CurrentThreadId;
 
-                    if(_Content.Last()?.Text == message) {
-                        _Content.Last().AddInstance(utcNow, threadId);
+                    var extantInstance = FindExtantInstance(message, utcNow);
+                    if(extantInstance != null) {
+                        extantInstance.AddInstance(utcNow, threadId);
                     } else {
-                        _Content.AddLast(new LogMessage(_NextInstanceId++, message, utcNow, threadId));
+                        AddLast(new LogMessage(_NextInstanceId++, message, utcNow, threadId));
                         while(_Content.Count > MaxAllowableMessagesInFile) {
-                            _Content.RemoveFirst();
+                            RemoveFirst();
                         }
                     }
 
@@ -145,18 +152,76 @@ namespace VirtualRadar.Library
         {
             if(!_ContentLoaded) {
                 if(_FileSystem.FileExists(FileName)) {
-                    LogMessage currentLogLine = null;
-                    foreach(var line in _FileSystem.ReadAllLines(FileName)) {
-                        if(currentLogLine != null && LogMessage.FollowOnLineRegex.IsMatch(line)) {
-                            currentLogLine.AppendLine(line);
-                        } else {
-                            currentLogLine = new(_NextInstanceId++, line);
-                            _Content.AddLast(currentLogLine);
+                    var currentMessage = new StringBuilder();
+
+                    void addCurrentMessage()
+                    {
+                        if(currentMessage.Length > 0) {
+                            AddLast(new LogMessage(_NextInstanceId++, currentMessage.ToString()));
+                            currentMessage.Clear();
                         }
                     }
+
+                    foreach(var line in _FileSystem.ReadAllLines(FileName)) {
+                        if(LogMessage.FirstLineRegex.IsMatch(line)) {
+                            addCurrentMessage();
+                            currentMessage.Append(line);
+                        } else {
+                            if(currentMessage.Length > 0) {
+                                currentMessage.AppendLine();
+                            }
+                            currentMessage.Append(line);
+                        }
+                    }
+
+                    addCurrentMessage();
                 }
                 _ContentLoaded = true;
             }
+        }
+
+        private void AddLast(LogMessage message)
+        {
+            _Content.AddLast(message);
+
+            if(!message.IsFromPreviousSession) {
+                if(!_IndexedContent.TryGetValue(message.Text, out var messages)) {
+                    messages = new List<LogMessage>();
+                    _IndexedContent.Add(message.Text, messages);
+                }
+                messages.Add(message);
+            }
+        }
+
+        private void RemoveFirst()
+        {
+            var first = _Content.First?.Value;
+            _Content.RemoveFirst();
+
+            if(first != null && !first.IsFromPreviousSession) {
+                if(_IndexedContent.TryGetValue(first.Text, out var messages)) {
+                    messages.Remove(first);
+                    if(messages.Count == 0) {
+                        _IndexedContent.Remove(first.Text);
+                    }
+                }
+            }
+        }
+
+        private LogMessage FindExtantInstance(string message, DateTime utcNow)
+        {
+            LogMessage result = null;
+
+            if(_IndexedContent.TryGetValue(message, out var candidates)) {
+                var lastCandidate = candidates
+                    .OrderByDescending(r => r.LastLoggedAtUtc)
+                    .FirstOrDefault();
+                if(lastCandidate?.LastLoggedAtUtc >= utcNow.AddMinutes(-RateLimitMessageMinutes)) {
+                    result = lastCandidate;
+                }
+            }
+
+            return result;
         }
     }
 }

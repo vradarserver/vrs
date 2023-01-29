@@ -48,7 +48,7 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// The text message. Old session messages will include the log time and thread ID.
         /// </summary>
-        public string Text { get; private set; }
+        public string Text { get; }
 
         private volatile List<int> _FromThreadIds = new();
         /// <summary>
@@ -209,18 +209,6 @@ namespace VirtualRadar.Interface
                         threadId
                     };
                 }
-                ++RevisionId;
-            }
-        }
-
-        /// <summary>
-        /// Appends a line of text to the message.
-        /// </summary>
-        /// <param name="text"></param>
-        public void AppendLine(string text)
-        {
-            lock(_SyncLock) {
-                Text = $"{Text}{Environment.NewLine}{text}";
                 ++RevisionId;
             }
         }
