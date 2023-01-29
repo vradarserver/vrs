@@ -8,8 +8,6 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System.Collections;
-
 namespace VirtualRadar.Interface
 {
     /// <summary>
@@ -60,27 +58,23 @@ namespace VirtualRadar.Interface
                 result = list.Count == other.Count;
                 if(result) {
                     if(orderMustMatch) {
-                        for(var i = 0;i < list.Count;++i) {
+                        for(var i = 0;result && i < list.Count;++i) {
                             result = Object.Equals(list[i], other[i]);
-                            if(!result) break;
                         }
                     } else {
-                        var unmatched = new LinkedList<T>();
-                        foreach(var item in other) {
-                            unmatched.AddLast(item);
-                        }
+                        var unmatched = new LinkedList<T>(other);
 
                         foreach(var thisItem in list) {
-                            var matched = false;
-                            for(var node = unmatched.First;node != null;node = node.Next) {
-                                if(Object.Equals(thisItem, node.Value)) {
+                            result = false;
+                            for(var node = unmatched.First;!result && node != null;node = node.Next) {
+                                result = Object.Equals(thisItem, node.Value);
+                                if(result) {
                                     unmatched.Remove(node);
-                                    matched = true;
-                                    break;
                                 }
                             }
-                            result = matched;
-                            if(!result) break;
+                            if(!result) {
+                                break;
+                            }
                         }
                     }
                 }
