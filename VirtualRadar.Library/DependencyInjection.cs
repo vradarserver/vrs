@@ -14,7 +14,7 @@ namespace VirtualRadar.Library
 {
     public static class DependencyInjection
     {
-        public static void Configure(IServiceCollection services)
+        public static IServiceCollection AddVirtualRadarLibraryGroup(this IServiceCollection services)
         {
             services.AddSingleton<VirtualRadar.Interface.IClock,                            Clock>();
             services.AddSingleton<VirtualRadar.Interface.IFileSystemProvider,               FileSystemProvider>();
@@ -22,6 +22,8 @@ namespace VirtualRadar.Library
             services.AddSingleton<VirtualRadar.Interface.IThreadingEnvironmentProvider,     ThreadingEnvironmentProvider>();
 
             services.AddSingleton<VirtualRadar.Interface.Settings.IConfigurationStorage,    Settings.ConfigurationStorage>();
+
+            return services;
         }
     }
 }

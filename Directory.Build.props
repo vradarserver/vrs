@@ -1,12 +1,19 @@
 <Project>
     <PropertyGroup>
-        <Version>6.0.0.0-alpha-0001</Version>
+        <Version>6.0.0.0-alpha-0003</Version>
+
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>disable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <PackageOutputPath>$(SolutionDir)bin\packages\$(Configuration)</PackageOutputPath>
         <Product>VirtualRadar</Product>
-        <Copyright>Copyright © 2010 onwards, Andrew Whewell</Copyright>
-        <Authors>Andrew Whewell and contributors</Authors>
+        <Copyright>Copyright (c) 2010 onwards, Andrew Whewell</Copyright>
+        <Authors>Andrew Whewell</Authors>
+        <PackageProjectUrl>https://virtualradarserver.co.uk</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/vradarserver/vrs</RepositoryUrl>
+        <PackageTags>adsb;ads-b;aircraft;flight tracking</PackageTags>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -29,18 +29,13 @@ namespace VirtualRadar.Library.Settings
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string Folder { get; set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
         public int CoarseListenerTimeout { get; set; }
 
         /// <summary>
         /// Gets the full path to the configuration file.
         /// </summary>
         private string FileName => Path.Combine(
-            Folder,
+            _FileSystem.ConfigurationFolder,
             "Configuration.xml"
         );
 
@@ -70,8 +65,6 @@ namespace VirtualRadar.Library.Settings
             _UserManager = userManager;
             _XmlSerialiser = xmlSerialiser;
             _XmlSerialiser.UseDefaultEnumValueIfUnknown = true;
-
-            Folder = Path.Combine(_FileSystem.LocalAppDataFolder, "VirtualRadar");
         }
 
         /// <summary>
@@ -245,7 +238,7 @@ namespace VirtualRadar.Library.Settings
         public void Save(Configuration configuration)
         {
             lock(_FileAccessLock) {
-                _FileSystem.CreateDirectoryIfNotExists(Folder);
+                _FileSystem.CreateDirectoryIfNotExists(_FileSystem.ConfigurationFolder);
 
                 Configuration currentConfiguration = null;
                 var ignoreLoadException = configuration.DataVersion == 0;       // i.e. it's a brand new configuration
@@ -282,7 +275,7 @@ namespace VirtualRadar.Library.Settings
         private void BackupOldSettings()
         {
             if(File.Exists(FileName)) {
-                var folder = Path.Combine(Folder, "ConfigBackups");
+                var folder = Path.Combine(_FileSystem.ConfigurationFolder, "ConfigBackups");
                 _FileSystem.CreateDirectoryIfNotExists(folder);
 
                 var fileInfo = new FileInfo(FileName);

@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.Database.SQLite.Users
 {
@@ -7,12 +7,12 @@ namespace VirtualRadar.Database.SQLite.Users
     {
         public string FullPath { get; }
 
-        public DbSet<User> Users;
+        public DbSet<User> Users { get; set; }
 
-        public UserContext(IConfigurationStorage configurationStorage) : base()
+        public UserContext(IFileSystemProvider fileSystemProvider) : base()
         {
             FullPath = Path.Combine(
-                configurationStorage.Folder,
+                fileSystemProvider.ConfigurationFolder,
                 "Users.sqb"
             );
         }

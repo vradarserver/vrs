@@ -24,7 +24,6 @@ namespace VirtualRadar.Library
 
         // DI services
         private readonly IClock _Clock;
-        private readonly IConfigurationStorage _ConfigurationStorage;
         private readonly IFileSystemProvider _FileSystem;
         private readonly IThreadingEnvironmentProvider _ThreadingEnvironment;
 
@@ -45,26 +44,19 @@ namespace VirtualRadar.Library
         private readonly Dictionary<string, List<LogMessage>> _IndexedContent = new();
 
         /// <summary>
-        /// The folder where we store the log file.
-        /// </summary>
-        private string Folder => _ConfigurationStorage.Folder;
-
-        /// <summary>
         /// See interface docs.
         /// </summary>
-        public string FileName => Path.Combine(Folder, "VirtualRadarLog.txt");
+        public string FileName => Path.Combine(_FileSystem.LogFolder, "VirtualRadarLog.txt");
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="clock"></param>
-        /// <param name="configurationStorage"></param>
         /// <param name="fileSystem"></param>
         /// <param name="threadingEnvironment"></param>
-        public Log(IClock clock, IConfigurationStorage configurationStorage, IFileSystemProvider fileSystem, IThreadingEnvironmentProvider threadingEnvironment)
+        public Log(IClock clock, IFileSystemProvider fileSystem, IThreadingEnvironmentProvider threadingEnvironment)
         {
             _Clock = clock;
-            _ConfigurationStorage = configurationStorage;
             _FileSystem = fileSystem;
             _ThreadingEnvironment = threadingEnvironment;
         }
@@ -117,7 +109,7 @@ namespace VirtualRadar.Library
                         .SelectMany(logMessage => logMessage.Text.Split(Environment.NewLine, StringSplitOptions.None))
                         .ToArray(); // <-- for debugging
 
-                    _FileSystem.CreateDirectoryIfNotExists(Folder);
+                    _FileSystem.CreateDirectoryIfNotExists(_FileSystem.LogFolder);
                     _FileSystem.WriteAllLines(FileName, lines);
 
                     _ContentNeedsFlushing = false;

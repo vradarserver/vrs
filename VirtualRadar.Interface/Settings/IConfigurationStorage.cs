@@ -20,11 +20,6 @@ namespace VirtualRadar.Interface.Settings
     public interface IConfigurationStorage
     {
         /// <summary>
-        /// Gets or sets the folder the contains the configuration and log files.
-        /// </summary>
-        string Folder { get; set; }
-
-        /// <summary>
         /// Raised after <see cref="Save"/> has saved a new configuration to disk or <see cref="Erase"/> has deleted the user's configuration.
         /// </summary>
         event EventHandler<EventArgs> ConfigurationChanged;

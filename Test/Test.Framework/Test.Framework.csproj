@@ -4,6 +4,7 @@
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

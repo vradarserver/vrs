@@ -17,7 +17,11 @@ namespace VirtualRadar.Library
     /// </summary>
     class FileSystemProvider : IFileSystemProvider
     {
-        public string LocalAppDataFolder => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        private string LocalAppDataFolder => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
+        public string ConfigurationFolder => Path.Combine(LocalAppDataFolder, "VirtualRadar");
+
+        public string LogFolder => ConfigurationFolder;
 
         public void CopyFile(string sourceFileName, string destFileName, bool overwrite) => File.Copy(sourceFileName, destFileName, overwrite);
 

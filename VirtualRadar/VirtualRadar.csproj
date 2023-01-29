@@ -1,3 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
-    <!-- See Directory.Build.props for common settings -->
+﻿<Project Sdk="Microsoft.NET.Sdk.Web"><!-- See Directory.Build.props for common settings -->
+
+
+  <PropertyGroup>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+  </PropertyGroup>
 </Project>
