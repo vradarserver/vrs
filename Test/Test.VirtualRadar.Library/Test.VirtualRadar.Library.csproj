@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- See Directory.Build.props for common settings -->
-
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
@@ -13,6 +11,12 @@
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />
     <PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\VirtualRadar.Interface\VirtualRadar.Interface.csproj" />
+    <ProjectReference Include="..\..\VirtualRadar.Library\VirtualRadar.Library.csproj" />
+    <ProjectReference Include="..\Test.Framework\Test.Framework.csproj" />
   </ItemGroup>
 
 </Project>

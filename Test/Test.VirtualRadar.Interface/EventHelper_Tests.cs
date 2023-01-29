@@ -15,7 +15,7 @@ using VirtualRadar.Interface;
 namespace Test.VirtualRadar.Interface
 {
     [TestClass]
-    public class EventHelperTests
+    public class EventHelper_Tests
     {
         event EventHandler _Raise_Raises_Event;
         [TestMethod]

@@ -11,13 +11,14 @@
 using System.Text;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.Types;
 
 namespace VirtualRadar.Library
 {
     /// <summary>
     /// Default implementation of <see cref="ILog"/> singleton.
     /// </summary>
-    class Log : ILog
+    public class Log : ILog
     {
         const int MaxAllowableMessagesInFile = 1000;    // Maximum number of messages to keep in the log file
         const int RateLimitMessageMinutes = 5;          // Merge the messages when they appear within this many minutes of a previous instance (rolling)
@@ -106,7 +107,7 @@ namespace VirtualRadar.Library
             lock(_SyncLock) {
                 if(_ContentNeedsFlushing) {
                     var lines = _Content
-                        .SelectMany(logMessage => logMessage.Text.Split(Environment.NewLine, StringSplitOptions.None))
+                        .SelectMany(logMessage => logMessage.ToString().SplitIntoLines())
                         .ToArray(); // <-- for debugging
 
                     _FileSystem.CreateDirectoryIfNotExists(_FileSystem.LogFolder);
