@@ -143,5 +143,22 @@ namespace Test.VirtualRadar.Library
             Assert.AreEqual(1, messages.Count);
             Assert.AreEqual(text, messages[0].Text);
         }
+
+        [TestMethod]
+        [DataRow("")]
+        [DataRow(" ")]
+        public void Blank_Lines_In_Log_Are_Ignored(string text)
+        {
+            _FileSystem
+                .Setup(r => r.FileExists(It.IsAny<string>()))
+                .Returns((string fn) => true);
+            _FileSystem
+                .Setup(r => r.ReadAllLines(It.IsAny<string>()))
+                .Returns((string fn) => new string[] { text });
+
+            var messages = _Log.GetContent();
+
+            Assert.AreEqual(0, messages.Count);
+        }
     }
 }

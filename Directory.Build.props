@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <Version>6.0.0.0-alpha-0003</Version>
+        <Version>6.0.0.0-alpha-0005</Version>
 
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>disable</Nullable>
@@ -13,7 +13,7 @@
         <Authors>Andrew Whewell</Authors>
         <PackageProjectUrl>https://virtualradarserver.co.uk</PackageProjectUrl>
         <RepositoryUrl>https://github.com/vradarserver/vrs</RepositoryUrl>
-        <PackageTags>adsb;ads-b;aircraft;flight tracking</PackageTags>
+        <PackageTags>vrs;virtual radar server;adsb;ads-b;aircraft;radar;flight tracking</PackageTags>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

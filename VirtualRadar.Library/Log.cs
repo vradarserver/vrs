@@ -156,14 +156,16 @@ namespace VirtualRadar.Library
                     }
 
                     foreach(var line in _FileSystem.ReadAllLines(FileName)) {
-                        if(LogMessage.FirstLineRegex.IsMatch(line)) {
-                            addCurrentMessage();
-                            currentMessage.Append(line);
-                        } else {
-                            if(currentMessage.Length > 0) {
-                                currentMessage.AppendLine();
+                        if(!String.IsNullOrWhiteSpace(line)) {
+                            if(LogMessage.FirstLineRegex.IsMatch(line)) {
+                                addCurrentMessage();
+                                currentMessage.Append(line);
+                            } else {
+                                if(currentMessage.Length > 0) {
+                                    currentMessage.AppendLine();
+                                }
+                                currentMessage.Append(line);
                             }
-                            currentMessage.Append(line);
                         }
                     }
 
