@@ -1,0 +1,19 @@
+<Project>
+    <PropertyGroup>
+        <Version>6.0.0.0-alpha-0001</Version>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>disable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Product>VirtualRadar</Product>
+        <Copyright>Copyright © 2010 onwards, Andrew Whewell</Copyright>
+        <Authors>Andrew Whewell and contributors</Authors>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <Deterministic>False</Deterministic>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <Deterministic>False</Deterministic>
+    </PropertyGroup>
+</Project>
