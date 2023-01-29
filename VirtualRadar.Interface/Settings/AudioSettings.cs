@@ -8,92 +8,26 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
     /// Holds the configuration of the speech-to-audio features that the website can access.
     /// </summary>
-    public class AudioSettings : INotifyPropertyChanged
+    public class AudioSettings
     {
-        private bool _Enabled;
         /// <summary>
         /// Gets or sets a value indicating that the user wants to use the feature.
         /// </summary>
-        public bool Enabled
-        {
-            get { return _Enabled; }
-            set { SetField(ref _Enabled, value, nameof(Enabled)); }
-        }
+        public bool Enabled { get; set; } = true;
 
-        private string _VoiceName;
         /// <summary>
         /// Gets or sets the Microsoft Voice to use.
         /// </summary>
-        public string VoiceName
-        {
-            get { return _VoiceName; }
-            set { SetField(ref _VoiceName, value, nameof(VoiceName)); }
-        }
+        public string VoiceName { get; set; }
 
-        private int _VoiceRate;
         /// <summary>
         /// Gets or sets the speed at which the voice should say the text.
         /// </summary>
-        public int VoiceRate
-        {
-            get { return _VoiceRate; }
-            set { SetField(ref _VoiceRate, value, nameof(VoiceRate)); }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Raises <see cref="PropertyChanged"/>.
-        /// </summary>
-        /// <param name="args"></param>
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
-        {
-            var handler = PropertyChanged;
-            if(handler != null) {
-                handler(this, args);
-            }
-        }
-
-        /// <summary>
-        /// Sets the field's value and raises <see cref="PropertyChanged"/>, but only when the value has changed.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="field"></param>
-        /// <param name="value"></param>
-        /// <param name="fieldName"></param>
-        /// <returns>True if the value was set because it had changed, false if the value did not change and the event was not raised.</returns>
-        protected bool SetField<T>(ref T field, T value, string fieldName)
-        {
-            var result = !EqualityComparer<T>.Default.Equals(field, value);
-            if(result) {
-                field = value;
-                OnPropertyChanged(new PropertyChangedEventArgs(fieldName));
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public AudioSettings()
-        {
-            Enabled = true;
-        }
+        public int VoiceRate { get; set; }
     }
 }

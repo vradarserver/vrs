@@ -1,4 +1,4 @@
-// Copyright © 2010 onwards, Andrew Whewell
+// Copyright Â© 2010 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -8,17 +8,7 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.IsolatedStorage;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Runtime.Serialization;
 using System.Text;
-using System.Threading;
-using InterfaceFactory;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Localisation;
@@ -30,44 +20,16 @@ namespace VirtualRadar.Library.Settings
     /// </summary>
     sealed class ConfigurationStorage : IConfigurationStorage
     {
-        /// <summary>
-        /// A spin lock that protects against multithreaded reads and writes of the configuration file.
-        /// </summary>
-        private static ObsoleteSpinLock _FileProtectionSpinLock = new ObsoleteSpinLock();
-
-        /// <summary>
-        /// A private class that supplies the default implementation of <see cref="IConfigurationStorageProvider"/>.
-        /// </summary>
-        class DefaultProvider : IConfigurationStorageProvider
-        {
-            /// <summary>
-            /// The folder where the files are held.
-            /// </summary>
-            private static string _Folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VirtualRadar");
-
-            /// <summary>
-            /// See interface docs.
-            /// </summary>
-            public string Folder
-            {
-                get { return _Folder; }
-                set { _Folder = value; }
-            }
-        }
+        private IFileSystemProvider _FileSystem;
+        private ILog _Log;
+        private IUserManager _UserManager;
+        private IXmlSerialiser _XmlSerialiser;
+        private object _FileAccessLock = new object();
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public IConfigurationStorageProvider Provider { get; set; }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public string Folder
-        {
-            get { return Provider.Folder; }
-            set { Provider.Folder = value; }
-        }
+        public string Folder { get; set; }
 
         /// <summary>
         /// See interface docs.
@@ -77,7 +39,10 @@ namespace VirtualRadar.Library.Settings
         /// <summary>
         /// Gets the full path to the configuration file.
         /// </summary>
-        private string FileName { get { return Path.Combine(Provider.Folder, "Configuration.xml"); } }
+        private string FileName => Path.Combine(
+            Folder,
+            "Configuration.xml"
+        );
 
         /// <summary>
         /// See interface docs.
@@ -91,17 +56,22 @@ namespace VirtualRadar.Library.Settings
         private void OnConfigurationChanged(EventArgs args)
         {
             EventHelper.Raise(ConfigurationChanged, this, args, ex => {
-                var log = Factory.ResolveSingleton<ILog>();
-                log.WriteLine("Caught exception in ConfigurationChanged event handler: {0}", ex.ToString());
+                _Log.WriteLine($"Caught exception in ConfigurationChanged event handler: {ex}");
             });
         }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public ConfigurationStorage()
+        public ConfigurationStorage(IFileSystemProvider fileSystem, ILog log, IXmlSerialiser xmlSerialiser, IUserManager userManager)
         {
-            Provider = new DefaultProvider();
+            _FileSystem = fileSystem;
+            _Log = log;
+            _UserManager = userManager;
+            _XmlSerialiser = xmlSerialiser;
+            _XmlSerialiser.UseDefaultEnumValueIfUnknown = true;
+
+            Folder = Path.Combine(_FileSystem.LocalAppDataFolder, "VirtualRadar");
         }
 
         /// <summary>
@@ -111,9 +81,9 @@ namespace VirtualRadar.Library.Settings
         {
             var raiseEvent = false;
 
-            using(_FileProtectionSpinLock.AcquireLock()) {
-                if(File.Exists(FileName)) {
-                    File.Delete(FileName);
+            lock(_FileAccessLock) {
+                if(_FileSystem.FileExists(FileName)) {
+                    _FileSystem.DeleteFile(FileName);
                     raiseEvent = true;
                 }
             }
@@ -132,11 +102,15 @@ namespace VirtualRadar.Library.Settings
             var result = LoadIfExists(acquireLock: true);
             if(result != null) {
                 bool needResave = false;
-                if(GenerateRebroadcastServerUniqueIds(result)) needResave = true;
-                if(ConvertBasicAuthenticationUser(result))     needResave = true;
-                if(result.Receivers.Count == 0) CreateInitialReceiverLocations(result);
+                needResave = GenerateRebroadcastServerUniqueIds(result) || needResave;
 
-                if(needResave) Save(result);
+                if(result.Receivers.Count == 0) {
+                    CreateInitialReceiverLocations(result);
+                }
+
+                if(needResave) {
+                    Save(result);
+                }
             }
 
             if(result == null) {
@@ -173,17 +147,21 @@ namespace VirtualRadar.Library.Settings
         {
             Configuration result = null;
 
-            if(acquireLock) _FileProtectionSpinLock.Lock();
-            try {
-                if(File.Exists(FileName)) {
+            void readFile()
+            {
+                if(_FileSystem.FileExists(FileName)) {
                     using(StreamReader stream = new StreamReader(FileName, Encoding.UTF8)) {
-                        var serialiser = Factory.Resolve<IXmlSerialiser>();
-                        serialiser.UseDefaultEnumValueIfUnknown = true;
-                        result = serialiser.Deserialise<Configuration>(stream);
+                        result = _XmlSerialiser.Deserialise<Configuration>(stream);
                     }
                 }
-            } finally {
-                if(acquireLock) _FileProtectionSpinLock.Unlock();
+            }
+
+            if(!acquireLock) {
+                readFile();
+            } else {
+                lock(_FileAccessLock) {
+                    readFile();
+                }
             }
 
             return result;
@@ -243,14 +221,11 @@ namespace VirtualRadar.Library.Settings
                 DataBits = baseStation.DataBits,
                 DataSource = baseStation.DataSource,
                 Enabled = true,
-                Handshake = baseStation.Handshake,
                 Name = "Receiver",
-                Parity = baseStation.Parity,
                 Port = baseStation.Port,
                 ReceiverLocationId = rawDecoding.ReceiverLocationId,
                 ShutdownText = baseStation.ShutdownText,
                 StartupText = baseStation.StartupText,
-                StopBits = baseStation.StopBits,
                 UniqueId = 1,
             });
 
@@ -264,46 +239,13 @@ namespace VirtualRadar.Library.Settings
         }
 
         /// <summary>
-        /// Attempts to convert the old BasicAuthentication user to an IUserManager user.
-        /// </summary>
-        /// <param name="configuration"></param>
-        /// <returns></returns>
-        private bool ConvertBasicAuthenticationUser(Configuration configuration)
-        {
-            var modified = false;
-
-            var settings = configuration == null ? null : configuration.WebServerSettings;
-            if(settings != null && !settings.ConvertedUser && !String.IsNullOrEmpty(settings.BasicAuthenticationUser)) {
-                var userManager = Factory.ResolveSingleton<IUserManager>();
-                var user = userManager.GetUserByLoginName(settings.BasicAuthenticationUser);
-                if(user == null && userManager.CanCreateUsersWithHash) {
-                    user = Factory.Resolve<IUser>();
-                    user.Enabled = true;
-                    user.LoginName = settings.BasicAuthenticationUser;
-                    user.Name = Strings.ConvertedBasicAuthenticationUser;
-                    userManager.CreateUserWithHash(user, settings.BasicAuthenticationPasswordHash);
-                }
-
-                if(user != null) {
-                    if(!settings.BasicAuthenticationUserIds.Contains(user.UniqueId)) {
-                        settings.BasicAuthenticationUserIds.Add(user.UniqueId);
-                    }
-                    settings.ConvertedUser = true;
-                    modified = true;
-                }
-            }
-
-            return modified;
-        }
-
-        /// <summary>
         /// See interface docs.
         /// </summary>
         /// <param name="configuration"></param>
         public void Save(Configuration configuration)
         {
-            using(_FileProtectionSpinLock.AcquireLock()) {
-                if(!Directory.Exists(Provider.Folder)) Directory.CreateDirectory(Provider.Folder);
+            lock(_FileAccessLock) {
+                _FileSystem.CreateDirectoryIfNotExists(Folder);
 
                 Configuration currentConfiguration = null;
                 var ignoreLoadException = configuration.DataVersion == 0;       // i.e. it's a brand new configuration
@@ -327,8 +269,7 @@ namespace VirtualRadar.Library.Settings
                 ++configuration.DataVersion;
 
                 using(StreamWriter stream = new StreamWriter(FileName, false, Encoding.UTF8)) {
-                    var serialiser = Factory.Resolve<IXmlSerialiser>();
-                    serialiser.Serialise(configuration, stream);
+                    _XmlSerialiser.Serialise(configuration, stream);
                 }
             }
 
@@ -341,16 +282,14 @@ namespace VirtualRadar.Library.Settings
         private void BackupOldSettings()
         {
             if(File.Exists(FileName)) {
-                var folder = Path.Combine(Provider.Folder, "ConfigBackups");
-                if(!Directory.Exists(folder)) {
-                    Directory.CreateDirectory(folder);
-                }
+                var folder = Path.Combine(Folder, "ConfigBackups");
+                _FileSystem.CreateDirectoryIfNotExists(folder);
 
                 var fileInfo = new FileInfo(FileName);
 
                 var backupFileName = Path.Combine(folder, String.Format("Configuration-{0:yyyy}-{0:MM}-{0:dd}-{0:HH}-{0:mm}-{0:ss}.xml", fileInfo.LastWriteTimeUtc));
-                if(!File.Exists(backupFileName)) {
-                    File.Copy(FileName, backupFileName, overwrite: false);
+                if(!_FileSystem.FileExists(backupFileName)) {
+                    _FileSystem.CopyFile(FileName, backupFileName, overwrite: false);
                 }
             }
         }

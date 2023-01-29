@@ -8,64 +8,46 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using InterfaceFactory;
-
 namespace VirtualRadar.Interface
 {
     /// <summary>
     /// The interface for objects that can manage log files for us.
     /// </summary>
-    /// <remarks>
-    /// You should only use the Singleton version of this object to write to the program log. Using your own
-    /// instance will work but it will not be thread-safe whereas the Singleton log is guaranteed to be thread-safe.
-    /// </remarks>
-    /// <example>
-    /// <code>
-    /// ILog log = Factory.Resolve&lt;ILog&gt;().Singleton;
-    /// log.WriteLine("This will be written to the program log");
-    /// </code>
-    /// </example>
-    [Singleton]
     public interface ILog
     {
-        /// <summary>
-        /// Gets or sets the provider that abstracts away the environment for the tests.
-        /// </summary>
-        ILogProvider Provider { get; set; }
-
         /// <summary>
         /// Gets the full path and filename of the log file.
         /// </summary>
         string FileName { get; }
 
         /// <summary>
-        /// Writes a line of text to the log file.
+        /// Writes a line of text to the log.
         /// </summary>
         /// <param name="message"></param>
         void WriteLine(string message);
 
         /// <summary>
-        /// Writes a line of text to the log file.
+        /// Asynchronously writes a line of text to the log. Note that these may appear out of call order
+        /// in the log.
         /// </summary>
-        /// <param name="format"></param>
-        /// <param name="args"></param>
-        void WriteLine(string format, params object[] args);
-
-        /// <summary>
-        /// Truncates the log file to the last nn kilobytes.
-        /// </summary>
-        /// <param name="kbLength">The number of kilobytes to preserve at the end of the file.</param>
-        void Truncate(int kbLength);
-
-        /// <summary>
-        /// Returns the content of the log as an array of lines, optionally truncated to the last so-many lines.
-        /// </summary>
-        /// <param name="lines">The number of tail lines to return or 0 to return all of them.</param>
+        /// <param name="message"></param>
         /// <returns></returns>
-        string[] GetContent(int lines);
+        Task WriteLineAsync(string message);
+
+        /// <summary>
+        /// Immediately flushes the log to disk, blocking until it has been flushed.
+        /// </summary>
+        void Flush();
+
+        /// <summary>
+        /// Asynchronously flushes the log to disk.
+        /// </summary>
+        Task FlushAsync();
+
+        /// <summary>
+        /// Returns clones of the messages held by the log. Changing the clones will not affect the log.
+        /// </summary>
+        /// <returns></returns>
+        IReadOnlyList<LogMessage> GetContent();
     }
 }

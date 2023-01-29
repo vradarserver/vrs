@@ -8,12 +8,6 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VirtualRadar.Interface;
 
 namespace VirtualRadar.Library
@@ -23,44 +17,34 @@ namespace VirtualRadar.Library
     /// </summary>
     class FileSystemProvider : IFileSystemProvider
     {
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public bool DirectoryExists(string path)
-        {
-            return Directory.Exists(path);
-        }
+        public string LocalAppDataFolder => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        public bool FileExists(string fileName)
-        {
-            return File.Exists(fileName);
-        }
+        public void CopyFile(string sourceFileName, string destFileName, bool overwrite) => File.Copy(sourceFileName, destFileName, overwrite);
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        public byte[] FileReadAllBytes(string fileName)
-        {
-            return File.ReadAllBytes(fileName);
-        }
+        public bool CreateDirectoryIfNotExists(string path) => !DirectoryExists(path) && Directory.CreateDirectory(path) != null;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        public long FileSize(string fileName)
-        {
-            return new FileInfo(fileName).Length;
-        }
+        public void DeleteFile(string fileName) => File.Delete(fileName);
+
+        public bool DirectoryExists(string path) => Directory.Exists(path);
+
+        public bool FileExists(string fileName) => File.Exists(fileName);
+
+        public long FileSize(string fileName) => new FileInfo(fileName).Length;
+
+        public byte[] ReadAllBytes(string fileName) => File.ReadAllBytes(fileName);
+
+        public Task<byte[]> ReadAllBytesAsync(string fileName, CancellationToken cancellationToken = default) => File.ReadAllBytesAsync(fileName, cancellationToken);
+
+        public string[] ReadAllLines(string fileName) => File.ReadAllLines(fileName);
+
+        public Task<string[]> ReadAllLinesAsync(string fileName, CancellationToken cancellationToken) => File.ReadAllLinesAsync(fileName, cancellationToken);
+
+        public void WriteAllBytes(string fileName, byte[] bytes) => File.WriteAllBytes(fileName, bytes);
+
+        public Task WriteAllBytesAsync(string fileName, byte[] bytes, CancellationToken cancellationToken = default) => File.WriteAllBytesAsync(fileName, bytes, cancellationToken);
+
+        public void WriteAllLines(string fileName, IEnumerable<string> contents) => File.WriteAllLines(fileName, contents);
+
+        public Task WriteAllLinesAsync(string fileName, IEnumerable<string> contents, CancellationToken cancellationToken = default) => File.WriteAllLinesAsync(fileName, contents, cancellationToken);
     }
 }

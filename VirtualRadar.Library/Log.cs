@@ -1,4 +1,4 @@
-﻿// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2023 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -8,107 +8,86 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
-using System.IO;
-using InterfaceFactory;
-using System.Threading;
 
 namespace VirtualRadar.Library
 {
     /// <summary>
-    /// Default implementation of <see cref="ILog"/>.
+    /// Default implementation of <see cref="ILog"/> singleton.
     /// </summary>
     class Log : ILog
     {
-        /// <summary>
-        /// Default implementation of <see cref="ILogProvider"/>.
-        /// </summary>
-        class DefaultProvider : ILogProvider
-        {
-            public int CurrentThreadId                              { get { return Thread.CurrentThread.ManagedThreadId; } }
-            public bool FileExists(string fullPath)                 { return File.Exists(fullPath); }
-            public bool FolderExists(string folder)                 { return Directory.Exists(folder); }
-            public void CreateFolder(string folder)                 { Directory.CreateDirectory(folder); }
-            public void AppendAllText(string fullPath, string text) { File.AppendAllText(fullPath, text); }
+        const int MaxAllowableMessagesInFile = 1000;      // Maximum number of messages to keep in the log file
 
-            public void TruncateTo(string fullPath, int bytes)
-            {
-                using(var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read | FileAccess.Write)) {
-                    if(stream.Length > bytes) {
-                        byte[] buffer = new byte[bytes];
-                        stream.Seek(-bytes, SeekOrigin.End);
-                        int bytesRead = stream.Read(buffer, 0, buffer.Length);
-                        stream.Seek(0, SeekOrigin.Begin);
-                        stream.Write(buffer, 0, bytesRead);
-                        stream.SetLength(bytesRead);
-                    }
-                }
-            }
+        // DI services
+        private readonly IClock _Clock;
+        private readonly IConfigurationStorage _ConfigurationStorage;
+        private readonly IFileSystemProvider _FileSystem;
+        private readonly IThreadingEnvironmentProvider _ThreadingEnvironment;
 
-            public string[] GetTail(string fullPath, int lines)
-            {
-                var result = File.ReadAllLines(fullPath);
-                if(lines > 0) {
-                    var skipLines = Math.Max(0, result.Length - lines);
-                    result = result.Skip(skipLines).Take(lines).ToArray();
-                }
+        // Locking
+        private readonly object _SyncLock = new();
 
-                return result;
-            }
-        }
+        // File content - this gets loaded when the first message is written and then appended
+        // to. Lines are removed from the start once we go past the limit on allowable number
+        // of lines in the file. Some external mechanism will periodically call Flush to write
+        // the lines back to disk.
+        private readonly LinkedList<LogMessage> _Content = new();
+        private long _NextInstanceId;
+        private bool _ContentLoaded;
+        private bool _ContentNeedsFlushing;
 
         /// <summary>
-        /// The object that all threads and instances use to prevent concurrent updates.
+        /// The folder where we store the log file.
         /// </summary>
-        private static object _SyncLock = new object();
-
-        /// <summary>
-        /// The object that manages the clock for us.
-        /// </summary>
-        private IClock _Clock;
-
-        /// <summary>
-        /// Gets the folder that <see cref="FileName"/> was based on.
-        /// </summary>
-        private string _Folder;
+        private string Folder => _ConfigurationStorage.Folder;
 
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public ILogProvider Provider { get; set; }
-
-        private string _FileName;
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public string FileName
-        {
-            get         { Initialise(); return _FileName; }
-            private set { _FileName = value; }
-        }
+        public string FileName => Path.Combine(Folder, "VirtualRadarLog.txt");
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public Log()
+        /// <param name="clock"></param>
+        /// <param name="configurationStorage"></param>
+        /// <param name="fileSystem"></param>
+        /// <param name="threadingEnvironment"></param>
+        public Log(IClock clock, IConfigurationStorage configurationStorage, IFileSystemProvider fileSystem, IThreadingEnvironmentProvider threadingEnvironment)
         {
-            Provider = new DefaultProvider();
-            _Clock = Factory.Resolve<IClock>();
+            _Clock = clock;
+            _ConfigurationStorage = configurationStorage;
+            _FileSystem = fileSystem;
+            _ThreadingEnvironment = threadingEnvironment;
         }
 
         /// <summary>
-        /// Determines the folder and filename.
+        /// See interface docs.
         /// </summary>
-        private void Initialise()
+        /// <param name="message"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteLine(string message)
         {
-            if(_Folder == null) {
-                _Folder = Factory.ResolveSingleton<IConfigurationStorage>().Folder;
-                FileName = Path.Combine(_Folder, "VirtualRadarLog.txt");
+            if(!String.IsNullOrWhiteSpace(message)) {
+                lock(_SyncLock) {
+                    ReadLogFileContent();
+
+                    var utcNow = _Clock.UtcNow;
+                    var threadId = _ThreadingEnvironment.CurrentThreadId;
+
+                    if(_Content.Last()?.Text == message) {
+                        _Content.Last().AddInstance(utcNow, threadId);
+                    } else {
+                        _Content.AddLast(new LogMessage(_NextInstanceId++, message, utcNow, threadId));
+                        while(_Content.Count > MaxAllowableMessagesInFile) {
+                            _Content.RemoveFirst();
+                        }
+                    }
+
+                    _ContentNeedsFlushing = true;
+                }
             }
         }
 
@@ -116,17 +95,25 @@ namespace VirtualRadar.Library
         /// See interface docs.
         /// </summary>
         /// <param name="message"></param>
-        public void WriteLine(string message)
-        {
-            Initialise();
+        /// <returns></returns>
+        public async Task WriteLineAsync(string message) => await Task.Run(() => WriteLine(message));
 
-            if(message != null) {
-                lock(_SyncLock) {
-                    if(!Provider.FolderExists(_Folder)) Provider.CreateFolder(_Folder);
-                    Provider.AppendAllText(FileName, String.Format("[{0:yyyy-MM-dd HH:mm:ss.fff} UTC] [t{1}] {2}\r\n",
-                            _Clock.UtcNow,
-                            Provider.CurrentThreadId,
-                            message));
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
+        public void Flush()
+        {
+            lock(_SyncLock) {
+                if(_ContentNeedsFlushing) {
+                    var lines = _Content
+                        .SelectMany(logMessage => logMessage.Text.Split(Environment.NewLine, StringSplitOptions.None))
+                        .ToArray(); // <-- for debugging
+
+                    _FileSystem.CreateDirectoryIfNotExists(Folder);
+                    _FileSystem.WriteAllLines(FileName, lines);
+
+                    _ContentNeedsFlushing = false;
                 }
             }
         }
@@ -134,43 +121,42 @@ namespace VirtualRadar.Library
         /// <summary>
         /// See interface docs.
         /// </summary>
-        /// <param name="format"></param>
-        /// <param name="args"></param>
-        public void WriteLine(string format, params object[] args)
-        {
-            WriteLine(String.Format(format, args));
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="kbLength"></param>
-        public void Truncate(int kbLength)
-        {
-            if(kbLength < 0) throw new ArgumentOutOfRangeException("kbLength");
-            Initialise();
-
-            var length = kbLength * 1024;
-
-            lock(_SyncLock) {
-                if(Provider.FileExists(FileName)) Provider.TruncateTo(FileName, length);
-            }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="lines"></param>
         /// <returns></returns>
-        public string[] GetContent(int lines)
+        public async Task FlushAsync() => await Task.Run(() => Flush());
+
+        /// <summary>
+        /// See interface docs.
+        /// </summary>
+        /// <returns></returns>
+        public IReadOnlyList<LogMessage> GetContent()
         {
-            string[] result = null;
-
             lock(_SyncLock) {
-                if(Provider.FileExists(FileName)) result = Provider.GetTail(FileName, lines);
+                ReadLogFileContent();
+                return _Content
+                    .Select(r => LogMessage.Clone(r))
+                    .ToArray();
             }
+        }
 
-            return result ?? new string[0];
+        /// <summary>
+        /// Loads the log file content if it's not already loaded. Always call from within a lock.
+        /// </summary>
+        private void ReadLogFileContent()
+        {
+            if(!_ContentLoaded) {
+                if(_FileSystem.FileExists(FileName)) {
+                    LogMessage currentLogLine = null;
+                    foreach(var line in _FileSystem.ReadAllLines(FileName)) {
+                        if(currentLogLine != null && LogMessage.FollowOnLineRegex.IsMatch(line)) {
+                            currentLogLine.AppendLine(line);
+                        } else {
+                            currentLogLine = new(_NextInstanceId++, line);
+                            _Content.AddLast(currentLogLine);
+                        }
+                    }
+                }
+                _ContentLoaded = true;
+            }
         }
     }
 }

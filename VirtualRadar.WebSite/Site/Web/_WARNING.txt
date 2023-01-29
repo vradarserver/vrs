@@ -1,4 +1,0 @@
-﻿Only change these files if you have copied them to another folder and installed the custom content plugin.
-
-If you change the original versions of these files then Virtual Radar Server will not serve them. You will
-have to reinstall Virtual Radar Server before you can get get a working site back.

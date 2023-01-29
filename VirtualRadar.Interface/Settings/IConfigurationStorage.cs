@@ -1,4 +1,4 @@
-// Copyright © 2010 onwards, Andrew Whewell
+// Copyright ï¿½ 2010 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,48 +11,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using InterfaceFactory;
 
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
     /// The interface for objects that can load and save <see cref="Configuration"/> objects.
     /// </summary>
-    /// <example>
-    /// To read all of the application settings in one go:
-    /// <code>
-    /// IConfigurationStorage storage = Factory.Resolve&lt;IConfigurationStorage&gt;().Singleton;
-    /// Configuration configuration = storage.Load();
-    /// </code>
-    /// To change a setting, save it and automatically raise <see cref="ConfigurationChanged"/>:
-    /// <code>
-    /// IConfigurationStorage storage = Factory.Resolve&lt;IConfigurationStorage&gt;().Singleton;
-    /// Configuration configuration = storage.Load();
-    /// configuration.AudioSettings.Enabled = false;
-    /// storage.Save(configuration);
-    /// </code>
-    /// And to have an event handler that is raised whenever something changes the configuration:
-    /// <code>
-    /// private void SetupMyObject()
-    /// {
-    ///     IConfigurationStorage storage = Factory.Resolve&lt;IConfigurationStorage&gt;().Singleton;
-    ///     storage.ConfigurationChanged += ConfigurationStorage_ConfigurationChanged;
-    /// }
-    /// 
-    /// private void ConfigurationStorage_ConfigurationChanged(object sender, EventArgs args)
-    /// {
-    ///     // reload and apply new configuration here
-    /// }
-    /// </code>
-    /// </example>
-    [Singleton]
     public interface IConfigurationStorage
     {
-        /// <summary>
-        /// Gets or sets a value that abstracts away the environment for testing purposes.
-        /// </summary>
-        IConfigurationStorageProvider Provider { get; set; }
-
         /// <summary>
         /// Gets or sets the folder the contains the configuration and log files.
         /// </summary>

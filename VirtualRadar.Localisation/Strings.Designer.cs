@@ -459,15 +459,6 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Treat DF18 CF1 identifiers as ICAO.
-        /// </summary>
-        public static string AssumeDF18CF1IsIcao {
-            get {
-                return ResourceManager.GetString("AssumeDF18CF1IsIcao", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Audio.
         /// </summary>
         public static string Audio {
@@ -666,7 +657,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot communicate with Microsoft Flight Simulator.
+        ///   Looks up a localized string similar to Cannot communicate with Flight Simulator X.
         /// </summary>
         public static string CannotCommunicateWithFlightSimulatorX {
             get {
@@ -1093,20 +1084,11 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect to Flight Simulator.
+        ///   Looks up a localized string similar to Connect to Flight Simulator X.
         /// </summary>
         public static string ConnectToFlightSimulatorX {
             get {
                 return ResourceManager.GetString("ConnectToFlightSimulatorX", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Connect to XPlane.
-        /// </summary>
-        public static string ConnectToXPlane {
-            get {
-                return ResourceManager.GetString("ConnectToXPlane", resourceCulture);
             }
         }
         
@@ -1849,7 +1831,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Microsoft Flight Simulator is not installed (cannot load SimConnect).
+        ///   Looks up a localized string similar to Flight Simulator X is not installed (cannot load SimConnect).
         /// </summary>
         public static string FlightSimulatorXIsNotInstalled {
             get {
@@ -1858,7 +1840,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Flight Simulator receiver.
+        ///   Looks up a localized string similar to Flight Simulator X receiver.
         /// </summary>
         public static string FlightSimulatorXReceiverId {
             get {
@@ -1867,7 +1849,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please specify the receiver that the MSFS ride-along feature will use.
+        ///   Looks up a localized string similar to Please specify the receiver that the FSX ride-along feature will use.
         /// </summary>
         public static string FlightSimulatorXReceiverRequired {
             get {
@@ -1876,7 +1858,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disconnected due to Microsoft Flight Simulator exiting.
+        ///   Looks up a localized string similar to Disconnected due to Flight Simulator X exiting.
         /// </summary>
         public static string FlightSimulatorXShutdown {
             get {
@@ -2416,7 +2398,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Flight Simulator Only.
+        ///   Looks up a localized string similar to Flight Simulator X Only.
         /// </summary>
         public static string JustFlightSimulatorX {
             get {
@@ -2871,7 +2853,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Microsoft Flight &amp;Simulator Mode....
+        ///   Looks up a localized string similar to Flight &amp;Simulator X Mode....
         /// </summary>
         public static string menuFlightSimulatorXMode {
             get {
@@ -2993,15 +2975,6 @@ namespace VirtualRadar.Localisation {
         public static string menuUsers {
             get {
                 return ResourceManager.GetString("menuUsers", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to XPlane Mode....
-        /// </summary>
-        public static string menuXPlaneMode {
-            get {
-                return ResourceManager.GetString("menuXPlaneMode", resourceCulture);
             }
         }
         
@@ -3753,7 +3726,7 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The receiver that will be used by the Flight Simulator &quot;ride-along&quot; feature..
+        ///   Looks up a localized string similar to The receiver that will be used by the Flight Simulator X &quot;ride-along&quot; feature..
         /// </summary>
         public static string OptionsDescribeFlightSimulatorXReceiverId {
             get {
@@ -4082,15 +4055,6 @@ namespace VirtualRadar.Localisation {
         public static string OptionsDescribeRawFeedAirborneGlobalPositionLimit {
             get {
                 return ResourceManager.GetString("OptionsDescribeRawFeedAirborneGlobalPositionLimit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to CF1 indicates that a ground vehicle is transmitting a non-standard ID instead of an ICAO ID. Some ground vehicles send CF1 even when they are using a real ICAO address. This option lets VRS track such vehicles at the expense of possibly mixing non-standard addresses in with valid ICAO..
-        /// </summary>
-        public static string OptionsDescribeRawFeedAssumeDF18CF1IsIcao {
-            get {
-                return ResourceManager.GetString("OptionsDescribeRawFeedAssumeDF18CF1IsIcao", resourceCulture);
             }
         }
         
@@ -5814,15 +5778,6 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reply port.
-        /// </summary>
-        public static string ReplyPort {
-            get {
-                return ResourceManager.GetString("ReplyPort", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Requests.
         /// </summary>
         public static string Requests {
@@ -7534,24 +7489,6 @@ namespace VirtualRadar.Localisation {
         public static string Wizard {
             get {
                 return ResourceManager.GetString("Wizard", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to XPlane host.
-        /// </summary>
-        public static string XPlaneHost {
-            get {
-                return ResourceManager.GetString("XPlaneHost", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to XPlane port.
-        /// </summary>
-        public static string XPlanePort {
-            get {
-                return ResourceManager.GetString("XPlanePort", resourceCulture);
             }
         }
         

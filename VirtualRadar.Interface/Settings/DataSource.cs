@@ -8,11 +8,6 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
@@ -56,7 +51,11 @@ namespace VirtualRadar.Interface.Settings
         /// </summary>
         public static readonly string AirnavXRange = "AirnavXRange";
 
-        static string[] _AllInternalDataSources = new string[] {
+        /// <summary>
+        /// Gets an array of all internal data sources. This is not used by the server, it's just to
+        /// make life easier for the unit tests.
+        /// </summary>
+        public static IReadOnlyList<string> AllInternalDataSources = new string[] {
             DataSource.Port30003,
             DataSource.Sbs3,
             DataSource.Beast,
@@ -65,13 +64,5 @@ namespace VirtualRadar.Interface.Settings
             DataSource.PlaneFinder,
             DataSource.AirnavXRange,
         };
-        /// <summary>
-        /// Gets an array of all internal data sources. This is not used by the server, it's just to
-        /// make life easier for the unit tests.
-        /// </summary>
-        public static string[] AllInternalDataSources
-        {
-            get { return _AllInternalDataSources; }
-        }
     }
 }

@@ -8,9 +8,6 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
@@ -30,49 +27,34 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public EventHelperException()
-        {
-            Initialise();
-        }
+        public EventHelperException() => Initialise();
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="message"></param>
-        public EventHelperException(string message) : base(message)
-        {
-            Initialise();
-        }
+        public EventHelperException(string message) : base(message) => Initialise();
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="message"></param>
         /// <param name="inner"></param>
-        public EventHelperException(string message, Exception inner) : base(message, inner)
-        {
-            Initialise();
-        }
+        public EventHelperException(string message, Exception inner) : base(message, inner) => Initialise();
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected EventHelperException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-            Initialise();
-        }
+        protected EventHelperException(SerializationInfo info, StreamingContext context) : base(info, context) => Initialise();
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="message"></param>
         /// <param name="handlerExceptions"></param>
-        public EventHelperException(string message, IEnumerable<Exception> handlerExceptions) : base(message)
-        {
-            Initialise(handlerExceptions);
-        }
+        public EventHelperException(string message, IEnumerable<Exception> handlerExceptions) : base(message) => Initialise(handlerExceptions);
 
         /// <summary>
         /// Initialises the exception's properties.
@@ -80,7 +62,9 @@ namespace VirtualRadar.Interface
         /// <param name="exceptions"></param>
         private void Initialise(IEnumerable<Exception> exceptions = null)
         {
-            HandlerExceptions = exceptions == null ? new Exception[0] : exceptions.ToArray();
+            HandlerExceptions = exceptions == null
+                ? Array.Empty<Exception>()
+                : exceptions.ToArray();
         }
 
         /// <summary>
@@ -91,7 +75,7 @@ namespace VirtualRadar.Interface
         {
             var result = new StringBuilder(base.ToString());
             for(var i = 0;i < HandlerExceptions.Length;++i) {
-                result.AppendLine(String.Format("--- Exception {0} ----------------------", i + 1));
+                result.AppendLine($"--- Exception {i + 1} ----------------------");
                 result.AppendLine(HandlerExceptions[i].ToString());
             }
 

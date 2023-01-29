@@ -8,19 +8,13 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using InterfaceFactory;
-using VirtualRadar.Interface.View;
+using VirtualRadar.Interface.Validation;
 
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
     /// The interface for the object that manages lists of users.
     /// </summary>
-    [Singleton]
     public interface IUserManager
     {
         /// <summary>
@@ -100,29 +94,20 @@ namespace VirtualRadar.Interface.Settings
         /// the changing of the password, then return an appropriate validation message. However the UI should have
         /// taken care not to let such modifications get this far.
         /// </remarks>
-        void ValidateUser(List<ValidationResult> results, IUser record, IUser currentRecord, IList<IUser> allRecords);
+        void ValidateUser(IList<ValidationResult> results, IUser record, IUser currentRecord, IList<IUser> allRecords);
 
         /// <summary>
         /// Creates a new user. If <see cref="CanCreateUsers"/> is false then this should throw an exception when called.
-        /// The user manager is expected to modify the record passed in to set IsPersisted to true and to fill in the unique ID.
         /// </summary>
-        /// <param name="user"></param>
-        void CreateUser(IUser user);
+        IUser NewUser();
 
         /// <summary>
-        /// Creates a new user. If <see cref="CanCreateUsersWithHash"/> is false then this should throw an exception when called.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="passwordHash"></param>
-        void CreateUserWithHash(IUser user, Hash passwordHash);
-
-        /// <summary>
-        /// Edits an existing user. Throw an exception if the change is not permitted, otherwise modify the backing store to
+        /// Creates or updates a user. Throw an exception if the change is not permitted, otherwise modify the backing store to
         /// reflect the change in details for the user with the appropriate UniqueID.
         /// </summary>
         /// <param name="user"></param>
         /// <param name="newPassword">This will be null if the password is to remain unchanged, otherwise it is the new password.</param>
-        void UpdateUser(IUser user, string newPassword);
+        void SaveUser(IUser user, string newPassword);
 
         /// <summary>
         /// Delete the user passed across. Throw an exception if the deletion is not permitted, otherwise remove the user

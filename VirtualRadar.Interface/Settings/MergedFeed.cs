@@ -8,54 +8,28 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.ComponentModel;
-using System.Linq.Expressions;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using VirtualRadar.Interface.PortableBinding;
-
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
     /// The configuration settings for a merged feed.
     /// </summary>
-    public class MergedFeed : INotifyPropertyChanged
+    public class MergedFeed
     {
-        private bool _Enabled;
         /// <summary>
         /// Gets or sets a value indicating that the merged feed is to be used.
         /// </summary>
-        public bool Enabled
-        {
-            get { return _Enabled; }
-            set { SetField(ref _Enabled, value, nameof(Enabled)); }
-        }
+        public bool Enabled { get; set; } = true;
 
-        private int _UniqueId;
         /// <summary>
         /// Gets or sets the unique identifier of the merged feed. This value is unique across <see cref="MergedFeed"/> and <see cref="Receiver"/> records. It cannot be zero.
         /// </summary>
-        public int UniqueId
-        {
-            get { return _UniqueId; }
-            set { SetField(ref _UniqueId, value, nameof(UniqueId)); }
-        }
+        public int UniqueId { get; set; }
 
-        private string _Name;
         /// <summary>
         /// Gets or sets the name that the merged feed will be known by.
         /// </summary>
-        public string Name
-        {
-            get { return _Name; }
-            set { SetField(ref _Name, value, nameof(Name)); }
-        }
+        public string Name { get; set; } = "";
 
-        private NotifyList<int> _ReceiverIds = new NotifyList<int>();
         /// <summary>
         /// Gets a list of the IDs for the receivers that are going to be merged into this feed.
         /// </summary>
@@ -73,12 +47,8 @@ namespace VirtualRadar.Interface.Settings
         /// </para><para>
         /// Always use ReceiverIds when building the list of receivers to merge together.
         /// </para></remarks>
-        public NotifyList<int> ReceiverIds
-        {
-            get { return _ReceiverIds; }
-        }
+        public IList<int> ReceiverIds { get; } = new List<int>();
 
-        private NotifyList<MergedFeedReceiver> _ReceiverFlags = new NotifyList<MergedFeedReceiver>();
         /// <summary>
         /// Gets a list of settings stored against each receiver that is merged into this feed.
         /// </summary>
@@ -89,101 +59,21 @@ namespace VirtualRadar.Interface.Settings
         /// it only carries extra information that could not be held by <see cref="ReceiverIds"/> without
         /// breaking backwards compatibility.
         /// </remarks>
-        public NotifyList<MergedFeedReceiver> ReceiverFlags
-        {
-            get { return _ReceiverFlags; }
-        }
+        public IList<MergedFeedReceiver> ReceiverFlags { get; } = new List<MergedFeedReceiver>();
 
-        private int _IcaoTimeout;
         /// <summary>
         /// Gets or sets the number of milliseconds that any given receiver will be considered to be the only source of messages for an ICAO.
         /// </summary>
-        public int IcaoTimeout
-        {
-            get { return _IcaoTimeout; }
-            set { SetField(ref _IcaoTimeout, value, nameof(IcaoTimeout)); }
-        }
+        public int IcaoTimeout { get; set; } = 3000;
 
-        private bool _IgnoreAircraftWithNoPosition;
         /// <summary>
         /// Gets or sets a value indicating that aircraft are ignored until they report a position that isn't 0/0.
         /// </summary>
-        public bool IgnoreAircraftWithNoPosition
-        {
-            get { return _IgnoreAircraftWithNoPosition; }
-            set { SetField(ref _IgnoreAircraftWithNoPosition, value, nameof(IgnoreAircraftWithNoPosition)); }
-        }
+        public bool IgnoreAircraftWithNoPosition { get; set; }
 
-        private ReceiverUsage _ReceiverUsage;
         /// <summary>
         /// Gets or sets a value indicating how the merged feed is going to be used by the system.
         /// </summary>
-        public ReceiverUsage ReceiverUsage
-        {
-            get { return _ReceiverUsage; }
-            set { SetField(ref _ReceiverUsage, value, nameof(ReceiverUsage)); }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Raises <see cref="PropertyChanged"/>.
-        /// </summary>
-        /// <param name="args"></param>
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
-        {
-            var handler = PropertyChanged;
-            if(handler != null) {
-                handler(this, args);
-            }
-        }
-
-        /// <summary>
-        /// Sets the field's value and raises <see cref="PropertyChanged"/>, but only when the value has changed.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="field"></param>
-        /// <param name="value"></param>
-        /// <param name="fieldName"></param>
-        /// <returns>True if the value was set because it had changed, false if the value did not change and the event was not raised.</returns>
-        protected bool SetField<T>(ref T field, T value, string fieldName)
-        {
-            var result = !EqualityComparer<T>.Default.Equals(field, value);
-            if(result) {
-                field = value;
-                OnPropertyChanged(new PropertyChangedEventArgs(fieldName));
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public MergedFeed()
-        {
-            Enabled = true;
-            IcaoTimeout = 3000;
-
-            _ReceiverIds.ListChanged += ReceiverIds_ListChanged;
-            _ReceiverFlags.ListChanged += ReceiverFlags_ListChanged;
-        }
-
-        private void ReceiverIds_ListChanged(object sender, ListChangedEventArgs args)
-        {
-            if(args.ListChangedType != ListChangedType.ItemChanged) {
-                OnPropertyChanged(new PropertyChangedEventArgs(nameof(ReceiverIds)));
-            }
-        }
-
-        private void ReceiverFlags_ListChanged(object sender, ListChangedEventArgs args)
-        {
-            if(args.ListChangedType != ListChangedType.ItemChanged) {
-                OnPropertyChanged(new PropertyChangedEventArgs(nameof(ReceiverFlags)));
-            }
-        }
+        public ReceiverUsage ReceiverUsage { get; set; } = ReceiverUsage.Normal;
     }
 }

@@ -8,11 +8,7 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace VirtualRadar.Interface
 {
@@ -57,7 +53,7 @@ namespace VirtualRadar.Interface
         /// <param name="other"></param>
         /// <param name="orderMustMatch"></param>
         /// <returns></returns>
-        public static bool HasSameContentAs(this IList list, IList other, bool orderMustMatch)
+        public static bool HasSameContentAs<T>(this IList<T> list, IList<T> other, bool orderMustMatch)
         {
             var result = Object.ReferenceEquals(list, other);
             if(!result) {
@@ -69,7 +65,7 @@ namespace VirtualRadar.Interface
                             if(!result) break;
                         }
                     } else {
-                        var unmatched = new LinkedList<object>();
+                        var unmatched = new LinkedList<T>();
                         foreach(var item in other) {
                             unmatched.AddLast(item);
                         }

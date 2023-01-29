@@ -8,16 +8,6 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.IO.Ports;
-using System.Linq.Expressions;
-using System.Runtime.Serialization;
-using System.Text;
-using InterfaceFactory;
-
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
@@ -29,7 +19,7 @@ namespace VirtualRadar.Interface.Settings
     /// to something that doesn't imply that it's only talking about BaseStation connections but the name
     /// has been serialised into the configuration files and it's not worth the pain of changing it.
     /// </remarks>
-    public class BaseStationSettings : INotifyPropertyChanged
+    public class BaseStationSettings
     {
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.
@@ -83,19 +73,19 @@ namespace VirtualRadar.Interface.Settings
         /// No longer used. Not marked as obsolete as that prevents serialisation.
         /// </summary>
         // Obsolete (we can't use the attribute)
-        public StopBits StopBits { get; set; }
+        public string StopBits { get; set; }
 
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.
         /// </summary>
         // Obsolete (we can't use the attribute)
-        public Parity Parity { get; set; }
+        public string Parity { get; set; }
 
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.
         /// </summary>
         // Obsolete (we can't use the attribute)
-        public Handshake Handshake { get; set; }
+        public string Handshake { get; set; }
 
         /// <summary>
         /// No longer used. Not marked as obsolete as that prevents serialisation.
@@ -109,105 +99,65 @@ namespace VirtualRadar.Interface.Settings
         // Obsolete (we can't use the attribute)
         public string ShutdownText { get; set; }
 
-        private string _DatabaseFileName;
         /// <summary>
         /// Gets or sets the full path to the BaseStation database file to use.
         /// </summary>
-        public string DatabaseFileName
-        {
-            get { return _DatabaseFileName; }
-            set { SetField(ref _DatabaseFileName, value, nameof(DatabaseFileName)); }
-        }
+        public string DatabaseFileName { get; set; } = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+            "Kinetic",
+            "BaseStation",
+            "BaseStation.sqb"
+        );
 
-        private string _OperatorFlagsFolder;
         /// <summary>
         /// Gets or sets the folder that holds operator logo images to display to the user.
         /// </summary>
-        public string OperatorFlagsFolder
-        {
-            get { return _OperatorFlagsFolder; }
-            set { SetField(ref _OperatorFlagsFolder, value, nameof(OperatorFlagsFolder)); }
-        }
+        public string OperatorFlagsFolder { get; set; } = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+            "Kinetic",
+            "BaseStation",
+            "OperatorFlags"
+        );
 
-        private string _SilhouettesFolder;
         /// <summary>
         /// Gets or sets the folder that holds aircraft silhouette images to display to the user.
         /// </summary>
-        public string SilhouettesFolder
-        {
-            get { return _SilhouettesFolder; }
-            set { SetField(ref _SilhouettesFolder, value, nameof(SilhouettesFolder)); }
-        }
+        public string SilhouettesFolder { get; set; }
 
-        private string _OutlinesFolder;
         /// <summary>
         /// No longer used.
         /// </summary>
-        public string OutlinesFolder
-        {
-            get { return _OutlinesFolder; }
-            set { SetField(ref _OutlinesFolder, value, nameof(OutlinesFolder)); }
-        }
+        public string OutlinesFolder { get; set; }
 
-        private string _PicturesFolder;
         /// <summary>
         /// Gets or sets the folder that holds pictures of aircraft to display to the user.
         /// </summary>
-        public string PicturesFolder
-        {
-            get { return _PicturesFolder; }
-            set { SetField(ref _PicturesFolder, value, nameof(PicturesFolder)); }
-        }
+        public string PicturesFolder { get; set; }
 
-        private bool _SearchPictureSubFolders;
         /// <summary>
         /// Gets or sets a value indicating that sub-folders of <see cref="PicturesFolder"/> should be searched for aircraft pictures.
         /// </summary>
-        public bool SearchPictureSubFolders
-        {
-            get { return _SearchPictureSubFolders; }
-            set { SetField(ref _SearchPictureSubFolders, value, nameof(SearchPictureSubFolders)); }
-        }
+        public bool SearchPictureSubFolders { get; set; }
 
-        private int _DisplayTimeoutSeconds;
         /// <summary>
         /// Gets or sets the number of seconds that aircraft should remain on display in the browser after their last transmission.
         /// </summary>
-        public int DisplayTimeoutSeconds
-        {
-            get { return _DisplayTimeoutSeconds; }
-            set { SetField(ref _DisplayTimeoutSeconds, value, nameof(DisplayTimeoutSeconds)); }
-        }
+        public int DisplayTimeoutSeconds { get; set; } = 30;
 
-        private int _TrackingTimeoutSeconds;
         /// <summary>
         /// Gets or sets the number of seconds that aircraft should remain in the aircraft list after their last transmission.
         /// </summary>
-        public int TrackingTimeoutSeconds
-        {
-            get { return _TrackingTimeoutSeconds; }
-            set { SetField(ref _TrackingTimeoutSeconds, value, nameof(TrackingTimeoutSeconds)); }
-        }
+        public int TrackingTimeoutSeconds { get; set; } = 600;
 
-        private int _SatcomDisplayTimeoutMinutes;
         /// <summary>
         /// Gets or sets the number of minutes that aircraft on a satellite feed should remain on display after their last transmission.
         /// </summary>
-        public int SatcomDisplayTimeoutMinutes
-        {
-            get { return _SatcomDisplayTimeoutMinutes; }
-            set { SetField(ref _SatcomDisplayTimeoutMinutes, value, nameof(SatcomDisplayTimeoutMinutes)); }
-        }
+        public int SatcomDisplayTimeoutMinutes { get; set; } = 60;
 
-        private int _SatcomTrackingTimeoutMinutes;
         /// <summary>
         /// Gets or sets the number of minutes that aircraft on a satellite feed should remain in the aircraft list after their last transmission.
         /// </summary>
-        public int SatcomTrackingTimeoutMinutes
-        {
-            get { return _SatcomTrackingTimeoutMinutes; }
-            set { SetField(ref _SatcomTrackingTimeoutMinutes, value, nameof(SatcomTrackingTimeoutMinutes)); }
-        }
+        public int SatcomTrackingTimeoutMinutes { get; set; } = 120;
 
         /// <summary>
         /// Gets or sets a value indicating that badly formatted messages on the feed should be ignored rather than triggering a disconnection
@@ -219,113 +169,25 @@ namespace VirtualRadar.Interface.Settings
         /// </remarks>
         public bool IgnoreBadMessages { get; set; }
 
-        private bool _MinimiseToSystemTray;
         /// <summary>
         /// Gets or sets a value indicating that the program should minimise to the system tray rather than the taskbar.
         /// </summary>
-        public bool MinimiseToSystemTray
-        {
-            get { return _MinimiseToSystemTray; }
-            set { SetField(ref _MinimiseToSystemTray, value, nameof(MinimiseToSystemTray)); }
-        }
+        public bool MinimiseToSystemTray { get; set; }
 
-        private int _AutoSavePolarPlotsMinutes;
         /// <summary>
         /// Gets or sets the number of minutes to wait between automatic saves of polar plots.
         /// </summary>
-        public int AutoSavePolarPlotsMinutes
-        {
-            get { return _AutoSavePolarPlotsMinutes; }
-            set { SetField(ref _AutoSavePolarPlotsMinutes, value, nameof(AutoSavePolarPlotsMinutes)); }
-        }
+        public int AutoSavePolarPlotsMinutes { get; set; } = 60;
 
-        private bool _LookupAircraftDetailsOnline;
         /// <summary>
         /// Gets or sets a value indicating that the program should lookup aircraft details online.
         /// </summary>
-        public bool LookupAircraftDetailsOnline
-        {
-            get { return _LookupAircraftDetailsOnline; }
-            set { SetField(ref _LookupAircraftDetailsOnline, value, nameof(LookupAircraftDetailsOnline)); }
-        }
+        public bool LookupAircraftDetailsOnline { get; set; } = true;
 
-        private bool _DownloadGlobalAirPressureReadings;
         /// <summary>
         /// Gets or sets a value indicating that global air pressure readings should be downloaded so that
         /// true altitudes can be calculated for aircraft that report pressure altitudes.
         /// </summary>
-        public bool DownloadGlobalAirPressureReadings
-        {
-            get { return _DownloadGlobalAirPressureReadings; }
-            set { SetField(ref _DownloadGlobalAirPressureReadings, value, nameof(DownloadGlobalAirPressureReadings)); }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Raises <see cref="PropertyChanged"/>.
-        /// </summary>
-        /// <param name="args"></param>
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
-        {
-            var handler = PropertyChanged;
-            if(handler != null) {
-                handler(this, args);
-            }
-        }
-
-        /// <summary>
-        /// Sets the field's value and raises <see cref="PropertyChanged"/>, but only when the value has changed.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="field"></param>
-        /// <param name="value"></param>
-        /// <param name="fieldName"></param>
-        /// <returns>True if the value was set because it had changed, false if the value did not change and the event was not raised.</returns>
-        protected bool SetField<T>(ref T field, T value, string fieldName)
-        {
-            var result = !EqualityComparer<T>.Default.Equals(field, value);
-            if(result) {
-                field = value;
-                OnPropertyChanged(new PropertyChangedEventArgs(fieldName));
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public BaseStationSettings()
-        {
-            var isMono = Factory.ResolveSingleton<IRuntimeEnvironment>().IsMono;
-
-            Address = "127.0.0.1";
-            Port = 30003;
-            IgnoreBadMessages = true;
-
-            BaudRate = 115200;
-            DataBits = 8;
-            StopBits = StopBits.One;
-            Parity = Parity.None;
-            Handshake = Handshake.None;
-            StartupText = "#43-02\\r";
-            ShutdownText = "#43-00\\r";
-
-            DatabaseFileName = isMono ? null : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Kinetic\BaseStation\BaseStation.sqb");
-            OperatorFlagsFolder = isMono ? null : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Kinetic\BaseStation\OperatorFlags");
-            OutlinesFolder = isMono ? null : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Kinetic\BaseStation\Outlines");
-
-            AutoSavePolarPlotsMinutes = 60;
-            DisplayTimeoutSeconds = 30;
-            TrackingTimeoutSeconds = 600;
-            SatcomDisplayTimeoutMinutes = 60;
-            SatcomTrackingTimeoutMinutes = 120;
-            LookupAircraftDetailsOnline = true;
-            DownloadGlobalAirPressureReadings = true;
-        }
+        public bool DownloadGlobalAirPressureReadings { get; set; } = true;
     }
 }

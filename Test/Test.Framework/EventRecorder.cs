@@ -8,12 +8,6 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VirtualRadar.Interface;
-
 namespace Test.Framework
 {
     /// <summary>
@@ -71,13 +65,13 @@ namespace Test.Framework
         /// Gets a list of every sender parameter passed to the event. There will be <see cref="CallCount"/>
         /// entries in the list.
         /// </summary>
-        public List<object> AllSenders { get; private set; }
+        public IList<object> AllSenders { get; } = new List<object>();
 
         /// <summary>
         /// Gets a list of every args parameter passed to the event. There will be <see cref="CallCount"/>
         /// entries in the list.
         /// </summary>
-        public List<T> AllArgs { get; private set; }
+        public IList<T> AllArgs { get; } = new List<T>();
 
         /// <summary>
         /// Raised by <see cref="Handler"/> whenever the event is raised. Can be used to test the state of
@@ -129,19 +123,7 @@ namespace Test.Framework
         /// Raises <see cref="EventRaised"/>.
         /// </summary>
         /// <param name="args"></param>
-        protected virtual void OnEventRaised(T args)
-        {
-            EventHelper.Raise(EventRaised, this, args);
-        }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public EventRecorder()
-        {
-            AllSenders = new List<object>();
-            AllArgs = new List<T>();
-        }
+        protected virtual void OnEventRaised(T args) => EventRaised?.Invoke(this, args);
 
         /// <summary>
         /// An event handler matching the EventHandler and/or EventHandler&lt;&gt; delegate that can be attached

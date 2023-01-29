@@ -8,71 +8,16 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using System.Linq.Expressions;
-
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
     /// Holds the configuration pertaining to the handling of flight routes.
     /// </summary>
-    public class FlightRouteSettings : INotifyPropertyChanged
+    public class FlightRouteSettings
     {
-        private bool _AutoUpdateEnabled;
         /// <summary>
         /// Gets or sets a value indicating that new flight routes should be automatically downloaded.
         /// </summary>
-        public bool AutoUpdateEnabled
-        {
-            get { return _AutoUpdateEnabled; }
-            set { SetField(ref _AutoUpdateEnabled, value, nameof(AutoUpdateEnabled)); }
-        }
-
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Raises <see cref="PropertyChanged"/>.
-        /// </summary>
-        /// <param name="args"></param>
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
-        {
-            var handler = PropertyChanged;
-            if(handler != null) {
-                handler(this, args);
-            }
-        }
-
-        /// <summary>
-        /// Sets the field's value and raises <see cref="PropertyChanged"/>, but only when the value has changed.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="field"></param>
-        /// <param name="value"></param>
-        /// <param name="fieldName"></param>
-        /// <returns>True if the value was set because it had changed, false if the value did not change and the event was not raised.</returns>
-        protected bool SetField<T>(ref T field, T value, string fieldName)
-        {
-            var result = !EqualityComparer<T>.Default.Equals(field, value);
-            if(result) {
-                field = value;
-                OnPropertyChanged(new PropertyChangedEventArgs(fieldName));
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public FlightRouteSettings()
-        {
-            AutoUpdateEnabled = true;
-        }
+        public bool AutoUpdateEnabled { get; set; } = true;
     }
 }

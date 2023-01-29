@@ -8,8 +8,6 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Security.Cryptography;
 
@@ -35,11 +33,10 @@ namespace VirtualRadar.Interface.Settings
         /// </summary>
         public int Version { get; set; }
 
-        private List<byte> _Buffer = new List<byte>();
         /// <summary>
         /// Gets the hash of the password. Callers can set this list to be the full byte sequence of the hash or read the hash from here.
         /// </summary>
-        public List<byte> Buffer { get { return _Buffer; } }
+        public IList<byte> Buffer { get; } = new List<byte>();
 
         /// <summary>
         /// Creates a new object.
@@ -72,8 +69,12 @@ namespace VirtualRadar.Interface.Settings
         /// <param name="password"></param>
         public Hash(int version, string password) : this(version)
         {
-            if(password == null) throw new ArgumentNullException("password");
-            _Buffer.AddRange(HashText(version, password));
+            if(password == null) {
+                throw new ArgumentNullException(nameof(password));
+            }
+            Buffer.AddRange(
+                HashText(version, password)
+            );
         }
 
         /// <summary>
@@ -83,20 +84,12 @@ namespace VirtualRadar.Interface.Settings
         /// <returns></returns>
         public bool PasswordMatches(string password)
         {
-            if(password == null) throw new ArgumentNullException("password");
-
-            List<byte> hashedText = HashText(Version, password);
-            bool result = hashedText.Count == _Buffer.Count;
-            if(result) {
-                for(int i = 0;i < hashedText.Count;++i) {
-                    if(hashedText[i] != _Buffer[i]) {
-                        result = false;
-                        break;
-                    }
-                }
+            if(password == null) {
+                throw new ArgumentNullException(nameof(password));
             }
 
-            return result;
+            return HashText(Version, password)
+                .HasSameContentAs(Buffer, orderMustMatch: true);
         }
 
         /// <summary>
@@ -105,20 +98,18 @@ namespace VirtualRadar.Interface.Settings
         /// <param name="version"></param>
         /// <param name="text"></param>
         /// <returns></returns>
-        private List<byte> HashText(int version, string text)
+        private byte[] HashText(int version, string text)
         {
-            List<byte> result = new List<byte>();
-
             switch(version) {
                 case 1:
-                    SHA256Managed hashAlgorithm = new SHA256Managed();
-                    result.AddRange(hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(text)));
-                    break;
+                    return SHA256
+                        .Create()
+                        .ComputeHash(
+                            Encoding.UTF8.GetBytes(text)
+                        );
                 default:
                     throw new InvalidOperationException($"Unknown hash version {version}");
             }
-
-            return result;
         }
     }
 }

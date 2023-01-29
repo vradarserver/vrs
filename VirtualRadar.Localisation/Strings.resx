@@ -409,7 +409,7 @@ Russian translation by Sergey Serov /sergsero and friends.
     <comment>The aircraft picked up by an ADS-B radio</comment>
   </data>
   <data name="CannotCommunicateWithFlightSimulatorX" xml:space="preserve">
-    <value>Cannot communicate with Microsoft Flight Simulator</value>
+    <value>Cannot communicate with Flight Simulator X</value>
     <comment>"Flight Simulator X" may not need translating</comment>
   </data>
   <data name="Close" xml:space="preserve">
@@ -420,7 +420,7 @@ Russian translation by Sergey Serov /sergsero and friends.
     <value>Connecting</value>
   </data>
   <data name="ConnectToFlightSimulatorX" xml:space="preserve">
-    <value>Connect to Flight Simulator</value>
+    <value>Connect to Flight Simulator X</value>
     <comment>Flight Simulator X is the name of a program, it may not need translating</comment>
   </data>
   <data name="CouldNotConnect" xml:space="preserve">
@@ -433,11 +433,11 @@ Russian translation by Sergey Serov /sergsero and friends.
     <value>Disconnecting</value>
   </data>
   <data name="FlightSimulatorXIsNotInstalled" xml:space="preserve">
-    <value>Microsoft Flight Simulator is not installed (cannot load SimConnect)</value>
+    <value>Flight Simulator X is not installed (cannot load SimConnect)</value>
     <comment>"Flight Simulator X" and "SimConnect" may not need translating</comment>
   </data>
   <data name="FlightSimulatorXShutdown" xml:space="preserve">
-    <value>Disconnected due to Microsoft Flight Simulator exiting</value>
+    <value>Disconnected due to Flight Simulator X exiting</value>
   </data>
   <data name="ReceivedCountMessages" xml:space="preserve">
     <value>Received {0:N0} messages</value>
@@ -538,7 +538,7 @@ Russian translation by Sergey Serov /sergsero and friends.
     <comment>Top-level menu</comment>
   </data>
   <data name="menuFlightSimulatorXMode" xml:space="preserve">
-    <value>Microsoft Flight &amp;Simulator Mode...</value>
+    <value>Flight &amp;Simulator X Mode...</value>
   </data>
   <data name="menuHelp" xml:space="preserve">
     <value>&amp;Help</value>
@@ -1825,13 +1825,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Feed status</value>
   </data>
   <data name="FlightSimulatorXReceiverId" xml:space="preserve">
-    <value>Flight Simulator receiver</value>
+    <value>Flight Simulator X receiver</value>
   </data>
   <data name="OptionsDescribeFlightSimulatorXReceiverId" xml:space="preserve">
-    <value>The receiver that will be used by the Flight Simulator "ride-along" feature.</value>
+    <value>The receiver that will be used by the Flight Simulator X "ride-along" feature.</value>
   </data>
   <data name="FlightSimulatorXReceiverRequired" xml:space="preserve">
-    <value>Please specify the receiver that the MSFS ride-along feature will use</value>
+    <value>Please specify the receiver that the FSX ride-along feature will use</value>
   </data>
   <data name="CompressedPort30003" xml:space="preserve">
     <value>Compressed VRS</value>
@@ -1991,7 +1991,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <value>Default Configuration</value>
   </data>
   <data name="JustFlightSimulatorX" xml:space="preserve">
-    <value>Flight Simulator Only</value>
+    <value>Flight Simulator X Only</value>
   </data>
   <data name="PresetConfigurations" xml:space="preserve">
     <value>Preset Configurations</value>
@@ -2790,26 +2790,5 @@ Show this message.</value>
   <data name="Beta" xml:space="preserve">
     <value>Beta</value>
     <comment>As in the preview version of a program</comment>
-  </data>
-  <data name="AssumeDF18CF1IsIcao" xml:space="preserve">
-    <value>Treat DF18 CF1 identifiers as ICAO</value>
-  </data>
-  <data name="OptionsDescribeRawFeedAssumeDF18CF1IsIcao" xml:space="preserve">
-    <value>CF1 indicates that a ground vehicle is transmitting a non-standard ID instead of an ICAO ID. Some ground vehicles send CF1 even when they are using a real ICAO address. This option lets VRS track such vehicles at the expense of possibly mixing non-standard addresses in with valid ICAO.</value>
-  </data>
-  <data name="menuXPlaneMode" xml:space="preserve">
-    <value>XPlane Mode...</value>
-  </data>
-  <data name="ConnectToXPlane" xml:space="preserve">
-    <value>Connect to XPlane</value>
-  </data>
-  <data name="ReplyPort" xml:space="preserve">
-    <value>Reply port</value>
-  </data>
-  <data name="XPlaneHost" xml:space="preserve">
-    <value>XPlane host</value>
-  </data>
-  <data name="XPlanePort" xml:space="preserve">
-    <value>XPlane port</value>
   </data>
 </root>
