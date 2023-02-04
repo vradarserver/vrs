@@ -12,6 +12,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using VirtualRadar.Interface.Options;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.Validation;
 using VirtualRadar.Localisation;
@@ -85,10 +86,6 @@ namespace VirtualRadar.Database.SQLite.Users
         {
             _UserContext = userContext;
             _Options = options.Value;
-
-            if(_Options.ShowDatabaseDiagnosticsInDebugConsole) {
-                _UserContext.ShowDatabaseDiagnosticsInDebugConsole = true;
-            }
 
             _UserContext.Database.EnsureCreated();
             _UserContext.Database.ExecuteSql(FormattableStringFactory.Create(

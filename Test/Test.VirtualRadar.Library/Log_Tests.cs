@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Moq;
+using Test.Framework;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Options;
 using VirtualRadar.Library;
 
 namespace Test.VirtualRadar.Library
@@ -12,7 +14,8 @@ namespace Test.VirtualRadar.Library
     [TestClass]
     public class Log_Tests
     {
-        private Mocks.Clock _Clock;
+        private MockOptions<EnvironmentOptions> _EnvironmentOptions;
+        private MockClock _Clock;
         private Mock<IFileSystemProvider> _FileSystem;
         private Mock<IThreadingEnvironmentProvider> _ThreadingEnvironment;
         private ILog _Log;
@@ -20,12 +23,13 @@ namespace Test.VirtualRadar.Library
         [TestInitialize]
         public void TestInitialise()
         {
-            _Clock = new Mocks.Clock();
+            _EnvironmentOptions = new();
+            _EnvironmentOptions.Value.WorkingFolder = @"C:\Folder";
+            _Clock = new();
             _FileSystem = MockHelper.CreateMock<IFileSystemProvider>();
-            _FileSystem.SetupGet(r => r.LogFolder).Returns(() => @"C:\Folder");
             _ThreadingEnvironment = MockHelper.CreateMock<IThreadingEnvironmentProvider>();
 
-            _Log = new Log(_Clock.Object, _FileSystem.Object, _ThreadingEnvironment.Object);
+            _Log = new Log(_EnvironmentOptions, _Clock.Object, _FileSystem.Object, _ThreadingEnvironment.Object);
         }
 
         [TestMethod]

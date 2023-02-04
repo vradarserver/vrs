@@ -1,30 +1,33 @@
 using Microsoft.EntityFrameworkCore;
-using VirtualRadar.Interface;
+using Microsoft.Extensions.Options;
+using VirtualRadar.Interface.Options;
 
 namespace VirtualRadar.Database.SQLite.Users
 {
     class UserContext : DbContext
     {
-        public string FullPath { get; }
-
-        public bool ShowDatabaseDiagnosticsInDebugConsole { get; set; }
+        private EnvironmentOptions _EnvironmentOptions;
+        private UserManagerOptions _UserManagerOptions;
 
         public DbSet<User> Users { get; set; }
 
-        public UserContext(IFileSystemProvider fileSystemProvider) : base()
+        public UserContext(IOptions<EnvironmentOptions> environmentOptions, IOptions<UserManagerOptions> userManagerOptions) : base()
         {
-            FullPath = Path.Combine(
-                fileSystemProvider.ConfigurationFolder,
-                "Users.sqb"
-            );
+            _EnvironmentOptions = environmentOptions.Value;
+            _UserManagerOptions = userManagerOptions.Value;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlite($"Data Source = {FullPath}");
 
-            if(ShowDatabaseDiagnosticsInDebugConsole) {
+            var dataSource = Path.Combine(
+                _EnvironmentOptions.WorkingFolder,
+                "Users.sqb"
+            );
+            optionsBuilder.UseSqlite($"Data Source = {dataSource}");
+
+            if(_UserManagerOptions.ShowDatabaseDiagnosticsInDebugConsole) {
                 optionsBuilder.LogTo(message => System.Diagnostics.Debug.WriteLine(message));
             }
         }

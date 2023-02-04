@@ -16,16 +16,6 @@ namespace VirtualRadar.Interface
     public interface IFileSystemProvider
     {
         /// <summary>
-        /// Returns the folder where configuration files are expected to be stored.
-        /// </summary>
-        string ConfigurationFolder { get; }
-
-        /// <summary>
-        /// Returns the folder where log files are going to be written.
-        /// </summary>
-        string LogFolder { get; }
-
-        /// <summary>
         /// Returns true if the directory exists.
         /// </summary>
         /// <param name="path"></param>

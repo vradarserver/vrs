@@ -9,7 +9,9 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System.Text;
+using Microsoft.Extensions.Options;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.Options;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Localisation;
 
@@ -20,6 +22,7 @@ namespace VirtualRadar.Library.Settings
     /// </summary>
     sealed class ConfigurationStorage : IConfigurationStorage
     {
+        private EnvironmentOptions _EnvironmentOptions;
         private IFileSystemProvider _FileSystem;
         private ILog _Log;
         private IUserManager _UserManager;
@@ -35,7 +38,7 @@ namespace VirtualRadar.Library.Settings
         /// Gets the full path to the configuration file.
         /// </summary>
         private string FileName => Path.Combine(
-            _FileSystem.ConfigurationFolder,
+            _EnvironmentOptions.WorkingFolder,
             "Configuration.xml"
         );
 
@@ -58,8 +61,9 @@ namespace VirtualRadar.Library.Settings
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public ConfigurationStorage(IFileSystemProvider fileSystem, ILog log, IXmlSerialiser xmlSerialiser, IUserManager userManager)
+        public ConfigurationStorage(IOptions<EnvironmentOptions> environmentOptions, IFileSystemProvider fileSystem, ILog log, IXmlSerialiser xmlSerialiser, IUserManager userManager)
         {
+            _EnvironmentOptions = environmentOptions.Value;
             _FileSystem = fileSystem;
             _Log = log;
             _UserManager = userManager;
@@ -238,7 +242,7 @@ namespace VirtualRadar.Library.Settings
         public void Save(Configuration configuration)
         {
             lock(_FileAccessLock) {
-                _FileSystem.CreateDirectoryIfNotExists(_FileSystem.ConfigurationFolder);
+                _FileSystem.CreateDirectoryIfNotExists(_EnvironmentOptions.WorkingFolder);
 
                 Configuration currentConfiguration = null;
                 var ignoreLoadException = configuration.DataVersion == 0;       // i.e. it's a brand new configuration
@@ -275,7 +279,7 @@ namespace VirtualRadar.Library.Settings
         private void BackupOldSettings()
         {
             if(File.Exists(FileName)) {
-                var folder = Path.Combine(_FileSystem.ConfigurationFolder, "ConfigBackups");
+                var folder = Path.Combine(_EnvironmentOptions.WorkingFolder, "ConfigBackups");
                 _FileSystem.CreateDirectoryIfNotExists(folder);
 
                 var fileInfo = new FileInfo(FileName);

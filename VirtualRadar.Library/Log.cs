@@ -9,8 +9,9 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System.Text;
+using Microsoft.Extensions.Options;
 using VirtualRadar.Interface;
-using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.Options;
 using VirtualRadar.Interface.Types;
 
 namespace VirtualRadar.Library
@@ -24,6 +25,7 @@ namespace VirtualRadar.Library
         const int RateLimitMessageMinutes = 5;          // Merge the messages when they appear within this many minutes of a previous instance (rolling)
 
         // DI services
+        private readonly EnvironmentOptions _EnvironmentOptions;
         private readonly IClock _Clock;
         private readonly IFileSystemProvider _FileSystem;
         private readonly IThreadingEnvironmentProvider _ThreadingEnvironment;
@@ -47,16 +49,18 @@ namespace VirtualRadar.Library
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string FileName => Path.Combine(_FileSystem.LogFolder, "VirtualRadarLog.txt");
+        public string FileName => Path.Combine(_EnvironmentOptions.WorkingFolder, "VirtualRadarLog.txt");
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
+        /// <param name="environmentOptions"></param>
         /// <param name="clock"></param>
         /// <param name="fileSystem"></param>
         /// <param name="threadingEnvironment"></param>
-        public Log(IClock clock, IFileSystemProvider fileSystem, IThreadingEnvironmentProvider threadingEnvironment)
+        public Log(IOptions<EnvironmentOptions> environmentOptions, IClock clock, IFileSystemProvider fileSystem, IThreadingEnvironmentProvider threadingEnvironment)
         {
+            _EnvironmentOptions = environmentOptions.Value;
             _Clock = clock;
             _FileSystem = fileSystem;
             _ThreadingEnvironment = threadingEnvironment;
@@ -110,7 +114,7 @@ namespace VirtualRadar.Library
                         .SelectMany(logMessage => logMessage.ToString().SplitIntoLines())
                         .ToArray(); // <-- for debugging
 
-                    _FileSystem.CreateDirectoryIfNotExists(_FileSystem.LogFolder);
+                    _FileSystem.CreateDirectoryIfNotExists(_EnvironmentOptions.WorkingFolder);
                     _FileSystem.WriteAllLines(FileName, lines);
 
                     _ContentNeedsFlushing = false;
