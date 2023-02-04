@@ -1,0 +1,13 @@
+﻿CREATE TABLE IF NOT EXISTS [User]
+  ([Id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL
+  ,[Enabled] BIT NOT NULL
+  ,[LoginName] TEXT NOT NULL COLLATE NOCASE
+  ,[Name] TEXT NOT NULL
+  ,[PasswordHashVersion] INTEGER NOT NULL
+  ,[PasswordHash] BLOB NOT NULL
+  ,[Created] DATETIME NOT NULL
+  ,[Updated] DATETIME NOT NULL
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS [idx_User_LoginName]
+  ON [User] ([LoginName] ASC);
