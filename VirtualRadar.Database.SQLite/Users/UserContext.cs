@@ -7,6 +7,8 @@ namespace VirtualRadar.Database.SQLite.Users
     {
         public string FullPath { get; }
 
+        public bool ShowDatabaseDiagnosticsInDebugConsole { get; set; }
+
         public DbSet<User> Users { get; set; }
 
         public UserContext(IFileSystemProvider fileSystemProvider) : base()
@@ -20,6 +22,11 @@ namespace VirtualRadar.Database.SQLite.Users
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
+            optionsBuilder.UseSqlite($"Data Source = {FullPath}");
+
+            if(ShowDatabaseDiagnosticsInDebugConsole) {
+                optionsBuilder.LogTo(message => System.Diagnostics.Debug.WriteLine(message));
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

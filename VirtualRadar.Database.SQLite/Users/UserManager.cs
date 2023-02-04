@@ -9,6 +9,7 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System.Globalization;
+using Microsoft.Extensions.Options;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.Validation;
 using VirtualRadar.Localisation;
@@ -23,6 +24,7 @@ namespace VirtualRadar.Database.SQLite.Users
     class UserManager : IUserManager
     {
         private UserContext _UserContext;
+        private UserManagerOptions _Options;
 
         /// <summary>
         /// The last temporary unique ID assigned by the manager.
@@ -77,9 +79,14 @@ namespace VirtualRadar.Database.SQLite.Users
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public UserManager(UserContext userContext)
+        public UserManager(UserContext userContext, IOptions<UserManagerOptions> options)
         {
             _UserContext = userContext;
+            _Options = options.Value;
+
+            if(_Options.ShowDatabaseDiagnosticsInDebugConsole) {
+                _UserContext.ShowDatabaseDiagnosticsInDebugConsole = true;
+            }
         }
 
         /// <summary>
@@ -193,8 +200,13 @@ namespace VirtualRadar.Database.SQLite.Users
         {
             var ourUser = CastUser(user);
 
+            if(!_UserContext.Users.Contains(ourUser)) {
+                _UserContext.Users.Add(ourUser);
+            }
+
+            password ??= user.UIPassword;
             if(password != null) {
-                var hash = new Hash(user.UIPassword);
+                var hash = new Hash(password);
                 ourUser.PasswordHashVersion = hash.Version;
                 ourUser.PasswordHash = hash.Buffer.ToArray();
             }

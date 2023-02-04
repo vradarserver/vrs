@@ -14,13 +14,18 @@ namespace VirtualRadar.Database.SQLite
 {
     public static class DependencyInjection
     {
-        public static void Configure(IServiceCollection services)
+        public static IServiceCollection AddVirtualRadarDatabaseSQLiteGroup(this IServiceCollection services)
         {
             // Singletons
             services.AddSingleton<VirtualRadar.Interface.Settings.IUserManager, Users.UserManager>();
 
+            // Scoped
+            services.AddScoped<Users.UserContext, Users.UserContext>();
+
             // Transients
             services.AddTransient<VirtualRadar.Interface.Settings.IUser, Users.User>();
+
+            return services;
         }
     }
 }

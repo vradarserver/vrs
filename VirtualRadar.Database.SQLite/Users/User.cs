@@ -29,6 +29,7 @@ namespace VirtualRadar.Database.SQLite.Users
         /// <summary>
         /// See interface docs.
         /// </summary>
+        [NotMapped]
         public string UniqueId
         {
             get => Id.ToString();
