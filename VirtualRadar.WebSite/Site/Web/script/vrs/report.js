@@ -461,6 +461,7 @@ var VRS;
                 result.isEmergency.setValue(flight.hEmg);
                 result.isMilitary.setValue(flight.aircraft.military);
                 result.isOnGround.setValue(useFirstValues ? flight.fOnGnd : flight.lOnGnd);
+                result.isRealAircraft.setValue(true);
                 result.latitude.setValue(useFirstValues ? flight.fLat : flight.lLat);
                 result.longitude.setValue(useFirstValues ? flight.fLng : flight.lLng);
                 result.model.setValue(flight.aircraft.typ);
