@@ -11,7 +11,7 @@
 namespace VirtualRadar.Interface.Settings
 {
     /// <summary>
-    /// An enumeration of the different types of connection supported by VRS.
+    /// This is moving to Options, do not use the version in Settings except for porting.
     /// </summary>
     public enum ConnectionType
     {
