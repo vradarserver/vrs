@@ -1,28 +1,33 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using VirtualRadar.Data;
-
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+namespace VirtualRadar
 {
-    app.UseExceptionHandler("/Error");
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+
+            builder.WebHost.ConfigureKestrel(options => {
+                options.ListenAnyIP(80);
+            });
+
+            builder.Services.AddRazorPages();
+            builder.Services.AddServerSideBlazor();
+
+            var app = builder.Build();
+
+            if(!app.Environment.IsDevelopment()) {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
+            }
+
+            //app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseRouting();
+
+            app.MapBlazorHub();
+            app.MapFallbackToPage("/_Host");
+
+            app.Run();
+        }
+    }
 }
-
-
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
-
-app.Run();

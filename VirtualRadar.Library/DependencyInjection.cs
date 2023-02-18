@@ -20,10 +20,7 @@ namespace VirtualRadar.Library
             services.AddSingleton<VirtualRadar.Interface.IFileSystemProvider,               FileSystemProvider>();
             services.AddSingleton<VirtualRadar.Interface.ILog,                              Log>();
             services.AddSingleton<VirtualRadar.Interface.IThreadingEnvironmentProvider,     ThreadingEnvironmentProvider>();
-            services.AddSingleton<VirtualRadar.Interface.Connectors.IConnectorTypeManager,  Connectors.ConnectorTypeManager>();
             services.AddSingleton<VirtualRadar.Interface.Settings.IConfigurationStorage,    Settings.ConfigurationStorage>();
-
-            services.AddScoped<Connectors.Tcp.ActivePullTcpConnector>();
 
             return services;
         }
