@@ -4,4 +4,15 @@
         <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\VirtualRadar.Database.SQLite\VirtualRadar.Database.SQLite.csproj" />
+      <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj" />
+      <ProjectReference Include="..\VirtualRadar.Library\VirtualRadar.Library.csproj" />
+      <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj" />
+    </ItemGroup>
+
 </Project>
