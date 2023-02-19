@@ -2806,4 +2806,7 @@ Show this message.</value>
   <data name="OperatingSystem" xml:space="preserve">
     <value>Operating system</value>
   </data>
+  <data name="CreatingDirectory" xml:space="preserve">
+    <value>Creating folder "{0}"</value>
+  </data>
 </root>

@@ -1264,6 +1264,15 @@ namespace VirtualRadar.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Creating folder &quot;{0}&quot;.
+        /// </summary>
+        public static string CreatingDirectory {
+            get {
+                return ResourceManager.GetString("CreatingDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Credits.
         /// </summary>
         public static string CreditsLabel {
