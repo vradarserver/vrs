@@ -1,0 +1,38 @@
+﻿@page "/about"
+@using Microsoft.Extensions.Options
+@using VirtualRadar.Interface
+@using VirtualRadar.Interface.Options
+@using VirtualRadar.Localisation
+@inject IOptions<EnvironmentOptions> EnvironmentOptions;
+@inject IApplicationInformation ApplicationInformation;
+
+<PageTitle>@Strings.About</PageTitle>
+<h1>@Strings.About</h1>
+
+<div class="row mb-3">
+    <div class="col">@Strings.Built <value>@ApplicationInformation.BuildDate.ToString("dd-MMM-yyyy HH:mm:ss") UTC</value></div>
+    <div class="col text-center"><value>@ApplicationInformation.ShortVersion@(ApplicationInformation.IsBeta ? $" {Strings.Beta}" : "")</value></div>
+    <div class="col text-end">.NET <value>@System.Environment.Version</value></div>
+</div>
+
+<div class="row">
+    <div class="col-2"><label>@Strings.OperatingSystem:</label></div>
+    <div class="col"><value>@System.Environment.OSVersion</value></div>
+</div>
+
+<div class="row">
+    <div class="col-2"><label>@Strings.ConfigurationFolder:</label></div>
+    <div class="col"><value>@EnvironmentOptions.Value.WorkingFolder</value></div>
+</div>
+
+<div class="row">
+    <div class="col-2"><label>@Strings.CreditsLabel:</label></div>
+    <div class="col"><value class="multi-line">@Strings.ApplicationDescription</value></div>
+</div>
+
+<div class="row mt-5">
+    <h5 class="col text-center">@ApplicationInformation.Copyright</h5>
+</div>
+
+@code {
+}

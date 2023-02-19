@@ -1,0 +1,29 @@
+﻿@using VirtualRadar.Localisation
+
+<header class="navbar navbar-dark navbar-expand-lg sticky-top bg-vrs-primary">
+    <nav class="container-xxl flex-wrap flex-lg-nowrap" aria-label="Site navigation">
+        <a class="navbar-brand text-bg-vrs-primary" href="">
+            @Strings.VirtualRadarServer
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+                        <span class="bi bi-house-fill" aria-hidden="true"></span>
+                        @Strings.Dashboard
+                    </NavLink>
+                </li>
+
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="/about" Match="NavLinkMatch.All">
+                        <span class="bi bi-info-circle-fill" aria-hidden="true"></span>
+                        @Strings.About
+                    </NavLink>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>

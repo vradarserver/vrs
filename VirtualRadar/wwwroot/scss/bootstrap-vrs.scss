@@ -1,0 +1,58 @@
+﻿@import "../lib/bootstrap/scss/functions";
+@import "../lib/bootstrap/scss/variables";
+
+$enable-rounded: false;
+
+$vrs-sans-serif: Nunito Sans;
+$vrs-monospace: Inconsolata;
+
+$font-family-sans-serif: #{$vrs-sans-serif},#{$font-family-sans-serif};
+$font-family-monospace: #{$vrs-monospace},#{$font-family-monospace};
+
+$vrs-primary:     #404570;
+$vrs-primary-100: tint-color($vrs-primary, 80%);
+$vrs-primary-200: tint-color($vrs-primary, 60%);
+$vrs-primary-300: tint-color($vrs-primary, 40%);
+$vrs-primary-400: tint-color($vrs-primary, 20%);
+$vrs-primary-500: $vrs-primary;
+$vrs-primary-600: shade-color($vrs-primary, 20%);
+$vrs-primary-700: shade-color($vrs-primary, 40%);
+$vrs-primary-800: shade-color($vrs-primary, 60%);
+$vrs-primary-900: shade-color($vrs-primary, 80%);
+
+$vrs-primary-text: #e0e0ee;
+$vrs-primary-text-100: tint-color($vrs-primary-text, 80%);
+$vrs-primary-text-200: tint-color($vrs-primary-text, 60%);
+$vrs-primary-text-300: tint-color($vrs-primary-text, 40%);
+$vrs-primary-text-400: tint-color($vrs-primary-text, 20%);
+$vrs-primary-text-500: $vrs-primary-text;
+$vrs-primary-text-600: shade-color($vrs-primary-text, 20%);
+$vrs-primary-text-700: shade-color($vrs-primary-text, 40%);
+$vrs-primary-text-800: shade-color($vrs-primary-text, 60%);
+$vrs-primary-text-900: shade-color($vrs-primary-text, 80%);
+
+$vrs-colors: (
+    "vrs-primary":  $vrs-primary
+);
+$theme-colors: map-merge($theme-colors, $vrs-colors);
+
+$form-label-font-weight:    600;
+$link-color:                $vrs-primary-700;
+$navbar-dark-color:         #ccc;
+$navbar-dark-hover-color:   #fff;
+
+@import "../lib/bootstrap/scss/bootstrap";
+
+label {
+    font-weight: $form-label-font-weight;
+}
+value {
+    font-family: $font-family-monospace;
+    font-weight: 300;
+}
+value.multi-line {
+    white-space: pre-line;
+}
+value b {
+    font-weight: 600;
+}

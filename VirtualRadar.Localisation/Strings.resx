@@ -2791,4 +2791,19 @@ Show this message.</value>
     <value>Beta</value>
     <comment>As in the preview version of a program</comment>
   </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="Built" xml:space="preserve">
+    <value>Built</value>
+  </data>
+  <data name="CopyrightLabel" xml:space="preserve">
+    <value>Copyright</value>
+  </data>
+  <data name="CreditsLabel" xml:space="preserve">
+    <value>Credits</value>
+  </data>
+  <data name="OperatingSystem" xml:space="preserve">
+    <value>Operating system</value>
+  </data>
 </root>
