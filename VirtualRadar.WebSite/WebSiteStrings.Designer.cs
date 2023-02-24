@@ -1618,6 +1618,24 @@ namespace VirtualRadar.WebSite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} kPa.
+        /// </summary>
+        public static string KilopascalAbbreviation {
+            get {
+                return ResourceManager.GetString("KilopascalAbbreviation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kilopascals.
+        /// </summary>
+        public static string KilopascalDescription {
+            get {
+                return ResourceManager.GetString("KilopascalDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Knots.
         /// </summary>
         public static string Knots {

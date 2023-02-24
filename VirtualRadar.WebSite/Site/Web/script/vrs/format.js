@@ -421,6 +421,9 @@ var VRS;
                     case VRS.Pressure.MmHg:
                         result = VRS.stringUtility.formatNumber(value, '0.00');
                         break;
+                    case VRS.Pressure.Kilopascal:
+                        result = VRS.stringUtility.formatNumber(value, '0');
+                        break;
                     default: throw 'Unknown pressure unit ' + unit;
                 }
                 if (showUnit && result) {

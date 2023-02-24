@@ -204,7 +204,8 @@ var VRS;
     VRS.Pressure = {
         InHg: '0',
         Millibar: '1',
-        MmHg: '2'
+        MmHg: '2',
+        Kilopascal: '3'
     };
     VRS.RenderProperty = {
         None: '---',

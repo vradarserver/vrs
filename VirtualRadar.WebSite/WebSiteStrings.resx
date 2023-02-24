@@ -1860,4 +1860,10 @@
   <data name="UpdateAircraftLookup" xml:space="preserve">
     <value>Update lookup details</value>
   </data>
+  <data name="KilopascalAbbreviation" xml:space="preserve">
+    <value>{0} kPa</value>
+  </data>
+  <data name="KilopascalDescription" xml:space="preserve">
+    <value>Kilopascals</value>
+  </data>
 </root>

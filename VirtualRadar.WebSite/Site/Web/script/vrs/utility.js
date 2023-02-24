@@ -723,6 +723,9 @@ var VRS;
                 switch (fromUnit) {
                     case VRS.Pressure.InHg:
                         switch (toUnit) {
+                            case VRS.Pressure.Kilopascal:
+                                result /= 0.295301;
+                                break;
                             case VRS.Pressure.Millibar:
                                 result /= 0.0295301;
                                 break;
@@ -732,10 +735,26 @@ var VRS;
                             default: throw 'Unknown pressure unit ' + toUnit;
                         }
                         break;
+                    case VRS.Pressure.Kilopascal:
+                        switch (toUnit) {
+                            case VRS.Pressure.InHg:
+                                result *= 0.295301;
+                                break;
+                            case VRS.Pressure.Millibar:
+                                result *= 10;
+                                break;
+                            case VRS.Pressure.MmHg:
+                                result *= 7.50061561303;
+                                break;
+                            default: throw 'Unknown pressure unit ' + toUnit;
+                        }
                     case VRS.Pressure.Millibar:
                         switch (toUnit) {
                             case VRS.Pressure.InHg:
                                 result *= 0.0295301;
+                                break;
+                            case VRS.Pressure.Kilopascal:
+                                result /= 10;
                                 break;
                             case VRS.Pressure.MmHg:
                                 result *= 0.750061561303;
@@ -747,6 +766,9 @@ var VRS;
                         switch (toUnit) {
                             case VRS.Pressure.InHg:
                                 result /= 25.4;
+                                break;
+                            case VRS.Pressure.Kilopascal:
+                                result /= 7.50061561303;
                                 break;
                             case VRS.Pressure.Millibar:
                                 result /= 0.750061561303;
@@ -763,6 +785,7 @@ var VRS;
         UnitConverter.prototype.pressureUnitAbbreviation = function (unit) {
             switch (unit) {
                 case VRS.Pressure.InHg: return VRS.$$.InHgAbbreviation;
+                case VRS.Pressure.Kilopascal: return VRS.$$.KilopascalAbbreviation;
                 case VRS.Pressure.Millibar: return VRS.$$.MillibarAbbreviation;
                 case VRS.Pressure.MmHg: return VRS.$$.MmHgAbbreviation;
                 default: throw 'Unknown pressure unit ' + unit;

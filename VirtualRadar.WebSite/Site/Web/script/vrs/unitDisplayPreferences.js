@@ -424,6 +424,7 @@ var VRS;
         UnitDisplayPreferences.getPressureUnitValues = function () {
             return [
                 new VRS.ValueText({ value: VRS.Pressure.InHg, textKey: 'InHgDescription' }),
+                new VRS.ValueText({ value: VRS.Pressure.Kilopascal, textKey: 'KilopascalDescription' }),
                 new VRS.ValueText({ value: VRS.Pressure.Millibar, textKey: 'MillibarDescription' }),
                 new VRS.ValueText({ value: VRS.Pressure.MmHg, textKey: 'MmHgDescription' })
             ];

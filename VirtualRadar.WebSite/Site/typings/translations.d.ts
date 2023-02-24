@@ -9,10 +9,10 @@ declare namespace VRS
     interface TranslatedStringsStatic
     {
         Add:                                string;
+        AddAircraftLookup:                  string;
         AddCondition:                       string;
         AddCriteria:                        string;
         AddFilter:                          string;
-        AddAircraftLookup:                  string;
         ADSB:                               string;
         ADSB0:                              string;
         ADSB1:                              string;
@@ -181,6 +181,8 @@ declare namespace VRS
         Kilometres:                         string;
         KilometresPerHour:                  string;
         KilometresPerHourAbbreviation:      string;
+        KilopascalAbbreviation:             string;
+        KilopascalDescription:              string;
         Knots:                              string;
         KnotsAbbreviation:                  string;
         LandPlane:                          string;
@@ -304,6 +306,8 @@ declare namespace VRS
         Longitude:                          string;
         Manufacturer:                       string;
         Map:                                string;
+        MapBrightness:                      string;
+        MapLayers:                          string;
         MaxTakeoffWeight:                   string;
         Menu:                               string;
         MenuBack:                           string;
@@ -564,10 +568,7 @@ declare namespace VRS
         VerticalSpeed:                      string;
         VerticalSpeedType:                  string;
         VirtualRadar:                       string;
-        Volume100:                          string;
-        Volume25:                           string;
-        Volume50:                           string;
-        Volume75:                           string;
+        Volume:                             string;
         VrsVersion:                         string;
         WakeTurbulenceCategory:             string;
         Warning:                            string;
