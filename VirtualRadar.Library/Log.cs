@@ -27,7 +27,7 @@ namespace VirtualRadar.Library
         // DI services
         private readonly EnvironmentOptions _EnvironmentOptions;
         private readonly IClock _Clock;
-        private readonly IFileSystemProvider _FileSystem;
+        private readonly IFileSystem _FileSystem;
         private readonly IThreadingEnvironmentProvider _ThreadingEnvironment;
 
         // Locking
@@ -49,7 +49,7 @@ namespace VirtualRadar.Library
         /// <summary>
         /// See interface docs.
         /// </summary>
-        public string FileName => Path.Combine(_EnvironmentOptions.WorkingFolder, "VirtualRadarLog.txt");
+        public string FileName => _FileSystem.Combine(_EnvironmentOptions.WorkingFolder, "VirtualRadarLog.txt");
 
         /// <summary>
         /// Creates a new object.
@@ -58,7 +58,7 @@ namespace VirtualRadar.Library
         /// <param name="clock"></param>
         /// <param name="fileSystem"></param>
         /// <param name="threadingEnvironment"></param>
-        public Log(IOptions<EnvironmentOptions> environmentOptions, IClock clock, IFileSystemProvider fileSystem, IThreadingEnvironmentProvider threadingEnvironment)
+        public Log(IOptions<EnvironmentOptions> environmentOptions, IClock clock, IFileSystem fileSystem, IThreadingEnvironmentProvider threadingEnvironment)
         {
             _EnvironmentOptions = environmentOptions.Value;
             _Clock = clock;

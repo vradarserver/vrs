@@ -1,0 +1,6 @@
+<Project>
+    <ItemGroup>
+        <!-- It is too easy to use File. and Directory. instead of IFileSystemProvider if File and Directory are implicitly available -->
+        <Using Remove="System.IO" />
+    </ItemGroup>
+</Project>

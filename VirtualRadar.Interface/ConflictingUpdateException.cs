@@ -10,7 +10,7 @@
 
 using System.Runtime.Serialization;
 
-namespace VirtualRadar.Interface.Settings
+namespace VirtualRadar.Interface
 {
     /// <summary>
     /// Thrown when an update conflicts with a previous update.

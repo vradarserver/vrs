@@ -16,7 +16,7 @@ namespace Test.VirtualRadar.Library
     {
         private MockOptions<EnvironmentOptions> _EnvironmentOptions;
         private MockClock _Clock;
-        private Mock<IFileSystemProvider> _FileSystem;
+        private Mock<IFileSystem> _FileSystem;
         private Mock<IThreadingEnvironmentProvider> _ThreadingEnvironment;
         private ILog _Log;
 
@@ -26,7 +26,7 @@ namespace Test.VirtualRadar.Library
             _EnvironmentOptions = new();
             _EnvironmentOptions.Value.WorkingFolder = @"C:\Folder";
             _Clock = new();
-            _FileSystem = MockHelper.CreateMock<IFileSystemProvider>();
+            _FileSystem = MockHelper.CreateMock<IFileSystem>();
             _ThreadingEnvironment = MockHelper.CreateMock<IThreadingEnvironmentProvider>();
 
             _Log = new Log(_EnvironmentOptions, _Clock.Object, _FileSystem.Object, _ThreadingEnvironment.Object);

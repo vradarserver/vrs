@@ -23,7 +23,7 @@ namespace VirtualRadar.Library.Settings
     sealed class ConfigurationStorage : IConfigurationStorage
     {
         private EnvironmentOptions _EnvironmentOptions;
-        private IFileSystemProvider _FileSystem;
+        private IFileSystem _FileSystem;
         private ILog _Log;
         private IUserManager _UserManager;
         private IXmlSerialiser _XmlSerialiser;
@@ -37,7 +37,7 @@ namespace VirtualRadar.Library.Settings
         /// <summary>
         /// Gets the full path to the configuration file.
         /// </summary>
-        private string FileName => Path.Combine(
+        private string FileName => _FileSystem.Combine(
             _EnvironmentOptions.WorkingFolder,
             "Configuration.xml"
         );
@@ -61,7 +61,7 @@ namespace VirtualRadar.Library.Settings
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public ConfigurationStorage(IOptions<EnvironmentOptions> environmentOptions, IFileSystemProvider fileSystem, ILog log, IXmlSerialiser xmlSerialiser, IUserManager userManager)
+        public ConfigurationStorage(IOptions<EnvironmentOptions> environmentOptions, IFileSystem fileSystem, ILog log, IXmlSerialiser xmlSerialiser, IUserManager userManager)
         {
             _EnvironmentOptions = environmentOptions.Value;
             _FileSystem = fileSystem;
@@ -147,7 +147,7 @@ namespace VirtualRadar.Library.Settings
             void readFile()
             {
                 if(_FileSystem.FileExists(FileName)) {
-                    using(StreamReader stream = new StreamReader(FileName, Encoding.UTF8)) {
+                    using(System.IO.StreamReader stream = new(FileName, Encoding.UTF8)) {
                         result = _XmlSerialiser.Deserialise<Configuration>(stream);
                     }
                 }
@@ -265,7 +265,7 @@ namespace VirtualRadar.Library.Settings
 
                 ++configuration.DataVersion;
 
-                using(StreamWriter stream = new StreamWriter(FileName, false, Encoding.UTF8)) {
+                using(System.IO.StreamWriter stream = new(FileName, false, Encoding.UTF8)) {
                     _XmlSerialiser.Serialise(configuration, stream);
                 }
             }
@@ -278,13 +278,13 @@ namespace VirtualRadar.Library.Settings
         /// </summary>
         private void BackupOldSettings()
         {
-            if(File.Exists(FileName)) {
-                var folder = Path.Combine(_EnvironmentOptions.WorkingFolder, "ConfigBackups");
+            if(_FileSystem.FileExists(FileName)) {
+                var folder = _FileSystem.Combine(_EnvironmentOptions.WorkingFolder, "ConfigBackups");
                 _FileSystem.CreateDirectoryIfNotExists(folder);
 
-                var fileInfo = new FileInfo(FileName);
+                var fileInfo = new System.IO.FileInfo(FileName);
 
-                var backupFileName = Path.Combine(folder, String.Format("Configuration-{0:yyyy}-{0:MM}-{0:dd}-{0:HH}-{0:mm}-{0:ss}.xml", fileInfo.LastWriteTimeUtc));
+                var backupFileName = _FileSystem.Combine(folder, String.Format("Configuration-{0:yyyy}-{0:MM}-{0:dd}-{0:HH}-{0:mm}-{0:ss}.xml", fileInfo.LastWriteTimeUtc));
                 if(!_FileSystem.FileExists(backupFileName)) {
                     _FileSystem.CopyFile(FileName, backupFileName, overwrite: false);
                 }

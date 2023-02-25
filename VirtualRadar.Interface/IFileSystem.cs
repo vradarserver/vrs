@@ -8,13 +8,23 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+using System.Text;
+
 namespace VirtualRadar.Interface
 {
     /// <summary>
-    /// The interface for providers that abstract away the file system.
+    /// The interface for services that abstract away the file system.
     /// </summary>
-    public interface IFileSystemProvider
+    public interface IFileSystem
     {
+        /// <summary>
+        /// A wrapper around Path.Combine - only exists so that code that wants to avoid accidentally using System.IO.File
+        /// or System.IO.Directory doesn't have to add a using System.IO to do trivial calls to Path.Combine.
+        /// </summary>
+        /// <param name="paths"></param>
+        /// <returns></returns>
+        string Combine(params string[] paths);
+
         /// <summary>
         /// Returns true if the directory exists.
         /// </summary>
@@ -87,6 +97,23 @@ namespace VirtualRadar.Interface
         Task<string[]> ReadAllLinesAsync(string fileName, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Returns all text from the file.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="encoding">Defaults to UTF8.</param>
+        /// <returns></returns>
+        string ReadAllText(string fileName, Encoding encoding = null);
+
+        /// <summary>
+        /// Returns all text from the file as read from a background thread.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="encoding">Defaults to UTF8.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<string> ReadAllTextAsync(string fileName, Encoding encoding = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Overwrites the content of the file with the byte array passed across.
         /// </summary>
         /// <param name="fileName"></param>
@@ -117,5 +144,23 @@ namespace VirtualRadar.Interface
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task WriteAllLinesAsync(string fileName, IEnumerable<string> contents, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Overwrites the content of the file.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="text"></param>
+        /// <param name="encoding">Defaults to UTF8.</param>
+        void WriteAllText(string fileName, string text, Encoding encoding = null);
+
+        /// <summary>
+        /// Overwrites the content of the file on a background thread.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="text"></param>
+        /// <param name="encoding"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task WriteAllTextAsync(string fileName, string text, Encoding encoding = null, CancellationToken cancellationToken = default);
     }
 }

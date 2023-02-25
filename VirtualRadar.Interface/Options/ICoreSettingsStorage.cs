@@ -8,22 +8,36 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System.IO;
-
 namespace VirtualRadar.Interface.Options
 {
-    /// <summary>
-    /// A class carrying options about the general environment. These typically do not
-    /// change over the lifetime of the program.
-    /// </summary>
-    public class EnvironmentOptions
+    public interface ICoreSettingsStorage
     {
         /// <summary>
-        /// The folder the program should look for configuration files, write log files etc.
+        /// The filename and extension of the configuration file.
         /// </summary>
-        public string WorkingFolder { get; set; } = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "VirtualRadar"
-        );
+        string ConfigurationFileName { get; }
+
+        /// <summary>
+        /// The full path and filename of the configuration file.
+        /// </summary>
+        string ConfigurationFullPath { get; }
+
+        /// <summary>
+        /// Loads the options.
+        /// </summary>
+        /// <returns></returns>
+        CoreOptions Load();
+
+        /// <summary>
+        /// Saves the options.
+        /// </summary>
+        /// <param name="options"></param>
+        void Save(CoreOptions options);
+
+        /// <summary>
+        /// Creates a default configuration if the file is not present.
+        /// </summary>
+        /// <returns></returns>
+        bool CreateIfMissing();
     }
 }
