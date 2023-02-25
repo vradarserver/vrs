@@ -1,3 +1,5 @@
+/* VRS Base Colour: #404570; */
+/* Used https://mycolor.space to generate complementary palette */
 /*!
    * Bootstrap  v5.2.3 (https://getbootstrap.com/)
    * Copyright 2011-2022 The Bootstrap Authors
@@ -29,24 +31,18 @@
   --bs-gray-700: #495057;
   --bs-gray-800: #343a40;
   --bs-gray-900: #212529;
-  --bs-primary: #0d6efd;
-  --bs-secondary: #6c757d;
-  --bs-success: #198754;
-  --bs-info: #0dcaf0;
-  --bs-warning: #ffc107;
-  --bs-danger: #dc3545;
-  --bs-light: #f8f9fa;
-  --bs-dark: #212529;
-  --bs-vrs-primary: #404570;
-  --bs-primary-rgb: 13, 110, 253;
-  --bs-secondary-rgb: 108, 117, 125;
-  --bs-success-rgb: 25, 135, 84;
-  --bs-info-rgb: 13, 202, 240;
-  --bs-warning-rgb: 255, 193, 7;
-  --bs-danger-rgb: 220, 53, 69;
-  --bs-light-rgb: 248, 249, 250;
-  --bs-dark-rgb: 33, 37, 41;
-  --bs-vrs-primary-rgb: 64, 69, 112;
+  --bs-primary: #0E81B0;
+  --bs-secondary: #404570;
+  --bs-success: #CFA716;
+  --bs-danger: #763615;
+  --bs-warning: #F9F871;
+  --bs-info: #E58EC3;
+  --bs-primary-rgb: 14, 129, 176;
+  --bs-secondary-rgb: 64, 69, 112;
+  --bs-success-rgb: 207, 167, 22;
+  --bs-danger-rgb: 118, 54, 21;
+  --bs-warning-rgb: 249, 248, 113;
+  --bs-info-rgb: 229, 142, 195;
   --bs-white-rgb: 255, 255, 255;
   --bs-black-rgb: 0, 0, 0;
   --bs-body-color-rgb: 33, 37, 41;
@@ -70,7 +66,7 @@
   --bs-border-radius-xl: 1rem;
   --bs-border-radius-2xl: 2rem;
   --bs-border-radius-pill: 50rem;
-  --bs-link-color: #262943;
+  --bs-link-color: #0d6efd;
   --bs-link-hover-color: #0a58ca;
   --bs-code-color: #d63384;
   --bs-highlight-bg: #fff3cd;
@@ -3449,150 +3445,24 @@ fieldset:disabled .btn {
 
 /* line 123, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
 .btn-primary {
-  --bs-btn-color: #fff;
-  --bs-btn-bg: #0d6efd;
-  --bs-btn-border-color: #0d6efd;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #0b5ed7;
-  --bs-btn-hover-border-color: #0a58ca;
-  --bs-btn-focus-shadow-rgb: 49, 132, 253;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #0a58ca;
-  --bs-btn-active-border-color: #0a53be;
+  --bs-btn-color: #000;
+  --bs-btn-bg: #0E81B0;
+  --bs-btn-border-color: #0E81B0;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #3294bc;
+  --bs-btn-hover-border-color: #268eb8;
+  --bs-btn-focus-shadow-rgb: 12, 110, 150;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: #3e9ac0;
+  --bs-btn-active-border-color: #268eb8;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #fff;
-  --bs-btn-disabled-bg: #0d6efd;
-  --bs-btn-disabled-border-color: #0d6efd;
+  --bs-btn-disabled-color: #000;
+  --bs-btn-disabled-bg: #0E81B0;
+  --bs-btn-disabled-border-color: #0E81B0;
 }
 
 /* line 123, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
 .btn-secondary {
-  --bs-btn-color: #fff;
-  --bs-btn-bg: #6c757d;
-  --bs-btn-border-color: #6c757d;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #5c636a;
-  --bs-btn-hover-border-color: #565e64;
-  --bs-btn-focus-shadow-rgb: 130, 138, 145;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #565e64;
-  --bs-btn-active-border-color: #51585e;
-  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #fff;
-  --bs-btn-disabled-bg: #6c757d;
-  --bs-btn-disabled-border-color: #6c757d;
-}
-
-/* line 123, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
-.btn-success {
-  --bs-btn-color: #fff;
-  --bs-btn-bg: #198754;
-  --bs-btn-border-color: #198754;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #157347;
-  --bs-btn-hover-border-color: #146c43;
-  --bs-btn-focus-shadow-rgb: 60, 153, 110;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #146c43;
-  --bs-btn-active-border-color: #13653f;
-  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #fff;
-  --bs-btn-disabled-bg: #198754;
-  --bs-btn-disabled-border-color: #198754;
-}
-
-/* line 123, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
-.btn-info {
-  --bs-btn-color: #000;
-  --bs-btn-bg: #0dcaf0;
-  --bs-btn-border-color: #0dcaf0;
-  --bs-btn-hover-color: #000;
-  --bs-btn-hover-bg: #31d2f2;
-  --bs-btn-hover-border-color: #25cff2;
-  --bs-btn-focus-shadow-rgb: 11, 172, 204;
-  --bs-btn-active-color: #000;
-  --bs-btn-active-bg: #3dd5f3;
-  --bs-btn-active-border-color: #25cff2;
-  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #000;
-  --bs-btn-disabled-bg: #0dcaf0;
-  --bs-btn-disabled-border-color: #0dcaf0;
-}
-
-/* line 123, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
-.btn-warning {
-  --bs-btn-color: #000;
-  --bs-btn-bg: #ffc107;
-  --bs-btn-border-color: #ffc107;
-  --bs-btn-hover-color: #000;
-  --bs-btn-hover-bg: #ffca2c;
-  --bs-btn-hover-border-color: #ffc720;
-  --bs-btn-focus-shadow-rgb: 217, 164, 6;
-  --bs-btn-active-color: #000;
-  --bs-btn-active-bg: #ffcd39;
-  --bs-btn-active-border-color: #ffc720;
-  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #000;
-  --bs-btn-disabled-bg: #ffc107;
-  --bs-btn-disabled-border-color: #ffc107;
-}
-
-/* line 123, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
-.btn-danger {
-  --bs-btn-color: #fff;
-  --bs-btn-bg: #dc3545;
-  --bs-btn-border-color: #dc3545;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #bb2d3b;
-  --bs-btn-hover-border-color: #b02a37;
-  --bs-btn-focus-shadow-rgb: 225, 83, 97;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #b02a37;
-  --bs-btn-active-border-color: #a52834;
-  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #fff;
-  --bs-btn-disabled-bg: #dc3545;
-  --bs-btn-disabled-border-color: #dc3545;
-}
-
-/* line 123, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
-.btn-light {
-  --bs-btn-color: #000;
-  --bs-btn-bg: #f8f9fa;
-  --bs-btn-border-color: #f8f9fa;
-  --bs-btn-hover-color: #000;
-  --bs-btn-hover-bg: #d3d4d5;
-  --bs-btn-hover-border-color: #c6c7c8;
-  --bs-btn-focus-shadow-rgb: 211, 212, 213;
-  --bs-btn-active-color: #000;
-  --bs-btn-active-bg: #c6c7c8;
-  --bs-btn-active-border-color: #babbbc;
-  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #000;
-  --bs-btn-disabled-bg: #f8f9fa;
-  --bs-btn-disabled-border-color: #f8f9fa;
-}
-
-/* line 123, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
-.btn-dark {
-  --bs-btn-color: #fff;
-  --bs-btn-bg: #212529;
-  --bs-btn-border-color: #212529;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #424649;
-  --bs-btn-hover-border-color: #373b3e;
-  --bs-btn-focus-shadow-rgb: 66, 70, 73;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #4d5154;
-  --bs-btn-active-border-color: #373b3e;
-  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #fff;
-  --bs-btn-disabled-bg: #212529;
-  --bs-btn-disabled-border-color: #212529;
-}
-
-/* line 123, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
-.btn-vrs-primary {
   --bs-btn-color: #fff;
   --bs-btn-bg: #404570;
   --bs-btn-border-color: #404570;
@@ -3609,152 +3479,98 @@ fieldset:disabled .btn {
   --bs-btn-disabled-border-color: #404570;
 }
 
+/* line 123, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
+.btn-success {
+  --bs-btn-color: #000;
+  --bs-btn-bg: #CFA716;
+  --bs-btn-border-color: #CFA716;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #d6b439;
+  --bs-btn-hover-border-color: #d4b02d;
+  --bs-btn-focus-shadow-rgb: 176, 142, 19;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: #d9b945;
+  --bs-btn-active-border-color: #d4b02d;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #000;
+  --bs-btn-disabled-bg: #CFA716;
+  --bs-btn-disabled-border-color: #CFA716;
+}
+
+/* line 123, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
+.btn-danger {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #763615;
+  --bs-btn-border-color: #763615;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #642e12;
+  --bs-btn-hover-border-color: #5e2b11;
+  --bs-btn-focus-shadow-rgb: 139, 84, 56;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #5e2b11;
+  --bs-btn-active-border-color: #592910;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #763615;
+  --bs-btn-disabled-border-color: #763615;
+}
+
+/* line 123, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
+.btn-warning {
+  --bs-btn-color: #000;
+  --bs-btn-bg: #F9F871;
+  --bs-btn-border-color: #F9F871;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #faf986;
+  --bs-btn-hover-border-color: #faf97f;
+  --bs-btn-focus-shadow-rgb: 212, 211, 96;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: #faf98d;
+  --bs-btn-active-border-color: #faf97f;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #000;
+  --bs-btn-disabled-bg: #F9F871;
+  --bs-btn-disabled-border-color: #F9F871;
+}
+
+/* line 123, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
+.btn-info {
+  --bs-btn-color: #000;
+  --bs-btn-bg: #E58EC3;
+  --bs-btn-border-color: #E58EC3;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #e99fcc;
+  --bs-btn-hover-border-color: #e899c9;
+  --bs-btn-focus-shadow-rgb: 195, 121, 166;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: #eaa5cf;
+  --bs-btn-active-border-color: #e899c9;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #000;
+  --bs-btn-disabled-bg: #E58EC3;
+  --bs-btn-disabled-border-color: #E58EC3;
+}
+
 /* line 149, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
 .btn-outline-primary {
-  --bs-btn-color: #0d6efd;
-  --bs-btn-border-color: #0d6efd;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #0d6efd;
-  --bs-btn-hover-border-color: #0d6efd;
-  --bs-btn-focus-shadow-rgb: 13, 110, 253;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #0d6efd;
-  --bs-btn-active-border-color: #0d6efd;
+  --bs-btn-color: #0E81B0;
+  --bs-btn-border-color: #0E81B0;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #0E81B0;
+  --bs-btn-hover-border-color: #0E81B0;
+  --bs-btn-focus-shadow-rgb: 14, 129, 176;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: #0E81B0;
+  --bs-btn-active-border-color: #0E81B0;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #0d6efd;
+  --bs-btn-disabled-color: #0E81B0;
   --bs-btn-disabled-bg: transparent;
-  --bs-btn-disabled-border-color: #0d6efd;
+  --bs-btn-disabled-border-color: #0E81B0;
   --bs-gradient: none;
 }
 
 /* line 149, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
 .btn-outline-secondary {
-  --bs-btn-color: #6c757d;
-  --bs-btn-border-color: #6c757d;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #6c757d;
-  --bs-btn-hover-border-color: #6c757d;
-  --bs-btn-focus-shadow-rgb: 108, 117, 125;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #6c757d;
-  --bs-btn-active-border-color: #6c757d;
-  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #6c757d;
-  --bs-btn-disabled-bg: transparent;
-  --bs-btn-disabled-border-color: #6c757d;
-  --bs-gradient: none;
-}
-
-/* line 149, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
-.btn-outline-success {
-  --bs-btn-color: #198754;
-  --bs-btn-border-color: #198754;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #198754;
-  --bs-btn-hover-border-color: #198754;
-  --bs-btn-focus-shadow-rgb: 25, 135, 84;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #198754;
-  --bs-btn-active-border-color: #198754;
-  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #198754;
-  --bs-btn-disabled-bg: transparent;
-  --bs-btn-disabled-border-color: #198754;
-  --bs-gradient: none;
-}
-
-/* line 149, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
-.btn-outline-info {
-  --bs-btn-color: #0dcaf0;
-  --bs-btn-border-color: #0dcaf0;
-  --bs-btn-hover-color: #000;
-  --bs-btn-hover-bg: #0dcaf0;
-  --bs-btn-hover-border-color: #0dcaf0;
-  --bs-btn-focus-shadow-rgb: 13, 202, 240;
-  --bs-btn-active-color: #000;
-  --bs-btn-active-bg: #0dcaf0;
-  --bs-btn-active-border-color: #0dcaf0;
-  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #0dcaf0;
-  --bs-btn-disabled-bg: transparent;
-  --bs-btn-disabled-border-color: #0dcaf0;
-  --bs-gradient: none;
-}
-
-/* line 149, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
-.btn-outline-warning {
-  --bs-btn-color: #ffc107;
-  --bs-btn-border-color: #ffc107;
-  --bs-btn-hover-color: #000;
-  --bs-btn-hover-bg: #ffc107;
-  --bs-btn-hover-border-color: #ffc107;
-  --bs-btn-focus-shadow-rgb: 255, 193, 7;
-  --bs-btn-active-color: #000;
-  --bs-btn-active-bg: #ffc107;
-  --bs-btn-active-border-color: #ffc107;
-  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #ffc107;
-  --bs-btn-disabled-bg: transparent;
-  --bs-btn-disabled-border-color: #ffc107;
-  --bs-gradient: none;
-}
-
-/* line 149, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
-.btn-outline-danger {
-  --bs-btn-color: #dc3545;
-  --bs-btn-border-color: #dc3545;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #dc3545;
-  --bs-btn-hover-border-color: #dc3545;
-  --bs-btn-focus-shadow-rgb: 220, 53, 69;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #dc3545;
-  --bs-btn-active-border-color: #dc3545;
-  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #dc3545;
-  --bs-btn-disabled-bg: transparent;
-  --bs-btn-disabled-border-color: #dc3545;
-  --bs-gradient: none;
-}
-
-/* line 149, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
-.btn-outline-light {
-  --bs-btn-color: #f8f9fa;
-  --bs-btn-border-color: #f8f9fa;
-  --bs-btn-hover-color: #000;
-  --bs-btn-hover-bg: #f8f9fa;
-  --bs-btn-hover-border-color: #f8f9fa;
-  --bs-btn-focus-shadow-rgb: 248, 249, 250;
-  --bs-btn-active-color: #000;
-  --bs-btn-active-bg: #f8f9fa;
-  --bs-btn-active-border-color: #f8f9fa;
-  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #f8f9fa;
-  --bs-btn-disabled-bg: transparent;
-  --bs-btn-disabled-border-color: #f8f9fa;
-  --bs-gradient: none;
-}
-
-/* line 149, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
-.btn-outline-dark {
-  --bs-btn-color: #212529;
-  --bs-btn-border-color: #212529;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #212529;
-  --bs-btn-hover-border-color: #212529;
-  --bs-btn-focus-shadow-rgb: 33, 37, 41;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #212529;
-  --bs-btn-active-border-color: #212529;
-  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #212529;
-  --bs-btn-disabled-bg: transparent;
-  --bs-btn-disabled-border-color: #212529;
-  --bs-gradient: none;
-}
-
-/* line 149, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
-.btn-outline-vrs-primary {
   --bs-btn-color: #404570;
   --bs-btn-border-color: #404570;
   --bs-btn-hover-color: #fff;
@@ -3768,6 +3584,78 @@ fieldset:disabled .btn {
   --bs-btn-disabled-color: #404570;
   --bs-btn-disabled-bg: transparent;
   --bs-btn-disabled-border-color: #404570;
+  --bs-gradient: none;
+}
+
+/* line 149, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
+.btn-outline-success {
+  --bs-btn-color: #CFA716;
+  --bs-btn-border-color: #CFA716;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #CFA716;
+  --bs-btn-hover-border-color: #CFA716;
+  --bs-btn-focus-shadow-rgb: 207, 167, 22;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: #CFA716;
+  --bs-btn-active-border-color: #CFA716;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #CFA716;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #CFA716;
+  --bs-gradient: none;
+}
+
+/* line 149, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
+.btn-outline-danger {
+  --bs-btn-color: #763615;
+  --bs-btn-border-color: #763615;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #763615;
+  --bs-btn-hover-border-color: #763615;
+  --bs-btn-focus-shadow-rgb: 118, 54, 21;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #763615;
+  --bs-btn-active-border-color: #763615;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #763615;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #763615;
+  --bs-gradient: none;
+}
+
+/* line 149, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
+.btn-outline-warning {
+  --bs-btn-color: #F9F871;
+  --bs-btn-border-color: #F9F871;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #F9F871;
+  --bs-btn-hover-border-color: #F9F871;
+  --bs-btn-focus-shadow-rgb: 249, 248, 113;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: #F9F871;
+  --bs-btn-active-border-color: #F9F871;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #F9F871;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #F9F871;
+  --bs-gradient: none;
+}
+
+/* line 149, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_buttons.scss */
+.btn-outline-info {
+  --bs-btn-color: #E58EC3;
+  --bs-btn-border-color: #E58EC3;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #E58EC3;
+  --bs-btn-hover-border-color: #E58EC3;
+  --bs-btn-focus-shadow-rgb: 229, 142, 195;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: #E58EC3;
+  --bs-btn-active-border-color: #E58EC3;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #E58EC3;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #E58EC3;
   --bs-gradient: none;
 }
 
@@ -5007,8 +4895,8 @@ fieldset:disabled .btn {
 
 /* line 267, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_navbar.scss */
 .navbar-dark {
-  --bs-navbar-color: #ccc;
-  --bs-navbar-hover-color: #fff;
+  --bs-navbar-color: rgba(255, 255, 255, 0.55);
+  --bs-navbar-hover-color: rgba(255, 255, 255, 0.75);
   --bs-navbar-disabled-color: rgba(255, 255, 255, 0.25);
   --bs-navbar-active-color: #fff;
   --bs-navbar-brand-color: #fff;
@@ -5532,110 +5420,74 @@ fieldset:disabled .btn {
 
 /* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_alert.scss */
 .alert-primary {
-  --bs-alert-color: #084298;
-  --bs-alert-bg: #cfe2ff;
-  --bs-alert-border-color: #b6d4fe;
+  --bs-alert-color: #084d6a;
+  --bs-alert-bg: #cfe6ef;
+  --bs-alert-border-color: #b7d9e7;
 }
 
 /* line 11, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_alert.scss */
 .alert-primary .alert-link {
-  color: #06357a;
+  color: #063e55;
 }
 
 /* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_alert.scss */
 .alert-secondary {
-  --bs-alert-color: #41464b;
-  --bs-alert-bg: #e2e3e5;
-  --bs-alert-border-color: #d3d6d8;
-}
-
-/* line 11, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_alert.scss */
-.alert-secondary .alert-link {
-  color: #34383c;
-}
-
-/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_alert.scss */
-.alert-success {
-  --bs-alert-color: #0f5132;
-  --bs-alert-bg: #d1e7dd;
-  --bs-alert-border-color: #badbcc;
-}
-
-/* line 11, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_alert.scss */
-.alert-success .alert-link {
-  color: #0c4128;
-}
-
-/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_alert.scss */
-.alert-info {
-  --bs-alert-color: #055160;
-  --bs-alert-bg: #cff4fc;
-  --bs-alert-border-color: #b6effb;
-}
-
-/* line 11, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_alert.scss */
-.alert-info .alert-link {
-  color: #04414d;
-}
-
-/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_alert.scss */
-.alert-warning {
-  --bs-alert-color: #664d03;
-  --bs-alert-bg: #fff3cd;
-  --bs-alert-border-color: #ffecb5;
-}
-
-/* line 11, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_alert.scss */
-.alert-warning .alert-link {
-  color: #523e02;
-}
-
-/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_alert.scss */
-.alert-danger {
-  --bs-alert-color: #842029;
-  --bs-alert-bg: #f8d7da;
-  --bs-alert-border-color: #f5c2c7;
-}
-
-/* line 11, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_alert.scss */
-.alert-danger .alert-link {
-  color: #6a1a21;
-}
-
-/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_alert.scss */
-.alert-light {
-  --bs-alert-color: #636464;
-  --bs-alert-bg: #fefefe;
-  --bs-alert-border-color: #fdfdfe;
-}
-
-/* line 11, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_alert.scss */
-.alert-light .alert-link {
-  color: #4f5050;
-}
-
-/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_alert.scss */
-.alert-dark {
-  --bs-alert-color: #141619;
-  --bs-alert-bg: #d3d3d4;
-  --bs-alert-border-color: #bcbebf;
-}
-
-/* line 11, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_alert.scss */
-.alert-dark .alert-link {
-  color: #101214;
-}
-
-/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_alert.scss */
-.alert-vrs-primary {
   --bs-alert-color: #262943;
   --bs-alert-bg: #d9dae2;
   --bs-alert-border-color: #c6c7d4;
 }
 
 /* line 11, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_alert.scss */
-.alert-vrs-primary .alert-link {
+.alert-secondary .alert-link {
   color: #1e2136;
+}
+
+/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_alert.scss */
+.alert-success {
+  --bs-alert-color: #7c640d;
+  --bs-alert-bg: #f5edd0;
+  --bs-alert-border-color: #f1e5b9;
+}
+
+/* line 11, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_alert.scss */
+.alert-success .alert-link {
+  color: #63500a;
+}
+
+/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_alert.scss */
+.alert-danger {
+  --bs-alert-color: #47200d;
+  --bs-alert-bg: #e4d7d0;
+  --bs-alert-border-color: #d6c3b9;
+}
+
+/* line 11, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_alert.scss */
+.alert-danger .alert-link {
+  color: #391a0a;
+}
+
+/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_alert.scss */
+.alert-warning {
+  --bs-alert-color: #64632d;
+  --bs-alert-bg: #fefee3;
+  --bs-alert-border-color: #fdfdd4;
+}
+
+/* line 11, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_alert.scss */
+.alert-warning .alert-link {
+  color: #504f24;
+}
+
+/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_alert.scss */
+.alert-info {
+  --bs-alert-color: #895575;
+  --bs-alert-bg: #fae8f3;
+  --bs-alert-border-color: #f7dded;
+}
+
+/* line 11, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_alert.scss */
+.alert-info .alert-link {
+  color: #6e445e;
 }
 
 @keyframes progress-bar-stripes {
@@ -5933,173 +5785,116 @@ fieldset:disabled .btn {
 
 /* line 5, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
 .list-group-item-primary {
-  color: #084298;
-  background-color: #cfe2ff;
+  color: #084d6a;
+  background-color: #cfe6ef;
 }
 
 /* line 10, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
 .list-group-item-primary.list-group-item-action:hover, .list-group-item-primary.list-group-item-action:focus {
-  color: #084298;
-  background-color: #bacbe6;
+  color: #084d6a;
+  background-color: #bacfd7;
 }
 
 /* line 16, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
 .list-group-item-primary.list-group-item-action.active {
   color: #fff;
-  background-color: #084298;
-  border-color: #084298;
+  background-color: #084d6a;
+  border-color: #084d6a;
 }
 
 /* line 5, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
 .list-group-item-secondary {
-  color: #41464b;
-  background-color: #e2e3e5;
-}
-
-/* line 10, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-secondary.list-group-item-action:hover, .list-group-item-secondary.list-group-item-action:focus {
-  color: #41464b;
-  background-color: #cbccce;
-}
-
-/* line 16, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-secondary.list-group-item-action.active {
-  color: #fff;
-  background-color: #41464b;
-  border-color: #41464b;
-}
-
-/* line 5, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-success {
-  color: #0f5132;
-  background-color: #d1e7dd;
-}
-
-/* line 10, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-success.list-group-item-action:hover, .list-group-item-success.list-group-item-action:focus {
-  color: #0f5132;
-  background-color: #bcd0c7;
-}
-
-/* line 16, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-success.list-group-item-action.active {
-  color: #fff;
-  background-color: #0f5132;
-  border-color: #0f5132;
-}
-
-/* line 5, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-info {
-  color: #055160;
-  background-color: #cff4fc;
-}
-
-/* line 10, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-info.list-group-item-action:hover, .list-group-item-info.list-group-item-action:focus {
-  color: #055160;
-  background-color: #badce3;
-}
-
-/* line 16, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-info.list-group-item-action.active {
-  color: #fff;
-  background-color: #055160;
-  border-color: #055160;
-}
-
-/* line 5, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-warning {
-  color: #664d03;
-  background-color: #fff3cd;
-}
-
-/* line 10, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-warning.list-group-item-action:hover, .list-group-item-warning.list-group-item-action:focus {
-  color: #664d03;
-  background-color: #e6dbb9;
-}
-
-/* line 16, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-warning.list-group-item-action.active {
-  color: #fff;
-  background-color: #664d03;
-  border-color: #664d03;
-}
-
-/* line 5, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-danger {
-  color: #842029;
-  background-color: #f8d7da;
-}
-
-/* line 10, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-danger.list-group-item-action:hover, .list-group-item-danger.list-group-item-action:focus {
-  color: #842029;
-  background-color: #dfc2c4;
-}
-
-/* line 16, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-danger.list-group-item-action.active {
-  color: #fff;
-  background-color: #842029;
-  border-color: #842029;
-}
-
-/* line 5, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-light {
-  color: #636464;
-  background-color: #fefefe;
-}
-
-/* line 10, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-light.list-group-item-action:hover, .list-group-item-light.list-group-item-action:focus {
-  color: #636464;
-  background-color: #e5e5e5;
-}
-
-/* line 16, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-light.list-group-item-action.active {
-  color: #fff;
-  background-color: #636464;
-  border-color: #636464;
-}
-
-/* line 5, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-dark {
-  color: #141619;
-  background-color: #d3d3d4;
-}
-
-/* line 10, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-dark.list-group-item-action:hover, .list-group-item-dark.list-group-item-action:focus {
-  color: #141619;
-  background-color: #bebebf;
-}
-
-/* line 16, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-dark.list-group-item-action.active {
-  color: #fff;
-  background-color: #141619;
-  border-color: #141619;
-}
-
-/* line 5, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-vrs-primary {
   color: #262943;
   background-color: #d9dae2;
 }
 
 /* line 10, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-vrs-primary.list-group-item-action:hover, .list-group-item-vrs-primary.list-group-item-action:focus {
+.list-group-item-secondary.list-group-item-action:hover, .list-group-item-secondary.list-group-item-action:focus {
   color: #262943;
   background-color: #c3c4cb;
 }
 
 /* line 16, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
-.list-group-item-vrs-primary.list-group-item-action.active {
+.list-group-item-secondary.list-group-item-action.active {
   color: #fff;
   background-color: #262943;
   border-color: #262943;
+}
+
+/* line 5, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
+.list-group-item-success {
+  color: #7c640d;
+  background-color: #f5edd0;
+}
+
+/* line 10, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
+.list-group-item-success.list-group-item-action:hover, .list-group-item-success.list-group-item-action:focus {
+  color: #7c640d;
+  background-color: #ddd5bb;
+}
+
+/* line 16, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
+.list-group-item-success.list-group-item-action.active {
+  color: #fff;
+  background-color: #7c640d;
+  border-color: #7c640d;
+}
+
+/* line 5, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
+.list-group-item-danger {
+  color: #47200d;
+  background-color: #e4d7d0;
+}
+
+/* line 10, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
+.list-group-item-danger.list-group-item-action:hover, .list-group-item-danger.list-group-item-action:focus {
+  color: #47200d;
+  background-color: #cdc2bb;
+}
+
+/* line 16, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
+.list-group-item-danger.list-group-item-action.active {
+  color: #fff;
+  background-color: #47200d;
+  border-color: #47200d;
+}
+
+/* line 5, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
+.list-group-item-warning {
+  color: #64632d;
+  background-color: #fefee3;
+}
+
+/* line 10, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
+.list-group-item-warning.list-group-item-action:hover, .list-group-item-warning.list-group-item-action:focus {
+  color: #64632d;
+  background-color: #e5e5cc;
+}
+
+/* line 16, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
+.list-group-item-warning.list-group-item-action.active {
+  color: #fff;
+  background-color: #64632d;
+  border-color: #64632d;
+}
+
+/* line 5, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
+.list-group-item-info {
+  color: #895575;
+  background-color: #fae8f3;
+}
+
+/* line 10, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
+.list-group-item-info.list-group-item-action:hover, .list-group-item-info.list-group-item-action:focus {
+  color: #895575;
+  background-color: #e1d1db;
+}
+
+/* line 16, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss */
+.list-group-item-info.list-group-item-action.active {
+  color: #fff;
+  background-color: #895575;
+  border-color: #895575;
 }
 
 /* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/_close.scss */
@@ -7826,146 +7621,98 @@ fieldset:disabled .btn {
 
 /* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_color-bg.scss */
 .text-bg-primary {
-  color: #fff !important;
-  background-color: RGBA(13, 110, 253, var(--bs-bg-opacity, 1)) !important;
+  color: #000 !important;
+  background-color: RGBA(14, 129, 176, var(--bs-bg-opacity, 1)) !important;
 }
 
 /* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_color-bg.scss */
 .text-bg-secondary {
   color: #fff !important;
-  background-color: RGBA(108, 117, 125, var(--bs-bg-opacity, 1)) !important;
+  background-color: RGBA(64, 69, 112, var(--bs-bg-opacity, 1)) !important;
 }
 
 /* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_color-bg.scss */
 .text-bg-success {
-  color: #fff !important;
-  background-color: RGBA(25, 135, 84, var(--bs-bg-opacity, 1)) !important;
-}
-
-/* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_color-bg.scss */
-.text-bg-info {
   color: #000 !important;
-  background-color: RGBA(13, 202, 240, var(--bs-bg-opacity, 1)) !important;
-}
-
-/* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_color-bg.scss */
-.text-bg-warning {
-  color: #000 !important;
-  background-color: RGBA(255, 193, 7, var(--bs-bg-opacity, 1)) !important;
+  background-color: RGBA(207, 167, 22, var(--bs-bg-opacity, 1)) !important;
 }
 
 /* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_color-bg.scss */
 .text-bg-danger {
   color: #fff !important;
-  background-color: RGBA(220, 53, 69, var(--bs-bg-opacity, 1)) !important;
+  background-color: RGBA(118, 54, 21, var(--bs-bg-opacity, 1)) !important;
 }
 
 /* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_color-bg.scss */
-.text-bg-light {
+.text-bg-warning {
   color: #000 !important;
-  background-color: RGBA(248, 249, 250, var(--bs-bg-opacity, 1)) !important;
+  background-color: RGBA(249, 248, 113, var(--bs-bg-opacity, 1)) !important;
 }
 
 /* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_color-bg.scss */
-.text-bg-dark {
-  color: #fff !important;
-  background-color: RGBA(33, 37, 41, var(--bs-bg-opacity, 1)) !important;
-}
-
-/* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_color-bg.scss */
-.text-bg-vrs-primary {
-  color: #fff !important;
-  background-color: RGBA(64, 69, 112, var(--bs-bg-opacity, 1)) !important;
+.text-bg-info {
+  color: #000 !important;
+  background-color: RGBA(229, 142, 195, var(--bs-bg-opacity, 1)) !important;
 }
 
 /* line 2, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
 .link-primary {
-  color: #0d6efd !important;
+  color: #0E81B0 !important;
 }
 
 /* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
 .link-primary:hover, .link-primary:focus {
-  color: #0a58ca !important;
+  color: #3e9ac0 !important;
 }
 
 /* line 2, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
 .link-secondary {
-  color: #6c757d !important;
-}
-
-/* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
-.link-secondary:hover, .link-secondary:focus {
-  color: #565e64 !important;
-}
-
-/* line 2, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
-.link-success {
-  color: #198754 !important;
-}
-
-/* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
-.link-success:hover, .link-success:focus {
-  color: #146c43 !important;
-}
-
-/* line 2, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
-.link-info {
-  color: #0dcaf0 !important;
-}
-
-/* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
-.link-info:hover, .link-info:focus {
-  color: #3dd5f3 !important;
-}
-
-/* line 2, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
-.link-warning {
-  color: #ffc107 !important;
-}
-
-/* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
-.link-warning:hover, .link-warning:focus {
-  color: #ffcd39 !important;
-}
-
-/* line 2, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
-.link-danger {
-  color: #dc3545 !important;
-}
-
-/* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
-.link-danger:hover, .link-danger:focus {
-  color: #b02a37 !important;
-}
-
-/* line 2, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
-.link-light {
-  color: #f8f9fa !important;
-}
-
-/* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
-.link-light:hover, .link-light:focus {
-  color: #f9fafb !important;
-}
-
-/* line 2, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
-.link-dark {
-  color: #212529 !important;
-}
-
-/* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
-.link-dark:hover, .link-dark:focus {
-  color: #1a1e21 !important;
-}
-
-/* line 2, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
-.link-vrs-primary {
   color: #404570 !important;
 }
 
 /* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
-.link-vrs-primary:hover, .link-vrs-primary:focus {
+.link-secondary:hover, .link-secondary:focus {
   color: #33375a !important;
+}
+
+/* line 2, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
+.link-success {
+  color: #CFA716 !important;
+}
+
+/* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
+.link-success:hover, .link-success:focus {
+  color: #d9b945 !important;
+}
+
+/* line 2, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
+.link-danger {
+  color: #763615 !important;
+}
+
+/* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
+.link-danger:hover, .link-danger:focus {
+  color: #5e2b11 !important;
+}
+
+/* line 2, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
+.link-warning {
+  color: #F9F871 !important;
+}
+
+/* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
+.link-warning:hover, .link-warning:focus {
+  color: #faf98d !important;
+}
+
+/* line 2, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
+.link-info {
+  color: #E58EC3 !important;
+}
+
+/* line 6, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_colored-links.scss */
+.link-info:hover, .link-info:focus {
+  color: #eaa5cf !important;
 }
 
 /* line 3, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/helpers/_ratio.scss */
@@ -8504,9 +8251,9 @@ fieldset:disabled .btn {
 }
 
 /* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
-.border-info {
+.border-danger {
   --bs-border-opacity: 1;
-  border-color: rgba(var(--bs-info-rgb), var(--bs-border-opacity)) !important;
+  border-color: rgba(var(--bs-danger-rgb), var(--bs-border-opacity)) !important;
 }
 
 /* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
@@ -8516,27 +8263,9 @@ fieldset:disabled .btn {
 }
 
 /* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
-.border-danger {
+.border-info {
   --bs-border-opacity: 1;
-  border-color: rgba(var(--bs-danger-rgb), var(--bs-border-opacity)) !important;
-}
-
-/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
-.border-light {
-  --bs-border-opacity: 1;
-  border-color: rgba(var(--bs-light-rgb), var(--bs-border-opacity)) !important;
-}
-
-/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
-.border-dark {
-  --bs-border-opacity: 1;
-  border-color: rgba(var(--bs-dark-rgb), var(--bs-border-opacity)) !important;
-}
-
-/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
-.border-vrs-primary {
-  --bs-border-opacity: 1;
-  border-color: rgba(var(--bs-vrs-primary-rgb), var(--bs-border-opacity)) !important;
+  border-color: rgba(var(--bs-info-rgb), var(--bs-border-opacity)) !important;
 }
 
 /* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
@@ -9578,9 +9307,9 @@ fieldset:disabled .btn {
 }
 
 /* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
-.text-info {
+.text-danger {
   --bs-text-opacity: 1;
-  color: rgba(var(--bs-info-rgb), var(--bs-text-opacity)) !important;
+  color: rgba(var(--bs-danger-rgb), var(--bs-text-opacity)) !important;
 }
 
 /* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
@@ -9590,27 +9319,9 @@ fieldset:disabled .btn {
 }
 
 /* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
-.text-danger {
+.text-info {
   --bs-text-opacity: 1;
-  color: rgba(var(--bs-danger-rgb), var(--bs-text-opacity)) !important;
-}
-
-/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
-.text-light {
-  --bs-text-opacity: 1;
-  color: rgba(var(--bs-light-rgb), var(--bs-text-opacity)) !important;
-}
-
-/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
-.text-dark {
-  --bs-text-opacity: 1;
-  color: rgba(var(--bs-dark-rgb), var(--bs-text-opacity)) !important;
-}
-
-/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
-.text-vrs-primary {
-  --bs-text-opacity: 1;
-  color: rgba(var(--bs-vrs-primary-rgb), var(--bs-text-opacity)) !important;
+  color: rgba(var(--bs-info-rgb), var(--bs-text-opacity)) !important;
 }
 
 /* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
@@ -9694,9 +9405,9 @@ fieldset:disabled .btn {
 }
 
 /* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
-.bg-info {
+.bg-danger {
   --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity)) !important;
+  background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
 }
 
 /* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
@@ -9706,27 +9417,9 @@ fieldset:disabled .btn {
 }
 
 /* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
-.bg-danger {
+.bg-info {
   --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
-}
-
-/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
-.bg-light {
-  --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-light-rgb), var(--bs-bg-opacity)) !important;
-}
-
-/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
-.bg-dark {
-  --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)) !important;
-}
-
-/* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
-.bg-vrs-primary {
-  --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-vrs-primary-rgb), var(--bs-bg-opacity)) !important;
+  background-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity)) !important;
 }
 
 /* line 67, ../../../../../Source/VRS/VirtualRadar/wwwroot/lib/bootstrap/scss/mixins/_utilities.scss */
@@ -13214,24 +12907,34 @@ fieldset:disabled .btn {
   }
 }
 
-/* line 46, ../../../../../Source/VRS/VirtualRadar/wwwroot/scss/bootstrap-vrs.scss */
+/* line 28, ../../../../../Source/VRS/VirtualRadar/wwwroot/scss/bootstrap-vrs.scss */
+h1:focus, .h1:focus {
+  outline: none;
+}
+
+/* line 31, ../../../../../Source/VRS/VirtualRadar/wwwroot/scss/bootstrap-vrs.scss */
 label {
   font-weight: 600;
 }
 
-/* line 49, ../../../../../Source/VRS/VirtualRadar/wwwroot/scss/bootstrap-vrs.scss */
+/* line 34, ../../../../../Source/VRS/VirtualRadar/wwwroot/scss/bootstrap-vrs.scss */
 value {
   font-family: Inconsolata, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
   font-weight: 300;
 }
 
-/* line 53, ../../../../../Source/VRS/VirtualRadar/wwwroot/scss/bootstrap-vrs.scss */
+/* line 38, ../../../../../Source/VRS/VirtualRadar/wwwroot/scss/bootstrap-vrs.scss */
 value.multi-line {
   white-space: pre-line;
 }
 
-/* line 56, ../../../../../Source/VRS/VirtualRadar/wwwroot/scss/bootstrap-vrs.scss */
+/* line 41, ../../../../../Source/VRS/VirtualRadar/wwwroot/scss/bootstrap-vrs.scss */
 value b {
+  font-weight: 600;
+}
+
+/* line 44, ../../../../../Source/VRS/VirtualRadar/wwwroot/scss/bootstrap-vrs.scss */
+.fw-bold value {
   font-weight: 600;
 }
 

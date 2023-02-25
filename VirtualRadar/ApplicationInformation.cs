@@ -29,6 +29,7 @@ namespace VirtualRadar
         private static string _FullVersion;
         private static string _BetaBasedOnShortVersion;
         private static string _BetaBasedOnFullVersion;
+        private static string _BetaRevision;
         private static string _ApplicationName;
         private static string _ProductName;
         private static string _Description;
@@ -66,6 +67,8 @@ namespace VirtualRadar
         /// See interface docs.
         /// </summary>
         public bool IsBeta => !String.IsNullOrEmpty(_BetaBasedOnFullVersion);
+
+        public string BetaRevision => _BetaRevision ?? "";
 
         /// <summary>
         /// See interface docs.
@@ -128,15 +131,17 @@ namespace VirtualRadar
 
                 var informationalVersion = (assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute)?.InformationalVersion;
                 if(!String.IsNullOrEmpty(informationalVersion)) {
-                    var betaRegex = new Regex(@"^(?<major>\d+)\.(?<minor>\d+)\.(?<build>\d+)\.(?<revision>\d+)-beta-(?<betaVersion>\d+)$");
+                    var betaRegex = new Regex(@"^(?<major>\d+)\.(?<minor>\d+)\.(?<build>\d+)\.(?<revision>\d+)-beta-(?<betaRevision>\d+)$");
                     var match = betaRegex.Match(informationalVersion);
                     if(match.Success) {
                         var major = match.Groups["major"].Value;
                         var minor = match.Groups["minor"].Value;
                         var build = match.Groups["build"].Value;
                         var revision = match.Groups["revision"].Value;
+                        var betaRevision = match.Groups["betaRevision"].Value;
                         _BetaBasedOnFullVersion = $"{major}.{minor}.{build}.{revision}";
                         _BetaBasedOnShortVersion = $"{major}.{minor}.{build}";
+                        _BetaRevision = betaRevision.TrimStart('0');
                     }
                 }
             }

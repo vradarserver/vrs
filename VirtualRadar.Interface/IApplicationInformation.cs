@@ -48,6 +48,11 @@ namespace VirtualRadar.Interface
         bool IsBeta { get; }
 
         /// <summary>
+        /// Gets the beta number or empty string if <see cref="IsBeta"/> is false.
+        /// </summary>
+        string BetaRevision { get; }
+
+        /// <summary>
         /// Gets the build date of the application.
         /// </summary>
         DateTime BuildDate { get; }

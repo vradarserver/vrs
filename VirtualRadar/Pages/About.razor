@@ -9,9 +9,9 @@
 <PageTitle>@Strings.About</PageTitle>
 <h1>@Strings.About</h1>
 
-<div class="row mb-3">
-    <div class="col">@Strings.Built <value>@ApplicationInformation.BuildDate.ToString("dd-MMM-yyyy HH:mm:ss") UTC</value></div>
-    <div class="col text-center"><value>@ApplicationInformation.ShortVersion@(ApplicationInformation.IsBeta ? $" {Strings.Beta}" : "")</value></div>
+<div class="row my-5 fw-bold">
+    <div class="col text-start offset-2"><value>@Strings.Built @ApplicationInformation.BuildDate.ToString("dd-MMM-yyyy HH:mm:ss") UTC</value></div>
+    <div class="col text-center"><value>@ApplicationInformation.ShortVersion@(ApplicationInformation.IsBeta ? $" {Strings.Beta} {ApplicationInformation.BetaRevision}" : "")</value></div>
     <div class="col text-end">.NET <value>@System.Environment.Version</value></div>
 </div>
 
