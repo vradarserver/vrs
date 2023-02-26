@@ -84,9 +84,15 @@ namespace VirtualRadar
             app.MapBlazorHub();
             app.MapFallbackToPage("/_Host");
 
-            Console.WriteLine(Strings.SplashScreenStartingWebServer);
+            var vrsApplicationLifetime = app.Services.GetRequiredService<VirtualRadar.Interface.IApplicationLifetime>();
+            vrsApplicationLifetime.Start();
 
-            app.Run();
+            try {
+                Console.WriteLine(Strings.SplashScreenStartingWebServer);
+                app.Run();
+            } finally {
+                vrsApplicationLifetime.Stop();
+            }
         }
     }
 }
