@@ -1,4 +1,4 @@
-﻿// Copyright © 2023 onwards, Andrew Whewell
+﻿// Copyright © 2012 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -8,32 +8,41 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using VirtualRadar.Interface.Adsb;
 
-namespace VirtualRadar.Interface.Options
+namespace VirtualRadar.Interface.ModeS
 {
     /// <summary>
-    /// The options for the code that manages incoming aircraft feeds.
+    /// The event that is raised when a listener to a source of raw Mode-S messages from an aircraft receives a message.
     /// </summary>
-    public class FeedManagerOptions
+    public class ModeSMessageEventArgs : EventArgs
     {
         /// <summary>
-        /// Settings for every receiver.
+        /// Gets the date and time at UTC when the message was received.
         /// </summary>
-        public List<ReceiverOptions> Receivers { get; } = new();
+        public DateTime ReceivedUtc { get; private set; }
 
         /// <summary>
-        /// Pull TCP connection settings.
+        /// Gets the decoded Mode-S message from the aircraft.
         /// </summary>
-        public Dictionary<Guid, TcpPullConnectionOptions> TcpPullConnectionOptions { get; } = new();
+        public ModeSMessage ModeSMessage { get; private set; }
 
         /// <summary>
-        /// Used by System.Text.Json to preserve properties that it does not know how to deserialise.
-        /// Allows users to regress to earlier versions of the program without losing options that
-        /// were added in a later version.
+        /// Gets the decoded ADS-B message from extended squitter Mode-S messages. This will be null if the Mode-S message did not contain an ADS-B payload.
         /// </summary>
-        [JsonExtensionData]
-        public Dictionary<string, JsonElement> PreservedForwardCompatibleProperties { get; set; }
+        public AdsbMessage AdsbMessage { get; private set; }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="utcNow"></param>
+        /// <param name="modeSMessage"></param>
+        /// <param name="adsbMessage"></param>
+        public ModeSMessageEventArgs(DateTime utcNow, ModeSMessage modeSMessage, AdsbMessage adsbMessage)
+        {
+            ReceivedUtc = utcNow;
+            ModeSMessage = modeSMessage;
+            AdsbMessage = adsbMessage;
+        }
     }
 }

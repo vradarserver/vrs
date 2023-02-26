@@ -1,4 +1,4 @@
-﻿// Copyright © 2023 onwards, Andrew Whewell
+﻿// Copyright © 2015 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -8,60 +8,42 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-namespace VirtualRadar.Interface.Options
+namespace VirtualRadar.Interface.StandingData
 {
-    public class ReceiverOptions
+    /// <summary>
+    /// An enumeration of the placement of the engines on the aircraft, if known.
+    /// </summary>
+    /// <remarks>The integer values for these are sent to browsers - try not to change the numbers between releases.</remarks>
+    public enum EnginePlacement
     {
         /// <summary>
-        /// Gets or sets the unique identifier of the receiver.
+        /// The engine placement has not been recorded for the aircraft.
         /// </summary>
-        public Guid ReceiverId { get; set; } = Guid.NewGuid();
+        Unknown = 0,
 
         /// <summary>
-        /// Gets or sets a value indicating that the receiver is enabled.
+        /// The engines are mainly mounted towards the rear of the aircraft.
         /// </summary>
-        public bool Enabled { get; set; } = true;
+        AftMounted = 1,
 
         /// <summary>
-        /// Gets or sets the receiver's name that is shown to the user.
+        /// The engines are mounted within the wings.
         /// </summary>
-        public string Name { get; set; } = "";
+        WingBuried = 2,
 
         /// <summary>
-        /// The format of the feed that this receiver is expecting to to be sent.
+        /// The engines are mounted within the fuselage.
         /// </summary>
-        public string FeedFormat { get; set; } = "Port30003";
+        FuselageBuried = 3,
 
         /// <summary>
-        /// Gets or sets a value indicating how to connect to the feed.
+        /// The engine is mounted within the nose of the aircraft.
         /// </summary>
-        public string ConnectionType { get; set; } = "TCP-PULL";
+        NoseMounted = 4,
 
         /// <summary>
-        /// The passphrase that the other side is expecting us to send when a connection is
-        /// established. If this is null or empty then no passphrase is required.
+        /// The engines are mounted on wing pylons.
         /// </summary>
-        public string Passphrase { get; set; }
-
-        /// <summary>
-        /// The latitude of the receiver.
-        /// </summary>
-        public double? Latitude { get; set; }
-
-        /// <summary>
-        /// The longitude of the receiver.
-        /// </summary>
-        public double? Longitude { get; set; }
-
-        /// <summary>
-        /// Used by System.Text.Json to preserve properties that it does not know how to deserialise.
-        /// Allows users to regress to earlier versions of the program without losing options that
-        /// were added in a later version.
-        /// </summary>
-        [JsonExtensionData]
-        public Dictionary<string, JsonElement> PreservedForwardCompatibleProperties { get; set; }
+        WingMounted = 5,
     }
 }

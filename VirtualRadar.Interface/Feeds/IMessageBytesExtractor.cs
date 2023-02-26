@@ -1,4 +1,4 @@
-﻿// Copyright © 2023 onwards, Andrew Whewell
+﻿// Copyright © 2012 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -8,32 +8,33 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-namespace VirtualRadar.Interface.Options
+namespace VirtualRadar.Interface.Feeds
 {
     /// <summary>
-    /// The options for the code that manages incoming aircraft feeds.
+    /// The interface for objects that can extract raw message bytes from an array of bytes.
     /// </summary>
-    public class FeedManagerOptions
+    public interface IMessageBytesExtractor
     {
         /// <summary>
-        /// Settings for every receiver.
+        /// Gets the number of bytes that the message extractor is currently consuming in buffers.
         /// </summary>
-        public List<ReceiverOptions> Receivers { get; } = new();
+        long BufferSize { get; }
 
         /// <summary>
-        /// Pull TCP connection settings.
+        /// Returns a collection of byte arrays, each byte array corresponding to a complete message.
         /// </summary>
-        public Dictionary<Guid, TcpPullConnectionOptions> TcpPullConnectionOptions { get; } = new();
-
-        /// <summary>
-        /// Used by System.Text.Json to preserve properties that it does not know how to deserialise.
-        /// Allows users to regress to earlier versions of the program without losing options that
-        /// were added in a later version.
-        /// </summary>
-        [JsonExtensionData]
-        public Dictionary<string, JsonElement> PreservedForwardCompatibleProperties { get; set; }
+        /// <param name="bytes"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        /// <remarks><para>
+        /// Extractors need to be miserly with the resources that they consume and so implementations are allowed
+        /// to reuse the <see cref="ExtractedBytes"/> that they return and the byte array within the 
+        /// <see cref="ExtractedBytes"/>. If a caller wants to ensure that each element returned by the enumerator
+        /// is independent of the others then it should clone each of them as they are returned - e.g.
+        /// </para><code>
+        /// var list = extractor.ExtractMessageBytes(bytes, 0, bytes.Length).Select(r => (ExtractedBytes)r.Clone()).ToList();
+        /// </code></remarks>
+        IEnumerable<ExtractedBytes> ExtractMessageBytes(byte[] bytes, int offset, int length);
     }
 }

@@ -13,48 +13,29 @@ using System.Text.Json.Serialization;
 
 namespace VirtualRadar.Interface.Options
 {
-    public class ReceiverOptions
+    public class TcpPullConnectionOptions
     {
         /// <summary>
-        /// Gets or sets the unique identifier of the receiver.
+        /// The address to connect to.
         /// </summary>
-        public Guid ReceiverId { get; set; } = Guid.NewGuid();
+        public string Address { get; set; } = "127.0.0.1";
 
         /// <summary>
-        /// Gets or sets a value indicating that the receiver is enabled.
+        /// The port to connect to.
         /// </summary>
-        public bool Enabled { get; set; } = true;
+        public int Port { get; set; } = 30003;
 
         /// <summary>
-        /// Gets or sets the receiver's name that is shown to the user.
+        /// True if keep-alive packets should be enabled on the connection.
         /// </summary>
-        public string Name { get; set; } = "";
+        public bool UseKeepAlive { get; set; } = true;
 
         /// <summary>
-        /// The format of the feed that this receiver is expecting to to be sent.
+        /// Only used if <see cref="UseKeepAlive"/> is false - the period of inactivity that
+        /// must elapse before the connection is dropped and re-established. If this is zero
+        /// the the feature is disabled.
         /// </summary>
-        public string FeedFormat { get; set; } = "Port30003";
-
-        /// <summary>
-        /// Gets or sets a value indicating how to connect to the feed.
-        /// </summary>
-        public string ConnectionType { get; set; } = "TCP-PULL";
-
-        /// <summary>
-        /// The passphrase that the other side is expecting us to send when a connection is
-        /// established. If this is null or empty then no passphrase is required.
-        /// </summary>
-        public string Passphrase { get; set; }
-
-        /// <summary>
-        /// The latitude of the receiver.
-        /// </summary>
-        public double? Latitude { get; set; }
-
-        /// <summary>
-        /// The longitude of the receiver.
-        /// </summary>
-        public double? Longitude { get; set; }
+        public int IdleTimeoutSeconds { get; set; } = 60;
 
         /// <summary>
         /// Used by System.Text.Json to preserve properties that it does not know how to deserialise.

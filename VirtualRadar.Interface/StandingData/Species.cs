@@ -1,4 +1,4 @@
-﻿// Copyright © 2023 onwards, Andrew Whewell
+﻿// Copyright © 2010 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -8,60 +8,61 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-namespace VirtualRadar.Interface.Options
+namespace VirtualRadar.Interface.StandingData
 {
-    public class ReceiverOptions
+    /// <summary>
+    /// An enumeration of the different species of flying machine described by ICAO8643.
+    /// </summary>
+    /// <remarks>
+    /// The numbers associated with these entries are sent to the browsers. Try to keep them unchanged across releases.
+    /// </remarks>
+    public enum Species
     {
         /// <summary>
-        /// Gets or sets the unique identifier of the receiver.
+        /// Species is not known or not applicable.
         /// </summary>
-        public Guid ReceiverId { get; set; } = Guid.NewGuid();
+        None = 0,
 
         /// <summary>
-        /// Gets or sets a value indicating that the receiver is enabled.
+        /// A fixed-wing aircraft that can only land or take off from terra firma.
         /// </summary>
-        public bool Enabled { get; set; } = true;
+        Landplane = 1,
 
         /// <summary>
-        /// Gets or sets the receiver's name that is shown to the user.
+        /// A fixed-wing aircraft that can only land or take off from a body of water.
         /// </summary>
-        public string Name { get; set; } = "";
+        Seaplane = 2,
 
         /// <summary>
-        /// The format of the feed that this receiver is expecting to to be sent.
+        /// A fixed-wing aircraft that can land or take off either from land or water.
         /// </summary>
-        public string FeedFormat { get; set; } = "Port30003";
+        Amphibian = 3,
 
         /// <summary>
-        /// Gets or sets a value indicating how to connect to the feed.
+        /// A rotary-wing aircraft whose rotors are driven by a motor.
         /// </summary>
-        public string ConnectionType { get; set; } = "TCP-PULL";
+        Helicopter = 4,
 
         /// <summary>
-        /// The passphrase that the other side is expecting us to send when a connection is
-        /// established. If this is null or empty then no passphrase is required.
+        /// A rotary-wing aircraft whose rotors are not driven by a motor.
         /// </summary>
-        public string Passphrase { get; set; }
+        Gyrocopter = 5,
 
         /// <summary>
-        /// The latitude of the receiver.
+        /// An aircraft whose wing (and the engines / propellers attached) are horizontal
+        /// during forward flight but can be tilted 90° upwards to allow it to take off
+        /// and land vertically.
         /// </summary>
-        public double? Latitude { get; set; }
+        TiltWing = 6,
 
         /// <summary>
-        /// The longitude of the receiver.
+        /// A ground vehicle.
         /// </summary>
-        public double? Longitude { get; set; }
+        GroundVehicle = 7,
 
         /// <summary>
-        /// Used by System.Text.Json to preserve properties that it does not know how to deserialise.
-        /// Allows users to regress to earlier versions of the program without losing options that
-        /// were added in a later version.
+        /// A tower or radio beacon of some kind.
         /// </summary>
-        [JsonExtensionData]
-        public Dictionary<string, JsonElement> PreservedForwardCompatibleProperties { get; set; }
+        Tower = 8,
     }
 }

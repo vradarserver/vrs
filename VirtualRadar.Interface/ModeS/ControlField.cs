@@ -1,4 +1,4 @@
-﻿// Copyright © 2023 onwards, Andrew Whewell
+﻿// Copyright © 2012 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -8,60 +8,51 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-namespace VirtualRadar.Interface.Options
+namespace VirtualRadar.Interface.ModeS
 {
-    public class ReceiverOptions
+    /// <summary>
+    /// An enumeration of the different values contained within the CF field of DF18 replies.
+    /// </summary>
+    public enum ControlField : byte
     {
         /// <summary>
-        /// Gets or sets the unique identifier of the receiver.
+        /// Non-transponder ADS-B device transmitting ICAO24 code in the AA field.
         /// </summary>
-        public Guid ReceiverId { get; set; } = Guid.NewGuid();
+        AdsbDeviceTransmittingIcao24 = 0,
 
         /// <summary>
-        /// Gets or sets a value indicating that the receiver is enabled.
+        /// Non-transponder ADS-B device transmitting a non-ICAO24 address in the AA field.
         /// </summary>
-        public bool Enabled { get; set; } = true;
+        AdsbDeviceNotTransmittingIcao24 = 1,
 
         /// <summary>
-        /// Gets or sets the receiver's name that is shown to the user.
+        /// Fine-format TIS-B message.
         /// </summary>
-        public string Name { get; set; } = "";
+        FineFormatTisb = 2,
 
         /// <summary>
-        /// The format of the feed that this receiver is expecting to to be sent.
+        /// Coarse-format TIS-B message.
         /// </summary>
-        public string FeedFormat { get; set; } = "Port30003";
+        CoarseFormatTisb = 3,
 
         /// <summary>
-        /// Gets or sets a value indicating how to connect to the feed.
+        /// Reserved for TIS-B management messages.
         /// </summary>
-        public string ConnectionType { get; set; } = "TCP-PULL";
+        TisbManagement = 4,
 
         /// <summary>
-        /// The passphrase that the other side is expecting us to send when a connection is
-        /// established. If this is null or empty then no passphrase is required.
+        /// TIS-B relay of ADS-B messages that have a non-ICAO24 address in the AA field.
         /// </summary>
-        public string Passphrase { get; set; }
+        TisbRelayNotTransmittingIcao24 = 5,
 
         /// <summary>
-        /// The latitude of the receiver.
+        /// ADS-B rebroadcast using same type codes and message formats as defined for Extended Squitter (DF17) messages.
         /// </summary>
-        public double? Latitude { get; set; }
+        AdsbRebroadcastOfExtendedSquitter = 6,
 
         /// <summary>
-        /// The longitude of the receiver.
+        /// Reserved.
         /// </summary>
-        public double? Longitude { get; set; }
-
-        /// <summary>
-        /// Used by System.Text.Json to preserve properties that it does not know how to deserialise.
-        /// Allows users to regress to earlier versions of the program without losing options that
-        /// were added in a later version.
-        /// </summary>
-        [JsonExtensionData]
-        public Dictionary<string, JsonElement> PreservedForwardCompatibleProperties { get; set; }
+        CF7 = 7,
     }
 }

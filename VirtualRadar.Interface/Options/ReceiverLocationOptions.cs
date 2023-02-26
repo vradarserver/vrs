@@ -13,49 +13,8 @@ using System.Text.Json.Serialization;
 
 namespace VirtualRadar.Interface.Options
 {
-    public class ReceiverOptions
+    public class ReceiverLocationOptions
     {
-        /// <summary>
-        /// Gets or sets the unique identifier of the receiver.
-        /// </summary>
-        public Guid ReceiverId { get; set; } = Guid.NewGuid();
-
-        /// <summary>
-        /// Gets or sets a value indicating that the receiver is enabled.
-        /// </summary>
-        public bool Enabled { get; set; } = true;
-
-        /// <summary>
-        /// Gets or sets the receiver's name that is shown to the user.
-        /// </summary>
-        public string Name { get; set; } = "";
-
-        /// <summary>
-        /// The format of the feed that this receiver is expecting to to be sent.
-        /// </summary>
-        public string FeedFormat { get; set; } = "Port30003";
-
-        /// <summary>
-        /// Gets or sets a value indicating how to connect to the feed.
-        /// </summary>
-        public string ConnectionType { get; set; } = "TCP-PULL";
-
-        /// <summary>
-        /// The passphrase that the other side is expecting us to send when a connection is
-        /// established. If this is null or empty then no passphrase is required.
-        /// </summary>
-        public string Passphrase { get; set; }
-
-        /// <summary>
-        /// The latitude of the receiver.
-        /// </summary>
-        public double? Latitude { get; set; }
-
-        /// <summary>
-        /// The longitude of the receiver.
-        /// </summary>
-        public double? Longitude { get; set; }
-
         /// <summary>
         /// Used by System.Text.Json to preserve properties that it does not know how to deserialise.
         /// Allows users to regress to earlier versions of the program without losing options that

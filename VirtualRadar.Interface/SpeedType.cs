@@ -1,4 +1,4 @@
-﻿// Copyright © 2023 onwards, Andrew Whewell
+﻿// Copyright © 2012 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -8,32 +8,33 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-namespace VirtualRadar.Interface.Options
+namespace VirtualRadar.Interface
 {
     /// <summary>
-    /// The options for the code that manages incoming aircraft feeds.
+    /// An enumeration of the different types of speed transmitted by a vehicle. This enumeration
+    /// is duplicated within the Javascript, hence the explicit declarations. Any changes here need
+    /// copying there.
     /// </summary>
-    public class FeedManagerOptions
+    public enum SpeedType : byte
     {
         /// <summary>
-        /// Settings for every receiver.
+        /// The aircraft is transmitting its ground speed.
         /// </summary>
-        public List<ReceiverOptions> Receivers { get; } = new();
+        GroundSpeed = 0,
 
         /// <summary>
-        /// Pull TCP connection settings.
+        /// The vehicle is on the ground and going backwards.
         /// </summary>
-        public Dictionary<Guid, TcpPullConnectionOptions> TcpPullConnectionOptions { get; } = new();
+        GroundSpeedReversing = 1,
 
         /// <summary>
-        /// Used by System.Text.Json to preserve properties that it does not know how to deserialise.
-        /// Allows users to regress to earlier versions of the program without losing options that
-        /// were added in a later version.
+        /// The aircraft is transmitting its indicated airspeed.
         /// </summary>
-        [JsonExtensionData]
-        public Dictionary<string, JsonElement> PreservedForwardCompatibleProperties { get; set; }
+        IndicatedAirSpeed = 2,
+
+        /// <summary>
+        /// The aircraft is transmitting its true airspeed.
+        /// </summary>
+        TrueAirSpeed = 3,
     }
 }

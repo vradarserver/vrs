@@ -1,4 +1,4 @@
-﻿// Copyright © 2023 onwards, Andrew Whewell
+﻿// Copyright © 2012 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -8,60 +8,41 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-namespace VirtualRadar.Interface.Options
+namespace VirtualRadar.Interface.Feeds
 {
-    public class ReceiverOptions
+    /// <summary>
+    /// An enumeration of the different formats that the payload of <see cref="ExtractedBytes"/> can be in.
+    /// </summary>
+    public enum ExtractedBytesFormat
     {
         /// <summary>
-        /// Gets or sets the unique identifier of the receiver.
+        /// The format of the payload is unknown.
         /// </summary>
-        public Guid ReceiverId { get; set; } = Guid.NewGuid();
+        None,
 
         /// <summary>
-        /// Gets or sets a value indicating that the receiver is enabled.
+        /// The format of the payload corresponds with Kinetic's de-facto standard port 30003 text.
         /// </summary>
-        public bool Enabled { get; set; } = true;
+        Port30003,
 
         /// <summary>
-        /// Gets or sets the receiver's name that is shown to the user.
+        /// The format of the payload corresponds with ICAO's specification for Mode-S messages.
         /// </summary>
-        public string Name { get; set; } = "";
+        ModeS,
 
         /// <summary>
-        /// The format of the feed that this receiver is expecting to to be sent.
+        /// The format of the payload is a compressed Port30003 object.
         /// </summary>
-        public string FeedFormat { get; set; } = "Port30003";
+        Compressed,
 
         /// <summary>
-        /// Gets or sets a value indicating how to connect to the feed.
+        /// The format of the payload is an aircraft list formatted in UTF-8 JSON.
         /// </summary>
-        public string ConnectionType { get; set; } = "TCP-PULL";
+        AircraftListJson,
 
         /// <summary>
-        /// The passphrase that the other side is expecting us to send when a connection is
-        /// established. If this is null or empty then no passphrase is required.
+        /// The format of the payload is an Airnav XRange JSON object.
         /// </summary>
-        public string Passphrase { get; set; }
-
-        /// <summary>
-        /// The latitude of the receiver.
-        /// </summary>
-        public double? Latitude { get; set; }
-
-        /// <summary>
-        /// The longitude of the receiver.
-        /// </summary>
-        public double? Longitude { get; set; }
-
-        /// <summary>
-        /// Used by System.Text.Json to preserve properties that it does not know how to deserialise.
-        /// Allows users to regress to earlier versions of the program without losing options that
-        /// were added in a later version.
-        /// </summary>
-        [JsonExtensionData]
-        public Dictionary<string, JsonElement> PreservedForwardCompatibleProperties { get; set; }
+        AirnavXRange,
     }
 }

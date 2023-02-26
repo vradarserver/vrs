@@ -1,4 +1,4 @@
-﻿// Copyright © 2023 onwards, Andrew Whewell
+// Copyright � 2010 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -8,32 +8,52 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-namespace VirtualRadar.Interface.Options
+namespace VirtualRadar.Interface.Feeds
 {
     /// <summary>
-    /// The options for the code that manages incoming aircraft feeds.
+    /// Arguments to an event that carries a message from a BaseStation instance.
     /// </summary>
-    public class FeedManagerOptions
+    public class BaseStationMessageEventArgs : EventArgs
     {
         /// <summary>
-        /// Settings for every receiver.
+        /// Gets the message that was transmitted by BaseStation.
         /// </summary>
-        public List<ReceiverOptions> Receivers { get; } = new();
+        public BaseStationMessage Message { get; }
 
         /// <summary>
-        /// Pull TCP connection settings.
+        /// Gets a value indicating that the message was received on a feed that is not the nominated feed for
+        /// the aircraft in a merged feed.
         /// </summary>
-        public Dictionary<Guid, TcpPullConnectionOptions> TcpPullConnectionOptions { get; } = new();
+        /// <remarks>
+        /// At the time of writing this is only set on merged feeds when the message was received from an MLAT source
+        /// and the aircraft is currently being serviced by a different receiver.
+        /// </remarks>
+        public bool IsOutOfBand { get; }
 
         /// <summary>
-        /// Used by System.Text.Json to preserve properties that it does not know how to deserialise.
-        /// Allows users to regress to earlier versions of the program without losing options that
-        /// were added in a later version.
+        /// Gets a value indicating that the message was received on a feed that is flagged as a SatCom feed.
         /// </summary>
-        [JsonExtensionData]
-        public Dictionary<string, JsonElement> PreservedForwardCompatibleProperties { get; set; }
+        public bool IsSatcomFeed { get; }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="message"></param>
+        public BaseStationMessageEventArgs(BaseStationMessage message)
+        {
+            Message = message;
+        }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="isOutOfBand"></param>
+        /// <param name="isSatcomFeed"></param>
+        public BaseStationMessageEventArgs(BaseStationMessage message, bool isOutOfBand, bool isSatcomFeed) : this(message)
+        {
+            IsOutOfBand = isOutOfBand;
+            IsSatcomFeed = isSatcomFeed;
+        }
     }
 }

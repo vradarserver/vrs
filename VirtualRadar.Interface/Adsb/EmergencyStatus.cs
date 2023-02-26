@@ -1,4 +1,4 @@
-﻿// Copyright © 2023 onwards, Andrew Whewell
+﻿// Copyright © 2012 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -8,32 +8,40 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Text;
 
-namespace VirtualRadar.Interface.Options
+namespace VirtualRadar.Interface.Adsb
 {
     /// <summary>
-    /// The options for the code that manages incoming aircraft feeds.
+    /// A class that carries information from an aircraft emergency / priority status message.
     /// </summary>
-    public class FeedManagerOptions
+    public class EmergencyStatus
     {
         /// <summary>
-        /// Settings for every receiver.
+        /// Gets or sets the type of emergency in an emergency / priority status message.
         /// </summary>
-        public List<ReceiverOptions> Receivers { get; } = new();
+        public EmergencyState EmergencyState { get; set; }
 
         /// <summary>
-        /// Pull TCP connection settings.
+        /// Gets or sets the squawk code transmitted with the emergency message.
         /// </summary>
-        public Dictionary<Guid, TcpPullConnectionOptions> TcpPullConnectionOptions { get; } = new();
+        /// <remarks>This is only present on version 2 ADS-B messages, and then only under some circumstances.
+        /// If the code sees a Mode-A code of 0000 then it sets this property to null.</remarks>
+        public short? Squawk { get; set; }
 
         /// <summary>
-        /// Used by System.Text.Json to preserve properties that it does not know how to deserialise.
-        /// Allows users to regress to earlier versions of the program without losing options that
-        /// were added in a later version.
+        /// Returns an English description of the object.
         /// </summary>
-        [JsonExtensionData]
-        public Dictionary<string, JsonElement> PreservedForwardCompatibleProperties { get; set; }
+        /// <returns></returns>
+        public override string ToString()
+        {
+            var result = new StringBuilder("EMG");
+            result.AppendFormat(" ES:{0}", (int)EmergencyState);
+            if(Squawk != null) {
+                result.AppendFormat(" SQK:{0}", Squawk);
+            }
+
+            return result.ToString();
+        }
     }
 }

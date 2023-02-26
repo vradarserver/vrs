@@ -1,4 +1,4 @@
-﻿// Copyright © 2023 onwards, Andrew Whewell
+﻿// Copyright © 2014 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -8,32 +8,39 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-namespace VirtualRadar.Interface.Options
+namespace VirtualRadar.Interface.Feeds
 {
     /// <summary>
-    /// The options for the code that manages incoming aircraft feeds.
+    /// The interface for all authentication classes.
     /// </summary>
-    public class FeedManagerOptions
+    public interface IConnectorAuthentication
     {
         /// <summary>
-        /// Settings for every receiver.
+        /// Gets the longest response that the class can handle.
         /// </summary>
-        public List<ReceiverOptions> Receivers { get; } = new();
+        /// <remarks>
+        /// If the connecting side returns a response that is longer than this then it
+        /// is deemed invalid and the connection is closed.
+        /// </remarks>
+        int MaximumResponseLength { get; }
 
         /// <summary>
-        /// Pull TCP connection settings.
+        /// Returns true if the response passed across is complete. The validity doesn't matter.
         /// </summary>
-        public Dictionary<Guid, TcpPullConnectionOptions> TcpPullConnectionOptions { get; } = new();
+        /// <param name="response"></param>
+        /// <returns>True if the byte array contains the entire response, false if it's too short.</returns>
+        bool GetResponseIsComplete(byte[] response);
 
         /// <summary>
-        /// Used by System.Text.Json to preserve properties that it does not know how to deserialise.
-        /// Allows users to regress to earlier versions of the program without losing options that
-        /// were added in a later version.
+        /// Passed a complete response, returns true if the response is valid and false if it does not.
         /// </summary>
-        [JsonExtensionData]
-        public Dictionary<string, JsonElement> PreservedForwardCompatibleProperties { get; set; }
+        /// <param name="response"></param>
+        /// <returns></returns>
+        bool GetResponseIsValid(byte[] response);
+
+        /// <summary>
+        /// Returns the bytes that need to be sent to the listening side to authenticate.
+        /// </summary>
+        byte[] SendAuthentication();
     }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright © 2023 onwards, Andrew Whewell
+﻿// Copyright © 2014 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -8,60 +8,42 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-namespace VirtualRadar.Interface.Options
+namespace VirtualRadar.Interface
 {
-    public class ReceiverOptions
+    /// <summary>
+    /// An enumeration of the different types of transponder that VRS can decode messages from.
+    /// </summary>
+    public enum TransponderType
     {
         /// <summary>
-        /// Gets or sets the unique identifier of the receiver.
+        /// The transponder type is not known and no attempt has been made to guess it.
         /// </summary>
-        public Guid ReceiverId { get; set; } = Guid.NewGuid();
+        Unknown = 0,
 
         /// <summary>
-        /// Gets or sets a value indicating that the receiver is enabled.
+        /// The transponder is sending Mode-S messages with no ADSB content.
         /// </summary>
-        public bool Enabled { get; set; } = true;
+        ModeS = 1,
 
         /// <summary>
-        /// Gets or sets the receiver's name that is shown to the user.
+        /// The transponder is sending Mode-S messages with ADSB content, but the type of ADSB
+        /// content cannot be determined. Assume that it's ADSB-0.
         /// </summary>
-        public string Name { get; set; } = "";
+        Adsb = 2,
 
         /// <summary>
-        /// The format of the feed that this receiver is expecting to to be sent.
+        /// The transponder is sending Mode-S messages with ADSB-0 content.
         /// </summary>
-        public string FeedFormat { get; set; } = "Port30003";
+        Adsb0 = 3,
 
         /// <summary>
-        /// Gets or sets a value indicating how to connect to the feed.
+        /// The transponder is sending Mode-S messages with ADSB-1 content.
         /// </summary>
-        public string ConnectionType { get; set; } = "TCP-PULL";
+        Adsb1 = 4,
 
         /// <summary>
-        /// The passphrase that the other side is expecting us to send when a connection is
-        /// established. If this is null or empty then no passphrase is required.
+        /// The transponder is sending Mode-S messages with ADSB-2 content.
         /// </summary>
-        public string Passphrase { get; set; }
-
-        /// <summary>
-        /// The latitude of the receiver.
-        /// </summary>
-        public double? Latitude { get; set; }
-
-        /// <summary>
-        /// The longitude of the receiver.
-        /// </summary>
-        public double? Longitude { get; set; }
-
-        /// <summary>
-        /// Used by System.Text.Json to preserve properties that it does not know how to deserialise.
-        /// Allows users to regress to earlier versions of the program without losing options that
-        /// were added in a later version.
-        /// </summary>
-        [JsonExtensionData]
-        public Dictionary<string, JsonElement> PreservedForwardCompatibleProperties { get; set; }
+        Adsb2 = 5,
     }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright © 2023 onwards, Andrew Whewell
+// Copyright � 2010 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -8,60 +8,46 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-namespace VirtualRadar.Interface.Options
+namespace VirtualRadar.Interface.Feeds
 {
-    public class ReceiverOptions
+    /// <summary>
+    /// An enumeration of the different types of BaseStation message.
+    /// </summary>
+    public enum BaseStationMessageType
     {
         /// <summary>
-        /// Gets or sets the unique identifier of the receiver.
+        /// The message could not be translated.
         /// </summary>
-        public Guid ReceiverId { get; set; } = Guid.NewGuid();
+        Unknown,
 
         /// <summary>
-        /// Gets or sets a value indicating that the receiver is enabled.
+        /// A MSG message.
         /// </summary>
-        public bool Enabled { get; set; } = true;
+        Transmission,
 
         /// <summary>
-        /// Gets or sets the receiver's name that is shown to the user.
+        /// A STA message.
         /// </summary>
-        public string Name { get; set; } = "";
+        StatusChange,
 
         /// <summary>
-        /// The format of the feed that this receiver is expecting to to be sent.
+        /// An AIR message.
         /// </summary>
-        public string FeedFormat { get; set; } = "Port30003";
+        NewAircraft,
 
         /// <summary>
-        /// Gets or sets a value indicating how to connect to the feed.
+        /// An ID message.
         /// </summary>
-        public string ConnectionType { get; set; } = "TCP-PULL";
+        NewIdentifier,
 
         /// <summary>
-        /// The passphrase that the other side is expecting us to send when a connection is
-        /// established. If this is null or empty then no passphrase is required.
+        /// A SEL message.
         /// </summary>
-        public string Passphrase { get; set; }
+        UserClicked,
 
         /// <summary>
-        /// The latitude of the receiver.
+        /// A CLK message.
         /// </summary>
-        public double? Latitude { get; set; }
-
-        /// <summary>
-        /// The longitude of the receiver.
-        /// </summary>
-        public double? Longitude { get; set; }
-
-        /// <summary>
-        /// Used by System.Text.Json to preserve properties that it does not know how to deserialise.
-        /// Allows users to regress to earlier versions of the program without losing options that
-        /// were added in a later version.
-        /// </summary>
-        [JsonExtensionData]
-        public Dictionary<string, JsonElement> PreservedForwardCompatibleProperties { get; set; }
+        UserDoubleClicked,
     }
 }
