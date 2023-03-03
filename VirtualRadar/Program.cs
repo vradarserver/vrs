@@ -11,6 +11,7 @@
 using System.CommandLine;
 using System.IO;
 using VirtualRadar.Database.SQLite;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Options;
 using VirtualRadar.Library;
 using VirtualRadar.Localisation;
@@ -21,6 +22,8 @@ namespace VirtualRadar
     {
         public static void Main(string[] args)
         {
+            CultureSwitcher.InitialiseCultureSwitcher();
+
             var rootCommand = new RootCommand("Virtual Radar Server");
             var workingFolderOption = new Option<string>(
                 "--working-folder",
@@ -67,7 +70,7 @@ namespace VirtualRadar
 
             builder.Services
                 .AddVirtualRadarHostGroup()
-//                .AddVirtualRadarDatabaseSQLiteGroup()
+                .AddVirtualRadarDatabaseSQLiteGroup()
                 .AddVirtualRadarLibraryGroup();
 
             var app = builder.Build();

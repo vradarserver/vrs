@@ -16,10 +16,7 @@ namespace VirtualRadar.Database.SQLite
     {
         public static IServiceCollection AddVirtualRadarDatabaseSQLiteGroup(this IServiceCollection services)
         {
-            // Singletons
-            services.AddSingleton<VirtualRadar.Interface.Settings.IUserManager, Users.UserManager>();
-
-            // Scoped
+            services.AddScoped<VirtualRadar.Interface.Settings.IUserManager, Users.UserManager>();
             services.AddScoped<Users.UserContext, Users.UserContext>();
 
             // Transients
