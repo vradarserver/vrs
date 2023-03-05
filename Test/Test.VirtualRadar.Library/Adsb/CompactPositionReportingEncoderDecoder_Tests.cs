@@ -2908,7 +2908,6 @@ namespace Test.VirtualRadar.Library.Adsb
             Assert.AreEqual(expectedLongitude, decodedCoordinate.Longitude, 0.000000000001);  // This can have a lower tolerance as the CPR101 tables aren't testing longitude zone boundaries so much
         }
 
-        /*
         [TestMethod]
         public void CompactPositionReporting_Encode_LocalDecode_RoundTrip_Example_Produces_Correct_Results()
         {
@@ -3253,6 +3252,5 @@ namespace Test.VirtualRadar.Library.Adsb
             Assert.AreEqual(45.0, decoded.Latitude, 0.0001);
             Assert.AreEqual(0.0001, decoded.Longitude, 0.0001);
         }
-        */
     }
 }
