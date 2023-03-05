@@ -18,16 +18,17 @@ namespace VirtualRadar.Library
         {
 #pragma warning disable CS0618 // Type or member is obsolete... we mark services that have been made public for unit tests as obsolete
 
-            services.AddSingleton<VirtualRadar.Interface.IApplicationLifetime,              ApplicationLifetime>();
-            services.AddSingleton<VirtualRadar.Interface.IClock,                            Clock>();
-            services.AddSingleton<VirtualRadar.Interface.IFileSystem,                       FileSystem>();
-            services.AddSingleton<VirtualRadar.Interface.ILog,                              Log>();
-            services.AddSingleton<VirtualRadar.Interface.IThreadingEnvironmentProvider,     ThreadingEnvironmentProvider>();
-            services.AddSingleton<VirtualRadar.Interface.Options.ICoreSettingsStorage,      Options.CoreSettingsStorage>();
+            services.AddSingleton<VirtualRadar.Interface.IApplicationLifetime,                          ApplicationLifetime>();
+            services.AddSingleton<VirtualRadar.Interface.IClock,                                        Clock>();
+            services.AddSingleton<VirtualRadar.Interface.IFileSystem,                                   FileSystem>();
+            services.AddSingleton<VirtualRadar.Interface.ILog,                                          Log>();
+            services.AddSingleton<VirtualRadar.Interface.IThreadingEnvironmentProvider,                 ThreadingEnvironmentProvider>();
+            services.AddSingleton<VirtualRadar.Interface.Adsb.ICompactPositionReportingEncoderDecoder,  Adsb.CompactPositionReportingEncoderDecoder>();
+            services.AddSingleton<VirtualRadar.Interface.Options.ICoreSettingsStorage,                  Options.CoreSettingsStorage>();
 
-            services.AddScoped<VirtualRadar.Interface.Settings.IConfigurationStorage,       Settings.ConfigurationStorage>();
+            services.AddScoped<VirtualRadar.Interface.Settings.IConfigurationStorage,                   Settings.ConfigurationStorage>();
 
-            services.AddTransient<VirtualRadar.Interface.IXmlSerialiser,                    XmlSerialiser>();
+            services.AddTransient<VirtualRadar.Interface.IXmlSerialiser,                                XmlSerialiser>();
 
             return services;
 

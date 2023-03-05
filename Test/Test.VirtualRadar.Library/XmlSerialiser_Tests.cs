@@ -18,7 +18,7 @@ using VirtualRadar.Interface.Settings;
 namespace Test.VirtualRadar.Library
 {
     [TestClass]
-    public class XmlSerialiserTests
+    public class XmlSerialiser_Tests
     {
         #region Comparable base class
         #pragma warning disable 0659 // overrode Equals without overriding GetHashCode
@@ -327,7 +327,7 @@ namespace Test.VirtualRadar.Library
 
         #region Constructor
         [TestMethod]
-        public void XmlSerialiser_Ctor_Initialises_To_Known_Values_And_Properties_Work()
+        public void Ctor_Initialises_To_Known_Values_And_Properties_Work()
         {
             Assert.AreEqual(true, _Serialiser.XmlSerializerCompatible);
             Assert.AreEqual(false, _Serialiser.UseDefaultEnumValueIfUnknown);
@@ -337,34 +337,34 @@ namespace Test.VirtualRadar.Library
         #region Serialise Stream
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void XmlSerialiser_Serialise_Stream_Throws_If_Passed_Null_Object()
+        public void Serialise_Stream_Throws_If_Passed_Null_Object()
         {
             _Serialiser.Serialise(null, CreateStream());
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void XmlSerialiser_Serialise_Stream_Throws_If_Passed_Null_Stream()
+        public void Serialise_Stream_Throws_If_Passed_Null_Stream()
         {
             _Serialiser.Serialise(new IntClass(), (Stream)null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void XmlSerialiser_Serialise_Stream_Throws_If_Serialising_IntPtr()
+        public void Serialise_Stream_Throws_If_Serialising_IntPtr()
         {
             _Serialiser.Serialise(new IntPtrClass(), CreateStream());
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void XmlSerialiser_Serialise_Stream_Throws_If_Serialising_TimeSpan()
+        public void Serialise_Stream_Throws_If_Serialising_TimeSpan()
         {
             _Serialiser.Serialise(new TimeSpanClass(), CreateStream());
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_IntClass()
+        public void Serialise_Stream_Produces_Expected_Text_For_IntClass()
         {
             Produces_Expected_Text_For_IntClass(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -373,7 +373,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_DateClass()
+        public void Serialise_Stream_Produces_Expected_Text_For_DateClass()
         {
             Produces_Expected_Text_For_DateClass(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -382,7 +382,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_StringClass()
+        public void Serialise_Stream_Produces_Expected_Text_For_StringClass()
         {
             Produces_Expected_Text_For_StringClass(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -391,7 +391,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_Null_String()
+        public void Serialise_Stream_Produces_Expected_Text_For_Null_String()
         {
             Produces_Expected_Text_For_Null_String(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -400,7 +400,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_BoolClass()
+        public void Serialise_Stream_Produces_Expected_Text_For_BoolClass()
         {
             Produces_Expected_Text_For_BoolClass(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -409,7 +409,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_DoubleClass()
+        public void Serialise_Stream_Produces_Expected_Text_For_DoubleClass()
         {
             Produces_Expected_Text_For_DoubleClass(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -418,7 +418,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_ByteList_Class()
+        public void Serialise_Stream_Produces_Expected_Text_For_ByteList_Class()
         {
             Produces_Expected_Text_For_ByteList_Class(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -427,7 +427,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_EnumClass()
+        public void Serialise_Stream_Produces_Expected_Text_For_EnumClass()
         {
             Produces_Expected_Text_For_EnumClass(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -436,7 +436,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_SimpleParentClass()
+        public void Serialise_Stream_Produces_Expected_Text_For_SimpleParentClass()
         {
             Produces_Expected_Text_For_SimpleParentClass(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -445,7 +445,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_SimpleParentClass_Null_Child()
+        public void Serialise_Stream_Produces_Expected_Text_For_SimpleParentClass_Null_Child()
         {
             Produces_Expected_Text_For_SimpleParentClass_Null_Child(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -454,7 +454,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_List_Of_Lists()
+        public void Serialise_Stream_Produces_Expected_Text_For_List_Of_Lists()
         {
             Produces_Expected_Text_For_List_Of_Lists(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -463,7 +463,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_IgnoreAttributeClass()
+        public void Serialise_Stream_Produces_Expected_Text_For_IgnoreAttributeClass()
         {
             Produces_Expected_Text_For_IgnoreAttributeClass(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -472,7 +472,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_InheritedIgnoreClass()
+        public void Serialise_Stream_Produces_Expected_Text_For_InheritedIgnoreClass()
         {
             Produces_Expected_Text_For_InheritedIgnoreClass(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -481,7 +481,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_ValueTypes()
+        public void Serialise_Stream_Produces_Expected_Text_For_ValueTypes()
         {
             Produces_Expected_Text_For_ValueTypes(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -490,7 +490,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_IntPtrClass()
+        public void Serialise_Stream_Produces_Expected_Text_For_IntPtrClass()
         {
             Produces_Expected_Text_For_IntPtrClass(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -499,7 +499,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_TimeSpanClass()
+        public void Serialise_Stream_Produces_Expected_Text_For_TimeSpanClass()
         {
             Produces_Expected_Text_For_TimeSpanClass(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -508,7 +508,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_ListOfClassesClass()
+        public void Serialise_Stream_Produces_Expected_Text_For_ListOfClassesClass()
         {
             Produces_Expected_Text_For_ListOfClassesClass(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -517,7 +517,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_ListOfClassesClass_With_Null_Element()
+        public void Serialise_Stream_Produces_Expected_Text_For_ListOfClassesClass_With_Null_Element()
         {
             Produces_Expected_Text_For_ListOfClassesClass_With_Null_Element(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -526,7 +526,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_ListsOfValueTypes()
+        public void Serialise_Stream_Produces_Expected_Text_For_ListsOfValueTypes()
         {
             Produces_Expected_Text_For_ListsOfValueTypes(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -535,7 +535,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_Stream_Produces_Expected_Text_For_ListOfStrings()
+        public void Serialise_Stream_Produces_Expected_Text_For_ListOfStrings()
         {
             Produces_Expected_Text_For_ListOfStrings(r => {
                 _Serialiser.Serialise(r, CreateStream());
@@ -547,34 +547,34 @@ namespace Test.VirtualRadar.Library
         #region Serialise TextWriter
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void XmlSerialiser_Serialise_TextWriter_Throws_If_Passed_Null_Object()
+        public void Serialise_TextWriter_Throws_If_Passed_Null_Object()
         {
             _Serialiser.Serialise(null, CreateTextWriter());
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void XmlSerialiser_Serialise_TextWriter_Throws_If_Passed_Null_TextWriter()
+        public void Serialise_TextWriter_Throws_If_Passed_Null_TextWriter()
         {
             _Serialiser.Serialise(new IntClass(), (TextWriter)null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void XmlSerialiser_Serialise_TextWriter_Throws_If_Serialising_IntPtr()
+        public void Serialise_TextWriter_Throws_If_Serialising_IntPtr()
         {
             _Serialiser.Serialise(new IntPtrClass(), CreateTextWriter());
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void XmlSerialiser_Serialise_TextWriter_Throws_If_Serialising_TimeSpan()
+        public void Serialise_TextWriter_Throws_If_Serialising_TimeSpan()
         {
             _Serialiser.Serialise(new TimeSpanClass(), CreateTextWriter());
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_IntClass()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_IntClass()
         {
             Produces_Expected_Text_For_IntClass(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -583,7 +583,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_DateClass()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_DateClass()
         {
             Produces_Expected_Text_For_DateClass(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -592,7 +592,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_StringClass()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_StringClass()
         {
             Produces_Expected_Text_For_StringClass(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -601,7 +601,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_Null_String()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_Null_String()
         {
             Produces_Expected_Text_For_Null_String(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -610,7 +610,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_BoolClass()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_BoolClass()
         {
             Produces_Expected_Text_For_BoolClass(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -619,7 +619,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_DoubleClass()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_DoubleClass()
         {
             Produces_Expected_Text_For_DoubleClass(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -628,7 +628,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_ByteList_Class()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_ByteList_Class()
         {
             Produces_Expected_Text_For_ByteList_Class(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -637,7 +637,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_EnumClass()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_EnumClass()
         {
             Produces_Expected_Text_For_EnumClass(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -646,7 +646,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_SimpleParentClass()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_SimpleParentClass()
         {
             Produces_Expected_Text_For_SimpleParentClass(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -655,7 +655,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_SimpleParentClass_Null_Child()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_SimpleParentClass_Null_Child()
         {
             Produces_Expected_Text_For_SimpleParentClass_Null_Child(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -664,7 +664,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_IgnoreAttributeClass()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_IgnoreAttributeClass()
         {
             Produces_Expected_Text_For_IgnoreAttributeClass(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -673,7 +673,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_InheritedIgnoreClass()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_InheritedIgnoreClass()
         {
             Produces_Expected_Text_For_InheritedIgnoreClass(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -682,7 +682,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_ValueTypes()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_ValueTypes()
         {
             Produces_Expected_Text_For_ValueTypes(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -691,7 +691,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_IntPtrClass()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_IntPtrClass()
         {
             Produces_Expected_Text_For_IntPtrClass(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -700,7 +700,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_TimeSpanClass()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_TimeSpanClass()
         {
             Produces_Expected_Text_For_TimeSpanClass(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -709,7 +709,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_ListOfClassesClass()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_ListOfClassesClass()
         {
             Produces_Expected_Text_For_ListOfClassesClass(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -718,7 +718,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_ListOfClassesClass_With_Null_Element()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_ListOfClassesClass_With_Null_Element()
         {
             Produces_Expected_Text_For_ListOfClassesClass_With_Null_Element(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -727,7 +727,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_ListsOfValueTypes()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_ListsOfValueTypes()
         {
             Produces_Expected_Text_For_ListsOfValueTypes(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -736,7 +736,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_ListOfStrings()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_ListOfStrings()
         {
             Produces_Expected_Text_For_ListOfStrings(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -745,7 +745,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Serialise_TextWriter_Produces_Expected_Text_For_ListOfStrings_With_Null_Element()
+        public void Serialise_TextWriter_Produces_Expected_Text_For_ListOfStrings_With_Null_Element()
         {
             Produces_Expected_Text_For_ListOfStrings_With_Null_Element(r => {
                 _Serialiser.Serialise(r, CreateTextWriter());
@@ -991,13 +991,13 @@ namespace Test.VirtualRadar.Library
         #region Deserialise Stream
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void XmlSerialiser_Deserialise_Stream_Throws_If_Passed_Null_Stream()
+        public void Deserialise_Stream_Throws_If_Passed_Null_Stream()
         {
             _Serialiser.Deserialise<IntClass>((Stream)null);
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_IntClass()
+        public void Deserialise_Stream_Produces_Correct_Object_For_IntClass()
         {
             Produces_Correct_Object_For_IntClass(r => {
                 return _Serialiser.Deserialise<IntClass>(CreateStream(r));
@@ -1005,7 +1005,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_DateClass()
+        public void Deserialise_Stream_Produces_Correct_Object_For_DateClass()
         {
             Produces_Correct_Object_For_DateClass(r => {
                 return _Serialiser.Deserialise<DateClass>(CreateStream(r));
@@ -1013,7 +1013,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_StringClass()
+        public void Deserialise_Stream_Produces_Correct_Object_For_StringClass()
         {
             Produces_Correct_Object_For_StringClass(r => {
                 return _Serialiser.Deserialise<StringClass>(CreateStream(r));
@@ -1021,7 +1021,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_StringClass_With_Null_String()
+        public void Deserialise_Stream_Produces_Correct_Object_For_StringClass_With_Null_String()
         {
             Produces_Correct_Object_For_StringClass_With_Null_String(r => {
                 return _Serialiser.Deserialise<StringClass>(CreateStream(r));
@@ -1029,7 +1029,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_BoolClass()
+        public void Deserialise_Stream_Produces_Correct_Object_For_BoolClass()
         {
             Produces_Correct_Object_For_BoolClass(r => {
                 return _Serialiser.Deserialise<BoolClass>(CreateStream(r));
@@ -1037,7 +1037,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_DoubleClass()
+        public void Deserialise_Stream_Produces_Correct_Object_For_DoubleClass()
         {
             Produces_Correct_Object_For_DoubleClass(r => {
                 return _Serialiser.Deserialise<DoubleClass>(CreateStream(r));
@@ -1045,7 +1045,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_ByteListClass()
+        public void Deserialise_Stream_Produces_Correct_Object_For_ByteListClass()
         {
             Produces_Correct_Object_For_ByteListClass(r => {
                 return _Serialiser.Deserialise<ByteListClass>(CreateStream(r));
@@ -1053,7 +1053,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_EnumClass()
+        public void Deserialise_Stream_Produces_Correct_Object_For_EnumClass()
         {
             Produces_Correct_Object_For_EnumClass(r => {
                 return _Serialiser.Deserialise<EnumClass>(CreateStream(r));
@@ -1061,7 +1061,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_SimpleParentClass()
+        public void Deserialise_Stream_Produces_Correct_Object_For_SimpleParentClass()
         {
             Produces_Correct_Object_For_SimpleParentClass(r => {
                 return _Serialiser.Deserialise<SimpleParentClass>(CreateStream(r));
@@ -1069,7 +1069,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_SimpleParentClass_With_Null_Child()
+        public void Deserialise_Stream_Produces_Correct_Object_For_SimpleParentClass_With_Null_Child()
         {
             Produces_Correct_Object_For_SimpleParentClass_With_Null_Child(r => {
                 return _Serialiser.Deserialise<SimpleParentClass>(CreateStream(r));
@@ -1077,7 +1077,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Expected_Text_For_List_Of_Lists()
+        public void Deserialise_Stream_Produces_Expected_Text_For_List_Of_Lists()
         {
             Produces_Correct_Object_For_ListOfListsClass(r => {
                 return _Serialiser.Deserialise<ListOfListsClass>(CreateStream(r));
@@ -1085,7 +1085,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_ValueTypes()
+        public void Deserialise_Stream_Produces_Correct_Object_For_ValueTypes()
         {
             Produces_Correct_Object_For_ValueTypes(r => {
                 return _Serialiser.Deserialise<ValueTypes>(CreateStream(r));
@@ -1093,7 +1093,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_IntPtrClass()
+        public void Deserialise_Stream_Produces_Correct_Object_For_IntPtrClass()
         {
             Produces_Correct_Object_For_IntPtrClass(r => {
                 return _Serialiser.Deserialise<IntPtrClass>(CreateStream(r));
@@ -1101,7 +1101,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_TimeSpanClass()
+        public void Deserialise_Stream_Produces_Correct_Object_For_TimeSpanClass()
         {
             Produces_Correct_Object_For_TimeSpanClass(r => {
                 return _Serialiser.Deserialise<TimeSpanClass>(CreateStream(r));
@@ -1109,7 +1109,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_ListOfClassesClass()
+        public void Deserialise_Stream_Produces_Correct_Object_For_ListOfClassesClass()
         {
             Produces_Correct_Object_For_ListOfClassesClass(r => {
                 return _Serialiser.Deserialise<ListOfClassesClass>(CreateStream(r));
@@ -1117,7 +1117,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_ListOfClassesClass_With_Null_Element()
+        public void Deserialise_Stream_Produces_Correct_Object_For_ListOfClassesClass_With_Null_Element()
         {
             Produces_Correct_Object_For_ListOfClassesClass_With_Null_Element(r => {
                 return _Serialiser.Deserialise<ListOfClassesClass>(CreateStream(r));
@@ -1125,7 +1125,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_IgnoreAttributeClass()
+        public void Deserialise_Stream_Produces_Correct_Object_For_IgnoreAttributeClass()
         {
             Produces_Correct_Object_For_IgnoreAttributeClass(r => {
                 return _Serialiser.Deserialise<IgnoreAttributeClass>(CreateStream(r));
@@ -1133,7 +1133,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_ListsOfValueTypes()
+        public void Deserialise_Stream_Produces_Correct_Object_For_ListsOfValueTypes()
         {
             Produces_Correct_Object_For_ListsOfValueTypes(r => {
                 return _Serialiser.Deserialise<ListsOfValueTypes>(CreateStream(r));
@@ -1141,7 +1141,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_ListOfStrings()
+        public void Deserialise_Stream_Produces_Correct_Object_For_ListOfStrings()
         {
             Produces_Correct_Object_For_ListOfStrings(r => {
                 return _Serialiser.Deserialise<ListOfStrings>(CreateStream(r));
@@ -1149,7 +1149,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Produces_Correct_Object_For_ListOfStrings_With_Null_Element()
+        public void Deserialise_Stream_Produces_Correct_Object_For_ListOfStrings_With_Null_Element()
         {
             Produces_Correct_Object_For_ListOfStrings_With_Null_Element(r => {
                 return _Serialiser.Deserialise<ListOfStrings>(CreateStream(r));
@@ -1158,7 +1158,7 @@ namespace Test.VirtualRadar.Library
 
         [TestMethod]
         [ExpectedException(typeof(System.ArgumentException))]
-        public void XmlSerialiser_Deserialise_Stream_Throws_Exception_By_Default_If_Enum_Value_Unknown()
+        public void Deserialise_Stream_Throws_Exception_By_Default_If_Enum_Value_Unknown()
         {
             Throws_Exception_By_Default_If_Enum_Value_Unknown(r => {
                 return _Serialiser.Deserialise<EnumClass>(CreateStream(r));
@@ -1166,7 +1166,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_Stream_Can_Use_Default_Enum_Value_For_Unknown_Values_If_Required()
+        public void Deserialise_Stream_Can_Use_Default_Enum_Value_For_Unknown_Values_If_Required()
         {
             Can_Use_Default_Enum_Value_For_Unknown_Values_If_Required(r => {
                 return _Serialiser.Deserialise<EnumClass>(CreateStream(r));
@@ -1177,13 +1177,13 @@ namespace Test.VirtualRadar.Library
         #region Deserialise TextReader
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void XmlSerialiser_Deserialise_TextReader_Throws_If_Passed_Null_TextReader()
+        public void Deserialise_TextReader_Throws_If_Passed_Null_TextReader()
         {
             _Serialiser.Deserialise<IntClass>((TextReader)null);
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_IntClass()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_IntClass()
         {
             Produces_Correct_Object_For_IntClass(r => {
                 return _Serialiser.Deserialise<IntClass>(CreateTextReader(r));
@@ -1191,7 +1191,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_DateClass()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_DateClass()
         {
             Produces_Correct_Object_For_DateClass(r => {
                 return _Serialiser.Deserialise<DateClass>(CreateTextReader(r));
@@ -1199,7 +1199,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_StringClass()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_StringClass()
         {
             Produces_Correct_Object_For_StringClass(r => {
                 return _Serialiser.Deserialise<StringClass>(CreateTextReader(r));
@@ -1207,7 +1207,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_StringClass_With_Null_String()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_StringClass_With_Null_String()
         {
             Produces_Correct_Object_For_StringClass_With_Null_String(r => {
                 return _Serialiser.Deserialise<StringClass>(CreateTextReader(r));
@@ -1215,7 +1215,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_BoolClass()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_BoolClass()
         {
             Produces_Correct_Object_For_BoolClass(r => {
                 return _Serialiser.Deserialise<BoolClass>(CreateTextReader(r));
@@ -1223,7 +1223,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_DoubleClass()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_DoubleClass()
         {
             Produces_Correct_Object_For_DoubleClass(r => {
                 return _Serialiser.Deserialise<DoubleClass>(CreateTextReader(r));
@@ -1231,7 +1231,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_ByteListClass()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_ByteListClass()
         {
             Produces_Correct_Object_For_ByteListClass(r => {
                 return _Serialiser.Deserialise<ByteListClass>(CreateTextReader(r));
@@ -1239,7 +1239,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_EnumClass()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_EnumClass()
         {
             Produces_Correct_Object_For_EnumClass(r => {
                 return _Serialiser.Deserialise<EnumClass>(CreateTextReader(r));
@@ -1247,7 +1247,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_SimpleParentClass()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_SimpleParentClass()
         {
             Produces_Correct_Object_For_SimpleParentClass(r => {
                 return _Serialiser.Deserialise<SimpleParentClass>(CreateTextReader(r));
@@ -1255,7 +1255,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_SimpleParentClass_With_Null_Child()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_SimpleParentClass_With_Null_Child()
         {
             Produces_Correct_Object_For_SimpleParentClass_With_Null_Child(r => {
                 return _Serialiser.Deserialise<SimpleParentClass>(CreateTextReader(r));
@@ -1263,7 +1263,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Expected_Text_For_List_Of_Lists()
+        public void Deserialise_TextReader_Produces_Expected_Text_For_List_Of_Lists()
         {
             Produces_Correct_Object_For_ListOfListsClass(r => {
                 return _Serialiser.Deserialise<ListOfListsClass>(CreateTextReader(r));
@@ -1271,7 +1271,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_ValueTypes()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_ValueTypes()
         {
             Produces_Correct_Object_For_ValueTypes(r => {
                 return _Serialiser.Deserialise<ValueTypes>(CreateTextReader(r));
@@ -1279,7 +1279,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_IntPtrClass()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_IntPtrClass()
         {
             Produces_Correct_Object_For_IntPtrClass(r => {
                 return _Serialiser.Deserialise<IntPtrClass>(CreateTextReader(r));
@@ -1287,7 +1287,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_TimeSpanClass()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_TimeSpanClass()
         {
             Produces_Correct_Object_For_TimeSpanClass(r => {
                 return _Serialiser.Deserialise<TimeSpanClass>(CreateTextReader(r));
@@ -1295,7 +1295,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_ListOfClassesClass()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_ListOfClassesClass()
         {
             Produces_Correct_Object_For_ListOfClassesClass(r => {
                 return _Serialiser.Deserialise<ListOfClassesClass>(CreateTextReader(r));
@@ -1303,7 +1303,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_ListOfClassesClass_With_Null_Element()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_ListOfClassesClass_With_Null_Element()
         {
             Produces_Correct_Object_For_ListOfClassesClass_With_Null_Element(r => {
                 return _Serialiser.Deserialise<ListOfClassesClass>(CreateTextReader(r));
@@ -1311,7 +1311,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_IgnoreAttributeClass()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_IgnoreAttributeClass()
         {
             Produces_Correct_Object_For_IgnoreAttributeClass(r => {
                 return _Serialiser.Deserialise<IgnoreAttributeClass>(CreateTextReader(r));
@@ -1319,7 +1319,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_ListsOfValueTypes()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_ListsOfValueTypes()
         {
             Produces_Correct_Object_For_ListsOfValueTypes(r => {
                 return _Serialiser.Deserialise<ListsOfValueTypes>(CreateTextReader(r));
@@ -1327,7 +1327,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_ListOfStrings()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_ListOfStrings()
         {
             Produces_Correct_Object_For_ListOfStrings(r => {
                 return _Serialiser.Deserialise<ListOfStrings>(CreateTextReader(r));
@@ -1335,7 +1335,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Produces_Correct_Object_For_ListOfStrings_With_Null_Element()
+        public void Deserialise_TextReader_Produces_Correct_Object_For_ListOfStrings_With_Null_Element()
         {
             Produces_Correct_Object_For_ListOfStrings_With_Null_Element(r => {
                 return _Serialiser.Deserialise<ListOfStrings>(CreateTextReader(r));
@@ -1344,7 +1344,7 @@ namespace Test.VirtualRadar.Library
 
         [TestMethod]
         [ExpectedException(typeof(System.ArgumentException))]
-        public void XmlSerialiser_Deserialise_TextReader_Throws_Exception_By_Default_If_Enum_Value_Unknown()
+        public void Deserialise_TextReader_Throws_Exception_By_Default_If_Enum_Value_Unknown()
         {
             Throws_Exception_By_Default_If_Enum_Value_Unknown(r => {
                 return _Serialiser.Deserialise<EnumClass>(CreateTextReader(r));
@@ -1352,7 +1352,7 @@ namespace Test.VirtualRadar.Library
         }
 
         [TestMethod]
-        public void XmlSerialiser_Deserialise_TextReader_Can_Use_Default_Enum_Value_For_Unknown_Values_If_Required()
+        public void Deserialise_TextReader_Can_Use_Default_Enum_Value_For_Unknown_Values_If_Required()
         {
             Can_Use_Default_Enum_Value_For_Unknown_Values_If_Required(r => {
                 return _Serialiser.Deserialise<EnumClass>(CreateTextReader(r));
