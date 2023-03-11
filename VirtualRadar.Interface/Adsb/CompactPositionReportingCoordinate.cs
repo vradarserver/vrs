@@ -65,9 +65,6 @@ namespace VirtualRadar.Interface.Adsb
         /// Returns an English description of the coordinate.
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
-        {
-            return String.Format("{0}/{1}{2}{3}", Latitude, Longitude, OddFormat ? 'O' : 'E', NumberOfBits);
-        }
+        public override string ToString() => $"{Latitude}/{Longitude}{(OddFormat ? 'O' : 'E')}{NumberOfBits}";
     }
 }

@@ -255,6 +255,9 @@ paket-files/
 .idea/
 *.sln.iml
 
+# LibreOffice lock files
+.~lock.*
+
 # VRS files to ignore
 /Installers/InnoSetup/Output/
 /Installers/Mono/output

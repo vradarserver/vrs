@@ -28,6 +28,7 @@ namespace VirtualRadar.Library
 
             services.AddScoped<VirtualRadar.Interface.Settings.IConfigurationStorage,                   Settings.ConfigurationStorage>();
 
+            services.AddTransient<VirtualRadar.Interface.Adsb.IAdsbTranslator,                          Adsb.AdsbTranslator>();
             services.AddTransient<VirtualRadar.Interface.IXmlSerialiser,                                XmlSerialiser>();
 
             return services;
