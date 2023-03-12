@@ -31,7 +31,7 @@ namespace Test.Framework
                 var result = 0;
                 var multiplier = 1;
                 for(var idx = ColumnLetter.Length - 1;idx >= 0;--idx) {
-                    result += ColumnLetter[idx] * multiplier;
+                    result += ((ColumnLetter[idx] - 'A') + 1) * multiplier;
                     multiplier *= 26;
                 }
                 return result;
@@ -50,7 +50,7 @@ namespace Test.Framework
 
         internal SpreadsheetTestDataCell(IXLCell cell)
         {
-            CellReference = new(cell.Address.ColumnLetter, cell.Address.ColumnNumber);
+            CellReference = new(cell.Address.ColumnLetter.ToUpper(), cell.Address.ColumnNumber);
             Value = cell.Value.ToString() ?? "";
         }
 

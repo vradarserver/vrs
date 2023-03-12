@@ -567,38 +567,35 @@ namespace Test.VirtualRadar.Library.Adsb
             return result;
         }
 
-        /*
-
         [TestMethod]
-        [DataSource("Data Source='RawDecodingTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "AdsbTranslate$")]
         public void Translate_Updates_Statistics_When_Decoding_Messages()
         {
-            var worksheet = new ExcelWorksheetData(TestContext);
+            var spreadsheet = new SpreadsheetTestData(TestData.RawDecodingTestData, "AdsbTranslate");
+            spreadsheet.TestEveryRow(this, row => {
+                var bits = row.String("ExtendedSquitterMessage");
+                _ModeSMessage.ExtendedSquitterMessage = TestDataParser.ConvertBitStringToBytes(bits).ToArray();
+                _ModeSMessage.DownlinkFormat = DownlinkFormat.ExtendedSquitter;
 
-            var bits = worksheet.String("ExtendedSquitterMessage");
-            _ModeSMessage.ExtendedSquitterMessage = TestUtilities.ConvertBitStringToBytes(bits).ToArray();
-            _ModeSMessage.DownlinkFormat = DownlinkFormat.ExtendedSquitter;
+                var message = _Translator.Translate(_ModeSMessage);
 
-            var message = _Translator.Translate(_ModeSMessage);
-
-            if(message == null) {
-                Assert.AreEqual(0L, _Statistics.Object.AdsbCount);
-                for(var i = 0;i < _Statistics.Object.AdsbMessageFormatCount.Length;++i) {
-                    Assert.AreEqual(0, _Statistics.Object.AdsbMessageFormatCount[i], i.ToString());
+                if(message == null) {
+                    Assert.AreEqual(0L, _Statistics.AdsbCount);
+                    for(var i = 0;i < _Statistics.AdsbMessageFormatCount.Length;++i) {
+                        Assert.AreEqual(0, _Statistics.AdsbMessageFormatCount[i], i.ToString());
+                    }
+                    for(var i = 0;i < _Statistics.AdsbTypeCount.Length;++i) {
+                        Assert.AreEqual(0, _Statistics.AdsbTypeCount[i], i.ToString());
+                    }
+                } else {
+                    Assert.AreEqual(1L, _Statistics.AdsbCount);
+                    for(var i = 0;i < _Statistics.AdsbMessageFormatCount.Length;++i) {
+                        Assert.AreEqual(i == (int)message.MessageFormat ? 1L : 0L, _Statistics.AdsbMessageFormatCount[i], i.ToString());
+                    }
+                    for(var i = 0;i < _Statistics.AdsbTypeCount.Length;++i) {
+                        Assert.AreEqual(i == (int)message.Type ? 1L : 0L, _Statistics.AdsbTypeCount[i], i.ToString());
+                    }
                 }
-                for(var i = 0;i < _Statistics.Object.AdsbTypeCount.Length;++i) {
-                    Assert.AreEqual(0, _Statistics.Object.AdsbTypeCount[i], i.ToString());
-                }
-            } else {
-                Assert.AreEqual(1L, _Statistics.Object.AdsbCount);
-                for(var i = 0;i < _Statistics.Object.AdsbMessageFormatCount.Length;++i) {
-                    Assert.AreEqual(i == (int)message.MessageFormat ? 1L : 0L, _Statistics.Object.AdsbMessageFormatCount[i], i.ToString());
-                }
-                for(var i = 0;i < _Statistics.Object.AdsbTypeCount.Length;++i) {
-                    Assert.AreEqual(i == (int)message.Type ? 1L : 0L, _Statistics.Object.AdsbTypeCount[i], i.ToString());
-                }
-            }
+            });
         }
 
         [TestMethod]
@@ -624,7 +621,7 @@ namespace Test.VirtualRadar.Library.Adsb
         {
             foreach(SurveillanceStatus surveillanceStatus in Enum.GetValues(typeof(SurveillanceStatus))) {
                 var bits = new StringBuilder(bitsBeforeSS);
-                bits.Append(TestUtilities.ConvertToBitString((int)surveillanceStatus, 2));
+                bits.Append(TestDataParser.ConvertToBitString((int)surveillanceStatus, 2));
                 bits.Append(bitsAfterSS);
 
                 var message = Translate(bits);
@@ -654,19 +651,21 @@ namespace Test.VirtualRadar.Library.Adsb
 
         private void DoGillhamAltitudeDecodingCheck(string bitsBeforeAC, string bitsAfterAC)
         {
-            var fileName = Path.Combine(TestContext.TestDeploymentDir, "GillhamAltitudeTable.csv");
-            var lines = File.ReadAllLines(fileName);
-            for(var lineNumber = 2;lineNumber < lines.Length;++lineNumber) {
-                var cells = lines[lineNumber].Split(',');
-                var altitude = int.Parse(cells[0]);
+            var gillhamAltitudeTable = new SpreadsheetTestData(TestData.GillhamAltitudeTable, "AllAltitudes", hasHeadingRow: false);
+            for(var rowNumber = 2;rowNumber < gillhamAltitudeTable.Rows.Count;++rowNumber) {
+                var row = gillhamAltitudeTable.Rows[rowNumber];
+                var altitude = row.Int(0);
                 var bits = new StringBuilder(bitsBeforeAC);
 
-                for(int bit = 0;bit < 12;++bit) {
-                    if(bit == 7) bits.Append('0');
-                    else {
+                for(var bit = 0;bit < 12;++bit) {
+                    if(bit == 7) {
+                        bits.Append('0');
+                    } else {
                         var index = bit + 1;
-                        if(bit > 7) --index;
-                        bits.Append(cells[index]);
+                        if(bit > 7) {
+                            --index;
+                        }
+                        bits.Append(row.String(index));
                     }
                 }
 
@@ -674,11 +673,14 @@ namespace Test.VirtualRadar.Library.Adsb
 
                 var message = Translate(bits);
 
-                var actual = message.Type < 20 ? message.AirbornePosition.BarometricAltitude : message.AirbornePosition.GeometricAltitude;
+                var actual = message.Type < 20
+                    ? message.AirbornePosition.BarometricAltitude
+                    : message.AirbornePosition.GeometricAltitude;
                 Assert.AreEqual(altitude, actual);
             }
         }
 
+        /*
         [TestMethod]
         public void Translate_Never_Throws_Exceptions_When_Decoding_Invalid_Gillham_Altitudes()
         {
