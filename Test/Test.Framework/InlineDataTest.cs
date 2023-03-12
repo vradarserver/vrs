@@ -54,13 +54,22 @@ namespace Test.Framework
         public int CountRows { get; private set; }
 
         /// <summary>
+        /// Gets the offset to add to zero-based row numbers when reporting errors. If your row source has
+        /// 1-based row numbers then set this to 1, if it has 1-based rows and a header row then set to 2,
+        /// if it's 0-based then leave at the default of 0.
+        /// </summary>
+        public int RowOffsetForErrorReports { get; }
+
+        /// <summary>
         /// Creates a new object.
         /// </summary>
         /// <param name="testClass"></param>
-        public InlineDataTest(object testClass)
+        /// <param name="rowOffsetForErrorReports"></param>
+        public InlineDataTest(object testClass, int rowOffsetForErrorReports = 0)
         {
             TestClass = testClass;
             FindTestInitialiseAndTestCleanup();
+            RowOffsetForErrorReports = rowOffsetForErrorReports;
         }
 
         private void FindTestInitialiseAndTestCleanup()
@@ -148,7 +157,7 @@ namespace Test.Framework
                 message.AppendLine($"SUMMARY (row numbers are 0-based)");
                 message.AppendLine($"=================================");
                 foreach(var kvp in _FailedRows.OrderBy(r => r.Key)) {
-                    message.AppendLine($"Row {kvp.Key} @{kvp.Value.TestLineNumber}: {kvp.Value.Exception.Message}");
+                    message.AppendLine($"Row {kvp.Key + RowOffsetForErrorReports} @{kvp.Value.TestLineNumber}: {kvp.Value.Exception.Message}");
                 }
 
                 message.AppendLine();
@@ -162,9 +171,9 @@ namespace Test.Framework
                         message.AppendLine();
                     }
                     if(kvp.Value.TestLineNumber > 0) {
-                        message.AppendLine($"Row {kvp.Key} failed at line {kvp.Value.TestLineNumber} in {kvp.Value.Method}:{Environment.NewLine}{kvp.Value.Exception}");
+                        message.AppendLine($"Row {kvp.Key + RowOffsetForErrorReports} failed at line {kvp.Value.TestLineNumber} in {kvp.Value.Method}:{Environment.NewLine}{kvp.Value.Exception}");
                     } else {
-                        message.AppendLine($"Row {kvp.Key} failed: {kvp.Value.Exception}");
+                        message.AppendLine($"Row {kvp.Key + RowOffsetForErrorReports} failed: {kvp.Value.Exception}");
                     }
                 }
 

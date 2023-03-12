@@ -50,7 +50,7 @@ namespace VirtualRadar.Interface.Adsb
         /// The length of the vehicle is, at most, this many metres - except when it is over 85 metres long or
         /// 90 metres wide, in which case this value is set to 85.
         /// </remarks>
-        public float? MaximumLength { get; set; }
+        public double? MaximumLength { get; set; }
 
         /// <summary>
         /// Gets or sets the upper-bound width of the vehicle in metres.
@@ -59,7 +59,7 @@ namespace VirtualRadar.Interface.Adsb
         /// The width of the vehicle is, at most, this many metres - except when it is over 85 metres long or
         /// 90 metres wide, in which case this value is set to 90.
         /// </remarks>
-        public float? MaximumWidth { get; set; }
+        public double? MaximumWidth { get; set; }
 
         /// <summary>
         /// Gets or sets the operational modes that are active on board the aircraft.

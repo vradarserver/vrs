@@ -43,12 +43,12 @@ namespace VirtualRadar.Library.Adsb
         /// <summary>
         /// The lookup table of maximum lengths.
         /// </summary>
-        private static readonly float[] _MaximumLengths = new float[] { 15F, 15F, 25F, 25F, 35F, 35F, 45F, 45F, 55F, 55F, 65F, 65F, 75F, 75F, 85F, 85F, };
+        private static readonly double[] _MaximumLengths = new double[] { 15, 15, 25, 25, 35, 35, 45, 45, 55, 55, 65, 65, 75, 75, 85, 85, };
 
         /// <summary>
         /// The lookup table of maximum widths.
         /// </summary>
-        private static readonly float[] _MaximumWidths = new float[] { 11.5F, 23F, 28.5F, 34F, 33F, 38F, 39.5F, 45F, 45F, 52F, 59.5F, 67F, 72.5F, 80F, 80F, 90F, };
+        private static readonly double[] _MaximumWidths = new double[] { 11.5, 23, 28.5, 34, 33, 38, 39.5, 45, 45, 52, 59.5, 67, 72.5, 80, 80, 90, };
 
         /// <summary>
         /// See interface docs.
@@ -301,11 +301,11 @@ namespace VirtualRadar.Library.Adsb
                 _BitStream.Skip(1);
 
                 switch(_BitStream.ReadByte(3)) {
-                    case 0: subMessage.HorizontalVelocityError = 10F; break;
-                    case 1: subMessage.HorizontalVelocityError = -10F; break;
-                    case 2: subMessage.HorizontalVelocityError = -3F; break;
-                    case 3: subMessage.HorizontalVelocityError = -1F; break;
-                    case 4: subMessage.HorizontalVelocityError = -0.3F; break;
+                    case 0: subMessage.HorizontalVelocityError = 10.0; break;
+                    case 1: subMessage.HorizontalVelocityError = -10.0; break;
+                    case 2: subMessage.HorizontalVelocityError = -3.0; break;
+                    case 3: subMessage.HorizontalVelocityError = -1.0; break;
+                    case 4: subMessage.HorizontalVelocityError = -0.3; break;
                 }
 
                 if(velocityType == 3 || velocityType == 4) {
@@ -412,7 +412,7 @@ namespace VirtualRadar.Library.Adsb
                             tcas.ThreatAltitude = ModeSAltitudeConversion.LookupGillhamAltitude(strippedAltitude);
 
                             if(threatRange > 0) {
-                                tcas.ThreatRange = ((float)(threatRange - 1) / 10F) + 0.05F;
+                                tcas.ThreatRange = ((double)(threatRange - 1) / 10.0) + 0.05;
                                 tcas.ThreatRangeExceeded = threatRange == 127;
                             }
 
@@ -475,7 +475,7 @@ namespace VirtualRadar.Library.Adsb
                     }
                     var pressure = _BitStream.ReadUInt16(9);
                     if(pressure != 0) {
-                        version2.BarometricPressureSetting = (((float)pressure - 1F) * 0.8F) + 800F;
+                        version2.BarometricPressureSetting = (((double)pressure - 1.0) * 0.8) + 800.0;
                     }
                     var headingIsValid = _BitStream.ReadBit();
                     var headingValue = _BitStream.ReadUInt16(9);

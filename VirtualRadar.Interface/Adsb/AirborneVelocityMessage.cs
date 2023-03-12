@@ -41,7 +41,7 @@ namespace VirtualRadar.Interface.Adsb
         /// is less than 10 m/s. Null values indicate that the value was undefined by the documentation.
         /// </para>
         /// </remarks>
-        public float? HorizontalVelocityError { get; set; }
+        public double? HorizontalVelocityError { get; set; }
 
         /// <summary>
         /// Gets or sets the velocity and bearing when expressed in an ADS-B message as a pair of speeds along the X/Y axes.

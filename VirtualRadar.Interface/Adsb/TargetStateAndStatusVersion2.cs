@@ -39,7 +39,7 @@ namespace VirtualRadar.Interface.Adsb
         /// <remarks>
         /// This is transmitted as the pressure setting minus 800 millibars. The 800 gets added back on before being reported here.
         /// </remarks>
-        public float? BarometricPressureSetting { get; set; }
+        public double? BarometricPressureSetting { get; set; }
 
         /// <summary>
         /// Gets or sets the autopilot / FMS selected heading in degrees.

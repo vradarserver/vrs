@@ -88,7 +88,7 @@ namespace VirtualRadar.Interface.Adsb
         /// </summary>
         /// <remarks>If this is null then either the range to the threat is not known or <see cref="ThreatIcao24"/> has been supplied. If it is
         /// not null then <see cref="ThreatIcao24"/> will be null and <see cref="ThreatAltitude"/> and <see cref="ThreatBearing"/> will be supplied.</remarks>
-        public float? ThreatRange { get; set; }
+        public double? ThreatRange { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating that the range to the threat in <see cref="ThreatRange"/> exceeds the maximum distance that TCAS can represent.

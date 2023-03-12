@@ -41,6 +41,14 @@ namespace Test.VirtualRadar.Library.Adsb
             _ModeSMessage = new ModeSMessage();
         }
 
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            // We're just keeping this as a placeholder in case we need a cleanup in the future. There are
+            // tests that manually call cleanup & initialise, don't want to have to update them all if a
+            // cleanup becomes necessary.
+        }
+
         /// <summary>
         /// Performs the very common task of sending a set of bits to the translator and getting a message back.
         /// </summary>
@@ -97,242 +105,241 @@ namespace Test.VirtualRadar.Library.Adsb
             }
         }
 
-        /*
         [TestMethod]
-        [DataSource("Data Source='RawDecodingTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
-                    "AdsbTranslate$")]
         public void Translate_Decodes_Messages_Correctly(
         )
         {
-            var worksheet = new ExcelWorksheetData(TestContext);
-            var expectedValue = new SpreadsheetFieldValue(worksheet, 17);
+            var spreadsheet = new SpreadsheetTestData(TestData.RawDecodingTestData, "AdsbTranslate");
+            spreadsheet.TestEveryRow(this, row => {
+                var expectedValue = new SpreadsheetFieldValue(row, 17);
 
-            var bits = worksheet.String("ExtendedSquitterMessage");
-            var bytes = TestUtilities.ConvertBitStringToBytes(bits);
-            var df = worksheet.String("DF");
+                var bits = row.String("ExtendedSquitterMessage");
+                var bytes = TestDataParser.ConvertBitStringToBytes(bits);
+                var df = row.String("DF");
 
-            int countTestsPerformed = 0;
-            for(var modeSDownlinkFormats = 0;modeSDownlinkFormats < 5;++modeSDownlinkFormats) {
-                DownlinkFormat downlinkFormat = DownlinkFormat.ShortAirToAirSurveillance;
-                ControlField? controlField = null;
-                ApplicationField? applicationField = null;
-                switch(modeSDownlinkFormats) {
-                    case 0: downlinkFormat = DownlinkFormat.ExtendedSquitter; break;
-                    case 1: downlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder; controlField = ControlField.AdsbDeviceTransmittingIcao24; break;
-                    case 2: downlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder; controlField = ControlField.AdsbDeviceNotTransmittingIcao24; break;
-                    case 3: downlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder; controlField = ControlField.AdsbRebroadcastOfExtendedSquitter; break;
-                    case 4: downlinkFormat = DownlinkFormat.MilitaryExtendedSquitter; applicationField = ApplicationField.ADSB; break;
-                }
-                if(df != "ALL") {
-                    modeSDownlinkFormats = int.MaxValue - 1;
+                var countTestsPerformed = 0;
+                for(var modeSDownlinkFormats = 0;modeSDownlinkFormats < 5;++modeSDownlinkFormats) {
+                    var downlinkFormat = DownlinkFormat.ShortAirToAirSurveillance;
+                    ControlField? controlField = null;
+                    ApplicationField? applicationField = null;
+                    switch(modeSDownlinkFormats) {
+                        case 0: downlinkFormat = DownlinkFormat.ExtendedSquitter; break;
+                        case 1: downlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder; controlField = ControlField.AdsbDeviceTransmittingIcao24; break;
+                        case 2: downlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder; controlField = ControlField.AdsbDeviceNotTransmittingIcao24; break;
+                        case 3: downlinkFormat = DownlinkFormat.ExtendedSquitterNonTransponder; controlField = ControlField.AdsbRebroadcastOfExtendedSquitter; break;
+                        case 4: downlinkFormat = DownlinkFormat.MilitaryExtendedSquitter; applicationField = ApplicationField.ADSB; break;
+                    }
+                    if(df != "ALL") {
+                        modeSDownlinkFormats = int.MaxValue - 1;
 
-                    downlinkFormat = (DownlinkFormat)worksheet.Int("DF");
-                    var controlFieldValue = worksheet.NInt("CF");
-                    controlField = controlFieldValue == null ? (ControlField?)null : (ControlField)controlFieldValue.Value;
-                    var applicationFieldValue = worksheet.NInt("AF");
-                    applicationField = applicationFieldValue == null ? (ApplicationField?)null : (ApplicationField)applicationFieldValue.Value;
-                }
-                ++countTestsPerformed;
+                        downlinkFormat = (DownlinkFormat)row.Int("DF");
+                        var controlFieldValue = row.NInt("CF");
+                        controlField = controlFieldValue == null ? (ControlField?)null : (ControlField)controlFieldValue.Value;
+                        var applicationFieldValue = row.NInt("AF");
+                        applicationField = applicationFieldValue == null ? (ApplicationField?)null : (ApplicationField)applicationFieldValue.Value;
+                    }
+                    ++countTestsPerformed;
 
-                TestCleanup();
-                TestInitialise();
+                    TestCleanup();
+                    TestInitialise();
 
-                _ModeSMessage.DownlinkFormat = downlinkFormat;
-                _ModeSMessage.ControlField = controlField;
-                _ModeSMessage.ApplicationField = applicationField;
-                _ModeSMessage.ExtendedSquitterMessage = bytes.ToArray();
+                    _ModeSMessage.DownlinkFormat = downlinkFormat;
+                    _ModeSMessage.ControlField = controlField;
+                    _ModeSMessage.ApplicationField = applicationField;
+                    _ModeSMessage.ExtendedSquitterMessage = bytes.ToArray();
 
-                var message = _Translator.Translate(_ModeSMessage);
-                var failMessage = String.Format("Failed for DF:{0} CF:{1} AF:{2}", (int)_ModeSMessage.DownlinkFormat, (int?)_ModeSMessage.ControlField, (int?)_ModeSMessage.ApplicationField);
+                    var message = _Translator.Translate(_ModeSMessage);
+                    var failMessage = $"Failed for DF:{(int)_ModeSMessage.DownlinkFormat} CF:{(int?)_ModeSMessage.ControlField} AF:{(int?)_ModeSMessage.ApplicationField}";
 
-                var countMessageObjects = 0;
-                object subMessage = null;
-                if(message.AirbornePosition != null)            { ++countMessageObjects; subMessage = message.AirbornePosition; }
-                if(message.SurfacePosition != null)             { ++countMessageObjects; subMessage = message.SurfacePosition; }
-                if(message.IdentifierAndCategory != null)       { ++countMessageObjects; subMessage = message.IdentifierAndCategory; }
-                if(message.AirborneVelocity != null)            { ++countMessageObjects; subMessage = message.AirborneVelocity; }
-                if(message.AircraftStatus != null)              { ++countMessageObjects; subMessage = message.AircraftStatus; }
-                if(message.TargetStateAndStatus != null)        { ++countMessageObjects; subMessage = message.TargetStateAndStatus; }
-                if(message.AircraftOperationalStatus != null)   { ++countMessageObjects; subMessage = message.AircraftOperationalStatus; }
-                if(message.CoarseTisbAirbornePosition != null)  { ++countMessageObjects; subMessage = message.CoarseTisbAirbornePosition; }
-                Assert.AreEqual(1, countMessageObjects, failMessage);
+                    var countMessageObjects = 0;
+                    object subMessage = null;
+                    if(message.AirbornePosition != null)            { ++countMessageObjects; subMessage = message.AirbornePosition; }
+                    if(message.SurfacePosition != null)             { ++countMessageObjects; subMessage = message.SurfacePosition; }
+                    if(message.IdentifierAndCategory != null)       { ++countMessageObjects; subMessage = message.IdentifierAndCategory; }
+                    if(message.AirborneVelocity != null)            { ++countMessageObjects; subMessage = message.AirborneVelocity; }
+                    if(message.AircraftStatus != null)              { ++countMessageObjects; subMessage = message.AircraftStatus; }
+                    if(message.TargetStateAndStatus != null)        { ++countMessageObjects; subMessage = message.TargetStateAndStatus; }
+                    if(message.AircraftOperationalStatus != null)   { ++countMessageObjects; subMessage = message.AircraftOperationalStatus; }
+                    if(message.CoarseTisbAirbornePosition != null)  { ++countMessageObjects; subMessage = message.CoarseTisbAirbornePosition; }
+                    Assert.AreEqual(1, countMessageObjects, failMessage);
 
-                // Extract values that can appear on more than one message type
-                CompactPositionReportingCoordinate cpr = null;
-                bool? posTime = null;
-                EmergencyState? emergencyState = null;
-                byte? nacP = null;
-                bool? nicBaro = null;
-                byte? sil = null;
-                bool? silSupplement = null;
-                bool? isRebroadcast = null;
-                int? baroAlt = null;
-                double? gndSpeed = null;
-                double? gndTrack = null;
-                SurveillanceStatus surveillanceStatus = SurveillanceStatus.NoInformation;
-                if(message.AirbornePosition != null) {
-                    cpr = message.AirbornePosition.CompactPosition;
-                    posTime = message.AirbornePosition.PositionTimeIsExact;
-                    baroAlt = message.AirbornePosition.BarometricAltitude;
-                    surveillanceStatus = message.AirbornePosition.SurveillanceStatus;
-                } else if(message.SurfacePosition != null) {
-                    cpr = message.SurfacePosition.CompactPosition;
-                    posTime = message.SurfacePosition.PositionTimeIsExact;
-                    gndSpeed = message.SurfacePosition.GroundSpeed;
-                    gndTrack = message.SurfacePosition.GroundTrack;
-                } else if(message.AircraftStatus != null && message.AircraftStatus.EmergencyStatus != null) {
-                    emergencyState = message.AircraftStatus.EmergencyStatus.EmergencyState;
-                } else if(message.TargetStateAndStatus != null && message.TargetStateAndStatus.Version1 != null) {
-                    nacP = message.TargetStateAndStatus.Version1.NacP;
-                    nicBaro = message.TargetStateAndStatus.Version1.NicBaro;
-                    sil = message.TargetStateAndStatus.Version1.Sil;
-                    emergencyState = message.TargetStateAndStatus.Version1.EmergencyState;
-                } else if(message.TargetStateAndStatus != null && message.TargetStateAndStatus.Version2 != null) {
-                    nacP = message.TargetStateAndStatus.Version2.NacP;
-                    nicBaro = message.TargetStateAndStatus.Version2.NicBaro;
-                    sil = message.TargetStateAndStatus.Version2.Sil;
-                    silSupplement = message.TargetStateAndStatus.Version2.SilSupplement;
-                    isRebroadcast = message.TargetStateAndStatus.Version2.IsRebroadcast;
-                } else if(message.AircraftOperationalStatus != null) {
-                    nacP = message.AircraftOperationalStatus.NacP;
-                    nicBaro = message.AircraftOperationalStatus.NicBaro;
-                    sil = message.AircraftOperationalStatus.Sil;
-                    silSupplement = message.AircraftOperationalStatus.SilSupplement;
-                    isRebroadcast = message.AircraftOperationalStatus.IsRebroadcast;
-                } else if(message.CoarseTisbAirbornePosition != null) {
-                    cpr = message.CoarseTisbAirbornePosition.CompactPosition;
-                    baroAlt = message.CoarseTisbAirbornePosition.BarometricAltitude;
-                    gndSpeed = message.CoarseTisbAirbornePosition.GroundSpeed;
-                    gndTrack = message.CoarseTisbAirbornePosition.GroundTrack;
-                    surveillanceStatus = message.CoarseTisbAirbornePosition.SurveillanceStatus;
-                }
+                    // Extract values that can appear on more than one message type
+                    CompactPositionReportingCoordinate cpr = null;
+                    bool? posTime = null;
+                    EmergencyState? emergencyState = null;
+                    byte? nacP = null;
+                    bool? nicBaro = null;
+                    byte? sil = null;
+                    bool? silSupplement = null;
+                    bool? isRebroadcast = null;
+                    int? baroAlt = null;
+                    double? gndSpeed = null;
+                    double? gndTrack = null;
+                    var surveillanceStatus = SurveillanceStatus.NoInformation;
+                    if(message.AirbornePosition != null) {
+                        cpr = message.AirbornePosition.CompactPosition;
+                        posTime = message.AirbornePosition.PositionTimeIsExact;
+                        baroAlt = message.AirbornePosition.BarometricAltitude;
+                        surveillanceStatus = message.AirbornePosition.SurveillanceStatus;
+                    } else if(message.SurfacePosition != null) {
+                        cpr = message.SurfacePosition.CompactPosition;
+                        posTime = message.SurfacePosition.PositionTimeIsExact;
+                        gndSpeed = message.SurfacePosition.GroundSpeed;
+                        gndTrack = message.SurfacePosition.GroundTrack;
+                    } else if(message.AircraftStatus != null && message.AircraftStatus.EmergencyStatus != null) {
+                        emergencyState = message.AircraftStatus.EmergencyStatus.EmergencyState;
+                    } else if(message.TargetStateAndStatus != null && message.TargetStateAndStatus.Version1 != null) {
+                        nacP = message.TargetStateAndStatus.Version1.NacP;
+                        nicBaro = message.TargetStateAndStatus.Version1.NicBaro;
+                        sil = message.TargetStateAndStatus.Version1.Sil;
+                        emergencyState = message.TargetStateAndStatus.Version1.EmergencyState;
+                    } else if(message.TargetStateAndStatus != null && message.TargetStateAndStatus.Version2 != null) {
+                        nacP = message.TargetStateAndStatus.Version2.NacP;
+                        nicBaro = message.TargetStateAndStatus.Version2.NicBaro;
+                        sil = message.TargetStateAndStatus.Version2.Sil;
+                        silSupplement = message.TargetStateAndStatus.Version2.SilSupplement;
+                        isRebroadcast = message.TargetStateAndStatus.Version2.IsRebroadcast;
+                    } else if(message.AircraftOperationalStatus != null) {
+                        nacP = message.AircraftOperationalStatus.NacP;
+                        nicBaro = message.AircraftOperationalStatus.NicBaro;
+                        sil = message.AircraftOperationalStatus.Sil;
+                        silSupplement = message.AircraftOperationalStatus.SilSupplement;
+                        isRebroadcast = message.AircraftOperationalStatus.IsRebroadcast;
+                    } else if(message.CoarseTisbAirbornePosition != null) {
+                        cpr = message.CoarseTisbAirbornePosition.CompactPosition;
+                        baroAlt = message.CoarseTisbAirbornePosition.BarometricAltitude;
+                        gndSpeed = message.CoarseTisbAirbornePosition.GroundSpeed;
+                        gndTrack = message.CoarseTisbAirbornePosition.GroundTrack;
+                        surveillanceStatus = message.CoarseTisbAirbornePosition.SurveillanceStatus;
+                    }
 
-                // Extract the full list of properties to check
-                var checkProperties = message.GetType().GetProperties().AsQueryable();
-                checkProperties = checkProperties.Concat(subMessage.GetType().GetProperties());
-                if(message.AircraftStatus != null) {
-                    switch(message.AircraftStatus.AircraftStatusType) {
-                        case AircraftStatusType.EmergencyStatus:
-                            checkProperties = checkProperties.Concat(message.AircraftStatus.EmergencyStatus.GetType().GetProperties());
-                            break;
-                        case AircraftStatusType.TcasResolutionAdvisoryBroadcast:
-                            checkProperties = checkProperties.Concat(message.AircraftStatus.TcasResolutionAdvisory.GetType().GetProperties());
-                            break;
+                    // Extract the full list of properties to check
+                    var checkProperties = message.GetType().GetProperties().AsQueryable();
+                    checkProperties = checkProperties.Concat(subMessage.GetType().GetProperties());
+                    if(message.AircraftStatus != null) {
+                        switch(message.AircraftStatus.AircraftStatusType) {
+                            case AircraftStatusType.EmergencyStatus:
+                                checkProperties = checkProperties.Concat(message.AircraftStatus.EmergencyStatus.GetType().GetProperties());
+                                break;
+                            case AircraftStatusType.TcasResolutionAdvisoryBroadcast:
+                                checkProperties = checkProperties.Concat(message.AircraftStatus.TcasResolutionAdvisory.GetType().GetProperties());
+                                break;
+                        }
+                    }
+                    if(message.TargetStateAndStatus != null) {
+                        switch(message.TargetStateAndStatus.TargetStateAndStatusType) {
+                            case TargetStateAndStatusType.Version1: checkProperties = checkProperties.Concat(message.TargetStateAndStatus.Version1.GetType().GetProperties()); break;
+                            case TargetStateAndStatusType.Version2: checkProperties = checkProperties.Concat(message.TargetStateAndStatus.Version2.GetType().GetProperties()); break;
+                        }
+                    }
+
+                    Assert.IsNotNull(message, failMessage);
+                    foreach(var messageProperty in checkProperties) {
+                        switch(messageProperty.Name) {
+                            case "AdsbVersion":                         Assert.AreEqual(expectedValue.GetNByte("V"), message.AircraftOperationalStatus.AdsbVersion, failMessage); break;
+                            case "AirborneCapability":                  Assert.AreEqual(expectedValue.GetNInt("AC", true), (int?)message.AircraftOperationalStatus.AirborneCapability, failMessage); break;
+                            case "AirbornePosition":                    break;
+                            case "AirborneVelocity":                    break;
+                            case "AircraftOperationalStatus":           break;
+                            case "AircraftOperationalStatusType":       Assert.AreEqual(expectedValue.GetEnum<AircraftOperationalStatusType>("AST"), message.AircraftOperationalStatus.AircraftOperationalStatusType, failMessage); break;
+                            case "AircraftStatus":                      break;
+                            case "AircraftStatusType":                  Assert.AreEqual(expectedValue.GetEnum<AircraftStatusType>("AST"), message.AircraftStatus.AircraftStatusType, failMessage); break;
+                            case "Airspeed":                            Assert.AreEqual(expectedValue.GetNDouble("AS"), message.AirborneVelocity.Airspeed, failMessage); break;
+                            case "AirspeedExceeded":                    Assert.AreEqual(expectedValue.GetNBool("AS:M"), message.AirborneVelocity.AirspeedExceeded, failMessage); break;
+                            case "AirspeedIsTrueAirspeed":              Assert.AreEqual(expectedValue.GetNBool("AST"), message.AirborneVelocity.AirspeedIsTrueAirspeed, failMessage); break;
+                            case "AltitudesAreMeanSeaLevel":            Assert.AreEqual(expectedValue.GetNBool("VMSL"), message.TargetStateAndStatus.Version1.AltitudesAreMeanSeaLevel, failMessage); break;
+                            case "BarometricAltitude":                  Assert.AreEqual(expectedValue.GetNInt("BA"), baroAlt, failMessage); break;
+                            case "BarometricPressureSetting":           Assert.AreEqual(expectedValue.GetNDouble("QNH"), message.TargetStateAndStatus.Version2.BarometricPressureSetting, failMessage); break;
+                            case "ChangeOfIntent":                      Assert.AreEqual(expectedValue.GetNBool("IC"), message.AirborneVelocity.ChangeOfIntent, failMessage); break;
+                            case "CoarseTisbAirbornePosition":          break;
+                            case "CompactPosition":                     Assert.AreEqual(expectedValue.GetString("CPR"), cpr == null ? null : cpr.ToString(), failMessage); break;
+                            case "EmergencyState":                      Assert.AreEqual(expectedValue.GetEnum<EmergencyState>("ES"), emergencyState, failMessage); break;
+                            case "EmergencyStatus":                     if(message.AircraftStatus.AircraftStatusType != AircraftStatusType.EmergencyStatus) Assert.IsNull(message.AircraftStatus.EmergencyStatus); break;
+                            case "EmitterCategory":                     Assert.AreEqual(GetExpectedEmitterCategory(expectedValue), message.IdentifierAndCategory.EmitterCategory, failMessage); break;
+                            case "FormattedThreatIcao24":               break;
+                            case "GeometricAltitude":                   Assert.AreEqual(expectedValue.GetNInt("GA"), message.AirbornePosition.GeometricAltitude, failMessage); break;
+                            case "GeometricAltitudeDelta":              Assert.AreEqual(expectedValue.GetNShort("DBA"), message.AirborneVelocity.GeometricAltitudeDelta, failMessage); break;
+                            case "GeometricAltitudeDeltaExceeded":      Assert.AreEqual(expectedValue.GetNBool("DBA:M"), message.AirborneVelocity.GeometricAltitudeDeltaExceeded, failMessage); break;
+                            case "GroundSpeed":                         Assert.AreEqual(expectedValue.GetNDouble("GSPD"), gndSpeed, failMessage); break;
+                            case "GroundSpeedExceeded":                 Assert.AreEqual(expectedValue.GetNBool("GSPD:M"), message.SurfacePosition.GroundSpeedExceeded, failMessage); break;
+                            case "GroundTrack":                         Assert.AreEqual(expectedValue.GetNDouble("GTRK"), gndTrack, failMessage); break;
+                            case "Gva":                                 Assert.AreEqual(expectedValue.GetNByte("GVA"), message.AircraftOperationalStatus.Gva, failMessage); break;
+                            case "Heading":                             Assert.AreEqual(expectedValue.GetNDouble("HDG"), message.AirborneVelocity.Heading, failMessage); break;
+                            case "HorizontalDataSource":                Assert.AreEqual(expectedValue.GetEnum<HorizontalDataSource>("HDS"), message.TargetStateAndStatus.Version1.HorizontalDataSource, failMessage); break;
+                            case "HorizontalModeIndicator":             Assert.AreEqual(expectedValue.GetEnum<HorizontalModeIndicator>("HMI"), message.TargetStateAndStatus.Version1.HorizontalModeIndicator, failMessage); break;
+                            case "HorizontalReferenceIsMagneticNorth":  Assert.AreEqual(expectedValue.GetNBool("HRD"), message.AircraftOperationalStatus.HorizontalReferenceIsMagneticNorth, failMessage); break;
+                            case "HorizontalVelocityError":             Assert.AreEqual(expectedValue.GetNDouble("NAC"), message.AirborneVelocity.HorizontalVelocityError, failMessage); break;
+                            case "Identification":                      Assert.AreEqual(expectedValue.GetString("ID"), message.IdentifierAndCategory.Identification, failMessage); break;
+                            case "IdentifierAndCategory":               break;
+                            case "IsAltitudeHoldActive":                Assert.AreEqual(expectedValue.GetNBool("ALTH"), message.TargetStateAndStatus.Version2.IsAltitudeHoldActive, failMessage); break;
+                            case "IsApproachModeActive":                Assert.AreEqual(expectedValue.GetNBool("APP"), message.TargetStateAndStatus.Version2.IsApproachModeActive, failMessage); break;
+                            case "IsAutopilotEngaged":                  Assert.AreEqual(expectedValue.GetNBool("APE"), message.TargetStateAndStatus.Version2.IsAutopilotEngaged, failMessage); break;
+                            case "IsLnavEngaged":                       Assert.AreEqual(expectedValue.GetNBool("LNAV"), message.TargetStateAndStatus.Version2.IsLnavEngaged, failMessage); break;
+                            case "IsRebroadcast":                       Assert.AreEqual(expectedValue.GetNBool("ADSR"), isRebroadcast, failMessage); break;
+                            case "IsReversing":                         Assert.AreEqual(expectedValue.GetNBool("REV"), message.SurfacePosition.IsReversing, failMessage); break;
+                            case "IsTcasOperational":                   Assert.AreEqual(expectedValue.GetNBool("TCOP"), message.TargetStateAndStatus.Version2.IsTcasOperational, failMessage); break;
+                            case "IsVnavEngaged":                       Assert.AreEqual(expectedValue.GetNBool("VNAV"), message.TargetStateAndStatus.Version2.IsVnavEngaged, failMessage); break;
+                            case "LateralAxisGpsOffset":                Assert.AreEqual(expectedValue.GetNShort("GLAT"), message.AircraftOperationalStatus.LateralAxisGpsOffset, failMessage); break;
+                            case "LongitudinalAxisGpsOffset":           Assert.AreEqual(expectedValue.GetNByte("GLNG"), message.AircraftOperationalStatus.LongitudinalAxisGpsOffset, failMessage); break;
+                            case "MaximumLength":                       Assert.AreEqual(expectedValue.GetNDouble("MLN"), message.AircraftOperationalStatus.MaximumLength, failMessage); break;
+                            case "MaximumWidth":                        Assert.AreEqual(expectedValue.GetNDouble("MWD"), message.AircraftOperationalStatus.MaximumWidth, failMessage); break;
+                            case "MessageFormat":                       Assert.AreEqual(row.Enum<MessageFormat>("MessageFormat"), message.MessageFormat, failMessage); break;
+                            case "ModeSMessage":                        Assert.AreSame(_ModeSMessage, message.ModeSMessage, failMessage); break;
+                            case "MultipleThreatEncounter":             Assert.AreEqual(expectedValue.GetNBool("MTE"), message.AircraftStatus.TcasResolutionAdvisory.MultipleThreatEncounter, failMessage); break;
+                            case "MultipleThreatResolutionAdvisory":    Assert.AreEqual(expectedValue.GetNShort("ARA-M", true), (short?)message.AircraftStatus.TcasResolutionAdvisory.MultipleThreatResolutionAdvisory, failMessage); break;
+                            case "NacP":                                Assert.AreEqual(expectedValue.GetNByte("NACP"), nacP, failMessage); break;
+                            case "NicA":                                Assert.AreEqual(expectedValue.GetNByte("NICA"), message.AircraftOperationalStatus.NicA, failMessage); break;
+                            case "NicB":                                Assert.AreEqual(expectedValue.GetNByte("NICB"), message.AirbornePosition.NicB, failMessage); break;
+                            case "NicC":                                Assert.AreEqual(expectedValue.GetNByte("NICC"), message.AircraftOperationalStatus.NicC, failMessage); break;
+                            case "NicBaro":                             Assert.AreEqual(expectedValue.GetNBool("NICBA"), nicBaro, failMessage); break;
+                            case "OperationalMode":                     Assert.AreEqual(expectedValue.GetNInt("OM", true), (int?)message.AircraftOperationalStatus.OperationalMode, failMessage); break;
+                            case "PositionTimeIsExact":                 Assert.AreEqual(expectedValue.GetNBool("TI"), posTime, failMessage); break;
+                            case "ResolutionAdvisoryComplement":        Assert.AreEqual(expectedValue.GetNByte("RAC", true), (byte?)message.AircraftStatus.TcasResolutionAdvisory.ResolutionAdvisoryComplement, failMessage); break;
+                            case "ResolutionAdvisoryTerminated":        Assert.AreEqual(expectedValue.GetNBool("RAT"), message.AircraftStatus.TcasResolutionAdvisory.ResolutionAdvisoryTerminated, failMessage); break;
+                            case "SelectedAltitude":                    Assert.AreEqual(expectedValue.GetNInt("ALT"), message.TargetStateAndStatus.Version2.SelectedAltitude, failMessage); break;
+                            case "SelectedAltitudeIsFms":               Assert.AreEqual(expectedValue.GetNBool("ALTF"), message.TargetStateAndStatus.Version2.SelectedAltitudeIsFms, failMessage); break;
+                            case "SelectedHeading":                     Assert.AreEqual(expectedValue.GetNDouble("HDG"), message.TargetStateAndStatus.Version2.SelectedHeading, failMessage); break;
+                            case "ServiceVolumeID":                     Assert.AreEqual(expectedValue.GetByte("SVID"), message.CoarseTisbAirbornePosition.ServiceVolumeID, failMessage); break;
+                            case "Sil":                                 Assert.AreEqual(expectedValue.GetNByte("SIL"), sil, failMessage); break;
+                            case "SilSupplement":                       Assert.AreEqual(expectedValue.GetNBool("SILP"), silSupplement, failMessage); break;
+                            case "SingleThreatResolutionAdvisory":      Assert.AreEqual(expectedValue.GetNShort("ARA-S", true), (short?)message.AircraftStatus.TcasResolutionAdvisory.SingleThreatResolutionAdvisory, failMessage); break;
+                            case "Squawk":                              Assert.AreEqual(expectedValue.GetNShort("SQK"), message.AircraftStatus.EmergencyStatus.Squawk, failMessage); break;
+                            case "SurfacePositionAngleIsTrack":         Assert.AreEqual(expectedValue.GetNBool("SPT"), message.AircraftOperationalStatus.SurfacePositionAngleIsTrack, failMessage); break;
+                            case "SurfaceCapability":                   Assert.AreEqual(expectedValue.GetNInt("SC", true), (int?)message.AircraftOperationalStatus.SurfaceCapability, failMessage); break;
+                            case "SurfacePosition":                     break;
+                            case "SurveillanceStatus":                  Assert.AreEqual(expectedValue.GetEnum<SurveillanceStatus>("SS"), surveillanceStatus, failMessage); break;
+                            case "SystemDesignAssurance":               Assert.AreEqual(expectedValue.GetEnum<SystemDesignAssurance>("SDA"), message.AircraftOperationalStatus.SystemDesignAssurance, failMessage); break;
+                            case "TargetAltitude":                      Assert.AreEqual(expectedValue.GetNInt("ALT"), message.TargetStateAndStatus.Version1.TargetAltitude, failMessage); break;
+                            case "TargetAltitudeCapability":            Assert.AreEqual(expectedValue.GetEnum<TargetAltitudeCapability>("TAC"), message.TargetStateAndStatus.Version1.TargetAltitudeCapability, failMessage); break;
+                            case "TargetHeading":                       Assert.AreEqual(expectedValue.GetNShort("HDG"), message.TargetStateAndStatus.Version1.TargetHeading, failMessage); break;
+                            case "TargetHeadingIsTrack":                Assert.AreEqual(expectedValue.GetNBool("HDG-T"), message.TargetStateAndStatus.Version1.TargetHeadingIsTrack, failMessage); break;
+                            case "TargetStateAndStatus":                break;
+                            case "TargetStateAndStatusType":            Assert.AreEqual(expectedValue.GetEnum<TargetStateAndStatusType>("TST"), message.TargetStateAndStatus.TargetStateAndStatusType, failMessage); break;
+                            case "TcasCapabilityMode":                  Assert.AreEqual(expectedValue.GetEnum<TcasCapabilityMode>("TCC"), message.TargetStateAndStatus.Version1.TcasCapabilityMode, failMessage); break;
+                            case "TcasResolutionAdvisory":              if(message.AircraftStatus.AircraftStatusType != AircraftStatusType.TcasResolutionAdvisoryBroadcast) Assert.IsNull(message.AircraftStatus.TcasResolutionAdvisory); break;
+                            case "ThreatAltitude":                      Assert.AreEqual(expectedValue.GetNInt("TID-A"), message.AircraftStatus.TcasResolutionAdvisory.ThreatAltitude, failMessage); break;
+                            case "ThreatBearing":                       Assert.AreEqual(expectedValue.GetNShort("TID-B"), message.AircraftStatus.TcasResolutionAdvisory.ThreatBearing, failMessage); break;
+                            case "ThreatIcao24":                        Assert.AreEqual(expectedValue.GetNInt("TID", true), message.AircraftStatus.TcasResolutionAdvisory.ThreatIcao24, failMessage); break;
+                            case "ThreatRange":                         Assert.AreEqual(expectedValue.GetNDouble("TID-R"), message.AircraftStatus.TcasResolutionAdvisory.ThreatRange, failMessage); break;
+                            case "ThreatRangeExceeded":                 Assert.AreEqual(expectedValue.GetNBool("TID-R:M"), message.AircraftStatus.TcasResolutionAdvisory.ThreatRangeExceeded, failMessage); break;
+                            case "TisbIcaoModeAFlag":                   Assert.AreEqual(row.NByte("IMF"), message.TisbIcaoModeAFlag, failMessage); break;
+                            case "Type":                                Assert.AreEqual(row.Byte("Type"), message.Type, failMessage); break;
+                            case "VectorVelocity":                      Assert.AreEqual(expectedValue.GetString("VV"), message.AirborneVelocity.VectorVelocity == null ? null : message.AirborneVelocity.VectorVelocity.ToString(), failMessage); break;
+                            case "VelocityType":                        Assert.AreEqual(expectedValue.GetEnum<VelocityType>("VT"), message.AirborneVelocity.VelocityType, failMessage); break;
+                            case "Version1":                            if(message.TargetStateAndStatus.TargetStateAndStatusType != TargetStateAndStatusType.Version1) Assert.IsNull(message.TargetStateAndStatus.Version1); break;
+                            case "Version2":                            if(message.TargetStateAndStatus.TargetStateAndStatusType != TargetStateAndStatusType.Version2) Assert.IsNull(message.TargetStateAndStatus.Version2); break;
+                            case "VerticalDataSource":                  Assert.AreEqual(expectedValue.GetEnum<VerticalDataSource>("VDS"), message.TargetStateAndStatus.Version1.VerticalDataSource, failMessage); break;
+                            case "VerticalModeIndicator":               Assert.AreEqual(expectedValue.GetEnum<VerticalModeIndicator>("VMI"), message.TargetStateAndStatus.Version1.VerticalModeIndicator, failMessage); break;
+                            case "VerticalRate":                        Assert.AreEqual(expectedValue.GetNInt("VSI"), message.AirborneVelocity.VerticalRate, failMessage); break;
+                            case "VerticalRateExceeded":                Assert.AreEqual(expectedValue.GetNBool("VSI:M"), message.AirborneVelocity.VerticalRateExceeded, failMessage); break;
+                            case "VerticalRateIsBarometric":            Assert.AreEqual(expectedValue.GetNBool("SBV"), message.AirborneVelocity.VerticalRateIsBarometric, failMessage); break;
+                            default:                                    Assert.Fail("Code needs to be added to check the {0} property", messageProperty.Name); break;
+                        }
                     }
                 }
-                if(message.TargetStateAndStatus != null) {
-                    switch(message.TargetStateAndStatus.TargetStateAndStatusType) {
-                        case TargetStateAndStatusType.Version1: checkProperties = checkProperties.Concat(message.TargetStateAndStatus.Version1.GetType().GetProperties()); break;
-                        case TargetStateAndStatusType.Version2: checkProperties = checkProperties.Concat(message.TargetStateAndStatus.Version2.GetType().GetProperties()); break;
-                    }
-                }
 
-                Assert.IsNotNull(message, failMessage);
-                foreach(var messageProperty in checkProperties) {
-                    switch(messageProperty.Name) {
-                        case "AdsbVersion":                         Assert.AreEqual(expectedValue.GetNByte("V"), message.AircraftOperationalStatus.AdsbVersion, failMessage); break;
-                        case "AirborneCapability":                  Assert.AreEqual(expectedValue.GetNInt("AC", true), (int?)message.AircraftOperationalStatus.AirborneCapability, failMessage); break;
-                        case "AirbornePosition":                    break;
-                        case "AirborneVelocity":                    break;
-                        case "AircraftOperationalStatus":           break;
-                        case "AircraftOperationalStatusType":       Assert.AreEqual(expectedValue.GetEnum<AircraftOperationalStatusType>("AST"), message.AircraftOperationalStatus.AircraftOperationalStatusType, failMessage); break;
-                        case "AircraftStatus":                      break;
-                        case "AircraftStatusType":                  Assert.AreEqual(expectedValue.GetEnum<AircraftStatusType>("AST"), message.AircraftStatus.AircraftStatusType, failMessage); break;
-                        case "Airspeed":                            Assert.AreEqual(expectedValue.GetNDouble("AS"), message.AirborneVelocity.Airspeed, failMessage); break;
-                        case "AirspeedExceeded":                    Assert.AreEqual(expectedValue.GetNBool("AS:M"), message.AirborneVelocity.AirspeedExceeded, failMessage); break;
-                        case "AirspeedIsTrueAirspeed":              Assert.AreEqual(expectedValue.GetNBool("AST"), message.AirborneVelocity.AirspeedIsTrueAirspeed, failMessage); break;
-                        case "AltitudesAreMeanSeaLevel":            Assert.AreEqual(expectedValue.GetNBool("VMSL"), message.TargetStateAndStatus.Version1.AltitudesAreMeanSeaLevel, failMessage); break;
-                        case "BarometricAltitude":                  Assert.AreEqual(expectedValue.GetNInt("BA"), baroAlt, failMessage); break;
-                        case "BarometricPressureSetting":           Assert.AreEqual(expectedValue.GetNFloat("QNH"), message.TargetStateAndStatus.Version2.BarometricPressureSetting, failMessage); break;
-                        case "ChangeOfIntent":                      Assert.AreEqual(expectedValue.GetNBool("IC"), message.AirborneVelocity.ChangeOfIntent, failMessage); break;
-                        case "CoarseTisbAirbornePosition":          break;
-                        case "CompactPosition":                     Assert.AreEqual(expectedValue.GetString("CPR"), cpr == null ? null : cpr.ToString(), failMessage); break;
-                        case "EmergencyState":                      Assert.AreEqual(expectedValue.GetEnum<EmergencyState>("ES"), emergencyState, failMessage); break;
-                        case "EmergencyStatus":                     if(message.AircraftStatus.AircraftStatusType != AircraftStatusType.EmergencyStatus) Assert.IsNull(message.AircraftStatus.EmergencyStatus); break;
-                        case "EmitterCategory":                     Assert.AreEqual(GetExpectedEmitterCategory(expectedValue), message.IdentifierAndCategory.EmitterCategory, failMessage); break;
-                        case "FormattedThreatIcao24":               break;
-                        case "GeometricAltitude":                   Assert.AreEqual(expectedValue.GetNInt("GA"), message.AirbornePosition.GeometricAltitude, failMessage); break;
-                        case "GeometricAltitudeDelta":              Assert.AreEqual(expectedValue.GetNShort("DBA"), message.AirborneVelocity.GeometricAltitudeDelta, failMessage); break;
-                        case "GeometricAltitudeDeltaExceeded":      Assert.AreEqual(expectedValue.GetNBool("DBA:M"), message.AirborneVelocity.GeometricAltitudeDeltaExceeded, failMessage); break;
-                        case "GroundSpeed":                         Assert.AreEqual(expectedValue.GetNDouble("GSPD"), gndSpeed, failMessage); break;
-                        case "GroundSpeedExceeded":                 Assert.AreEqual(expectedValue.GetNBool("GSPD:M"), message.SurfacePosition.GroundSpeedExceeded, failMessage); break;
-                        case "GroundTrack":                         Assert.AreEqual(expectedValue.GetNDouble("GTRK"), gndTrack, failMessage); break;
-                        case "Gva":                                 Assert.AreEqual(expectedValue.GetNByte("GVA"), message.AircraftOperationalStatus.Gva, failMessage); break;
-                        case "Heading":                             Assert.AreEqual(expectedValue.GetNDouble("HDG"), message.AirborneVelocity.Heading, failMessage); break;
-                        case "HorizontalDataSource":                Assert.AreEqual(expectedValue.GetEnum<HorizontalDataSource>("HDS"), message.TargetStateAndStatus.Version1.HorizontalDataSource, failMessage); break;
-                        case "HorizontalModeIndicator":             Assert.AreEqual(expectedValue.GetEnum<HorizontalModeIndicator>("HMI"), message.TargetStateAndStatus.Version1.HorizontalModeIndicator, failMessage); break;
-                        case "HorizontalReferenceIsMagneticNorth":  Assert.AreEqual(expectedValue.GetNBool("HRD"), message.AircraftOperationalStatus.HorizontalReferenceIsMagneticNorth, failMessage); break;
-                        case "HorizontalVelocityError":             Assert.AreEqual(expectedValue.GetNFloat("NAC"), message.AirborneVelocity.HorizontalVelocityError, failMessage); break;
-                        case "Identification":                      Assert.AreEqual(expectedValue.GetString("ID"), message.IdentifierAndCategory.Identification, failMessage); break;
-                        case "IdentifierAndCategory":               break;
-                        case "IsAltitudeHoldActive":                Assert.AreEqual(expectedValue.GetNBool("ALTH"), message.TargetStateAndStatus.Version2.IsAltitudeHoldActive, failMessage); break;
-                        case "IsApproachModeActive":                Assert.AreEqual(expectedValue.GetNBool("APP"), message.TargetStateAndStatus.Version2.IsApproachModeActive, failMessage); break;
-                        case "IsAutopilotEngaged":                  Assert.AreEqual(expectedValue.GetNBool("APE"), message.TargetStateAndStatus.Version2.IsAutopilotEngaged, failMessage); break;
-                        case "IsLnavEngaged":                       Assert.AreEqual(expectedValue.GetNBool("LNAV"), message.TargetStateAndStatus.Version2.IsLnavEngaged, failMessage); break;
-                        case "IsRebroadcast":                       Assert.AreEqual(expectedValue.GetNBool("ADSR"), isRebroadcast, failMessage); break;
-                        case "IsReversing":                         Assert.AreEqual(expectedValue.GetNBool("REV"), message.SurfacePosition.IsReversing, failMessage); break;
-                        case "IsTcasOperational":                   Assert.AreEqual(expectedValue.GetNBool("TCOP"), message.TargetStateAndStatus.Version2.IsTcasOperational, failMessage); break;
-                        case "IsVnavEngaged":                       Assert.AreEqual(expectedValue.GetNBool("VNAV"), message.TargetStateAndStatus.Version2.IsVnavEngaged, failMessage); break;
-                        case "LateralAxisGpsOffset":                Assert.AreEqual(expectedValue.GetNShort("GLAT"), message.AircraftOperationalStatus.LateralAxisGpsOffset, failMessage); break;
-                        case "LongitudinalAxisGpsOffset":           Assert.AreEqual(expectedValue.GetNByte("GLNG"), message.AircraftOperationalStatus.LongitudinalAxisGpsOffset, failMessage); break;
-                        case "MaximumLength":                       Assert.AreEqual(expectedValue.GetNFloat("MLN"), message.AircraftOperationalStatus.MaximumLength, failMessage); break;
-                        case "MaximumWidth":                        Assert.AreEqual(expectedValue.GetNFloat("MWD"), message.AircraftOperationalStatus.MaximumWidth, failMessage); break;
-                        case "MessageFormat":                       Assert.AreEqual(worksheet.ParseEnum<MessageFormat>("MessageFormat"), message.MessageFormat, failMessage); break;
-                        case "ModeSMessage":                        Assert.AreSame(_ModeSMessage, message.ModeSMessage, failMessage); break;
-                        case "MultipleThreatEncounter":             Assert.AreEqual(expectedValue.GetNBool("MTE"), message.AircraftStatus.TcasResolutionAdvisory.MultipleThreatEncounter, failMessage); break;
-                        case "MultipleThreatResolutionAdvisory":    Assert.AreEqual(expectedValue.GetNShort("ARA-M", true), (short?)message.AircraftStatus.TcasResolutionAdvisory.MultipleThreatResolutionAdvisory, failMessage); break;
-                        case "NacP":                                Assert.AreEqual(expectedValue.GetNByte("NACP"), nacP, failMessage); break;
-                        case "NicA":                                Assert.AreEqual(expectedValue.GetNByte("NICA"), message.AircraftOperationalStatus.NicA, failMessage); break;
-                        case "NicB":                                Assert.AreEqual(expectedValue.GetNByte("NICB"), message.AirbornePosition.NicB, failMessage); break;
-                        case "NicC":                                Assert.AreEqual(expectedValue.GetNByte("NICC"), message.AircraftOperationalStatus.NicC, failMessage); break;
-                        case "NicBaro":                             Assert.AreEqual(expectedValue.GetNBool("NICBA"), nicBaro, failMessage); break;
-                        case "OperationalMode":                     Assert.AreEqual(expectedValue.GetNInt("OM", true), (int?)message.AircraftOperationalStatus.OperationalMode, failMessage); break;
-                        case "PositionTimeIsExact":                 Assert.AreEqual(expectedValue.GetNBool("TI"), posTime, failMessage); break;
-                        case "ResolutionAdvisoryComplement":        Assert.AreEqual(expectedValue.GetNByte("RAC", true), (byte?)message.AircraftStatus.TcasResolutionAdvisory.ResolutionAdvisoryComplement, failMessage); break;
-                        case "ResolutionAdvisoryTerminated":        Assert.AreEqual(expectedValue.GetNBool("RAT"), message.AircraftStatus.TcasResolutionAdvisory.ResolutionAdvisoryTerminated, failMessage); break;
-                        case "SelectedAltitude":                    Assert.AreEqual(expectedValue.GetNInt("ALT"), message.TargetStateAndStatus.Version2.SelectedAltitude, failMessage); break;
-                        case "SelectedAltitudeIsFms":               Assert.AreEqual(expectedValue.GetNBool("ALTF"), message.TargetStateAndStatus.Version2.SelectedAltitudeIsFms, failMessage); break;
-                        case "SelectedHeading":                     Assert.AreEqual(expectedValue.GetNDouble("HDG"), message.TargetStateAndStatus.Version2.SelectedHeading, failMessage); break;
-                        case "ServiceVolumeID":                     Assert.AreEqual(expectedValue.GetByte("SVID"), message.CoarseTisbAirbornePosition.ServiceVolumeID, failMessage); break;
-                        case "Sil":                                 Assert.AreEqual(expectedValue.GetNByte("SIL"), sil, failMessage); break;
-                        case "SilSupplement":                       Assert.AreEqual(expectedValue.GetNBool("SILP"), silSupplement, failMessage); break;
-                        case "SingleThreatResolutionAdvisory":      Assert.AreEqual(expectedValue.GetNShort("ARA-S", true), (short?)message.AircraftStatus.TcasResolutionAdvisory.SingleThreatResolutionAdvisory, failMessage); break;
-                        case "Squawk":                              Assert.AreEqual(expectedValue.GetNShort("SQK"), message.AircraftStatus.EmergencyStatus.Squawk, failMessage); break;
-                        case "SurfacePositionAngleIsTrack":         Assert.AreEqual(expectedValue.GetNBool("SPT"), message.AircraftOperationalStatus.SurfacePositionAngleIsTrack, failMessage); break;
-                        case "SurfaceCapability":                   Assert.AreEqual(expectedValue.GetNInt("SC", true), (int?)message.AircraftOperationalStatus.SurfaceCapability, failMessage); break;
-                        case "SurfacePosition":                     break;
-                        case "SurveillanceStatus":                  Assert.AreEqual(expectedValue.GetEnum<SurveillanceStatus>("SS"), surveillanceStatus, failMessage); break;
-                        case "SystemDesignAssurance":               Assert.AreEqual(expectedValue.GetEnum<SystemDesignAssurance>("SDA"), message.AircraftOperationalStatus.SystemDesignAssurance, failMessage); break;
-                        case "TargetAltitude":                      Assert.AreEqual(expectedValue.GetNInt("ALT"), message.TargetStateAndStatus.Version1.TargetAltitude, failMessage); break;
-                        case "TargetAltitudeCapability":            Assert.AreEqual(expectedValue.GetEnum<TargetAltitudeCapability>("TAC"), message.TargetStateAndStatus.Version1.TargetAltitudeCapability, failMessage); break;
-                        case "TargetHeading":                       Assert.AreEqual(expectedValue.GetNShort("HDG"), message.TargetStateAndStatus.Version1.TargetHeading, failMessage); break;
-                        case "TargetHeadingIsTrack":                Assert.AreEqual(expectedValue.GetNBool("HDG-T"), message.TargetStateAndStatus.Version1.TargetHeadingIsTrack, failMessage); break;
-                        case "TargetStateAndStatus":                break;
-                        case "TargetStateAndStatusType":            Assert.AreEqual(expectedValue.GetEnum<TargetStateAndStatusType>("TST"), message.TargetStateAndStatus.TargetStateAndStatusType, failMessage); break;
-                        case "TcasCapabilityMode":                  Assert.AreEqual(expectedValue.GetEnum<TcasCapabilityMode>("TCC"), message.TargetStateAndStatus.Version1.TcasCapabilityMode, failMessage); break;
-                        case "TcasResolutionAdvisory":              if(message.AircraftStatus.AircraftStatusType != AircraftStatusType.TcasResolutionAdvisoryBroadcast) Assert.IsNull(message.AircraftStatus.TcasResolutionAdvisory); break;
-                        case "ThreatAltitude":                      Assert.AreEqual(expectedValue.GetNInt("TID-A"), message.AircraftStatus.TcasResolutionAdvisory.ThreatAltitude, failMessage); break;
-                        case "ThreatBearing":                       Assert.AreEqual(expectedValue.GetNShort("TID-B"), message.AircraftStatus.TcasResolutionAdvisory.ThreatBearing, failMessage); break;
-                        case "ThreatIcao24":                        Assert.AreEqual(expectedValue.GetNInt("TID", true), message.AircraftStatus.TcasResolutionAdvisory.ThreatIcao24, failMessage); break;
-                        case "ThreatRange":                         Assert.AreEqual(expectedValue.GetNFloat("TID-R"), message.AircraftStatus.TcasResolutionAdvisory.ThreatRange, failMessage); break;
-                        case "ThreatRangeExceeded":                 Assert.AreEqual(expectedValue.GetNBool("TID-R:M"), message.AircraftStatus.TcasResolutionAdvisory.ThreatRangeExceeded, failMessage); break;
-                        case "TisbIcaoModeAFlag":                   Assert.AreEqual(worksheet.NByte("IMF"), message.TisbIcaoModeAFlag, failMessage); break;
-                        case "Type":                                Assert.AreEqual(worksheet.Byte("Type"), message.Type, failMessage); break;
-                        case "VectorVelocity":                      Assert.AreEqual(expectedValue.GetString("VV"), message.AirborneVelocity.VectorVelocity == null ? null : message.AirborneVelocity.VectorVelocity.ToString(), failMessage); break;
-                        case "VelocityType":                        Assert.AreEqual(expectedValue.GetEnum<VelocityType>("VT"), message.AirborneVelocity.VelocityType, failMessage); break;
-                        case "Version1":                            if(message.TargetStateAndStatus.TargetStateAndStatusType != TargetStateAndStatusType.Version1) Assert.IsNull(message.TargetStateAndStatus.Version1); break;
-                        case "Version2":                            if(message.TargetStateAndStatus.TargetStateAndStatusType != TargetStateAndStatusType.Version2) Assert.IsNull(message.TargetStateAndStatus.Version2); break;
-                        case "VerticalDataSource":                  Assert.AreEqual(expectedValue.GetEnum<VerticalDataSource>("VDS"), message.TargetStateAndStatus.Version1.VerticalDataSource, failMessage); break;
-                        case "VerticalModeIndicator":               Assert.AreEqual(expectedValue.GetEnum<VerticalModeIndicator>("VMI"), message.TargetStateAndStatus.Version1.VerticalModeIndicator, failMessage); break;
-                        case "VerticalRate":                        Assert.AreEqual(expectedValue.GetNInt("VSI"), message.AirborneVelocity.VerticalRate, failMessage); break;
-                        case "VerticalRateExceeded":                Assert.AreEqual(expectedValue.GetNBool("VSI:M"), message.AirborneVelocity.VerticalRateExceeded, failMessage); break;
-                        case "VerticalRateIsBarometric":            Assert.AreEqual(expectedValue.GetNBool("SBV"), message.AirborneVelocity.VerticalRateIsBarometric, failMessage); break;
-                        default:                                    Assert.Fail("Code needs to be added to check the {0} property", messageProperty.Name); break;
-                    }
-                }
-            }
-
-            Assert.AreNotEqual(0, countTestsPerformed, "DF{0}/CF{1}/AF{2} is not valid, no tests were performed", worksheet.String("DF"), worksheet.String("CF"), worksheet.String("AF"));
+                Assert.AreNotEqual(0, countTestsPerformed, "DF{0}/CF{1}/AF{2} is not valid, no tests were performed", row.String("DF"), row.String("CF"), row.String("AF"));
+            });
         }
 
         private EmitterCategory? GetExpectedEmitterCategory(SpreadsheetFieldValue expectedValue)

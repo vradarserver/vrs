@@ -72,7 +72,7 @@ namespace Test.Framework
 
         public void TestEveryRow(object testClass, Action<SpreadsheetTestDataRow> testMethod)
         {
-            var inlineDataTest = new InlineDataTest(testClass);
+            var inlineDataTest = new InlineDataTest(testClass, HasHeadingRow ? 2 : 1);
             var rows = Rows.Skip(HasHeadingRow ? 1 : 0);
 
             Assert.IsTrue(rows.Any(), "Spreadsheet contains no rows, that doesn't seem right");
