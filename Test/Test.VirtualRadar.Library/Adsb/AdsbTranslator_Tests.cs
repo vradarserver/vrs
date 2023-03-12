@@ -599,25 +599,21 @@ namespace Test.VirtualRadar.Library.Adsb
         }
 
         [TestMethod]
-        public void Translate_Decodes_SurveillanceStatus_Correctly()
-        {
-            DoSurveillanceStatusCheck("00000", "0000000000000000000000000000000000000000000000000"); // Type 0
-            DoSurveillanceStatusCheck("01001", "0111111111111001111111111111111101010101010101010"); // Type 9
-            DoSurveillanceStatusCheck("01010", "0111111111111001111111111111111101010101010101010"); // Type 10
-            DoSurveillanceStatusCheck("01011", "0111111111111001111111111111111101010101010101010"); // Type 11
-            DoSurveillanceStatusCheck("01100", "0111111111111001111111111111111101010101010101010"); // Type 12
-            DoSurveillanceStatusCheck("01101", "0111111111111001111111111111111101010101010101010"); // Type 13
-            DoSurveillanceStatusCheck("01110", "0111111111111001111111111111111101010101010101010"); // Type 14
-            DoSurveillanceStatusCheck("01111", "0111111111111001111111111111111101010101010101010"); // Type 15
-            DoSurveillanceStatusCheck("10000", "0111111111111001111111111111111101010101010101010"); // Type 16
-            DoSurveillanceStatusCheck("10001", "0111111111111001111111111111111101010101010101010"); // Type 17
-            DoSurveillanceStatusCheck("10010", "0111111111111001111111111111111101010101010101010"); // Type 18
-            DoSurveillanceStatusCheck("10100", "0111111111111001111111111111111101010101010101010"); // Type 20
-            DoSurveillanceStatusCheck("10101", "0111111111111001111111111111111101010101010101010"); // Type 21
-            DoSurveillanceStatusCheck("10110", "0111111111111001111111111111111101010101010101010"); // Type 22
-        }
-
-        private void DoSurveillanceStatusCheck(string bitsBeforeSS, string bitsAfterSS)
+        [DataRow("00000", "0000000000000000000000000000000000000000000000000")] // Type 0
+        [DataRow("01001", "0111111111111001111111111111111101010101010101010")] // Type 9
+        [DataRow("01010", "0111111111111001111111111111111101010101010101010")] // Type 10
+        [DataRow("01011", "0111111111111001111111111111111101010101010101010")] // Type 11
+        [DataRow("01100", "0111111111111001111111111111111101010101010101010")] // Type 12
+        [DataRow("01101", "0111111111111001111111111111111101010101010101010")] // Type 13
+        [DataRow("01110", "0111111111111001111111111111111101010101010101010")] // Type 14
+        [DataRow("01111", "0111111111111001111111111111111101010101010101010")] // Type 15
+        [DataRow("10000", "0111111111111001111111111111111101010101010101010")] // Type 16
+        [DataRow("10001", "0111111111111001111111111111111101010101010101010")] // Type 17
+        [DataRow("10010", "0111111111111001111111111111111101010101010101010")] // Type 18
+        [DataRow("10100", "0111111111111001111111111111111101010101010101010")] // Type 20
+        [DataRow("10101", "0111111111111001111111111111111101010101010101010")] // Type 21
+        [DataRow("10110", "0111111111111001111111111111111101010101010101010")] // Type 22
+        public void Translate_Decodes_SurveillanceStatus_Correctly(string bitsBeforeSS, string bitsAfterSS)
         {
             foreach(SurveillanceStatus surveillanceStatus in Enum.GetValues(typeof(SurveillanceStatus))) {
                 var bits = new StringBuilder(bitsBeforeSS);
@@ -631,25 +627,21 @@ namespace Test.VirtualRadar.Library.Adsb
         }
 
         [TestMethod]
-        public void Translate_Decodes_Gillham_Altitudes_Correctly()
-        {
-            DoGillhamAltitudeDecodingCheck("00000000", "000000000000000000000000000000000000"); // Type 0
-            DoGillhamAltitudeDecodingCheck("01001000", "000000000000000000000000000000000000"); // Type 9
-            DoGillhamAltitudeDecodingCheck("01010000", "000000000000000000000000000000000000"); // Type 10
-            DoGillhamAltitudeDecodingCheck("01011000", "000000000000000000000000000000000000"); // Type 11
-            DoGillhamAltitudeDecodingCheck("01100000", "000000000000000000000000000000000000"); // Type 12
-            DoGillhamAltitudeDecodingCheck("01101000", "000000000000000000000000000000000000"); // Type 13
-            DoGillhamAltitudeDecodingCheck("01110000", "000000000000000000000000000000000000"); // Type 14
-            DoGillhamAltitudeDecodingCheck("01111000", "000000000000000000000000000000000000"); // Type 15
-            DoGillhamAltitudeDecodingCheck("10000000", "000000000000000000000000000000000000"); // Type 16
-            DoGillhamAltitudeDecodingCheck("10001000", "000000000000000000000000000000000000"); // Type 17
-            DoGillhamAltitudeDecodingCheck("10010000", "000000000000000000000000000000000000"); // Type 18
-            DoGillhamAltitudeDecodingCheck("10100000", "000000000000000000000000000000000000"); // Type 20
-            DoGillhamAltitudeDecodingCheck("10101000", "000000000000000000000000000000000000"); // Type 21
-            DoGillhamAltitudeDecodingCheck("10110000", "000000000000000000000000000000000000"); // Type 22
-        }
-
-        private void DoGillhamAltitudeDecodingCheck(string bitsBeforeAC, string bitsAfterAC)
+        [DataRow("00000000", "000000000000000000000000000000000000")] // Type 0
+        [DataRow("01001000", "000000000000000000000000000000000000")] // Type 9
+        [DataRow("01010000", "000000000000000000000000000000000000")] // Type 10
+        [DataRow("01011000", "000000000000000000000000000000000000")] // Type 11
+        [DataRow("01100000", "000000000000000000000000000000000000")] // Type 12
+        [DataRow("01101000", "000000000000000000000000000000000000")] // Type 13
+        [DataRow("01110000", "000000000000000000000000000000000000")] // Type 14
+        [DataRow("01111000", "000000000000000000000000000000000000")] // Type 15
+        [DataRow("10000000", "000000000000000000000000000000000000")] // Type 16
+        [DataRow("10001000", "000000000000000000000000000000000000")] // Type 17
+        [DataRow("10010000", "000000000000000000000000000000000000")] // Type 18
+        [DataRow("10100000", "000000000000000000000000000000000000")] // Type 20
+        [DataRow("10101000", "000000000000000000000000000000000000")] // Type 21
+        [DataRow("10110000", "000000000000000000000000000000000000")] // Type 22
+        public void Translate_Decodes_Gillham_Altitudes_Correctly(string bitsBeforeAC, string bitsAfterAC)
         {
             var gillhamAltitudeTable = new SpreadsheetTestData(TestData.GillhamAltitudeTable, "AllAltitudes", hasHeadingRow: false);
             for(var rowNumber = 2;rowNumber < gillhamAltitudeTable.Rows.Count;++rowNumber) {
@@ -680,31 +672,26 @@ namespace Test.VirtualRadar.Library.Adsb
             }
         }
 
-        /*
         [TestMethod]
-        public void Translate_Never_Throws_Exceptions_When_Decoding_Invalid_Gillham_Altitudes()
-        {
-            DoGillhamGracefulFailCheck("00000000", "000000000000000000000000000000000000"); // Type 0
-            DoGillhamGracefulFailCheck("01001000", "000000000000000000000000000000000000"); // Type 9
-            DoGillhamGracefulFailCheck("01010000", "000000000000000000000000000000000000"); // Type 10
-            DoGillhamGracefulFailCheck("01011000", "000000000000000000000000000000000000"); // Type 11
-            DoGillhamGracefulFailCheck("01100000", "000000000000000000000000000000000000"); // Type 12
-            DoGillhamGracefulFailCheck("01101000", "000000000000000000000000000000000000"); // Type 13
-            DoGillhamGracefulFailCheck("01110000", "000000000000000000000000000000000000"); // Type 14
-            DoGillhamGracefulFailCheck("01111000", "000000000000000000000000000000000000"); // Type 15
-            DoGillhamGracefulFailCheck("10000000", "000000000000000000000000000000000000"); // Type 16
-            DoGillhamGracefulFailCheck("10001000", "000000000000000000000000000000000000"); // Type 17
-            DoGillhamGracefulFailCheck("10010000", "000000000000000000000000000000000000"); // Type 18
-            DoGillhamGracefulFailCheck("10100000", "000000000000000000000000000000000000"); // Type 20
-            DoGillhamGracefulFailCheck("10101000", "000000000000000000000000000000000000"); // Type 21
-            DoGillhamGracefulFailCheck("10110000", "000000000000000000000000000000000000"); // Type 22
-        }
-
-        private void DoGillhamGracefulFailCheck(string bitsBeforeAC, string bitsAfterAC)
+        [DataRow("00000000", "000000000000000000000000000000000000")] // Type 0
+        [DataRow("01001000", "000000000000000000000000000000000000")] // Type 9
+        [DataRow("01010000", "000000000000000000000000000000000000")] // Type 10
+        [DataRow("01011000", "000000000000000000000000000000000000")] // Type 11
+        [DataRow("01100000", "000000000000000000000000000000000000")] // Type 12
+        [DataRow("01101000", "000000000000000000000000000000000000")] // Type 13
+        [DataRow("01110000", "000000000000000000000000000000000000")] // Type 14
+        [DataRow("01111000", "000000000000000000000000000000000000")] // Type 15
+        [DataRow("10000000", "000000000000000000000000000000000000")] // Type 16
+        [DataRow("10001000", "000000000000000000000000000000000000")] // Type 17
+        [DataRow("10010000", "000000000000000000000000000000000000")] // Type 18
+        [DataRow("10100000", "000000000000000000000000000000000000")] // Type 20
+        [DataRow("10101000", "000000000000000000000000000000000000")] // Type 21
+        [DataRow("10110000", "000000000000000000000000000000000000")] // Type 22
+        public void Translate_Never_Throws_Exceptions_When_Decoding_Invalid_Gillham_Altitudes(string bitsBeforeAC, string bitsAfterAC)
         {
             for(var acCode = 0;acCode < 2048;++acCode) {
                 var bits = new StringBuilder(bitsBeforeAC);
-                bits.Append(TestUtilities.ConvertToBitString(acCode, 11));
+                bits.Append(TestDataParser.ConvertToBitString(acCode, 11));
                 bits.Insert(bitsBeforeAC.Length + 7, '0');
                 bits.Append(bitsAfterAC);
 
@@ -713,30 +700,26 @@ namespace Test.VirtualRadar.Library.Adsb
         }
 
         [TestMethod]
-        public void Translate_Decodes_QBitOne_Altitudes_Correctly()
-        {
-            DoQBitOneAltitudeCheck("00000000", "000000000000000000000000000000000000"); // Type 0
-            DoQBitOneAltitudeCheck("01001000", "000000000000000000000000000000000000"); // Type 9
-            DoQBitOneAltitudeCheck("01010000", "000000000000000000000000000000000000"); // Type 10
-            DoQBitOneAltitudeCheck("01011000", "000000000000000000000000000000000000"); // Type 11
-            DoQBitOneAltitudeCheck("01100000", "000000000000000000000000000000000000"); // Type 12
-            DoQBitOneAltitudeCheck("01101000", "000000000000000000000000000000000000"); // Type 13
-            DoQBitOneAltitudeCheck("01110000", "000000000000000000000000000000000000"); // Type 14
-            DoQBitOneAltitudeCheck("01111000", "000000000000000000000000000000000000"); // Type 15
-            DoQBitOneAltitudeCheck("10000000", "000000000000000000000000000000000000"); // Type 16
-            DoQBitOneAltitudeCheck("10001000", "000000000000000000000000000000000000"); // Type 17
-            DoQBitOneAltitudeCheck("10010000", "000000000000000000000000000000000000"); // Type 18
-            DoQBitOneAltitudeCheck("10100000", "000000000000000000000000000000000000"); // Type 20
-            DoQBitOneAltitudeCheck("10101000", "000000000000000000000000000000000000"); // Type 21
-            DoQBitOneAltitudeCheck("10110000", "000000000000000000000000000000000000"); // Type 22
-        }
-
-        private void DoQBitOneAltitudeCheck(string bitsBeforeAC, string bitsAfterAC)
+        [DataRow("00000000", "000000000000000000000000000000000000")] // Type 0
+        [DataRow("01001000", "000000000000000000000000000000000000")] // Type 9
+        [DataRow("01010000", "000000000000000000000000000000000000")] // Type 10
+        [DataRow("01011000", "000000000000000000000000000000000000")] // Type 11
+        [DataRow("01100000", "000000000000000000000000000000000000")] // Type 12
+        [DataRow("01101000", "000000000000000000000000000000000000")] // Type 13
+        [DataRow("01110000", "000000000000000000000000000000000000")] // Type 14
+        [DataRow("01111000", "000000000000000000000000000000000000")] // Type 15
+        [DataRow("10000000", "000000000000000000000000000000000000")] // Type 16
+        [DataRow("10001000", "000000000000000000000000000000000000")] // Type 17
+        [DataRow("10010000", "000000000000000000000000000000000000")] // Type 18
+        [DataRow("10100000", "000000000000000000000000000000000000")] // Type 20
+        [DataRow("10101000", "000000000000000000000000000000000000")] // Type 21
+        [DataRow("10110000", "000000000000000000000000000000000000")] // Type 22
+        public void Translate_Decodes_QBitOne_Altitudes_Correctly(string bitsBeforeAC, string bitsAfterAC)
         {
             for(int altitude = -1000;altitude < 50200;altitude += 25) {
                 var encodedAltitude = (altitude + 1000) / 25;
                 var bits = new StringBuilder(bitsBeforeAC);
-                var altitudeBits = TestUtilities.ConvertToBitString(encodedAltitude, 11);
+                var altitudeBits = TestDataParser.ConvertToBitString(encodedAltitude, 11);
                 bits.AppendFormat("{0}1{1}", altitudeBits.Substring(0, 7), altitudeBits.Substring(7));
                 bits.Append(bitsAfterAC);
 
@@ -748,58 +731,52 @@ namespace Test.VirtualRadar.Library.Adsb
         }
 
         [TestMethod]
-        public void Translate_Decodes_Surface_Movements_Correctly()
-        {
-            DoSurfaceMovementCheck("00101", "10101010001111111111111111101010101010101010"); // Type 5
-            DoSurfaceMovementCheck("00110", "10101010001111111111111111101010101010101010"); // Type 6
-            DoSurfaceMovementCheck("00111", "10101010001111111111111111101010101010101010"); // Type 7
-            DoSurfaceMovementCheck("01000", "10101010001111111111111111101010101010101010"); // Type 8
-        }
-
-        private void DoSurfaceMovementCheck(string bitsBefore, string bitsAfter)
+        [DataRow("00101", "10101010001111111111111111101010101010101010")] // Type 5
+        [DataRow("00110", "10101010001111111111111111101010101010101010")] // Type 6
+        [DataRow("00111", "10101010001111111111111111101010101010101010")] // Type 7
+        [DataRow("01000", "10101010001111111111111111101010101010101010")] // Type 8
+        public void Translate_Decodes_Surface_Movements_Correctly(string bitsBefore, string bitsAfter)
         {
             for(var movement = 0;movement < 128;++movement) {
                 var bits = new StringBuilder(bitsBefore);
-                bits.Append(TestUtilities.ConvertToBitString(movement, 7));
+                bits.Append(TestDataParser.ConvertToBitString(movement, 7));
                 bits.Append(bitsAfter);
                 var message = Translate(bits);
 
                 Assert.AreEqual(movement == 124, message.SurfacePosition.GroundSpeedExceeded);
                 Assert.AreEqual(movement == 127, message.SurfacePosition.IsReversing);
 
-                if(movement == 0 || movement > 124) Assert.IsNull(message.SurfacePosition.GroundSpeed);
-                else {
+                if(movement == 0 || movement > 124) {
+                    Assert.IsNull(message.SurfacePosition.GroundSpeed);
+                } else {
                     double expectedSpeed;
-                    if(movement == 1) expectedSpeed = 0;
-                    else if(movement == 2) expectedSpeed = 0.125;
-                    else if(movement >= 3 && movement <= 8) expectedSpeed = 0.125 + ((movement - 2) * 0.145833315);
-                    else if(movement >= 9 && movement <= 12) expectedSpeed = 1 + ((movement - 8) * 0.25);
-                    else if(movement >= 13 && movement <= 38) expectedSpeed = 2 + ((movement - 12) * 0.5);
-                    else if(movement >= 39 && movement <= 93) expectedSpeed = 15 + (movement - 38);
-                    else if(movement >= 94 && movement <= 108) expectedSpeed = 70 + ((movement - 93) * 2.0);
+                    if(movement == 1)                           expectedSpeed = 0;
+                    else if(movement == 2)                      expectedSpeed = 0.125;
+                    else if(movement >= 3 && movement <= 8)     expectedSpeed = 0.125 + ((movement - 2) * 0.145833315);
+                    else if(movement >= 9 && movement <= 12)    expectedSpeed = 1 + ((movement - 8) * 0.25);
+                    else if(movement >= 13 && movement <= 38)   expectedSpeed = 2 + ((movement - 12) * 0.5);
+                    else if(movement >= 39 && movement <= 93)   expectedSpeed = 15 + (movement - 38);
+                    else if(movement >= 94 && movement <= 108)  expectedSpeed = 70 + ((movement - 93) * 2.0);
                     else if(movement >= 109 && movement <= 123) expectedSpeed = 100 + ((movement - 108) * 5.0);
-                    else expectedSpeed = 175.0;
+                    else                                        expectedSpeed = 175.0;
+
                     Assert.AreEqual(expectedSpeed, message.SurfacePosition.GroundSpeed.Value, 0.00001, "Could not decode a movement of {0} correctly", movement);
                 }
             }
         }
 
         [TestMethod]
-        public void Translate_Decodes_Surface_Track_Correctly()
-        {
-            DoSurfaceTrackCheck("001010000000", "001111111111111111101010101010101010"); // Type 5
-            DoSurfaceTrackCheck("001100000000", "001111111111111111101010101010101010"); // Type 6
-            DoSurfaceTrackCheck("001110000000", "001111111111111111101010101010101010"); // Type 7
-            DoSurfaceTrackCheck("010000000000", "001111111111111111101010101010101010"); // Type 8
-        }
-
-        private void DoSurfaceTrackCheck(string bitsBefore, string bitsAfter)
+        [DataRow("001010000000", "001111111111111111101010101010101010")] // Type 5
+        [DataRow("001100000000", "001111111111111111101010101010101010")] // Type 6
+        [DataRow("001110000000", "001111111111111111101010101010101010")] // Type 7
+        [DataRow("010000000000", "001111111111111111101010101010101010")] // Type 8
+        public void Translate_Decodes_Surface_Track_Correctly(string bitsBefore, string bitsAfter)
         {
             foreach(var isValid in new bool[] { true, false }) {
                 for(var track = 0;track < 128;++track) {
                     var bits = new StringBuilder(bitsBefore);
                     bits.Append(isValid ? '1' : '0');
-                    bits.Append(TestUtilities.ConvertToBitString(track, 7));
+                    bits.Append(TestDataParser.ConvertToBitString(track, 7));
                     bits.Append(bitsAfter);
                     var message = Translate(bits);
 
@@ -825,58 +802,61 @@ namespace Test.VirtualRadar.Library.Adsb
         }
 
         [TestMethod]
-        public void Translate_Decodes_Emitter_Categories_Correctly()
-        {
-            DoEmitterCategoryCheck("00001", "000001000010000011000100110000110001110010110011", new EmitterCategory[8] { 
-                EmitterCategory.None,
-                (EmitterCategory)131,
-                (EmitterCategory)132,
-                (EmitterCategory)133,
-                (EmitterCategory)134,
-                (EmitterCategory)135,
-                (EmitterCategory)136,
-                (EmitterCategory)137,
-            });
-
-            DoEmitterCategoryCheck("00010", "000001000010000011000100110000110001110010110011", new EmitterCategory[8] { 
-                EmitterCategory.None,
-                EmitterCategory.SurfaceEmergencyVehicle,
-                EmitterCategory.SurfaceServiceVehicle,
-                EmitterCategory.PointObstacle,
-                EmitterCategory.ClusterObstacle,
-                EmitterCategory.LineObstacle,
-                (EmitterCategory)126,
-                (EmitterCategory)127,
-            });
-
-            DoEmitterCategoryCheck("00011", "000001000010000011000100110000110001110010110011", new EmitterCategory[8] { 
-                EmitterCategory.None,
-                EmitterCategory.Glider,
-                EmitterCategory.LighterThanAir,
-                EmitterCategory.Parachutist,
-                EmitterCategory.Ultralight,
-                (EmitterCategory)115,
-                EmitterCategory.UnmannedAerialVehicle,
-                EmitterCategory.SpaceVehicle,
-            });
-
-            DoEmitterCategoryCheck("00100", "000001000010000011000100110000110001110010110011", new EmitterCategory[8] { 
-                EmitterCategory.None,
-                EmitterCategory.LightAircraft,
-                EmitterCategory.SmallAircraft,
-                EmitterCategory.LargeAircraft,
-                EmitterCategory.HighVortexLargeAircraft,
-                EmitterCategory.HeavyAircraft,
-                EmitterCategory.HighPerformanceAircraft,
-                EmitterCategory.Rotorcraft,
-            });
-        }
-
-        private void DoEmitterCategoryCheck(string bitsBefore, string bitsAfter, EmitterCategory[] expectedCategories)
+        [DataRow("00001", "000001000010000011000100110000110001110010110011", new EmitterCategory[] { 
+            EmitterCategory.None,
+            (EmitterCategory)131,
+            (EmitterCategory)132,
+            (EmitterCategory)133,
+            (EmitterCategory)134,
+            (EmitterCategory)135,
+            (EmitterCategory)136,
+            (EmitterCategory)137,
+        })]
+        [DataRow("00001", "000001000010000011000100110000110001110010110011", new EmitterCategory[8] { 
+            EmitterCategory.None,
+            (EmitterCategory)131,
+            (EmitterCategory)132,
+            (EmitterCategory)133,
+            (EmitterCategory)134,
+            (EmitterCategory)135,
+            (EmitterCategory)136,
+            (EmitterCategory)137,
+        })]
+        [DataRow("00010", "000001000010000011000100110000110001110010110011", new EmitterCategory[] { 
+            EmitterCategory.None,
+            EmitterCategory.SurfaceEmergencyVehicle,
+            EmitterCategory.SurfaceServiceVehicle,
+            EmitterCategory.PointObstacle,
+            EmitterCategory.ClusterObstacle,
+            EmitterCategory.LineObstacle,
+            (EmitterCategory)126,
+            (EmitterCategory)127,
+        })]
+        [DataRow("00011", "000001000010000011000100110000110001110010110011", new EmitterCategory[] { 
+            EmitterCategory.None,
+            EmitterCategory.Glider,
+            EmitterCategory.LighterThanAir,
+            EmitterCategory.Parachutist,
+            EmitterCategory.Ultralight,
+            (EmitterCategory)115,
+            EmitterCategory.UnmannedAerialVehicle,
+            EmitterCategory.SpaceVehicle,
+        })]
+        [DataRow("00100", "000001000010000011000100110000110001110010110011", new EmitterCategory[] { 
+            EmitterCategory.None,
+            EmitterCategory.LightAircraft,
+            EmitterCategory.SmallAircraft,
+            EmitterCategory.LargeAircraft,
+            EmitterCategory.HighVortexLargeAircraft,
+            EmitterCategory.HeavyAircraft,
+            EmitterCategory.HighPerformanceAircraft,
+            EmitterCategory.Rotorcraft,
+        })]
+        public void Translate_Decodes_Emitter_Categories_Correctly(string bitsBefore, string bitsAfter, EmitterCategory[] expectedCategories)
         {
             for(var category = 0;category < 8;++category) {
                 var bits = new StringBuilder(bitsBefore);
-                bits.Append(TestUtilities.ConvertToBitString(category, 3));
+                bits.Append(TestDataParser.ConvertToBitString(category, 3));
                 bits.Append(bitsAfter);
                 var message = Translate(bits);
 
@@ -885,22 +865,18 @@ namespace Test.VirtualRadar.Library.Adsb
         }
 
         [TestMethod]
-        public void Translate_Decodes_Identification_Correctly()
-        {
-            DoIdentificationCheck("00001 000");
-            DoIdentificationCheck("00010 000");
-            DoIdentificationCheck("00011 000");
-            DoIdentificationCheck("00100 000");
-        }
-
-        private void DoIdentificationCheck(string bitsBefore)
+        [DataRow("00001 000")]
+        [DataRow("00010 000")]
+        [DataRow("00011 000")]
+        [DataRow("00100 000")]
+        public void Translate_Decodes_Identification_Correctly(string bitsBefore)
         {
             foreach(var ch in "ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789") {
                 var expectedIdentification = new String(ch, 8);
                 var encodedCh = ch >= 'A' ? (ch - 'A') + 1 : ch == ' ' ? 32 : 48 + (ch - '0');
                 var bits = new StringBuilder(bitsBefore);
                 for(var i = 0;i < 8;++i) {
-                    bits.Append(TestUtilities.ConvertToBitString(encodedCh, 6));
+                    bits.Append(TestDataParser.ConvertToBitString(encodedCh, 6));
                 }
 
                 var message = Translate(bits);
@@ -910,26 +886,21 @@ namespace Test.VirtualRadar.Library.Adsb
         }
 
         [TestMethod]
-        public void Translate_Handles_Unknown_Characters_In_Identification_Correctly()
+        [DataRow("00001 000")]
+        [DataRow("00010 000")]
+        [DataRow("00011 000")]
+        [DataRow("00100 000")]
+        public void Translate_Handles_Unknown_Characters_In_Identification_Correctly(string bitsBefore)
         {
-            DoUnknownCharacterIdentificationCheck("00001 000");
-            DoUnknownCharacterIdentificationCheck("00010 000");
-            DoUnknownCharacterIdentificationCheck("00011 000");
-            DoUnknownCharacterIdentificationCheck("00100 000");
-        }
-
-        private void DoUnknownCharacterIdentificationCheck(string bitsBefore)
-        {
-            var undefinedCharacters = new List<int>();
-            undefinedCharacters.Add(0);
-            for(int i = 27;i < 32;undefinedCharacters.Add(i++)) ;
-            for(int i = 33;i < 48;undefinedCharacters.Add(i++)) ;
-            for(int i = 58;i < 64;undefinedCharacters.Add(i++)) ;
+            var undefinedCharacters = new List<int> { 0, };
+            for(var i = 27;i < 32;undefinedCharacters.Add(i++)) ;
+            for(var i = 33;i < 48;undefinedCharacters.Add(i++)) ;
+            for(var i = 58;i < 64;undefinedCharacters.Add(i++)) ;
 
             foreach(var undefinedCharacter in undefinedCharacters) {
                 // Encoded bits will be <undefined> + A + <undefined> + B + <undefined> + <undefined> + C + <undefined>
                 var bits = new StringBuilder(bitsBefore);
-                bits.AppendFormat("{0}000001{0}000010{0}{0}000011{0}", TestUtilities.ConvertToBitString(undefinedCharacter, 6));
+                bits.AppendFormat("{0}000001{0}000010{0}{0}000011{0}", TestDataParser.ConvertToBitString(undefinedCharacter, 6));
 
                 var message = Translate(bits);
 
@@ -942,8 +913,8 @@ namespace Test.VirtualRadar.Library.Adsb
         {
             foreach(VelocityType subtype in Enum.GetValues(typeof(VelocityType))) {
                 var expectDecode = _ValidVelocityTypes.Contains(subtype);
-                var bits = String.Format("10011{0}101001011111111111010101010101111011110011010101", TestUtilities.ConvertToBitString((int)subtype, 3));
-                var bytes = TestUtilities.ConvertBitStringToBytes(bits.ToString());
+                var bits = String.Format("10011{0}101001011111111111010101010101111011110011010101", TestDataParser.ConvertToBitString((int)subtype, 3));
+                var bytes = TestDataParser.ConvertBitStringToBytes(bits.ToString());
                 var velocity = Translate(bits).AirborneVelocity;
 
                 Assert.AreEqual(subtype, velocity.VelocityType);
@@ -968,8 +939,8 @@ namespace Test.VirtualRadar.Library.Adsb
             foreach(var velocityType in _ValidVelocityTypes) {
                 foreach(var changeOfIntent in new bool[] { true, false }) {
                     var bits = String.Format("10011{0}{1}01001011111111111010101010101111011110011010101",
-                                    TestUtilities.ConvertToBitString((int)velocityType, 3),
-                                    TestUtilities.ConvertToBitString(changeOfIntent ? 1 : 0, 1));
+                                    TestDataParser.ConvertToBitString((int)velocityType, 3),
+                                    TestDataParser.ConvertToBitString(changeOfIntent ? 1 : 0, 1));
                     var velocity = Translate(bits).AirborneVelocity;
 
                     Assert.AreEqual(changeOfIntent, velocity.ChangeOfIntent);
@@ -983,16 +954,16 @@ namespace Test.VirtualRadar.Library.Adsb
             foreach(var velocityType in _ValidVelocityTypes) {
                 for(var nac = 0;nac < 8;++nac) {
                     var bits = String.Format("10011{0}00{1}1011111111111010101010101111011110011010101",
-                                    TestUtilities.ConvertToBitString((int)velocityType, 3),
-                                    TestUtilities.ConvertToBitString(nac, 3));
+                                    TestDataParser.ConvertToBitString((int)velocityType, 3),
+                                    TestDataParser.ConvertToBitString(nac, 3));
                     var velocity = Translate(bits).AirborneVelocity;
 
                     switch(nac) {
-                        case 0:     Assert.AreEqual(10.0F, velocity.HorizontalVelocityError); break;
-                        case 1:     Assert.AreEqual(-10.0F, velocity.HorizontalVelocityError); break;
-                        case 2:     Assert.AreEqual(-3.0F, velocity.HorizontalVelocityError); break;
-                        case 3:     Assert.AreEqual(-1.0F, velocity.HorizontalVelocityError); break;
-                        case 4:     Assert.AreEqual(-0.3F, velocity.HorizontalVelocityError); break;
+                        case 0:     Assert.AreEqual(10.0, velocity.HorizontalVelocityError); break;
+                        case 1:     Assert.AreEqual(-10.0, velocity.HorizontalVelocityError); break;
+                        case 2:     Assert.AreEqual(-3.0, velocity.HorizontalVelocityError); break;
+                        case 3:     Assert.AreEqual(-1.0, velocity.HorizontalVelocityError); break;
+                        case 4:     Assert.AreEqual(-0.3, velocity.HorizontalVelocityError); break;
                         default:    Assert.IsNull(velocity.HorizontalVelocityError); break;
                     }
                 }
@@ -1004,20 +975,20 @@ namespace Test.VirtualRadar.Library.Adsb
         {
             foreach(var velocityType in new VelocityType[] { VelocityType.GroundSpeedSubsonic, VelocityType.GroundSpeedSupersonic }) {
                 var isSupersonic = velocityType == VelocityType.GroundSpeedSupersonic;
-                var velocityTypeBits = TestUtilities.ConvertToBitString((int)velocityType, 3);
+                var velocityTypeBits = TestDataParser.ConvertToBitString((int)velocityType, 3);
                 foreach(var isWesterly in new bool[] { true, false }) {
                     var isWesterlyBits = isWesterly ? '1' : '0';
                     foreach(var isSoutherly in new bool[] { true, false }) {
                         var isSoutherlyBits = isSoutherly ? '1' : '0';
                         for(var x = 0;x < 1024;++x) {
-                            var xBits = TestUtilities.ConvertToBitString(x, 10);
+                            var xBits = TestDataParser.ConvertToBitString(x, 10);
                             for(var y = 0;y < 1024;++y) {
                                 var bits = String.Format("10011{0}00100{1}{2}{3}{4}101111011110011010101",
                                                 velocityTypeBits,
                                                 isWesterlyBits,
                                                 xBits,
                                                 isSoutherlyBits,
-                                                TestUtilities.ConvertToBitString(y, 10));
+                                                TestDataParser.ConvertToBitString(y, 10));
                                 var vector = Translate(bits).AirborneVelocity.VectorVelocity;
 
                                 Assert.AreEqual(isWesterly, vector.IsWesterlyVelocity);
@@ -1059,7 +1030,7 @@ namespace Test.VirtualRadar.Library.Adsb
         public void Translate_Decodes_Vertical_Rates_Correctly()
         {
             foreach(var velocityType in _ValidVelocityTypes) {
-                var velocityTypeBits = TestUtilities.ConvertToBitString((int)velocityType, 3);
+                var velocityTypeBits = TestDataParser.ConvertToBitString((int)velocityType, 3);
                 foreach(var barometricSource in new bool[] { true, false }) {
                     var barometricBits = barometricSource ? '1' : '0';
                     foreach(var directionDown in new bool[] { true, false }) {
@@ -1069,7 +1040,7 @@ namespace Test.VirtualRadar.Library.Adsb
                                             velocityTypeBits,
                                             barometricBits,
                                             directionBits,
-                                            TestUtilities.ConvertToBitString(verticalRate, 9));
+                                            TestDataParser.ConvertToBitString(verticalRate, 9));
                             var velocity = Translate(bits).AirborneVelocity;
 
                             Assert.AreEqual(barometricSource, velocity.VerticalRateIsBarometric);
@@ -1094,14 +1065,14 @@ namespace Test.VirtualRadar.Library.Adsb
         public void Translate_Decodes_Geometric_Altitude_Difference_Correctly()
         {
             foreach(var velocityType in _ValidVelocityTypes) {
-                var velocityTypeBits = TestUtilities.ConvertToBitString((int)velocityType, 3);
+                var velocityTypeBits = TestDataParser.ConvertToBitString((int)velocityType, 3);
                 foreach(var altitudeBelowBarometric in new bool[] { true, false }) {
                     var altitudeBelowBarometricBits = altitudeBelowBarometric ? '1' : '0';
                     for(var delta = 0;delta < 128;++delta) {
                         var bits = String.Format("10011{0}1010010111111111110101010101011110111100{1}{2}",
                                         velocityTypeBits,
                                         altitudeBelowBarometricBits,
-                                        TestUtilities.ConvertToBitString(delta, 7));
+                                        TestDataParser.ConvertToBitString(delta, 7));
                         var velocity = Translate(bits).AirborneVelocity;
 
                         // Assert explicit examples in the documentation, otherwise assert that the expected calculated value is correct
@@ -1123,7 +1094,7 @@ namespace Test.VirtualRadar.Library.Adsb
         public void Translate_Ignores_Unknown_AircraftStatus_Subtypes()
         {
             for(var subType = 0;subType < 8;++subType) {
-                var bits = String.Format("11100{0}100001100000000000000000000000000000000000000000", TestUtilities.ConvertToBitString(subType, 3));
+                var bits = String.Format("11100{0}100001100000000000000000000000000000000000000000", TestDataParser.ConvertToBitString(subType, 3));
                 var message = Translate(bits);
 
                 Assert.AreEqual(subType, (int)message.AircraftStatus.AircraftStatusType);
@@ -1149,7 +1120,7 @@ namespace Test.VirtualRadar.Library.Adsb
         public void Translate_Decodes_Emergency_States_Correctly()
         {
             for(var emergencyState = 0;emergencyState < 8;++emergencyState) {
-                var bits = String.Format("11100001{0}001100000000000000000000000000000000000000000", TestUtilities.ConvertToBitString(emergencyState, 3));
+                var bits = String.Format("11100001{0}001100000000000000000000000000000000000000000", TestDataParser.ConvertToBitString(emergencyState, 3));
                 var message = Translate(bits);
 
                 Assert.AreEqual(emergencyState, (int)message.AircraftStatus.EmergencyStatus.EmergencyState);
@@ -1165,10 +1136,10 @@ namespace Test.VirtualRadar.Library.Adsb
                         for(int d = 0;d < 8;++d) {
                             short expectedIdentity = (short)((a * 1000) + (b * 100) + (c * 10) + d);
 
-                            var aBits = TestUtilities.ConvertToBitString(a, 3);
-                            var bBits = TestUtilities.ConvertToBitString(b, 3);
-                            var cBits = TestUtilities.ConvertToBitString(c, 3);
-                            var dBits = TestUtilities.ConvertToBitString(d, 3);
+                            var aBits = TestDataParser.ConvertToBitString(a, 3);
+                            var bBits = TestDataParser.ConvertToBitString(b, 3);
+                            var cBits = TestDataParser.ConvertToBitString(c, 3);
+                            var dBits = TestDataParser.ConvertToBitString(d, 3);
                             var bits = String.Format("{0}{1}{2}{3}{4}{5}0{6}{7}{8}{9}{10}{11}",
                                 cBits[2], aBits[2], cBits[1], aBits[1], cBits[0], aBits[0],
                                 bBits[2], dBits[2], bBits[1], dBits[1], bBits[0], dBits[0]);
@@ -1221,20 +1192,20 @@ namespace Test.VirtualRadar.Library.Adsb
             // Note that the TCAS message includes the D1 bit (presumably always zero) when encoding altitudes.
             // The Mode-S Gillham encodings don't include the D1 bit, so if the implementation is sharing decoding
             // of Gillham altitudes with Mode-S code it will have to strip the D1 bit out.
-            var fileName = Path.Combine(TestContext.TestDeploymentDir, "GillhamAltitudeTable.csv");
-            var lines = File.ReadAllLines(fileName);
-            for(var lineNumber = 2;lineNumber < lines.Length;++lineNumber) {
-                var cells = lines[lineNumber].Split(',');
-                var altitude = int.Parse(cells[0]);
+            var spreadsheet = new SpreadsheetTestData(TestData.GillhamAltitudeTable, "AllAltitudes");
+            for(var rowNumber = 2;rowNumber < spreadsheet.Rows.Count;++rowNumber) {
+                var row = spreadsheet.Rows[rowNumber];
+                var altitude = row.Int(0);
                 var bits = new StringBuilder("11100 010 10000000000000 0000 0 1 10");
 
-                for(int bit = 0;bit < 13;++bit) {
-                    if(bit == 6 || bit == 8) bits.Append('0');
-                    else {
+                for(var bit = 0;bit < 13;++bit) {
+                    if(bit == 6 || bit == 8) {
+                        bits.Append('0');
+                    } else {
                         var index = bit + 1;
                         if(bit > 6) --index;
                         if(bit > 8) --index;
-                        bits.Append(cells[index]);
+                        bits.Append(row.String(index));
                     }
                 }
 
@@ -1250,15 +1221,15 @@ namespace Test.VirtualRadar.Library.Adsb
         public void Translate_Decodes_TCAS_Threat_Range_Correctly()
         {
             for(var rangeValue = 0;rangeValue < 128;++rangeValue) {
-                var bits = String.Format("11100 010 10000000000000 0000 0 1 10 0000000000000 {0} 000000", TestUtilities.ConvertToBitString(rangeValue, 7));
+                var bits = String.Format("11100 010 10000000000000 0000 0 1 10 0000000000000 {0} 000000", TestDataParser.ConvertToBitString(rangeValue, 7));
                 var tcas = Translate(bits).AircraftStatus.TcasResolutionAdvisory;
 
                 Assert.AreEqual(rangeValue == 127, tcas.ThreatRangeExceeded);
                 switch(rangeValue) {
                     case 0:     Assert.IsNull(tcas.ThreatRange); break;
-                    case 1:     Assert.AreEqual(0.05F, tcas.ThreatRange); break;
-                    case 126:   Assert.AreEqual(12.55F, tcas.ThreatRange); break;
-                    default:    Assert.AreEqual((float)((rangeValue - 1) / 10F) + 0.05F, tcas.ThreatRange.Value, 0.001F); break; 
+                    case 1:     Assert.AreEqual(0.05, tcas.ThreatRange); break;
+                    case 126:   Assert.AreEqual(12.55, tcas.ThreatRange); break;
+                    default:    Assert.AreEqual((double)((rangeValue - 1) / 10.0) + 0.05, tcas.ThreatRange.Value, 0.001); break; 
                 }
             }
         }
@@ -1267,7 +1238,7 @@ namespace Test.VirtualRadar.Library.Adsb
         public void Translate_Decodes_TCAS_Threat_Bearing_Correctly()
         {
             for(var bearingValue = 0;bearingValue < 64;++bearingValue) {
-                var bits = String.Format("11100 010 10000000000000 0000 0 1 10 0000000000000 0000000 {0}", TestUtilities.ConvertToBitString(bearingValue, 6));
+                var bits = String.Format("11100 010 10000000000000 0000 0 1 10 0000000000000 0000000 {0}", TestDataParser.ConvertToBitString(bearingValue, 6));
                 var tcas = Translate(bits).AircraftStatus.TcasResolutionAdvisory;
 
                 switch(bearingValue) {
@@ -1288,7 +1259,7 @@ namespace Test.VirtualRadar.Library.Adsb
         {
             foreach(var backwardsCompatibleBit in new byte[] { 0, 1 }) {
                 for(var subType = 0;subType < 4;++subType) {
-                    var bits = String.Format("11101 {0} 0 00{1}00000 00000000 00000000 00000000 00000000 00000000", TestUtilities.ConvertToBitString(subType, 2), backwardsCompatibleBit);
+                    var bits = String.Format("11101 {0} 0 00{1}00000 00000000 00000000 00000000 00000000 00000000", TestDataParser.ConvertToBitString(subType, 2), backwardsCompatibleBit);
                     var targetState = Translate(bits).TargetStateAndStatus;
 
                     Assert.AreEqual(subType, (int)targetState.TargetStateAndStatusType);
@@ -1321,11 +1292,11 @@ namespace Test.VirtualRadar.Library.Adsb
                         for(var verticalModeIndicator = 0;verticalModeIndicator < 4;++verticalModeIndicator) {
                             for(var targetAltitudeValue = 0;targetAltitudeValue < 1024;++targetAltitudeValue) {
                                 var bits = String.Format("11101 00 {0} {1} 0 {2} {3} {4} 0000000 00000000 00000000 00000000",
-                                                TestUtilities.ConvertToBitString(verticalDataSource, 2),
-                                                TestUtilities.ConvertToBitString(targetAltitudeType, 1),
-                                                TestUtilities.ConvertToBitString(targetAltitudeCapability, 2),
-                                                TestUtilities.ConvertToBitString(verticalModeIndicator, 2),
-                                                TestUtilities.ConvertToBitString(targetAltitudeValue, 10));
+                                                TestDataParser.ConvertToBitString(verticalDataSource, 2),
+                                                TestDataParser.ConvertToBitString(targetAltitudeType, 1),
+                                                TestDataParser.ConvertToBitString(targetAltitudeCapability, 2),
+                                                TestDataParser.ConvertToBitString(verticalModeIndicator, 2),
+                                                TestDataParser.ConvertToBitString(targetAltitudeValue, 10));
                                 var version1 = Translate(bits).TargetStateAndStatus.Version1;
 
                                 Assert.AreEqual(verticalDataSource, (int)version1.VerticalDataSource);
@@ -1359,10 +1330,10 @@ namespace Test.VirtualRadar.Library.Adsb
                     for(var horizontalModeIndicator = 0; horizontalModeIndicator < 4;++horizontalModeIndicator) {
                         for(var headingValue = 0;headingValue < 512;++headingValue) {
                             var bits = String.Format("11101 000 00000000 00000000 0 {0} {1} {2} {3} 0 00000000 00000000",
-                                        TestUtilities.ConvertToBitString(horizontalDataSource, 2),
-                                        TestUtilities.ConvertToBitString(headingValue, 9),
-                                        TestUtilities.ConvertToBitString(headingIsTrack, 1),
-                                        TestUtilities.ConvertToBitString(horizontalModeIndicator, 2));
+                                        TestDataParser.ConvertToBitString(horizontalDataSource, 2),
+                                        TestDataParser.ConvertToBitString(headingValue, 9),
+                                        TestDataParser.ConvertToBitString(headingIsTrack, 1),
+                                        TestDataParser.ConvertToBitString(horizontalModeIndicator, 2));
                             var version1 = Translate(bits).TargetStateAndStatus.Version1;
 
                             Assert.AreEqual(horizontalDataSource, (int)version1.HorizontalDataSource);
@@ -1391,8 +1362,8 @@ namespace Test.VirtualRadar.Library.Adsb
             for(var altitudeType = 0;altitudeType < 2;++altitudeType) {
                 for(var altitudeValue = 0;altitudeValue < 2048;++altitudeValue) {
                     var bits = String.Format("11101 01 0 {0} {1} 0000 00000000 00000000 00000000 00000000",
-                                TestUtilities.ConvertToBitString(altitudeType, 1),
-                                TestUtilities.ConvertToBitString(altitudeValue, 11));
+                                TestDataParser.ConvertToBitString(altitudeType, 1),
+                                TestDataParser.ConvertToBitString(altitudeValue, 11));
                     var version2 = Translate(bits).TargetStateAndStatus.Version2;
 
                     Assert.AreEqual(altitudeType == 1, version2.SelectedAltitudeIsFms);
@@ -1413,17 +1384,17 @@ namespace Test.VirtualRadar.Library.Adsb
         public void Translate_Decodes_Target_State_Version_2_Barometric_Pressure_Setting_Correctly()
         {
             for(var settingValue = 0;settingValue < 512;++settingValue) {
-                var bits = String.Format("11101 01 0 0 00000000000 {0} 000 00000000 00000000 00000000", TestUtilities.ConvertToBitString(settingValue, 9));
+                var bits = String.Format("11101 01 0 0 00000000000 {0} 000 00000000 00000000 00000000", TestDataParser.ConvertToBitString(settingValue, 9));
                 var version2 = Translate(bits).TargetStateAndStatus.Version2;
 
                 switch(settingValue) {
                     case 0:     Assert.IsNull(version2.BarometricPressureSetting); break;
-                    case 1:     Assert.AreEqual(800.0F, version2.BarometricPressureSetting); break;
-                    case 2:     Assert.AreEqual(800.8F, version2.BarometricPressureSetting); break;
-                    case 3:     Assert.AreEqual(801.6F, version2.BarometricPressureSetting); break;
-                    case 510:   Assert.AreEqual(1207.2F, version2.BarometricPressureSetting); break;
-                    case 511:   Assert.AreEqual(1208.0F, version2.BarometricPressureSetting); break;
-                    default:    Assert.AreEqual((((float)settingValue - 1F) * 0.8F) + 800F, version2.BarometricPressureSetting); break;
+                    case 1:     Assert.AreEqual(800.0, version2.BarometricPressureSetting); break;
+                    case 2:     Assert.AreEqual(800.8, version2.BarometricPressureSetting); break;
+                    case 3:     Assert.AreEqual(801.6, version2.BarometricPressureSetting); break;
+                    case 510:   Assert.AreEqual(1207.2, version2.BarometricPressureSetting); break;
+                    case 511:   Assert.AreEqual(1208.0, version2.BarometricPressureSetting); break;
+                    default:    Assert.AreEqual((((float)settingValue - 1.0) * 0.8) + 800, version2.BarometricPressureSetting); break;
                 }
             }
         }
@@ -1435,9 +1406,9 @@ namespace Test.VirtualRadar.Library.Adsb
                 for(var headingSign = 0;headingSign < 2;++headingSign) {
                     for(var headingValue = 0;headingValue < 256;++headingValue) {
                         var bits = String.Format("11101 01 0 0 00000000000 000000000 {0} {1} {2} 0 00000000 00000000",
-                                        TestUtilities.ConvertToBitString(headingValid, 1),
-                                        TestUtilities.ConvertToBitString(headingSign, 1),
-                                        TestUtilities.ConvertToBitString(headingValue, 8));
+                                        TestDataParser.ConvertToBitString(headingValid, 1),
+                                        TestDataParser.ConvertToBitString(headingSign, 1),
+                                        TestDataParser.ConvertToBitString(headingValue, 8));
                         var version2 = Translate(bits).TargetStateAndStatus.Version2;
 
                         if(headingValid == 0) Assert.IsNull(version2.SelectedHeading);
@@ -1518,8 +1489,8 @@ namespace Test.VirtualRadar.Library.Adsb
             for(var version = 0;version < 7;++version) {
                 for(var type = 0;type < 7;++type) {
                     var bits = String.Format("11111 {0} 00000000 00000000 00000000 00000000 {1} 00000 00000000",
-                        TestUtilities.ConvertToBitString(type, 3),
-                        TestUtilities.ConvertToBitString(version, 3));
+                        TestDataParser.ConvertToBitString(type, 3),
+                        TestDataParser.ConvertToBitString(version, 3));
                     var message = Translate(bits).AircraftOperationalStatus;
 
                     Assert.AreEqual(version, message.AdsbVersion);
@@ -1571,9 +1542,9 @@ namespace Test.VirtualRadar.Library.Adsb
                 for(var type = 0;type < 7;++type) {
                     for(var dimensionValue = 0;dimensionValue < 16;++dimensionValue) {
                         var bits = String.Format("11111 {0} 000000000000 {1} 00000000 00000000 {2} 00000 00000000",
-                                        TestUtilities.ConvertToBitString(type, 3),
-                                        TestUtilities.ConvertToBitString(dimensionValue, 4),
-                                        TestUtilities.ConvertToBitString(version, 3));
+                                        TestDataParser.ConvertToBitString(type, 3),
+                                        TestDataParser.ConvertToBitString(dimensionValue, 4),
+                                        TestDataParser.ConvertToBitString(version, 3));
                         var message = Translate(bits).AircraftOperationalStatus;
 
                         if(version < 1 || version > 2 || type != 1) {
@@ -1622,12 +1593,12 @@ namespace Test.VirtualRadar.Library.Adsb
                             for(var gpsLateralOffset = 0;gpsLateralOffset < 4;++gpsLateralOffset) {
                                 for(var gpsLongitudinalOffset = 0;gpsLongitudinalOffset < 32;++gpsLongitudinalOffset) {
                                     var bits = String.Format("11111 {0} 00000000 00000000 000000 {1} {2}{3}{4} {5} 00000 00000000",
-                                            TestUtilities.ConvertToBitString(type, 3),
-                                            TestUtilities.ConvertToBitString(sda, 2),
-                                            TestUtilities.ConvertToBitString(gpsLeftRight, 1),
-                                            TestUtilities.ConvertToBitString(gpsLateralOffset, 2),
-                                            TestUtilities.ConvertToBitString(gpsLongitudinalOffset, 5),
-                                            TestUtilities.ConvertToBitString(version, 3));
+                                            TestDataParser.ConvertToBitString(type, 3),
+                                            TestDataParser.ConvertToBitString(sda, 2),
+                                            TestDataParser.ConvertToBitString(gpsLeftRight, 1),
+                                            TestDataParser.ConvertToBitString(gpsLateralOffset, 2),
+                                            TestDataParser.ConvertToBitString(gpsLongitudinalOffset, 5),
+                                            TestDataParser.ConvertToBitString(version, 3));
                                     var message = Translate(bits).AircraftOperationalStatus;
 
                                     if(version == 2 && type < 2) Assert.AreEqual((SystemDesignAssurance)sda, message.SystemDesignAssurance);
@@ -1660,7 +1631,5 @@ namespace Test.VirtualRadar.Library.Adsb
                 }
             }
         }
-        #endregion
-        */
     }
 }
