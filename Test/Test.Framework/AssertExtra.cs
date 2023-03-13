@@ -77,5 +77,25 @@ namespace Test.Framework
             Assert.IsTrue(innerException.Message.IndexOf(expectedText) > -1);
             Assert.AreSame(inner, innerException.InnerException);
         }
+
+        /// <summary>
+        /// Asserts that either both sequences are null or both are the same.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expected"></param>
+        /// <param name="actual"></param>
+        public static void SequenceEqualOrNull<T>(IEnumerable<T> expected, IEnumerable<T> actual, string message = null)
+        {
+            Assert.IsTrue(
+                (expected == null && actual == null) || (expected != null && actual != null),
+                message ?? $"expected is {(expected == null ? "" : "not ")}null and actual is {(actual == null ? "" : "not ")}null"
+            );
+            if(expected != null) {
+                Assert.IsTrue(
+                    expected.SequenceEqual(actual),
+                    message ?? $"SequenceEqual is returning false when comparing expected to actual"
+                );
+            }
+        }
     }
 }

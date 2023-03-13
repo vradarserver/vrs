@@ -28,7 +28,11 @@ namespace VirtualRadar.Library
 
             services.AddScoped<VirtualRadar.Interface.Settings.IConfigurationStorage,                   Settings.ConfigurationStorage>();
 
-            services.AddTransient<VirtualRadar.Interface.Adsb.IAdsbTranslator,                          Adsb.AdsbTranslator>();
+            // The feed manager creates a separate scope for each receiver that is instantiated
+            services.AddScoped<VirtualRadar.Interface.Adsb.IAdsbTranslator,                             Adsb.AdsbTranslator>();
+            services.AddScoped<VirtualRadar.Interface.ModeS.IModeSParity,                               ModeS.ModeSParity>();
+            services.AddScoped<VirtualRadar.Interface.ModeS.IModeSTranslator,                           ModeS.ModeSTranslator>();
+
             services.AddTransient<VirtualRadar.Interface.IXmlSerialiser,                                XmlSerialiser>();
 
             return services;

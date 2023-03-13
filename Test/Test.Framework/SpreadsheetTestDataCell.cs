@@ -82,55 +82,15 @@ namespace Test.Framework
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T? ConvertNullable<T>()
-            where T: struct
-        {
-            return Value == ""
-                ? null
-                : (T)ConvertString(Value, typeof(T));
-        }
+        public T? ConvertNullable<T>() where T: struct => TestDataParser.ConvertTextToNullableType<T>(Value);
 
-        public static object ConvertString(string text, Type type)
-        {
-            object result = null;
-
-            if(type != typeof(DateTime)) {
-                var parsed = false;
-                if(text.StartsWith("0x")) {
-                    parsed = true;
-                    if(type == typeof(ushort))      result = Convert.ToUInt16(text[2..], 16);
-                    else if(type == typeof(uint))   result = Convert.ToUInt32(text[2..], 16);
-                    else if(type == typeof(ulong))  result = Convert.ToUInt64(text[2..], 16);
-                    else                            parsed = false;
-                }
-                if(!parsed) {
-                    result = Convert.ChangeType(text, type, new CultureInfo("en-GB"));
-                }
-            } else {
-                var dateParts = text.Split(new char[] {'/', ' ', ':', '.'}, StringSplitOptions.RemoveEmptyEntries);
-                var parsed = new List<int>();
-                var kind = DateTimeKind.Unspecified;
-                foreach(var datePart in dateParts) {
-                    switch(datePart.ToUpperInvariant()) {
-                        case "L":   kind = DateTimeKind.Local; break;
-                        case "Z":
-                        case "U":   kind = DateTimeKind.Utc; break;
-                        default:    parsed.Add(int.Parse(datePart)); break;
-                    }
-                }
-                switch(parsed.Count) {
-                    case 3:     result = new DateTime(parsed[2], parsed[1], parsed[0]); break;
-                    case 6:     result = new DateTime(parsed[2], parsed[1], parsed[0], parsed[3], parsed[4], parsed[5]); break;
-                    case 7:     result = new DateTime(parsed[2], parsed[1], parsed[0], parsed[3], parsed[4], parsed[5], parsed[6]); break;
-                    default:    throw new InvalidOperationException($"Cannot parse date string {text}");
-                }
-                if(kind != DateTimeKind.Unspecified) {
-                    result = System.DateTime.SpecifyKind((DateTime)result, kind);
-                }
-            }
-
-            return result;
-        }
+        /// <summary>
+        /// Converts text into a concrete type.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static object ConvertString(string text, Type type) => TestDataParser.ConvertTextToConcreteType(text, type);
 
         /// <summary>
         /// Returns <see cref="Value"/> parsed into an array.
@@ -138,15 +98,7 @@ namespace Test.Framework
         /// <typeparam name="T"></typeparam>
         /// <param name="separator"></param>
         /// <returns></returns>
-        public T[] Array<T>(string separator = ",")
-        {
-            var result = new List<T>();
-            foreach(var chunk in Value.Split(separator)) {
-                result.Add((T)ConvertString(chunk.Trim(), typeof(T)));
-            }
-
-            return result.ToArray();
-        }
+        public T[] Array<T>(string separator = ",") => TestDataParser.ConvertTextToArray<T>(Value, separator);
 
         public bool Bool() => ConvertValue<bool>(false);
 
@@ -160,19 +112,7 @@ namespace Test.Framework
 
         public byte Byte(byte emptyValue) => ConvertValue<byte>(emptyValue);
 
-        public byte[] Bytes()
-        {
-            var result = System.Array.Empty<byte>();
-
-            if(Value != "") {
-                result = Value
-                    .Split(' ', ',', ';', '/', '\t', '.')
-                    .Select(r => Convert.ToByte(r, 16))
-                    .ToArray();
-            }
-
-            return result;
-        }
+        public byte[] Bytes() => TestDataParser.ConvertByteStringToBytes(Value);
 
         public DateTime DateTime() => ConvertValue<DateTime>(default);
 

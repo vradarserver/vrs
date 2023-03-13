@@ -33,11 +33,12 @@ namespace Test.VirtualRadar.Library.Adsb
         [TestInitialize]
         public void TestInitialise()
         {
-            _Statistics = new ReceiverStatistics();
+            _Statistics = new();
 #pragma warning disable CS0618 // Type or member is obsolete (used to warn people not to instantiate directly)
-            _Translator = new AdsbTranslator();
+            _Translator = new AdsbTranslator {
+                Statistics = _Statistics
+            };
 #pragma warning restore CS0618
-            _Translator.Statistics = _Statistics;
             _ModeSMessage = new ModeSMessage();
         }
 
