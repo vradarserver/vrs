@@ -13,7 +13,7 @@ using VirtualRadar.Interface.Feeds;
 namespace Test.VirtualRadar.Interface.Feeds
 {
     [TestClass]
-    public class BaseStationMessageHelperTests
+    public class BaseStationMessageHelper_Tests
     {
         [TestMethod]
         public void ConvertToBaseStationMessageType_Converts_Text_Correctly()

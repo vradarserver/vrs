@@ -13,7 +13,7 @@ using VirtualRadar.Interface;
 namespace Test.VirtualRadar.Interface
 {
     [TestClass]
-    public class Crc32ModeSTimingTests
+    public class Crc32ModeSTiming_Tests
     {
         [TestMethod]
         public void Crc32ModeS_Timing_Test()

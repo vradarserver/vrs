@@ -15,7 +15,7 @@ using VirtualRadar.Library.ModeS;
 namespace Test.VirtualRadar.Library.ModeS
 {
     [TestClass]
-    public class ModeSParityTests
+    public class ModeSParity_Tests
     {
         public TestContext TestContext { get; set; }
 
