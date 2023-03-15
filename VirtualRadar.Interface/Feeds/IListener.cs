@@ -35,7 +35,7 @@ namespace VirtualRadar.Interface.Feeds
         /// <summary>
         /// Gets the statistics for the listener.
         /// </summary>
-        IStatistics Statistics { get; }
+        ReceiverStatistics Statistics { get; }
 
         /// <summary>
         /// Gets the connector that is handling the connection for the listener. Do not modify any properties on the connection directly,

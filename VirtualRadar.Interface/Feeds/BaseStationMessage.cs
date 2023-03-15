@@ -193,14 +193,5 @@ namespace VirtualRadar.Interface.Feeds
 
             return result.ToString();
         }
-
-        /// <summary>
-        /// Calculates a rough and far-from-accurate size for the object.
-        /// </summary>
-        /// <returns></returns>
-        public int CalculateRoughSize()
-        {
-            return 176;
-        }
     }
 }

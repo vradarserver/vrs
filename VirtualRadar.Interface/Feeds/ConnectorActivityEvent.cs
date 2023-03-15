@@ -23,12 +23,12 @@ namespace VirtualRadar.Interface.Feeds
         /// <summary>
         /// Gets a unique identifier assigned to each event object created.
         /// </summary>
-        public long Id { get; private set; }
+        public long Id { get; }
 
         /// <summary>
         /// Gets the name of the connector.
         /// </summary>
-        public string ConnectorName { get; private set; }
+        public string ConnectorName { get; }
 
         /// <summary>
         /// Gets the time (at UTC) that the activity took place.
@@ -38,13 +38,13 @@ namespace VirtualRadar.Interface.Feeds
         /// <summary>
         /// Gets the type of activity.
         /// </summary>
-        public ConnectorActivityType Type { get; private set; }
+        public ConnectorActivityType Type { get; }
 
         /// <summary>
         /// Gets a message describing the activity. The message is always in English, I need
         /// to be able to read them when supporting VRS.
         /// </summary>
-        public string Message { get; private set; }
+        public string Message { get; }
 
         /// <summary>
         /// Gets the recorded exception.

@@ -11,7 +11,7 @@
 using VirtualRadar.Interface.Adsb;
 using VirtualRadar.Interface.ModeS;
 
-namespace VirtualRadar.Interface
+namespace VirtualRadar.Interface.Feeds
 {
     /// <summary>
     /// A class that records various statistics gleaned from messages interpreted by a receiver.

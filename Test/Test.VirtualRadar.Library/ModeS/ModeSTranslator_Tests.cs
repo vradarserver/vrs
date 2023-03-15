@@ -10,7 +10,7 @@
 
 using System.Text;
 using Test.Framework;
-using VirtualRadar.Interface;
+using VirtualRadar.Interface.Feeds;
 using VirtualRadar.Interface.ModeS;
 using VirtualRadar.Library.ModeS;
 

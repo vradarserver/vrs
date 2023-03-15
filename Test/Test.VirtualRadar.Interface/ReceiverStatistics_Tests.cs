@@ -10,6 +10,7 @@
 
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Adsb;
+using VirtualRadar.Interface.Feeds;
 using VirtualRadar.Interface.ModeS;
 
 namespace Test.VirtualRadar.Interface

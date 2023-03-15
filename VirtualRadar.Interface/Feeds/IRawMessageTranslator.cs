@@ -24,7 +24,7 @@ namespace VirtualRadar.Interface.Feeds
         /// <summary>
         /// Gets or sets the statistics to update when translating messages.
         /// </summary>
-        IStatistics Statistics { get; set; }
+        ReceiverStatistics Statistics { get; set; }
 
         /// <summary>
         /// Gets or sets the location of the receiver.
