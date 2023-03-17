@@ -62,7 +62,8 @@ namespace VirtualRadar.Interface
         /// Assigns a new value unless the value has not changed.
         /// </summary>
         /// <param name="newValue"></param>
-        /// <param name="newDataVersion"></param>
+        /// <param name="newDataVersion">No assumptions are made about the version. It can be the same as, less than
+        /// or greater than the existing value.</param>
         /// <returns>True if the value was changed by this call.</returns>
         public bool SetValue(T newValue, long newDataVersion)
         {
@@ -75,12 +76,13 @@ namespace VirtualRadar.Interface
         }
 
         /// <summary>
-        /// Returns true if the value has changed since the <see cref="IAircraft.DataVersion"/>
-        /// passed in.
+        /// Returns true if the <see cref="DataVersion"/> is a larger number than the
+        /// version passed across. Note that ascending order of version is *not* enforced
+        /// by <see cref="SetValue"/>.
         /// </summary>
         /// <param name="sinceDataVersion"></param>
         /// <returns></returns>
-        public bool HasChanged(long sinceDataVersion) => DataVersion > sinceDataVersion;
+        public bool IsAfter(long sinceDataVersion) => DataVersion > sinceDataVersion;
 
         /// <summary>
         /// Returns a shallow copy of the value.
