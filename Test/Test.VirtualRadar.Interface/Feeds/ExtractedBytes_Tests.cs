@@ -16,7 +16,7 @@ namespace Test.VirtualRadar.Interface.Feeds
     public class ExtractedBytes_Tests
     {
         [TestMethod]
-        public void ExtractedBytes_Clone_Returns_A_Deep_Copy()
+        public void Clone_Returns_A_Deep_Copy()
         {
             var originalByteArray = new byte[] {0x01, 0x02};
 
@@ -58,7 +58,7 @@ namespace Test.VirtualRadar.Interface.Feeds
         }
 
         [TestMethod]
-        public void ExtractedBytes_Equals_Returns_Correct_Value()
+        public void Equals_Returns_Correct_Value()
         {
             var obj1 = new ExtractedBytes() { Bytes = new byte[] { 0x01, 0x02, 0x03 }, Format = ExtractedBytesFormat.ModeS, Offset = 0, Length = 1, ChecksumFailed = false, HasParity = false, SignalLevel = 22 };
             var obj2 = new ExtractedBytes() { Bytes = new byte[] { 0x01, 0x02, 0x03 }, Format = ExtractedBytesFormat.ModeS, Offset = 0, Length = 1, ChecksumFailed = false, HasParity = false, SignalLevel = 22 };

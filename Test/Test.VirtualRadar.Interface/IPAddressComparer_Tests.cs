@@ -33,7 +33,7 @@ namespace Test.VirtualRadar.Interface
         [DataRow("254.255.255.255", "255.0.0.0",       -1)]
         [DataRow("0001::1",         "255.255.255.255", 1)]
         [DataRow("255.255.255.255", "0001::1",         -1)]
-        public void Describe_Airport_Formats_Airport_Correctly(string lhsText, string rhsText, int expectedResult)
+        public void Compare_Compares_Endpoints_Correctly(string lhsText, string rhsText, int expectedResult)
         {
             var comparer = new IPAddressComparer();
             var lhs = lhsText == null ? null : IPAddress.Parse(lhsText);
