@@ -839,7 +839,7 @@ namespace VirtualRadar.Interface
 
         /// <summary>
         /// Updates the <see cref="FullCoordinates"/> and <see cref="ShortCoordinates"/> lists using the current values
-        /// on the aircraft.
+        /// on the aircraft. It is assumed that this is being called from within <see cref="Lock"/>.
         /// </summary>
         /// <param name="utcNow">The UTC time at which the message was processed. </param>
         /// <param name="shortCoordinateSeconds">The number of seconds of short coordinates that are to be maintained. This normally comes
@@ -856,12 +856,20 @@ namespace VirtualRadar.Interface
             if(Latitude != null && Longitude != null) {
                 var nowTick = utcNow.Ticks;
 
-                var lastFullCoordinate = FullCoordinates.Count == 0 ? null : FullCoordinates[FullCoordinates.Count - 1];
-                var secondLastFullCoordinate = FullCoordinates.Count < 2 ? null : FullCoordinates[FullCoordinates.Count - 2];
-                if(lastFullCoordinate == null || Latitude != lastFullCoordinate.Latitude || Longitude != lastFullCoordinate.Longitude || Altitude != lastFullCoordinate.Altitude || GroundSpeed != lastFullCoordinate.GroundSpeed) {
-                    Lock(_ => {
-                        PositionTime = utcNow;
-                    });
+                var lastFullCoordinate = FullCoordinates.Count == 0
+                    ? null
+                    : FullCoordinates[FullCoordinates.Count - 1];
+                var secondLastFullCoordinate = FullCoordinates.Count < 2
+                    ? null
+                    : FullCoordinates[FullCoordinates.Count - 2];
+
+                if(   lastFullCoordinate == null
+                   || Latitude != lastFullCoordinate.Latitude
+                   || Longitude != lastFullCoordinate.Longitude
+                   || Altitude != lastFullCoordinate.Altitude
+                   || GroundSpeed != lastFullCoordinate.GroundSpeed
+                ) {
+                    PositionTime = utcNow;
 
                     // Check to see whether the aircraft appears to be moving impossibly fast and, if it is, reset its trail. Do this even if
                     // the gap between this message and the last is below the threshold for adding to the trails.
@@ -874,31 +882,65 @@ namespace VirtualRadar.Interface
                     }
 
                     // Only update the trails if more than one second has elapsed since the last position update
-                    long lastUpdateTick = lastFullCoordinate == null ? 0 : lastFullCoordinate.Tick;
+                    var lastUpdateTick = lastFullCoordinate == null
+                        ? 0L
+                        : lastFullCoordinate.Tick;
                     if(nowTick - lastUpdateTick >= _TicksPerSecond) {
                         var track = Round.TrackHeading(Track);
                         var altitude = Round.TrackAltitude(Altitude);
                         var groundSpeed = Round.TrackGroundSpeed(GroundSpeed);
-                        var coordinate = new Coordinate(DataVersion, nowTick, Latitude.Value, Longitude.Value, track, altitude, groundSpeed);
-                        var positionChanged = lastFullCoordinate != null && (coordinate.Latitude != lastFullCoordinate.Latitude || coordinate.Longitude != lastFullCoordinate.Longitude);
+                        var coordinate = new Coordinate(
+                            DataVersion,
+                            nowTick,
+                            Latitude.Value,
+                            Longitude.Value,
+                            track,
+                            altitude,
+                            groundSpeed
+                        );
+                        var positionChanged =  lastFullCoordinate != null
+                                            && (
+                                                   coordinate.Latitude != lastFullCoordinate.Latitude
+                                                || coordinate.Longitude != lastFullCoordinate.Longitude
+                                               );
 
-                        if(FullCoordinates.Count > 1 &&
-                            track != null && lastFullCoordinate.Heading == track && secondLastFullCoordinate.Heading == track &&
-                            (!positionChanged || lastFullCoordinate.Altitude == altitude && secondLastFullCoordinate.Altitude == altitude) &&
-                            (!positionChanged || lastFullCoordinate.GroundSpeed == groundSpeed && secondLastFullCoordinate.GroundSpeed == groundSpeed)
+                        if(   FullCoordinates.Count > 1
+                           && track != null
+                           && lastFullCoordinate.Heading == track
+                           && secondLastFullCoordinate.Heading == track
+                           && (
+                                   !positionChanged
+                                || (
+                                       lastFullCoordinate.Altitude == altitude
+                                    && secondLastFullCoordinate.Altitude == altitude
+                                   )
+                              )
+                           && (
+                                   !positionChanged
+                                || (
+                                       lastFullCoordinate.GroundSpeed == groundSpeed
+                                    && secondLastFullCoordinate.GroundSpeed == groundSpeed
+                                   )
+                              )
                         ) {
-                            FullCoordinates[FullCoordinates.Count - 1] = coordinate;
+                            FullCoordinates[^1] = coordinate;
                         } else {
                             FullCoordinates.Add(coordinate);
                         }
 
-                        long earliestAllowable = nowTick - (_TicksPerSecond * shortCoordinateSeconds);
+                        var earliestAllowable = nowTick - (_TicksPerSecond * shortCoordinateSeconds);
                         var firstAllowableIndex = ShortCoordinates.FindIndex(c => c.Tick >= earliestAllowable);
-                        if(firstAllowableIndex == -1)    ShortCoordinates.Clear();
-                        else if(firstAllowableIndex > 0) ShortCoordinates.RemoveRange(0, firstAllowableIndex);
+                        if(firstAllowableIndex == -1) {
+                            ShortCoordinates.Clear();
+                        } else if(firstAllowableIndex > 0) {
+                            ShortCoordinates.RemoveRange(0, firstAllowableIndex);
+                        }
                         ShortCoordinates.Add(coordinate);
 
-                        if(FirstCoordinateChanged == 0) FirstCoordinateChanged = DataVersion;
+                        if(FirstCoordinateChanged == 0) {
+                            FirstCoordinateChanged = DataVersion;
+                        }
+
                         LastCoordinateChanged = DataVersion;
                         LatestCoordinateTime = utcNow;
                     }
