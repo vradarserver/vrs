@@ -18,6 +18,33 @@ namespace VirtualRadar.Interface
     public class Aircraft
     {
         /// <summary>
+        /// Number of ticks in a second.
+        /// </summary>
+        private const long TicksPerSecond = 10000000L;
+
+        /// <summary>
+        /// The threshold distance in KM between two points that can cause the trails to reset. If the distance between
+        /// two consecutive points for an aircraft is higher than this and the time threshold is passed (see <see cref="_ResetCoordinatesTime"/>)
+        /// then the trail is reset.
+        /// </summary>
+        /// <remarks>This is about 10 nautical miles. Any 'jump' between two positions that is less than this distance will never
+        /// trigger a trail reset, even if it is wrong. This figure may need tuning. It needs to be quite large though to counteract
+        /// the 'shrinking time' effect arising from not knowing the real time a message was transmitted by an aircraft (BaseStation's
+        /// timestamp is inaccurate).</remarks>
+        private const double _ResetCoordinatesDistance = 18.0;
+
+        /// <summary>
+        /// See <see cref="_ResetCoordinatesDistance"/>. The period is in 100-nanosecond units. If the distance between two points exceeds
+        /// <see cref="_ResetCoordinatesDistance"/> then the factor by which it is exceeded is multiplied by this threshold. This is the
+        /// time that the aircraft is given to cover that distance - if it manages to cover it quicker then the trail is reset. If
+        /// it took longer than this then the aircraft just dropped out of range for a bit and the trail is preserved.
+        /// </summary>
+        /// <remarks>Originally this was set at the speed of an SR-71, ~ mach 3, but in tests with a receiver that was transmitting
+        /// a lot of bad positions some A319s were seen travelling at mach 2 :) So it's had to be tuned down quite a bit. The speed
+        /// of sound at sea level is 0.34 km/sec.</remarks>
+        private const double _ResetCoordinatesTime = (18.0 / 0.4) * 10000000.0;  // anything that covers 18km in under 45 seconds will reset the trail
+
+        /// <summary>
         /// The lock object used to synchronise writes to the object.
         /// </summary>
         private object _SyncLock = new();
@@ -453,7 +480,13 @@ namespace VirtualRadar.Interface
         /// </summary>
         public void ResetCoordinates()
         {
-            throw new NotImplementedException();
+            lock(_SyncLock) {
+                LatestCoordinateTime = default;
+                FullCoordinates.Clear();
+                ShortCoordinates.Clear();
+                FirstCoordinateChanged = 0;
+                LastCoordinateChanged = 0;
+            }
         }
 
         /// <summary>
@@ -472,7 +505,57 @@ namespace VirtualRadar.Interface
         /// </remarks>
         public void UpdateCoordinates(DateTime utcNow, int shortCoordinateSeconds)
         {
-            throw new NotImplementedException();
+            if(Latitude != null && Longitude != null) {
+                var nowTick = utcNow.Ticks;
+
+                var lastFullCoordinate = FullCoordinates.Count == 0 ? null : FullCoordinates[FullCoordinates.Count - 1];
+                var secondLastFullCoordinate = FullCoordinates.Count < 2 ? null : FullCoordinates[FullCoordinates.Count - 2];
+                if(lastFullCoordinate == null || Latitude != lastFullCoordinate.Latitude || Longitude != lastFullCoordinate.Longitude || Altitude != lastFullCoordinate.Altitude || GroundSpeed != lastFullCoordinate.GroundSpeed) {
+                    Lock(r => {
+                        PositionTime.SetValue(utcNow, DataVersion);
+                    });
+
+                    // Check to see whether the aircraft appears to be moving impossibly fast and, if it is, reset its trail. Do this even if
+                    // the gap between this message and the last is below the threshold for adding to the trails.
+                    if(lastFullCoordinate != null) {
+                        var distance = GreatCircleMaths.Distance(lastFullCoordinate.Latitude, lastFullCoordinate.Longitude, Latitude, Longitude);
+                        if(distance > _ResetCoordinatesDistance) {
+                            var fastestTime = _ResetCoordinatesTime * (distance / _ResetCoordinatesDistance);
+                            if(nowTick - lastFullCoordinate.Tick < fastestTime) ResetCoordinates();
+                        }
+                    }
+
+                    // Only update the trails if more than one second has elapsed since the last position update
+                    long lastUpdateTick = lastFullCoordinate == null ? 0 : lastFullCoordinate.Tick;
+                    if(nowTick - lastUpdateTick >= TicksPerSecond) {
+                        var track = Round.TrackHeading(Track);
+                        var altitude = Round.TrackAltitude(Altitude);
+                        var groundSpeed = Round.TrackGroundSpeed(GroundSpeed);
+                        var coordinate = new Coordinate(DataVersion, nowTick, Latitude.Value.Value, Longitude.Value.Value, track, altitude, groundSpeed);
+                        var positionChanged = lastFullCoordinate != null && (coordinate.Latitude != lastFullCoordinate.Latitude || coordinate.Longitude != lastFullCoordinate.Longitude);
+
+                        if(FullCoordinates.Count > 1 &&
+                            track != null && lastFullCoordinate.Heading == track && secondLastFullCoordinate.Heading == track &&
+                            (!positionChanged || lastFullCoordinate.Altitude == altitude && secondLastFullCoordinate.Altitude == altitude) &&
+                            (!positionChanged || lastFullCoordinate.GroundSpeed == groundSpeed && secondLastFullCoordinate.GroundSpeed == groundSpeed)
+                        ) {
+                            FullCoordinates[FullCoordinates.Count - 1] = coordinate;
+                        } else {
+                            FullCoordinates.Add(coordinate);
+                        }
+
+                        long earliestAllowable = nowTick - (TicksPerSecond * shortCoordinateSeconds);
+                        var firstAllowableIndex = ShortCoordinates.FindIndex(c => c.Tick >= earliestAllowable);
+                        if(firstAllowableIndex == -1)    ShortCoordinates.Clear();
+                        else if(firstAllowableIndex > 0) ShortCoordinates.RemoveRange(0, firstAllowableIndex);
+                        ShortCoordinates.Add(coordinate);
+
+                        if(FirstCoordinateChanged == 0) FirstCoordinateChanged = DataVersion;
+                        LastCoordinateChanged = DataVersion;
+                        LatestCoordinateTime = utcNow;
+                    }
+                }
+            }
         }
 
         /// <summary>

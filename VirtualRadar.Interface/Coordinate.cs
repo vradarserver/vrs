@@ -39,7 +39,7 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// Gets the direction the aircraft was pointing in.
         /// </summary>
-        public float? Heading { get; }
+        public double? Heading { get; }
 
         /// <summary>
         /// Gets the altitude of the aircraft.
@@ -49,7 +49,7 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// Gets the ground speed of the aircraft.
         /// </summary>
-        public float? GroundSpeed { get; }
+        public double? GroundSpeed { get; }
 
         /// <summary>
         /// Creates a new object.
@@ -68,7 +68,7 @@ namespace VirtualRadar.Interface
         /// <param name="latitude">The latitude of the aircraft.</param>
         /// <param name="longitude">The longitude of the aircraft.</param>
         /// <param name="heading">The heading in degrees from north that the aircraft was pointing in, if known.</param>
-        public Coordinate(long dataVersion, long tick, double latitude, double longitude, float? heading) : this(dataVersion, tick, latitude, longitude, heading, null, null)
+        public Coordinate(long dataVersion, long tick, double latitude, double longitude, double? heading) : this(dataVersion, tick, latitude, longitude, heading, null, null)
         {
         }
 
@@ -82,7 +82,7 @@ namespace VirtualRadar.Interface
         /// <param name="heading">The heading in degrees from north that the aircraft was pointing in, if known.</param>
         /// <param name="altitude">The altitude of the aircraft.</param>
         /// <param name="groundSpeed">The speed of the aircraft.</param>
-        public Coordinate(long dataVersion, long tick, double latitude, double longitude, float? heading, int? altitude, float? groundSpeed)
+        public Coordinate(long dataVersion, long tick, double latitude, double longitude, double? heading, int? altitude, double? groundSpeed)
         {
             DataVersion = dataVersion;
             Tick = tick;

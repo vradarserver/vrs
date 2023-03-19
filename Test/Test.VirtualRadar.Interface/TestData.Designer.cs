@@ -63,6 +63,16 @@ namespace Test.VirtualRadar.Interface {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] AircraftTests {
+            get {
+                object obj = ResourceManager.GetObject("AircraftTests", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] FeedTests {
             get {
                 object obj = ResourceManager.GetObject("FeedTests", resourceCulture);

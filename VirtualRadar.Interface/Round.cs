@@ -20,13 +20,13 @@ namespace VirtualRadar.Interface
         /// </summary>
         /// <param name="groundSpeed"></param>
         /// <returns></returns>
-        public static float? GroundSpeed(float? groundSpeed)
+        public static double? GroundSpeed(double? groundSpeed)
         {
             var result = groundSpeed;
             if(result != null) {
-                var rounder = result >= 0 ? 0.5F : -0.5F;
+                var rounder = result >= 0 ? 0.5 : -0.5;
                 var rounded = (int)((result * 10) + rounder);
-                result = (float)rounded / 10F;
+                result = (double)rounded / 10;
             }
 
             return result;
@@ -38,18 +38,18 @@ namespace VirtualRadar.Interface
         /// <param name="track"></param>
         /// <param name="roundToZeroPlaces"></param>
         /// <returns></returns>
-        public static float? Track(float? track, bool roundToZeroPlaces = false)
+        public static double? Track(double? track, bool roundToZeroPlaces = false)
         {
             var result = track;
             if(result != null) {
-                var rounded = (int)((result * 10) + 0.5F);
+                var rounded = (int)((result * 10) + 0.5);
                 if(roundToZeroPlaces) {
-                    result = (int)(rounded / 10F);
+                    result = (int)(rounded / 10);
                 } else {
-                    result = (float)rounded / 10F;
+                    result = (double)rounded / 10;
                 }
-                if(result >= 360F) {
-                    result -= 360F;
+                if(result >= 360) {
+                    result -= 360;
                 }
             }
 
@@ -82,15 +82,15 @@ namespace VirtualRadar.Interface
         /// </summary>
         /// <param name="track"></param>
         /// <returns></returns>
-        public static float? TrackHeading(float? track)
+        public static double? TrackHeading(double? track)
         {
             var result = track;
             if(result != null) {
-                result /= 5F;
-                result += result > 0 ? 0.5F : -0.5F;
+                result /= 5;
+                result += result > 0 ? 0.5 : -0.5;
                 result = (int)result * 5;
-                if(result >= 360F) {
-                    result -= 360F;
+                if(result >= 360) {
+                    result -= 360;
                 }
             }
 
@@ -119,12 +119,12 @@ namespace VirtualRadar.Interface
         /// </summary>
         /// <param name="speed"></param>
         /// <returns></returns>
-        public static float? TrackGroundSpeed(float? speed)
+        public static double? TrackGroundSpeed(double? speed)
         {
             var result = speed;
             if(result != null) {
-                var spd = speed.Value / 10f;
-                spd += spd > 0 ? 0.5f : -0.5f;
+                var spd = speed.Value / 10;
+                spd += spd > 0 ? 0.5 : -0.5;
                 result = (int)spd * 10;
             }
 
