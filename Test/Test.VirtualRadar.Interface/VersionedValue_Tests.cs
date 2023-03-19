@@ -37,18 +37,17 @@ namespace Test.VirtualRadar.Interface
         }
 
         [TestMethod]
-        public void SetValue_Returns_True_If_Value_Has_Changed()
+        public void SetValue_Returns_The_New_Value_After_A_Change()
         {
-            var value = new VersionedValue<int>();
-            Assert.IsTrue(value.SetValue(2, 3));
+            var value = new VersionedValue<int>(7, 14);
+            Assert.AreEqual(8, value.SetValue(8, 16));
         }
 
         [TestMethod]
-        public void SetValue_Returns_False_If_Value_Is_Unchanged()
+        public void SetValue_Returns_The_Existing_Value_If_Value_Is_Unchanged()
         {
-            var value = new VersionedValue<int?>();
-            value.SetValue(3, 4);
-            Assert.IsFalse(value.SetValue(3, 4));
+            var value = new VersionedValue<int?>(3,14);
+            Assert.AreEqual(3, value.SetValue(3, 4));
         }
 
         [TestMethod]
@@ -58,7 +57,7 @@ namespace Test.VirtualRadar.Interface
         public void SetValue_Does_Not_Insist_That_New_Version_Is_Greater_Than_Old_Version(int originalVersion, int newVersion)
         {
             var value = new VersionedValue<double>(4, originalVersion);
-            Assert.IsTrue(value.SetValue(4.1, newVersion));
+            value.SetValue(5, newVersion);
             Assert.AreEqual(newVersion, value.DataVersion);
         }
 
@@ -78,6 +77,33 @@ namespace Test.VirtualRadar.Interface
             var value = new VersionedValue<decimal>(0, valueVersion);
             var actual = value.IsAfter(compareAgainstVersion);
             Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void CopyFrom_Overwrites_Existing_Values()
+        {
+            var value = new VersionedValue<int>(1, 2);
+            value.CopyFrom(new VersionedValue<int>(3, 4));
+
+            Assert.AreEqual(3, value.Value);
+            Assert.AreEqual(4, value.DataVersion);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void CopyFrom_Throws_If_Passed_Null()
+        {
+            new VersionedValue<int>().CopyFrom(null);
+        }
+
+        [TestMethod]
+        public void CopyFrom_Does_Not_Change_Original()
+        {
+            var original = new VersionedValue<int>(3, 4);
+            new VersionedValue<int>(1, 2).CopyFrom(original);
+
+            Assert.AreEqual(3, original.Value);
+            Assert.AreEqual(4, original.DataVersion);
         }
     }
 }

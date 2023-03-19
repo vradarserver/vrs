@@ -65,7 +65,7 @@ namespace VirtualRadar.Interface
         /// the original <see cref="IAircraft"/> continues to be updated to keep track with the source of
         /// aircraft data.
         /// </remarks>
-        IAircraft FindAircraft(int uniqueId);
+        Aircraft FindAircraft(int uniqueId);
 
         /// <summary>
         /// Returns a list of all of the aircraft currently being tracked. The aircraft objects are clones of the
@@ -79,6 +79,6 @@ namespace VirtualRadar.Interface
         /// the original <see cref="IAircraft"/> continues to be updated to keep track with the source of
         /// aircraft data.
         /// </remarks>
-        List<IAircraft> TakeSnapshot(out long snapshotTimeStamp, out long snapshotDataVersion);
+        List<Aircraft> TakeSnapshot(out long snapshotTimeStamp, out long snapshotDataVersion);
     }
 }

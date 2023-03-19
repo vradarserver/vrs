@@ -15,7 +15,7 @@ namespace VirtualRadar.Interface
     /// value was last changed.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public struct VersionedValue<T>
+    public class VersionedValue<T>
     {
         /// <summary>
         /// The value that has been recorded.
@@ -64,15 +64,15 @@ namespace VirtualRadar.Interface
         /// <param name="newValue"></param>
         /// <param name="newDataVersion">No assumptions are made about the version. It can be the same as, less than
         /// or greater than the existing value.</param>
-        /// <returns>True if the value was changed by this call.</returns>
-        public bool SetValue(T newValue, long newDataVersion)
+        /// <returns>The <see cref="Value"/> after assignment.</returns>
+        public T SetValue(T newValue, long newDataVersion)
         {
             var result = !Object.Equals(Value, newValue);
             if(result) {
                 Value = newValue;
                 DataVersion = newDataVersion;
             }
-            return result;
+            return Value;
         }
 
         /// <summary>
@@ -85,9 +85,16 @@ namespace VirtualRadar.Interface
         public bool IsAfter(long sinceDataVersion) => DataVersion > sinceDataVersion;
 
         /// <summary>
-        /// Returns a shallow copy of the value.
+        /// Copies the value and version from the original.
         /// </summary>
-        /// <returns></returns>
-        public VersionedValue<T> Clone() => new(Value, DataVersion);
+        /// <param name="original"></param>
+        public void CopyFrom(VersionedValue<T> original)
+        {
+            if(original == null) {
+                throw new ArgumentNullException(nameof(original));
+            }
+            Value = original.Value;
+            DataVersion = original.DataVersion;
+        }
     }
 }
