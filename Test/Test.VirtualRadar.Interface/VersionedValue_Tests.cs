@@ -37,17 +37,17 @@ namespace Test.VirtualRadar.Interface
         }
 
         [TestMethod]
-        public void SetValue_Returns_The_New_Value_After_A_Change()
+        public void SetValue_Returns_True_If_The_Value_Changed()
         {
             var value = new VersionedValue<int>(7, 14);
-            Assert.AreEqual(8, value.SetValue(8, 16));
+            Assert.IsTrue(value.SetValue(8, 14));
         }
 
         [TestMethod]
-        public void SetValue_Returns_The_Existing_Value_If_Value_Is_Unchanged()
+        public void SetValue_Returns_False_If_The_Value_Is_Unchanged()
         {
-            var value = new VersionedValue<int?>(3,14);
-            Assert.AreEqual(3, value.SetValue(3, 4));
+            var value = new VersionedValue<int>(7,14);
+            Assert.IsFalse(value.SetValue(7, 14));
         }
 
         [TestMethod]

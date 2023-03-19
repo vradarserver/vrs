@@ -65,14 +65,14 @@ namespace VirtualRadar.Interface
         /// <param name="newDataVersion">No assumptions are made about the version. It can be the same as, less than
         /// or greater than the existing value.</param>
         /// <returns>The <see cref="Value"/> after assignment.</returns>
-        public T SetValue(T newValue, long newDataVersion)
+        public bool SetValue(T newValue, long newDataVersion)
         {
             var result = !Object.Equals(Value, newValue);
             if(result) {
                 Value = newValue;
                 DataVersion = newDataVersion;
             }
-            return Value;
+            return result;
         }
 
         /// <summary>
