@@ -29,8 +29,8 @@ namespace Test.VirtualRadar.Interface
         public void ResetCoordinates_Resets_Coordinate_Properties()
         {
             _Aircraft.LatestCoordinateTime = DateTime.Now;
-            _Aircraft.FullCoordinates.Add(new Coordinate(1, 2, 3f, 4f, null));
-            _Aircraft.ShortCoordinates.Add(new Coordinate(1, 2, 3f, 4f, null));
+            _Aircraft.FullCoordinates.Add(new Coordinate(1, 2, 3, 4, null));
+            _Aircraft.ShortCoordinates.Add(new Coordinate(1, 2, 3, 4, null));
             _Aircraft.FirstCoordinateChanged = 88;
             _Aircraft.LastCoordinateChanged = 99;
 
@@ -46,139 +46,191 @@ namespace Test.VirtualRadar.Interface
         [TestMethod]
         public void Clone_Copies_Every_Property_Correctly()
         {
-            var values = new Dictionary<string,object>();
-            var versions = new Dictionary<string,long>();
+            Dictionary<string, object> values = new Dictionary<string,object>();
 
             var intValue = 1;
-            var doubleValue = 121.3414;
+            double doubleValue = 121.3414;
             var longValue = (long)int.MaxValue + 1L;
             var dateTimeValue = new DateTime(2001, 1, 2);
 
-            foreach(var property in typeof(Aircraft).GetProperties()) {
-                ++intValue;
-                ++longValue;
-                ++doubleValue;
-                dateTimeValue = dateTimeValue.AddDays(1);
-                var ver = ++_Aircraft.DataVersion;
-                var stringValue = $"A{intValue}";
-                var guidValue = Guid.NewGuid();
-                var airport = new Airport() { IcaoCode = stringValue, IataCode = "" };
+            var allBoolPropertyNames = typeof(Aircraft).GetProperties().Where(r => r.PropertyType == typeof(bool) || r.PropertyType == typeof(bool?)).Select(r => r.Name).ToList();
+            foreach(var trueBool in allBoolPropertyNames) {
+                TestInitialise();
+                values.Clear();
 
-                if(values.ContainsKey(nameof(Aircraft.DataVersion))) {
-                    values[nameof(Aircraft.DataVersion)] = ver;
-                }
+                for(int setChangedValues = 0;setChangedValues < 2;++setChangedValues) {
+                    // Set the properties of the object to clone using reflection to make sure
+                    // we don't forget to update this test in the future...
+                    foreach(var property in typeof(Aircraft).GetProperties()) {
+                        if(property.Name == "DataVersion") continue;
+                        var isChangedValue = property.Name.EndsWith("Changed");
+                        if(   (setChangedValues == 0 && isChangedValue)
+                           || (setChangedValues == 1 && !isChangedValue)
+                        ) {
+                            continue;
+                        }
 
-                object value = null;
-                switch(property.Name) {
-                    case nameof(Aircraft.DataVersion):                      value = ver; break;
-                    case nameof(Aircraft.UniqueId):                         value = _Aircraft.UniqueId = intValue; break;
-                    case nameof(Aircraft.Icao24):                           value = _Aircraft.Icao24.SetValue(stringValue, ver); break;
-                    case nameof(Aircraft.Icao24Invalid):                    value = _Aircraft.Icao24Invalid.SetValue(true, ver); break;
-                    case nameof(Aircraft.Callsign):                         value = _Aircraft.Callsign.SetValue(stringValue, ver); break;
-                    case nameof(Aircraft.CallsignIsSuspect):                value = _Aircraft.CallsignIsSuspect.SetValue(true, ver); break;
-                    case nameof(Aircraft.CountMessagesReceived):            value = _Aircraft.CountMessagesReceived.SetValue(longValue, ver); break;
-                    case nameof(Aircraft.Altitude):                         value = _Aircraft.Altitude.SetValue(intValue, ver); break;
-                    case nameof(Aircraft.AltitudeType):                     value = _Aircraft.AltitudeType.SetValue(AltitudeType.Geometric, ver); break;
-                    case nameof(Aircraft.GroundSpeed):                      value = _Aircraft.GroundSpeed.SetValue(intValue, ver); break;
-                    case nameof(Aircraft.Latitude):                         value = _Aircraft.Latitude.SetValue(doubleValue, ver); break;
-                    case nameof(Aircraft.Longitude):                        value = _Aircraft.Longitude.SetValue(doubleValue, ver); break;
-                    case nameof(Aircraft.PositionIsMlat):                   value = _Aircraft.PositionIsMlat.SetValue(true, ver); break;
-                    case nameof(Aircraft.PositionReceiverId):               value = _Aircraft.PositionReceiverId.SetValue(guidValue, ver); break;
-                    case nameof(Aircraft.PositionTime):                     value = _Aircraft.PositionTime.SetValue(dateTimeValue, ver); break;
-                    case nameof(Aircraft.Track):                            value = _Aircraft.Track.SetValue(doubleValue, ver); break;
-                    case nameof(Aircraft.IsTransmittingTrack):              value = _Aircraft.IsTransmittingTrack = true; break;
-                    case nameof(Aircraft.VerticalRate):                     value = _Aircraft.VerticalRate.SetValue(intValue, ver); break;
-                    case nameof(Aircraft.Squawk):                           value = _Aircraft.Squawk.SetValue(intValue, ver); break;
-                    case nameof(Aircraft.Emergency):                        value = _Aircraft.Emergency.SetValue(true, ver); break;
-                    case nameof(Aircraft.Registration):                     value = _Aircraft.Registration.SetValue(stringValue, ver); break;
-                    case nameof(Aircraft.FirstSeen):                        value = _Aircraft.FirstSeen.SetValue(dateTimeValue, ver); break;
-                    case nameof(Aircraft.FlightsCount):                     value = _Aircraft.FlightsCount.SetValue(intValue, ver); break;
-                    case nameof(Aircraft.LastUpdate):                       value = _Aircraft.LastUpdate = dateTimeValue; break;
-                    case nameof(Aircraft.LastModeSUpdate):                  value = _Aircraft.LastModeSUpdate = dateTimeValue; break;
-                    case nameof(Aircraft.LastSatcomUpdate):                 value = _Aircraft.LastSatcomUpdate = dateTimeValue; break;
-                    case nameof(Aircraft.Type):                             value = _Aircraft.Type.SetValue(stringValue, ver); break;
-                    case nameof(Aircraft.Manufacturer):                     value = _Aircraft.Manufacturer.SetValue(stringValue, ver); break;
-                    case nameof(Aircraft.Model):                            value = _Aircraft.Model.SetValue(stringValue, ver); break;
-                    case nameof(Aircraft.ConstructionNumber):               value = _Aircraft.ConstructionNumber.SetValue(stringValue, ver); break;
-                    case nameof(Aircraft.Origin):                           value = _Aircraft.Origin.SetValue(airport, ver); break;
-                    case nameof(Aircraft.Destination):                      value = _Aircraft.Destination.SetValue(airport, ver); break;
-                    case nameof(Aircraft.SignalLevel):                      value = _Aircraft.SignalLevel.SetValue(intValue, ver); break;
-                    case nameof(Aircraft.Stopovers):                        value = new Airport[] { airport }; _Aircraft.Stopovers.SetValue((Airport[])value, ver); break;
-                    case nameof(Aircraft.Operator):                         value = _Aircraft.Operator.SetValue(stringValue, ver); break;
-                    case nameof(Aircraft.OperatorIcao):                     value = _Aircraft.OperatorIcao.SetValue(stringValue, ver); break;
-                    case nameof(Aircraft.WakeTurbulenceCategory):           value = _Aircraft.WakeTurbulenceCategory.SetValue(WakeTurbulenceCategory.Light, ver); break;
-                    case nameof(Aircraft.EnginePlacement):                  value = _Aircraft.EnginePlacement.SetValue(EnginePlacement.AftMounted, ver); break;
-                    case nameof(Aircraft.EngineType):                       value = _Aircraft.EngineType.SetValue(EngineType.Electric, ver); break;
-                    case nameof(Aircraft.NumberOfEngines):                  value = _Aircraft.NumberOfEngines.SetValue(stringValue, ver); break;
-                    case nameof(Aircraft.Species):                          value = _Aircraft.Species.SetValue(Species.Gyrocopter, ver); break;
-                    case nameof(Aircraft.IsMilitary):                       value = _Aircraft.IsMilitary.SetValue(true, ver); break;
-                    case nameof(Aircraft.Icao24Country):                    value = _Aircraft.Icao24Country.SetValue(stringValue, ver); break;
-                    case nameof(Aircraft.PictureFileName):                  value = _Aircraft.PictureFileName.SetValue(stringValue, ver); break;
-                    case nameof(Aircraft.FirstCoordinateChanged):           value = _Aircraft.FirstCoordinateChanged = longValue; break;
-                    case nameof(Aircraft.LastCoordinateChanged):            value = _Aircraft.LastCoordinateChanged = longValue; break;
-                    case nameof(Aircraft.LatestCoordinateTime):             value = _Aircraft.LatestCoordinateTime = dateTimeValue; break;
-                    case nameof(Aircraft.FullCoordinates):                  _Aircraft.FullCoordinates.Add(new Coordinate(1, 2, 3F, 4F, 5F)); value = _Aircraft.FullCoordinates[0]; break;
-                    case nameof(Aircraft.ShortCoordinates):                 _Aircraft.ShortCoordinates.Add(new Coordinate(11, 12, 13F, 14F, 15F)); value = _Aircraft.ShortCoordinates[0]; break;
-                    case nameof(Aircraft.IcaoCompliantRegistration):        break;
-                    case nameof(Aircraft.IsInteresting):                    value = _Aircraft.IsInteresting.SetValue(true, ver); break;
-                    case nameof(Aircraft.OnGround):                         value = _Aircraft.OnGround.SetValue(true, ver); break;
-                    case nameof(Aircraft.SpeedType):                        value = _Aircraft.SpeedType.SetValue(SpeedType.TrueAirSpeed, ver); break;
-                    case nameof(Aircraft.UserTag):                          value = _Aircraft.UserTag.SetValue(stringValue, ver); break;
-                    case nameof(Aircraft.UserNotes):                        value = _Aircraft.UserNotes.SetValue(stringValue, ver); break;
-                    case nameof(Aircraft.ReceiverId):                       value = _Aircraft.ReceiverId.SetValue(guidValue, ver); break;
-                    case nameof(Aircraft.PictureWidth):                     value = _Aircraft.PictureWidth.SetValue(intValue, ver); break;
-                    case nameof(Aircraft.PictureHeight):                    value = _Aircraft.PictureHeight.SetValue(intValue, ver); break;
-                    case nameof(Aircraft.VerticalRateType):                 value = _Aircraft.VerticalRateType.SetValue(AltitudeType.Geometric, ver); break;
-                    case nameof(Aircraft.TrackIsHeading):                   value = _Aircraft.TrackIsHeading.SetValue(true, ver); break;
-                    case nameof(Aircraft.TransponderType):                  value = _Aircraft.TransponderType.SetValue(TransponderType.Adsb2, ver); break;
-                    case nameof(Aircraft.TargetAltitude):                   value = _Aircraft.TargetAltitude.SetValue(intValue, ver); break;
-                    case nameof(Aircraft.TargetTrack):                      value = _Aircraft.TargetTrack.SetValue(doubleValue, ver); break;
-                    case nameof(Aircraft.IsTisb):                           value = _Aircraft.IsTisb.SetValue(true, ver); break;
-                    case nameof(Aircraft.YearBuilt):                        value = _Aircraft.YearBuilt.SetValue(stringValue, ver); break;
-                    case nameof(Aircraft.GeometricAltitude):                value = _Aircraft.GeometricAltitude.SetValue(intValue, ver); break;
-                    case nameof(Aircraft.AirPressureInHg):                  value = _Aircraft.AirPressureInHg.SetValue(doubleValue, ver); break;
-                    case nameof(Aircraft.AirPressureLookedUpUtc):           value = _Aircraft.AirPressureLookedUpUtc = dateTimeValue; break;
-                    case nameof(Aircraft.IdentActive):                      value = _Aircraft.IdentActive.SetValue(true, ver); break;
-                    case nameof(Aircraft.IsCharterFlight):                  value = _Aircraft.IsCharterFlight.SetValue(true, ver); break;
-                    case nameof(Aircraft.IsPositioningFlight):              value = _Aircraft.IsPositioningFlight.SetValue(true, ver); break;
-                    default:                                                throw new NotImplementedException();
-                }
+                        ++intValue;
+                        ++doubleValue;
+                        ++longValue;
+                        dateTimeValue = dateTimeValue.AddDays(1);
+                        ++_Aircraft.DataVersion;
+                        var stringValue = String.Format("A{0}", intValue);
+                        var guidValue = Guid.NewGuid();
+                        var airport = new Airport() { IcaoCode = stringValue, IataCode = stringValue };
 
-                if(value != null) {
-                    values.Add(property.Name, value);
+                        if(!values.ContainsKey("DataVersion")) values.Add("DataVersion", _Aircraft.DataVersion);
+                        else                                   values["DataVersion"] = _Aircraft.DataVersion;
 
-                    if(property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(VersionedValue<>)) {
-                        versions[property.Name] = ver;
+                        object value = null;
+                        switch(property.Name) {
+                            case nameof(Aircraft.UniqueId):                        value = _Aircraft.UniqueId = intValue; break;
+                            case nameof(Aircraft.Icao24):                          value = _Aircraft.Icao24 = stringValue; break;
+                            case nameof(Aircraft.Icao24Changed):                   value = _Aircraft.Icao24Changed; break;
+                            case nameof(Aircraft.Icao24Invalid):                   value = _Aircraft.Icao24Invalid = property.Name == trueBool; break;
+                            case nameof(Aircraft.Icao24InvalidChanged):            value = _Aircraft.Icao24InvalidChanged; break;
+                            case nameof(Aircraft.Callsign):                        value = _Aircraft.Callsign = stringValue; break;
+                            case nameof(Aircraft.CallsignChanged):                 value = _Aircraft.CallsignChanged; break;
+                            case nameof(Aircraft.CallsignIsSuspect):               value = _Aircraft.CallsignIsSuspect = property.Name == trueBool; break;
+                            case nameof(Aircraft.CallsignIsSuspectChanged):        value = _Aircraft.CallsignIsSuspectChanged; break;
+                            case nameof(Aircraft.CountMessagesReceived):           value = _Aircraft.CountMessagesReceived = longValue; break;
+                            case nameof(Aircraft.CountMessagesReceivedChanged):    value = _Aircraft.CountMessagesReceivedChanged; break;
+                            case nameof(Aircraft.Altitude):                        value = _Aircraft.Altitude = intValue; break;
+                            case nameof(Aircraft.AltitudeChanged):                 value = _Aircraft.AltitudeChanged; break;
+                            case nameof(Aircraft.AltitudeType):                    value = _Aircraft.AltitudeType = AltitudeType.Geometric; break;
+                            case nameof(Aircraft.AltitudeTypeChanged):             value = _Aircraft.AltitudeTypeChanged; break;
+                            case nameof(Aircraft.GroundSpeed):                     value = _Aircraft.GroundSpeed = intValue; break;
+                            case nameof(Aircraft.GroundSpeedChanged):              value = _Aircraft.GroundSpeedChanged; break;
+                            case nameof(Aircraft.Latitude):                        value = _Aircraft.Latitude = doubleValue; break;
+                            case nameof(Aircraft.LatitudeChanged):                 value = _Aircraft.LatitudeChanged; break;
+                            case nameof(Aircraft.Longitude):                       value = _Aircraft.Longitude = doubleValue; break;
+                            case nameof(Aircraft.LongitudeChanged):                value = _Aircraft.LongitudeChanged; break;
+                            case nameof(Aircraft.PositionIsMlat):                  value = _Aircraft.PositionIsMlat = property.Name == trueBool; break;
+                            case nameof(Aircraft.PositionIsMlatChanged):           value = _Aircraft.PositionIsMlatChanged; break;
+                            case nameof(Aircraft.PositionReceiverId):              value = _Aircraft.PositionReceiverId = guidValue; break;
+                            case nameof(Aircraft.PositionReceiverIdChanged):       value = _Aircraft.PositionReceiverIdChanged; break;
+                            case nameof(Aircraft.PositionTime):                    value = _Aircraft.PositionTime = dateTimeValue; break;
+                            case nameof(Aircraft.PositionTimeChanged):             value = _Aircraft.PositionTimeChanged; break;
+                            case nameof(Aircraft.Track):                           value = _Aircraft.Track = doubleValue; break;
+                            case nameof(Aircraft.TrackChanged):                    value = _Aircraft.TrackChanged; break;
+                            case nameof(Aircraft.IsTransmittingTrack):             value = _Aircraft.IsTransmittingTrack = property.Name == trueBool; break;
+                            case nameof(Aircraft.VerticalRate):                    value = _Aircraft.VerticalRate = intValue; break;
+                            case nameof(Aircraft.VerticalRateChanged):             value = _Aircraft.VerticalRateChanged; break;
+                            case nameof(Aircraft.Squawk):                          value = _Aircraft.Squawk = intValue; break;
+                            case nameof(Aircraft.SquawkChanged):                   value = _Aircraft.SquawkChanged; break;
+                            case nameof(Aircraft.Emergency):                       value = _Aircraft.Emergency = property.Name == trueBool; break;
+                            case nameof(Aircraft.EmergencyChanged):                value = _Aircraft.EmergencyChanged; break;
+                            case nameof(Aircraft.Registration):                    value = _Aircraft.Registration = stringValue; break;
+                            case nameof(Aircraft.RegistrationChanged):             value = _Aircraft.RegistrationChanged; break;
+                            case nameof(Aircraft.FirstSeen):                       value = _Aircraft.FirstSeen = dateTimeValue; break;
+                            case nameof(Aircraft.FirstSeenChanged):                value = _Aircraft.FirstSeenChanged; break;
+                            case nameof(Aircraft.FlightsCount):                    value = _Aircraft.FlightsCount = intValue; break;
+                            case nameof(Aircraft.FlightsCountChanged):             value = _Aircraft.FlightsCountChanged; break;
+                            case nameof(Aircraft.LastUpdate):                      value = _Aircraft.LastUpdate = dateTimeValue; break;
+                            case nameof(Aircraft.LastModeSUpdate):                 value = _Aircraft.LastModeSUpdate = dateTimeValue; break;
+                            case nameof(Aircraft.LastSatcomUpdate):                value = _Aircraft.LastSatcomUpdate = dateTimeValue; break;
+                            case nameof(Aircraft.Type):                            value = _Aircraft.Type = stringValue; break;
+                            case nameof(Aircraft.TypeChanged):                     value = _Aircraft.TypeChanged; break;
+                            case nameof(Aircraft.Manufacturer):                    value = _Aircraft.Manufacturer = stringValue; break;
+                            case nameof(Aircraft.ManufacturerChanged):             value = _Aircraft.ManufacturerChanged; break;
+                            case nameof(Aircraft.Model):                           value = _Aircraft.Model = stringValue; break;
+                            case nameof(Aircraft.ModelChanged):                    value = _Aircraft.ModelChanged; break;
+                            case nameof(Aircraft.ConstructionNumber):              value = _Aircraft.ConstructionNumber = stringValue; break;
+                            case nameof(Aircraft.ConstructionNumberChanged):       value = _Aircraft.ConstructionNumberChanged; break;
+                            case nameof(Aircraft.Origin):                          value = _Aircraft.Origin = airport; break;
+                            case nameof(Aircraft.OriginChanged):                   value = _Aircraft.OriginChanged; break;
+                            case nameof(Aircraft.Destination):                     value = _Aircraft.Destination = airport; break;
+                            case nameof(Aircraft.DestinationChanged):              value = _Aircraft.DestinationChanged; break;
+                            case nameof(Aircraft.SignalLevel):                     value = _Aircraft.SignalLevel = intValue; break;
+                            case nameof(Aircraft.SignalLevelChanged):              value = _Aircraft.SignalLevelChanged; break;
+                            case nameof(Aircraft.Stopovers):                       value = _Aircraft.Stopovers = new Airport[] { airport, }; break;
+                            case nameof(Aircraft.StopoversChanged):                value = _Aircraft.StopoversChanged; break;
+                            case nameof(Aircraft.Operator):                        value = _Aircraft.Operator = stringValue; break;
+                            case nameof(Aircraft.OperatorChanged):                 value = _Aircraft.OperatorChanged; break;
+                            case nameof(Aircraft.OperatorIcao):                    value = _Aircraft.OperatorIcao = stringValue; break;
+                            case nameof(Aircraft.OperatorIcaoChanged):             value = _Aircraft.OperatorIcaoChanged; break;
+                            case nameof(Aircraft.WakeTurbulenceCategory):          value = _Aircraft.WakeTurbulenceCategory = WakeTurbulenceCategory.Light; break;
+                            case nameof(Aircraft.WakeTurbulenceCategoryChanged):   value = _Aircraft.WakeTurbulenceCategoryChanged; break;
+                            case nameof(Aircraft.EnginePlacement):                 value = _Aircraft.EnginePlacement = EnginePlacement.AftMounted; break;
+                            case nameof(Aircraft.EnginePlacementChanged):          value = _Aircraft.EnginePlacementChanged; break;
+                            case nameof(Aircraft.EngineType):                      value = _Aircraft.EngineType = EngineType.Electric; break;
+                            case nameof(Aircraft.EngineTypeChanged):               value = _Aircraft.EngineTypeChanged; break;
+                            case nameof(Aircraft.NumberOfEngines):                 value = _Aircraft.NumberOfEngines = stringValue; break;
+                            case nameof(Aircraft.NumberOfEnginesChanged):          value = _Aircraft.NumberOfEnginesChanged; break;
+                            case nameof(Aircraft.Species):                         value = _Aircraft.Species = Species.Gyrocopter; break;
+                            case nameof(Aircraft.SpeciesChanged):                  value = _Aircraft.SpeciesChanged; break;
+                            case nameof(Aircraft.IsMilitary):                      value = _Aircraft.IsMilitary = property.Name == trueBool; break;
+                            case nameof(Aircraft.IsMilitaryChanged):               value = _Aircraft.IsMilitaryChanged; break;
+                            case nameof(Aircraft.Icao24Country):                   value = _Aircraft.Icao24Country = stringValue; break;
+                            case nameof(Aircraft.Icao24CountryChanged):            value = _Aircraft.Icao24CountryChanged; break;
+                            case nameof(Aircraft.PictureFileName):                 value = _Aircraft.PictureFileName = stringValue; break;
+                            case nameof(Aircraft.PictureFileNameChanged):          value = _Aircraft.PictureFileNameChanged; break;
+                            case nameof(Aircraft.FirstCoordinateChanged):          value = _Aircraft.FirstCoordinateChanged = longValue; break;
+                            case nameof(Aircraft.LastCoordinateChanged):           value = _Aircraft.LastCoordinateChanged = longValue; break;
+                            case nameof(Aircraft.LatestCoordinateTime):            value = _Aircraft.LatestCoordinateTime = dateTimeValue; break;
+                            case nameof(Aircraft.FullCoordinates):                 _Aircraft.FullCoordinates.Add(new Coordinate(1, 2, 3, 4, 5)); value = _Aircraft.FullCoordinates[0]; break;
+                            case nameof(Aircraft.ShortCoordinates):                _Aircraft.ShortCoordinates.Add(new Coordinate(11, 12, 13, 14, 15)); value = _Aircraft.ShortCoordinates[0]; break;
+                            case nameof(Aircraft.IcaoCompliantRegistration):       value = _Aircraft.Registration; break;
+                            case nameof(Aircraft.IsInteresting):                   value = _Aircraft.IsInteresting = property.Name == trueBool; break;
+                            case nameof(Aircraft.IsInterestingChanged):            value = _Aircraft.IsInterestingChanged; break;
+                            case nameof(Aircraft.OnGround):                        value = _Aircraft.OnGround = property.Name == trueBool; break;
+                            case nameof(Aircraft.OnGroundChanged):                 value = _Aircraft.OnGroundChanged; break;
+                            case nameof(Aircraft.SpeedType):                       value = _Aircraft.SpeedType = SpeedType.TrueAirSpeed; break;
+                            case nameof(Aircraft.SpeedTypeChanged):                value = _Aircraft.SpeedTypeChanged; break;
+                            case nameof(Aircraft.UserTag):                         value = _Aircraft.UserTag = stringValue; break;
+                            case nameof(Aircraft.UserTagChanged):                  value = _Aircraft.UserTagChanged; break;
+                            case nameof(Aircraft.UserNotes):                       value = _Aircraft.UserNotes = stringValue; break;
+                            case nameof(Aircraft.UserNotesChanged):                value = _Aircraft.UserNotesChanged; break;
+                            case nameof(Aircraft.ReceiverId):                      value = _Aircraft.ReceiverId = guidValue; break;
+                            case nameof(Aircraft.ReceiverIdChanged):               value = _Aircraft.ReceiverIdChanged; break;
+                            case nameof(Aircraft.PictureWidth):                    value = _Aircraft.PictureWidth = intValue; break;
+                            case nameof(Aircraft.PictureWidthChanged):             value = _Aircraft.PictureWidthChanged; break;
+                            case nameof(Aircraft.PictureHeight):                   value = _Aircraft.PictureHeight = intValue; break;
+                            case nameof(Aircraft.PictureHeightChanged):            value = _Aircraft.PictureHeightChanged; break;
+                            case nameof(Aircraft.VerticalRateType):                value = _Aircraft.VerticalRateType = AltitudeType.Geometric; break;
+                            case nameof(Aircraft.VerticalRateTypeChanged):         value = _Aircraft.VerticalRateTypeChanged; break;
+                            case nameof(Aircraft.TrackIsHeading):                  value = _Aircraft.TrackIsHeading = property.Name == trueBool; break;
+                            case nameof(Aircraft.TrackIsHeadingChanged):           value = _Aircraft.TrackIsHeadingChanged; break;
+                            case nameof(Aircraft.TransponderType):                 value = _Aircraft.TransponderType = TransponderType.Adsb2; break;
+                            case nameof(Aircraft.TransponderTypeChanged):          value = _Aircraft.TransponderTypeChanged; break;
+                            case nameof(Aircraft.TargetAltitude):                  value = _Aircraft.TargetAltitude = intValue; break;
+                            case nameof(Aircraft.TargetAltitudeChanged):           value = _Aircraft.TargetAltitudeChanged; break;
+                            case nameof(Aircraft.TargetTrack):                     value = _Aircraft.TargetTrack = doubleValue; break;
+                            case nameof(Aircraft.TargetTrackChanged):              value = _Aircraft.TargetTrackChanged; break;
+                            case nameof(Aircraft.IsTisb):                          value = _Aircraft.IsTisb = property.Name == trueBool; break;
+                            case nameof(Aircraft.IsTisbChanged):                   value = _Aircraft.IsTisbChanged; break;
+                            case nameof(Aircraft.YearBuilt):                       value = _Aircraft.YearBuilt = stringValue; break;
+                            case nameof(Aircraft.YearBuiltChanged):                value = _Aircraft.YearBuiltChanged; break;
+                            case nameof(Aircraft.GeometricAltitude):               value = _Aircraft.GeometricAltitude = intValue; break;
+                            case nameof(Aircraft.GeometricAltitudeChanged):        value = _Aircraft.GeometricAltitudeChanged; break;
+                            case nameof(Aircraft.AirPressureInHg):                 value = _Aircraft.AirPressureInHg = doubleValue; break;
+                            case nameof(Aircraft.AirPressureInHgChanged):          value = _Aircraft.AirPressureInHgChanged; break;
+                            case nameof(Aircraft.AirPressureLookedUpUtc):          value = _Aircraft.AirPressureLookedUpUtc = dateTimeValue; break;
+                            case nameof(Aircraft.IdentActive):                     value = _Aircraft.IdentActive = property.Name == trueBool; break;
+                            case nameof(Aircraft.IdentActiveChanged):              value = _Aircraft.IdentActiveChanged; break;
+                            case nameof(Aircraft.IsCharterFlight):                 value = _Aircraft.IsCharterFlight = property.Name == trueBool; break;
+                            case nameof(Aircraft.IsCharterFlightChanged):          value = _Aircraft.IsCharterFlightChanged; break;
+                            case nameof(Aircraft.IsPositioningFlight):             value = _Aircraft.IsPositioningFlight = property.Name == trueBool; break;
+                            case nameof(Aircraft.IsPositioningFlightChanged):      value = _Aircraft.IsPositioningFlightChanged; break;
+                            default:                                                throw new NotImplementedException();
+                        }
+
+                        Assert.IsNotNull(value, property.Name);
+                        values.Add(property.Name, value);
                     }
                 }
-            }
 
-            var clone = _Aircraft.Clone();
+                var clone = (Aircraft)_Aircraft.Clone();
 
-            foreach(var property in typeof(Aircraft).GetProperties()) {
-                if(values.TryGetValue(property.Name, out var expected)) {
+                foreach(var property in typeof(Aircraft).GetProperties()) {
+                    var expected = values[property.Name];
                     switch(property.Name) {
-                        case nameof(Aircraft.Stopovers):               Assert.IsTrue(((Airport[])expected).SequenceEqual(clone.Stopovers.Value), property.Name); break;
+                        case nameof(Aircraft.Stopovers):               Assert.AreSame(expected, clone.Stopovers, property.Name); break;
                         case nameof(Aircraft.FullCoordinates):         Assert.AreEqual(expected, clone.FullCoordinates[0], property.Name); break;
                         case nameof(Aircraft.ShortCoordinates):        Assert.AreEqual(expected, clone.ShortCoordinates[0], property.Name); break;
                         default:
                             var actual = property.GetValue(clone, null);
-
-                            object actualVer = null;
-                            if(property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(VersionedValue<>)) {
-                                var versionPropertyInfo = actual.GetType().GetProperty(nameof(VersionedValue<int>.DataVersion));
-                                actualVer = versionPropertyInfo.GetValue(actual, null);
-
-                                var valuePropertyInfo = actual.GetType().GetProperty(nameof(VersionedValue<int>.Value));
-                                actual = valuePropertyInfo.GetValue(actual, null);
-                            }
-
-                            Assert.AreEqual(expected, actual, property.Name);
-                            if(actualVer != null) {
-                                Assert.AreEqual(versions[property.Name], (long)actualVer);
-                            }
-
-                            break;
+                            Assert.AreEqual(expected, actual, property.Name); break;
                     }
                 }
             }
@@ -190,29 +242,29 @@ namespace Test.VirtualRadar.Interface
             var now = DateTime.UtcNow;
 
             _Aircraft.DataVersion = now.Ticks + 1;
-            _Aircraft.Latitude.SetValue(10, 0);
-            _Aircraft.Longitude.SetValue(20, 0);
-            _Aircraft.Track.SetValue(30, 0);
-            _Aircraft.Altitude.SetValue(20000, 0);
-            _Aircraft.GroundSpeed.SetValue(250, 0);
+            _Aircraft.Latitude = 10;
+            _Aircraft.Longitude = 20;
+            _Aircraft.Track = 30;
+            _Aircraft.Altitude = 20000;
+            _Aircraft.GroundSpeed = 250;
             _Aircraft.UpdateCoordinates(now, 30);
 
             Assert.AreEqual(1, _Aircraft.FullCoordinates.Count);
             Assert.AreEqual(1, _Aircraft.ShortCoordinates.Count);
 
             var fullCoordinate = _Aircraft.FullCoordinates[0];
-            Assert.AreEqual(10f, fullCoordinate.Latitude);
-            Assert.AreEqual(20f, fullCoordinate.Longitude);
-            Assert.AreEqual(30f, fullCoordinate.Heading);
+            Assert.AreEqual(10, fullCoordinate.Latitude);
+            Assert.AreEqual(20, fullCoordinate.Longitude);
+            Assert.AreEqual(30, fullCoordinate.Heading);
             Assert.AreEqual(20000, fullCoordinate.Altitude);
             Assert.AreEqual(250, fullCoordinate.GroundSpeed);
             Assert.AreEqual(now.Ticks + 1, fullCoordinate.DataVersion);
             Assert.AreEqual(now.Ticks, fullCoordinate.Tick);
 
             var shortCoordinate = _Aircraft.ShortCoordinates[0];
-            Assert.AreEqual(10f, shortCoordinate.Latitude);
-            Assert.AreEqual(20f, shortCoordinate.Longitude);
-            Assert.AreEqual(30f, shortCoordinate.Heading);
+            Assert.AreEqual(10, shortCoordinate.Latitude);
+            Assert.AreEqual(20, shortCoordinate.Longitude);
+            Assert.AreEqual(30, shortCoordinate.Heading);
             Assert.AreEqual(20000, shortCoordinate.Altitude);
             Assert.AreEqual(250, shortCoordinate.GroundSpeed);
             Assert.AreEqual(now.Ticks + 1, shortCoordinate.DataVersion);
@@ -225,9 +277,9 @@ namespace Test.VirtualRadar.Interface
             var now = DateTime.UtcNow;
 
             _Aircraft.DataVersion = now.Ticks + 1;
-            _Aircraft.Latitude.SetValue(10, 0);
-            _Aircraft.Longitude.SetValue(20, 0);
-            _Aircraft.Track.SetValue(30, 0);
+            _Aircraft.Latitude = 10;
+            _Aircraft.Longitude = 20;
+            _Aircraft.Track = 30;
             _Aircraft.UpdateCoordinates(now, 30);
 
             _Aircraft.UpdateCoordinates(now, 30);
@@ -238,7 +290,7 @@ namespace Test.VirtualRadar.Interface
 
             var nowPlusOne = now.AddSeconds(1);
             _Aircraft.DataVersion = nowPlusOne.Ticks;
-            _Aircraft.Latitude.SetValue(10.0001, 0);
+            _Aircraft.Latitude = 10.0001;
             _Aircraft.UpdateCoordinates(nowPlusOne, 30);
 
             Assert.AreEqual(now.Ticks + 1, _Aircraft.FirstCoordinateChanged);
@@ -274,9 +326,9 @@ namespace Test.VirtualRadar.Interface
 
                 var latitude = 10.0 + ((double)i / 100000.0);
                 _Aircraft.DataVersion = now.Ticks;
-                _Aircraft.Latitude.SetValue(latitude, 0);
-                _Aircraft.Longitude.SetValue(20, 0);
-                _Aircraft.Track.SetValue(null, 0);
+                _Aircraft.Latitude = latitude;
+                _Aircraft.Longitude = 20;
+                _Aircraft.Track = null;
 
                 _Aircraft.UpdateCoordinates(now, 30);
 
@@ -294,33 +346,33 @@ namespace Test.VirtualRadar.Interface
             var timePlusOnePoint999 = timePlusOne.AddMilliseconds(999);
 
             _Aircraft.DataVersion = time.Ticks;
-            _Aircraft.Latitude.SetValue(10, 0);
-            _Aircraft.Longitude.SetValue(20, 0);
+            _Aircraft.Latitude = 10;
+            _Aircraft.Longitude = 20;
             _Aircraft.UpdateCoordinates(time, 30);
 
             _Aircraft.DataVersion = timePlusPoint999.Ticks;
-            _Aircraft.Latitude.SetValue(10.0001, 0);
-            _Aircraft.Longitude.SetValue(20.0001, 0);
+            _Aircraft.Latitude = 10.0001;
+            _Aircraft.Longitude = 20.0001;
             _Aircraft.UpdateCoordinates(timePlusPoint999, 30);
 
             _Aircraft.DataVersion = timePlusOne.Ticks;
-            _Aircraft.Latitude.SetValue(10.0002, 0);
-            _Aircraft.Longitude.SetValue(20.0002, 0);
+            _Aircraft.Latitude = 10.0002;
+            _Aircraft.Longitude = 20.0002;
             _Aircraft.UpdateCoordinates(timePlusOne, 30);
 
             Assert.AreEqual(2, _Aircraft.ShortCoordinates.Count);
             Assert.AreEqual(2, _Aircraft.FullCoordinates.Count);
 
-            Assert.AreEqual(10f, _Aircraft.ShortCoordinates[0].Latitude);
-            Assert.AreEqual(10.0002f, _Aircraft.ShortCoordinates[1].Latitude);
+            Assert.AreEqual(10, _Aircraft.ShortCoordinates[0].Latitude);
+            Assert.AreEqual(10.0002, _Aircraft.ShortCoordinates[1].Latitude);
 
             Assert.AreEqual(10, _Aircraft.FullCoordinates[0].Latitude);
             Assert.AreEqual(10.0002, _Aircraft.FullCoordinates[1].Latitude);
 
             // That has the basic stuff covered, but we want to make sure that we're using the latest time and not the time of the first coordinate
             _Aircraft.DataVersion = timePlusOnePoint999.Ticks;
-            _Aircraft.Latitude.SetValue(10.0003, 0);
-            _Aircraft.Longitude.SetValue(20.0003, 0);
+            _Aircraft.Latitude = 10.0003;
+            _Aircraft.Longitude = 20.0003;
             _Aircraft.UpdateCoordinates(timePlusOnePoint999, 30);
 
             Assert.AreEqual(2, _Aircraft.ShortCoordinates.Count);
@@ -332,22 +384,22 @@ namespace Test.VirtualRadar.Interface
             var time = DateTime.UtcNow;
 
             _Aircraft.DataVersion = time.Ticks;
-            _Aircraft.Latitude.SetValue(51, 0);
-            _Aircraft.Longitude.SetValue(12, 0);
-            _Aircraft.Track.SetValue(40, 0);
+            _Aircraft.Latitude = 51;
+            _Aircraft.Longitude = 12;
+            _Aircraft.Track = 40;
 
             _Aircraft.UpdateCoordinates(time, 30);
 
             time = time.AddSeconds(1);
             _Aircraft.DataVersion = time.Ticks;
-            _Aircraft.Track.SetValue(50, 0);
+            _Aircraft.Track = 50;
             _Aircraft.UpdateCoordinates(time, 30);
 
             Assert.AreEqual(1, _Aircraft.FullCoordinates.Count);
-            Assert.AreEqual(40f, _Aircraft.FullCoordinates[0].Heading);
+            Assert.AreEqual(40, _Aircraft.FullCoordinates[0].Heading);
 
             Assert.AreEqual(1, _Aircraft.ShortCoordinates.Count);
-            Assert.AreEqual(40f, _Aircraft.ShortCoordinates[0].Heading);
+            Assert.AreEqual(40, _Aircraft.ShortCoordinates[0].Heading);
         }
 
         [TestMethod]
@@ -356,16 +408,16 @@ namespace Test.VirtualRadar.Interface
             var time = DateTime.UtcNow;
 
             _Aircraft.DataVersion = time.Ticks;
-            _Aircraft.Latitude.SetValue(51, 0);
-            _Aircraft.Longitude.SetValue(12, 0);
-            _Aircraft.Track.SetValue(40, 0);
-            _Aircraft.Altitude.SetValue(10000, 0);
+            _Aircraft.Latitude = 51;
+            _Aircraft.Longitude = 12;
+            _Aircraft.Track = 40;
+            _Aircraft.Altitude = 10000;
 
             _Aircraft.UpdateCoordinates(time, 30);
 
             time = time.AddSeconds(1);
             _Aircraft.DataVersion = time.Ticks;
-            _Aircraft.Altitude.SetValue(11000, 0);
+            _Aircraft.Altitude = 11000;
             _Aircraft.UpdateCoordinates(time, 30);
 
             Assert.AreEqual(2, _Aircraft.FullCoordinates.Count);
@@ -381,16 +433,16 @@ namespace Test.VirtualRadar.Interface
             var time = DateTime.UtcNow;
 
             _Aircraft.DataVersion = time.Ticks;
-            _Aircraft.Latitude.SetValue(51, 0);
-            _Aircraft.Longitude.SetValue(12, 0);
-            _Aircraft.Track.SetValue(40, 0);
-            _Aircraft.GroundSpeed.SetValue(100, 0);
+            _Aircraft.Latitude = 51;
+            _Aircraft.Longitude = 12;
+            _Aircraft.Track = 40;
+            _Aircraft.GroundSpeed = 100;
 
             _Aircraft.UpdateCoordinates(time, 30);
 
             time = time.AddSeconds(1);
             _Aircraft.DataVersion = time.Ticks;
-            _Aircraft.GroundSpeed.SetValue(150, 0);
+            _Aircraft.GroundSpeed = 150;
             _Aircraft.UpdateCoordinates(time, 30);
 
             Assert.AreEqual(2, _Aircraft.FullCoordinates.Count);
@@ -428,11 +480,11 @@ namespace Test.VirtualRadar.Interface
                     if(row.String(latInColumn) != null) {
                         time = time.AddHours(1);
                         _Aircraft.DataVersion = time.Ticks;
-                        _Aircraft.Latitude.SetValue(row.Double(latInColumn), 0);
-                        _Aircraft.Longitude.SetValue(row.Double(lngInColumn), 0);
-                        _Aircraft.Altitude.SetValue(row.NInt(altInColumn), 0);
-                        _Aircraft.GroundSpeed.SetValue(row.NFloat(spdInColumn), 0);
-                        _Aircraft.Track.SetValue(row.NFloat(trkInColumn), 0);
+                        _Aircraft.Latitude = row.Double(latInColumn);
+                        _Aircraft.Longitude = row.Double(lngInColumn);
+                        _Aircraft.Altitude = row.NInt(altInColumn);
+                        _Aircraft.GroundSpeed = row.NFloat(spdInColumn);
+                        _Aircraft.Track = row.NFloat(trkInColumn);
                         _Aircraft.UpdateCoordinates(time, 300 * 60 * 60);
 
                         Assert.AreEqual(i, _Aircraft.ShortCoordinates.Count);
@@ -480,9 +532,9 @@ namespace Test.VirtualRadar.Interface
                     if(row.String(secondsGapColumn) != null) {
                         var utcNow = baseTime.AddSeconds(row.Int(secondsGapColumn));
                         _Aircraft.DataVersion = utcNow.Ticks;
-                        _Aircraft.Latitude.SetValue(row.NDouble(latitudeColumn), 0);
-                        _Aircraft.Longitude.SetValue(row.NDouble(longitudeColumn), 0);
-                        _Aircraft.Track.SetValue(row.NDouble(trackColumn), 0);
+                        _Aircraft.Latitude = row.NDouble(latitudeColumn);
+                        _Aircraft.Longitude = row.NDouble(longitudeColumn);
+                        _Aircraft.Track = row.NDouble(trackColumn);
                         _Aircraft.UpdateCoordinates(utcNow, seconds);
                     }
                 }
@@ -509,18 +561,18 @@ namespace Test.VirtualRadar.Interface
                 var shortSeconds = 24 * 60 * 60; // seconds in a day
 
                 _Aircraft.DataVersion = time.Ticks;
-                _Aircraft.Latitude.SetValue(row.Double("Lat1"), 0);
-                _Aircraft.Longitude.SetValue(row.Double("Lng1"), 0);
-                _Aircraft.Track.SetValue(10, 0);
+                _Aircraft.Latitude = row.Double("Lat1");
+                _Aircraft.Longitude = row.Double("Lng1");
+                _Aircraft.Track = 10;
                 _Aircraft.UpdateCoordinates(time, shortSeconds);
 
                 int milliseconds = row.Int("Milliseconds");
 
                 time = time.AddMilliseconds(milliseconds);
                 _Aircraft.DataVersion = time.Ticks;
-                _Aircraft.Latitude.SetValue(row.Double("Lat2"), 0);
-                _Aircraft.Longitude.SetValue(row.Double("Lng2"), 0);
-                _Aircraft.Track.SetValue(20, 0);
+                _Aircraft.Latitude = row.Double("Lat2");
+                _Aircraft.Longitude = row.Double("Lng2");
+                _Aircraft.Track = 20;
                 _Aircraft.UpdateCoordinates(time, shortSeconds);
 
                 if(!row.Bool("ResetTrail")) {
@@ -553,8 +605,8 @@ namespace Test.VirtualRadar.Interface
             var now = DateTime.UtcNow;
 
             _Aircraft.DataVersion = now.Ticks;
-            _Aircraft.Latitude.SetValue(1, 0);
-            _Aircraft.Longitude.SetValue(1, 0);
+            _Aircraft.Latitude = 1;
+            _Aircraft.Longitude = 1;
             _Aircraft.UpdateCoordinates(now, 30);
 
             Assert.AreEqual(now, _Aircraft.PositionTime.Value);
@@ -566,8 +618,8 @@ namespace Test.VirtualRadar.Interface
             var now = DateTime.UtcNow;
 
             _Aircraft.DataVersion = now.Ticks;
-            _Aircraft.Latitude.SetValue(1, 0);
-            _Aircraft.Longitude.SetValue(1, 0);
+            _Aircraft.Latitude = 1;
+            _Aircraft.Longitude = 1;
             _Aircraft.UpdateCoordinates(now, 30);
 
             Assert.AreEqual(now, _Aircraft.PositionTime.Value);
@@ -580,14 +632,14 @@ namespace Test.VirtualRadar.Interface
 
             newTime = now.AddSeconds(20);
             _Aircraft.DataVersion = newTime.Ticks;
-            _Aircraft.Latitude.SetValue(2, 0);
+            _Aircraft.Latitude = 2;
             _Aircraft.UpdateCoordinates(newTime, 30);
 
             Assert.AreEqual(newTime, _Aircraft.PositionTime.Value);
 
             newTime = now.AddSeconds(25);
             _Aircraft.DataVersion = newTime.Ticks;
-            _Aircraft.Longitude.SetValue(2, 0);
+            _Aircraft.Longitude = 2;
             _Aircraft.UpdateCoordinates(newTime, 30);
 
             Assert.AreEqual(newTime, _Aircraft.PositionTime.Value);

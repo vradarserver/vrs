@@ -20,7 +20,7 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// Number of ticks in a second.
         /// </summary>
-        private const long TicksPerSecond = 10000000L;
+        private const long _TicksPerSecond = 10000000L;
 
         /// <summary>
         /// The threshold distance in KM between two points that can cause the trails to reset. If the distance between
@@ -47,7 +47,7 @@ namespace VirtualRadar.Interface
         /// <summary>
         /// The lock object used to synchronise writes to the object.
         /// </summary>
-        private object _SyncLock = new();
+        private readonly object _SyncLock = new();
 
         /// <summary>
         /// Gets or sets the unique identifier of the aircraft.
@@ -67,127 +67,253 @@ namespace VirtualRadar.Interface
         /// </remarks>
         public long DataVersion { get; set; }
 
+        private readonly VersionedValue<Guid> _ReceiverId = new();
+        public long ReceiverIdChanged => _ReceiverId.DataVersion;
         /// <summary>
         /// The ID of the last receiver to provide a message for this aircraft. Only varies when the aircraft is being fed
         /// messages from a merged feed.
         /// </summary>
-        public VersionedValue<Guid> ReceiverId { get; } = new();
+        public Guid ReceiverId
+        {
+            get => _ReceiverId.Value;
+            set => _ReceiverId.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<int?> _SignalLevel = new();
+        public long SignalLevelChanged => _SignalLevel.DataVersion;
         /// <summary>
         /// The signal level of the last message applied to the aircraft. If the value is  null then the receiver isn't
         /// passing along signal levels.
         /// </summary>
-        public VersionedValue<int?> SignalLevel { get; } = new();
+        public int? SignalLevel
+        {
+            get => _SignalLevel.Value;
+            set => _SignalLevel.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<string> _Icao24 = new();
+        public long Icao24Changed => _Icao24.DataVersion;
         /// <summary>
         /// The aircraft's ICAO identifier.
         /// </summary>
-        public VersionedValue<string> Icao24 { get; } = new();
+        public string Icao24
+        {
+            get => _Icao24.Value;
+            set => _Icao24.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<bool> _Icao24Invalid = new();
+        public long Icao24InvalidChanged => _Icao24Invalid.DataVersion;
         /// <summary>
         /// A value indicating that the <see cref="Icao24"/> identifier does not comply with ICAO rules or is known to be a duplicate
         /// of another aircraft's ICAO.
         /// </summary>
-        public VersionedValue<bool> Icao24Invalid { get; } = new();
+        public bool Icao24Invalid
+        {
+            get => _Icao24Invalid.Value;
+            set => _Icao24Invalid.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<string> _Callsign = new();
+        public long CallsignChanged => _Callsign.DataVersion;
         /// <summary>
         /// The ATC callsign of the aircraft.
         /// </summary>
-        public VersionedValue<string> Callsign { get; } = new();
+        public string Callsign
+        {
+            get => _Callsign.Value;
+            set => _Callsign.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<int?> _Altitude = new();
+        public long AltitudeChanged => _Altitude.DataVersion;
         /// <summary>
         /// The pressure altitde (in feet) that the aircraft last reported. If the aircraft is
         /// transmitting geometric altitude and the air pressure is known then this will be the calculated
         /// pressure altitude.
         /// </summary>
-        public VersionedValue<int?> Altitude { get; } = new();
+        public int? Altitude
+        {
+            get => _Altitude.Value;
+            set => _Altitude.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<AltitudeType> _AltitudeType = new();
+        public long AltitudeTypeChanged => _AltitudeType.DataVersion;
         /// <summary>
         /// The type of altitude being transmitted by the aircraft.
         /// </summary>
-        public VersionedValue<AltitudeType> AltitudeType { get; } = new();
+        public AltitudeType AltitudeType
+        {
+            get => _AltitudeType.Value;
+            set => _AltitudeType.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<int?> _GeometricAltitude = new();
+        public long GeometricAltitudeChanged => _GeometricAltitude.DataVersion;
         /// <summary>
         /// The geometric altitude, i.e. how far the aircraft is above sea level. If the aircraft is
         /// transmitting barometric altitudes and the air pressure is known then this is the calculated geometric
         /// altitude.
         /// </summary>
-        public VersionedValue<int?> GeometricAltitude { get; } = new();
+        public int? GeometricAltitude
+        {
+            get => _GeometricAltitude.Value;
+            set => _GeometricAltitude.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<double?> _AirPressureInHg = new();
+        public long AirPressureInHgChanged => _AirPressureInHg.DataVersion;
         /// <summary>
         /// The pressure setting for the aircraft. The value will be null if air pressure downloads
         /// are switched off, or the server is unavailable, or no air pressures have been downloaded yet.
         /// </summary>
-        public VersionedValue<double?> AirPressureInHg { get; } = new();
+        public double? AirPressureInHg
+        {
+            get => _AirPressureInHg.Value;
+            set => _AirPressureInHg.SetValue(value, DataVersion);
+        }
 
         /// <summary>
         /// Gets and sets the time that the air pressure setting was looked up.
         /// </summary>
         public DateTime? AirPressureLookedUpUtc { get; set; } = new();
 
+        private readonly VersionedValue<int?> _TargetAltitude = new();
+        public long TargetAltitudeChanged => _TargetAltitude.DataVersion;
         /// <summary>
         /// The altitude (in feet) that the aircraft's autopilot / FMS etc. is set to.
         /// </summary>
-        public VersionedValue<int?> TargetAltitude { get; } = new();
+        public int? TargetAltitude
+        {
+            get => _TargetAltitude.Value;
+            set => _TargetAltitude.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<double?> _GroundSpeed = new();
+        public long GroundSpeedChanged => _GroundSpeed.DataVersion;
         /// <summary>
         /// The speed (in knots) that the aircraft last reported.
         /// </summary>
-        public VersionedValue<double?> GroundSpeed { get; } = new();
+        public double? GroundSpeed
+        {
+            get => _GroundSpeed.Value;
+            set => _GroundSpeed.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<SpeedType> _SpeedType = new();
+        public long SpeedTypeChanged => _SpeedType.DataVersion;
         /// <summary>
         /// The type of speed being transmitted by the aircraft.
         /// </summary>
-        public VersionedValue<SpeedType> SpeedType { get; } = new();
+        public SpeedType SpeedType
+        {
+            get => _SpeedType.Value;
+            set => _SpeedType.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<double?> _Latitude = new();
+        public long LatitudeChanged => _Latitude.DataVersion;
         /// <summary>
         /// The last reported latitude of the aircraft.
         /// </summary>
-        public VersionedValue<double?> Latitude { get; } = new();
+        public double? Latitude
+        {
+            get => _Latitude.Value;
+            set => _Latitude.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<double?> _Longitude = new();
+        public long LongitudeChanged => _Longitude.DataVersion;
         /// <summary>
         /// The last reported longitude of the aircraft.
         /// </summary>
-        public VersionedValue<double?> Longitude { get; } = new();
+        public double? Longitude
+        {
+            get => _Longitude.Value;
+            set => _Longitude.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<DateTime?> _PositionTime = new();
+        public long PositionTimeChanged => _PositionTime.DataVersion;
         /// <summary>
         /// The UTC date and time that <see cref="Latitude"/> and <see cref="Longitude"/> were last changed.
         /// </summary>
-        public VersionedValue<DateTime?> PositionTime { get; } = new();
+        public DateTime? PositionTime
+        {
+            get => _PositionTime.Value;
+            set => _PositionTime.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<bool?> _PositionIsMlat = new();
+        public long PositionIsMlatChanged => _PositionIsMlat.DataVersion;
         /// <summary>
         /// A value indicating that the position was calculated by an MLAT server, or came off an MLAT feed.
         /// </summary>
-        public VersionedValue<bool?> PositionIsMlat { get; } = new();
+        public bool? PositionIsMlat
+        {
+            get => _PositionIsMlat.Value;
+            set => _PositionIsMlat.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<Guid?> _PositionReceiverId = new();
+        public long PositionReceiverIdChanged => _PositionReceiverId.DataVersion;
         /// <summary>
         /// The ID of the receiver that supplied the last position for the aircraft.
         /// </summary>
-        public VersionedValue<Guid?> PositionReceiverId { get; } = new();
+        public Guid? PositionReceiverId
+        {
+            get => _PositionReceiverId.Value;
+            set => _PositionReceiverId.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<bool> _IsTisb = new();
+        public long IsTisbChanged => _IsTisb.DataVersion;
         /// <summary>
         /// A value indicating that the last message received for the aircraft came from a TIS-B source.
         /// </summary>
-        public VersionedValue<bool> IsTisb { get; } = new();
+        public bool IsTisb
+        {
+            get => _IsTisb.Value;
+            set => _IsTisb.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<double?> _Track = new();
+        public long TrackChanged => _Track.DataVersion;
         /// <summary>
         /// The last reported heading over the ground of the aircraft. If the aircraft is not reporting its
         /// track (see <see cref="IsTransmittingTrack"/>) then the code will calculate one for it. This is in
         /// degrees clockwise.
         /// </summary>
         /// <remarks>Tracks are not calculated until the aircraft has moved a small distance.</remarks>
-        public VersionedValue<double?> Track { get; } = new();
+        public double? Track
+        {
+            get => _Track.Value;
+            set => _Track.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<double?> _TargetTrack = new();
+        public long TargetTrackChanged => _TargetTrack.DataVersion;
         /// <summary>
         /// The track or heading on the aircraft's autopilot / FMS etc.
         /// </summary>
-        public VersionedValue<double?> TargetTrack { get; } = new();
+        public double? TargetTrack
+        {
+            get => _TargetTrack.Value;
+            set => _TargetTrack.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<bool> _TrackIsHeading = new();
+        public long TrackIsHeadingChanged => _TrackIsHeading.DataVersion;
         /// <summary>
         /// A value indicating that the <see cref="Track"/> is the heading of the aircraft. If this
         /// is false then <see cref="Track"/> is the ground track, which is the default.
         /// </summary>
-        public VersionedValue<bool> TrackIsHeading { get; } = new();
+        public bool TrackIsHeading
+        {
+            get => _TrackIsHeading.Value;
+            set => _TrackIsHeading.SetValue(value, DataVersion);
+        }
 
         /// <summary>
         /// Gets or sets a value indicating that the aircraft is transmitting its track, or at least that
@@ -195,36 +321,72 @@ namespace VirtualRadar.Interface
         /// </summary>
         public bool IsTransmittingTrack { get; set; }
 
+        private readonly VersionedValue<int?> _VerticalRate = new();
+        public long VerticalRateChanged => _VerticalRate.DataVersion;
         /// <summary>
         /// The last reported rate of ascent or descent (-ve) of the aircraft in feet per minute.
         /// </summary>
-        public VersionedValue<int?> VerticalRate { get; } = new();
+        public int? VerticalRate
+        {
+            get => _VerticalRate.Value;
+            set => _VerticalRate.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<AltitudeType> _VerticalRateType = new();
+        public long VerticalRateTypeChanged => _VerticalRateType.DataVersion;
         /// <summary>
         /// The type of vertical rate being transmitted by the aircraft.
         /// </summary>
-        public VersionedValue<AltitudeType> VerticalRateType { get; } = new();
+        public AltitudeType VerticalRateType
+        {
+            get => _VerticalRateType.Value;
+            set => _VerticalRateType.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<int?> _Squawk = new();
+        public long SquawkChanged => _Squawk.DataVersion;
         /// <summary>
         /// The squawk code transmitted by the aircraft.
         /// </summary>
-        public VersionedValue<int?> Squawk { get; } = new();
+        public int? Squawk
+        {
+            get => _Squawk.Value;
+            set => _Squawk.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<bool?> _IdentActive = new();
+        public long IdentActiveChanged => _IdentActive.DataVersion;
         /// <summary>
         /// A value indicating that the aircraft's ident is active.
         /// </summary>
-        public VersionedValue<bool?> IdentActive { get; } = new();
+        public bool? IdentActive
+        {
+            get => _IdentActive.Value;
+            set => _IdentActive.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<bool?> _Emergency = new();
+        public long EmergencyChanged => _Emergency.DataVersion;
         /// <summary>
         /// A value indicating that the <see cref="Squawk"/> represents an emergency code.
         /// </summary>
-        public VersionedValue<bool?> Emergency { get; } = new();
+        public bool? Emergency
+        {
+            get => _Emergency.Value;
+            set => _Emergency.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<string> _Registration = new();
+        public long RegistrationChanged => _Registration.DataVersion;
         /// <summary>
         /// The aircraft's registration.
         /// </summary>
         /// <remarks>This is whatever is recorded in the database for the registration and may contain non-compliant characters.</remarks>
-        public VersionedValue<string> Registration { get; } = new();
+        public string Registration
+        {
+            get => _Registration.Value;
+            set => _Registration.SetValue(value, DataVersion);
+        }
 
         private string _IcaoCompliantRegistration;
         private string _IcaoCompliantRegistrationBasedOnRegistration;
@@ -244,10 +406,16 @@ namespace VirtualRadar.Interface
             }
         }
 
+        private readonly VersionedValue<DateTime> _FirstSeen = new();
+        public long FirstSeenChanged => _FirstSeen.DataVersion;
         /// <summary>
         /// The time that a message from the aircraft was first received in this session.
         /// </summary>
-        public VersionedValue<DateTime> FirstSeen { get; } = new();
+        public DateTime FirstSeen
+        {
+            get => _FirstSeen.Value;
+            set => _FirstSeen.SetValue(value, DataVersion);
+        }
 
         /// <summary>
         /// Gets or sets the time of the last message received from the aircraft. This is not versioned.
@@ -269,125 +437,269 @@ namespace VirtualRadar.Interface
         /// </summary>
         public DateTime LastSatcomUpdate { get; set; }
 
+        private readonly VersionedValue<long> _CountMessagesReceived = new();
+        public long CountMessagesReceivedChanged => _CountMessagesReceived.DataVersion;
         /// <summary>
         /// The number of messages received for the aircraft.
         /// </summary>
-        public VersionedValue<long> CountMessagesReceived { get; } = new();
+        public long CountMessagesReceived
+        {
+            get => _CountMessagesReceived.Value;
+            set => _CountMessagesReceived.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<string> _Type = new();
+        public long TypeChanged => _Type.DataVersion;
         /// <summary>
         /// The ICAO8643 type code for the aircraft.
         /// </summary>
-        public VersionedValue<string> Type { get; } = new();
+        public string Type
+        {
+            get => _Type.Value;
+            set => _Type.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<string> _Manufacturer = new();
+        public long ManufacturerChanged => _Manufacturer.DataVersion;
         /// <summary>
         /// The name of the aircraft's maker.
         /// </summary>
-        public VersionedValue<string> Manufacturer { get; } = new();
+        public string Manufacturer
+        {
+            get => _Manufacturer.Value;
+            set => _Manufacturer.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<string> _Model = new();
+        public long ModelChanged => _Model.DataVersion;
         /// <summary>
         /// A description of the model of the aircraft, as assigned by the manufacturer.
         /// </summary>
-        public VersionedValue<string> Model { get; } = new();
+        public string Model
+        {
+            get => _Model.Value;
+            set => _Model.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<string> _ConstructionNumber = new();
+        public long ConstructionNumberChanged => _ConstructionNumber.DataVersion;
         /// <summary>
         /// The construction number assigned to the aircraft by the manufacturer.
         /// </summary>
-        public VersionedValue<string> ConstructionNumber { get; } = new();
+        public string ConstructionNumber
+        {
+            get => _ConstructionNumber.Value;
+            set => _ConstructionNumber.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<string> _YearBuilt = new();
+        public long YearBuiltChanged => _YearBuilt.DataVersion;
         /// <summary>
         /// The year the aircraft was manufactured as a string (it's a string in BaseStation.sqb).
         /// </summary>
-        public VersionedValue<string> YearBuilt { get; } = new();
+        public string YearBuilt
+        {
+            get => _YearBuilt.Value;
+            set => _YearBuilt.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<Airport> _Origin = new();
+        public long OriginChanged => _Origin.DataVersion;
         /// <summary>
         /// The airport where the aircraft's journey began.
         /// </summary>
-        public VersionedValue<Airport> Origin { get; } = new();
+        public Airport Origin
+        {
+            get => _Origin.Value;
+            set => _Origin.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<Airport> _Destination = new();
+        public long DestinationChanged => _Destination.DataVersion;
         /// <summary>
         /// The airport where the aircraft's journey is scheduled to end.
         /// </summary>
-        public VersionedValue<Airport> Destination { get; } = new();
+        public Airport Destination
+        {
+            get => _Destination.Value;
+            set => _Destination.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<IReadOnlyList<Airport>> _Stopovers = new();
+        public long StopoversChanged => _Stopovers.DataVersion;
         /// <summary>
         /// A list of scheduled stops for the aircraft.
         /// </summary>
-        public VersionedValue<IReadOnlyList<Airport>> Stopovers { get; } = new();
+        public IReadOnlyList<Airport> Stopovers
+        {
+            get => _Stopovers.Value ?? Array.Empty<Airport>();
+            set => _Stopovers.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<bool> _IsPositioningFlight = new();
+        public long IsPositioningFlightChanged => _IsPositioningFlight.DataVersion;
         /// <summary>
         /// A value indicating that this is probably a positioning / ferry flight.
         /// </summary>
-        public VersionedValue<bool> IsPositioningFlight { get; } = new();
+        public bool IsPositioningFlight
+        {
+            get => _IsPositioningFlight.Value;
+            set => _IsPositioningFlight.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<bool> _IsCharterFlight = new();
+        public long IsCharterFlightChanged => _IsCharterFlight.DataVersion;
         /// <summary>
         /// A value indicating that the this probably a charter flight.
         /// </summary>
-        public VersionedValue<bool> IsCharterFlight { get; } = new();
+        public bool IsCharterFlight
+        {
+            get => _IsCharterFlight.Value;
+            set => _IsCharterFlight.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<string> _Operator = new();
+        public long OperatorChanged => _Operator.DataVersion;
         /// <summary>
         /// The name of the company or individual that is operating the aircraft.
         /// </summary>
-        public VersionedValue<string> Operator { get; } = new();
+        public string Operator
+        {
+            get => _Operator.Value;
+            set => _Operator.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<string> _OperatorIcao = new();
+        public long OperatorIcaoChanged => _OperatorIcao.DataVersion;
         /// <summary>
         /// The ICAO code for the aircraft's operator.
         /// </summary>
-        public VersionedValue<string> OperatorIcao { get; } = new();
+        public string OperatorIcao
+        {
+            get => _OperatorIcao.Value;
+            set => _OperatorIcao.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<WakeTurbulenceCategory> _WakeTurbulenceCategory = new();
+        public long WakeTurbulenceCategoryChanged => _WakeTurbulenceCategory.DataVersion;
         /// <summary>
         /// The ICAO 8643 ATC wake turbulence category for this type of aircraft.
         /// </summary>
-        public VersionedValue<WakeTurbulenceCategory> WakeTurbulenceCategory { get; } = new();
+        public WakeTurbulenceCategory WakeTurbulenceCategory
+        {
+            get => _WakeTurbulenceCategory.Value;
+            set => _WakeTurbulenceCategory.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<EngineType> _EngineType = new();
+        public long EngineTypeChanged => _EngineType.DataVersion;
         /// <summary>
         /// The ICAO 8643 engine type for this type of aircraft.
         /// </summary>
-        public VersionedValue<EngineType> EngineType { get; } = new();
+        public EngineType EngineType
+        {
+            get => _EngineType.Value;
+            set => _EngineType.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<EnginePlacement> _EnginePlacement = new();
+        public long EnginePlacementChanged => _EnginePlacement.DataVersion;
         /// <summary>
         /// An indication of where the engines are mounted on the aircraft.
         /// </summary>
-        public VersionedValue<EnginePlacement> EnginePlacement { get; } = new();
+        public EnginePlacement EnginePlacement
+        {
+            get => _EnginePlacement.Value;
+            set => _EnginePlacement.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<string> _NumberOfEngines = new();
+        public long NumberOfEnginesChanged => _NumberOfEngines.DataVersion;
         /// <summary>
         /// The number of engines as per ICAO 8643. Note that this 'number' can include the value C...
         /// </summary>
-        public VersionedValue<string> NumberOfEngines { get; } = new();
+        public string NumberOfEngines
+        {
+            get => _NumberOfEngines.Value;
+            set => _NumberOfEngines.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<Species> _Species = new();
+        public long SpeciesChanged => _Species.DataVersion;
         /// <summary>
         /// The type of aircraft as recorded in ICAO 8643.
         /// </summary>
-        public VersionedValue<Species> Species { get; } = new();
+        public Species Species
+        {
+            get => _Species.Value;
+            set => _Species.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<bool> _IsMilitary = new();
+        public long IsMilitaryChanged => _IsMilitary.DataVersion;
         /// <summary>
         /// A value indicating that the aircraft is probably a military aircraft.
         /// </summary>
-        public VersionedValue<bool> IsMilitary { get; } = new();
+        public bool IsMilitary
+        {
+            get => _IsMilitary.Value;
+            set => _IsMilitary.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<string> _Icao24Country = new();
+        public long Icao24CountryChanged => _Icao24Country.DataVersion;
         /// <summary>
         /// The country that the aircraft's ICAO24 is assigned to.
         /// </summary>
-        public VersionedValue<string> Icao24Country { get; } = new();
+        public string Icao24Country
+        {
+            get => _Icao24Country.Value;
+            set => _Icao24Country.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<string> _PictureFileName = new();
+        public long PictureFileNameChanged => _PictureFileName.DataVersion;
         /// <summary>
         /// The full path and filename of the aircraft's picture or null if the aircraft has no picture.
         /// </summary>
-        public VersionedValue<string> PictureFileName { get; } = new();
+        public string PictureFileName
+        {
+            get => _PictureFileName.Value;
+            set => _PictureFileName.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<int> _PictureWidth = new();
+        public long PictureWidthChanged => _PictureWidth.DataVersion;
         /// <summary>
         /// The width of the picture in pixels. This will be 0 if the aircraft has no picture.
         /// </summary>
-        public VersionedValue<int> PictureWidth { get; } = new();
+        public int PictureWidth
+        {
+            get => _PictureWidth.Value;
+            set => _PictureWidth.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<int> _PictureHeight = new();
+        public long PictureHeightChanged => _PictureHeight.DataVersion;
         /// <summary>
         /// The height of the picture in pixels. This will be 0 if the aircraft has no picture.
         /// </summary>
-        public VersionedValue<int> PictureHeight { get; } = new();
+        public int PictureHeight
+        {
+            get => _PictureHeight.Value;
+            set => _PictureHeight.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<TransponderType> _TransponderType = new();
+        public long TransponderTypeChanged => _TransponderType.DataVersion;
         /// <summary>
         /// The transponder type used by the aircraft.
         /// </summary>
-        public VersionedValue<TransponderType> TransponderType { get; } = new();
+        public TransponderType TransponderType
+        {
+            get => _TransponderType.Value;
+            set => _TransponderType.SetValue(value, DataVersion);
+        }
 
         /// <summary>
         /// Gets or sets the <see cref="DataVersion"/> that was current when the coordinates were first
@@ -426,36 +738,72 @@ namespace VirtualRadar.Interface
         /// </remarks>
         public List<Coordinate> ShortCoordinates { get; } = new();
 
+        private readonly VersionedValue<bool> _IsInteresting = new();
+        public long IsInterestingChanged => _IsInteresting.DataVersion;
         /// <summary>
         /// A value indicating that the aircraft is flagged as interesting in BaseStation.
         /// </summary>
-        public VersionedValue<bool> IsInteresting { get; } = new();
+        public bool IsInteresting
+        {
+            get => _IsInteresting.Value;
+            set => _IsInteresting.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<int> _FlightsCount = new();
+        public long FlightsCountChanged => _FlightsCount.DataVersion;
         /// <summary>
         /// The number of flights that the aircraft has logged for it in the BaseStation database.
         /// </summary>
-        public VersionedValue<int> FlightsCount { get; } = new();
+        public int FlightsCount
+        {
+            get => _FlightsCount.Value;
+            set => _FlightsCount.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<bool?> _OnGround = new();
+        public long OnGroundChanged => _OnGround.DataVersion;
         /// <summary>
         /// A value indicating that the vehicle is reporting itself as being on the ground.
         /// </summary>
-        public VersionedValue<bool?> OnGround { get; } = new();
+        public bool? OnGround
+        {
+            get => _OnGround.Value;
+            set => _OnGround.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<bool> _CallsignIsSuspect = new();
+        public long CallsignIsSuspectChanged => _CallsignIsSuspect.DataVersion;
         /// <summary>
         /// A value indicating that the callsign came from a possible BDS2,0 message instead of an
         /// ADS-B message.
         /// </summary>
-        public VersionedValue<bool> CallsignIsSuspect { get; } = new();
+        public bool CallsignIsSuspect
+        {
+            get => _CallsignIsSuspect.Value;
+            set => _CallsignIsSuspect.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<string> _UserNotes = new();
+        public long UserNotesChanged => _UserNotes.DataVersion;
         /// <summary>
         /// The <see cref="UserNotes"/> from the aircraft's database record.
         /// </summary>
-        public VersionedValue<string> UserNotes { get; } = new();
+        public string UserNotes
+        {
+            get => _UserNotes.Value;
+            set => _UserNotes.SetValue(value, DataVersion);
+        }
 
+        private readonly VersionedValue<string> _UserTag = new();
+        public long UserTagChanged => _UserTag.DataVersion;
         /// <summary>
         /// The <see cref="UserTag"/> from the aircraft's database record.
         /// </summary>
-        public VersionedValue<string> UserTag { get; } = new();
+        public string UserTag
+        {
+            get => _UserTag.Value;
+            set => _UserTag.SetValue(value, DataVersion);
+        }
 
         /// <summary>
         /// Creates a new aircraft object.
@@ -480,13 +828,13 @@ namespace VirtualRadar.Interface
         /// </summary>
         public void ResetCoordinates()
         {
-            lock(_SyncLock) {
+            Lock(_ => {
                 LatestCoordinateTime = default;
                 FullCoordinates.Clear();
                 ShortCoordinates.Clear();
                 FirstCoordinateChanged = 0;
                 LastCoordinateChanged = 0;
-            }
+            });
         }
 
         /// <summary>
@@ -511,8 +859,8 @@ namespace VirtualRadar.Interface
                 var lastFullCoordinate = FullCoordinates.Count == 0 ? null : FullCoordinates[FullCoordinates.Count - 1];
                 var secondLastFullCoordinate = FullCoordinates.Count < 2 ? null : FullCoordinates[FullCoordinates.Count - 2];
                 if(lastFullCoordinate == null || Latitude != lastFullCoordinate.Latitude || Longitude != lastFullCoordinate.Longitude || Altitude != lastFullCoordinate.Altitude || GroundSpeed != lastFullCoordinate.GroundSpeed) {
-                    Lock(r => {
-                        PositionTime.SetValue(utcNow, DataVersion);
+                    Lock(_ => {
+                        PositionTime = utcNow;
                     });
 
                     // Check to see whether the aircraft appears to be moving impossibly fast and, if it is, reset its trail. Do this even if
@@ -527,11 +875,11 @@ namespace VirtualRadar.Interface
 
                     // Only update the trails if more than one second has elapsed since the last position update
                     long lastUpdateTick = lastFullCoordinate == null ? 0 : lastFullCoordinate.Tick;
-                    if(nowTick - lastUpdateTick >= TicksPerSecond) {
+                    if(nowTick - lastUpdateTick >= _TicksPerSecond) {
                         var track = Round.TrackHeading(Track);
                         var altitude = Round.TrackAltitude(Altitude);
                         var groundSpeed = Round.TrackGroundSpeed(GroundSpeed);
-                        var coordinate = new Coordinate(DataVersion, nowTick, Latitude.Value.Value, Longitude.Value.Value, track, altitude, groundSpeed);
+                        var coordinate = new Coordinate(DataVersion, nowTick, Latitude.Value, Longitude.Value, track, altitude, groundSpeed);
                         var positionChanged = lastFullCoordinate != null && (coordinate.Latitude != lastFullCoordinate.Latitude || coordinate.Longitude != lastFullCoordinate.Longitude);
 
                         if(FullCoordinates.Count > 1 &&
@@ -544,7 +892,7 @@ namespace VirtualRadar.Interface
                             FullCoordinates.Add(coordinate);
                         }
 
-                        long earliestAllowable = nowTick - (TicksPerSecond * shortCoordinateSeconds);
+                        long earliestAllowable = nowTick - (_TicksPerSecond * shortCoordinateSeconds);
                         var firstAllowableIndex = ShortCoordinates.FindIndex(c => c.Tick >= earliestAllowable);
                         if(firstAllowableIndex == -1)    ShortCoordinates.Clear();
                         else if(firstAllowableIndex > 0) ShortCoordinates.RemoveRange(0, firstAllowableIndex);
@@ -566,9 +914,9 @@ namespace VirtualRadar.Interface
         {
             var result = (Aircraft)Activator.CreateInstance(GetType());
 
-            lock(this) {
-                result.FullCoordinates  .AddRange(FullCoordinates);
-                result.ShortCoordinates .AddRange(ShortCoordinates);
+            Lock(_ => {
+                result.FullCoordinates.         AddRange(FullCoordinates);
+                result.ShortCoordinates.        AddRange(ShortCoordinates);
 
                 result.AirPressureLookedUpUtc = AirPressureLookedUpUtc;
                 result.FirstCoordinateChanged = FirstCoordinateChanged;
@@ -581,65 +929,65 @@ namespace VirtualRadar.Interface
                 result.LatestCoordinateTime =   LatestCoordinateTime;
                 result.UniqueId =               UniqueId;
 
-                result.AirPressureInHg.         CopyFrom(AirPressureInHg);
-                result.Altitude.                CopyFrom(Altitude);
-                result.AltitudeType.            CopyFrom(AltitudeType);
-                result.Callsign.                CopyFrom(Callsign);
-                result.CallsignIsSuspect.       CopyFrom(CallsignIsSuspect);
-                result.ConstructionNumber.      CopyFrom(ConstructionNumber);
-                result.GeometricAltitude.       CopyFrom(GeometricAltitude);
-                result.CountMessagesReceived.   CopyFrom(CountMessagesReceived);
-                result.Destination.             CopyFrom(Destination);
-                result.Emergency.               CopyFrom(Emergency);
-                result.EnginePlacement.         CopyFrom(EnginePlacement);
-                result.EngineType.              CopyFrom(EngineType);
-                result.FirstSeen.               CopyFrom(FirstSeen);
-                result.FlightsCount.            CopyFrom(FlightsCount);
-                result.GroundSpeed.             CopyFrom(GroundSpeed);
-                result.Icao24.                  CopyFrom(Icao24);
-                result.Icao24Country.           CopyFrom(Icao24Country);
-                result.Icao24Invalid.           CopyFrom(Icao24Invalid);
-                result.IdentActive.             CopyFrom(IdentActive);
-                result.IsCharterFlight.         CopyFrom(IsCharterFlight);
-                result.IsInteresting.           CopyFrom(IsInteresting);
-                result.IsMilitary.              CopyFrom(IsMilitary);
-                result.IsPositioningFlight.     CopyFrom(IsPositioningFlight);
-                result.IsTisb.                  CopyFrom(IsTisb);
-                result.Latitude.                CopyFrom(Latitude);
-                result.Longitude.               CopyFrom(Longitude);
-                result.Manufacturer.            CopyFrom(Manufacturer);
-                result.Model.                   CopyFrom(Model);
-                result.NumberOfEngines.         CopyFrom(NumberOfEngines);
-                result.OnGround.                CopyFrom(OnGround);
-                result.Operator.                CopyFrom(Operator);
-                result.OperatorIcao.            CopyFrom(OperatorIcao);
-                result.Origin.                  CopyFrom(Origin);
-                result.PictureFileName.         CopyFrom(PictureFileName);
-                result.PictureHeight.           CopyFrom(PictureHeight);
-                result.PictureWidth.            CopyFrom(PictureWidth);
-                result.PositionIsMlat.          CopyFrom(PositionIsMlat);
-                result.PositionReceiverId.      CopyFrom(PositionReceiverId);
-                result.PositionTime.            CopyFrom(PositionTime);
-                result.ReceiverId.              CopyFrom(ReceiverId);
-                result.Registration.            CopyFrom(Registration);
-                result.SignalLevel.             CopyFrom(SignalLevel);
-                result.Species.                 CopyFrom(Species);
-                result.SpeedType.               CopyFrom(SpeedType);
-                result.Squawk.                  CopyFrom(Squawk);
-                result.Stopovers.               CopyFrom(Stopovers);
-                result.TargetAltitude.          CopyFrom(TargetAltitude);
-                result.TargetTrack.             CopyFrom(TargetTrack);
-                result.Track.                   CopyFrom(Track);
-                result.TrackIsHeading.          CopyFrom(TrackIsHeading);
-                result.TransponderType.         CopyFrom(TransponderType);
-                result.Type.                    CopyFrom(Type);
-                result.UserNotes.               CopyFrom(UserNotes);
-                result.UserTag.                 CopyFrom(UserTag);
-                result.VerticalRate.            CopyFrom(VerticalRate);
-                result.VerticalRateType.        CopyFrom(VerticalRateType);
-                result.WakeTurbulenceCategory.  CopyFrom(WakeTurbulenceCategory);
-                result.YearBuilt.               CopyFrom(YearBuilt);
-            }
+                result._AirPressureInHg.        CopyFrom(_AirPressureInHg);
+                result._Altitude.               CopyFrom(_Altitude);
+                result._AltitudeType.           CopyFrom(_AltitudeType);
+                result._Callsign.               CopyFrom(_Callsign);
+                result._CallsignIsSuspect.      CopyFrom(_CallsignIsSuspect);
+                result._ConstructionNumber.     CopyFrom(_ConstructionNumber);
+                result._GeometricAltitude.      CopyFrom(_GeometricAltitude);
+                result._CountMessagesReceived.  CopyFrom(_CountMessagesReceived);
+                result._Destination.            CopyFrom(_Destination);
+                result._Emergency.              CopyFrom(_Emergency);
+                result._EnginePlacement.        CopyFrom(_EnginePlacement);
+                result._EngineType.             CopyFrom(_EngineType);
+                result._FirstSeen.              CopyFrom(_FirstSeen);
+                result._FlightsCount.           CopyFrom(_FlightsCount);
+                result._GroundSpeed.            CopyFrom(_GroundSpeed);
+                result._Icao24.                 CopyFrom(_Icao24);
+                result._Icao24Country.          CopyFrom(_Icao24Country);
+                result._Icao24Invalid.          CopyFrom(_Icao24Invalid);
+                result._IdentActive.            CopyFrom(_IdentActive);
+                result._IsCharterFlight.        CopyFrom(_IsCharterFlight);
+                result._IsInteresting.          CopyFrom(_IsInteresting);
+                result._IsMilitary.             CopyFrom(_IsMilitary);
+                result._IsPositioningFlight.    CopyFrom(_IsPositioningFlight);
+                result._IsTisb.                 CopyFrom(_IsTisb);
+                result._Latitude.               CopyFrom(_Latitude);
+                result._Longitude.              CopyFrom(_Longitude);
+                result._Manufacturer.           CopyFrom(_Manufacturer);
+                result._Model.                  CopyFrom(_Model);
+                result._NumberOfEngines.        CopyFrom(_NumberOfEngines);
+                result._OnGround.               CopyFrom(_OnGround);
+                result._Operator.               CopyFrom(_Operator);
+                result._OperatorIcao.           CopyFrom(_OperatorIcao);
+                result._Origin.                 CopyFrom(_Origin);
+                result._PictureFileName.        CopyFrom(_PictureFileName);
+                result._PictureHeight.          CopyFrom(_PictureHeight);
+                result._PictureWidth.           CopyFrom(_PictureWidth);
+                result._PositionIsMlat.         CopyFrom(_PositionIsMlat);
+                result._PositionReceiverId.     CopyFrom(_PositionReceiverId);
+                result._PositionTime.           CopyFrom(_PositionTime);
+                result._ReceiverId.             CopyFrom(_ReceiverId);
+                result._Registration.           CopyFrom(_Registration);
+                result._SignalLevel.            CopyFrom(_SignalLevel);
+                result._Species.                CopyFrom(_Species);
+                result._SpeedType.              CopyFrom(_SpeedType);
+                result._Squawk.                 CopyFrom(_Squawk);
+                result._Stopovers.              CopyFrom(_Stopovers);
+                result._TargetAltitude.         CopyFrom(_TargetAltitude);
+                result._TargetTrack.            CopyFrom(_TargetTrack);
+                result._Track.                  CopyFrom(_Track);
+                result._TrackIsHeading.         CopyFrom(_TrackIsHeading);
+                result._TransponderType.        CopyFrom(_TransponderType);
+                result._Type.                   CopyFrom(_Type);
+                result._UserNotes.              CopyFrom(_UserNotes);
+                result._UserTag.                CopyFrom(_UserTag);
+                result._VerticalRate.           CopyFrom(_VerticalRate);
+                result._VerticalRateType.       CopyFrom(_VerticalRateType);
+                result._WakeTurbulenceCategory. CopyFrom(_WakeTurbulenceCategory);
+                result._YearBuilt.              CopyFrom(_YearBuilt);
+            });
 
             return result;
         }
