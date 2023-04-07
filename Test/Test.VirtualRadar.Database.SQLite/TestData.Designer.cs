@@ -80,5 +80,15 @@ namespace Test.VirtualRadar.Database.SQLite {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] StandingDataTests {
+            get {
+                object obj = ResourceManager.GetObject("StandingDataTests", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

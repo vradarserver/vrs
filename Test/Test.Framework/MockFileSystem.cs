@@ -94,6 +94,22 @@ namespace Test.Framework
         }
 
         /// <summary>
+        /// Adds a file containing the lines of text passed across.
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <param name="lines"></param>
+        /// <param name="encoding"></param>
+        /// <param name="lineSeparator"></param>
+        public void AddFileContent(string fullPath, IEnumerable<string> lines, Encoding encoding = null, string lineSeparator = null)
+        {
+            AddFileContent(
+                fullPath,
+                String.Join(lineSeparator ?? "\r\n", lines),
+                encoding
+            );
+        }
+
+        /// <summary>
         /// Removes the file content and optionally, if there are no other files in the folder,
         /// the file's folder.
         /// </summary>

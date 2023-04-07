@@ -46,7 +46,7 @@ DELETE FROM [Route]
 WHERE  [Callsign] NOT IN ('DLH400', 'DLH8208', 'DLH8222');
 
 DELETE FROM [Operator]
-WHERE  [Icao] NOT IN ('DLH');
+WHERE  [Icao] NOT IN ('BAW', 'DLH', 'GEC');
 
 DELETE FROM [Airport]
 WHERE  [AirportId] NOT IN (

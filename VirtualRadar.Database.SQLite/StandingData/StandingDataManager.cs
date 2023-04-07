@@ -233,7 +233,9 @@ namespace VirtualRadar.Database.SQLite.StandingData
                     foreach(var codeBlock in allCodeBlocks) {
                         newCache.Add(new() {
                             CodeBlock = new() {
-                                Country =           codeBlock.Country?.Name ?? Strings.Unknown,
+                                Country =           (codeBlock.Country?.Name.StartsWith("Unknown ", ignoreCase: true, CultureInfo.InvariantCulture) ?? true)
+                                                    ? null  // <-- there are unit tests that confirm that the unknown country causes this field to be null
+                                                    : codeBlock.Country?.Name,
                                 IsMilitary =        codeBlock.IsMilitary,
                             },
                             BitMask =               codeBlock.BitMask,
