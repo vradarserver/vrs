@@ -8,27 +8,15 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using Moq;
+using System.ComponentModel.DataAnnotations;
 
-namespace Test.VirtualRadar.Library
+namespace VirtualRadar.Database.SQLite.StandingData
 {
-    public static class MockHelper
+    class ManufacturerModel
     {
-        public static Mock<T> CreateMock<T>()
-            where T: class
-        {
-            return new Mock<T>() {
-                DefaultValue = DefaultValue.Mock,
-            }
-            .SetupAllProperties();
-        }
+        [Key]
+        public long ManufacturerId { get; set; }
 
-        public static Mock CreateMock(Type mockType)
-        {
-            var result = (Mock)Activator.CreateInstance(mockType);
-            result.DefaultValue = DefaultValue.Mock;
-
-            return result;
-        }
+        public string Name { get; set; }
     }
 }

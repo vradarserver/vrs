@@ -8,26 +8,35 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using Microsoft.Extensions.Options;
+using System.ComponentModel.DataAnnotations;
 
-namespace Test.Framework
+namespace VirtualRadar.Database.SQLite.StandingData
 {
-    /// <summary>
-    /// Implements the Options extension's IOptions interface.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class MockOptions<T> : IOptions<T>
-        where T: class, new()
+    class AircraftTypeModel
     {
-        public T Value { get; set; } = new();
+        [Key]
+        public long AircraftTypeId { get; set; }
 
-        public MockOptions()
-        {
-        }
+        public string Icao { get; set; }
 
-        public MockOptions(T value)
-        {
-            Value = value;
-        }
+        public long WakeTurbulenceId { get; set; }
+
+        public WakeTurbulenceModel WakeTurbulence { get; set; }
+
+        public long SpeciesId { get; set; }
+
+        public SpeciesModel Species { get; set; }
+
+        public long EngineTypeId { get; set; }
+
+        public EngineTypeModel EngineType { get; set; }
+
+        public long EnginePlacementId { get; set; }
+
+        public EnginePlacementModel EnginePlacement { get; set; }
+
+        public string Engines { get; set; }
+
+        public List<AircraftTypeModelModel> AircraftTypeModels { get; } = new();
     }
 }

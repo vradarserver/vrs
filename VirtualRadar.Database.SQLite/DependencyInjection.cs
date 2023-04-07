@@ -16,6 +16,8 @@ namespace VirtualRadar.Database.SQLite
     {
         public static IServiceCollection AddVirtualRadarDatabaseSQLiteGroup(this IServiceCollection services)
         {
+            services.AddSingleton<VirtualRadar.Interface.StandingData.IStandingDataManager, StandingData.StandingDataManager>();
+
             services.AddScoped<VirtualRadar.Interface.Settings.IUserManager, Users.UserManager>();
             services.AddScoped<Users.UserContext, Users.UserContext>();
 

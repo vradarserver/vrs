@@ -8,26 +8,28 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
-namespace Test.Framework
+namespace VirtualRadar.Interface.Options
 {
     /// <summary>
-    /// Implements the Options extension's IOptions interface.
+    /// Options that can be passed to the standing data manager implementation.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class MockOptions<T> : IOptions<T>
-        where T: class, new()
+    public class StandingDataManagerOptions
     {
-        public T Value { get; set; } = new();
+        /// <summary>
+        /// If true then database diagnostics are shown in the debug console. This
+        /// might not be observed by all implementations.
+        /// </summary>
+        public bool ShowDatabaseDiagnosticsInDebugConsole { get; set; }
 
-        public MockOptions()
-        {
-        }
-
-        public MockOptions(T value)
-        {
-            Value = value;
-        }
+        /// <summary>
+        /// Used by Newtonsoft.Json to preserve properties that it does not know how to deserialise.
+        /// Allows users to regress to earlier versions of the program without losing options that
+        /// were added in a later version.
+        /// </summary>
+        [JsonExtensionData]
+        public Dictionary<string, JToken> PreservedForwardCompatibleProperties { get; set; }
     }
 }

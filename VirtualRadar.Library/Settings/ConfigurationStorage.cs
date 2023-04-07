@@ -13,7 +13,6 @@ using Microsoft.Extensions.Options;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Options;
 using VirtualRadar.Interface.Settings;
-using VirtualRadar.Localisation;
 
 namespace VirtualRadar.Library.Settings
 {

@@ -8,26 +8,27 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using Microsoft.Extensions.Options;
+using Moq;
 
 namespace Test.Framework
 {
-    /// <summary>
-    /// Implements the Options extension's IOptions interface.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class MockOptions<T> : IOptions<T>
-        where T: class, new()
+    public static class MockHelper
     {
-        public T Value { get; set; } = new();
-
-        public MockOptions()
+        public static Mock<T> CreateMock<T>()
+            where T: class
         {
+            return new Mock<T>() {
+                DefaultValue = DefaultValue.Mock,
+            }
+            .SetupAllProperties();
         }
 
-        public MockOptions(T value)
+        public static Mock CreateMock(Type mockType)
         {
-            Value = value;
+            var result = (Mock)Activator.CreateInstance(mockType);
+            result.DefaultValue = DefaultValue.Mock;
+
+            return result;
         }
     }
 }
