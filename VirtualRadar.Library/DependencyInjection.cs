@@ -21,6 +21,7 @@ namespace VirtualRadar.Library
             services.AddSingleton<VirtualRadar.Interface.IApplicationLifetime,                          ApplicationLifetime>();
             services.AddSingleton<VirtualRadar.Interface.IClock,                                        Clock>();
             services.AddSingleton<VirtualRadar.Interface.IFileSystem,                                   FileSystem>();
+            services.AddSingleton<VirtualRadar.Interface.IHttpClientService,                            HttpClientService>();
             services.AddSingleton<VirtualRadar.Interface.ILog,                                          Log>();
             services.AddSingleton<VirtualRadar.Interface.IThreadingEnvironmentProvider,                 ThreadingEnvironmentProvider>();
             services.AddSingleton<VirtualRadar.Interface.Adsb.ICompactPositionReportingEncoderDecoder,  Adsb.CompactPositionReportingEncoderDecoder>();
