@@ -16,7 +16,6 @@ namespace VirtualRadar.Library
     /// <inheritdoc/>
     class HttpClientService : IHttpClientService
     {
-        // The HttpClient instance that all functions share.
         private static readonly HttpClient _HttpClient = new();
 
         /// <inheritdoc/>
@@ -29,6 +28,18 @@ namespace VirtualRadar.Library
         public Stream GetStream(string requestUri, CancellationToken cancellationToken = default)
         {
             return Task.Run(async () => await GetStreamAsync(requestUri, cancellationToken)).Result;
+        }
+
+        /// <inheritdoc/>
+        public async Task<string> GetStringAsync(string requestUri, CancellationToken cancellationToken = default)
+        {
+            return await _HttpClient.GetStringAsync(requestUri, cancellationToken);
+        }
+
+        /// <inheritdoc/>
+        public string GetString(string requestUri, CancellationToken cancellationToken = default)
+        {
+            return Task.Run(async () => await GetStringAsync(requestUri, cancellationToken)).Result;
         }
     }
 }

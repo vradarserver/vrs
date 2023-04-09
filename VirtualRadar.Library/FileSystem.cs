@@ -23,9 +23,7 @@ namespace VirtualRadar.Library
 
         public string Combine(params string[] paths) => Path.Combine(paths);
 
-        public string ConfigurationFolder => Path.Combine(LocalAppDataFolder, "VirtualRadar");
-
-        public string LogFolder => ConfigurationFolder;
+        public string GetDirectory(string fullPath) => Path.GetDirectoryName(fullPath);
 
         public void CopyFile(string sourceFileName, string destFileName, bool overwrite) => File.Copy(sourceFileName, destFileName, overwrite);
 
@@ -38,6 +36,10 @@ namespace VirtualRadar.Library
         public bool FileExists(string fileName) => File.Exists(fileName);
 
         public long FileSize(string fileName) => new FileInfo(fileName).Length;
+
+        public void MoveFile(string sourceFileName, string destFileName, bool overwrite) => File.Move(sourceFileName, destFileName, overwrite);
+
+        public Stream OpenFileStream(string fileName, FileMode fileMode, FileAccess fileAccess, FileShare fileShare) => new FileStream(fileName, fileMode, fileAccess, fileShare);
 
         public byte[] ReadAllBytes(string fileName) => File.ReadAllBytes(fileName);
 

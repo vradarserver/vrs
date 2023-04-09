@@ -144,10 +144,14 @@ namespace Test.Framework
         /// </summary>
         /// <param name="paths"></param>
         /// <returns></returns>
-        public string Combine(params string[] paths)
-        {
-            return Path.Combine(paths);
-        }
+        public string Combine(params string[] paths) => Path.Combine(paths);
+
+        /// <summary>
+        /// This is not mocked, it just passes through to Path.
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <returns></returns>
+        public string GetDirectory(string fullPath) => Path.GetDirectoryName(fullPath);
 
         public void CopyFile(string sourceFileName, string destFileName, bool overwrite)
         {
@@ -184,7 +188,7 @@ namespace Test.Framework
                 Mock.Object.DeleteFile(fileName);
             } else {
                 ThrowIfFileNotFound(fileName);
-                CaseSensitiveFolders.Remove(fileName);
+                CaseSensitiveFileContent.Remove(fileName);
             }
         }
 
@@ -211,6 +215,57 @@ namespace Test.Framework
                 ThrowIfFileNotFound(fileName);
                 result = CaseSensitiveFileContent[fileName].Length;
             }
+
+            return result;
+        }
+
+        public void MoveFile(string sourceFileName, string destFileName, bool overwrite)
+        {
+            ThrowIfFileNotFound(sourceFileName);
+            if(FileExists(destFileName) && !overwrite) {
+                throw new IOException();
+            }
+
+            AddFileContent(destFileName, CaseSensitiveFileContent[sourceFileName]);
+            RemoveFile(sourceFileName);
+        }
+
+        public Stream OpenFileStream(string fileName, FileMode fileMode, FileAccess fileAccess, FileShare fileShare)
+        {
+            switch(fileMode) {
+                case FileMode.CreateNew:
+                    if(FileExists(fileName)) {
+                        throw new IOException();
+                    }
+                    break;
+                case FileMode.Create:
+                    if(FileExists(fileName)) {
+                        CaseSensitiveFileContent[fileName] = Array.Empty<byte>();
+                    }
+                    break;
+                case FileMode.Open:
+                    if(!FileExists(fileName)) {
+                        throw new FileNotFoundException();
+                    }
+                    break;
+                case FileMode.OpenOrCreate:
+                    if(!FileExists(fileName)) {
+                        CaseSensitiveFileContent[fileName] = Array.Empty<byte>();
+                    }
+                    break;
+                case FileMode.Truncate:
+                    ThrowIfFileNotFound(fileName);
+                    goto case FileMode.Create;
+            }
+
+            if(!CaseSensitiveFileContent.ContainsKey(fileName)) {
+                CaseSensitiveFileContent[fileName] = Array.Empty<byte>();
+            }
+
+            var result = new ByteStream(
+                CaseSensitiveFileContent[fileName],
+                writeCallback: newContent => CaseSensitiveFileContent[fileName] = newContent.ToArray()
+            );
 
             return result;
         }
@@ -306,7 +361,7 @@ namespace Test.Framework
             if(!UseFileContent) {
                 Mock.Object.WriteAllLines(fileName, contents);
             } else {
-                AddFileContent(fileName, Encoding.UTF8.GetBytes(String.Join(Path.DirectorySeparatorChar, contents)));
+                AddFileContent(fileName, Encoding.UTF8.GetBytes(String.Join(Environment.NewLine, contents)));
             }
         }
 

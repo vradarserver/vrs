@@ -8,6 +8,7 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+using System.IO;
 using System.Text;
 
 namespace VirtualRadar.Interface
@@ -24,6 +25,13 @@ namespace VirtualRadar.Interface
         /// <param name="paths"></param>
         /// <returns></returns>
         string Combine(params string[] paths);
+
+        /// <summary>
+        /// Returns the folder portion of a full path.
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <returns></returns>
+        string GetDirectory(string fullPath);
 
         /// <summary>
         /// Returns true if the directory exists.
@@ -65,6 +73,24 @@ namespace VirtualRadar.Interface
         /// </summary>
         /// <param name="fileName">The name of the file. Case sensitivity depends on the underlying operating system.</param>
         void DeleteFile(string fileName);
+
+        /// <summary>
+        /// Moves a file from source to destination.
+        /// </summary>
+        /// <param name="sourceFileName"></param>
+        /// <param name="newFileName"></param>
+        /// <param name="overwrite"></param>
+        void MoveFile(string sourceFileName, string newFileName, bool overwrite);
+
+        /// <summary>
+        /// Opens a stream on a file. The caller has to dispose of the stream.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="fileMode"></param>
+        /// <param name="fileAccess"></param>
+        /// <param name="fileShare"></param>
+        /// <returns></returns>
+        Stream OpenFileStream(string fileName, FileMode fileMode, FileAccess fileAccess, FileShare fileShare);
 
         /// <summary>
         /// Returns the byte content of a file.

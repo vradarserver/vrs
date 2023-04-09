@@ -1,4 +1,4 @@
-﻿// Copyright © 2023 onwards, Andrew Whewell
+﻿// Copyright © 2022 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -8,47 +8,38 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System.IO;
-
 namespace VirtualRadar.Interface
 {
     /// <summary>
-    /// A thin wrapper around HttpClient. It is an interface so that it can be
-    /// abstracted away in unit tests. All behaviour is as per the HttpClient
-    /// equivalents.
+    /// Handles the web addresses file in the configuration folder. Implementations are thread safe.
     /// </summary>
-    public interface IHttpClientService
+    public interface IWebAddressManager
     {
         /// <summary>
-        /// Send a GET request to the specified Uri and return the response body as a stream in an asynchronous operation.
+        /// The full path to the web addresses file.
         /// </summary>
-        /// <param name="requestUri"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<Stream> GetStreamAsync(string requestUri, CancellationToken cancellationToken = default);
+        string AddressFileFullPath { get; }
 
         /// <summary>
-        /// Send a GET request to the specified Uri and return the response body as a stream in a synchronous operation.
+        /// Adds or overwrites an address without overwriting existing custom addresses.
         /// </summary>
-        /// <param name="requestUri"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Stream GetStream(string requestUri, CancellationToken cancellationToken = default);
+        /// <param name="name">The name of the address to add.</param>
+        /// <param name="address">The address to add.</param>
+        /// <param name="oldAddresses">An optional list of historical
+        /// addresses that are to be overwritten with the new address. If an address
+        /// already exists for <paramref name="name"/> and it is neither <paramref name="address"/>
+        /// nor is it in the list of <paramref name="oldAddresses"/> then it is considered a
+        /// custom address entered by the user and it is left unchanged.</param>
+        /// <returns>The address actually registered against the name.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Missing name, missing or bad address</exception>
+        string RegisterAddress(string name, string address, IList<string> oldAddresses = null);
 
         /// <summary>
-        /// Send a GET request to the specified Uri and return the response body as a string in an asynchronous operation.
+        /// Returns the address associated with the case insensitive name. The program reserves
+        /// names that start with 'vrs-'. Returns null if the name does not exist.
         /// </summary>
-        /// <param name="requestUri"></param>
-        /// <param name="cancellationToken"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        Task<string> GetStringAsync(string requestUri, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Send a GET request to the specified Uri and return the response body as a string in a synchronous operation.
-        /// </summary>
-        /// <param name="requestUri"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        string GetString(string requestUri, CancellationToken cancellationToken = default);
+        string LookupAddress(string name);
     }
 }
