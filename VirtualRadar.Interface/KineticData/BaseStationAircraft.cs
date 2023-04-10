@@ -1,4 +1,4 @@
-// Copyright © 2022 onwards, Andrew Whewell
+﻿// Copyright © 2010 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -8,25 +8,49 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using Microsoft.Extensions.DependencyInjection;
-
-#pragma warning disable CS0618 // Type or member is obsolete
-
-namespace VirtualRadar.Database.SQLite
+namespace VirtualRadar.Interface.Database
 {
-    public static class DependencyInjection
+    /// <summary>
+    /// A simple data transfer object that describes a record from the BaseStation database for an aircraft.
+    /// </summary>
+    public class BaseStationAircraft : BaseStationAircraftKeyless
     {
-        public static IServiceCollection AddVirtualRadarDatabaseSQLiteGroup(this IServiceCollection services)
+        /// <summary>
+        /// Gets or sets the unique identifier of the aircraft in the database.
+        /// </summary>
+        public int AircraftID { get; set; }
+
+        /// <summary>
+        /// Creates a new object.
+        /// </summary>
+        public BaseStationAircraft() : base()
         {
-            services.AddSingleton<VirtualRadar.Interface.StandingData.IStandingDataManager, StandingData.StandingDataManager>();
+        }
 
-            services.AddScoped<VirtualRadar.Interface.Settings.IUserManager, Users.UserManager>();
-            services.AddScoped<Users.UserContext, Users.UserContext>();
+        /// <summary>
+        /// Creates a new object with details (EXCEPT THE ID) copied from the
+        /// aircraft passed in.
+        /// </summary>
+        /// <param name="donorAircraft"></param>
+        public BaseStationAircraft(BaseStationAircraftKeyless donorAircraft) : base(donorAircraft)
+        {
+        }
 
-            // Transients
-            services.AddTransient<VirtualRadar.Interface.Settings.IUser, Users.User>();
+        /// <summary>
+        /// See base docs.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public virtual bool IsSameAircraft(BaseStationAircraft other)
+        {
+            var result = Object.ReferenceEquals(this, other);
+            if(!result) {
+                result = other != null
+                      && AircraftID == other.AircraftID
+                      && base.IsSameAircraft(other);
+            }
 
-            return services;
+            return result;
         }
     }
 }
