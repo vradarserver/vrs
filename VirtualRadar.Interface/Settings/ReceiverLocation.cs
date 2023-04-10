@@ -48,11 +48,7 @@ namespace VirtualRadar.Interface.Settings
         /// <returns></returns>
         public override string ToString() => Name ?? "";
 
-        /// <summary>
-        /// See base docs. Note that GetHashCode is not overridden, this class is mutable and not safe for use as a key.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             bool result = Object.ReferenceEquals(this, obj);

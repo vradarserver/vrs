@@ -52,10 +52,7 @@ namespace VirtualRadar.Interface
             DataVersion = initialDataVersion;
         }
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public override string ToString() => Value?.ToString();
 
         /// <summary>

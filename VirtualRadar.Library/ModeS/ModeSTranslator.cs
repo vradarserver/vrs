@@ -28,14 +28,7 @@ namespace VirtualRadar.Library.ModeS
         /// <inheritdoc/>
         public ReceiverStatistics Statistics { get; set; }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="rawMessage"></param>
-        /// <param name="start"></param>
-        /// <param name="signalLevel"></param>
-        /// <param name="isMlat"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public ModeSMessage Translate(byte[] rawMessage, int start, int? signalLevel, bool isMlat)
         {
             if(Statistics == null) {

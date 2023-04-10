@@ -38,9 +38,7 @@ namespace VirtualRadar.Library
         /// </summary>
         volatile Dictionary<string, string> _Store = new(StringComparer.OrdinalIgnoreCase);
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public string AddressFileFullPath { get; }
 
         /// <summary>

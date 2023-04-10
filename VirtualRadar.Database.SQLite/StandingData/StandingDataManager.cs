@@ -91,19 +91,13 @@ namespace VirtualRadar.Database.SQLite.StandingData
         /// </summary>
         private string[] _FakeTowerCodes;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public string RouteStatus { get; private set; }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public bool CodeBlocksLoaded { get; private set; }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public event EventHandler LoadCompleted;
 
         /// <summary>
@@ -155,9 +149,7 @@ namespace VirtualRadar.Database.SQLite.StandingData
             }
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public void Load()
         {
             Lock(_ => {
@@ -359,11 +351,7 @@ namespace VirtualRadar.Database.SQLite.StandingData
             _FakeTowerCodes = towerCodes?.ToArray() ?? new string[] { "-TWR" };
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="callSign"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public Route FindRoute(string callSign)
         {
             Route result = null;
@@ -398,11 +386,7 @@ namespace VirtualRadar.Database.SQLite.StandingData
             return result;
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public AircraftType FindAircraftType(string type)
         {
             AircraftType result = null;
@@ -433,11 +417,7 @@ namespace VirtualRadar.Database.SQLite.StandingData
             return result;
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="code"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public IEnumerable<Airline> FindAirlinesForCode(string code)
         {
             var result = new List<Airline>();
@@ -464,11 +444,7 @@ namespace VirtualRadar.Database.SQLite.StandingData
             return result;
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="icao24"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public CodeBlock FindCodeBlock(string icao24)
         {
             CodeBlock result = null;
@@ -496,11 +472,7 @@ namespace VirtualRadar.Database.SQLite.StandingData
             return result;
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="code"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public Airport FindAirportForCode(string code)
         {
             Airport result = null;

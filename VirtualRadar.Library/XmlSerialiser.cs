@@ -55,21 +55,13 @@ namespace VirtualRadar.Library
             { "UInt64", "UnsignedLong" },
         };
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
+        /// <inheritdoc/>
         public bool XmlSerializerCompatible { get; set; } = true;
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
+        /// <inheritdoc/>
         public bool UseDefaultEnumValueIfUnknown { get; set; }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="stream"></param>
+        /// <inheritdoc/>
         public void Serialise(object obj, Stream stream)
         {
             if(obj == null) {
@@ -84,11 +76,7 @@ namespace VirtualRadar.Library
             stream.Write(bytes, 0, bytes.Length);
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="textWriter"></param>
+        /// <inheritdoc/>
         public void Serialise(object obj, TextWriter textWriter)
         {
             if(obj == null) {
@@ -218,12 +206,7 @@ namespace VirtualRadar.Library
             }
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="stream"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public T Deserialise<T>(Stream stream)
             where T: class, new()
         {
@@ -237,12 +220,7 @@ namespace VirtualRadar.Library
             }
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="textReader"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public T Deserialise<T>(TextReader textReader)
             where T: class, new()
         {

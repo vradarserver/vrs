@@ -34,49 +34,31 @@ namespace VirtualRadar.Database.SQLite.Users
         /// </summary>
         private long _TemporaryUniqueId;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public string Name => Strings.UserManagerName;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public bool LoginNameIsCaseSensitive => false;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public bool CanCreateUsers => true;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public bool CanCreateUsersWithHash => true;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public bool CanEditUsers => true;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public bool CanChangePassword => true;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public bool CanChangeEnabledState => true;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public bool CanDeleteUsers => true;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public bool CanListUsers => true;
 
         /// <summary>
@@ -93,27 +75,17 @@ namespace VirtualRadar.Database.SQLite.Users
             ));
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public void Initialise()
         {
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public void Shutdown()
         {
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="results"></param>
-        /// <param name="record"></param>
-        /// <param name="currentRecord"></param>
-        /// <param name="allRecords"></param>
+        /// <inheritdoc/>
         public void ValidateUser(IList<ValidationResult> results, IUser record, IUser currentRecord, IList<IUser> allRecords)
         {
             if(allRecords == null) {
@@ -190,16 +162,10 @@ namespace VirtualRadar.Database.SQLite.Users
             return result;
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public IUser NewUser() => new User();
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="password"></param>
+        /// <inheritdoc/>
         public void SaveUser(IUser user, string password)
         {
             var ourUser = CastUser(user);
@@ -218,11 +184,7 @@ namespace VirtualRadar.Database.SQLite.Users
             _UserContext.SaveChanges();
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public void DeleteUser(IUser user)
         {
             var ourUser = CastUser(user);
@@ -230,18 +192,10 @@ namespace VirtualRadar.Database.SQLite.Users
             _UserContext.SaveChanges();
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="loginName"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public IUser GetUserByLoginName(string loginName) => _UserContext.Users.FirstOrDefault(usr => usr.LoginName == loginName);
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="uniqueIdentifiers"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public IEnumerable<IUser> GetUsersByUniqueId(IEnumerable<string> uniqueIdentifiers)
         {
             var allUsers = GetUsers()
@@ -259,18 +213,10 @@ namespace VirtualRadar.Database.SQLite.Users
             return result;
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public IEnumerable<IUser> GetUsers() => _UserContext.Users.ToArray();
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="password"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public bool PasswordMatches(IUser user, string password)
         {
             var ourUser = CastUser(user);
@@ -279,11 +225,7 @@ namespace VirtualRadar.Database.SQLite.Users
                 .PasswordMatches(password);
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public string GenerateTemporaryUniqueId(IUser user)
         {
             var result = _TemporaryUniqueId - 1;

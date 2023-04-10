@@ -114,19 +114,13 @@ namespace VirtualRadar.Interface
             return result;
         }
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             return Latitude.GetHashCode();
         }
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public override string ToString()
         {
             return String.Format("DV:{0}/TK:{1}/LA:{2}/LN:{3}/HD:{4}/AL:{5}/SP:{6}",

@@ -83,17 +83,12 @@ namespace VirtualRadar.Interface.Feeds
             return result;
         }
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Note that Equals is overridden to detect identical content - it is NOT implemented to allow the class to be used
-        /// as a key. The class is mutable. It must not be used as a key in dictionaries, hash tables etc.
-        /// </remarks>
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
+            // Note that Equals is overridden to detect identical content - it is NOT implemented to allow the class to be used
+            // as a key. The class is mutable. It must not be used as a key in dictionaries, hash tables etc.
+
             var result = Object.ReferenceEquals(this, obj);
             if(!result && obj is ExtractedBytes other) {
                 result =  (other.Bytes == null && Bytes == null)

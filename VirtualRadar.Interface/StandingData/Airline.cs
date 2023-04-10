@@ -44,10 +44,7 @@ namespace VirtualRadar.Interface.StandingData
         /// </summary>
         public string CharterFlightPattern { get; set; }
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public override string ToString() => $"{(!String.IsNullOrEmpty(IcaoCode) ? IcaoCode : IataCode)} {Name}";
 
         /// <summary>

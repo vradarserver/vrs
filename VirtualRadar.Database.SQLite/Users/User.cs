@@ -26,9 +26,7 @@ namespace VirtualRadar.Database.SQLite.Users
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         [NotMapped]
         public string UniqueId
         {
@@ -39,31 +37,21 @@ namespace VirtualRadar.Database.SQLite.Users
             }
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public bool IsPersisted => Id > 0;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public bool Enabled { get; set; }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         [Required]
         public string LoginName { get; set; }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         [Required]
         public string Name { get; set; }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         [NotMapped]
         public string UIPassword { get; set; }
 
@@ -107,9 +95,7 @@ namespace VirtualRadar.Database.SQLite.Users
             }
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         [NotMapped]
         public object Tag { get; set; }
     }

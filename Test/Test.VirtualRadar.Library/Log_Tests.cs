@@ -100,8 +100,8 @@ namespace Test.VirtualRadar.Library
             _Log.WriteLine("Test");
             _Log.Flush();
 
-            Assert.AreEqual(@"C:\Folder\VirtualRadarLog.txt", fileName);
             Assert.AreEqual(1, lines.Length);
+            Assert.AreEqual(@"C:\Folder\VirtualRadarLog.txt", fileName);
             var line = lines[0];
             Assert.AreEqual("[2001-02-03 04:05:06.789 UTC] [t99] Test", line);
         }

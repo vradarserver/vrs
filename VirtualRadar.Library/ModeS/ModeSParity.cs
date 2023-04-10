@@ -19,12 +19,7 @@ namespace VirtualRadar.Library.ModeS
     [Obsolete("Do not create instances of this directly. Use dependency injection instead. This is only public so that it can be unit tested")]
     public class ModeSParity : IModeSParity
     {
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="bytes"></param>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
+        /// <inheritdoc/>
         public void StripParity(byte[] bytes, int offset, int length)
         {
             if(bytes == null) {

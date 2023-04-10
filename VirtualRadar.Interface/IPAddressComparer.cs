@@ -22,12 +22,7 @@ namespace VirtualRadar.Interface
         /// </summary>
         public static IPAddressComparer Singleton { get; } = new IPAddressComparer();
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public int Compare(IPAddress x, IPAddress y)
         {
             var result = Object.ReferenceEquals(x, y) ? 0 : -1;

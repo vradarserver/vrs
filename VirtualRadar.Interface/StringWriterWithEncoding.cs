@@ -19,9 +19,7 @@ namespace VirtualRadar.Interface
     public class StringWriterWithEncoding : StringWriter
     {
         private Encoding _Encoding = Encoding.Unicode;
-        /// <summary>
-        /// See base docs.
-        /// </summary>
+        /// <inheritdoc/>
         public override Encoding Encoding => _Encoding;
 
         /// <summary>

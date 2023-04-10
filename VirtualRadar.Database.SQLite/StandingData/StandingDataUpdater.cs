@@ -96,10 +96,7 @@ namespace VirtualRadar.Database.SQLite.StandingData
             _StateFileUrl = _WebAddressManager.RegisterAddress("vrs-sdm-state-file",  "http://www.virtualradarserver.co.uk/Files/FlightNumberCoverage.csv");
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public bool DataIsOld()
         {
             var stateFilename = _FileSystem.Combine(
@@ -120,9 +117,7 @@ namespace VirtualRadar.Database.SQLite.StandingData
             return result;
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public void Update()
         {
             if(!_UpdateRunning) {

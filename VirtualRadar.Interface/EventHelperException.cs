@@ -67,10 +67,7 @@ namespace VirtualRadar.Interface
                 : exceptions.ToArray();
         }
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public override string ToString()
         {
             var result = new StringBuilder(base.ToString());

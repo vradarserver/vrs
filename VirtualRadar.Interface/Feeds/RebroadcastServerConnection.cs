@@ -68,16 +68,10 @@ namespace VirtualRadar.Interface.Feeds
         /// </summary>
         public long StaleBytesDiscarded { get; set; }
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public override string ToString() => $"{RebroadcastServerId}: {Name}";
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public object Clone()
         {
             var result = Activator.CreateInstance(GetType()) as RebroadcastServerConnection;

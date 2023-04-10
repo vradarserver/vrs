@@ -1,4 +1,4 @@
-// Copyright © 2010 onwards, Andrew Whewell
+﻿// Copyright © 2010 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -28,9 +28,7 @@ namespace VirtualRadar.Library.Settings
         private IXmlSerialiser _XmlSerialiser;
         private object _FileAccessLock = new object();
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public int CoarseListenerTimeout { get; set; }
 
         /// <summary>
@@ -41,9 +39,7 @@ namespace VirtualRadar.Library.Settings
             "Configuration.xml"
         );
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public event EventHandler<EventArgs> ConfigurationChanged;
 
         /// <summary>
@@ -70,9 +66,7 @@ namespace VirtualRadar.Library.Settings
             _XmlSerialiser.UseDefaultEnumValueIfUnknown = true;
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public void Erase()
         {
             var raiseEvent = false;
@@ -89,10 +83,7 @@ namespace VirtualRadar.Library.Settings
             }
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public Configuration Load()
         {
             var result = LoadIfExists(acquireLock: true);
@@ -234,10 +225,7 @@ namespace VirtualRadar.Library.Settings
             }
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="configuration"></param>
+        /// <inheritdoc/>
         public void Save(Configuration configuration)
         {
             lock(_FileAccessLock) {

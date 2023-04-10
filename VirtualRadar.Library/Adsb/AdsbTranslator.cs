@@ -51,9 +51,7 @@ namespace VirtualRadar.Library.Adsb
         /// </summary>
         private static readonly double[] _MaximumWidths = new double[] { 11.5, 23, 28.5, 34, 33, 38, 39.5, 45, 45, 52, 59.5, 67, 72.5, 80, 80, 90, };
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public ReceiverStatistics Statistics { get; set; }
 
         /// <summary>
@@ -97,11 +95,7 @@ namespace VirtualRadar.Library.Adsb
             }
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="modeSMessage"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public AdsbMessage Translate(ModeSMessage modeSMessage)
         {
             if(Statistics == null) {

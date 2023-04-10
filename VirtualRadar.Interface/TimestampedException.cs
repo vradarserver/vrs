@@ -44,10 +44,7 @@ namespace VirtualRadar.Interface
             Exception = exception;
         }
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public override string ToString()
         {
             return String.Format("{0:HH:mm:ss.sss} {1}", TimeUtc, Exception == null ? null : Exception.Message);

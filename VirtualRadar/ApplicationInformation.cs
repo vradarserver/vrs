@@ -39,76 +39,48 @@ namespace VirtualRadar
         private static DateTime _BuildDate;
         private static bool _IsService;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public Version Version => _Version;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public string ShortVersion => _ShortVersion;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public string FullVersion => _FullVersion;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public string BetaBasedOnShortVersion => _BetaBasedOnShortVersion;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public string BetaBasedOnFullVersion => _BetaBasedOnFullVersion;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public bool IsBeta => !String.IsNullOrEmpty(_BetaBasedOnFullVersion);
 
         public string BetaRevision => _BetaRevision ?? "";
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public DateTime BuildDate => _BuildDate;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public string ApplicationName => _ApplicationName;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public string ProductName => _ProductName;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public string Description => _Description;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public string Copyright => _Copyright;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public CultureInfo CultureInfo => CultureInfo.CurrentCulture;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public bool Headless => _Headless;
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public bool IsService => _IsService;
 
         /// <summary>

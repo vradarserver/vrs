@@ -16,13 +16,7 @@ using VirtualRadar.Interface.Adsb;
 
 namespace VirtualRadar.Library.Adsb
 {
-    /// <summary>
-    /// See interface docs.
-    /// </summary>
-    /// <remarks>
-    /// Some of the nomenclature (e.g. 'NL', 'DLAT' etc.) used in the code is taken from the description of the
-    /// CPR algorithms in the various versions of the ICAO documentation.
-    /// </remarks>
+    /// <inheritdoc/>
     [Obsolete("Do not create instances of this directly. Use dependency injection instead. This is only public so that it can be unit tested")]
     public class CompactPositionReportingEncoderDecoder : ICompactPositionReportingEncoderDecoder
     {
@@ -104,13 +98,7 @@ namespace VirtualRadar.Library.Adsb
             }
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="globalCoordinate"></param>
-        /// <param name="isOddFormat"></param>
-        /// <param name="numberOfBits"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public CompactPositionReportingCoordinate Encode(GlobalCoordinate globalCoordinate, bool isOddFormat, byte numberOfBits)
         {
             var maxResult = MaxResultSize(numberOfBits);
@@ -131,26 +119,22 @@ namespace VirtualRadar.Library.Adsb
             );
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="cprCoordinate"></param>
-        /// <param name="referenceCoordinate"></param>
-        /// <returns></returns>
-        /// <remarks><para>
-        /// It was found in testing that encoded latitudes of zero are incredibly sensitive to rounding errors introduced by the use of doubles. This
-        /// can be fixed by using decimals, which have much greater precision, and rounding to a very large number of decimal places - but using decimals
-        /// is bad news, they are a lot slower than doubles because all of the operations are done in software, there is no hardware FPU support for them.
-        /// 10 million divisions in LINQPad took 58 seconds on my development machine when using decimals and less than a second using doubles.
-        /// </para><para>
-        /// However it's only on the boundary between zones where rounding errors cause huge problems (e.g. returning a longitude of -87 instead of -90).
-        /// The problem revolves around the selection of the wrong value of m, rounding errors in doubles at boundaries between zones can push m out by
-        /// one, placing the longitude into the wrong zone and getting a longitude that it out by miles. Once the longitude is above zero rounding errors
-        /// can have an effect but the correct m is still selected and they only produce inaccuracies of a few feet. So the compromise was to use decimals
-        /// when accuracy is paramount - i.e. when the encoded longitude is 0 - and doubles for the rest of the time.
-        /// </para></remarks>
+        /// <inheritdoc/>
         public GlobalCoordinate LocalDecode(CompactPositionReportingCoordinate cprCoordinate, GlobalCoordinate referenceCoordinate)
         {
+            // It was found in testing that encoded latitudes of zero are incredibly sensitive to rounding errors introduced by the
+            // use of doubles. This can be fixed by using decimals, which have much greater precision, and rounding to a very large
+            // number of decimal places - but using decimals is bad news, they are a lot slower than doubles because all of the
+            // operations are done in software, there is no hardware FPU support for them. 10 million divisions in LINQPad took 58
+            // seconds on my development machine when using decimals and less than a second using doubles.
+            //
+            // However it's only on the boundary between zones where rounding errors cause huge problems (e.g. returning a longitude
+            // of -87 instead of -90). The problem revolves around the selection of the wrong value of m, rounding errors in doubles
+            // at boundaries between zones can push m out by one, placing the longitude into the wrong zone and getting a longitude
+            // that it out by miles. Once the longitude is above zero rounding errors can have an effect but the correct m is still
+            // selected and they only produce inaccuracies of a few feet. So the compromise was to use decimals when accuracy is
+            // paramount - i.e. when the encoded longitude is 0 - and doubles for the rest of the time.
+
             var result = new GlobalCoordinate();
 
             var maxResult = MaxResultSize(cprCoordinate.NumberOfBits == 19 ? 17 : cprCoordinate.NumberOfBits);
@@ -189,13 +173,7 @@ namespace VirtualRadar.Library.Adsb
             return result;
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="earlyCpr"></param>
-        /// <param name="laterCpr"></param>
-        /// <param name="receiverLocation"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public GlobalCoordinate GlobalDecode(CompactPositionReportingCoordinate earlyCpr, CompactPositionReportingCoordinate laterCpr, GlobalCoordinate receiverLocation)
         {
             GlobalCoordinate result = null;

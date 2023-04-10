@@ -46,9 +46,7 @@ namespace VirtualRadar.Library
         // hundreds of extant messages. Messages loaded from previous sessions are not indexed.
         private readonly Dictionary<string, List<LogMessage>> _IndexedContent = new();
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
+        /// <inheritdoc/>
         public string FileName => _FileSystem.Combine(_EnvironmentOptions.WorkingFolder, "VirtualRadarLog.txt");
 
         /// <summary>
@@ -66,11 +64,7 @@ namespace VirtualRadar.Library
             _ThreadingEnvironment = threadingEnvironment;
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="message"></param>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <inheritdoc/>
         public void WriteLine(string message)
         {
             if(!String.IsNullOrWhiteSpace(message)) {
@@ -95,17 +89,10 @@ namespace VirtualRadar.Library
             }
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public async Task WriteLineAsync(string message) => await Task.Run(() => WriteLine(message));
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <inheritdoc/>
         public void Flush()
         {
             lock(_SyncLock) {
@@ -122,16 +109,10 @@ namespace VirtualRadar.Library
             }
         }
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public async Task FlushAsync() => await Task.Run(() => Flush());
 
-        /// <summary>
-        /// See interface docs.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public IReadOnlyList<LogMessage> GetContent()
         {
             lock(_SyncLock) {

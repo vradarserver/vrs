@@ -147,10 +147,7 @@ namespace VirtualRadar.Interface
         /// <returns></returns>
         public static LogMessage Clone(LogMessage other) => new(other);
 
-        /// <summary>
-        /// See base docs.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public override string ToString()
         {
             var result = new StringBuilder();
