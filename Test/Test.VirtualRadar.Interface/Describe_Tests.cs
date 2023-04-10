@@ -16,10 +16,10 @@ using VirtualRadar.Localisation;
 namespace Test.VirtualRadar.Interface
 {
     [TestClass]
-    public class DescribeTests
+    public class Describe_Tests
     {
         [TestMethod]
-        public void Describe_Airport_Returns_Empty_String_If_Passed_Null()
+        public void Airport_Returns_Empty_String_If_Passed_Null()
         {
             Assert.AreEqual("", Describe.Airport(null, false));
         }
@@ -54,7 +54,7 @@ namespace Test.VirtualRadar.Interface
         [DataRow("EGLL", "LHR",  "Heathrow", "United Kingdom", true,  false, true,  true,  "Heathrow, United Kingdom")]
         [DataRow("EGLL", "LHR",  "Heathrow", "United Kingdom", true,  true,  false, true,  "LHR, United Kingdom")]
         [DataRow("EGLL", "LHR",  "Heathrow", "United Kingdom", true,  true,  true,  false, "LHR Heathrow")]
-        public void Describe_Airport_Formats_Airport_Correctly(
+        public void Airport_Formats_Airport_Correctly(
             string icao,
             string iata,
             string name,
@@ -93,7 +93,7 @@ namespace Test.VirtualRadar.Interface
         [DataRow("Bristol",     "Bristol", "Bristol",           "Ignore city if it's the same as the name")]
         [DataRow("Bristol X",   "Bristol", "Bristol X",         "If name starts with city then don't append city")]
         [DataRow("X Bristol X", "Bristol", "X Bristol X",       "If name contains city then don't append city")]
-        public void Describe_AirportName_Formats_AirportName_Correctly(string officialName, string cityName, string expected, string rule)
+        public void AirportName_Formats_AirportName_Correctly(string officialName, string cityName, string expected, string rule)
         {
             var actual = Describe.AirportName(officialName, cityName);
 
@@ -121,7 +121,7 @@ namespace Test.VirtualRadar.Interface
         [DataRow(1099505185325,    "de-DE", "1.023,99 GB")]
         [DataRow(1099511627776,    "de-DE", "1,00 TB")]
         [DataRow(9999999999999999, "de-DE", "9.094,95 TB")]
-        public void Describe_Bytes_Formats_Bytes_Correctly(long bytes, string culture, string expected)
+        public void Bytes_Formats_Bytes_Correctly(long bytes, string culture, string expected)
         {
             using(var switcher = new CultureSwitcher(culture)) {
                 var actual = Describe.Bytes(bytes);
@@ -130,7 +130,7 @@ namespace Test.VirtualRadar.Interface
         }
 
         [TestMethod]
-        public void Describe_TimeSpan_Formats_TimeSpans_Correctly()
+        public void TimeSpan_Formats_TimeSpans_Correctly()
         {
             Assert.AreEqual("00:00:00", Describe.TimeSpan(new TimeSpan()));
             Assert.AreEqual("00:00:01", Describe.TimeSpan(new TimeSpan(0, 0, 1)));
@@ -149,14 +149,14 @@ namespace Test.VirtualRadar.Interface
         [DataRow("ABCDEFGHIJKLMNOPQRSTUVWXYZ-1234567890", "ABCDEFGHIJKLMNOPQRSTUVWXYZ-1234567890")]
         [DataRow("^",                                     "")]
         [DataRow("°©12ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÙÚÛÜÝ3",     "123")]
-        public void Describe_IcaoCompliantRegistration_Correctly_Transforms_Registration_To_Comply_With_ICAO_Rules(string registration, string expected)
+        public void IcaoCompliantRegistration_Correctly_Transforms_Registration_To_Comply_With_ICAO_Rules(string registration, string expected)
         {
             var actual = Describe.IcaoCompliantRegistration(registration);
             Assert.AreEqual(expected, actual);
         }
 
         [TestMethod]
-        public void Describe_RebroadcastSettingsCollection_Correctly_Describes_Collection()
+        public void RebroadcastSettingsCollection_Correctly_Describes_Collection()
         {
             foreach(var culture in new string[] { "en-GB", "fr-FR" })  {
                 using(var cultureSwitcher = new CultureSwitcher(culture)) {
@@ -181,7 +181,7 @@ namespace Test.VirtualRadar.Interface
         }
 
         [TestMethod]
-        public void Describe_MapProvider_Returns_Correct_Description()
+        public void MapProvider_Returns_Correct_Description()
         {
             foreach(var mapProvider in Enum.GetValues<MapProvider>()) {
                 var expected = "";
