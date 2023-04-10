@@ -7,6 +7,7 @@ using Moq;
 using Test.Framework;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.Options;
+using VirtualRadar.Interface.Types;
 using VirtualRadar.Library;
 
 namespace Test.VirtualRadar.Library
@@ -16,7 +17,7 @@ namespace Test.VirtualRadar.Library
     {
         private MockOptions<EnvironmentOptions> _EnvironmentOptions;
         private MockClock _Clock;
-        private Mock<IFileSystem> _FileSystem;
+        private MockFileSystem _FileSystem;
         private Mock<IThreadingEnvironmentProvider> _ThreadingEnvironment;
         private ILog _Log;
 
@@ -26,10 +27,10 @@ namespace Test.VirtualRadar.Library
             _EnvironmentOptions = new();
             _EnvironmentOptions.Value.WorkingFolder = @"C:\Folder";
             _Clock = new();
-            _FileSystem = MockHelper.CreateMock<IFileSystem>();
+            _FileSystem = new();
             _ThreadingEnvironment = MockHelper.CreateMock<IThreadingEnvironmentProvider>();
 
-            _Log = new Log(_EnvironmentOptions, _Clock.Object, _FileSystem.Object, _ThreadingEnvironment.Object);
+            _Log = new Log(_EnvironmentOptions, _Clock.Object, _FileSystem, _ThreadingEnvironment.Object);
         }
 
         [TestMethod]
@@ -86,47 +87,35 @@ namespace Test.VirtualRadar.Library
         [TestMethod]
         public void Flush_Writes_Correct_Value_File_Content_For_Single_Line()
         {
-            var fileName = "";
-            var lines = Array.Empty<string>();
-            _FileSystem
-                .Setup(r => r.WriteAllLines(It.IsAny<string>(), It.IsAny<IEnumerable<string>>()))
-                .Callback((string fn, IEnumerable<string> l) => {
-                    fileName = fn;
-                    lines = l.ToArray();
-                });
             _ThreadingEnvironment.SetupGet(r => r.CurrentThreadId).Returns(() => 99);
             _Clock.Now = new DateTimeOffset(2001, 2, 3, 4, 5, 6, 789, TimeSpan.Zero);
 
             _Log.WriteLine("Test");
             _Log.Flush();
 
-            Assert.AreEqual(1, lines.Length);
-            Assert.AreEqual(@"C:\Folder\VirtualRadarLog.txt", fileName);
-            var line = lines[0];
-            Assert.AreEqual("[2001-02-03 04:05:06.789 UTC] [t99] Test", line);
+            var lines = _FileSystem
+                .GetFileContentAsString(@"C:\Folder\VirtualRadarLog.txt")
+                .SplitIntoLines();
+
+            Assert.AreEqual(1, lines.Count);
+            Assert.AreEqual("[2001-02-03 04:05:06.789 UTC] [t99] Test", lines[0]);
         }
 
         [TestMethod]
         public async Task FlushAsync_Writes_Correct_Value_File_Content_For_Single_Line()
         {
-            var fileName = "";
-            var lines = Array.Empty<string>();
-            _FileSystem
-                .Setup(r => r.WriteAllLines(It.IsAny<string>(), It.IsAny<IEnumerable<string>>()))
-                .Callback((string fn, IEnumerable<string> l) => {
-                    fileName = fn;
-                    lines = l.ToArray();
-                });
             _ThreadingEnvironment.SetupGet(r => r.CurrentThreadId).Returns(() => 99);
             _Clock.Now = new DateTimeOffset(2001, 2, 3, 4, 5, 6, 789, TimeSpan.Zero);
 
             _Log.WriteLine("Test");
             await _Log.FlushAsync();
 
-            Assert.AreEqual(@"C:\Folder\VirtualRadarLog.txt", fileName);
-            Assert.AreEqual(1, lines.Length);
-            var line = lines[0];
-            Assert.AreEqual("[2001-02-03 04:05:06.789 UTC] [t99] Test", line);
+            var lines = _FileSystem
+                .GetFileContentAsString(@"C:\Folder\VirtualRadarLog.txt")
+                .SplitIntoLines();
+
+            Assert.AreEqual(1, lines.Count);
+            Assert.AreEqual("[2001-02-03 04:05:06.789 UTC] [t99] Test", lines[0]);
         }
 
         [TestMethod]
@@ -135,12 +124,7 @@ namespace Test.VirtualRadar.Library
         [DataRow("+ Old continuation line")]
         public void Log_Entries_From_Previous_Sessions_Are_Not_Lost(string text)
         {
-            _FileSystem
-                .Setup(r => r.FileExists(It.IsAny<string>()))
-                .Returns((string fn) => true);
-            _FileSystem
-                .Setup(r => r.ReadAllLines(It.IsAny<string>()))
-                .Returns((string fn) => new string[] { text });
+            _FileSystem.AddFileContent(@"C:\Folder\VirtualRadarLog.txt", text);
 
             var messages = _Log.GetContent();
 
@@ -153,12 +137,7 @@ namespace Test.VirtualRadar.Library
         [DataRow(" ")]
         public void Blank_Lines_In_Log_Are_Ignored(string text)
         {
-            _FileSystem
-                .Setup(r => r.FileExists(It.IsAny<string>()))
-                .Returns((string fn) => true);
-            _FileSystem
-                .Setup(r => r.ReadAllLines(It.IsAny<string>()))
-                .Returns((string fn) => new string[] { text });
+            _FileSystem.AddFileContent(@"C:\Folder\VirtualRadarLog.txt", text);
 
             var messages = _Log.GetContent();
 

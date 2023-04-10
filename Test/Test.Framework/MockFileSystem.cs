@@ -110,6 +110,19 @@ namespace Test.Framework
         }
 
         /// <summary>
+        /// Returns the content of a file as a string.
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        public string GetFileContentAsString(string fullPath, Encoding encoding = null)
+        {
+            return (encoding ?? Encoding.UTF8).GetString(
+                CaseSensitiveFileContent[fullPath]
+            );
+        }
+
+        /// <summary>
         /// Removes the file content and optionally, if there are no other files in the folder,
         /// the file's folder.
         /// </summary>
