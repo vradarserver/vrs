@@ -8,12 +8,12 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-namespace VirtualRadar.Interface.Database
+namespace VirtualRadar.Interface.KineticData
 {
     /// <summary>
     /// A simple data transfer object that describes a record from the BaseStation database for an aircraft.
     /// </summary>
-    public class BaseStationAircraft : BaseStationAircraftKeyless
+    public class KineticAircraft : KineticAircraftKeyless
     {
         /// <summary>
         /// Gets or sets the unique identifier of the aircraft in the database.
@@ -23,7 +23,7 @@ namespace VirtualRadar.Interface.Database
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public BaseStationAircraft() : base()
+        public KineticAircraft() : base()
         {
         }
 
@@ -32,7 +32,7 @@ namespace VirtualRadar.Interface.Database
         /// aircraft passed in.
         /// </summary>
         /// <param name="donorAircraft"></param>
-        public BaseStationAircraft(BaseStationAircraftKeyless donorAircraft) : base(donorAircraft)
+        public KineticAircraft(KineticAircraftKeyless donorAircraft) : base(donorAircraft)
         {
         }
 
@@ -41,7 +41,7 @@ namespace VirtualRadar.Interface.Database
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public virtual bool IsSameAircraft(BaseStationAircraft other)
+        public virtual bool IsSameAircraft(KineticAircraft other)
         {
             var result = Object.ReferenceEquals(this, other);
             if(!result) {

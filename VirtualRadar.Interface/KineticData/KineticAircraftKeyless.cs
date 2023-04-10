@@ -8,7 +8,7 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-namespace VirtualRadar.Interface.Database
+namespace VirtualRadar.Interface.KineticData
 {
     /// <summary>
     /// All of the aircraft details in a BaseStation.sqb Aircraft table except the primary key field.
@@ -16,7 +16,7 @@ namespace VirtualRadar.Interface.Database
     /// <remarks>
     /// In the .NET Framework version of VRS this was known as BaseStationAircraftUpsert.
     /// </remarks>
-    public class BaseStationAircraftKeyless
+    public class KineticAircraftKeyless
     {
         /// <summary>
         /// Gets or sets the aircraft's 'class' - can't find out what this field actually is, guessing it's the species?
@@ -267,7 +267,7 @@ namespace VirtualRadar.Interface.Database
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public BaseStationAircraftKeyless()
+        public KineticAircraftKeyless()
         {
         }
 
@@ -275,7 +275,7 @@ namespace VirtualRadar.Interface.Database
         /// Creates a new object.
         /// </summary>
         /// <param name="aircraft"></param>
-        public BaseStationAircraftKeyless(BaseStationAircraftKeyless aircraft)
+        public KineticAircraftKeyless(KineticAircraftKeyless aircraft)
         {
             AircraftClass =     aircraft.AircraftClass;
             CofACategory =      aircraft.CofACategory;
@@ -332,7 +332,7 @@ namespace VirtualRadar.Interface.Database
         /// Copies the object's values to an aircraft.
         /// </summary>
         /// <param name="aircraft"></param>
-        public void ApplyTo(BaseStationAircraftKeyless aircraft)
+        public void ApplyTo(KineticAircraftKeyless aircraft)
         {
             aircraft.AircraftClass =     AircraftClass;
             aircraft.CofACategory =      CofACategory;
@@ -390,7 +390,7 @@ namespace VirtualRadar.Interface.Database
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public virtual bool IsSameAircraft(BaseStationAircraftKeyless other)
+        public virtual bool IsSameAircraft(KineticAircraftKeyless other)
         {
             var result = Object.ReferenceEquals(this, other);
             if(!result) {
