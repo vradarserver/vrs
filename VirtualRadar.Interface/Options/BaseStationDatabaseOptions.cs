@@ -1,4 +1,4 @@
-﻿// Copyright © 2014 onwards, Andrew Whewell
+﻿// Copyright © 2023 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -8,33 +8,29 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-namespace VirtualRadar.Interface.KineticData
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+namespace VirtualRadar.Interface.Options
 {
     /// <summary>
-    /// An extension of the <see cref="KineticAircraft"/> object that includes a count of flights.
+    /// Options that implementations of <see cref="IBaseStationDatabase"/> can accept. Not
+    /// all implementations will honour all options.
     /// </summary>
-    public class KineticAircraftAndFlightsCount : KineticAircraft
+    public class BaseStationDatabaseOptions
     {
         /// <summary>
-        /// Gets or sets the number of flight records for the aircraft.
+        /// If true then database diagnostics are shown in the debug console. This
+        /// might not be observed by all implementations.
         /// </summary>
-        public int FlightsCount { get; set; }
+        public bool ShowDatabaseDiagnosticsInDebugConsole { get; set; }
 
         /// <summary>
-        /// Creates a new object.
+        /// Used by Newtonsoft.Json to preserve properties that it does not know how to deserialise.
+        /// Allows users to regress to earlier versions of the program without losing options that
+        /// were added in a later version.
         /// </summary>
-        public KineticAircraftAndFlightsCount() : base()
-        {
-        }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        /// <param name="copyFrom"></param>
-        /// <param name="flightsCount"></param>
-        public KineticAircraftAndFlightsCount(KineticAircraft copyFrom, int flightsCount) : base(copyFrom)
-        {
-            FlightsCount = flightsCount;
-        }
+        [JsonExtensionData]
+        public Dictionary<string, JToken> PreservedForwardCompatibleProperties { get; set; }
     }
 }

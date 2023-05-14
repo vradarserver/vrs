@@ -11,7 +11,7 @@
 namespace VirtualRadar.Interface.KineticData
 {
     /// <summary>
-    /// A class holding information from a single record from the Session table.
+    /// A class holding information from a single record from the Sessions table.
     /// </summary>
     public class KineticSession
     {

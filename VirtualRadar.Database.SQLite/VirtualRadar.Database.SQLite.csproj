@@ -17,6 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="BaseStation\BaseStationSqbScripts.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BaseStationSqbScripts.resx</DependentUpon>
+    </Compile>
     <Compile Update="Users\UserSqbScripts.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -25,6 +30,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="BaseStation\BaseStationSqbScripts.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BaseStationSqbScripts.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Users\UserSqbScripts.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>UserSqbScripts.Designer.cs</LastGenOutput>

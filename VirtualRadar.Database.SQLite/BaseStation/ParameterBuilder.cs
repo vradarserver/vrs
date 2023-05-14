@@ -1,4 +1,4 @@
-﻿// Copyright © 2014 onwards, Andrew Whewell
+﻿// Copyright © 2017 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -8,33 +8,18 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-namespace VirtualRadar.Interface.KineticData
+namespace VirtualRadar.Database.SQLite.BaseStation
 {
-    /// <summary>
-    /// An extension of the <see cref="KineticAircraft"/> object that includes a count of flights.
-    /// </summary>
-    public class KineticAircraftAndFlightsCount : KineticAircraft
+    public static class ParameterBuilder
     {
         /// <summary>
-        /// Gets or sets the number of flight records for the aircraft.
+        /// Normalises a Mode-S ICAO24.
         /// </summary>
-        public int FlightsCount { get; set; }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        public KineticAircraftAndFlightsCount() : base()
+        /// <param name="icao"></param>
+        /// <returns></returns>
+        public static string NormaliseAircraftIcao(string icao)
         {
-        }
-
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        /// <param name="copyFrom"></param>
-        /// <param name="flightsCount"></param>
-        public KineticAircraftAndFlightsCount(KineticAircraft copyFrom, int flightsCount) : base(copyFrom)
-        {
-            FlightsCount = flightsCount;
+            return (icao ?? "").ToUpperInvariant();
         }
     }
 }

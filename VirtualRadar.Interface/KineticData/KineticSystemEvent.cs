@@ -1,4 +1,4 @@
-﻿// Copyright © 2014 onwards, Andrew Whewell
+﻿// Copyright © 2010 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -11,30 +11,28 @@
 namespace VirtualRadar.Interface.KineticData
 {
     /// <summary>
-    /// An extension of the <see cref="KineticAircraft"/> object that includes a count of flights.
+    /// A class that carries the information from a single record in the SystemEvents table from the BaseStation database.
     /// </summary>
-    public class KineticAircraftAndFlightsCount : KineticAircraft
+    public class KineticSystemEvent
     {
         /// <summary>
-        /// Gets or sets the number of flight records for the aircraft.
+        /// Gets or sets the unique identifier of the record in the database.
         /// </summary>
-        public int FlightsCount { get; set; }
+        public int SystemEventsID { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the UTC time that the record was written.
+        /// </summary>
+        public DateTime TimeStamp { get; set; }
 
         /// <summary>
-        /// Creates a new object.
+        /// Gets or sets the name of the application that wrote the record. Cannot be null, maximum of 15 characters.
         /// </summary>
-        public KineticAircraftAndFlightsCount() : base()
-        {
-        }
+        public string App { get; set; }
 
         /// <summary>
-        /// Creates a new object.
+        /// Gets or sets a description of the system event. Cannot be null, maximum of 100 characters.
         /// </summary>
-        /// <param name="copyFrom"></param>
-        /// <param name="flightsCount"></param>
-        public KineticAircraftAndFlightsCount(KineticAircraft copyFrom, int flightsCount) : base(copyFrom)
-        {
-            FlightsCount = flightsCount;
-        }
+        public string Msg { get; set; }
     }
 }

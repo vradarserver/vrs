@@ -38,22 +38,6 @@ namespace VirtualRadar.Interface.KineticData
         string Engine { get; }
 
         /// <summary>
-        /// Gets or sets the full path and filename of the database. Changing the filename causes the current connection
-        /// to close, the next operation on the database causes it to open a new connection as per usual.
-        /// </summary>
-        string FileName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the full path and filename of the log.
-        /// </summary>
-        /// <remarks>
-        /// This is not used by the application as it has an impact on performance but some plugins may use it to trace
-        /// database calls. The implementation may leave the file open and locked while the object is alive. Logging may
-        /// not be supported by all implementations.
-        /// </remarks>
-        string LogFileName { get; set; }
-
-        /// <summary>
         /// Gets a value indicating that there is an open connection to the database.
         /// </summary>
         bool IsConnected { get; }
@@ -75,16 +59,6 @@ namespace VirtualRadar.Interface.KineticData
         /// maximum number of parameters using just the ADO.NET provider. So this could be a bit arbitrary.
         /// </remarks>
         int MaxParameters { get; }
-
-        /// <summary>
-        /// Raised before <see cref="FileName"/> is changed as the result of a configuration change.
-        /// </summary>
-        event EventHandler FileNameChanging;
-
-        /// <summary>
-        /// Raised after <see cref="FileName"/> has changed as the result of a configuration change.
-        /// </summary>
-        event EventHandler FileNameChanged;
 
         /// <summary>
         /// Raised after an aircraft has been updated.
@@ -163,6 +137,7 @@ namespace VirtualRadar.Interface.KineticData
         /// <returns></returns>
         List<KineticAircraft> GetAllAircraft();
 
+/*
         /// <summary>
         /// Returns a list of every flight, or a subset of every flight, that matches the criteria passed across.
         /// </summary>
@@ -221,25 +196,25 @@ namespace VirtualRadar.Interface.KineticData
         /// Returns the entire content of the SystemEvents table.
         /// </summary>
         /// <returns></returns>
-        IList<KineticSystemEvents> GetSystemEvents();
+        IList<KineticSystemEvent> GetSystemEvents();
 
         /// <summary>
         /// Inserts a new SystemEvents record and sets the SystemEventsID to the identifier of the new record.
         /// </summary>
         /// <param name="systemEvent"></param>
-        void InsertSystemEvent(KineticSystemEvents systemEvent);
+        void InsertSystemEvent(KineticSystemEvent systemEvent);
 
         /// <summary>
         /// Updates an existing SystemEvents record.
         /// </summary>
         /// <param name="systemEvent"></param>
-        void UpdateSystemEvent(KineticSystemEvents systemEvent);
+        void UpdateSystemEvent(KineticSystemEvent systemEvent);
 
         /// <summary>
         /// Deletes an existing SystemEvents record.
         /// </summary>
         /// <param name="systemEvent"></param>
-        void DeleteSystemEvent(KineticSystemEvents systemEvent);
+        void DeleteSystemEvent(KineticSystemEvent systemEvent);
 
         /// <summary>
         /// Returns all of the locations from BaseStation's Locations table.
@@ -289,6 +264,7 @@ namespace VirtualRadar.Interface.KineticData
         /// </summary>
         /// <param name="session"></param>
         void DeleteSession(KineticSession session);
+*/
 
         /// <summary>
         /// Retrieves an aircraft record by its identifier.
@@ -373,6 +349,7 @@ namespace VirtualRadar.Interface.KineticData
         /// <param name="aircraft"></param>
         void DeleteAircraft(KineticAircraft aircraft);
 
+/*
         /// <summary>
         /// Retrieves a flight record from the database by its ID number. This does not read the associated aircraft record.
         /// </summary>
@@ -405,5 +382,6 @@ namespace VirtualRadar.Interface.KineticData
         /// <param name="flights"></param>
         /// <returns></returns>
         KineticFlight[] UpsertManyFlights(IEnumerable<KineticFlightKeyless> flights);
+*/
     }
 }
