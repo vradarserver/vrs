@@ -30,6 +30,7 @@ namespace VirtualRadar.Library
             services.AddSingleton<VirtualRadar.Interface.Options.ICoreSettingsStorage,                  Options.CoreSettingsStorage>();
 
             services.AddScoped<VirtualRadar.Interface.Settings.IConfigurationStorage,                   Settings.ConfigurationStorage>();
+            services.AddScoped<VirtualRadar.Interface.Settings.ISharedConfiguration,                    Settings.SharedConfiguration>();
 
             // The feed manager creates a separate scope for each receiver that is instantiated
             services.AddScoped<VirtualRadar.Interface.Adsb.IAdsbTranslator,                             Adsb.AdsbTranslator>();
