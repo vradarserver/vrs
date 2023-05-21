@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace VirtualRadar.Database.SQLite.BaseStation {
+namespace VirtualRadar.Database.SQLite.KineticData {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace VirtualRadar.Database.SQLite.BaseStation {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("VirtualRadar.Database.SQLite.BaseStation.BaseStationSqbScripts", typeof(BaseStationSqbScripts).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("VirtualRadar.Database.SQLite.KineticData.BaseStationSqbScripts", typeof(BaseStationSqbScripts).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

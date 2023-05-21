@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using VirtualRadar.Interface.KineticData;
 using VirtualRadar.Interface.Options;
 
-namespace VirtualRadar.Database.SQLite.BaseStation
+namespace VirtualRadar.Database.SQLite.KineticData
 {
     class BaseStationContext : DbContext
     {

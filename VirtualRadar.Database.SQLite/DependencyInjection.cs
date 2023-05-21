@@ -18,10 +18,17 @@ namespace VirtualRadar.Database.SQLite
     {
         public static IServiceCollection AddVirtualRadarDatabaseSQLiteGroup(this IServiceCollection services)
         {
+            // Self-implements
+            services.AddScoped<KineticData.BaseStationContext,  KineticData.BaseStationContext>();
+            services.AddScoped<Users.UserContext,               Users.UserContext>();
+
+            // Singletons
             services.AddSingleton<VirtualRadar.Interface.StandingData.IStandingDataManager, StandingData.StandingDataManager>();
 
-            services.AddScoped<VirtualRadar.Interface.Settings.IUserManager, Users.UserManager>();
-            services.AddScoped<Users.UserContext, Users.UserContext>();
+            // Scoped
+            services.AddScoped<VirtualRadar.Interface.KineticData.IBaseStationDatabase,         KineticData.Database>();
+            services.AddScoped<VirtualRadar.Interface.KineticData.IBaseStationDatabaseSQLite,   KineticData.Database>();
+            services.AddScoped<VirtualRadar.Interface.Settings.IUserManager,                    Users.UserManager>();
 
             // Transients
             services.AddTransient<VirtualRadar.Interface.Settings.IUser, Users.User>();

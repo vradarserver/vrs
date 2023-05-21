@@ -21,7 +21,7 @@ using VirtualRadar.Interface.Options;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StandingData;
 
-namespace VirtualRadar.Database.SQLite.BaseStation
+namespace VirtualRadar.Database.SQLite.KineticData
 {
     /// <summary>
     /// Default implementation of <see cref="IBaseStationDatabase"/>.
