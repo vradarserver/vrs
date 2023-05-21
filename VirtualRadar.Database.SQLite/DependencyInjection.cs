@@ -1,4 +1,4 @@
-// Copyright © 2022 onwards, Andrew Whewell
+﻿// Copyright © 2022 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,15 +19,14 @@ namespace VirtualRadar.Database.SQLite
         public static IServiceCollection AddVirtualRadarDatabaseSQLiteGroup(this IServiceCollection services)
         {
             // Self-implements
-            services.AddScoped<KineticData.BaseStationContext,  KineticData.BaseStationContext>();
-            services.AddScoped<Users.UserContext,               Users.UserContext>();
+            services.AddScoped<Users.UserContext, Users.UserContext>();
 
             // Singletons
             services.AddSingleton<VirtualRadar.Interface.StandingData.IStandingDataManager, StandingData.StandingDataManager>();
 
             // Scoped
-            services.AddScoped<VirtualRadar.Interface.KineticData.IBaseStationDatabase,         KineticData.Database>();
-            services.AddScoped<VirtualRadar.Interface.KineticData.IBaseStationDatabaseSQLite,   KineticData.Database>();
+            services.AddScoped<VirtualRadar.Interface.KineticData.IBaseStationDatabase,         KineticData.BaseStationDatabase>();
+            services.AddScoped<VirtualRadar.Interface.KineticData.IBaseStationDatabaseSQLite,   KineticData.BaseStationDatabase>();
             services.AddScoped<VirtualRadar.Interface.Settings.IUserManager,                    Users.UserManager>();
 
             // Transients

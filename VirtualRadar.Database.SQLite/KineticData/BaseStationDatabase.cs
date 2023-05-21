@@ -10,10 +10,8 @@
 
 using System.Data;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.KineticData;
@@ -26,7 +24,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
     /// <summary>
     /// Default implementation of <see cref="IBaseStationDatabase"/>.
     /// </summary>
-    public sealed class Database : IBaseStationDatabaseSQLite
+    public sealed class BaseStationDatabase : IBaseStationDatabaseSQLite
     {
         private readonly IFileSystem _FileSystem;
         private readonly ISharedConfiguration _SharedConfiguration;
@@ -107,7 +105,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
         /// <param name="clock"></param>
         /// <param name="standingDataManager"></param>
         /// <param name="baseStationDatabaseOptions"></param>
-        public Database(
+        public BaseStationDatabase(
             IFileSystem fileSystem,
             ISharedConfiguration sharedConfiguration,
             IClock clock,
@@ -133,7 +131,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
         /// <summary>
         /// Finalises the object.
         /// </summary>
-        ~Database() => Dispose(false);
+        ~BaseStationDatabase() => Dispose(false);
 
         /// <inheritdoc/>
         public void Dispose()
