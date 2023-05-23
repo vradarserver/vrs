@@ -68,37 +68,44 @@ namespace VirtualRadar.Database.SQLite.KineticData
 
             modelBuilder.Entity<KineticAircraft>(entity => {
                 entity.ToTable("Aircraft");
+                entity.HasKey(r => r.AircraftID);
                 entity.Property(r => r.FirstCreated).HasConversion(new ISO8601Converter());
                 entity.Property(r => r.LastModified).HasConversion(new ISO8601Converter());
             });
 
             modelBuilder.Entity<KineticDBHistory>(entity => {
                 entity.ToTable("DBHistory");
+                entity.HasKey(r => r.DBHistoryID);
                 entity.Property(r => r.TimeStamp).HasConversion(new ISO8601Converter());
             });
 
             modelBuilder.Entity<KineticDBInfo>(entity => {
                 entity.ToTable("DBInfo");
+                entity.HasNoKey();
             });
 
             modelBuilder.Entity<KineticFlight>(entity => {
                 entity.ToTable("Flights");
+                entity.HasKey(r => r.FlightID);
                 entity.Property(r => r.StartTime).HasConversion(new ISO8601Converter());
                 entity.Property(r => r.EndTime).HasConversion(new ISO8601Converter());
             });
 
             modelBuilder.Entity<KineticLocation>(entity => {
                 entity.ToTable("Locations");
+                entity.HasKey(r => r.LocationID);
             });
 
             modelBuilder.Entity<KineticSession>(entity => {
                 entity.ToTable("Sessions");
+                entity.HasKey(r => r.SessionID);
                 entity.Property(r => r.StartTime).HasConversion(new ISO8601Converter());
                 entity.Property(r => r.EndTime).HasConversion(new ISO8601Converter());
             });
 
             modelBuilder.Entity<KineticSystemEvent>(entity => {
                 entity.ToTable("SystemEvents");
+                entity.HasKey(r => r.SystemEventsID);
                 entity.Property(r => r.TimeStamp).HasConversion(new ISO8601Converter());
             });
         }

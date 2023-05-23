@@ -195,10 +195,14 @@ namespace VirtualRadar.Database.SQLite.KineticData
         /// <inheritdoc/>
         public bool TestConnection()
         {
-            bool result = false;
+            var result = false;
             lock(_ConnectionLock) {
                 OpenConnection();
                 result = _Context != null;
+                if(result) {
+                    // Force the context to actually *do* something...
+                    result = _Context.DBHistories.Count() >= 0;
+                }
             }
 
             return result;
@@ -829,7 +833,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
 
         KineticAircraft Aircraft_GetById(int aircraftId) => _Context.Aircraft.FirstOrDefault(r => r.AircraftID == aircraftId);
 
-        KineticAircraft Aircraft_GetByRegistration(string registration) => _Context.Aircraft.FirstOrDefault(r => r.RegisteredOwners == registration);
+        KineticAircraft Aircraft_GetByRegistration(string registration) => _Context.Aircraft.FirstOrDefault(r => r.Registration == registration);
 
         void Aircraft_Insert(KineticAircraft aircraft) => _Context.Aircraft.Add(aircraft);
 

@@ -79,12 +79,12 @@ dotnet_naming_symbols.simple_pascal_cased.applicable_accessibilities = public, i
 
 # constant_fields group - these need to be pascal cased
 dotnet_naming_symbols.constant_fields.applicable_kinds            = field
-dotnet_naming_symbols.constant_fields.applicable_accessibilities  = public, internal, private, protected, protected_internal, private_protected
+dotnet_naming_symbols.constant_fields.applicable_accessibilities  = public, internal
 dotnet_naming_symbols.constant_fields.required_modifiers          = const
 
 # fields group - these must be underscore pascal cased
-dotnet_naming_symbols.fields.applicable_kinds            = field
-dotnet_naming_symbols.fields.applicable_accessibilities  = *
+dotnet_naming_symbols.pascal_fields.applicable_kinds           = field
+dotnet_naming_symbols.pascal_fields.applicable_accessibilities = private, protected, protected_internal, private_protected
 
 # simple_camel_cased group - these are always camel cased
 dotnet_naming_symbols.simple_camel_cased.applicable_kinds            = parameter, local, local_function
@@ -98,9 +98,14 @@ dotnet_naming_symbols.interfaces.applicable_accessibilities  = *
 dotnet_naming_symbols.type_params.applicable_kinds            = type_parameter
 dotnet_naming_symbols.type_params.applicable_accessibilities  = *
 
+# Enforce pascal case
+dotnet_naming_rule.must_be_pascal_cased.severity = error
+dotnet_naming_rule.must_be_pascal_cased.symbols  = simple_pascal_cased, constant_fields
+dotnet_naming_rule.must_be_pascal_cased.style    = pascal_case_style
+
 # Enforce underscore-prefixed pascal case
 dotnet_naming_rule.must_be_underscore_pascal_cased.severity = error
-dotnet_naming_rule.must_be_underscore_pascal_cased.symbols  = fields
+dotnet_naming_rule.must_be_underscore_pascal_cased.symbols  = pascal_fields
 dotnet_naming_rule.must_be_underscore_pascal_cased.style    = underscore_pascal_case_style
 
 # Enforce I-prefixed pascal case
@@ -112,11 +117,6 @@ dotnet_naming_rule.must_be_I_pascal_cased.style    = interface_pascal_case_style
 dotnet_naming_rule.must_be_T_pascal_cased.severity = error
 dotnet_naming_rule.must_be_T_pascal_cased.symbols  = type_params
 dotnet_naming_rule.must_be_T_pascal_cased.style    = type_param_pascal_case_style
-
-# Enforce pascal case
-dotnet_naming_rule.must_be_pascal_cased.severity = error
-dotnet_naming_rule.must_be_pascal_cased.symbols  = simple_pascal_cased, constant_fields
-dotnet_naming_rule.must_be_pascal_cased.style    = pascal_case_style
 
 # Enforce camel case
 dotnet_naming_rule.must_be_camel_cased.severity = error

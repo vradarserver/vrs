@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System.Data;
+using System.IO;
+using System.Text;
+using Dapper;
 using Test.Framework;
 using VirtualRadar.Database.SQLite.KineticData;
 using VirtualRadar.Interface;
@@ -11,6 +14,11 @@ namespace Test.VirtualRadar.Database.SQLite
     [TestClass]
     public class BaseStationDatabase_Tests
     {
+        // Eventually these should go into the shared BaseStation database tests base
+        public const string SchemaPrefix = "";
+        Func<IDbConnection> _CreateConnection;
+        private string _SqlReturnNewIdentity = "SELECT last_insert_rowid();";
+
         private MockFileSystem _FileSystem;
         private EnvironmentOptions _EnvironmentOptions;
         private BaseStationDatabaseOptions _BaseStationDatabaseOptions;
@@ -24,6 +32,9 @@ namespace Test.VirtualRadar.Database.SQLite
         [TestInitialize]
         public void TestInitialise()
         {
+            // These can be removed once we have the common base
+             _CreateConnection = () => CreateSqliteConnection(null);
+
             _SharedConfiguration = new();
             _Configuration = _SharedConfiguration.Configuration;
 
@@ -39,7 +50,7 @@ namespace Test.VirtualRadar.Database.SQLite
             File.WriteAllBytes(_BaseStationSqbFullPath, TestData.BaseStation_sqb);
 
             _FileSystem = new();
-            _FileSystem.AddFileContent(Path.Combine(_EnvironmentOptions.WorkingFolder, _BaseStationSqbFullPath), Array.Empty<byte>());
+            _FileSystem.AddFileContent(_BaseStationSqbFullPath, new byte[] { 0 });
 
             _MockClock = new();
 
@@ -60,16 +71,149 @@ namespace Test.VirtualRadar.Database.SQLite
         [TestCleanup]
         public void TestCleanup()
         {
-            if(File.Exists(_BaseStationSqbFullPath)) {
-                File.Delete(_BaseStationSqbFullPath);
+            _Implementation.Dispose();
+            DeleteTestFile();
+        }
+
+        private void DeleteTestFile()
+        {
+            try {
+                _FileSystem.DeleteFile(_BaseStationSqbFullPath);
+            } catch(IOException) {
+                // You might get this if it's been left in the mock file system, it
+                // is completely benign.
+            }
+
+            for(var i = 0;i < 10;++i) {
+                try {
+                    if(File.Exists(_BaseStationSqbFullPath)) {
+                        File.Delete(_BaseStationSqbFullPath);
+                    }
+                } catch(IOException) {
+                    Thread.Sleep(50);
+                }
             }
         }
 
+        private IDbConnection CreateSqliteConnection(string fileName = null)
+        {
+            var builder = new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder() {
+                DataSource = fileName ?? _BaseStationSqbFullPath,
+            };
+            var connection = new Microsoft.Data.Sqlite.SqliteConnection(builder.ConnectionString);
+
+            return connection;
+        }
+
+        protected long AddAircraft(KineticAircraft aircraft)
+        {
+            long result = 0;
+
+            using(var connection = _CreateConnection()) {
+                connection.Open();
+
+                var dynamicParameters = new Dapper.DynamicParameters();
+                var fieldNames = new StringBuilder();
+                var parameters = new StringBuilder();
+
+                foreach(var property in typeof(KineticAircraft).GetProperties()) {
+                    var fieldName = property.Name;
+                    if(fieldName == nameof(KineticAircraft.AircraftID)) {
+                        continue;
+                    }
+
+                    if(fieldNames.Length > 0) {
+                        fieldNames.Append(',');
+                    }
+                    if(parameters.Length > 0) {
+                        parameters.Append(',');
+                    }
+
+                    fieldNames.Append($"[{fieldName}]");
+                    parameters.Append($"@{fieldName}");
+
+                    dynamicParameters.Add(fieldName, property.GetValue(aircraft, null));
+                }
+
+                result = connection.ExecuteScalar<long>($"INSERT INTO {SchemaPrefix}[Aircraft] ({fieldNames}) VALUES ({parameters}); {_SqlReturnNewIdentity}", dynamicParameters);
+                aircraft.AircraftID = (int)result;
+            }
+
+            return result;
+        }
+
+        protected static KineticAircraft CreateAircraft(string icao24 = "123456", string registration = "G-VRST")
+        {
+            return new KineticAircraft() {
+                ModeS = icao24,
+                Registration = registration,
+            };
+        }
+
+        #region TestConnection
         [TestMethod]
         public void TestConnection_Returns_False_If_File_Could_Not_Be_Opened()
         {
-            File.Delete(_BaseStationSqbFullPath);
+            DeleteTestFile();
             Assert.IsFalse(_Implementation.TestConnection());
         }
+
+        [TestMethod]
+        public void TestConnection_Returns_True_If_File_Could_Be_Opened()
+        {
+            Assert.IsTrue(_Implementation.TestConnection());
+        }
+
+        [TestMethod]
+        public void TestConnection_Leaves_SQLite_Connection_Open()
+        {
+            Assert.IsTrue(_Implementation.TestConnection());
+            Assert.IsTrue(_Implementation.IsConnected);
+
+            bool seenConnectionOpen = false;
+            try {
+                File.Delete(_BaseStationSqbFullPath);
+            } catch(IOException) {
+                seenConnectionOpen = true;
+            }
+            Assert.IsTrue(seenConnectionOpen);
+        }
+        #endregion
+
+        #region Connection
+        [TestMethod]
+        public void Connection_Does_Not_Create_File_If_Missing()
+        {
+            DeleteTestFile();
+            _Implementation.GetAircraftByRegistration("G-ABCD");
+            Assert.IsFalse(File.Exists(_BaseStationSqbFullPath));
+        }
+
+        [TestMethod]
+        public void SQLite_Connection_Does_Not_Try_To_Use_Zero_Length_Files()
+        {
+            DeleteTestFile();
+            File
+                .Create(_BaseStationSqbFullPath)
+                .Close();
+
+            _Implementation.GetAircraftByRegistration("G-ABCD");
+
+            Assert.AreEqual(false, _Implementation.IsConnected);
+        }
+
+        [TestMethod]
+        public void SQLite_Connection_Can_Work_With_ReadOnly_Access()
+        {
+            var fileInfo = new FileInfo(_BaseStationSqbFullPath);
+            try {
+                AddAircraft(CreateAircraft("ABCDEF", "G-AGWP"));
+                fileInfo.IsReadOnly = true;
+                Assert.IsNotNull(_Implementation.GetAircraftByRegistration("G-AGWP"));
+            } finally {
+                fileInfo.IsReadOnly = false;
+            }
+        }
+        #endregion
     }
 }
