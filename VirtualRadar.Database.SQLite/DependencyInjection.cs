@@ -24,9 +24,12 @@ namespace VirtualRadar.Database.SQLite
             // Singletons
             services.AddSingleton<VirtualRadar.Interface.StandingData.IStandingDataManager, StandingData.StandingDataManager>();
 
+            // Multi-service singletons
+            services.AddScoped<KineticData.BaseStationDatabase, KineticData.BaseStationDatabase>();
+            services.AddScoped<VirtualRadar.Interface.KineticData.IBaseStationDatabase>         (s => s.GetRequiredService<KineticData.BaseStationDatabase>());
+            services.AddScoped<VirtualRadar.Interface.KineticData.IBaseStationDatabaseSQLite>   (s => s.GetRequiredService<KineticData.BaseStationDatabase>());
+
             // Scoped
-            services.AddScoped<VirtualRadar.Interface.KineticData.IBaseStationDatabase,         KineticData.BaseStationDatabase>();
-            services.AddScoped<VirtualRadar.Interface.KineticData.IBaseStationDatabaseSQLite,   KineticData.BaseStationDatabase>();
             services.AddScoped<VirtualRadar.Interface.Settings.IUserManager,                    Users.UserManager>();
 
             // Transients
