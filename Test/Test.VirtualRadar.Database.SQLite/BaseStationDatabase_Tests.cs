@@ -271,5 +271,31 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.IsFalse(_Implementation.FileExists());
         }
         #endregion
+
+        #region FileIsEmpty
+        [TestMethod]
+        public void SQLite_FileIsEmpty_Returns_True_If_The_Configured_File_Is_Empty()
+        {
+            _FileSystem.WriteAllBytes(_BaseStationSqbFullPath, Array.Empty<byte>());
+
+            Assert.IsTrue(_Implementation.FileIsEmpty());
+        }
+
+        [TestMethod]
+        public void SQLite_FileIsEmpty_Returns_False_If_The_FileName_Is_Not_Empty()
+        {
+            _FileSystem.WriteAllBytes(_BaseStationSqbFullPath, new byte[] { 0 });
+
+            Assert.IsFalse(_Implementation.FileIsEmpty());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FileNotFoundException))]
+        public void SQLite_FileIsEmpty_Throws_Exception_If_File_Does_Not_Exist()
+        {
+            DeleteTestFile();
+            _Implementation.FileIsEmpty();
+        }
+        #endregion
     }
 }
