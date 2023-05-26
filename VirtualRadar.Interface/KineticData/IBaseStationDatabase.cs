@@ -66,18 +66,6 @@ namespace VirtualRadar.Interface.KineticData
         event EventHandler<EventArgs<KineticAircraft>> AircraftUpdated;
 
         /// <summary>
-        /// Returns true if the database file exists.
-        /// </summary>
-        /// <returns></returns>
-        bool FileExists();
-
-        /// <summary>
-        /// Returns true if the database file is zero length.
-        /// </summary>
-        /// <returns></returns>
-        bool FileIsEmpty();
-
-        /// <summary>
         /// Takes an exception that was thrown from TestConnection and attempts to correct the error that
         /// was encountered. If it's likely to have succeeded then returns true.
         /// </summary>
