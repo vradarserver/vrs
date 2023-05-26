@@ -193,16 +193,17 @@ namespace VirtualRadar.Database.SQLite.KineticData
         }
 
         /// <inheritdoc/>
-        public bool TestConnection()
+        public bool TestConnection(string fileName)
         {
             var result = false;
-            lock(_ConnectionLock) {
-                OpenConnection();
-                result = _Context != null;
-                if(result) {
+
+            try {
+                using(var context = new BaseStationContext(fileName, writeEnabled: false, new BaseStationDatabaseOptions())) {
                     // Force the context to actually *do* something...
-                    result = _Context.DBHistories.Count() >= 0;
+                    result = context.DBHistories.Count() >= 0;
                 }
+            } catch(SqliteException) {
+                result = false;
             }
 
             return result;

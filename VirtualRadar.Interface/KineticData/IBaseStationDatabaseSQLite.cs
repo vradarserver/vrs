@@ -15,5 +15,12 @@ namespace VirtualRadar.Interface.KineticData
     /// </summary>
     public interface IBaseStationDatabaseSQLite : IBaseStationDatabase
     {
+        /// <summary>
+        /// Returns true if a connection could be made to <see cref="fileName"/>, false if it could not.
+        /// If it could be made then the connection is left open.
+        /// </summary>
+        /// <param name="fileName">The file to test a connection to.</param>
+        /// <returns></returns>
+        bool TestConnection(string fileName);
     }
 }

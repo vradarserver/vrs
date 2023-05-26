@@ -154,29 +154,41 @@ namespace Test.VirtualRadar.Database.SQLite
         [TestMethod]
         public void TestConnection_Returns_False_If_File_Could_Not_Be_Opened()
         {
-            DeleteTestFile();
-            Assert.IsFalse(_Implementation.TestConnection());
+            Assert.IsFalse(_Implementation.TestConnection(@"file-does-not-exist.sqb-not"));
         }
 
         [TestMethod]
         public void TestConnection_Returns_True_If_File_Could_Be_Opened()
         {
-            Assert.IsTrue(_Implementation.TestConnection());
+            var temporaryFileName = Path.GetTempFileName();
+            try {
+                File.WriteAllBytes(temporaryFileName, TestData.BaseStation_sqb);
+                Assert.IsTrue(_Implementation.TestConnection(temporaryFileName));
+            } finally {
+                if(File.Exists(temporaryFileName)) {
+                    for(var i = 0;i < 10;++i) {
+                        try {
+                            File.Delete(temporaryFileName);
+                        } catch(IOException) {
+                            Thread.Sleep(50);
+                        }
+                    }
+                }
+            }
         }
 
         [TestMethod]
-        public void TestConnection_Leaves_SQLite_Connection_Open()
+        public void TestConnection_Closes_SQLite_Connection()
         {
-            Assert.IsTrue(_Implementation.TestConnection());
-            Assert.IsTrue(_Implementation.IsConnected);
+            Assert.IsTrue(_Implementation.TestConnection(_BaseStationSqbFullPath));
+            DeleteTestFile();
+        }
 
-            bool seenConnectionOpen = false;
-            try {
-                File.Delete(_BaseStationSqbFullPath);
-            } catch(IOException) {
-                seenConnectionOpen = true;
-            }
-            Assert.IsTrue(seenConnectionOpen);
+        [TestMethod]
+        public void TestConnection_Returns_False_If_File_Exists_But_Is_Not_SQLite_File()
+        {
+            File.WriteAllText(_BaseStationSqbFullPath, "Hello");
+            Assert.IsFalse(_Implementation.TestConnection(_BaseStationSqbFullPath));
         }
         #endregion
 

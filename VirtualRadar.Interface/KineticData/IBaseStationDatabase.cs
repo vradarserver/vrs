@@ -78,13 +78,6 @@ namespace VirtualRadar.Interface.KineticData
         bool FileIsEmpty();
 
         /// <summary>
-        /// Returns true if a connection could be made to <see cref="FileName"/>, false if it could not.
-        /// If it could be made then the connection is left open.
-        /// </summary>
-        /// <returns></returns>
-        bool TestConnection();
-
-        /// <summary>
         /// Takes an exception that was thrown from TestConnection and attempts to correct the error that
         /// was encountered. If it's likely to have succeeded then returns true.
         /// </summary>
