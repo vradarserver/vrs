@@ -245,5 +245,31 @@ namespace Test.VirtualRadar.Database.SQLite
             }
         }
         #endregion
+
+        #region FileExists
+        [TestMethod]
+        public void SQLite_FileExists_Returns_True_If_The_Configured_File_Exists()
+        {
+            Assert.IsTrue(_Implementation.FileExists());
+        }
+
+        [TestMethod]
+        public void SQLite_FileExists_Returns_False_If_The_Configured_File_Does_Not_Exist()
+        {
+            DeleteTestFile();
+            Assert.IsFalse(_Implementation.FileExists());
+        }
+
+        [TestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        public void SQLite_FileExists_Does_Not_Test_Null_Or_Empty_FileName(string configuredFileName)
+        {
+            DeleteTestFile();
+            _Configuration.BaseStationSettings.DatabaseFileName = configuredFileName;
+
+            Assert.IsFalse(_Implementation.FileExists());
+        }
+        #endregion
     }
 }
