@@ -190,6 +190,24 @@ namespace Test.VirtualRadar.Database.SQLite
             File.WriteAllText(_BaseStationSqbFullPath, "Hello");
             Assert.IsFalse(_Implementation.TestConnection(_BaseStationSqbFullPath));
         }
+
+        [TestMethod]
+        public void TestConnection_Can_Return_False_When_Connected()
+        {
+            _Implementation.GetAircraftByRegistration("G-ABCD");
+
+            Assert.IsFalse(_Implementation.TestConnection("does-not-exist"));
+        }
+
+        [TestMethod]
+        public void TestConnection_Does_Not_Affect_IsConnected_Property()
+        {
+            _Implementation.GetAircraftByRegistration("G-ABCD");
+
+            _Implementation.TestConnection("does-not-exist");
+
+            Assert.IsTrue(_Implementation.IsConnected);
+        }
         #endregion
 
         #region Connection
