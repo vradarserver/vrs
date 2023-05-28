@@ -182,7 +182,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
                     fileName ??= config.BaseStationSettings.DatabaseFileName;
                     writeSupportEnabled ??= WriteSupportEnabled;
 
-                    bool fileExists = _FileSystem.FileExists(fileName);
+                    bool fileExists = !String.IsNullOrWhiteSpace(fileName) && _FileSystem.FileExists(fileName);
                     bool zeroLength = fileExists && _FileSystem.FileSize(fileName) == 0;
 
                     if(!String.IsNullOrEmpty(fileName) && fileExists && (inCreateMode || !zeroLength)) {

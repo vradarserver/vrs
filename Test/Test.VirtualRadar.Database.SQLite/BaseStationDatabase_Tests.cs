@@ -247,6 +247,21 @@ namespace Test.VirtualRadar.Database.SQLite
         {
             Common_GetAircraftByRegistration_Returns_Null_If_Aircraft_Does_Not_Exist();
         }
+
+        [TestMethod]
+        public void GetAircraftByRegistration_Returns_Null_If_Database_File_Does_Not_Exist()
+        {
+            DeleteTestFile();
+            Assert.IsNull(_Implementation.GetAircraftByRegistration("REG"));
+        }
+
+        [TestMethod]
+        public void GetAircraftByRegistration_Returns_Null_If_Database_File_Not_Configured()
+        {
+            DeleteTestFile();
+            _Configuration.BaseStationSettings.DatabaseFileName = null;
+            Assert.IsNull(_Implementation.GetAircraftByRegistration("REG"));
+        }
         #endregion
     }
 }
