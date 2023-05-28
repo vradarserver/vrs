@@ -1,47 +1,32 @@
 ﻿using System.Data;
 using System.IO;
-using System.Text;
-using Dapper;
 using Test.Framework;
 using VirtualRadar.Database.SQLite.KineticData;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.KineticData;
 using VirtualRadar.Interface.Options;
-using VirtualRadar.Interface.Settings;
 
 namespace Test.VirtualRadar.Database.SQLite
 {
     [TestClass]
-    public class BaseStationDatabase_Tests
+    public class BaseStationDatabase_Tests : CommonBaseStationDatabaseTests
     {
-        // Eventually these should go into the shared BaseStation database tests base
-        public const string SchemaPrefix = "";
-        Func<IDbConnection> _CreateConnection;
-        private string _SqlReturnNewIdentity = "SELECT last_insert_rowid();";
+        protected override string _SchemaPrefix => "";
+
+        protected override bool _EngineTruncatesMilliseconds => false;
+
+        protected override string _SqlReturnNewIdentity => "SELECT last_insert_rowid();";
 
         private MockFileSystem _FileSystem;
-        private EnvironmentOptions _EnvironmentOptions;
-        private BaseStationDatabaseOptions _BaseStationDatabaseOptions;
-        private IBaseStationDatabaseSQLite _Implementation;
-        private MockSharedConfiguration _SharedConfiguration;
-        private Configuration _Configuration;
-        private MockClock _MockClock;
-        private MockStandingDataManager _StandingData;
+        private IBaseStationDatabaseSQLite _SqliteImplementation;
         private string _BaseStationSqbFullPath;
 
         [TestInitialize]
         public void TestInitialise()
         {
-            // These can be removed once we have the common base
+            base.CommonTestInitialise();
+
              _CreateConnection = () => CreateSqliteConnection(null);
-
-            _SharedConfiguration = new();
-            _Configuration = _SharedConfiguration.Configuration;
-
-            _EnvironmentOptions = new() {
-                WorkingFolder = Path.GetTempPath(),
-            };
-            _BaseStationDatabaseOptions = new();
 
             var randomFileNameElement = Guid.NewGuid().ToString();      // <-- need this to stop the O/S knacking tests while it deletes files in the background etc.
             var baseStationSqbFileName = $"BaseStation-{randomFileNameElement}.sqb";
@@ -52,19 +37,16 @@ namespace Test.VirtualRadar.Database.SQLite
             _FileSystem = new();
             _FileSystem.AddFileContent(_BaseStationSqbFullPath, new byte[] { 0 });
 
-            _MockClock = new();
-
-            _StandingData = new();
-
 #pragma warning disable CS0618 // Type or member is obsolete (used to warn people not to instantiate directly)
             using(new CultureSwitcher("en-GB")) {
-                _Implementation = new BaseStationDatabase(
+                _SqliteImplementation = new BaseStationDatabase(
                     _FileSystem,
                     _SharedConfiguration.Object,
                     _MockClock.Object,
                     _StandingData.Object,
                     new MockOptions<BaseStationDatabaseOptions>(_BaseStationDatabaseOptions)
                 );
+                _Implementation = _SqliteImplementation;
             }
         }
 
@@ -105,56 +87,11 @@ namespace Test.VirtualRadar.Database.SQLite
             return connection;
         }
 
-        protected long AddAircraft(KineticAircraft aircraft)
-        {
-            long result = 0;
-
-            using(var connection = _CreateConnection()) {
-                connection.Open();
-
-                var dynamicParameters = new Dapper.DynamicParameters();
-                var fieldNames = new StringBuilder();
-                var parameters = new StringBuilder();
-
-                foreach(var property in typeof(KineticAircraft).GetProperties()) {
-                    var fieldName = property.Name;
-                    if(fieldName == nameof(KineticAircraft.AircraftID)) {
-                        continue;
-                    }
-
-                    if(fieldNames.Length > 0) {
-                        fieldNames.Append(',');
-                    }
-                    if(parameters.Length > 0) {
-                        parameters.Append(',');
-                    }
-
-                    fieldNames.Append($"[{fieldName}]");
-                    parameters.Append($"@{fieldName}");
-
-                    dynamicParameters.Add(fieldName, property.GetValue(aircraft, null));
-                }
-
-                result = connection.ExecuteScalar<long>($"INSERT INTO {SchemaPrefix}[Aircraft] ({fieldNames}) VALUES ({parameters}); {_SqlReturnNewIdentity}", dynamicParameters);
-                aircraft.AircraftID = (int)result;
-            }
-
-            return result;
-        }
-
-        protected static KineticAircraft CreateAircraft(string icao24 = "123456", string registration = "G-VRST")
-        {
-            return new KineticAircraft() {
-                ModeS = icao24,
-                Registration = registration,
-            };
-        }
-
         #region TestConnection
         [TestMethod]
         public void TestConnection_Returns_False_If_File_Could_Not_Be_Opened()
         {
-            Assert.IsFalse(_Implementation.TestConnection(@"file-does-not-exist.sqb-not"));
+            Assert.IsFalse(_SqliteImplementation.TestConnection(@"file-does-not-exist.sqb-not"));
         }
 
         [TestMethod]
@@ -163,7 +100,7 @@ namespace Test.VirtualRadar.Database.SQLite
             var temporaryFileName = Path.GetTempFileName();
             try {
                 File.WriteAllBytes(temporaryFileName, TestData.BaseStation_sqb);
-                Assert.IsTrue(_Implementation.TestConnection(temporaryFileName));
+                Assert.IsTrue(_SqliteImplementation.TestConnection(temporaryFileName));
             } finally {
                 if(File.Exists(temporaryFileName)) {
                     for(var i = 0;i < 10;++i) {
@@ -180,7 +117,7 @@ namespace Test.VirtualRadar.Database.SQLite
         [TestMethod]
         public void TestConnection_Closes_SQLite_Connection()
         {
-            Assert.IsTrue(_Implementation.TestConnection(_BaseStationSqbFullPath));
+            Assert.IsTrue(_SqliteImplementation.TestConnection(_BaseStationSqbFullPath));
             DeleteTestFile();
         }
 
@@ -188,7 +125,7 @@ namespace Test.VirtualRadar.Database.SQLite
         public void TestConnection_Returns_False_If_File_Exists_But_Is_Not_SQLite_File()
         {
             File.WriteAllText(_BaseStationSqbFullPath, "Hello");
-            Assert.IsFalse(_Implementation.TestConnection(_BaseStationSqbFullPath));
+            Assert.IsFalse(_SqliteImplementation.TestConnection(_BaseStationSqbFullPath));
         }
 
         [TestMethod]
@@ -196,7 +133,7 @@ namespace Test.VirtualRadar.Database.SQLite
         {
             _Implementation.GetAircraftByRegistration("G-ABCD");
 
-            Assert.IsFalse(_Implementation.TestConnection("does-not-exist"));
+            Assert.IsFalse(_SqliteImplementation.TestConnection("does-not-exist"));
         }
 
         [TestMethod]
@@ -204,7 +141,7 @@ namespace Test.VirtualRadar.Database.SQLite
         {
             _Implementation.GetAircraftByRegistration("G-ABCD");
 
-            _Implementation.TestConnection("does-not-exist");
+            _SqliteImplementation.TestConnection("does-not-exist");
 
             Assert.IsTrue(_Implementation.IsConnected);
         }
@@ -250,14 +187,14 @@ namespace Test.VirtualRadar.Database.SQLite
         [TestMethod]
         public void SQLite_FileExists_Returns_True_If_The_Configured_File_Exists()
         {
-            Assert.IsTrue(_Implementation.FileExists());
+            Assert.IsTrue(_SqliteImplementation.FileExists());
         }
 
         [TestMethod]
         public void SQLite_FileExists_Returns_False_If_The_Configured_File_Does_Not_Exist()
         {
             DeleteTestFile();
-            Assert.IsFalse(_Implementation.FileExists());
+            Assert.IsFalse(_SqliteImplementation.FileExists());
         }
 
         [TestMethod]
@@ -268,7 +205,7 @@ namespace Test.VirtualRadar.Database.SQLite
             DeleteTestFile();
             _Configuration.BaseStationSettings.DatabaseFileName = configuredFileName;
 
-            Assert.IsFalse(_Implementation.FileExists());
+            Assert.IsFalse(_SqliteImplementation.FileExists());
         }
         #endregion
 
@@ -278,7 +215,7 @@ namespace Test.VirtualRadar.Database.SQLite
         {
             _FileSystem.WriteAllBytes(_BaseStationSqbFullPath, Array.Empty<byte>());
 
-            Assert.IsTrue(_Implementation.FileIsEmpty());
+            Assert.IsTrue(_SqliteImplementation.FileIsEmpty());
         }
 
         [TestMethod]
@@ -286,7 +223,7 @@ namespace Test.VirtualRadar.Database.SQLite
         {
             _FileSystem.WriteAllBytes(_BaseStationSqbFullPath, new byte[] { 0 });
 
-            Assert.IsFalse(_Implementation.FileIsEmpty());
+            Assert.IsFalse(_SqliteImplementation.FileIsEmpty());
         }
 
         [TestMethod]
@@ -294,7 +231,15 @@ namespace Test.VirtualRadar.Database.SQLite
         public void SQLite_FileIsEmpty_Throws_Exception_If_File_Does_Not_Exist()
         {
             DeleteTestFile();
-            _Implementation.FileIsEmpty();
+            _SqliteImplementation.FileIsEmpty();
+        }
+        #endregion
+
+        #region GetAircraftByRegistration
+        [TestMethod]
+        public void SQLite_GetAircraftByRegistration_Returns_Null_If_Passed_Null()
+        {
+            GetAircraftByRegistration_Returns_Null_If_Passed_Null();
         }
         #endregion
     }
