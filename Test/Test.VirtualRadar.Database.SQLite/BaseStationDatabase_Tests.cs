@@ -237,9 +237,15 @@ namespace Test.VirtualRadar.Database.SQLite
 
         #region GetAircraftByRegistration
         [TestMethod]
-        public void SQLite_GetAircraftByRegistration_Returns_Null_If_Passed_Null()
+        public void GetAircraftByRegistration_Returns_Null_If_Passed_Null()
         {
-            GetAircraftByRegistration_Returns_Null_If_Passed_Null();
+            Common_GetAircraftByRegistration_Returns_Null_If_Passed_Null();
+        }
+
+        [TestMethod]
+        public void GetAircraftByRegistration_Returns_Null_If_Aircraft_Does_Not_Exist()
+        {
+            Common_GetAircraftByRegistration_Returns_Null_If_Aircraft_Does_Not_Exist();
         }
         #endregion
     }

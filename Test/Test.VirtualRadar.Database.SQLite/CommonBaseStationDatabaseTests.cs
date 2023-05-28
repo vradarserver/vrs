@@ -85,9 +85,14 @@ namespace Test.VirtualRadar.Database.SQLite
         }
 
         #region GetAircraftByRegistration
-        protected void GetAircraftByRegistration_Returns_Null_If_Passed_Null()
+        protected void Common_GetAircraftByRegistration_Returns_Null_If_Passed_Null()
         {
             Assert.IsNull(_Implementation.GetAircraftByRegistration(null));
+        }
+
+        protected void Common_GetAircraftByRegistration_Returns_Null_If_Aircraft_Does_Not_Exist()
+        {
+            Assert.IsNull(_Implementation.GetAircraftByRegistration("REG"));
         }
         #endregion
     }
