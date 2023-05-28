@@ -56,72 +56,71 @@ dotnet_style_prefer_conditional_expression_over_return = true:silent
 # Naming Conventions          #
 ###############################
 # pascal_case_style
-dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+dotnet_naming_style.pascal_case_style.capitalization                = pascal_case
 
 # underscore_pascal_case_style
-dotnet_naming_style.underscore_pascal_case_style.required_prefix = _
-dotnet_naming_style.underscore_pascal_case_style.capitalization = pascal_case
+dotnet_naming_style.underscore_pascal_case_style.required_prefix    = _
+dotnet_naming_style.underscore_pascal_case_style.capitalization     = pascal_case
 
 # interface_pascal_case_style
-dotnet_naming_style.interface_pascal_case_style.required_prefix = I
-dotnet_naming_style.interface_pascal_case_style.capitalization = pascal_case
+dotnet_naming_style.interface_pascal_case_style.required_prefix     = I
+dotnet_naming_style.interface_pascal_case_style.capitalization      = pascal_case
 
 # type_param_pascal_case_style
-dotnet_naming_style.type_param_pascal_case_style.required_prefix = T
-dotnet_naming_style.type_param_pascal_case_style.capitalization = pascal_case
+dotnet_naming_style.type_param_pascal_case_style.required_prefix    = T
+dotnet_naming_style.type_param_pascal_case_style.capitalization     = pascal_case
 
 # camel_case_style
-dotnet_naming_style.camel_case_style.capitalization = camel_case
+dotnet_naming_style.camel_case_style.capitalization                 = camel_case
 
 # simple_pascal_cased group - these are always pascal cased
-dotnet_naming_symbols.simple_pascal_cased.applicable_kinds = namespace, class, struct, enum, property, method, event, delegate
-dotnet_naming_symbols.simple_pascal_cased.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
-
-# constant_fields group - these need to be pascal cased
-dotnet_naming_symbols.constant_fields.applicable_kinds            = field
-dotnet_naming_symbols.constant_fields.applicable_accessibilities  = public, internal
-dotnet_naming_symbols.constant_fields.required_modifiers          = const
-
-# fields group - these must be underscore pascal cased
-dotnet_naming_symbols.pascal_fields.applicable_kinds           = field
-dotnet_naming_symbols.pascal_fields.applicable_accessibilities = private, protected, protected_internal, private_protected
+dotnet_naming_symbols.simple_pascal_cased.applicable_kinds                  = namespace, class, struct, enum, method, event, delegate
+dotnet_naming_symbols.simple_pascal_cased.applicable_accessibilities        = public, internal, private, protected, protected_internal, private_protected
 
 # simple_camel_cased group - these are always camel cased
-dotnet_naming_symbols.simple_camel_cased.applicable_kinds            = parameter, local, local_function
-dotnet_naming_symbols.simple_camel_cased.applicable_accessibilities  = *
+dotnet_naming_symbols.simple_camel_cased.applicable_kinds                   = parameter, local, local_function
+dotnet_naming_symbols.simple_camel_cased.applicable_accessibilities         = *
+
+# private_fields_and_props group - these must be underscore pascal cased
+dotnet_naming_symbols.private_fields_and_props.applicable_kinds             = field, property
+dotnet_naming_symbols.private_fields_and_props.applicable_accessibilities   = private, protected, protected_internal, private_protected
+
+# public_fields_and_props group - these need to be pascal cased
+dotnet_naming_symbols.public_fields_and_props.applicable_kinds              = field
+dotnet_naming_symbols.public_fields_and_props.applicable_accessibilities    = public, internal
 
 # interfaces group - these are always pascal case and prefixed with an I
-dotnet_naming_symbols.interfaces.applicable_kinds            = interface
-dotnet_naming_symbols.interfaces.applicable_accessibilities  = *
+dotnet_naming_symbols.interfaces.applicable_kinds                           = interface
+dotnet_naming_symbols.interfaces.applicable_accessibilities                 = *
 
 # type_params group - these are always pascal case and prefixed with an T
-dotnet_naming_symbols.type_params.applicable_kinds            = type_parameter
-dotnet_naming_symbols.type_params.applicable_accessibilities  = *
+dotnet_naming_symbols.type_params.applicable_kinds                          = type_parameter
+dotnet_naming_symbols.type_params.applicable_accessibilities                = *
 
-# Enforce pascal case
-dotnet_naming_rule.must_be_pascal_cased.severity = error
-dotnet_naming_rule.must_be_pascal_cased.symbols  = simple_pascal_cased, constant_fields
-dotnet_naming_rule.must_be_pascal_cased.style    = pascal_case_style
+# Enforce rules
+dotnet_naming_rule.do_simple_pascal_cased.severity              = error
+dotnet_naming_rule.do_simple_pascal_cased.symbols               = simple_pascal_cased
+dotnet_naming_rule.do_simple_pascal_cased.style                 = pascal_case_style
 
-# Enforce underscore-prefixed pascal case
-dotnet_naming_rule.must_be_underscore_pascal_cased.severity = error
-dotnet_naming_rule.must_be_underscore_pascal_cased.symbols  = pascal_fields
-dotnet_naming_rule.must_be_underscore_pascal_cased.style    = underscore_pascal_case_style
+dotnet_naming_rule.do_public_fields_and_props.severity          = error
+dotnet_naming_rule.do_public_fields_and_props.symbols           = public_fields_and_props
+dotnet_naming_rule.do_public_fields_and_props.style             = pascal_case_style
 
-# Enforce I-prefixed pascal case
-dotnet_naming_rule.must_be_I_pascal_cased.severity = error
-dotnet_naming_rule.must_be_I_pascal_cased.symbols  = interfaces
-dotnet_naming_rule.must_be_I_pascal_cased.style    = interface_pascal_case_style
+dotnet_naming_rule.do_private_fields_and_props.severity         = error
+dotnet_naming_rule.do_private_fields_and_props.symbols          = private_fields_and_props
+dotnet_naming_rule.do_private_fields_and_props.style            = underscore_pascal_case_style
 
-# Enforce T-prefixed pascal case
-dotnet_naming_rule.must_be_T_pascal_cased.severity = error
-dotnet_naming_rule.must_be_T_pascal_cased.symbols  = type_params
-dotnet_naming_rule.must_be_T_pascal_cased.style    = type_param_pascal_case_style
+dotnet_naming_rule.do_interfaces.severity                       = error
+dotnet_naming_rule.do_interfaces.symbols                        = interfaces
+dotnet_naming_rule.do_interfaces.style                          = interface_pascal_case_style
 
-# Enforce camel case
-dotnet_naming_rule.must_be_camel_cased.severity = error
-dotnet_naming_rule.must_be_camel_cased.symbols  = simple_camel_cased
-dotnet_naming_rule.must_be_camel_cased.style    = camel_case_style
+dotnet_naming_rule.do_type_params.severity                      = error
+dotnet_naming_rule.do_type_params.symbols                       = type_params
+dotnet_naming_rule.do_type_params.style                         = type_param_pascal_case_style
+
+dotnet_naming_rule.do_simple_camel_cased.severity               = error
+dotnet_naming_rule.do_simple_camel_cased.symbols                = simple_camel_cased
+dotnet_naming_rule.do_simple_camel_cased.style                  = camel_case_style
 
 ###############################
 # C# Coding Conventions       #
