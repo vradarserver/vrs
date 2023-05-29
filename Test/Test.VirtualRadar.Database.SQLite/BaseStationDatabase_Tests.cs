@@ -157,7 +157,7 @@ namespace Test.VirtualRadar.Database.SQLite
         }
 
         [TestMethod]
-        public void SQLite_Connection_Does_Not_Try_To_Use_Zero_Length_Files()
+        public void Connection_Does_Not_Try_To_Use_Zero_Length_Files()
         {
             DeleteTestFile();
             File
@@ -170,7 +170,7 @@ namespace Test.VirtualRadar.Database.SQLite
         }
 
         [TestMethod]
-        public void SQLite_Connection_Can_Work_With_ReadOnly_Access()
+        public void Connection_Can_Work_With_ReadOnly_Access()
         {
             var fileInfo = new FileInfo(_BaseStationSqbFullPath);
             try {
@@ -185,13 +185,13 @@ namespace Test.VirtualRadar.Database.SQLite
 
         #region FileExists
         [TestMethod]
-        public void SQLite_FileExists_Returns_True_If_The_Configured_File_Exists()
+        public void FileExists_Returns_True_If_The_Configured_File_Exists()
         {
             Assert.IsTrue(_SqliteImplementation.FileExists());
         }
 
         [TestMethod]
-        public void SQLite_FileExists_Returns_False_If_The_Configured_File_Does_Not_Exist()
+        public void FileExists_Returns_False_If_The_Configured_File_Does_Not_Exist()
         {
             DeleteTestFile();
             Assert.IsFalse(_SqliteImplementation.FileExists());
@@ -200,7 +200,7 @@ namespace Test.VirtualRadar.Database.SQLite
         [TestMethod]
         [DataRow(null)]
         [DataRow("")]
-        public void SQLite_FileExists_Does_Not_Test_Null_Or_Empty_FileName(string configuredFileName)
+        public void FileExists_Does_Not_Test_Null_Or_Empty_FileName(string configuredFileName)
         {
             DeleteTestFile();
             _Configuration.BaseStationSettings.DatabaseFileName = configuredFileName;
@@ -211,7 +211,7 @@ namespace Test.VirtualRadar.Database.SQLite
 
         #region FileIsEmpty
         [TestMethod]
-        public void SQLite_FileIsEmpty_Returns_True_If_The_Configured_File_Is_Empty()
+        public void FileIsEmpty_Returns_True_If_The_Configured_File_Is_Empty()
         {
             _FileSystem.WriteAllBytes(_BaseStationSqbFullPath, Array.Empty<byte>());
 
@@ -219,7 +219,7 @@ namespace Test.VirtualRadar.Database.SQLite
         }
 
         [TestMethod]
-        public void SQLite_FileIsEmpty_Returns_False_If_The_FileName_Is_Not_Empty()
+        public void FileIsEmpty_Returns_False_If_The_FileName_Is_Not_Empty()
         {
             _FileSystem.WriteAllBytes(_BaseStationSqbFullPath, new byte[] { 0 });
 
@@ -228,7 +228,7 @@ namespace Test.VirtualRadar.Database.SQLite
 
         [TestMethod]
         [ExpectedException(typeof(FileNotFoundException))]
-        public void SQLite_FileIsEmpty_Throws_Exception_If_File_Does_Not_Exist()
+        public void FileIsEmpty_Throws_Exception_If_File_Does_Not_Exist()
         {
             DeleteTestFile();
             _SqliteImplementation.FileIsEmpty();
@@ -264,9 +264,46 @@ namespace Test.VirtualRadar.Database.SQLite
         }
 
         [TestMethod]
-        public void SQLite_BaseStationDatabase_GetAircraftByRegistration_Returns_Aircraft_Object_For_Registration()
+        public void GetAircraftByRegistration_Returns_Aircraft_Object_For_Registration()
         {
             Common_GetAircraftByRegistration_Returns_Aircraft_Object_For_Registration();
+        }
+        #endregion
+
+        #region GetAircraftByCode
+        [TestMethod]
+        public void GetAircraftByCode_Returns_Null_If_Passed_Null()
+        {
+            Common_GetAircraftByCode_Returns_Null_If_Passed_Null();
+        }
+
+        [TestMethod]
+        public void GetAircraftByCode_Returns_Null_If_Aircraft_Does_Not_Exist()
+        {
+            Common_GetAircraftByCode_Returns_Null_If_Aircraft_Does_Not_Exist();
+        }
+
+        [TestMethod]
+        public void GetAircraftByCode_Returns_Null_If_File_Does_Not_Exist()
+        {
+            DeleteTestFile();
+            Assert.IsNull(_Implementation.GetAircraftByCode("ABC123"));
+        }
+
+        [TestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow(" ")]
+        public void GetAircraftByCode_Returns_Null_If_File_Not_Configured(string configuredFileName)
+        {
+            _Configuration.BaseStationSettings.DatabaseFileName = configuredFileName;
+            Assert.IsNull(_Implementation.GetAircraftByCode("ABC123"));
+        }
+
+        [TestMethod]
+        public void GetAircraftByCode_Returns_Aircraft_Object_For_ICAO24_Code()
+        {
+            Common_GetAircraftByCode_Returns_Aircraft_Object_For_ICAO24_Code();
         }
         #endregion
     }

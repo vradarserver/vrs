@@ -210,7 +210,6 @@ namespace Test.VirtualRadar.Database.SQLite
         protected void Common_GetAircraftByRegistration_Returns_Aircraft_Object_For_Registration()
         {
             var spreadsheet = new SpreadsheetTestData(TestData.BaseStationDatabaseTests_xslx, "GetAircraftBy");
-
             spreadsheet.TestEveryRow(this, row => {
                 var mockAircraft = LoadAircraftFromSpreadsheetRow(row);
 
@@ -219,6 +218,32 @@ namespace Test.VirtualRadar.Database.SQLite
                 var aircraft = _Implementation.GetAircraftByRegistration(mockAircraft.Registration);
                 Assert.AreNotSame(aircraft, mockAircraft);
 
+                AssertAircraftAreEqual(mockAircraft, aircraft, id);
+            });
+        }
+        #endregion
+
+        #region GetAircraftByCode
+        protected void Common_GetAircraftByCode_Returns_Null_If_Passed_Null()
+        {
+            Assert.IsNull(_Implementation.GetAircraftByCode(null));
+        }
+
+        protected void Common_GetAircraftByCode_Returns_Null_If_Aircraft_Does_Not_Exist()
+        {
+            Assert.IsNull(_Implementation.GetAircraftByCode("ABC123"));
+        }
+
+        protected void Common_GetAircraftByCode_Returns_Aircraft_Object_For_ICAO24_Code()
+        {
+            var spreadsheet = new SpreadsheetTestData(TestData.BaseStationDatabaseTests_xslx, "GetAircraftBy");
+            spreadsheet.TestEveryRow(this, row => {
+                var mockAircraft = LoadAircraftFromSpreadsheetRow(row);
+                var id = AddAircraft(mockAircraft);
+
+                var aircraft = _Implementation.GetAircraftByCode(mockAircraft.ModeS);
+
+                Assert.AreNotSame(aircraft, mockAircraft);
                 AssertAircraftAreEqual(mockAircraft, aircraft, id);
             });
         }
