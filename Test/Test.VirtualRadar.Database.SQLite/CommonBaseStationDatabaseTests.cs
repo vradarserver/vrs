@@ -778,5 +778,93 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.IsNotNull(allAircraft["XYZ789"]);
         }
         #endregion
+
+        #region GetManyAircraftAndFlightsCountByCode
+        protected void Common_GetManyAircraftAndFlightsCountByCode_Returns_Empty_Collection_If_Passed_Null()
+        {
+            Assert.AreEqual(0, _Implementation.GetManyAircraftAndFlightsCountByCode(null).Count);
+        }
+
+        protected void Common_GetManyAircraftAndFlightsCountByCode_Returns_Empty_Collection_If_Aircraft_Does_Not_Exist()
+        {
+            Assert.AreEqual(0, _Implementation.GetManyAircraftAndFlightsCountByCode(new string[] { "ABC123" }).Count);
+        }
+
+        protected void Common_GetManyAircraftAndFlightsCountByCode_Returns_Aircraft_Object_For_ICAO24_Code()
+        {
+            var spreadsheet = new SpreadsheetTestData(TestData.BaseStationDatabaseTests_xslx, "GetAircraftBy");
+            spreadsheet.TestEveryRow(this, row => {
+                var mockAircraft = LoadAircraftFromSpreadsheetRow(row);
+
+                var id = AddAircraft(mockAircraft);
+
+                var manyAircraft = _Implementation.GetManyAircraftAndFlightsCountByCode(new string[] { mockAircraft.ModeS });
+                Assert.AreEqual(1, manyAircraft.Count);
+
+                var aircraft = manyAircraft.First().Value;
+                Assert.AreNotSame(aircraft, mockAircraft);
+
+                AssertAircraftAreEqual(mockAircraft, aircraft, id);
+            });
+        }
+
+        protected void Common_GetManyAircraftAndFlightsCountByCode_Can_Return_More_Than_One_Aircraft()
+        {
+            var flight1 = CreateFlight("ABC123", setRegistration: true);
+            var flight2 = CreateFlight("EFG456", setRegistration: true);
+            var flight3 = CreateFlight("XYZ789", setRegistration: true);
+
+            AddAircraft(flight1.Aircraft);
+            AddAircraft(flight2.Aircraft);
+            AddAircraft(flight3.Aircraft);
+
+            AddFlight(flight1);
+            AddFlight(flight2);
+            AddFlight(flight3);
+
+            var firstAndLast = _Implementation.GetManyAircraftAndFlightsCountByCode(new string[] { "ABC123", "XYZ789" });
+
+            Assert.AreEqual(2, firstAndLast.Count);
+            Assert.IsTrue(firstAndLast.Where(r => r.Value.Registration == "ABC123").Any());
+            Assert.IsTrue(firstAndLast.Where(r => r.Value.Registration == "XYZ789").Any());
+        }
+
+        protected void Common_GetManyAircraftAndFlightsCountByCode_Returns_Counts_Of_Flights()
+        {
+            var flight1 = CreateFlight("ABC123", setRegistration: true);
+            flight1.AircraftID = (int)AddAircraft(flight1.Aircraft);
+            var flight2 = CreateFlight(flight1.Aircraft, "XYZ999");
+
+            AddFlight(flight1);
+            AddFlight(flight2);
+
+            var allAircraft = _Implementation.GetManyAircraftAndFlightsCountByCode(new string[] { "ABC123" });
+
+            Assert.AreEqual(1, allAircraft.Count);
+            Assert.AreEqual(2, allAircraft.First().Value.FlightsCount);
+        }
+
+        protected void Common_GetManyAircraftAndFlightsCountByCode_Transparently_Handles_Call_Splitting_When_Number_Of_Icaos_Exceeds_MaxParameters()
+        {
+            var flight1 = CreateFlight("ABC123", setRegistration: true);
+            var flight2 = CreateFlight("XYZ789", setRegistration: true);
+
+            AddAircraft(flight1.Aircraft);
+            AddAircraft(flight2.Aircraft);
+
+            AddFlight(flight1);
+            AddFlight(flight2);
+
+            var icaos = new string[_Implementation.MaxParameters + 1];
+            icaos[0] = "ABC123";
+            icaos[icaos.Length - 1] = "XYZ789";
+
+            var allAircraft = _Implementation.GetManyAircraftAndFlightsCountByCode(icaos);
+
+            Assert.AreEqual(2, allAircraft.Count);
+            Assert.IsNotNull(allAircraft["ABC123"]);
+            Assert.IsNotNull(allAircraft["XYZ789"]);
+        }
+        #endregion
     }
 }

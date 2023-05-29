@@ -865,7 +865,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
                         Aircraft = r,
                         CountFlights = _Context.Flights.Count(f => f.AircraftID == r.AircraftID),
                     })
-                    .Select(r => new KineticAircraftAndFlightsCount(r.Aircraft, r.CountFlights));
+                    .Select(r => new KineticAircraftAndFlightsCount(r.Aircraft, r.CountFlights, /*copyAircraftId:*/ true));
                 result.AddRange(batchResults);
             }
 

@@ -32,7 +32,8 @@ namespace VirtualRadar.Interface.KineticData
         /// </summary>
         /// <param name="copyFrom"></param>
         /// <param name="flightsCount"></param>
-        public KineticAircraftAndFlightsCount(KineticAircraft copyFrom, int flightsCount) : base(copyFrom)
+        /// <param name="copyAircraftId"></param>
+        public KineticAircraftAndFlightsCount(KineticAircraft copyFrom, int flightsCount, bool copyAircraftId) : base(copyFrom, copyAircraftId)
         {
             FlightsCount = flightsCount;
         }

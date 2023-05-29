@@ -32,8 +32,12 @@ namespace VirtualRadar.Interface.KineticData
         /// aircraft passed in.
         /// </summary>
         /// <param name="donorAircraft"></param>
-        public KineticAircraft(KineticAircraftKeyless donorAircraft) : base(donorAircraft)
+        /// <param name="copyAircraftId"></param>
+        public KineticAircraft(KineticAircraftKeyless donorAircraft, bool copyAircraftId) : base(donorAircraft)
         {
+            if(copyAircraftId && donorAircraft is KineticAircraft donorWithId) {
+                AircraftID = donorWithId.AircraftID;
+            }
         }
 
         /// <summary>
