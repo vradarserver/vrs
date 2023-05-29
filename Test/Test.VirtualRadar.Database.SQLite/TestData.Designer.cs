@@ -71,6 +71,16 @@ namespace Test.VirtualRadar.Database.SQLite {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] BaseStationDatabaseTests_xslx {
+            get {
+                object obj = ResourceManager.GetObject("BaseStationDatabaseTests_xslx", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to StartDate,EndDate,Count,AirlinesMD5,AirportsMD5,TypesMD5,CodeBlocksMD5
         ///2009-12-01,2013-01-25,135894,62F073D7ACB4AC9046CDB6B3699D273D,EC95FA9E2273AD14E7E3B6D9DA56A12F,551997BCB2739067712350CAD436FB72,531CC0B2F9C48AC40F23D80BC33078CE
         ///.

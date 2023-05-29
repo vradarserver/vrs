@@ -262,6 +262,12 @@ namespace Test.VirtualRadar.Database.SQLite
             _Configuration.BaseStationSettings.DatabaseFileName = null;
             Assert.IsNull(_Implementation.GetAircraftByRegistration("REG"));
         }
+
+        [TestMethod]
+        public void SQLite_BaseStationDatabase_GetAircraftByRegistration_Returns_Aircraft_Object_For_Registration()
+        {
+            Common_GetAircraftByRegistration_Returns_Aircraft_Object_For_Registration();
+        }
         #endregion
     }
 }
