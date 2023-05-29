@@ -256,10 +256,13 @@ namespace Test.VirtualRadar.Database.SQLite
         }
 
         [TestMethod]
-        public void GetAircraftByRegistration_Returns_Null_If_Database_File_Not_Configured()
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow(" ")]
+        public void GetAircraftByRegistration_Returns_Null_If_Database_File_Not_Configured(string configuredFileName)
         {
             DeleteTestFile();
-            _Configuration.BaseStationSettings.DatabaseFileName = null;
+            _Configuration.BaseStationSettings.DatabaseFileName = configuredFileName;
             Assert.IsNull(_Implementation.GetAircraftByRegistration("REG"));
         }
 
@@ -304,6 +307,55 @@ namespace Test.VirtualRadar.Database.SQLite
         public void GetAircraftByCode_Returns_Aircraft_Object_For_ICAO24_Code()
         {
             Common_GetAircraftByCode_Returns_Aircraft_Object_For_ICAO24_Code();
+        }
+        #endregion
+
+        #region GetManyAircraftByCode
+        [TestMethod]
+        public void GetManyAircraftByCode_Returns_Empty_Collection_If_Passed_Null()
+        {
+            Common_GetManyAircraftByCode_Returns_Empty_Collection_If_Passed_Null();
+        }
+
+        [TestMethod]
+        public void GetManyAircraftByCode_Returns_Empty_Collection_If_Aircraft_Does_Not_Exist()
+        {
+            Common_GetManyAircraftByCode_Returns_Empty_Collection_If_Aircraft_Does_Not_Exist();
+        }
+
+        [TestMethod]
+        public void GetManyAircraftByCode_Returns_Empty_Collection_If_File_Does_Not_Exist()
+        {
+            DeleteTestFile();
+            Assert.AreEqual(0, _Implementation.GetManyAircraftByCode(new string[] { "ABC123" }).Count);
+        }
+
+        [TestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow(" ")]
+        public void GetManyAircraftByCode_Returns_Empty_Collection_If_File_Not_Configured(string configuredFileName)
+        {
+            _Configuration.BaseStationSettings.DatabaseFileName = configuredFileName;
+            Assert.AreEqual(0, _Implementation.GetManyAircraftByCode(new string[] { "ABC123" }).Count);
+        }
+
+        [TestMethod]
+        public void GetManyAircraftByCode_Returns_Aircraft_Object_For_ICAO24_Code()
+        {
+            Common_GetManyAircraftByCode_Returns_Aircraft_Object_For_ICAO24_Code();
+        }
+
+        [TestMethod]
+        public void GetManyAircraftByCode_Can_Return_More_Than_One_Aircraft()
+        {
+            Common_GetManyAircraftByCode_Can_Return_More_Than_One_Aircraft();
+        }
+
+        [TestMethod]
+        public void GetManyAircraftByCode_Transparently_Handles_Call_Splitting_When_Number_Of_Icaos_Exceeds_MaxParameters()
+        {
+            Common_GetManyAircraftByCode_Transparently_Handles_Call_Splitting_When_Number_Of_Icaos_Exceeds_MaxParameters();
         }
         #endregion
     }
