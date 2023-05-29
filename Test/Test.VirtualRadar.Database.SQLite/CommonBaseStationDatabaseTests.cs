@@ -866,5 +866,26 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.IsNotNull(allAircraft["XYZ789"]);
         }
         #endregion
+
+        #region GetAircraftById
+        protected void Common_GetAircraftById_Returns_Null_If_Aircraft_Does_Not_Exist()
+        {
+            Assert.IsNull(_Implementation.GetAircraftById(1));
+        }
+
+        protected void Common_GetAircraftById_Returns_Aircraft_Object_For_Record_Identifier()
+        {
+            var spreadsheet = new SpreadsheetTestData(TestData.BaseStationDatabaseTests_xslx, "GetAircraftBy");
+            spreadsheet.TestEveryRow(this, row => {
+                var mockAircraft = LoadAircraftFromSpreadsheetRow(row);
+                var id = (int)AddAircraft(mockAircraft);
+
+                var aircraft = _Implementation.GetAircraftById(id);
+
+                Assert.AreNotSame(aircraft, mockAircraft);
+                AssertAircraftAreEqual(mockAircraft, aircraft, id);
+            });
+        }
+        #endregion
     }
 }

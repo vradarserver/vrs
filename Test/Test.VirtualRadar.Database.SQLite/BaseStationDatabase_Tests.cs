@@ -413,5 +413,36 @@ namespace Test.VirtualRadar.Database.SQLite
             Common_GetManyAircraftAndFlightsCountByCode_Transparently_Handles_Call_Splitting_When_Number_Of_Icaos_Exceeds_MaxParameters();
         }
         #endregion
+
+        #region GetAircraftById
+        [TestMethod]
+        public void GetAircraftById_Returns_Null_If_Aircraft_Does_Not_Exist()
+        {
+            Common_GetAircraftById_Returns_Null_If_Aircraft_Does_Not_Exist();
+        }
+
+        [TestMethod]
+        public void GetAircraftById_Returns_Null_If_File_Does_Not_Exist()
+        {
+            DeleteTestFile();
+            Assert.IsNull(_Implementation.GetAircraftById(1));
+        }
+
+        [TestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow(" ")]
+        public void GetAircraftById_Returns_Null_If_File_Not_Configured(string configuredFileName)
+        {
+            _Configuration.BaseStationSettings.DatabaseFileName = configuredFileName;
+            Assert.IsNull(_Implementation.GetAircraftById(1));
+        }
+
+        [TestMethod]
+        public void GetAircraftById_Returns_Aircraft_Object_For_Record_Identifier()
+        {
+            Common_GetAircraftById_Returns_Aircraft_Object_For_Record_Identifier();
+        }
+        #endregion
     }
 }
