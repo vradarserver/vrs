@@ -444,5 +444,69 @@ namespace Test.VirtualRadar.Database.SQLite
             Common_GetAircraftById_Returns_Aircraft_Object_For_Record_Identifier();
         }
         #endregion
+
+        #region InsertAircraft
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void InsertAircraft_Throws_If_Writes_Disabled()
+        {
+            Common_InsertAircraft_Throws_If_Writes_Disabled();
+        }
+
+        [TestMethod]
+        public void InsertAircraft_Does_Nothing_If_File_Does_Not_Exist()
+        {
+            _Implementation.WriteSupportEnabled = true;
+            DeleteTestFile();
+
+            _Implementation.InsertAircraft(new() { ModeS = "123456" });
+            Assert.AreEqual(null, _Implementation.GetAircraftByCode("123456"));
+        }
+
+        [TestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow(" ")]
+        public void InsertAircraft_Does_Nothing_If_File_Not_Configured(string configuredFileName)
+        {
+            _Implementation.WriteSupportEnabled = true;
+            _Configuration.BaseStationSettings.DatabaseFileName = configuredFileName;
+
+            _SqliteImplementation.InsertAircraft(new() { ModeS = "X" });
+            Assert.AreEqual(null, _Implementation.GetAircraftByCode("X"));
+        }
+
+        [TestMethod]
+        public void InsertAircraft_Does_Not_Truncate_Milliseconds_From_Date()
+        {
+            // In the .NET version there was some issue with the ADO.NET library not liking milliseconds
+            // on dates... I can't remember. Anyway, it seems to be fine on .NET Core so for now I'm not
+            // stripping off milliseconds... see how it goes :)
+
+            _Implementation.WriteSupportEnabled = true;
+
+            _Implementation.InsertAircraft(new() {
+                ModeS = "X",
+                FirstCreated = new DateTime(2001, 2, 3, 4, 5, 6, 789),
+                LastModified = new DateTime(2009, 8, 7, 6, 5, 4, 321),
+            });
+            var readBack = _Implementation.GetAircraftByCode("X");
+
+            Assert.AreEqual(new DateTime(2001, 2, 3, 4, 5, 6, 789), readBack.FirstCreated);
+            Assert.AreEqual(new DateTime(2009, 8, 7, 6, 5, 4, 321), readBack.LastModified);
+        }
+
+        [TestMethod]
+        public void InsertAircraft_Correctly_Inserts_Record()
+        {
+            Common_InsertAircraft_Correctly_Inserts_Record();
+        }
+
+        [TestMethod]
+        public void InsertAircraft_Works_For_Different_Cultures()
+        {
+            Common_InsertAircraft_Works_For_Different_Cultures();
+        }
+        #endregion
     }
 }

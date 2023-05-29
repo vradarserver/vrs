@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using Test.Framework;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.KineticData;
 using VirtualRadar.Interface.Options;
 using VirtualRadar.Interface.Settings;
@@ -26,6 +28,15 @@ namespace Test.VirtualRadar.Database.SQLite
         protected Configuration _Configuration;
         protected MockClock _MockClock;
         protected MockStandingDataManager _StandingData;
+
+        protected readonly string[] _Cultures = new string[] {
+            "en-GB",
+            "de-DE",
+            "fr-FR",
+            "it-IT",
+            "el-GR",
+            "ru-RU",
+        };
 
         protected KineticAircraft _DefaultAircraft;
         protected KineticSession _DefaultSession;
@@ -59,6 +70,28 @@ namespace Test.VirtualRadar.Database.SQLite
                 StartTime = DateTime.Now,
                 EndTime = DateTime.Now.AddSeconds(30),
             };
+        }
+
+        private MethodInfo _TestInitialise;
+        private void RunTestInitialise()
+        {
+            if(_TestInitialise == null) {
+                _TestInitialise = GetType()
+                    .GetMethods()
+                    .Single(r => r.GetCustomAttributes(typeof(TestInitializeAttribute), inherit: false).Length != 0);
+            }
+            _TestInitialise.Invoke(this, Array.Empty<object>());
+        }
+
+        private MethodInfo _TestCleanup;
+        private void RunTestCleanup()
+        {
+            if(_TestCleanup == null) {
+                _TestCleanup = GetType()
+                    .GetMethods()
+                    .Single(r => r.GetCustomAttributes(typeof(TestCleanupAttribute), inherit: false).Length != 0);
+            }
+            _TestCleanup.Invoke(this, Array.Empty<object>());
         }
 
         #region Aircraft Utility Methods
@@ -885,6 +918,41 @@ namespace Test.VirtualRadar.Database.SQLite
                 Assert.AreNotSame(aircraft, mockAircraft);
                 AssertAircraftAreEqual(mockAircraft, aircraft, id);
             });
+        }
+        #endregion
+
+        #region InsertAircraft
+        protected void Common_InsertAircraft_Throws_If_Writes_Disabled()
+        {
+            _Implementation.InsertAircraft(new() { ModeS = "123456" });
+        }
+
+        protected void Common_InsertAircraft_Correctly_Inserts_Record()
+        {
+            var spreadsheet = new SpreadsheetTestData(TestData.BaseStationDatabaseTests_xslx, "GetAircraftBy");
+            spreadsheet.TestEveryRow(this, row => {
+                var aircraft = LoadAircraftFromSpreadsheetRow(row);
+                _Implementation.WriteSupportEnabled = true;
+                _Implementation.InsertAircraft(aircraft);
+                Assert.AreNotEqual(0, aircraft.AircraftID);
+
+                var readBack = _Implementation.GetAircraftById(aircraft.AircraftID);
+
+                AssertAircraftAreEqual(aircraft, readBack);
+            });
+        }
+
+        protected void Common_InsertAircraft_Works_For_Different_Cultures()
+        {
+            foreach(var culture in _Cultures) {
+                using(var switcher = new CultureSwitcher(culture)) {
+                    try {
+                        Common_InsertAircraft_Correctly_Inserts_Record();
+                    } catch(Exception ex) {
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
+                    }
+                }
+            }
         }
         #endregion
     }
