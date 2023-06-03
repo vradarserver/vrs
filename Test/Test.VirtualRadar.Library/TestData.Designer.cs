@@ -63,6 +63,16 @@ namespace Test.VirtualRadar.Library {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] CallsignParserTestData {
+            get {
+                object obj = ResourceManager.GetObject("CallsignParserTestData", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] GillhamAltitudeTable {
             get {
                 object obj = ResourceManager.GetObject("GillhamAltitudeTable", resourceCulture);

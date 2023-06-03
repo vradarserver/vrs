@@ -72,6 +72,10 @@ namespace Test.Framework
 
         public SpreadsheetTestDataCell CellForColumnOrdinal(int ordinal, bool returnEmptyIfMissing = true) => CellForColumnNumber(ordinal + 1, returnEmptyIfMissing);
 
+        public T[] Array<T>(string headerName, string separator = ",") => CellForColumnHeader(headerName).Array<T>(separator);
+
+        public T[] Array<T>(int ordinal, string separator = ",") => CellForColumnOrdinal(ordinal).Array<T>(separator);
+
         public bool Bool(string headerName, bool emptyValue = default) => CellForColumnHeader(headerName).Bool(emptyValue);
 
         public bool Bool(int ordinal, bool emptyValue = default) => CellForColumnOrdinal(ordinal).Bool(emptyValue);

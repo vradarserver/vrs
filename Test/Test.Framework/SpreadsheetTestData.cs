@@ -24,6 +24,8 @@ namespace Test.Framework
 
         public IReadOnlyList<SpreadsheetTestDataRow> Rows { get; private set; }
 
+        public IEnumerable<SpreadsheetTestDataRow> DataRows => HasHeadingRow ? Rows.Skip(1) : Rows;
+
         public SpreadsheetTestData(byte[] spreadsheetData, string worksheetName, bool hasHeadingRow = true)
         {
             WorksheetName = worksheetName;
@@ -73,11 +75,10 @@ namespace Test.Framework
         public void TestEveryRow(object testClass, Action<SpreadsheetTestDataRow> testMethod)
         {
             var inlineDataTest = new InlineDataTest(testClass, HasHeadingRow ? 2 : 1);
-            var rows = Rows.Skip(HasHeadingRow ? 1 : 0);
 
-            Assert.IsTrue(rows.Any(), "Spreadsheet contains no rows, that doesn't seem right");
+            Assert.IsTrue(DataRows.Any(), "Spreadsheet contains no rows, that doesn't seem right");
 
-            inlineDataTest.TestAndAssert<SpreadsheetTestDataRow>(rows,testMethod);
+            inlineDataTest.TestAndAssert<SpreadsheetTestDataRow>(DataRows, testMethod);
         }
     }
 }

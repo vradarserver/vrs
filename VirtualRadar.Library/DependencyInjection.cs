@@ -1,4 +1,4 @@
-// Copyright © 2022 onwards, Andrew Whewell
+﻿// Copyright © 2022 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,6 +19,7 @@ namespace VirtualRadar.Library
 #pragma warning disable CS0618 // Type or member is obsolete... we mark services that have been made public for unit tests as obsolete
 
             services.AddSingleton<VirtualRadar.Interface.IApplicationLifetime,                          ApplicationLifetime>();
+            services.AddSingleton<VirtualRadar.Interface.ICallsignParser,                               CallsignParser>();
             services.AddSingleton<VirtualRadar.Interface.IClock,                                        Clock>();
             services.AddSingleton<VirtualRadar.Interface.IFileSystem,                                   FileSystem>();
             services.AddSingleton<VirtualRadar.Interface.IHeartbeatService,                             HeartbeatService>();
