@@ -1746,5 +1746,29 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.AreEqual(0, _AircraftUpdatedEvent.CallCount);
         }
         #endregion
+
+        #region DeleteAircraft
+        protected void Common_DeleteAircraft_Throws_If_Writes_Disabled()
+        {
+            var aircraft = new KineticAircraft() { ModeS = "X" };
+            aircraft.AircraftID = (int)AddAircraft(aircraft);
+
+            _Implementation.DeleteAircraft(aircraft);
+        }
+
+        protected void Common_DeleteAircraft_Correctly_Deletes_Record()
+        {
+            var spreadsheet = new SpreadsheetTestData(TestData.BaseStationDatabaseTests_xslx, "GetAircraftBy");
+            spreadsheet.TestEveryRow(this, row => {
+                _Implementation.WriteSupportEnabled = true;
+                var id = (int)AddAircraft(LoadAircraftFromSpreadsheetRow(row));
+
+                var aircraft = _Implementation.GetAircraftById(id);
+                _Implementation.DeleteAircraft(aircraft);
+
+                Assert.AreEqual(null, _Implementation.GetAircraftById(id));
+            });
+        }
+        #endregion
     }
 }

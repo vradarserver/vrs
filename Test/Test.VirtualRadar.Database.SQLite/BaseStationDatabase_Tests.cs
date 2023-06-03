@@ -823,5 +823,42 @@ namespace Test.VirtualRadar.Database.SQLite
             Common_UpsertManyAircraft_Does_Not_Raise_AircraftUpdated_On_Insert();
         }
         #endregion
+
+        #region DeleteAircraft
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void DeleteAircraft_Throws_If_Writes_Disabled()
+        {
+            Common_DeleteAircraft_Throws_If_Writes_Disabled();
+        }
+
+        [TestMethod]
+        public void DeleteAircraft_Does_Nothing_If_File_Does_Not_Exist()
+        {
+            _Implementation.WriteSupportEnabled = true;
+            DeleteTestFile();
+
+            _Implementation.DeleteAircraft(new());
+            Assert.IsFalse(File.Exists(_BaseStationSqbFullPath));
+        }
+
+        [TestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow(" ")]
+        public void DeleteAircraft_Does_Nothing_If_File_Not_Configured(string configuredFileName)
+        {
+            _Implementation.WriteSupportEnabled = true;
+            _Configuration.BaseStationSettings.DatabaseFileName = configuredFileName;
+
+            _Implementation.DeleteAircraft(new());
+        }
+
+        [TestMethod]
+        public void DeleteAircraft_Correctly_Deletes_Record()
+        {
+            Common_DeleteAircraft_Correctly_Deletes_Record();
+        }
+        #endregion
     }
 }
