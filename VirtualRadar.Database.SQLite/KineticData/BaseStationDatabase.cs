@@ -662,9 +662,10 @@ namespace VirtualRadar.Database.SQLite.KineticData
 
             var localNow = _Clock.Now.LocalDateTime;
             var icaos = allUpsertAircraft.Select(r => r.ModeS);
-            var allAircraft = Aircraft_GetByIcaos(icaos).ToDictionary(r => ParameterBuilder.NormaliseAircraftIcao(r.ModeS), r => r);
 
             PerformInTransaction(() => {
+                var allAircraft = Aircraft_GetByIcaos(icaos)
+                    .ToDictionary(r => ParameterBuilder.NormaliseAircraftIcao(r.ModeS), r => r);
                 foreach(var icao in icaos) {
                     var thisUpdated = false;
                     allAircraft.TryGetValue(ParameterBuilder.NormaliseAircraftIcao(icao), out var aircraft);
@@ -710,10 +711,10 @@ namespace VirtualRadar.Database.SQLite.KineticData
 
             var localNow = _Clock.Now.LocalDateTime;
             var icaos = allUpsertAircraft.Select(r => r.ModeS);
-            var allAircraft = Aircraft_GetByIcaos(icaos)
-                .ToDictionary(r => ParameterBuilder.NormaliseAircraftIcao(r.ModeS), r => r);
 
             PerformInTransaction(() => {
+                var allAircraft = Aircraft_GetByIcaos(icaos)
+                    .ToDictionary(r => ParameterBuilder.NormaliseAircraftIcao(r.ModeS), r => r);
                 foreach(var icao in icaos) {
                     var thisUpdated = false;
                     allAircraft.TryGetValue(ParameterBuilder.NormaliseAircraftIcao(icao), out var aircraft);
