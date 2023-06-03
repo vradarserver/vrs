@@ -42,7 +42,7 @@ namespace Test.VirtualRadar.Database.SQLite
                 _SqliteImplementation = new BaseStationDatabase(
                     _FileSystem,
                     _SharedConfiguration.Object,
-                    _MockClock.Object,
+                    _Clock.Object,
                     _StandingData.Object,
                     new MockOptions<BaseStationDatabaseOptions>(_BaseStationDatabaseOptions)
                 );
@@ -506,6 +506,212 @@ namespace Test.VirtualRadar.Database.SQLite
         public void InsertAircraft_Works_For_Different_Cultures()
         {
             Common_InsertAircraft_Works_For_Different_Cultures();
+        }
+        #endregion
+
+        #region GetOrInsertAircraftByCode
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void GetOrInsertAircraftByCode_Throws_If_Writes_Disabled()
+        {
+            Common_GetOrInsertAircraftByCode_Throws_If_Writes_Disabled();
+        }
+
+        [TestMethod]
+        public void GetOrInsertAircraftByCode_Returns_Record_If_It_Exists()
+        {
+            Common_GetOrInsertAircraftByCode_Returns_Record_If_It_Exists();
+        }
+
+        [TestMethod]
+        public void GetOrInsertAircraftByCode_Does_Nothing_If_File_Does_Not_Exist()
+        {
+            _Implementation.WriteSupportEnabled = true;
+            DeleteTestFile();
+
+            _Implementation.GetOrInsertAircraftByCode("123456", out var created);
+            Assert.AreEqual(null, _Implementation.GetAircraftByCode("123456"));
+        }
+
+        [TestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow(" ")]
+        public void GetOrInsertAircraftByCode_Does_Nothing_If_File_Not_Configured(string configuredFileName)
+        {
+            _Implementation.WriteSupportEnabled = true;
+            _Configuration.BaseStationSettings.DatabaseFileName = configuredFileName;
+
+            _Implementation.GetOrInsertAircraftByCode("123456", out var created);
+            Assert.AreEqual(null, _Implementation.GetAircraftByCode("X"));
+        }
+
+        [TestMethod]
+        public void GetOrInsertAircraftByCode_Correctly_Inserts_Record()
+        {
+            Common_GetOrInsertAircraftByCode_Correctly_Inserts_Record();
+        }
+
+        [TestMethod]
+        public void GetOrInsertAircraftByCode_Deals_With_Null_CodeBlock()
+        {
+            Common_GetOrInsertAircraftByCode_Deals_With_Null_CodeBlock();
+        }
+
+        [TestMethod]
+        public void GetOrInsertAircraftByCode_Deals_With_Null_Country()
+        {
+            Common_GetOrInsertAircraftByCode_Deals_With_Null_Country();
+        }
+
+        [TestMethod]
+        public void GetOrInsertAircraftByCode_Deals_With_Unknown_Country()
+        {
+            Common_GetOrInsertAircraftByCode_Deals_With_Unknown_Country();
+        }
+
+        [TestMethod]
+        public void GetOrInsertAircraftByCode_Truncates_Milliseconds_From_Date()
+        {
+            Common_GetOrInsertAircraftByCode_Truncates_Milliseconds_From_Date();
+        }
+        #endregion
+
+        #region UpdateAircraft
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void UpdateAircraft_Throws_If_Writes_Disabled()
+        {
+            Common_UpdateAircraft_Throws_If_Writes_Disabled();
+        }
+
+        [TestMethod]
+        public void UpdateAircraft_Does_Nothing_If_File_Does_Not_Exist()
+        {
+            _Implementation.WriteSupportEnabled = true;
+            DeleteTestFile();
+
+            _Implementation.UpdateAircraft(new() { ModeS = "X" });
+            Assert.AreEqual(null, _Implementation.GetAircraftByCode("X"));
+        }
+
+        [TestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow(" ")]
+        public void UpdateAircraft_Does_Nothing_If_File_Not_Configured(string configuredFileName)
+        {
+            _Implementation.WriteSupportEnabled = true;
+            _Configuration.BaseStationSettings.DatabaseFileName = configuredFileName;
+
+            _Implementation.UpdateAircraft(new() { ModeS = "X" });
+            Assert.AreEqual(null, _Implementation.GetAircraftByCode("X"));
+        }
+
+        [TestMethod]
+        public void UpdateAircraft_Raises_AircraftUpdated()
+        {
+            Common_UpdateAircraft_Raises_AircraftUpdated();
+        }
+
+        [TestMethod]
+        public void UpdateAircraft_Correctly_Updates_Record()
+        {
+            Common_UpdateAircraft_Correctly_Updates_Record();
+        }
+
+        [TestMethod]
+        public void UpdateAircraft_Works_For_Different_Cultures()
+        {
+            Common_UpdateAircraft_Works_For_Different_Cultures();
+        }
+        #endregion
+
+        #region UpdateAircraftModeSCountry
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void UpdateAircraftModeSCountry_Throws_If_Writes_Disabled()
+        {
+            Common_UpdateAircraftModeSCountry_Throws_If_Writes_Disabled();
+        }
+
+        [TestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow(" ")]
+        public void UpdateAircraftModeSCountry_Does_Nothing_If_File_Not_Configured(string configuredFileName)
+        {
+            _Implementation.WriteSupportEnabled = true;
+            _Configuration.BaseStationSettings.DatabaseFileName = configuredFileName;
+
+            _Implementation.UpdateAircraftModeSCountry(1, "X");
+            Assert.AreEqual(null, _Implementation.GetAircraftByCode("X"));
+        }
+
+        [TestMethod]
+        public void UpdateAircraftModeSCountry_Updates_ModeSCountry_For_Existing_Record()
+        {
+            Common_UpdateAircraftModeSCountry_Updates_ModeSCountry_For_Existing_Record();
+        }
+        #endregion
+
+        #region RecordMissingAircraft
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void RecordMissingAircraft_Throws_Exception_If_Writes_Not_Enabled()
+        {
+            Common_RecordMissingAircraft_Throws_Exception_If_Writes_Not_Enabled();
+        }
+
+        [TestMethod]
+        public void RecordMissingAircraft_Creates_Almost_Empty_Aircraft_Record()
+        {
+            Common_RecordMissingAircraft_Creates_Almost_Empty_Aircraft_Record();
+        }
+
+        [TestMethod]
+        public void RecordMissingAircraft_Updates_Existing_Empty_Records()
+        {
+            Common_RecordMissingAircraft_Updates_Existing_Empty_Records();
+        }
+
+        [TestMethod]
+        public void RecordMissingAircraft_Updates_Existing_Empty_Records_With_Wrong_UserString1()
+        {
+            Common_RecordMissingAircraft_Updates_Existing_Empty_Records_With_Wrong_UserString1();
+        }
+
+        [TestMethod]
+        public void RecordMissingAircraft_Only_Updates_Time_On_Existing_Records_With_Values()
+        {
+            Common_RecordMissingAircraft_Only_Updates_Time_On_Existing_Records_With_Values();
+        }
+        #endregion
+
+        #region RecordManyMissingAircraft
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void RecordManyMissingAircraft_Throws_Exception_If_Writes_Not_Enabled()
+        {
+            Common_RecordManyMissingAircraft_Throws_Exception_If_Writes_Not_Enabled();
+        }
+
+        [TestMethod]
+        public void RecordManyMissingAircraft_Creates_Almost_Empty_Aircraft_Record()
+        {
+            Common_RecordManyMissingAircraft_Creates_Almost_Empty_Aircraft_Record();
+        }
+
+        [TestMethod]
+        public void RecordManyMissingAircraft_Updates_Existing_Empty_Records()
+        {
+            Common_RecordManyMissingAircraft_Updates_Existing_Empty_Records();
+        }
+
+        [TestMethod]
+        public void RecordManyMissingAircraft_Only_Updates_LastModified_Time_On_Existing_Records_With_Registrations()
+        {
+            Common_RecordManyMissingAircraft_Only_Updates_LastModified_Time_On_Existing_Records_With_Registrations();
         }
         #endregion
     }

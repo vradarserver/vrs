@@ -7,11 +7,13 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
+using Moq;
 using Test.Framework;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.KineticData;
 using VirtualRadar.Interface.Options;
 using VirtualRadar.Interface.Settings;
+using VirtualRadar.Interface.StandingData;
 
 namespace Test.VirtualRadar.Database.SQLite
 {
@@ -26,8 +28,9 @@ namespace Test.VirtualRadar.Database.SQLite
         protected BaseStationDatabaseOptions _BaseStationDatabaseOptions;
         protected MockSharedConfiguration _SharedConfiguration;
         protected Configuration _Configuration;
-        protected MockClock _MockClock;
+        protected MockClock _Clock;
         protected MockStandingDataManager _StandingData;
+        protected EventRecorder<EventArgs<KineticAircraft>> _AircraftUpdatedEvent;
 
         protected readonly string[] _Cultures = new string[] {
             "en-GB",
@@ -51,8 +54,10 @@ namespace Test.VirtualRadar.Database.SQLite
                 WorkingFolder = Path.GetTempPath(),
             };
             _BaseStationDatabaseOptions = new();
-            _MockClock = new();
+            _Clock = new();
             _StandingData = new();
+
+            _AircraftUpdatedEvent = new EventRecorder<EventArgs<KineticAircraft>>();
 
             _DefaultAircraft = new() {
                 ModeS = "123456",
@@ -953,6 +958,325 @@ namespace Test.VirtualRadar.Database.SQLite
                     }
                 }
             }
+        }
+        #endregion
+
+        #region GetOrInsertAircraftByCode
+        protected void Common_GetOrInsertAircraftByCode_Throws_If_Writes_Disabled()
+        {
+            _Implementation.GetOrInsertAircraftByCode("123456", out var created);
+        }
+
+        protected void Common_GetOrInsertAircraftByCode_Returns_Record_If_It_Exists()
+        {
+            _Implementation.WriteSupportEnabled = true;
+            _Implementation.InsertAircraft(new() { ModeS = "123456" });
+
+            var result = _Implementation.GetOrInsertAircraftByCode("123456", out var created);
+
+            Assert.AreNotEqual(0, result.AircraftID);
+            Assert.AreEqual("123456", result.ModeS);
+            Assert.AreEqual(false, created);
+        }
+
+        protected void Common_GetOrInsertAircraftByCode_Correctly_Inserts_Record()
+        {
+            _Implementation.WriteSupportEnabled = true;
+
+            _StandingData.AllCodeBlocksByIcao24.Add("Abc123", new() {
+                Country = "Foovania",
+            });
+
+            var aircraft = _Implementation.GetOrInsertAircraftByCode("Abc123", out bool created);
+            Assert.AreNotEqual(0, aircraft.AircraftID);
+
+            var readBack = _Implementation.GetAircraftById(aircraft.AircraftID);
+            AssertAircraftAreEqual(new() {
+                AircraftID =    aircraft.AircraftID,
+                FirstCreated =  _Clock.Object.Now.DateTime,
+                LastModified =  _Clock.Object.Now.DateTime,
+                ModeS =         "Abc123",
+                ModeSCountry =  "Foovania",
+            }, readBack);
+            Assert.AreEqual(true, created);
+        }
+
+        protected void Common_GetOrInsertAircraftByCode_Deals_With_Null_CodeBlock()
+        {
+            _StandingData.AllCodeBlocksByIcao24.Add("abc123", null);
+            _Implementation.WriteSupportEnabled = true;
+
+            var aircraft = _Implementation.GetOrInsertAircraftByCode("abc123", out bool created);
+
+            Assert.IsNull(aircraft.ModeSCountry);
+        }
+
+        protected void Common_GetOrInsertAircraftByCode_Deals_With_Null_Country()
+        {
+            _Implementation.WriteSupportEnabled = true;
+            var aircraft = _Implementation.GetOrInsertAircraftByCode("abc123", out bool created);
+            Assert.IsNull(aircraft.ModeSCountry);
+        }
+
+        protected void Common_GetOrInsertAircraftByCode_Deals_With_Unknown_Country()
+        {
+            _StandingData.AllCodeBlocksByIcao24.Add("abc123", new() { Country = "Unknown Country", });
+
+            _Implementation.WriteSupportEnabled = true;
+            var aircraft = _Implementation.GetOrInsertAircraftByCode("abc123", out bool created);
+            Assert.IsNull(aircraft.ModeSCountry);
+        }
+
+        protected void Common_GetOrInsertAircraftByCode_Truncates_Milliseconds_From_Date()
+        {
+            _Implementation.WriteSupportEnabled = true;
+
+            var time = new DateTime(2001, 2, 3, 4, 5, 6, 789);
+            _Clock.Now = time;
+
+            _Implementation.GetOrInsertAircraftByCode("X", out var created);
+            var readBack = _Implementation.GetAircraftByCode("X");
+            Assert.AreEqual(time, readBack.FirstCreated);
+            Assert.AreEqual(time, readBack.LastModified);
+        }
+        #endregion
+
+        #region UpdateAircraft
+        protected void Common_UpdateAircraft_Throws_If_Writes_Disabled()
+        {
+            var aircraft = new KineticAircraft() { ModeS = "X", };
+            aircraft.AircraftID = (int)AddAircraft(aircraft);
+
+            aircraft.Registration = "C";
+            _Implementation.UpdateAircraft(aircraft);
+        }
+
+        protected void Common_UpdateAircraft_Raises_AircraftUpdated()
+        {
+            _Implementation.WriteSupportEnabled = true;
+
+            var aircraft = new KineticAircraft() { ModeS = "X" };
+
+            _Implementation.AircraftUpdated += _AircraftUpdatedEvent.Handler;
+            _AircraftUpdatedEvent.EventRaised += (sender, args) => {
+                Assert.AreSame(aircraft, args.Value);
+            };
+
+            _Implementation.InsertAircraft(aircraft);
+            Assert.AreEqual(0, _AircraftUpdatedEvent.CallCount);
+
+            _Implementation.UpdateAircraft(aircraft);
+            Assert.AreEqual(1, _AircraftUpdatedEvent.CallCount);
+            Assert.AreSame(_Implementation, _AircraftUpdatedEvent.Sender);
+        }
+
+        protected void Common_UpdateAircraft_Correctly_Updates_Record()
+        {
+            var spreadsheet = new SpreadsheetTestData(TestData.BaseStationDatabaseTests_xslx, "GetAircraftBy");
+            spreadsheet.TestEveryRow(this, row => {
+                _Implementation.WriteSupportEnabled = true;
+                var id = (int)AddAircraft(new() { ModeS = "ZZZZZZ" });
+
+                var update = _Implementation.GetAircraftById(id);
+                LoadAircraftFromSpreadsheetRow(row, 0, update);
+
+                _Implementation.UpdateAircraft(update);
+
+                var readBack = _Implementation.GetAircraftById(id);
+                AssertAircraftAreEqual(update, readBack, id);
+            });
+        }
+
+        protected void Common_UpdateAircraft_Works_For_Different_Cultures()
+        {
+            foreach(var culture in _Cultures) {
+                using(var switcher = new CultureSwitcher(culture)) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    try {
+                        Common_UpdateAircraft_Correctly_Updates_Record();
+                    } catch(Exception ex) {
+                        throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region UpdateAircraftModeSCountry
+        protected void Common_UpdateAircraftModeSCountry_Throws_If_Writes_Disabled()
+        {
+            var aircraft = new KineticAircraft() { ModeS = "X" };
+            aircraft.AircraftID = (int)AddAircraft(aircraft);
+
+            aircraft.Registration = "C";
+            _Implementation.UpdateAircraftModeSCountry(aircraft.AircraftID, "X");
+        }
+
+        protected void Common_UpdateAircraftModeSCountry_Updates_ModeSCountry_For_Existing_Record()
+        {
+            var spreadsheet = new SpreadsheetTestData(TestData.BaseStationDatabaseTests_xslx, "GetAircraftBy");
+            spreadsheet.TestEveryRow(this, row => {
+                _Implementation.WriteSupportEnabled = true;
+                var id = (int)AddAircraft(new() { ModeS = "ZZZZZZ" });
+
+                var update = _Implementation.GetAircraftById(id);
+                LoadAircraftFromSpreadsheetRow(row, 0, update);
+
+                _Implementation.UpdateAircraft(update);
+
+                update.ModeSCountry = "Updated Mode-S Country";
+                _Implementation.UpdateAircraftModeSCountry(update.AircraftID, update.ModeSCountry);
+
+                var readBack = _Implementation.GetAircraftById(id);
+                AssertAircraftAreEqual(update, readBack, id);
+
+                update.ModeSCountry = null;
+                _Implementation.UpdateAircraftModeSCountry(update.AircraftID, update.ModeSCountry);
+
+                readBack = _Implementation.GetAircraftById(id);
+                AssertAircraftAreEqual(update, readBack, id);
+            });
+        }
+        #endregion
+
+        #region RecordMissingAircraft
+        protected void Common_RecordMissingAircraft_Throws_Exception_If_Writes_Not_Enabled()
+        {
+            _Implementation.RecordMissingAircraft("123456");
+        }
+
+        protected void Common_RecordMissingAircraft_Creates_Almost_Empty_Aircraft_Record()
+        {
+            _Implementation.WriteSupportEnabled = true;
+
+            _Implementation.RecordMissingAircraft("123456");
+
+            var aircraft = _Implementation.GetAircraftByCode("123456");
+            Assert.IsNotNull(aircraft);
+            Assert.AreEqual("123456", aircraft.ModeS);
+            Assert.AreEqual("Missing", aircraft.UserString1);
+            Assert.AreEqual(_Clock.Now.DateTime, aircraft.FirstCreated);
+            Assert.AreEqual(_Clock.Now.DateTime, aircraft.LastModified);
+            Assert.IsNull(aircraft.Registration);
+            Assert.IsNull(aircraft.Manufacturer);
+            Assert.IsNull(aircraft.Type);
+            Assert.IsNull(aircraft.RegisteredOwners);
+        }
+
+        protected void Common_RecordMissingAircraft_Updates_Existing_Empty_Records()
+        {
+            _Implementation.WriteSupportEnabled = true;
+            _Implementation.RecordMissingAircraft("123456");
+
+            var createdDate = _Clock.Now;
+            _Clock.Now = _Clock.Now.AddMinutes(1);
+            _Implementation.RecordMissingAircraft("123456");
+
+            var aircraft = _Implementation.GetAircraftByCode("123456");
+            Assert.AreEqual(createdDate, aircraft.FirstCreated);
+            Assert.AreEqual(_Clock.Now,  aircraft.LastModified);
+        }
+
+        protected void Common_RecordMissingAircraft_Updates_Existing_Empty_Records_With_Wrong_UserString1()
+        {
+            _Implementation.WriteSupportEnabled = true;
+            _Implementation.InsertAircraft(new () { ModeS = "123456", FirstCreated = _Clock.Now.DateTime, LastModified = _Clock.Now.DateTime, });
+
+            var createdDate = _Clock.Now.DateTime;
+            _Clock.Now = _Clock.Now.AddMinutes(1);
+            _Implementation.RecordMissingAircraft("123456");
+
+            var aircraft = _Implementation.GetAircraftByCode("123456");
+            Assert.AreEqual("Missing",      aircraft.UserString1);
+            Assert.AreEqual(createdDate,    aircraft.FirstCreated);
+            Assert.AreEqual(_Clock.Now,     aircraft.LastModified);
+        }
+
+        protected void Common_RecordMissingAircraft_Only_Updates_Time_On_Existing_Records_With_Values()
+        {
+            foreach(var property in new String[] { "Registration", "Manufacturer", "Model", "Operator" }) {
+                RunTestCleanup();
+                RunTestInitialise();
+
+                _Implementation.WriteSupportEnabled = true;
+                var aircraft = new KineticAircraft() { ModeS = "123456", UserString1 = "something", FirstCreated = _Clock.Now.DateTime, LastModified = _Clock.Now.DateTime, };
+                switch(property) {
+                    case "Registration":    aircraft.Registration = "A"; break;
+                    case "Manufacturer":    aircraft.Manufacturer = "A"; break;
+                    case "Model":           aircraft.Type = "A"; break;
+                    case "Operator":        aircraft.RegisteredOwners = "A"; break;
+                    default:                throw new NotImplementedException();
+                }
+                _Implementation.InsertAircraft(aircraft);
+
+                var createdDate = _Clock.Now.DateTime;
+                _Clock.Now = _Clock.Now.AddMinutes(1);
+                _Implementation.RecordMissingAircraft("123456");
+
+                aircraft = _Implementation.GetAircraftByCode("123456");
+                Assert.AreEqual("something",    aircraft.UserString1);
+                Assert.AreEqual(createdDate,    aircraft.FirstCreated);
+                Assert.AreEqual(_Clock.Now,     aircraft.LastModified);
+            }
+        }
+        #endregion
+
+        #region RecordManyMissingAircraft
+        protected void Common_RecordManyMissingAircraft_Throws_Exception_If_Writes_Not_Enabled()
+        {
+            _Implementation.RecordManyMissingAircraft(new string[] { "A", "B" });
+        }
+
+        protected void Common_RecordManyMissingAircraft_Creates_Almost_Empty_Aircraft_Record()
+        {
+            _Implementation.WriteSupportEnabled = true;
+
+            _Implementation.RecordManyMissingAircraft(new string[] { "A", "B" });
+
+            var aircraft = _Implementation.GetAircraftByCode("A");
+            Assert.IsNotNull(aircraft);
+            Assert.AreEqual("A",        aircraft.ModeS);
+            Assert.AreEqual("Missing",  aircraft.UserString1);
+            Assert.AreEqual(_Clock.Now, aircraft.FirstCreated);
+            Assert.AreEqual(_Clock.Now, aircraft.LastModified);
+
+            aircraft = _Implementation.GetAircraftByCode("B");
+            Assert.IsNotNull(aircraft);
+            Assert.AreEqual("B",        aircraft.ModeS);
+            Assert.AreEqual("Missing",  aircraft.UserString1);
+            Assert.AreEqual(_Clock.Now, aircraft.FirstCreated);
+            Assert.AreEqual(_Clock.Now, aircraft.LastModified);
+        }
+
+        protected void Common_RecordManyMissingAircraft_Updates_Existing_Empty_Records()
+        {
+            _Implementation.WriteSupportEnabled = true;
+            _Implementation.RecordManyMissingAircraft(new string[] { "123456" });
+
+            var createdDate = _Clock.Now;
+            _Clock.Now = _Clock.Now.AddMinutes(1);
+            _Implementation.RecordManyMissingAircraft(new string[] { "123456" });
+
+            var aircraft = _Implementation.GetAircraftByCode("123456");
+            Assert.AreEqual(createdDate,  aircraft.FirstCreated);
+            Assert.AreEqual(_Clock.Now,   aircraft.LastModified);
+        }
+
+        protected void Common_RecordManyMissingAircraft_Only_Updates_LastModified_Time_On_Existing_Records_With_Registrations()
+        {
+            _Implementation.WriteSupportEnabled = true;
+            _Implementation.InsertAircraft(new() { ModeS = "123456", Registration = "A", FirstCreated = _Clock.Now.LocalDateTime, LastModified = _Clock.Now.LocalDateTime });
+
+            var createdDate = _Clock.Now;
+            _Clock.Now = _Clock.Now.AddMinutes(1);
+            _Implementation.RecordManyMissingAircraft(new string[] { "123456" });
+
+            var aircraft = _Implementation.GetAircraftByCode("123456");
+            Assert.AreEqual("A",            aircraft.Registration);
+            Assert.AreEqual(createdDate,    aircraft.FirstCreated);
+            Assert.AreEqual(_Clock.Now,     aircraft.LastModified);
         }
         #endregion
     }

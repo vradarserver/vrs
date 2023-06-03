@@ -588,9 +588,9 @@ namespace VirtualRadar.Database.SQLite.KineticData
             }
 
             var localNow = _Clock.Now.LocalDateTime;
-            var allAircraft = Aircraft_GetByIcaos(icaos).ToDictionary(r => ParameterBuilder.NormaliseAircraftIcao(r.ModeS), r => r);
 
             PerformInTransaction(() => {
+                var allAircraft = Aircraft_GetByIcaos(icaos).ToDictionary(r => ParameterBuilder.NormaliseAircraftIcao(r.ModeS), r => r);
                 foreach(var icao in icaos) {
                     allAircraft.TryGetValue(ParameterBuilder.NormaliseAircraftIcao(icao), out var aircraft);
                     RecordEmptyAircraft(aircraft, icao, localNow);
