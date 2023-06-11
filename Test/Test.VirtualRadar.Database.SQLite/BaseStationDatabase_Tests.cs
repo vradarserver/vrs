@@ -892,6 +892,18 @@ namespace Test.VirtualRadar.Database.SQLite
         {
             Common_GetFlights_Can_Filter_Flights_By_Contains_Criteria();
         }
+
+        [TestMethod]
+        public void GetFlights_Can_Filter_Flights_By_StartsWith_Criteria()
+        {
+            Common_GetFlights_Can_Filter_Flights_By_StartsWith_Criteria();
+        }
+
+        [TestMethod]
+        public void GetFlights_Can_Filter_Flights_By_EndsWith_Criteria()
+        {
+            Common_GetFlights_Can_Filter_Flights_By_EndsWith_Criteria();
+        }
         #endregion
     }
 }
