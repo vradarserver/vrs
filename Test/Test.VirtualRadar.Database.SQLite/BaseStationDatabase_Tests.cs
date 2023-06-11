@@ -37,6 +37,9 @@ namespace Test.VirtualRadar.Database.SQLite
             _FileSystem = new();
             _FileSystem.AddFileContent(_BaseStationSqbFullPath, new byte[] { 0 });
 
+            // Uncomment this to see Entity Framework traces in the debug console:
+            //_BaseStationDatabaseOptions.ShowDatabaseDiagnosticsInDebugConsole = true;
+
 #pragma warning disable CS0618 // Type or member is obsolete (used to warn people not to instantiate directly)
             using(new CultureSwitcher("en-GB")) {
                 _SqliteImplementation = new BaseStationDatabase(
@@ -903,6 +906,12 @@ namespace Test.VirtualRadar.Database.SQLite
         public void GetFlights_Can_Filter_Flights_By_EndsWith_Criteria()
         {
             Common_GetFlights_Can_Filter_Flights_By_EndsWith_Criteria();
+        }
+
+        [TestMethod]
+        public void GetFlights_Can_Filter_Flights_By_Range_Criteria()
+        {
+            Common_GetFlights_Can_Filter_Flights_By_Range_Criteria();
         }
         #endregion
     }

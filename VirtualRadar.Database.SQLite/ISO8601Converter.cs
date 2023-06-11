@@ -23,7 +23,7 @@ namespace VirtualRadar.Database.SQLite
         /// Creates a new object.
         /// </summary>
         public ISO8601Converter() : base(
-            val => val.ToString("s"),
+            val => val.ToString("yyyy-MM-dd HH:mm:ss"),
             str => DateTime.Parse(str, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
         )
         {

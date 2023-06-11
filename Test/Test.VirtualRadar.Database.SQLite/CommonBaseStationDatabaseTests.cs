@@ -946,7 +946,7 @@ namespace Test.VirtualRadar.Database.SQLite
                     _Criteria.Date.UpperValue = endRangeFlight.StartTime = startTime.AddSeconds(2);
                     aboveRangeFlight.StartTime = startTime.AddSeconds(3);
 
-                    _Criteria.Date.ReverseCondition =reverseCondition;
+                    _Criteria.Date.ReverseCondition = reverseCondition;
                     break;
                 case nameof(SearchBaseStationCriteria.FirstAltitude):
                     var firstAltitude = 100;
@@ -2478,6 +2478,47 @@ namespace Test.VirtualRadar.Database.SQLite
                             }
                             Assert.AreEqual(expectedCount, flights.Count, criteriaProperty.Name);
                             Assert.IsFalse(flights.Any(r => r.FlightID == endsWithFlight.FlightID), criteriaProperty.Name);
+                        }
+                    }
+                }
+            }
+        }
+
+        protected void Common_GetFlights_Can_Filter_Flights_By_Range_Criteria()
+        {
+            var belowRangeFlight = CreateFlight("belowRange");
+            var startRangeFlight = CreateFlight("startRange");
+            var inRangeFlight = CreateFlight("inRange");
+            var endRangeFlight = CreateFlight("endRange");
+            var aboveRangeFlight = CreateFlight("aboveRange");
+
+            foreach(var reverseCondition in new bool[] { false, true }) {
+                foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    if(SetRangeCriteria(criteriaProperty, belowRangeFlight, startRangeFlight, inRangeFlight, endRangeFlight, aboveRangeFlight, reverseCondition)) {
+                        AddFlightAndAircraft(belowRangeFlight);
+                        AddFlightAndAircraft(startRangeFlight);
+                        AddFlightAndAircraft(inRangeFlight);
+                        AddFlightAndAircraft(endRangeFlight);
+                        AddFlightAndAircraft(aboveRangeFlight);
+
+                        var flights = _Implementation.GetFlights(_Criteria, -1, -1, null, false, null, false);
+                        var message = $"{criteriaProperty.Name} {(reverseCondition ? "reversed" : "not reversed")}";
+                        foreach(var flight in flights) {
+                            message = $"{message}{(message.Length == 0 ? "" : ", ")}{flight.Callsign}";
+                        }
+
+                        if(!reverseCondition) {
+                            Assert.AreEqual(3, flights.Count, message);
+                            Assert.IsTrue(flights.Where(f => f.Callsign == "startRange").Any(), message);
+                            Assert.IsTrue(flights.Where(f => f.Callsign == "inRange").Any(), message);
+                            Assert.IsTrue(flights.Where(f => f.Callsign == "endRange").Any(), message);
+                        } else {
+                            Assert.AreEqual(2, flights.Count, message);
+                            Assert.IsTrue(flights.Where(f => f.Callsign == "belowRange").Any(), message);
+                            Assert.IsTrue(flights.Where(f => f.Callsign == "aboveRange").Any(), message);
                         }
                     }
                 }

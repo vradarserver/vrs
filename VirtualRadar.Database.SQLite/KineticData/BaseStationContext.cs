@@ -58,6 +58,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
             optionsBuilder.UseSqlite(connectionString.ToString());
 
             if(_BaseStationDatabaseOptions.ShowDatabaseDiagnosticsInDebugConsole) {
+                optionsBuilder.EnableSensitiveDataLogging(true);
                 optionsBuilder.LogTo(message => System.Diagnostics.Debug.WriteLine(message));
             }
         }
