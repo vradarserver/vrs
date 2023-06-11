@@ -860,5 +860,20 @@ namespace Test.VirtualRadar.Database.SQLite
             Common_DeleteAircraft_Correctly_Deletes_Record();
         }
         #endregion
+
+        #region GetFlights
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void GetFlights_Throws_If_Criteria_Is_Null()
+        {
+            Common_GetFlights_Throws_If_Criteria_Is_Null();
+        }
+
+        [TestMethod]
+        public void GetFlights_Copies_Database_Record_To_Flight_Object()
+        {
+            Common_GetFlights_Copies_Database_Record_To_Flight_Object();
+        }
+        #endregion
     }
 }

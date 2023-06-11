@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using Dapper;
-using Moq;
 using Test.Framework;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.KineticData;
 using VirtualRadar.Interface.Options;
 using VirtualRadar.Interface.Settings;
-using VirtualRadar.Interface.StandingData;
 
 namespace Test.VirtualRadar.Database.SQLite
 {
@@ -31,6 +25,7 @@ namespace Test.VirtualRadar.Database.SQLite
         protected MockClock _Clock;
         protected MockStandingDataManager _StandingData;
         protected EventRecorder<EventArgs<KineticAircraft>> _AircraftUpdatedEvent;
+        protected SearchBaseStationCriteria _Criteria;
 
         protected readonly string[] _Cultures = new string[] {
             "en-GB",
@@ -74,6 +69,12 @@ namespace Test.VirtualRadar.Database.SQLite
             _DefaultSession = new() {
                 StartTime = DateTime.Now,
                 EndTime = DateTime.Now.AddSeconds(30),
+            };
+
+            _Criteria = new SearchBaseStationCriteria() {
+                Date =          new FilterRange<DateTime>(DateTime.MinValue, DateTime.MaxValue),
+                FirstAltitude = new FilterRange<int>(int.MinValue, int.MaxValue),
+                LastAltitude =  new FilterRange<int>(int.MinValue, int.MaxValue),
             };
         }
 
@@ -1767,6 +1768,49 @@ namespace Test.VirtualRadar.Database.SQLite
                 _Implementation.DeleteAircraft(aircraft);
 
                 Assert.AreEqual(null, _Implementation.GetAircraftById(id));
+            });
+        }
+        #endregion
+
+        #region GetFlights
+        protected void Common_GetFlights_Throws_If_Criteria_Is_Null()
+        {
+            _Implementation.GetFlights(null, -1, -1, null, false, null, false);
+        }
+
+        protected void Common_GetFlights_Copies_Database_Record_To_Flight_Object()
+        {
+            Do_GetFlightsAllVersions_Copies_Database_Record_To_Flight_Object(true);
+        }
+
+        protected void Do_GetFlightsAllVersions_Copies_Database_Record_To_Flight_Object(bool getFlights)
+        {
+            var spreadsheet = new SpreadsheetTestData(TestData.BaseStationDatabaseTests_xslx, "GetFlights");
+            spreadsheet.TestEveryRow(this, row => {
+                var mockFlight = LoadFlightFromSpreadsheetRow(row);
+
+                var aircraftId = (int)AddAircraft(mockFlight.Aircraft);
+                mockFlight.AircraftID = aircraftId;
+                mockFlight.SessionID = PrepareSessionReference(new() { StartTime = DateTime.Now }).SessionID;
+                var flightId = AddFlight(mockFlight);
+
+                List<KineticFlight> flights = null;
+                if(getFlights) {
+                    flights = _Implementation.GetFlights(_Criteria, -1, -1, null, false, null, false);
+                } else {
+                    throw new NotImplementedException(); //flights = _Implementation.GetFlightsForAircraft(mockFlight.Aircraft, _Criteria, -1, -1, null, false, null, false);
+                }
+
+                Assert.AreEqual(1, flights.Count);
+
+                Assert.AreNotSame(flights[0], mockFlight);
+                if(getFlights) {
+                    Assert.AreNotSame(flights[0].Aircraft, mockFlight.Aircraft);
+                } else {
+                    Assert.AreSame(flights[0].Aircraft, mockFlight.Aircraft);
+                }
+
+                AssertFlightsAreEqual(mockFlight, flights[0], true, aircraftId);
             });
         }
         #endregion

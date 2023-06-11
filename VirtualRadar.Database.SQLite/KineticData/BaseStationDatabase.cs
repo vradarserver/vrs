@@ -915,6 +915,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
 
             return result;
         }
+*/
 
         /// <summary>
         /// See interface docs.
@@ -927,21 +928,34 @@ namespace VirtualRadar.Database.SQLite.KineticData
         /// <param name="sortField2"></param>
         /// <param name="sortField2Ascending"></param>
         /// <returns></returns>
-        public List<BaseStationFlight> GetFlights(SearchBaseStationCriteria criteria, int fromRow, int toRow, string sortField1, bool sortField1Ascending, string sortField2, bool sortField2Ascending)
+        public List<KineticFlight> GetFlights(
+            SearchBaseStationCriteria criteria,
+            int fromRow,
+            int toRow,
+            string sortField1,
+            bool sortField1Ascending,
+            string sortField2,
+            bool sortField2Ascending
+        )
         {
-            if(criteria == null) throw new ArgumentNullException("criteria");
+            if(criteria == null) {
+                throw new ArgumentNullException("criteria");
+            }
             NormaliseCriteria(criteria);
 
-            List<BaseStationFlight> result = new List<BaseStationFlight>();
+            var result = new List<KineticFlight>();
 
             lock(_ConnectionLock) {
                 OpenConnection();
-                if(_Connection != null) result = Flights_GetByCriteria(null, criteria, fromRow, toRow, sortField1, sortField1Ascending, sortField2, sortField2Ascending);
+                if(_Context != null) {
+                    result = Flights_GetByCriteria(null, criteria, fromRow, toRow, sortField1, sortField1Ascending, sortField2, sortField2Ascending);
+                }
             }
 
             return result;
         }
 
+/*
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -1090,59 +1104,29 @@ namespace VirtualRadar.Database.SQLite.KineticData
 
             return (int)_Connection.ExecuteScalar<long>(commandText.ToString(), criteriaAndProperties.Parameters, transaction: _Transaction);
         }
+*/
 
-        private List<BaseStationFlight> Flights_GetByCriteria(BaseStationAircraft aircraft, SearchBaseStationCriteria criteria, int fromRow, int toRow, string sort1, bool sort1Ascending, string sort2, bool sort2Ascending)
+        private List<KineticFlight> Flights_GetByCriteria(
+            KineticAircraft aircraft,
+            SearchBaseStationCriteria criteria,
+            int fromRow,
+            int toRow,
+            string sort1,
+            bool sort1Ascending,
+            string sort2,
+            bool sort2Ascending
+        )
         {
-            List<BaseStationFlight> result = null;
-
-            sort1 = DynamicSql.CriteriaSortFieldToColumnName(sort1);
-            sort2 = DynamicSql.CriteriaSortFieldToColumnName(sort2);
-
-            StringBuilder commandText = new StringBuilder();
-            commandText.Append(CreateSearchBaseStationCriteriaSql(aircraft, criteria, justCount: false));
-            var criteriaAndProperties = DynamicSql.GetFlightsCriteria(aircraft, criteria);
-            if(criteriaAndProperties.SqlChunk.Length > 0) commandText.AppendFormat(" WHERE {0}", criteriaAndProperties.SqlChunk);
-            if(sort1 != null || sort2 != null) {
-                commandText.Append(" ORDER BY ");
-                if(sort1 != null) commandText.AppendFormat("{0} {1}", sort1, sort1Ascending ? "ASC" : "DESC");
-                if(sort2 != null) commandText.AppendFormat("{0}{1} {2}", sort1 == null ? "" : ", ", sort2, sort2Ascending ? "ASC" : "DESC");
+            if(criteria == null) {
+                throw new ArgumentNullException(nameof(criteria));
             }
 
-            commandText.Append(" LIMIT @limit OFFSET @offset");
-            int limit = toRow == -1 || toRow < fromRow ? int.MaxValue : (toRow - Math.Max(0, fromRow)) + 1;
-            int offset = fromRow < 0 ? 0 : fromRow;
-            criteriaAndProperties.Parameters.Add("limit", limit);
-            criteriaAndProperties.Parameters.Add("offset", offset);
+            return _Context.Flights
+                .Include(flight => flight.Aircraft)
+                .ToList();
 
-            if(aircraft != null) {
-                result = _Connection.Query<BaseStationFlight>(commandText.ToString(), criteriaAndProperties.Parameters, transaction: _Transaction).ToList();
-                foreach(var flight in result) {
-                    flight.Aircraft = aircraft;
-                }
-            } else {
-                var aircraftInstances = new Dictionary<int, BaseStationAircraft>();
-                Func<BaseStationAircraft, BaseStationAircraft> getAircraftInstance = (a) => {
-                    BaseStationAircraft instance = null;
-                    if(a != null) {
-                        if(!aircraftInstances.TryGetValue(a.AircraftID, out instance)) {
-                            instance = a;
-                            aircraftInstances.Add(a.AircraftID, instance);
-                        }
-                    }
-                    return instance;
-                };
-
-                // The results are always declared as flights then aircraft
-                result = _Connection.Query<BaseStationFlight, BaseStationAircraft, BaseStationFlight>(
-                    commandText.ToString(),
-                    (f, a) => { f.Aircraft = getAircraftInstance(a); return f; },
-                    criteriaAndProperties.Parameters,
-                    transaction: _Transaction, splitOn: "AircraftID"
-                ).ToList();
-            }
-
-            return result;
         }
+/*
 
         /// <summary>
         /// See interface docs.
@@ -1217,6 +1201,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
 
             return result;
         }
+*/
 
         /// <summary>
         /// Normalises strings in the criteria object.
@@ -1231,11 +1216,20 @@ namespace VirtualRadar.Database.SQLite.KineticData
         /// <param name="criteria"></param>
         public static void NormaliseCriteria(SearchBaseStationCriteria criteria)
         {
-            if(criteria.Callsign != null)       criteria.Callsign.ToUpperInvariant();
-            if(criteria.Icao != null)           criteria.Icao.ToUpperInvariant();
-            if(criteria.Registration != null)   criteria.Registration.ToUpperInvariant();
-            if(criteria.Type != null)           criteria.Type.ToUpperInvariant();
+            if(criteria.Callsign != null) {
+                criteria.Callsign.ToUpperInvariant();
+            }
+            if(criteria.Icao != null) {
+                criteria.Icao.ToUpperInvariant();
+            }
+            if(criteria.Registration != null) {
+                criteria.Registration.ToUpperInvariant();
+            }
+            if(criteria.Type != null) {
+                criteria.Type.ToUpperInvariant();
+            }
         }
+/*
 
         /// <summary>
         /// Builds a select statement from criteria.
