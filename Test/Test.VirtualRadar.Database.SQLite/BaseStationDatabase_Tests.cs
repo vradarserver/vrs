@@ -874,6 +874,18 @@ namespace Test.VirtualRadar.Database.SQLite
         {
             Common_GetFlights_Copies_Database_Record_To_Flight_Object();
         }
+
+        [TestMethod]
+        public void GetFlights_Can_Return_List_Of_All_Flights()
+        {
+            Common_GetFlights_Can_Return_List_Of_All_Flights();
+        }
+
+        [TestMethod]
+        public void GetFlights_Can_Filter_Flights_By_Equality_Criteria()
+        {
+            Common_GetFlights_Can_Filter_Flights_By_Equality_Criteria();
+        }
         #endregion
     }
 }

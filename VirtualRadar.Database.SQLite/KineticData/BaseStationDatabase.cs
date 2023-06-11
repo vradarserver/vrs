@@ -1126,6 +1126,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
                 .ToList();
 
         }
+
 /*
 
         /// <summary>

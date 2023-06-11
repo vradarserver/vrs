@@ -503,6 +503,510 @@ namespace Test.VirtualRadar.Database.SQLite
         }
         #endregion
 
+        #region Criteria & sort test helpers - IsFlightCriteria, IsFlightSortColumn, SetEqualityCriteria, SetRangeCriteria, SetSortColumnValue
+        /// <summary>
+        /// Returns true if the criteria property refers to a flight property as opposed to an actual property (e.g.
+        /// callsign is a flight property and returns true while registration is an actual property and returns false).
+        /// </summary>
+        /// <param name="criteriaProperty"></param>
+        /// <returns></returns>
+        protected bool IsFlightCriteria(PropertyInfo criteriaProperty)
+        {
+            switch(criteriaProperty.Name) {
+                case nameof(SearchBaseStationCriteria.Date):
+                case nameof(SearchBaseStationCriteria.IsEmergency):
+                case nameof(SearchBaseStationCriteria.FirstAltitude):
+                case nameof(SearchBaseStationCriteria.LastAltitude):
+                case nameof(SearchBaseStationCriteria.Callsign):
+                    return true;
+                case nameof(SearchBaseStationCriteria.Icao):
+                case nameof(SearchBaseStationCriteria.Operator):
+                case nameof(SearchBaseStationCriteria.Country):
+                case nameof(SearchBaseStationCriteria.Registration):
+                case nameof(SearchBaseStationCriteria.Type):
+                case nameof(SearchBaseStationCriteria.UseAlternateCallsigns):
+                    return false;
+                default:
+                    throw new NotImplementedException(criteriaProperty.Name);
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the sort column passed across refers to a property on the flight as opposed to a property on the aircraft.
+        /// </summary>
+        /// <param name="sortColumn"></param>
+        /// <returns></returns>
+        protected bool IsFlightSortColumn(string sortColumn)
+        {
+            switch(sortColumn) {
+                case "date":
+                case "firstaltitude":
+                case "lastaltitude":
+                case "callsign":
+                    return true;
+                case "country":
+                case "model":
+                case "type":
+                case "operator":
+                case "reg":
+                case "icao":
+                    return false;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the criteria property refers to a string filter.
+        /// </summary>
+        /// <param name="criteriaProperty"></param>
+        /// <returns></returns>
+        protected bool IsFilterStringProperty(PropertyInfo criteriaProperty)
+        {
+            return typeof(FilterString).IsAssignableFrom(criteriaProperty.PropertyType);
+        }
+
+        /// <summary>
+        /// Sets a property on a flight based on the name of a criteria property.
+        /// </summary>
+        /// <param name="criteriaProperty"></param>
+        /// <param name="flight"></param>
+        /// <param name="value"></param>
+        protected void SetStringAircraftProperty(PropertyInfo criteriaProperty, KineticFlight flight, string value)
+        {
+            switch(criteriaProperty.Name) {
+                case nameof(SearchBaseStationCriteria.Callsign):        flight.Callsign = value; break;
+                case nameof(SearchBaseStationCriteria.Operator):        flight.Aircraft.RegisteredOwners = value; break;
+                case nameof(SearchBaseStationCriteria.Registration):    flight.Aircraft.Registration = value; break;
+                case nameof(SearchBaseStationCriteria.Icao):            flight.Aircraft.ModeS = value; break;
+                case nameof(SearchBaseStationCriteria.Country):         flight.Aircraft.ModeSCountry = value; break;
+                case nameof(SearchBaseStationCriteria.Type):            flight.Aircraft.ICAOTypeCode = value; break;
+                default:
+                    // only pass properties that pass "IsFilterStringProperty" to this method.
+                    throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Sets up the flights passed across for an equality criteria test.
+        /// </summary>
+        /// <param name="criteriaProperty"></param>
+        /// <param name="defaultFlight"></param>
+        /// <param name="notEqualFlight"></param>
+        /// <param name="equalsFlight"></param>
+        /// <param name="reverseCondition"></param>
+        /// <returns>Returns true if the criteria property is an equality criteria.</returns>
+        protected bool SetEqualityCriteria(
+            PropertyInfo criteriaProperty,
+            KineticFlight defaultFlight,
+            KineticFlight notEqualFlight,
+            KineticFlight equalsFlight,
+            bool reverseCondition
+        )
+        {
+            var result = true;
+
+            string flightPropertyName = criteriaProperty.Name;
+            string aircraftPropertyName = null;
+            object criteriaValue = null;
+            object defaultValue = null;
+            object notEqualValue = null;
+            object equalValue = null;
+
+            switch(criteriaProperty.Name) {
+                case nameof(SearchBaseStationCriteria.Callsign):
+                    criteriaValue = new FilterString("A") {
+                        ReverseCondition = reverseCondition
+                    };
+                    defaultValue = aircraftPropertyName == "ModeS" ? "" : null;
+                    notEqualValue = "AA";
+                    equalValue = "A";
+                    break;
+                case nameof(SearchBaseStationCriteria.Registration):
+                case nameof(SearchBaseStationCriteria.Icao):
+                case nameof(SearchBaseStationCriteria.Operator):
+                case nameof(SearchBaseStationCriteria.Country):
+                case nameof(SearchBaseStationCriteria.Type):
+                    flightPropertyName = null;
+                    switch(criteriaProperty.Name) {
+                        case nameof(SearchBaseStationCriteria.Icao):        aircraftPropertyName = nameof(KineticAircraft.ModeS); break;
+                        case nameof(SearchBaseStationCriteria.Operator):    aircraftPropertyName = nameof(KineticAircraft.RegisteredOwners); break;
+                        case nameof(SearchBaseStationCriteria.Country):     aircraftPropertyName = nameof(KineticAircraft.ModeSCountry); break;
+                        case nameof(SearchBaseStationCriteria.Type):        aircraftPropertyName = nameof(KineticAircraft.ICAOTypeCode); break;
+                        default:                                            aircraftPropertyName = criteriaProperty.Name; break;
+                    }
+                    goto case nameof(SearchBaseStationCriteria.Callsign);
+                case nameof(SearchBaseStationCriteria.Date):
+                case nameof(SearchBaseStationCriteria.UseAlternateCallsigns):
+                case nameof(SearchBaseStationCriteria.FirstAltitude):
+                case nameof(SearchBaseStationCriteria.LastAltitude):
+                    result = false;
+                    break;
+                case nameof(SearchBaseStationCriteria.IsEmergency):
+                    criteriaValue = new FilterBool(true) {
+                        ReverseCondition = reverseCondition
+                    };
+                    defaultValue = false;
+                    notEqualValue = false;
+                    equalValue = true;
+                    flightPropertyName = nameof(KineticFlight.HadEmergency);
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+            if(result) {
+                criteriaProperty.SetValue(_Criteria, criteriaValue, null);
+
+                if(aircraftPropertyName != null) {
+                    var aircraftProperty = typeof(KineticAircraft).GetProperty(aircraftPropertyName);
+                    aircraftProperty.SetValue(defaultFlight.Aircraft, defaultValue, null);
+                    aircraftProperty.SetValue(notEqualFlight.Aircraft, notEqualValue, null);
+                    aircraftProperty.SetValue(equalsFlight.Aircraft, equalValue, null);
+                } else {
+                    var flightProperty = typeof(KineticFlight).GetProperty(flightPropertyName);
+                    flightProperty.SetValue(defaultFlight, defaultValue, null);
+                    flightProperty.SetValue(notEqualFlight, notEqualValue, null);
+                    flightProperty.SetValue(equalsFlight, equalValue, null);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Sets up the flights passed across for a contains criteria test.
+        /// </summary>
+        /// <param name="criteriaProperty"></param>
+        /// <param name="defaultFlight"></param>
+        /// <param name="notContainsFlight"></param>
+        /// <param name="containsFlight"></param>
+        /// <param name="reverseCondition"></param>
+        /// <returns>Returns true if the criteria property is an contains criteria.</returns>
+        protected bool SetContainsCriteria(
+            PropertyInfo criteriaProperty,
+            KineticFlight defaultFlight,
+            KineticFlight notContainsFlight,
+            KineticFlight containsFlight,
+            bool reverseCondition
+        )
+        {
+            var result = true;
+
+            string flightPropertyName = criteriaProperty.Name;
+            string aircraftPropertyName = null;
+            object criteriaValue = null;
+            object defaultValue = null;
+            object notContainsValue = null;
+            object containsValue = null;
+
+            switch(criteriaProperty.Name) {
+                case nameof(SearchBaseStationCriteria.Callsign):
+                    criteriaValue = new FilterString("B") {
+                        Condition = FilterCondition.Contains,
+                        ReverseCondition = reverseCondition
+                    };
+                    defaultValue = aircraftPropertyName == "ModeS" ? "" : null;
+                    notContainsValue = "DEF";
+                    containsValue = "ABC";
+                    break;
+                case nameof(SearchBaseStationCriteria.Registration):
+                case nameof(SearchBaseStationCriteria.Icao):
+                case nameof(SearchBaseStationCriteria.Operator):
+                case nameof(SearchBaseStationCriteria.Country):
+                case nameof(SearchBaseStationCriteria.Type):
+                    flightPropertyName = null;
+                    switch(criteriaProperty.Name) {
+                        case nameof(SearchBaseStationCriteria.Icao):        aircraftPropertyName = nameof(KineticAircraft.ModeS); break;
+                        case nameof(SearchBaseStationCriteria.Operator):    aircraftPropertyName = nameof(KineticAircraft.RegisteredOwners); break;
+                        case nameof(SearchBaseStationCriteria.Country):     aircraftPropertyName = nameof(KineticAircraft.ModeSCountry); break;
+                        case nameof(SearchBaseStationCriteria.Type):        aircraftPropertyName = nameof(KineticAircraft.ICAOTypeCode); break;
+                        default:                                            aircraftPropertyName = criteriaProperty.Name; break;
+                    }
+                    goto case nameof(SearchBaseStationCriteria.Callsign);
+                case nameof(SearchBaseStationCriteria.Date):
+                case nameof(SearchBaseStationCriteria.IsEmergency):
+                case nameof(SearchBaseStationCriteria.UseAlternateCallsigns):
+                case nameof(SearchBaseStationCriteria.FirstAltitude):
+                case nameof(SearchBaseStationCriteria.LastAltitude):
+                    result = false;
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+            if(result) {
+                criteriaProperty.SetValue(_Criteria, criteriaValue, null);
+
+                if(aircraftPropertyName != null) {
+                    var aircraftProperty = typeof(KineticAircraft).GetProperty(aircraftPropertyName);
+                    aircraftProperty.SetValue(defaultFlight.Aircraft, defaultValue, null);
+                    aircraftProperty.SetValue(notContainsFlight.Aircraft, notContainsValue, null);
+                    aircraftProperty.SetValue(containsFlight.Aircraft, containsValue, null);
+                } else {
+                    var flightProperty = typeof(KineticFlight).GetProperty(flightPropertyName);
+                    flightProperty.SetValue(defaultFlight, defaultValue, null);
+                    flightProperty.SetValue(notContainsFlight, notContainsValue, null);
+                    flightProperty.SetValue(containsFlight, containsValue, null);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Sets up the flights passed across for a starts with criteria test.
+        /// </summary>
+        /// <param name="criteriaProperty"></param>
+        /// <param name="defaultFlight"></param>
+        /// <param name="notStartsWithFlight"></param>
+        /// <param name="startsWithFlight"></param>
+        /// <param name="reverseCondition"></param>
+        /// <returns>Returns true if the criteria property is an starts with criteria.</returns>
+        protected bool SetStartsWithCriteria(
+            PropertyInfo criteriaProperty,
+            KineticFlight defaultFlight,
+            KineticFlight notStartsWithFlight,
+            KineticFlight startsWithFlight,
+            bool reverseCondition
+        )
+        {
+            var result = true;
+
+            string flightPropertyName = criteriaProperty.Name;
+            string aircraftPropertyName = null;
+            object criteriaValue = null;
+            object defaultValue = null;
+            object notStartsWithValue = null;
+            object startsWithValue = null;
+
+            switch(criteriaProperty.Name) {
+                case nameof(SearchBaseStationCriteria.Callsign):
+                    criteriaValue = new FilterString("AB") {
+                        Condition = FilterCondition.StartsWith,
+                        ReverseCondition = reverseCondition
+                    };
+                    defaultValue = aircraftPropertyName == "ModeS" ? "" : null;
+                    notStartsWithValue = "DEF";
+                    startsWithValue = "ABC";
+                    break;
+                case nameof(SearchBaseStationCriteria.Registration):
+                case nameof(SearchBaseStationCriteria.Icao):
+                case nameof(SearchBaseStationCriteria.Operator):
+                case nameof(SearchBaseStationCriteria.Country):
+                case nameof(SearchBaseStationCriteria.Type):
+                    flightPropertyName = null;
+                    switch(criteriaProperty.Name) {
+                        case nameof(SearchBaseStationCriteria.Icao):        aircraftPropertyName = nameof(KineticAircraft.ModeS); break;
+                        case nameof(SearchBaseStationCriteria.Operator):    aircraftPropertyName = nameof(KineticAircraft.RegisteredOwners); break;
+                        case nameof(SearchBaseStationCriteria.Country):     aircraftPropertyName = nameof(KineticAircraft.ModeSCountry); break;
+                        case nameof(SearchBaseStationCriteria.Type):        aircraftPropertyName = nameof(KineticAircraft.ICAOTypeCode); break;
+                        default:                                            aircraftPropertyName = criteriaProperty.Name; break;
+                    }
+                    goto case nameof(SearchBaseStationCriteria.Callsign);
+                case nameof(SearchBaseStationCriteria.Date):
+                case nameof(SearchBaseStationCriteria.IsEmergency):
+                case nameof(SearchBaseStationCriteria.UseAlternateCallsigns):
+                case nameof(SearchBaseStationCriteria.FirstAltitude):
+                case nameof(SearchBaseStationCriteria.LastAltitude):
+                    result = false;
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+            if(result) {
+                criteriaProperty.SetValue(_Criteria, criteriaValue, null);
+
+                if(aircraftPropertyName != null) {
+                    var aircraftProperty = typeof(KineticAircraft).GetProperty(aircraftPropertyName);
+                    aircraftProperty.SetValue(defaultFlight.Aircraft, defaultValue, null);
+                    aircraftProperty.SetValue(notStartsWithFlight.Aircraft, notStartsWithValue, null);
+                    aircraftProperty.SetValue(startsWithFlight.Aircraft, startsWithValue, null);
+                } else {
+                    var flightProperty = typeof(KineticFlight).GetProperty(flightPropertyName);
+                    flightProperty.SetValue(defaultFlight, defaultValue, null);
+                    flightProperty.SetValue(notStartsWithFlight, notStartsWithValue, null);
+                    flightProperty.SetValue(startsWithFlight, startsWithValue, null);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Sets up the flights passed across for a ends with criteria test.
+        /// </summary>
+        /// <param name="criteriaProperty"></param>
+        /// <param name="defaultFlight"></param>
+        /// <param name="notEndsWithFlight"></param>
+        /// <param name="endsWithFlight"></param>
+        /// <param name="reverseCondition"></param>
+        /// <returns>Returns true if the criteria property is an ends with criteria.</returns>
+        protected bool SetEndsWithCriteria(
+            PropertyInfo criteriaProperty,
+            KineticFlight defaultFlight,
+            KineticFlight notEndsWithFlight,
+            KineticFlight endsWithFlight,
+            bool reverseCondition
+        )
+        {
+            var result = true;
+
+            string flightPropertyName = criteriaProperty.Name;
+            string aircraftPropertyName = null;
+            object criteriaValue = null;
+            object defaultValue = null;
+            object notEndsWithValue = null;
+            object endsWithValue = null;
+
+            switch(criteriaProperty.Name) {
+                case nameof(SearchBaseStationCriteria.Callsign):
+                    criteriaValue = new FilterString("BC") {
+                        Condition = FilterCondition.EndsWith,
+                        ReverseCondition = reverseCondition
+                    };
+                    defaultValue = aircraftPropertyName == "ModeS" ? "" : null;
+                    notEndsWithValue = "DEF";
+                    endsWithValue = "ABC";
+                    break;
+                case nameof(SearchBaseStationCriteria.Registration):
+                case nameof(SearchBaseStationCriteria.Icao):
+                case nameof(SearchBaseStationCriteria.Operator):
+                case nameof(SearchBaseStationCriteria.Country):
+                case nameof(SearchBaseStationCriteria.Type):
+                    flightPropertyName = null;
+                    switch(criteriaProperty.Name) {
+                        case nameof(SearchBaseStationCriteria.Icao):        aircraftPropertyName = nameof(KineticAircraft.ModeS); break;
+                        case nameof(SearchBaseStationCriteria.Operator):    aircraftPropertyName = nameof(KineticAircraft.RegisteredOwners); break;
+                        case nameof(SearchBaseStationCriteria.Country):     aircraftPropertyName = nameof(KineticAircraft.ModeSCountry); break;
+                        case nameof(SearchBaseStationCriteria.Type):        aircraftPropertyName = nameof(KineticAircraft.ICAOTypeCode); break;
+                        default:                                            aircraftPropertyName = criteriaProperty.Name; break;
+                    }
+                    goto case nameof(SearchBaseStationCriteria.Callsign);
+                case nameof(SearchBaseStationCriteria.Date):
+                case nameof(SearchBaseStationCriteria.IsEmergency):
+                case nameof(SearchBaseStationCriteria.UseAlternateCallsigns):
+                case nameof(SearchBaseStationCriteria.FirstAltitude):
+                case nameof(SearchBaseStationCriteria.LastAltitude):
+                    result = false;
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+            if(result) {
+                criteriaProperty.SetValue(_Criteria, criteriaValue, null);
+
+                if(aircraftPropertyName != null) {
+                    var aircraftProperty = typeof(KineticAircraft).GetProperty(aircraftPropertyName);
+                    aircraftProperty.SetValue(defaultFlight.Aircraft, defaultValue, null);
+                    aircraftProperty.SetValue(notEndsWithFlight.Aircraft, notEndsWithValue, null);
+                    aircraftProperty.SetValue(endsWithFlight.Aircraft, endsWithValue, null);
+                } else {
+                    var flightProperty = typeof(KineticFlight).GetProperty(flightPropertyName);
+                    flightProperty.SetValue(defaultFlight, defaultValue, null);
+                    flightProperty.SetValue(notEndsWithFlight, notEndsWithValue, null);
+                    flightProperty.SetValue(endsWithFlight, endsWithValue, null);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Sets up the flights for a range criteria test.
+        /// </summary>
+        /// <param name="criteriaProperty"></param>
+        /// <param name="belowRangeFlight"></param>
+        /// <param name="startRangeFlight"></param>
+        /// <param name="inRangeFlight"></param>
+        /// <param name="endRangeFlight"></param>
+        /// <param name="aboveRangeFlight"></param>
+        /// <param name="reverseCondition"></param>
+        /// <returns></returns>
+        protected bool SetRangeCriteria(
+            PropertyInfo criteriaProperty,
+            KineticFlight belowRangeFlight,
+            KineticFlight startRangeFlight,
+            KineticFlight inRangeFlight,
+            KineticFlight endRangeFlight,
+            KineticFlight aboveRangeFlight,
+            bool reverseCondition
+        )
+        {
+            bool result = true;
+
+            switch(criteriaProperty.Name) {
+                case nameof(SearchBaseStationCriteria.Date):
+                    var startTime = new DateTime(2001, 2, 3, 4, 5, 6);
+                    belowRangeFlight.StartTime = startTime.AddSeconds(-1);
+                    _Criteria.Date.LowerValue = startRangeFlight.StartTime = startTime;
+                    inRangeFlight.StartTime = startTime.AddSeconds(1);
+                    _Criteria.Date.UpperValue = endRangeFlight.StartTime = startTime.AddSeconds(2);
+                    aboveRangeFlight.StartTime = startTime.AddSeconds(3);
+
+                    _Criteria.Date.ReverseCondition =reverseCondition;
+                    break;
+                case nameof(SearchBaseStationCriteria.FirstAltitude):
+                    var firstAltitude = 100;
+                    belowRangeFlight.FirstAltitude = firstAltitude - 1;
+                    _Criteria.FirstAltitude.LowerValue = startRangeFlight.FirstAltitude = firstAltitude;
+                    inRangeFlight.FirstAltitude = firstAltitude + 1;
+                    _Criteria.FirstAltitude.UpperValue = endRangeFlight.FirstAltitude = firstAltitude + 2;
+                    aboveRangeFlight.FirstAltitude = firstAltitude + 3;
+
+                    _Criteria.FirstAltitude.ReverseCondition = reverseCondition;
+                    break;
+                case nameof(SearchBaseStationCriteria.LastAltitude):
+                    var lastAltitude = 100;
+                    belowRangeFlight.LastAltitude = lastAltitude - 1;
+                    _Criteria.LastAltitude.LowerValue = startRangeFlight.LastAltitude = lastAltitude;
+                    inRangeFlight.LastAltitude = lastAltitude + 1;
+                    _Criteria.LastAltitude.UpperValue = endRangeFlight.LastAltitude = lastAltitude + 2;
+                    aboveRangeFlight.LastAltitude = lastAltitude + 3;
+
+                    _Criteria.LastAltitude.ReverseCondition = reverseCondition;
+                    break;
+                case nameof(SearchBaseStationCriteria.Callsign):
+                case nameof(SearchBaseStationCriteria.IsEmergency):
+                case nameof(SearchBaseStationCriteria.Operator):
+                case nameof(SearchBaseStationCriteria.Registration):
+                case nameof(SearchBaseStationCriteria.Icao):
+                case nameof(SearchBaseStationCriteria.Country):
+                case nameof(SearchBaseStationCriteria.UseAlternateCallsigns):
+                case nameof(SearchBaseStationCriteria.Type):
+                    result = false;
+                    break;
+                default:
+                    throw new NotImplementedException(criteriaProperty.Name);
+            }
+
+            return result;
+        }
+
+        protected void SetSortColumnValue(KineticFlight flight, string sortColumn, bool isDefault, bool isHigh)
+        {
+            var stringValue = isDefault ? sortColumn == "reg" || sortColumn == "icao" ? "" : null : isHigh ? "B" : "A";
+            var dateValue = isDefault ? default(DateTime) : isHigh ? new DateTime(2001, 1, 2) : new DateTime(2001, 1, 1);
+            var intValue = isDefault ? (int?)null : isHigh ? 10 : -10;
+
+            switch(sortColumn) {
+                case "callsign":        flight.Callsign = stringValue; break;
+                case "country":         flight.Aircraft.ModeSCountry = stringValue; break;
+                case "date":            flight.StartTime = dateValue; break;
+                case "firstaltitude":   flight.FirstAltitude = intValue; break;
+                case "lastaltitude":    flight.LastAltitude = intValue; break;
+                case "model":           flight.Aircraft.Type = stringValue; break;
+                case "type":            flight.Aircraft.ICAOTypeCode = stringValue; break;
+                case "operator":        flight.Aircraft.RegisteredOwners = stringValue; break;
+                case "reg":             flight.Aircraft.Registration = stringValue; break;
+                case "icao":            flight.Aircraft.ModeS = stringValue; break;
+                default:                throw new NotImplementedException();
+            }
+        }
+        #endregion
+
         #region DBHistory Utility Methods
         protected void ClearDBHistory()
         {
@@ -1812,6 +2316,61 @@ namespace Test.VirtualRadar.Database.SQLite
 
                 AssertFlightsAreEqual(mockFlight, flights[0], true, aircraftId);
             });
+        }
+
+        protected void Common_GetFlights_Can_Return_List_Of_All_Flights()
+        {
+            var flight1 = CreateFlight("ABC123");
+            var flight2 = CreateFlight("XYZ789");
+
+            AddAircraft(flight1.Aircraft);
+            AddAircraft(flight2.Aircraft);
+
+            AddFlight(flight1);
+            AddFlight(flight2);
+
+            var flights = _Implementation.GetFlights(_Criteria, -1, -1, null, false, null, false);
+
+            Assert.AreEqual(2, flights.Count);
+            Assert.IsTrue(flights.Where(f => f.Callsign == "ABC123").Any());
+            Assert.IsTrue(flights.Where(f => f.Callsign == "XYZ789").Any());
+        }
+
+        protected void Common_GetFlights_Can_Filter_Flights_By_Equality_Criteria()
+        {
+            var defaultFlight = CreateFlight("default", false);
+            var notEqualFlight = CreateFlight("notEquals", false);
+            var equalsFlight = CreateFlight("equals", false);
+
+            foreach(var reverseCondition in new bool[] { false, true }) {
+                foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    if(SetEqualityCriteria(criteriaProperty, defaultFlight, notEqualFlight, equalsFlight, reverseCondition)) {
+                        AddFlightAndAircraft(defaultFlight);
+                        AddFlightAndAircraft(notEqualFlight);
+                        AddFlightAndAircraft(equalsFlight);
+
+                        var flights = _Implementation.GetFlights(_Criteria, -1, -1, null, false, null, false);
+                        if(!reverseCondition) {
+                            Assert.AreEqual(1, flights.Count, criteriaProperty.Name);
+                            Assert.AreEqual(equalsFlight.FlightID, flights[0].FlightID, criteriaProperty.Name);
+                        } else {
+                            var expectedCount = 1;
+                            switch(criteriaProperty.Name) {
+                                // NOT NULL properties will return 2 records, nullable properties will ignore nulls and just return 1
+                                case "Icao":
+                                case "IsEmergency":
+                                    expectedCount = 2;
+                                    break;
+                            }
+                            Assert.AreEqual(expectedCount, flights.Count, criteriaProperty.Name);
+                            Assert.IsFalse(flights.Any(r => r.FlightID == equalsFlight.FlightID), criteriaProperty.Name);
+                        }
+                    }
+                }
+            }
         }
         #endregion
     }
