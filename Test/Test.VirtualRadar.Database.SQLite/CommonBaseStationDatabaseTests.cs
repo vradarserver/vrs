@@ -2372,6 +2372,43 @@ namespace Test.VirtualRadar.Database.SQLite
                 }
             }
         }
+
+        protected void Common_GetFlights_Can_Filter_Flights_By_Contains_Criteria()
+        {
+            var defaultFlight = CreateFlight("default", false);
+            var notContainsFlight = CreateFlight("notContains", false);
+            var containsFlight = CreateFlight("contains", false);
+
+            foreach(var reverseCondition in new bool[] { false, true }) {
+                foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                    RunTestCleanup();
+                    RunTestInitialise();
+
+                    if(SetContainsCriteria(criteriaProperty, defaultFlight, notContainsFlight, containsFlight, reverseCondition)) {
+                        AddFlightAndAircraft(defaultFlight);
+                        AddFlightAndAircraft(notContainsFlight);
+                        AddFlightAndAircraft(containsFlight);
+
+                        var flights = _Implementation.GetFlights(_Criteria, -1, -1, null, false, null, false);
+                        if(!reverseCondition) {
+                            Assert.AreEqual(1, flights.Count, criteriaProperty.Name);
+                            Assert.AreEqual(containsFlight.FlightID, flights[0].FlightID, criteriaProperty.Name);
+                        } else {
+                            var expectedCount = 1;
+                            switch(criteriaProperty.Name) {
+                                // NOT NULL properties will return 2 records, nullable properties will ignore nulls and just return 1
+                                case nameof(SearchBaseStationCriteria.Icao):
+                                case nameof(SearchBaseStationCriteria.IsEmergency):
+                                    expectedCount = 2;
+                                    break;
+                            }
+                            Assert.AreEqual(expectedCount, flights.Count, criteriaProperty.Name);
+                            Assert.IsFalse(flights.Any(r => r.FlightID == containsFlight.FlightID), criteriaProperty.Name);
+                        }
+                    }
+                }
+            }
+        }
         #endregion
     }
 }
