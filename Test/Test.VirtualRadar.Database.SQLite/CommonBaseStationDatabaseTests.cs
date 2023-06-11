@@ -2360,8 +2360,8 @@ namespace Test.VirtualRadar.Database.SQLite
                             var expectedCount = 1;
                             switch(criteriaProperty.Name) {
                                 // NOT NULL properties will return 2 records, nullable properties will ignore nulls and just return 1
-                                case "Icao":
-                                case "IsEmergency":
+                                case nameof(SearchBaseStationCriteria.Icao):
+                                case nameof(SearchBaseStationCriteria.IsEmergency):
                                     expectedCount = 2;
                                     break;
                             }

@@ -1121,8 +1121,13 @@ namespace VirtualRadar.Database.SQLite.KineticData
                 throw new ArgumentNullException(nameof(criteria));
             }
 
-            return _Context.Flights
-                .Include(flight => flight.Aircraft)
+            IQueryable<KineticFlight> query = _Context
+                .Flights
+                .Include(flight => flight.Aircraft);
+
+            query = BaseStationDatabase_Query.ApplyBaseStationFlightCriteria(query, criteria);
+
+            return query
                 .ToList();
 
         }

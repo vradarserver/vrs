@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\VirtualRadar.Database\VirtualRadar.Database.csproj" />
     <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj" />
     <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj" />
   </ItemGroup>
