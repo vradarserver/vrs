@@ -69,14 +69,8 @@ namespace Test.VirtualRadar.Database.SQLite
                 // is completely benign.
             }
 
-            for(var i = 0;i < 10;++i) {
-                try {
-                    if(File.Exists(_BaseStationSqbFullPath)) {
-                        File.Delete(_BaseStationSqbFullPath);
-                    }
-                } catch(IOException) {
-                    Thread.Sleep(50);
-                }
+            if(File.Exists(_BaseStationSqbFullPath)) {
+                File.Delete(_BaseStationSqbFullPath);
             }
         }
 
@@ -84,6 +78,7 @@ namespace Test.VirtualRadar.Database.SQLite
         {
             var builder = new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder() {
                 DataSource = fileName ?? _BaseStationSqbFullPath,
+                Pooling = false,
             };
             var connection = new Microsoft.Data.Sqlite.SqliteConnection(builder.ConnectionString);
 
