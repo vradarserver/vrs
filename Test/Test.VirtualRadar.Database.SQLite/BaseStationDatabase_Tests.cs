@@ -908,6 +908,12 @@ namespace Test.VirtualRadar.Database.SQLite
         {
             Common_GetFlights_Can_Filter_Flights_By_Range_Criteria();
         }
+
+        [TestMethod]
+        public void GetFlights_String_Properties_Can_Match_Null_Or_Empty_Fields()
+        {
+            Common_GetFlights_String_Properties_Can_Match_Null_Or_Empty_Fields();
+        }
         #endregion
     }
 }

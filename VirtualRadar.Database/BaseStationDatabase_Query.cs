@@ -13,6 +13,8 @@ namespace VirtualRadar.Database
             query = ApplyStringFilter(query, criteria.Callsign,
                 q => q.Where(r => r.Callsign == criteria.Callsign.Value),
                 q => q.Where(r => r.Callsign != null && r.Callsign != criteria.Callsign.Value),
+                q => q.Where(r => (r.Callsign ?? "") == ""),
+                q => q.Where(r => (r.Callsign ?? "") != ""),
                 q => q.Where(r => r.Callsign != null && r.Callsign.Contains(criteria.Callsign.Value)),
                 q => q.Where(r => r.Callsign != null && !r.Callsign.Contains(criteria.Callsign.Value)),
                 q => q.Where(r => r.Callsign != null && r.Callsign.StartsWith(criteria.Callsign.Value)),
@@ -23,6 +25,8 @@ namespace VirtualRadar.Database
             query = ApplyStringFilter(query, criteria.Country,
                 q => q.Where(r => r.Aircraft.ModeSCountry == criteria.Country.Value),
                 q => q.Where(r => r.Aircraft.ModeSCountry != null && r.Aircraft.ModeSCountry != criteria.Country.Value),
+                q => q.Where(r => (r.Aircraft.ModeSCountry ?? "") == ""),
+                q => q.Where(r => (r.Aircraft.ModeSCountry ?? "") != ""),
                 q => q.Where(r => r.Aircraft.ModeSCountry != null && r.Aircraft.ModeSCountry.Contains(criteria.Country.Value)),
                 q => q.Where(r => r.Aircraft.ModeSCountry != null && !r.Aircraft.ModeSCountry.Contains(criteria.Country.Value)),
                 q => q.Where(r => r.Aircraft.ModeSCountry != null && r.Aircraft.ModeSCountry.StartsWith(criteria.Country.Value)),
@@ -47,6 +51,8 @@ namespace VirtualRadar.Database
             query = ApplyStringFilter(query, criteria.Icao,
                 q => q.Where(r => r.Aircraft.ModeS == criteria.Icao.Value),
                 q => q.Where(r => r.Aircraft.ModeS != criteria.Icao.Value),
+                q => q.Where(r => (r.Aircraft.ModeS ?? "") == ""),
+                q => q.Where(r => (r.Aircraft.ModeS ?? "") != ""),
                 q => q.Where(r => r.Aircraft.ModeS.Contains(criteria.Icao.Value)),
                 q => q.Where(r => !r.Aircraft.ModeS.Contains(criteria.Icao.Value)),
                 q => q.Where(r => r.Aircraft.ModeS.StartsWith(criteria.Icao.Value)),
@@ -68,6 +74,8 @@ namespace VirtualRadar.Database
             query = ApplyStringFilter(query, criteria.Operator,
                 q => q.Where(r => r.Aircraft.RegisteredOwners == criteria.Operator.Value),
                 q => q.Where(r => r.Aircraft.RegisteredOwners != null && r.Aircraft.RegisteredOwners != criteria.Operator.Value),
+                q => q.Where(r => (r.Aircraft.RegisteredOwners ?? "") == ""),
+                q => q.Where(r => (r.Aircraft.RegisteredOwners ?? "") != ""),
                 q => q.Where(r => r.Aircraft.RegisteredOwners != null && r.Aircraft.RegisteredOwners.Contains(criteria.Operator.Value)),
                 q => q.Where(r => r.Aircraft.RegisteredOwners != null && !r.Aircraft.RegisteredOwners.Contains(criteria.Operator.Value)),
                 q => q.Where(r => r.Aircraft.RegisteredOwners != null && r.Aircraft.RegisteredOwners.StartsWith(criteria.Operator.Value)),
@@ -78,6 +86,8 @@ namespace VirtualRadar.Database
             query = ApplyStringFilter(query, criteria.Registration,
                 q => q.Where(r => r.Aircraft.Registration == criteria.Registration.Value),
                 q => q.Where(r => r.Aircraft.Registration != null && r.Aircraft.Registration != criteria.Registration.Value),
+                q => q.Where(r => (r.Aircraft.Registration ?? "") == ""),
+                q => q.Where(r => (r.Aircraft.Registration ?? "") != ""),
                 q => q.Where(r => r.Aircraft.Registration != null && r.Aircraft.Registration.Contains(criteria.Registration.Value)),
                 q => q.Where(r => r.Aircraft.Registration != null && !r.Aircraft.Registration.Contains(criteria.Registration.Value)),
                 q => q.Where(r => r.Aircraft.Registration != null && r.Aircraft.Registration.StartsWith(criteria.Registration.Value)),
@@ -88,6 +98,8 @@ namespace VirtualRadar.Database
             query = ApplyStringFilter(query, criteria.Type,
                 q => q.Where(r => r.Aircraft.ICAOTypeCode == criteria.Type.Value),
                 q => q.Where(r => r.Aircraft.ICAOTypeCode != null && r.Aircraft.ICAOTypeCode != criteria.Type.Value),
+                q => q.Where(r => (r.Aircraft.ICAOTypeCode ?? "") == ""),
+                q => q.Where(r => (r.Aircraft.ICAOTypeCode ?? "") != ""),
                 q => q.Where(r => r.Aircraft.ICAOTypeCode != null && r.Aircraft.ICAOTypeCode.Contains(criteria.Type.Value)),
                 q => q.Where(r => r.Aircraft.ICAOTypeCode != null && !r.Aircraft.ICAOTypeCode.Contains(criteria.Type.Value)),
                 q => q.Where(r => r.Aircraft.ICAOTypeCode != null && r.Aircraft.ICAOTypeCode.StartsWith(criteria.Type.Value)),
@@ -99,11 +111,13 @@ namespace VirtualRadar.Database
             return query;
         }
 
-        private static IQueryable<KineticFlight> ApplyFilter(
+        private static IQueryable<KineticFlight> ApplyStringFilter(
             IQueryable<KineticFlight> query,
-            Filter filter,
+            FilterString filter,
             Func<IQueryable<KineticFlight>, IQueryable<KineticFlight>> whereEqual,
             Func<IQueryable<KineticFlight>, IQueryable<KineticFlight>> whereNotEqual,
+            Func<IQueryable<KineticFlight>, IQueryable<KineticFlight>> whereIsNull,
+            Func<IQueryable<KineticFlight>, IQueryable<KineticFlight>> whereIsNotNull,
             Func<IQueryable<KineticFlight>, IQueryable<KineticFlight>> whereContains,
             Func<IQueryable<KineticFlight>, IQueryable<KineticFlight>> whereNotContains,
             Func<IQueryable<KineticFlight>, IQueryable<KineticFlight>> whereStartsWith,
@@ -115,31 +129,30 @@ namespace VirtualRadar.Database
             if(filter != null) {
                 switch(filter.Condition) {
                     case FilterCondition.Contains:
-                        if(!filter.ReverseCondition) {
-                            query = whereContains(query);
-                        } else {
-                            query = whereNotContains(query);
-                        }
+                        query = !filter.ReverseCondition
+                            ? whereContains(query)
+                            : whereNotContains(query);
                         break;
                     case FilterCondition.EndsWith:
-                        if(!filter.ReverseCondition) {
-                            query = whereEndsWith(query);
-                        } else {
-                            query = whereNotEndsWith(query);
-                        }
+                        query = !filter.ReverseCondition
+                            ? whereEndsWith(query)
+                            : whereNotEndsWith(query);
                         break;
                     case FilterCondition.StartsWith:
-                        if(!filter.ReverseCondition) {
-                            query = whereStartsWith(query);
-                        } else {
-                            query = whereNotStartsWith(query);
-                        }
+                        query = !filter.ReverseCondition
+                            ? whereStartsWith(query)
+                            : whereNotStartsWith(query);
                         break;
                     case FilterCondition.Equals:
+                        var matchNull = String.IsNullOrEmpty(filter.Value);
                         if(!filter.ReverseCondition) {
-                            query = whereEqual(query);
+                            query = matchNull
+                                ? whereIsNull(query)
+                                : whereEqual(query);
                         } else {
-                            query = whereNotEqual(query);
+                            query = matchNull
+                                ? whereIsNotNull(query)
+                                : whereNotEqual(query);
                         }
                         break;
                     default:
@@ -150,29 +163,6 @@ namespace VirtualRadar.Database
             return query;
         }
 
-        private static IQueryable<KineticFlight> ApplyStringFilter(
-            IQueryable<KineticFlight> query,
-            Filter filter,
-            Func<IQueryable<KineticFlight>, IQueryable<KineticFlight>> whereEqual,
-            Func<IQueryable<KineticFlight>, IQueryable<KineticFlight>> whereNotEqual,
-            Func<IQueryable<KineticFlight>, IQueryable<KineticFlight>> whereContains,
-            Func<IQueryable<KineticFlight>, IQueryable<KineticFlight>> whereNotContains,
-            Func<IQueryable<KineticFlight>, IQueryable<KineticFlight>> whereStartsWith,
-            Func<IQueryable<KineticFlight>, IQueryable<KineticFlight>> whereNotStartsWith,
-            Func<IQueryable<KineticFlight>, IQueryable<KineticFlight>> whereEndsWith,
-            Func<IQueryable<KineticFlight>, IQueryable<KineticFlight>> whereNotEndsWith
-        )
-        {
-            return ApplyFilter(
-                query,
-                filter,
-                whereEqual,             whereNotEqual,
-                whereContains,          whereNotContains,
-                whereStartsWith,        whereNotStartsWith,
-                whereEndsWith,          whereNotEndsWith
-            );
-        }
-
         private static IQueryable<KineticFlight> ApplyBoolFilter(
             IQueryable<KineticFlight> query,
             FilterBool filter,
@@ -180,14 +170,13 @@ namespace VirtualRadar.Database
             Func<IQueryable<KineticFlight>, IQueryable<KineticFlight>> whereNotEqual
         )
         {
-            return ApplyFilter(
-                query,
-                filter,
-                whereEqual, whereNotEqual,
-                null,       null,
-                null,       null,
-                null,       null
-            );
+            if(filter != null && filter.Condition == FilterCondition.Equals) {
+                query = !filter.ReverseCondition
+                    ? whereEqual(query)
+                    : whereNotEqual(query);
+            }
+
+            return query;
         }
 
         private static IQueryable<KineticFlight> ApplyRangeFilter(

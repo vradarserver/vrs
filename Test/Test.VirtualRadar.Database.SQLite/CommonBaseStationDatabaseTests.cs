@@ -2524,6 +2524,46 @@ namespace Test.VirtualRadar.Database.SQLite
                 }
             }
         }
+
+        protected void Common_GetFlights_String_Properties_Can_Match_Null_Or_Empty_Fields()
+        {
+            foreach(var reverseCondition in new bool[] { false, true }) {
+                foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                    foreach(var filterValue in new string[] { null, "" }) {
+                        foreach(var databaseValue in new string[] { null, "" }) {
+                            if(IsFilterStringProperty(criteriaProperty)) {
+                                if(criteriaProperty.Name == "Icao") {
+                                    continue;     // these can't be set to null on the database
+                                }
+
+                                RunTestCleanup();
+                                RunTestInitialise();
+
+                                var filter = new FilterString(filterValue) {
+                                    Condition = FilterCondition.Equals,
+                                    ReverseCondition = reverseCondition,
+                                };
+                                criteriaProperty.SetValue(_Criteria, filter, null);
+
+                                var nullFlight = CreateFlight("nullFlight", false, false);
+                                var notNullFlight = CreateFlight("notNullFlight", false, false);
+                                SetStringAircraftProperty(criteriaProperty, nullFlight, databaseValue);
+                                SetStringAircraftProperty(criteriaProperty, notNullFlight, "A");
+                                AddFlightAndAircraft(nullFlight);
+                                AddFlightAndAircraft(notNullFlight);
+
+                                var flights = _Implementation.GetFlights(_Criteria, -1, -1, null, false, null, false);
+
+                                var message = $"{criteriaProperty.Name}/{reverseCondition}/Filter:{(filterValue == null ? "null" : "empty")}/DB:{(databaseValue == null ? "null" : "empty")}";
+                                Assert.AreEqual(1, flights.Count, message);
+                                var expected = reverseCondition ? "notNullFlight" : "nullFlight";
+                                Assert.AreEqual(expected, flights[0].Aircraft.ModeS, message);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         #endregion
     }
 }
