@@ -1051,5 +1051,32 @@ namespace Test.VirtualRadar.Database.SQLite
             Common_GetFlightsForAircraft_Sorts_By_Two_Columns_Correctly();
         }
         #endregion
+
+        #region GetCountOfFlights
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void GetCountOfFlights_Throws_If_Criteria_Is_Null()
+        {
+            Common_GetCountOfFlights_Throws_If_Criteria_Is_Null();
+        }
+
+        [TestMethod]
+        public void GetCountOfFlights_Returns_Count_Of_Flights_Matching_Criteria()
+        {
+            Common_GetCountOfFlights_Returns_Count_Of_Flights_Matching_Criteria();
+        }
+
+        [TestMethod]
+        public void GetCountOfFlights_Counts_Equality_Criteria()
+        {
+            Common_GetCountOfFlights_Counts_Equality_Criteria();
+        }
+
+        [TestMethod]
+        public void GetCountOfFlights_Counts_Range_Criteria()
+        {
+            Common_GetCountOfFlights_Counts_Range_Criteria();
+        }
+        #endregion
     }
 }

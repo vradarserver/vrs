@@ -875,7 +875,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
 
             return result.ToArray();
         }
-        /*
+
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -883,19 +883,24 @@ namespace VirtualRadar.Database.SQLite.KineticData
         /// <returns></returns>
         public int GetCountOfFlights(SearchBaseStationCriteria criteria)
         {
-            if(criteria == null) throw new ArgumentNullException("criteria");
+            if(criteria == null) {
+                throw new ArgumentNullException(nameof(criteria));
+            }
             NormaliseCriteria(criteria);
 
             int result = 0;
 
             lock(_ConnectionLock) {
                 OpenConnection();
-                if(_Connection != null) result = Flights_GetCountByCriteria(null, criteria);
+                if(_Context != null) {
+                    result = Flights_GetCountByCriteria(null, criteria);
+                }
             }
 
             return result;
         }
 
+        /*
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -1138,17 +1143,21 @@ namespace VirtualRadar.Database.SQLite.KineticData
                 transaction: _Transaction
             );
         }
-
-        private int Flights_GetCountByCriteria(BaseStationAircraft aircraft, SearchBaseStationCriteria criteria)
-        {
-            StringBuilder commandText = new StringBuilder();
-            commandText.Append(CreateSearchBaseStationCriteriaSql(aircraft, criteria, justCount: true));
-            var criteriaAndProperties = DynamicSql.GetFlightsCriteria(aircraft, criteria);
-            if(criteriaAndProperties.SqlChunk.Length > 0) commandText.AppendFormat(" WHERE {0}", criteriaAndProperties.SqlChunk);
-
-            return (int)_Connection.ExecuteScalar<long>(commandText.ToString(), criteriaAndProperties.Parameters, transaction: _Transaction);
-        }
 */
+
+        private int Flights_GetCountByCriteria(KineticAircraft aircraft, SearchBaseStationCriteria criteria)
+        {
+            return BaseStationDatabase_Query.ApplyBaseStationFlightCriteria(
+                _Context.Flights,
+                criteria,
+                aircraft,
+                _CallsignParser,
+                0, -1,
+                null, false,
+                null, false
+            )
+            .Count();
+        }
 
         private IQueryable<KineticFlight> Flights_GetByCriteria(
             KineticAircraft aircraft,

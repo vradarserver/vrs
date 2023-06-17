@@ -3124,5 +3124,67 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.AreEqual(4, flights[3].FirstAltitude);
         }
         #endregion
+
+        #region GetCountOfFlights
+        protected void Common_GetCountOfFlights_Throws_If_Criteria_Is_Null()
+        {
+            _Implementation.GetCountOfFlights(null);
+        }
+
+        protected void Common_GetCountOfFlights_Returns_Count_Of_Flights_Matching_Criteria()
+        {
+            AddFlightAndAircraft(CreateFlight("ABC"));
+            AddFlightAndAircraft(CreateFlight("XYZ"));
+
+            Assert.AreEqual(2, _Implementation.GetCountOfFlights(_Criteria));
+
+            _Criteria.Callsign = new FilterString("XYZ");
+            Assert.AreEqual(1, _Implementation.GetCountOfFlights(_Criteria));
+        }
+
+        protected void Common_GetCountOfFlights_Counts_Equality_Criteria()
+        {
+            var defaultFlight = CreateFlight("default", false);
+            var notEqualFlight = CreateFlight("notEquals", false);
+            var equalsFlight = CreateFlight("equals", false);
+
+            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                RunTestCleanup();
+                RunTestInitialise();
+
+                if(SetEqualityCriteria(criteriaProperty, defaultFlight, notEqualFlight, equalsFlight, false)) {
+                    AddFlightAndAircraft(defaultFlight);
+                    AddFlightAndAircraft(notEqualFlight);
+                    AddFlightAndAircraft(equalsFlight);
+
+                    Assert.AreEqual(1, _Implementation.GetCountOfFlights(_Criteria), "{0}", criteriaProperty.Name);
+                }
+            }
+        }
+
+        protected void Common_GetCountOfFlights_Counts_Range_Criteria()
+        {
+            var belowRangeFlight = CreateFlight("belowRange");
+            var startRangeFlight = CreateFlight("startRange");
+            var inRangeFlight = CreateFlight("inRange");
+            var endRangeFlight = CreateFlight("endRange");
+            var aboveRangeFlight = CreateFlight("aboveRange");
+
+            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                RunTestCleanup();
+                RunTestInitialise();
+
+                if(SetRangeCriteria(criteriaProperty, belowRangeFlight, startRangeFlight, inRangeFlight, endRangeFlight, aboveRangeFlight, false)) {
+                    AddFlightAndAircraft(belowRangeFlight);
+                    AddFlightAndAircraft(startRangeFlight);
+                    AddFlightAndAircraft(inRangeFlight);
+                    AddFlightAndAircraft(endRangeFlight);
+                    AddFlightAndAircraft(aboveRangeFlight);
+
+                    Assert.AreEqual(3, _Implementation.GetCountOfFlights(_Criteria), criteriaProperty.Name);
+                }
+            }
+        }
+        #endregion
     }
 }

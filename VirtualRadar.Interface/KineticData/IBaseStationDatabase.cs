@@ -172,7 +172,6 @@ namespace VirtualRadar.Interface.KineticData
             bool sortField2Ascending
         );
 
-/*
         /// <summary>
         /// Returns the number of flights that match the criteria passed across.
         /// </summary>
@@ -180,6 +179,7 @@ namespace VirtualRadar.Interface.KineticData
         /// <returns></returns>
         int GetCountOfFlights(SearchBaseStationCriteria criteria);
 
+/*
         /// <summary>
         /// Returns all of the records from BaseStation's DBHistory table.
         /// </summary>
