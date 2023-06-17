@@ -30,6 +30,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
         private readonly ISharedConfiguration _SharedConfiguration;
         private readonly IClock _Clock;
         private readonly IStandingDataManager _StandingDataManager;
+        private readonly ICallsignParser _CallsignParser;
         private readonly BaseStationDatabaseOptions _BaseStationDatabaseOptions;
 
         /// <summary>
@@ -110,6 +111,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
             ISharedConfiguration sharedConfiguration,
             IClock clock,
             IStandingDataManager standingDataManager,
+            ICallsignParser callsignParser,
             IOptions<BaseStationDatabaseOptions> baseStationDatabaseOptions
         )
         {
@@ -118,6 +120,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
             _Clock = clock;
             _StandingDataManager = standingDataManager;
             _BaseStationDatabaseOptions = baseStationDatabaseOptions.Value;
+            _CallsignParser = callsignParser;
 
             _SharedConfiguration.ConfigurationChanged += SharedConfiguration_ConfigurationChanged;
 
@@ -1125,7 +1128,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
                 .Flights
                 .Include(flight => flight.Aircraft);
 
-            query = BaseStationDatabase_Query.ApplyBaseStationFlightCriteria(query, criteria);
+            query = BaseStationDatabase_Query.ApplyBaseStationFlightCriteria(query, criteria, _CallsignParser);
 
             return query
                 .ToList();

@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using Dapper;
+using Moq;
 using Test.Framework;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.KineticData;
@@ -26,6 +27,7 @@ namespace Test.VirtualRadar.Database.SQLite
         protected MockStandingDataManager _StandingData;
         protected EventRecorder<EventArgs<KineticAircraft>> _AircraftUpdatedEvent;
         protected SearchBaseStationCriteria _Criteria;
+        protected Mock<ICallsignParser> _CallsignParser;
 
         protected readonly string[] _Cultures = new string[] {
             "en-GB",
@@ -70,6 +72,8 @@ namespace Test.VirtualRadar.Database.SQLite
                 StartTime = DateTime.Now,
                 EndTime = DateTime.Now.AddSeconds(30),
             };
+
+            _CallsignParser = MockHelper.CreateMock<ICallsignParser>();
 
             _Criteria = new SearchBaseStationCriteria() {
                 Date =          new FilterRange<DateTime>(DateTime.MinValue, DateTime.MaxValue),
@@ -2563,6 +2567,61 @@ namespace Test.VirtualRadar.Database.SQLite
                     }
                 }
             }
+        }
+
+        protected void Common_GetFlights_Can_Search_For_All_Variations_Of_A_Callsign()
+        {
+            var spreadsheet = new SpreadsheetTestData(TestData.BaseStationDatabaseTests_xslx, "Callsigns");
+            spreadsheet.TestEveryRow(this, row => {
+                var comments = row.String("Comments");
+
+                // Setup flights in database
+                for(var i = 1;i <= 3;++i) {
+                    var flightCallsign = row.EString($"Callsign{i}");
+                    if(flightCallsign != null) {
+                        var flight = CreateFlight("Flight" + i.ToString());
+                        flight.Callsign = flightCallsign;
+                        AddFlightAndAircraft(flight);
+                    }
+                }
+
+                // Setup alternate codes
+                var alternates = new List<string>();
+                for(var i = 1;i <= 3;++i) {
+                    var altCallsign = row.String($"Alt{i}");
+                    if(!String.IsNullOrEmpty(altCallsign)) {
+                        alternates.Add(altCallsign);
+                    }
+                }
+
+                // Setup criteria
+                var callsign = row.EString("Callsign");
+                if(callsign != null) {
+                    alternates.Add(callsign);       // The alternates API always returns the callsign you asked for at a minimum unless it's null or empty
+                    _CallsignParser
+                        .Setup(r => r.GetAllAlternateCallsigns(callsign))
+                        .Returns(alternates);
+                }
+
+                var findAlternates = row.Bool("FindAlts");
+                var condition = row.Enum<FilterCondition>("Condition");
+                var reverseCondition = row.Bool("Reverse");
+                _Criteria.Callsign = new FilterString(callsign) {
+                    Condition = condition,
+                    ReverseCondition = reverseCondition,
+                };
+                _Criteria.UseAlternateCallsigns = findAlternates;
+
+                var flights = _Implementation.GetFlights(_Criteria, -1, -1, null, false, null, false);
+
+                Assert.AreEqual(row.Int("Count"), flights.Count, comments);
+                for(var i = 1;i <= 3;++i) {
+                    var expectCallsign = row.EString($"Expect{i}");
+                    if(expectCallsign != null) {
+                        Assert.IsNotNull(flights.Single(r => r.Callsign == expectCallsign), comments);
+                    }
+                }
+            });
         }
         #endregion
     }

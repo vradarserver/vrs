@@ -47,6 +47,7 @@ namespace Test.VirtualRadar.Database.SQLite
                     _SharedConfiguration.Object,
                     _Clock.Object,
                     _StandingData.Object,
+                    _CallsignParser.Object,
                     new MockOptions<BaseStationDatabaseOptions>(_BaseStationDatabaseOptions)
                 );
                 _Implementation = _SqliteImplementation;
@@ -913,6 +914,12 @@ namespace Test.VirtualRadar.Database.SQLite
         public void GetFlights_String_Properties_Can_Match_Null_Or_Empty_Fields()
         {
             Common_GetFlights_String_Properties_Can_Match_Null_Or_Empty_Fields();
+        }
+
+        [TestMethod]
+        public void GetFlights_Can_Search_For_All_Variations_Of_A_Callsign()
+        {
+            Common_GetFlights_Can_Search_For_All_Variations_Of_A_Callsign();
         }
         #endregion
     }

@@ -7,21 +7,33 @@ namespace VirtualRadar.Database
     {
         public static IQueryable<KineticFlight> ApplyBaseStationFlightCriteria(
             IQueryable<KineticFlight> query,
-            SearchBaseStationCriteria criteria
+            SearchBaseStationCriteria criteria,
+            ICallsignParser callsignParser
         )
         {
-            query = ApplyStringFilter(query, criteria.Callsign,
-                q => q.Where(r => r.Callsign == criteria.Callsign.Value),
-                q => q.Where(r => r.Callsign != null && r.Callsign != criteria.Callsign.Value),
-                q => q.Where(r => (r.Callsign ?? "") == ""),
-                q => q.Where(r => (r.Callsign ?? "") != ""),
-                q => q.Where(r => r.Callsign != null && r.Callsign.Contains(criteria.Callsign.Value)),
-                q => q.Where(r => r.Callsign != null && !r.Callsign.Contains(criteria.Callsign.Value)),
-                q => q.Where(r => r.Callsign != null && r.Callsign.StartsWith(criteria.Callsign.Value)),
-                q => q.Where(r => r.Callsign != null && !r.Callsign.StartsWith(criteria.Callsign.Value)),
-                q => q.Where(r => r.Callsign != null && r.Callsign.EndsWith(criteria.Callsign.Value)),
-                q => q.Where(r => r.Callsign != null && !r.Callsign.EndsWith(criteria.Callsign.Value))
-            );
+            if(   criteria.UseAlternateCallsigns
+               && criteria.Callsign != null
+               && criteria.Callsign.Condition == FilterCondition.Equals
+               && !String.IsNullOrEmpty(criteria.Callsign.Value)
+            ) {
+                var alternates = callsignParser.GetAllAlternateCallsigns(criteria.Callsign.Value);
+                query = !criteria.Callsign.ReverseCondition
+                    ? query.Where(r => alternates.Contains(r.Callsign))
+                    : query.Where(r => !alternates.Contains(r.Callsign));
+            } else {
+                query = ApplyStringFilter(query, criteria.Callsign,
+                    q => q.Where(r => r.Callsign == criteria.Callsign.Value),
+                    q => q.Where(r => r.Callsign != null && r.Callsign != criteria.Callsign.Value),
+                    q => q.Where(r => (r.Callsign ?? "") == ""),
+                    q => q.Where(r => (r.Callsign ?? "") != ""),
+                    q => q.Where(r => r.Callsign != null && r.Callsign.Contains(criteria.Callsign.Value)),
+                    q => q.Where(r => r.Callsign != null && !r.Callsign.Contains(criteria.Callsign.Value)),
+                    q => q.Where(r => r.Callsign != null && r.Callsign.StartsWith(criteria.Callsign.Value)),
+                    q => q.Where(r => r.Callsign != null && !r.Callsign.StartsWith(criteria.Callsign.Value)),
+                    q => q.Where(r => r.Callsign != null && r.Callsign.EndsWith(criteria.Callsign.Value)),
+                    q => q.Where(r => r.Callsign != null && !r.Callsign.EndsWith(criteria.Callsign.Value))
+                );
+            }
             query = ApplyStringFilter(query, criteria.Country,
                 q => q.Where(r => r.Aircraft.ModeSCountry == criteria.Country.Value),
                 q => q.Where(r => r.Aircraft.ModeSCountry != null && r.Aircraft.ModeSCountry != criteria.Country.Value),
