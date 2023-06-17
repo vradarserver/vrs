@@ -10,7 +10,11 @@ namespace VirtualRadar.Database
             SearchBaseStationCriteria criteria,
             ICallsignParser callsignParser,
             int fromRow,
-            int toRow
+            int toRow,
+            string sort1,
+            bool sort1Ascending,
+            string sort2,
+            bool sort2Ascending
         )
         {
             if(   criteria.UseAlternateCallsigns
@@ -121,6 +125,12 @@ namespace VirtualRadar.Database
                 q => q.Where(r => r.Aircraft.ICAOTypeCode != null && r.Aircraft.ICAOTypeCode.EndsWith(criteria.Type.Value)),
                 q => q.Where(r => r.Aircraft.ICAOTypeCode != null && !r.Aircraft.ICAOTypeCode.EndsWith(criteria.Type.Value))
             );
+
+            if(sort1 != null) {
+                query = sort1Ascending
+                    ? query.OrderBy(r => r.Callsign)
+                    : query.OrderByDescending(r => r.Callsign);
+            }
 
             fromRow = Math.Max(0, fromRow);
             if(fromRow > 0) {

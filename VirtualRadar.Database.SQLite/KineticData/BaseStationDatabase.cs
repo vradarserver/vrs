@@ -1133,7 +1133,11 @@ namespace VirtualRadar.Database.SQLite.KineticData
                 criteria,
                 _CallsignParser,
                 fromRow,
-                toRow
+                toRow,
+                sort1,
+                sort1Ascending,
+                sort2,
+                sort2Ascending
             );
 
             return query

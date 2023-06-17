@@ -2768,6 +2768,53 @@ namespace Test.VirtualRadar.Database.SQLite
                 Assert.AreEqual(row.EString("ExpectedRows"), rows);
             });
         }
+
+        protected void Common_GetFlights_Ignores_Unknown_Sort_Columns()
+        {
+            Do_GetFlightsAllVersions_Ignores_Unknown_Sort_Columns(true);
+        }
+
+        protected void Do_GetFlightsAllVersions_Ignores_Unknown_Sort_Columns(bool getFlights)
+        {
+            var aircraft = CreateAircraft();
+            AddAircraft(aircraft);
+            AddFlight(CreateFlight(aircraft, "1"));
+            AddFlight(CreateFlight(aircraft, "2"));
+
+            var flights = getFlights
+                ? _Implementation.GetFlights(_Criteria, -1, -1, "ThisColumnDoesNotExist", true, "AndNeitherDoesThis", false)
+                : throw new NotImplementedException(); // _Implementation.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, "ThisColumnDoesNotExist", true, "AndNeitherDoesThis", false);
+
+            Assert.AreEqual(2, flights.Count);
+        }
+
+        protected void Common_GetFlights_Ignores_Case_On_Sort_Column_Names()
+        {
+            Do_GetFlightsAllVersions_Ignores_Case_On_Sort_Column_Names(true);
+        }
+
+        protected void Do_GetFlightsAllVersions_Ignores_Case_On_Sort_Column_Names(bool getFlights)
+        {
+            var aircraft = CreateAircraft();
+            AddAircraft(aircraft);
+
+            AddFlight(CreateFlight(aircraft, "ABC"));
+            AddFlight(CreateFlight(aircraft, "XYZ"));
+
+            var flights = getFlights
+                ? _Implementation.GetFlights(_Criteria, -1, -1, "callsign", true, null, false)
+                : throw new NotImplementedException(); // _Implementation.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, "callsign", true, null, false);
+
+            Assert.AreEqual("ABC", flights[0].Callsign);
+            Assert.AreEqual("XYZ", flights[1].Callsign);
+
+            flights = getFlights
+                ? _Implementation.GetFlights(_Criteria, -1, -1, "callsign", false, null, false)
+                : throw new NotImplementedException(); // _Implementation.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, "callsign", false, null, false);
+
+            Assert.AreEqual("XYZ", flights[0].Callsign);
+            Assert.AreEqual("ABC", flights[1].Callsign);
+        }
         #endregion
     }
 }

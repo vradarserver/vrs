@@ -939,6 +939,18 @@ namespace Test.VirtualRadar.Database.SQLite
         {
             Common_GetFlights_Can_Return_Subset_Of_Rows();
         }
+
+        [TestMethod]
+        public void GetFlights_Ignores_Unknown_Sort_Columns()
+        {
+            Common_GetFlights_Ignores_Unknown_Sort_Columns();
+        }
+
+        [TestMethod]
+        public void GetFlights_Ignores_Case_On_Sort_Column_Names()
+        {
+            Common_GetFlights_Ignores_Case_On_Sort_Column_Names();
+        }
         #endregion
     }
 }
