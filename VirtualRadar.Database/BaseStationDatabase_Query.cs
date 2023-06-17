@@ -239,13 +239,7 @@ namespace VirtualRadar.Database
                 }
             }
 
-            fromRow = Math.Max(0, fromRow);
-            if(fromRow > 0) {
-                query = query.Skip(fromRow);
-            }
-            if(toRow >= fromRow) {
-                query = query.Take((toRow - fromRow) + 1);
-            }
+            query = query.SkipAndTake(fromRow, toRow);
 
             return query;
         }
