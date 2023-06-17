@@ -951,6 +951,18 @@ namespace Test.VirtualRadar.Database.SQLite
         {
             Common_GetFlights_Ignores_Case_On_Sort_Column_Names();
         }
+
+        [TestMethod]
+        public void GetFlights_Sorts_By_One_Column_Correctly()
+        {
+            Common_GetFlights_Sorts_By_One_Column_Correctly();
+        }
+
+        [TestMethod]
+        public void GetFlights_Sorts_By_Two_Columns_Correctly()
+        {
+            Common_GetFlights_Sorts_By_Two_Columns_Correctly();
+        }
         #endregion
     }
 }

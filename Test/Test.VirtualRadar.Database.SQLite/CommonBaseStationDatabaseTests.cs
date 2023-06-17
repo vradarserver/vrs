@@ -29,6 +29,18 @@ namespace Test.VirtualRadar.Database.SQLite
         protected SearchBaseStationCriteria _Criteria;
         protected Mock<ICallsignParser> _CallsignParser;
 
+        protected readonly string[] _SortColumns = new string[] {
+            "callsign",
+            "country",
+            "date",
+            "model",
+            "type",
+            "operator",
+            "reg",
+            "icao",
+            "firstaltitude",
+            "lastaltitude",
+        };
         protected readonly string[] _Cultures = new string[] {
             "en-GB",
             "de-DE",
@@ -2802,18 +2814,92 @@ namespace Test.VirtualRadar.Database.SQLite
             AddFlight(CreateFlight(aircraft, "XYZ"));
 
             var flights = getFlights
-                ? _Implementation.GetFlights(_Criteria, -1, -1, "callsign", true, null, false)
-                : throw new NotImplementedException(); // _Implementation.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, "callsign", true, null, false);
+                ? _Implementation.GetFlights(_Criteria, -1, -1, "caLLsign", true, null, false)
+                : throw new NotImplementedException(); // _Implementation.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, "caLLsign", true, null, false);
 
             Assert.AreEqual("ABC", flights[0].Callsign);
             Assert.AreEqual("XYZ", flights[1].Callsign);
 
             flights = getFlights
-                ? _Implementation.GetFlights(_Criteria, -1, -1, "callsign", false, null, false)
-                : throw new NotImplementedException(); // _Implementation.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, "callsign", false, null, false);
+                ? _Implementation.GetFlights(_Criteria, -1, -1, "caLLsign", false, null, false)
+                : throw new NotImplementedException(); // _Implementation.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, "caLLsign", false, null, false);
 
             Assert.AreEqual("XYZ", flights[0].Callsign);
             Assert.AreEqual("ABC", flights[1].Callsign);
+        }
+
+        protected void Common_GetFlights_Sorts_By_One_Column_Correctly()
+        {
+            var defaultFlight = CreateFlight("defaultFlight", false);
+            var lowFlight = CreateFlight("lowFlight", false);
+            var highFlight = CreateFlight("highFlight", false);
+
+            defaultFlight.NumPosMsgRec = 1;
+            lowFlight.NumPosMsgRec = 2;
+            highFlight.NumPosMsgRec = 3;
+
+            foreach(var sortColumn in _SortColumns) {
+                RunTestCleanup();
+                RunTestInitialise();
+
+                SetSortColumnValue(defaultFlight,   sortColumn, true,   false);
+                SetSortColumnValue(lowFlight,       sortColumn, false,  false);
+                SetSortColumnValue(highFlight,      sortColumn, false,  true);
+
+                foreach(var otherColumn in _SortColumns.Where(r => r != sortColumn)) {
+                    SetSortColumnValue(defaultFlight,   otherColumn, true,   true);
+                    SetSortColumnValue(lowFlight,       otherColumn, false,  true);
+                    SetSortColumnValue(highFlight,      otherColumn, false,  false);
+                }
+
+                AddFlightAndAircraft(defaultFlight);
+                AddFlightAndAircraft(lowFlight);
+                AddFlightAndAircraft(highFlight);
+
+                var flights = _Implementation.GetFlights(_Criteria, -1, -1, sortColumn, true, null, false);
+                Assert.AreEqual(3, flights.Count, sortColumn);
+                Assert.AreEqual(1, flights[0].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(2, flights[1].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(3, flights[2].NumPosMsgRec, sortColumn);
+
+                flights = _Implementation.GetFlights(_Criteria, -1, -1, sortColumn, false, null, false);
+                Assert.AreEqual(3, flights.Count, sortColumn);
+                Assert.AreEqual(3, flights[0].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(2, flights[1].NumPosMsgRec, sortColumn);
+                Assert.AreEqual(1, flights[2].NumPosMsgRec, sortColumn);
+            }
+        }
+
+        protected void Common_GetFlights_Sorts_By_Two_Columns_Correctly()
+        {
+            var firstFlight = CreateFlight("1");
+            var secondFlight = CreateFlight("2");
+            var thirdFlight = CreateFlight("3");
+            var fourthFlight = CreateFlight("4");
+
+            firstFlight.Aircraft.Type = "1";
+            secondFlight.Aircraft.Type = thirdFlight.Aircraft.Type = "2";
+            fourthFlight.Aircraft.Type = "3";
+
+            secondFlight.Aircraft.Registration = "A";
+            thirdFlight.Aircraft.Registration = "B";
+
+            AddFlightAndAircraft(firstFlight);
+            AddFlightAndAircraft(secondFlight);
+            AddFlightAndAircraft(thirdFlight);
+            AddFlightAndAircraft(fourthFlight);
+
+            var flights = _Implementation.GetFlights(_Criteria, -1, -1, "model", true, "reg", true);
+            Assert.AreEqual("1", flights[0].Callsign);
+            Assert.AreEqual("2", flights[1].Callsign);
+            Assert.AreEqual("3", flights[2].Callsign);
+            Assert.AreEqual("4", flights[3].Callsign);
+
+            flights = _Implementation.GetFlights(_Criteria, -1, -1, "model", true, "reg", false);
+            Assert.AreEqual("1", flights[0].Callsign);
+            Assert.AreEqual("3", flights[1].Callsign);
+            Assert.AreEqual("2", flights[2].Callsign);
+            Assert.AreEqual("4", flights[3].Callsign);
         }
         #endregion
     }

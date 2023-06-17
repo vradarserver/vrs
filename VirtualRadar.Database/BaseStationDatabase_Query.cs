@@ -127,9 +127,116 @@ namespace VirtualRadar.Database
             );
 
             if(sort1 != null) {
-                query = sort1Ascending
-                    ? query.OrderBy(r => r.Callsign)
-                    : query.OrderByDescending(r => r.Callsign);
+                switch(sort1.ToLower()) {
+                    case "callsign":
+                        query = sort1Ascending
+                            ? query.OrderBy(r => r.Callsign)
+                            : query.OrderByDescending(r => r.Callsign);
+                        break;
+                    case "country":
+                        query = sort1Ascending
+                            ? query.OrderBy(r => r.Aircraft.Country)
+                            : query.OrderByDescending(r => r.Aircraft.Country);
+                        break;
+                    case "date":
+                        query = sort1Ascending
+                            ? query.OrderBy(r => r.StartTime)
+                            : query.OrderByDescending(r => r.StartTime);
+                        break;
+                    case "firstaltitude":
+                        query = sort1Ascending
+                            ? query.OrderBy(r => r.FirstAltitude)
+                            : query.OrderByDescending(r => r.FirstAltitude);
+                        break;
+                    case "icao":
+                        query = sort1Ascending
+                            ? query.OrderBy(r => r.Aircraft.ModeS)
+                            : query.OrderByDescending(r => r.Aircraft.ModeS);
+                        break;
+                    case "lastaltitude":
+                        query = sort1Ascending
+                            ? query.OrderBy(r => r.LastAltitude)
+                            : query.OrderByDescending(r => r.LastAltitude);
+                        break;
+                    case "model":
+                        query = sort1Ascending
+                            ? query.OrderBy(r => r.Aircraft.Type)
+                            : query.OrderByDescending(r => r.Aircraft.Type);
+                        break;
+                    case "operator":
+                        query = sort1Ascending
+                            ? query.OrderBy(r => r.Aircraft.RegisteredOwners)
+                            : query.OrderByDescending(r => r.Aircraft.RegisteredOwners);
+                        break;
+                    case "reg":
+                        query = sort1Ascending
+                            ? query.OrderBy(r => r.Aircraft.Registration)
+                            : query.OrderByDescending(r => r.Aircraft.Registration);
+                        break;
+                    case "type":
+                        query = sort1Ascending
+                            ? query.OrderBy(r => r.Aircraft.ICAOTypeCode)
+                            : query.OrderByDescending(r => r.Aircraft.ICAOTypeCode);
+                        break;
+                    default:
+                        sort2 = null;
+                        break;
+                }
+                if(sort2 != null) {
+                    var orderedQuery = (IOrderedQueryable<KineticFlight>)query;
+                    switch(sort2.ToLower()) {
+                        case "callsign":
+                            query = sort2Ascending
+                                ? orderedQuery.ThenBy(r => r.Callsign)
+                                : orderedQuery.ThenByDescending(r => r.Callsign);
+                            break;
+                        case "country":
+                            query = sort2Ascending
+                                ? orderedQuery.ThenBy(r => r.Aircraft.Country)
+                                : orderedQuery.ThenByDescending(r => r.Aircraft.Country);
+                            break;
+                        case "date":
+                            query = sort2Ascending
+                                ? orderedQuery.ThenBy(r => r.StartTime)
+                                : orderedQuery.ThenByDescending(r => r.StartTime);
+                            break;
+                        case "firstaltitude":
+                            query = sort2Ascending
+                                ? orderedQuery.ThenBy(r => r.FirstAltitude)
+                                : orderedQuery.ThenByDescending(r => r.FirstAltitude);
+                            break;
+                        case "icao":
+                            query = sort2Ascending
+                                ? orderedQuery.ThenBy(r => r.Aircraft.ModeS)
+                                : orderedQuery.ThenByDescending(r => r.Aircraft.ModeS);
+                            break;
+                        case "lastaltitude":
+                            query = sort2Ascending
+                                ? orderedQuery.ThenBy(r => r.LastAltitude)
+                                : orderedQuery.ThenByDescending(r => r.LastAltitude);
+                            break;
+                        case "model":
+                            query = sort2Ascending
+                                ? orderedQuery.ThenBy(r => r.Aircraft.Type)
+                                : orderedQuery.ThenByDescending(r => r.Aircraft.Type);
+                            break;
+                        case "operator":
+                            query = sort2Ascending
+                                ? orderedQuery.ThenBy(r => r.Aircraft.RegisteredOwners)
+                                : orderedQuery.ThenByDescending(r => r.Aircraft.RegisteredOwners);
+                            break;
+                        case "reg":
+                            query = sort2Ascending
+                                ? orderedQuery.ThenBy(r => r.Aircraft.Registration)
+                                : orderedQuery.ThenByDescending(r => r.Aircraft.Registration);
+                            break;
+                        case "type":
+                            query = sort2Ascending
+                                ? orderedQuery.ThenBy(r => r.Aircraft.ICAOTypeCode)
+                                : orderedQuery.ThenByDescending(r => r.Aircraft.ICAOTypeCode);
+                            break;
+                    }
+                }
             }
 
             fromRow = Math.Max(0, fromRow);
