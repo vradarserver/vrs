@@ -1128,7 +1128,13 @@ namespace VirtualRadar.Database.SQLite.KineticData
                 .Flights
                 .Include(flight => flight.Aircraft);
 
-            query = BaseStationDatabase_Query.ApplyBaseStationFlightCriteria(query, criteria, _CallsignParser);
+            query = BaseStationDatabase_Query.ApplyBaseStationFlightCriteria(
+                query,
+                criteria,
+                _CallsignParser,
+                fromRow,
+                toRow
+            );
 
             return query
                 .ToList();

@@ -921,6 +921,24 @@ namespace Test.VirtualRadar.Database.SQLite
         {
             Common_GetFlights_Can_Search_For_All_Variations_Of_A_Callsign();
         }
+
+        [TestMethod]
+        public void GetFlights_Some_Criteria_Is_Case_Insensitive()
+        {
+            Common_GetFlights_Some_Criteria_Is_Case_Insensitive();
+        }
+
+        [TestMethod]
+        public void GetFlights_Some_Criteria_Is_Case_Sensitive()
+        {
+            Common_GetFlights_Some_Criteria_Is_Case_Sensitive();
+        }
+
+        [TestMethod]
+        public void GetFlights_Can_Return_Subset_Of_Rows()
+        {
+            Common_GetFlights_Can_Return_Subset_Of_Rows();
+        }
         #endregion
     }
 }

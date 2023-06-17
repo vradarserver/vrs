@@ -2623,6 +2623,151 @@ namespace Test.VirtualRadar.Database.SQLite
                 }
             });
         }
+
+        protected void Common_GetFlights_Some_Criteria_Is_Case_Insensitive()
+        {
+            Do_GetFlightsAllVersions_Some_Criteria_Is_Case_Insensitive(true);
+        }
+
+        protected void Do_GetFlightsAllVersions_Some_Criteria_Is_Case_Insensitive(bool getFlights)
+        {
+            var flight = CreateFlight("1");
+            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                if(!getFlights && !IsFlightCriteria(criteriaProperty)) {
+                    continue;
+                }
+
+                RunTestCleanup();
+                RunTestInitialise();
+
+                bool isStringProperty = true;
+                switch(criteriaProperty.Name) {
+                    case nameof(SearchBaseStationCriteria.Callsign):
+                        _Criteria.Callsign = new FilterString("a");
+                        flight.Callsign = "A";
+                        break;
+                    case nameof(SearchBaseStationCriteria.Registration):
+                        _Criteria.Registration = new FilterString("a");
+                        flight.Aircraft.Registration = "A";
+                        break;
+                    case nameof(SearchBaseStationCriteria.Icao):
+                        _Criteria.Icao = new FilterString("a");
+                        flight.Aircraft.ModeS = "A";
+                        break;
+                    case nameof(SearchBaseStationCriteria.Type):
+                        _Criteria.Type = new FilterString("a");
+                        flight.Aircraft.ICAOTypeCode = "A";
+                        break;
+                    case nameof(SearchBaseStationCriteria.Operator):
+                    case nameof(SearchBaseStationCriteria.Country):
+                    case nameof(SearchBaseStationCriteria.Date):
+                    case nameof(SearchBaseStationCriteria.IsEmergency):
+                    case nameof(SearchBaseStationCriteria.UseAlternateCallsigns):
+                    case nameof(SearchBaseStationCriteria.FirstAltitude):
+                    case nameof(SearchBaseStationCriteria.LastAltitude):
+                        isStringProperty = false;
+                        break;
+                    default:
+                        throw new NotImplementedException(criteriaProperty.Name);
+                }
+
+                if(isStringProperty) {
+                    AddFlightAndAircraft(flight);
+
+                    var flights = getFlights
+                        ? _Implementation.GetFlights(_Criteria, -1, -1, null, true, null, true)
+                        : throw new NotImplementedException();// _Implementation.GetFlightsForAircraft(flight.Aircraft, _Criteria, -1, -1, null, true, null, true);
+
+                    Assert.AreEqual(1, flights.Count, criteriaProperty.Name);
+                }
+            }
+        }
+
+        protected void Common_GetFlights_Some_Criteria_Is_Case_Sensitive()
+        {
+            Do_GetFlightsAllVersions_Some_Criteria_Is_Case_Sensitive(true);
+        }
+
+        protected void Do_GetFlightsAllVersions_Some_Criteria_Is_Case_Sensitive(bool getFlights)
+        {
+            var flight = CreateFlight("1");
+            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                if(!getFlights && !IsFlightCriteria(criteriaProperty)) {
+                    continue;
+                }
+
+                RunTestCleanup();
+                RunTestInitialise();
+
+                bool isStringProperty = true;
+                switch(criteriaProperty.Name) {
+                    case nameof(SearchBaseStationCriteria.Operator):
+                        _Criteria.Operator = new FilterString("a");
+                        flight.Aircraft.RegisteredOwners = "A";
+                        break;
+                    case nameof(SearchBaseStationCriteria.Country):
+                        _Criteria.Country = new FilterString("a");
+                        flight.Aircraft.ModeSCountry = "A";
+                        break;
+                    case nameof(SearchBaseStationCriteria.Callsign):
+                    case nameof(SearchBaseStationCriteria.Registration):
+                    case nameof(SearchBaseStationCriteria.Icao):
+                    case nameof(SearchBaseStationCriteria.Date):
+                    case nameof(SearchBaseStationCriteria.Type):
+                    case nameof(SearchBaseStationCriteria.IsEmergency):
+                    case nameof(SearchBaseStationCriteria.UseAlternateCallsigns):
+                    case nameof(SearchBaseStationCriteria.FirstAltitude):
+                    case nameof(SearchBaseStationCriteria.LastAltitude):
+                        isStringProperty = false;
+                        break;
+                    default:
+                        throw new NotImplementedException(criteriaProperty.Name);
+                }
+
+                if(isStringProperty) {
+                    AddFlightAndAircraft(flight);
+
+                    var flights = getFlights
+                        ? _Implementation.GetFlights(_Criteria, -1, -1, null, true, null, true)
+                        : throw new NotImplementedException(); // _Implementation.GetFlightsForAircraft(flight.Aircraft, _Criteria, -1, -1, null, true, null, true);
+
+                    Assert.AreEqual(0, flights.Count, criteriaProperty.Name);
+                }
+            }
+        }
+
+        protected void Common_GetFlights_Can_Return_Subset_Of_Rows()
+        {
+            Do_GetFlightsAllVersions_Can_Return_Subset_Of_Rows(true);
+        }
+
+        protected void Do_GetFlightsAllVersions_Can_Return_Subset_Of_Rows(bool getFlights)
+        {
+            var spreadsheet = new SpreadsheetTestData(TestData.BaseStationDatabaseTests_xslx, "GetFlightsRows");
+            spreadsheet.TestEveryRow(this, row => {
+                int flightCount = row.Int("Flights");
+
+                var aircraft = CreateAircraft();
+                AddAircraft(aircraft);
+
+                for(int flightNumber = 0;flightNumber < flightCount;++flightNumber) {
+                    var flight = CreateFlight(aircraft, (flightNumber + 1).ToString());
+                    AddFlight(flight);
+                }
+
+                var flights = getFlights
+                    ? _Implementation.GetFlights(_Criteria, row.Int("StartRow"), row.Int("EndRow"), "CALLSIGN", true, null, false)
+                    : throw new NotImplementedException(); // _Implementation.GetFlightsForAircraft(aircraft, _Criteria, row.Int("StartRow"), row.Int("EndRow"), "CALLSIGN", true, null, false);
+
+                var rows = "";
+                foreach(var flight in flights) {
+                    rows = String.Format("{0}{1}{2}", rows, rows.Length == 0 ? "" : ",", flight.Callsign);
+                }
+
+                Assert.AreEqual(row.Int("ExpectedCount"), flights.Count);
+                Assert.AreEqual(row.EString("ExpectedRows"), rows);
+            });
+        }
         #endregion
     }
 }

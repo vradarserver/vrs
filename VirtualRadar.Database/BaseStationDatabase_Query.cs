@@ -8,7 +8,9 @@ namespace VirtualRadar.Database
         public static IQueryable<KineticFlight> ApplyBaseStationFlightCriteria(
             IQueryable<KineticFlight> query,
             SearchBaseStationCriteria criteria,
-            ICallsignParser callsignParser
+            ICallsignParser callsignParser,
+            int fromRow,
+            int toRow
         )
         {
             if(   criteria.UseAlternateCallsigns
@@ -119,6 +121,14 @@ namespace VirtualRadar.Database
                 q => q.Where(r => r.Aircraft.ICAOTypeCode != null && r.Aircraft.ICAOTypeCode.EndsWith(criteria.Type.Value)),
                 q => q.Where(r => r.Aircraft.ICAOTypeCode != null && !r.Aircraft.ICAOTypeCode.EndsWith(criteria.Type.Value))
             );
+
+            fromRow = Math.Max(0, fromRow);
+            if(fromRow > 0) {
+                query = query.Skip(fromRow);
+            }
+            if(toRow >= fromRow) {
+                query = query.Take((toRow - fromRow) + 1);
+            }
 
             return query;
         }
