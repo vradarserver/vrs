@@ -990,6 +990,66 @@ namespace Test.VirtualRadar.Database.SQLite
         {
             Common_GetFlightsForAircraft_Does_Not_Create_New_Aircraft_Objects();
         }
+
+        [TestMethod]
+        public void GetFlightsForAircraft_Copies_Database_Record_To_Flight_Object()
+        {
+            Common_GetFlightsForAircraft_Copies_Database_Record_To_Flight_Object();
+        }
+
+        [TestMethod]
+        public void GetFlightsForAircraft_Can_Filter_Flights_By_Equality_Criteria()
+        {
+            Common_GetFlightsForAircraft_Can_Filter_Flights_By_Equality_Criteria();
+        }
+
+        [TestMethod]
+        public void GetFlightsForAircraft_Can_Filter_Flights_By_Range_Criteria()
+        {
+            Common_GetFlightsForAircraft_Can_Filter_Flights_By_Range_Criteria();
+        }
+
+        [TestMethod]
+        public void GetFlightsForAircraft_Some_Criteria_Is_Case_Insensitive()
+        {
+            Common_GetFlightsForAircraft_Some_Criteria_Is_Case_Insensitive();
+        }
+
+        [TestMethod]
+        public void GetFlightsForAircraft_Some_Criteria_Is_Case_Sensitive()
+        {
+            Common_GetFlightsForAircraft_Some_Criteria_Is_Case_Sensitive();
+        }
+
+        [TestMethod]
+        public void GetFlightsForAircraft_Can_Return_Subset_Of_Rows()
+        {
+            Common_GetFlightsForAircraft_Can_Return_Subset_Of_Rows();
+        }
+
+        [TestMethod]
+        public void GetFlightsForAircraft_Ignores_Unknown_Sort_Columns()
+        {
+            Common_GetFlightsForAircraft_Ignores_Unknown_Sort_Columns();
+        }
+
+        [TestMethod]
+        public void GetFlightsForAircraft_Ignores_Case_On_Sort_Column_Names()
+        {
+            Common_GetFlightsForAircraft_Ignores_Case_On_Sort_Column_Names();
+        }
+
+        [TestMethod]
+        public void GetFlightsForAircraft_Sorts_By_One_Column_Correctly()
+        {
+            Common_GetFlightsForAircraft_Sorts_By_One_Column_Correctly();
+        }
+
+        [TestMethod]
+        public void GetFlightsForAircraft_Sorts_By_Two_Columns_Correctly()
+        {
+            Common_GetFlightsForAircraft_Sorts_By_Two_Columns_Correctly();
+        }
         #endregion
     }
 }
