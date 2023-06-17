@@ -951,14 +951,23 @@ namespace VirtualRadar.Database.SQLite.KineticData
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Context != null) {
-                    result = Flights_GetByCriteria(null, criteria, fromRow, toRow, sortField1, sortField1Ascending, sortField2, sortField2Ascending);
+                    result = Flights_GetByCriteria(
+                        null,
+                        criteria,
+                        fromRow,
+                        toRow,
+                        sortField1,
+                        sortField1Ascending,
+                        sortField2,
+                        sortField2Ascending
+                    )
+                    .ToList();
                 }
             }
 
             return result;
         }
 
-/*
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -971,22 +980,54 @@ namespace VirtualRadar.Database.SQLite.KineticData
         /// <param name="sort2"></param>
         /// <param name="sort2Ascending"></param>
         /// <returns></returns>
-        public List<BaseStationFlight> GetFlightsForAircraft(BaseStationAircraft aircraft, SearchBaseStationCriteria criteria, int fromRow, int toRow, string sort1, bool sort1Ascending, string sort2, bool sort2Ascending)
+        public List<KineticFlight> GetFlightsForAircraft(
+            KineticAircraft aircraft,
+            SearchBaseStationCriteria criteria,
+            int fromRow,
+            int toRow,
+            string sort1,
+            bool sort1Ascending,
+            string sort2,
+            bool sort2Ascending
+        )
         {
-            if(criteria == null) throw new ArgumentNullException("criteria");
+            if(criteria == null) {
+                throw new ArgumentNullException("criteria");
+            }
             NormaliseCriteria(criteria);
 
-            List<BaseStationFlight> result = new List<BaseStationFlight>();
+            var result = new List<KineticFlight>();
 
             if(aircraft != null) {
                 lock(_ConnectionLock) {
                     OpenConnection();
-                    if(_Connection != null) result = Flights_GetByCriteria(aircraft, criteria, fromRow, toRow, sort1, sort1Ascending, sort2, sort2Ascending);
+                    if(_Context != null) {
+                        result = Flights_GetByCriteria(
+                            aircraft,
+                            criteria,
+                            fromRow,
+                            toRow,
+                            sort1,
+                            sort1Ascending,
+                            sort2,
+                            sort2Ascending
+                        )
+                        .ToArray()
+                        .Select(r => {
+                            if(!Object.ReferenceEquals(r.Aircraft, aircraft)) {
+                                r.Aircraft = aircraft;      // <-- EF should be doing this anyway, but we have it in the spec so this just enforces it
+                            }
+                            return r;
+                        })
+                        .ToList();
+                    }
                 }
             }
 
             return result;
         }
+
+/*
 
         /// <summary>
         /// See interface docs.
@@ -1109,7 +1150,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
         }
 */
 
-        private List<KineticFlight> Flights_GetByCriteria(
+        private IQueryable<KineticFlight> Flights_GetByCriteria(
             KineticAircraft aircraft,
             SearchBaseStationCriteria criteria,
             int fromRow,
@@ -1131,6 +1172,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
             query = BaseStationDatabase_Query.ApplyBaseStationFlightCriteria(
                 query,
                 criteria,
+                aircraft,
                 _CallsignParser,
                 fromRow,
                 toRow,
@@ -1140,9 +1182,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
                 sort2Ascending
             );
 
-            return query
-                .ToList();
-
+            return query;
         }
 
 /*

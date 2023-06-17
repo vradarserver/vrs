@@ -21,6 +21,7 @@ namespace VirtualRadar.Database
         public static IQueryable<KineticFlight> ApplyBaseStationFlightCriteria(
             IQueryable<KineticFlight> query,
             SearchBaseStationCriteria criteria,
+            KineticAircraft constrainToAircraft,
             ICallsignParser callsignParser,
             int fromRow,
             int toRow,
@@ -30,6 +31,10 @@ namespace VirtualRadar.Database
             bool sort2Ascending
         )
         {
+            if(constrainToAircraft != null) {
+                query = query.Where(r => r.AircraftID == constrainToAircraft.AircraftID);
+            }
+
             if(   criteria.UseAlternateCallsigns
                && criteria.Callsign != null
                && criteria.Callsign.Condition == FilterCondition.Equals

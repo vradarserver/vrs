@@ -2902,5 +2902,44 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.AreEqual("4", flights[3].Callsign);
         }
         #endregion
+
+        #region GetFlightsForAircraft
+        protected void Common_GetFlightsForAircraft_Returns_Empty_List_If_Aircraft_Is_Null()
+        {
+            Assert.AreEqual(0, _Implementation.GetFlightsForAircraft(null, _Criteria, 0, int.MaxValue, null, false, null, false).Count);
+        }
+
+        protected void Common_GetFlightsForAircraft_Throws_If_Criteria_Is_Null()
+        {
+            _Implementation.GetFlightsForAircraft(CreateAircraft(), null, 0, int.MaxValue, null, false, null, false);
+        }
+
+        protected void Common_GetFlightsForAircraft_Restricts_Search_To_Single_Aircraft()
+        {
+            var flight1 = CreateFlight("1");
+            var flight2 = CreateFlight("2");
+
+            AddFlightAndAircraft(flight1);
+            AddFlightAndAircraft(flight2);
+
+            var flights = _Implementation.GetFlightsForAircraft(flight2.Aircraft, _Criteria, -1, -1, null, false, null, false);
+            Assert.AreEqual(1, flights.Count);
+            Assert.AreEqual("2", flights[0].Callsign);
+        }
+
+        protected void Common_GetFlightsForAircraft_Does_Not_Create_New_Aircraft_Objects()
+        {
+            var aircraft = CreateAircraft("icao", "reg");
+            AddAircraft(aircraft);
+
+            AddFlight(CreateFlight(aircraft));
+            AddFlight(CreateFlight(aircraft));
+
+            var flights = _Implementation.GetFlightsForAircraft(aircraft, _Criteria, -1, -1, null, false, null, false);
+            Assert.AreEqual(2, flights.Count);
+            Assert.AreSame(aircraft, flights[0].Aircraft);
+            Assert.AreSame(aircraft, flights[1].Aircraft);
+        }
+        #endregion
     }
 }

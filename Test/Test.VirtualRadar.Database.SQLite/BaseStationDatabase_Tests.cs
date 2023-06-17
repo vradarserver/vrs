@@ -964,5 +964,32 @@ namespace Test.VirtualRadar.Database.SQLite
             Common_GetFlights_Sorts_By_Two_Columns_Correctly();
         }
         #endregion
+
+        #region GetFlightsForAircraft
+        [TestMethod]
+        public void GetFlightsForAircraft_Returns_Empty_List_If_Aircraft_Is_Null()
+        {
+            Common_GetFlightsForAircraft_Returns_Empty_List_If_Aircraft_Is_Null();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void GetFlightsForAircraft_Throws_If_Criteria_Is_Null()
+        {
+            Common_GetFlightsForAircraft_Throws_If_Criteria_Is_Null();
+        }
+
+        [TestMethod]
+        public void GetFlightsForAircraft_Restricts_Search_To_Single_Aircraft()
+        {
+            Common_GetFlightsForAircraft_Restricts_Search_To_Single_Aircraft();
+        }
+
+        [TestMethod]
+        public void GetFlightsForAircraft_Does_Not_Create_New_Aircraft_Objects()
+        {
+            Common_GetFlightsForAircraft_Does_Not_Create_New_Aircraft_Objects();
+        }
+        #endregion
     }
 }
