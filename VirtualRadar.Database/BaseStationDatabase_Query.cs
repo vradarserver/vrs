@@ -5,6 +5,19 @@ namespace VirtualRadar.Database
 {
     public static class BaseStationDatabase_Query
     {
+        private static SortColumnClauses<KineticFlight>[] _FlightSortClauses = new SortColumnClauses<KineticFlight>[] {
+            new("callsign",         q => q.OrderBy(r => r.Callsign),                    q => q.OrderByDescending(r => r.Callsign),                  q => q.ThenBy(r => r.Callsign),                     q => q.ThenByDescending(r => r.Callsign)),
+            new("country",          q => q.OrderBy(r => r.Aircraft.Country),            q => q.OrderByDescending(r => r.Aircraft.Country),          q => q.ThenBy(r => r.Aircraft.Country),             q => q.ThenByDescending(r => r.Aircraft.Country)),
+            new("date",             q => q.OrderBy(r => r.StartTime),                   q => q.OrderByDescending(r => r.StartTime),                 q => q.ThenBy(r => r.StartTime),                    q => q.ThenByDescending(r => r.StartTime)),
+            new("firstaltitude",    q => q.OrderBy(r => r.FirstAltitude),               q => q.OrderByDescending(r => r.FirstAltitude),             q => q.ThenBy(r => r.FirstAltitude),                q => q.ThenByDescending(r => r.FirstAltitude)),
+            new("icao",             q => q.OrderBy(r => r.Aircraft.ModeS),              q => q.OrderByDescending(r => r.Aircraft.ModeS),            q => q.ThenBy(r => r.Aircraft.ModeS),               q => q.ThenByDescending(r => r.Aircraft.ModeS)),
+            new("lastaltitude",     q => q.OrderBy(r => r.LastAltitude),                q => q.OrderByDescending(r => r.LastAltitude),              q => q.ThenBy(r => r.LastAltitude),                 q => q.ThenByDescending(r => r.LastAltitude)),
+            new("model",            q => q.OrderBy(r => r.Aircraft.Type),               q => q.OrderByDescending(r => r.Aircraft.Type),             q => q.ThenBy(r => r.Aircraft.Type),                q => q.ThenByDescending(r => r.Aircraft.Type)),
+            new("operator",         q => q.OrderBy(r => r.Aircraft.RegisteredOwners),   q => q.OrderByDescending(r => r.Aircraft.RegisteredOwners), q => q.ThenBy(r => r.Aircraft.RegisteredOwners),    q => q.ThenByDescending(r => r.Aircraft.RegisteredOwners)),
+            new("reg",              q => q.OrderBy(r => r.Aircraft.Registration),       q => q.OrderByDescending(r => r.Aircraft.Registration),     q => q.ThenBy(r => r.Aircraft.Registration),        q => q.ThenByDescending(r => r.Aircraft.Registration)),
+            new("type",             q => q.OrderBy(r => r.Aircraft.ICAOTypeCode),       q => q.OrderByDescending(r => r.Aircraft.ICAOTypeCode),     q => q.ThenBy(r => r.Aircraft.ICAOTypeCode),        q => q.ThenByDescending(r => r.Aircraft.ICAOTypeCode)),
+        };
+
         public static IQueryable<KineticFlight> ApplyBaseStationFlightCriteria(
             IQueryable<KineticFlight> query,
             SearchBaseStationCriteria criteria,
@@ -126,119 +139,13 @@ namespace VirtualRadar.Database
                 q => q.Where(r => r.Aircraft.ICAOTypeCode != null && !r.Aircraft.ICAOTypeCode.EndsWith(criteria.Type.Value))
             );
 
-            if(sort1 != null) {
-                switch(sort1.ToLower()) {
-                    case "callsign":
-                        query = sort1Ascending
-                            ? query.OrderBy(r => r.Callsign)
-                            : query.OrderByDescending(r => r.Callsign);
-                        break;
-                    case "country":
-                        query = sort1Ascending
-                            ? query.OrderBy(r => r.Aircraft.Country)
-                            : query.OrderByDescending(r => r.Aircraft.Country);
-                        break;
-                    case "date":
-                        query = sort1Ascending
-                            ? query.OrderBy(r => r.StartTime)
-                            : query.OrderByDescending(r => r.StartTime);
-                        break;
-                    case "firstaltitude":
-                        query = sort1Ascending
-                            ? query.OrderBy(r => r.FirstAltitude)
-                            : query.OrderByDescending(r => r.FirstAltitude);
-                        break;
-                    case "icao":
-                        query = sort1Ascending
-                            ? query.OrderBy(r => r.Aircraft.ModeS)
-                            : query.OrderByDescending(r => r.Aircraft.ModeS);
-                        break;
-                    case "lastaltitude":
-                        query = sort1Ascending
-                            ? query.OrderBy(r => r.LastAltitude)
-                            : query.OrderByDescending(r => r.LastAltitude);
-                        break;
-                    case "model":
-                        query = sort1Ascending
-                            ? query.OrderBy(r => r.Aircraft.Type)
-                            : query.OrderByDescending(r => r.Aircraft.Type);
-                        break;
-                    case "operator":
-                        query = sort1Ascending
-                            ? query.OrderBy(r => r.Aircraft.RegisteredOwners)
-                            : query.OrderByDescending(r => r.Aircraft.RegisteredOwners);
-                        break;
-                    case "reg":
-                        query = sort1Ascending
-                            ? query.OrderBy(r => r.Aircraft.Registration)
-                            : query.OrderByDescending(r => r.Aircraft.Registration);
-                        break;
-                    case "type":
-                        query = sort1Ascending
-                            ? query.OrderBy(r => r.Aircraft.ICAOTypeCode)
-                            : query.OrderByDescending(r => r.Aircraft.ICAOTypeCode);
-                        break;
-                    default:
-                        sort2 = null;
-                        break;
-                }
-                if(sort2 != null) {
-                    var orderedQuery = (IOrderedQueryable<KineticFlight>)query;
-                    switch(sort2.ToLower()) {
-                        case "callsign":
-                            query = sort2Ascending
-                                ? orderedQuery.ThenBy(r => r.Callsign)
-                                : orderedQuery.ThenByDescending(r => r.Callsign);
-                            break;
-                        case "country":
-                            query = sort2Ascending
-                                ? orderedQuery.ThenBy(r => r.Aircraft.Country)
-                                : orderedQuery.ThenByDescending(r => r.Aircraft.Country);
-                            break;
-                        case "date":
-                            query = sort2Ascending
-                                ? orderedQuery.ThenBy(r => r.StartTime)
-                                : orderedQuery.ThenByDescending(r => r.StartTime);
-                            break;
-                        case "firstaltitude":
-                            query = sort2Ascending
-                                ? orderedQuery.ThenBy(r => r.FirstAltitude)
-                                : orderedQuery.ThenByDescending(r => r.FirstAltitude);
-                            break;
-                        case "icao":
-                            query = sort2Ascending
-                                ? orderedQuery.ThenBy(r => r.Aircraft.ModeS)
-                                : orderedQuery.ThenByDescending(r => r.Aircraft.ModeS);
-                            break;
-                        case "lastaltitude":
-                            query = sort2Ascending
-                                ? orderedQuery.ThenBy(r => r.LastAltitude)
-                                : orderedQuery.ThenByDescending(r => r.LastAltitude);
-                            break;
-                        case "model":
-                            query = sort2Ascending
-                                ? orderedQuery.ThenBy(r => r.Aircraft.Type)
-                                : orderedQuery.ThenByDescending(r => r.Aircraft.Type);
-                            break;
-                        case "operator":
-                            query = sort2Ascending
-                                ? orderedQuery.ThenBy(r => r.Aircraft.RegisteredOwners)
-                                : orderedQuery.ThenByDescending(r => r.Aircraft.RegisteredOwners);
-                            break;
-                        case "reg":
-                            query = sort2Ascending
-                                ? orderedQuery.ThenBy(r => r.Aircraft.Registration)
-                                : orderedQuery.ThenByDescending(r => r.Aircraft.Registration);
-                            break;
-                        case "type":
-                            query = sort2Ascending
-                                ? orderedQuery.ThenBy(r => r.Aircraft.ICAOTypeCode)
-                                : orderedQuery.ThenByDescending(r => r.Aircraft.ICAOTypeCode);
-                            break;
-                    }
-                }
-            }
-
+            query = query.AddSortConditionSorting(
+                new SortCondition[] {
+                    new(sort1, sort1Ascending),
+                    new(sort2, sort2Ascending),
+                },
+                _FlightSortClauses
+            );
             query = query.AddSkipAndTake(fromRow, toRow);
 
             return query;

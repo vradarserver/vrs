@@ -5,27 +5,6 @@ namespace VirtualRadar.Database
     static class LinqDynamicQueryExtensions
     {
         /// <summary>
-        /// Adds Skip and Take parameters when from and to rows indicate a subset is required.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="query"></param>
-        /// <param name="fromRow"></param>
-        /// <param name="toRow"></param>
-        /// <returns></returns>
-        public static IQueryable<T> AddSkipAndTake<T>(this IQueryable<T> query, int fromRow, int toRow)
-        {
-            fromRow = Math.Max(0, fromRow);
-            if(fromRow > 0) {
-                query = query.Skip(fromRow);
-            }
-            if(toRow >= fromRow) {
-                query = query.Take((toRow - fromRow) + 1);
-            }
-
-            return query;
-        }
-
-        /// <summary>
         /// Adds a where clause for the string filter passed across.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -222,6 +201,63 @@ namespace VirtualRadar.Database
                 query = !filter.ReverseCondition
                     ? whereEqual(query)
                     : whereNotEqual(query);
+            }
+
+            return query;
+        }
+
+        /// <summary>
+        /// Adds an arbitrary number of OrderBy / ThenBy clauses for the sort conditions
+        /// passed across.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="sortConditions"></param>
+        /// <param name="sortColumns"></param>
+        /// <returns></returns>
+        public static IQueryable<T> AddSortConditionSorting<T>(
+            this IQueryable<T> query,
+            IEnumerable<SortCondition> sortConditions,
+            params SortColumnClauses<T>[] sortColumns
+        )
+        {
+            IOrderedQueryable<T> orderedQuery = null;
+
+            foreach(var sortCondition in sortConditions.Where(con => !String.IsNullOrWhiteSpace(con.Column))) {
+                var sortColumn = sortColumns.FirstOrDefault(r => String.Equals(r.Column, sortCondition.Column, StringComparison.InvariantCultureIgnoreCase));
+                if(sortColumn != default) {
+                    if(orderedQuery == null) {
+                        orderedQuery = sortCondition.Ascending
+                            ? sortColumn.OrderBy(query)
+                            : sortColumn.OrderByDescending(query);
+                    } else {
+                        orderedQuery = sortCondition.Ascending
+                            ? sortColumn.ThenBy(orderedQuery)
+                            : sortColumn.ThenByDescending(orderedQuery);
+                    }
+                    query = orderedQuery;
+                }
+            }
+
+            return query;
+        }
+
+        /// <summary>
+        /// Adds Skip and Take parameters when from and to rows indicate a subset is required.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="fromRow"></param>
+        /// <param name="toRow"></param>
+        /// <returns></returns>
+        public static IQueryable<T> AddSkipAndTake<T>(this IQueryable<T> query, int fromRow, int toRow)
+        {
+            fromRow = Math.Max(0, fromRow);
+            if(fromRow > 0) {
+                query = query.Skip(fromRow);
+            }
+            if(toRow >= fromRow) {
+                query = query.Take((toRow - fromRow) + 1);
             }
 
             return query;
