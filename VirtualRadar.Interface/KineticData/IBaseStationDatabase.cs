@@ -18,17 +18,8 @@ namespace VirtualRadar.Interface.KineticData
     /// The interface for objects that can deal with the BaseStation database file for us.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// The BaseStation database is an SQLite file that Kinetic's BaseStation application creates and
-    /// maintains. By default the object implementing the interface is in read-only mode, it will not make any
-    /// changes to the database. In this mode attempts to use the insert / update or delete methods should
-    /// throw an InvalidOperation exception. If the program sets <see cref="WriteSupportEnabled"/> then the
-    /// insert / update and delete methods should allow writes to the database.
-    /// </para>
-    /// <para>
-    /// Virtual Radar Server never sets <see cref="WriteSupportEnabled"/>, it will never write to the
-    /// database. The write methods are only there for the use of plugins.
-    /// </para>
+    /// See README.md in $/VirtualRadar.Interface/KineticData for copious notes about how this
+    /// has changed from older versions of the interface.
     /// </remarks>
     public interface IBaseStationDatabase : ITransactionable, IDisposable
     {
@@ -354,14 +345,14 @@ namespace VirtualRadar.Interface.KineticData
         /// <returns></returns>
         KineticFlight GetFlightById(int id);
 
-/*
         /// <summary>
-        /// Inserts a new flight record and assigns the unique identifier of the new record to the FlightID property. The AircraftID
-        /// property must be filled with the identifier of an existing aircraft record.
+        /// Attaches a new flight to the repository. When <see cref="SaveChanges"/> is called the flight will be created
+        /// and the flight ID filled in. Until that happens the flight ID will not be set.
         /// </summary>
         /// <param name="flight"></param>
-        void InsertFlight(KineticFlight flight);
+        void AttachFlight(KineticFlight flight);
 
+/*
         /// <summary>
         /// Updates an existing flight record. Ignores the aircraft record attached to the flight (if any).
         /// </summary>

@@ -1142,5 +1142,14 @@ namespace Test.VirtualRadar.Database.SQLite
             Common_GetFlightById_Returns_Flight_Object_For_Record_Identifier();
         }
         #endregion
+
+        #region AttachFlight
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void AttachFlight_Throws_If_Writes_Disabled()
+        {
+            Common_AttachFlight_Throws_If_Writes_Disabled();
+        }
+        #endregion
     }
 }

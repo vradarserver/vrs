@@ -3303,5 +3303,12 @@ namespace Test.VirtualRadar.Database.SQLite
             });
         }
         #endregion
+
+        #region AttachFlight
+        protected void Common_AttachFlight_Throws_If_Writes_Disabled()
+        {
+            _Implementation.AttachFlight(new());
+        }
+        #endregion
     }
 }

@@ -1053,26 +1053,25 @@ namespace VirtualRadar.Database.SQLite.KineticData
             return result;
         }
 
-/*
         /// <summary>
         /// See interface docs.
         /// </summary>
         /// <param name="flight"></param>
-        public void InsertFlight(BaseStationFlight flight)
+        public void AttachFlight(KineticFlight flight)
         {
-            if(!WriteSupportEnabled) throw new InvalidOperationException("You cannot insert flights when writes are disabled");
-
-            flight.StartTime = SQLiteDateHelper.Truncate(flight.StartTime);
-            flight.EndTime = SQLiteDateHelper.Truncate(flight.EndTime);
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException("You cannot insert flights when writes are disabled");
+            }
 
             lock(_ConnectionLock) {
                 OpenConnection();
-                if(_Connection != null) {
-                    Flights_Insert(flight);
+                if(_Context != null) {
+                    ;
                 }
             }
         }
 
+/*
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -1127,15 +1126,6 @@ namespace VirtualRadar.Database.SQLite.KineticData
             return _Connection.Query<BaseStationFlight>("SELECT * FROM [Flights] WHERE [AircraftID] = @aircraftID", new {
                 aircraftID = aircraftID,
             }, transaction: _Transaction).ToArray();
-        }
-
-        private void Flights_Insert(BaseStationFlight flight)
-        {
-            flight.FlightID = (int)_Connection.ExecuteScalar<long>(
-                Commands.Flights_Insert,
-                ParameterBuilder.FromFlight(flight, includeFlightID: false),
-                transaction: _Transaction
-            );
         }
 
         private void Flights_Update(BaseStationFlight flight)
