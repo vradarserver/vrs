@@ -361,6 +361,20 @@ namespace VirtualRadar.Database.SQLite.KineticData
         }
 
         /// <inheritdoc/>
+        public void SaveChanges()
+        {
+            if(!WriteSupportEnabled) {
+                throw new InvalidOperationException();
+            }
+            lock(_ConnectionLock) {
+                OpenConnection();
+                if(IsConnected) {
+                    _Context.SaveChanges();
+                }
+            }
+        }
+
+        /// <inheritdoc/>
         public bool PerformInTransaction(Func<bool> action)
         {
             var result = false;

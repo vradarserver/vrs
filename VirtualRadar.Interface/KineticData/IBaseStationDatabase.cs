@@ -76,6 +76,14 @@ namespace VirtualRadar.Interface.KineticData
         void CreateDatabaseIfMissing(string fileName);
 
         /// <summary>
+        /// Inserts all ADDed records, removed all REMOVEd records, saves any changes to extant records back to
+        /// the database.
+        /// is false.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Throw if <see cref="WriteSupportEnabled"/> is false.</exception>
+        void SaveChanges();
+
+        /// <summary>
         /// Returns the first aircraft with the registration passed across.
         /// </summary>
         /// <param name="registration"></param>

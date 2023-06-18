@@ -46,7 +46,10 @@ The `SaveChanges` call writes all changes back to the database. Calling this whe
 read-only mode will throw an exception.
 
 If you retrieve objects from the database while it is in read-only mode and then change them then the
-changes **will** be saved if you subsequently switch to read-write mode and call `SaveChanges`.
+changes will be lost if you subsequently switch to read-write mode and call `SaveChanges`. This is because
+implementations of the repository will generally discard the original context and create a new one when
+the read-write mode is changed. If your plugin needs to write to the database then set read-write mode
+early on and leave it set.
 
 ## Nested SaveChanges calls
 

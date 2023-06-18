@@ -40,6 +40,11 @@ namespace Test.VirtualRadar.Database.SQLite
             // Uncomment this to see Entity Framework traces in the debug console:
             //_BaseStationDatabaseOptions.ShowDatabaseDiagnosticsInDebugConsole = true;
 
+            CreateImplementation();
+        }
+
+        protected override void CreateImplementation()
+        {
 #pragma warning disable CS0618 // Type or member is obsolete (used to warn people not to instantiate directly)
             using(new CultureSwitcher("en-GB")) {
                 _SqliteImplementation = new BaseStationDatabase(
@@ -57,8 +62,13 @@ namespace Test.VirtualRadar.Database.SQLite
         [TestCleanup]
         public void TestCleanup()
         {
-            _Implementation.Dispose();
+            DestroyImplementation();
             DeleteTestFile();
+        }
+
+        protected override void DestroyImplementation()
+        {
+            _Implementation.Dispose();
         }
 
         private void DeleteTestFile()
@@ -231,6 +241,21 @@ namespace Test.VirtualRadar.Database.SQLite
         {
             DeleteTestFile();
             _SqliteImplementation.FileIsEmpty();
+        }
+        #endregion
+
+        #region SaveChanges
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void SaveChanges_Throws_If_Called_In_ReadOnly_Mode()
+        {
+            Common_SaveChanges_Throws_If_Called_In_ReadOnly_Mode();
+        }
+
+        [TestMethod]
+        public void SaveChanges_Writes_All_Deferred_Changes_To_Database()
+        {
+            Common_SaveChanges_Writes_All_Deferred_Changes_To_Database();
         }
         #endregion
 

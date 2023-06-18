@@ -12,7 +12,7 @@ using VirtualRadar.Interface.Settings;
 
 namespace Test.VirtualRadar.Database.SQLite
 {
-    public class CommonBaseStationDatabaseTests
+    public abstract class CommonBaseStationDatabaseTests
     {
         protected virtual string _SchemaPrefix => "";
         protected virtual bool _EngineTruncatesMilliseconds => false;
@@ -115,6 +115,16 @@ namespace Test.VirtualRadar.Database.SQLite
             }
             _TestCleanup.Invoke(this, Array.Empty<object>());
         }
+
+        /// <summary>
+        /// Derivee must rebuild <see cref="_Implementation"/> here.
+        /// </summary>
+        protected abstract void CreateImplementation();
+
+        /// <summary>
+        /// Derivee must tear down / destroy <see cref="_Implementation"/> here.
+        /// </summary>
+        protected abstract void DestroyImplementation();
 
         #region Aircraft Utility Methods
         protected long AddAircraft(KineticAircraft aircraft)
@@ -1215,6 +1225,31 @@ namespace Test.VirtualRadar.Database.SQLite
             return session;
         }
         #endregion
+
+        #region SaveChanges
+        protected void Common_SaveChanges_Throws_If_Called_In_ReadOnly_Mode()
+        {
+            _Implementation.SaveChanges();
+        }
+
+        protected void Common_SaveChanges_Writes_All_Deferred_Changes_To_Database()
+        {
+            var rawAircraft = CreateAircraft();
+            var id = (int)AddAircraft(rawAircraft);
+
+            _Implementation.WriteSupportEnabled = true;
+            var changeTrackedAircraft = _Implementation.GetAircraftById(id);
+            changeTrackedAircraft.RegisteredOwners = "Me!";
+            _Implementation.SaveChanges();
+
+            DestroyImplementation();
+            CreateImplementation();
+
+            var reloadedAircraft = _Implementation.GetAircraftById(id);
+            Assert.AreEqual("Me!", reloadedAircraft.RegisteredOwners);
+        }
+        #endregion
+
 
         #region GetAircraftByRegistration
         protected void Common_GetAircraftByRegistration_Returns_Null_If_Passed_Null()
