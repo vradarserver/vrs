@@ -469,21 +469,21 @@ namespace Test.VirtualRadar.Database.SQLite
         }
         #endregion
 
-        #region InsertAircraft
+        #region AddAircraft
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void InsertAircraft_Throws_If_Writes_Disabled()
+        public void AddAircraft_Throws_If_Writes_Disabled()
         {
-            Common_InsertAircraft_Throws_If_Writes_Disabled();
+            Common_AddAircraft_Throws_If_Writes_Disabled();
         }
 
         [TestMethod]
-        public void InsertAircraft_Does_Nothing_If_File_Does_Not_Exist()
+        public void AddAircraft_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Implementation.WriteSupportEnabled = true;
             DeleteTestFile();
 
-            _Implementation.InsertAircraft(new() { ModeS = "123456" });
+            _Implementation.AddAircraft(new() { ModeS = "123456" });
             Assert.AreEqual(null, _Implementation.GetAircraftByCode("123456"));
         }
 
@@ -491,69 +491,49 @@ namespace Test.VirtualRadar.Database.SQLite
         [DataRow(null)]
         [DataRow("")]
         [DataRow(" ")]
-        public void InsertAircraft_Does_Nothing_If_File_Not_Configured(string configuredFileName)
+        public void AddAircraft_Does_Nothing_If_File_Not_Configured(string configuredFileName)
         {
             _Implementation.WriteSupportEnabled = true;
             _Configuration.BaseStationSettings.DatabaseFileName = configuredFileName;
 
-            _SqliteImplementation.InsertAircraft(new() { ModeS = "X" });
+            _SqliteImplementation.AddAircraft(new() { ModeS = "X" });
             Assert.AreEqual(null, _Implementation.GetAircraftByCode("X"));
         }
 
         [TestMethod]
-        public void InsertAircraft_Does_Not_Truncate_Milliseconds_From_Date()
+        public void AddAircraft_Correctly_Inserts_Record()
         {
-            // In the .NET version there was some issue with the ADO.NET library not liking milliseconds
-            // on dates... I can't remember. Anyway, it seems to be fine on .NET Core so for now I'm not
-            // stripping off milliseconds... see how it goes :)
-
-            _Implementation.WriteSupportEnabled = true;
-
-            _Implementation.InsertAircraft(new() {
-                ModeS = "X",
-                FirstCreated = new DateTime(2001, 2, 3, 4, 5, 6, 789),
-                LastModified = new DateTime(2009, 8, 7, 6, 5, 4, 321),
-            });
-            var readBack = _Implementation.GetAircraftByCode("X");
-
-            Assert.AreEqual(new DateTime(2001, 2, 3, 4, 5, 6, 789), readBack.FirstCreated);
-            Assert.AreEqual(new DateTime(2009, 8, 7, 6, 5, 4, 321), readBack.LastModified);
+            Common_AddAircraft_Correctly_Inserts_Record();
         }
 
         [TestMethod]
-        public void InsertAircraft_Correctly_Inserts_Record()
+        public void AddAircraft_Works_For_Different_Cultures()
         {
-            Common_InsertAircraft_Correctly_Inserts_Record();
-        }
-
-        [TestMethod]
-        public void InsertAircraft_Works_For_Different_Cultures()
-        {
-            Common_InsertAircraft_Works_For_Different_Cultures();
+            Common_AddAircraft_Works_For_Different_Cultures();
         }
         #endregion
 
-        #region GetOrInsertAircraftByCode
+        #region GetOrAddAircraftByCode
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void GetOrInsertAircraftByCode_Throws_If_Writes_Disabled()
+        public void GetOrAddAircraftByCode_Throws_If_Writes_Disabled()
         {
-            Common_GetOrInsertAircraftByCode_Throws_If_Writes_Disabled();
+            Common_GetOrAddAircraftByCode_Throws_If_Writes_Disabled();
         }
 
         [TestMethod]
-        public void GetOrInsertAircraftByCode_Returns_Record_If_It_Exists()
+        public void GetOrAddAircraftByCode_Returns_Record_If_It_Exists()
         {
-            Common_GetOrInsertAircraftByCode_Returns_Record_If_It_Exists();
+            Common_GetOrAddAircraftByCode_Returns_Record_If_It_Exists();
         }
 
         [TestMethod]
-        public void GetOrInsertAircraftByCode_Does_Nothing_If_File_Does_Not_Exist()
+        public void GetOrAddAircraftByCode_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Implementation.WriteSupportEnabled = true;
             DeleteTestFile();
 
-            _Implementation.GetOrInsertAircraftByCode("123456", out var created);
+            _Implementation.GetOrAddAircraftByCode("123456", out var created);
             Assert.AreEqual(null, _Implementation.GetAircraftByCode("123456"));
         }
 
@@ -561,43 +541,37 @@ namespace Test.VirtualRadar.Database.SQLite
         [DataRow(null)]
         [DataRow("")]
         [DataRow(" ")]
-        public void GetOrInsertAircraftByCode_Does_Nothing_If_File_Not_Configured(string configuredFileName)
+        public void GetOrAddAircraftByCode_Does_Nothing_If_File_Not_Configured(string configuredFileName)
         {
             _Implementation.WriteSupportEnabled = true;
             _Configuration.BaseStationSettings.DatabaseFileName = configuredFileName;
 
-            _Implementation.GetOrInsertAircraftByCode("123456", out var created);
+            _Implementation.GetOrAddAircraftByCode("123456", out var created);
             Assert.AreEqual(null, _Implementation.GetAircraftByCode("X"));
         }
 
         [TestMethod]
-        public void GetOrInsertAircraftByCode_Correctly_Inserts_Record()
+        public void GetOrAddAircraftByCode_Correctly_Inserts_Record()
         {
-            Common_GetOrInsertAircraftByCode_Correctly_Inserts_Record();
+            Common_GetOrAddAircraftByCode_Correctly_Adds_Record();
         }
 
         [TestMethod]
-        public void GetOrInsertAircraftByCode_Deals_With_Null_CodeBlock()
+        public void GetOrAddAircraftByCode_Deals_With_Null_CodeBlock()
         {
-            Common_GetOrInsertAircraftByCode_Deals_With_Null_CodeBlock();
+            Common_GetOrAddAircraftByCode_Deals_With_Null_CodeBlock();
         }
 
         [TestMethod]
-        public void GetOrInsertAircraftByCode_Deals_With_Null_Country()
+        public void GetOrAddAircraftByCode_Deals_With_Null_Country()
         {
-            Common_GetOrInsertAircraftByCode_Deals_With_Null_Country();
+            Common_GetOrAddAircraftByCode_Deals_With_Null_Country();
         }
 
         [TestMethod]
-        public void GetOrInsertAircraftByCode_Deals_With_Unknown_Country()
+        public void GetOrAddAircraftByCode_Deals_With_Unknown_Country()
         {
-            Common_GetOrInsertAircraftByCode_Deals_With_Unknown_Country();
-        }
-
-        [TestMethod]
-        public void GetOrInsertAircraftByCode_Truncates_Milliseconds_From_Date()
-        {
-            Common_GetOrInsertAircraftByCode_Truncates_Milliseconds_From_Date();
+            Common_GetOrAddAircraftByCode_Deals_With_Unknown_Country();
         }
         #endregion
 

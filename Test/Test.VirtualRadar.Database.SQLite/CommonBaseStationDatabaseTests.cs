@@ -126,6 +126,20 @@ namespace Test.VirtualRadar.Database.SQLite
         /// </summary>
         protected abstract void DestroyImplementation();
 
+        /// <summary>
+        /// Drops the current <see cref="_Implementation"/> and creates a new one.
+        /// </summary>
+        /// <param name="saveChangesFirst"></param>
+        protected void RebuildImplementation(bool saveChangesFirst = false)
+        {
+            if(saveChangesFirst) {
+                _Implementation.SaveChanges();
+            }
+
+            DestroyImplementation();
+            CreateImplementation();
+        }
+
         #region Aircraft Utility Methods
         protected long AddAircraft(KineticAircraft aircraft)
         {
@@ -1240,10 +1254,8 @@ namespace Test.VirtualRadar.Database.SQLite
             _Implementation.WriteSupportEnabled = true;
             var changeTrackedAircraft = _Implementation.GetAircraftById(id);
             changeTrackedAircraft.RegisteredOwners = "Me!";
-            _Implementation.SaveChanges();
 
-            DestroyImplementation();
-            CreateImplementation();
+            RebuildImplementation(saveChangesFirst: true);
 
             var reloadedAircraft = _Implementation.GetAircraftById(id);
             Assert.AreEqual("Me!", reloadedAircraft.RegisteredOwners);
@@ -1483,32 +1495,36 @@ namespace Test.VirtualRadar.Database.SQLite
         #endregion
 
         #region InsertAircraft
-        protected void Common_InsertAircraft_Throws_If_Writes_Disabled()
+        protected void Common_AddAircraft_Throws_If_Writes_Disabled()
         {
-            _Implementation.InsertAircraft(new() { ModeS = "123456" });
+            _Implementation.AddAircraft(new() { ModeS = "123456" });
         }
 
-        protected void Common_InsertAircraft_Correctly_Inserts_Record()
+        protected void Common_AddAircraft_Correctly_Inserts_Record()
         {
             var spreadsheet = new SpreadsheetTestData(TestData.BaseStationDatabaseTests_xslx, "GetAircraftBy");
             spreadsheet.TestEveryRow(this, row => {
                 var aircraft = LoadAircraftFromSpreadsheetRow(row);
                 _Implementation.WriteSupportEnabled = true;
-                _Implementation.InsertAircraft(aircraft);
+                _Implementation.AddAircraft(aircraft);
+
+                Assert.AreEqual(0, aircraft.AircraftID);
+                _Implementation.SaveChanges();
                 Assert.AreNotEqual(0, aircraft.AircraftID);
 
+                RebuildImplementation(saveChangesFirst: false);
                 var readBack = _Implementation.GetAircraftById(aircraft.AircraftID);
 
                 AssertAircraftAreEqual(aircraft, readBack);
             });
         }
 
-        protected void Common_InsertAircraft_Works_For_Different_Cultures()
+        protected void Common_AddAircraft_Works_For_Different_Cultures()
         {
             foreach(var culture in _Cultures) {
                 using(var switcher = new CultureSwitcher(culture)) {
                     try {
-                        Common_InsertAircraft_Correctly_Inserts_Record();
+                        Common_AddAircraft_Correctly_Inserts_Record();
                     } catch(Exception ex) {
                         throw new InvalidOperationException($"Exception thrown when culture was {culture}", ex);
                     }
@@ -1517,25 +1533,24 @@ namespace Test.VirtualRadar.Database.SQLite
         }
         #endregion
 
-        #region GetOrInsertAircraftByCode
-        protected void Common_GetOrInsertAircraftByCode_Throws_If_Writes_Disabled()
+        #region GetOrAddAircraftByCode
+        protected void Common_GetOrAddAircraftByCode_Throws_If_Writes_Disabled()
         {
-            _Implementation.GetOrInsertAircraftByCode("123456", out var created);
+            _Implementation.GetOrAddAircraftByCode("123456", out var created);
         }
 
-        protected void Common_GetOrInsertAircraftByCode_Returns_Record_If_It_Exists()
+        protected void Common_GetOrAddAircraftByCode_Returns_Record_If_It_Exists()
         {
             _Implementation.WriteSupportEnabled = true;
-            _Implementation.InsertAircraft(new() { ModeS = "123456" });
+            var aircraft = new KineticAircraft() { ModeS = "123456" };
+            _Implementation.AddAircraft(aircraft);
 
-            var result = _Implementation.GetOrInsertAircraftByCode("123456", out var created);
+            var result = _Implementation.GetOrAddAircraftByCode("123456", out var created);
 
-            Assert.AreNotEqual(0, result.AircraftID);
-            Assert.AreEqual("123456", result.ModeS);
-            Assert.AreEqual(false, created);
+            Assert.AreSame(aircraft, result);
         }
 
-        protected void Common_GetOrInsertAircraftByCode_Correctly_Inserts_Record()
+        protected void Common_GetOrAddAircraftByCode_Correctly_Adds_Record()
         {
             _Implementation.WriteSupportEnabled = true;
 
@@ -1543,8 +1558,13 @@ namespace Test.VirtualRadar.Database.SQLite
                 Country = "Foovania",
             });
 
-            var aircraft = _Implementation.GetOrInsertAircraftByCode("Abc123", out bool created);
-            Assert.AreNotEqual(0, aircraft.AircraftID);
+            var aircraft = _Implementation.GetOrAddAircraftByCode("Abc123", out bool created);
+            Assert.AreEqual(true, created);
+
+            var secondReference = _Implementation.GetAircraftByCode("Abc123");
+            Assert.AreSame(aircraft, secondReference);
+
+            RebuildImplementation(saveChangesFirst: true);
 
             var readBack = _Implementation.GetAircraftById(aircraft.AircraftID);
             AssertAircraftAreEqual(new() {
@@ -1554,46 +1574,32 @@ namespace Test.VirtualRadar.Database.SQLite
                 ModeS =         "Abc123",
                 ModeSCountry =  "Foovania",
             }, readBack);
-            Assert.AreEqual(true, created);
         }
 
-        protected void Common_GetOrInsertAircraftByCode_Deals_With_Null_CodeBlock()
+        protected void Common_GetOrAddAircraftByCode_Deals_With_Null_CodeBlock()
         {
             _StandingData.AllCodeBlocksByIcao24.Add("abc123", null);
             _Implementation.WriteSupportEnabled = true;
 
-            var aircraft = _Implementation.GetOrInsertAircraftByCode("abc123", out bool created);
+            var aircraft = _Implementation.GetOrAddAircraftByCode("abc123", out _);
 
             Assert.IsNull(aircraft.ModeSCountry);
         }
 
-        protected void Common_GetOrInsertAircraftByCode_Deals_With_Null_Country()
+        protected void Common_GetOrAddAircraftByCode_Deals_With_Null_Country()
         {
             _Implementation.WriteSupportEnabled = true;
-            var aircraft = _Implementation.GetOrInsertAircraftByCode("abc123", out bool created);
+            var aircraft = _Implementation.GetOrAddAircraftByCode("abc123", out _);
             Assert.IsNull(aircraft.ModeSCountry);
         }
 
-        protected void Common_GetOrInsertAircraftByCode_Deals_With_Unknown_Country()
+        protected void Common_GetOrAddAircraftByCode_Deals_With_Unknown_Country()
         {
             _StandingData.AllCodeBlocksByIcao24.Add("abc123", new() { Country = "Unknown Country", });
 
             _Implementation.WriteSupportEnabled = true;
-            var aircraft = _Implementation.GetOrInsertAircraftByCode("abc123", out bool created);
+            var aircraft = _Implementation.GetOrAddAircraftByCode("abc123", out _);
             Assert.IsNull(aircraft.ModeSCountry);
-        }
-
-        protected void Common_GetOrInsertAircraftByCode_Truncates_Milliseconds_From_Date()
-        {
-            _Implementation.WriteSupportEnabled = true;
-
-            var time = new DateTime(2001, 2, 3, 4, 5, 6, 789);
-            _Clock.Now = time;
-
-            _Implementation.GetOrInsertAircraftByCode("X", out var created);
-            var readBack = _Implementation.GetAircraftByCode("X");
-            Assert.AreEqual(time, readBack.FirstCreated);
-            Assert.AreEqual(time, readBack.LastModified);
         }
         #endregion
 
@@ -1609,6 +1615,8 @@ namespace Test.VirtualRadar.Database.SQLite
 
         protected void Common_UpdateAircraft_Raises_AircraftUpdated()
         {
+throw new NotImplementedException();
+/*
             _Implementation.WriteSupportEnabled = true;
 
             var aircraft = new KineticAircraft() { ModeS = "X" };
@@ -1624,6 +1632,7 @@ namespace Test.VirtualRadar.Database.SQLite
             _Implementation.UpdateAircraft(aircraft);
             Assert.AreEqual(1, _AircraftUpdatedEvent.CallCount);
             Assert.AreSame(_Implementation, _AircraftUpdatedEvent.Sender);
+*/
         }
 
         protected void Common_UpdateAircraft_Correctly_Updates_Record()
@@ -1737,6 +1746,8 @@ namespace Test.VirtualRadar.Database.SQLite
 
         protected void Common_RecordMissingAircraft_Updates_Existing_Empty_Records_With_Wrong_UserString1()
         {
+throw new NotImplementedException();
+/*
             _Implementation.WriteSupportEnabled = true;
             _Implementation.InsertAircraft(new () { ModeS = "123456", FirstCreated = _Clock.Now.DateTime, LastModified = _Clock.Now.DateTime, });
 
@@ -1748,10 +1759,13 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.AreEqual("Missing",      aircraft.UserString1);
             Assert.AreEqual(createdDate,    aircraft.FirstCreated);
             Assert.AreEqual(_Clock.Now,     aircraft.LastModified);
+*/
         }
 
         protected void Common_RecordMissingAircraft_Only_Updates_Time_On_Existing_Records_With_Values()
         {
+throw new NotImplementedException();
+/*
             foreach(var property in new String[] { "Registration", "Manufacturer", "Model", "Operator" }) {
                 RunTestCleanup();
                 RunTestInitialise();
@@ -1776,6 +1790,7 @@ namespace Test.VirtualRadar.Database.SQLite
                 Assert.AreEqual(createdDate,    aircraft.FirstCreated);
                 Assert.AreEqual(_Clock.Now,     aircraft.LastModified);
             }
+*/
         }
         #endregion
 
@@ -1822,6 +1837,8 @@ namespace Test.VirtualRadar.Database.SQLite
 
         protected void Common_RecordManyMissingAircraft_Only_Updates_LastModified_Time_On_Existing_Records_With_Registrations()
         {
+throw new NotImplementedException();
+/*
             _Implementation.WriteSupportEnabled = true;
             _Implementation.InsertAircraft(new() { ModeS = "123456", Registration = "A", FirstCreated = _Clock.Now.LocalDateTime, LastModified = _Clock.Now.LocalDateTime });
 
@@ -1833,6 +1850,7 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.AreEqual("A",            aircraft.Registration);
             Assert.AreEqual(createdDate,    aircraft.FirstCreated);
             Assert.AreEqual(_Clock.Now,     aircraft.LastModified);
+*/
         }
         #endregion
 
@@ -1882,6 +1900,8 @@ namespace Test.VirtualRadar.Database.SQLite
 
         protected void Common_UpsertAircraftLookup_Updates_Existing_Aircraft()
         {
+throw new NotImplementedException();
+/*
             var createdDate = new DateTime(1999, 8, 7, 6, 5, 4, 321);
             var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
 
@@ -1924,10 +1944,13 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.AreEqual("00119",            aircraft.SerialNo);
             Assert.AreEqual("Big Jobs",         aircraft.Type);
             Assert.AreEqual("1979",             aircraft.YearBuilt);
+*/
         }
 
         protected void Common_UpsertAircraftLookup_Can_Ignore_Existing_Aircraft_When_Required()
         {
+throw new NotImplementedException();
+/*
             var createdDate = new DateTime(1999, 8, 7, 6, 5, 4, 321);
             var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
 
@@ -1970,10 +1993,13 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.IsNull(                  aircraft.SerialNo);
             Assert.IsNull(                  aircraft.Type);
             Assert.IsNull(                  aircraft.YearBuilt);
+*/
         }
 
         protected void Common_UpsertAircraftLookup_Will_Overwrite_Missing_Aircraft_When_Required()
         {
+throw new NotImplementedException();
+/*
             _Implementation.WriteSupportEnabled = true;
             _Implementation.InsertAircraft(new() {
                 ModeS =             "123456",
@@ -1990,10 +2016,13 @@ namespace Test.VirtualRadar.Database.SQLite
 
             Assert.AreEqual("123456", aircraft.ModeS);
             Assert.AreEqual("D-WXYZ", aircraft.Registration);
+*/
         }
 
         protected void Common_UpsertAircraftLookup_Will_Not_Consider_Aircraft_Missing_If_They_Have_Registration()
         {
+throw new NotImplementedException();
+/*
             _Implementation.WriteSupportEnabled = true;
             _Implementation.InsertAircraft(new() {
                 ModeS =             "123456",
@@ -2011,10 +2040,13 @@ namespace Test.VirtualRadar.Database.SQLite
 
             Assert.AreEqual("123456", aircraft.ModeS);
             Assert.AreEqual("G-ABCD", aircraft.Registration);
+*/
         }
 
         protected void Common_UpsertAircraftLookup_Raises_AircraftUpdated_On_Update()
         {
+throw new NotImplementedException();
+/*
             _Implementation.WriteSupportEnabled = true;
             _Implementation.InsertAircraft(new() { ModeS = "123456", Registration = "ABC" });
             _Implementation.AircraftUpdated += _AircraftUpdatedEvent.Handler;
@@ -2024,6 +2056,7 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.AreEqual(1, _AircraftUpdatedEvent.CallCount);
             Assert.AreEqual("123456", _AircraftUpdatedEvent.Args.Value.ModeS);
             Assert.AreEqual("XYZ", _AircraftUpdatedEvent.Args.Value.Registration);
+*/
         }
 
         protected void Common_UpsertAircraftLookup_Does_Not_Raise_AircraftUpdated_On_Insert()
@@ -2160,6 +2193,8 @@ namespace Test.VirtualRadar.Database.SQLite
 
         protected void Common_UpsertManyAircraft_Updates_Existing_Lookups()
         {
+throw new NotImplementedException();
+/*
             var createdDate = new DateTime(1999, 8, 7, 6, 5, 4, 321);
             var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
 
@@ -2204,10 +2239,13 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.AreEqual("00119",            aircraft.SerialNo);
             Assert.AreEqual("Big Jobs",         aircraft.Type);
             Assert.AreEqual("1979",             aircraft.YearBuilt);
+*/
         }
 
         protected void Common_UpsertManyAircraft_Updates_Existing_Aircraft()
         {
+throw new NotImplementedException();
+/*
             var createdDate = new DateTime(1999, 8, 7, 6, 5, 4, 321);
             var now = new DateTime(2001, 2, 3, 4, 5, 6, 789);
 
@@ -2255,10 +2293,13 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.AreEqual("Big Jobs",         aircraft.Type);
             Assert.AreEqual("1979",             aircraft.YearBuilt);
             Assert.AreEqual(true,               aircraft.UserBool4);
+*/
         }
 
         protected void Common_UpsertManyAircraft_Raises_AircraftUpdated_On_Update_Lookup()
         {
+throw new NotImplementedException();
+/*
             _Implementation.WriteSupportEnabled = true;
             _Implementation.InsertAircraft(new() { ModeS = "AAAAAA", Registration = "---" });
             _Implementation.InsertAircraft(new() { ModeS = "BBBBBB", Registration = "===" });
@@ -2272,10 +2313,13 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.AreEqual(2, _AircraftUpdatedEvent.CallCount);
             Assert.AreEqual("111", _AircraftUpdatedEvent.AllArgs.Single(r => r.Value.ModeS == "AAAAAA").Value.Registration);
             Assert.AreEqual("222", _AircraftUpdatedEvent.AllArgs.Single(r => r.Value.ModeS == "BBBBBB").Value.Registration);
+*/
         }
 
         protected void Common_UpsertManyAircraft_Raises_AircraftUpdated_On_Update_Aircraft()
         {
+throw new NotImplementedException();
+/*
             _Implementation.WriteSupportEnabled = true;
             _Implementation.InsertAircraft(new() { ModeS = "AAAAAA", Registration = "---" });
             _Implementation.InsertAircraft(new() { ModeS = "BBBBBB", Registration = "===" });
@@ -2289,6 +2333,7 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.AreEqual(2, _AircraftUpdatedEvent.CallCount);
             Assert.AreEqual("111", _AircraftUpdatedEvent.AllArgs.Single(r => r.Value.ModeS == "AAAAAA").Value.Registration);
             Assert.AreEqual("222", _AircraftUpdatedEvent.AllArgs.Single(r => r.Value.ModeS == "BBBBBB").Value.Registration);
+*/
         }
 
         protected void Common_UpsertManyAircraft_Does_Not_Raise_AircraftUpdated_On_Insert()

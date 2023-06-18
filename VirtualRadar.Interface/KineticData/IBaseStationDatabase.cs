@@ -270,21 +270,23 @@ namespace VirtualRadar.Interface.KineticData
         KineticAircraft GetAircraftById(int id);
 
         /// <summary>
-        /// Inserts a new aircraft record and fills AircraftID with the identifier of the record.
+        /// Adds a new aircraft record to the repository. The aircraft is not saved until <see cref="SaveChanges"/>
+        /// is called. The aircraft has no identifier until after the next call to <see cref="SaveChanges"/>.
         /// </summary>
         /// <param name="aircraft"></param>
-        void InsertAircraft(KineticAircraft aircraft);
+        void AddAircraft(KineticAircraft aircraft);
 
         /// <summary>
-        /// Fetches an aircraft by its ICAO code. If there is no record for the aircraft then a new bare-bones aircraft record is created.
+        /// Fetches an aircraft by its ICAO code. If there is no record for the aircraft then a new bare-bones aircraft record is added.
+        /// The new record will have no ID and will not exist on the database until the next call to <see cref="SaveChanges"/>.
         /// </summary>
         /// <param name="icao24"></param>
         /// <returns></returns>
         /// <remarks>
-        /// A lock is held over both the fetch and the insert, this is an atomic operation. The bare-bones aircraft record has the ModeS,
+        /// A lock is held over both the fetch and the add, this is an atomic operation. The bare-bones aircraft record has the ModeS,
         /// create and update times and ModeSCountry fields filled in.
         /// </remarks>
-        KineticAircraft GetOrInsertAircraftByCode(string icao24, out bool created);
+        KineticAircraft GetOrAddAircraftByCode(string icao24, out bool created);
 
         /// <summary>
         /// Updates an existing aircraft record.

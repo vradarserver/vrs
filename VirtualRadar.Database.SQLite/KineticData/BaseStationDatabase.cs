@@ -508,23 +508,25 @@ namespace VirtualRadar.Database.SQLite.KineticData
         }
 
         /// <inheritdoc/>
-        public void InsertAircraft(KineticAircraft aircraft)
+        public void AddAircraft(KineticAircraft aircraft)
         {
             if(!WriteSupportEnabled) {
                 throw new InvalidOperationException("You cannot insert aircraft when write support is disabled");
             }
 
-            PerformInTransaction(() => {
-                Aircraft_Insert(aircraft);
-                return true;
-            });
+            lock(_ConnectionLock) {
+                OpenConnection();
+                if(IsConnected) {
+                    _Context.Aircraft.Add(aircraft);
+                }
+            }
         }
 
         /// <inheritdoc/>
-        public KineticAircraft GetOrInsertAircraftByCode(string icao24, out bool created)
+        public KineticAircraft GetOrAddAircraftByCode(string icao24, out bool created)
         {
             if(!WriteSupportEnabled) {
-                throw new InvalidOperationException("You cannot insert aircraft when write support is disabled");
+                throw new InvalidOperationException("You cannot add aircraft when write support is disabled");
             }
 
             created = false;
@@ -542,7 +544,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
                         LastModified = now,
                         ModeSCountry = codeBlock?.ModeSCountry,
                     };
-                    Aircraft_Insert(result);
+                    AddAircraft(result);
                     innerCreated = true;
                 }
                 return true;

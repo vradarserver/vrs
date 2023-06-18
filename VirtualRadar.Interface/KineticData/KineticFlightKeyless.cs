@@ -9,6 +9,7 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using VirtualRadar.Interface.Types;
 
 namespace VirtualRadar.Interface.KineticData
 {
@@ -33,10 +34,15 @@ namespace VirtualRadar.Interface.KineticData
         /// </summary>
         public string Callsign { get; set; }
 
+        private DateTime? _EndTime;
         /// <summary>
         /// Gets or sets the time of the last message received from the aircraft (UTC).
         /// </summary>
-        public DateTime? EndTime { get; set; }
+        public DateTime? EndTime
+        {
+            get => _EndTime;
+            set => _EndTime = value.TruncateMilliseconds();
+        }
 
         /// <summary>
         /// Gets or sets the altitude (in feet) the aircraft was at when the first message was received.
@@ -194,10 +200,15 @@ namespace VirtualRadar.Interface.KineticData
         /// </summary>
         public int SessionID { get; set; }
 
+        private DateTime _StartTime;
         /// <summary>
         /// Gets or sets the time that the first message was received from the aircraft (UTC).
         /// </summary>
-        public DateTime StartTime { get; set; }
+        public DateTime StartTime
+        {
+            get => _StartTime;
+            set => _StartTime = value.TruncateMilliseconds();
+        }
 
         /// <summary>
         /// Gets or sets the notes entered by the user against the flight.

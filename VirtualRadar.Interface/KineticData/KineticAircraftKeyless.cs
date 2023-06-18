@@ -8,6 +8,8 @@
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+using VirtualRadar.Interface.Types;
+
 namespace VirtualRadar.Interface.KineticData
 {
     /// <summary>
@@ -54,10 +56,16 @@ namespace VirtualRadar.Interface.KineticData
         /// </summary>
         public string Engines { get; set; }
 
+        private DateTime _FirstCreated;
         /// <summary>
-        /// Gets or sets the date and time (UTC) that the record was created.
+        /// Gets or sets the date and time (UTC) that the record was created. Milliseconds
+        /// are stripped from the date when stored.
         /// </summary>
-        public DateTime FirstCreated { get; set; }
+        public DateTime FirstCreated
+        {
+            get => _FirstCreated;
+            set => _FirstCreated = value.TruncateMilliseconds();
+        }
 
         /// <summary>
         /// Gets or sets the date that the aircraft was first placed onto the register.
@@ -84,10 +92,15 @@ namespace VirtualRadar.Interface.KineticData
         /// </summary>
         public bool Interested { get; set; }
 
+        private DateTime _LastModified;
         /// <summary>
         /// Gets or sets the date and time (UTC) that the record was last changed.
         /// </summary>
-        public DateTime LastModified { get; set; }
+        public DateTime LastModified
+        {
+            get => _LastModified;
+            set => _LastModified = value.TruncateMilliseconds();
+        }
 
         /// <summary>
         /// Gets or sets the full name of the aircraft's manufacturer.

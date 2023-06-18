@@ -34,7 +34,20 @@ records by attaching references to objects instead of setting identifier propert
 
 The names of the Insert and Delete calls were changed to force people to revisit their code if they
 were writing to the database. Plugins that were just reading `BaseStation.sqb` should not need to change
-anything.
+anything (almost).
+
+### Identities and references
+
+Previously if you called a fetch method twice for the same aircraft then you would get two different
+instances back, both with the same aircraft's details on.
+
+In .NET Core the identities are tracked. If you fetch the same aircraft ID twice then you get the same
+instance returned to you twice.
+
+This applies to everything, not just aircraft.
+
+If your plugin relies on getting new copies of a record every time you fetch it then you will need to
+rework your plugin.
 
 ## Writes
 
@@ -54,3 +67,7 @@ early on and leave it set.
 ## Nested SaveChanges calls
 
 There is no nesting of `SaveChanges`.
+
+## Multi-threading
+
+The repository is thread-safe, it puts a lock around all reads and writes.
