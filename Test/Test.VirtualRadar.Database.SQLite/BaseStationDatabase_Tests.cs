@@ -1078,5 +1078,38 @@ namespace Test.VirtualRadar.Database.SQLite
             Common_GetCountOfFlights_Counts_Range_Criteria();
         }
         #endregion
+
+        #region GetCountOfFlightsForAircraft
+        [TestMethod]
+        public void GetCountOfFlightsForAircraft_Returns_Zero_If_Aircraft_Is_Null()
+        {
+            Common_GetCountOfFlightsForAircraft_Returns_Zero_If_Aircraft_Is_Null();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void GetCountOfFlightsForAircraft_Throws_If_Criteria_Is_Null()
+        {
+            Common_GetCountOfFlightsForAircraft_Throws_If_Criteria_Is_Null();
+        }
+
+        [TestMethod]
+        public void GetCountOfFlightsForAircraft_Returns_Count_Of_Flights_Matching_Criteria()
+        {
+            Common_GetCountOfFlightsForAircraft_Returns_Count_Of_Flights_Matching_Criteria();
+        }
+
+        [TestMethod]
+        public void GetCountOfFlightsForAircraft_Counts_Equality_Criteria()
+        {
+            Common_GetCountOfFlightsForAircraft_Counts_Equality_Criteria();
+        }
+
+        [TestMethod]
+        public void GetCountOfFlightsForAircraft_Counts_Range_Criteria()
+        {
+            Common_GetCountOfFlightsForAircraft_Counts_Range_Criteria();
+        }
+        #endregion
     }
 }

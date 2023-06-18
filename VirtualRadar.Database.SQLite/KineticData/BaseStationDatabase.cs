@@ -900,16 +900,17 @@ namespace VirtualRadar.Database.SQLite.KineticData
             return result;
         }
 
-        /*
         /// <summary>
         /// See interface docs.
         /// </summary>
         /// <param name="aircraft"></param>
         /// <param name="criteria"></param>
         /// <returns></returns>
-        public int GetCountOfFlightsForAircraft(BaseStationAircraft aircraft, SearchBaseStationCriteria criteria)
+        public int GetCountOfFlightsForAircraft(KineticAircraft aircraft, SearchBaseStationCriteria criteria)
         {
-            if(criteria == null) throw new ArgumentNullException("criteria");
+            if(criteria == null) {
+                throw new ArgumentNullException("criteria");
+            }
             NormaliseCriteria(criteria);
 
             int result = 0;
@@ -917,13 +918,14 @@ namespace VirtualRadar.Database.SQLite.KineticData
             if(aircraft != null) {
                 lock(_ConnectionLock) {
                     OpenConnection();
-                    if(_Connection != null) result = Flights_GetCountByCriteria(aircraft, criteria);
+                    if(_Context != null) {
+                        result = Flights_GetCountByCriteria(aircraft, criteria);
+                    }
                 }
             }
 
             return result;
         }
-*/
 
         /// <summary>
         /// See interface docs.

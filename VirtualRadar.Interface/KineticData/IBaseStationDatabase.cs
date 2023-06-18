@@ -141,7 +141,6 @@ namespace VirtualRadar.Interface.KineticData
             bool sort2Ascending
         );
 
-/*
         /// <summary>
         /// Returns the number of flight records that match the criteria passed across.
         /// </summary>
@@ -149,7 +148,6 @@ namespace VirtualRadar.Interface.KineticData
         /// <param name="criteria"></param>
         /// <returns></returns>
         int GetCountOfFlightsForAircraft(KineticAircraft aircraft, SearchBaseStationCriteria criteria);
-*/
 
         /// <summary>
         /// Returns all flights, or a subset of all flights, that match the criteria passed across.

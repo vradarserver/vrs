@@ -3186,5 +3186,94 @@ namespace Test.VirtualRadar.Database.SQLite
             }
         }
         #endregion
+
+        #region GetCountOfFlightsForAircraft
+        protected void Common_GetCountOfFlightsForAircraft_Returns_Zero_If_Aircraft_Is_Null()
+        {
+            AddFlightAndAircraft(CreateFlight("1"));
+
+            Assert.AreEqual(0, _Implementation.GetCountOfFlightsForAircraft(null, _Criteria));
+        }
+
+        protected void Common_GetCountOfFlightsForAircraft_Throws_If_Criteria_Is_Null()
+        {
+            _Implementation.GetCountOfFlightsForAircraft(CreateAircraft(), null);
+        }
+
+        protected void Common_GetCountOfFlightsForAircraft_Returns_Count_Of_Flights_Matching_Criteria()
+        {
+            var aircraft = CreateAircraft();
+            AddAircraft(aircraft);
+
+            AddFlight(CreateFlight(aircraft, "ABC"));
+            AddFlight(CreateFlight(aircraft, "XYZ"));
+            AddFlightAndAircraft(CreateFlight("XYZ"));  // <-- different actual, should not be included
+
+            Assert.AreEqual(2, _Implementation.GetCountOfFlightsForAircraft(aircraft, _Criteria));
+
+            _Criteria.Callsign = new FilterString("XYZ");
+            Assert.AreEqual(1, _Implementation.GetCountOfFlightsForAircraft(aircraft, _Criteria));
+        }
+
+        protected void Common_GetCountOfFlightsForAircraft_Counts_Equality_Criteria()
+        {
+            var aircraft = CreateAircraft();
+            var defaultFlight = CreateFlight(aircraft);
+            var notEqualFlight = CreateFlight(aircraft);
+            var equalsFlight = CreateFlight(aircraft);
+
+            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                if(!IsFlightCriteria(criteriaProperty)) {
+                    continue;
+                }
+
+                RunTestCleanup();
+                RunTestInitialise();
+
+                if(SetEqualityCriteria(criteriaProperty, defaultFlight, notEqualFlight, equalsFlight, false)) {
+                    var aircraftId = (int)AddAircraft(aircraft);
+                    defaultFlight.AircraftID = notEqualFlight.AircraftID = equalsFlight.AircraftID = aircraftId;
+
+                    AddFlight(defaultFlight);
+                    AddFlight(notEqualFlight);
+                    AddFlight(equalsFlight);
+
+                    Assert.AreEqual(1, _Implementation.GetCountOfFlightsForAircraft(aircraft, _Criteria));
+                }
+            }
+        }
+
+        protected void Common_GetCountOfFlightsForAircraft_Counts_Range_Criteria()
+        {
+            var aircraft = CreateAircraft();
+            var belowRangeFlight = CreateFlight(aircraft);
+            var startRangeFlight = CreateFlight(aircraft);
+            var inRangeFlight = CreateFlight(aircraft);
+            var endRangeFlight = CreateFlight(aircraft);
+            var aboveRangeFlight = CreateFlight(aircraft);
+
+            foreach(var criteriaProperty in typeof(SearchBaseStationCriteria).GetProperties()) {
+                if(!IsFlightCriteria(criteriaProperty)) {
+                    continue;
+                }
+
+                RunTestCleanup();
+                RunTestInitialise();
+
+                if(SetRangeCriteria(criteriaProperty, belowRangeFlight, startRangeFlight, inRangeFlight, endRangeFlight, aboveRangeFlight, false)) {
+                    var aircraftId = (int)AddAircraft(aircraft);
+                    belowRangeFlight.AircraftID = startRangeFlight.AircraftID = inRangeFlight.AircraftID = endRangeFlight.AircraftID = aboveRangeFlight.AircraftID = aircraftId;
+
+                    AddFlight(belowRangeFlight);
+                    AddFlight(startRangeFlight);
+                    AddFlight(inRangeFlight);
+                    AddFlight(endRangeFlight);
+                    AddFlight(aboveRangeFlight);
+
+                    Assert.AreEqual(3, _Implementation.GetCountOfFlightsForAircraft(aircraft, _Criteria));
+                }
+            }
+        }
+        #endregion
     }
 }
