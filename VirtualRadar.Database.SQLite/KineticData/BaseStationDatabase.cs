@@ -478,9 +478,9 @@ namespace VirtualRadar.Database.SQLite.KineticData
 
                         do {
                             var chunk = icao24s.Skip(offset).Take(maxParameters).ToArray();
-                            foreach(var aircraft in AircraftAndFlightsCount_GetByIcaos(chunk)) {
-                                if(aircraft.ModeS != null && !result.ContainsKey(aircraft.ModeS)) {
-                                    result.Add(aircraft.ModeS, aircraft);
+                            foreach(var aircraftAndCount in AircraftAndFlightsCount_GetByIcaos(chunk)) {
+                                if(aircraftAndCount.Aircraft.ModeS != null && !result.ContainsKey(aircraftAndCount.Aircraft.ModeS)) {
+                                    result.Add(aircraftAndCount.Aircraft.ModeS, aircraftAndCount);
                                 }
                             }
                             offset += maxParameters;
@@ -641,179 +641,6 @@ namespace VirtualRadar.Database.SQLite.KineticData
         }
 
         /// <inheritdoc/>
-        public KineticAircraft UpsertAircraftLookup(KineticAircraftLookup aircraft, bool onlyUpdateIfMarkedAsMissing)
-        {
-            if(!WriteSupportEnabled) {
-                throw new InvalidOperationException("You cannot upsert aircraft when write support is disabled");
-            }
-
-            KineticAircraft result = null;
-            bool updated = false;
-
-            PerformInTransaction(() => {
-                var localNow = _Clock.Now.LocalDateTime;
-
-                result = Aircraft_GetByIcao(aircraft.ModeS);
-                if(result == null || CanUpdateAircraftLookup(result, onlyUpdateIfMarkedAsMissing)) {
-                    result = UpsertAircraft(result, aircraft, FillFromUpsertLookup, ref updated);
-                }
-
-                return true;
-            });
-
-            if(updated) {
-                OnAircraftUpdated(new(result));
-            }
-
-            return result;
-        }
-
-        /// <inheritdoc/>
-        /// <returns></returns>
-        public KineticAircraft[] UpsertManyAircraftLookup(IEnumerable<KineticAircraftLookup> allUpsertAircraft, bool onlyUpdateIfMarkedAsMissing)
-        {
-            if(!WriteSupportEnabled) {
-                throw new InvalidOperationException("You cannot upsert aircraft when write support is disabled");
-            }
-
-            var result = new List<KineticAircraft>();
-            var updated = new List<bool>();
-
-            var localNow = _Clock.Now.LocalDateTime;
-            var icaos = allUpsertAircraft.Select(r => r.ModeS);
-
-            PerformInTransaction(() => {
-                var allAircraft = Aircraft_GetByIcaos(icaos)
-                    .ToDictionary(r => ParameterBuilder.NormaliseAircraftIcao(r.ModeS), r => r);
-                foreach(var icao in icaos) {
-                    var thisUpdated = false;
-                    allAircraft.TryGetValue(ParameterBuilder.NormaliseAircraftIcao(icao), out var aircraft);
-                    if(aircraft == null || CanUpdateAircraftLookup(aircraft, onlyUpdateIfMarkedAsMissing)) {
-                        var upsertAircraft = allUpsertAircraft.First(r => r.ModeS == icao);
-                        aircraft = UpsertAircraft(aircraft, upsertAircraft, FillFromUpsertLookup, ref thisUpdated);
-                        if(aircraft != null) {
-                            result.Add(aircraft);
-                            updated.Add(thisUpdated);
-                        }
-                    }
-                }
-                return true;
-            });
-
-            for(int i = 0;i < result.Count;++i) {
-                if(updated[i]) {
-                    OnAircraftUpdated(new(result[i]));
-                }
-            }
-
-            return result.ToArray();
-        }
-
-        private static bool CanUpdateAircraftLookup(KineticAircraft result, bool onlyUpdateIfMarkedAsMissing)
-        {
-            return result == null
-                || !onlyUpdateIfMarkedAsMissing
-                || (
-                       result.UserString1 == _MissingMarkerInUserString1
-                    && String.IsNullOrEmpty(result.Registration?.Trim())
-                   );
-        }
-
-        public KineticAircraft[] UpsertManyAircraft(IEnumerable<KineticAircraftKeyless> allUpsertAircraft)
-        {
-            if(!WriteSupportEnabled) {
-                throw new InvalidOperationException("You cannot upsert aircraft when write support is disabled");
-            }
-
-            var result = new List<KineticAircraft>();
-            var updated = new List<bool>();
-
-            var localNow = _Clock.Now.LocalDateTime;
-            var icaos = allUpsertAircraft.Select(r => r.ModeS);
-
-            PerformInTransaction(() => {
-                var allAircraft = Aircraft_GetByIcaos(icaos)
-                    .ToDictionary(r => ParameterBuilder.NormaliseAircraftIcao(r.ModeS), r => r);
-                foreach(var icao in icaos) {
-                    var thisUpdated = false;
-                    allAircraft.TryGetValue(ParameterBuilder.NormaliseAircraftIcao(icao), out var aircraft);
-                    var upsertAircraft = allUpsertAircraft.First(r => r.ModeS == icao);
-                    aircraft = UpsertAircraft(aircraft, upsertAircraft, FillFromBaseStationAircraftUpsert, ref thisUpdated);
-                    if(aircraft != null) {
-                        result.Add(aircraft);
-                        updated.Add(thisUpdated);
-                    }
-                }
-                return true;
-            });
-
-            for(var i = 0;i < result.Count;++i) {
-                if(updated[i]) {
-                    OnAircraftUpdated(new(result[i]));
-                }
-            }
-
-            return result.ToArray();
-        }
-
-        private KineticAircraft FillFromUpsertLookup(KineticAircraft destination, KineticAircraftLookup source)
-        {
-            if(destination == null) {
-                destination = new KineticAircraft() {
-                    ModeS =         source.ModeS,
-                    FirstCreated =  source.LastModified,
-                };
-            }
-            destination.LastModified =     source.LastModified;
-            destination.Registration =     source.Registration;
-            destination.Country =          source.Country;
-            destination.ModeSCountry =     source.ModeSCountry;
-            destination.Manufacturer =     source.Manufacturer;
-            destination.Type =             source.Type;
-            destination.ICAOTypeCode =     source.ICAOTypeCode;
-            destination.RegisteredOwners = source.RegisteredOwners;
-            destination.OperatorFlagCode = source.OperatorFlagCode;
-            destination.SerialNo =         source.SerialNo;
-            destination.YearBuilt =        source.YearBuilt;
-            destination.UserString1 =      destination.UserString1 == "Missing" ? null : destination.UserString1;
-
-            return destination;
-        }
-
-        private KineticAircraft FillFromBaseStationAircraftUpsert(KineticAircraft destination, KineticAircraftKeyless source)
-        {
-            destination ??= new();
-            source.ApplyTo(destination);
-
-            return destination;
-        }
-
-        /// <summary>
-        /// Does the work for the UpsertAircraftByCode methods.
-        /// </summary>
-        /// <param name="aircraft"></param>
-        /// <param name="upsertAircraft"></param>
-        /// <param name="fillAircraft"></param>
-        /// <param name="updated"></param>
-        /// <returns></returns>
-        private KineticAircraft UpsertAircraft<T>(KineticAircraft aircraft, T upsertAircraft, Func<KineticAircraft, T, KineticAircraft> fillAircraft, ref bool updated)
-        {
-            var isNewAircraft = aircraft == null;
-            updated = !isNewAircraft;
-
-            aircraft = fillAircraft(aircraft, upsertAircraft);
-            if(aircraft != null) {
-                if(isNewAircraft) {
-                    Aircraft_Insert(aircraft);
-                } else {
-                    Aircraft_Update(aircraft);
-                }
-            }
-
-            return aircraft;
-        }
-
-        /// <inheritdoc/>
         public void DeleteAircraft(KineticAircraft aircraft)
         {
             if(!WriteSupportEnabled) {
@@ -885,7 +712,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
                         Aircraft = r,
                         CountFlights = _Context.Flights.Count(f => f.AircraftID == r.AircraftID),
                     })
-                    .Select(r => new KineticAircraftAndFlightsCount(r.Aircraft, r.CountFlights, /*copyAircraftId:*/ true));
+                    .Select(r => new KineticAircraftAndFlightsCount(r.Aircraft, r.CountFlights));
                 result.AddRange(batchResults);
             }
 

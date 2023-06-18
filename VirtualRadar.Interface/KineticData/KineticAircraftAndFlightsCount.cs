@@ -11,10 +11,15 @@
 namespace VirtualRadar.Interface.KineticData
 {
     /// <summary>
-    /// An extension of the <see cref="KineticAircraft"/> object that includes a count of flights.
+    /// An aircraft record and a count of flights seen for the aircraft.
     /// </summary>
-    public class KineticAircraftAndFlightsCount : KineticAircraft
+    public class KineticAircraftAndFlightsCount
     {
+        /// <summary>
+        /// Gets or sets the aircraft record.
+        /// </summary>
+        public KineticAircraft Aircraft { get; set; }
+
         /// <summary>
         /// Gets or sets the number of flight records for the aircraft.
         /// </summary>
@@ -23,18 +28,18 @@ namespace VirtualRadar.Interface.KineticData
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        public KineticAircraftAndFlightsCount() : base()
+        public KineticAircraftAndFlightsCount()
         {
         }
 
         /// <summary>
         /// Creates a new object.
         /// </summary>
-        /// <param name="copyFrom"></param>
+        /// <param name="aircraft"></param>
         /// <param name="flightsCount"></param>
-        /// <param name="copyAircraftId"></param>
-        public KineticAircraftAndFlightsCount(KineticAircraft copyFrom, int flightsCount, bool copyAircraftId) : base(copyFrom, copyAircraftId)
+        public KineticAircraftAndFlightsCount(KineticAircraft aircraft, int flightsCount)
         {
+            Aircraft = aircraft;
             FlightsCount = flightsCount;
         }
     }
