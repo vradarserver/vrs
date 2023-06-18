@@ -1034,25 +1034,26 @@ namespace VirtualRadar.Database.SQLite.KineticData
             return result;
         }
 
-/*
-
         /// <summary>
         /// See interface docs.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public BaseStationFlight GetFlightById(int id)
+        public KineticFlight GetFlightById(int id)
         {
-            BaseStationFlight result = null;
+            KineticFlight result = null;
 
             lock(_ConnectionLock) {
                 OpenConnection();
-                if(_Connection != null) result = Flights_GetById(id);
+                if(_Context != null) {
+                    result = Flights_GetById(id);
+                }
             }
 
             return result;
         }
 
+/*
         /// <summary>
         /// See interface docs.
         /// </summary>
@@ -1113,14 +1114,14 @@ namespace VirtualRadar.Database.SQLite.KineticData
                 @flightID = flight.FlightID,
             }, transaction: _Transaction);
         }
-
-        private BaseStationFlight Flights_GetById(int flightId)
+*/
+        private KineticFlight Flights_GetById(int flightId)
         {
-            return _Connection.Query<BaseStationFlight>("SELECT * FROM [Flights] WHERE [FlightID] = @flightID", new {
-                @flightID = flightId,
-            }, transaction: _Transaction).FirstOrDefault();
+            return _Context
+                .Flights
+                .FirstOrDefault(flight => flight.FlightID == flightId);
         }
-
+/*
         private BaseStationFlight[] Flights_GetAllForAircraft(int aircraftID)
         {
             return _Connection.Query<BaseStationFlight>("SELECT * FROM [Flights] WHERE [AircraftID] = @aircraftID", new {

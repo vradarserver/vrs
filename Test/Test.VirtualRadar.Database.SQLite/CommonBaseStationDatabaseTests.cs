@@ -3275,5 +3275,33 @@ namespace Test.VirtualRadar.Database.SQLite
             }
         }
         #endregion
+
+        #region GetFlightById
+        protected void Common_GetFlightById_Returns_Null_If_Flight_Does_Not_Exist()
+        {
+            Assert.IsNull(_Implementation.GetFlightById(1));
+        }
+
+        protected void Common_GetFlightById_Returns_Flight_Object_For_Record_Identifier()
+        {
+            var spreadsheet = new SpreadsheetTestData(TestData.BaseStationDatabaseTests_xslx, "GetFlights");
+            spreadsheet.TestEveryRow(this, row => {
+                var aircraft = new KineticAircraft() { ModeS = "A" };
+                AddAircraft(aircraft);
+
+                var mockFlight = LoadFlightFromSpreadsheetRow(row);
+                mockFlight.SessionID = PrepareSessionReference(new() { StartTime = DateTime.Now }).SessionID;
+                mockFlight.Aircraft = aircraft;
+                mockFlight.AircraftID = aircraft.AircraftID;
+
+                var id = (int)AddFlight(mockFlight);
+
+                var flight = _Implementation.GetFlightById(id);
+                Assert.AreNotSame(flight, mockFlight);
+
+                AssertFlightsAreEqual(mockFlight, flight, false, aircraft.AircraftID);
+            });
+        }
+        #endregion
     }
 }

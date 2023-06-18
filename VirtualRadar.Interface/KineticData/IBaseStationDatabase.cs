@@ -347,7 +347,6 @@ namespace VirtualRadar.Interface.KineticData
         /// <param name="aircraft"></param>
         void DeleteAircraft(KineticAircraft aircraft);
 
-/*
         /// <summary>
         /// Retrieves a flight record from the database by its ID number. This does not read the associated aircraft record.
         /// </summary>
@@ -355,6 +354,7 @@ namespace VirtualRadar.Interface.KineticData
         /// <returns></returns>
         KineticFlight GetFlightById(int id);
 
+/*
         /// <summary>
         /// Inserts a new flight record and assigns the unique identifier of the new record to the FlightID property. The AircraftID
         /// property must be filled with the identifier of an existing aircraft record.

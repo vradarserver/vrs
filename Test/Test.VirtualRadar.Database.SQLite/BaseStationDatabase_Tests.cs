@@ -1111,5 +1111,36 @@ namespace Test.VirtualRadar.Database.SQLite
             Common_GetCountOfFlightsForAircraft_Counts_Range_Criteria();
         }
         #endregion
+
+        #region GetFlightById
+        [TestMethod]
+        public void GetFlightById_Returns_Null_If_Flight_Does_Not_Exist()
+        {
+            Common_GetFlightById_Returns_Null_If_Flight_Does_Not_Exist();
+        }
+
+        [TestMethod]
+        public void GetFlightById_Returns_Null_If_File_Does_Not_Exist()
+        {
+            DeleteTestFile();
+            Assert.IsNull(_Implementation.GetFlightById(1));
+        }
+
+        [TestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow(" ")]
+        public void GetFlightById_Returns_Null_If_File_Not_Configured(string configuredFileName)
+        {
+            _Configuration.BaseStationSettings.DatabaseFileName = configuredFileName;
+            Assert.IsNull(_Implementation.GetFlightById(1));
+        }
+
+        [TestMethod]
+        public void GetFlightById_Returns_Flight_Object_For_Record_Identifier()
+        {
+            Common_GetFlightById_Returns_Flight_Object_For_Record_Identifier();
+        }
+        #endregion
     }
 }
