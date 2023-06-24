@@ -706,6 +706,8 @@ namespace VirtualRadar.Database.BaseStation
                 throw new InvalidOperationException("You cannot insert aircraft when write support is disabled");
             }
 
+            icao24 = ParameterBuilder.NormaliseAircraftIcao(icao24);
+
             created = false;
             BaseStationAircraft result = null;
             lock(_ConnectionLock) {

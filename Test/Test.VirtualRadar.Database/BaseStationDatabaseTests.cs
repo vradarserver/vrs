@@ -1550,7 +1550,7 @@ namespace Test.VirtualRadar.Database
                 AircraftID =    aircraft.AircraftID,
                 FirstCreated =  TruncateDate(_Clock.LocalNowValue),
                 LastModified =  TruncateDate(_Clock.LocalNowValue),
-                ModeS =         "Abc123",
+                ModeS =         "ABC123",               // <-- call should convert ICAO to uppercase...
                 ModeSCountry =  "United Kingdom",
             }, readBack);
             Assert.AreEqual(true, created);
@@ -1562,17 +1562,17 @@ namespace Test.VirtualRadar.Database
 
             _Database.WriteSupportEnabled = true;
 
-            var aircraft = _Database.GetOrInsertAircraftByCode("abc123", out bool created);
+            var aircraft = _Database.GetOrInsertAircraftByCode("ABC123", out bool created);
             Assert.AreEqual("USA", aircraft.ModeSCountry);
         }
 
         protected void BaseStationDatabase_GetOrInsertAircraftByCode_Deals_With_Null_CodeBlock()
         {
-            _StandingDataManager.Setup(r => r.FindCodeBlock("abc123")).Returns((CodeBlock)null);
+            _StandingDataManager.Setup(r => r.FindCodeBlock("ABC123")).Returns((CodeBlock)null);
 
             _Database.WriteSupportEnabled = true;
 
-            var aircraft = _Database.GetOrInsertAircraftByCode("abc123", out bool created);
+            var aircraft = _Database.GetOrInsertAircraftByCode("ABC123", out bool created);
             Assert.IsNull(aircraft.ModeSCountry);
         }
 
@@ -1590,7 +1590,7 @@ namespace Test.VirtualRadar.Database
             _Icao24CodeBlock.Country = "Unknown Country";
 
             _Database.WriteSupportEnabled = true;
-            var aircraft = _Database.GetOrInsertAircraftByCode("abc123", out bool created);
+            var aircraft = _Database.GetOrInsertAircraftByCode("ABC123", out bool created);
             Assert.IsNull(aircraft.ModeSCountry);
         }
 

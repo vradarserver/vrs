@@ -811,6 +811,8 @@ namespace VirtualRadar.Plugin.SqlServer
                 throw new InvalidOperationException("You cannot insert aircraft when write support is disabled");
             }
 
+            icao24 = ParameterBuilder.NormaliseAircraftIcao(icao24);
+
             BaseStationAircraft result = null;
 
             var parameters = new DynamicParameters();
