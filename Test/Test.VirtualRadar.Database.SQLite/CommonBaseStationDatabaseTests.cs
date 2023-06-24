@@ -261,10 +261,8 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.AreEqual(expected.Country,                           actual.Country);
             Assert.AreEqual(expected.DeRegDate,                         actual.DeRegDate);
             Assert.AreEqual(expected.Engines,                           actual.Engines);
-            Assert.AreEqual(expected.FirstCreated,                      actual.FirstCreated);
             Assert.AreEqual(expected.GenericName,                       actual.GenericName);
             Assert.AreEqual(expected.ICAOTypeCode,                      actual.ICAOTypeCode);
-            Assert.AreEqual(expected.LastModified,                      actual.LastModified);
             Assert.AreEqual(expected.Manufacturer,                      actual.Manufacturer);
             Assert.AreEqual(expected.ModeS,                             actual.ModeS);
             Assert.AreEqual(expected.ModeSCountry,                      actual.ModeSCountry);
@@ -306,6 +304,9 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.AreEqual(expected.UserInt5,                          actual.UserInt5);
             Assert.AreEqual(expected.UserTag,                           actual.UserTag);
             Assert.AreEqual(expected.YearBuilt,                         actual.YearBuilt);
+
+            AssertExtra.AreEqualToSeconds(expected.FirstCreated, actual.FirstCreated);
+            AssertExtra.AreEqualToSeconds(expected.LastModified, actual.LastModified);
         }
         #endregion
 
@@ -1722,8 +1723,8 @@ throw new NotImplementedException();
             Assert.IsNotNull(aircraft);
             Assert.AreEqual("123456", aircraft.ModeS);
             Assert.AreEqual("Missing", aircraft.UserString1);
-            Assert.AreEqual(_Clock.Now.DateTime, aircraft.FirstCreated);
-            Assert.AreEqual(_Clock.Now.DateTime, aircraft.LastModified);
+            AssertExtra.AreEqualToSeconds(_Clock.Now.DateTime, aircraft.FirstCreated);
+            AssertExtra.AreEqualToSeconds(_Clock.Now.DateTime, aircraft.LastModified);
             Assert.IsNull(aircraft.Registration);
             Assert.IsNull(aircraft.Manufacturer);
             Assert.IsNull(aircraft.Type);
@@ -1740,8 +1741,8 @@ throw new NotImplementedException();
             _Implementation.RecordMissingAircraft("123456");
 
             var aircraft = _Implementation.GetAircraftByCode("123456");
-            Assert.AreEqual(createdDate, aircraft.FirstCreated);
-            Assert.AreEqual(_Clock.Now,  aircraft.LastModified);
+            AssertExtra.AreEqualToSeconds(createdDate.DateTime, aircraft.FirstCreated);
+            AssertExtra.AreEqualToSeconds(_Clock.Now.DateTime,  aircraft.LastModified);
         }
 
         protected void Common_RecordMissingAircraft_Updates_Existing_Empty_Records_With_Wrong_UserString1()
@@ -1808,17 +1809,17 @@ throw new NotImplementedException();
 
             var aircraft = _Implementation.GetAircraftByCode("A");
             Assert.IsNotNull(aircraft);
-            Assert.AreEqual("A",        aircraft.ModeS);
-            Assert.AreEqual("Missing",  aircraft.UserString1);
-            Assert.AreEqual(_Clock.Now, aircraft.FirstCreated);
-            Assert.AreEqual(_Clock.Now, aircraft.LastModified);
+            Assert.AreEqual("A",                                aircraft.ModeS);
+            Assert.AreEqual("Missing",                          aircraft.UserString1);
+            AssertExtra.AreEqualToSeconds(_Clock.Now.DateTime,  aircraft.FirstCreated);
+            AssertExtra.AreEqualToSeconds(_Clock.Now.DateTime,  aircraft.LastModified);
 
             aircraft = _Implementation.GetAircraftByCode("B");
             Assert.IsNotNull(aircraft);
-            Assert.AreEqual("B",        aircraft.ModeS);
-            Assert.AreEqual("Missing",  aircraft.UserString1);
-            Assert.AreEqual(_Clock.Now, aircraft.FirstCreated);
-            Assert.AreEqual(_Clock.Now, aircraft.LastModified);
+            Assert.AreEqual("B",                                aircraft.ModeS);
+            Assert.AreEqual("Missing",                          aircraft.UserString1);
+            AssertExtra.AreEqualToSeconds(_Clock.Now.DateTime,  aircraft.FirstCreated);
+            AssertExtra.AreEqualToSeconds(_Clock.Now.DateTime,  aircraft.LastModified);
         }
 
         protected void Common_RecordManyMissingAircraft_Updates_Existing_Empty_Records()
@@ -1831,8 +1832,8 @@ throw new NotImplementedException();
             _Implementation.RecordManyMissingAircraft(new string[] { "123456" });
 
             var aircraft = _Implementation.GetAircraftByCode("123456");
-            Assert.AreEqual(createdDate,  aircraft.FirstCreated);
-            Assert.AreEqual(_Clock.Now,   aircraft.LastModified);
+            AssertExtra.AreEqualToSeconds(createdDate.DateTime, aircraft.FirstCreated);
+            AssertExtra.AreEqualToSeconds(_Clock.Now.DateTime,  aircraft.LastModified);
         }
 
         protected void Common_RecordManyMissingAircraft_Only_Updates_LastModified_Time_On_Existing_Records_With_Registrations()

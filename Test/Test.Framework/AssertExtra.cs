@@ -97,5 +97,49 @@ namespace Test.Framework
                 );
             }
         }
+
+        /// <summary>
+        /// Compares two date times down to second precision. Differences in milliseconds are ignored.
+        /// </summary>
+        /// <param name="lhs"></param>
+        /// <param name="rhs"></param>
+        /// <param name="message"></param>
+        public static void AreEqualToSeconds(DateTime lhs, DateTime rhs, string message = null)
+        {
+            Assert.AreEqual(
+                TruncateDateTimeToSeconds(lhs),
+                TruncateDateTimeToSeconds(rhs),
+                message
+            );
+        }
+
+        /// <summary>
+        /// Compares two date times down to second precision. Differences in milliseconds are ignored.
+        /// </summary>
+        /// <param name="lhs"></param>
+        /// <param name="rhs"></param>
+        /// <param name="message"></param>
+        public static void AreEqualToSeconds(DateTime? lhs, DateTime? rhs, string message = null)
+        {
+            if(lhs == null) {
+                Assert.IsNull(rhs, message);
+            } else if(rhs == null) {
+                Assert.Fail(message);
+            } else {
+                Assert.AreEqual(
+                    TruncateDateTimeToSeconds(lhs.Value),
+                    TruncateDateTimeToSeconds(rhs.Value),
+                    message
+                );
+            }
+        }
+
+        private static DateTime TruncateDateTimeToSeconds(DateTime original)
+        {
+            return new DateTime(
+                original.Year, original.Month, original.Day,
+                original.Hour, original.Minute, original.Second
+            );
+        }
     }
 }
