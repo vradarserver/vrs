@@ -551,6 +551,12 @@ namespace Test.VirtualRadar.Database.SQLite
         }
 
         [TestMethod]
+        public void GetOrAddAircraftByCode_Converts_Icao24_To_Uppercase()
+        {
+            Common_GetOrAddAircraftByCode_Converts_Icao24_To_Uppercase();
+        }
+
+        [TestMethod]
         public void GetOrAddAircraftByCode_Correctly_Inserts_Record()
         {
             Common_GetOrAddAircraftByCode_Correctly_Adds_Record();

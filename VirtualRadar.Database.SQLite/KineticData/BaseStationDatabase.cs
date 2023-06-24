@@ -529,6 +529,8 @@ namespace VirtualRadar.Database.SQLite.KineticData
                 throw new InvalidOperationException("You cannot add aircraft when write support is disabled");
             }
 
+            icao24 = ParameterBuilder.NormaliseAircraftIcao(icao24);
+
             created = false;
             var innerCreated = created;
             KineticAircraft result = null;

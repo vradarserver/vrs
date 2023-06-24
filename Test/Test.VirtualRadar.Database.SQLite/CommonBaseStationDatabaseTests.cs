@@ -1551,6 +1551,15 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.AreSame(aircraft, result);
         }
 
+        protected void Common_GetOrAddAircraftByCode_Converts_Icao24_To_Uppercase()
+        {
+            _Implementation.WriteSupportEnabled = true;
+
+            var aircraft = _Implementation.GetOrAddAircraftByCode("abc123", out bool _);
+
+            Assert.AreEqual("ABC123", aircraft.ModeS);
+        }
+
         protected void Common_GetOrAddAircraftByCode_Correctly_Adds_Record()
         {
             _Implementation.WriteSupportEnabled = true;
@@ -1572,7 +1581,7 @@ namespace Test.VirtualRadar.Database.SQLite
                 AircraftID =    aircraft.AircraftID,
                 FirstCreated =  _Clock.Object.Now.DateTime,
                 LastModified =  _Clock.Object.Now.DateTime,
-                ModeS =         "Abc123",
+                ModeS =         "ABC123",
                 ModeSCountry =  "Foovania",
             }, readBack);
         }
