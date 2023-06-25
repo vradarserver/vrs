@@ -1212,6 +1212,16 @@ namespace Test.VirtualRadar.Database
         }
 
         [TestMethod]
+        public void BaseStationDatabase_GetOrInsertAircraftByCode_Converts_ICAO24_To_UpperCase()
+        {
+            _Database.WriteSupportEnabled = true;
+
+            var actual = _Database.GetOrInsertAircraftByCode("Abc123", (icao) => new BaseStationAircraft() { ModeS = icao, });
+
+            Assert.AreEqual("ABC123", actual.ModeS);
+        }
+
+        [TestMethod]
         [DataSource("Data Source='BaseStationTests.xls';Provider=Microsoft.Jet.OLEDB.4.0;Persist Security Info=False;Extended Properties='Excel 8.0'",
                     "GetAircraftBy$")]
         public void BaseStationDatabase_GetOrInsertAircraftByCode_Works_For_Different_Cultures()
