@@ -528,30 +528,30 @@ namespace VirtualRadar.Database.SQLite.KineticData
             if(!WriteSupportEnabled) {
                 throw new InvalidOperationException("You cannot add aircraft when write support is disabled");
             }
-
             icao24 = ParameterBuilder.NormaliseAircraftIcao(icao24);
 
-            created = false;
-            var innerCreated = created;
             KineticAircraft result = null;
-            PerformInTransaction(() => {
-                result = Aircraft_GetByIcao(icao24);
-                if(result == null) {
-                    var now = _Clock.Now.LocalDateTime;
-                    var codeBlock = _StandingDataManager.FindCodeBlock(icao24);
-                    result = new KineticAircraft() {
-                        AircraftID = 0,
-                        ModeS = icao24,
-                        FirstCreated = now,
-                        LastModified = now,
-                        ModeSCountry = codeBlock?.ModeSCountry,
-                    };
-                    AddAircraft(result);
-                    innerCreated = true;
+            created = false;
+
+            lock(_ConnectionLock) {
+                OpenConnection();
+                if(IsConnected) {
+                    result = Aircraft_GetByIcao(icao24);
+                    if(result == null) {
+                        var now = _Clock.Now.LocalDateTime;
+                        var codeBlock = _StandingDataManager.FindCodeBlock(icao24);
+                        result = new KineticAircraft() {
+                            AircraftID = 0,
+                            ModeS = icao24,
+                            FirstCreated = now,
+                            LastModified = now,
+                            ModeSCountry = codeBlock?.ModeSCountry,
+                        };
+                        AddAircraft(result);
+                        created = true;
+                    }
                 }
-                return true;
-            });
-            created = innerCreated;
+            }
 
             return result;
         }

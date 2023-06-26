@@ -1552,6 +1552,31 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.AreSame(aircraft, result);
         }
 
+        protected void Common_GetOrAddAircraftByCode_Cannot_Return_Aircraft_Previously_Added_But_Not_Yet_Saved()
+        {
+            // One fly in the ointment with Entity Framework is that it ignores new entities that
+            // have been added to the context but not yet saved. This differs from most database
+            // engines that have the concept of transactions - you can usually query the new
+            // records from within the open transaction, as long as it's your transaction.
+            //
+            // It's possible to work around this by extracting added entries manually in the change
+            // tracker and querying those, but (a) that would be surprising to people used to EF,
+            // which is against one of the aims of the .NET Core conversion (make it easier for C#
+            // programmers to understand the source) and (b) where does it end? There's all sorts
+            // of trickery we can do in the change tracker.
+            //
+            // So, this is just confirming that the unexpected behaviour is still here. The code
+            // that would otherwise rely on querying added (but unsaved) records will need to change.
+
+            _Implementation.WriteSupportEnabled = true;
+            var aircraft = new KineticAircraft() { ModeS = "123456" };
+            _Implementation.AddAircraft(aircraft);
+
+            var result = _Implementation.GetOrAddAircraftByCode("123456", out var created);
+
+            Assert.IsTrue(created);
+        }
+
         protected void Common_GetOrAddAircraftByCode_Converts_Icao24_To_Uppercase()
         {
             _Implementation.WriteSupportEnabled = true;
@@ -1571,6 +1596,8 @@ namespace Test.VirtualRadar.Database.SQLite
 
             var aircraft = _Implementation.GetOrAddAircraftByCode("Abc123", out bool created);
             Assert.AreEqual(true, created);
+
+            _Implementation.SaveChanges();
 
             var secondReference = _Implementation.GetAircraftByCode("Abc123");
             Assert.AreSame(aircraft, secondReference);

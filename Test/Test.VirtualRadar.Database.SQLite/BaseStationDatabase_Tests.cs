@@ -528,6 +528,12 @@ namespace Test.VirtualRadar.Database.SQLite
         }
 
         [TestMethod]
+        public void GetOrAddAircraftByCode_Cannot_Return_Aircraft_Previously_Added_But_Not_Yet_Saved()
+        {
+            Common_GetOrAddAircraftByCode_Cannot_Return_Aircraft_Previously_Added_But_Not_Yet_Saved();
+        }
+
+        [TestMethod]
         public void GetOrAddAircraftByCode_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Implementation.WriteSupportEnabled = true;
