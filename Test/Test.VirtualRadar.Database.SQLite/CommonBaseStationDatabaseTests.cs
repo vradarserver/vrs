@@ -1545,6 +1545,7 @@ namespace Test.VirtualRadar.Database.SQLite
             _Implementation.WriteSupportEnabled = true;
             var aircraft = new KineticAircraft() { ModeS = "123456" };
             _Implementation.AddAircraft(aircraft);
+            _Implementation.SaveChanges();
 
             var result = _Implementation.GetOrAddAircraftByCode("123456", out var created);
 
