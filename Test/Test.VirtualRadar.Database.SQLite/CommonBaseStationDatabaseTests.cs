@@ -1653,8 +1653,6 @@ namespace Test.VirtualRadar.Database.SQLite
 
         protected void Common_UpdateAircraft_Raises_AircraftUpdated()
         {
-throw new NotImplementedException();
-/*
             _Implementation.WriteSupportEnabled = true;
 
             var aircraft = new KineticAircraft() { ModeS = "X" };
@@ -1664,13 +1662,17 @@ throw new NotImplementedException();
                 Assert.AreSame(aircraft, args.Value);
             };
 
-            _Implementation.InsertAircraft(aircraft);
+            _Implementation.AddAircraft(aircraft);
             Assert.AreEqual(0, _AircraftUpdatedEvent.CallCount);
 
-            _Implementation.UpdateAircraft(aircraft);
+            _Implementation.SaveChanges();
+            Assert.AreEqual(0, _AircraftUpdatedEvent.CallCount);
+
+            aircraft.Registration = "NEW";
+            _Implementation.SaveChanges();
+
             Assert.AreEqual(1, _AircraftUpdatedEvent.CallCount);
             Assert.AreSame(_Implementation, _AircraftUpdatedEvent.Sender);
-*/
         }
 
         protected void Common_UpdateAircraft_Correctly_Updates_Record()

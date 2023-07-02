@@ -12,6 +12,7 @@ using System.Data;
 using System.Runtime.CompilerServices;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Options;
 using VirtualRadar.Interface;
 using VirtualRadar.Interface.KineticData;
@@ -164,6 +165,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
         {
             lock(_ConnectionLock) {
                 if(_Context != null) {
+                    _Context.EntityStateChanged -= Context_EntityStateChanged;
                     _Context.Dispose();
                     _Context = null;
                 }
@@ -190,7 +192,17 @@ namespace VirtualRadar.Database.SQLite.KineticData
 
                     if(!String.IsNullOrEmpty(fileName) && fileExists && (inCreateMode || !zeroLength)) {
                         _Context = new BaseStationContext(fileName, writeSupportEnabled.Value, _BaseStationDatabaseOptions);
+                        _Context.EntityStateChanged += Context_EntityStateChanged;
                     }
+                }
+            }
+        }
+
+        private void Context_EntityStateChanged(object sender, EntityStateChangedEventArgs e)
+        {
+            if(e.NewState == EntityState.Modified) {
+                if(e.Entry?.Entity is KineticAircraft aircraft) {
+                    OnAircraftUpdated(new(aircraft));
                 }
             }
         }

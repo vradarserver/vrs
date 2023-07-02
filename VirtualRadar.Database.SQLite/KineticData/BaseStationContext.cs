@@ -11,6 +11,7 @@
 using System.Text;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using VirtualRadar.Interface.KineticData;
 using VirtualRadar.Interface.Options;
 
@@ -36,6 +37,10 @@ namespace VirtualRadar.Database.SQLite.KineticData
 
         public DbSet<KineticSystemEvent> SystemEvents { get; set; }
 
+        public event EventHandler<EntityStateChangedEventArgs> EntityStateChanged;
+
+        protected virtual void OnEntityStateChaned(EntityStateChangedEventArgs args) => EntityStateChanged?.Invoke(this, args);
+
         public BaseStationContext(
             string fileName,
             bool writeEnabled,
@@ -45,6 +50,8 @@ namespace VirtualRadar.Database.SQLite.KineticData
             _FileName = fileName;
             _WriteEnabled = writeEnabled;
             _BaseStationDatabaseOptions = baseStationDatabaseOptions;
+
+            ChangeTracker.StateChanged += (_, args) => OnEntityStateChaned(args);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
