@@ -1263,7 +1263,6 @@ namespace Test.VirtualRadar.Database.SQLite
         }
         #endregion
 
-
         #region GetAircraftByRegistration
         protected void Common_GetAircraftByRegistration_Returns_Null_If_Passed_Null()
         {
@@ -1288,6 +1287,17 @@ namespace Test.VirtualRadar.Database.SQLite
 
                 AssertAircraftAreEqual(mockAircraft, aircraft, id);
             });
+        }
+
+        protected void Common_GetAircraftByRegistration_Searches_Unsaved_Changes()
+        {
+            _Implementation.WriteSupportEnabled = true;
+            var original = new KineticAircraft() { Registration = "ANDREW" };
+            _Implementation.AddAircraft(original);
+
+            var actual = _Implementation.GetAircraftByRegistration("ANDREW");
+
+            Assert.AreSame(original, actual);
         }
         #endregion
 
@@ -1314,6 +1324,17 @@ namespace Test.VirtualRadar.Database.SQLite
                 Assert.AreNotSame(aircraft, mockAircraft);
                 AssertAircraftAreEqual(mockAircraft, aircraft, id);
             });
+        }
+
+        protected void Common_GetAircraftByCode_Searches_Unsaved_Changes()
+        {
+            _Implementation.WriteSupportEnabled = true;
+            var original = new KineticAircraft() { ModeS = "ABCDEF", };
+            _Implementation.AddAircraft(original);
+
+            var actual = _Implementation.GetAircraftByCode("ABCDEF");
+
+            Assert.AreSame(original, actual);
         }
         #endregion
 
@@ -1383,6 +1404,17 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.AreEqual(2, allAircraft.Count);
             Assert.IsNotNull(allAircraft["ABC123"]);
             Assert.IsNotNull(allAircraft["XYZ789"]);
+        }
+
+        protected void Common_GetManyAircraftByCode_Can_Return_Unsaved_Changes()
+        {
+            _Implementation.WriteSupportEnabled = true;
+            var original = new KineticAircraft() { ModeS = "FEDCBA" };
+            _Implementation.AddAircraft(original);
+
+            var actual = _Implementation.GetManyAircraftByCode(new string[] { "FEDCBA", });
+
+            Assert.AreSame(original, actual["FEDCBA"]);
         }
         #endregion
 
@@ -1472,6 +1504,17 @@ namespace Test.VirtualRadar.Database.SQLite
             Assert.IsNotNull(allAircraft["ABC123"]);
             Assert.IsNotNull(allAircraft["XYZ789"]);
         }
+
+        protected void Common_GetManyAircraftAndFlightsCountByCode_Can_See_Unsaved_Changes()
+        {
+            _Implementation.WriteSupportEnabled = true;
+            var original = new KineticAircraft() { ModeS = "ABCFED", };
+            _Implementation.AddAircraft(original);
+
+            var actual = _Implementation.GetManyAircraftAndFlightsCountByCode(new string[] { "ABCFED", });
+
+            Assert.AreSame(original, actual["ABCFED"].Aircraft);
+        }
         #endregion
 
         #region GetAircraftById
@@ -1492,6 +1535,19 @@ namespace Test.VirtualRadar.Database.SQLite
                 Assert.AreNotSame(aircraft, mockAircraft);
                 AssertAircraftAreEqual(mockAircraft, aircraft, id);
             });
+        }
+
+        protected void Common_GetAircraftById_Ignores_Aircraft_Scheduled_For_Deletion()
+        {
+            _Implementation.WriteSupportEnabled = true;
+            AddAircraft(new() { ModeS = "ABC123", });
+            var aircraft = _Implementation.GetAircraftByCode("ABC123");
+            var id = aircraft.AircraftID;
+            _Implementation.DeleteAircraft(aircraft);
+
+            var actual = _Implementation.GetAircraftById(id);
+
+            Assert.IsNull(actual);
         }
         #endregion
 
@@ -1550,31 +1606,6 @@ namespace Test.VirtualRadar.Database.SQLite
             var result = _Implementation.GetOrAddAircraftByCode("123456", out var created);
 
             Assert.AreSame(aircraft, result);
-        }
-
-        protected void Common_GetOrAddAircraftByCode_Cannot_Return_Aircraft_Previously_Added_But_Not_Yet_Saved()
-        {
-            // One fly in the ointment with Entity Framework is that it ignores new entities that
-            // have been added to the context but not yet saved. This differs from most database
-            // engines that have the concept of transactions - you can usually query the new
-            // records from within the open transaction, as long as it's your transaction.
-            //
-            // It's possible to work around this by extracting added entries manually in the change
-            // tracker and querying those, but (a) that would be surprising to people used to EF,
-            // which is against one of the aims of the .NET Core conversion (make it easier for C#
-            // programmers to understand the source) and (b) where does it end? There's all sorts
-            // of trickery we can do in the change tracker.
-            //
-            // So, this is just confirming that the unexpected behaviour is still here. The code
-            // that would otherwise rely on querying added (but unsaved) records will need to change.
-
-            _Implementation.WriteSupportEnabled = true;
-            var aircraft = new KineticAircraft() { ModeS = "123456" };
-            _Implementation.AddAircraft(aircraft);
-
-            var result = _Implementation.GetOrAddAircraftByCode("123456", out var created);
-
-            Assert.IsTrue(created);
         }
 
         protected void Common_GetOrAddAircraftByCode_Converts_Icao24_To_Uppercase()
@@ -1638,6 +1669,19 @@ namespace Test.VirtualRadar.Database.SQLite
             _Implementation.WriteSupportEnabled = true;
             var aircraft = _Implementation.GetOrAddAircraftByCode("abc123", out _);
             Assert.IsNull(aircraft.ModeSCountry);
+        }
+
+        protected void Common_GetOrAddAircraftByCode_Recognises_Unsaved_Changes()
+        {
+            _Implementation.WriteSupportEnabled = true;
+
+            var first = _Implementation.GetOrAddAircraftByCode("ABC123", out var created);
+            Assert.AreEqual(true, created);
+
+            var second = _Implementation.GetOrAddAircraftByCode("ABC123", out created);
+            Assert.AreEqual(false, created);
+
+            Assert.AreSame(first, second);
         }
         #endregion
 

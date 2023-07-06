@@ -295,6 +295,12 @@ namespace Test.VirtualRadar.Database.SQLite
         {
             Common_GetAircraftByRegistration_Returns_Aircraft_Object_For_Registration();
         }
+
+        [TestMethod]
+        public void GetAircraftByRegistration_Searches_Unsaved_Changes()
+        {
+            Common_GetAircraftByRegistration_Searches_Unsaved_Changes();
+        }
         #endregion
 
         #region GetAircraftByCode
@@ -331,6 +337,12 @@ namespace Test.VirtualRadar.Database.SQLite
         public void GetAircraftByCode_Returns_Aircraft_Object_For_ICAO24_Code()
         {
             Common_GetAircraftByCode_Returns_Aircraft_Object_For_ICAO24_Code();
+        }
+
+        [TestMethod]
+        public void GetAircraftByCode_Searches_Unsaved_Changes()
+        {
+            Common_GetAircraftByCode_Searches_Unsaved_Changes();
         }
         #endregion
 
@@ -380,6 +392,12 @@ namespace Test.VirtualRadar.Database.SQLite
         public void GetManyAircraftByCode_Transparently_Handles_Call_Splitting_When_Number_Of_Icaos_Exceeds_MaxParameters()
         {
             Common_GetManyAircraftByCode_Transparently_Handles_Call_Splitting_When_Number_Of_Icaos_Exceeds_MaxParameters();
+        }
+
+        [TestMethod]
+        public void GetManyAircraftByCode_Can_Return_Unsaved_Changes()
+        {
+            Common_GetManyAircraftByCode_Can_Return_Unsaved_Changes();
         }
         #endregion
 
@@ -436,6 +454,12 @@ namespace Test.VirtualRadar.Database.SQLite
         {
             Common_GetManyAircraftAndFlightsCountByCode_Transparently_Handles_Call_Splitting_When_Number_Of_Icaos_Exceeds_MaxParameters();
         }
+
+        [TestMethod]
+        public void GetManyAircraftAndFlightsCountByCode_Can_See_Unsaved_Changes()
+        {
+            Common_GetManyAircraftAndFlightsCountByCode_Can_See_Unsaved_Changes();
+        }
         #endregion
 
         #region GetAircraftById
@@ -466,6 +490,12 @@ namespace Test.VirtualRadar.Database.SQLite
         public void GetAircraftById_Returns_Aircraft_Object_For_Record_Identifier()
         {
             Common_GetAircraftById_Returns_Aircraft_Object_For_Record_Identifier();
+        }
+
+        [TestMethod]
+        public void GetAircraftById_Ignores_Aircraft_Scheduled_For_Deletion()
+        {
+            Common_GetAircraftById_Ignores_Aircraft_Scheduled_For_Deletion();
         }
         #endregion
 
@@ -528,12 +558,6 @@ namespace Test.VirtualRadar.Database.SQLite
         }
 
         [TestMethod]
-        public void GetOrAddAircraftByCode_Cannot_Return_Aircraft_Previously_Added_But_Not_Yet_Saved()
-        {
-            Common_GetOrAddAircraftByCode_Cannot_Return_Aircraft_Previously_Added_But_Not_Yet_Saved();
-        }
-
-        [TestMethod]
         public void GetOrAddAircraftByCode_Does_Nothing_If_File_Does_Not_Exist()
         {
             _Implementation.WriteSupportEnabled = true;
@@ -584,6 +608,12 @@ namespace Test.VirtualRadar.Database.SQLite
         public void GetOrAddAircraftByCode_Deals_With_Unknown_Country()
         {
             Common_GetOrAddAircraftByCode_Deals_With_Unknown_Country();
+        }
+
+        [TestMethod]
+        public void GetOrAddAircraftByCode_Recognises_Unsaved_Changes()
+        {
+            Common_GetOrAddAircraftByCode_Recognises_Unsaved_Changes();
         }
         #endregion
 

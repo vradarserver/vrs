@@ -575,10 +575,12 @@ namespace VirtualRadar.Database.SQLite.KineticData
                 throw new InvalidOperationException("You cannot update aircraft when write support is disabled");
             }
 
-            PerformInTransaction(() => {
-                Aircraft_Update(aircraft);
-                return true;
-            });
+            lock(_ConnectionLock) {
+                OpenConnection();
+                if(IsConnected) {
+                    Aircraft_Update(aircraft);
+                }
+            }
 
             OnAircraftUpdated(new(aircraft));
         }
@@ -661,20 +663,26 @@ namespace VirtualRadar.Database.SQLite.KineticData
                 throw new InvalidOperationException("You cannot delete aircraft when write support is disabled");
             }
 
-            PerformInTransaction(() => {
-                Aircraft_Delete(aircraft);
-                return true;
-            });
+            lock(_ConnectionLock) {
+                OpenConnection();
+                if(IsConnected) {
+                    _Context
+                        .Aircraft
+                        .Remove(aircraft);
+                }
+            }
         }
-
-        void Aircraft_Delete(KineticAircraft aircraft) => _Context.Aircraft.Remove(aircraft);
 
         KineticAircraft[] Aircraft_GetAll() => _Context.Aircraft.ToArray();
 
         KineticAircraft Aircraft_GetByIcao(string icao)
         {
             icao = ParameterBuilder.NormaliseAircraftIcao(icao);
-            return _Context.Aircraft.FirstOrDefault(r => r.ModeS == icao);
+            _Context.Aircraft.Where(r => r.ModeS == icao).Load();
+            return _Context
+                .Aircraft
+                .Local
+                .FirstOrDefault(r => r.ModeS == icao);
         }
 
         KineticAircraft[] Aircraft_GetByIcaos(IEnumerable<string> icaos)
@@ -685,17 +693,36 @@ namespace VirtualRadar.Database.SQLite.KineticData
             const int batchSize = 100;
             for(var i = 0;i < icaosArray.Length;i += batchSize) {
                 var batchIcaos = icaosArray.Skip(i).Take(batchSize).ToArray();
-                var batchResults = _Context.Aircraft
-                    .Where(r => batchIcaos.Contains(r.ModeS));
-                result.AddRange(batchResults);
+                _Context.Aircraft.Where(r => batchIcaos.Contains(r.ModeS)).Load();
             }
+
+            var batchResults = _Context
+                .Aircraft
+                .Local
+                .Where(r => icaos.Contains(r.ModeS));
+            result.AddRange(batchResults);
 
             return result.ToArray();
         }
 
-        KineticAircraft Aircraft_GetById(int aircraftId) => _Context.Aircraft.FirstOrDefault(r => r.AircraftID == aircraftId);
+        KineticAircraft Aircraft_GetById(int aircraftId)
+        {
+            _Context.Aircraft.Where(r => r.AircraftID == aircraftId).Load();
+            return _Context
+                .Aircraft
+                .Local
+                .FirstOrDefault(r => r.AircraftID == aircraftId);
+        }
 
-        KineticAircraft Aircraft_GetByRegistration(string registration) => _Context.Aircraft.FirstOrDefault(r => r.Registration == registration);
+        KineticAircraft Aircraft_GetByRegistration(string registration)
+        {
+            _Context.Aircraft.Where(r => r.Registration == registration).Load();
+
+            return _Context
+                .Aircraft
+                .Local
+                .FirstOrDefault(r => r.Registration == registration);
+        }
 
         void Aircraft_Insert(KineticAircraft aircraft) => _Context.Aircraft.Add(aircraft);
 
@@ -720,15 +747,19 @@ namespace VirtualRadar.Database.SQLite.KineticData
             const int batchSize = 100;
             for(var i = 0;i < icaosArray.Length;i += batchSize) {
                 var batchIcaos = icaosArray.Skip(i).Take(batchSize).ToArray();
-                var batchResults = _Context.Aircraft
-                    .Where(r => batchIcaos.Contains(r.ModeS))
-                    .Select(r => new {
-                        Aircraft = r,
-                        CountFlights = _Context.Flights.Count(f => f.AircraftID == r.AircraftID),
-                    })
-                    .Select(r => new KineticAircraftAndFlightsCount(r.Aircraft, r.CountFlights));
-                result.AddRange(batchResults);
+                _Context.Aircraft.Where(r => batchIcaos.Contains(r.ModeS)).Load();
             }
+
+            var batchResults = _Context
+                .Aircraft
+                .Local
+                .Where(r => icaos.Contains(r.ModeS))
+                .Select(r => new {
+                    Aircraft = r,
+                    CountFlights = _Context.Flights.Count(f => f.AircraftID == r.AircraftID),
+                })
+                .Select(r => new KineticAircraftAndFlightsCount(r.Aircraft, r.CountFlights));
+            result.AddRange(batchResults);
 
             return result.ToArray();
         }
