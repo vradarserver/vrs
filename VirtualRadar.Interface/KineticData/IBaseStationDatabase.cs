@@ -285,19 +285,6 @@ namespace VirtualRadar.Interface.KineticData
         KineticAircraft GetOrAddAircraftByCode(string icao24, out bool created);
 
         /// <summary>
-        /// Updates an existing aircraft record.
-        /// </summary>
-        /// <param name="aircraft"></param>
-        void UpdateAircraft(KineticAircraft aircraft);
-
-        /// <summary>
-        /// Updates the Mode-S country for an aircraft.
-        /// </summary>
-        /// <param name="aircraftId"></param>
-        /// <param name="modeSCountry"></param>
-        void UpdateAircraftModeSCountry(int aircraftId, string modeSCountry);
-
-        /// <summary>
         /// Records a missing aircraft record.
         /// </summary>
         /// <param name="icao"></param>

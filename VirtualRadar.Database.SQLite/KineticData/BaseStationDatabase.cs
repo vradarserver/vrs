@@ -569,36 +569,6 @@ namespace VirtualRadar.Database.SQLite.KineticData
         }
 
         /// <inheritdoc/>
-        public void UpdateAircraft(KineticAircraft aircraft)
-        {
-            if(!WriteSupportEnabled) {
-                throw new InvalidOperationException("You cannot update aircraft when write support is disabled");
-            }
-
-            lock(_ConnectionLock) {
-                OpenConnection();
-                if(IsConnected) {
-                    Aircraft_Update(aircraft);
-                }
-            }
-
-            OnAircraftUpdated(new(aircraft));
-        }
-
-        /// <inheritdoc/>
-        public void UpdateAircraftModeSCountry(int aircraftId, string modeSCountry)
-        {
-            if(!WriteSupportEnabled) {
-                throw new InvalidOperationException("You cannot update the Mode-S country for an aircraft when write support is disabled");
-            }
-
-            PerformInTransaction(() => {
-                Aircraft_UpdateModeSCountry(aircraftId, modeSCountry);
-                return true;
-            });
-        }
-
-        /// <inheritdoc/>
         public void RecordMissingAircraft(string icao)
         {
             if(!WriteSupportEnabled) {
@@ -638,13 +608,13 @@ namespace VirtualRadar.Database.SQLite.KineticData
         {
             if(aircraft != null) {
                 aircraft.LastModified = localNow;
-                if(String.IsNullOrEmpty(aircraft.Registration) &&
-                   String.IsNullOrEmpty(aircraft.Manufacturer) &&
-                   String.IsNullOrEmpty(aircraft.Type) &&
-                   String.IsNullOrEmpty(aircraft.RegisteredOwners)) {
+                if(   String.IsNullOrEmpty(aircraft.Registration)
+                   && String.IsNullOrEmpty(aircraft.Manufacturer)
+                   && String.IsNullOrEmpty(aircraft.Type)
+                   && String.IsNullOrEmpty(aircraft.RegisteredOwners)
+                ) {
                     aircraft.UserString1 = _MissingMarkerInUserString1;
                 }
-                Aircraft_Update(aircraft);
             } else {
                 aircraft = new KineticAircraft() {
                     ModeS = icao,
@@ -652,7 +622,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
                     FirstCreated = localNow,
                     LastModified = localNow,
                 };
-                Aircraft_Insert(aircraft);
+                _Context.Aircraft.Add(aircraft);
             }
         }
 
@@ -722,21 +692,6 @@ namespace VirtualRadar.Database.SQLite.KineticData
                 .Aircraft
                 .Local
                 .FirstOrDefault(r => r.Registration == registration);
-        }
-
-        void Aircraft_Insert(KineticAircraft aircraft) => _Context.Aircraft.Add(aircraft);
-
-        void Aircraft_Update(KineticAircraft aircraft)
-        {
-            // nop
-        }
-
-        void Aircraft_UpdateModeSCountry(int aircraftId, string modeSCountry)
-        {
-            var aircraft = Aircraft_GetById(aircraftId);
-            if(aircraft != null) {
-                aircraft.ModeSCountry = modeSCountry;
-            }
         }
 
         KineticAircraftAndFlightsCount[] AircraftAndFlightsCount_GetByIcaos(IEnumerable<string> icaos)
