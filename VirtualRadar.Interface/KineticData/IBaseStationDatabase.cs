@@ -17,7 +17,7 @@ namespace VirtualRadar.Interface.KineticData
     /// See README.md in $/VirtualRadar.Interface/KineticData for copious notes about how this
     /// has changed from older versions of the interface.
     /// </remarks>
-    public interface IBaseStationDatabase : ITransactionable, IDisposable
+    public interface IBaseStationDatabase : IDisposable
     {
         /// <summary>
         /// Gets the name of the database engine or library that the implementation is using.

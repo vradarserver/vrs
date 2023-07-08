@@ -387,21 +387,6 @@ namespace VirtualRadar.Database.SQLite.KineticData
         }
 
         /// <inheritdoc/>
-        public bool PerformInTransaction(Func<bool> action)
-        {
-            var result = false;
-
-            lock(_ConnectionLock) {
-                OpenConnection();
-                if(IsConnected) {
-                    result = _TransactionHelper.PerformInTransaction(action);
-                }
-            }
-
-            return result;
-        }
-
-        /// <inheritdoc/>
         public KineticAircraft GetAircraftByRegistration(string registration)
         {
             KineticAircraft result = null;
@@ -575,14 +560,15 @@ namespace VirtualRadar.Database.SQLite.KineticData
                 throw new InvalidOperationException("You cannot record empty aircraft when write support is disabled");
             }
 
-            PerformInTransaction(() => {
-                var localNow = _Clock.Now.LocalDateTime;
+            lock(_ConnectionLock) {
+                OpenConnection();
+                if(IsConnected) {
+                    var localNow = _Clock.Now.LocalDateTime;
 
-                var aircraft = Aircraft_GetByIcao(icao);
-                RecordEmptyAircraft(aircraft, icao, localNow);
-
-                return true;
-            });
+                    var aircraft = Aircraft_GetByIcao(icao);
+                    RecordEmptyAircraft(aircraft, icao, localNow);
+                }
+            }
         }
 
         /// <inheritdoc/>
