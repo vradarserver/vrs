@@ -1725,32 +1725,36 @@ namespace Test.VirtualRadar.Database.SQLite
 
         protected void Common_RecordMissingAircraft_Updates_Existing_Empty_Records_With_Wrong_UserString1()
         {
-throw new NotImplementedException();
-/*
             _Implementation.WriteSupportEnabled = true;
-            _Implementation.InsertAircraft(new () { ModeS = "123456", FirstCreated = _Clock.Now.DateTime, LastModified = _Clock.Now.DateTime, });
+            _Implementation.AddAircraft(new () {
+                ModeS = "123456",
+                FirstCreated = _Clock.Now.DateTime,
+                LastModified = _Clock.Now.DateTime,
+            });
 
             var createdDate = _Clock.Now.DateTime;
             _Clock.Now = _Clock.Now.AddMinutes(1);
             _Implementation.RecordMissingAircraft("123456");
 
             var aircraft = _Implementation.GetAircraftByCode("123456");
-            Assert.AreEqual("Missing",      aircraft.UserString1);
-            Assert.AreEqual(createdDate,    aircraft.FirstCreated);
-            Assert.AreEqual(_Clock.Now,     aircraft.LastModified);
-*/
+            Assert.AreEqual("Missing", aircraft.UserString1);
+            AssertExtra.AreEqualToSeconds(createdDate,         aircraft.FirstCreated);
+            AssertExtra.AreEqualToSeconds(_Clock.Now.DateTime, aircraft.LastModified);
         }
 
         protected void Common_RecordMissingAircraft_Only_Updates_Time_On_Existing_Records_With_Values()
         {
-throw new NotImplementedException();
-/*
             foreach(var property in new String[] { "Registration", "Manufacturer", "Model", "Operator" }) {
                 RunTestCleanup();
                 RunTestInitialise();
 
                 _Implementation.WriteSupportEnabled = true;
-                var aircraft = new KineticAircraft() { ModeS = "123456", UserString1 = "something", FirstCreated = _Clock.Now.DateTime, LastModified = _Clock.Now.DateTime, };
+                var aircraft = new KineticAircraft() {
+                    ModeS = "123456",
+                    UserString1 = "something",
+                    FirstCreated = _Clock.Now.DateTime,
+                    LastModified = _Clock.Now.DateTime,
+                };
                 switch(property) {
                     case "Registration":    aircraft.Registration = "A"; break;
                     case "Manufacturer":    aircraft.Manufacturer = "A"; break;
@@ -1758,18 +1762,17 @@ throw new NotImplementedException();
                     case "Operator":        aircraft.RegisteredOwners = "A"; break;
                     default:                throw new NotImplementedException();
                 }
-                _Implementation.InsertAircraft(aircraft);
+                _Implementation.AddAircraft(aircraft);
 
                 var createdDate = _Clock.Now.DateTime;
                 _Clock.Now = _Clock.Now.AddMinutes(1);
                 _Implementation.RecordMissingAircraft("123456");
 
                 aircraft = _Implementation.GetAircraftByCode("123456");
-                Assert.AreEqual("something",    aircraft.UserString1);
-                Assert.AreEqual(createdDate,    aircraft.FirstCreated);
-                Assert.AreEqual(_Clock.Now,     aircraft.LastModified);
+                Assert.AreEqual("something", aircraft.UserString1);
+                AssertExtra.AreEqualToSeconds(createdDate,         aircraft.FirstCreated);
+                AssertExtra.AreEqualToSeconds(_Clock.Now.DateTime, aircraft.LastModified);
             }
-*/
         }
         #endregion
 
@@ -1816,20 +1819,22 @@ throw new NotImplementedException();
 
         protected void Common_RecordManyMissingAircraft_Only_Updates_LastModified_Time_On_Existing_Records_With_Registrations()
         {
-throw new NotImplementedException();
-/*
             _Implementation.WriteSupportEnabled = true;
-            _Implementation.InsertAircraft(new() { ModeS = "123456", Registration = "A", FirstCreated = _Clock.Now.LocalDateTime, LastModified = _Clock.Now.LocalDateTime });
+            _Implementation.AddAircraft(new() {
+                ModeS = "123456",
+                Registration = "A",
+                FirstCreated = _Clock.Now.LocalDateTime,
+                LastModified = _Clock.Now.LocalDateTime,
+            });
 
-            var createdDate = _Clock.Now;
+            var createdDate = _Clock.Now.DateTime;
             _Clock.Now = _Clock.Now.AddMinutes(1);
             _Implementation.RecordManyMissingAircraft(new string[] { "123456" });
 
             var aircraft = _Implementation.GetAircraftByCode("123456");
-            Assert.AreEqual("A",            aircraft.Registration);
-            Assert.AreEqual(createdDate,    aircraft.FirstCreated);
-            Assert.AreEqual(_Clock.Now,     aircraft.LastModified);
-*/
+            Assert.AreEqual("A", aircraft.Registration);
+            AssertExtra.AreEqualToSeconds(createdDate,          aircraft.FirstCreated);
+            AssertExtra.AreEqualToSeconds(_Clock.Now.DateTime,  aircraft.LastModified);
         }
         #endregion
 
