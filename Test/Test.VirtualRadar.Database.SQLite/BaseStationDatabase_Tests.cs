@@ -997,12 +997,12 @@ namespace Test.VirtualRadar.Database.SQLite
         }
         #endregion
 
-        #region AttachFlight
+        #region AddFlight
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void AttachFlight_Throws_If_Writes_Disabled()
+        public void AddFlight_Throws_If_Writes_Disabled()
         {
-            Common_AttachFlight_Throws_If_Writes_Disabled();
+            Common_AddFlight_Throws_If_Writes_Disabled();
         }
         #endregion
     }

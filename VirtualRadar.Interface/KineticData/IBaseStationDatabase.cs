@@ -320,7 +320,7 @@ namespace VirtualRadar.Interface.KineticData
         /// and the flight ID filled in. Until that happens the flight ID will not be set.
         /// </summary>
         /// <param name="flight"></param>
-        void AttachFlight(KineticFlight flight);
+        void AddFlight(KineticFlight flight);
 
 /*
         /// <summary>

@@ -2874,10 +2874,10 @@ namespace Test.VirtualRadar.Database.SQLite
         }
         #endregion
 
-        #region AttachFlight
-        protected void Common_AttachFlight_Throws_If_Writes_Disabled()
+        #region AddFlight
+        protected void Common_AddFlight_Throws_If_Writes_Disabled()
         {
-            _Implementation.AttachFlight(new());
+            _Implementation.AddFlight(new());
         }
         #endregion
     }

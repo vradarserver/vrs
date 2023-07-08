@@ -889,7 +889,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
         /// See interface docs.
         /// </summary>
         /// <param name="flight"></param>
-        public void AttachFlight(KineticFlight flight)
+        public void AddFlight(KineticFlight flight)
         {
             if(!WriteSupportEnabled) {
                 throw new InvalidOperationException("You cannot insert flights when writes are disabled");
