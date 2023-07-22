@@ -264,7 +264,8 @@
 
 应用程序图标来自 aha-soft (http://www.aha-soft.com)。
 
-民用及军事代码组来自 Kinetic 论坛用户'SabreJV'维护的 countries.dat 文件和Kinetic 论坛用户'Bones'主持的论坛页面
+民用及军事代码组来自 Kinetic 论坛用户'SabreJV'维护的 countries.dat 文件和Kinetic 论坛用户'Bones'主持的论坛页面
+
 (http://www.homepages.mcb.net/bones/SBS/Kinetic_Utilities.htm)。
 
 iPhone CSS 来自 jQTouch 项目 (http://www.jqtouch.com)。
@@ -2703,7 +2704,7 @@ Suggestion made if the exception could indicate that the port number is in use.<
     <value>发送 keep-alive 包</value>
   </data>
   <data name="UseLocalDecodeForInitialPosition" xml:space="preserve">
-    <value>使用本地解码作为初始位置修复.</value>
+    <value>使用本地解码作为初始位置定位点.</value>
   </data>
   <data name="UseMarkerLabels" xml:space="preserve">
     <value>使用标记标签</value>
