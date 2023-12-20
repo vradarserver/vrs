@@ -898,7 +898,7 @@ namespace VirtualRadar.Database.SQLite.KineticData
             lock(_ConnectionLock) {
                 OpenConnection();
                 if(_Context != null) {
-                    ;
+                    _Context.Add(flight);
                 }
             }
         }

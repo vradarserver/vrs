@@ -1004,6 +1004,12 @@ namespace Test.VirtualRadar.Database.SQLite
         {
             Common_AddFlight_Throws_If_Writes_Disabled();
         }
+
+        [TestMethod]
+        public void AddFlight_Save_Deferred_Until_SaveChanges()
+        {
+            Common_AddFlight_Save_Deferred_Until_SaveChanges();
+        }
         #endregion
     }
 }

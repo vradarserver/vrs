@@ -81,6 +81,11 @@ namespace VirtualRadar.Database.SQLite.KineticData
                 entity.HasKey(r => r.AircraftID);
                 entity.Property(r => r.FirstCreated).HasConversion(new ISO8601Converter());
                 entity.Property(r => r.LastModified).HasConversion(new ISO8601Converter());
+
+                entity.HasMany<KineticFlight>()
+                      .WithOne(flight => flight.Aircraft)
+                      .HasForeignKey(nameof(KineticFlight.AircraftID))
+                      .IsRequired(true);
             });
 
             modelBuilder.Entity<KineticDBHistory>(entity => {

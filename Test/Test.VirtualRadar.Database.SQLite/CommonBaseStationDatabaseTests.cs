@@ -1551,7 +1551,7 @@ namespace Test.VirtualRadar.Database.SQLite
         }
         #endregion
 
-        #region InsertAircraft
+        #region AddAircraft
         protected void Common_AddAircraft_Throws_If_Writes_Disabled()
         {
             _Implementation.AddAircraft(new() { ModeS = "123456" });
@@ -2878,6 +2878,27 @@ namespace Test.VirtualRadar.Database.SQLite
         protected void Common_AddFlight_Throws_If_Writes_Disabled()
         {
             _Implementation.AddFlight(new());
+        }
+
+        protected void Common_AddFlight_Save_Deferred_Until_SaveChanges()
+        {
+            var flight = new KineticFlight() {
+                Aircraft = new() {
+                    ModeS = "ABC123",
+                },
+                FirstAltitude = 100,
+            };
+
+            _Implementation.WriteSupportEnabled = true;
+            _Implementation.AddFlight(flight);
+
+            Assert.AreEqual(0, flight.FlightID);
+            Assert.AreEqual(0, flight.Aircraft.AircraftID);
+
+            _Implementation.SaveChanges();
+
+            Assert.AreNotEqual(0, flight.FlightID);
+            Assert.AreNotEqual(0, flight.Aircraft.AircraftID);
         }
         #endregion
     }
