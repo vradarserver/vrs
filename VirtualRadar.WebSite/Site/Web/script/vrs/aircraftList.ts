@@ -179,11 +179,11 @@ namespace VRS
             return this._FlagHeight;
         }
 
-        private _DataVersion: number = undefined;
+        private _DataVersion: string = undefined;
         /**
          * Gets the data version number from the last update. This goes up for each update.
          */
-        getDataVersion() : number
+        getDataVersion() : string
         {
             return this._DataVersion;
         }
@@ -408,7 +408,7 @@ namespace VRS
                 this._ServerHasPictures =       !!aircraftListJson.showPic;
                 this._FlagWidth =               aircraftListJson.flgW || 0;
                 this._FlagHeight =              aircraftListJson.flgH || 0;
-                this._DataVersion =             aircraftListJson.lastDv || -1;
+                this._DataVersion =             aircraftListJson.lastDv || '-1';
                 this._ShortTrailSeconds =       aircraftListJson.shtTrlSec || 0;
                 this._ServerTicks =             aircraftListJson.stm || 0;
 
