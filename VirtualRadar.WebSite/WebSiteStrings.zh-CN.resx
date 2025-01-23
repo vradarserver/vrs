@@ -219,7 +219,7 @@
     <value>航班号&amp;短路线</value>
   </data>
   <data name="CallsignMayNotBeCorrect" xml:space="preserve">
-    <value>可能不正确的航班号</value>
+    <value>航班号可能不正确</value>
   </data>
   <data name="CentreOnSelectedAircraft" xml:space="preserve">
     <value>在地图上显示航空器</value>
@@ -1020,7 +1020,7 @@
     <value>垂直速度类型</value>
   </data>
   <data name="ListWtc" xml:space="preserve">
-    <value>WTC</value>
+    <value>尾流等级</value>
     <comment>** SAME AS ENGLISH **</comment>
   </data>
   <data name="ListYearBuilt" xml:space="preserve">
@@ -1708,7 +1708,7 @@
     <value>航空器劫持</value>
   </data>
   <data name="Squawk7600" xml:space="preserve">
-    <value>无限的故障</value>
+    <value>无线电故障</value>
   </data>
   <data name="Squawk7700" xml:space="preserve">
     <value>一般紧急</value>
@@ -1878,13 +1878,13 @@
     <value>脱机工作</value>
   </data>
   <data name="WtcHeavy" xml:space="preserve">
-    <value>严重</value>
+    <value>重型</value>
   </data>
   <data name="WtcLight" xml:space="preserve">
-    <value>轻微</value>
+    <value>轻型</value>
   </data>
   <data name="WtcMedium" xml:space="preserve">
-    <value>中等</value>
+    <value>中型</value>
   </data>
   <data name="YearBuilt" xml:space="preserve">
     <value>出厂年份</value>
