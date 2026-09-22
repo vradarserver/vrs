@@ -11,7 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VirtualRadar.Plugin.WebAdmin</RootNamespace>
     <AssemblyName>VirtualRadar.Plugin.WebAdmin</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>

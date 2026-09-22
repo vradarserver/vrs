@@ -25,10 +25,9 @@ compatible.
 You can safely ignore the errors, the build will use 2.3 and it should be fine.
 
 ## Earlier versions of Visual Studio
-Virtual Radar Server targets .NET 4.6.1 and TypeScript 2.3. It also makes use of language features from C# 6.
+Virtual Radar Server targets .NET 4.8 and TypeScript 2.3. It also makes use of language features from C# 6.
 
-You can probably use versions of Visual Studio 2015 as long as you install the .NET 4.6.1 targeting pack and TypeScript 2.3,
-but I haven't tried it.
+The .NET Framework 4.8 targeting pack requires at least Visual Studio 2017.
 
 ## Overview
 * **InterfaceFactory**: Exposes a static class called *Factory* that can create new instances of classes that implement interfaces.

@@ -12,7 +12,7 @@ DefaultGroupName=Virtual Radar
 DisableDirPage=no
 InfoBeforeFile=LanguagePack-Contents.rtf
 LicenseFile={#Root}\License.txt
-; .NET 4.6.1 minimum version is Windows 7 SP1
+; .NET 4.8 minimum version is Windows 7 SP1
 MinVersion=6.1.7601
 OutputBaseFileName=LanguagePack-{#Version}
 SetupIconFile={#Root}\VirtualRadar\Application.ico
