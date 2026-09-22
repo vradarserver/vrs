@@ -15,7 +15,7 @@
         showPic:          boolean;
         flgW:             number;
         flgH:             number;
-        lastDv:           number;
+        lastDv:           string;
         shtTrlSec:        number;
         stm:              number;
         acList:           IAircraftListAircraft[];
@@ -111,7 +111,7 @@
      */
     export interface IAircraftListRequestQueryString
     {
-        ldv?:           number;
+        ldv?:           string;
         feed?:          number;
         lat?:           number;
         lng?:           number;

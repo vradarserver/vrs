@@ -196,7 +196,7 @@ var VRS;
                 this._ServerHasPictures = !!aircraftListJson.showPic;
                 this._FlagWidth = aircraftListJson.flgW || 0;
                 this._FlagHeight = aircraftListJson.flgH || 0;
-                this._DataVersion = aircraftListJson.lastDv || -1;
+                this._DataVersion = aircraftListJson.lastDv || '-1';
                 this._ShortTrailSeconds = aircraftListJson.shtTrlSec || 0;
                 this._ServerTicks = aircraftListJson.stm || 0;
                 var aircraft = new AircraftCollection();
