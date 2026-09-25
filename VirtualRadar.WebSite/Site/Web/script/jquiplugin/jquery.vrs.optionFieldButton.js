@@ -46,27 +46,33 @@ var VRS;
             var state = this._getState();
             var field = this.options.field;
             var optionPageParent = this.options.optionPageParent;
-            var getTextOption = function () { return field.getShowText(); };
-            var getIconsOption = function () {
+            var getShowLabelOption = function () { return field.getShowText(); };
+            var getIconOption = function () {
                 var result = undefined;
                 if (field.getPrimaryIcon()) {
-                    if (!field.getSecondaryIcon())
-                        result = { primary: 'ui-icon-' + field.getPrimaryIcon() };
-                    else
-                        result = { primary: 'ui-icon-' + field.getPrimaryIcon(), secondary: 'ui-icon-' + field.getSecondaryIcon() };
+                    result = 'ui-icon-' + field.getPrimaryIcon();
+                }
+                else if (field.getSecondaryIcon()) {
+                    result = 'ui-icon-' + field.getSecondaryIcon();
                 }
                 return result;
             };
+            var getIconPositionOption = function () {
+                return !field.getPrimaryIcon() && field.getSecondaryIcon() ? 'end' : 'beginning';
+            };
             var jqSettings = {
-                text: getTextOption(),
-                icons: getIconsOption()
+                showLabel: getShowLabelOption(),
+                icon: getIconOption(),
+                iconPosition: getIconPositionOption()
             };
             state.refreshFieldContentHookResult = field.hookRefreshFieldContent(function () {
-                this.element.button('option', 'text', getTextOption());
-                var icons = getIconsOption();
-                if (icons)
-                    this.element.button('option', 'icons', icons);
-                this.element.text(field.getLabelText());
+                this.element.button('option', 'showLabel', getShowLabelOption());
+                var icon = getIconOption();
+                if (icon) {
+                    this.element.button('option', 'icon', icon);
+                    this.element.button('option', 'iconPosition', getIconPositionOption());
+                }
+                this.element.button('option', 'label', field.getLabelText());
             }, this);
             state.refreshFieldStateHookResult = field.hookRefreshFieldState($.proxy(function () {
                 if (field.getEnabled())

@@ -206,6 +206,7 @@
     <None Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <None Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="Web\css-DatabaseEditor\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="Web\DatabaseEditor\index.js.map">
       <DependentUpon>index.ts</DependentUpon>
     </None>

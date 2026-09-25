@@ -84,8 +84,11 @@ declare module JQueryUI {
 
     interface ButtonOptions {
         disabled?: boolean;
+        icon?: string;
+        iconPosition?: string;
         icons?: any;
         label?: string;
+        showLabel?: boolean;
         text?: string|boolean;
         click?: (event?: Event) => void;
     }
