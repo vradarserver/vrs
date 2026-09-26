@@ -24,6 +24,7 @@ if "%~1"=="" goto :USAGE
 
 :NEXTARG
     if "%~1"=="" goto :ENDARGS
+    if "%1"=="-all"     set RELEASE=1& set DEBUG=1& set X86=1& set X64=1
     if "%1"=="-release" set RELEASE=1
     if "%1"=="-debug"   set DEBUG=1
     if "%1"=="-x86"     set X86=1
@@ -86,9 +87,11 @@ goto :EOF
 
 :USAGE
     echo usage: Build.bat [-debug] [-release] [-x86] [-x64] [-vs2019 ^| -vs2022 ^| -vs2026]
+    echo        Build.bat -all [-vs2019 ^| -vs2022 ^| -vs2026]
     echo        Build.bat -restore [-vs2019 ^| -vs2022 ^| -vs2026]
     echo.
     echo   -restore    Restore NuGet packages without building
+    echo   -all        Build every configuration and platform
     echo   -debug      Build the Debug configuration
     echo   -release    Build the Release configuration
     echo   -x86        Build the x86 platform
