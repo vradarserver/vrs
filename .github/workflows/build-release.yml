@@ -61,9 +61,18 @@ jobs:
           $installerDir = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer"
           $vsPath = & "$installerDir\vswhere.exe" -latest -products * -property installationPath
           Write-Host "Adding .NET 3.5 development tools to $vsPath"
-          $arguments = @('/c', "`"$installerDir\vs_installer.exe`"", 'modify', '--installPath', "`"$vsPath`"", '--add', 'Microsoft.Net.Component.3.5.DeveloperTools', '--quiet', '--norestart', '--nocache')
-          $process = Start-Process -FilePath cmd.exe -ArgumentList $arguments -Wait -PassThru -WindowStyle Hidden
-          if($process.ExitCode -ne 0 -and $process.ExitCode -ne 3010) { throw "Visual Studio installer failed with exit code $($process.ExitCode)" }
+          $arguments = "modify --installPath `"$vsPath`" --add Microsoft.Net.Component.3.5.DeveloperTools --quiet --norestart --nocache"
+          $process = Start-Process -FilePath "$installerDir\vs_installer.exe" -ArgumentList $arguments -Wait -PassThru -NoNewWindow
+          if($process.ExitCode -ne 0 -and $process.ExitCode -ne 3010) {
+            Get-ChildItem $env:TEMP -Filter 'dd_*.log' -ErrorAction SilentlyContinue |
+              Sort-Object LastWriteTime -Descending |
+              Select-Object -First 3 |
+              ForEach-Object {
+                Write-Host "===== $($_.FullName)"
+                Get-Content $_.FullName -Tail 40
+              }
+            throw "Visual Studio installer failed with exit code $($process.ExitCode)"
+          }
 
           $required = @(
             "${env:ProgramFiles(x86)}\Reference Assemblies\Microsoft\Framework\v3.5",
