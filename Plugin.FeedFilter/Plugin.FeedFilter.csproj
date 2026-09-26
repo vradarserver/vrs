@@ -163,6 +163,7 @@
     <None Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <None Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <None Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="Web\css-FeedFilter\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="FeedFilterStrings.resx">
