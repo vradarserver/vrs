@@ -5,6 +5,8 @@
     <DeploymentItem filename="VirtualRadar.WebSite\Site\" />
     <DeploymentItem filename="VirtualRadar.WebSite\Site\Checksums.txt" />
     <DeploymentItem filename="Test\Test.Framework\TestFiles\" />
+    <DeploymentItem filename="packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\build\net20\x86\SQLite.Interop.dll" outputDirectory="x86" />
+    <DeploymentItem filename="packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\build\net20\x64\SQLite.Interop.dll" outputDirectory="x64" />
   </Deployment>
   <Execution>
     <TestTypeSpecific>

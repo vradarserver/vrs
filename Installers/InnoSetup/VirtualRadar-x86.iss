@@ -59,7 +59,8 @@ Source: "{#Root}\VirtualRadar\bin\x86\Release\ru-RU\VirtualRadar.WebSite.resourc
 Source: "{#Root}\VirtualRadar\bin\x86\Release\zh-CN\VirtualRadar.WebSite.resources.dll"; DestDir: "{app}\zh-CN"; Excludes: "zz-norel-*"; Flags: ignoreversion recursesubdirs;
 
 ; SQLite
-Source: "{#Root}\Dependencies\System.Data.SQLite.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\System.Data.SQLite.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\x86\SQLite.Interop.dll"; DestDir: "{app}\x86"; Flags: ignoreversion
 
 ; 3rd party libraries
 Source: "{#Root}\VirtualRadar\bin\x86\{#BuildType}\AjaxMin.dll"; DestDir: "{app}"; Flags: ignoreversion;
