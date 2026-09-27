@@ -90,19 +90,26 @@ namespace VirtualRadar.Plugin.AirportDataThumbnails
         /// <inheritdoc/>
         public WebRequestResult<AirportDataThumbnailsJson> GetThumbnails(string icao, string registration, int maxThumbnails)
         {
-            var thumbnailKey = new ThumbnailKey(icao, maxThumbnails);
-            var cachedThumbnail = _ThumbnailCache.GetForKeyAndRefresh(thumbnailKey);
-            if(cachedThumbnail != null) {
-                cachedThumbnail.LastAccessTimeUtc = DateTime.UtcNow;
+            WebRequestResult<AirportDataThumbnailsJson> result;
+
+            if(!Plugin.Singleton.Options.Enabled) {
+                result = Plugin.OriginalImplementation.GetThumbnails(icao, registration, maxThumbnails);
             } else {
-                cachedThumbnail = new CachedThumbnail() {
-                    LastAccessTimeUtc = DateTime.UtcNow,
-                    Thumbnail = RequestThumbnails(icao, registration, maxThumbnails),
-                };
-                _ThumbnailCache.UpsertAndRefresh(thumbnailKey, cachedThumbnail);
+                var thumbnailKey = new ThumbnailKey(icao, maxThumbnails);
+                var cachedThumbnail = _ThumbnailCache.GetForKeyAndRefresh(thumbnailKey);
+                if(cachedThumbnail != null) {
+                    cachedThumbnail.LastAccessTimeUtc = DateTime.UtcNow;
+                } else {
+                    cachedThumbnail = new CachedThumbnail() {
+                        LastAccessTimeUtc = DateTime.UtcNow,
+                        Thumbnail = RequestThumbnails(icao, registration, maxThumbnails),
+                    };
+                    _ThumbnailCache.UpsertAndRefresh(thumbnailKey, cachedThumbnail);
+                }
+                result = cachedThumbnail.Thumbnail;
             }
 
-            return cachedThumbnail.Thumbnail;
+            return result;
         }
 
         private WebRequestResult<AirportDataThumbnailsJson> RequestThumbnails(string icao, string registration, int maxThumbnails)

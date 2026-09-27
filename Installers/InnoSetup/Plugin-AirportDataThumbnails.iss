@@ -31,6 +31,13 @@ Source: "{#Root}\LICENSE.txt"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 ; Application files
 Source: "{#Root}\Plugin.AirportDataThumbnails\bin\{#BuildType}\VirtualRadar.Plugin.AirportDataThumbnails.dll"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
+; Web site files
+Source: "{#Root}\Plugin.AirportDataThumbnails\Web\*"; DestDir: "{#Plugin}\Web"; Excludes: "zz-norel-*"; Flags: ignoreversion recursesubdirs;
+
 ; Manifest file
 Source: "{#Root}\Plugin.AirportDataThumbnails\bin\{#BuildType}\VirtualRadar.Plugin.AirportDataThumbnails.xml"; DestDir: "{#Plugin}"; Flags: ignoreversion;
+
+[InstallDelete]
+; Old web site files
+Type: filesandordirs; Name: "{#Plugin}\Web";
 
