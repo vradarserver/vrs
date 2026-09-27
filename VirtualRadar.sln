@@ -15,6 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRadar", "VirtualRada
 		{3465B4A9-2278-422D-B1D5-E2CDCB308D03} = {3465B4A9-2278-422D-B1D5-E2CDCB308D03}
 		{C21751B3-11B0-41E0-8221-C1106F4D0A9E} = {C21751B3-11B0-41E0-8221-C1106F4D0A9E}
 		{C4516CF0-85E9-4B59-B22A-EFDFF1D8399D} = {C4516CF0-85E9-4B59-B22A-EFDFF1D8399D}
+		{B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96} = {B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLiteWrapper.DotNet", "SQLiteWrapper.DotNet\SQLiteWrapper.DotNet.csproj", "{DDF2A51A-4AB8-4338-94AE-6320637AE3D7}"
@@ -119,6 +120,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseStationImport", "Utilit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.TileServerCache", "Plugin.TileServerCache\Plugin.TileServerCache.csproj", "{65C67D9E-42FF-467C-92C2-10F0B9481309}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.AirportDataThumbnails", "Plugin.AirportDataThumbnails\Plugin.AirportDataThumbnails.csproj", "{B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installers", "Installers", "{2706C041-CF15-4CA8-AB29-717CEB7EB0C2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{6DA177EA-7167-4E2F-B673-6CC020171F51}"
@@ -131,6 +134,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InnoSetup", "InnoSetup", "{
 	ProjectSection(SolutionItems) = preProject
 		Installers\InnoSetup\LanguagePack-Contents.rtf = Installers\InnoSetup\LanguagePack-Contents.rtf
 		Installers\InnoSetup\LanguagePack.iss = Installers\InnoSetup\LanguagePack.iss
+		Installers\InnoSetup\Plugin-AirportDataThumbnails-VersionHistory.rtf = Installers\InnoSetup\Plugin-AirportDataThumbnails-VersionHistory.rtf
+		Installers\InnoSetup\Plugin-AirportDataThumbnails.iss = Installers\InnoSetup\Plugin-AirportDataThumbnails.iss
 		Installers\InnoSetup\Plugin-CustomContent-VersionHistory.rtf = Installers\InnoSetup\Plugin-CustomContent-VersionHistory.rtf
 		Installers\InnoSetup\Plugin-CustomContent.iss = Installers\InnoSetup\Plugin-CustomContent.iss
 		Installers\InnoSetup\Plugin-DatabaseEditor-VersionHistory.rtf = Installers\InnoSetup\Plugin-DatabaseEditor-VersionHistory.rtf
@@ -157,6 +162,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mono", "Mono", "{47B5682B-D580-49F5-8038-F4DB6AFAB6DE}"
 	ProjectSection(SolutionItems) = preProject
 		Installers\Mono\build-language-pack.sh = Installers\Mono\build-language-pack.sh
+		Installers\Mono\build-plugin-airportdata-thumbnails.sh = Installers\Mono\build-plugin-airportdata-thumbnails.sh
 		Installers\Mono\build-plugin-custom-content.sh = Installers\Mono\build-plugin-custom-content.sh
 		Installers\Mono\build-plugin-database-editor.sh = Installers\Mono\build-plugin-database-editor.sh
 		Installers\Mono\build-plugin-database-writer.sh = Installers\Mono\build-plugin-database-writer.sh
@@ -701,6 +707,22 @@ Global
 		{195971C3-B1DE-43CD-B714-E447A47F2D5A}.Release|x64.Build.0 = Release|Any CPU
 		{195971C3-B1DE-43CD-B714-E447A47F2D5A}.Release|x86.ActiveCfg = Release|Any CPU
 		{195971C3-B1DE-43CD-B714-E447A47F2D5A}.Release|x86.Build.0 = Release|Any CPU
+		{B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96}.Debug|x64.Build.0 = Debug|Any CPU
+		{B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96}.Debug|x86.Build.0 = Debug|Any CPU
+		{B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96}.Release|x64.ActiveCfg = Release|Any CPU
+		{B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96}.Release|x64.Build.0 = Release|Any CPU
+		{B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96}.Release|x86.ActiveCfg = Release|Any CPU
+		{B1774A40-3C6B-4E52-BC6B-AAC86E7A8D96}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
