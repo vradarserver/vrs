@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+    <RunConfiguration>
+        <TargetPlatform>x86</TargetPlatform>
+        <TargetFrameworkVersion>.NETFramework,Version=v4.8</TargetFrameworkVersion>
+    </RunConfiguration>
+    <MSTest>
+        <SettingsFile>LocalTestRun.testrunconfig</SettingsFile>
+        <ForcedLegacyMode>true</ForcedLegacyMode>
+    </MSTest>
+</RunSettings>
