@@ -4,25 +4,36 @@ on:
   push:
     tags:
       - v[23].*
-  pull_request:
-    tags:
-      - v[23].*
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to build the installers as (a manual run never creates a release)
+        required:    true
+        type:        string
+        default:     0.0.0-test
 
 jobs:
   build:
-    runs-on: windows-2019
+    runs-on: windows-2025
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name:  Extract tag
         id:    set_tag
-        run:   echo ::set-output name=TAG::${GITHUB_REF/refs\/tags\//}
+        run:   echo "TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
         shell: bash
 
       - name:  Extract version
         id:    set_ver
-        run:   echo ::set-output name=VER::${GITHUB_REF/refs\/tags\/v/}
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            echo "VER=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_OUTPUT
+          else
+            echo "VER=$INPUT_VERSION" >> $GITHUB_OUTPUT
+          fi
         shell: bash
 
       - name:  SQLServer plugin exists
@@ -32,15 +43,51 @@ jobs:
             files: "Installers/InnoSetup/Plugin-SqlServer.iss"
 
       - name: Setup Nuget
-        uses: NuGet/setup-nuget@v1.0.5
+        uses: NuGet/setup-nuget@v2
         with:
           nuget-version: '5.x'
+
+      - name:  Install .NET Framework 3.5 and its development tools
+        shell: pwsh
+        run: |
+          try {
+            Enable-WindowsOptionalFeature -Online -FeatureName NetFx3 -All -NoRestart
+          } catch {
+            Write-Host "Enable-WindowsOptionalFeature failed ($_), trying Chocolatey"
+            choco install dotnet3.5 -y --no-progress
+            if($LASTEXITCODE -ne 0) { throw "Could not install .NET Framework 3.5" }
+          }
+
+          $installerDir = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer"
+          $vsPath = & "$installerDir\vswhere.exe" -latest -products * -property installationPath
+          Write-Host "Adding .NET 3.5 development tools to $vsPath"
+          $arguments = "modify --installPath `"$vsPath`" --add Microsoft.Net.Component.3.5.DeveloperTools --quiet --norestart --nocache"
+          $process = Start-Process -FilePath "$installerDir\vs_installer.exe" -ArgumentList $arguments -Wait -PassThru -NoNewWindow
+          if($process.ExitCode -ne 0 -and $process.ExitCode -ne 3010) {
+            Get-ChildItem $env:TEMP -Filter 'dd_*.log' -ErrorAction SilentlyContinue |
+              Sort-Object LastWriteTime -Descending |
+              Select-Object -First 3 |
+              ForEach-Object {
+                Write-Host "===== $($_.FullName)"
+                Get-Content $_.FullName -Tail 40
+              }
+            throw "Visual Studio installer failed with exit code $($process.ExitCode)"
+          }
+
+          $required = @(
+            "${env:ProgramFiles(x86)}\Reference Assemblies\Microsoft\Framework\v3.5",
+            "${env:ProgramFiles(x86)}\Microsoft SDKs\Windows\v7.0A\Bin\ResGen.exe"
+          )
+          foreach($path in $required) {
+            if(!(Test-Path $path)) { throw "$path is missing after installing .NET Framework 3.5" }
+            Write-Host "Found $path"
+          }
 
       - name: Restore packages
         run:  nuget restore VirtualRadar.sln
 
       - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.1
+        uses: microsoft/setup-msbuild@v2
 
       - name: Build x86 release
         run:  msbuild VirtualRadar.sln -property:Configuration=Release,Platform=x86 -nowarn:1570,1572,1573,1574,1584,1587,1591,1711
@@ -150,6 +197,7 @@ jobs:
 
       - name: Create Mono release
         id:   mono_release
+        if:   github.event_name == 'push'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -161,6 +209,7 @@ jobs:
 
       - name: Create Windows .NET Framework release
         id:   framework_release
+        if:   github.event_name == 'push'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -171,6 +220,7 @@ jobs:
           prerelease:   true
 
       - name: Add x86 installer to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -181,6 +231,7 @@ jobs:
           asset_name:                             VirtualRadar-32bit-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add x64 installer to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -191,6 +242,7 @@ jobs:
           asset_name:                             VirtualRadar-64bit-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add mono tarball to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -201,6 +253,7 @@ jobs:
           asset_name:                        VirtualRadar-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add airport data thumbnails installer to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -211,6 +264,7 @@ jobs:
           asset_name:                             Plugin-AirportDataThumbnails-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add airport data thumbnails tarball to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -221,6 +275,7 @@ jobs:
           asset_name:                        Plugin-AirportDataThumbnails-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add custom content installer to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -231,6 +286,7 @@ jobs:
           asset_name:                             Plugin-CustomContent-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add custom content tarball to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -241,6 +297,7 @@ jobs:
           asset_name:                        Plugin-CustomContent-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add database editor installer to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -251,6 +308,7 @@ jobs:
           asset_name:                             Plugin-DatabaseEditor-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add database editor tarball to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -261,6 +319,7 @@ jobs:
           asset_name:                        Plugin-DatabaseEditor-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add database writer installer to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -271,6 +330,7 @@ jobs:
           asset_name:                             Plugin-DatabaseWriter-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add database writer tarball to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -281,6 +341,7 @@ jobs:
           asset_name:                        Plugin-DatabaseWriter-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add disable audio installer to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -291,6 +352,7 @@ jobs:
           asset_name:                             Plugin-DisableAudio-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add disable UPnP installer to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -301,6 +363,7 @@ jobs:
           asset_name:                             Plugin-DisableUPnP-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add feed filter installer to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -311,6 +374,7 @@ jobs:
           asset_name:                             Plugin-FeedFilter-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add feed filter tarball to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -321,7 +385,7 @@ jobs:
           asset_name:                        Plugin-FeedFilter-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add SQL Server installer to release
-        if:   steps.plugin_sqlserver_exists.outputs.files_exists == 'true'
+        if:   github.event_name == 'push' && steps.plugin_sqlserver_exists.outputs.files_exists == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -332,7 +396,7 @@ jobs:
           asset_name:                             Plugin-SqlServer-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add SQL Server tarball to release
-        if:   steps.plugin_sqlserver_exists.outputs.files_exists == 'true'
+        if:   github.event_name == 'push' && steps.plugin_sqlserver_exists.outputs.files_exists == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -343,6 +407,7 @@ jobs:
           asset_name:                        Plugin-SqlServer-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add tile server cache installer to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -353,6 +418,7 @@ jobs:
           asset_name:                             Plugin-TileServerCache-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add tile server cache tarball to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -363,6 +429,7 @@ jobs:
           asset_name:                        Plugin-TileServerCache-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add VATSIM installer to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -373,6 +440,7 @@ jobs:
           asset_name:                             Plugin-Vatsim-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add VATSIM tarball to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -383,6 +451,7 @@ jobs:
           asset_name:                        Plugin-Vatsim-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add web admin installer to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -393,6 +462,7 @@ jobs:
           asset_name:                             Plugin-WebAdmin-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add web admin tarball to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -403,6 +473,7 @@ jobs:
           asset_name:                        Plugin-WebAdmin-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add language pack installer to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -413,6 +484,7 @@ jobs:
           asset_name:                             LanguagePack-${{ steps.set_ver.outputs.VER }}.exe
 
       - name: Add language pack tarball to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -423,6 +495,7 @@ jobs:
           asset_name:                        LanguagePack-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add Windows .NET Framework SHA256 checksums to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -433,6 +506,7 @@ jobs:
           asset_name:                             checksums-windows-${{ steps.set_ver.outputs.VER }}-sha256.txt
 
       - name: Add Mono SHA256 checksums to release
+        if:   github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
