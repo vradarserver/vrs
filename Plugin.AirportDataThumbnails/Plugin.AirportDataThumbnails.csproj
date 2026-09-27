@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.props" Condition="Exists('..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.props')" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -12,6 +14,22 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptModuleKind />
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+    <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,23 +52,59 @@
     <Reference Include="InterfaceFactory, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AWhewell.InterfaceFactory.4.0.0\lib\net35\InterfaceFactory.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AirportDataDotCom.cs" />
+    <Compile Include="AirportDataThumbnailsStrings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AirportDataThumbnailsStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Options.cs" />
+    <Compile Include="OptionsStorage.cs" />
     <Compile Include="Plugin.cs" />
+    <Compile Include="PluginLocalise.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebAdmin\IOptionsView.cs" />
+    <Compile Include="WebAdmin\OptionsModels.cs" />
+    <Compile Include="WebAdmin\OptionsView.cs" />
+    <Compile Include="WinForms\OptionsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\OptionsView.Designer.cs">
+      <DependentUpon>OptionsView.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VirtualRadar.Interface\VirtualRadar.Interface.csproj">
       <Project>{8ef81105-f45d-4edb-996c-de7d5644b1e7}</Project>
       <Name>VirtualRadar.Interface</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.Localisation\VirtualRadar.Localisation.csproj">
+      <Project>{fd3e36e1-35ea-46f3-a30b-65cea7d92b7e}</Project>
+      <Name>VirtualRadar.Localisation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualRadar.WinForms\VirtualRadar.WinForms.csproj">
+      <Project>{3a1330d8-1e7d-4c70-ba9a-39851389cfff}</Project>
+      <Name>VirtualRadar.WinForms</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AirportDataThumbnailsStrings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AirportDataThumbnailsStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -59,9 +113,30 @@
     <Content Include="VirtualRadar.Plugin.AirportDataThumbnails.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Web\WebAdmin\AirportDataThumbnailsPluginOptions.html" />
+    <Content Include="Web\WebAdmin\AirportDataThumbnailsPluginOptions.js">
+      <DependentUpon>AirportDataThumbnailsPluginOptions.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\AirportDataThumbnailsPluginOptions.js.map">
+      <DependentUpon>AirportDataThumbnailsPluginOptions.ts</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Typings\AirportDataThumbnailsPluginModels.d.ts" />
+    <TypeScriptCompile Include="Typings\webadmin.d.ts" />
+    <TypeScriptCompile Include="Web\WebAdmin\AirportDataThumbnailsPluginOptions.ts" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>PowerShell.exe -ExecutionPolicy Bypass "$(SolutionDir)_PostBuild.ps1" -projectName "$(ProjectName)"  -configurationName "$(ConfigurationName)" -targetName "$(TargetName)" -platformName "$(PlatformName)"</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.targets'))" />
+  </Target>
+  <Import Project="..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.targets" Condition="Exists('..\packages\Microsoft.TypeScript.MSBuild.2.3.3\build\Microsoft.TypeScript.MSBuild.targets')" />
 </Project>

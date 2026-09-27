@@ -1,4 +1,4 @@
-﻿// Copyright © 2021 onwards, Andrew Whewell
+﻿// Copyright © 2026 onwards, Andrew Whewell
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -9,61 +9,119 @@
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Windows.Forms;
 using InterfaceFactory;
 using VirtualRadar.Interface;
+using VirtualRadar.Interface.WebSite;
 
 namespace VirtualRadar.Plugin.AirportDataThumbnails
 {
-#pragma warning disable 0067        // Event never used
     public class Plugin : IPlugin
     {
-        /// <inheritdoc/>
-        public string Id                { get { return "AirportDataThumbnails"; } }
+        internal static Plugin Singleton { get; private set; }
+
+        internal static IAirportDataDotCom OriginalImplementation { get; private set; }
+
+        private Options _Options;
+        internal Options Options
+        {
+            get { return _Options; }
+            set {
+                _Options = value;
+                Status = value.Enabled
+                    ? AirportDataThumbnailsStrings.StatusEnabled
+                    : AirportDataThumbnailsStrings.StatusDisabled;
+            }
+        }
 
         /// <inheritdoc/>
-        public string Name              { get { return "Airport-Data.com Thumbnails"; } }
+        public string Id { get { return "AirportDataThumbnails"; } }
 
         /// <inheritdoc/>
-        public string Version           { get { return "2.5.0"; } }
+        public string Name { get { return AirportDataThumbnailsStrings.PluginName; } }
 
         /// <inheritdoc/>
-        public string Status            { get { return "Enabled"; } }
+        public string Version { get { return "2.5.0"; } }
+
+        private string _Status;
+        /// <inheritdoc/>
+        public string Status
+        {
+            get { return _Status; }
+            private set {
+                if(value != _Status) {
+                    _Status = value;
+                    OnStatusChanged(EventArgs.Empty);
+                }
+            }
+        }
 
         /// <inheritdoc/>
         public string StatusDescription { get { return ""; } }
 
         /// <inheritdoc/>
-        public bool HasOptions          { get { return false; } }
+        public bool HasOptions { get { return true; } }
 
         /// <inheritdoc/>
-        public string PluginFolder      { get; set; }
+        public string PluginFolder { get; set; }
 
         /// <inheritdoc/>
         public event EventHandler StatusChanged;
 
-        /// <inheritdoc/>
-        public void GuiThreadStartup()
+        private void OnStatusChanged(EventArgs args)
         {
+            EventHelper.Raise(StatusChanged, this, args);
         }
 
         /// <inheritdoc/>
         public void RegisterImplementations(IClassFactory classFactory)
         {
+            Singleton = this;
+            Options = OptionsStorage.Load();
+
+            OriginalImplementation = classFactory.Resolve<IAirportDataDotCom>();
             classFactory.Register<IAirportDataDotCom, AirportDataDotCom>();
+        }
+
+        /// <inheritdoc/>
+        public void Startup(PluginStartupParameters parameters)
+        {
+        }
+
+        /// <inheritdoc/>
+        public void GuiThreadStartup()
+        {
+            var webAdminViewManager = Factory.ResolveSingleton<IWebAdminViewManager>();
+            webAdminViewManager.AddWebAdminView(
+                new WebAdminView(
+                    "/WebAdmin/",
+                    "AirportDataThumbnailsPluginOptions.html",
+                    AirportDataThumbnailsStrings.WebAdminMenuName,
+                    () => new WebAdmin.OptionsView(),
+                    typeof(AirportDataThumbnailsStrings)
+                ) {
+                    Plugin = this,
+                }
+            );
+            webAdminViewManager.RegisterWebAdminViewFolder(PluginFolder, "Web");
         }
 
         /// <inheritdoc/>
         public void ShowWinFormsOptionsUI()
         {
+            using(var view = new WinForms.OptionsView()) {
+                var options = OptionsStorage.Load();
+                view.PluginEnabled = options.Enabled;
+
+                if(view.ShowDialog() == DialogResult.OK) {
+                    options.Enabled = view.PluginEnabled;
+                    OptionsStorage.Save(options);
+                }
+            }
         }
 
         /// <inheritdoc/>
         public void Shutdown()
-        {
-        }
-
-        /// <inheritdoc/>
-        public void Startup(PluginStartupParameters parameters)
         {
         }
     }

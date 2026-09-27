@@ -32,3 +32,6 @@ Source: "{#Root}\Plugin.AirportDataThumbnails\bin\{#BuildType}\VirtualRadar.Plug
 ; Manifest file
 Source: "{#Root}\Plugin.AirportDataThumbnails\bin\{#BuildType}\VirtualRadar.Plugin.AirportDataThumbnails.xml"; DestDir: "{#Plugin}"; Flags: ignoreversion;
 
+; Web files
+Source: "{#Root}\Plugin.AirportDataThumbnails\Web\*"; DestDir: "{#Plugin}\Web"; Excludes: "zz-norel-*"; Flags: ignoreversion recursesubdirs;
+
