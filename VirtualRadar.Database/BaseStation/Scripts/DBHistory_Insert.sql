@@ -2,7 +2,7 @@
     [TimeStamp]
    ,[Description]
 ) VALUES (
-    @timeStamp
-   ,@description
+    @TimeStamp
+   ,@Description
 );
 SELECT [DBHistoryID] FROM [DBHistory] WHERE _ROWID_ = last_insert_rowid();

@@ -34,7 +34,14 @@ namespace VirtualRadar.SQLiteWrapper
         public IDbConnection Create(string connectionString)
         {
             #if DOTNET_BUILD
-                return new SQLiteConnection(connectionString);
+                // The e_sqlite3 native library is built with foreign key enforcement switched on by
+                // default, unlike stock SQLite. Kinetic's BaseStation.sqb declares foreign keys that
+                // VRS does not honour (e.g. sessions with no location) so they must stay off.
+                var builder = new SQLiteConnectionStringBuilder(connectionString);
+                if(!builder.ContainsKey("Foreign Keys")) {
+                    builder.ForeignKeys = false;
+                }
+                return new SQLiteConnection(builder.ConnectionString);
             #else
                 return new SqliteConnection(connectionString);
             #endif

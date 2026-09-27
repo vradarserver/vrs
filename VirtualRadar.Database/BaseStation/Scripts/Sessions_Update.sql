@@ -1,5 +1,5 @@
 ﻿UPDATE [Sessions]
-   SET [LocationID] = @locationID
-      ,[StartTime]  = @startTime
-      ,[EndTime]    = @endTime
-WHERE [SessionID] = @sessionID;
+   SET [LocationID] = @LocationID
+      ,[StartTime]  = @StartTime
+      ,[EndTime]    = @EndTime
+WHERE [SessionID] = @SessionID;

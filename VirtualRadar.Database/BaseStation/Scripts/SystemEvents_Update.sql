@@ -1,5 +1,5 @@
 ﻿UPDATE [SystemEvents]
-   SET [TimeStamp]      = @timeStamp
-      ,[App]            = @app
-      ,[Msg]            = @msg
- WHERE [SystemEventsID] = @systemEventsID;
+   SET [TimeStamp]      = @TimeStamp
+      ,[App]            = @App
+      ,[Msg]            = @Msg
+ WHERE [SystemEventsID] = @SystemEventsID;

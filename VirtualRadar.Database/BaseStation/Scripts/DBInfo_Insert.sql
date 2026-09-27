@@ -2,6 +2,6 @@
     [OriginalVersion]
    ,[CurrentVersion]
 ) VALUES (
-    @originalVersion
-   ,@currentVersion
+    @OriginalVersion
+   ,@CurrentVersion
 );

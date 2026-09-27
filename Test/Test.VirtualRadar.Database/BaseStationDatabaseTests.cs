@@ -608,10 +608,10 @@ namespace Test.VirtualRadar.Database
                        ,[LocationName]
                        ,[Longitude]
                     ) VALUES (
-                        @altitude
-                       ,@latitude
-                       ,@locationName
-                       ,@longitude
+                        @Altitude
+                       ,@Latitude
+                       ,@LocationName
+                       ,@Longitude
                     ); {_SqlReturnNewIdentity}", new {
                         location.Altitude,
                         location.Latitude,
@@ -650,9 +650,9 @@ namespace Test.VirtualRadar.Database
                        ,[StartTime]
                        ,[EndTime]
                     ) VALUES (
-                        @locationID
-                       ,@startTime
-                       ,@endTime
+                        @LocationID
+                       ,@StartTime
+                       ,@EndTime
                     ); {_SqlReturnNewIdentity}", new {
                         session.LocationID,
                         session.StartTime,

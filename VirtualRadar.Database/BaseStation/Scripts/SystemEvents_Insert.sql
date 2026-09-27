@@ -3,8 +3,8 @@
    ,[App]
    ,[Msg]
 ) VALUES (
-    @timeStamp
-   ,@app
-   ,@msg
+    @TimeStamp
+   ,@App
+   ,@Msg
 );
 SELECT [SystemEventsID] FROM [SystemEvents] WHERE _ROWID_ = last_insert_rowid();

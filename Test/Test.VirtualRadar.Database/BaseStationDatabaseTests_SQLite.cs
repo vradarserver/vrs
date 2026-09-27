@@ -28,6 +28,7 @@ using VirtualRadar.Interface.StandingData;
 
 namespace Test.VirtualRadar.Database
 {
+    [DeploymentItem("e_sqlite3.dll")]
     [TestClass]
     public class BaseStationDatabaseTests_SQLite : BaseStationDatabaseTests
     {
@@ -52,7 +53,7 @@ namespace Test.VirtualRadar.Database
                 }
                 File.Copy(Path.Combine(TestContext.TestDeploymentDir, "BaseStation.sqb"), _EmptyDatabaseFileName, true);
 
-                _ConnectionStringBuilder = new SQLiteConnectionStringBuilder() { DataSource = _EmptyDatabaseFileName };
+                _ConnectionStringBuilder = new SQLiteConnectionStringBuilder() { DataSource = _EmptyDatabaseFileName, ForeignKeys = false };
             },
             () => new SQLiteConnection(_ConnectionStringBuilder.ConnectionString),
             (db) => db.FileName = _EmptyDatabaseFileName,

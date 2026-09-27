@@ -77,8 +77,7 @@ Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\zh-CN\VirtualRadar.WebSite.re
 
 ; SQLite
 Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\System.Data.SQLite.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\x64\SQLite.Interop.dll"; DestDir: "{app}\x64"; Flags: ignoreversion
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\x86\SQLite.Interop.dll"; DestDir: "{app}\x86"; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\e_sqlite3.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 ; 3rd party libraries
 Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\AjaxMin.dll"; DestDir: "{app}"; Flags: ignoreversion;
@@ -124,6 +123,10 @@ Type: files; Name: "{app}\System.Net.Http.Formatting.dll"
 Type: files; Name: "{app}\System.Web.Http.dll"
 Type: files; Name: "{app}\System.Web.Http.Owin.dll"
 Type: files; Name: "{app}\VirtualRadar.Owin.dll"
+Type: files; Name: "{app}\x64\SQLite.Interop.dll"
+Type: files; Name: "{app}\x86\SQLite.Interop.dll"
+Type: dirifempty; Name: "{app}\x64"
+Type: dirifempty; Name: "{app}\x86"
 Type: files; Name: "{localappdata}\VirtualRadar\AirlineCodes.csv";
 Type: files; Name: "{localappdata}\VirtualRadar\AirportCodes.csv";
 Type: files; Name: "{localappdata}\VirtualRadar\AircraftTypes.csv";

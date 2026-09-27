@@ -1,6 +1,6 @@
 ﻿UPDATE [Locations]
-   SET [LocationName]   = @locationName
-      ,[Latitude]       = @latitude
-      ,[Longitude]      = @longitude
-      ,[Altitude]       = @altitude
-WHERE [LocationID] = @locationID;
+   SET [LocationName]   = @LocationName
+      ,[Latitude]       = @Latitude
+      ,[Longitude]      = @Longitude
+      ,[Altitude]       = @Altitude
+WHERE [LocationID] = @LocationID;

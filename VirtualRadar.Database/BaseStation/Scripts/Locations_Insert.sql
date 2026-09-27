@@ -4,9 +4,9 @@
    ,[Longitude]
    ,[Altitude]
 ) VALUES (
-    @locationName
-   ,@latitude
-   ,@longitude
-   ,@altitude
+    @LocationName
+   ,@Latitude
+   ,@Longitude
+   ,@Altitude
 );
 SELECT [LocationID] FROM [Locations] WHERE _ROWID_ = last_insert_rowid();

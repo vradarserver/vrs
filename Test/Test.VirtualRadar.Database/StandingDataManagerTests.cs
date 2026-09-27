@@ -25,6 +25,7 @@ using VirtualRadar.Interface.StandingData;
 
 namespace Test.VirtualRadar.Database
 {
+    [DeploymentItem("e_sqlite3.dll")]
     [TestClass]
     public class StandingDataManagerTests
     {

@@ -23,6 +23,7 @@ using VirtualRadar.Interface;
 
 namespace Test.VirtualRadar.Database
 {
+    [DeploymentItem("e_sqlite3.dll")]
     [TestClass]
     public class LogDatabaseTests
     {
