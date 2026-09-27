@@ -111,7 +111,7 @@ namespace Test.VirtualRadar.Library
             var aircraft = _AircraftList.FindAircraft(100);
 
             _Aircraft.Verify(m => m.Clone(), Times.Once());
-            Assert.AreNotSame(aircraft, _Aircraft);
+            Assert.AreNotSame<object>(aircraft, _Aircraft);
         }
         #endregion
 

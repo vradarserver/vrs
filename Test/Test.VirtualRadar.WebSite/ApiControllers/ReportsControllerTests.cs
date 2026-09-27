@@ -1234,7 +1234,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
 
             Assert.AreEqual(0, json.Airports.Count);
             Assert.AreEqual(0, json.CountRows);
-            Assert.AreEqual(null, json.ErrorText);
+            Assert.AreEqual(null, (object)json.ErrorText);
             Assert.AreEqual(0, json.Flights.Count);
             Assert.AreEqual("", json.GroupBy);
             Assert.AreEqual(0.ToString("0.000"), json.ProcessingTime);
@@ -1459,7 +1459,7 @@ namespace Test.VirtualRadar.WebSite.ApiControllers
             var expectedValue = TestUtilities.ChangeType(worksheet.EString("JsonValue"), jsonProperty.PropertyType, CultureInfo.InvariantCulture);
             var actualValue = jsonProperty.GetValue(jsonFlight, null);
 
-            Assert.AreEqual(expectedValue, actualValue);
+            Assert.AreEqual((object)expectedValue, (object)actualValue);
         }
 
         private void Do_ReportRows_Report_Sets_Flight_Row_Numbers_Correctly(string report, ReportJsonClass reportClass)

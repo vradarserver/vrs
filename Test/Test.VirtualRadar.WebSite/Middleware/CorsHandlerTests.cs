@@ -81,7 +81,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
             var allowMethods = _Environment.ResponseHeaders.GetCommaSeparatedValues("Access-Control-Allow-Methods");
             Assert.AreEqual(3 + (additionalMethods?.Length ?? 0), allowMethods.Count);
             foreach(var method in new string[] { "POST", "GET", "OPTIONS", }.Concat(additionalMethods ?? new string[0])) {
-                Assert.AreNotEqual(-1, allowMethods.Contains(method, StringComparer.OrdinalIgnoreCase));
+                Assert.AreNotEqual<object>(-1, allowMethods.Contains(method, StringComparer.OrdinalIgnoreCase));
             }
 
             Assert.IsFalse(_Pipeline.NextMiddlewareCalled);

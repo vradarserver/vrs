@@ -5,7 +5,6 @@
         <TargetFrameworkVersion>.NETFramework,Version=v4.8</TargetFrameworkVersion>
     </RunConfiguration>
     <MSTest>
-        <SettingsFile>LocalTestRun.testrunconfig</SettingsFile>
-        <ForcedLegacyMode>true</ForcedLegacyMode>
+        <DeploymentEnabled>false</DeploymentEnabled>
     </MSTest>
 </RunSettings>

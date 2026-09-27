@@ -53,10 +53,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Clean.bat = Clean.bat
 		CleanObjAndBin.ps1 = CleanObjAndBin.ps1
 		LICENSE.txt = LICENSE.txt
-		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
 		README.md = README.md
 		VirtualRadar.runsettings = VirtualRadar.runsettings
-		VirtualRadar.vsmdi = VirtualRadar.vsmdi
 		WebEssentials-Settings.json = WebEssentials-Settings.json
 	EndProjectSection
 EndProject
@@ -723,8 +721,5 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0B7509BC-2E0B-4EE1-9683-D79016B9781E}
-	EndGlobalSection
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = VirtualRadar.vsmdi
 	EndGlobalSection
 EndGlobal

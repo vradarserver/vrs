@@ -161,7 +161,7 @@ namespace Test.VirtualRadar.WebSite.MiddlewareConfiguration
         [TestMethod]
         public void FileSystemConfiguration_IsSiteRootActive_Returns_False_If_SiteRoot_Not_Added()
         {
-            var siteRoot = new SiteRoot() { Folder = TestContext.TestDeploymentDir };
+            var siteRoot = new SiteRoot() { Folder = AppDomain.CurrentDomain.BaseDirectory };
             Assert.IsFalse(_Configuration.IsSiteRootActive(siteRoot, false));
         }
 

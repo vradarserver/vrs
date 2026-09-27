@@ -267,7 +267,7 @@ namespace Test.VirtualRadar.Library.ModeS
 
         private void DoGillhamAltitudeDecodingCheck(string bitsBeforeAC, string bitsAfterAC)
         {
-            var fileName = Path.Combine(TestContext.TestDeploymentDir, "GillhamAltitudeTable.csv");
+            var fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GillhamAltitudeTable.csv");
             var lines = File.ReadAllLines(fileName);
             for(var lineNumber = 2;lineNumber < lines.Length;++lineNumber) {
                 var cells = lines[lineNumber].Split(',');

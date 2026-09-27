@@ -28,7 +28,6 @@ using VirtualRadar.Interface.StandingData;
 
 namespace Test.VirtualRadar.Database
 {
-    [DeploymentItem("e_sqlite3.dll")]
     [TestClass]
     public class BaseStationDatabaseTests_SQLite : BaseStationDatabaseTests
     {
@@ -42,16 +41,16 @@ namespace Test.VirtualRadar.Database
         public void TestInitialise()
         {
             CommonTestInitialise<IBaseStationDatabaseSQLite>(() => {
-                _CreateDatabaseFileName = Path.Combine(TestContext.TestDeploymentDir, "CreatedDatabase.sqb");
+                _CreateDatabaseFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CreatedDatabase.sqb");
                 if(File.Exists(_CreateDatabaseFileName)) {
                     RetryAction(() => File.Delete(_CreateDatabaseFileName));
                 }
 
-                _EmptyDatabaseFileName = Path.Combine(TestContext.TestDeploymentDir, "TestCopyBaseStation.sqb");
+                _EmptyDatabaseFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestCopyBaseStation.sqb");
                 if(File.Exists(_EmptyDatabaseFileName)) {
                     RetryAction(() => File.Delete(_EmptyDatabaseFileName));
                 }
-                File.Copy(Path.Combine(TestContext.TestDeploymentDir, "BaseStation.sqb"), _EmptyDatabaseFileName, true);
+                File.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "BaseStation.sqb"), _EmptyDatabaseFileName, true);
 
                 _ConnectionStringBuilder = new SQLiteConnectionStringBuilder() { DataSource = _EmptyDatabaseFileName, ForeignKeys = false };
             },
@@ -1932,7 +1931,7 @@ namespace Test.VirtualRadar.Database
         [TestMethod]
         public void SQLite_BaseStationDatabase_CreateDatabaseIfMissing_Creates_Path_To_Database_File()
         {
-            string folder = Path.Combine(TestContext.TestDeploymentDir, "SubFolderForCDIF");
+            string folder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SubFolderForCDIF");
             if(Directory.Exists(folder)) Directory.Delete(folder, true);
 
             _CreateDatabaseFileName = Path.Combine(folder, "TheFile.sdb");

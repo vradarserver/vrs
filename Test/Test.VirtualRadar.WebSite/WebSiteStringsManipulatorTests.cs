@@ -22,12 +22,6 @@ using VirtualRadar.WebSite;
 namespace Test.VirtualRadar.WebSite
 {
     [TestClass]
-    [DeploymentItem("de-DE", "de-DE")]
-    [DeploymentItem("fr-FR", "fr-FR")]
-    [DeploymentItem("pt-BR", "pt-BR")]
-    [DeploymentItem("ru-RU", "ru-RU")]
-    [DeploymentItem("tr-TR", "tr-TR")]
-    [DeploymentItem("zh-CN", "zh-CN")]
     public class WebSiteStringsManipulatorTests
     {
         public TestContext TestContext { get; set; }
@@ -50,7 +44,7 @@ namespace Test.VirtualRadar.WebSite
             _Environment = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
             _TextContent = new TextContent();
 
-            _I18NPath = Path.Combine(TestContext.DeploymentDirectory, @"Web\script\i18n");
+            _I18NPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Web\script\i18n");
         }
 
         private void ConfigureRequestPath(string path)

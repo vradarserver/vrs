@@ -49,10 +49,10 @@ namespace Test.Framework
     /// N. There are special methods for reading strings where you need to be able to return either null or an empty string, methods to parse the
     /// names of enum values into the correct type and methods to parse a cell's text into a byte array.
     /// </para><para>
-    /// Finally you need to get the spreadsheet copied into the test deployment folder by VSTS so that the test can use it. The easiest way to do this
-    /// is to create a folder on a test project that contains all of your spreadsheets (Virtual Radar Server has a folder called TestFiles under the
-    /// Test.Framework project for this) and then edit the test configuration file (in VSTS either double-click LocalTestRun.testrunconfig in Solution
-    /// Items or use the Test | Edit Test Settings menu entry) and add the sub-folder with the spreadsheet(s) in to the Deployment section.
+    /// Finally you need to get the spreadsheet copied into the test project's output folder so that the test can use it. Virtual Radar Server keeps
+    /// its spreadsheets in the TestFiles folder of the Test.Framework project, as Content items with a Link to the output root and Copy to Output
+    /// Directory set, so they are copied into the output folder of every test project that references Test.Framework. The spreadsheets are read
+    /// through the 32-bit Jet OLE DB provider, so the tests must run as x86.
     /// </para></remarks>
     /// <example><para>
     /// This example tests the standard <see cref="ASCIIEncoding"/> object's GetString method. Assume that we have a spreadsheet called Tests.xls that

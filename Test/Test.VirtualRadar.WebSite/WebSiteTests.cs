@@ -80,7 +80,7 @@ namespace Test.VirtualRadar.WebSite
 
             _RuntimeEnvironment = TestUtilities.CreateMockSingleton<IRuntimeEnvironment>();
             _RuntimeEnvironment.Setup(r => r.IsMono).Returns(false);
-            _RuntimeEnvironment.Setup(r => r.ExecutablePath).Returns(TestContext.TestDeploymentDir);
+            _RuntimeEnvironment.Setup(r => r.ExecutablePath).Returns(AppDomain.CurrentDomain.BaseDirectory);
 
             _BaseStationDatabase = new Mock<IBaseStationDatabase>() { DefaultValue = DefaultValue.Mock }.SetupAllProperties();
             _AutoConfigBaseStationDatabase = TestUtilities.CreateMockSingleton<IAutoConfigBaseStationDatabase>();

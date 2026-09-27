@@ -446,7 +446,7 @@ namespace Test.VirtualRadar.Library.Adsb
 
         private void DoGillhamAltitudeDecodingCheck(string bitsBeforeAC, string bitsAfterAC)
         {
-            var fileName = Path.Combine(TestContext.TestDeploymentDir, "GillhamAltitudeTable.csv");
+            var fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GillhamAltitudeTable.csv");
             var lines = File.ReadAllLines(fileName);
             for(var lineNumber = 2;lineNumber < lines.Length;++lineNumber) {
                 var cells = lines[lineNumber].Split(',');
@@ -1011,7 +1011,7 @@ namespace Test.VirtualRadar.Library.Adsb
             // Note that the TCAS message includes the D1 bit (presumably always zero) when encoding altitudes.
             // The Mode-S Gillham encodings don't include the D1 bit, so if the implementation is sharing decoding
             // of Gillham altitudes with Mode-S code it will have to strip the D1 bit out.
-            var fileName = Path.Combine(TestContext.TestDeploymentDir, "GillhamAltitudeTable.csv");
+            var fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GillhamAltitudeTable.csv");
             var lines = File.ReadAllLines(fileName);
             for(var lineNumber = 2;lineNumber < lines.Length;++lineNumber) {
                 var cells = lines[lineNumber].Split(',');

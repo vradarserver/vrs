@@ -25,7 +25,6 @@ using VirtualRadar.Interface.StandingData;
 
 namespace Test.VirtualRadar.Database
 {
-    [DeploymentItem("e_sqlite3.dll")]
     [TestClass]
     public class StandingDataManagerTests
     {
@@ -66,7 +65,7 @@ namespace Test.VirtualRadar.Database
             _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
             _Configuration = new Configuration();
             _ConfigurationStorage.Setup(r => r.Load()).Returns(_Configuration);
-            _ConfigurationStorage.Setup(r => r.Folder).Returns(Path.Combine(TestContext.TestDeploymentDir, "StandingDataTest"));
+            _ConfigurationStorage.Setup(r => r.Folder).Returns(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "StandingDataTest"));
 
             _Implementation = Factory.ResolveNewInstance<IStandingDataManager>();
 

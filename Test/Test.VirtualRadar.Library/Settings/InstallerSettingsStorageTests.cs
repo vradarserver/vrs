@@ -37,7 +37,7 @@ namespace Test.VirtualRadar.Library.Settings
         [TestInitialize]
         public void TestInitialise()
         {
-            _Provider = new TestProvider() { Folder = TestContext.TestDeploymentDir };
+            _Provider = new TestProvider() { Folder = AppDomain.CurrentDomain.BaseDirectory };
             _Implementation = Factory.Resolve<IInstallerSettingsStorage>();
             _Implementation.Provider = _Provider;
             _FullPath = Path.Combine(_Provider.Folder, _FileName);

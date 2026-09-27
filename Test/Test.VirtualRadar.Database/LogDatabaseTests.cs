@@ -23,7 +23,6 @@ using VirtualRadar.Interface;
 
 namespace Test.VirtualRadar.Database
 {
-    [DeploymentItem("e_sqlite3.dll")]
     [TestClass]
     public class LogDatabaseTests
     {
@@ -44,7 +43,7 @@ namespace Test.VirtualRadar.Database
             _OriginalFactory = Factory.TakeSnapshot();
 
             _ConfigurationStorage = TestUtilities.CreateMockSingleton<IConfigurationStorage>();
-            _ConfigurationStorage.Setup(m => m.Folder).Returns(TestContext.TestDeploymentDir);
+            _ConfigurationStorage.Setup(m => m.Folder).Returns(AppDomain.CurrentDomain.BaseDirectory);
 
             _FullPath = Path.Combine(_ConfigurationStorage.Object.Folder, _FileName);
 

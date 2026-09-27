@@ -53,7 +53,7 @@ namespace Test.VirtualRadar.Library.Settings
             _OriginalFactory = Factory.TakeSnapshot();
 
             _Provider = new TestProvider();
-            _Provider.Folder = TestContext.TestDeploymentDir;
+            _Provider.Folder = AppDomain.CurrentDomain.BaseDirectory;
             _Implementation = Factory.ResolveNewInstance<IConfigurationStorage>();
             _Implementation.Provider = _Provider;
 
@@ -71,7 +71,7 @@ namespace Test.VirtualRadar.Library.Settings
         {
             Factory.RestoreSnapshot(_OriginalFactory);
             
-            var settingsFileName = Path.Combine(TestContext.TestDeploymentDir, "Configuration.xml");
+            var settingsFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configuration.xml");
             if(File.Exists(settingsFileName)) File.Delete(settingsFileName);
         }
         #endregion
@@ -97,7 +97,7 @@ namespace Test.VirtualRadar.Library.Settings
         [TestMethod]
         public void ConfigurationStorage_GetFolder_Retrieves_Folder()
         {
-            Assert.AreEqual(TestContext.TestDeploymentDir, _Implementation.Folder);
+            Assert.AreEqual(AppDomain.CurrentDomain.BaseDirectory, _Implementation.Folder);
         }
         #endregion
 

@@ -64,7 +64,12 @@
     <Reference Include="InterfaceFactory, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\AWhewell.InterfaceFactory.4.0.0\lib\net40\InterfaceFactory.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MSTest.TestFramework.3.11.1\lib\net462\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MSTest.TestFramework.3.11.1\lib\net462\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="Moq, Version=4.13.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Moq.4.13.1\lib\net45\Moq.dll</HintPath>
     </Reference>
@@ -74,11 +79,11 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.4.5.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Threading.Tasks.Extensions.4.5.1\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -109,30 +114,90 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="TestFiles\AircraftTests.xls" />
-    <None Include="TestFiles\BaseStation.sqb" />
-    <None Include="TestFiles\BaseStationTests.xls" />
-    <None Include="TestFiles\GillhamAltitudeTable.csv" />
-    <None Include="TestFiles\RawDecodingTests.xls" />
-    <None Include="TestFiles\PluginBaseStationDatabaseWriterTests.xls" />
-    <None Include="TestFiles\LibraryTests.xls" />
-    <None Include="TestFiles\StandingDataTest\AircraftTypes.csv" />
-    <None Include="TestFiles\StandingDataTest\Airlines.csv" />
-    <None Include="TestFiles\StandingDataTest\Airports.csv" />
-    <None Include="TestFiles\StandingDataTest\Countries.dat" />
-    <None Include="TestFiles\StandingDataTest\FlightNumberCoverage.csv" />
-    <None Include="TestFiles\StandingDataTest\FlightNumberVotes.csv" />
-    <None Include="TestFiles\StandingDataTest\StandingData.sqb" />
-    <None Include="TestFiles\OwinTests.xls" />
-    <None Include="TestFiles\WebSiteTests.xls" />
-    <None Include="TestFiles\WebServerTests.xls" />
-    <None Include="TestFiles\DataTests.xls" />
+    <Content Include="TestFiles\AircraftTests.xls">
+      <Link>AircraftTests.xls</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\BaseStation.sqb">
+      <Link>BaseStation.sqb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\BaseStationTests.xls">
+      <Link>BaseStationTests.xls</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\GillhamAltitudeTable.csv">
+      <Link>GillhamAltitudeTable.csv</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\RawDecodingTests.xls">
+      <Link>RawDecodingTests.xls</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\PluginBaseStationDatabaseWriterTests.xls">
+      <Link>PluginBaseStationDatabaseWriterTests.xls</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\LibraryTests.xls">
+      <Link>LibraryTests.xls</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\StandingDataTest\AircraftTypes.csv">
+      <Link>StandingDataTest\AircraftTypes.csv</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\StandingDataTest\Airlines.csv">
+      <Link>StandingDataTest\Airlines.csv</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\StandingDataTest\Airports.csv">
+      <Link>StandingDataTest\Airports.csv</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\StandingDataTest\Countries.dat">
+      <Link>StandingDataTest\Countries.dat</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\StandingDataTest\FlightNumberCoverage.csv">
+      <Link>StandingDataTest\FlightNumberCoverage.csv</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\StandingDataTest\FlightNumberVotes.csv">
+      <Link>StandingDataTest\FlightNumberVotes.csv</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\StandingDataTest\StandingData.sqb">
+      <Link>StandingDataTest\StandingData.sqb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\OwinTests.xls">
+      <Link>OwinTests.xls</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\WebSiteTests.xls">
+      <Link>WebSiteTests.xls</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\WebServerTests.xls">
+      <Link>WebServerTests.xls</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\DataTests.xls">
+      <Link>DataTests.xls</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="TestFiles\favicon.ico" />
-    <Content Include="TestFiles\SampleMessages.txt" />
-    <Content Include="TestFiles\SubFolder\VIR.bmp" />
+    <Content Include="TestFiles\SampleMessages.txt">
+      <Link>SampleMessages.txt</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\SubFolder\VIR.bmp">
+      <Link>SubFolder\VIR.bmp</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
