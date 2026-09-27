@@ -115,6 +115,13 @@ jobs:
         run:   Installers/Mono/build-virtualradar.sh ${{ steps.set_ver.outputs.VER }}
         shell: bash
 
+      - name: Build AirportDataThumbnails plugin installer
+        run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\Plugin-AirportDataThumbnails.iss
+
+      - name:  Build AirportDataThumbnails tarball
+        run:   Installers/Mono/build-plugin-airportdata-thumbnails.sh ${{ steps.set_ver.outputs.VER }}
+        shell: bash
+
       - name: Build CustomContent plugin installer
         run:  iscc /DVERSION=${{ steps.set_ver.outputs.VER }} Installers\InnoSetup\Plugin-CustomContent.iss
 
@@ -247,6 +254,28 @@ jobs:
           asset_content_type: application/gzip
           asset_path: Installers\Mono\output\VirtualRadar-${{ steps.set_ver.outputs.VER }}.tar.gz
           asset_name:                        VirtualRadar-${{ steps.set_ver.outputs.VER }}.tar.gz
+
+      - name: Add airport data thumbnails installer to release
+        if:   github.event_name == 'push'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.framework_release.outputs.upload_url }}
+          asset_content_type: application/vnd.microsoft.portable-executable
+          asset_path: Installers\InnoSetup\Output\Plugin-AirportDataThumbnails-${{ steps.set_ver.outputs.VER }}.exe
+          asset_name:                             Plugin-AirportDataThumbnails-${{ steps.set_ver.outputs.VER }}.exe
+
+      - name: Add airport data thumbnails tarball to release
+        if:   github.event_name == 'push'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.mono_release.outputs.upload_url }}
+          asset_content_type: application/gzip
+          asset_path: Installers\Mono\output\Plugin-AirportDataThumbnails-${{ steps.set_ver.outputs.VER }}.tar.gz
+          asset_name:                        Plugin-AirportDataThumbnails-${{ steps.set_ver.outputs.VER }}.tar.gz
 
       - name: Add custom content installer to release
         if:   github.event_name == 'push'
