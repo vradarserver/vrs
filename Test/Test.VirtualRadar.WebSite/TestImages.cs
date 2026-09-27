@@ -60,9 +60,8 @@ namespace Test.VirtualRadar.WebSite
         {
             get {
                 if(_AltitudeImageTest_01_png_Bitmap == null) {
-                    using(var stream = new System.IO.MemoryStream(_AltitudeImageTest_01_png_Stock)) {
-                        _AltitudeImageTest_01_png_Bitmap = (Bitmap)Bitmap.FromStream(stream);
-                    }
+                    // GDI+ needs the stream to stay open for the lifetime of the bitmap
+                    _AltitudeImageTest_01_png_Bitmap = (Bitmap)Bitmap.FromStream(new System.IO.MemoryStream(_AltitudeImageTest_01_png_Stock));
                 }
                 return _AltitudeImageTest_01_png_Bitmap;
             }
@@ -111,9 +110,8 @@ namespace Test.VirtualRadar.WebSite
         {
             get {
                 if(_DLH_bmp_Bitmap == null) {
-                    using(var stream = new System.IO.MemoryStream(_DLH_bmp_Stock)) {
-                        _DLH_bmp_Bitmap = (Bitmap)Bitmap.FromStream(stream);
-                    }
+                    // GDI+ needs the stream to stay open for the lifetime of the bitmap
+                    _DLH_bmp_Bitmap = (Bitmap)Bitmap.FromStream(new System.IO.MemoryStream(_DLH_bmp_Stock));
                 }
                 return _DLH_bmp_Bitmap;
             }
@@ -162,9 +160,8 @@ namespace Test.VirtualRadar.WebSite
         {
             get {
                 if(_OversizedLogo_bmp_Bitmap == null) {
-                    using(var stream = new System.IO.MemoryStream(_OversizedLogo_bmp_Stock)) {
-                        _OversizedLogo_bmp_Bitmap = (Bitmap)Bitmap.FromStream(stream);
-                    }
+                    // GDI+ needs the stream to stay open for the lifetime of the bitmap
+                    _OversizedLogo_bmp_Bitmap = (Bitmap)Bitmap.FromStream(new System.IO.MemoryStream(_OversizedLogo_bmp_Stock));
                 }
                 return _OversizedLogo_bmp_Bitmap;
             }
@@ -213,9 +210,8 @@ namespace Test.VirtualRadar.WebSite
         {
             get {
                 if(_Picture_120x140_Resized_60x40_png_Bitmap == null) {
-                    using(var stream = new System.IO.MemoryStream(_Picture_120x140_Resized_60x40_png_Stock)) {
-                        _Picture_120x140_Resized_60x40_png_Bitmap = (Bitmap)Bitmap.FromStream(stream);
-                    }
+                    // GDI+ needs the stream to stay open for the lifetime of the bitmap
+                    _Picture_120x140_Resized_60x40_png_Bitmap = (Bitmap)Bitmap.FromStream(new System.IO.MemoryStream(_Picture_120x140_Resized_60x40_png_Stock));
                 }
                 return _Picture_120x140_Resized_60x40_png_Bitmap;
             }
@@ -264,9 +260,8 @@ namespace Test.VirtualRadar.WebSite
         {
             get {
                 if(_Picture_120x140_png_Bitmap == null) {
-                    using(var stream = new System.IO.MemoryStream(_Picture_120x140_png_Stock)) {
-                        _Picture_120x140_png_Bitmap = (Bitmap)Bitmap.FromStream(stream);
-                    }
+                    // GDI+ needs the stream to stay open for the lifetime of the bitmap
+                    _Picture_120x140_png_Bitmap = (Bitmap)Bitmap.FromStream(new System.IO.MemoryStream(_Picture_120x140_png_Stock));
                 }
                 return _Picture_120x140_png_Bitmap;
             }
@@ -315,9 +310,8 @@ namespace Test.VirtualRadar.WebSite
         {
             get {
                 if(_Picture_120x80_Resized_60x40_png_Bitmap == null) {
-                    using(var stream = new System.IO.MemoryStream(_Picture_120x80_Resized_60x40_png_Stock)) {
-                        _Picture_120x80_Resized_60x40_png_Bitmap = (Bitmap)Bitmap.FromStream(stream);
-                    }
+                    // GDI+ needs the stream to stay open for the lifetime of the bitmap
+                    _Picture_120x80_Resized_60x40_png_Bitmap = (Bitmap)Bitmap.FromStream(new System.IO.MemoryStream(_Picture_120x80_Resized_60x40_png_Stock));
                 }
                 return _Picture_120x80_Resized_60x40_png_Bitmap;
             }
@@ -366,9 +360,8 @@ namespace Test.VirtualRadar.WebSite
         {
             get {
                 if(_Picture_120x80_png_Bitmap == null) {
-                    using(var stream = new System.IO.MemoryStream(_Picture_120x80_png_Stock)) {
-                        _Picture_120x80_png_Bitmap = (Bitmap)Bitmap.FromStream(stream);
-                    }
+                    // GDI+ needs the stream to stay open for the lifetime of the bitmap
+                    _Picture_120x80_png_Bitmap = (Bitmap)Bitmap.FromStream(new System.IO.MemoryStream(_Picture_120x80_png_Stock));
                 }
                 return _Picture_120x80_png_Bitmap;
             }
@@ -417,9 +410,8 @@ namespace Test.VirtualRadar.WebSite
         {
             get {
                 if(_Picture_140x80_Resized_60x40_png_Bitmap == null) {
-                    using(var stream = new System.IO.MemoryStream(_Picture_140x80_Resized_60x40_png_Stock)) {
-                        _Picture_140x80_Resized_60x40_png_Bitmap = (Bitmap)Bitmap.FromStream(stream);
-                    }
+                    // GDI+ needs the stream to stay open for the lifetime of the bitmap
+                    _Picture_140x80_Resized_60x40_png_Bitmap = (Bitmap)Bitmap.FromStream(new System.IO.MemoryStream(_Picture_140x80_Resized_60x40_png_Stock));
                 }
                 return _Picture_140x80_Resized_60x40_png_Bitmap;
             }
@@ -468,9 +460,8 @@ namespace Test.VirtualRadar.WebSite
         {
             get {
                 if(_Picture_140x80_png_Bitmap == null) {
-                    using(var stream = new System.IO.MemoryStream(_Picture_140x80_png_Stock)) {
-                        _Picture_140x80_png_Bitmap = (Bitmap)Bitmap.FromStream(stream);
-                    }
+                    // GDI+ needs the stream to stay open for the lifetime of the bitmap
+                    _Picture_140x80_png_Bitmap = (Bitmap)Bitmap.FromStream(new System.IO.MemoryStream(_Picture_140x80_png_Stock));
                 }
                 return _Picture_140x80_png_Bitmap;
             }
@@ -519,9 +510,8 @@ namespace Test.VirtualRadar.WebSite
         {
             get {
                 if(_Picture_700x400_png_Bitmap == null) {
-                    using(var stream = new System.IO.MemoryStream(_Picture_700x400_png_Stock)) {
-                        _Picture_700x400_png_Bitmap = (Bitmap)Bitmap.FromStream(stream);
-                    }
+                    // GDI+ needs the stream to stay open for the lifetime of the bitmap
+                    _Picture_700x400_png_Bitmap = (Bitmap)Bitmap.FromStream(new System.IO.MemoryStream(_Picture_700x400_png_Stock));
                 }
                 return _Picture_700x400_png_Bitmap;
             }
@@ -570,9 +560,8 @@ namespace Test.VirtualRadar.WebSite
         {
             get {
                 if(_TestSquare_bmp_Bitmap == null) {
-                    using(var stream = new System.IO.MemoryStream(_TestSquare_bmp_Stock)) {
-                        _TestSquare_bmp_Bitmap = (Bitmap)Bitmap.FromStream(stream);
-                    }
+                    // GDI+ needs the stream to stay open for the lifetime of the bitmap
+                    _TestSquare_bmp_Bitmap = (Bitmap)Bitmap.FromStream(new System.IO.MemoryStream(_TestSquare_bmp_Stock));
                 }
                 return _TestSquare_bmp_Bitmap;
             }
@@ -621,9 +610,8 @@ namespace Test.VirtualRadar.WebSite
         {
             get {
                 if(_TestSquare_png_Bitmap == null) {
-                    using(var stream = new System.IO.MemoryStream(_TestSquare_png_Stock)) {
-                        _TestSquare_png_Bitmap = (Bitmap)Bitmap.FromStream(stream);
-                    }
+                    // GDI+ needs the stream to stay open for the lifetime of the bitmap
+                    _TestSquare_png_Bitmap = (Bitmap)Bitmap.FromStream(new System.IO.MemoryStream(_TestSquare_png_Stock));
                 }
                 return _TestSquare_png_Bitmap;
             }

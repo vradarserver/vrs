@@ -18,6 +18,7 @@ using InterfaceFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Test.Framework;
+using VirtualRadar.Interface;
 using VirtualRadar.Interface.Settings;
 using VirtualRadar.Interface.StandingData;
 
@@ -71,6 +72,11 @@ namespace Test.VirtualRadar.Database
             _StandingDataManager = TestUtilities.CreateMockSingleton<IStandingDataManager>();
             _StandingDataManagerLock = new object();
             _StandingDataManager.Setup(r => r.Lock).Returns(_StandingDataManagerLock);
+
+            var webAddressManager = TestUtilities.CreateMockSingleton<IWebAddressManager>();
+            webAddressManager
+                .Setup(r => r.RegisterAddress(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IList<string>>()))
+                .Returns((string name, string address, IList<string> oldAddresses) => address);
 
             _Implementation = Factory.Resolve<IStandingDataUpdater>();
             _Provider = new Mock<IStandingDataUpdaterProvider>();

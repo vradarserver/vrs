@@ -603,15 +603,14 @@ namespace Test.VirtualRadar.Library.Presenter
         public void MainPresenter_ReconnectToBaseStation_Disconnects_And_Then_Reconnects()
         {
             var feed = _Feeds[1];
-            var listener = _Listeners[1];
             _Presenter.Initialise(_View.Object);
 
             _View.Raise(v => v.ReconnectFeed += null, new EventArgs<IFeed>(feed.Object));
 
             // The event is processed in a background thread, so this might not always pass...
             Thread.Sleep(200);
-            listener.Verify(v => v.Disconnect(), Times.Once());
-            listener.Verify(v => v.Connect(), Times.Once());
+            feed.Verify(v => v.Disconnect(), Times.Once());
+            feed.Verify(v => v.Connect(), Times.Once());
         }
         #endregion
     }

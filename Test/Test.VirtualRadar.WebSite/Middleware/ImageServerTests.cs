@@ -242,7 +242,8 @@ namespace Test.VirtualRadar.WebSite.Middleware
             else                        Assert.IsTrue(actualPixel.A > 0, "x = {0}, y = {1} {2}", x, y, message);
 
             if(expectedPixel.A > 0) {
-                var colourDelta = 5.0;
+                // GDI+ loses colour precision on nearly transparent pixels, where it cannot be seen anyway
+                var colourDelta = 5.0 * 255.0 / expectedPixel.A;
                 Assert.AreEqual(expectedPixel.R, actualPixel.R, colourDelta, "x = {0}, y = {1} {2}", x, y, message);
                 Assert.AreEqual(expectedPixel.G, actualPixel.G, colourDelta, "x = {0}, y = {1} {2}", x, y, message);
                 Assert.AreEqual(expectedPixel.B, actualPixel.B, colourDelta, "x = {0}, y = {1} {2}", x, y, message);
@@ -524,7 +525,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
         {
             _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns(@"c:\flags");
             AddFileSystemImageFile(TestImages.DLH_bmp_Bitmap, "DLH.bmp", ImageFormat.Bmp, @"c:\flags");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\DLH.bmp")).Returns(TestImages.DLH_bmp_IImage);
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\DLH.bmp")).Returns(() => TestImages.DLH_bmp_IImage.Clone());
 
             _Environment.RequestPath = "/Images/File-DLH/OpFlag.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
@@ -541,7 +542,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
         {
             _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns(@"c:\types");
             AddFileSystemImageFile(TestImages.DLH_bmp_Bitmap, "DLH.bmp", ImageFormat.Bmp, @"c:\types");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\DLH.bmp")).Returns(TestImages.DLH_bmp_IImage);
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\DLH.bmp")).Returns(() => TestImages.DLH_bmp_IImage.Clone());
 
             _Environment.RequestPath = "/Images/File-DLH/Type.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
@@ -558,7 +559,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
         {
             _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns(@"c:\flags");
             AddFileSystemImageFile(TestImages.DLH_bmp_Bitmap, "DLH.bmp", ImageFormat.Bmp, @"c:\flags");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\DLH.bmp")).Returns(TestImages.DLH_bmp_IImage);
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\DLH.bmp")).Returns(() => TestImages.DLH_bmp_IImage.Clone());
 
             _Environment.RequestPath = "/Images/File-DOESNOTEXIST|DLH/OpFlag.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
@@ -575,7 +576,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
         {
             _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns(@"c:\types");
             AddFileSystemImageFile(TestImages.DLH_bmp_Bitmap, "DLH.bmp", ImageFormat.Bmp, @"c:\types");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\DLH.bmp")).Returns(TestImages.DLH_bmp_IImage);
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\DLH.bmp")).Returns(() => TestImages.DLH_bmp_IImage.Clone());
 
             _Environment.RequestPath = "/Images/File-DOESNOTEXIST|DLH/Type.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
@@ -592,7 +593,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
         {
             _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns(@"c:\flags");
             AddFileSystemImageFile(TestImages.TestSquare_bmp_Bitmap, "TestSquare.bmp", ImageFormat.Bmp, @"c:\flags");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\TestSquare.bmp")).Returns(TestImages.TestSquare_bmp_IImage);
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\TestSquare.bmp")).Returns(() => TestImages.TestSquare_bmp_IImage.Clone());
 
             _Environment.RequestPath = "/Images/File-TestSquare/OpFlag.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
@@ -615,7 +616,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
         {
             _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns(@"c:\types");
             AddFileSystemImageFile(TestImages.TestSquare_bmp_Bitmap, "TestSquare.bmp", ImageFormat.Bmp, @"c:\types");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\TestSquare.bmp")).Returns(TestImages.TestSquare_bmp_IImage);
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\TestSquare.bmp")).Returns(() => TestImages.TestSquare_bmp_IImage.Clone());
 
             _Environment.RequestPath = "/Images/File-TestSquare/Type.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
@@ -638,7 +639,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
         {
             _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns(@"c:\flags");
             AddFileSystemImageFile(TestImages.OversizedLogo_bmp_Bitmap, "OversizeLogo.bmp", ImageFormat.Bmp, @"c:\flags");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\OversizeLogo.bmp")).Returns(TestImages.OversizedLogo_bmp_IImage);
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\OversizeLogo.bmp")).Returns(() => TestImages.OversizedLogo_bmp_IImage.Clone());
 
             _Environment.RequestPath = "/Images/File-OversizeLogo/OpFlag.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
@@ -664,7 +665,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
         {
             _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns(@"c:\types");
             AddFileSystemImageFile(TestImages.OversizedLogo_bmp_Bitmap, "OversizeLogo.bmp", ImageFormat.Bmp, @"c:\types");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\OversizeLogo.bmp")).Returns(TestImages.OversizedLogo_bmp_IImage);
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\OversizeLogo.bmp")).Returns(() => TestImages.OversizedLogo_bmp_IImage.Clone());
 
             _Environment.RequestPath = "/Images/File-OversizeLogo/Type.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
@@ -785,7 +786,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
             _ServerConfiguration.SetupGet(r => r.OperatorFolder).Returns(@"c:\flags\subfolder");
             _FileSystem.AddFolder(@"c:\flags\subfolder");
             AddFileSystemImageFile(TestImages.DLH_bmp_Bitmap, "DLH.bmp", ImageFormat.Bmp, @"c:\flags");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\DLH.bmp")).Returns(TestImages.DLH_bmp_IImage);
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\flags\DLH.bmp")).Returns(() => TestImages.DLH_bmp_IImage.Clone());
 
             _Environment.RequestPath = "/Images/File-..\\DLH/OpFlag.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);
@@ -803,7 +804,7 @@ namespace Test.VirtualRadar.WebSite.Middleware
             _ServerConfiguration.SetupGet(r => r.SilhouettesFolder).Returns(@"c:\types\subfolder");
             _FileSystem.AddFolder(@"c:\types\subfolder");
             AddFileSystemImageFile(TestImages.DLH_bmp_Bitmap, "DLH.bmp", ImageFormat.Bmp, @"c:\types");
-            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\DLH.bmp")).Returns(TestImages.DLH_bmp_IImage);
+            _ImageFileManager.Setup(r => r.LoadFromFile(@"c:\types\DLH.bmp")).Returns(() => TestImages.DLH_bmp_IImage.Clone());
 
             _Environment.RequestPath = "/Images/File-..\\DLH/Type.png";
             _Pipeline.BuildAndCallMiddleware(_Server.AppFuncBuilder, _Environment.Environment);

@@ -46,6 +46,7 @@ namespace Test.VirtualRadar.Database
         public void TestCleanup()
         {
             CommonTestCleanup();
+            SqlMapper.AddTypeMap(typeof(DateTime), System.Data.DbType.DateTime);
         }
 
         private void ResetTestDatabase()

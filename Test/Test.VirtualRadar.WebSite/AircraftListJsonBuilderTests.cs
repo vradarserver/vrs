@@ -549,6 +549,9 @@ namespace Test.VirtualRadar.WebSite
                     switch(aircraftProperty.Name) {
                         case "FirstSeen":
                         case "PositionReceiverId":
+                        case "OriginAirportCode":
+                        case "DestinationAirportCode":
+                        case "StopoverAirportCodes":
                             continue;
                         case "PictureFileName":
                             jsonProperty = typeof(AircraftJson).GetProperty("HasPicture");

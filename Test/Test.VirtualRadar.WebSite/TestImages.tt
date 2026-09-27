@@ -106,9 +106,8 @@ foreach(var fileName in Directory.GetFiles(path)) {
         {
             get {
                 if(<#=fieldName#>_Bitmap == null) {
-                    using(var stream = new System.IO.MemoryStream(<#=fieldName#>_Stock)) {
-                        <#=fieldName#>_Bitmap = (Bitmap)Bitmap.FromStream(stream);
-                    }
+                    // GDI+ needs the stream to stay open for the lifetime of the bitmap
+                    <#=fieldName#>_Bitmap = (Bitmap)Bitmap.FromStream(new System.IO.MemoryStream(<#=fieldName#>_Stock));
                 }
                 return <#=fieldName#>_Bitmap;
             }

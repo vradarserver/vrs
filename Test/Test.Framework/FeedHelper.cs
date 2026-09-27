@@ -114,6 +114,7 @@ namespace Test.Framework
         public static void AddMergedFeeds(List<Mock<INetworkFeed>> feeds, List<Mock<IMergedFeedListener>> listeners, params int[] feedIds)
         {
             DoAddFeeds(feeds, feedIds, feed => {
+                feed.As<IMergedFeedFeed>();
                 var listener = TestUtilities.CreateMockInstance<IMergedFeedListener>();
                 listener.Object.ReceiverId = feed.Object.UniqueId;
                 listeners.Add(listener);
