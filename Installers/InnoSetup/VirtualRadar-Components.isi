@@ -1,0 +1,297 @@
+[Types]
+Name: "custom"; Description: "Custom installation"; Flags: iscustom
+
+[Components]
+Name: "plugins";                       Description: "Plugins"
+Name: "plugins\airportdatathumbnails"; Description: "Airport-Data.com Thumbnails - aircraft pictures from airport-data.com"
+Name: "plugins\customcontent";         Description: "Custom Content - inject your own content into the web site"
+Name: "plugins\databaseeditor";        Description: "Database Editor - edit aircraft in BaseStation.sqb from a browser"
+Name: "plugins\databasewriter";        Description: "Database Writer - record flights to BaseStation.sqb"
+Name: "plugins\disableaudio";          Description: "Disable Audio - switch off audio and text-to-speech"
+Name: "plugins\disableupnp";           Description: "Disable UPnP - switch off UPnP port forwarding"
+Name: "plugins\feedfilter";            Description: "Feed Filter - filter aircraft out of feeds"
+Name: "plugins\sqlserver";             Description: "SQL Server - keep the BaseStation database in SQL Server"
+Name: "plugins\tileservercache";       Description: "Tile Server Cache - cache OpenStreetMap map tiles"
+Name: "plugins\vatsim";                Description: "VATSIM - add feeds of VATSIM flight simulator flights"
+Name: "plugins\webadmin";              Description: "Web Admin - configure VRS from a browser"
+Name: "languages";                     Description: "Language pack"
+Name: "languages\chinese";             Description: "Chinese (Simplified)"
+Name: "languages\french";              Description: "French"
+Name: "languages\german";              Description: "German"
+Name: "languages\portuguesebr";        Description: "Portuguese (Brazil)"
+Name: "languages\russian";             Description: "Russian"
+
+[Files]
+; Airport-Data.com Thumbnails plugin
+Source: "{#Root}\Plugin.AirportDataThumbnails\bin\{#BuildType}\VirtualRadar.Plugin.AirportDataThumbnails.dll"; DestDir: "{app}\Plugins\AirportDataThumbnails"; Components: plugins\airportdatathumbnails; Flags: ignoreversion;
+Source: "{#Root}\Plugin.AirportDataThumbnails\bin\{#BuildType}\VirtualRadar.Plugin.AirportDataThumbnails.xml"; DestDir: "{app}\Plugins\AirportDataThumbnails"; Components: plugins\airportdatathumbnails; Flags: ignoreversion;
+Source: "{#Root}\Plugin.AirportDataThumbnails\Web\*"; DestDir: "{app}\Plugins\AirportDataThumbnails\Web"; Excludes: "zz-norel-*"; Components: plugins\airportdatathumbnails; Flags: ignoreversion recursesubdirs;
+
+; Custom Content plugin
+Source: "{#Root}\Plugin.CustomContent\bin\{#BuildType}\VirtualRadar.Plugin.CustomContent.dll"; DestDir: "{app}\Plugins\CustomContent"; Components: plugins\customcontent; Flags: ignoreversion;
+Source: "{#Root}\Plugin.CustomContent\VirtualRadar.Plugin.CustomContent.xml"; DestDir: "{app}\Plugins\CustomContent"; Components: plugins\customcontent; Flags: ignoreversion;
+Source: "{#Root}\Plugin.CustomContent\Web\*"; DestDir: "{app}\Plugins\CustomContent\Web"; Excludes: "zz-norel-*"; Components: plugins\customcontent; Flags: ignoreversion recursesubdirs;
+
+; Database Editor plugin
+Source: "{#Root}\Plugin.DatabaseEditor\bin\{#BuildType}\VirtualRadar.Plugin.DatabaseEditor.dll"; DestDir: "{app}\Plugins\DatabaseEditor"; Components: plugins\databaseeditor; Flags: ignoreversion;
+Source: "{#Root}\Plugin.DatabaseEditor\VirtualRadar.Plugin.DatabaseEditor.xml"; DestDir: "{app}\Plugins\DatabaseEditor"; Components: plugins\databaseeditor; Flags: ignoreversion;
+Source: "{#Root}\Plugin.DatabaseEditor\Web\*"; DestDir: "{app}\Plugins\DatabaseEditor\Web"; Excludes: "zz-norel-*"; Components: plugins\databaseeditor; Flags: ignoreversion recursesubdirs;
+Source: "{#Root}\Plugin.DatabaseEditor\Web-WebAdmin\*"; DestDir: "{app}\Plugins\DatabaseEditor\Web-WebAdmin"; Excludes: "zz-norel-*"; Components: plugins\databaseeditor; Flags: ignoreversion recursesubdirs;
+
+; Database Writer plugin
+Source: "{#Root}\Plugin.BaseStationDatabaseWriter\bin\{#BuildType}\VirtualRadar.Plugin.BaseStationDatabaseWriter.dll"; DestDir: "{app}\Plugins\BaseStationDatabaseWriter"; Components: plugins\databasewriter; Flags: ignoreversion;
+Source: "{#Root}\Plugin.BaseStationDatabaseWriter\VirtualRadar.Plugin.BaseStationDatabaseWriter.xml"; DestDir: "{app}\Plugins\BaseStationDatabaseWriter"; Components: plugins\databasewriter; Flags: ignoreversion;
+Source: "{#Root}\Plugin.BaseStationDatabaseWriter\Web\*"; DestDir: "{app}\Plugins\BaseStationDatabaseWriter\Web"; Excludes: "zz-norel-*"; Components: plugins\databasewriter; Flags: ignoreversion recursesubdirs;
+
+; Disable Audio plugin
+Source: "{#Root}\Plugin.DisableAudio\bin\{#BuildType}\VirtualRadar.Plugin.DisableAudio.dll"; DestDir: "{app}\Plugins\DisableAudio"; Components: plugins\disableaudio; Flags: ignoreversion;
+Source: "{#Root}\Plugin.DisableAudio\bin\{#BuildType}\VirtualRadar.Plugin.DisableAudio.xml"; DestDir: "{app}\Plugins\DisableAudio"; Components: plugins\disableaudio; Flags: ignoreversion;
+
+; Disable UPnP plugin
+Source: "{#Root}\Plugin.DisableUPnP\bin\{#BuildType}\VirtualRadar.Plugin.DisableUPnP.dll"; DestDir: "{app}\Plugins\DisableUPnP"; Components: plugins\disableupnp; Flags: ignoreversion;
+Source: "{#Root}\Plugin.DisableUPnP\bin\{#BuildType}\VirtualRadar.Plugin.DisableUPnP.xml"; DestDir: "{app}\Plugins\DisableUPnP"; Components: plugins\disableupnp; Flags: ignoreversion;
+
+; Feed Filter plugin
+Source: "{#Root}\Plugin.FeedFilter\bin\{#BuildType}\VirtualRadar.Plugin.FeedFilter.dll"; DestDir: "{app}\Plugins\FeedFilter"; Components: plugins\feedfilter; Flags: ignoreversion;
+Source: "{#Root}\Plugin.FeedFilter\VirtualRadar.Plugin.FeedFilter.xml"; DestDir: "{app}\Plugins\FeedFilter"; Components: plugins\feedfilter; Flags: ignoreversion;
+Source: "{#Root}\Plugin.FeedFilter\Web\*"; DestDir: "{app}\Plugins\FeedFilter\Web"; Excludes: "zz-norel-*"; Components: plugins\feedfilter; Flags: ignoreversion recursesubdirs;
+Source: "{#Root}\Plugin.FeedFilter\Web-WebAdmin\*"; DestDir: "{app}\Plugins\FeedFilter\Web-WebAdmin"; Excludes: "zz-norel-*"; Components: plugins\feedfilter; Flags: ignoreversion recursesubdirs;
+
+; SQL Server plugin
+Source: "{#Root}\Plugin.SqlServer\bin\{#BuildType}\VirtualRadar.Plugin.SqlServer.dll"; DestDir: "{app}\Plugins\SqlServer"; Components: plugins\sqlserver; Flags: ignoreversion;
+Source: "{#Root}\Plugin.SqlServer\VirtualRadar.Plugin.SqlServer.xml"; DestDir: "{app}\Plugins\SqlServer"; Components: plugins\sqlserver; Flags: ignoreversion;
+Source: "{#Root}\Plugin.SqlServer\Scripts\UpdateSchema.sql"; DestDir: "{app}\Plugins\SqlServer"; Components: plugins\sqlserver; Flags: ignoreversion;
+Source: "{#Root}\Plugin.SqlServer\Web\*"; DestDir: "{app}\Plugins\SqlServer\Web"; Excludes: "zz-norel-*"; Components: plugins\sqlserver; Flags: ignoreversion recursesubdirs;
+
+; Tile Server Cache plugin
+Source: "{#Root}\Plugin.TileServerCache\bin\{#BuildType}\VirtualRadar.Plugin.TileServerCache.dll"; DestDir: "{app}\Plugins\TileServerCache"; Components: plugins\tileservercache; Flags: ignoreversion;
+Source: "{#Root}\Plugin.TileServerCache\VirtualRadar.Plugin.TileServerCache.xml"; DestDir: "{app}\Plugins\TileServerCache"; Components: plugins\tileservercache; Flags: ignoreversion;
+Source: "{#Root}\Plugin.TileServerCache\Web\*"; DestDir: "{app}\Plugins\TileServerCache\Web"; Excludes: "zz-norel-*"; Components: plugins\tileservercache; Flags: ignoreversion recursesubdirs;
+
+; VATSIM plugin
+Source: "{#Root}\Plugin.Vatsim\bin\{#BuildType}\VirtualRadar.Plugin.Vatsim.dll"; DestDir: "{app}\Plugins\Vatsim"; Components: plugins\vatsim; Flags: ignoreversion;
+Source: "{#Root}\Plugin.Vatsim\VirtualRadar.Plugin.Vatsim.xml"; DestDir: "{app}\Plugins\Vatsim"; Components: plugins\vatsim; Flags: ignoreversion;
+Source: "{#Root}\Plugin.Vatsim\Web\*"; DestDir: "{app}\Plugins\Vatsim\Web"; Excludes: "zz-norel-*"; Components: plugins\vatsim; Flags: ignoreversion recursesubdirs;
+
+; Web Admin plugin
+Source: "{#Root}\Plugin.WebAdmin\bin\{#BuildType}\VirtualRadar.Plugin.WebAdmin.dll"; DestDir: "{app}\Plugins\WebAdmin"; Components: plugins\webadmin; Flags: ignoreversion;
+Source: "{#Root}\Plugin.WebAdmin\VirtualRadar.Plugin.WebAdmin.xml"; DestDir: "{app}\Plugins\WebAdmin"; Components: plugins\webadmin; Flags: ignoreversion;
+Source: "{#Root}\Plugin.WebAdmin\Web\*"; DestDir: "{app}\Plugins\WebAdmin\Web"; Excludes: "zz-norel-*"; Components: plugins\webadmin; Flags: ignoreversion recursesubdirs;
+
+; Language pack
+#define LANGFILE(ISOCODE, LANGCOMP, ASSEMBLY, PLUGINCOMP) \
+    "Source: """ + Root + "\VirtualRadar\bin\" + Platform + "\" + BuildType + "\" + ISOCODE + "\" + ASSEMBLY + ".resources.dll""; " + \
+    "DestDir: ""{app}\" + ISOCODE + """; " + \
+    "Components: languages\" + LANGCOMP + (PLUGINCOMP == "" ? "" : " and plugins\" + PLUGINCOMP) + "; " + \
+    "Flags: ignoreversion"
+
+#emit LANGFILE("zh-CN", "chinese", "VirtualRadar.Localisation", "")
+#emit LANGFILE("zh-CN", "chinese", "VirtualRadar.Plugin.BaseStationDatabaseWriter", "databasewriter")
+#emit LANGFILE("zh-CN", "chinese", "VirtualRadar.Plugin.CustomContent", "customcontent")
+#emit LANGFILE("zh-CN", "chinese", "VirtualRadar.Plugin.DatabaseEditor", "databaseeditor")
+#emit LANGFILE("zh-CN", "chinese", "VirtualRadar.Plugin.FeedFilter", "feedfilter")
+#emit LANGFILE("zh-CN", "chinese", "VirtualRadar.Plugin.WebAdmin", "webadmin")
+
+#emit LANGFILE("fr-FR", "french", "VirtualRadar.Localisation", "")
+#emit LANGFILE("fr-FR", "french", "VirtualRadar.Plugin.BaseStationDatabaseWriter", "databasewriter")
+#emit LANGFILE("fr-FR", "french", "VirtualRadar.Plugin.CustomContent", "customcontent")
+#emit LANGFILE("fr-FR", "french", "VirtualRadar.Plugin.DatabaseEditor", "databaseeditor")
+#emit LANGFILE("fr-FR", "french", "VirtualRadar.Plugin.FeedFilter", "feedfilter")
+#emit LANGFILE("fr-FR", "french", "VirtualRadar.Plugin.WebAdmin", "webadmin")
+
+#emit LANGFILE("de-DE", "german", "VirtualRadar.Localisation", "")
+#emit LANGFILE("de-DE", "german", "VirtualRadar.Plugin.BaseStationDatabaseWriter", "databasewriter")
+#emit LANGFILE("de-DE", "german", "VirtualRadar.Plugin.CustomContent", "customcontent")
+#emit LANGFILE("de-DE", "german", "VirtualRadar.Plugin.DatabaseEditor", "databaseeditor")
+#emit LANGFILE("de-DE", "german", "VirtualRadar.Plugin.FeedFilter", "feedfilter")
+#emit LANGFILE("de-DE", "german", "VirtualRadar.Plugin.WebAdmin", "webadmin")
+
+#emit LANGFILE("pt-BR", "portuguesebr", "VirtualRadar.Localisation", "")
+#emit LANGFILE("pt-BR", "portuguesebr", "VirtualRadar.Plugin.BaseStationDatabaseWriter", "databasewriter")
+#emit LANGFILE("pt-BR", "portuguesebr", "VirtualRadar.Plugin.CustomContent", "customcontent")
+#emit LANGFILE("pt-BR", "portuguesebr", "VirtualRadar.Plugin.DatabaseEditor", "databaseeditor")
+#emit LANGFILE("pt-BR", "portuguesebr", "VirtualRadar.Plugin.FeedFilter", "feedfilter")
+#emit LANGFILE("pt-BR", "portuguesebr", "VirtualRadar.Plugin.WebAdmin", "webadmin")
+
+#emit LANGFILE("ru-RU", "russian", "VirtualRadar.Localisation", "")
+#emit LANGFILE("ru-RU", "russian", "VirtualRadar.Plugin.BaseStationDatabaseWriter", "databasewriter")
+#emit LANGFILE("ru-RU", "russian", "VirtualRadar.Plugin.CustomContent", "customcontent")
+#emit LANGFILE("ru-RU", "russian", "VirtualRadar.Plugin.DatabaseEditor", "databaseeditor")
+#emit LANGFILE("ru-RU", "russian", "VirtualRadar.Plugin.FeedFilter", "feedfilter")
+#emit LANGFILE("ru-RU", "russian", "VirtualRadar.Plugin.WebAdmin", "webadmin")
+
+[InstallDelete]
+; Every bundled plugin is cleared, not just the ticked ones, so that unticked plugins are removed
+Type: filesandordirs; Name: "{app}\Plugins\AirportDataThumbnails";
+Type: filesandordirs; Name: "{app}\Plugins\BaseStationDatabaseWriter";
+Type: filesandordirs; Name: "{app}\Plugins\CustomContent";
+Type: filesandordirs; Name: "{app}\Plugins\DatabaseEditor";
+Type: filesandordirs; Name: "{app}\Plugins\DisableAudio";
+Type: filesandordirs; Name: "{app}\Plugins\DisableUPnP";
+Type: filesandordirs; Name: "{app}\Plugins\FeedFilter";
+Type: filesandordirs; Name: "{app}\Plugins\SqlServer";
+Type: filesandordirs; Name: "{app}\Plugins\TileServerCache";
+Type: filesandordirs; Name: "{app}\Plugins\Vatsim";
+Type: filesandordirs; Name: "{app}\Plugins\WebAdmin";
+
+[Code]
+const
+  OldUninstallKeyPrefix = 'Software\Microsoft\Windows\CurrentVersion\Uninstall\';
+  OldUninstallTimeoutMilliseconds = 60000;
+
+var
+  ComponentTablesLoaded:    Boolean;
+  PreselectedForFolder:     String;
+  OldInstallerAppNames:     TArrayOfString;
+  PluginFolders:            TArrayOfString;
+  PluginComponents:         TArrayOfString;
+  LanguageIsoCodes:         TArrayOfString;
+  LanguageComponents:       TArrayOfString;
+
+procedure AddPlugin(Index: Integer; Folder, Component: String);
+begin
+  PluginFolders[Index] := Folder;
+  PluginComponents[Index] := Component;
+end;
+
+procedure AddLanguage(Index: Integer; IsoCode, Component: String);
+begin
+  LanguageIsoCodes[Index] := IsoCode;
+  LanguageComponents[Index] := Component;
+end;
+
+procedure LoadComponentTables();
+begin
+  if not ComponentTablesLoaded then begin
+    ComponentTablesLoaded := True;
+
+    SetArrayLength(PluginFolders, 11);
+    SetArrayLength(PluginComponents, 11);
+    AddPlugin(0,  'AirportDataThumbnails',     'plugins\airportdatathumbnails');
+    AddPlugin(1,  'CustomContent',             'plugins\customcontent');
+    AddPlugin(2,  'DatabaseEditor',            'plugins\databaseeditor');
+    AddPlugin(3,  'BaseStationDatabaseWriter', 'plugins\databasewriter');
+    AddPlugin(4,  'DisableAudio',              'plugins\disableaudio');
+    AddPlugin(5,  'DisableUPnP',               'plugins\disableupnp');
+    AddPlugin(6,  'FeedFilter',                'plugins\feedfilter');
+    AddPlugin(7,  'SqlServer',                 'plugins\sqlserver');
+    AddPlugin(8,  'TileServerCache',           'plugins\tileservercache');
+    AddPlugin(9,  'Vatsim',                    'plugins\vatsim');
+    AddPlugin(10, 'WebAdmin',                  'plugins\webadmin');
+
+    SetArrayLength(LanguageIsoCodes, 5);
+    SetArrayLength(LanguageComponents, 5);
+    AddLanguage(0, 'zh-CN', 'languages\chinese');
+    AddLanguage(1, 'fr-FR', 'languages\french');
+    AddLanguage(2, 'de-DE', 'languages\german');
+    AddLanguage(3, 'pt-BR', 'languages\portuguesebr');
+    AddLanguage(4, 'ru-RU', 'languages\russian');
+
+    SetArrayLength(OldInstallerAppNames, 12);
+    OldInstallerAppNames[0]  := 'Airport Data Thumbnails VRS Plugin';
+    OldInstallerAppNames[1]  := 'Custom Content VRS Plugin';
+    OldInstallerAppNames[2]  := 'Database Editor VRS Plugin';
+    OldInstallerAppNames[3]  := 'Database Writer VRS Plugin';
+    OldInstallerAppNames[4]  := 'Disable Audio VRS Plugin';
+    OldInstallerAppNames[5]  := 'Disable UPnP VRS Plugin';
+    OldInstallerAppNames[6]  := 'Feed Filter VRS Plugin';
+    OldInstallerAppNames[7]  := 'SQL Server VRS Plugin';
+    OldInstallerAppNames[8]  := 'Tile Server Cache VRS Plugin';
+    OldInstallerAppNames[9]  := 'VATSIM VRS Plugin';
+    OldInstallerAppNames[10] := 'Web Admin VRS Plugin';
+    OldInstallerAppNames[11] := 'Virtual Radar Language Pack';
+  end;
+end;
+
+procedure CurPageChanged(CurPageID: Integer);
+var
+  appFolder: String;
+  i:         Integer;
+begin
+  if CurPageID = wpSelectComponents then begin
+    appFolder := AddBackslash(WizardDirValue());
+    if CompareText(appFolder, PreselectedForFolder) <> 0 then begin
+      PreselectedForFolder := appFolder;
+      LoadComponentTables();
+
+      for i := 0 to GetArrayLength(PluginFolders) - 1 do begin
+        if DirExists(appFolder + 'Plugins\' + PluginFolders[i]) then begin
+          WizardSelectComponents(PluginComponents[i]);
+        end;
+      end;
+
+      for i := 0 to GetArrayLength(LanguageIsoCodes) - 1 do begin
+        if FileExists(appFolder + LanguageIsoCodes[i] + '\VirtualRadar.Localisation.resources.dll') then begin
+          WizardSelectComponents(LanguageComponents[i]);
+        end;
+      end;
+    end;
+  end;
+end;
+
+function IsOldInstallInAppFolder(RootKey: Integer; KeyName: String; var UninstallString: String): Boolean;
+var
+  appPath: String;
+begin
+  Result := False;
+  if RegQueryStringValue(RootKey, KeyName, 'Inno Setup: App Path', appPath) then begin
+    if CompareText(AddBackslash(appPath), AddBackslash(ExpandConstant('{app}'))) = 0 then begin
+      Result := RegQueryStringValue(RootKey, KeyName, 'UninstallString', UninstallString);
+    end;
+  end;
+end;
+
+function RunOldUninstaller(RootKey: Integer; KeyName, UninstallString: String): Boolean;
+var
+  resultCode: Integer;
+  waited:     Integer;
+begin
+  Exec(RemoveQuotes(UninstallString), '/VERYSILENT /SUPPRESSMSGBOXES /NORESTART', '', SW_HIDE, ewWaitUntilTerminated, resultCode);
+
+  // Inno uninstallers relaunch themselves from the temp folder and the original process exits
+  // straight away, so wait for the uninstall entry to go instead
+  waited := 0;
+  while RegKeyExists(RootKey, KeyName) and (waited < OldUninstallTimeoutMilliseconds) do begin
+    Sleep(250);
+    waited := waited + 250;
+  end;
+
+  Result := not RegKeyExists(RootKey, KeyName);
+end;
+
+function UninstallOldInstaller(AppName: String): String;
+var
+  keyName:         String;
+  uninstallString: String;
+  removed:         Boolean;
+begin
+  Result := '';
+  removed := True;
+  keyName := OldUninstallKeyPrefix + AppName + '_is1';
+
+  if IsOldInstallInAppFolder(HKLM32, keyName, uninstallString) then begin
+    removed := RunOldUninstaller(HKLM32, keyName, uninstallString);
+  end else begin
+    if IsOldInstallInAppFolder(HKCU, keyName, uninstallString) then begin
+      removed := RunOldUninstaller(HKCU, keyName, uninstallString);
+    end;
+  end;
+
+  if not removed then begin
+    Result := 'Setup could not remove the separately installed ' + AppName + '. Please uninstall it from Programs and Features and then run this installer again.';
+  end;
+end;
+
+function PrepareToInstall(var NeedsRestart: Boolean): String;
+var
+  i: Integer;
+begin
+  Result := '';
+  LoadComponentTables();
+
+  for i := 0 to GetArrayLength(OldInstallerAppNames) - 1 do begin
+    if Result = '' then begin
+      Result := UninstallOldInstaller(OldInstallerAppNames[i]);
+    end;
+  end;
+end;

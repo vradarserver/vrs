@@ -1,5 +1,6 @@
 #define public Root       "..\.."
 #define public BuildType  "Release"
+#define public Platform   "x86"
 #ifndef VERSION
   #define public VERSION    "v3"
 #endif
@@ -187,6 +188,10 @@ begin
   msg := msg + 'Port: ' + NewLine;
   msg := msg + Space + ChosenPort() + NewLine;
   msg := msg + NewLine;
+  if MemoComponentsInfo <> '' then begin
+    msg := msg + MemoComponentsInfo + NewLine;
+    msg := msg + NewLine;
+  end;
   msg := msg + MemoGroupInfo + NewLine;
   msg := msg + NewLine;
   msg := msg + MemoTasksInfo + NewLine;
@@ -209,4 +214,6 @@ begin
   fileName := AddBackslash(fileName) + 'VirtualRadar\InstallerConfiguration.xml';
   content.SaveToFile(fileName);
 end;
+
+#include "VirtualRadar-Components.isi"
 
