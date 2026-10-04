@@ -12,6 +12,20 @@
     <AssemblyName>VirtualRadar.Plugin.AirportDataThumbnails</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptModuleKind />
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+    <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -97,6 +111,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Web\WebAdmin\AirportDataThumbnailsPluginOptions.html" />
+    <Content Include="Web\WebAdmin\AirportDataThumbnailsPluginOptions.js">
+      <DependentUpon>AirportDataThumbnailsPluginOptions.ts</DependentUpon>
+    </Content>
+    <Content Include="Web\WebAdmin\AirportDataThumbnailsPluginOptions.js.map">
+      <DependentUpon>AirportDataThumbnailsPluginOptions.ts</DependentUpon>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Typings\AirportDataThumbnailsPluginModels.d.ts" />
