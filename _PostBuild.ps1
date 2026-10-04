@@ -8,7 +8,7 @@ function Usage
 {
     Write-Host 'usage: _PostBuild.ps1 -projectName <project name> -configurationName <configuration name> [-targetName <targetName>] [-platformName <platformName>]'
     Write-Host 'The targetName parameter is not optional for plugins or projects with translation files'
-    Write-Host 'The platformName parameter is not optional for BaseStationImport'
+    Write-Host 'The platformName parameter is not optional for VirtualRadar-Service and BaseStationImport'
     Exit 1
 }
 
@@ -28,7 +28,7 @@ $virtualRadarDirX64 = [io.Path]::Combine($solutionDir, 'VirtualRadar', 'bin', 'x
 $virtualRadarDir = switch($platformName) {
     'x64'   { $virtualRadarDirX64 }
     'x86'   { $virtualRadarDirX86 }
-    default { '::UNDEFINED-' + $platformName + '::' }
+    default { $null }
 }
 
 Write-Host ('**********')
@@ -37,7 +37,9 @@ Write-Host ('Solution folder:                 ' + $solutionDir)
 Write-Host ('Project folder:                  ' + $projectDir)
 Write-Host ('VirtualRadar build folder (x86): ' + $virtualRadarDirX86)
 Write-Host ('VirtualRadar build folder (x64): ' + $virtualRadarDirX64)
-Write-Host ('VirtualRadar build folder:       ' + $virtualRadarDir)
+if($virtualRadarDir -ne $null) {
+    Write-Host ('VirtualRadar build folder:       ' + $virtualRadarDir)
+}
 Write-Host ('**********')
 
 function Copy-File
@@ -239,7 +241,7 @@ function PostBuild-Plugin
 
 function PostBuild-VirtualRadar-Service
 {
-    if([string]::IsNullOrWhiteSpace($targetName)) {
+    if([string]::IsNullOrWhiteSpace($targetName) -or $virtualRadarDir -eq $null) {
         Usage
     }
 
@@ -251,7 +253,7 @@ function PostBuild-VirtualRadar-Service
 
 function PostBuild-BaseStationImport
 {
-    if([string]::IsNullOrWhiteSpace($targetName)) {
+    if([string]::IsNullOrWhiteSpace($targetName) -or $virtualRadarDir -eq $null) {
         Usage
     }
 
