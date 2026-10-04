@@ -32,65 +32,65 @@ Name: AddToFirewall; Description: "Configure Windows Firewall so other computers
 
 [Files]
 ; License
-Source: "{#Root}\LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "{#Root}\LICENSE.txt"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
 
 ; Application files
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.exe"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.exe.config"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar-Service.exe"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar-Service.exe.config"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.Database.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.Headless.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.Interface.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.Interop.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.Library.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.Localisation.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.Resources.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.SQLiteWrapper.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.WebServer.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.WebServer.HttpListener.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.WebSite.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.WinForms.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\InterfaceFactory.dll"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\AWhewell.Owin.Interface.dll"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\AWhewell.Owin.Interface.Host.HttpListener.dll"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\AWhewell.Owin.Interface.WebApi.dll"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\AWhewell.Owin.dll"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\AWhewell.Owin.Host.HttpListener.dll"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\AWhewell.Owin.Utility.dll"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\AWhewell.Owin.WebApi.dll"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\Interop.NATUPNPLib.dll"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.exe"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.exe.config"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar-Service.exe"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar-Service.exe.config"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.Database.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.Headless.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.Interface.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.Interop.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.Library.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.Localisation.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.Resources.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.SQLiteWrapper.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.WebServer.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.WebServer.HttpListener.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.WebSite.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\VirtualRadar.WinForms.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\InterfaceFactory.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\AWhewell.Owin.Interface.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\AWhewell.Owin.Interface.Host.HttpListener.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\AWhewell.Owin.Interface.WebApi.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\AWhewell.Owin.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\AWhewell.Owin.Host.HttpListener.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\AWhewell.Owin.Utility.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\AWhewell.Owin.WebApi.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\Interop.NATUPNPLib.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
 
 ; Command-line utility files
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\BaseStationImport.exe"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\BaseStationImport.exe.config"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\BaseStationImport.exe"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\BaseStationImport.exe.config"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
 
 ; Web site files
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\Web\*"; DestDir: "{app}\Web"; Excludes: "zz-norel-*"; Flags: ignoreversion recursesubdirs;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\Checksums.txt"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\Web\*"; DestDir: "{app}\Web"; Excludes: "zz-norel-*"; Components: server; Flags: ignoreversion recursesubdirs;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\Checksums.txt"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
 
 ; Web site translations
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\de-DE\VirtualRadar.WebSite.resources.dll"; DestDir: "{app}\de-DE"; Excludes: "zz-norel-*"; Flags: ignoreversion recursesubdirs;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\fr-FR\VirtualRadar.WebSite.resources.dll"; DestDir: "{app}\fr-FR"; Excludes: "zz-norel-*"; Flags: ignoreversion recursesubdirs;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\pt-BR\VirtualRadar.WebSite.resources.dll"; DestDir: "{app}\pt-BR"; Excludes: "zz-norel-*"; Flags: ignoreversion recursesubdirs;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\ru-RU\VirtualRadar.WebSite.resources.dll"; DestDir: "{app}\ru-RU"; Excludes: "zz-norel-*"; Flags: ignoreversion recursesubdirs;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\zh-CN\VirtualRadar.WebSite.resources.dll"; DestDir: "{app}\zh-CN"; Excludes: "zz-norel-*"; Flags: ignoreversion recursesubdirs;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\de-DE\VirtualRadar.WebSite.resources.dll"; DestDir: "{app}\de-DE"; Excludes: "zz-norel-*"; Components: server; Flags: ignoreversion recursesubdirs;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\fr-FR\VirtualRadar.WebSite.resources.dll"; DestDir: "{app}\fr-FR"; Excludes: "zz-norel-*"; Components: server; Flags: ignoreversion recursesubdirs;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\pt-BR\VirtualRadar.WebSite.resources.dll"; DestDir: "{app}\pt-BR"; Excludes: "zz-norel-*"; Components: server; Flags: ignoreversion recursesubdirs;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\ru-RU\VirtualRadar.WebSite.resources.dll"; DestDir: "{app}\ru-RU"; Excludes: "zz-norel-*"; Components: server; Flags: ignoreversion recursesubdirs;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\zh-CN\VirtualRadar.WebSite.resources.dll"; DestDir: "{app}\zh-CN"; Excludes: "zz-norel-*"; Components: server; Flags: ignoreversion recursesubdirs;
 
 ; SQLite
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\System.Data.SQLite.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\e_sqlite3.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\System.Data.SQLite.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\e_sqlite3.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion
 
 ; 3rd party libraries
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\AjaxMin.dll"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\Dapper.dll"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\HtmlAgilityPack.dll"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\KdTreeLib.dll"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\AjaxMin.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\Dapper.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\HtmlAgilityPack.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\KdTreeLib.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\Newtonsoft.Json.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
 
 ; Flight Simulator
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\Microsoft.FlightSimulator.SimConnect.dll"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\SimConnect.cfg"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\SimConnect.dll"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\Microsoft.FlightSimulator.SimConnect.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\SimConnect.cfg"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
+Source: "{#Root}\VirtualRadar\bin\x64\{#BuildType}\SimConnect.dll"; DestDir: "{app}"; Components: server; Flags: ignoreversion;
 
 [Dirs]
 Name: "{app}\Plugins"

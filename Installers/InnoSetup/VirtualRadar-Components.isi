@@ -2,6 +2,7 @@
 Name: "custom"; Description: "Custom installation"; Flags: iscustom
 
 [Components]
+Name: "server";                        Description: "Virtual Radar Server"; Types: custom; Flags: fixed
 Name: "plugins";                       Description: "Plugins"
 Name: "plugins\airportdatathumbnails"; Description: "Airport-Data.com Thumbnails: thumbnails from airport-data.com"
 Name: "plugins\customcontent";         Description: "Custom Content: inject content into the web site"
