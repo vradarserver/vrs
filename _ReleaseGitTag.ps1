@@ -92,6 +92,14 @@ try {
         }
     }
 
+    if($exitCode -eq 0 -and (Confirm-Step '* Run git push?')) {
+        git push
+        if($LASTEXITCODE -ne 0) {
+            Write-Host 'git push failed' -ForegroundColor Red
+            $exitCode = 1
+        }
+    }
+
     if($exitCode -eq 0) {
         $release = Get-ReleaseVersion $assemblyInfoPath
         if($null -eq $release) {
