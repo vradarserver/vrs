@@ -15,7 +15,7 @@ Name: "plugins\sqlserver";             Description: "SQL Server: use SQL Server 
 Name: "plugins\tileservercache";       Description: "Tile Server Cache: cache OpenStreetMap tiles"
 Name: "plugins\vatsim";                Description: "VATSIM: show feeds of VATSIM flight sim flights"
 Name: "plugins\webadmin";              Description: "Web Admin: web-based management of VRS"
-Name: "languages";                     Description: "Language Pack"
+Name: "languages";                     Description: "Translations"
 Name: "languages\chinese";             Description: "Chinese (Simplified)"
 Name: "languages\french";              Description: "French"
 Name: "languages\german";              Description: "German"
