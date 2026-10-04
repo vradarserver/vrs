@@ -54,6 +54,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE.txt = LICENSE.txt
 		README.md = README.md
 		ReleaseToGithub.bat = ReleaseToGithub.bat
+		UndoTestRelease.bat = UndoTestRelease.bat
 		VirtualRadar.runsettings = VirtualRadar.runsettings
 		WebEssentials-Settings.json = WebEssentials-Settings.json
 		_ChecksumFiles.ps1 = _ChecksumFiles.ps1
