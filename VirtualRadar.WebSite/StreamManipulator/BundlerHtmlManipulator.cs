@@ -53,9 +53,15 @@ namespace VirtualRadar.WebSite.StreamManipulator
                     if(parserErrors.Count != 0) {
                         htmlDocument.LoadHtml(textContent.Content);
 
-                        var node = htmlDocument.DocumentNode.AppendChild(htmlDocument.CreateComment("\r\n<!-- BUNDLE PARSER ERROR -->\r\n"));
+                        // Modern versions of HtmlAgilityPack do not like it if you put line breaks into
+                        // CreateComment, keep them separate.
+                        var root = htmlDocument.DocumentNode;
+                        root.AppendChild(htmlDocument.CreateTextNode("\r\n"));
+                        root.AppendChild(htmlDocument.CreateComment("<!-- BUNDLE PARSER ERROR -->"));
+                        root.AppendChild(htmlDocument.CreateTextNode("\r\n"));
                         foreach(var parserError in parserErrors) {
-                            node = htmlDocument.DocumentNode.InsertAfter(htmlDocument.CreateComment($"<!-- {parserError} -->\r\n"), node);
+                            root.AppendChild(htmlDocument.CreateComment($"<!-- {parserError} -->"));
+                            root.AppendChild(htmlDocument.CreateTextNode("\r\n"));
                         }
                     }
 
