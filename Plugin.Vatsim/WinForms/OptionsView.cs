@@ -17,7 +17,7 @@ using VirtualRadar.WinForms;
 
 namespace VirtualRadar.Plugin.Vatsim.WinForms
 {
-    public partial class OptionsView : Form
+    public partial class OptionsView : BaseForm
     {
         private ListViewHelper<GeofenceFeedOption, Guid> _GeofenceFeedListViewHelper;
         private ComboBoxHelper<GeofenceCentreOn, object> _CentreOnComboBoxHelper;
