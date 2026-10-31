@@ -38,6 +38,7 @@ cp    $BUILD/HtmlAgilityPack.dll $WORK
 cp    $BUILD/KdTreeLib.dll $WORK
 cp    $BUILD/NewtonSoft.Json.dll $WORK/Newtonsoft.Json.dll
 cp    $BUILD/Checksums.txt $WORK
+cp    $BUILD/VirtualRadar.exe.config $WORK
 cp -r $BUILD/Web $WORK
 cp    $ROOT/SQLiteWrapper.Mono/bin/Release/VirtualRadar.SQLiteWrapper.dll $WORK
 cp -t $WORK/de-DE $BUILD/de-DE/VirtualRadar.WebSite.resources.dll
