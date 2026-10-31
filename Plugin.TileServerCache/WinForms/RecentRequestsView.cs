@@ -16,10 +16,11 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VirtualRadar.WinForms;
 
 namespace VirtualRadar.Plugin.TileServerCache.WinForms
 {
-    public partial class RecentRequestsView : Form
+    public partial class RecentRequestsView : BaseForm
     {
         public RecentRequestsView()
         {

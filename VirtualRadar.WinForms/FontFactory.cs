@@ -14,6 +14,8 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Threading;
+using InterfaceFactory;
+using VirtualRadar.Interface;
 
 namespace VirtualRadar.WinForms
 {
@@ -170,6 +172,21 @@ namespace VirtualRadar.WinForms
                         }
                     } catch {
                         ;
+                    }
+
+                    // Work around button fonts not showing properly under mono on Ubuntu 24.04
+                    if(Factory.ResolveSingleton<IRuntimeEnvironment>().IsMono) {
+                        using(var designFont = new Font("Microsoft Sans Serif", 8.25F)) {
+                            if(designFont.FontFamily.Name != "Microsoft Sans Serif") {
+                                preferredFontFamilies.Add("DejaVu Sans");
+                                preferredSizes.Add(8.25F);
+                                preferredDisableAutoSize.Add(false);
+
+                                preferredFontFamilies.Add("Liberation Sans");
+                                preferredSizes.Add(8.25F);
+                                preferredDisableAutoSize.Add(false);
+                            }
+                        }
                     }
 
                     for(var i = 0;i < preferredFontFamilies.Count;++i) {
