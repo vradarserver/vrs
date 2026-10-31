@@ -115,75 +115,75 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <Content Include="TestFiles\AircraftTests.xls">
-      <Link>AircraftTests.xls</Link>
+      <TargetPath>AircraftTests.xls</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\BaseStation.sqb">
-      <Link>BaseStation.sqb</Link>
+      <TargetPath>BaseStation.sqb</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\BaseStationTests.xls">
-      <Link>BaseStationTests.xls</Link>
+      <TargetPath>BaseStationTests.xls</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\GillhamAltitudeTable.csv">
-      <Link>GillhamAltitudeTable.csv</Link>
+      <TargetPath>GillhamAltitudeTable.csv</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\RawDecodingTests.xls">
-      <Link>RawDecodingTests.xls</Link>
+      <TargetPath>RawDecodingTests.xls</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\PluginBaseStationDatabaseWriterTests.xls">
-      <Link>PluginBaseStationDatabaseWriterTests.xls</Link>
+      <TargetPath>PluginBaseStationDatabaseWriterTests.xls</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\LibraryTests.xls">
-      <Link>LibraryTests.xls</Link>
+      <TargetPath>LibraryTests.xls</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\StandingDataTest\AircraftTypes.csv">
-      <Link>StandingDataTest\AircraftTypes.csv</Link>
+      <TargetPath>StandingDataTest\AircraftTypes.csv</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\StandingDataTest\Airlines.csv">
-      <Link>StandingDataTest\Airlines.csv</Link>
+      <TargetPath>StandingDataTest\Airlines.csv</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\StandingDataTest\Airports.csv">
-      <Link>StandingDataTest\Airports.csv</Link>
+      <TargetPath>StandingDataTest\Airports.csv</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\StandingDataTest\Countries.dat">
-      <Link>StandingDataTest\Countries.dat</Link>
+      <TargetPath>StandingDataTest\Countries.dat</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\StandingDataTest\FlightNumberCoverage.csv">
-      <Link>StandingDataTest\FlightNumberCoverage.csv</Link>
+      <TargetPath>StandingDataTest\FlightNumberCoverage.csv</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\StandingDataTest\FlightNumberVotes.csv">
-      <Link>StandingDataTest\FlightNumberVotes.csv</Link>
+      <TargetPath>StandingDataTest\FlightNumberVotes.csv</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\StandingDataTest\StandingData.sqb">
-      <Link>StandingDataTest\StandingData.sqb</Link>
+      <TargetPath>StandingDataTest\StandingData.sqb</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\OwinTests.xls">
-      <Link>OwinTests.xls</Link>
+      <TargetPath>OwinTests.xls</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\WebSiteTests.xls">
-      <Link>WebSiteTests.xls</Link>
+      <TargetPath>WebSiteTests.xls</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\WebServerTests.xls">
-      <Link>WebServerTests.xls</Link>
+      <TargetPath>WebServerTests.xls</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\DataTests.xls">
-      <Link>DataTests.xls</Link>
+      <TargetPath>DataTests.xls</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -191,11 +191,11 @@
   <ItemGroup>
     <EmbeddedResource Include="TestFiles\favicon.ico" />
     <Content Include="TestFiles\SampleMessages.txt">
-      <Link>SampleMessages.txt</Link>
+      <TargetPath>SampleMessages.txt</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles\SubFolder\VIR.bmp">
-      <Link>SubFolder\VIR.bmp</Link>
+      <TargetPath>SubFolder\VIR.bmp</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
